@@ -132,13 +132,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			oldData.get().wkpId = newData.wkpId;
 			oldData.get().clsCd = newData.clsCd;
 			oldData.get().busTypeCd = newData.busTypeCd;
-			oldData.get().nurseLicense = newData.nurseLicense;
 			oldData.get().wktpCd = newData.wktpCd;
 			oldData.get().wktmCd = newData.wktmCd;
 			oldData.get().goStraightAtr = newData.goStraightAtr;
 			oldData.get().backStraightAtr = newData.backStraightAtr;
 			oldData.get().treatAsSubstituteAtr = newData.treatAsSubstituteAtr;
 			oldData.get().treatAsSubstituteDays = newData.treatAsSubstituteDays;
+			oldData.get().nursingLicenseClass = newData.nursingLicenseClass;
+			oldData.get().workplaceGroupId = newData.workplaceGroupId;
+			oldData.get().nursingManager = newData.nursingManager;
+			oldData.get().bonusPaySettingCode = newData.bonusPaySettingCode;
 
 			// kscdtSchTime
 			if (oldData.get().kscdtSchTime != null) {

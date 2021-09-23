@@ -28,8 +28,10 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -105,9 +107,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 	/** 勤務種別コード **/
 	@Column(name = "BUSTYPE_CD")
 	public String busTypeCd;
-	/** 看護区分 **/
-	@Column(name = "NURSE_LICENSE")
-	public String nurseLicense;
 	/** 勤務種類コード **/
 	@Column(name = "WKTP_CD")
 	public String wktpCd;
@@ -126,6 +125,20 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 
 	@Column(name = "TREAT_AS_SUBSTITUTE_DAYS")
 	public Double treatAsSubstituteDays;
+	
+	// redmine 119637
+	// 職場グループID
+	@Column(name = "WKP_GROUP_ID")
+	public String workplaceGroupId;
+	// 看護免許区分
+	@Column(name = "NURSE_LICENSE_ATR")
+	public Integer nursingLicenseClass;
+	// 看護管理者か
+	@Column(name = "IS_NURSE_ADMINISTRATOR")
+	public Boolean nursingManager;
+	// 加給コード
+	@Column(name = "BONUS_PAY_CD")
+	public String bonusPaySettingCode;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "basicInfo", orphanRemoval = true)
 	public KscdtSchTime kscdtSchTime;
@@ -223,11 +236,15 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		KscdtSchBasicInfo basicInfo = new KscdtSchBasicInfo(basicInfoPK,
 				cID, workSchedule.getConfirmedATR().value == 1 ? true : false, workInfo.getEmploymentCode().v(),
 				workInfo.getJobTitleID(), workInfo.getWplID(), workInfo.getClsCode().v(),
-				!workInfo.getBusinessTypeCode().isPresent() ||workInfo.getBusinessTypeCode() ==null ?null:workInfo.getBusinessTypeCode().get().v(), null, workInformation.getWorkTypeCode().v(),
+				!workInfo.getBusinessTypeCode().isPresent() ||workInfo.getBusinessTypeCode() ==null ?null:workInfo.getBusinessTypeCode().get().v(), workInformation.getWorkTypeCode().v(),
 				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v(), workInfoOfDaily.getGoStraightAtr().value == 1 ? true : false,
 				workInfoOfDaily.getBackStraightAtr().value == 1 ? true : false,
 				classifiction,
 				days,
+				workInfo.getWorkplaceGroupId().isPresent() ? workInfo.getWorkplaceGroupId().get() : null,
+				workInfo.getNursingLicenseClass().isPresent()? workInfo.getNursingLicenseClass().get().value : null,
+				workInfo.getIsNursingManager().isPresent()? workInfo.getIsNursingManager().get() : null,
+                workInfo.getBonusPaySettingCode().isPresent() ? workInfo.getBonusPaySettingCode().get().toString() : null,
 				kscdtSchTimes, kscdtEditStates, kscdtSchAtdLvwTimes,
 				kscdtSchShortTimeTs, kscdtSchBreakTs,listKscdtSchGoingOutTs);
 		return basicInfo;
@@ -254,10 +271,10 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
 				Optional.ofNullable(new BusinessTypeCode(busTypeCd)),
-				Optional.empty(), // TODO implement bonusPaySettingCode
-				Optional.empty(), // TODO implement workplaceGroupId
-				Optional.empty(), // TODO implement nursingLicenseClass
-				Optional.empty()); // TODO implement isnursingLicenseManager
+				Optional.ofNullable(new BonusPaySettingCode(bonusPaySettingCode)), //  bonusPaySettingCode
+				Optional.ofNullable(workplaceGroupId), //  workplaceGroupId
+				EnumAdaptor.optionalOf(nursingLicenseClass, LicenseClassification.class), //  nursingLicenseClass
+				Optional.ofNullable(nursingManager)); //  isnursingLicenseManager
 
 		// create List<BreakTimeOfDailyAttd>
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();

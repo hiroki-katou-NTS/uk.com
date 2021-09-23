@@ -2,11 +2,15 @@ package nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 
 @NoArgsConstructor
 @Getter
@@ -30,6 +34,10 @@ public class EmployeeGeneralInfoImport {
 	
 	/** 部門履歴一覧 */
 	List<ExDepartmentHistoryImport> exDepartmentHistoryImports= new ArrayList<>();
+	
+	Map<GeneralDate, List<EmpOrganizationImport>> empWorkplaceGroup;
+	
+	Map<GeneralDate, List<EmpLicenseClassification>> empLicense;
 
 	public EmployeeGeneralInfoImport(List<ExEmploymentHistoryImport> employmentHistoryImports,
 			List<ExClassificationHistoryImport> exClassificationHistoryImports,
@@ -54,6 +62,23 @@ public class EmployeeGeneralInfoImport {
 		this.exJobTitleHistoryImports = exJobTitleHistoryImports;
 		this.exWorkPlaceHistoryImports = exWorkPlaceHistoryImports;
 		this.exWorkTypeHistoryImports = exWorkTypeHistoryImports;
+	}
+	
+	public EmployeeGeneralInfoImport(List<ExEmploymentHistoryImport> employmentHistoryImports,
+			List<ExClassificationHistoryImport> exClassificationHistoryImports,
+			List<ExJobTitleHistoryImport> exJobTitleHistoryImports,
+			List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports,
+			List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports,
+			Map<GeneralDate, List<EmpOrganizationImport>> empWorkplaceGroup,
+			Map<GeneralDate, List<EmpLicenseClassification>> empLicense) {
+		super();
+		this.employmentHistoryImports = employmentHistoryImports;
+		this.exClassificationHistoryImports = exClassificationHistoryImports;
+		this.exJobTitleHistoryImports = exJobTitleHistoryImports;
+		this.exWorkPlaceHistoryImports = exWorkPlaceHistoryImports;
+		this.exWorkTypeHistoryImports = exWorkTypeHistoryImports;
+		this.empWorkplaceGroup = empWorkplaceGroup;
+		this.empLicense = empLicense;
 	}
 	
 }
