@@ -408,7 +408,7 @@ module nts.uk.com.view.cas011.a {
             }else {
                 currentRoleSet.personInfRoleId(null);
             }
-            if(!isNullOrEmpty(vm.dataA41() && vm.dataA41().length>2)){
+            if(!isNullOrEmpty(vm.dataA41()) && vm.dataA41().length>2 ){
                 currentRoleSet.employmentRoleId(vm.dataA41()[1].id);
 
             }else {
