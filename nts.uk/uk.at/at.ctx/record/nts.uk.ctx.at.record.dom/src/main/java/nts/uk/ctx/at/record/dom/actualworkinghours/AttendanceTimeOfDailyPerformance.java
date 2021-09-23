@@ -63,13 +63,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	public static AttendanceTimeOfDailyPerformance allZeroValue(String empId, GeneralDate ymd) {
 		return new AttendanceTimeOfDailyPerformance(empId, 
 													ymd,
-													new AttendanceTimeOfDailyAttendance (
-														WorkScheduleTimeOfDaily.defaultValue(), 
-														ActualWorkingTimeOfDaily.defaultValue(), 
-														StayingTimeOfDaily.defaultValue(), 
-														new AttendanceTimeOfExistMinus(0), 
-														new AttendanceTimeOfExistMinus(0), 
-														MedicalCareTimeOfDaily.defaultValue())
+													AttendanceTimeOfDailyAttendance.createDefault()
 													);
 	}
 }

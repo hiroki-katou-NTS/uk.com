@@ -53,8 +53,8 @@
 					</div>
 					
 
-					<div id="C2_7" class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_282')}</div>
-					<div class="right-content">
+					<div id="C2_7" class="left-content" data-bind="ntsFormLabel: { required: false }, visible: checkLicense">#{i18n.getText('KDW006_282')}</div>
+					<div class="right-content" data-bind="visible: checkLicense">
 						<div id="C2_8" class="cf" tabindex="4" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_282'),
 							options: ko.observableArray([

@@ -71,7 +71,7 @@ public class AggregateGoOutDto implements ItemConst, AttendanceItemDataGate {
 			dto.setLegalTime(TimeMonthWithCalculationDto.from(domain.getLegalTime()));
 			dto.setTimes(domain.getTimes() == null ? 0 : domain.getTimes().v());
 			dto.setTotalTime(TimeMonthWithCalculationDto.from(domain.getTotalTime()));
-			dto.setCoreOutTime(TimeMonthWithCalculationDto.from(domain.getTotalTime()));
+			dto.setCoreOutTime(TimeMonthWithCalculationDto.from(domain.getCoreOutTime()));
 		}
 		return dto;
 	}

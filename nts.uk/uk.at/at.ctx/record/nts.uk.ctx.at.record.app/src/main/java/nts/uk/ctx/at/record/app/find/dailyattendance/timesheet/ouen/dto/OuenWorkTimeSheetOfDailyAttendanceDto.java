@@ -68,6 +68,16 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	public static OuenWorkTimeSheetOfDailyAttendanceDto from(String sid, GeneralDate ymd, OuenWorkTimeSheetOfDailyAttendance domain) {
 		OuenWorkTimeSheetOfDailyAttendanceDto dto = new OuenWorkTimeSheetOfDailyAttendanceDto();
 		if(domain != null){
+			WorkGroupDto wGroup = null;
+			if (domain.getWorkContent().getWork().isPresent()){
+					wGroup = new WorkGroupDto(
+							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD1() != null) ? domain.getWorkContent().getWork().get().getWorkCD1().v() : null, 
+							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD2().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
+							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD3().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
+							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD4().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
+							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD5().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null
+					);
+			}
 			dto.setEmployeeId(sid);
 			dto.setDate(ymd);
 			dto.setNo(domain.getWorkNo().v());
@@ -76,12 +86,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 							domain.getWorkContent().getWorkplace().getWorkplaceId() == null ? null : domain.getWorkContent().getWorkplace().getWorkplaceId().v(),
 							!domain.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null :
 							domain.getWorkContent().getWorkplace().getWorkLocationCD().get().v()), 
-					new WorkGroupDto(
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD1() != null) ? domain.getWorkContent().getWork().get().getWorkCD1().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD2().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD3().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD4().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD5().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null),
+					Optional.ofNullable(wGroup),
 					(domain.getWorkContent().getWorkRemarks().isPresent() ? domain.getWorkContent().getWorkRemarks().get().v() : null)));
 			dto.setTimeSheet(new TimeSheetOfAttendanceEachOuenSheetDto(domain.getTimeSheet().getWorkNo().v(), 
 					new WorkTimeInformationDto(new ReasonTimeChangeDto(

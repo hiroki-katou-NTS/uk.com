@@ -62,7 +62,7 @@
 							<div data-bind="if: !isMobile">
 								<div id="tab-panel"
 									data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-									<div class="tab-content-1" style="height: 386px; width: 830px">
+									<div class="tab-content-1" style="height: 345px; width: 800px">
 										<div>
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div id="A_SEL_002"
@@ -88,7 +88,7 @@
 										<div style="margin-top: 10px" id="swap-list2"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 314,
+											height: 290,
 											dataSource: dailyDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns1,
@@ -111,12 +111,12 @@
 													swapTarget: 'right'}">
 										</div>
 									</div>
-									<div class="tab-content-2" style="height: 386px; width: 830px">
+									<div class="tab-content-2" style="height: 345px; width: 800px">
 										<div id="messageSwaplist">#{i18n.getText('KDW008_28')}</div>
 										<div style="margin-top: 10px" id="swap-list"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 362,
+											height: 335,
 											dataSource: monthlyDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns2,
@@ -140,7 +140,7 @@
 										</div>
 									</div>
 									<!-- tab3 -->
-									<div class="tab-content-3" style="height: 386px; width: 830px">
+									<div class="tab-content-3" style="height: 345px; width: 800px">
 										<div>
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div id="A_SEL_002"
@@ -166,7 +166,7 @@
 										<div style="margin-top: 10px" id="swap-list3"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 330,
+											height: 290,
 											dataSource: monthlyCorrectedDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns3,
@@ -194,12 +194,12 @@
 							<div data-bind="if: isMobile">
 								<div id="tab-panel"
 									data-bind="ntsTabPanel: { dataSource: mobileTabs, active: selectedMobileTab}">
-									<div class="tab-content-1" style="height: 385px; width: 830px;margin-top: -15px;">
+									<div class="tab-content-1" style="height: 345px; width: 800px;margin-top: -15px;">
 										
 										<div style="margin-top: 10px" id="swap-list21"
 											data-bind="ntsSwapList: {
 											showSearchBox: { showLeft : true, showRight: true},
-											height: 350,
+											height: 290,
 											dataSource: dailyDataSource,
 											primaryKey: 'attendanceItemId',
 											columns: columns1,
@@ -222,12 +222,12 @@
 													swapTarget: 'right'}">
 										</div>
 									</div>
-									<div class="tab-content-2" style="height: 385px; width: 830px;margin-top: -15px;">
+									<div class="tab-content-2" style="height: 345px; width: 800px;margin-top: -15px;">
 										
 										<div style="margin-top: 10px" id="swap-list"
 											data-bind="ntsSwapList: {
                     showSearchBox: { showLeft : true, showRight: true},
-                    height: 380,
+                    height: 335,
                     dataSource: monthlyDataSource,
                     primaryKey: 'attendanceItemId',
                     columns: columns2,
@@ -251,7 +251,7 @@
 										</div>
 									</div>
 									<!-- tab3 -->
-									<div class="tab-content-3" style="height: 500px; width: 830px">
+									<div class="tab-content-3" style="height: 345px; width: 800px">
 										<div>
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div id="A_SEL_002"
@@ -277,7 +277,7 @@
 										<div style="margin-top: 10px" id="swap-list3"
 											data-bind="ntsSwapList: {
                     showSearchBox: { showLeft : true, showRight: true},
-                    height: 406,
+                    height: 290,
                     dataSource: monthlyCorrectedDataSource,
                     primaryKey: 'attendanceItemId',
                     columns: columns3,

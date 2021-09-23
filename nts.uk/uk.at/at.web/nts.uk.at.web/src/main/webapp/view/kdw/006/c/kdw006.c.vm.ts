@@ -14,6 +14,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         appType: KnockoutObservable<string>;
         appTypeEnum : KnockoutObservableArray<any>;
 
+        checkLicense: KnockoutObservable<boolean>;
         yourselfConfirmErrorOldValue: number;
         supervisorConfirmErrorOldValue: number;
 
@@ -21,6 +22,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             super();
 
             let self = this;
+            self.checkLicense = ko.observable(false);
             self.itemList = ko.observableArray([]);
 
             let yourSelf = __viewContext.enums.YourselfConfirmError;
@@ -94,8 +96,9 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+
             self.$blockui("grayout");
-            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType(), self.getRestrict()).done(() => {
+            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType(), self.getRestrict(),self.licenseCheck()).done(() => {
                 dfd.resolve();
             }).always(() => {
                 nts.uk.ui.errors.clearAll();
@@ -182,6 +185,18 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 } else {
                     dfd.resolve();
                 }
+            });
+            return dfd.promise();
+        }
+        
+         licenseCheck(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.licenseCheck().done(function(data: any) {
+                 if(data == true){
+                     self.checkLicense(true);
+                 }   
+                dfd.resolve();
             });
             return dfd.promise();
         }

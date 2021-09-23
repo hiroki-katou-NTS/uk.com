@@ -97,7 +97,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
 					$('#functions-area').css({'opacity': ''});
-					CommonProcess.checkUsage(true, "#recAppDate", vm);
+					// CommonProcess.checkUsage(true, "#recAppDate", vm);
 					$("#recAppDate").focus();	
 				}
 				vm.$blockui("hide"); 

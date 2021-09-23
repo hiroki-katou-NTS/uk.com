@@ -12,7 +12,7 @@
 			<com:scriptfile path="kmk005.b.vm.js" />
 			<com:scriptfile path="kmk005.b.service.js" />
 			<com:stylefile path="kmk005.b.main.css" />
-				<script>var dialogSize = { width: 590, height: 670 };</script>
+				<script>var dialogSize = { width: 545, height: 600 };</script>
 				<com:ValidatorScript>
 					nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.TimeItemName
    				</com:ValidatorScript>
@@ -45,8 +45,8 @@
 											data-bind="ntsSwitchButton: {
 										name: '#[KMK005_20]',
 										options:ko.observableArray([
-											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
-								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
+											{ code: 1, name: '#{i18n.getText('Enum_UseAtr_Use')}' },
+								            { code: 0, name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
 								        ]),
 										optionsValue: 'code',
 										optionsText: 'name',
@@ -84,15 +84,15 @@
 							</thead>
 							<tbody data-bind="foreach: timeItemSpecList">
 								 
-								<tr style="height:15px;">
+								<tr style="height:10px;">
 									<td data-bind="text: timeItemNo"></td>
 									<td>
 										<div class="cf"
 											data-bind="ntsSwitchButton: {
 										name: '#[KMK005_20]',
 										options:ko.observableArray([
-											{ code: '1', name: '#{i18n.getText('Enum_UseAtr_Use')}' },
-								            { code: '0', name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
+											{ code: 1, name: '#{i18n.getText('Enum_UseAtr_Use')}' },
+								            { code: 0, name: '#{i18n.getText('Enum_UseAtr_NotUse')}' }
 								        ]),
 										optionsValue: 'code',
 										optionsText: 'name',

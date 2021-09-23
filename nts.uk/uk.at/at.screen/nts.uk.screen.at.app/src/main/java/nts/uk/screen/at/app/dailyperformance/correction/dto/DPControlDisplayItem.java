@@ -118,16 +118,24 @@ public class DPControlDisplayItem {
 						}
 					}
 				}
-				
 			});
 		});
 		this.lstSheet = this.lstSheet.stream().filter(x -> x.getColumns().size() > 0).collect(Collectors.toList());
-		this.lstSheet.forEach(x -> {
-			x.addColumn("Submitted");
-			if(showButton){
-				x.addColumn("Application");
-			}
-			x.addColumn("ApplicationList");
+		lstFormat.forEach(f -> {
+			this.lstSheet.forEach(s -> {
+				if (f.getSheetNo().equals(s.getName()) && !s.isExistColumn(String.valueOf(f.getAttendanceItemId()))) {
+					if (mapDP.containsKey(f.getAttendanceItemId())) {
+						int attendanceAtr = mapDP.get(f.getAttendanceItemId()).getAttendanceAtr();
+						if (attendanceAtr == DailyAttendanceAtr.Application.value) {
+							s.addColumn("Submitted");
+							if(showButton){
+								s.addColumn("Application");
+							}
+							s.addColumn("ApplicationList");
+						}
+					}
+				}
+			});
 		});
 		
 		if(this.lstSheet.size() == 0){

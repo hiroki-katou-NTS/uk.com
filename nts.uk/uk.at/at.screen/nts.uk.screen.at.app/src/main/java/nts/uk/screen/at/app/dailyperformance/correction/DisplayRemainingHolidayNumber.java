@@ -119,9 +119,9 @@ public class DisplayRemainingHolidayNumber {
 		return output;
 	}
 	
-	private GeneralDate getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
+	private NextAnnualLeaveGrantImport getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
 		List<NextAnnualLeaveGrantImport> lstOutput = this.annualHolidayMng.acquireNextHolidayGrantDate(companyId, employeeId, date);
-		return lstOutput.isEmpty() ? null : lstOutput.get(0).grantDate;
+		return lstOutput.isEmpty() ? null : lstOutput.get(0);
 	}
 	
 	public HolidayRemainNumberDto getRemainingHolidayNumber(String employeeId) {
@@ -133,8 +133,11 @@ public class DisplayRemainingHolidayNumber {
 		result.setReserveLeave(this.getReserveLeaveSetting(companyId, employeeId, baseDate));
 		result.setSubstitutionLeave(this.getSubsitutionVacationSetting(companyId, employeeId, baseDate));
 		result.setCom60HVacation(this.getCom60HVacationSetting(companyId, employeeId, baseDate));
-		if (result.getAnnualLeave().isManageYearOff())
-			result.setNextGrantDate(this.getNextGrantDate(companyId, employeeId, baseDate));
+		if (result.getAnnualLeave().isManageYearOff()) {
+			NextAnnualLeaveGrantImport nextAnnualLeaveGrantImport = this.getNextGrantDate(companyId, employeeId, baseDate);
+			result.setNextGrantDate(nextAnnualLeaveGrantImport==null? null : nextAnnualLeaveGrantImport.grantDate);
+			result.setGrantDays(nextAnnualLeaveGrantImport==null ? null : nextAnnualLeaveGrantImport.grantDays);
+		}
 		return result;
 	}
 

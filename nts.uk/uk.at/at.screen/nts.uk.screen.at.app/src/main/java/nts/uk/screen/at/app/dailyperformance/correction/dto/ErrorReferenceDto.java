@@ -22,6 +22,8 @@ public class ErrorReferenceDto {
 	private String messageColor;
 	private String submitedName;
 	private Boolean itemMonth = false;
+	private Integer errorAlarmAtr;
+	
 	
 	public ErrorReferenceDto(String id, String employeeId, GeneralDate date, String errorCode, String message, Boolean itemMonth){
 		this.id = id;
