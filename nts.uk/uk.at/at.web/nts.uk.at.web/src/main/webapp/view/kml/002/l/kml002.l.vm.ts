@@ -12,8 +12,7 @@ module nts.uk.at.view.kml002.l {
         constructor() {
             super();
             const self = this;      
-            self.loadData();
-            
+            self.loadData();            
         }
 
         loadData(): void {
@@ -22,12 +21,12 @@ module nts.uk.at.view.kml002.l {
             self.$ajax(Paths.GET_EMPLOYMENT_USEAGE_SETTING).done((data: any) => {
                 if(data){
                     data.employmentUse == 1 ? self.isUseageEmployment(true) : self.isUseageEmployment(false);      
-                }    
-                $('#employment').focus();
+                }  
+                $('[type=checkbox]:first').focus();
             }).always(() => {
                 self.$blockui("hide");
             });
-        }
+        }       
 
         public register(): void {
             const self = this;
