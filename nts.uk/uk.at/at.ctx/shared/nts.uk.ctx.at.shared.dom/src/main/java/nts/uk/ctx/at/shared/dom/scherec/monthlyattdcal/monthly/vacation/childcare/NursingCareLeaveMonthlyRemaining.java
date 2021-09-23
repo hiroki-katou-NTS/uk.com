@@ -33,5 +33,5 @@ public class NursingCareLeaveMonthlyRemaining {
     /**
      * 残時間:残時間　←子の看護休暇月別残数データ．本年使用数．使用数．時間
      */
-    private Double timeRemaining;
+    private Integer timeRemaining;
 }

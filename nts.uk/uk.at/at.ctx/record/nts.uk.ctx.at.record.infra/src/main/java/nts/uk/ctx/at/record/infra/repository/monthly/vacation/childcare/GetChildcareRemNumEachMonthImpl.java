@@ -79,7 +79,7 @@ public class GetChildcareRemNumEachMonthImpl implements IGetChildcareRemNumEachM
                             //残日数:残日数　←子の看護休暇月別残数データ．本年使用数．使用数．日数
                             output.setRemainingDays(usedDay.v());
                             // 残時間:残時間　←子の看護休暇月別残数データ．本年使用数．使用数．時間
-                            usedTimes.ifPresent(PrimitiveValueBase::v);
+                            usedTimes.ifPresent(e->output.setTimeRemaining(e.v()));
                         }
                     }
                 }
@@ -141,7 +141,7 @@ public class GetChildcareRemNumEachMonthImpl implements IGetChildcareRemNumEachM
                     //残日数:残日数　←子の看護休暇月別残数データ．本年使用数．使用数．日数
                     output.setRemainingDays(usedDay.v());
                     // 残時間:残時間　←子の看護休暇月別残数データ．本年使用数．使用数．時間
-                    usedTimes.ifPresent(PrimitiveValueBase::v);
+                    usedTimes.ifPresent(e->output.setTimeRemaining(e.v()));
                 }
             }
             listOuput.add(output);
