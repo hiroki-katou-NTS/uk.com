@@ -54,23 +54,24 @@ module cps003.c.vm {
             
             if (paramB && paramB.headDatas) {
                 self.convertData(paramB).done((errs) => {
-                    self.loadGrid();
-                    self.initDs = _.cloneDeep(self.gridOptions.dataSource);
-                    let $grid = $("#grid");
-//                    $grid.mGrid("validate", null, () => true);
-//                    self.validateSpecial(null, self.gridOptions.dataSource);
-                    forEach(errs, e => {
-                        if (_.isNil(e.id)) {
-                            let rec = self.initDs[e.index];
-                            if (rec) {
-                                e.id = rec.id;
-                            }            
-                        }                    
-                    });
-                    
-                    if (errs && errs.length > 0) {
-                        $grid.mGrid("setErrors", errs);
-                    }
+                    setTimeout(() => {
+						self.loadGrid();
+	                    self.initDs = _.cloneDeep(self.gridOptions.dataSource);
+	                    let $grid = $("#grid");
+	//                    $grid.mGrid("validate", null, () => true);
+	//                    self.validateSpecial(null, self.gridOptions.dataSource);
+	                    forEach(errs, e => {
+	                        if (_.isNil(e.id)) {
+	                            let rec = self.initDs[e.index];
+	                            if (rec) {
+	                                e.id = rec.id;
+	                            }            
+	                        }                    
+	                    });
+	                    
+	                    if (errs && errs.length > 0) {
+	                        $grid.mGrid("setErrors", errs);
+	                    }
                     
 //                    let errors = $grid.mGrid("errors");
 //                    if (errors.length > 0) {
@@ -79,7 +80,7 @@ module cps003.c.vm {
 //                            $grid.mGrid("updateCell", id, "status", "エラー(" + errGroup[id].length + "件)", true);
 //                        });
 //                    }
-                    
+                    }, 100);
                     unblock();
                 });
             }
@@ -614,14 +615,14 @@ module cps003.c.vm {
                     switch (item.itemCode) {
                         case "IS00375":
                             if (item.value === "0") {
-                                _.forEach(['IS00376', 'IS00377', 'IS00378', 'IS00379'], code => {
+                                _.forEach(['IS00376', 'IS00377', 'IS00378', 'IS00379', 'IS01101'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
                             }
                             break;
                         case "IS00380":
                             if (item.value === "0") {
-                                _.forEach(['IS00381', 'IS00382', 'IS00383', 'IS00384'], code => {
+                                _.forEach(['IS00381', 'IS00382', 'IS00383', 'IS00384', 'IS01102'], code => {
                                     states.push(new State(id, code, ["mgrid-disable"]));
                                 });
                             }

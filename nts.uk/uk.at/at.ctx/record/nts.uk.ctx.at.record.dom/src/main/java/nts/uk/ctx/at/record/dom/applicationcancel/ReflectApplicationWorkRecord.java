@@ -47,7 +47,7 @@ public class ReflectApplicationWorkRecord {
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			// レコーダイメージ申請の対象日を取得する
-			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require,
+			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require, require.getCId(), 
 					(AppRecordImageShare) application);
 			if (dateOpt.getLeft().isPresent()) {
 				dateTarget = dateOpt.getLeft().get();
@@ -73,7 +73,7 @@ public class ReflectApplicationWorkRecord {
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD, true);
 			/// 打刻申請（NRモード）を反映する -- itemId
-			TimeStampApplicationNRMode.process(require, dateTarget,
+			TimeStampApplicationNRMode.process(require, require.getCId(), dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
 		} else {
 			/// 申請の反映（勤務実績） in process
@@ -104,7 +104,7 @@ public class ReflectApplicationWorkRecord {
 			require.removeConfirmApproval(Arrays.asList(dailyRecordApp.getDomain().getDomain()));
 			
 			// 勤務実績の更新
-			require.addAllDomain(dailyRecordApp.getDomain());
+			require.addAllDomain(dailyRecordApp.getDomain(), true);
 
 			// 申請反映履歴を作成する
 			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.RECORD,
@@ -157,7 +157,7 @@ public class ReflectApplicationWorkRecord {
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr);
 
 		// DailyRecordAdUpService
-		public void addAllDomain(IntegrationOfDaily domain);
+		public void addAllDomain(IntegrationOfDaily domain, boolean removeError);
 		
 		//DailyRecordAdUpService
 		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily);

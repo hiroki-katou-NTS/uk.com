@@ -66,7 +66,7 @@
                                 dataSource: targetWorkMethods,
                                 primaryKey: 'key',
                                 columns: [ { headerText: '', key: 'key', hidden: true },
-                                           { headerText: $i18n('KSM008_58'), key: 'display', formatter: _.escape }],
+                                           { headerText: $i18n('KSM008_58'), key: 'display', width: 350, formatter: _.escape }],
                                 multiple: false,
                                 columnResize: true,
                                 value: dScreenCurrentCode,
@@ -74,7 +74,7 @@
                             }"/>
                         </div>
                     </div>
-                    <div class="cell">
+                    <div class="cell" style="padding-left: 20px;">
                         <div class="padding-5">
                             <!-- D7_1 -->
                             <div class="width-form-label"
@@ -127,7 +127,7 @@
                                     optionsText: 'name',
                                     value: $vm.nextDayWorkMethodType }"/>
                         </div>
-                        <div class="padding-5" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
+                        <div class="padding-5" style="padding-left: 15px" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
                             <div class="width-form-label display-inline-block"/>
                             <!-- D11_1 -->
                             <button tabindex="19" id="D11_1" data-bind="text: $i18n('KSM008_73'), click: $vm.openKdl001MultiSelect" class="small"/>
@@ -136,7 +136,7 @@
                         </div>
                         <!-- D12 -->
                         <div style="padding: 3px" data-bind="visible: $vm.nextDayWorkMethodType() == 0">
-                            <div style="padding-left: 188px">
+                            <div style="padding-left: 112px">
                                 <table tabindex="21" id="D12" data-bind="ntsGridList: {
                                         name: $i18n('KSM008_75'),
                                         dataSource: nextDayWorkHours,

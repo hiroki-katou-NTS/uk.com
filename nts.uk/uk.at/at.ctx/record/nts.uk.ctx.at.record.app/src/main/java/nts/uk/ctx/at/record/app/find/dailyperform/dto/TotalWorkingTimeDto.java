@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.val;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -430,15 +432,25 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 				new TemporaryTimeOfDaily(ConvertHelper.mapTo(temporaryTime, (c) -> new TemporaryFrameTimeOfDaily(new WorkNo(c.getNo()),
 										toAttendanceTime(c.getTemporaryTime()),
 										toAttendanceTime(c.getTemporaryNightTime())))),
-				shortWorkTime == null || shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(0).toDomain(),
+				shortWorkTime == null || shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(shortWorkTime.size()-1).toDomain(),
 				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain(),
-				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)));
-		
-		if(vacationAddTime != null) {
-			total.setVacationAddTime(new AttendanceTime(vacationAddTime));
-		}
-		total.setCalcDiffTime(new AttendanceTime(calcDiffTime));
+				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)),
+				new AttendanceTime(calcDiffTime),
+				new AttendanceTime(vacationAddTime == null ? 0 : vacationAddTime));
 		return total;
+	}
+	
+	public void correct(List<EditStateOfDailyPerformanceDto> editStates) {
+
+		if (editStates.isEmpty()) return;
+		
+		val haveChildCare = editStates.stream().filter(c -> c.getAttendanceItemId() >= 580 && c.getAttendanceItemId() <= 585).findFirst();
+		val haveCare = editStates.stream().filter(c -> c.getAttendanceItemId() >= 586 && c.getAttendanceItemId() <= 591).findFirst();
+		
+		val prioNo = haveChildCare.map(c -> 0).orElseGet(() -> haveCare.map(c -> 1).orElse(-1));
+		
+		if (prioNo != -1 && this.shortWorkTime != null)
+			this.shortWorkTime.removeIf(c -> c.getAttr() != prioNo);
 	}
 
 	private AttendanceTime toAttendanceTime(Integer time) {
@@ -446,14 +458,14 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	}
 
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {
-		return new TimevacationUseTimeOfDaily(
-						toAttendanceTime(c == null ? null : c.getTimeAnnualLeaveUseTime()),
-						toAttendanceTime(c == null ? null : c.getTimeCompensatoryLeaveUseTime()),
-						toAttendanceTime(c == null ? null : c.getExcessHolidayUseTime()),
-						toAttendanceTime(c == null ? null : c.getTimeSpecialHolidayUseTime()),
+		return c == null ?  TimevacationUseTimeOfDaily.defaultValue() : new TimevacationUseTimeOfDaily(
+						toAttendanceTime(c.getTimeAnnualLeaveUseTime()),
+						toAttendanceTime(c.getTimeCompensatoryLeaveUseTime()),
+						toAttendanceTime(c.getExcessHolidayUseTime()),
+						toAttendanceTime(c.getTimeSpecialHolidayUseTime()),
 						Optional.ofNullable(c.specialHdFrameNo == null ? null : new SpecialHdFrameNo(c.specialHdFrameNo)),
-						toAttendanceTime(c == null ? null : c.getChildCareUseTime()),
-						toAttendanceTime(c == null ? null : c.getCareUseTime())
+						toAttendanceTime(c.getChildCareUseTime()),
+						toAttendanceTime(c.getCareUseTime())
 						);
 	}
 

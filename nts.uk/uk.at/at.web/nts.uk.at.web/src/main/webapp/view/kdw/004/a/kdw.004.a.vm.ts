@@ -23,7 +23,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
             {{elseif \${${headerTxtId}} == '${ApprovalStatus.CannotApproved}' }}
             <a class='cannotApproved' href='javascript:void(0);'>他</a>
             {{elseif \${${headerTxtId}} != '${ApprovalStatus.Approved}' && \${${headerTxtId}} != '${ApprovalStatus.UnApproved}' && \${${headerTxtId}} != '${ApprovalStatus.CannotApproved}'  }}
-            <span class='disable'></span>
+            <span class='disable'></span>            
             {{/if}}`;
 
     export class ScreenModelKDW004A { 
@@ -107,10 +107,9 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                             startDate: moment(result.startDate).format("YYYY/MM/DD"),
                             endDate: moment(result.endDate).format("YYYY/MM/DD")
                         });
-
-                        self.periodRepresent(moment(result.startDate).format("YYYY/MM/DD") + " ～ " + moment(result.endDate).format("YYYY/MM/DD"));
-                            self.genDataChange(result);
-                            nts.uk.ui.block.clear();
+                        self.periodRepresent(moment(result.startDate).format("YYYY/MM/DD") + " ～ " + moment(result.endDate).format("YYYY/MM/DD"));                       
+                        self.genDataChange(result);
+                        nts.uk.ui.block.clear();
                     });
                 }
             });
@@ -298,7 +297,8 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     displayFormat: DPCorrectionDisplayFormat.DATE,
                     startDate: startDate,
                     endDate: startDate,
-                    lstExtractedEmployee: _.map(self.lstData, data => data.employeeId),
+                    // lstExtractedEmployee: _.map(self.lstData, data => data.employeeId),
+                    lstExtractedEmployee: [employeeId],
                     dateTarget: startDate,
                     individualTarget: employeeId,
                     startDateKDW004: self.startDateExtract,
@@ -335,7 +335,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
                     transitionDesScreen: '/view/kdw/004/a/index.xhtml'
                 }, extractionParam: DPCorrectionExtractionParam = {
                     //表示形式
-                    displayFormat: DPCorrectionDisplayFormat.INDIVIDUAl,
+                    displayFormat: DPCorrectionDisplayFormat.INDIVIDUAL,
                     //期間
 //                    startDate: self.startDateExtract,
 //                    endDate: self.endDateExtract,
@@ -623,7 +623,7 @@ module nts.uk.at.view.kdw004.a.viewmodel {
 
     export enum DPCorrectionDisplayFormat {
         //個人別
-        INDIVIDUAl = 0,
+        INDIVIDUAL = 0,
         //日付別
         DATE = 1,
         //エラー・アラーム

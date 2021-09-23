@@ -408,6 +408,10 @@ module nts.uk.at.view.ksc001.b {
 					showWorktype : true, // 勤種条件
 					isMutipleCheck : true, // 選択モード
 
+					showOnStart: true,
+					
+					employeesDoNotManageSchedules: ko.observable(true),
+
 					/** Return data */
 					returnDataFromCcg001 : function( data: any ) {
 						const mappedEmployeeList = _.map( data.listEmployee, employeeSearch => {
@@ -819,8 +823,11 @@ module nts.uk.at.view.ksc001.b {
 					self.buildString();
 					self.next().done( function() {
 						$('#employeeSearch .nts-gridlist').attr('tabindex', '-1');
-						if( self.kcp005EmployeeList().length <= 0 )
-							$('.ccg-lbl-search-drawer').click();
+						if( self.kcp005EmployeeList().length <= 0 ) {
+							_.defer(() => {
+                                $('#ccg001-btn-search-drawer').click();
+							});
+						}
 
 						if( self.kcp005EmployeeList().length > 0 && self.hasChangedCondition() ) {
 							self.applyKCP005ContentSearch( self.kcp005EmployeeList() );

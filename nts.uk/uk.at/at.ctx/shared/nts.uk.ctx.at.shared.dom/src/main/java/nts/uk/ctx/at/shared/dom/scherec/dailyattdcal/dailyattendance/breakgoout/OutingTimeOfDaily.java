@@ -5,7 +5,6 @@ import lombok.Setter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -25,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -250,8 +248,12 @@ public class OutingTimeOfDaily {
 	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
-	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet,
-			DeductionTimeSheet deductionTimeSheet, WorkTimeForm workTimeForm) {
+	public AttendanceTime calcVacationAddTime(
+			HolidayCalcMethodSet calcMethodSet,
+			Optional<HolidayAddtionSet> holidayAddtionSet,
+			DeductionTimeSheet deductionTimeSheet,
+			WorkTimeForm workTimeForm) {
+		
 		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;
 		}
@@ -260,7 +262,7 @@ public class OutingTimeOfDaily {
 				.filter(r -> r.getDeductionAtr().isGoOut() && r.getGoOutReason().equals(Finally.of(this.reason)))
 				.collect(Collectors.toList());
 		//計算計上用外出時間
-		AttendanceTime outCalcTime = deductionTimeSheet.getDeductionTotalTime(records, DeductionAtr.Appropriate).getTotalTime().getCalcTime();
+		AttendanceTime outCalcTime = deductionTimeSheet.getDeductionTotalTime(records, false).getTotalTime().getCalcTime();
 		
 		return holidayAddtionSet.get().getAddTime(this.timeVacationUseOfDaily, outCalcTime, workTimeForm);
 	}

@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.GetRemainingNumberPublicHolidayService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -79,6 +80,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.Get
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -245,7 +247,9 @@ public class AggregateMonthlyRecordServiceProc {
 				closureId, closureDate, monthlyWorkOpt);
 
 		// 「労働条件項目」を取得
-		List<WorkingConditionItem> workingConditionItems = require.workingConditionItem(employeeId, monthPeriod);
+//		List<WorkingConditionItem> workingConditionItems = require.workingConditionItem(employeeId, monthPeriod);
+		val workingConditions = require.workingCondition(employeeId, monthPeriod);
+		val workingConditionItems = workingConditions.stream().map(c -> c.getWorkingConditionItem()).collect(Collectors.toList());
 		if (workingConditionItems.isEmpty()) {
 			this.aggregateResult.addErrorInfos("001", new ErrMessageContent(TextResource.localize("Msg_430")));
 			return this.aggregateResult;
@@ -255,7 +259,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
 
 		// 所属情報の作成
-		val affiliationInfo = this.createAffiliationInfo(monthPeriod);
+		val affiliationInfo = this.createAffiliationInfo(monthPeriod, workingConditions);
 
 		if (affiliationInfo == null) {
 			for (val errorInfo : this.errorInfos.values()) {
@@ -282,7 +286,7 @@ public class AggregateMonthlyRecordServiceProc {
 			};
 
 			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
-				require.getExecutorService().submit(AsyncTask.builder().withContexts()
+				require.getExecutorService().submit(AsyncTask.builder()
 						.threadName("Aggregation").build(asyncAggregation));
 			} else {
 				// バッチなどの場合は非同期にせずそのまま実行
@@ -324,9 +328,19 @@ public class AggregateMonthlyRecordServiceProc {
 			// 手修正された項目を元に戻す （勤怠時間用）
 			attendanceTime = this.undoRetouchValuesForAttendanceTime(require, attendanceTime, this.monthlyOldDatas);
 
-			// 手修正を戻してから計算必要な項目を再度計算
 			if (this.isRetouch) {
-				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(attendanceTime)));
+				val converter = require.createMonthlyConverter();
+				val edittedItemIds = this.editStates.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
+				val oldValues = converter.withAttendanceTime(attendanceTime).convert(edittedItemIds);
+
+				// 手修正を戻してから計算必要な項目を再度計算
+				val reCalcedAt = this.recalcAttendanceTime(attendanceTime); 
+				
+				/** 手修正された項目を元に戻す */
+				converter.withAttendanceTime(reCalcedAt).merge(oldValues);
+				val lastAggrAt = converter.toAttendanceTime();
+				
+				this.aggregateResult.setAttendanceTime(lastAggrAt);
 			}
 		}
 
@@ -1218,7 +1232,8 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getChildHdRemainList().addAll(output.getChildHdRemainList());
 		// 介護
 		this.aggregateResult.getCareHdRemainList().addAll(output.getCareHdRemainList());
-
+		//公休
+		this.aggregateResult.getPublicRemainList().addAll(output.getPublicRemainList());
 
 		// エラー一覧
 		this.aggregateResult.getPerErrors().addAll(output.getPerErrors());
@@ -1594,11 +1609,11 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 所属情報の作成
 	 *
-	 * @param datePeriod
-	 *            期間
+	 * @param datePeriod 期間
 	 * @return 月別実績の所属情報
 	 */
-	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod) {
+	private AffiliationInfoOfMonthly createAffiliationInfo(DatePeriod datePeriod, 
+			List<WorkingConditionItemWithPeriod> workConditions) {
 
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(this.employeeId);
@@ -1633,6 +1648,11 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
+		
+		/** 最終労働条件を取得する */
+		val latsWorkCondition = workConditions.stream().filter(c -> c.getDatePeriod().contains(datePeriod.end()))
+				.findFirst().map(c -> c.getWorkingConditionItem()).get();
+		
 		// 月初の情報を作成
 		val firstInfo = AggregateAffiliationInfo.of(
 				firstInfoOfDaily.getEmploymentCode(),
@@ -1646,7 +1666,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 月別実績の所属情報を返す
 			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					firstInfo, firstInfo);
+					firstInfo, firstInfo, latsWorkCondition.getContractTime());
 		}
 
 		// 月末の所属情報を取得
@@ -1655,7 +1675,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 月別実績の所属情報を返す （エラーにせず、月末に月初の情報を入れる）
 			return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					firstInfo, firstInfo);
+					firstInfo, firstInfo, latsWorkCondition.getContractTime());
 		}
 
 		// 月末の情報を作成
@@ -1668,7 +1688,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 月別実績の所属情報を返す
 		return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, firstInfo,
-				lastInfo);
+				lastInfo, latsWorkCondition.getContractTime());
 	}
 
 	/**
@@ -1723,7 +1743,7 @@ public class AggregateMonthlyRecordServiceProc {
 		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
 	}
 
-	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3{
+	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3, RequireM16{
 
 //		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
 //
@@ -1755,7 +1775,9 @@ public class AggregateMonthlyRecordServiceProc {
 		/* ,GetAnnAndRsvRemNumWithinPeriod.RequireM2 */ {
 	}
 
-
+	public static interface RequireM16 extends GetRemainingNumberPublicHolidayService.RequireM1{
+		
+	}
 
 	public static interface RequireM5 extends NumberCompensatoryLeavePeriodQuery.Require{
 	}
@@ -1777,7 +1799,7 @@ public class AggregateMonthlyRecordServiceProc {
 		MonthlyOldDatas.RequireM1, RequireM14, RequireM2, RequireM8, RequireM10,
 		MonthlyCalculation.RequireM2, AttendanceTimeOfMonthly.RequireM2, RequireM11, RequireM12 {
 
-		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);
+		List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod);
 
 		List<EditStateOfMonthlyPerformance> monthEditStates(String employeeId, YearMonth yearMonth, ClosureId closureId,
 				ClosureDate closureDate);

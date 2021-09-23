@@ -12,7 +12,6 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
@@ -176,9 +175,8 @@ public class MonthlyDetail {
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(companySets.getCompanyId(), 
-																		companySets.getWorkTimeCommonSetMap(require, workTimeCode),
-																		true);
+		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(require, companySets.getCompanyId(), 
+																		workTimeCode, true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -298,9 +296,8 @@ public class MonthlyDetail {
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companySets.getCompanyId(), 
-																companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
-																true);
+		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(require, companySets.getCompanyId(), 
+																workTimeCode, true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -628,8 +625,8 @@ public class MonthlyDetail {
 
 		// 休出・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(
-				companySets.getCompanyId(), companySets.getWorkTimeCommonSetMap(require, workTimeCode), true);
+		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(require,
+				companySets.getCompanyId(), workTimeCode, true);
 		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
@@ -750,9 +747,8 @@ public class MonthlyDetail {
 
 		// 残業・振替の処理順序を取得する（逆時系列用）
 		val companySets = this.excessOutsideWorkMng.getCompanySets();
-		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companySets.getCompanyId(), 
-																	companySets.getWorkTimeCommonSetMap(require, workTimeCode),
-																	true);
+		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(require, companySets.getCompanyId(), 
+																	workTimeCode, true);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -763,6 +759,7 @@ public class MonthlyDetail {
 			
 			if (monthlyPTAfterAssign.lessThanOrEqualTo(0)) break;
 		}
+		
 		return monthlyPTAfterAssign;
 	}
 	
@@ -1023,11 +1020,13 @@ public class MonthlyDetail {
 
 		return monthlyPTAfterAssign;
 	}
-	
-	public static interface RequireM1 extends MonAggrCompanySettings.RequireM3 {
+
+	public static interface RequireM1 extends MonAggrCompanySettings.RequireM3,
+		GetHolidayWorkAndTransferOrder.RequireM1 {
 	}
 	
-	public static interface RequireM2 extends MonAggrCompanySettings.RequireM3 {
+	public static interface RequireM2 extends MonAggrCompanySettings.RequireM3, 
+		GetOverTimeAndTransferOrder.RequireM1 {
 	}
 	
 	public static interface RequireM3 extends RequireM1, RequireM2 {
@@ -1038,5 +1037,4 @@ public class MonthlyDetail {
 	
 	public static interface RequireM5 extends RequireM3, RequireM4 {
 	}
-	
 }

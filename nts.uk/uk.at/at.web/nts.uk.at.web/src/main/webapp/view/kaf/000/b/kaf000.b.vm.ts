@@ -74,6 +74,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         displayCancelButton: KnockoutObservable<boolean> = ko.observable(true);
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(true);
+		displayCancelLabel: KnockoutObservable<boolean> = ko.observable(false);
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -160,7 +161,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     successData.appDetailScreenInfo.reflectPlanState,
                     successData.appDetailScreenInfo.authorizableFlags,
                     successData.appDetailScreenInfo.alternateExpiration,
-                    loginFlg);
+                    loginFlg,
+					successData.appDetailScreenInfo.pastApp);
 				if(_.isFunction(vm.childReloadEvent)) {
 	                vm.childReloadEvent();
 	            }
@@ -179,46 +181,68 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             state: any, // trạng thái đơn
             canApprove: any,  // có thể bấm nút approval không true, false
             expired: any, // phân biệt thời hạn
-            loginFlg: any // login có phải người viết đơn/ người xin hay k
+            loginFlg: any, // login có phải người viết đơn/ người xin hay k
+			pastApp?: boolean
         ) {
             const vm = this;
             vm.displayApprovalButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue != ApprovalAtr.APPROVED));
-            vm.enableApprovalButton((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
+            vm.enableApprovalButton(!pastApp && ((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
-                && !expired);
+                && !expired));
 
             vm.displayDenyButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue != ApprovalAtr.DENIAL));
-            vm.enableDenyButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
-                && canApprove
-                && !expired);
+            vm.enableDenyButton(!pastApp &&
+				((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+	                && canApprove
+	                && !expired));
 
             vm.displayRemandButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
             vm.enableRemandButton(
+					!pastApp &&
+				(
                 ((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
                     && canApprove
                     && !expired) ||
                 (state == Status.WAITREFLECTION
                     && canApprove
                     && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
-                    && !expired)
+                    && !expired))
             );
 
             vm.displayReleaseButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
-            vm.enableReleaseButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+            vm.enableReleaseButton(
+				!pastApp &&
+				((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
-                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL));
+                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
+			));
 
             vm.displayUpdateButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER));
-            vm.enableUpdateButton(state == Status.NOTREFLECTED || state == Status.REMAND);
+            vm.enableUpdateButton(
+				!pastApp &&
+				(state == Status.NOTREFLECTED || state == Status.REMAND)
+				);
 
             vm.displayDeleteButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER));
-            vm.enableDeleteButton(state == Status.NOTREFLECTED || state == Status.REMAND);
+            vm.enableDeleteButton(
+				!pastApp &&
+				(state == Status.NOTREFLECTED || state == Status.REMAND)
+			);
 
-            vm.displayCancelButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER)
-                && loginFlg);
-            vm.enableCancelButton(state == Status.REFLECTED);
+			if(state == Status.CANCELED) {
+				vm.displayCancelButton(false);
+				vm.displayCancelLabel(true);	
+			} else {
+				vm.displayCancelButton(true);
+				vm.displayCancelLabel(false);
+			}
+			if(pastApp) {
+				vm.enableCancelButton(false);	
+			} else {
+				vm.enableCancelButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT) && state != Status.CANCELED);
+			}
 
             vm.displayApprovalLabel((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue == ApprovalAtr.APPROVED));
@@ -431,14 +455,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_249" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                    return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
+                    return vm.$ajax(API.cancel, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
 	                    vm.loadData();
 	                });
-				}
+				} 
+				// else {
+				// 	vm.$dialog.info({ messageId: "Msg_2188" }).then(() => {
+	            //         vm.loadData();
+	            //     });
+				// }
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));

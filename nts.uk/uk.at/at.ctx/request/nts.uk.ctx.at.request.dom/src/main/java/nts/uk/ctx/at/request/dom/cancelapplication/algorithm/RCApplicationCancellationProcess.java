@@ -28,6 +28,7 @@ public class RCApplicationCancellationProcess {
 
 		// [input.反映状態.反映状態]をチェック
 		if (statusWorkRecord.getReflectStatus() != ReflectedState.REFLECTED) {
+			statusWorkRecord.setReflectStatus(ReflectedState.CANCELED);
 			return new RCCancelProcessOneDayOutput(statusWorkRecord, Optional.empty(), AtomTask.none());
 		}
 
@@ -49,7 +50,7 @@ public class RCApplicationCancellationProcess {
 		}
 
 		// 勤務実績の取消
-		val result = require.processRecover(ConvertApplicationToShare.toAppliction(app), date, statusWorkRecord,
+		val result = require.processRecover(ConvertApplicationToShare.toOnlyAppliction(app), date, statusWorkRecord,
 				dbRegisterClassfi);
 		return new RCCancelProcessOneDayOutput(result.getReflectStatus(), result.getWorkRecord(),
 				result.getAtomTask());

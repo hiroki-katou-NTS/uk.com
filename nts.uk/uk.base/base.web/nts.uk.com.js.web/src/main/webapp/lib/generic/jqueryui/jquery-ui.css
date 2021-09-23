@@ -980,20 +980,26 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #003eff;
-	background: #007fff;
-	font-weight: normal;
-	color: #ffffff;
+	font-weight: 700;
+	color: #30CC40;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
+	box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
+}
+.ui-state-active td>span {
+	font-weight: 700;
+	color: #30CC40;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
+	box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #003eff;
-	background-color: #ffffff;
+	/* border: #003eff; */
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #ffffff;
+	color: #30CC40;
 	text-decoration: none;
 }
 

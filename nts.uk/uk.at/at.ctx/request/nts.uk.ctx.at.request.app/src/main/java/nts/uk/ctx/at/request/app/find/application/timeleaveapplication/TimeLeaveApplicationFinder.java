@@ -1,13 +1,35 @@
 package nts.uk.ctx.at.request.app.find.application.timeleaveapplication;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.service.other.output.AchievementDetailDto;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.*;
-import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.OutingTimeZoneDto;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDetailDto;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveManagement;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveRemaining;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeZoneDto;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.ChildCareTimeZoneExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
@@ -25,8 +47,9 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.service.TimeLe
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
-import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -36,12 +59,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 public class TimeLeaveApplicationFinder {
@@ -219,8 +236,8 @@ public class TimeLeaveApplicationFinder {
                 achievementDetailDto == null ? null : achievementDetailDto.getWorkTypeCD(),
                 achievementDetailDto == null ? null : achievementDetailDto.getWorkTimeCD(),
                 mapTimeZone,
-                Collections.emptyList(),
-                Collections.emptyList(),
+                achievementDetailDto != null ? achievementDetailDto.getBreakTimeSheets().stream().map(x -> x.getStartTime()).collect(Collectors.toList()) : new ArrayList<Integer>(),
+                achievementDetailDto != null ? achievementDetailDto.getBreakTimeSheets().stream().map(x -> x.getEndTime()).collect(Collectors.toList()) : new ArrayList<Integer>(),
                 lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
                         i.getOutingAtr() == 4 ? GoingOutReason.PRIVATE.value : GoingOutReason.UNION.value,
                         i.getStartTime(),
@@ -353,6 +370,19 @@ public class TimeLeaveApplicationFinder {
         Application application;
         TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfoDto.mappingData(params.getTimeLeaveAppDisplayInfo());
 
+        int over60h = 0;
+        int nursingTime = 0;
+        int childCareTime = 0;
+        int subHolidayTime = 0;
+        int annualTime = 0;
+        for (TimeLeaveAppDetailDto time : params.getDetails()) {
+            over60h += time.getApplyTime().getSuper60AppTime();
+            nursingTime += time.getApplyTime().getCareAppTime();
+            childCareTime += time.getApplyTime().getChildCareAppTime();
+            subHolidayTime += time.getApplyTime().getSubstituteAppTime();
+            annualTime += time.getApplyTime().getAnnualAppTime();
+        }
+        
         if (params.getApplicationNew() != null) {
             String employeeId = AppContexts.user().employeeId();
             application = Application.createFromNew(
@@ -375,15 +405,20 @@ public class TimeLeaveApplicationFinder {
 
             // アルゴリズム「2-1.新規画面登録前の処理」を実行する
             System.out.println("2-1.新規画面登録前の処理");
+            
             confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
                     companyId,
                     EmploymentRootAtr.APPLICATION,
                     params.isAgentMode(),
                     application,
                     null,
-                    output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+                    output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
-                    output.getAppDispInfoStartup()
+                    output.getAppDispInfoStartup(), 
+                    new ArrayList<String>(), 
+                    Optional.of(new TimeDigestionParam(over60h, nursingTime, childCareTime, subHolidayTime, annualTime, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
+                    Optional.empty(), 
+                    false
             );
         } else {
             application = params.getApplicationUpdate().toDomain(params.getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
@@ -398,7 +433,10 @@ public class TimeLeaveApplicationFinder {
                     application.getVersion(),
                     null,
                     null,
-                    output.getAppDispInfoStartup()
+                    output.getAppDispInfoStartup(), 
+                    new ArrayList<String>(), 
+                    Optional.of(new TimeDigestionParam(over60h, nursingTime, childCareTime, subHolidayTime, annualTime, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
+                    false
             );
             confirmMsgOutputs = new ArrayList<>();
         }

@@ -129,12 +129,12 @@ module nts.uk.pr.view.kmf001.f {
                 value: number;
                 fieldName: string;
                 localizedName: string;
-                enable: boolean;
+                enable: KnockoutObservable<boolean>;
                 constructor(value: number, fieldName: string, localizedName: string) {
                     this.value = value;
                     this.fieldName = fieldName;
                     this.localizedName = localizedName;
-                    this.enable = true;
+                    this.enable = ko.observable(true);
                 }
             }
 

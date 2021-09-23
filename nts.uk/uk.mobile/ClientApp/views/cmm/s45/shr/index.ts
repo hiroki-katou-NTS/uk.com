@@ -12,6 +12,10 @@ export class AppInfo {
     public appStatusNo: number;
     public frameStatus: boolean;
     public version: number;
+    public opComplementLeaveApp: any;
+    public opAppStartDate: Date;
+    public opAppEndDate: Date;
+
 
     constructor(params: IAppInfo) {
         this.id = params.id;
@@ -23,10 +27,32 @@ export class AppInfo {
         this.appStatusNo = params.appStatusNo;
         this.frameStatus = params.frameStatus ? params.frameStatus : false;
         this.version = params.version ? params.version : 0;
+        this.opComplementLeaveApp = params.opComplementLeaveApp;
+        this.opAppStartDate = params.opAppStartDate;
+        this.opAppEndDate = params.opAppEndDate;
     }
+
     
     get prePostName() {
         return this.prePostAtr == 0 ? '事前' : '事後';
+    }
+
+    get linkAppDateCss() {
+        let a: number = new Date(this.opComplementLeaveApp.linkAppDate).getDay();
+
+        return a == 6 ? 'uk-text-saturday' : a == 0 ? 'uk-text-sunday' : '';
+    }
+
+    get opAppStartDateCss() {
+        let a: number = new Date(this.opAppStartDate).getDay();
+
+        return a == 6 ? 'uk-text-saturday' : a == 0 ? 'uk-text-sunday' : '';
+    }
+
+    get opAppEndDateCss() {
+        let a: number = new Date(this.opAppEndDate).getDay();
+
+        return a == 6 ? 'uk-text-saturday' : a == 0 ? 'uk-text-sunday' : '';
     }
 
     get appDateCss() {

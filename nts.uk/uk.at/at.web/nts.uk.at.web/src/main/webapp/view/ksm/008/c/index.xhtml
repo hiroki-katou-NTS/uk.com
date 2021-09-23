@@ -64,7 +64,7 @@
                             <div class="label" data-bind="text: $i18n('KSM008_29')"></div>
                             <!--C6_2-->
                             <div data-bind="ifnot: isWorkplaceMode">
-                                <div tabindex="6" style="width: 100px" data-bind="ntsCheckBox: { checked: isNightShiftDisplay, text: $i18n('KSM008_30') }"></div>
+                                <div tabindex="6" style="width: 100px; margin-left: 50px;" data-bind="ntsCheckBox: { checked: isNightShiftDisplay, text: $i18n('KSM008_30') }"></div>
                             </div>
                         </div>
                         <!--C6_3-->
@@ -112,7 +112,7 @@
                 <div>
                     <table>
                         <tr>
-                            <td style="width: 200px">
+                            <td style="width: 135px">
                                 <!--C7_1-->
                                 <div data-bind="ntsFormLabel: {
                                                  constraint: ['BanWorkTogetherCode','BanWorkTogetherName'],
@@ -167,12 +167,12 @@
                     </table>
                     <table>
                         <tr>
-                            <td>
+                            <td style="padding-bottom: 0px;">
                                 <!--C10_1-->
                                 <div data-bind="ntsFormLabel: {text: $i18n('KSM008_46')}"></div>
                             </td>
                             <td></td>
-                            <td>
+                            <td style="padding-bottom: 0px;">
                                 <!--C10_2-->
                                 <div data-bind="ntsFormLabel: {text: $i18n('KSM008_47'), required: true}"></div>
                             </td>

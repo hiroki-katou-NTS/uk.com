@@ -33,7 +33,6 @@
 
 .box-list {
   width: 70%;
-  margin-left: 20px;
 }
 
 .contentAll {
@@ -77,11 +76,6 @@
 }
 #B8_3_2 {
 	margin-top: 5px;
-}
-
-#B9_2 {
-	margin-left: 32px;
-	width: 352px;
 }
 
 .flex {
@@ -185,4 +179,8 @@ top: 150px;
 
 #B3_3_2 {
   width: 310px;
+}
+
+.contentR #fixed-flex-layout-right .flex .form-label {
+  width: 100px;
 }

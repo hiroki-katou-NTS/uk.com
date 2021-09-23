@@ -51,11 +51,6 @@
 	height: 40px;
 }
 
-#print_date {
-	margin-top: 15px;
-	margin-left: 65px;
-}
-
 .mt-10 {
 	margin-top: 10px;
 }
@@ -64,8 +59,8 @@
 	margin-left: 10px;
 }
 
-.ml-20 {
-	margin-left: 20px;
+.mr-10 {
+	margin-right: 10px;
 }
 
 .mr-15 {
@@ -80,8 +75,8 @@
 	margin-top: 30px;
 }
 
-.mt-22 {
-	margin-top: 22px;
+.mt-15 {
+	margin-top: 15px;
 }
 
 
@@ -91,7 +86,7 @@
 
 .date-range-a3_15 {
 	display: inline-flex;
-    margin-left: 57px;
+  margin-top: 5px;
 }
 
 .a3_15 {
@@ -147,10 +142,10 @@
     border: 2px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
-    width: 810px;
+    min-width: 600px;
     margin-left: 16px;
     margin-top: 10px;
-    height: 620px;
+    height: 560px;
 }
 
 
@@ -182,5 +177,23 @@
 	}
 }
 
+.setting-label {
+  width: 380px;
+}
 
+.label-zone {
+  width: 150px;
+}
 
+.div_line .switchbox-wrappers > label.nts-input > span {
+  width: 70px !important;
+  text-align: center !important;
+}
+
+.setting-content {
+  margin-left: 50px;
+}
+
+.label-zone-70 {
+  width: 70px;
+}

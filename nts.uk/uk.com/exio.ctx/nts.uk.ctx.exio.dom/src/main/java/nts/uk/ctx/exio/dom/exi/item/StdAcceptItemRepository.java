@@ -11,7 +11,7 @@ public interface StdAcceptItemRepository
 
 //    List<StdAcceptItem> getAllStdAcceptItem();
 
-    Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd, int acceptItemNumber);
+    Optional<StdAcceptItem> getStdAcceptItemById(String cid, String conditionSetCd, int acceptItemNumber);
 
     void add(StdAcceptItem domain);
 
@@ -19,14 +19,14 @@ public interface StdAcceptItemRepository
     /**
      * Remove all 受入項目（定型） by 受入条件設定（定型） key, using EntityManager.
      */
-    void removeAll(String cid, int sysType, String conditionSetCd);
+    void removeAll(String cid, String conditionSetCd);
     
     /**
      * Remove 受入項目（定型） by primary key.
      */
-    void remove(String cid, int sysType, String conditionSetCd, int acceptItemNumber);
+    void remove(String cid, String conditionSetCd, int acceptItemNumber);
 
-    List<StdAcceptItem> getListStdAcceptItems(String cid, int systemType, String conditionSetCd);
+    List<StdAcceptItem> getListStdAcceptItems(String cid, String conditionSetCd);
     
     void addList(List<StdAcceptItem> listItem);
     

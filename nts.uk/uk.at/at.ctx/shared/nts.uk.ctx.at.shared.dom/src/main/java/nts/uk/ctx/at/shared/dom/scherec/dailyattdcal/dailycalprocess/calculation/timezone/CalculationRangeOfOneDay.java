@@ -21,17 +21,22 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.HolidayWorkFrameTimeSheetForCalc;
@@ -43,6 +48,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SchedulePerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSheetRoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationWorkEachNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
@@ -50,11 +57,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateDecisionClock;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -65,7 +71,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -133,7 +138,7 @@ public class CalculationRangeOfOneDay {
 	public static CalculationRangeOfOneDay createEmpty(IntegrationOfDaily integrationOfDaily) {
 		return new CalculationRangeOfOneDay(
 				Finally.of(new FlexWithinWorkTimeSheet(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-								Collections.emptyList(), Collections.emptyMap(), Finally.empty(), Optional.empty())),
+								Collections.emptyList(), Optional.empty())),
 				Finally.of(new OutsideWorkTimeSheet(Optional.empty(),Optional.empty())),
 				null,
 				integrationOfDaily.getAttendanceLeave().orElse(null),
@@ -207,6 +212,9 @@ public class CalculationRangeOfOneDay {
 			return;
 		}
 		
+		// 時間休暇WORKを作成する
+		TimeVacationWork timeVacationWork = this.createTimeVacationWork(integrationOfDaily);
+		
 		/*attendanceLeavingWork は、ジャスト遅刻早退の補正処理を行った結果をCalculationRangeOneDayが持っているので、
 		 * intergrationOfDailyではなく、rangeOneDayが持っている出退勤を使う事。
 		 * */
@@ -222,7 +230,8 @@ public class CalculationRangeOfOneDay {
 					integrationOfDaily,
 					deductionTimeSheet,
 					this.predetermineTimeSetForCalc,
-					timeLeavingWork);
+					timeLeavingWork,
+					timeVacationWork);
 			if(this.withinWorkingTimeSheet.isPresent()) {
 				this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().addAll(createWithinWorkTimeSheet.getWithinWorkTimeFrame());
 			}
@@ -267,6 +276,7 @@ public class CalculationRangeOfOneDay {
 		
 		if(!this.withinWorkingTimeSheet.isPresent()) {
 			this.withinWorkingTimeSheet = Finally.of(new WithinWorkTimeSheet(Arrays.asList(new WithinWorkTimeFrame(new EmTimeFrameNo(5), 
+																									new WorkNo(3),
 																									new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
 																									new TimeSpanForDailyCalc(new TimeWithDayAttr(0), new TimeWithDayAttr(0)), 
 																									new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN), 
@@ -665,6 +675,9 @@ public class CalculationRangeOfOneDay {
 					integrationOfWorkTime.getFlowWorkSetting().get(),
 					schedulePerformance);
 			
+			//時間休暇WORKを作成する
+			TimeVacationWork timeVacationWork = this.createTimeVacationWork(integrationOfDaily);
+			
 			//流動勤務(就内、平日)
 			this.withinWorkingTimeSheet.set(WithinWorkTimeSheet.createAsFlow(
 					companyCommonSetting,
@@ -674,7 +687,8 @@ public class CalculationRangeOfOneDay {
 					integrationOfDaily,
 					this.predetermineTimeSetForCalc,
 					deductTimeSheet,
-					creatingWithinWorkTimeSheet));
+					creatingWithinWorkTimeSheet,
+					timeVacationWork));
 			
 			if(this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().isEmpty())
 				return;
@@ -965,7 +979,7 @@ public class CalculationRangeOfOneDay {
 		
 		//計算範囲を判断する
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().add(this.createWithinWorkTimeFrameIncludingCalculationRange(
-				todayWorkType, timeLeavingWork, predetermineTimeSet));
+				todayWorkType, integrationOfWorkTime, timeLeavingWork, predetermineTimeSet));
 
 		//遅刻時間帯を計算
 		return creatingWithinWorkTimeSheet.calcLateTimeDeduction(
@@ -1060,26 +1074,26 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 計算範囲を判断
 	 * @param todayWorkType 勤務種類
+	 * @param workTime 統合就業時間帯
 	 * @param timeLeavingWork 出退勤
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @return 就業時間内時間枠
 	 */
-	public WithinWorkTimeFrame createWithinWorkTimeFrameIncludingCalculationRange(WorkType todayWorkType, 
-			TimeLeavingWork timeLeavingWork, PredetermineTimeSetForCalc predetermineTimeSet) {
+	public WithinWorkTimeFrame createWithinWorkTimeFrameIncludingCalculationRange(WorkType todayWorkType,
+			IntegrationOfWorkTime workTime, TimeLeavingWork timeLeavingWork, PredetermineTimeSetForCalc predetermineTimeSet) {
 		
 		/** 計算範囲を判断 */
 		TimeSpanForDailyCalc calcRange = getCalcRange(todayWorkType, timeLeavingWork, predetermineTimeSet);
 		
 		//就業時間内時間枠作成
-		return createWithinWorkTimeFrame(timeLeavingWork.getWorkNo().v(), calcRange);
-	}
-
-	private WithinWorkTimeFrame createWithinWorkTimeFrame(int workNo, TimeSpanForDailyCalc calcRange) {
 		return new WithinWorkTimeFrame(
-				new EmTimeFrameNo(workNo),
+				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()),
+				timeLeavingWork.getWorkNo(),
 				calcRange,
 				calcRange,
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				workTime.getFlowWorkSetting().isPresent()
+						? workTime.getFlowWorkSetting().get().getHalfDayWorkTimezone().getWorkTimeZone().getWorkTimeRounding()
+						: new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				new ArrayList<>(),
 				new ArrayList<>(),
 				new ArrayList<>(),
@@ -1136,7 +1150,8 @@ public class CalculationRangeOfOneDay {
 				Optional.empty(),
 				//休憩として扱う場合、就業時間から控除し休憩時間に計上する(控除種別.休憩)　休憩として扱わない場合、就業時間から控除するが休憩時間には計上しない(控除種別.計上なし)
 				flowWorkSetting.getRestSetting().getFlowRestSetting().isUsePluralWorkRestTime() ? DeductionClassification.BREAK : DeductionClassification.NON_RECORD,
-				Optional.empty()));
+				Optional.empty(),
+				false));
 		
 		return deductionTimeBetweenWork;
 	}
@@ -1358,5 +1373,50 @@ public class CalculationRangeOfOneDay {
 		this.shortTimeWSWithoutWork = Optional.of(ShortTimeWorkSheetWithoutWork.create(
 				workType, integrationOfWorkTime, integrationOfDaily, this,
 				companyCommonSetting, personCommonSetting));
+	}
+	
+	/**
+	 * 時間休暇WORKを作成する
+	 * @param itgOfDaily 日別勤怠(WORK)
+	 * @return 時間休暇WORK
+	 */
+	public TimeVacationWork createTimeVacationWork(IntegrationOfDaily itgOfDaily){
+		
+		if (!itgOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) return TimeVacationWork.defaultValue();
+		// 総労働時間
+		TotalWorkingTime totalWorkTime = itgOfDaily.getAttendanceTimeOfDailyPerformance().get()
+				.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		// 勤務NO
+		List<WorkNo> workNoList = new ArrayList<>(); 
+		for (LateTimeOfDaily late : totalWorkTime.getLateTimeOfDaily()){
+			if (!workNoList.contains(late.getWorkNo())) workNoList.add(late.getWorkNo());
+		}
+		for (LeaveEarlyTimeOfDaily early : totalWorkTime.getLeaveEarlyTimeOfDaily()){
+			if (!workNoList.contains(early.getWorkNo())) workNoList.add(early.getWorkNo());
+		}
+		// 勤務NO毎の時間
+		List<TimeVacationWorkEachNo> eachNoList = new ArrayList<>();
+		for (WorkNo workNo : workNoList){
+			Optional<LateTimeOfDaily> lateOpt = totalWorkTime.getLateTimeNo(workNo.v());
+			Optional<LeaveEarlyTimeOfDaily> earlyOpt = totalWorkTime.getLeaveEarlyTimeNo(workNo.v());
+			TimeVacationWorkEachNo eachNo = TimeVacationWorkEachNo.of(
+					workNo,
+					lateOpt.isPresent() ?
+							lateOpt.get().getTimePaidUseTime().clone() : TimevacationUseTimeOfDaily.defaultValue(),
+					earlyOpt.isPresent() ?
+							earlyOpt.get().getTimePaidUseTime().clone() : TimevacationUseTimeOfDaily.defaultValue());
+			eachNoList.add(eachNo);
+		}
+		// 私用外出
+		Optional<OutingTimeOfDaily> privateOutingOpt = totalWorkTime.getOutingTimeByReason(GoingOutReason.PRIVATE);
+		// 組合外出
+		Optional<OutingTimeOfDaily> unionOutingOpt = totalWorkTime.getOutingTimeByReason(GoingOutReason.UNION);
+		// 時間休暇WORK
+		return TimeVacationWork.of(
+				eachNoList,
+				privateOutingOpt.isPresent() ?
+						privateOutingOpt.get().getTimeVacationUseOfDaily().clone() : TimevacationUseTimeOfDaily.defaultValue(),
+				unionOutingOpt.isPresent() ?
+						unionOutingOpt.get().getTimeVacationUseOfDaily().clone() : TimevacationUseTimeOfDaily.defaultValue());
 	}
 }

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CNV003 コンバート生成</title>
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="../../../lib/nittsu/ui/style/stylesheets/base.css">
+<link rel="stylesheet" type="text/css" href="cnv003.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="cnv003.js"></script>
+</head>
+
+<body>
+<div id="messageDialog" title="">
+	<label id="lblMessage"></label>
+</div>
+<div id="master-wrapper" data-bind="with: content">
+	<div id="header">
+		<div id="menu-header">
+			<div id="logo-area" class="cf"><div id="logo"><img src="/nts.uk.cnv.web/master/images/kinjirou.png"></div></div>
+			<div id="nav-area" class="cf"></div>
+			<div id="pg-area" class="cf">
+				<div id="pg-name" class="title">CNV003 コンバート生成</div>
+			</div>
+		</div>
+	</div>
+	<div id="master-content">
+		<div id="functions-area">
+			<button id="btnExport" class="large">テスト出力</button>
+			<button id="btnExport_update" class="large" style="display:none">updateテスト出力</button>
+		</div>
+		<div id="contents-area" class="fixed-flex-layout" style="height: calc(100vh - 161px);">
+			<table style="width: 900px;">
+			<tr>
+				<td>
+					<table>
+						<tr>
+							<td>
+								<div class="control-group">
+									<div class="form-label required">
+										<label>出力先ファイルパス：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtFilepath" style="margin-left: 11px; width: 400px;" class="nts-editor nts-input reset-element" value="">
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="control-group">
+									<div class="form-label required">
+										<label>DB種類：</label>
+									</div>
+									<input type="radio" id="mssql" name="dbtype" value="sqlserver" style="font-size:80%" checked="checked">SqlServer
+									<input type="radio" id="pg" name="dbtype" value="postgres" style="font-size:80%">Postgres
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="control-group">
+									<div class="form-label required">
+										<label>移行元DB名：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtSourceDbName" style="width: 200px;" class="nts-editor nts-input reset-element" value="ERP">
+									</span>
+									<div class="form-label required" style="margin-left: 11px;">
+										<label>移行元スキーマ名：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtSourceSchema" style="width: 180px;" class="nts-editor nts-input reset-element" value="dbo">
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="control-group">
+									<div class="form-label required">
+										<label>移行先DB名：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtTargetDbName" style="width: 200px;" class="nts-editor nts-input reset-element" value="UK_WORK">
+									</span>
+									<div class="form-label required" style="margin-left: 11px;">
+										<label>移行先スキーマ名：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtTargetSchema" style="width: 180px;" class="nts-editor nts-input reset-element" value="dbo">
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="control-group">
+									<div class="form-label required">
+										<label>移行ワーク用DB名：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtWorkDbName" style="width: 200px;" class="nts-editor nts-input reset-element" value="UK_CONVERT_WORK">
+									</span>
+									<div class="form-label required" style="margin-left: 11px;">
+										<label>移行ワーク用スキーマ名：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtWorkSchema" style="width: 180px;" class="nts-editor nts-input reset-element" value="dbo">
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="control-group">
+									<div class="form-label required">
+										<label>契約コード：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtContractCode" style="margin-left: 11px; width: 150px;" class="nts-editor nts-input reset-element" value="000000000000">
+									</span>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+</div>
+</body>
+</html>

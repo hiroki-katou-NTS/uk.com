@@ -230,7 +230,7 @@ public class MenuSettingImpl implements MasterListData {
 			masterData.cellAt("コード").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 			masterData.cellAt("名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
 			if (rowBar.get() == 0){
-				masterData.cellAt("メニュー").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(menuBar.getBackgroundColor().toString()).textColor(menuBar.getTextColor().toString()));
+				masterData.cellAt("メニュー").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor("#127D09").textColor("#ffffff"));
 			}
 			for (int j = 0; j < titleBars.size(); j++) {
 				if (rowBar.get() == 0){

@@ -53,6 +53,7 @@ module a3 {
         isDetailMode: KnockoutComputed<boolean>;
         showSimpleFixed: KnockoutComputed<boolean>;
         showSimpleDifftime: KnockoutComputed<boolean>;
+        showSimpleFlow: KnockoutComputed<boolean>;
 
         // fixed table datasource
         dataSourceOnedayFixed: KnockoutObservableArray<any>;
@@ -128,6 +129,9 @@ module a3 {
             });
             self.showSimpleDifftime = ko.computed(() => {
                 return self.mainSettingModel.diffWorkSetting.overtimeSetting() == 0;
+            });
+            self.showSimpleFlow = ko.computed(() => {
+                return (self.isDetailMode() && self.mainSettingModel.flowWorkSetting.designatedSetting() == 0) || (!self.isDetailMode());
             });
 
             self.isNewMode.subscribe((v) => {
