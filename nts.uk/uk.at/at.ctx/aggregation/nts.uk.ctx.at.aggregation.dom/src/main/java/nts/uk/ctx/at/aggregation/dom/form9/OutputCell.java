@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
 import nts.arc.primitive.UpperCaseAlphaNumericPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.StringRegEx;
 /**
  * 出力セル
@@ -9,9 +8,7 @@ import nts.arc.primitive.constraint.StringRegEx;
  * @author lan_lt
  *
  */
-
-@StringMaxLength(10)
-@StringRegEx("[a-zA-Z]{3}[1-9]{1}[0-9]{7}")
+@StringRegEx("[a-zA-Z]{1}[1-9]{1}[0-9]{0,6}")
 public class OutputCell extends UpperCaseAlphaNumericPrimitiveValue<OutputCell> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
