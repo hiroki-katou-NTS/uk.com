@@ -60,7 +60,7 @@ module nts.uk.com.view.cas014.b {
                 isMultiSelect: false,
                 listType: 4, //ListType.EMPLOYEE,
                 employeeInputList: self.roleSetPersonList,
-                selectType: 3, // SELECT_FIRST_ITEM
+                selectType: 4, // NO_SELECT, manual handle
                 selectedCode: self.selectedEmployeeCode,
                 isDialog: true,
                 isShowNoSelectRow: false,
@@ -107,22 +107,20 @@ module nts.uk.com.view.cas014.b {
                         }
                     }));
 
-                    if (employeeId) {
-                        const emp = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.id == employeeId);
-                        if (emp) {
-                            if (emp.code == self.selectedEmployeeCode())
-                                self.selectedEmployeeCode.valueHasMutated();
-                            else
-                                self.selectedEmployeeCode(emp.code);
-                        }
-                    }
-
                     if (_.isEmpty(self.roleSetPersonList())) {
-                        if (self.selectedEmployeeCode() == null)
-                            self.selectedEmployeeCode.valueHasMutated();
-                        else
-                            self.selectedEmployeeCode(null);
-                    }
+						self.selectedEmployeeCode() == null ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(null);
+					} else {
+						if (employeeId) {
+							const emp = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.id == employeeId);
+							if (emp) {
+								emp.code == self.selectedEmployeeCode() ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(emp.code);
+							} else {
+								self.selectedEmployeeCode() == self.roleSetPersonList()[0].code ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(self.roleSetPersonList()[0].code);
+							}
+						} else {
+							self.selectedEmployeeCode() == self.roleSetPersonList()[0].code ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(self.roleSetPersonList()[0].code);
+						}
+					}
                 } else {
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                 }
