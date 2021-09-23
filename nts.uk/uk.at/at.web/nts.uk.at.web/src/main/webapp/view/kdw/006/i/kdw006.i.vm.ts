@@ -10,6 +10,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
         elapsedMonthsValue: KnockoutObservable<any>;
 
         useAtr: KnockoutObservable<number>;
+        useAtrTask: KnockoutObservable<number>;
         time: KnockoutObservable<number>;
         displayMessage: KnockoutObservable<string>;
         messageColor: KnockoutObservable<string>;
@@ -36,6 +37,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
             self.elapsedMonthsValue = ko.observable(0);
 
             self.useAtr = ko.observable(0);
+            self.useAtrTask = ko.observable(0);
             self.time = ko.observable(0);
             self.displayMessage = ko.observable("test");
             self.messageColor = ko.observable("");
