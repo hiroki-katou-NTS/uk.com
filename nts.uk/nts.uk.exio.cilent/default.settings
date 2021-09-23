@@ -1,0 +1,19 @@
+## 設定ファイル名
+SettingFile=D:\\uk_exio\\importlist.csv
+
+## ログファイル名
+LogFile=D:\\uk_exio\\log\\log.txt
+
+## UkサーバーUrl
+UkServerUrl=http://localhost:8080
+
+## テナントコード
+TenantCode=000000000000
+## テナントログインパスワード
+TenantLoginPassword=0
+## 会社コード
+CompanyCode=0001
+## 社員コード
+EmployeeCode=000000000001
+## ログインパスワード
+Password=0

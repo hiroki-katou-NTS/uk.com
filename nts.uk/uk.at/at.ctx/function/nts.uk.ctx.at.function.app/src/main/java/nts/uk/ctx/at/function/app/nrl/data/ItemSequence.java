@@ -108,10 +108,17 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 	public static final List<String> APP_REASON_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.BCC);
-
 	public static final List<String> APP_REASON_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
-			Element.PAYLOAD, Element.BCC);
+			Element.NUMBER, Element.PAYLOAD, Element.BCC);
+	
+	public static final List<String> UK_SWITCH_MODE_REQ =  Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
+			Element.BCC);
+	public static final List<String> UK_SWITCH_MODE_RES = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
+			Element.YEAR, Element.MONTH, Element.DAY, Element.HOUR, Element.MINITE, Element.SECOND, Element.WEEK,
+			Element.BCC);
 	
 	/**
 	 * From map.
@@ -188,6 +195,9 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			orders = request ? APP_REASON_REQ_ORDER : APP_REASON_RES_ORDER;
 			break;
 			
+		case UK_SWITCH_MODE:
+			 orders = request ? UK_SWITCH_MODE_REQ : UK_SWITCH_MODE_RES;
+			 break;
 		default:
 			return Optional.empty();
 		}

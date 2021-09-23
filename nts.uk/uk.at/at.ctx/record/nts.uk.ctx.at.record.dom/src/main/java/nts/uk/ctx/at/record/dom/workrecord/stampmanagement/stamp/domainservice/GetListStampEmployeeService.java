@@ -56,13 +56,12 @@ public class GetListStampEmployeeService {
 	private static List<StampInfoDisp> createEmpStampInfo(List<StampRecord> listStampRecord, List<Stamp> listStamp) {
 		// $打刻記録 in 打刻記録リスト :
 		return listStampRecord.stream().map(rc -> {
-			// $対象打刻 = $打刻 in 打刻リスト :find $打刻記録.打刻カード番号 = $打刻.打刻カード番号 AND
-			// $打刻記録.打刻日時 = $打刻.打刻日時
-			List<Stamp> stamps = listStamp.stream().filter(s -> rc.getStampDateTime().equals(s.getStampDateTime())
-					&& rc.getStampNumber().equals(s.getCardNumber())).collect(Collectors.toList());
+			// $対象打刻 = $打刻 in 打刻リスト :																	
+			// find $打刻記録.打刻記録ID = $打刻.打刻記録ID
+			Optional<Stamp> stamp = listStamp.stream().filter(f -> f.getStampRecordId().equals(rc.getStampRecordId())).findFirst();
 			// map 表示する打刻情報#打刻区分を作成する($打刻記録.打刻カード番号, $打刻記録.打刻日時, $打刻記録.表示する打刻区分,
 			// $対象打刻)
-			return new StampInfoDisp(rc.getStampNumber(), rc.getStampDateTime(), rc.getStampTypeDisplay().v(), stamps);
+			return new StampInfoDisp(rc.getStampNumber(), rc.getStampDateTime(), rc.getStampTypeDisplay().v(), stamp);
 		}).collect(Collectors.toList());
 
 	}

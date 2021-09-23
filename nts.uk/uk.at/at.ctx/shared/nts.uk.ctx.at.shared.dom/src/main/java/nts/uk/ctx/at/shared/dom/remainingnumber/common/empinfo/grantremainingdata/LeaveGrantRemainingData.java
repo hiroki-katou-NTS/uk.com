@@ -76,6 +76,8 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			double usedDays,
 			Integer usedMinutes,
 			Double stowageDays,
+			Double numberOverDays,
+			Integer timeOver,
 			double remainDays,
 			Integer remainMinutes,
 			double usedPercent) {
@@ -90,7 +92,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 			domain.details = new LeaveNumberInfo(
 					grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
-					remainDays, remainMinutes, usedPercent);
+					numberOverDays, timeOver, remainDays, remainMinutes, usedPercent);
 
 //			if (prescribedDays != null && deductedDays != null && workingDays != null) {
 //				domain.annualLeaveConditionInfo = Optional
@@ -235,7 +237,11 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	}
 
 	/** 残数不足のときにはtrueを返す */
-	public boolean isShortageRemain() {
+	public boolean isDummyData() {
+		return this.details.isDummyData() && this.isShortageRemain();
+	}
+
+	private boolean isShortageRemain() {
 		return details.isShortageRemain();
 	}
 

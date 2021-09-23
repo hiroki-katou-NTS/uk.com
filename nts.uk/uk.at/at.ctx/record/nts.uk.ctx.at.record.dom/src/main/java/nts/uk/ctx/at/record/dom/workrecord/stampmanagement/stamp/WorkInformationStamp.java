@@ -131,4 +131,10 @@ public class WorkInformationStamp implements DomainValue {
 		tempo.setWorkplaceID(Optional.of(supportCard.get().getWorkplaceId()));
 	}
 	
+	@Override
+	public WorkInformationStamp clone() {
+		return new WorkInformationStamp(this.getWorkplaceID(), empInfoTerCode.map(x -> new EmpInfoTerminalCode(x.v())), 
+				workLocationCD.map(x -> new WorkLocationCD(x.v())), 
+				cardNumberSupport.map(x -> new SupportCardNumber(x.v())));
+	}
 }

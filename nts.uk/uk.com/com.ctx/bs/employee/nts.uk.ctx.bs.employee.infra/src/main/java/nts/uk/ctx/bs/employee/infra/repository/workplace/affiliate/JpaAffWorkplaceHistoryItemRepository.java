@@ -308,10 +308,12 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 	@Override
 	public void addAll(List<AffWorkplaceHistoryItem> domain) {
 		String INS_SQL = "INSERT INTO BSYMT_AFF_WKP_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," + " HIST_ID, SID, WORKPLACE_ID," + " NORMAL_WORKPLACE_ID)"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," + " CONTRACT_CD, HIST_ID, SID, WORKPLACE_ID," + " NORMAL_WORKPLACE_ID)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, SID_VAL, WORKPLACE_ID_VAL, NORMAL_ID_VAL); ";
+				+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, WORKPLACE_ID_VAL, NORMAL_ID_VAL); ";
+		
+		String contractCode = AppContexts.user().contractCode();
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -332,6 +334,7 @@ public class JpaAffWorkplaceHistoryItemRepository extends JpaRepository implemen
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
 			sql = sql.replace("WORKPLACE_ID_VAL", c.getWorkplaceId() == null ? "null" : "'" + c.getWorkplaceId() + "'");

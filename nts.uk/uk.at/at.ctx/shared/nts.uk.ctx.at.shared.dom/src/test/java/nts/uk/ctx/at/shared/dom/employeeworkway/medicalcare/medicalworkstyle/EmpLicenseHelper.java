@@ -48,13 +48,13 @@ public class EmpLicenseHelper {
 	 
 	 public static List<NurseClassification> getLstNurseClass (){
 		 NurseClassification classification = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("1"), new NurseClassifiName("NAME"), LicenseClassification.valueOf(LicenseClassification.NURSE.value), true);
+				 new NurseClassifiCode("1"), new NurseClassifiName("NAME"), LicenseClassification.valueOf(LicenseClassification.NURSE.value), true, true);
 		 
 		 NurseClassification classification2 = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("2"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true);
+				 new NurseClassifiCode("2"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true, false);
 		
 		 NurseClassification classification3 = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("3"), new NurseClassifiName("NAME2"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSOCIATE.value), true);
+				 new NurseClassifiCode("3"), new NurseClassifiName("NAME2"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSOCIATE.value), true, false);
 		 
 		 List<NurseClassification> list = new ArrayList<NurseClassification>();
 		 list.add(classification);
@@ -65,13 +65,13 @@ public class EmpLicenseHelper {
 	 
 	 public static List<NurseClassification> getLstNurseClass_null (){
 		 NurseClassification classification = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("1"), new NurseClassifiName("NAME"), LicenseClassification.valueOf(LicenseClassification.NURSE.value), true);
+				 new NurseClassifiCode("1"), new NurseClassifiName("NAME"), LicenseClassification.valueOf(LicenseClassification.NURSE.value), true, true);
 		 
 		 NurseClassification classification2 = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("2"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true);
+				 new NurseClassifiCode("2"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true, false);
 		
 		 NurseClassification classification3 = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("3"), new NurseClassifiName("NAME2"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSOCIATE.value), true);
+				 new NurseClassifiCode("3"), new NurseClassifiName("NAME2"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSOCIATE.value), true, false);
 		 
 		 List<NurseClassification> list = new ArrayList<NurseClassification>();
 		 list.add(classification);
@@ -155,9 +155,9 @@ public static List<EmpMedicalWorkStyleHistoryItem> getnurseClass_null() {
 	 
 	 public static List<NurseClassification> getnurseClassification_null (){
 		 NurseClassification classification2 = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("3"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true);
+				 new NurseClassifiCode("3"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true, false);
 		 NurseClassification classification = new NurseClassification(new CompanyId("CID"), 
-				 new NurseClassifiCode("2"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true);
+				 new NurseClassifiCode("2"), new NurseClassifiName("NAME1"), LicenseClassification.valueOf(LicenseClassification.NURSE_ASSIST.value), true, false);
 		
 		
 		 

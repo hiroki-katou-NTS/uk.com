@@ -2,18 +2,19 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 
 /**
+ * 勤務予定作成マスタ参照区分
  * The Enum WorkScheduleMasterReferenceAtr.
  */
 public enum WorkScheduleMasterReferenceAtr {
 
-	/** The work place. */
-	WORK_PLACE(0, "Enum_WorkScheduleMasterReferenceAtr_Workplace"),
+	/** 職場 - The work place. */
+	WORK_PLACE(1, "Enum_WorkScheduleMasterReferenceAtr_Workplace"),
 
-	/** The classification. */
-	CLASSIFICATION(1, "Enum_WorkScheduleMasterReferenceAtr_Classification"),
+	/** 分類 - The classification. */
+	CLASSIFICATION(2, "Enum_WorkScheduleMasterReferenceAtr_Classification"),
 	
-	/** The company. */
-	COMPANY(2, "Enum_WorkScheduleMasterReferenceAtr_Company");
+	/** 会社 - The company. */
+	COMPANY(0, "Enum_WorkScheduleMasterReferenceAtr_Company");
 
 	/** The value. */
 	public final int value;

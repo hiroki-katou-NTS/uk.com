@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -99,6 +100,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	private static final String QUERY_ABS_BY_IDS_ATR = "SELECT c FROM KrcdtInterimRecHdSub c "
 			+ " WHERE c.recAbsPk.absenceMngID IN :absenceMngIds"
 			+ " AND c.absenceMngAtr = :absenceMngAtr";
+
 
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
@@ -452,5 +454,78 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				RemainType.PAUSE,
 				new RequiredDay(x.getBigDecimal("REQUIRED_DAYS") == null ? 0 : x.getBigDecimal("REQUIRED_DAYS").doubleValue()),
 				new UnOffsetDay(x.getBigDecimal("UNOFFSET_DAYS") == null ? 0 : x.getBigDecimal("UNOFFSET_DAYS").doubleValue()));
+	}
+
+	private static final String DELETE_FURISYUTSU_PERIOD = "DELETE FROM KrcdtInterimRecMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
+
+	@Override
+	public void deleteRecMngWithPeriod(String sid, DatePeriod period) {
+		this.getEntityManager().createQuery(DELETE_FURISYUTSU_PERIOD).setParameter("sid", sid)
+		.setParameter("startDate", period.start()).setParameter("endDate", period.end()).executeUpdate();
+	}
+
+	@Override
+	public void insertRecMngList(List<InterimRecMng> lstDomain) {
+		this.commandProxy().insertAll(lstDomain.stream().map(c -> toEntityRecMng(c)).collect(Collectors.toList()));
+	}
+
+	private KrcdtInterimRecMng toEntityRecMng(InterimRecMng domain) {
+		// キー
+		KrcdtInterimRecMngPK pk = new KrcdtInterimRecMngPK(AppContexts.user().companyId(), domain.getSID(),
+				domain.getYmd());
+
+		// 登録・更新
+		KrcdtInterimRecMng entity = new KrcdtInterimRecMng();
+		entity.pk = pk;
+		entity.remainMngId = domain.getRemainManaID();
+		entity.createAtr = domain.getCreatorAtr().value;
+		entity.expirationDate = domain.getExpirationDate();
+		entity.occurrenceDays = domain.getOccurrenceDays().v();
+		entity.unUsedDays = domain.getUnUsedDays().v();
+		return entity;
+	}
+	
+	private static final String DELETE_FURIKYU_PERIOD = "DELETE FROM KrcdtInterimHdSubMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
+	@Override
+	public void deleteAbsMngWithPeriod(String sid, DatePeriod period) {
+		this.getEntityManager().createQuery(DELETE_FURIKYU_PERIOD).setParameter("sid", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).executeUpdate();
+	}
+
+	@Override
+	public void insertAbsMngList(List<InterimAbsMng> lstDomain) {
+		this.commandProxy().insertAll(lstDomain.stream().map(c -> toEntityAbsMng(c)).collect(Collectors.toList()));
+	}
+	
+	private KrcdtInterimHdSubMng toEntityAbsMng(InterimAbsMng domain) {
+		// キー
+		KrcdtInterimHdSubMngPK pk = new KrcdtInterimHdSubMngPK(AppContexts.user().companyId(), domain.getSID(),
+				domain.getYmd());
+		// 登録・更新
+		KrcdtInterimHdSubMng entity = new KrcdtInterimHdSubMng();
+		entity.pk = pk;
+		entity.remainMngId = domain.getRemainManaID();
+		entity.requiredDays = domain.getRequeiredDays().v();
+		entity.unOffsetDay = domain.getUnOffsetDays().v();
+		entity.createAtr = domain.getCreatorAtr().value;
+		return entity;
+	}
+
+	
+	private static final String DELETE_FURISYUTSU_DATE = "DELETE FROM KrcdtInterimRecMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+
+	@Override
+	public void deleteRecMngWithDateList(String sid, List<GeneralDate> lstDate) {
+		this.getEntityManager().createQuery(DELETE_FURISYUTSU_DATE).setParameter("sid", sid)
+				.setParameter("lstDate", lstDate).executeUpdate();
+	}
+
+	private static final String DELETE_FURIKYU_DATE = "DELETE FROM KrcdtInterimHdSubMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+	
+	@Override
+	public void deleteAbsMngWithDateList(String sid, List<GeneralDate> lstDate) {
+		this.getEntityManager().createQuery(DELETE_FURIKYU_DATE).setParameter("sid", sid)
+		.setParameter("lstDate", lstDate).executeUpdate();
+		
 	}
 }

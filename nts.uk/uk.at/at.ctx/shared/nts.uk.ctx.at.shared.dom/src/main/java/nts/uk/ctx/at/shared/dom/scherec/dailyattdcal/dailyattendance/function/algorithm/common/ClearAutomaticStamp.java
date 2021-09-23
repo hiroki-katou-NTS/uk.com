@@ -29,6 +29,11 @@ public class ClearAutomaticStamp {
 					timeActualStamp.getNumberOfReflectionStamp());
 		}
 		val changeMean = timeActualStamp.getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans();
+		
+		if (null == changeMean) {
+			return timeActualStamp;
+		}
+		
 		switch (changeMean) {
 		case APPLICATION:
 		case DIRECT_BOUNCE_APPLICATION:

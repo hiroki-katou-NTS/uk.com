@@ -9,6 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 
 /** 36協定1ヶ月 */
@@ -24,6 +25,12 @@ public class AgreementOneMonth {
 	public AgreementOneMonth() {
 		this.basic = new OneMonthTime();
 		this.specConditionLimit = new OneMonthTime();
+	}
+	
+	/** 社員の３６協定年月設定を取り込む　*/
+	public void updateWithEmpSet(OneMonthErrorAlarmTime erAlTime) {
+		
+		this.specConditionLimit = OneMonthTime.of(erAlTime, this.specConditionLimit.getUpperLimit());
 	}
 	
 	/** エラーチェック */

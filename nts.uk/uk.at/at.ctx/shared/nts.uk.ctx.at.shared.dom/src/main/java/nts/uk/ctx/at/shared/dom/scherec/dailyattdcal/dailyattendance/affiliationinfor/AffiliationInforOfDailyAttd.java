@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliatio
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -27,49 +29,53 @@ import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class AffiliationInforOfDailyAttd implements DomainObject  {
 	
-	//雇用コード
+	/**
+	 * 雇用コード
+	 */
 	private EmploymentCode employmentCode;
 	
-	//職位ID
+	/**
+	 * 職位ID
+	 */
 	private String jobTitleID;
 	
-	//職場ID
+	/**
+	 * 職場ID
+	 */
 	private String wplID;
 	
-	//分類コード
+	/**
+	 * 分類コード
+	 */
 	private ClassificationCode clsCode;
 	
-	//勤務種別コード
+	/**
+	 * 勤務種別コード
+	 */
 	private Optional<BusinessTypeCode> businessTypeCode;
 	
-	//加給コード : optional
+	/**
+	 * 加給コード
+	 */
 	private Optional<BonusPaySettingCode> bonusPaySettingCode;
+	
+	/**
+	 * 職場グループID
+	 */
+	private Optional<String> workplaceGroupId;
+	
+	/**
+	 * 看護免許区分
+	 */
+	private Optional<LicenseClassification> nursingLicenseClass;
 
 	/**
-	 * @param employmentCode 雇用コード
-	 * @param jobTitleID 職位ID
-	 * @param wplID 職場ID
-	 * @param clsCode 分類コード
-	 * @param businessTypeCode 勤務種別コード
-	 * @param bonusPaySettingCode 加給コード
+	 * 看護管理者か
 	 */
-	public AffiliationInforOfDailyAttd(
-			EmploymentCode employmentCode, 
-			String jobTitleID, 
-			String wplID,
-			ClassificationCode clsCode, 
-			Optional<BusinessTypeCode> businessTypeCode,
-			Optional<BonusPaySettingCode> bonusPaySettingCode) {
-		super();
-		this.employmentCode = employmentCode;
-		this.jobTitleID = jobTitleID;
-		this.wplID = wplID;
-		this.clsCode = clsCode;
-		this.businessTypeCode = businessTypeCode;
-		this.bonusPaySettingCode = bonusPaySettingCode;
-	}
+	private Optional<Boolean> isNursingManager;
 	
 	/**
 	 * [C-1] 作る
@@ -86,7 +92,10 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 				AffiliationInforOfDailyAttd.getWorkplaceId(require, employeeId, standardDate), 
 				AffiliationInforOfDailyAttd.getClassificationCode(require, employeeId, standardDate), 
 				AffiliationInforOfDailyAttd.getBusinessTypeCode(require, employeeId, standardDate), 
-				AffiliationInforOfDailyAttd.getBonusPaySettingCode(require, employeeId, standardDate));
+				AffiliationInforOfDailyAttd.getBonusPaySettingCode(require, employeeId, standardDate),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty());
 	}
 	
 	/**
