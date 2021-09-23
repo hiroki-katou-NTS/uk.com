@@ -56,7 +56,7 @@ public class EquipmentUsageSettingsDataSource {
 		switch (EnumAdaptor.valueOf(itemSetting.getInputControl().getItemCls(), ItemClassification.class)) {
 		case TEXT:
 			minimum = NONE_SYMBOL;
-			maximum = String.format("%,d", itemSetting.getInputControl().getMaximum());
+			maximum = String.format("%,d", itemSetting.getInputControl().getDigitsNo());
 			unit = itemSetting.getItems().getUnit();
 			break;
 		case NUMBER:
