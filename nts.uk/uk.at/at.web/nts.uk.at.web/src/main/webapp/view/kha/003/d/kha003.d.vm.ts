@@ -150,9 +150,9 @@ module nts.uk.at.kha003.d {
             }
             let widthScreen = $(document).width();
             let windowHeight = $(window).height();
-            let height = (.77 * windowHeight);
+            let height = (.76 * windowHeight);
             if (window.devicePixelRatio <= 1) {
-                height = (.75 * windowHeight);
+                height = (.736 * windowHeight);
             }
             let width = Math.min(widthScreen, colWidth);
             let widthInPX = width + "px";
