@@ -1,6 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kmk006.a {
+module nts.uk.at.view.kmk006.j {
 
     @bean()
     export class ViewModel extends ko.ViewModel {
@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk006.a {
         public currentCodeListRight: KnockoutObservableArray<any> = ko.observableArray([]);
         public itemsRight: KnockoutObservableArray<ModelList> = ko.observableArray([]);
 
-        create() {
+        created() {
             const vm = this;
 
             for (var i = 1; i <= 20; i++) {
@@ -47,15 +47,7 @@ module nts.uk.at.view.kmk006.a {
         mounted() {
             const vm = this;
 
-            for (var i = 1; i <= 20; i++) {
-                vm.itemsLeft.push({ id: i + '', code: '00' + i, name: 'Employee' + i });
-            }
-
-            for (var i = 1; i <= 20; i++) {
-                vm.itemsRight.push({ id: i + '', code: '00' + i, name: 'Employee' + i });
-            }
-
-            console.log(ko.unwrap(vm.itemsLeft));
+            
         }
     }
 
