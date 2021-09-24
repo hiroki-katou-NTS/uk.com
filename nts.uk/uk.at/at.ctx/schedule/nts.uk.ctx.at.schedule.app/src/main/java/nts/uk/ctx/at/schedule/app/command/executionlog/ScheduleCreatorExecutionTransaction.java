@@ -921,73 +921,11 @@ public class ScheduleCreatorExecutionTransaction {
 		// 社員の在職状態を確認する
 		// if 休職中、休業中
 		// if 休職中
-<<<<<<< HEAD
-		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE) {
-			// 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
-			// Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休職, 勤務の単位 = 1日
-			List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(cid,
-					DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-					WorkTypeClassification.LeaveOfAbsence.value);
-			// Filter by 勤務の単位 = 1日
-			lstWorkType = lstWorkType.stream()
-					.map(x -> new WorkType(cid, x.getWorkTypeCode(), x.getWorkTypeSetList().stream()
-							.filter(y -> y.getWorkAtr().value == WorkAtr.OneDay.value).collect(Collectors.toList())))
-					.collect(Collectors.toList());
-			if (lstWorkType.isEmpty()) {
-				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, creator.getExecutionId(), dateInPeriod,
-						creator.getEmployeeId());
-				// ドメインモデル「スケジュール作成エラーログ」を返す
-				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
-			} else {
-				// 勤務情報を返す
-				// ・勤務種類コード＝取得した勤務種類コード
-				// ・就業時間帯コード＝Null
-				WorkInformation workInformation = lstWorkType.stream().findFirst()
-						.map(m -> new WorkInformation(m.getWorkTypeCode(), null)).orElse(null);
-
-				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
-			}
-
-		}
-
-		// if 休業中
-		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
-			// 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
-			// Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休業, 勤務の単位 = 1日
-			List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
-					DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-					WorkTypeClassification.Closure.value);
-			// Filter by 勤務の単位 = 1日
-			lstWorkType = lstWorkType.stream()
-					.map(x -> new WorkType(cid, x.getWorkTypeCode(), x.getWorkTypeSetList().stream()
-							.filter(y -> y.getCloseAtr().value == CloseAtr.PRENATAL.value
-									&& y.getWorkAtr().value == WorkAtr.OneDay.value)
-							.collect(Collectors.toList())))
-					.collect(Collectors.toList());
-
-			if (lstWorkType.isEmpty()) {
-				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
-						creator.getEmployeeId());
-				// ドメインモデル「スケジュール作成エラーログ」を返す
-				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
-			} else {
-				// 勤務情報を返す
-				// ・勤務種類コード＝取得した勤務種類コード
-				// ・就業時間帯コード＝Null
-				WorkInformation workInformation = lstWorkType.stream().findFirst()
-						.map(m -> new WorkInformation(m.getWorkTypeCode(), null)).orElse(null);
-
-				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
-			}
-=======
-		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE || 
-				optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) {
+		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || 
+				optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
 		prepareWorkOutput = this.getWorkInfoLeave(command, creator, domain, context,
 			 targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 		return prepareWorkOutput;
->>>>>>> pj/at/release_ver4
 		}
 		
 
@@ -1137,8 +1075,8 @@ public class ScheduleCreatorExecutionTransaction {
 					return preWork;
 				}
 				
-				List<ScheManaStatuTempo> listEmploymentInfo = masterCache.getListManaStatuTempo();
-				Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
+				List<EmployeeWorkingStatus> listEmploymentInfo = masterCache.getListManaStatuTempo();
+				Optional<EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
 
 				if (listEmploymentInfo != null) {
 					optEmploymentInfo = listEmploymentInfo.stream()
@@ -1147,12 +1085,12 @@ public class ScheduleCreatorExecutionTransaction {
 				
 				List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
 						DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-						optEmploymentInfo.get().getScheManaStatus().value);
+						optEmploymentInfo.get().getWorkingStatus().value);
 				
 				if (optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
 					lstWorkType = workTypeRepository.findHolidayWorkType(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-							optEmploymentInfo.get().getScheManaStatus().value, // WorkTypeClassification
+							optEmploymentInfo.get().getWorkingStatus().value, // WorkTypeClassification
 							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue()); // HolidayAtr
 				}
 				
