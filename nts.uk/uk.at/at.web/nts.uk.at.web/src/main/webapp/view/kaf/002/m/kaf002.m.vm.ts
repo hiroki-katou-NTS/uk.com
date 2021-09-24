@@ -413,7 +413,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             _.each(self.isLinkList, (i, index) => {
                 if (items[0].index == index) {
                     let paramString = 'enableList[' + String(index) + ']';
-                    headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString + '}">' + self.$i18n('KAF002_72') + '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72') + '</div>';
+                    headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString + ', enable: ' + (self.mode() != 2) + '}">' + self.$i18n('KAF002_72') + '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72') + '</div>';
 
                     dataSource = items.length >= 10 && self.isLinkList[index] ? items.slice(0, 3) : items;
                 }
