@@ -1,11 +1,6 @@
-module nts.uk.at.view.kdl020.test.start {
-    let __viewContext: any = window['__viewContext'] || {};
-    __viewContext.ready(() => {
-
-        let vm =  __viewContext['viewModel'] = new test.screenModel.ViewModel();
-        __viewContext['viewModel'].start().done(() => {
-            __viewContext.bind(__viewContext['viewModel']); 
-           
-        });
+__viewContext.ready(function() {
+        var screenModel = new kdl020.test.viewmodel.ScreenModel();
+        //screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);   
+        //});
     });
-}

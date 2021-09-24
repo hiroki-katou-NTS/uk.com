@@ -1,272 +1,458 @@
-module nts.uk.at.view.kdl029.a.screenModel {
-    import getText = nts.uk.resource.getText;
-    import text = nts.uk.resource.getText;
-    import block = nts.uk.ui.block;
-    import service = nts.uk.at.view.kdl029.a.service;
+module nts.uk.at.view.kdl029.a.viewmodel {
+	export class ScreenModel {
+		date: KnockoutObservable<any>;
+		empList: KnockoutObservableArray<string> = ko.observableArray([]);
+		dataHoliday: KnockoutObservable<any> = ko.observable();
 
-    export class ViewModel {
+		//_____KCP005________
+		listComponentOption: any = [];
+		selectedCode: KnockoutObservable<string>;
+		multiSelectedCode: KnockoutObservableArray<string>;
+		isShowAlreadySet: KnockoutObservable<boolean>;
+		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+		isDialog: KnockoutObservable<boolean>;
+		isShowNoSelectRow: KnockoutObservable<boolean>;
+		isMultiSelect: KnockoutObservable<boolean>;
+		isShowWorkPlaceName: KnockoutObservable<boolean>;
+		isShowSelectAllButton: KnockoutObservable<boolean>;
+		disableSelection: KnockoutObservable<boolean>;
 
-        columnHolidayGrantInfos = ko.observableArray([
-            { headerText: 'ID', prop: 'id', hidden: true },
-            { headerText: text('KDL029_9') + '(' + text('KDL029_13') + ')', prop: 'dataDate', width: 250 },//付与日
-            { headerText: text('KDL029_10'), prop: 'fundedNumber', width: 90 },//付与日数
-            { headerText: text('KDL029_11'), prop: 'numberOfUses', width: 90 },//使用数
-            { headerText: text('KDL029_12'), prop: 'residualNumber', width: 90 }//残日数 
-        ]);
-        dataHolidayGrantInfo: KnockoutObservableArray<DataHolidayGrantInfo> = ko.observableArray([]);
-        columnSteadyUseInfors = ko.observableArray([
-            { headerText: 'ID', prop: 'id', hidden: true },
-            { headerText: text('KDL029_17'), prop: 'date', width: 100 },
-            { headerText: text('KDL029_18'), prop: 'steadNumberOfUser', width: 90 },
-            { headerText: text('KDL029_19'), prop: 'typeOfStead', width: 125 }
-        ]);
-        dataSteadyUseInfor: KnockoutObservableArray<DataSteadyUseInfor> = ko.observableArray([]);
+		employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
+		paramData: any = nts.uk.ui.windows.getShared('KDL005_DATA');
 
-        value: KnockoutObservable<string> = ko.observable('');
-        employeeCode: KnockoutObservable<string> = ko.observable('');
-        employeeName: KnockoutObservable<string> = ko.observable('');
-        listComponentOption: any;
-        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
-        employeeIDList: KnockoutObservableArray<string> = ko.observableArray([]);
-        selectedType: KnockoutObservable<number> = ko.observable(0);
-        multiSelect: KnockoutObservable<boolean> = ko.observable(false);
-        inputDate: KnockoutObservable<string> = ko.observable('');
-        totalRemain: KnockoutObservable<string> = ko.observable('0.0 日');
-        displayKCP005: KnockoutObservable<boolean> = ko.observable(false);
+		// search
+		items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
-        isRetentionManage: KnockoutObservable<boolean> = ko.observable(true);
-        lstEmpFull: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
-        //ver7
-        title2: KnockoutObservable<string> = ko.observable('');
+		// area left
+		employeeCodeName: KnockoutObservable<string> = ko.observable('');
 
-        constructor() {
-            let vm = this;
-            let param = nts.uk.ui.windows.getShared('KDL029_PARAM');
-            vm.isRetentionManage(true)
-            vm.employeeIDList(param.employeeIds);
-            vm.multiSelect(false);
-            vm.inputDate(param.baseDate);
-            vm.start().then(() => {
-                if (vm.employeeList().length > 1) {
-                    vm.displayKCP005(true);
-                    vm.employeeCode(vm.employeeList()[0].code);
-                    vm.listComponentOption = {
-                        isShowAlreadySet: false,
-                        isMultiSelect: false,
-                        listType: ListType.EMPLOYEE,
-                        employeeInputList: vm.employeeList,
-                        selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                        selectedCode: vm.employeeCode,
-                        isDialog: false,
-                        isShowNoSelectRow: false,
-                        alreadySettingList: ko.observableArray([]),
-                        isShowWorkPlaceName: false,
-                        isShowSelectAllButton: false,
-                        maxRows: 12
-                    };
+		//
+		columns: KnockoutObservableArray<any>;
+		currentCode: KnockoutObservable<any>;
+		currentCodeList: KnockoutObservableArray<any>;
+		count: number = 100;
+		switchOptions: KnockoutObservableArray<any>;
+		holidayData: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
+		holidayDataOld: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
 
-                    $('#component-items-list').ntsListComponent(vm.listComponentOption).then(() => {
-                        $('#component-items-list').focusComponent();
-                    });
-                }
+		//
+		itemList: KnockoutObservableArray<ItemModel>;
+		selectedCodeCbb: KnockoutObservable<string>;
+		isEnable: KnockoutObservable<boolean>;
+		isEditable: KnockoutObservable<boolean>;
+		checkBindData: boolean = true;
 
-                if (vm.displayKCP005()) {
-                    nts.uk.ui.windows.getSelf().setWidth(990);
-                    nts.uk.ui.windows.getSelf().$dialog.dialogPositionControl();
-                }
-            })
-        }
+		checkSolid: number = 0;
 
-        closeDialog() {
-            nts.uk.ui.windows.close();
-        }
+		//
+		currentRemainNumber: KnockoutObservable<string> = ko.observable('');
+		expiredWithinMonth: KnockoutObservable<string> = ko.observable('');
+		dayCloseDeadline: KnockoutObservable<string> = ko.observable('');
 
-        start(): JQueryPromise<any> {
-            block.invisible();
-            let vm = this,
-                dfd = $.Deferred();
-            service.findAllEmploymentSystem({
-                inputDate: nts.uk.util.isNullOrEmpty(vm.inputDate()) ? null : moment.utc(vm.inputDate()).format("YYYY/MM/DD"),
-                listSID: vm.employeeIDList(),
-            }).then(data => {
-                block.clear();
-                let yearRes = getText('KDL029_15') + data.yearResigName + getText('KDL029_23');
-                vm.title2(yearRes);
-                vm.employeeName(data.employeeName);
-                //create list emp -> kcp005
-                _.each(data.employeeInfors, emp => {
-                    vm.lstEmpFull().push({ id: emp.sid, code: emp.scd, name: emp.bussinessName });
-                    vm.employeeList().push({ code: emp.scd, name: emp.bussinessName });
-                });
+		searchText: KnockoutObservable<string> = ko.observable('');
 
-                vm.employeeCode.subscribe(value => {
-                    let empSelected = _.find(vm.lstEmpFull(), emp => {
-                        if (emp.code === value) {
-                            return emp;
-                        }
-                    });
+		constructor() {
+			let self = this;
+			self.date = ko.observable(new Date());
+			self.empList = ko.observableArray([]);
 
-                    if (!nts.uk.util.isNullOrEmpty(empSelected)) {
-                        let employeeIDs = [];
-                        let dfd = $.Deferred();
-                        employeeIDs.push(empSelected.id);
-                        vm.employeeName(empSelected.name);
-                        block.invisible();
-                        service.findByEmployee({
-                            mode: vm.multiSelect(),
-                            inputDate: nts.uk.util.isNullOrEmpty(vm.inputDate()) ? null : moment.utc(vm.inputDate()).format("YYYY/MM/DD"),
-                            listSID: employeeIDs,
-                        }).then(data => {
-                            block.clear();
-                            vm.getDataForTable(data);
-                            vm.isRetentionManage(data.retentionManage);
-                            dfd.resolve();
-                        }).fail(() => {
-                            block.clear();
-                            dfd.reject();
-                        });
-                        return dfd.promise();
-                    }
-                });
-                vm.employeeCode(data.employeeCode);
-                dfd.resolve();
-            }).fail(() => {
-                block.clear();
-                dfd.reject();
-            });
-            return dfd.promise();
+			//_____KCP005________
+			self.selectedCode = ko.observable('1');
+			self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+			self.isShowAlreadySet = ko.observable(false);
+			self.alreadySettingList = ko.observableArray([
+				{ code: '1', isAlreadySetting: true },
+				{ code: '2', isAlreadySetting: true }
+			]);
+			self.isDialog = ko.observable(false);
+			self.isShowNoSelectRow = ko.observable(false);
+			self.isMultiSelect = ko.observable(false);
+			self.isShowWorkPlaceName = ko.observable(false);
+			self.isShowSelectAllButton = ko.observable(false);
+			self.disableSelection = ko.observable(false);
 
-        }
+			//
+			self.columns = ko.observableArray([
+				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 200 },
+				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 150 },
+				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 130 },
+				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 220 }
+			]);
 
-        getDataForTable(data: EmpRsvLeaveInforDto) {
-            const vm = this;
-            if (!nts.uk.util.isNullOrEmpty(data.rsvLeaManaImport)) {
-                let dataHoliday = [];
-                let total = 0.0;
-                _.each(data.rsvLeaManaImport.grantRemainingList, (rsv, index) => {
-                    dataHoliday.push(new DataHolidayGrantInfo(
-                        index,
-                        rsv.grantDate,
-                        rsv.grantNumber,
-                        rsv.usedNumber,
-                        rsv.remainingNumber,
-                        rsv.deadline,
-                        rsv.expiredInCurrentMonth
-                    ));
-                    total = total + rsv.remainingNumber;
-                });
-                vm.totalRemain(total.toFixed(1) + text('KDL029_22'));
-                vm.dataHolidayGrantInfo(_.orderBy(dataHoliday, ["fundedDate"], ["asc"]));
+			self.switchOptions = ko.observableArray([
+				{ code: "1", name: '四捨五入' },
+				{ code: "2", name: '切り上げ' },
+				{ code: "3", name: '切り捨て' }
+			]);
+			self.currentCode = ko.observable(0);
+			self.currentCodeList = ko.observableArray([]);
 
-                let dataYearly = [];
-                _.each(data.rsvLeaManaImport.tmpManageList, (tmp, index) => {
-                    dataYearly.push(new DataSteadyUseInfor(index, tmp.ymd, tmp.useDays, tmp.creatorAtr));
-                });
-                vm.dataSteadyUseInfor(_.orderBy(dataYearly, ["date"], ["asc"]));
-            }
-        }
-    }
+			if (self.paramData.length > 1) {
+				$("#area-right").show();
+			} else {
+				$("#area-right").hide();
+			}
 
-    export class DataHolidayGrantInfo {
-        id: any;
-        fundedDate: string;
-        fundedNumber: string;
-        numberOfUses: string;//使用数 - usedNumber
-        residualNumber: string;
-        deadline: string;//期限日 - deadline
-        dataDate: string;
-        constructor(id: any, fundedDate: string, fundedNumber: number, numberOfUses: number,
-            residualNumber: number, deadline: string, expiredInCurrentMonth: boolean) {
-            this.id = id;
-            this.fundedDate = fundedDate;
-            this.fundedNumber = fundedNumber.toFixed(1) + text('KDL029_14');
-            this.numberOfUses = numberOfUses.toFixed(1) + text('KDL029_14');
-            this.residualNumber = residualNumber.toFixed(1) + text('KDL029_14');
-            if (expiredInCurrentMonth) {
-                this.deadline = deadline ? nts.uk.resource.getText("KDL005_38", [deadline]) : '';
-            } else {
-                this.deadline = deadline ? nts.uk.resource.getText("KDL005_37", [deadline]) : '';
-            }
-            this.dataDate = this.fundedDate + this.deadline;
-        }
-    }
+			//
+			self.listComponentOption = {
+				isShowAlreadySet: self.isShowAlreadySet(),
+				isMultiSelect: false,
+				listType: ListType.EMPLOYEE,
+				employeeInputList: self.employeeList,
+				selectType: SelectType.SELECT_FIRST_ITEM,
+				selectedCode: self.selectedCode,
+				isDialog: self.isDialog(),
+				isShowNoSelectRow: self.isShowNoSelectRow(),
+				alreadySettingList: self.alreadySettingList,
+				isShowWorkPlaceName: self.isShowWorkPlaceName(),
+				isShowSelectAllButton: self.isShowSelectAllButton(),
+				disableSelection: self.disableSelection(),
+				maxRows: 15
+			};
 
-    export class DataSteadyUseInfor {
-        id: any;
-        date: string;
-        steadNumberOfUser: string;
-        typeOfStead: string;
-        constructor(id: any, date: string, steadNumberOfUser: number, typeOfStead: string) {
-            this.id = id;
-            this.date = date;
-            this.steadNumberOfUser = steadNumberOfUser.toFixed(1) + text('KDL029_14');
-            this.typeOfStead = typeOfStead;
-        }
-    }
+			$('#kcp005component').ntsListComponent(self.listComponentOption);
 
-    export interface UnitModel {
-        id?: string;
-        code: string;
-        name?: string;
-        workplaceName?: string;
-        isAlreadySetting?: boolean;
-        optionalColumn?: any;
-    }
+			self.listComponentOption.selectedCode.subscribe((value: any) => {
+				if (value == null) return;
+				self.checkSolid = 0;
+				let name: any = _.filter(self.employeeList(), (x: any) => {
+					return _.isEqual(x.code, value);
+				});
+				self.employeeCodeName(name[0].code + " " + name[0].name);
+				self.bindDataToGrid(value).done(() => {
+					self.selectedCodeCbb("1");
+				});
+			})
 
-    export class ListType {
-        static EMPLOYMENT = 1;
-        static Classification = 2;
-        static JOB_TITLE = 3;
-        static EMPLOYEE = 4;
-    }
+			//
+			self.itemList = ko.observableArray([
+				new ItemModel(1, nts.uk.resource.getText('KDL005_63')),
+				new ItemModel(2, nts.uk.resource.getText('KDL005_48'))
+			]);
 
-    export class SelectType {
-        static SELECT_BY_SELECTED_CODE = 1;
-        static SELECT_ALL = 2;
-        static SELECT_FIRST_ITEM = 3;
-        static NO_SELECT = 4;
-    }
+			self.selectedCodeCbb = ko.observable('1');
+			self.isEnable = ko.observable(true);
+			self.isEditable = ko.observable(true);
 
-    export interface EmpRsvLeaveInforDto {
-        employeeInfors: EmployeeInfoImport[];
-        rsvLeaManaImport: RsvLeaManagerImport;
-        employeeCode: string;
-        employeeName: string;
-        yearResigName: string;
-        retentionManage: boolean
-    }
+			self.selectedCodeCbb.subscribe((value: any) => {
+				self.holidayData([]);
+				if (value == 1) {
+					_.each(self.holidayDataOld(), (x: any) => {
+						self.holidayData.push(x);
+					});
+					console.log(self.holidayData());
+				} else {
+					let data = (_.filter(self.dataHoliday().remainNumConfirmDto.detailRemainingNumbers, (x: any) => {
+						return _.includes(x.digestionStatus, "残り");
+					}));
+					if (data.length > 0) {
+						_.forEach(data, (z: any, index: number) => {
+							self.bindDataToText(z, index);
+						});
+					}
+				}
 
-    export interface EmployeeInfoImport {
-        sid: string;
-        scd: string;
-        bussinessName: string;
-    }
+				if (self.checkSolid != 0) {
+					$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
+				}
+			})
 
-    export interface RsvLeaManagerImport {
-        reserveLeaveInfo: RsvLeaveInfoImport;
-        grantRemainingList: RsvLeaGrantRemainingImport[];
-        tmpManageList: TmpRsvLeaveMngImport[];
-    }
+			$("#search-btn").on({
+				"click": function() {
+					console.log("");
+				}
+			})
 
-    export interface RsvLeaveInfoImport {
-        befRemainDay: number;
-        aftRemainDay: number;
-        grantDay: number;
-        remainingDays: number;
-    }
+		}
 
-    export interface RsvLeaGrantRemainingImport {
-        grantDate: string;
-        deadline: string;
-        grantNumber: number;
-        usedNumber: number;
-        remainingNumber: number;
-        expiredInCurrentMonth: boolean;
-    }
+		startPage(): JQueryPromise<any> {
+			let self = this, dfd = $.Deferred<any>();
+			nts.uk.ui.block.grayout();
+			let param = {
+				employeeIds: self.paramData,
+				baseDate: ""
+			};
+			service.getHolidaySub(param).done((data: any) => {
+				self.dataHoliday(data);
+				if (data.remainNumConfirmDto != null) {
+					self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
+					self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
+					self.dayCloseDeadline(data.remainNumConfirmDto.dayCloseDeadline);
+				}
 
-    export interface TmpRsvLeaveMngImport {
-        ymd: string;
-        creatorAtr: string;
-        useDays: number;
-    }
+				_.forEach(data.empImport, (a: any, ind) => {
+					self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName, workplaceName: 'HN' })
+				});
+				self.listComponentOption.selectedCode(self.employeeList()[0].code);
+				$(".search-btn").hide();
+				if (self.checkSolid != 0) {
+					$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
+				}
+			});
+			dfd.resolve();
+			return dfd.promise();
+		}
+
+		bindDataToGrid(value: any): JQueryPromise<any> {
+			let self = this, dfd = $.Deferred<any>();
+			if (_.isNil(self.dataHoliday())) return;
+			self.holidayData([]);
+			if (self.dataHoliday().remainNumConfirmDto == null || (self.dataHoliday().remainNumConfirmDto != null && !_.includes(self.dataHoliday().remainNumConfirmDto.employeeId.slice(-12), value))) {
+				let sid = _.map(_.filter(self.paramData, (o: any) => _.isEqual(o.slice(-12), value)), (z: any) => {
+					return z;
+				})
+				let param = {
+					employeeIds: sid,
+					baseDate: ""
+				};
+				service.getHolidaySub(param).done((data: any) => {
+					self.dataHoliday(data);
+
+					if (data.remainNumConfirmDto != null) {
+						self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
+						self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
+						self.dayCloseDeadline(data.remainNumConfirmDto.dayCloseDeadline);
+
+						_.forEach(data.remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
+							self.bindDataToText(z, index);
+						});
+						self.holidayDataOld({ ...self.holidayData() });
+						dfd.resolve();
+					}
+					self.showHideItem(data);
+					$("#ui-area").css('display','');
+					$("#functions-area-bottom").css('display','');
+					$('#cancel-btn').focus();
+					
+					let id = _.filter($("div > div > div > div"), (x: any) => {
+							return _.includes(x.id, "container") && !_.includes(x.id, "single-list");
+					})
+					$("#" + id[0].id).attr('tabindex', -1);
+					if (self.checkSolid != 0) {
+						$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
+					}
+				});
+			} else {
+				_.forEach(self.dataHoliday().remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
+					self.bindDataToText(z, index);
+				});
+				self.showHideItem(self.dataHoliday());
+				$("#ui-area").css('display','');
+				$("#functions-area-bottom").css('display','');
+				$('#cancel-btn').focus();
+				self.holidayDataOld({ ...self.holidayData() });
+				dfd.resolve();
+			}
+
+			return dfd.promise();
+		}
+
+		bindDataToText(z: any, index: number) {
+			let self = this, textA3_11_12_13 = "", text_A3_31_32 = "", text_A4_41_42_43 = "",
+				text45 = "<span style='color:#FF2D2D;'>" + z.dueDateStatus + "</span>";
+
+			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate + " " + z.numberOccurrences;
+			text_A3_31_32 = "<span>" + text45 + " " + z.deadline; + "</span>"
+			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + " " + z.digestionCount
+
+			self.holidayData.push(new HolidayInfo(textA3_11_12_13, z.digestionStatus, text_A3_31_32, text_A4_41_42_43));
+
+			if ((_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
+				|| _.includes(z.digestionDateStatus, nts.uk.resource.getText('KDL005_40')))) {
+				if (self.checkSolid == 0) {
+					self.checkSolid = index;
+				}
+			}
+		}
+
+		showHideItem(data: any) {
+			let remainNumConfirmDto = data.remainNumConfirmDto;
+
+			// ※１ && ※4
+			if (remainNumConfirmDto != null && remainNumConfirmDto.management == 1 &&
+				remainNumConfirmDto.dayCloseDeadline.length > 0) {
+				$("#A2_10").show();
+				$("#A2_21").show();
+			} else {
+				$("#A2_10").hide();
+				$("#A2_21").hide();
+			}
+
+			// ※2
+			if (remainNumConfirmDto != null && remainNumConfirmDto.management == 1) {
+				$("#area-info").show();
+				$("#area-non-info").hide();
+			} else {
+				$("#area-info").hide();
+				$("#area-non-info").show();
+			}
+
+			// ※3
+			if (remainNumConfirmDto != null && remainNumConfirmDto.unit == 0) {
+				$("#A6_1").hide();
+				$("#A6_2").hide();
+				$("#A6_3").hide();
+			} else {
+				$("#A6_1").show();
+				$("#A6_2").show();
+				$("#A6_3").show();
+			}
+			nts.uk.ui.block.clear();
+		}
+
+		findData(data: any) {
+			let self = this;
+
+			let text = $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").val()
+			if (text == "") {
+				nts.uk.ui.dialog.info({ messageId: "MsgB_24" });
+			} else {
+				let lstFil = _.filter(self.employeeList(), (z: any) => {
+					return _.includes(z.code, text);
+				})
+
+				if (lstFil.length > 0) {
+					let index = _.findIndex(lstFil, (z: any) => _.isEqual(z.code, self.listComponentOption.selectedCode()));
+					if (index == -1 || index == lstFil.length - 1) {
+						self.listComponentOption.selectedCode(lstFil[0].code);
+					} else {
+						self.listComponentOption.selectedCode(lstFil[index + 1].code);
+					}
+					let scroll: any = _.findIndex(self.employeeList(), (z: any) => _.isEqual(z.code, self.listComponentOption.selectedCode())),
+						id = _.filter($("table > tbody > tr > td > div"), (x: any) => {
+							return _.includes(x.id, "_scrollContainer") && !_.includes(x.id, "single-list");
+						})
+					$("#" + id[0].id).scrollTop(scroll * 24);
+				} else {
+					nts.uk.ui.dialog.info({ messageId: "MsgB_25" });
+				}
+			}
+		}
+
+		cancel() {
+			nts.uk.ui.windows.close();
+		}
+	}
+
+	export interface IEmployeeParam {
+		employeeIds: Array<string>;
+		baseDate: string;
+	}
+
+	export class ListType {
+		static EMPLOYMENT = 1;
+		static Classification = 2;
+		static JOB_TITLE = 3;
+		static EMPLOYEE = 4;
+	}
+
+	export interface UnitModel {
+		id?: string;
+		code: string;
+		name?: string;
+		workplaceName?: string;
+		isAlreadySetting?: boolean;
+		optionalColumn?: any;
+	}
+
+	export class SelectType {
+		static SELECT_BY_SELECTED_CODE = 1;
+		static SELECT_ALL = 2;
+		static SELECT_FIRST_ITEM = 3;
+		static NO_SELECT = 4;
+	}
+
+	export interface UnitAlreadySettingModel {
+		code: string;
+		isAlreadySetting: boolean;
+	}
+
+	/** 残数確認ダイアログDTO */
+	export class RemainNumberConfirmDto {
+		expiredWithinMonth: KnockoutObservable<string>; // 1ヶ月以内期限切れ数 - A2_9
+		unit: KnockoutObservable<number>; // 単位  0 : 日, 1 : 時間
+		dayCloseDeadline: KnockoutObservable<string>; // 期限の一番近い日 - A2_21
+		detailRemainingNumbers: KnockoutObservableArray<RemainNumberDetailedInfo>; // 残数詳細一覧 - 残数詳細情報
+		currentRemainNumber: KnockoutObservable<string>; // 現時点残数 - A2_5
+		employeeId: KnockoutObservable<string>; // 社員ID
+		management: KnockoutObservable<number>; // 管理する
+		constructor(
+			expiredWithinMonth: string,
+			unit: number,
+			dayCloseDeadline: string,
+			detailRemainingNumbers: Array<RemainNumberDetailedInfo>,
+			currentRemainNumber: string,
+			employeeId: string,
+			management: number
+		) {
+			let self = this;
+			self.expiredWithinMonth = ko.observable(expiredWithinMonth);
+			self.unit = ko.observable(unit);
+			self.dayCloseDeadline = ko.observable(dayCloseDeadline);
+			self.detailRemainingNumbers = ko.observableArray(detailRemainingNumbers);
+			self.currentRemainNumber = ko.observable(currentRemainNumber);
+			self.employeeId = ko.observable(employeeId);
+			self.management = ko.observable(management);
+		}
+	}
+
+	/** 残数詳細情報 */
+	export class RemainNumberDetailedInfo {
+		deadline: KnockoutObservable<string>; // 期限日 - A3_32
+		dueDateStatus: KnockoutObservable<string>; // 期限日状況 - A3_31
+		digestionCount: KnockoutObservable<string>; // 消化数 - A3_43
+		digestionDate: KnockoutObservable<string>; // 消化日  - A3_42
+		digestionDateStatus: KnockoutObservable<string>; // 消化日状況  - A3_41
+		digestionStatus: KnockoutObservable<string>; // 消化状況  - A3_21
+		numberOccurrences: KnockoutObservable<string>; // 発生数 - A3_13
+		accrualDate: KnockoutObservable<string>; // 発生日 - A3_12
+		occurrenceDateStatus: KnockoutObservable<string>; // 発生日状況 - A3_11
+		constructor(
+			deadline: string,
+			dueDateStatus: string,
+			digestionCount: string,
+			digestionDate: string,
+			digestionDateStatus: string,
+			digestionStatus: string,
+			numberOccurrences: string,
+			accrualDate: string,
+			occurrenceDateStatus: string
+		) {
+			let self = this;
+			self.deadline = ko.observable(deadline);
+			self.dueDateStatus = ko.observable(dueDateStatus);
+			self.digestionCount = ko.observable(digestionCount);
+			self.digestionDate = ko.observable(digestionDate);
+			self.digestionDateStatus = ko.observable(digestionDateStatus);
+			self.digestionStatus = ko.observable(digestionStatus);
+			self.numberOccurrences = ko.observable(numberOccurrences);
+			self.accrualDate = ko.observable(accrualDate);
+			self.occurrenceDateStatus = ko.observable(occurrenceDateStatus);
+		}
+	}
+
+	export class ItemModel {
+		code: number;
+		name: string;
+		displayName?: string;
+		constructor(code: number, name: string, displayName?: string) {
+			this.code = code;
+			this.name = name;
+			this.displayName = displayName;
+		}
+	}
+
+	class HolidayInfo {
+		accrualDate: string;
+		digestionStatus: string;
+		deadline: string;
+		digestionDate: string;
+		constructor(accrualDate: string, digestionStatus: string, deadline: string, digestionDate: string) {
+			this.accrualDate = accrualDate;
+			this.digestionStatus = digestionStatus;
+			this.deadline = deadline;
+			this.digestionDate = digestionDate;
+		}
+	}
+
 }

@@ -1,0 +1,73 @@
+@import url("common.css");
+
+#totalTable {
+	width: 250px;
+}
+
+#content-right {
+	float: left;
+	margin-left: 20px;
+}
+
+#holiday-info_table tr, #holiday-use_table tr {
+	height: 25px;
+}
+
+#total {
+	border: 1px solid #CCC;
+	margin-top: 1px;
+	padding: 0 2px;
+	width: 520px;
+	height: 20px;
+}
+
+#total-number {
+	margin-left: 395px;
+}
+
+.line_1 {
+	display: inline-block;
+}
+.column1 {
+	width: 145px;
+}
+
+#title, #employeeInfo label {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+#employeeInfo {
+	margin-top: 0px;
+}
+
+#contents-area {
+	height: calc(100vh - 50px) !important;
+}
+
+#component-items-list {
+  margin-top: -10px;
+}
+
+#content-right_bottom_left, #content-right_bottom_right {
+	display: inline-block;
+}
+
+#content-right_bottom_right {
+	margin-left: 20px;
+	vertical-align: top;
+}
+
+#content-right_top {
+	display: inline-block;
+	margin-top: 0px;
+}
+#functions-area-bottom button {
+	margin-left: 0px;
+}
+#functions-area-bottom {
+  height: 50px;
+}
+
+.div_line {
+	margin-top: 10px;
+}
