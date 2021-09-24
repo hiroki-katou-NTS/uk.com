@@ -53,6 +53,16 @@ public interface ApplicationRepository {
 	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect, List<Integer> appType);
 	
 	/**
+	 * 検索
+	 * @param sid
+	 * @param dateData　申請日　
+	 * @param reflect　反映情報.実績反映状態
+	 * @param appType　申請種類
+	 * @return
+	 */
+	public List<Application> getByPeriodReflectType(String sid, GeneralDate baseDate, List<Integer> reflect, List<Integer> appType);
+	
+	/**
 	 * getListAppByType
 	 * sort：申請日（ASC）、入力日（DESC）
 	 * @param companyId
