@@ -71,6 +71,10 @@ module nts.uk.at.view.kdw006 {
                 nts.uk.request.jump("/view/kdw/006/j/index.xhtml");
             }
 
+            openK() {
+                nts.uk.request.jump("/view/kdw/006/k/index.xhtml");
+            }
+
             //---daily---
             open002Control() {
                 let isDaily = true;
