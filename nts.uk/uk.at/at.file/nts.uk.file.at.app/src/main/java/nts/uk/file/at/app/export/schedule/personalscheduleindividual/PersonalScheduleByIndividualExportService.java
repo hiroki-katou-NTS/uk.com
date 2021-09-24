@@ -25,9 +25,6 @@ public class PersonalScheduleByIndividualExportService extends ExportService<Per
         DatePeriod period = new DatePeriod(GeneralDate.fromString(query.getPeriod().getStartDate(), "yyyy/MM/dd"),
                 GeneralDate.fromString(query.getPeriod().getEndDate(), "yyyy/MM/dd"));
         PersonalScheduleIndividualDataSource dataSource = exportQuery.get(
-                query.getEmployeeId(),
-                query.getEmployeeCode(),
-                GeneralDate.fromString(query.getDate(), "yyyy/MM/dd"),
                 period,
                 query.getStartDate(),
                 query.isTotalDisplay()

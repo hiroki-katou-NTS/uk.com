@@ -90,12 +90,13 @@ public class BasicInformationQuery {
     /**
      * 取得する
      *
-     * @param employeeId
+     * @param isTotalDisplay
      * @param period
      * @return BasicInformationDto
      */
-    public <T> BasicInformationDto<T> get(String employeeId, DatePeriod period) {
+    public <T> BasicInformationDto<T> get(boolean isTotalDisplay, DatePeriod period) {
         String companyId = AppContexts.user().companyId();
+        String employeeId = AppContexts.user().employeeId();
         // 基本情報取得
         // [RQ622]会社IDから会社情報を取得する
         String companyName = company.getCurrentCompany().orElseGet(() -> {
@@ -103,7 +104,7 @@ public class BasicInformationQuery {
         }).getCompanyName();
 
         //[No.650]社員が所属している職場を取得する
-        String workplaceId = scWorkplaceAdapter.getAffWkpHistItemByEmpDate(companyId, period.end()).getWorkplaceId();
+        String workplaceId = scWorkplaceAdapter.getAffWkpHistItemByEmpDate(employeeId, period.end()).getWorkplaceId();
         List<String> workplaceIds = new ArrayList<>();
         if (!workplaceId.isEmpty()) {
             workplaceIds.add(workplaceId);
@@ -161,28 +162,32 @@ public class BasicInformationQuery {
                 dateInformationList.add(information);
             }
         });
-        //Optional<社員の法定労働時間>
-        Optional<LegalWorkTimeOfEmployee> legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(new GetLegalWorkTimeOfEmployeeService.Require() {
-            @Override
-            public Optional<WorkingConditionItem> getHistoryItemBySidAndBaseDate(String sid, GeneralDate baseDate) {
-                return workingConditionItemRepository.getBySidAndStandardDate(sid, baseDate);
-            }
+        Optional<LegalWorkTimeOfEmployee> legalWorkTimeOfEmployee = Optional.empty();
+        //Input.週合計判定 == true
+        if (isTotalDisplay) {
+            //Optional<社員の法定労働時間>
+            legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(new GetLegalWorkTimeOfEmployeeService.Require() {
+                @Override
+                public Optional<WorkingConditionItem> getHistoryItemBySidAndBaseDate(String sid, GeneralDate baseDate) {
+                    return workingConditionItemRepository.getBySidAndStandardDate(sid, baseDate);
+                }
 
-            @Override
-            public List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod) {
-                return employmentHisScheduleAdapter.getEmploymentPeriod(Arrays.asList(sid), period);
-            }
+                @Override
+                public List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod) {
+                    return employmentHisScheduleAdapter.getEmploymentPeriod(Arrays.asList(sid), period);
+                }
 
-            @Override
-            public MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate) {
-                return RequiredDependency.flexMonAndWeekStatutoryTime(companyId, employmentCd, employeeId, baseDate, ym);
-            }
+                @Override
+                public MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate) {
+                    return RequiredDependency.flexMonAndWeekStatutoryTime(companyId, employmentCd, employeeId, baseDate, ym);
+                }
 
-            @Override
-            public Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate, WorkingSystem workingSystem) {
-                return RequiredDependency.monAndWeekStatutoryTime(companyId, employmentCd, employeeId, baseDate, ym, workingSystem);
-            }
-        }, employeeId, period);
+                @Override
+                public Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate, WorkingSystem workingSystem) {
+                    return RequiredDependency.monAndWeekStatutoryTime(companyId, employmentCd, employeeId, baseDate, ym, workingSystem);
+                }
+            }, employeeId, period);
+        }
 
         return new BasicInformationDto(
                 companyName,

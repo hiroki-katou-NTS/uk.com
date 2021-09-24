@@ -9,10 +9,12 @@ import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.AppointmentDto;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,9 +47,12 @@ public class GetAnAppointmentQuery {
      * @param isTotalDisplay
      * @return AppointmentDto
      */
-    public AppointmentDto get(String employeeId, DatePeriod period, int startDate, boolean isTotalDisplay) {
+    public AppointmentDto get(DatePeriod period, int startDate, boolean isTotalDisplay) {
+        String employeeId = AppContexts.user().employeeId();
+        //1.
         //取得期間と週合計期間リストを取得する
         val aqDatePeriodList = periodListQuery.get(period, startDate);
+        //2.
         //日別勤怠を取得する
         List<IntegrationOfDaily> dailyAttendance = DailyAttendanceGettingService.getSchedule(
                 new DailyAttendanceGettingService.Require() {
@@ -63,10 +68,17 @@ public class GetAnAppointmentQuery {
                 },
                 Arrays.asList(new EmployeeId(employeeId)),
                 period);
+        //3.List<勤務予定（勤務情報）dto）
+        val workInforDtoList = createWorkScheduleDtoQuery.get(dailyAttendance);
+        //4.
+        List<WeeklyAgreegateResult> agreegateResults = Collections.emptyList();
+        if (isTotalDisplay) {
+            agreegateResults = aggregatedDataQuery.get(aqDatePeriodList.getPeriodItem(), dailyAttendance, Collections.emptyList());
+        }
         return new AppointmentDto(
-                createWorkScheduleDtoQuery.get(dailyAttendance),
-                aggregatedDataQuery.get(aqDatePeriodList.getPeriodItem(), dailyAttendance, dailyAttendance)
-
+                workInforDtoList,
+                agreegateResults,
+                aqDatePeriodList.getPeriodItem()
         );
     }
 }

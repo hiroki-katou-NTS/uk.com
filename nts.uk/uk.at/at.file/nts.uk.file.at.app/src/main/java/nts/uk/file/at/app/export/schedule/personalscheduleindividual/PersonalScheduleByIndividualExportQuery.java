@@ -1,6 +1,5 @@
 package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.AppointmentDto;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.BasicInformationDto;
@@ -23,23 +22,17 @@ public class PersonalScheduleByIndividualExportQuery {
     /**
      * 取得する
      *
-     * @param employeeId
-     * @param employeeCode
-     * @param generalDate
      * @param period
      * @param startDate
      * @param isTotalDisplay
      * @return PersonalScheduleDto
      */
     public PersonalScheduleIndividualDataSource get(
-            String employeeId,
-            String employeeCode,
-            GeneralDate generalDate,
             DatePeriod period,
             int startDate,
             boolean isTotalDisplay) {
-        AppointmentDto appointmentResult = getAnAppointmentQuery.get(employeeId, period, startDate, isTotalDisplay);
-        BasicInformationDto basicInfo = basicInformationQuery.get(employeeId, period);
+        AppointmentDto appointmentResult = getAnAppointmentQuery.get(period, startDate, isTotalDisplay);
+        BasicInformationDto basicInfo = basicInformationQuery.get(isTotalDisplay, period);
         return new PersonalScheduleIndividualDataSource(
                 basicInfo.getCompanyName(),
                 basicInfo.getWorkplaceInfo(),
