@@ -81,10 +81,10 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
 
 
     private void setPageHeader(AsposeCellsReportContext reportContext, OutputTraceConfirmTableDataSource dataSource, String menuName) {
-        reportContext.setHeader(0, "&7&\"MS ゴシック\"" + dataSource.getCompanyInfo().getCompanyName());
-        reportContext.setHeader(1, "&12&\"MS ゴシック,Bold\"" + menuName);
+        reportContext.setHeader(0, "&7&\"ＭＳ ゴシック\"" + dataSource.getCompanyInfo().getCompanyName());
+        reportContext.setHeader(1, "&12&\"ＭＳ ゴシック,Bold\"" + menuName);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm");
-        reportContext.setHeader(2, "&7&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
+        reportContext.setHeader(2, "&7&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
     }
 
     private void printSubHeader(Cells cells, OutputTraceConfirmTableDataSource dataSource) {
