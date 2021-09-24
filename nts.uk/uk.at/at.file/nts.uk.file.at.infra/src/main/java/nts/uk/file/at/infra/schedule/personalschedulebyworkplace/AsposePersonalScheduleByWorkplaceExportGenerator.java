@@ -153,9 +153,13 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             reportContext.processDesigner();
             if (preview) {
                 worksheet.getCells().get(startRow, 0).setValue(" ");
+                worksheet.getCells().setColumnWidth(PERSONAL_INFO_COLUMN, 15);
+                worksheet.getCells().setColumnWidth(PERSONAL_INFO_COLUMN + 1, 10);
+                if (worksheet.getCells().getColumnWidth(ADDITIONAL_PERSONAL_INFO_COLUMN) != 0) worksheet.getCells().setColumnWidth(ADDITIONAL_PERSONAL_INFO_COLUMN, 12);
                 // save as html file
                 HtmlSaveOptions options = new HtmlSaveOptions(SaveFormat.AUTO);
                 options.setPresentationPreference(true);
+                options.setHiddenColDisplayType(HtmlHiddenColDisplayType.REMOVE);
                 String fileName = this.getReportName(dataSource.getOutputSetting().getName().v() + HTML_EXT);
                 workbook.save(this.createNewFile(context, fileName), options);
                 workbook.save(ServerSystemProperties.fileStoragePath() + "\\" + fileName, options);
@@ -238,7 +242,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
 
         // C2 part
         long additionCount = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count();
-        if (additionCount == 0) {
+        if (dataSource.getOutputSetting().getOutputItem().getAdditionalColumnUseAtr() == NotUseAtr.NOT_USE || additionCount == 0) {
             cells.hideColumn(ADDITIONAL_PERSONAL_INFO_COLUMN);
         } else {
             cells.setColumnWidth(ADDITIONAL_PERSONAL_INFO_COLUMN, 9);

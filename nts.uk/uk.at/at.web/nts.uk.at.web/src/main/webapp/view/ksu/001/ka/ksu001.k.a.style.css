@@ -1,3 +1,7 @@
+#preview-frame table {
+    margin: 0 auto;
+}
+
 #preview-frame table td span {
     color: inherit;
     font-size: inherit;
