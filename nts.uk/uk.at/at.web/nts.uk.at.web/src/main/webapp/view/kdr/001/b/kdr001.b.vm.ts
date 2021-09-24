@@ -94,9 +94,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.nursingCareSetting == false) {
                     $('#rowNursingCareHoliday').addClass("hidden");
                 }
-                if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-                    $('#publicHolidaySetting').addClass("hidden");
-                }
+                // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+                //     $('#publicHolidaySetting').addClass("hidden");
+                // }
                 if (!vacationControl || vacationControl.com60HourVacationSetting == false) {
                     $('#rowHD60HItemCheck').addClass("hidden");
                 }
@@ -116,12 +116,6 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             }));
                             self.listSpecialHolidayEnable.push(i);
                             listSpecialHoliday.push(i);
-                        }else {
-                            self.allSpecialHolidays.push(new SpecialHoliday({
-                                specialHolidayCode: i,
-                                specialHolidayName: "",
-                                enable: false
-                            }));
                         }
                     }
                     if(holidayRemainings.length != 0){
@@ -209,11 +203,11 @@ module nts.uk.at.view.kdr001.b.viewmodel {
             if (!vacationControl || vacationControl.nursingCareSetting == false) {
                 self.currentHoliday().nursingLeave(false);
             }
-            if (!vacationControl || vacationControl.publicHolidaySetting == false) {
-                self.currentHoliday().outputItemsHolidays(false);
-                self.currentHoliday().outputHolidayForward(false);
-                self.currentHoliday().monthlyPublic(false);
-            }
+            // if (!vacationControl || vacationControl.publicHolidaySetting == false) {
+            //     self.currentHoliday().outputItemsHolidays(false);
+            //     self.currentHoliday().outputHolidayForward(false);
+            //     self.currentHoliday().monthlyPublic(false);
+            // }
             if (!vacationControl || vacationControl.listSpecialHoliday.length == 0) {
                 self.currentHoliday().listSpecialHoliday([]);
             }
@@ -304,21 +298,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                             enable: true
                         }));
                         self.listSpecialHolidayEnable.push(i);
-                    }else {
-                        self.allSpecialHolidays.push(new SpecialHoliday({
-                            specialHolidayCode: i,
-                            specialHolidayName: "",
-                            enable: false
-                        }));
                     }
-                }
-            } else {
-                for (let i = 1; i < 21; i++) {
-                    self.allSpecialHolidays.push(new SpecialHoliday({
-                        specialHolidayCode: i,
-                        specialHolidayName: "",
-                        enable: false
-                    }));
                 }
             }
             self.currentHoliday().listSpecialHoliday([]);
