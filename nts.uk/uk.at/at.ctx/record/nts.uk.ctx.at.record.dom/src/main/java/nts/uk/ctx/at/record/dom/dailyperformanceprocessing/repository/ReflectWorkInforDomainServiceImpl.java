@@ -1505,7 +1505,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// get workPlaceGroupId
 			// 特定期間の社員情報から該当の社員の職場グループIDを取得する
 			Optional<String> workplaceGroupId = Optional.empty();
-			if(!generalInfoImport.getEmpWorkplaceGroup().get(day).isEmpty()){
+			if(generalInfoImport.getEmpWorkplaceGroup() != null &&  !generalInfoImport.getEmpWorkplaceGroup().get(day).isEmpty()){
 				workplaceGroupId = generalInfoImport.getEmpWorkplaceGroup().get(day).stream()
 						.filter(i -> i.getEmpId().equals(employeeId)).findFirst().map(x -> x.getWorkplaceGroupId())
 						.orElse(Optional.empty());
@@ -1516,7 +1516,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			// 特定期間の社員情報から該当の社員の免許区分を取得する
 			 Optional<LicenseClassification> nursingLicenseClass = Optional.empty();	
 			 Optional<Boolean> isNursingManager = Optional.empty();
-			 if(!generalInfoImport.getEmpLicense().get(day).isEmpty()){
+			 if(generalInfoImport.getEmpLicense()!=null && !generalInfoImport.getEmpLicense().get(day).isEmpty()){
 				 nursingLicenseClass = generalInfoImport.getEmpLicense().get(day).stream()
 							.filter(i -> i.getEmpID().equals(employeeId)).findFirst().map(x -> x.getOptLicenseClassification())
 							.orElse(Optional.empty());

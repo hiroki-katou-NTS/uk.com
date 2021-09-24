@@ -63,7 +63,7 @@ public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable
 	public Integer nursingLicenseClass;
 	// 看護管理者か
 	@Column(name = "IS_NURSE_ADMINISTRATOR")
-	public Boolean nursingManager;
+	public Integer nursingManager;
 
 	@Override
 	protected Object getKey() {
@@ -83,7 +83,7 @@ public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable
 				businessTypeCode,
 				workplaceGroupId,
 				nursingLicenseClass == null ? null : EnumAdaptor.valueOf(nursingLicenseClass, LicenseClassification.class),
-				nursingManager		
+				nursingManager ==null?null: nursingManager == 1 ? true : false	
 				);
 		return domain;
 	}
@@ -100,7 +100,7 @@ public class KrcdtDayAffInfo extends ContractUkJpaEntity implements Serializable
 				affInfor.getBusinessTypeCode().isPresent()? affInfor.getBusinessTypeCode().get().v():null,
 				affInfor.getWorkplaceGroupId().isPresent()? affInfor.getWorkplaceGroupId().get() : null,
 				affInfor.getNursingLicenseClass().isPresent()? affInfor.getNursingLicenseClass().get().value : null,
-				affInfor.getIsNursingManager().isPresent() ? affInfor.getIsNursingManager().get() : null
+				affInfor.getIsNursingManager().isPresent() ? (affInfor.getIsNursingManager().get() ? 1:0) : null
 				);
 	}
 }
