@@ -17,8 +17,8 @@ import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 public class JpaImportingDataMetaRepository extends JpaRepository implements ImportingDataMetaRepository {
 
 	@Override
-	public void cleanOldTables(String companyId) {
-		String tableName = tableName(new ExecutionContext(companyId, "", null, null));
+	public void cleanOldTables(ExecutionContext context) {
+		String tableName = tableName(context);
 		TemporaryTable.dropTable(jdbcProxy(), tableName);
 	}
 	

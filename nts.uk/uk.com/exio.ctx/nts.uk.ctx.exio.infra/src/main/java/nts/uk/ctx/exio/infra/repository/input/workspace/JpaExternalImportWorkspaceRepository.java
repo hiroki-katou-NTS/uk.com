@@ -14,8 +14,8 @@ import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 public class JpaExternalImportWorkspaceRepository extends JpaRepository implements ExternalImportWorkspaceRepository {
 
 	@Override
-	public void cleanOldTables(Require require, String companyId) {
-		WorkspaceSql.cleanOldTables(require, companyId, jdbcProxy());
+	public void cleanOldTables(Require require, ExecutionContext context) {
+		WorkspaceSql.cleanOldTables(require, context, jdbcProxy());
 	}
 	
 	@Override

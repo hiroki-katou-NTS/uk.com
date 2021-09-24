@@ -72,6 +72,6 @@ public class ErrorsTable {
 	}
 	
 	private String tableName() {
-		return TemporaryTable.createTableName(context, "ERROR");
+		return TemporaryTable.createErrorTableName(context, "ERROR");
 	}
 }

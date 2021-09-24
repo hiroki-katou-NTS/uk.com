@@ -170,11 +170,6 @@ public class ExternalImportPrepareRequire {
 			return settingRepo.get(companyId, settingCode)
 						.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
-
-		@Override
-		public List<ImportingDomain> getAllImportingDomains() {
-			return importingDomainRepo.findAll();
-		}
 		
 		@Override
 		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
@@ -205,21 +200,28 @@ public class ExternalImportPrepareRequire {
 		
 		
 		/***** Workspace *****/
+		@Override
+		public void cleanOldTables(ExecutionContext context) {
+			errorsRepo.cleanOldTables(context);
+		}
 		
 		@Override
-		public void cleanOldTables(String companyId) {
-			workspaceRepo.cleanOldTables(this, companyId);
-			existingRepo.cleanOldTables(companyId);
-			metaRepo.cleanOldTables(companyId);
-			errorsRepo.cleanOldTables(companyId);
+		public void cleanOldTablesForEachDomain(ExecutionContext context) {
+			workspaceRepo.cleanOldTables(this, context);
+			existingRepo.cleanOldTables(context);
+			metaRepo.cleanOldTables(context);
 		}
 		
 		@Override
 		public void setupWorkspace(ExecutionContext context) {
+			errorsRepo.setup(context);
+		}
+		
+		@Override
+		public void setupWorkspaceForEachDomain(ExecutionContext context) {
 			workspaceRepo.setup(this, context);
 			existingRepo.setup(context);
 			metaRepo.setup(context);
-			errorsRepo.setup(context);
 		}
 		
 		@Override

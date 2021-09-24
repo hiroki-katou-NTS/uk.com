@@ -8,6 +8,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
 /**
@@ -18,14 +19,13 @@ public class PrepareImporting {
 	public static void prepare(
 			Require require,
 			ExternalImportSetting externalImportSetting,
+			DomainImportSetting setting,
 			InputStream csvFileStream) {
 
-		require.cleanOldTables(externalImportSetting.getCompanyId());
-		
-		externalImportSetting.getDomainSettings().forEach((domainId, setting) -> {	
 			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
-			
-			require.setupWorkspace(context);
+
+			require.cleanOldTablesForEachDomain(context);			
+			require.setupWorkspaceForEachDomain(context);
 			
 			// 受入データの組み立て
 			setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);
@@ -33,17 +33,19 @@ public class PrepareImporting {
 			// 編集済みデータの正準化
 			val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
 			CanonicalizeRevisedData.canonicalize(require, context, meta);
-		});
 	}
 	
 	public static interface Require extends
 			ExternalImportErrorsRequire,
 			ExternalImportSetting.RequireAssemble,
 			CanonicalizeRevisedData.Require {
-
-		void cleanOldTables(String companyId);
 		
+		void cleanOldTables(ExecutionContext context);
 		void setupWorkspace(ExecutionContext context);
+
+		void cleanOldTablesForEachDomain(ExecutionContext context);
+
+		void setupWorkspaceForEachDomain(ExecutionContext context);
 		
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}

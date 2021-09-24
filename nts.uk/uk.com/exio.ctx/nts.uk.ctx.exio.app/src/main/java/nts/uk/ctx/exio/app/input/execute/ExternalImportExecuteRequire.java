@@ -153,11 +153,6 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public List<ImportingDomain> getAllImportingDomains() {
-			return importingDomainRepo.findAll();
-		}
-
-		@Override
 		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
 			return importingDomainRepo.find(domainId);
 		}

@@ -6,7 +6,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 public interface ExternalImportExistingRepository {
 
-	void cleanOldTables(String companyId);
+	void cleanOldTables(ExecutionContext context);
 	
 	void setup(ExecutionContext context);
 	
