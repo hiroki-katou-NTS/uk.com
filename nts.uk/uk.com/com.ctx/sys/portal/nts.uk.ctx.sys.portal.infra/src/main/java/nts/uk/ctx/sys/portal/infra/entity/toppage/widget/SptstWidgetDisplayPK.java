@@ -20,10 +20,6 @@ public class SptstWidgetDisplayPK implements Serializable {
 	@Column(name = "CID")
 	public String companyID;
 
-	/** TopPage Part GUID */
-	@Column(name = "TOPPAGE_PART_ID")
-	public String topPagePartID;
-
 	@Column(name = "WIDGET_DISPLAY_ITEM_TYPE")
 	public int widgetType;
 }

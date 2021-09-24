@@ -12,6 +12,7 @@ import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.Attendanc
 import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.AffiliationStatusDto;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmpAffInfoExportDto;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
@@ -80,7 +81,7 @@ public class CreateAnnualWorkLedgerContentQuery {
         // DAILY
         List<AttendanceResultDto> listItemValue = require.getValueOf(listSid, datePeriod, listIdDailys);
         Map<String, Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>>> mapValue = new HashMap<>();
-        Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid, datePeriod.end(), listIdDailys);
+        Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid);
         listSid.forEach(e -> {
             val listValueEm = listItemValue.stream().filter(i -> i.getEmployeeId().equals(e)).collect(Collectors.toList());
             Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> values = listValueEm.stream()
@@ -238,7 +239,7 @@ public class CreateAnnualWorkLedgerContentQuery {
      * 月次データ
      */
     private static List<MonthlyData> getMonthlyData(AffiliationStatusDto emp,
-                                                    List<OutputItem> monthlyOutputItems,
+                                                    List<OutputItemWorkLedger> monthlyOutputItems,
                                                     List<MonthlyRecordValueImport> valueImports) {
         List<MonthlyData> lstMonthlyData = new ArrayList<>();
         // Loop 出力項目 月次
@@ -252,7 +253,7 @@ public class CreateAnnualWorkLedgerContentQuery {
                         k -> k.getItemValues().stream().filter(distinctByKey(ItemValue::getItemId))
                                 .collect(Collectors.toMap(ItemValue::getItemId, l -> l))));
         // Loop 出力項目 日次
-        for (OutputItem monthlyItem : monthlyOutputItems) {
+        for (OutputItemWorkLedger monthlyItem : monthlyOutputItems) {
             List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
             // 「期間」の中にループを行い
             for (val y : yearMonthList) {
@@ -268,7 +269,7 @@ public class CreateAnnualWorkLedgerContentQuery {
         return lstMonthlyData;
     }
 
-    private static MonthlyValue fromMonthlyRecordValue(OutputItem monthlyItem, List<OutputItemDetailAttItem> selectedAttendanceItemList, Map<Integer, ItemValue> itemValueMap, YearMonth ym) {
+    private static MonthlyValue fromMonthlyRecordValue(OutputItemWorkLedger monthlyItem, List<OutputItemDetailAttItem> selectedAttendanceItemList, Map<Integer, ItemValue> itemValueMap, YearMonth ym) {
         StringBuilder character = new StringBuilder();
         Double actualValue = 0d;
         for (OutputItemDetailAttItem d : selectedAttendanceItemList) {
@@ -300,8 +301,7 @@ public class CreateAnnualWorkLedgerContentQuery {
         Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
 
-        Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference,
-                                                                    List<Integer> lstDivNO);
+        Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId);
 
     }
 

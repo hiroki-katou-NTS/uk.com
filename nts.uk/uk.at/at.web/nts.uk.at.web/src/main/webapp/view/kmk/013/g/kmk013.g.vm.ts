@@ -37,13 +37,13 @@ module nts.uk.at.view.kmk013.g {
                     new ItemModel(0, nts.uk.resource.getText("KMK013_210"))
                 ]);
                 self.daysOfWeekOptions = ko.observableArray([
-                    new ItemModel(0, nts.uk.resource.getText("Enum_DayOfWeek_Monday")),
-                    new ItemModel(1, nts.uk.resource.getText("Enum_DayOfWeek_Tuesday")),
-                    new ItemModel(2, nts.uk.resource.getText("Enum_DayOfWeek_Wednesday")),
-                    new ItemModel(3, nts.uk.resource.getText("Enum_DayOfWeek_Thursday")),
-                    new ItemModel(4, nts.uk.resource.getText("Enum_DayOfWeek_Friday")),
-                    new ItemModel(5, nts.uk.resource.getText("Enum_DayOfWeek_Saturday")),
-                    new ItemModel(6, nts.uk.resource.getText("Enum_DayOfWeek_Sunday")),
+                    new ItemModel(1, nts.uk.resource.getText("Enum_DayOfWeek_Monday")),
+                    new ItemModel(2, nts.uk.resource.getText("Enum_DayOfWeek_Tuesday")),
+                    new ItemModel(3, nts.uk.resource.getText("Enum_DayOfWeek_Wednesday")),
+                    new ItemModel(4, nts.uk.resource.getText("Enum_DayOfWeek_Thursday")),
+                    new ItemModel(5, nts.uk.resource.getText("Enum_DayOfWeek_Friday")),
+                    new ItemModel(6, nts.uk.resource.getText("Enum_DayOfWeek_Saturday")),
+                    new ItemModel(7, nts.uk.resource.getText("Enum_DayOfWeek_Sunday")),
                 ]);
                 self.goOutReasonOptions = ko.observableArray<ItemModel>([
                     new ItemModel(0, nts.uk.resource.getText("Enum_Private")),

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.actualworkinghours;
 
 import lombok.Getter;
-import nts.arc.diagnose.stopwatch.Stopwatch;
 import nts.arc.diagnose.stopwatch.Stopwatch.TimeUnit;
 import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.dom.AggregateRoot;
@@ -17,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.St
  * 
  * @author nampt
  * 日別実績の勤怠時間 - root
- *
  */
 @Getter
 public class AttendanceTimeOfDailyPerformance extends AggregateRoot {

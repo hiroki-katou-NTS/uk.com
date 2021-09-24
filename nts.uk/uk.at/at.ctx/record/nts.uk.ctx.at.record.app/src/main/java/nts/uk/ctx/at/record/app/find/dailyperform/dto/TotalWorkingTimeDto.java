@@ -434,12 +434,9 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 										toAttendanceTime(c.getTemporaryNightTime())))),
 				shortWorkTime == null || shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(shortWorkTime.size()-1).toDomain(),
 				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain(),
-				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)));
-		
-		if(vacationAddTime != null) {
-			total.setVacationAddTime(new AttendanceTime(vacationAddTime));
-		}
-		total.setCalcDiffTime(new AttendanceTime(calcDiffTime));
+				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)),
+				new AttendanceTime(calcDiffTime),
+				new AttendanceTime(vacationAddTime == null ? 0 : vacationAddTime));
 		return total;
 	}
 	
@@ -461,14 +458,14 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	}
 
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {
-		return new TimevacationUseTimeOfDaily(
-						toAttendanceTime(c == null ? null : c.getTimeAnnualLeaveUseTime()),
-						toAttendanceTime(c == null ? null : c.getTimeCompensatoryLeaveUseTime()),
-						toAttendanceTime(c == null ? null : c.getExcessHolidayUseTime()),
-						toAttendanceTime(c == null ? null : c.getTimeSpecialHolidayUseTime()),
-						Optional.ofNullable((c == null || c.specialHdFrameNo == null)  ? null : new SpecialHdFrameNo(c.specialHdFrameNo) ),
-						toAttendanceTime(c == null ? null : c.getChildCareUseTime()),
-						toAttendanceTime(c == null ? null : c.getCareUseTime())
+		return c == null ?  TimevacationUseTimeOfDaily.defaultValue() : new TimevacationUseTimeOfDaily(
+						toAttendanceTime(c.getTimeAnnualLeaveUseTime()),
+						toAttendanceTime(c.getTimeCompensatoryLeaveUseTime()),
+						toAttendanceTime(c.getExcessHolidayUseTime()),
+						toAttendanceTime(c.getTimeSpecialHolidayUseTime()),
+						Optional.ofNullable(c.specialHdFrameNo == null ? null : new SpecialHdFrameNo(c.specialHdFrameNo)),
+						toAttendanceTime(c.getChildCareUseTime()),
+						toAttendanceTime(c.getCareUseTime())
 						);
 	}
 

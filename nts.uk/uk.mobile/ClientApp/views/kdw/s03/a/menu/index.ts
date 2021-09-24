@@ -47,8 +47,9 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public openKdws03g(param: boolean) {
+        let self = this;
         this.createMask();
-        this.$modal('kdws03g', { 'remainDisplay': param });
+        this.$modal('kdws03g', { 'remainDisplay': param, closureDate: self.params.closureDate });
     }
 
     public processConfirmAll(processFlag: string) {
@@ -139,6 +140,7 @@ interface MenuParam {
     monthActualReferButtonDis: boolean;
     timeExcessReferButtonDis: boolean;
     allConfirmButtonDis: boolean;
+    closureDate: any;
 }
 const servicePath = {
     confirmAll: 'screen/at/correctionofdailyperformance/confirmAll'

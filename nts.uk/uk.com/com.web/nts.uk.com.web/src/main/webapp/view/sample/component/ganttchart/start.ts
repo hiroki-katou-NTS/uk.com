@@ -234,6 +234,20 @@ __viewContext.ready(function() {
                     {
                         name: "BodyCellStyle",
                         decorator: detailDeco
+                    }, {
+                        name: "RightClick",
+                        chartFilter: function() {
+                            return true;
+                        },
+                        handler: function(ui) {
+                            let items = [
+                                { id: "終日に拡大", text: "終日に拡大", selectHandler: function(id) { } },
+                                { id: "削除", text: "削除", selectHandler: function(id) { ruler.removeBy({ no: ui.rowIndex, id: ui.id }); } }
+                            ];
+                            
+                            ui.contextMenu(items);
+                            ui.contextMenu("show");
+                        }
                     }
                 ]
             };

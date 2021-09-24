@@ -37,7 +37,7 @@ public class RecruitmentAppCmd {
 	
 	public List<TimeZoneWithWorkNoDto> workingHours;
 	
-	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
+	public List<LeaveComDayOffManaDto> leaveComDayOffMana = new ArrayList<LeaveComDayOffManaDto>();
 	
 	/** Use for save KAF011A */
 	public RecruitmentApp toDomainInsertRec() {

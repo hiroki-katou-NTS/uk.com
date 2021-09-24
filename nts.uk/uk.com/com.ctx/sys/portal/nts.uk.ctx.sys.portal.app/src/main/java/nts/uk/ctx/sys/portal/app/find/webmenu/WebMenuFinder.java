@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.I18NResources;
@@ -47,7 +46,6 @@ import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuGroup;
 import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuOrder;
 import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
-import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
 import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.constants.DefaultSettingKeys;
@@ -297,8 +295,7 @@ public class WebMenuFinder {
 			
 			return new MenuBarDetailDto(m.getMenuBarId().toString(),
 					m.getCode().v(), m.getMenuBarName().v(), m.getSelectedAtr().value, link,
-					m.getSystem().value, m.getMenuCls().value, m.getBackgroundColor().v(),
-					m.getTextColor().v(), m.getDisplayOrder().intValue(), titleBars);
+					m.getSystem().value, m.getMenuCls().value, m.getDisplayOrder().intValue(), titleBars);
 		}).sorted((m1, m2) -> m1.getDisplayOrder() - m2.getDisplayOrder()).collect(Collectors.toList());
 		return new WebMenuDetailDto(companyId, menu.getWebMenuCode().v(),
 				menu.getWebMenuName().v(), menu.getDefaultMenu().value, menuBar);
@@ -391,8 +388,7 @@ public class WebMenuFinder {
 			List<TitleBarDto> titleMenus = toTitleMenu(domain, mn);
 
 			return new MenuBarDto(mn.getMenuBarId().toString(), mn.getCode().v(), mn.getMenuBarName().v(),
-					mn.getSelectedAtr().value, mn.getSystem().value, mn.getMenuCls().value,
-					mn.getBackgroundColor().v(), mn.getTextColor().v(), mn.getDisplayOrder(), titleMenus);
+					mn.getSelectedAtr().value, mn.getSystem().value, mn.getMenuCls().value, mn.getDisplayOrder(), titleMenus);
 		}).collect(Collectors.toList());
 		return menuBars;
 	}

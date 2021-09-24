@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
@@ -139,6 +141,18 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	 */
 	@Getter
 	private final boolean reboot;
+	
+	/**
+	 * 切替日時送信
+	 */
+	@Getter
+	private final boolean sendTimeSwitchUKMode;
+	
+	/**
+	 * 切替日時
+	 */
+	@Getter
+	private final Optional<GeneralDateTime> timeSwitchUKMode;
 
 	public TimeRecordReqSetting(ReqSettingBuilder builder) {
 		super();
@@ -162,6 +176,8 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		this.timeSetting = builder.timeSetting;
 		this.remoteSetting = builder.remoteSetting;
 		this.reboot = builder.reboot;
+		this.sendTimeSwitchUKMode = builder.sendTimeSwitchUKMode;
+		this.timeSwitchUKMode = builder.timeSwitchUKMode;
 	}
 	
 	// 	[1] 端末のリクエスト状態の判断
@@ -279,6 +295,17 @@ public class TimeRecordReqSetting implements DomainAggregate {
 		 */
 		@Getter
 		private  boolean reboot;
+		
+		/**
+		 * 切替日時送信
+		 */
+		@Getter
+		private boolean sendTimeSwitchUKMode;
+		
+		/**
+		 * 切替日時
+		 */
+		private Optional<GeneralDateTime> timeSwitchUKMode;
 
 		public ReqSettingBuilder(EmpInfoTerminalCode terminalCode, ContractCode contractCode, CompanyId companyId,
 				String companyCode, List<EmployeeId> employeeIds, List<Integer> bentoMenuFrameNumbers,
@@ -290,6 +317,7 @@ public class TimeRecordReqSetting implements DomainAggregate {
 			this.employeeIds = employeeIds;
 			this.bentoMenuFrameNumbers = bentoMenuFrameNumbers;
 			this.workTypeCodes = workTypeCodes;
+			this.timeSwitchUKMode = Optional.empty();
 		}
 
 		public ReqSettingBuilder workTime(List<WorkTimeCode> workTimeCodes) {
@@ -354,6 +382,16 @@ public class TimeRecordReqSetting implements DomainAggregate {
 
 		public ReqSettingBuilder reboot(boolean reboot) {
 			this.reboot = reboot;
+			return this;
+		}
+		
+		public ReqSettingBuilder sendTimeSwitchUKMode(boolean sendTimeSwitchUKMode) {
+			this.sendTimeSwitchUKMode = sendTimeSwitchUKMode;
+			return this;
+		}
+		
+		public ReqSettingBuilder timeSwitchUKMode(Optional<GeneralDateTime> timeSwitchUKMode) {
+			this.timeSwitchUKMode = timeSwitchUKMode;
 			return this;
 		}
 		
