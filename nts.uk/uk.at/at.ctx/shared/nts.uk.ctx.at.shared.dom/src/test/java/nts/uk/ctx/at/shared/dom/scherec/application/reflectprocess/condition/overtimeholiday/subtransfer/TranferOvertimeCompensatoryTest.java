@@ -144,7 +144,7 @@ public class TranferOvertimeCompensatoryTest {
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
 								.extracting(x -> x.getOverWorkFrameNo().v(), x -> x.getOverTimeWork().getTime().v(),
 										x -> x.getTransferTime().getTime().v())
-								.contains(Tuple.tuple(1, 240, 240), Tuple.tuple(4, 120, 240));
+								.contains(Tuple.tuple(1, 0, 480), Tuple.tuple(4, 0, 360));
 
 	}
 
@@ -237,7 +237,7 @@ public class TranferOvertimeCompensatoryTest {
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
 								.extracting(x -> x.getOverWorkFrameNo().v(), x -> x.getOverTimeWork().getTime().v(),
 										x -> x.getTransferTime().getTime().v())
-								.contains(Tuple.tuple(3, 0, 360), Tuple.tuple(10, 60, 120));
+								.contains(Tuple.tuple(3, 0, 360), Tuple.tuple(10, 0, 180));
 
 	}
 
@@ -299,7 +299,7 @@ public class TranferOvertimeCompensatoryTest {
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
 								.extracting(x -> x.getOverWorkFrameNo().v(), x -> x.getOverTimeWork().getTime().v(),
 										x -> x.getTransferTime().getTime().v())
-								.containsExactly(Tuple.tuple(3, 180, 60), Tuple.tuple(4, 0, 420));
+								.containsExactly(Tuple.tuple(3, 0, 240), Tuple.tuple(4, 0, 420));
 
 	}
 
@@ -330,7 +330,7 @@ public class TranferOvertimeCompensatoryTest {
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
 								.extracting(x -> x.getOverWorkFrameNo().v(), x -> x.getOverTimeWork().getTime().v(),
 										x -> x.getTransferTime().getTime().v())
-								.contains(Tuple.tuple(1, 0, 240), Tuple.tuple(10, 180, 240));
+								.contains(Tuple.tuple(1, 0, 240), Tuple.tuple(10, 0, 420));
 
 	}
 
