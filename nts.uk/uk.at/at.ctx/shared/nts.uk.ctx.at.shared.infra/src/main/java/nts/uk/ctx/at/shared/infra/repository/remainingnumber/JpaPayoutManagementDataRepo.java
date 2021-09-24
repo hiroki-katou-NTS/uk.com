@@ -169,6 +169,12 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		}
 		
 	}
+	
+	@Override
+	public void deleteAllByEmployeeId(String employeeId) {
+		String jpql = "DELETE FROM KrcdtPayoutMng a WHERE a.sID = :sid";
+		this.getEntityManager().createQuery(jpql).setParameter("sid", employeeId).executeUpdate();
+	}
 
 	@Override
 	public void update(PayoutManagementData domain) {

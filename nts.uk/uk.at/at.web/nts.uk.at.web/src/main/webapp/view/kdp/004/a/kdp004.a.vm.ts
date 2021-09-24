@@ -595,13 +595,6 @@ module nts.uk.at.view.kdp004.a {
 
 											service.stampInput(registerdata).done((res) => {
 
-												const param = {
-													sid: employeeId,
-													date: vm.$date.now()
-												}
-
-												service.createDaily(param);
-
 												//phat nhac
 												self.playAudio(button.audioType);
 												// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
@@ -648,13 +641,6 @@ module nts.uk.at.view.kdp004.a {
 							};
 
 							service.stampInput(registerdata).done((res) => {
-
-								const param = {
-									sid: employeeId,
-									date: vm.$date.now()
-								}
-
-								service.createDaily(param);
 
 								//phat nhac
 								self.playAudio(button.audioType);

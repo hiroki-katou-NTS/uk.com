@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -565,6 +565,7 @@ var nts;
                             break;
                         case 'Decimal':
                         case 'Integer':
+                        case 'HalfInt':
                         case 'Date':
                         case 'Time':
                         case 'Clock':
@@ -1896,12 +1897,10 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -3158,7 +3157,7 @@ var nts;
                         function toText(dayAttr) {
                             switch (dayAttr) {
                                 case DayAttr.THE_PREVIOUS_DAY: return "前日";
-                                case DayAttr.THE_PRESENT_DAY: return "当日";
+                                case DayAttr.THE_PRESENT_DAY: return "";
                                 case DayAttr.THE_NEXT_DAY: return "翌日";
                                 case DayAttr.TWO_DAY_LATER: return "翌々日";
                                 default: new Error("invalid dayAttr: " + dayAttr);
@@ -7146,11 +7145,6 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
-};
 var nts;
 (function (nts) {
     var uk;
@@ -14011,7 +14005,7 @@ var nts;
                                     var id = target.getAttribute("id");
                                     if (_.isNil(id))
                                         return;
-                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArray(__spreadArray([], id.split('-')), [target])))
+                                    if (!rightClickFt.chartFilter.apply(rightClickFt, id.split('-').concat([target])))
                                         return;
                                 }
                                 else {
@@ -14026,7 +14020,7 @@ var nts;
                                     ui = helper.getCellCoord(target);
                                 }
                                 else {
-                                    _a = __spreadArray([], id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
+                                    _a = id.split('-').slice(), ui.rowIndex = _a[0], ui.id = _a[1];
                                 }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
@@ -17853,7 +17847,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArray(__spreadArray([], checkeds), [value_1]));
+                                                accessor.checked(checkeds.concat([value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -20444,11 +20438,11 @@ var nts;
                         $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
                             var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
-                            if (!$input.data(_kc)) {
-                                $input.data(_kc, evt);
-                                $input.data(_rg, { start: start, end: end });
-                                $input.data(_val, target.value);
-                            }
+                            // if (!$input.data(_kc)) {
+                            $input.data(_kc, evt);
+                            $input.data(_rg, { start: start, end: end });
+                            $input.data(_val, target.value);
+                            // }
                         });
                         $input.on('paste', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
@@ -20494,26 +20488,42 @@ var nts;
                             evt.preventDefault();
                         });
                         $input.on('input', function (evt) {
-                            var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = devt.originalEvent, ival = evt.target.value, dval = $input.data(_val);
-                            ival = ival
-                                .replace(/。/, '.')
-                                .replace(/ー/, '-')
-                                .replace(/０/, '0')
-                                .replace(/１/, '1')
-                                .replace(/２/, '2')
-                                .replace(/３/, '3')
-                                .replace(/４/, '4')
-                                .replace(/５/, '5')
-                                .replace(/６/, '6')
-                                .replace(/７/, '7')
-                                .replace(/８/, '8')
-                                .replace(/９/, '9')
-                                .replace(/./g, function (k) {
-                                if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
-                                    return '';
-                                }
-                                return k;
-                            });
+                            var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = ((devt || {}).originalEvent || {}), ival = evt.target.value, dval = $input.data(_val);
+                            //Japanese input always return keyCode 229 -> skip constraining input, and validate after input is committed to editor's value
+                            if (dorgi == null || dorgi == undefined || dorgi.keyCode == 229) {
+                                return;
+                            }
+                            // ival = ival
+                            //     .replace(/。/, '.')
+                            //     .replace(/ー/, '-')
+                            //     .replace(/０/, '0')
+                            //     .replace(/１/, '1')
+                            //     .replace(/２/, '2')
+                            //     .replace(/３/, '3')
+                            //     .replace(/４/, '4')
+                            //     .replace(/５/, '5')
+                            //     .replace(/６/, '6')
+                            //     .replace(/７/, '7')
+                            //     .replace(/８/, '8')
+                            //     .replace(/９/, '9')
+                            //     .replace(/./g, k => {
+                            //         if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
+                            //             return '';
+                            //         }
+                            //         return k;
+                            //     });
+                            var numberKeyCodes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+                            var numberNumpadKeyCodes = [96, 97, 98, 99, 100, 101, 102, 103, 104, 105]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] numpad
+                            var backspaceKeyCode = [8];
+                            var delKeyCode = [46];
+                            var dotWithNumpadKeyCodes = [110, 190]; //'.'
+                            var minusWithNumpadKeyCodes = [109, 189]; //'-'
+                            var allowedKeyCodes = numberKeyCodes.concat(numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
+                            if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
+                                $input.val(dval);
+                                $input.data(_kc, null);
+                                return;
+                            }
                             if (ival.match(/^0+$/)) {
                                 ival = '0';
                             }
@@ -21676,7 +21686,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -23152,7 +23162,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23871,7 +23881,8 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active, tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
+                                                .map(function (d) { return (__assign({}, d, { active: active,
+                                                tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
                                                     width: 40,
@@ -38721,7 +38732,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
                         }
                     },
                     blank: {
@@ -48382,8 +48393,7 @@ var nts;
                                         }
                                     });
                                 }
-                            },
-                            checkChildSiblings: function (source, key, childKey, primaryKey) {
+                            }, checkChildSiblings: function (source, key, childKey, primaryKey) {
                                 var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
                                     var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
                                     return !checkbox.is(":checked");
@@ -48394,8 +48404,7 @@ var nts;
                                     $checkbox.click();
                                 }
                                 return isAllCheck;
-                            },
-                            checkSiblings: function (rowId, source, key, childKey, primaryKey) {
+                            }, checkSiblings: function (rowId, source, key, childKey, primaryKey) {
                                 //let source = $tree.igTreeGrid("option", "dataSource");
                                 for (var i = 0; i < source.length; i++) {
                                     if (!_.isEmpty(source[i][childKey])) {
@@ -48414,12 +48423,10 @@ var nts;
                                     }
                                 }
                                 return { process: false, value: false };
-                            },
-                            getTrueRowData: function (rowId, primaryKey, childKey) {
+                            }, getTrueRowData: function (rowId, primaryKey, childKey) {
                                 var dataSource = $tree.data("igTreeGrid").dataSource._origDs, flatSource = helper.flatChild(dataSource, childKey);
                                 return _.find(flatSource, function (s) { return s[primaryKey] === rowId; });
-                            },
-                            flatChild: function (dataSource, childKey) {
+                            }, flatChild: function (dataSource, childKey) {
                                 var result = [];
                                 if (_.isEmpty(dataSource)) {
                                     return result;

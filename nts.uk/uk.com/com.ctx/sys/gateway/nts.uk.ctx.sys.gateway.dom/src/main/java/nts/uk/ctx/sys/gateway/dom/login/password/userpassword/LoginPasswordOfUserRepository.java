@@ -6,5 +6,7 @@ public interface LoginPasswordOfUserRepository {
 	
 	void save(LoginPasswordOfUser password);
 	
+	void delete(String userId);
+	
 	Optional<LoginPasswordOfUser> find(String userId);
 }

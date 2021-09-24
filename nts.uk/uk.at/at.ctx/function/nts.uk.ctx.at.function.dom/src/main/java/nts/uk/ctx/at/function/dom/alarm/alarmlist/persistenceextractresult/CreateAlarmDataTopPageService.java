@@ -131,7 +131,8 @@ public class CreateAlarmDataTopPageService {
                             patternName,
                             Optional.empty(),
                             Optional.empty(),
-                            superiorEmpIDListSub
+                            superiorEmpIDListSub,
+                            empIdWithNoErrors
                     ));
                 }
             }

@@ -192,4 +192,20 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 		return entityAll.entrySet().stream().map(x -> new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(x.getValue())))
 				.collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<WorkplaceMonthDaySetting> findByYears(CompanyId companyId, String workplaceId, List<Year> years) {
+		List<WorkplaceMonthDaySetting> domain =new ArrayList<>();
+		
+		for(Year year:years){
+			List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, workplaceId, year, null, null);
+			// Check continue
+			if (result.isEmpty()) {
+				continue;
+			}
+		
+			domain.add(new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(result)));
+		}
+		return domain;
+	}
 }

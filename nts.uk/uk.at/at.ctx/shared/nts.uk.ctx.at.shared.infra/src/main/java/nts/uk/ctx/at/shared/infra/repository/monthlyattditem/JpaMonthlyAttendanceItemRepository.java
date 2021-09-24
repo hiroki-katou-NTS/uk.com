@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.monthlyattditem;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,6 +74,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 
 		// Get results
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624)
 				.collect(Collectors.toList());
 	}
 
@@ -104,6 +107,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 
 		// Get results
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624)
 				.collect(Collectors.toList());
 	}
 
@@ -135,7 +139,8 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 								  .setParameter("companyId", companyId)
 								  .getList(f -> toDomain(f)));
 		});
-		return resultList;
+		return resultList
+				.stream().filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624).collect(toList());
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -177,7 +182,8 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 				resultList.addAll(query.getList(f -> toDomain(f)));
 			});
 		});
-		return resultList;
+		return resultList
+				.stream().filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624).collect(toList());
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -246,7 +252,8 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 								  .setParameter("companyId", companyId)
 								  .getList(f -> toDomain(f)));
 		});
-		return resultList;
+		return resultList
+				.stream().filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624).collect(toList());
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -255,7 +262,8 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		Optional<KrcmtMonAttendanceItem> entity = this.queryProxy()
 				.find(new KrcmtMonAttendanceItemPK(companyId, attendanceItemId), KrcmtMonAttendanceItem.class);
 		if (entity.isPresent()) {
-			return Optional.of(toDomain(entity.get()));
+			return Optional.of(toDomain(entity.get()))
+					.filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624);
 		} else {
 			return Optional.empty();
 		}

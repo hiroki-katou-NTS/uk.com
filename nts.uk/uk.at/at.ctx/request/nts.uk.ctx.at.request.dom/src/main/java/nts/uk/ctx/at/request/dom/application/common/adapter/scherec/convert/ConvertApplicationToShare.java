@@ -71,197 +71,200 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 
 public class ConvertApplicationToShare {
 
-	public static ApplicationShare toAppliction(Application application) {
+    public static ApplicationShare toOnlyAppliction(Application application) {
+        ApplicationShare appShare = new ApplicationShare(application.getVersion(), application.getAppID(),
+                PrePostAtrShare.valueOf(application.getPrePostAtr().value), application.getEmployeeID(),
+                ApplicationTypeShare.valueOf(application.getAppType().value),
+                new ApplicationDateShare(application.getAppDate().getApplicationDate()),
+                application.getEnteredPersonID(), application.getInputDate());
+        appShare.setOpStampRequestMode(
+                application.getOpStampRequestMode().map(x -> StampRequestModeShare.valueOf(x.value)));
 
-		ApplicationShare appShare = new ApplicationShare(application.getVersion(), application.getAppID(),
-				PrePostAtrShare.valueOf(application.getPrePostAtr().value), application.getEmployeeID(),
-				ApplicationTypeShare.valueOf(application.getAppType().value),
-				new ApplicationDateShare(application.getAppDate().getApplicationDate()),
-				application.getEnteredPersonID(), application.getInputDate());
-		appShare.setOpStampRequestMode(
-				application.getOpStampRequestMode().map(x -> StampRequestModeShare.valueOf(x.value)));
+        appShare.setOpAppStartDate(
+                application.getOpAppStartDate().map(x -> new ApplicationDateShare(x.getApplicationDate())));
 
-		appShare.setOpAppStartDate(
-				application.getOpAppStartDate().map(x -> new ApplicationDateShare(x.getApplicationDate())));
+        appShare.setOpAppEndDate(
+                application.getOpAppEndDate().map(x -> new ApplicationDateShare(x.getApplicationDate())));
 
-		appShare.setOpAppEndDate(
-				application.getOpAppEndDate().map(x -> new ApplicationDateShare(x.getApplicationDate())));
+        return appShare;
+    }
+    
+    public static ApplicationShare toAppliction(Application application) {
 
-		return appDetail(appShare, application);
-	}
+        ApplicationShare appShare = toOnlyAppliction(application);
 
-	private static ApplicationShare appDetail(ApplicationShare appShare, Application application) {
+        return appDetail(appShare, application);
+    }
 
-		switch (application.getAppType()) {
-		case OVER_TIME_APPLICATION:
+    private static ApplicationShare appDetail(ApplicationShare appShare, Application application) {
 
-			AppOverTime appOver = (AppOverTime) application;
+        switch (application.getAppType()) {
+        case OVER_TIME_APPLICATION:
 
-			// 申請時間
-			ApplicationTimeShare appTimeShare = converAppTime(appOver.getApplicationTime());
+            AppOverTime appOver = (AppOverTime) application;
 
-			AppOverTimeShare overShare = new AppOverTimeShare(appTimeShare,
-					appOver.getBreakTimeOp().orElse(new ArrayList<>()),
-					appOver.getWorkHoursOp().orElse(new ArrayList<>()), appOver.getWorkInfoOp());
-			overShare.setApplication(appShare);
-			return overShare;
+            // 申請時間
+            ApplicationTimeShare appTimeShare = converAppTime(appOver.getApplicationTime());
 
-		case ABSENCE_APPLICATION:
-			ApplyForLeave appAbsence = (ApplyForLeave) application;
-			val reflectFreeTimeDom = appAbsence.getReflectFreeTimeApp();
-			ReflectFreeTimeAppShare reflectFreeTimeApp = new ReflectFreeTimeAppShare(
-					reflectFreeTimeDom.getWorkingHours().orElse(new ArrayList<>()),
-					reflectFreeTimeDom.getTimeDegestion().map(x -> convertTimeDigest(x)),
-					reflectFreeTimeDom.getWorkInfo(), reflectFreeTimeDom.getWorkChangeUse());
+            AppOverTimeShare overShare = new AppOverTimeShare(appTimeShare,
+                    appOver.getBreakTimeOp().orElse(new ArrayList<>()),
+                    appOver.getWorkHoursOp().orElse(new ArrayList<>()), appOver.getWorkInfoOp());
+            overShare.setApplication(appShare);
+            return overShare;
 
-			return new ApplyForLeaveShare(appShare, reflectFreeTimeApp);
+        case ABSENCE_APPLICATION:
+            ApplyForLeave appAbsence = (ApplyForLeave) application;
+            val reflectFreeTimeDom = appAbsence.getReflectFreeTimeApp();
+            ReflectFreeTimeAppShare reflectFreeTimeApp = new ReflectFreeTimeAppShare(
+                    reflectFreeTimeDom.getWorkingHours().orElse(new ArrayList<>()),
+                    reflectFreeTimeDom.getTimeDegestion().map(x -> convertTimeDigest(x)),
+                    reflectFreeTimeDom.getWorkInfo(), reflectFreeTimeDom.getWorkChangeUse());
 
-		case WORK_CHANGE_APPLICATION:
-			AppWorkChange appWCh = (AppWorkChange) application;
-			return new AppWorkChangeShare(appWCh.getStraightGo(), appWCh.getStraightBack(), appWCh.getOpWorkTypeCD(),
-					appWCh.getOpWorkTimeCD(), appWCh.getTimeZoneWithWorkNoLst(), appShare);
+            return new ApplyForLeaveShare(appShare, reflectFreeTimeApp);
 
-		case BUSINESS_TRIP_APPLICATION:
-			BusinessTrip bussinessTrip = (BusinessTrip) application;
+        case WORK_CHANGE_APPLICATION:
+            AppWorkChange appWCh = (AppWorkChange) application;
+            return new AppWorkChangeShare(appWCh.getStraightGo(), appWCh.getStraightBack(), appWCh.getOpWorkTypeCD(),
+                    appWCh.getOpWorkTimeCD(), appWCh.getTimeZoneWithWorkNoLst(), appShare);
 
-			return new BusinessTripShare(
-					bussinessTrip.getInfos().stream()
-							.map(x -> new BusinessTripInfoShare(x.getWorkInformation(), x.getDate(),
-									x.getWorkingHours()))
-							.collect(Collectors.toList()),
-					bussinessTrip.getDepartureTime().map(x -> x.v()).orElse(null),
-					bussinessTrip.getReturnTime().map(x -> x.v()).orElse(null), appShare);
+        case BUSINESS_TRIP_APPLICATION:
+            BusinessTrip bussinessTrip = (BusinessTrip) application;
 
-		case GO_RETURN_DIRECTLY_APPLICATION:
-			GoBackDirectly goBack = (GoBackDirectly) application;
-			return new GoBackDirectlyShare(goBack.getStraightDistinction(), goBack.getStraightLine(),
-					goBack.getIsChangedWork(), goBack.getDataWork(), appShare);
+            return new BusinessTripShare(
+                    bussinessTrip.getInfos().stream()
+                            .map(x -> new BusinessTripInfoShare(x.getWorkInformation(), x.getDate(),
+                                    x.getWorkingHours()))
+                            .collect(Collectors.toList()),
+                    bussinessTrip.getDepartureTime().map(x -> x.v()).orElse(null),
+                    bussinessTrip.getReturnTime().map(x -> x.v()).orElse(null), appShare);
 
-		case HOLIDAY_WORK_APPLICATION:
-			// AppHolidayWorkShare
-			AppHolidayWork appHolWork = (AppHolidayWork) application;
+        case GO_RETURN_DIRECTLY_APPLICATION:
+            GoBackDirectly goBack = (GoBackDirectly) application;
+            return new GoBackDirectlyShare(goBack.getStraightDistinction(), goBack.getStraightLine(),
+                    goBack.getIsChangedWork(), goBack.getDataWork(), appShare);
 
-			return new AppHolidayWorkShare(appShare, 
-					appHolWork.getWorkInformation(), 
-					converAppTime(appHolWork.getApplicationTime()),
-					appHolWork.getBackHomeAtr() == NotUseAtr.USE, 
-					appHolWork.getGoWorkAtr() == NotUseAtr.USE,
-					appHolWork.getBreakTimeList().orElse(new ArrayList<>()), 
-					appHolWork.getWorkingTimeList().orElse(new ArrayList<>())
-					);
+        case HOLIDAY_WORK_APPLICATION:
+            // AppHolidayWorkShare
+            AppHolidayWork appHolWork = (AppHolidayWork) application;
 
-		case STAMP_APPLICATION:
-			if (!application.getOpStampRequestMode().isPresent()
-					|| application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
-				// AppStampShare
-				AppStamp appStamp = (AppStamp) application;
-				return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
-					return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()), x.getTimeOfDay(),
-							x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr(), Optional.empty());//TODO: domain sinsei hasn't workplaceId
-				}).collect(Collectors.toList()), // 時刻
+            return new AppHolidayWorkShare(appShare, appHolWork.getWorkInformation(),
+                    converAppTime(appHolWork.getApplicationTime()), appHolWork.getBackHomeAtr() == NotUseAtr.USE,
+                    appHolWork.getGoWorkAtr() == NotUseAtr.USE, appHolWork.getBreakTimeList().orElse(new ArrayList<>()),
+                    appHolWork.getWorkingTimeList().orElse(new ArrayList<>()));
 
-						appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
-								.collect(Collectors.toList()), // 時刻の取消
+        case STAMP_APPLICATION:
+            if (!application.getOpStampRequestMode().isPresent()
+                    || application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
+                // AppStampShare
+                AppStamp appStamp = (AppStamp) application;
+                return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
+                    return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()), x.getTimeOfDay(),
+                            x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr(),
+                            Optional.empty());// TODO: domain sinsei hasn't workplaceId
+                }).collect(Collectors.toList()), // 時刻
 
-						appStamp.getListTimeStampAppOther().stream().map(x -> {
-							return new TimeStampAppOtherShare(new DestinationTimeZoneAppShare(
-									x.getDestinationTimeZoneApp().getTimeZoneStampClassification().value,
-									x.getDestinationTimeZoneApp().getEngraveFrameNo()), x.getTimeZone());
-						}).collect(Collectors.toList()), // 時間帯
+                        appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
+                                .collect(Collectors.toList()), // 時刻の取消
 
-						appStamp.getListDestinationTimeZoneApp().stream().map(x -> {
-							return new DestinationTimeZoneAppShare(
-									TimeZoneStampClassificationShare.valueOf(x.getTimeZoneStampClassification().value),
-									x.getEngraveFrameNo());
-						}).collect(Collectors.toList()), // 時間帯の取消
-						appShare);
-			} else {
-				// レコーダイメージ申請
-				AppRecordImage appImg = (AppRecordImage) application;
+                        appStamp.getListTimeStampAppOther().stream().map(x -> {
+                            return new TimeStampAppOtherShare(new DestinationTimeZoneAppShare(
+                                    x.getDestinationTimeZoneApp().getTimeZoneStampClassification().value,
+                                    x.getDestinationTimeZoneApp().getEngraveFrameNo()), x.getTimeZone());
+                        }).collect(Collectors.toList()), // 時間帯
 
-				return new AppRecordImageShare(EngraveShareAtr.valueOf(appImg.getAppStampCombinationAtr().value),
-						appImg.getAttendanceTime(), appImg.getAppStampGoOutAtr(), appShare);
-			}
+                        appStamp.getListDestinationTimeZoneApp().stream().map(x -> {
+                            return new DestinationTimeZoneAppShare(
+                                    TimeZoneStampClassificationShare.valueOf(x.getTimeZoneStampClassification().value),
+                                    x.getEngraveFrameNo());
+                        }).collect(Collectors.toList()), // 時間帯の取消
+                        appShare);
+            } else {
+                // レコーダイメージ申請
+                AppRecordImage appImg = (AppRecordImage) application;
 
-		case ANNUAL_HOLIDAY_APPLICATION:
-			TimeLeaveApplication appTimeLeav = (TimeLeaveApplication) application;
+                return new AppRecordImageShare(EngraveShareAtr.valueOf(appImg.getAppStampCombinationAtr().value),
+                        appImg.getAttendanceTime(), appImg.getAppStampGoOutAtr(), appShare);
+            }
 
-			return new TimeLeaveApplicationShare(appShare, appTimeLeav.getLeaveApplicationDetails().stream().map(x -> {
-				return new TimeLeaveApplicationDetailShare(x.getAppTimeType(), x.getTimeZoneWithWorkNoLst(),
-						convertTimeDigest(x.getTimeDigestApplication()));
-			}).collect(Collectors.toList()));
+        case ANNUAL_HOLIDAY_APPLICATION:
+            TimeLeaveApplication appTimeLeav = (TimeLeaveApplication) application;
 
-		case EARLY_LEAVE_CANCEL_APPLICATION:
-			ArrivedLateLeaveEarly early = (ArrivedLateLeaveEarly) application;
-			return new ArrivedLateLeaveEarlyShare(
-					early.getLateCancelation().stream()
-							.map(x -> new LateCancelationShare(x.getWorkNo(),
-									LateOrEarlyAtrShare.valueOf(x.getLateOrEarlyClassification().value)))
-							.collect(Collectors.toList()),
-					early.getLateOrLeaveEarlies().stream()
-							.map(x -> new TimeReportShare(x.getWorkNo(),
-									LateOrEarlyAtrShare.valueOf(x.getLateOrEarlyClassification().value),
-									x.getTimeWithDayAttr()))
-							.collect(Collectors.toList()),
-					appShare);
+            return new TimeLeaveApplicationShare(appShare, appTimeLeav.getLeaveApplicationDetails().stream().map(x -> {
+                return new TimeLeaveApplicationDetailShare(x.getAppTimeType(), x.getTimeZoneWithWorkNoLst(),
+                        convertTimeDigest(x.getTimeDigestApplication()));
+            }).collect(Collectors.toList()));
 
-		case COMPLEMENT_LEAVE_APPLICATION:
-			TypeApplicationHolidaysShare typeAppHolidayShare = EnumAdaptor.valueOf(
-					((ApplicationForHolidays) application).getTypeApplicationHolidays().value,
-					TypeApplicationHolidaysShare.class);
-			if (typeAppHolidayShare == TypeApplicationHolidaysShare.Abs) {
-				// 振休申請
-				AbsenceLeaveApp absence = (AbsenceLeaveApp) application;
-				return new AbsenceLeaveAppShare(absence.getWorkingHours(), absence.getWorkInformation(),
-						absence.getWorkChangeUse(), absence.getChangeSourceHoliday(), typeAppHolidayShare, appShare);
-			} else {
-				// 振出申請
-				RecruitmentApp recruit = (RecruitmentApp) application;
-				return new RecruitmentAppShare(recruit.getWorkInformation(), recruit.getWorkingHours(),
-						typeAppHolidayShare, appShare);
-			}
+        case EARLY_LEAVE_CANCEL_APPLICATION:
+            ArrivedLateLeaveEarly early = (ArrivedLateLeaveEarly) application;
+            return new ArrivedLateLeaveEarlyShare(
+                    early.getLateCancelation().stream()
+                            .map(x -> new LateCancelationShare(x.getWorkNo(),
+                                    LateOrEarlyAtrShare.valueOf(x.getLateOrEarlyClassification().value)))
+                            .collect(Collectors.toList()),
+                    early.getLateOrLeaveEarlies().stream()
+                            .map(x -> new TimeReportShare(x.getWorkNo(),
+                                    LateOrEarlyAtrShare.valueOf(x.getLateOrEarlyClassification().value),
+                                    x.getTimeWithDayAttr()))
+                            .collect(Collectors.toList()),
+                    appShare);
 
-		case OPTIONAL_ITEM_APPLICATION:
-			OptionalItemApplication optionalApp = (OptionalItemApplication) application;
-			return new OptionalItemApplicationShare(optionalApp.getOptionalItems(), appShare);
+        case COMPLEMENT_LEAVE_APPLICATION:
+            TypeApplicationHolidaysShare typeAppHolidayShare = EnumAdaptor.valueOf(
+                    ((ApplicationForHolidays) application).getTypeApplicationHolidays().value,
+                    TypeApplicationHolidaysShare.class);
+            if (typeAppHolidayShare == TypeApplicationHolidaysShare.Abs) {
+                // 振休申請
+                AbsenceLeaveApp absence = (AbsenceLeaveApp) application;
+                return new AbsenceLeaveAppShare(absence.getWorkingHours(), absence.getWorkInformation(),
+                        absence.getWorkChangeUse(), absence.getChangeSourceHoliday(), typeAppHolidayShare, appShare);
+            } else {
+                // 振出申請
+                RecruitmentApp recruit = (RecruitmentApp) application;
+                return new RecruitmentAppShare(recruit.getWorkInformation(), recruit.getWorkingHours(),
+                        typeAppHolidayShare, appShare);
+            }
 
-		default:
-			return null;
-		}
-	}
+        case OPTIONAL_ITEM_APPLICATION:
+            OptionalItemApplication optionalApp = (OptionalItemApplication) application;
+            return new OptionalItemApplicationShare(optionalApp.getOptionalItems(), appShare);
 
-	private static DestinationTimeAppShare converDesTimeApp(DestinationTimeApp app) {
-		return new DestinationTimeAppShare(TimeStampAppEnumShare.valueOf(app.getTimeStampAppEnum().value),
-				app.getEngraveFrameNo(), StartEndClassificationShare.valueOf(app.getStartEndClassification().value),
-				app.getSupportWork());
+        default:
+            return appShare;
+        }
+    }
 
-	}
+    private static DestinationTimeAppShare converDesTimeApp(DestinationTimeApp app) {
+        return new DestinationTimeAppShare(TimeStampAppEnumShare.valueOf(app.getTimeStampAppEnum().value),
+                app.getEngraveFrameNo(), StartEndClassificationShare.valueOf(app.getStartEndClassification().value),
+                app.getSupportWork());
 
-	private static TimeDigestApplicationShare convertTimeDigest(TimeDigestApplication data) {
-		return new TimeDigestApplicationShare(data.getOvertime60H(), data.getNursingTime(), data.getChildTime(),
-				data.getTimeOff(), data.getTimeSpecialVacation(), data.getTimeAnnualLeave(),
-				data.getSpecialVacationFrameNO());
-	}
-	
-	private static ApplicationTimeShare converAppTime(ApplicationTime appTime) {
-		return new ApplicationTimeShare(
-				appTime.getApplicationTime().stream().map(x -> {
-					return new OvertimeApplicationSettingShare(x.getFrameNo().v(),
-							EnumAdaptor.valueOf(x.getAttendanceType().value, AttendanceTypeShare.class),
-							x.getApplicationTime().v());
-				}).collect(Collectors.toList()), appTime.getFlexOverTime(),
-				appTime.getOverTimeShiftNight().map(x -> {
-					return new OverTimeShiftNightShare(x.getMidNightHolidayTimes().stream().map(y -> {
-						return new HolidayMidNightTimeShare(y.getAttendanceTime(), y.getLegalClf());
-					}).collect(Collectors.toList()), 
-							x.getMidNightOutSide(), x.getOverTimeMidNight());
-				}), appTime.getAnyItem().orElse(new ArrayList<>()), //
-				appTime.getReasonDissociation()
-						.map(x -> x.stream()
-								.map(y -> new ReasonDivergenceShare(y.getReason() == null ? null : new DivergenceReasonContent(y.getReason().v()),
-										y.getReasonCode(), y.getDiviationTime()))
-								.collect(Collectors.toList()))
-						.orElse(new ArrayList<>()));
-	}
-	
-	}
+    }
+
+    private static TimeDigestApplicationShare convertTimeDigest(TimeDigestApplication data) {
+        return new TimeDigestApplicationShare(data.getOvertime60H(), data.getNursingTime(), data.getChildTime(),
+                data.getTimeOff(), data.getTimeSpecialVacation(), data.getTimeAnnualLeave(),
+                data.getSpecialVacationFrameNO());
+    }
+    
+    private static ApplicationTimeShare converAppTime(ApplicationTime appTime) {
+        return new ApplicationTimeShare(
+                appTime.getApplicationTime().stream().map(x -> {
+                    return new OvertimeApplicationSettingShare(x.getFrameNo().v(),
+                            EnumAdaptor.valueOf(x.getAttendanceType().value, AttendanceTypeShare.class),
+                            x.getApplicationTime().v());
+                }).collect(Collectors.toList()), appTime.getFlexOverTime(),
+                appTime.getOverTimeShiftNight().map(x -> {
+                    return new OverTimeShiftNightShare(x.getMidNightHolidayTimes().stream().map(y -> {
+                        return new HolidayMidNightTimeShare(y.getAttendanceTime(), y.getLegalClf());
+                    }).collect(Collectors.toList()), 
+                            x.getMidNightOutSide(), x.getOverTimeMidNight());
+                }), appTime.getAnyItem().orElse(new ArrayList<>()), //
+                appTime.getReasonDissociation()
+                        .map(x -> x.stream()
+                                .map(y -> new ReasonDivergenceShare(y.getReason() == null ? null : new DivergenceReasonContent(y.getReason().v()),
+                                        y.getReasonCode(), y.getDiviationTime()))
+                                .collect(Collectors.toList()))
+                        .orElse(new ArrayList<>()));
+    }
+    
+    }

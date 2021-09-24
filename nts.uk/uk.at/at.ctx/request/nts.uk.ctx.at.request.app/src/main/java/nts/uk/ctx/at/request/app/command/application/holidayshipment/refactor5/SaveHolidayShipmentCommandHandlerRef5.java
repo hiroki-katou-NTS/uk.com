@@ -96,6 +96,10 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		AppDispInfoStartupOutput appDispInfoStartup = command.appDispInfoStartup.toDomain();
 		
 		//登録前のエラーチェック処理(Xử lý error check trước khi đăng ký)
+		boolean existFlag = false;
+        if (abs.isPresent() && rec.isPresent()) {
+            existFlag = true;
+        }
 		this.errorCheckProcessingBeforeRegistrationKAF011.processing(
 				companyId, 
 				abs,
@@ -103,7 +107,10 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 				command.represent, 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
-				appDispInfoStartup);
+				appDispInfoStartup, 
+				command.existAbs() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
+				command.isCheckFlag(), 
+				existFlag);
 		
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
 		//QA: http://192.168.50.4:3000/issues/113451 -> done
@@ -185,28 +192,31 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		String recReflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
-		//暫定データの登録(đăng ký data tạm thời)
-		interimRemainDataMngRegisterDateChange.registerDateChange(
-				companyId, 
-				rec.get().getEmployeeID(), 
-				Arrays.asList(rec.get().getAppDate().getApplicationDate()));
+//		//暫定データの登録(đăng ký data tạm thời)
+//		interimRemainDataMngRegisterDateChange.registerDateChange(
+//				companyId, 
+//				rec.get().getEmployeeID(), 
+//				Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 		
 		//ドメイン「振休申請」を1件登録する
 		appRepository.insertApp(abs.get(), approvalLst);
 		absenceLeaveAppRepository.insert(abs.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		String absReflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
+		
+		//振休振出同時登録時紐付け管理を登録する
+		this.registerTheLinkManagement(companyId, abs.get(), rec.get());
+		
 		//暫定データの登録(đăng ký data tạm thời)
 		interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyId, 
 				abs.get().getEmployeeID(), 
-				Arrays.asList(abs.get().getAppDate().getApplicationDate()));
+				Arrays.asList(abs.get().getAppDate().getApplicationDate(), rec.get().getAppDate().getApplicationDate()));
 		
 		//ドメイン「振休振出同時申請管理」を1件登録する
 		//QA: http://192.168.50.4:3000/issues/113413 => done
 		compltLeaveSimMngRepository.insert(new AppHdsubRec(rec.get().getAppID(), abs.get().getAppID(), SyncState.SYNCHRONIZING));
-		//振休振出同時登録時紐付け管理を登録する
-		this.registerTheLinkManagement(companyId, abs.get(), rec.get(), holidayManage);
+
 		
 		//アルゴリズム「新規画面登録後の処理」を実行する(thực hiện thuật toán [xử lý sau khi đăng ký màn hình new])
 		//QA: http://192.168.50.4:3000/issues/113416 => done
@@ -329,20 +339,20 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param rec 振出申請
 	 * @param holidayManage 振休紐付け管理区分
 	 */
-	public void registerTheLinkManagement(String companyId, AbsenceLeaveApp abs, RecruitmentApp rec, ManageDistinct holidayManage) {
-		if(holidayManage == ManageDistinct.YES) {
-			//<<Public>> 指定した勤務種類をすべて取得する
-			Optional<WorkType> workTypes = workTypeRepo.findByDeprecated(companyId, rec.getWorkInformation().getWorkTypeCode().v());;
-			if(workTypes.isPresent()) {
-				//ドメインモデル「振出振休紐付け管理」を登録する
-				payoutSubofHDManaRepository.add(
-						new PayoutSubofHDManagement(
-								rec.getEmployeeID(), 
-								rec.getAppDate().getApplicationDate(), 
-								abs.getAppDate().getApplicationDate(), 
-								workTypes.get().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay ? 1.0 : 0.5,
-								TargetSelectionAtr.REQUEST.value));
-			}
-		}
+	public void registerTheLinkManagement(String companyId, AbsenceLeaveApp abs, RecruitmentApp rec) {
+	    //<<Public>> 指定した勤務種類をすべて取得する
+	    Optional<WorkType> workTypes = workTypeRepo.findByDeprecated(companyId, rec.getWorkInformation().getWorkTypeCode().v());;
+	    if(workTypes.isPresent()) {
+	        //ドメインモデル「振出振休紐付け管理」を登録する
+	        payoutSubofHDManaRepository.add(
+	                new PayoutSubofHDManagement(
+	                        rec.getEmployeeID(), 
+	                        rec.getAppDate().getApplicationDate(), 
+	                        abs.getAppDate().getApplicationDate(), 
+	                        workTypes.get().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay ? 1.0 : 0.5,
+	                                TargetSelectionAtr.REQUEST.value));
+	    }
+//		if(holidayManage == ManageDistinct.YES) {
+//		}
 	}
 }

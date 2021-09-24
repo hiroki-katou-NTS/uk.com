@@ -32,7 +32,10 @@ public class OiomtExAcCdConv extends ContractUkJpaEntity implements Serializable
 	 */
 	@EmbeddedId
 	public OiomtAcceptCdConvertPk acceptCdConvertPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * コード変換名称
 	 */

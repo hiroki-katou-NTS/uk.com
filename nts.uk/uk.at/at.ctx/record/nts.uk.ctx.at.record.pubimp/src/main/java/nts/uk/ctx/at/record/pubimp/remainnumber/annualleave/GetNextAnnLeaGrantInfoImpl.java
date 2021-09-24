@@ -21,17 +21,17 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 @Stateless
 public class GetNextAnnLeaGrantInfoImpl implements GetNextAnnLeaGrantInfo {
 
-	@Inject 
+	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	/** 次回年休付与情報を取得する */
 	@Override
-	public Optional<NextAnnualLeaveGrant> algorithm(String companyId, GeneralDate closureStart, GeneralDate entryDate,
+	public Optional<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, GeneralDate closureStart, GeneralDate entryDate,
 			GeneralDate criteriaDate, String grantTableCode, Optional<LimitedTimeHdTime> contractTime) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		return CalcNextAnnLeaGrantInfo.algorithm(require, cacheCarrier,
-				companyId, closureStart, entryDate, criteriaDate, grantTableCode, contractTime);
+				companyId, employeeId, closureStart, entryDate, criteriaDate, grantTableCode, contractTime);
 	}
 }

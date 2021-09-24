@@ -40,7 +40,7 @@ public class InsTimeDatFmSetCommand {
 	/**
 	 * 固定値の値
 	 */
-	private String valueOfFixedValue;
+	private Integer valueOfFixedValue;
 
 	/**
 	 * 有効桁数開始桁

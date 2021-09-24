@@ -533,11 +533,11 @@ module nts.uk.ui.koExtentions {
                     start = target.selectionStart,
                     end = target.selectionEnd;
 
-                if (!$input.data(_kc)) {
+                // if (!$input.data(_kc)) {
                     $input.data(_kc, evt);
                     $input.data(_rg, { start, end });
                     $input.data(_val, target.value);
-                }
+                // }
             });
 
             $input.on('paste', (evt: any) => {
@@ -598,30 +598,50 @@ module nts.uk.ui.koExtentions {
                     targ: HTMLInputElement = evt.target,
                     srg: { start: number; end: number; } = $input.data(_rg),
                     devt: any = $input.data(_kc),
-                    dorgi: any = devt.originalEvent,
+                    dorgi: any = ((devt || {}).originalEvent || {}),
                     ival: string = evt.target.value,
                     dval: string = $input.data(_val);
 
-                ival = ival
-                    .replace(/。/, '.')
-                    .replace(/ー/, '-')
-                    .replace(/０/, '0')
-                    .replace(/１/, '1')
-                    .replace(/２/, '2')
-                    .replace(/３/, '3')
-                    .replace(/４/, '4')
-                    .replace(/５/, '5')
-                    .replace(/６/, '6')
-                    .replace(/７/, '7')
-                    .replace(/８/, '8')
-                    .replace(/９/, '9')
-                    .replace(/./g, k => {
-                        if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
-                            return '';
-                        }
+                //Japanese input always return keyCode 229 -> skip constraining input, and validate after input is committed to editor's value
+                if (dorgi == null || dorgi == undefined || dorgi.keyCode == 229) {
+                    return;
+                }
+                
+                // ival = ival
+                //     .replace(/。/, '.')
+                //     .replace(/ー/, '-')
+                //     .replace(/０/, '0')
+                //     .replace(/１/, '1')
+                //     .replace(/２/, '2')
+                //     .replace(/３/, '3')
+                //     .replace(/４/, '4')
+                //     .replace(/５/, '5')
+                //     .replace(/６/, '6')
+                //     .replace(/７/, '7')
+                //     .replace(/８/, '8')
+                //     .replace(/９/, '9')
+                //     .replace(/./g, k => {
+                //         if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
+                //             return '';
+                //         }
 
-                        return k;
-                    });
+                //         return k;
+                //     });
+
+                const numberKeyCodes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+                const numberNumpadKeyCodes = [96, 97, 98, 99, 100, 101, 102, 103, 104, 105]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] numpad
+                const backspaceKeyCode = [8];
+                const delKeyCode = [46];
+                const dotWithNumpadKeyCodes = [110, 190]; //'.'
+                const minusWithNumpadKeyCodes = [109, 189]; //'-'
+
+                const allowedKeyCodes = [...numberKeyCodes, ...numberNumpadKeyCodes, ...backspaceKeyCode, ...delKeyCode, ...dotWithNumpadKeyCodes, ...minusWithNumpadKeyCodes];
+
+                if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
+                    $input.val(dval);
+                    $input.data(_kc, null);
+                    return;
+                }
 
                 if (ival.match(/^0+$/)) {
                     ival = '0';

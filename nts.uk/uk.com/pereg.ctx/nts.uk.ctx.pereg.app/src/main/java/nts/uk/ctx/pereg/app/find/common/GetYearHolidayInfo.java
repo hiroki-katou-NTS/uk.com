@@ -103,7 +103,7 @@ public class GetYearHolidayInfo {
 		// 次回年休付与情報を取得する
 		Optional<NextAnnualLeaveGrant> nextAnnualLeave = CalcNextAnnLeaGrantInfo.algorithm(
 				requireService.createRequire(), new CacheCarrier(),
-				AppContexts.user().companyId(), baseDate, entryDate, annLea.getGrantDate(), annLea.getGrantTable(),
+				AppContexts.user().companyId(), annLea.getSid(), baseDate, entryDate, annLea.getGrantDate(), annLea.getGrantTable(),
 				contractTime);
 
 		if (nextAnnualLeave.isPresent() && nextAnnualLeave.get().getGrantDays().isPresent()) {
@@ -182,7 +182,7 @@ public class GetYearHolidayInfo {
 			// 次回年休付与情報を取得する
 			Optional<NextAnnualLeaveGrant> nextAnnualLeave = CalcNextAnnLeaGrantInfo.algorithm(
 					requireService.createRequire(), new CacheCarrier(),
-					AppContexts.user().companyId(), baseDate, entryDate, c.getGrantDate(), c.getGrantTable(),
+					AppContexts.user().companyId(), c.getSid(), baseDate, entryDate, c.getGrantDate(), c.getGrantTable(),
 					contractTime);
 
 			if (nextAnnualLeave.isPresent() && nextAnnualLeave.get().getGrantDays().isPresent()) {

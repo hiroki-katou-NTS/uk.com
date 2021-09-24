@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
@@ -56,9 +55,9 @@ public class SubstitutionHolidayProcess {
 				 /** 振休残数更新 */
 				.then(updateRemainSubstitutionHoliday(require, output.getVacationDetails(), period, empId))
 				/** 振休逐次休暇の紐付け情報を追加する */
-				.then(addSeqVacation(require, empId, output.getLstSeqVacation()));		
+				.then(addSeqVacation(require, empId, output.getLstSeqVacation()))
 				/** 振休暫定データ削除 */
-				//.then(deleteTempSubstitutionData(require, period, empId));		
+				.then(deleteTemp(require, empId, period.getPeriod()));	
 	}
 	
 	/** 振休逐次休暇の紐付け情報を追加する */
@@ -115,17 +114,7 @@ public class SubstitutionHolidayProcess {
 				Optional.of(period.getPeriod()), remainDataMonthAgg.getMonthly());
 		
 		return NumberCompensatoryLeavePeriodQuery.process(require, param);
-	}
-	
-	/** 暫定データ削除 */
-	//private static AtomTask deleteTempSubstitutionData(RequireM3 require, AggrPeriodEachActualClosure period, String empId) {
-		
-		/** アルゴリズム「振出暫定データの削除」を実行する */
-		//return AtomTask.of(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PICKINGUP))
-				/** アルゴリズム「振休暫定データの削除」を実行する */
-				//.then(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PAUSE));
-	//}
-	
+	}		
 
 	/** 振休残数更新 */
 	private static AtomTask updateRemainSubstitutionHoliday(RequireM5 require, VacationDetails vacationDetails,
@@ -142,6 +131,22 @@ public class SubstitutionHolidayProcess {
 				/**　アルゴリズム「振休管理データの更新」を実行する　*/
 				.then(updateSubstitutionHolidayMngData(require, companyId, vacationDetails.getLstAcctAbsenDetail()));
 	}
+	
+	
+	/**
+	 * 振休暫定データ削除
+	 * @param require
+	 * @param employeeId
+	 * @param period
+	 * @return
+	 */
+	public static AtomTask deleteTemp(Require require, String employeeId, DatePeriod period){
+		//暫定振休管理データ 削除
+		return AtomTask.of(() -> require.deleteInterimAbsMngBySidDatePeriod(employeeId, period))
+				//暫定振出管理データ 削除
+				.then(AtomTask.of(() -> require.deleteInterimRecMngBySidDatePeriod(employeeId, period)));
+	}
+	
 	
 	/**　当月以降の振出管理データを削除　*/
 	private static AtomTask deletePayoutManaData(RequireM4 require, DatePeriod period, String empId){
@@ -263,7 +268,9 @@ public class SubstitutionHolidayProcess {
 		void createSubstitutionOfHDManagementData(SubstitutionOfHDManagementData domain);
 	}
 
-	private static interface RequireM3 {
+	private static interface RequireM3{
+		void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period);
+		void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period);
 	}
 	
 	public static interface RequireM2 extends NumberCompensatoryLeavePeriodQuery.Require {
