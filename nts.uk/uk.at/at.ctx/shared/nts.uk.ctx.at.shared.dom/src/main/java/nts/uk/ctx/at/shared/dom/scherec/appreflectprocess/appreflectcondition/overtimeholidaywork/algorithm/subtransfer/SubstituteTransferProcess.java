@@ -30,7 +30,7 @@ public class SubstituteTransferProcess {
 		if(!subSet.isPresent()) return timeAfterReflectApp;
 		
 		// 振替可能時間を算出する
-		int tranferableTime = maxTime.stream().collect(Collectors.summingInt(x -> x.getTransferTime().v()));
+		int tranferableTime = timeAfterReflectApp.stream().collect(Collectors.summingInt(x -> x.getTime().v()));
 		
 		tranferableTime = subSet.get().getTransferTime(new AttendanceTime(tranferableTime)).v();
 
