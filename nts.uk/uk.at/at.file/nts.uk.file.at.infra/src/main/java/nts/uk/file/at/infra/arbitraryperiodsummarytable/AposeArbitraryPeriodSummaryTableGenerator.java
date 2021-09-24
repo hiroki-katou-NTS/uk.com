@@ -162,7 +162,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             val listDisplaySid = content.getListDisplayedEmployees();
                             val listDisplayedEmployees = listDisplaySid.stream()
                                     .sorted(Comparator.comparing(DisplayedEmployee::getEmployeeCode)).collect(Collectors.toList());
-                            cells.copyRow(cellsTemplate, q == 0 ? 5 : 16, count);
+                            cells.copyRow(cellsTemplate, itemOnePage <= 5 ? 5 : 16, count);
                             itemOnePage += 1;
                             //D1_1
                             cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
