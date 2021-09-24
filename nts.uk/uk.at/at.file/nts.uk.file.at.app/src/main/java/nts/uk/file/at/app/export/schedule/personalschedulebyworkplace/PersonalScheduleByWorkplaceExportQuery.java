@@ -149,11 +149,9 @@ public class PersonalScheduleByWorkplaceExportQuery {
             }
         }, period.end());
 
-        List<DateInformation> dateInformationList = new ArrayList<>();
-        // Loop：年月日 in Input.対象期間
-        period.datesBetween().forEach(date -> {
+        List<DateInformation> dateInformationList = period.datesBetween().stream().map(date -> {
             // 作成する(Require, 年月日, 対象組織識別情報)
-            DateInformation information = DateInformation.create(new DateInformation.Require() {
+            return DateInformation.create(new DateInformation.Require() {
                 @Override
                 public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
                     return workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId, specificDate);
@@ -181,8 +179,7 @@ public class PersonalScheduleByWorkplaceExportQuery {
                     return specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
                 }
             }, date, targetOrgIdenInfor);
-            dateInformationList.add(information);
-        });
+        }).collect(Collectors.toList());
 
         // 出力項目設定情報を取得する
         Optional<ScheduleTableOutputSetting> outputSetting = outputSettingRepo.get(companyId, new OutputSettingCode(outputSettingCode));
