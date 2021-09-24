@@ -12,7 +12,6 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-@AllArgsConstructor
 public class FavoriteTaskItem extends AggregateRoot {
 	
 	/** 社員ID*/
@@ -26,4 +25,20 @@ public class FavoriteTaskItem extends AggregateRoot {
 	
 	/** お気に入り内容*/
 	private final List<TaskContent> favoriteContents;
+
+	/**
+	 * [C-1] 新規追加
+	 * @param employeeId 社員ID
+	 * @param favoriteId お気に入りID
+	 * @param taskName 名称
+	 * @param favoriteContents お気に入り内容
+	 */
+	public FavoriteTaskItem(String employeeId, String favoriteId, FavoriteTaskName taskName,
+			List<TaskContent> favoriteContents) {
+		super();
+		this.employeeId = employeeId;
+		this.favoriteId = favoriteId;
+		this.taskName = taskName;
+		this.favoriteContents = favoriteContents;
+	}
 }

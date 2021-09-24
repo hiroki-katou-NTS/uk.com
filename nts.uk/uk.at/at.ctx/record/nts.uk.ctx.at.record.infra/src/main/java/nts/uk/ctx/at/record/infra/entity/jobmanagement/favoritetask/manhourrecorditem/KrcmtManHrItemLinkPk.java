@@ -21,7 +21,7 @@ public class KrcmtManHrItemLinkPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "CID")
-	public int cId;
+	public String cId;
 	
 	@Column(name = "SUP_NO")
 	public int supNo;

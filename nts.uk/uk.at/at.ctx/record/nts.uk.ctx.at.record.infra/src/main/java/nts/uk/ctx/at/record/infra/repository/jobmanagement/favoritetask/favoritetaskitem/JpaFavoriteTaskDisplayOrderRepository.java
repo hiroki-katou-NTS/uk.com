@@ -8,7 +8,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskDisplayOrder;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskDisplayOrderRepository;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSet;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSetDisporder;
 
 /**
@@ -38,17 +37,19 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 
 	@Override
 	public void delete(String sId) {
-		KrcdtTaskFavFrameSetDisporder entity = this.queryProxy()
-				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getSingleOrNull();
-		this.commandProxy().remove(entity);
+		Optional<KrcdtTaskFavFrameSetDisporder> entity = this.queryProxy()
+				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getSingle();
+		if (entity.isPresent()) {
+			this.commandProxy().remove(entity.get());
+		}
 	}
 
 	@Override
 	public Optional<FavoriteTaskDisplayOrder> get(String sId) {
-		Optional<KrcdtTaskFavFrameSetDisporder> entity = this.queryProxy().query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId)
-				.getSingle();
-		//TODO: mapping với FavoriteTaskDisplayOrder
-		 return null;
+		Optional<KrcdtTaskFavFrameSetDisporder> entity = this.queryProxy()
+				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getSingle();
+		// TODO: mapping với FavoriteTaskDisplayOrder
+		return null;
 	}
 
 }

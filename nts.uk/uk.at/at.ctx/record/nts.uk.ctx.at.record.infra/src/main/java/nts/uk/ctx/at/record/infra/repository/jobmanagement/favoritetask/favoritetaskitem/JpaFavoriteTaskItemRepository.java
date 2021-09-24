@@ -8,7 +8,6 @@ import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.Favo
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItemRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.TaskContent;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSet;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtMonPerformanceFun;
 
 /**
  * 
@@ -19,10 +18,10 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtMonPer
 public class JpaFavoriteTaskItemRepository extends JpaRepository implements FavoriteTaskItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM KrcdtTaskFavFrameSet s";
-	private static final String SELECT_BY_FAVID_AND_SID = SELECT_ALL_QUERY_STRING
-			+ " WHERE s.favId = :favId AND s.sId = :sId";
+
 	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE s.sId = :sId";
 	private static final String SELECT_BY_FAID = SELECT_ALL_QUERY_STRING + " WHERE s.favId = :favId";
+	private static final String SELECT_BY_FAVID_AND_SID = SELECT_BY_FAID + " AND s.sId = :sId";
 
 	@Override
 	public void insert(FavoriteTaskItem item) {
@@ -36,20 +35,24 @@ public class JpaFavoriteTaskItemRepository extends JpaRepository implements Favo
 
 	@Override
 	public void delete(String sId, String favId) {
-		KrcdtTaskFavFrameSet setEntity = this.queryProxy().query(SELECT_BY_FAVID_AND_SID, KrcdtTaskFavFrameSet.class)
-				.setParameter("favId", favId).setParameter("sId", sId).getSingleOrNull();
-		this.commandProxy().remove(setEntity);
+		Optional<KrcdtTaskFavFrameSet> setEntity = this.queryProxy()
+				.query(SELECT_BY_FAVID_AND_SID, KrcdtTaskFavFrameSet.class).setParameter("favId", favId)
+				.setParameter("sId", sId).getSingle();
+
+		if (setEntity.isPresent()) {
+			this.commandProxy().remove(setEntity.get());
+		}
 	}
 
 	@Override
-	public List<FavoriteTaskItem> getAll(String employeeId) {
-		return this.queryProxy().query(SELECT_BY_SID, KrcdtTaskFavFrameSet.class).getList(item -> item.toDomain());
+	public List<FavoriteTaskItem> getAll(String sId) {
+		return this.queryProxy().query(SELECT_BY_SID, KrcdtTaskFavFrameSet.class).setParameter("sId", sId)
+				.getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<FavoriteTaskItem> getByFavoriteId(String favId) {
-		return this.queryProxy().query(SELECT_BY_FAID, KrcdtTaskFavFrameSet.class)
-				.setParameter("favId", favId)
+		return this.queryProxy().query(SELECT_BY_FAID, KrcdtTaskFavFrameSet.class).setParameter("favId", favId)
 				.getSingle(c -> c.toDomain());
 	}
 

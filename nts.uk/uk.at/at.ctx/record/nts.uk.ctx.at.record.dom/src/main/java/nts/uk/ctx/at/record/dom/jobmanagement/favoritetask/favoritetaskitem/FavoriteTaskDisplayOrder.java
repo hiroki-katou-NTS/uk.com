@@ -42,7 +42,7 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	public FavoriteTaskDisplayOrder(String employeeId, String favoriteId) {
 		super();
 		this.employeeId = employeeId;
-		// Chưa hiểu -> Cần trao đổi thêm
+		//QA
 	}
 
 	/**

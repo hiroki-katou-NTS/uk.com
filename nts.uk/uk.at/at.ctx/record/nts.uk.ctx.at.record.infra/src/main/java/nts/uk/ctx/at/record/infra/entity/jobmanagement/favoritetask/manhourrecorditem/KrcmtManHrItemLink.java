@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecorditem;
 
+import java.applet.AppletContext;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -9,6 +10,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLink;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -33,6 +37,15 @@ public class KrcmtManHrItemLink extends ContractUkJpaEntity implements Serializa
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	public KrcmtManHrItemLink(ManHourRecordAndAttendanceItemLink domain) {
+		this.pk = new KrcmtManHrItemLinkPk(AppContexts.user().companyId(), domain.getFrameNo().v(), domain.getItemId());
+		this.attItemId = domain.getAttendanceItemId();
+	}
+	
+	public ManHourRecordAndAttendanceItemLink toDomain() {
+		return new ManHourRecordAndAttendanceItemLink(new SupportFrameNo(this.pk.supNo), this.pk.manHrItemId, this.attItemId);
 	}
 	
 }

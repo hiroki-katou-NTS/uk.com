@@ -1,0 +1,44 @@
+package nts.uk.ctx.at.record.infra.repository.jobmanagement.manhourrecorditem;
+
+import java.util.List;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItem;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItemRepository;
+import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSet;
+import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSetDisporder;
+import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecorditem.KrcmtManHrItem;
+
+/**
+ * 
+ * @author tutt
+ *
+ */
+public class JpaManHourRecordItemRepository extends JpaRepository implements ManHourRecordItemRepository {
+
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT i FROM KrcmtManHrItem i";
+	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE i.cId = :cId";
+	private static final String SELECT_BY_CID_AND_ITEM = SELECT_BY_CID + " AND i.pk.manHrItemId IN :items";
+	
+	@Override
+	public void insert(ManHourRecordItem item) {
+		this.commandProxy().insert(new KrcmtManHrItem(item));		
+	}
+
+	@Override
+	public void update(ManHourRecordItem item) {
+		this.commandProxy().update(new KrcmtManHrItem(item));	
+		
+	}
+
+	@Override
+	public List<ManHourRecordItem> get(String cId) {
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtManHrItem.class).getList(item -> item.toDomain());
+	}
+
+	@Override
+	public List<ManHourRecordItem> get(String cId, List<Integer> items) {
+		return this.queryProxy().query(SELECT_BY_CID_AND_ITEM, KrcmtManHrItem.class).getList(item -> item.toDomain());
+	}
+
+}
