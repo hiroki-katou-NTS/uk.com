@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReportGenerator implements ArbitraryPeriodSummaryTableGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR007_template_v2.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR007_template_v3.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
     private static final String FORMAT_DATE = "yyyy/MM/dd";
@@ -154,10 +154,15 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 itemOnePage = 5;
                                 isFist = false;
                             }
+                            if (q > 0 && (MAX_LINE_IN_PAGE - itemOnePage <= 2)) {
+                                pageBreak(pageBreaks, count, cells);
+                                count += 5;
+                                itemOnePage = 5;
+                            }
                             val listDisplaySid = content.getListDisplayedEmployees();
                             val listDisplayedEmployees = listDisplaySid.stream()
                                     .sorted(Comparator.comparing(DisplayedEmployee::getEmployeeCode)).collect(Collectors.toList());
-                            cells.copyRow(cellsTemplate, 5, count);
+                            cells.copyRow(cellsTemplate, q == 0 ? 5 : 16, count);
                             itemOnePage += 1;
                             //D1_1
                             cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
@@ -222,6 +227,13 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                     pageBreak(pageBreaks,count,cells);
                                     itemOnePage = 5;
                                     count += 5;
+
+                                    // #
+                                    cells.copyRow(cellsTemplate, 5, count);
+                                    itemOnePage += 1;
+                                    cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
+                                            + content.getWorkplaceCd() + "　" + content.getWorkplaceName());
+                                    count += 1;
                                 }
                                 cells.copyRows(cellsTemplate, 14, count, 2);
                                 itemOnePage += 2;
@@ -262,6 +274,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     cells.get(count, 0).setValue(TextResource.localize("KWR007_306"));
                     prinDetail(count, totalAll, cells, mapIdAnAttribute, query);
                 }
+                setTopBorder(cells, count - 1);
                 PageSetup pageSetup = worksheet.getPageSetup();
                 pageSetup.setPrintArea(PRINT_AREA + count);
             }
@@ -533,7 +546,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         for (int col = 0; col < 21; col++) {
             Cell cell = cells.get(row, col);
             Style style = cell.getStyle();
-            style.setBorder(BorderType.TOP_BORDER, CellBorderType.THICK, Color.getRed());
+            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
             cell.setStyle(style);
         }
     }
