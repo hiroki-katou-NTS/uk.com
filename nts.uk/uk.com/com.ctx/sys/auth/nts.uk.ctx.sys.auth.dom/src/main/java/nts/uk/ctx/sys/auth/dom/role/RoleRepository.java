@@ -146,4 +146,18 @@ public interface RoleRepository {
 	 */
 	boolean exists(String cid, RoleType roleType, RoleAtr assignAtr, RoleCode roleCode);
 	
+	/**
+	 * [2] 承認権限がある就業ロールを取得する
+	 * @param cid
+	 * @return ロールList
+	 */
+	List<Role> obtainRoleWorks(String cid);
+	
+	/**
+	 * [3] 就業ロールIDから承認権限がある就業ロールを取得する
+	 * @param cid
+	 * @param eplRoleId 就業ロールID
+	 * @return ロール
+	 */
+	Optional<Role> getRoleWorks(String cid, String eplRoleId);
 }

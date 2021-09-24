@@ -48,6 +48,23 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	private final static String GET_BY_ROLE_TYPE_ROLE_ATR = "SELECT e FROM SacmtRole e"
 			+ " WHERE e.cid = :companyId AND e.roleType = :roleType"
 			+ " AND e.assignAtr = :roleAtr ORDER BY e.assignAtr ASC, e.code ASC ";
+
+	private final static String GET_BY_ROLE_TYPE_ROLE_ATR_ROLE_CD = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :companyId"
+			+ " AND e.roleType = :roleType"
+			+ " AND e.assignAtr = :roleAtr "
+			+ " AND e.code = :roleCode ";
+
+	
+	private final static String OBTAIN_ROLE_WORK = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :cid"
+			+ " AND e.roleType = :roleType";
+	
+	private final static String GET_ROLE_WORK = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :cid"
+			+ " AND e.roleId = :roleId";
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
@@ -128,6 +145,11 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	@Override
 	public void update(Role role) {
+		Integer approvalAuthority = null;
+		Optional<Boolean> approvalAuthorityOpt = role.getApprovalAuthority();
+		if(approvalAuthorityOpt.isPresent()){
+			approvalAuthority = approvalAuthorityOpt.get()? 1: 0;
+		}
 		SacmtRole updateEntity = this.queryProxy().find(role.getRoleId(), SacmtRole.class).get();
 		updateEntity.setCid(role.getCompanyId());
 		updateEntity.setRoleType(role.getRoleType().value);
@@ -135,6 +157,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		updateEntity.setName(role.getName().toString());
 		updateEntity.contractCd = (role.getContractCode().toString());
 		updateEntity.setAssignAtr(role.getAssignAtr().value);
+		updateEntity.setApprovalAuthority(approvalAuthority);
 		this.commandProxy().update(updateEntity);		
 	}
 	
@@ -144,6 +167,11 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 	}
 	
 	private SacmtRole  toEntity(Role role){
+		Integer approvalAuthority = null;
+		Optional<Boolean> approvalAuthorityOpt = role.getApprovalAuthority();
+		if(approvalAuthorityOpt.isPresent()){
+			approvalAuthority = approvalAuthorityOpt.get()? 1: 0;
+		}
 		SacmtRole entity = new SacmtRole();
 		entity.setRoleId(role.getRoleId());
 		entity.setCid(role.getCompanyId());
@@ -153,6 +181,7 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		entity.setName(role.getName().toString());
 		entity.contractCd = (role.getContractCode().toString());
 		entity.setAssignAtr(role.getAssignAtr().value);
+		entity.setApprovalAuthority(approvalAuthority);
 		return entity;
 	}
 
@@ -252,8 +281,42 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	@Override
 	public boolean exists(String cid, RoleType roleType, RoleAtr assignAtr, RoleCode roleCode) {
-		//TODO 会社ID、ロール種類、担当区分毎に、ロールコードが重複チェックするので、実装お願いします。
-		return false;
+		List<SacmtRole> entities = this.queryProxy().query(GET_BY_ROLE_TYPE_ROLE_ATR_ROLE_CD, SacmtRole.class)
+				.setParameter("companyId", cid)
+				.setParameter("roleType", roleType.value)
+				.setParameter("roleAtr", assignAtr.value)
+				.setParameter("roleCode", roleCode.v())
+				.getList();
+		return entities != null && !entities.isEmpty();
+	}
+
+	@Override
+	public List<Role> obtainRoleWorks(String cid) {
+		
+		return this.queryProxy()
+			.query(OBTAIN_ROLE_WORK, SacmtRole.class)
+			.setParameter("cid", cid)
+			.setParameter("roleType", 3) // ロール種類.就業
+			.getList()
+			.stream()
+			.map(x-> new Role(new JpaRoleGetMemento(x)))
+			.filter(x -> x.getApprovalAuthority().orElse(false))
+			.collect(Collectors.toList());		
+		
+	}
+
+	@Override
+	public Optional<Role> getRoleWorks(String cid, String eplRoleId) {
+		
+		return this.queryProxy()
+				.query(GET_ROLE_WORK, SacmtRole.class)
+				.setParameter("cid", cid)
+				.setParameter("roleId", eplRoleId) // ロール種類.就業
+				.getList()
+				.stream()
+				.map(x-> new Role(new JpaRoleGetMemento(x)))
+				.filter(x -> x.getApprovalAuthority().orElse(false))
+				.findFirst();
 	}
 
 }
