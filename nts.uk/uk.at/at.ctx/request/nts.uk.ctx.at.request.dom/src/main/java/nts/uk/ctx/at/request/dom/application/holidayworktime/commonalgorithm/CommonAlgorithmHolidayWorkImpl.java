@@ -1163,22 +1163,25 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	@Override
 	public void checkContentApp(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
 			AppHolidayWork appHolidayWork, Boolean mode) {
-	    int totalOverTime = 0;
-        totalOverTime = appHolidayWork.getApplicationTime().getApplicationTime().stream()
-                .map(x -> x.getApplicationTime().v())
-                .mapToInt(Integer::intValue)
-                .sum();
-        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
-                appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
-        totalOverTime += appHolidayWork.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
-        TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
-                0, 
-                0, 
-                0, 
-                0, 
-                0, 
-                totalOverTime, 
-                new ArrayList<TimeLeaveApplicationDetailShare>());
+		TimeDigestionParam timeDigestionParam = null;
+		if(appHolidayWork.getApplicationTime()!=null) {
+		    int totalOverTime = 0;
+	        totalOverTime = appHolidayWork.getApplicationTime().getApplicationTime().stream()
+	                .map(x -> x.getApplicationTime().v())
+	                .mapToInt(Integer::intValue)
+	                .sum();
+	        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
+	                appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
+	        totalOverTime += appHolidayWork.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
+	        timeDigestionParam = new TimeDigestionParam(
+	                0, 
+	                0, 
+	                0, 
+	                0, 
+	                0, 
+	                totalOverTime, 
+	                new ArrayList<TimeLeaveApplicationDetailShare>());
+		}
 		if (mode) { // 新規モード　の場合
 			//2-1.新規画面登録前の処理
 			processBeforeRegister.processBeforeRegister_New(
@@ -1191,7 +1194,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					Collections.emptyList(), 
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-					Optional.of(timeDigestionParam), 
+					Optional.ofNullable(timeDigestionParam), 
 					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
 					false);
 			
@@ -1209,7 +1212,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					appHolidayWork.getWorkInformation().getWorkTimeCode().v(),
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-                    Optional.of(timeDigestionParam), 
+                    Optional.ofNullable(timeDigestionParam), 
                     false);
 		}
 		//	遷移する前のエラーチェック
