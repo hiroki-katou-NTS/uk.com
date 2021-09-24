@@ -192,6 +192,7 @@ public interface EmployeeDataMngInfoRepository {
 
 	Optional<EmployeeDataMngInfo> findByScdNotDel(String employeeCd, String companyId);
 
+	// Pub get all Sid
 	List<String> getAllSidByCid(String cid);
 	
 }

@@ -918,6 +918,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.getSingle(m -> toDomain(m));
 	}
 	
+	// Pub get all Sid
 	@Override
 	public List<String> getAllSidByCid(String cid) {
 		List<String> listEntity = this.queryProxy().query(GET_ALL, BsymtEmployeeDataMngInfo.class)
