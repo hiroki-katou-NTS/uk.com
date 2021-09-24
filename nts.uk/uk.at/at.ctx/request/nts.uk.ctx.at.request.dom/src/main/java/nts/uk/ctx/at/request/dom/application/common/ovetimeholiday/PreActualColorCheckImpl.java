@@ -424,7 +424,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					companyId,
 					employeeId,
 					date,
-					workTypeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()),
+					workTypeCode == null ? Optional.empty() : Optional.of(workTypeCode.v()),
 					workTimeCode == null ? Optional.empty() : Optional.ofNullable(workTimeCode.v()),
 					timeZones,
 					breakTimes);
