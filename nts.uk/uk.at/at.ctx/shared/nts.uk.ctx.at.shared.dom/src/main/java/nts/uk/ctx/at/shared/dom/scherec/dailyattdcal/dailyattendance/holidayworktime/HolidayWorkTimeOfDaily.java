@@ -80,7 +80,6 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 	 * @param beforeApplicationTime 事前深夜時間
 	 * @param holidayLateNightAutoCalSetting 自動計算設定（休出深夜時間）
 	 * @param declareResult 申告時間帯作成結果
-	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 日別実績の休出時間
 	 */
 	public static HolidayWorkTimeOfDaily calculationTime(
@@ -92,8 +91,7 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
 			AutoCalSetting holidayLateNightAutoCalSetting,
-			DeclareTimezoneResult declareResult,
-			Optional<WorkTimezoneGoOutSet> goOutSet) {
+			DeclareTimezoneResult declareResult) {
 		
 		//休出枠時間帯の作成
 		val holidayWorkFrameTimeSheet = holidayWorkTimeSheet.changeHolidayWorkTimeFrameTimeSheet(
@@ -104,7 +102,7 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 				workTimeCode,
 				integrationOfDaily,
 				true,
-				goOutSet);
+				recordReGet.getWorkTimezoneCommonSet().map(c -> c.getGoOutSet()));
 		//休出時間の計算
 		val holidayWorkFrameTime = holidayWorkTimeSheet.collectHolidayWorkTime(
 				recordReGet.getPersonDailySetting().getOverTimeSheetReq(),
@@ -115,7 +113,7 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 				integrationOfDaily,
 				declareResult,
 				true,
-				goOutSet);
+				recordReGet.getWorkTimezoneCommonSet().map(c -> c.getGoOutSet()));
 		
 		//休日出勤深夜時間の計算
 		val holidayMidnightWork = Finally.of(calcMidNightTimeIncludeHolidayWorkTime(

@@ -69,7 +69,7 @@ public class HolidayWorkTimeSheet{
 		
 	/**
 	 * 休出枠時間帯をループさせ時間計算をする
-	 * アルゴリズム：ループ処理
+	 * アルゴリズム：休日出勤時間の計算
 	 * @param require Require
 	 * @param holidayAutoCalcSetting 自動計算設定
 	 * @param workType 勤務種類

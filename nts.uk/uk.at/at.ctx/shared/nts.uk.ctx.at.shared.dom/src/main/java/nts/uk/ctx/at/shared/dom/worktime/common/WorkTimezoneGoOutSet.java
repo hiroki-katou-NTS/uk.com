@@ -129,8 +129,8 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	 * @param dedAtr 控除区分
 	 * @return 丸め設定
 	 */
-	public Optional<TimeRoundingSetting> getGoOut(ActualWorkTimeSheetAtr actualAtr, GoingOutReason reason, DeductionAtr dedAtr) {
-		if(this.roundingMethod.isRoundingGoOut()) {
+	public Optional<TimeRoundingSetting> getInFrame(ActualWorkTimeSheetAtr actualAtr, GoingOutReason reason, DeductionAtr dedAtr) {
+		if(this.roundingMethod.isInFrame()) {
 			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason, dedAtr, TimeRoundingSetting.ONE_MIN_DOWN));
 		}
 		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
@@ -149,7 +149,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 		if(!reason.isPresent()) {
 			return Optional.empty();
 		}
-		if(this.roundingMethod.isRoundinAfterTotalInFrame()) {
+		if(this.roundingMethod.isAfterTotalInFrame()) {
 			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason.get(), dedAtr, reverse));
 		}
 		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
@@ -170,7 +170,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 		if(dedAtr.isDeduction()) {
 			return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
 		}
-		if(this.roundingMethod.isRoundingAfterTotal()) {
+		if(this.roundingMethod.isAfterTotal()) {
 			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason.get(), dedAtr, TimeRoundingSetting.ONE_MIN_DOWN));
 		}
 		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);

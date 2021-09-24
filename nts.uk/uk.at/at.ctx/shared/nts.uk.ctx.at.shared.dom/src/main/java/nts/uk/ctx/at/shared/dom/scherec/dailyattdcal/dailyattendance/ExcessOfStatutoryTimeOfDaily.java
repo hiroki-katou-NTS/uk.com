@@ -239,8 +239,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 						integrationOfDaily,
 						beforeApplicationTime,
 						recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime(),
-						declareResult,
-						recordReget.getWorkTimezoneCommonSet().map(c -> c.getGoOutSet()));
+						declareResult);
 			}
 		}
 		

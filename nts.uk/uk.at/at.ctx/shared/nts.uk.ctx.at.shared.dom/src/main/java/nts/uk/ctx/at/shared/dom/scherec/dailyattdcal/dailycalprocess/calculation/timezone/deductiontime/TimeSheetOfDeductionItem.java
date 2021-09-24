@@ -673,7 +673,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			if(!this.goOutReason.isPresent()) {
 				return Optional.empty();
 			}
-			return commonSet.getGoOutSet().getGoOut(actualAtr, this.goOutReason.get(), dedAtr);
+			return commonSet.getGoOutSet().getInFrame(actualAtr, this.goOutReason.get(), dedAtr);
 		//計上無し
 		case NON_RECORD:
 			return Optional.of(rounding);

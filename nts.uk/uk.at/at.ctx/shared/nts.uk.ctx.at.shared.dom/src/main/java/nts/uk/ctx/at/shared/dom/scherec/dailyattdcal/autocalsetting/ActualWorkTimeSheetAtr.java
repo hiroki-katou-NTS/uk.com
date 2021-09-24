@@ -20,8 +20,8 @@ public enum ActualWorkTimeSheetAtr {
 	}
 
 	/**
-	 * 休出であるか判定する
-	 * @return　就業時間である
+	 * 休出か
+	 * @return 休出である
 	 */
 	public boolean isHolidayWork() {
 		return this.equals(HolidayWork);

@@ -60,7 +60,6 @@ public class TimeRoundingSetting extends DomainObject implements Cloneable{
 		this.rounding = EnumAdaptor.valueOf(rounding, Rounding.class);
 	}
 
-
 //	/**
 //	 * Round.
 //	 *

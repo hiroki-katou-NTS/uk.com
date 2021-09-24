@@ -70,21 +70,21 @@ public enum GoOutTimeRoundingMethod {
 	/**
 	 * 実働時間帯の枠ごとに合計せず丸めるか
 	 */
-	public boolean isRoundingGoOut() {
+	public boolean isInFrame() {
 		return IN_FRAME.equals(this);
 	}
 	
 	/**
 	 * 実働時間帯の枠ごとに合計してから丸めるか
 	 */
-	public boolean isRoundinAfterTotalInFrame() {
+	public boolean isAfterTotalInFrame() {
 		return AFTER_TOTAL_IN_FRAME.equals(this);
 	}
 	
 	/**
 	 * 実働時間帯ごとに合計して丸めるか
 	 */
-	public boolean isRoundingAfterTotal() {
+	public boolean isAfterTotal() {
 		return AFTER_TOTAL.equals(this);
 	}
 }
