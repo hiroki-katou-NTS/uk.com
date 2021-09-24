@@ -122,7 +122,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         // B2_3
         cells.get(2, 7).setValue(query.getEmployeeName());
         // B3_1
-        cells.get(2, 7).setValue(query.getDate().yearMonth());
+        cells.get(2, 7).setValue(GeneralDate.fromString(query.getDate(), "yyyy/MM/dd") .yearMonth());
         if (query.isTotalDisplay()) {
             cells.get(5, 36).setValue(getText("KSU002_68"));
         }
