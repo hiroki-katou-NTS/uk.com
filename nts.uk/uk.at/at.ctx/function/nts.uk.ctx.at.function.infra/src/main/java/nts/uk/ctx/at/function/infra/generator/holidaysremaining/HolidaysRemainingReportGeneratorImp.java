@@ -560,6 +560,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 setTopBorderStyle(cells.get(firstRow + (isTime ? 2 * i:i), 3));
                 if(!isTime){
                    setBottomBorderStyle(cells.get(firstRow + i, 4));
+                   setBottomBorderStyle(cells.get(firstRow + i, 3));
                 }
                 // E1_16
                 val valueE116 = listAnnLeaGrant.get(i).getGrantTime();
