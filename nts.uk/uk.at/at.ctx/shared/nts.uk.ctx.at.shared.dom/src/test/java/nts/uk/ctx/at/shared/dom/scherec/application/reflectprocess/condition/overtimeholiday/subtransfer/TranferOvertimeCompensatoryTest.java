@@ -104,12 +104,12 @@ public class TranferOvertimeCompensatoryTest {
 		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 				.getExcessOfStatutoryTimeOfDaily().updateOverTime(null);
 
-		new Expectations() {
-			{
-				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
-				result = dailyApp;
-			}
-		};
+//		new Expectations() {
+//			{
+//				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
+//				result = dailyApp;
+//			}
+//		};
 
 		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
