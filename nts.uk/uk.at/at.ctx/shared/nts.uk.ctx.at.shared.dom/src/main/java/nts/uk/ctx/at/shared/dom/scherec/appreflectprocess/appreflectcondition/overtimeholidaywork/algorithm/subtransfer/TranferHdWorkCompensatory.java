@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.o
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,6 +17,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 
 /**
  * @author thanh_nx
@@ -26,6 +30,13 @@ public class TranferHdWorkCompensatory {
 
 	public static IntegrationOfDaily process(Require require, String cid, IntegrationOfDaily dailyRecord) {
 
+		Optional<WorkType> workTypeOpt = require.getWorkType(dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+		if (!workTypeOpt.isPresent() || workTypeOpt.get().getWorkTypeSetList().stream()
+				.filter(x -> x.getWorkAtr() == WorkAtr.OneDay).findFirst().map(x -> x.getGenSubHodiday())
+				.orElse(WorkTypeSetCheck.NO_CHECK) == WorkTypeSetCheck.NO_CHECK) {
+			return dailyRecord;
+		}
+		
 		if (!dailyRecord.getAttendanceTimeOfDailyPerformance().isPresent()
 				|| !dailyRecord.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
@@ -104,6 +115,6 @@ public class TranferHdWorkCompensatory {
 	}
 
 	public static interface Require extends CreateWorkMaxTimeZone.Require, SubstituteTransferProcess.Require {
-
+		Optional<WorkType> getWorkType(String workTypeCd);
 	}
 }
