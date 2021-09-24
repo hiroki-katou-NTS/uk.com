@@ -53,7 +53,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 //				domainDaily.getEmployeeId(), domainDaily.getYmd());
 
 		// 変更された項目を確認
-		ChangeDailyAttendance changeAtt = createChangeDailyAtt(cancellationResult.getLstItemId());
+		ChangeDailyAttendance changeAtt = ChangeDailyAttendance.createChangeDailyAtt(cancellationResult.getLstItemId(), ScheduleRecordClassifi.SCHEDULE);
 
 		// 勤怠変更後の補正（日別実績の補正処理）
 		domainDaily = require.correct(domainDaily, changeAtt);
@@ -89,19 +89,6 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		// 反映状態を「取消済み」に更新する
 		reflectStatus.setReflectStatus(SCReflectedState.CANCELED);
 		return new SCRecoverAppReflectOutput(reflectStatus, Optional.of(domainDaily), atomTask);
-	}
-
-	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
-
-		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
-				.isPresent();
-		boolean attendance = lstItemId.stream()
-				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
-				.findFirst().isPresent();
-		boolean directBounceClassifi = lstItemId.stream()
-				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
-				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi);
 	}
 
 	public static interface Require extends CancellationOfApplication.Require {

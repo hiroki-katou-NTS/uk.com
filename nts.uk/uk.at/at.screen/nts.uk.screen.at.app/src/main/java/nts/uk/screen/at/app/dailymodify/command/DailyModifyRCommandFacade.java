@@ -383,9 +383,11 @@ public class DailyModifyRCommandFacade {
 			if (dataParent.isCheckDailyChange() || flagTempCalc) {
 				//勤怠ルールの補正処理
 				//2021/03/19 - 日別修正から補正処理を実行する対応
-				val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
 				List<DailyRecordDto> dtoOldTemp = dailyOlds;
 				dailyEdits = dailyEdits.stream().map(x -> {
+					val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
+							.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
+							.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
 					val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
 							correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
 							changeSetting);
