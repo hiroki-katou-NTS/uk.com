@@ -59,8 +59,8 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
 
     @Override
     public void generate(FileGeneratorContext generatorContext, OutputTraceConfirmTableDataSource dataSource) {
-        List<StandardMenu> menus = standardMenuRepo.findBySystem(dataSource.getCompanyInfo().getCompanyId(), 1);
-        String menuName = menus.stream().filter(i -> i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KDR003"))
+        List<StandardMenu> menus = standardMenuRepo.findAll(dataSource.getCompanyInfo().getCompanyId());
+        String menuName = menus.stream().filter(i->i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KDR003"))
                 .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KDR003_100"));
         try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE_EXT)) {
             this.setPageHeader(reportContext, dataSource, menuName);
