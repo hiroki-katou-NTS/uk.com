@@ -19,7 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
@@ -78,8 +78,9 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.REMAND.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
 		if(!lstAppType.isEmpty()) {
@@ -90,8 +91,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dates) {
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
 		if(!lstAppType.isEmpty()) {
