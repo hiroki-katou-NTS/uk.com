@@ -17,6 +17,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
  * 回数集計を集計する
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AggregateNumberOfTimesQuery {
     @Inject
     private TimesNumberCounterSelectionFinder finder;

@@ -55,6 +55,8 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -64,6 +66,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByWorkplaceExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
     private final int FONT_SIZE = 9;
@@ -108,14 +111,17 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
 
     private final OneDayEmployeeAttendanceInfo.Require require = new OneDayEmployeeAttendanceInfo.Require() {
         @Override
+        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
         public Optional<ShiftMaster> getShiftMaster(String workTypeCode, Optional<String> workTimeCode) {
             return shiftMasterRepo.getByWorkTypeAndWorkTime(AppContexts.user().companyId(), workTypeCode, workTimeCode.orElse(null));
         }
         @Override
+        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
         public Optional<WorkType> getWorkType(String workTypeCode) {
             return workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCode);
         }
         @Override
+        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
         public Optional<WorkTimeSetting> getWorkTimeSetting(String workTimeCode) {
             return workTimeSettingRepo.findByCode(AppContexts.user().companyId(), workTimeCode);
         }
@@ -137,7 +143,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     private JobTitleInfoRepository jobTitleInfoRepo;
 
     @Override
-    public void generate(FileGeneratorContext context, PersonalScheduleByWkpDataSource dataSource, boolean excel, boolean preview) {
+    public void generate(FileGeneratorContext context, PersonalScheduleByWkpDataSource dataSource, String comment, boolean excel, boolean preview) {
         startRow = START_DATA_ROW;
         indexes.clear();
         try {
@@ -146,7 +152,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet worksheet = worksheets.get(0);
             worksheet.setName(dataSource.getOutputSetting().getName().v());
-            this.printHeader(worksheet, dataSource);
+            this.printHeader(worksheet, dataSource, comment);
             this.printContent(worksheet, dataSource);
             this.handlePageBreak(worksheet, dataSource);
             worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
@@ -203,10 +209,10 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         return TextResource.localize(resourceId);
     }
 
-    private void printHeader(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource) {
+    private void printHeader(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource, String comment) {
         Cells cells = worksheet.getCells();
         // B part
-        cells.get(0, START_DATE_COL).setValue(dataSource.getComment());
+        cells.get(0, START_DATE_COL).setValue(comment);
         Style styleC1 = cells.get(0, START_DATE_COL).getStyle();
         styleC1.setVerticalAlignment(TextAlignmentType.TOP);
         styleC1.setHorizontalAlignment(TextAlignmentType.JUSTIFY);
@@ -460,7 +466,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             i == 0,
                             i == rows - 1,
                             i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
-                            j == dataSource.getDateInfos().size() - 1 && hasPersonalTotal
+                            j == dataSource.getDateInfos().size() - 1 && hasPersonalTotal,
+                            dataSource.getOutputSetting().getOutputItem().getShiftBackgroundColorUseAtr() == NotUseAtr.USE
                     );
                 }
             }
@@ -624,7 +631,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         cells.get(row, column).setStyle(style);
     }
 
-    private void setAttendanceValue(Cells cells, Optional<OneDayEmployeeAttendanceInfo> attendanceInfo, ScheduleTableAttendanceItem attendanceItem, int row, int column, boolean isFirstRow, boolean isLastRow, boolean doubleBorderBottom, boolean doubleBorderRight) {
+    private void setAttendanceValue(Cells cells, Optional<OneDayEmployeeAttendanceInfo> attendanceInfo, ScheduleTableAttendanceItem attendanceItem, int row, int column, boolean isFirstRow, boolean isLastRow, boolean doubleBorderBottom, boolean doubleBorderRight, boolean displayShiftBackground) {
         String value = "";
         Style style = commonStyle();
         if (attendanceItem != null && attendanceInfo.isPresent()) {
@@ -633,7 +640,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     Optional<ShiftMaster> shiftMaster = attendanceInfo.get().getShiftMaster(require);
                     if (shiftMaster.isPresent()) {
                         value = shiftMaster.get().getDisplayInfor().getName().v();
-                        style.setForegroundColor(Color.fromArgb(Integer.parseInt(shiftMaster.get().getDisplayInfor().getColor().v(), 16)));
+                        if (displayShiftBackground) style.setForegroundColor(Color.fromArgb(Integer.parseInt(shiftMaster.get().getDisplayInfor().getColor().v(), 16)));
                     } else if (attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) != null)
                         value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) + getText("KSU001_4136");
                     break;

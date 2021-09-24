@@ -30,7 +30,6 @@ public class PersonalScheduleByWorkplaceExportService extends ExportService<Pers
                 query.getEmployeeIds(),
                 query.getClosureDate()
         );
-        dataSource.setComment(query.getComment());
-        exportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource, query.isExcel(), query.isPreview());
+        exportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource, query.getComment(), query.isExcel(), query.isPreview());
     }
 }

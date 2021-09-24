@@ -24,8 +24,6 @@ public class PersonalScheduleByWkpDataSource<T> {
 
     private DatePeriod period;
 
-    private String comment;
-
     // 会社情報
     private String companyName;
 

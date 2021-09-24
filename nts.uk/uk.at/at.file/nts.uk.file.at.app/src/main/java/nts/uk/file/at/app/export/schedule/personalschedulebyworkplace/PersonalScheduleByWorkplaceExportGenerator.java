@@ -4,5 +4,5 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface PersonalScheduleByWorkplaceExportGenerator {
-    void generate(FileGeneratorContext context, PersonalScheduleByWkpDataSource dataSource, boolean excel, boolean preview);
+    void generate(FileGeneratorContext context, PersonalScheduleByWkpDataSource dataSource, String comment, boolean excel, boolean preview);
 }

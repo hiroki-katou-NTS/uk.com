@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.schedule.personalschedulebyworkplace;
 
 import nts.arc.primitive.PrimitiveValueBase;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
@@ -49,6 +50,8 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,6 +60,7 @@ import java.util.stream.Collectors;
  * 個人スケジュール表(職場別)を作成する
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class PersonalScheduleByWorkplaceExportQuery {
     @Inject
     private CompanyAdapter company;
@@ -109,6 +113,9 @@ public class PersonalScheduleByWorkplaceExportQuery {
     @Inject
     private WorkplaceTotalAggregatedInfoQuery workplaceTotalAggregatedInfoQuery;
 
+    @Inject
+    private ManagedParallelWithContext parallel;
+
     /**
      * 取得する
      * @param orgUnit
@@ -133,10 +140,12 @@ public class PersonalScheduleByWorkplaceExportQuery {
         // 組織の表示情報を取得する(Require, 年月日)
         DisplayInfoOrganization displayInfoOrganization = targetOrgIdenInfor.getDisplayInfor(new TargetOrgIdenInfor.Require() {
             @Override
+            @TransactionAttribute(TransactionAttributeType.SUPPORTS)
             public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId(List<String> workplacegroupId) {
                 return groupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
             }
             @Override
+            @TransactionAttribute(TransactionAttributeType.SUPPORTS)
             public List<WorkplaceInfo> getWorkplaceInforFromWkpIds(List<String> listWorkplaceId, GeneralDate baseDate) {
                 List<WorkplaceInfo> workplaceInfos = serviceAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate).stream()
                         .map(mapper-> new WorkplaceInfo(mapper.getWorkplaceId(), Optional.ofNullable(mapper.getWorkplaceCode()), Optional.ofNullable(mapper.getWorkplaceName()), Optional.ofNullable(mapper.getWorkplaceExternalCode()),
@@ -144,42 +153,11 @@ public class PersonalScheduleByWorkplaceExportQuery {
                 return workplaceInfos;
             }
             @Override
+            @TransactionAttribute(TransactionAttributeType.SUPPORTS)
             public List<String> getWKPID(String WKPGRPID) {
                 return wplAdapter.getWKPID(companyId, WKPGRPID);
             }
         }, period.end());
-
-        List<DateInformation> dateInformationList = period.datesBetween().stream().map(date -> {
-            // 作成する(Require, 年月日, 対象組織識別情報)
-            return DateInformation.create(new DateInformation.Require() {
-                @Override
-                public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
-                    return workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId, specificDate);
-                }
-                @Override
-                public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
-                    return companySpecificDateRepo.getComSpecByDate(companyId, specificDate);
-                }
-                @Override
-                public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
-                    return workplaceEventRepo.findByPK(workplaceId, date);
-                }
-                @Override
-                public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date) {
-                    return companyEventRepo.findByPK(companyId, date);
-                }
-                @Override
-                public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
-                    return publicHolidayRepo.getHolidaysByDate(companyId, date);
-                }
-                @Override
-                public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
-                    if (lstSpecificDateItemNo.isEmpty()) return new ArrayList<>();
-                    List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-                    return specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
-                }
-            }, date, targetOrgIdenInfor);
-        }).collect(Collectors.toList());
 
         // 出力項目設定情報を取得する
         Optional<ScheduleTableOutputSetting> outputSetting = outputSettingRepo.get(companyId, new OutputSettingCode(outputSettingCode));
@@ -195,22 +173,27 @@ public class PersonalScheduleByWorkplaceExportQuery {
         List<ScheduleTablePersonalInfo> personalInfoScheduleTableList = GetPersonalInfoForScheduleTableService.get(
                 new GetPersonalInfoForScheduleTableService.Require() {
                     @Override
+                    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                     public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
                         return empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
                     }
                     @Override
+                    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                     public List<NurseClassification> getListCompanyNurseCategory() {
                         return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
                     }
                     @Override
+                    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                     public List<EmployeeInfoImported> getEmployeeInfo(List<String> employeeIds, GeneralDate baseDate, EmployeeInfoWantToBeGet param) {
                         return employeeAdapter.getEmployeeInfo(employeeIds, baseDate, param);
                     }
                     @Override
+                    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                     public List<EmployeeTeamInfoImported> getEmployeeTeamInfo(List<String> employeeIds) {
                         return employeeTeamInfoAdapter.get(employeeIds);
                     }
                     @Override
+                    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                     public List<EmployeeRankInfoImported> getEmployeeRankInfo(List<String> employeeIds) {
                         return employeeRankInfoAdapter.get(employeeIds);
                     }
@@ -224,10 +207,12 @@ public class PersonalScheduleByWorkplaceExportQuery {
         Map<ScheRecGettingAtr, List<IntegrationOfDaily>> integrationOfDailyMap = DailyAttendanceGettingService.get(
             new DailyAttendanceGettingService.Require() {
                 @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                 public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
                     return workScheduleAdapter.getList(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
                 }
                 @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                 public List<IntegrationOfDaily> getRecordList(List<EmployeeId> empIds, DatePeriod period) {
                     return dailyRecordAdapter.getDailyRecordByScheduleManagement(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
                 }
@@ -253,13 +238,52 @@ public class PersonalScheduleByWorkplaceExportQuery {
         // 9.
         Map<WorkplaceCounterCategory, Map<GeneralDate, T>> workplaceTotalResult = new HashMap<>();
         if (!outputSetting.get().getWorkplaceCounterCategories().isEmpty()) {
-            workplaceTotalResult = workplaceTotalAggregatedInfoQuery.get(attendanceItems, outputSetting.get().getWorkplaceCounterCategories(), integrationOfDailyMap, outputSetting.get().getOutputItem().getDailyDataDisplayAtr(), period, targetOrgIdenInfor);
+            workplaceTotalResult = workplaceTotalAggregatedInfoQuery.get(attendanceItems, outputSetting.get().getWorkplaceCounterCategories(), integrationOfDailyMap, period, targetOrgIdenInfor);
         }
+
+        List<DateInformation> dateInformationList = Collections.synchronizedList(new ArrayList<>());
+        this.parallel.forEach(period.datesBetween(), date -> {
+            DateInformation dateInfo = DateInformation.create(new DateInformation.Require() {
+                @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+                public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
+                    return workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId, specificDate);
+                }
+                @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+                public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
+                    return companySpecificDateRepo.getComSpecByDate(companyId, specificDate);
+                }
+                @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+                public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
+                    return workplaceEventRepo.findByPK(workplaceId, date);
+                }
+                @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+                public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date) {
+                    return companyEventRepo.findByPK(companyId, date);
+                }
+                @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+                public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
+                    return publicHolidayRepo.getHolidaysByDate(companyId, date);
+                }
+                @Override
+                @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+                public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
+                    if (lstSpecificDateItemNo.isEmpty()) return new ArrayList<>();
+                    List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+                    return specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
+                }
+            }, date, targetOrgIdenInfor);
+            dateInformationList.add(dateInfo);
+        });
+        dateInformationList.sort(Comparator.comparing(DateInformation::getYmd));
 
         return new PersonalScheduleByWkpDataSource(
                 orgUnit,
                 period,
-                null,
                 companyName,
                 outputSetting.get(),
                 displayInfoOrganization,
