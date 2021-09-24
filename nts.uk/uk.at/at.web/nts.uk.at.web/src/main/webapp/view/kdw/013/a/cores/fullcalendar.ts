@@ -56,6 +56,7 @@ module nts.uk.ui.at.kdw013.calendar {
             workLocationCD: string;
             remarks: string;
             workingHours:number;
+            isTimeBreak:boolean;
         };
     };
 
@@ -362,7 +363,12 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-col-header-cell.fc-day:not(.fc-day-disabled):hover {
             background-color: #fffadf;
-        }`;
+        }
+        .fc-container .fc-timegrid-event-harness{
+            width: 100%;
+            left: 0% !important;
+        }
+`;
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -1034,13 +1040,15 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     if (workGroupDtos && startManHourInputResultDto) {
                         const { tasks } = startManHourInputResultDto;
+                        
+
 
                         if (tasks && tasks.length) {
                             const draggers: EventRaw[] = _
                                 .chain(workGroupDtos)
                                 .map((wg) => {
                                     const task = getTask(wg, tasks);
-                                    const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
+                                    const { workCD1, workCD2, workCD3, workCD4, workCD5 , dropInfo} = wg;
 
                                     if (!task) {
                                         return null;
@@ -1080,7 +1088,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                             workCD4,
                                             workCD5,
                                             remarks: '',
-                                            workingHours
+                                            workingHours,
+                                            dropInfo
                                         } as any
                                     };
                                 })
@@ -1602,6 +1611,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 vm.calendar.setOption('events', mapppedEvents);
                 // _.each(events, (e: EventRaw) => vm.calendar.addEvent(e));
 
+                
+
                 vm.selectedEvents = [];
             };
             const removeNewEvent = (event: EventApi | null) => {
@@ -2024,6 +2035,10 @@ module nts.uk.ui.at.kdw013.calendar {
                     // get all event with border is black
                     const seletions = () => _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
 
+                    if (event.extendedProps.isTimeBreak) {
+                        return;
+                    }
+                    
                     // single select
                     if (!shift) {
                         _.each(seletions(), (e: EventApi) => {
@@ -2138,7 +2153,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventDrop: (arg: EventDropArg) => {
                     const { event, relatedEvents } = arg;
-                    const { start, end, id, title, extendedProps, borderColor, groupId } = event;
+                    const { start, end, id, title, extendedProps, borderColor, groupId, backgroundColor} = event;
                     const rels = relatedEvents.map(({ start, end }) => ({ start, end }));
 
                     vm.selectedEvents = [{ start, end }, ...rels];
@@ -2167,6 +2182,150 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true});
                         }
                     }
+                    
+                    //check for resize fit with space
+                    
+                   
+                    
+                    //check override events
+                    
+                    
+                     const IEvents = _.chain(events())
+                            .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                    
+                    const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
+                    
+                    if (extendedProps.isTimeBreak) {
+                        if (!moment(arg.oldEvent.start).isSame(start, 'days')) {
+                            vm.revertEvent(arg.oldEvent , $caches);
+                        }
+                        
+                        let businessHours = vm.calendar.getOption('businessHours');
+                    
+                        let dow = moment(start).day();
+
+                        if (businessHours) {
+                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow)});
+
+                            if (setting) {
+                                let format = 'hh:mm:ss',
+                                    startTime = moment(start, format),
+                                    endTime = moment(end, format),
+                                    beforeTime = moment(setting.startTime, format),
+                                    afterTime = moment(setting.endTime, format);
+                                if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime) ) {
+                                    vm.revertEvent(arg.oldEvent , $caches);
+                                }
+                            }
+
+                        }
+                        
+                        return;
+                    }
+                  
+                    if (!IEvents.length) {
+                        return;
+                    }
+                    
+                    if (arg.relatedEvents.length == 0) {
+                        const oEvents = [];
+
+                        if (IEvents.length > 1) {
+                            for (let i = 0; i < IEvents.length - 1; i++) {
+                                let cEvent = IEvents[i];
+                                let nEvent = IEvents[i + 1];
+
+                                let isEndOverrideBetween =
+                                    moment(end).isAfter(moment(nEvent.start)) &&
+                                    moment(end).isSameOrBefore(moment(nEvent.end)) &&
+                                    moment(start).isBefore(moment(nEvent.start)) &&
+                                    moment(start).isSameOrAfter(moment(cEvent.end));
+
+                                if (isEndOverrideBetween)
+                                    oEvents.push({ start: nEvent.start, end: nEvent.end });
+                            }
+                        }
+                        if (oEvents.length) {
+                            const [first] = oEvents;
+                            const currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
+                            currentEvent.setEnd(first.start);
+
+                        } else {
+                            oEvents = _.chain(IEvents)
+                                .filter((evn) => {
+                                    let isStartOverride = moment(start).isSameOrAfter(moment(evn.start)) && moment(start).isBefore(moment(evn.end));
+                                    let isEmbrace = moment(start).isSameOrBefore(moment(evn.start)) && moment(end).isSameOrAfter(moment(evn.end));
+                                    let isEndOverride = moment(end).isAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end)) && moment(start).isSameOrBefore(moment(evn.start));
+                                    let isEmbraced = moment(start).isSameOrAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end));
+                                    let isNotTimeBreak = !evn.extendedProps.isTimeBreak;
+                                    return (isStartOverride || isEmbrace || isEndOverride || isEmbraced) && isNotTimeBreak;
+
+                                })
+                                .value();
+
+                            if (oEvents.length) {
+                                
+                                 vm.revertEvent(arg.oldEvent , $caches);
+
+                            }
+                        }
+                    }else{
+                        
+                        const { dataEvent } = vm;
+                        
+                        const [secondEvent] = arg.relatedEvents;
+                        
+                        if ( ko.unwrap<boolean>(dataEvent.shift) && arg.relatedEvents.length == 1 && moment(end).isSame(moment(secondEvent.start))) {
+                            
+                            IEvents = _.chain(events())
+                            .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                            .filter((evn) => { return evn.extendedProps.id != secondEvent.extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                            
+                            const oEvents = [];
+                            for (let i = 0; i < IEvents.length - 1; i++) {
+                                let cEvent = IEvents[i];
+                                let nEvent = IEvents[i + 1];
+
+                                let isEndOverrideBetween =
+                                    moment(secondEvent.end).isAfter(moment(nEvent.start)) &&
+                                    moment(secondEvent.end).isSameOrBefore(moment(nEvent.end)) &&
+                                    moment(secondEvent.start).isBefore(moment(nEvent.start)) &&
+                                    moment(secondEvent.start).isSameOrAfter(moment(cEvent.end));
+
+                                if (isEndOverrideBetween)
+                                    oEvents.push({ start: nEvent.start, end: nEvent.end });
+                            }
+
+                            if (oEvents.length) {
+                                const [first] = oEvents;
+                                const sEvent = _.find(vm.calendar.getEvents(), { 'groupId': 'selected', 'start': secondEvent.start, 'end': secondEvent.end });
+                                sEvent.remove();
+                                
+                                 const newEvent = vm.calendar
+                                    .addEvent({
+                                        id: randomId(),
+                                        backgroundColor:sEvent.backgroundColor,
+                                        title:sEvent.title,
+                                        start: sEvent.start,
+                                        end: first.start,
+                                        borderColor:sEvent.borderColor,
+                                        groupId:sEvent.groupId,
+                                        extendedProps:sEvent.extendedProps
+                                    });
+                                $caches.new(newEvent);
+
+                            }
+                            
+                            
+                        }
+                    }
+                    
+                    
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
                     // remove new event (with no data) & background event
@@ -2188,7 +2347,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventResize: (arg: EventResizeDoneArg) => {
                     const { event } = arg;
-                    const { start, end, title, extendedProps, id, borderColor, groupId } = event;
+                    const { start, end, title, backgroundColor, extendedProps, id, borderColor, groupId } = event;
 
                     vm.selectedEvents = [{ start, end }];
 
@@ -2207,6 +2366,103 @@ module nts.uk.ui.at.kdw013.calendar {
                                 extendedProps
                             }));
                     }
+                    
+                    if (extendedProps.isTimeBreak) {
+                        
+                        //valid another day
+                        if (!moment(arg.oldEvent.end).isSame(end, 'days')) {
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
+                        
+                        
+                        
+                        //validate businessHours 
+                        
+                        let businessHours = vm.calendar.getOption('businessHours');
+
+                        let dow = moment(start).day();
+
+                        if (businessHours) {
+                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow) });
+
+                            let format = 'hh:mm:ss',
+                                startTime = moment(start, format),
+                                endTime = moment(end, format),
+                                beforeTime = moment(setting.startTime, format),
+                                afterTime = moment(setting.endTime, format);
+                            if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime)) {
+                                 vm.revertEvent(arg.oldEvent , $caches);
+                            }
+
+                            return;
+                        }
+                        return;
+                    }
+                    
+                    
+                    //check override
+                    
+                  const oEvents =  
+                  _.chain(events())
+                  .filter((evn)=>{ return moment(start).isBefore(evn.start) && moment(evn.end).isSameOrBefore(end); })
+                  .sortBy('end')
+                  .value();
+                  
+                  if (oEvents.length) {
+                      const [first] = oEvents;
+                      //set end time for min start event
+                      const currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
+                      currentEvent.setEnd(first.start);
+
+                      const last = _.last(oEvents);
+                      //check if end > lastOverridedEvent end
+                      if (moment(last.end).isBefore(moment(end))) {
+                          
+                          vm.calendar
+                              .addEvent({
+                                  id: randomId(),
+                                  backgroundColor,
+                                  title,
+                                  start: last.end,
+                                  end,
+                                  borderColor,
+                                  groupId,
+                                  extendedProps
+                              });
+                      }
+
+                      //if oEvents.length >=2, need create event between it 
+                      if (oEvents.length >= 2) {
+                          
+                        //get space between
+                          let spaces = [];
+                          for (i = 0; i < oEvents.length -1 ; i++) {
+                              const cEvent = oEvents[i];
+                              const nEvent = oEvents[i + 1];
+                              if (moment(cEvent.end).isBefore(moment(nEvent.start)))
+                                  spaces.push({ start: cEvent.end, end: nEvent.start });
+                              
+                          }
+                          
+                          //after get space, create event
+                          _.forEach(spaces, ({start,end}) => {
+                              vm.calendar
+                                  .addEvent({
+                                      id: randomId(),
+                                      backgroundColor,
+                                      title,
+                                      start,
+                                      end,
+                                      borderColor,
+                                      groupId,
+                                      extendedProps
+                                  });
+                          });
+                      }
+
+                  }
+                   
                 },
                 eventResizeStop: ({ el, event }) => {
                     console.log('stop', event.extendedProps);
@@ -2296,18 +2552,41 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD5
                     } = extendedProps;
                     // add cloned event to datasources
-                    events.push({
-                        title: getTitles(wg, vm.params.$settings().startManHourInputResultDto.tasks),
-                        start,
-                        end,
-                        textColor,
-                        backgroundColor,
-                        extendedProps: {
-                            ...extendedProps,
-                            id: randomId(),
-                            status: 'update'
-                        } as any
-                    });
+                    
+                    if (extendedProps.dropInfo.dropType == 'task') {
+                            events.push({
+                                title: getTitles(wg, vm.params.$settings().startManHourInputResultDto.tasks),
+                                start,
+                                end,
+                                textColor,
+                                backgroundColor,
+                                extendedProps: {
+                                ...extendedProps,
+                                id: randomId(),
+                                status: 'update'
+                            } as any
+                        });
+                    }else {
+                        //drop by day
+    
+                        
+                        _.each(extendedProps.dropInfo.dropTaskInfo, task => {
+                            let timeStart = moment(start).set('hour', task.start).set('minute', 0);
+                            let timeEnd = moment(start).set('hour', task.end).set('minute', 0);
+                            events.push({
+                                title: getTitles(task.workCDs, vm.params.$settings().startManHourInputResultDto.tasks),
+                                start : timeStart,
+                                end : timeEnd,
+                                textColor,
+                                backgroundColor,
+                                extendedProps: {
+                                ...extendedProps,
+                                id: randomId(),
+                                status: 'update'
+                            } as any
+                        });
+                        });
+                    }
                 },
                 datesSet: ({ start, end }) => {
                     const current = moment().startOf('day');
@@ -2558,14 +2837,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     const breakTime = ko.unwrap<BreakTime>(params.breakTime);
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
 
-                    if (!breakTime) {
-                        vm.calendar.setOption('businessHours', businessHours.map((m) => ({
-                            ...m,
-                            startTime: formatTime(m.startTime),
-                            endTime: formatTime(m.endTime)
-                        })));
-
-                        vm.updateStyle('breaktime', '');
+                    if (!businessHours.length) {
+                         vm.calendar.setOption('businessHours', false);
+                         //vm.updateStyle('breaktime', '');
                     } else {
                         const { startTime, endTime, backgroundColor } = breakTime;
 
@@ -2596,6 +2870,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
                     }
+                    
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2638,6 +2913,33 @@ module nts.uk.ui.at.kdw013.calendar {
             // test item
             _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });
         }
+
+
+
+           public revertEvent(oldEvent, caches){
+                let vm = this;
+                _.each(vm.calendar.getEvents(), (e: EventApi) => {
+
+                    if (e.extendedProps.id === oldEvent.extendedProps.id) {
+                        e.setExtendedProp('status', 'delete');
+                        e.remove();
+                        caches.new(null);
+                    }
+                });
+                let newEvent = vm.calendar
+                    .addEvent({
+                        id: randomId(),
+                        backgroundColor: oldEvent.backgroundColor,
+                        title: oldEvent.title,
+                        start: oldEvent.start,
+                        end: oldEvent.end,
+                        borderColor: oldEvent.borderColor,
+                        groupId: oldEvent.groupId,
+                        extendedProps: oldEvent.extendedProps
+                    });
+                caches.new(newEvent);
+
+            }
 
         public destroyed() {
             const vm = this;

@@ -34,6 +34,22 @@
             <div id="contents-area">
 				<div id="contents">
 
+					<div id="I2_1" style="margin-bottom: 25px;" 
+						class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_307')}</div>
+					<div class="right-content">
+						<div id="I4_2" class="cf" tabindex="7" data-bind="ntsSwitchButton: {
+							name: $i18n('KDW006_307'),
+							options: ko.observableArray([
+										{ code: 0, name: $i18n('KDW006_185')},
+										{ code: 1, name: $i18n('KDW006_186')}
+									]),
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: useAtrTask,
+							enable: true,
+							required: false }"></div>
+					</div>
+
                     <div id="I2_1" class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_234')}</div>
 					<div class="right-content">
 						<div id="I2_2" tabindex="3" data-bind="ntsComboBox: {

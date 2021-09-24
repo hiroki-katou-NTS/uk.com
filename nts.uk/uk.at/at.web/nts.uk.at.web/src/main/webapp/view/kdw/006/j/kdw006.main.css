@@ -1,0 +1,124 @@
+.view-kdw #tab-panel {
+    width: 960px;
+    margin: 25px;
+}
+
+.view-kdw #tab-panel .tab-content-1 {
+    width: 1100px;
+    padding: 25px;
+    height: 550px;
+}
+
+.view-kdw #tab-panel .tab-content-2 {
+    width: 900px;
+    padding: 25px;
+    height: 550px;
+}
+
+.view-kdw #tab-panel .tab-content-3 {
+    width: 900px;
+    padding: 25px;
+    height: 550px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .title {
+    box-sizing: border-box;
+    border: 1px solid;
+    border-radius: 5px;
+    width: 500px;
+    padding: 20px;
+}
+
+.view-kdw #tab-panel .tab-content-2 .title {
+    box-sizing: border-box;
+    border: 1px solid;
+    border-radius: 5px;
+    width: 500px;
+    padding: 20px;
+}
+
+.view-kdw #tab-panel .tab-content-3 .title {
+    box-sizing: border-box;
+    border: 1px solid;
+    border-radius: 5px;
+    width: 500px;
+    padding: 20px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content {
+    margin-top: 30px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-1 {
+    margin-bottom: 20px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-2 {
+    margin-bottom: 20px;
+}
+
+.ntsSwapGridArea .ntsSwapComponent {
+    width: 330px;
+}
+
+.ntsSwapSearchLeft #swap-list-search-area-input{
+    width: 173px !important;
+}
+
+.ntsSwapSearchRight #swap-list-search-area-input{
+    width: 206px !important;
+}
+
+.ntsSwapSearchRight {
+    width: 327px !important;
+}
+
+.ntsMoveDataArea {
+    padding: 0 10px;
+}
+
+.upDown-container {
+    float: left;
+}
+
+#swap-list_container {
+    float: left;    
+}
+
+#swap-list-gridArea1 {
+    width: 317px !important;
+}
+
+#swap-list-gridArea2 {
+    width: 326px !important;
+}
+
+.upDown-container{
+    padding-top: 167px;
+}
+
+#swap-list-grid1_horizontalScrollContainer {
+    overflow: hidden !important;
+}
+
+#swap-list-grid2_horizontalScrollContainer {
+    overflow: hidden !important;
+}
+
+.view-kdw #tab-panel .tab-content-2 .content .child-title {
+    margin-top: 10px;
+}
+
+.view-kdw #tab-panel .tab-content-2 .content .title-left {
+    width: 413px;
+    float: left;
+}
+
+.view-kdw #tab-panel .tab-content-3 .content .child-title {
+    margin-top: 10px;
+}
+
+.view-kdw #tab-panel .tab-content-3 .content .title-left {
+    width: 413px;
+    float: left;
+}

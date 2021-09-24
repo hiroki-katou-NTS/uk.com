@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.record.dom.daily.ouen;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 
 @Getter
 /** 日別実績の応援作業別勤怠時間 */
@@ -37,5 +39,13 @@ public class OuenWorkTimeOfDaily extends AggregateRoot {
 	/** [1] 変更する */
 	public void setOuenTime(List<OuenWorkTimeOfDailyAttendance> ouenTimes) {
 		this.ouenTimes = ouenTimes;
+	}
+	
+	public void updateOuenTime(OuenWorkTimeOfDailyAttendance ouenTimeNew) {
+		Optional<OuenWorkTimeOfDailyAttendance> ouenTimeOld = this.ouenTimes.stream().filter(c->c.getWorkNo().v() == ouenTimeNew.getWorkNo().v()).findFirst();
+		if(ouenTimeOld.isPresent()) {
+			this.ouenTimes.removeIf(c->c.getWorkNo().v() == ouenTimeNew.getWorkNo().v());
+			this.ouenTimes.add(ouenTimeNew);
+		}
 	}
 }

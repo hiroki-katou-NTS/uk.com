@@ -87,9 +87,9 @@ module nts.uk.ui.at.kdw013.a {
 
         events: KnockoutObservableArray<calendar.EventApi> = ko.observableArray([]);
 
-        breakTime: KnockoutObservable<calendar.BreakTime> = ko.observable();
+        breakTime= ko.observableArray([]);
 
-        businessHours: KnockoutObservableArray<calendar.BussinessHour> = ko.observableArray([]);
+        businessHours= ko.observableArray([]);
 
         weekends: KnockoutObservable<boolean> = ko.observable(true);
         editable: KnockoutObservable<boolean> = ko.observable(true);
@@ -100,7 +100,7 @@ module nts.uk.ui.at.kdw013.a {
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
-        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '10000-01-01'});
+        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
 
         employee: KnockoutObservable<string> = ko.observable('');
 
@@ -231,7 +231,7 @@ module nts.uk.ui.at.kdw013.a {
                             })
                             .flatten()
                             .value();
-
+                        
                         vm.events(events);
 
                         return;
@@ -385,6 +385,57 @@ module nts.uk.ui.at.kdw013.a {
                     return [] as calendar.Employee[];
                 }
             }).extend({ rateLimit: 500 });
+    
+            vm.breakTime = ko.computed({
+                read: () => {
+                    const datas = ko.unwrap(vm.$datas);
+
+                    if (datas) {
+
+                        const { lstWorkRecordDetailDto } = datas;
+
+                        return _
+                            .chain(lstWorkRecordDetailDto)
+                            .filter(({actualContent}) => { return !!actualContent.breakTimeSheets.length })
+                            .map(({actualContent, date}) => {
+                                const {breakTimeSheets} = actualContent;
+                                return {
+                                    dayOfWeek: vm.getDOW(date),
+                                    breakTimes: _.map(breakTimeSheets, ({start, end}) => { return { start, end }; })
+                                };
+                            }).value();
+
+                    }
+
+                    return [];
+                }
+            });
+    
+            vm.businessHours = ko.computed({
+                read: () => {
+                    const datas = ko.unwrap(vm.$datas);
+
+                    if (datas) {
+
+                        const { lstWorkRecordDetailDto } = datas;
+
+                        return _
+                            .chain(lstWorkRecordDetailDto)
+                            .filter(({actualContent}) => { return !!actualContent.start.timeWithDay || !!actualContent.end.timeWithDay })
+                            .map(({actualContent, date}) => {
+                                const {start, end} = actualContent;
+                                return {
+                                    dayOfWeek: vm.getDOW(date),
+                                    start: start.timeWithDay,
+                                    end: end.timeWithDay
+                                };
+                            }).value();
+
+                    }
+
+                    return [];
+                }
+            });
 
             vm.attendanceTimes = ko.computed({
                 read: () => {
@@ -492,6 +543,23 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$settings(response);
                 })
                 .always(() => vm.$blockui('clear'));
+        }
+
+        getDOW(date){
+            const vm = this;
+            const dateRange = ko.unwrap(vm.dateRange);
+            if (dateRange) {
+                const start = moment(dateRange.start);
+                const end = moment(dateRange.end);
+                let range = end.diff(start, 'days');
+                let dates = [] ;
+                for (let i = 0; i <= range; i++) {
+                    dates.push(start.clone().add(i, 'days').format('YYYY/MM/DD'));
+                }
+                return _.indexOf(dates, date) + 1;
+            }
+           
+                return 0;
         }
 
         mounted() {
