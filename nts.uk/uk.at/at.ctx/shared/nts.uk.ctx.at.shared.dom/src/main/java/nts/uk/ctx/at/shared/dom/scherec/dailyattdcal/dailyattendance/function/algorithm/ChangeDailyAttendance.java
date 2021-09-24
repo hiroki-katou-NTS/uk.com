@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
@@ -30,4 +32,17 @@ public class ChangeDailyAttendance {
 	
 	/** 直行直帰区分*/
 	public boolean directBounceClassifi; 
+	
+	public static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId,  ScheduleRecordClassifi classification) {
+
+		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
+				.isPresent();
+		boolean attendance = lstItemId.stream()
+				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
+				.findFirst().isPresent();
+		boolean directBounceClassifi = lstItemId.stream().filter(x -> x.intValue() == 859 || x.intValue() == 860)
+				.findFirst().isPresent();
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, classification,
+				directBounceClassifi);
+	}
 }
