@@ -93,7 +93,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 
 			// (Imported)「残数作成元の申請を取得する」
 			List<AppRemainCreateInfor> lstAppData = this.remainAppData.lstRemainDataFromApp(new CacheCarrier(), cid,
-					sid, datePeriod);
+					sid, loopDate);
 
 			// 指定期間の暫定残数管理データを作成する
 			InterimRemainCreateDataInputPara inputParam = new InterimRemainCreateDataInputPara(cid,
