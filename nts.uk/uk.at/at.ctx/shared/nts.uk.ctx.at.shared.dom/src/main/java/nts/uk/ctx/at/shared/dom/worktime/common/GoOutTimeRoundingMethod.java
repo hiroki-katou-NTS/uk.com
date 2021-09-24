@@ -11,7 +11,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 public enum GoOutTimeRoundingMethod {
 	
 	/** 実働時間帯の枠ごとに合計せず丸める */
-	IN_FRAME(0, "Enum_GoOutTimeRoundingMethod_InFrame", "外出時間帯ごとに丸める"),
+	IN_FRAME(0, "Enum_GoOutTimeRoundingMethod_InFrame", "実働時間帯の枠ごとに合計せず丸める"),
 	
 	/** 実働時間帯の枠ごとに合計してから丸める */
 	AFTER_TOTAL_IN_FRAME(1, "Enum_GoOutTimeRoundingMethod_AfterTotalInFrame", "実働時間帯の枠ごとに合計してから丸める"),

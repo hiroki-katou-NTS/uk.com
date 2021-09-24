@@ -160,7 +160,11 @@ public class WorkTimezoneGoOutSetTest {
 				GoOutTimeRoundingMethod.IN_FRAME, //外出時間帯ごとに丸める
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_5MIN, Rounding.ROUNDING_UP)); //5分切り上げ
 		
-		Optional<TimeRoundingSetting> result = target.getInFrame(ActualWorkTimeSheetAtr.WithinWorkTime, GoingOutReason.PRIVATE, DeductionAtr.Appropriate);
+		Optional<TimeRoundingSetting> result = target.getInFrame(
+				ActualWorkTimeSheetAtr.WithinWorkTime,
+				GoingOutReason.PRIVATE,
+				DeductionAtr.Appropriate,
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN));
 		
 		//result == 5分切り上げ
 		assertThat(result.get().getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_5MIN);
@@ -173,7 +177,11 @@ public class WorkTimezoneGoOutSetTest {
 				GoOutTimeRoundingMethod.AFTER_TOTAL, //実働時間帯ごとに合計して丸める
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_5MIN, Rounding.ROUNDING_UP)); //5分切り上げ
 		
-		Optional<TimeRoundingSetting> result = target.getInFrame(ActualWorkTimeSheetAtr.WithinWorkTime, GoingOutReason.PRIVATE, DeductionAtr.Appropriate);
+		Optional<TimeRoundingSetting> result = target.getInFrame(
+				ActualWorkTimeSheetAtr.WithinWorkTime,
+				GoingOutReason.PRIVATE,
+				DeductionAtr.Appropriate,
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN));
 		
 		//result == 1分切り捨て
 		assertThat(result.get().getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_1MIN);
@@ -186,7 +194,11 @@ public class WorkTimezoneGoOutSetTest {
 				GoOutTimeRoundingMethod.AFTER_TOTAL_IN_FRAME, //実働時間帯の枠ごとに合計してから丸める
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_5MIN, Rounding.ROUNDING_UP)); //5分切り上げ
 		
-		Optional<TimeRoundingSetting> result = target.getInFrame(ActualWorkTimeSheetAtr.WithinWorkTime, GoingOutReason.PRIVATE, DeductionAtr.Appropriate);
+		Optional<TimeRoundingSetting> result = target.getInFrame(
+				ActualWorkTimeSheetAtr.WithinWorkTime,
+				GoingOutReason.PRIVATE,
+				DeductionAtr.Appropriate,
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN));
 		
 		//result == 1分切り捨て
 		assertThat(result.get().getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_1MIN);

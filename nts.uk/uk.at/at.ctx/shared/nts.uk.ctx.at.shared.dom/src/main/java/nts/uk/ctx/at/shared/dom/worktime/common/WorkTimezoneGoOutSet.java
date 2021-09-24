@@ -127,11 +127,12 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	 * @param actualAtr 実働時間帯区分
 	 * @param reason 外出理由
 	 * @param dedAtr 控除区分
+	 * @param reverse 逆丸め用
 	 * @return 丸め設定
 	 */
-	public Optional<TimeRoundingSetting> getInFrame(ActualWorkTimeSheetAtr actualAtr, GoingOutReason reason, DeductionAtr dedAtr) {
+	public Optional<TimeRoundingSetting> getInFrame(ActualWorkTimeSheetAtr actualAtr, GoingOutReason reason, DeductionAtr dedAtr, TimeRoundingSetting reverse) {
 		if(this.roundingMethod.isInFrame()) {
-			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason, dedAtr, TimeRoundingSetting.ONE_MIN_DOWN));
+			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason, dedAtr, reverse));
 		}
 		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
 	}
