@@ -227,6 +227,13 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                     pageBreak(pageBreaks,count,cells);
                                     itemOnePage = 5;
                                     count += 5;
+
+                                    // #
+                                    cells.copyRow(cellsTemplate, 5, count);
+                                    itemOnePage += 1;
+                                    cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
+                                            + content.getWorkplaceCd() + "　" + content.getWorkplaceName());
+                                    count += 1;
                                 }
                                 cells.copyRows(cellsTemplate, 14, count, 2);
                                 itemOnePage += 2;
@@ -267,6 +274,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     cells.get(count, 0).setValue(TextResource.localize("KWR007_306"));
                     prinDetail(count, totalAll, cells, mapIdAnAttribute, query);
                 }
+                setTopBorder(cells, count - 1);
                 PageSetup pageSetup = worksheet.getPageSetup();
                 pageSetup.setPrintArea(PRINT_AREA + count);
             }
@@ -532,5 +540,19 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
             if (i == 4 || i == 8) destination.append("\n");
         }
         return destination.toString();
+    }
+
+    private void setTopBorder(Cells cells, int row) {
+        for (int col = 0; col < 21; col++) {
+            Cell cell = cells.get(row, col);
+            Style style = cell.getStyle();
+            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+            cell.setStyle(style);
+        }
+    }
+
+    private void printWorkplace(Cells cells, Cells cellsTemplate, int row, String wkpCode, String wkpName) throws Exception {
+        cells.copyRow(cellsTemplate, 5, row);
+        cells.get(row, 0).setValue(TextResource.localize("KWR007_303") + wkpCode + "　" + wkpName);
     }
 }
