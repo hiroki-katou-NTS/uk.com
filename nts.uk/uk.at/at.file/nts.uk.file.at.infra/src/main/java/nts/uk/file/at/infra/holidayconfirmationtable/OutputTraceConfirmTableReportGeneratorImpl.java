@@ -137,7 +137,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             }
             List<DisplayContentsOfSubLeaveConfirmationTable> contents = mapData.get(wkpCode);
             contents.sort(Comparator.comparing(DisplayContentsOfSubLeaveConfirmationTable::getEmployeeCode));
-            cells.get(row, 0).setValue(TextResource.localize("KDR003_38") + wkpCode + "　" + contents.get(0).getWorkplaceName());
+            cells.get(row, 0).setValue(TextResource.localize("KDR003_18") + wkpCode + "　" + contents.get(0).getWorkplaceName());
             wkpIndexes.add(row);
             row++;
             count++;
