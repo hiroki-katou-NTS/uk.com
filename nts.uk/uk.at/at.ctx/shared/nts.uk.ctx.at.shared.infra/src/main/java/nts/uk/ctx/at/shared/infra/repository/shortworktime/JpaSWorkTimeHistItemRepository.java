@@ -27,6 +27,7 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
@@ -251,6 +252,20 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
 			return Collections.emptyList();
 
 		return findByHistIds(resultHist.stream().map(x -> x.identifier()).distinct().collect(Collectors.toList()));
+	}
+
+	@Override
+	public Optional<ShortWorkTimeHistoryItem> getShortWorkTimeHistoryItemBySidAndBaseDate(String sid,
+			GeneralDate baseDate) {
+		// TODO dev code
+		return null;
+	}
+
+	@Override
+	public List<ShortWorkTimeHistoryItem> getShortWorkTimeHistoryItemBySidsAndBaseDate(List<String> sids,
+			GeneralDate baseDate) {
+		// TODO dev code
+		return null;
 	}
 
 }
