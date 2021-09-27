@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.app.input.setting;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -29,8 +28,7 @@ public class FindExternalImportSetting {
 	public List<ExternalImportSettingDto> find(String settingCode) {
 		val require = this.createRequire();
 		val setting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode)).get();
-		val domainSettings = setting.getDomainSettings().values().stream().collect(Collectors.toList());
-		return ExternalImportSettingDto.fromDomain(require, setting, domainSettings);
+		return ExternalImportSettingDto.fromDomain(require, setting, setting.getDomainSettings());
 	}
 	
 	public Require createRequire() {

@@ -29,7 +29,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	@Override
 	public void insert(ExternalImportSetting domain) {
 		this.commandProxy().insert(toEntitiy(domain));
-		domain.getDomainSettings().forEach((domainId, setting) -> {
+		domain.getDomainSettings().forEach(setting -> {
 			this.commandProxy().insert(toEntitiy(domain.getCompanyId(), domain.getCode().v(), setting));
 		});
 	}
@@ -74,7 +74,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 			List<DomainImportSetting> domainImportSettings = domainImportSettings(
 					companyId, d.getCode(), d.getCsvFileInfo());
 			domainImportSettings.forEach(domainImportSetting ->{
-				d.getDomainSettings().put(domainImportSetting.getDomainId(), domainImportSetting);
+				d.putDomainSettings(domainImportSetting.getDomainId(), domainImportSetting);
 			});
 		});
 		return domains;
@@ -96,7 +96,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		if(domain.isPresent()) {
 			List<DomainImportSetting> domainImportSettings = domainImportSettings(companyId, settingCode, domain.get().getCsvFileInfo());
 			domainImportSettings.forEach(domainImportSetting -> {
-				domain.get().getDomainSettings().put(domainImportSetting.getDomainId(), domainImportSetting);
+				domain.get().putDomainSettings(domainImportSetting.getDomainId(), domainImportSetting);
 			});
 		}
 		return domain;

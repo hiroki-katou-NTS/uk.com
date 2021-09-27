@@ -1,8 +1,10 @@
 package nts.uk.ctx.exio.dom.input.setting;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -52,6 +54,12 @@ public class ExternalImportSetting implements DomainAggregate {
 		this.csvFileInfo = csvFileInfo;
 		this.domainSettings = domainSettings;
 	}
+	
+	public List<DomainImportSetting> getDomainSettings() {
+		return this.domainSettings.values().stream()
+				.sorted((ds1, ds2) -> ds1.getDomainId().compareTo(ds2.getDomainId()))
+				.collect(Collectors.toList());
+	}
 
 	public void assemble(DomainImportSetting.RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
 		domainSettings.forEach((domainId, setting) -> {
@@ -74,5 +82,9 @@ public class ExternalImportSetting implements DomainAggregate {
 		return this.domainSettings.containsKey(domain)
 				? Optional.of(this.domainSettings.get(domain))
 				: Optional.empty();
+	}
+
+	public void putDomainSettings(ImportingDomainId domainId, DomainImportSetting domainImportSetting) {
+		this.domainSettings.put(domainId, domainImportSetting);
 	}
 }

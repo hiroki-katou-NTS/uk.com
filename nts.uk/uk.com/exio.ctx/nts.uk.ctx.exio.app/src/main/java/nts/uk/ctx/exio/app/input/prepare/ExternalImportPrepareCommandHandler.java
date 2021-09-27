@@ -64,7 +64,7 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 			String companyId) {
 
 		require.setupWorkspace();
-		for (DomainImportSetting setting : externalImportSetting.getDomainSettings().values()) {	//ドメイン設定の順番気にして返してくれるやつつかう
+		for (DomainImportSetting setting : externalImportSetting.getDomainSettings()) {
 			try (val inputStream = fileStorage.getStream(fileId)
 					.orElseThrow(() -> new RuntimeException("file not found: " + fileId))) {
 				

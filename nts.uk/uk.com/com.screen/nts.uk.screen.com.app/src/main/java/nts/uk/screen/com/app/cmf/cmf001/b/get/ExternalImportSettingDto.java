@@ -51,7 +51,7 @@ public class ExternalImportSettingDto {
 
 	public static ExternalImportSettingDto fromDomain(ExternalImportSetting setting) {
 
-		DomainImportSetting domainSetting = setting.getDomainSettings().values().stream().findFirst().get();
+		DomainImportSetting domainSetting = setting.getDomainSettings().stream().findFirst().get();
 		
 		return new ExternalImportSettingDto(
 				setting.getCompanyId(),
