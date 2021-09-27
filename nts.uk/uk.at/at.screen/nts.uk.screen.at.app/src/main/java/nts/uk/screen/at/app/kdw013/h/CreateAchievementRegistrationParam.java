@@ -28,12 +28,14 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
+import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
+import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * @author thanhpv
- * @part UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.H：実績内容確認.メニュー別OCD.実績登録パラメータを作成する
+ * @part UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.H：実績内容確認.メニュー別OCD
  */
 @Stateless
 public class CreateAchievementRegistrationParam {
@@ -46,6 +48,32 @@ public class CreateAchievementRegistrationParam {
     
     @Inject
     private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+    
+    @Inject
+    private GetWorkDataMasterInformation getWorkDataMasterInformation;
+    
+    /**
+     * @name 実績内容を登録する
+     */
+    public void registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items, IntegrationOfDaily integrationOfDaily){
+    	
+    	//call ScreenQuery 実績登録パラメータを作成する
+    	// chưa có mô tả param truyền vào.
+    	DPItemParent DPItemParent = this.create(empTarget, targetDate, items, integrationOfDaily);
+    	
+    	//Call 修正した実績を登録する
+    	//QA: 120067
+    	
+    }
+    
+    /**
+     * @name 実績内容確認を起動する
+     */
+    public WorkDataMasterInformationDto startAchievementConfirmation(GeneralDate refDate, List<Integer> itemIds){
+    	
+    	return getWorkDataMasterInformation.get(refDate, itemIds);
+    	
+    }
     
     /**
      * @name 実績登録パラメータを作成する
