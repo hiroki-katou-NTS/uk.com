@@ -9,7 +9,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDayDispOrderPk;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -27,8 +29,8 @@ public class KrcmtManHrUse extends ContractUkJpaEntity implements Serializable {
 
 	@Id
 	@Column(name = "CID")
-	public int cId;
-	
+	public String cId;
+
 	@Column(name = "USE_ATR")
 	public int useAtr;
 
@@ -36,4 +38,14 @@ public class KrcmtManHrUse extends ContractUkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.cId;
 	}
+
+	public KrcmtManHrUse(ManHrInputUsageSetting setting) {
+		this.cId = AppContexts.user().companyId();
+		this.useAtr = setting.getUsrAtr().value;
+	}
+
+	public ManHrInputUsageSetting toDomain() {
+		return new ManHrInputUsageSetting(NotUseAtr.valueOf(this.useAtr));
+	}
+
 }

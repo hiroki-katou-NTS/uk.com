@@ -37,5 +37,5 @@ public class KrcmtManHrFormatMain extends ContractUkJpaEntity implements Seriali
 	protected Object getKey() {
 		return this.pk;
 	}
-
+	
 }
