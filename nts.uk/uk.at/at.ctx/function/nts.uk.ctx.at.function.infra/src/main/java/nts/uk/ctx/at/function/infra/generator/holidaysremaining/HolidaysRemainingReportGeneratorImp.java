@@ -452,41 +452,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 1, firstRow, totalAddRows);
         // E1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_13"));
-        if(!isTime){
-            Style styleCopy = cells.get(firstRow, 10).getStyle();
-            cells.get(firstRow, 9).setStyle(styleCopy);
 
-            Style style = cells.get(firstRow, 9).getStyle();
-            style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
-            style.setHorizontalAlignment(TextAlignmentType.LEFT);
-            cells.get(firstRow, 9).setStyle(style);
-
-            Style styleE116 = cells.get(firstRow+1, 4).getStyle();
-            styleE116.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            styleE116.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-            cells.get(firstRow+1, 4).setStyle(styleE116);
-
-            Style styleE113 = cells.get(firstRow+1, 5).getStyle();
-            styleE113.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            styleE113.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            //styleE113.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-            cells.get(firstRow+1, 5).setStyle(styleE113);
-
-            Style styleE114 = cells.get(firstRow+1, 6).getStyle();
-            styleE114.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            styleE114.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            styleE114.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            //styleE114.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-            cells.get(firstRow+1, 6).setStyle(styleE114);
-
-            Style styleE115 = cells.get(firstRow+1, 7).getStyle();
-            styleE115.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            styleE115.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            //styleE115.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-            cells.get(firstRow+1, 7).setStyle(styleE115);
-
-
-        }
         // E2_1
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_14"));
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
@@ -503,13 +469,50 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         listAnnLeaGrant = listAnnLeaGrant.stream()
                 .sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate))
                 .collect(Collectors.toList());
+        if(!isTime){
+            val isThinBoderTop = (listAnnLeaGrant == null ||listAnnLeaGrant.size() == 0 ||listAnnLeaGrant.size() == 1) &&!isTime;
+            Style styleCopy = cells.get(firstRow, 10).getStyle();
+            cells.get(firstRow, 9).setStyle(styleCopy);
+
+            Style style = cells.get(firstRow, 9).getStyle();
+            style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+            style.setHorizontalAlignment(TextAlignmentType.LEFT);
+            cells.get(firstRow, 9).setStyle(style);
+
+            Style styleE116 = cells.get(firstRow+1, 4).getStyle();
+            styleE116.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            styleE116.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+            cells.get(firstRow+1, 4).setStyle(styleE116);
+
+            Style styleE113 = cells.get(firstRow+1, 5).getStyle();
+            styleE113.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            styleE113.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            if(isThinBoderTop)
+              styleE113.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+            cells.get(firstRow+1, 5).setStyle(styleE113);
+
+            Style styleE114 = cells.get(firstRow+1, 6).getStyle();
+            styleE114.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            styleE114.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            styleE114.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            if(isThinBoderTop)
+              styleE114.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+            cells.get(firstRow+1, 6).setStyle(styleE114);
+
+            Style styleE115 = cells.get(firstRow+1, 7).getStyle();
+            styleE115.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            styleE115.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+            if(isThinBoderTop)
+                styleE115.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+            cells.get(firstRow+1, 7).setStyle(styleE115);
+
+        }
         //RQ 363
         // E3_1
         val text = checkShowAreaAnnualBreak1(
                 dataSource.getHolidaysRemainingManagement())
                 ? TextResource.localize("KDR001_15")
                 : "";
-
         cells.get(firstRow + (isTime  ? 2 : 1), 9).setValue(text);
         if (listAnnLeaGrant != null) {
             for (int i = 0; i < listAnnLeaGrant.size(); i++) {
@@ -569,8 +572,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         (Integer) valueE116 : null;
                 cells.get(firstRow + (isTime ? 2 * i : i) + 1, 4)
                         .setValue((time_Granted == null || !isTime) ? "" : convertToTime(time_Granted));
-
-
             }
         }
         // RQ 363
