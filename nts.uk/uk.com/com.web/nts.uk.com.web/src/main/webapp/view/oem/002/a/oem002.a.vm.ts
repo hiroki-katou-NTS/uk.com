@@ -39,18 +39,14 @@ module nts.uk.com.view.oem002.a {
             vm.$errors("clear");
             vm.selectedEquipmentInfo(EquipmentInformation.createFromDto(result, vm.equipmentClsList()));
 
-            // Fix bug A2_9
-            // Avoid using readonly attr because of tabindex
-            vm.$nextTick(() => $("#A2_9").attr("readonly", "readonly"));
+            vm.fixReadonlyA2_9();
           })
         } else {
           vm.isNewMode(true);
           vm.selectedEquipmentInfo(new EquipmentInformation());
           vm.selectedEquipmentInfo.valueHasMutated();
 
-          // Fix bug A2_9
-          // Avoid using readonly attr because of tabindex
-          vm.$nextTick(() => $("#A2_9").attr("readonly", "readonly"));
+          vm.fixReadonlyA2_9();
         }
       });
       vm.isNewMode.subscribe(() => vm.$nextTick(() => $("#A2_10").focus()));
@@ -146,10 +142,18 @@ module nts.uk.com.view.oem002.a {
           if (result) {
             vm.selectedEquipmentInfo().equipmentClsCode(result.code);
             vm.selectedEquipmentInfo().equipmentClsName(result.name);
+
+            vm.fixReadonlyA2_9();
           }
         });
     }
     
+    private fixReadonlyA2_9() {
+      const vm = this;
+      // Fix bug A2_9
+      // Avoid using readonly attr because of tabindex
+      vm.$nextTick(() => $("#A2_9").attr("readonly", "readonly"));
+    }
   }
 
   export class EquipmentInformationDto {
