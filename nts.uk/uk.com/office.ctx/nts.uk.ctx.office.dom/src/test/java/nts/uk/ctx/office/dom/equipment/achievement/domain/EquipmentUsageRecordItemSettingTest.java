@@ -25,6 +25,7 @@ public class EquipmentUsageRecordItemSettingTest {
 	
 	/**
 	 * [1] 入力した値の制御をチェックする
+	 * エラー:Empty
 	 */
 	@Test
 	public void testCheck() {
@@ -33,5 +34,18 @@ public class EquipmentUsageRecordItemSettingTest {
 		
 		Optional<ErrorMessage> actual = domain.check(inputVal);
 		assertThat(actual).isNotPresent();
+	}
+	
+	/**
+	 * [1] 入力した値の制御をチェックする
+	 * エラー:Present
+	 */
+	@Test
+	public void testCheck2() {
+		EquipmentUsageRecordItemSetting domain = EquipmentUsageRecordItemSettingTestHelper.createDoamin();
+		ActualItemUsageValue inputVal = new ActualItemUsageValue("input value mock to error");
+		
+		Optional<ErrorMessage> actual = domain.check(inputVal);
+		assertThat(actual).isPresent();
 	}
 }

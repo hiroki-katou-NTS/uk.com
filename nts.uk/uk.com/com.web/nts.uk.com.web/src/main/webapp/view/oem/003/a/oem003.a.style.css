@@ -1,0 +1,68 @@
+.fixed-flex-layout-left {
+  width: 990px;
+  padding: 5px;
+}
+.fixed-flex-layout-right {
+  padding: 10px;
+  margin: auto;
+}
+.button-img {
+  cursor: pointer;
+}
+table.data-table th,
+table.data-table td {
+  text-align: center;
+  padding: 0px !important;
+}
+table.data-table tr td.text-area span {
+  display: flex !important;
+}
+table.data-table {
+  width: 990px;
+}
+table.data-table .ntsControl {
+  height: 50px !important;
+}
+table.data-table .ntsControl .nts-editor {
+  height: calc(100% - 14px) !important;
+  border-radius: 0px !important;
+}
+table.data-table .ntsControl:not(.error) .nts-editor {
+  border: none !important;
+}
+table.data-table .ui-igcombo-wrapper .ui-igcombo .ui-igcombo-button,
+table.data-table .ui-igcombo-wrapper:not(.error) .ui-igcombo {
+  border: none !important;
+}
+table.data-table .ui-igcombo-wrapper .ui-igcombo-buttonicon,
+table.data-table .ui-igcombo-wrapper .nts-toggle-dropdown .nts-combo-item .text {
+  line-height: 48px !important;
+  border: none !important;
+  margin: 0 !important;
+}
+
+div.ui-iggrid-scrolldiv table.data-table tr:hover td,
+div.ui-iggrid-scrolldiv table.data-table tr:hover td .nts-editor,
+div.ui-iggrid-scrolldiv table.data-table tr:hover td .ui-igcombo-button,
+div.ui-iggrid-scrolldiv table.data-table tr:hover td .ui-igcombo-buttonicon {
+  background: linear-gradient(0deg, rgba(68,224,140,0.1), rgba(68,224,140,0.1)),#fff;
+  color: #30CC40;
+  font-weight: 400;
+}
+div.ui-iggrid-scrolldiv table.data-table tr:hover td .nts-toggle-dropdown .text {
+  color: #30CC40;
+  font-weight: 400;
+}
+
+div.ui-iggrid-scrolldiv table.data-table tr.active td,
+div.ui-iggrid-scrolldiv table.data-table tr.active td .nts-editor,
+div.ui-iggrid-scrolldiv table.data-table tr.active td .ui-igcombo-button,
+div.ui-iggrid-scrolldiv table.data-table tr.active td .ui-igcombo-buttonicon {
+  background: linear-gradient(0deg, rgba(68,224,140,0.1), rgba(68,224,140,0.1)),#fff;
+  color: #30CC40;
+  font-weight: 600 !important;
+}
+div.ui-iggrid-scrolldiv table.data-table tr.active td .nts-toggle-dropdown .text {
+  color: #30CC40;
+  font-weight: 600 !important;
+}

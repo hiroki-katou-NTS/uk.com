@@ -45,7 +45,9 @@ public class EquipmentPerformInputFormatSettingRepositoryImpl extends JpaReposit
 
 	@Override
 	public void delete(String cid) {
-		List<OfimtEquipmentDayFormat> entities = this.queryProxy().query(SELECT_BY_CID, OfimtEquipmentDayFormat.class)
+		List<OfimtEquipmentDayFormat> entities = this.queryProxy()
+				.query(SELECT_BY_CID, OfimtEquipmentDayFormat.class)
+				.setParameter("cid", cid)
 				.getList();
 		this.commandProxy().removeAll(entities);
 	}
