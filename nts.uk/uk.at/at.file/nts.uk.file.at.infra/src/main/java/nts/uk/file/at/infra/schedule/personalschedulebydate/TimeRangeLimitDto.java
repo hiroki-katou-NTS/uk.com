@@ -26,6 +26,13 @@ class TimeCheckedDto {
     private Integer endTime;
 }
 
+@Getter
+class ScheduleTimeInput extends TimeCheckedDto {
+    public ScheduleTimeInput(Integer startTime, Integer endTime) {
+        super(startTime, endTime);
+    }
+}
+
 enum OutputType {
     TOTAL_MINUTE,
     HOUR,

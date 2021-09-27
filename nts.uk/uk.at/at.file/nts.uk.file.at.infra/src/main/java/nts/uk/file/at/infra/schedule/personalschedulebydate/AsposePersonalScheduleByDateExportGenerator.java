@@ -4,8 +4,8 @@ import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.calendar.DayOfWeek;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
@@ -23,10 +23,12 @@ import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Stateless
 public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByDateExportGenerator {
-    private static final String TEMPLATE_FILE = "report/KSU003.xlsx";
+    private static final String TEMPLATE_FILE = "report/KSU003_v2.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int MAX_ROW_IN_PAGE = 60;
     private static final int MAX_ROW_HEADER_IN_PAGE = 8;
@@ -35,7 +37,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private static final String PRINT_AREA = "A1:BE";
     private static int MINUTES_IN_AN_HOUR = 60;
     private static int ROUNDING_INCREMENTS = 5;
-    private static final int MAX_SPEC_DAY = 5;
+    private static final int MAX_ROW_B5 = 4;
 
     @Override
     public void generate(FileGeneratorContext context, PersonalScheduleByDateDataSource dataSource) {
@@ -72,12 +74,12 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private void pageSetting(Worksheet worksheet, PersonalScheduleByDateDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         // A1_1
-        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyInfo().getCompanyName());
+        pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + dataSource.getCompanyInfo().getCompanyName());
         // A1_2
-        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + getText("KSU003_138"));
+        pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + getText("KSU003_138"));
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         // A1_3, A1_4
-        pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
+        pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
     }
 
     /**
@@ -100,24 +102,9 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         // B4_1, B4_2
         val workplaceEvent = dateInfo.getOptWorkplaceEventName().isPresent() ? dateInfo.getOptWorkplaceEventName().get().v() : EMPTY;
         cells.get(4, 5).setValue(getText("KSU003_143") + workplaceEvent);
+
         // B5_1
-        if (!CollectionUtil.isEmpty(dateInfo.getListSpecDayNameCompany())) {
-            int maxSize = dateInfo.getListSpecDayNameCompany().size();
-            int rowStart = MAX_SPEC_DAY - maxSize;
-            for (int i = 0; i < maxSize; i++) {
-                cells.get(rowStart, 14).setValue(getText("KSU003_186") + dateInfo.getListSpecDayNameCompany().get(i));
-                rowStart++;
-            }
-        }
-        // B5_2
-        if (!CollectionUtil.isEmpty(dateInfo.getListSpecDayNameWorkplace())) {
-            int maxSize = dateInfo.getListSpecDayNameWorkplace().size();
-            int rowStart = MAX_SPEC_DAY - maxSize;
-            for (int i = 0; i < maxSize; i++) {
-                cells.get(rowStart, 21).setValue(getText("KSU003_187") + dateInfo.getListSpecDayNameWorkplace().get(i));
-                rowStart++;
-            }
-        }
+        printB5(cells, dateInfo.getListSpecDayNameCompany(), dateInfo.getListSpecDayNameWorkplace());
 
         // Header C:
         cells.get(6, 0).setValue(getText("KSU003_159"));      // C1_1
@@ -193,7 +180,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
             else
                 cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (isEndOfPage(rowCount, pageIndex) ? 49 : 9), rowCount, 2);
-
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
 
             val empInfoOpt = employeeInfoList.stream().filter(x -> x.getEmployeeId().equals(item.getEmployeeId())).findFirst();
@@ -281,7 +267,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
                 // C3_2_2
                 if (!item.getBreakTimeList().isEmpty()) {
-                    final List<BreakTimeSheet> breakTimeList = item.getBreakTimeList();
+                    val breakTimeList = item.getBreakTimeList();
                     for (BreakTimeSheet breakTime : breakTimeList) {
                         TimeCheckedDto timeChecked = new TimeCheckedDto(breakTime.getStartTime().v(), breakTime.getEndTime().v());
                         if (!isDoubleWorkDisplay) {
@@ -524,6 +510,10 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         return new TimeCheckedDto(startTime, endTime);
     }
 
+    private List<TimeCheckedDto> checkContinuityOfTime(List<ScheduleTimeInput> sources) {
+        return null;
+    }
+
     /**
      * Check overlap range for actual time
      *
@@ -726,6 +716,45 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         return (i >= minValueInclusive && i <= maxValueInclusive);
     }
 
+    private void printB5(Cells cells, List<SpecificName> specDayCompanies, List<SpecificName> specDayWorkplaces) {
+        val mergedSpecDayList = Stream.of(specDayCompanies, specDayWorkplaces).flatMap(Collection::stream).collect(Collectors.toList());
+        int rowStart = getRowStartB5(mergedSpecDayList.size());
+        int row = rowStart;
+        int column = 14;
+        for (SpecificName specDayName : mergedSpecDayList) {
+            // B5_1, B5_2
+            if (row > MAX_ROW_B5) {
+                row = rowStart;
+                column = 21;
+            }
+            cells.get(row, column).setValue(getText(column == 14 ? "KSU003_186" : "KSU003_187") + specDayName.v());
+            setBottomBorder(cells, row, column, column == 14 ? 19 : 26);
+            row += 1;
+        }
+    }
+
+    private int getRowStartB5(int maxSize) {
+        switch (maxSize) {
+            case 1:
+            case 2:
+                return 4;
+            case 3:
+            case 4:
+                return 3;
+            case 5:
+            case 6:
+                return 2;
+            case 7:
+            case 8:
+                return 1;
+            case 9:
+            case 10:
+                return 0;
+            default:
+                return 4;
+        }
+    }
+
     private void setStyleEmpWorkInfo(Cells cells, int row, boolean isDoubleWorkDisplay) {
         for (int column = 0; column < 7; column++) {
             if (isDoubleWorkDisplay && (column == 3 || column == 4)) continue;
@@ -745,11 +774,13 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         cell.setStyle(style);
     }
 
-    private void setAlignment(Cell cell, int textAlignmentType) {
-        Style style = cell.getStyle();
-        style.setHorizontalAlignment(textAlignmentType);
-        style.setVerticalAlignment(textAlignmentType);
-        cell.setStyle(style);
+    private void setBottomBorder(Cells cells, int row, int columnStart, int columnEnd) {
+        for (int col = columnStart; col <= columnEnd; col++) {
+            Cell cell = cells.get(row, col);
+            Style style = cell.getStyle();
+            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+            cell.setStyle(style);
+        }
     }
 
     private void removeTopBorder(Cell cell) {
