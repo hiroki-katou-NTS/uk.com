@@ -9,6 +9,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.外部入出力.外部受入.受入条件設定.受入条件設定（定型）
  *
@@ -165,8 +167,8 @@ public class StdAcceptCondSet extends AggregateRoot {
 		memento.setCharacterCode(this.characterCode.map(exiCharset -> exiCharset.value).orElse(null));
 		memento.setAcceptMode(this.acceptMode.map(acceptMode -> acceptMode.value).orElse(null));
 		memento.setConditionSetName(this.conditionSetName.v());
-		memento.setCheckCompleted(this.checkCompleted.map(notUseAtr -> notUseAtr.value).orElse(null));
-		memento.setDeleteExistDataMethod(this.deleteExistDataMethod.map(delExistDataMethod -> delExistDataMethod.value)
+		memento.setCheckCompleted(this.checkCompleted.map(notUseAtr -> BooleanUtils.toBoolean(notUseAtr.value)).orElse(null));
+		memento.setDeleteExistDataMethod(this.deleteExistDataMethod.map(delExistDataMethod -> BooleanUtils.toBoolean(delExistDataMethod.value))
 																   .orElse(null));
 	}
 
@@ -249,14 +251,14 @@ public class StdAcceptCondSet extends AggregateRoot {
 		 *
 		 * @param checkCompleted the check completed
 		 */
-		void setCheckCompleted(Integer checkCompleted);
+		void setCheckCompleted(boolean checkCompleted);
 
 		/**
 		 * Sets delete exist data method.
 		 *
 		 * @param deleteExistDataMethod the delete exist data method
 		 */
-		void setDeleteExistDataMethod(Integer deleteExistDataMethod);
+		void setDeleteExistDataMethod(boolean deleteExistDataMethod);
 	}
 
 	/**

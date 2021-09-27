@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcExecLog;
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacExeResultLogPk;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
@@ -68,11 +70,11 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
     }
 
     private static ExacExeResultLog toDomain(OiodtExAcExecLog entity) {
-        return ExacExeResultLog.createFromJavaType(entity.version, entity.exacExeResultLogPk.cid, entity.exacExeResultLogPk.conditionSetCd, entity.exacExeResultLogPk.externalProcessId, entity.executorId, entity.userId, entity.processStartDatetime, entity.standardAtr, entity.executeForm, entity.targetCount, entity.errorCount, entity.fileName, entity.systemType, entity.resultStatus, entity.processEndDatetime, entity.processAtr);
+        return ExacExeResultLog.createFromJavaType(entity.version, entity.exacExeResultLogPk.cid, entity.exacExeResultLogPk.conditionSetCd, entity.exacExeResultLogPk.externalProcessId, entity.executorId, entity.userId, entity.processStartDatetime, entity.standardAtr, BooleanUtils.toInteger(entity.executeForm), entity.targetCount, entity.errorCount, entity.fileName, entity.systemType, entity.resultStatus, entity.processEndDatetime, entity.processAtr);
     }
 
     private OiodtExAcExecLog toEntity(ExacExeResultLog domain) {
-        return new OiodtExAcExecLog(domain.getVersion(), new OiomtExacExeResultLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(), domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(), domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(), domain.getProcessAtr());
+        return new OiodtExAcExecLog(domain.getVersion(), new OiomtExacExeResultLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(), BooleanUtils.toBoolean(domain.getExecuteForm()), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(), domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(), domain.getProcessAtr());
     }
 
 	/* (non-Javadoc)

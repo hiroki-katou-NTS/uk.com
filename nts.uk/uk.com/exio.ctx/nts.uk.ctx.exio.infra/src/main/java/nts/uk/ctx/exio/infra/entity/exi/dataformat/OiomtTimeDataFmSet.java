@@ -11,6 +11,8 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
@@ -46,7 +48,7 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 	 */
 	@Basic(optional = false)
 	@Column(name = "FIXED_VALUE")
-	public int fixedValue;
+	public boolean fixedValue;
 
 	/**
 	 * 時分/分選択
@@ -60,14 +62,14 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 	 */
 	@Basic(optional = false)
 	@Column(name = "EFFECTIVE_DIGIT_LENGTH")
-	public int effectiveDigitLength;
+	public boolean effectiveDigitLength;
 
 	/**
 	 * 端数処理
 	 */
 	@Basic(optional = false)
 	@Column(name = "ROUND_PROC")
-	public int roundProc;
+	public boolean roundProc;
 
 	/**
 	 * 進数選択
@@ -122,10 +124,10 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 		super();
 		this.timeDatFmSetPk = new OiomtTimeDataFmSetPk(cid, sysType, conditionCode, acceptItemNum);
 		this.delimiterSet = delimiterSet;
-		this.fixedValue = fixedValue;
+		this.fixedValue = BooleanUtils.toBoolean(fixedValue);
 		this.hourMinSelect = hourMinSelect;
-		this.effectiveDigitLength = effectiveDigitLength;
-		this.roundProc = roundProc;
+		this.effectiveDigitLength = BooleanUtils.toBoolean(effectiveDigitLength);
+		this.roundProc = BooleanUtils.toBoolean(roundProc);
 		this.decimalSelect = decimalSelect;
 		this.valueOfFixedValue = valueOfFixedValue;
 		this.startDigit = startDigit;
@@ -145,8 +147,8 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 	}
 
 	public TimeDataFormatSet toDomain() {
-		return new TimeDataFormatSet(ItemType.TIME.value, this.delimiterSet, this.fixedValue, this.hourMinSelect,
-				this.effectiveDigitLength, this.roundProc, this.decimalSelect, this.valueOfFixedValue, this.startDigit,
+		return new TimeDataFormatSet(ItemType.TIME.value, this.delimiterSet, BooleanUtils.toInteger(this.fixedValue), this.hourMinSelect,
+				BooleanUtils.toInteger(this.effectiveDigitLength), BooleanUtils.toInteger(this.roundProc), this.decimalSelect, this.valueOfFixedValue, this.startDigit,
 				this.endDigit, this.roundProcCls);
 	}
 

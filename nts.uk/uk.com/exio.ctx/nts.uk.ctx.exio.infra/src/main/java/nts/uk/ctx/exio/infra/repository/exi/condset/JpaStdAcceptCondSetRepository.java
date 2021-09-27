@@ -8,6 +8,9 @@ import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcCond;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSetPk;
 
 import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +103,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 									   .orElse(null));
 			entity.setDeleteExistData(domain.getDeleteExistData().value);
 			entity.setDeleteExtDataMethod(domain.getDeleteExistDataMethod()
-												.map(deleteExistDataMethod -> deleteExistDataMethod.value)
+												.map(deleteExistDataMethod -> BooleanUtils.toBoolean(deleteExistDataMethod.value))
 												.orElse(null));
 			entity.setCharacterCode(domain.getCharacterCode()
 										  .map(exiCharset -> exiCharset.value)
@@ -112,7 +115,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 											 .map(AcceptanceLineNumber::v)
 											 .orElse(null));
 			entity.setCheckCompleted(domain.getCheckCompleted()
-										   .map(checkCompleted -> checkCompleted.value)
+										   .map(checkCompleted -> BooleanUtils.toBoolean(checkCompleted.value))
 										   .orElse(null));
 			this.commandProxy().update(entity);
 		}
@@ -159,7 +162,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 			OiomtExAcCond entity = updateStdAcceptCondSet.get();
 			entity.setCategoryId(domain.getCategoryId().orElse(null));
 			entity.setCheckCompleted(domain.getCheckCompleted()
-										   .map(checkCompleted -> checkCompleted.value)
+										   .map(checkCompleted -> BooleanUtils.toBoolean(checkCompleted.value))
 										   .orElse(null));
 			entity.setCsvDataLineNumber(domain.getCsvDataItemLineNumber()
 											  .map(AcceptanceLineNumber::v)

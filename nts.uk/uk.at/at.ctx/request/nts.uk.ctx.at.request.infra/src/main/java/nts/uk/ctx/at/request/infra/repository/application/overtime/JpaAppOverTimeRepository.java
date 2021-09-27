@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -98,7 +99,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				appOverTime.getAppID());
 				
 		krqdtAppOverTime.krqdtAppOvertimePK = krqdtAppOvertimePK;
-		krqdtAppOverTime.overtimeAtr = appOverTime.getOverTimeClf().value;
+		krqdtAppOverTime.overtimeAtr = BooleanUtils.toBoolean(appOverTime.getOverTimeClf().value);
 		krqdtAppOverTime.workTypeCode = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
 		krqdtAppOverTime.workTimeCode = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null);
 		List<TimeZoneWithWorkNo> workHours = appOverTime.getWorkHoursOp().orElse(Collections.emptyList());
@@ -743,7 +744,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
 					   .setParameter("cid", companyId)
 					   .setParameter("appIds", subList)
-					   .getList().stream().collect(Collectors.toMap(item -> item.krqdtAppOvertimePK.appId, item -> item.overtimeAtr)));
+					   .getList().stream().collect(Collectors.toMap(item -> item.krqdtAppOvertimePK.appId, item -> BooleanUtils.toInteger(item.overtimeAtr))));
 		});
 		return returnMap;
 	}

@@ -85,7 +85,7 @@ public class StdAcceptCondSetDto implements StdAcceptCondSet.MementoSetter {
 	 * @param checkCompleted the check completed
 	 */
 	@Override
-	public void setCheckCompleted(Integer checkCompleted) {
+	public void setCheckCompleted(boolean checkCompleted) {
 	}
 
 	/**
@@ -101,6 +101,11 @@ public class StdAcceptCondSetDto implements StdAcceptCondSet.MementoSetter {
 		StdAcceptCondSetDto dto = new StdAcceptCondSetDto();
 		domain.setMemento(dto);
 		return dto;
+	}
+
+	@Override
+	public void setDeleteExistDataMethod(boolean deleteExistDataMethod) {
+		
 	}
 
 }

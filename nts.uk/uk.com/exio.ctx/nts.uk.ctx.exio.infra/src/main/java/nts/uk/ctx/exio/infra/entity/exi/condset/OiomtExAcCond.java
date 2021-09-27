@@ -7,6 +7,9 @@ import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import java.io.Serializable;
 
 /**
@@ -80,14 +83,14 @@ public class OiomtExAcCond extends ContractUkJpaEntity
 	 */
 	@Basic(optional = true)
 	@Column(name = "CHECK_COMPLETED")
-	private Integer checkCompleted;
+	private boolean checkCompleted;
 
 	/**
 	 * 既存データの削除方法
 	 */
 	@Basic(optional = true)
 	@Column(name = "DELETE_EXT_DATA_METHOD")
-	private Integer deleteExtDataMethod;
+	private boolean deleteExtDataMethod;
 
 	/**
 	 * Gets primary key of entity.
@@ -179,7 +182,7 @@ public class OiomtExAcCond extends ContractUkJpaEntity
 	 * @param deleteExistDataMethod the delete exist data method
 	 */
 	@Override
-	public void setDeleteExistDataMethod(Integer deleteExistDataMethod) {
+	public void setDeleteExistDataMethod(boolean deleteExistDataMethod) {
 		this.deleteExtDataMethod = deleteExistDataMethod;
 	}
 
@@ -230,7 +233,12 @@ public class OiomtExAcCond extends ContractUkJpaEntity
 	 */
 	@Override
 	public Integer getDeleteExistDataMethod() {
-		return this.deleteExtDataMethod;
+		return BooleanUtils.toInteger(this.deleteExtDataMethod);
+	}
+
+	@Override
+	public Integer getCheckCompleted() {
+		return BooleanUtils.toInteger(this.checkCompleted);
 	}
 
 }

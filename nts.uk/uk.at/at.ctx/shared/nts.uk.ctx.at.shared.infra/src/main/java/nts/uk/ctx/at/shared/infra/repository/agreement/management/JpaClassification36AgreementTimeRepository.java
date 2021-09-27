@@ -9,6 +9,9 @@ import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtCls;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtClsPk;
 
 import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -74,10 +77,10 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
     @Override
     public void delete(AgreementTimeOfClassification domain) {
         val entity = this.queryProxy().find(new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode().v()
-                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtCls.class);
+                ,BooleanUtils.toBoolean(domain.getLaborSystemAtr().value)),Ksrmt36AgrMgtCls.class);
         if(entity.isPresent()){
             this.commandProxy().remove(Ksrmt36AgrMgtCls.class,new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode().v()
-                    ,domain.getLaborSystemAtr().value));
+                    ,BooleanUtils.toBoolean(domain.getLaborSystemAtr().value)));
 			this.getEntityManager().flush();
         }
     }

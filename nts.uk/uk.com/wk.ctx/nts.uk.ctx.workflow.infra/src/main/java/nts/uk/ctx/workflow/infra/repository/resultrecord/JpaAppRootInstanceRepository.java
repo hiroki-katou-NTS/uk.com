@@ -146,7 +146,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 										.map(y -> new WwfdtInstFrame(
 												new WwfdpAppFrameInstancePK(appRootInstance.getRootID(),
 														x.getPhaseOrder(), y.getFrameOrder()),
-												y.isConfirmAtr() ? 1 : 0, null,
+												y.isConfirmAtr(), null,
 												y.getListApprover().stream().map(z -> new WwfdtInstApprove(
 														new WwfdpAppApproveInstancePK(appRootInstance.getRootID(),
 																x.getPhaseOrder(), y.getFrameOrder(), z),

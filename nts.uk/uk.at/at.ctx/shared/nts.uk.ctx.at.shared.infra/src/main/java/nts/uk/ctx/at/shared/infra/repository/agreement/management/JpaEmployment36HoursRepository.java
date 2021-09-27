@@ -1,6 +1,13 @@
 package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
@@ -8,11 +15,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Empl
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtEmp;
 import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtEmpPk;
-
-import javax.ejb.Stateless;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * 	Repository: 雇用３６協定時間
@@ -89,10 +91,10 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
     public void delete(AgreementTimeOfEmployment domain) {
 
         val entity = this.queryProxy().find(new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCategoryCode().v()
-                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtEmp.class);
+                ,BooleanUtils.toBoolean(domain.getLaborSystemAtr().value)),Ksrmt36AgrMgtEmp.class);
         if(entity.isPresent()){
             this.commandProxy().remove(Ksrmt36AgrMgtEmp.class,new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCategoryCode().v()
-                    ,domain.getLaborSystemAtr().value));
+                    ,BooleanUtils.toBoolean(domain.getLaborSystemAtr().value)));
 			this.getEntityManager().flush();
         }
     }

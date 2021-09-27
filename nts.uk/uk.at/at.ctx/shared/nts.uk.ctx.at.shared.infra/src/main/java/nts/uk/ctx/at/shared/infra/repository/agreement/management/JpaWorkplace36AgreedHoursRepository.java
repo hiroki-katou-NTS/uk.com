@@ -11,6 +11,9 @@ import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkpPk
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,10 +73,10 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     @Override
     public void delete(AgreementTimeOfWorkPlace domain) {
         val entity = this.queryProxy().find(new Ksrmt36AgrMgtWkpPk(domain.getWorkplaceId()
-                , domain.getLaborSystemAtr().value), Ksrmt36AgrMgtWkp.class);
+                , BooleanUtils.toBoolean(domain.getLaborSystemAtr().value)), Ksrmt36AgrMgtWkp.class);
         if (entity.isPresent()) {
             this.commandProxy().remove(Ksrmt36AgrMgtWkp.class, new Ksrmt36AgrMgtWkpPk(domain.getWorkplaceId()
-                    , domain.getLaborSystemAtr().value));
+                    , BooleanUtils.toBoolean(domain.getLaborSystemAtr().value)));
 			this.getEntityManager().flush();
         }
     }

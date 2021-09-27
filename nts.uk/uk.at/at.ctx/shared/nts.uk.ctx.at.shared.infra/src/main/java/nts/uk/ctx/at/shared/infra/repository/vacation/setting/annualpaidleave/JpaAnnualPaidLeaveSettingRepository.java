@@ -98,7 +98,7 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 //						kmamtMngAnnualSet.setRoundProcessCla(rec.getInt("KMASROUND_PRO_CLA"));
 						KshmtHdpaidTimeSet ktvmtTimeVacationSet = new KshmtHdpaidTimeSet();
 						ktvmtTimeVacationSet.setCid(rec.getString("CID"));
-						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("KTASROUND_PRO_CLA"));
+						ktvmtTimeVacationSet.setRoundProcessCla(rec.getBoolean("KTASROUND_PRO_CLA"));
 						ktvmtTimeVacationSet.setTimeOfDayRef(rec.getInt("KTASTIME_OF_DAY_REFERENCE"));
 						ktvmtTimeVacationSet.setUniformTime(rec.getInt("KTASUNIFORM_TIME"));
 						ktvmtTimeVacationSet.setContractTimeRound(rec.getInt("KTASCONTRACT_TIME_ROUND"));
