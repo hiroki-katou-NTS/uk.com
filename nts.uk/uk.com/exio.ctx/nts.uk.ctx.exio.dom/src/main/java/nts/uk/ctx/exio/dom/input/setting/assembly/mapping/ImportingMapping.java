@@ -105,7 +105,7 @@ public class ImportingMapping {
 
 		if (!errors.isEmpty()) {
 			for (val error : errors) {
-				require.add(context, ExternalImportError.of(csvRecord.getRowNo(), error));
+				require.add(context, ExternalImportError.of(csvRecord.getRowNo(), context.getDomainId().value, error));
 			}
 			return Optional.empty();
 		}

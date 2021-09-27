@@ -45,23 +45,13 @@ public class ExternalImportSettingDto {
 	/** レイアウト項目リスト */
 	private List<Integer> itemNoList;
 
-	public void merge(RequireMerge require, ExternalImportSetting domain) {
-
-		domain.setName(new ExternalImportName(name));
-		domain.setCsvFileInfo(toCsvFileInfo());
-
-		DomainImportSetting setting = domain.getDomainSetting(this.domain).get();
-		setting.setImportingMode(ImportingMode.valueOf(mode));
-		setting.merge(require, itemNoList, domain.getCode(), setting.getDomainId());
-	}
-
 	public static interface RequireMerge extends
 		ExternalImportSetting.RequireMerge{
 	}
 
 	public static ExternalImportSettingDto fromDomain(ExternalImportSetting setting) {
 
-		DomainImportSetting domainSetting = setting.getDomainSetting().get();
+		DomainImportSetting domainSetting = setting.getDomainSettings().values().stream().findFirst().get();
 		
 		return new ExternalImportSettingDto(
 				setting.getCompanyId(),

@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.app.input.errors;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -7,7 +10,9 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrors;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrors.RequireToText;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRepository;
@@ -41,6 +46,9 @@ public class GetLatestExternalImportErrors {
 	@Inject
 	private ImportableItemsRepository itemRepo;
 	
+	@Inject
+	private ImportingDomainRepository domainRepo;
+	
 	/**
 	 * 指定したページのエラーテキストを返す
 	 * @param pageNo 1スタート
@@ -49,8 +57,7 @@ public class GetLatestExternalImportErrors {
 	public ErrorsTextDto getTextPage(ExternalImportCode settingCode, int pageNo) {
 		
 		String companyId = AppContexts.user().companyId();
-		val setting = settingRepo.get(companyId, settingCode).get();
-		val context = setting.getDomainSetting().get().executionContext(companyId, settingCode);
+		val context = ExecutionContext.createForErrorTableName(companyId);
 		
 		int startErrorNo = MAX_PAGE_SIZE * (pageNo - 1);
 		val errors = errorsRepo.find(context, startErrorNo, MAX_PAGE_SIZE);
@@ -61,6 +68,23 @@ public class GetLatestExternalImportErrors {
 	private String errorsToText(ExecutionContext context, ExternalImportErrors errors) {
 		
 		val require = new RequireToText() {
+			
+			private Map<String, String> domainNameChache;
+			{
+				domainNameChache = new HashMap<>();
+			}
+			
+			@Override
+			public String getDomainName(ImportingDomainId domainId) {
+				if(domainId == null) return "";
+				
+				if (!domainNameChache.containsKey(domainId.name())) {
+					ImportingDomain domain = domainRepo.find(domainId);
+					domainNameChache.put(domainId.name(), domain.getName());
+				}
+				return domainNameChache.get(domainId.name());
+			}
+			
 			@Override
 			public ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo) {
 				return itemRepo.get(domainId, itemNo).get();

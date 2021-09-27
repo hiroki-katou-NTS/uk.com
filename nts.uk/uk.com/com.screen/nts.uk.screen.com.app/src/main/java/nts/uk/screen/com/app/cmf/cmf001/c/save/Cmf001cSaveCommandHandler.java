@@ -44,7 +44,7 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 
 	private void updateSetting(String companyId, Cmf001cSaveCommand command, ExternalImportSetting setting) {
 		
-		val mapping = setting.getAssembly(command.getDomainId()).getMapping();
+		val mapping = setting.getAssembly(ImportingDomainId.valueOf(command.getDomainId())).getMapping();
 		int itemNo = command.getItemNo();
 		
 		if (command.isFixedValue()) {

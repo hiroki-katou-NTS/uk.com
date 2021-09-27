@@ -50,9 +50,9 @@ public class ExternalImportSettingDto {
 	/** レイアウト */
 	private List<ExternalImportLayoutDto> layouts;
 	
-	public static ExternalImportSettingDto fromDomain(Require require, ExternalImportSetting domain, DomainImportSetting domainSetting) {
+	public static List<ExternalImportSettingDto> fromDomain(Require require, ExternalImportSetting domain, List<DomainImportSetting> domainSettings) {
 		
-		return new ExternalImportSettingDto(
+		return domainSettings.stream().map(domainSetting -> new ExternalImportSettingDto(
 				domain.getCompanyId(), 
 				domain.getCode().toString(), 
 				domain.getName().toString(), 
@@ -62,7 +62,9 @@ public class ExternalImportSettingDto {
 				domain.getCsvFileInfo().getImportStartRowNumber().hashCode(), 
 				domainSetting.getAssembly().getMapping().getMappings().stream()
 					.map(m -> ExternalImportLayoutDto.fromDomain(require, domainSetting.getDomainId(), m))
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList()))
+			)
+			.collect(Collectors.toList());
 	}
 
 	

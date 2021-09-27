@@ -20,6 +20,7 @@ public class ErrorsTable {
 	
 	private static final String ERROR_NO = "ERROR_NO";
 	private static final String ROW_NO = "ROW_NO";
+	private static final String DOMAIN_ID = "DOMAIN_ID";
 	private static final String ITEM_NO = "ITEM_NO";
 	private static final String MESSAGE = "MESSAGE";
 
@@ -40,6 +41,7 @@ public class ErrorsTable {
 		TemporaryTable.createTable(jdbcProxy, database, tableName, b -> b
 				.columnPK(ERROR_NO, autonumber())
 				.column(ROW_NO, integer(10))
+				.column(DOMAIN_ID, integer(3))
 				.column(ITEM_NO, integer(4))
 				.column(MESSAGE, text(1000)));
 	}
@@ -47,13 +49,14 @@ public class ErrorsTable {
 	public void insert(ExternalImportError error) {
 		
 		String sql = "insert into " + tableName()
-			+ " (" + ROW_NO + ", " + ITEM_NO + ", " + MESSAGE + ") "
-			+ " VALUES (@p1, @p2, @p3)";
+			+ " (" + ROW_NO + "," + DOMAIN_ID + ", " + ITEM_NO + ", " + MESSAGE + ") "
+			+ " VALUES (@p1, @p2, @p3, @p4)";
 		
 		this.jdbcProxy.query(sql)
 			.paramInt("p1", error.getCsvRowNo())
-			.paramInt("p2", error.getItemNo())
-			.paramString("p3", error.getMessage())
+			.paramInt("p2", error.getDomainId())
+			.paramInt("p3", error.getItemNo())
+			.paramString("p4", error.getMessage())
 			.execute();
 	}
 	
@@ -67,6 +70,7 @@ public class ErrorsTable {
 				.paramInt("p2", startErrorNo + size)
 				.getList(rec -> new ExternalImportError(
 						rec.getInt(ROW_NO),
+						rec.getInt(DOMAIN_ID),
 						rec.getInt(ITEM_NO),
 						rec.getString(MESSAGE)));
 	}

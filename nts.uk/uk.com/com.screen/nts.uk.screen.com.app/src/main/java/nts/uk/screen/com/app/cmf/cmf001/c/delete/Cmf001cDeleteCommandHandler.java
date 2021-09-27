@@ -28,12 +28,13 @@ public class Cmf001cDeleteCommandHandler extends CommandHandler<Cmf001cDeleteCom
 		
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		ImportingDomainId domainId = ImportingDomainId.valueOf(command.getDomainId());
 		
 		val setting = settingRepo.get(companyId, command.getExternalImportCode()).get();
-		setting.getAssembly(command.getDomainId()).getMapping().setNoSetting(command.getItemNo());
+		setting.getAssembly(domainId).getMapping().setNoSetting(command.getItemNo());
 		
 		settingRepo.update(setting);
-		reviseItemRepo.delete(companyId, command.getExternalImportCode(), ImportingDomainId.valueOf(command.getDomainId()), command.getItemNo());
+		reviseItemRepo.delete(companyId, command.getExternalImportCode(), domainId, command.getItemNo());
 	}
 
 }

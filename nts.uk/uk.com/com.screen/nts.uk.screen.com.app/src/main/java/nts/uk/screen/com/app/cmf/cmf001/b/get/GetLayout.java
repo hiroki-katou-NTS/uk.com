@@ -31,7 +31,7 @@ public class GetLayout {
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), query.getSettingCode());
 		if (settingOpt.isPresent()) {
 			val setting = settingOpt.get();
-			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId().value);
+			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId());
 			if (domainSetting.isPresent()) {
 				// 設定されている項目
 				return domainSetting.get().getAssembly().getMapping().getMappings().stream()
@@ -53,7 +53,7 @@ public class GetLayout {
 		if (settingOpt.isPresent()) {
 			// 設定あり（更新モード）
 			val setting = settingOpt.get();
-			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId().value);
+			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId());
 			if (domainSetting.isPresent()) {
 				// グループIDがマスタと一致
 				if (query.isAllItem()) {
@@ -83,7 +83,7 @@ public class GetLayout {
 			GetLayout.Require require,
 			GetLayoutParam query,
 			ExternalImportSetting setting) {
-		return toLayouts(require, query, setting.getAssembly(query.getImportingDomainId().value).getMapping().getMappings());
+		return toLayouts(require, query, setting.getAssembly(query.getImportingDomainId()).getMapping().getMappings());
 	}
 
 	// 指定した項目のレイアウトを取得する
@@ -92,7 +92,7 @@ public class GetLayout {
 			GetLayoutParam query,
 			ExternalImportSetting setting) {
 
-		val savedMapping = setting.getAssembly(query.getImportingDomainId().value).getMapping().getMappings().stream()
+		val savedMapping = setting.getAssembly(query.getImportingDomainId()).getMapping().getMappings().stream()
 				.filter(m -> query.getItemNoList().contains(m.getItemNo()))
 				.collect(toList());
 

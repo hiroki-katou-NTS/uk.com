@@ -25,7 +25,7 @@ public class PrepareImporting {
 			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
 
 			require.cleanOldTablesForEachDomain(context);			
-			require.setupWorkspaceForEachDomain(context);
+			require.setupWorkspaceForEachDomain(context);//削除も一緒に
 			
 			// 受入データの組み立て
 			setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);

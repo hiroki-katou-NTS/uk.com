@@ -121,7 +121,7 @@ module nts.uk.com.cmf001.c {
             let path = "exio/input/setting/find/" + this.settingCode;
             this.$ajax(path).done(res => {
                 this.items.removeAll();
-                res.layouts.forEach(layout => {
+                res[0].layouts.forEach(layout => {
                     this.items.push(layout);
                 });
 

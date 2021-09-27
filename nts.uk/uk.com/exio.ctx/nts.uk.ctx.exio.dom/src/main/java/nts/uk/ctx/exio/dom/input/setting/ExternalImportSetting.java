@@ -55,7 +55,8 @@ public class ExternalImportSetting implements DomainAggregate {
 	}
 
 	/**
-	 * マッピングを更新する
+	 * マッピングを更新する 
+	 * けす
 	 * @param itemList
 	 */
 	public void merge(DomainImportSetting.RequireMerge require, ImportingDomainId domainId, List<Integer> itemList) {
@@ -73,20 +74,15 @@ public class ExternalImportSetting implements DomainAggregate {
 	public static interface RequireAssemble extends DomainImportSetting.RequireAssemble {
 	}
 
-	public ExternalImportAssemblyMethod getAssembly(int domainId) {
+	public ExternalImportAssemblyMethod getAssembly(ImportingDomainId domainId) {
 		return getDomainSetting(domainId).get().getAssembly();
 	}
-
-	public Optional<DomainImportSetting> getDomainSetting() {
-		return getDomainSetting(0);
-	}
 	
-	public Optional<DomainImportSetting> getDomainSetting(int domain) {
+	public Optional<DomainImportSetting> getDomainSetting(ImportingDomainId domain) {
 		if (baseType == ImportSettingBaseType.DOMAIN_BASE)  return this.domainSettings.entrySet().stream().findFirst().map(es-> es.getValue());
 
-		ImportingDomainId domainId = ImportingDomainId.valueOf(domain);
-		return this.domainSettings.containsKey(domainId)
-				? Optional.of(this.domainSettings.get(domainId))
+		return this.domainSettings.containsKey(domain)
+				? Optional.of(this.domainSettings.get(domain))
 				: Optional.empty();
 	}
 }

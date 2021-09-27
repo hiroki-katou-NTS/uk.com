@@ -17,6 +17,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -107,11 +108,11 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 		public static List<ExternalImportError> getLackItemError(IntermediateResult interm) {
 			val timeErrors = hasTimeAllItemNoOrAllNothing(interm, timesNumbers)
 					.stream()
-					.map(errorItemNo -> new ExternalImportError(interm.getRowNo(), errorItemNo, "値がありません。"))
+					.map(errorItemNo -> new ExternalImportError(interm.getRowNo(), ImportingDomainId.ANNUAL_LEAVE_REMAINING.value, errorItemNo, "値がありません。"))
 					.collect(Collectors.toList());
 			val timesErrors = hasTimeAllItemNoOrAllNothing(interm, timeNumbers)
 					.stream()
-					.map(errorItemNo -> new ExternalImportError(interm.getRowNo(), errorItemNo, "値がありません。"))
+					.map(errorItemNo -> new ExternalImportError(interm.getRowNo(), ImportingDomainId.ANNUAL_LEAVE_REMAINING.value, errorItemNo, "値がありません。"))
 					.collect(Collectors.toList());
 			if(timeErrors.isEmpty() && timesErrors.isEmpty()) {
 				return Collections.emptyList();
