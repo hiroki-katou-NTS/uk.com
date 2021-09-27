@@ -24,7 +24,6 @@ public class PrepareImporting {
 
 			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
 
-			require.cleanOldTablesForEachDomain(context);			
 			require.setupWorkspaceForEachDomain(context);//削除も一緒に
 			
 			// 受入データの組み立て
@@ -40,10 +39,7 @@ public class PrepareImporting {
 			ExternalImportSetting.RequireAssemble,
 			CanonicalizeRevisedData.Require {
 		
-		void cleanOldTables(ExecutionContext context);
 		void setupWorkspace(ExecutionContext context);
-
-		void cleanOldTablesForEachDomain(ExecutionContext context);
 
 		void setupWorkspaceForEachDomain(ExecutionContext context);
 		

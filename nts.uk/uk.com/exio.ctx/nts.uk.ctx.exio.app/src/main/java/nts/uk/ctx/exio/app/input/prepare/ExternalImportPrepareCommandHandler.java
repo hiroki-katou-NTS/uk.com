@@ -65,8 +65,7 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 			String companyId) {
 
 		ExecutionContext context = ExecutionContext.createForErrorTableName(companyId);//素直に会社IDでつくる
-		require.cleanOldTables(context);
-		require.setupWorkspace(context);//cleanOldTableも一緒にしちゃう
+		require.setupWorkspace(context);
 		for (DomainImportSetting setting : externalImportSetting.getDomainSettings().values()) {	//ドメイン設定の順番気にして返してくれるやつつかう
 			try (val inputStream = fileStorage.getStream(fileId)
 					.orElseThrow(() -> new RuntimeException("file not found: " + fileId))) {

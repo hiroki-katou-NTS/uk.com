@@ -200,25 +200,20 @@ public class ExternalImportPrepareRequire {
 		
 		
 		/***** Workspace *****/
-		@Override
-		public void cleanOldTables(ExecutionContext context) {
-			errorsRepo.cleanOldTables(context);
-		}
-		
-		@Override
-		public void cleanOldTablesForEachDomain(ExecutionContext context) {
-			workspaceRepo.cleanOldTables(this, context);
-			existingRepo.cleanOldTables(context);
-			metaRepo.cleanOldTables(context);
-		}
-		
+				
 		@Override
 		public void setupWorkspace(ExecutionContext context) {
+			errorsRepo.cleanOldTables(context);
+			
 			errorsRepo.setup(context);
 		}
 		
 		@Override
 		public void setupWorkspaceForEachDomain(ExecutionContext context) {
+			workspaceRepo.cleanOldTables(this, context);
+			existingRepo.cleanOldTables(context);
+			metaRepo.cleanOldTables(context);
+			
 			workspaceRepo.setup(this, context);
 			existingRepo.setup(context);
 			metaRepo.setup(context);
