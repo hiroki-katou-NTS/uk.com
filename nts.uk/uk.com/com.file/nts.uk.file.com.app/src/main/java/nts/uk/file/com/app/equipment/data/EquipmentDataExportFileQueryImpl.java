@@ -118,6 +118,6 @@ public class EquipmentDataExportFileQueryImpl implements EquipmentDataExportFile
 				.itemSettings(query.getItemSettings().stream().map(EquipmentUsageRecordItemSettingDto::toDomain)
 						.collect(Collectors.toList()))
 				.optEquipmentClsCode(optEquipmentClsCode).optEquipmentInfoCode(optEquipmentCode)
-				.formatSetting(query.getFormatSettings().toDomain()).reportType(reportType).yearMonth(ym).build();
+				.formatSetting(query.getFormatSetting().toDomain()).reportType(reportType).yearMonth(ym).build();
 	}
 }

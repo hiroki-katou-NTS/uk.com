@@ -3,9 +3,13 @@
 }
 
 .dynamic-zone {
-  height: 250px;
+  height: 210px;
   overflow-y: auto;
   margin-top: 10px;
+}
+
+.dynamic-zone > .div-line {
+  margin-bottom: 10px;
 }
 
 .form-label {
@@ -14,4 +18,8 @@
 
 .ml-10 {
   margin-left: 10px;
+}
+
+.mr-10 {
+  margin-right: 10px;
 }

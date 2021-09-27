@@ -10,6 +10,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.ErrorMessage;
 import nts.arc.error.I18NErrorMessage;
 import nts.arc.i18n.I18NText;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 
 /**
@@ -84,7 +85,7 @@ public class ItemInputControl extends ValueObject {
 			return Optional.of(new I18NErrorMessage(I18NText.main("Msg_2228").addRaw(itemName.v()).build()));
 		}
 		
-		if (!inputVal.isPresent()) {
+		if (!inputVal.isPresent() || StringUtil.isNullOrEmpty(inputVal.get().v(), true)) {
 			return Optional.empty();
 		}
 		

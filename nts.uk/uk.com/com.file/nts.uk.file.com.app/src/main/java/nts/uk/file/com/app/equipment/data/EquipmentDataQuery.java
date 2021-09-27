@@ -34,7 +34,7 @@ public class EquipmentDataQuery {
 	/**
 	 * 設備の実績入力フォーマット設定<List>
 	 */
-	private EquipmentPerformInputFormatSettingDto formatSettings;
+	private EquipmentPerformInputFormatSettingDto formatSetting;
 	
 	private int printType;
 }

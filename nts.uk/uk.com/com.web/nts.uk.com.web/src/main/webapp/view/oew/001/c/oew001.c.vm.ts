@@ -21,23 +21,26 @@ module nts.uk.com.view.oew001.c {
     // dto
     equipmentClassification: KnockoutObservable<model.EquipmentClassificationDto> = ko.observable(null);
     equipmentInformationList: KnockoutObservableArray<model.EquipmentInformationDto> = ko.observableArray([]);
+    itemSettings: KnockoutObservableArray<model.EquipmentUsageRecordItemSettingDto> = ko.observableArray([]);
+    formatSetting: KnockoutObservable<model.EquipmentPerformInputFormatSettingDto> = ko.observable(null);
 
     created(param: any) {
       const vm = this;
 
-      vm.selectedEquipmentClsCode.subscribe(value => vm.getEquipmentInfoList());
+      vm.selectedEquipmentClsCode.subscribe(value => vm.getEquipmentInfoList(param.equipmentCode));
 
       vm.selectedEquipmentClsCode(param.equipmentClsCode);
       vm.equipmentClsName(param.equipmentClsName);
-      vm.selectedEquipmentInfoCode(param.equipmentCode);
       vm.yearMonth(param.yearMonth);  
+      vm.formatSetting(param.formatSetting);
+      vm.itemSettings(param.itemSettings);
     }
 
     mounted() {
-
+      $("#C4_1").focus();
     }
 
-    private getEquipmentInfoList(): JQueryPromise<any> {
+    private getEquipmentInfoList(equipmentInfoCode?: string): JQueryPromise<any> {
       const vm = this;
       const param = {
         equipmentClsCode: vm.selectedEquipmentClsCode(),
@@ -45,11 +48,16 @@ module nts.uk.com.view.oew001.c {
       };
       return vm.$ajax(API.getEquipmentInfoList, param).then(result => {
         vm.isSelectAll(param.equipmentClsCode === model.constants.SELECT_ALL_CODE);
-        vm.equipmentInformationList(result);
-        vm.equipmentInformationList.unshift(new model.EquipmentInformationDto({
-          code: model.constants.SELECT_ALL_CODE,
-          name: vm.$i18n("OEW001_70")
-        }));
+        if (vm.isSelectAll()) {
+          vm.equipmentInformationList([]);
+        } else {
+          vm.equipmentInformationList(result);
+          vm.equipmentInformationList.unshift(new model.EquipmentInformationDto({
+            code: model.constants.SELECT_ALL_CODE,
+            name: vm.$i18n("OEW001_70")
+          }));
+        }
+        vm.selectedEquipmentInfoCode(equipmentInfoCode);
       });
     }
 
@@ -57,7 +65,9 @@ module nts.uk.com.view.oew001.c {
       const vm = this;
       const param: EquipmentDataQuery = {
         printType: printType,
-        ym: Number(vm.yearMonth())
+        ym: Number(vm.yearMonth()),
+        formatSetting: vm.formatSetting(),
+        itemSettings: vm.itemSettings()
       }
       if (vm.selectedEquipmentClsCode() !== model.constants.SELECT_ALL_CODE) {
         param.equipmentClsCode = vm.selectedEquipmentClsCode();
@@ -115,6 +125,12 @@ module nts.uk.com.view.oew001.c {
     
     // 年月
     ym: number;
+
+    // 設備利用実績の項目設定<List> 
+    itemSettings: model.EquipmentUsageRecordItemSettingDto[];
+    
+    // 設備の実績入力フォーマット設定<List>
+    formatSetting: model.EquipmentPerformInputFormatSettingDto;
     
     printType: number;
   }
