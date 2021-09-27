@@ -44,7 +44,7 @@ import java.util.Optional;
 public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByIndividualExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
     private final String EXCEL_EXT = ".xlsx";
-    private static final String TEMPLATE_FILE = "report/KSU002B.xlsx";
+    private static final String TEMPLATE_FILE = "report/KSU002.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 37;
     private final String SPACE = "　";
     private final String COLON = "　：　";
@@ -67,18 +67,17 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             AsposeCellsReportContext reportContext = createContext(TEMPLATE_FILE);
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            Worksheet wsSource = worksheets.get(1);
+            Worksheet wsSource = worksheets.get(0);
             if (query.isTotalDisplay()) {
-                wsSource = worksheets.get(2);
+                wsSource = worksheets.get(1);
             }
 
             //  Worksheet wsDestination = worksheets.get(1);
             pageSetting(wsSource, dataSource);
             printHeader(wsSource, dataSource, query);
-            printContent(wsSource, wsSource, dataSource, query);
-            worksheets.removeAt(2);
-            worksheets.setActiveSheetIndex(1);
+            printContent(wsSource, dataSource, query);
             reportContext.processDesigner();
+
 
             // Save as excel file
             reportContext.saveAsExcel(createNewFile(context, getReportName(dataSource.getCompanyName() + EXCEL_EXT)));
@@ -122,18 +121,18 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         // B2_3
         cells.get(2, 7).setValue(query.getEmployeeName());
         // B3_1
-        cells.get(2, 7).setValue(GeneralDate.fromString(query.getDate(), "yyyy/MM/dd") .yearMonth());
+        cells.get(2, 7).setValue(GeneralDate.fromString(query.getDate(), "yyyy/MM/dd").yearMonth());
         if (query.isTotalDisplay()) {
             cells.get(5, 36).setValue(getText("KSU002_68"));
         }
     }
 
 
-    private void printContent(Worksheet wsDestination, Worksheet wsSource, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) throws Exception {
-        Cells cells = wsDestination.getCells();
+    private void printContent(Worksheet wsSource, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) throws Exception {
+        Cells cells = wsSource.getCells();
         Cells cellsTemplate = wsSource.getCells();
-        ShapeCollection shapes = wsDestination.getShapes();
-        HorizontalPageBreakCollection hPageBreaks = wsDestination.getHorizontalPageBreaks();
+        ShapeCollection shapes = wsSource.getShapes();
+        HorizontalPageBreakCollection hPageBreaks = wsSource.getHorizontalPageBreaks();
         cells.deleteRows(7, 38);
         List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource);
         // Set CopyOptions.ReferToDestinationSheet to true
@@ -237,7 +236,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 pageIndex += 1;
             }
         }
-        PageSetup pageSetup = wsDestination.getPageSetup();
+        PageSetup pageSetup = wsSource.getPageSetup();
         pageSetup.setPrintArea(PRINT_AREA + rowCount);
     }
 

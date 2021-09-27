@@ -212,16 +212,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     private void printHeader(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource, String comment) {
         Cells cells = worksheet.getCells();
         // B part
-        cells.get(0, START_DATE_COL).setValue(comment);
-        Style styleC1 = cells.get(0, START_DATE_COL).getStyle();
-        styleC1.setVerticalAlignment(TextAlignmentType.TOP);
-        styleC1.setHorizontalAlignment(TextAlignmentType.JUSTIFY);
-        styleC1.setTextWrapped(true);
-        styleC1.getFont().setName(FONT_NAME);
-        styleC1.getFont().setSize(FONT_SIZE);
-        cells.get(0, START_DATE_COL).setStyle(styleC1);
-        cells.merge(0, START_DATE_COL, 2, dataSource.getDateInfos().size());
-
         cells.get("A3").setValue(
                 getText("KSU001_4129")
                         + dataSource.getPeriod().start().toString() + "(" + this.getDayOfWeek(dataSource.getPeriod().start().dayOfWeekEnum()) + ")"
@@ -370,6 +360,16 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     break;
             }
         }
+
+        cells.get(0, 0).setValue(comment);
+        Style styleC1 = cells.get(0, 0).getStyle();
+        styleC1.setVerticalAlignment(TextAlignmentType.TOP);
+        styleC1.setHorizontalAlignment(TextAlignmentType.RIGHT);
+        styleC1.setTextWrapped(true);
+        styleC1.getFont().setName(FONT_NAME);
+        styleC1.getFont().setSize(FONT_SIZE);
+        cells.get(0, 0).setStyle(styleC1);
+        cells.merge(0, 0, 2, startCol);
     }
 
     private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean wrapText, boolean firstRow, boolean lastRow, boolean doubleBorder, boolean wkp) {
