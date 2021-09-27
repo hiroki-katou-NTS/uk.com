@@ -409,6 +409,8 @@ module nts.uk.at.view.ksc001.b {
 					isMutipleCheck : true, // 選択モード
 
 					showOnStart: true,
+					
+					employeesDoNotManageSchedules: ko.observable(true),
 
 					/** Return data */
 					returnDataFromCcg001 : function( data: any ) {

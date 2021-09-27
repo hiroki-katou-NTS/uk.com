@@ -173,7 +173,9 @@ public interface ItemConst extends Cloneable {
 
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_CODE = LAYOUT_K;
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_NAME = "子の看護月別残数データ";
-
+	
+	public final String MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME = "公休月別残数データ";
+	
 	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE = LAYOUT_L;
 	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME = "管理期間の36協定時間";
 
@@ -331,6 +333,7 @@ public interface ItemConst extends Cloneable {
 	public final String CUR_MONTH = "当月";
 	public final String NO = "不可";
 	public final String STANDARD = "基準";
+	public final String CONTRACT_TIME = "契約時間";
 	public final String WEEKLY_ATTENDANCE_TIME_EXESS = "週別実績の勤怠時間．時間外超過";
 	public final String WORK_CONTENT = "作業内容";
 	public final String WORKPLACE_BYSUPPORT = "勤務先";
@@ -339,4 +342,6 @@ public interface ItemConst extends Cloneable {
 	public final String WORKGROUP = "作業グループ";
 	public final String WORKCODE = "作業CD";
 	public final String WORKREMARKS = "作業入力備考";
+	public final String THIS_YEAR = "本年";
+	public final String NEXT_YEAR = "翌年";
 }

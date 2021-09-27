@@ -15,6 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberCareService;
@@ -64,6 +65,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 //import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataMngCheckRegister {
@@ -85,12 +88,6 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	
 	@Inject
-    private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
-	
-	@Inject
-    private GetRemainingNumberCareService getRemainingNumberCareService;
-	
-	@Inject
     private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 	
 	@Inject
@@ -101,6 +98,12 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
+	
+	@Inject
+	private RemainChildCareCheck remainChildCareCheck;
+	
+	@Inject
+	private RemainLongTermCareCheck remainLongTermCareCheck;
 
 	@Override
 	public EarchInterimRemainCheck checkRegister(InterimRemainCheckInputParam inputParam) {
@@ -358,42 +361,65 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		// 子の看護チェック区分をチェックする
 		if (remainNumberClassification.map(x -> x.isChkChildNursing()).orElse(true)) {
 		    // [NO.206]期間中の子の看護休暇残数を取得
-		    AggrResultOfChildCareNurse result =
-	                getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
-	                        inputParam.getCid(), 
-	                        inputParam.getSid(), 
-	                        inputParam.getDatePeriod(), 
-	                        InterimRemainMngMode.of(inputParam.isMode()), 
-	                        inputParam.getBaseDate(),
-	                        Optional.of(true), 
-	                        childCareData.stream().map(x -> ((TempChildCareManagement)x)).collect(Collectors.toList()),
-	                        Optional.empty(), 
-	                        inputParam.getCreateAtr(), 
-	                        Optional.of(inputParam.getRegisterDate()),
-	                        cache, 
-	                        childCareNurseRequireImplFactory.createRequireImpl());
+//		    AggrResultOfChildCareNurse resultChildcare =
+//		            GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+//	                        inputParam.getCid(), 
+//	                        inputParam.getSid(), 
+//	                        inputParam.getDatePeriod(), 
+//	                        InterimRemainMngMode.of(inputParam.isMode()), 
+//	                        inputParam.getBaseDate(),
+//	                        Optional.of(true), 
+//	                        childCareData.stream().map(x -> ((TempChildCareManagement)x)).collect(Collectors.toList()),
+//	                        Optional.empty(), 
+//	                        inputParam.getCreateAtr(), 
+//	                        Optional.of(inputParam.getRegisterDate()),
+//	                        cache, 
+//	                        childCareNurseRequireImplFactory.createRequireImpl());
+		    RemainChildCareCheckParam param = new RemainChildCareCheckParam(
+		                    inputParam.getCid(), 
+                            inputParam.getSid(), 
+                            YearMonth.of(9999, 12), 
+                            inputParam.getDatePeriod(), 
+                            ClosureId.RegularEmployee, 
+                            new ClosureDate(1, false), 
+                            inputParam.isMode(), 
+                            true,
+                            childCareData.stream().map(x -> ((TempChildCareManagement)x)).collect(Collectors.toList()), 
+                            inputParam.getCreateAtr(), 
+                            Optional.of(inputParam.getRegisterDate()));
 		    
-		        outputData.setChildCareErrors(result.getChildCareNurseErrors());
+		        outputData.setChildCareErrors(remainChildCareCheck.checkRemainChildCare(param));
 		}
 		
 		// 介護チェック区分をチェックする
 		if (remainNumberClassification.map(x -> x.isChkLongTermCare()).orElse(true)) {
 		    // [NO.207]期間中の介護休暇残数を取得
-		    AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
+//		    AggrResultOfChildCareNurse resultNursing = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
+//		            inputParam.getCid(), 
+//                    inputParam.getSid(), 
+//                    inputParam.getDatePeriod(),
+//                    InterimRemainMngMode.of(inputParam.isMode()), 
+//                    inputParam.getBaseDate(),
+//                    Optional.of(true), 
+//	                careData.stream().map(x -> (TempCareManagement)x).collect(Collectors.toList()), 
+//	                Optional.empty(),
+//	                inputParam.getCreateAtr(), 
+//	                Optional.of(inputParam.getRegisterDate()),
+//                    cache, 
+//                    childCareNurseRequireImplFactory.createRequireImpl());
+		    RemainLongTermCareCheckParam param = new RemainLongTermCareCheckParam(
 		            inputParam.getCid(), 
                     inputParam.getSid(), 
-                    inputParam.getDatePeriod(),
-                    InterimRemainMngMode.of(inputParam.isMode()), 
-                    inputParam.getBaseDate(),
-                    Optional.of(true), 
-	                careData.stream().map(x -> (TempCareManagement)x).collect(Collectors.toList()), 
-	                Optional.empty(),
-	                inputParam.getCreateAtr(), 
-	                Optional.of(inputParam.getRegisterDate()),
-                    cache, 
-                    childCareNurseRequireImplFactory.createRequireImpl());
-		    
-		       outputData.setNurseErrors(result.getChildCareNurseErrors());
+                    YearMonth.of(9999, 12), 
+                    inputParam.getDatePeriod(), 
+                    ClosureId.RegularEmployee, 
+                    new ClosureDate(1, false), 
+                    inputParam.isMode(), 
+                    true,
+                    careData.stream().map(x -> (TempCareManagement)x).collect(Collectors.toList()),
+                    inputParam.getCreateAtr(), 
+                    Optional.of(inputParam.getRegisterDate()));
+		       outputData.setNurseErrors(remainLongTermCareCheck.checkRemainLongTermCare(param));
 		}
 		return outputData;
 	}

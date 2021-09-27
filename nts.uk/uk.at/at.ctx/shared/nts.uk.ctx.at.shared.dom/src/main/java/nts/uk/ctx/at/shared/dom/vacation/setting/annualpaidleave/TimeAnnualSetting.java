@@ -49,10 +49,6 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     // 端数処理区分
     private TimeAnnualRoundProcesCla roundProcessClassific;
 
-    /** 1日の時間 */
-    // 1日の時間
-    private Optional<AnnualTimePerDay> annualTimePerDay;
-
     // 時間年休一日の時間
     private TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay; 
     

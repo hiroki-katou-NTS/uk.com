@@ -39,8 +39,7 @@ public class TimeCorrectionProcess {
 		}
 
 		// 矛盾した時刻をクリアする
-		clearConflictTimeWithDay.clear(cid, workCondition.get(), domainDaily,
-				domainDaily.getAttendanceLeave());
+		clearConflictTimeWithDay.clear(cid, workCondition.get(), domainDaily, classification);
 
 	}
 

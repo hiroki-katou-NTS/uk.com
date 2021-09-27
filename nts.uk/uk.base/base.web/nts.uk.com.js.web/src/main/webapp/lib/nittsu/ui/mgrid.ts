@@ -5461,8 +5461,9 @@ module nts.uk.ui.mgrid {
                         (controlDef.pattern || {})[(controlDef.list || {})[id]] = val;
                     } else if (txt) {
                         if (controlDef.pattern && controlDef.list) {
-                            let itemList = controlDef.pattern[controlDef.list[id]],
-                                item = _.find(itemList, i => i[controlDef.optionsValue || "code"] === val);
+                            let itemList = controlDef.pattern[controlDef.list[id]];
+                            if (!itemList) itemList = controlDef.pattern[controlDef.list["null"]];
+                            let item = _.find(itemList, i => i[controlDef.optionsValue || "code"] === val);
                             if (item) content = item[controlDef.optionsText || "name"];
                         }
                         

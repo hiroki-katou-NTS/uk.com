@@ -76,10 +76,10 @@ public class SaveTotalTimesCommandHandler extends CommandHandler<TotalTimesComma
 		 * In case UseAtr.Use.value or uncheck both LowerLimitSettingAtr and
 		 * UpperLimitSettingAtr will value in DB
 		 */
-		if (command.getTotalCondition().getLowerLimitSettingAtr() == 0
-				&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
-			command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
-		}
+//		if (command.getTotalCondition().getLowerLimitSettingAtr() == 0
+//				&& command.getTotalCondition().getUpperLimitSettingAtr() == 0) {
+//			command.getTotalCondition().setAttendanceItemId(totalTimeDb.getTotalCondition().getAtdItemId().orElse(null));
+//		}
 
 		if (command.getUseAtr() == UseAtr.Use.value) {
 			return;

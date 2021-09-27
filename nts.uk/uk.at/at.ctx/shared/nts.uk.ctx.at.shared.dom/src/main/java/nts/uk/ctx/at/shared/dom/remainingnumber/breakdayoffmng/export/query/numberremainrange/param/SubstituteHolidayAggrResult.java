@@ -71,4 +71,17 @@ public class SubstituteHolidayAggrResult {
 		this.occurrenceTime = new RemainingMinutes(data.getRemainTimes());
 	}
 
+	public void removeAllDayValue() {
+		this.remainDay = new ReserveLeaveRemainingDayNumber(0.0);
+		this.dayUse = new ReserveLeaveRemainingDayNumber(0.0);
+		this.occurrenceDay = new ReserveLeaveRemainingDayNumber(0.0);
+		this.carryoverDay = new ReserveLeaveRemainingDayNumber(0.0);
+	}
+	
+	public void removeAllTimeValue() {
+		this.remainTime = new RemainingMinutes(0);
+		this.timeUse = new RemainingMinutes(0);
+		this.occurrenceTime = new RemainingMinutes(0);
+		this.carryoverTime = new RemainingMinutes(0);
+	}
 }

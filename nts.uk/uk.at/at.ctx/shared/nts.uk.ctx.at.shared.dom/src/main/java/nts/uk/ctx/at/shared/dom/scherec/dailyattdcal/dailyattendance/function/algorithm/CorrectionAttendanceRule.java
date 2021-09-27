@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionShortWorkingHour;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetCorrector;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.CreateOneDayRangeCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -105,7 +106,10 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
-
+	
+	@Inject
+	private CorrectionShortWorkingHour correctShortWorkingHour;
+	
 	// 勤怠ルールの補正処理
 	@Override
 	public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
@@ -140,7 +144,8 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 					changeAtt);
 
 		}
-
+		
+		//出退勤変更後の補正
 		if(changeAtt.attendance) {
 			SupportDataWorkImport workImport = supportAdapter.correctionAfterChangeAttendance(domainDaily);
 
@@ -148,6 +153,11 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 				afterDomain = workImport.getIntegrationOfDaily();
 		}
 
+		if(changeAtt.workInfo || changeAtt.isDirectBounceClassifi() || changeAtt.attendance) {
+		//短時間勤務の補正
+			afterDomain = correctShortWorkingHour.correct(companyId, afterDomain);
+		}
+		
 		/** 休憩時間帯の補正 */
 		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.correctValCopyFromSche);
 

@@ -7,7 +7,8 @@
         getExtraHolidayData: "at/record/remainnumber/subhd/getExtraHolidayData",
         getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
         deleteHolidaySetting : "at/record/remainnumber/submana/holidaysetting/delete",
-        getWpName: "screen/com/kcp010/getLoginWkp"
+        getWpName: "screen/com/kcp010/getLoginWkp",
+        findComLeaveSetting: "ctx/at/shared/vacation/setting/compensatoryleave/find"
     }
 
     export function getSubsitutionData(searchCondition): JQueryPromise<any> {
@@ -29,5 +30,9 @@
 
      export function getWpName(): JQueryPromise<any> {
         return ajax("com", paths.getWpName);
+    }
+
+    export function findComLeaveSetting(): JQueryPromise<any> {
+      return ajax(paths.findComLeaveSetting);
     }
 }
