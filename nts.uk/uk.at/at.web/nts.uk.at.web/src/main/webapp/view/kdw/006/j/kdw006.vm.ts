@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk006.j {
             { id: 'tab-2', title: this.$i18n('KDW006_309'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
             { id: 'tab-3', title: this.$i18n('KDW006_310'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
         ]);
-        public selectedTab: KnockoutObservable<string> = ko.observable('tab-2');
+        public selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
         public columns1: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: this.$i18n('KDW006_44'), key: 'code', width: 70 },
             { headerText: 'number', key: 'id', hidden: true, width: 100 },
@@ -18,7 +18,9 @@ module nts.uk.at.view.kmk006.j {
         ]);
 
         // Value Tab1
-        public textInput: KnockoutObservable<string> = ko.observable(this.$i18n('KDW006_312'));
+        public textInput1: KnockoutObservable<string> = ko.observable(this.$i18n('復路'));
+        public textInput2: KnockoutObservable<string> = ko.observable(this.$i18n('往路'));
+        public textInput3: KnockoutObservable<string> = ko.observable(this.$i18n('総働'));
 
         // Value Tab2
         public currentCodeListLeft: KnockoutObservableArray<any> = ko.observableArray([]);

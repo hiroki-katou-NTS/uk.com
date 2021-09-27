@@ -27,6 +27,7 @@
     border-radius: 5px;
     width: 500px;
     padding: 20px;
+    height: 86px;
 }
 
 .view-kdw #tab-panel .tab-content-2 .title {
@@ -35,6 +36,16 @@
     border-radius: 5px;
     width: 500px;
     padding: 20px;
+    height: 100px;
+    height: 86px;
+}
+
+.view-kdw #tab-panel .tab-content-2 .content .child-title {
+    margin-bottom: 10px;
+}
+
+.view-kdw #tab-panel .tab-content-3 .content .child-title {
+    margin-bottom: 10px;
 }
 
 .view-kdw #tab-panel .tab-content-3 .title {
@@ -43,18 +54,73 @@
     border-radius: 5px;
     width: 500px;
     padding: 20px;
+    padding: 32px 20px;
+    height: 86px;
 }
 
 .view-kdw #tab-panel .tab-content-1 .content {
-    margin-top: 30px;
+    margin-top: 35px;
+}
+
+.view-kdw #tab-panel .tab-content-2 .content {
+    margin-top: 35px;
+}
+
+.view-kdw #tab-panel .tab-content-3 .content {
+    margin-top: 35px;
 }
 
 .view-kdw #tab-panel .tab-content-1 .content .row-1 {
     margin-bottom: 20px;
+    display: flex;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-1 span {
+    line-height: 32px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-1 input {
+    margin-left: 20px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-1 button {
+    margin-left: 20px;
+    width: 59px;
 }
 
 .view-kdw #tab-panel .tab-content-1 .content .row-2 {
     margin-bottom: 20px;
+    display: flex;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-2 span {
+    line-height: 32px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-2 input {
+    margin-left: 20px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-2 button {
+    margin-left: 20px;
+    width: 59px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-3 {
+    display: flex;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-3 span {
+    line-height: 32px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-3 input {
+    margin-left: 20px;
+}
+
+.view-kdw #tab-panel .tab-content-1 .content .row-3 button {
+    margin-left: 20px;
+    width: 59px;
 }
 
 .ntsSwapGridArea .ntsSwapComponent {

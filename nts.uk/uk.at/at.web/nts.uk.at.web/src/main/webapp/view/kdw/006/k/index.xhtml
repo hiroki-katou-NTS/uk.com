@@ -43,7 +43,7 @@
                     <div class="column-2">
                         <span data-bind="text: $i18n('KDW006_324')"></span>
                         <div data-bind="text: $vm.datePeriod"></div>
-                        <button data-bind="text: $i18n('履歴選択')"></button>
+                        <button data-bind="text: $i18n('履歴選択'), click: $vm.openViewL"></button>
                     </div>
                     <div class="column-3">
                         <table id="single-list" data-bind="ntsGridList: {
