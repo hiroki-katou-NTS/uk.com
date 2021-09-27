@@ -44,7 +44,7 @@ import java.util.Optional;
 public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByIndividualExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
     private final String EXCEL_EXT = ".xlsx";
-    private static final String TEMPLATE_FILE = "report/KSU002B.xlsx";
+    private static final String TEMPLATE_FILE = "report/KSU002.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 37;
     private final String SPACE = "　";
     private final String COLON = "　：　";
@@ -67,9 +67,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             AsposeCellsReportContext reportContext = createContext(TEMPLATE_FILE);
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            Worksheet wsSource = worksheets.get(1);
+            Worksheet wsSource = worksheets.get(0);
             if (query.isTotalDisplay()) {
-                wsSource = worksheets.get(2);
+                wsSource = worksheets.get(1);
             }
 
             //  Worksheet wsDestination = worksheets.get(1);

@@ -3,19 +3,12 @@ package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ObjectPeriod;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.ObjectDatePeriod;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonalScheduleByIndividualQuery {
-
-    /**
-     * 社員ID
-     */
-    private String employeeId;
 
     /**
      * 社員コード

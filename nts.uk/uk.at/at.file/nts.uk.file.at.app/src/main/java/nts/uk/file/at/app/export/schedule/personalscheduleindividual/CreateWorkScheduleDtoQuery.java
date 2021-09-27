@@ -64,7 +64,7 @@ public class CreateWorkScheduleDtoQuery {
         List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendanceList = dailyListAttendanceWork
                 .stream()
                 .map(x -> x.getWorkInformation()).collect(Collectors.toList());
-        //1.日別勤怠の実績で利用する勤務種類と就業時間帯
+       /* //1.日別勤怠の実績で利用する勤務種類と就業時間帯
         val workType = GetListWtypeWtimeUseDailyAttendRecordService.getdata(workInfoOfDailyAttendanceList);
         workInfoOfDailyAttendanceList.stream().map(x -> x.getRecordInfo()).collect(Collectors.toList());
 
@@ -77,7 +77,7 @@ public class CreateWorkScheduleDtoQuery {
         val workTimeList = workTimeSettingRepository.getListWorkTime(
                 companyId,
                 workInfoOfDailyAttendanceList.stream().map(x -> x.getRecordInfo().getWorkTimeCode().v()).collect(Collectors.toList())
-        );
+        );*/
         List<WorkScheduleWorkInforDto> workInforDtoList = new ArrayList<>();
         //loop：日別勤怠(Work) in input.List<日別勤怠(Work)>
         for (val ntegrationOfDaily : dailyListAttendanceWork) {

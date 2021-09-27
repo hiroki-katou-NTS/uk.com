@@ -49,7 +49,7 @@ module nts.uk.ui.at.ksu002.b.test {
                 endDate: vm.dateValue().endDate,
                 employeeCode: vm.empCode(),
                 employeeName: vm.empName(),
-                targetDate: vm.targetDate(),
+                targetDate: vm.targetDate().substring(0,10).replace(new RegExp('-', 'g'), '/'),
                 startDay: vm.startDay()
             }
             vm.$window.storage("ksu002B_params", shareData).then(() => {
