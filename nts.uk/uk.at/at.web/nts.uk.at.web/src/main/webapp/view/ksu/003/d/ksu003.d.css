@@ -26,6 +26,10 @@
     padding-bottom: 4px;
 }
 
+.content-setting .table .cell.valign-center span.unit {
+    padding-left: 10px;
+}
+
 /*.switchbox-wrappers.radio-wrappers label input+span {*/
     /*width: 60px;*/
     /*text-align: center;*/
