@@ -18,11 +18,11 @@ module nts.uk.at.view.kmk006.k {
             const vm = this;
 
             vm.itemList = ko.observableArray([
-                {code:'1', name:'基本給'},
-                {code:'2', name:'役職手当'},
-                {code:'3', name:'基本給ながい文字列ながい文字列ながい文字列'}
+                { code: '1', name: '基本給' },
+                { code: '2', name: '役職手当' },
+                { code: '3', name: '基本給ながい文字列ながい文字列ながい文字列' }
             ]);
-    
+
             vm.selectedCode = ko.observable('1');
             vm.isEnable = ko.observable(true);
             vm.isEditable = ko.observable(true);
@@ -36,7 +36,11 @@ module nts.uk.at.view.kmk006.k {
         mounted() {
             const vm = this;
 
+        }
 
+        openViewL() {
+            const vm = this;
+            vm.$window.modal('at', '/view/kdw/006/l/index.xhtml');
         }
     }
 
