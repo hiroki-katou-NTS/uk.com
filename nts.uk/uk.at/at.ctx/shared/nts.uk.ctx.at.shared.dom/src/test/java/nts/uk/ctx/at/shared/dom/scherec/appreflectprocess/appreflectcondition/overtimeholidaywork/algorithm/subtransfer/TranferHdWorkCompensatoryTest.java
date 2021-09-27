@@ -29,6 +29,10 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
@@ -60,6 +64,9 @@ public class TranferHdWorkCompensatoryTest {
 
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = ReflectApplicationHelper.createRCWithTimeLeavOverTime();
 
@@ -92,6 +99,9 @@ public class TranferHdWorkCompensatoryTest {
 
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase();
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -122,6 +132,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -152,6 +165,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -182,6 +198,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -212,6 +231,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -242,6 +264,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -272,6 +297,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -303,6 +331,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -333,6 +364,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -364,6 +398,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -393,6 +430,9 @@ public class TranferHdWorkCompensatoryTest {
 		DailyRecordOfApplication dailyApp = createRCHdCase2(hdTimeWorkFrameTime);
 		new Expectations() {
 			{
+				require.getWorkType(anyString);
+				result = Optional.of(createWorkType());
+				
 				CreateWorkMaxTimeZone.process(require, cid, (IntegrationOfDaily) any);
 				result = createRCHdCase2(hdTimeWorkFrameTime);
 				GetSubHolOccurrenceSetting.process(require, anyString, (Optional<String>) any,
@@ -448,4 +488,11 @@ public class TranferHdWorkCompensatoryTest {
 				new AttendanceTime(overtimeCalc), new AttendanceTime(overTimeTransfer));
 
 	}
+	
+	private WorkType createWorkType() {
+		 List<WorkTypeSet> workTypeSetList = new ArrayList<>();
+		 workTypeSetList.add(new WorkTypeSet("", null, WorkAtr.OneDay, null, null, null, null, 0, 0, null, null, WorkTypeSetCheck.CHECK, null));
+		return new WorkType("", null, workTypeSetList);
+	}
+	
 }
