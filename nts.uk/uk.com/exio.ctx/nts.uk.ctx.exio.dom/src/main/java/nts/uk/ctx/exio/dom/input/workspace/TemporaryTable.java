@@ -24,8 +24,8 @@ public class TemporaryTable {
 		return PREFIX + context.getDomainId().value + "_"  + name + "_" + context.getCompanyId().replace("-", "");
 	}
 
-	public static String createErrorTableName(ExecutionContext context, String name) {
-		return PREFIX + name + "_" + context.getCompanyId().replace("-", "");
+	public static String createErrorTableName(String companyId, String name) {
+		return PREFIX + name + "_" + companyId.replace("-", "");
 	}
 	
 	/**

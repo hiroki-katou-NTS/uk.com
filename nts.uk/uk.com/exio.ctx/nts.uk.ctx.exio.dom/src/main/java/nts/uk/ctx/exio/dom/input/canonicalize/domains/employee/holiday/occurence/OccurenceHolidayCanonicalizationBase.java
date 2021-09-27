@@ -42,7 +42,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 			
 			employeeCodeCanonicalization.canonicalize(require, context, employeeCode)
 				.ifLeft(errors -> {
-					errors.forEach(error -> require.add(context, ExternalImportError.of(error)));
+					errors.forEach(error -> require.add(ExternalImportError.of(error)));
 				})
 				.ifRight(interms -> {
 					List<IntermediateResult> intermsList = interms.collect(Collectors.toList());

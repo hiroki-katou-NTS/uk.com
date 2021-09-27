@@ -138,7 +138,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.forEach(interm -> getPeriod(interm)
 						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
 						.ifRight(c -> containers.add(c))
-						.ifLeft(e -> require.add(context, ExternalImportError.record(interm.getRowNo(), e.getText()))));
+						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), e.getText()))));
 
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
@@ -154,7 +154,6 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		} catch (BusinessException ex) {
 			// どのデータで失敗しようと１社員分すべて受け入れるか、全て受け入れないかのどちらかとする
 			containers.forEach(c -> require.add(
-					context,
 					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
 			
 			return Collections.emptyList();

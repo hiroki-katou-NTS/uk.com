@@ -30,8 +30,8 @@ public class ExternalImportExecuteCommandHandler extends AsyncCommandHandler<Ext
 		String companyId = AppContexts.user().companyId();
 		
 		val require = this.require.create(companyId);
-		val externalImportSetting = require.getExternalImportSetting(companyId, command.getExternalImportCode());
-		val currentState = require.getExternalImportCurrentState(companyId);
+		val externalImportSetting = require.getExternalImportSetting(command.getExternalImportCode());
+		val currentState = require.getExternalImportCurrentState();
 		
 		val taskData = context.asAsync().getDataSetter();
 		try {

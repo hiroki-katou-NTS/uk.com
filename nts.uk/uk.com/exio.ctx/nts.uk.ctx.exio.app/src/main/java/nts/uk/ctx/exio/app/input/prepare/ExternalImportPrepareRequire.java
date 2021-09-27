@@ -73,9 +73,9 @@ public class ExternalImportPrepareRequire {
 			PrepareImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
 		
-		ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode);
 		
-		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
+		ExternalImportCurrentState getExternalImportCurrentState();
 	}
 	
 	@Inject
@@ -151,12 +151,12 @@ public class ExternalImportPrepareRequire {
 		/***** 外部受入関連 *****/
 		
 		@Override
-		public void add(ExecutionContext context, ExternalImportError error) {
-			errorsRepo.add(context, error);
+		public void add(ExternalImportError error) {
+			errorsRepo.add(companyId, error);
 		}
 
 		@Override
-		public ExternalImportCurrentState getExternalImportCurrentState(String companyId) {
+		public ExternalImportCurrentState getExternalImportCurrentState() {
 			return currentStateRepo.find(companyId);
 		}
 
@@ -166,7 +166,7 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
+		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
 			return settingRepo.get(companyId, settingCode)
 						.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
@@ -182,7 +182,7 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode importCode, ImportingDomainId domainId, int importItemNumber) {
+		public Optional<ReviseItem> getReviseItem(ExternalImportCode importCode, ImportingDomainId domainId, int importItemNumber) {
 			return reviseItemRepo.get(companyId, importCode, domainId, importItemNumber);
 		}
 		
@@ -202,10 +202,10 @@ public class ExternalImportPrepareRequire {
 		/***** Workspace *****/
 				
 		@Override
-		public void setupWorkspace(ExecutionContext context) {
-			errorsRepo.cleanOldTables(context);
+		public void setupWorkspace() {
+			errorsRepo.cleanOldTables(companyId);
 			
-			errorsRepo.setup(context);
+			errorsRepo.setup(companyId);
 		}
 		
 		@Override

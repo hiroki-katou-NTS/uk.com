@@ -53,7 +53,7 @@ public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalizati
 					canonicalizeds.add(new Container(itm, container.getAddingHistoryItem()));
 				})
 				.ifLeft(e -> {
-					require.add(context, ExternalImportError.record(container.getInterm().getRowNo(), e.getText()));
+					require.add(ExternalImportError.record(container.getInterm().getRowNo(), e.getText()));
 				});
 		}
 		

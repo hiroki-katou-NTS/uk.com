@@ -10,7 +10,6 @@ import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.file.storage.FileStorage;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.manage.ExternalImportStateException;
 import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
@@ -36,8 +35,8 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 		val taskData = context.asAsync().getDataSetter();
 		try {
 			val require = this.require.create(companyId);
-			val setting = require.getExternalImportSetting(companyId, command.getExternalImportCode());
-			val currentState = require.getExternalImportCurrentState(companyId);
+			val setting = require.getExternalImportSetting(command.getExternalImportCode());
+			val currentState = require.getExternalImportCurrentState();
 			
 			currentState.prepare(require, setting, () -> {
 				run(require, command.getUploadedCsvFileId(), setting, companyId);
@@ -64,8 +63,7 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 			ExternalImportSetting externalImportSetting,
 			String companyId) {
 
-		ExecutionContext context = ExecutionContext.createForErrorTableName(companyId);//素直に会社IDでつくる
-		require.setupWorkspace(context);
+		require.setupWorkspace();
 		for (DomainImportSetting setting : externalImportSetting.getDomainSettings().values()) {	//ドメイン設定の順番気にして返してくれるやつつかう
 			try (val inputStream = fileStorage.getStream(fileId)
 					.orElseThrow(() -> new RuntimeException("file not found: " + fileId))) {

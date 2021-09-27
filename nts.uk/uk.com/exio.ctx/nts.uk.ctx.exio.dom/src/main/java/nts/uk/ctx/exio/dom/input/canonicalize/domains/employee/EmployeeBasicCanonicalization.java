@@ -51,7 +51,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		// 個人基本情報は1社員につき1レコード
 		// 2レコード目以降はエラーとする
 		revisedRecords.stream().skip(1).forEach(record -> {
-			require.add(context, ExternalImportError.record(
+			require.add(ExternalImportError.record(
 					record.getRowNo(), "受入データに同じ社員のレコードが存在しています。1社員につき1レコードのみにしてください。"));
 		});
 		
@@ -103,7 +103,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		
 		// ログインIDの重複チェック
 		if (Items.User.isDuplicatedLoginId(require, interm)) {
-			require.add(context, ExternalImportError.record(interm.getRowNo(), "ログインIDが重複しています。"));
+			require.add(ExternalImportError.record(interm.getRowNo(), "ログインIDが重複しています。"));
 			
 			return;
 		}

@@ -59,12 +59,12 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 			for(val interm : interms) {
 					val results = FixedItem.getLackItemError(interm);
 					if(!results.isEmpty()) {
-						results.stream().peek(result ->require.add(context, result));
+						results.stream().peek(result ->require.add(result));
 						continue;
 					}
 					val keyValue = getPrimaryKeys(interm, workspace);
 					if (importingKeys.contains(keyValue)) {
-						require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
+						require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
 						return; // 次のレコードへ
 					}
 					

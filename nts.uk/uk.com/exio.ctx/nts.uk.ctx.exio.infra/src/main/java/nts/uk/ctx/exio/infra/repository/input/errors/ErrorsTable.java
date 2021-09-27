@@ -7,14 +7,14 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 
 @RequiredArgsConstructor
 public class ErrorsTable {
 
-	private final ExecutionContext context;
+//	private final ExecutionContext context;
+	private final String companyId;
 	private final DatabaseProduct database;
 	private final JdbcProxy jdbcProxy;
 	
@@ -76,6 +76,6 @@ public class ErrorsTable {
 	}
 	
 	private String tableName() {
-		return TemporaryTable.createErrorTableName(context, "ERROR");
+		return TemporaryTable.createErrorTableName(companyId, "ERROR");
 	}
 }

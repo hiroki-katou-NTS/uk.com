@@ -74,7 +74,7 @@ public class ExternalImportCurrentState implements DomainAggregate {
 			
 		} catch (BusinessException ex) {
 			
-			require.add(context, ExternalImportError.execution(ex.getMessage()));
+			require.add(ExternalImportError.execution(ex.getMessage()));
 			abortedByBusinessError(require);
 			
 		} catch (Exception ex) {

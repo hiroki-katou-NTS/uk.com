@@ -96,7 +96,7 @@ public class ImportingItemMapping {
 			val csvItem = readCsv(csvRecord);
 
 			// 編集
-			return require.getReviseItem(context.getCompanyId(), context.getExternalImportCode(), context.getDomainId(), itemNo)
+			return require.getReviseItem(context.getExternalImportCode(), context.getDomainId(), itemNo)
 					.map(r -> r.revise(csvItem.getCsvValue()))
 					.orElseGet(() -> noRevise(require, context, csvItem));
 		}
@@ -122,7 +122,7 @@ public class ImportingItemMapping {
 
 	public static interface RequireAssemble {
 
-		Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, int itemNo);
+		Optional<ReviseItem> getReviseItem(ExternalImportCode settingCode, ImportingDomainId domainId, int itemNo);
 
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}

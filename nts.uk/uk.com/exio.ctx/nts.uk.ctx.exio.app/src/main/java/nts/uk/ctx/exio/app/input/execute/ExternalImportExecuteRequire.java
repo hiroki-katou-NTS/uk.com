@@ -62,9 +62,9 @@ public class ExternalImportExecuteRequire {
 			ExecuteImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
 		
-		ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode);
 		
-		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
+		ExternalImportCurrentState getExternalImportCurrentState();
 	}
 	
 	@Inject
@@ -132,7 +132,7 @@ public class ExternalImportExecuteRequire {
 		private final String companyId;
 
 		@Override
-		public ExternalImportCurrentState getExternalImportCurrentState(String companyId) {
+		public ExternalImportCurrentState getExternalImportCurrentState() {
 			return currentStateRepo.find(companyId);
 		}
 
@@ -142,12 +142,12 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void add(ExecutionContext context, ExternalImportError error) {
-			errorsRepo.add(context, error);
+		public void add(ExternalImportError error) {
+			errorsRepo.add(companyId, error);
 		}
 		
 		@Override
-		public ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
+		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
 			return settingRepo.get(companyId, settingCode)
 					.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}

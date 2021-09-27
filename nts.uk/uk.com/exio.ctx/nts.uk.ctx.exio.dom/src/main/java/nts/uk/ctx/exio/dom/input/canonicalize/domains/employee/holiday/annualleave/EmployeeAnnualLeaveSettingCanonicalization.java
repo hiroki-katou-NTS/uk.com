@@ -58,7 +58,7 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 			for(val interm : interms) {
 				val keyValue = getPrimaryKeys(interm, workspace);
 				if (importingKeys.contains(keyValue)) {
-					require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
+					require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
 					return; // 次のレコードへ
 				}
 				importingKeys.add(keyValue);

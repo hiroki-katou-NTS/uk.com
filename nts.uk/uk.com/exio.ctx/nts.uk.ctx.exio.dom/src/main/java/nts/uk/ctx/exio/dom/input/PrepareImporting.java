@@ -39,7 +39,7 @@ public class PrepareImporting {
 			ExternalImportSetting.RequireAssemble,
 			CanonicalizeRevisedData.Require {
 		
-		void setupWorkspace(ExecutionContext context);
+		void setupWorkspace();
 
 		void setupWorkspaceForEachDomain(ExecutionContext context);
 		
