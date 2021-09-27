@@ -5,7 +5,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.screen.at.app.query.kdp.kdp002.a.CreateDailyAchievementsFromStampDto;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.CreateDailyParam;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.GetWorkManagementMultiple;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommon;
@@ -49,9 +48,6 @@ public class Kdp002BWebService {
 	private GetSettingNoti settingNoti;
 	
 	@Inject
-	private CreateDailyAchievementsFromStamp createDailyAchievementsFromStamp;
-	
-	@Inject
 	private GetEmployeeWorkByStamping getEmployeeWorkByStamping;
 	
 	@POST 
@@ -91,13 +87,7 @@ public class Kdp002BWebService {
 	public boolean settingNoti() {
 		return this.settingNoti.getSetting();
 	}
-	
-	@POST
-	@Path("craeteDaily")
-	public CreateDailyAchievementsFromStampDto createDaily(CreateDailyParam param) {
-		return this.createDailyAchievementsFromStamp.createDaily(param);
-	}
-	
+		
 	@POST 
 	@Path("employee_work_by_stamping")
 	public GetEmployeeWorkByStampingDto getEmployeeWorkByStamping(GetEmployeeWorkByStampingInput param){
