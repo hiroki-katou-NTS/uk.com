@@ -1,6 +1,8 @@
 package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
+import lombok.RequiredArgsConstructor;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
@@ -8,6 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
+import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
@@ -25,8 +28,34 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecif
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.GetLegalWorkTimeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeComRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkpRepo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -38,6 +67,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRep
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.BasicInformationDto;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.WorkPlaceHistoryDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleOfWorkInfo002;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.GetWorkActualOfWorkInfo002;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.KSU002Finder;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -85,6 +117,50 @@ public class BasicInformationQuery {
 
     @Inject
     private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
+
+    @Inject
+    private GetWorkActualOfWorkInfo002 getWorkRecord;
+
+    @Inject
+    private GetScheduleOfWorkInfo002 getScheduleOfWorkInfo002;
+
+    @Inject
+    private UsageUnitSettingRepository usageUnitSettingRepository;
+
+    @Inject
+    private AffWorkplaceAdapter affWorkplaceAdapter;
+
+    @Inject
+    private MonthlyWorkTimeSetRepo monthlyWorkTimeSet;
+
+    @Inject
+    private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
+    @Inject
+    private RegularLaborTimeComRepo regularLaborTimeComRepo;
+
+    @Inject
+    private DeforLaborTimeComRepo deforLaborTimeComRepo;
+
+    @Inject
+    private RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
+
+    @Inject
+    private DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
+
+    @Inject
+    private RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+
+    @Inject
+    private DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
+
+    @Inject
+    private RegularLaborTimeShaRepo regularLaborTimeShaRepo;
+
+    @Inject
+    private DeforLaborTimeShaRepo deforLaborTimeShaRepo;
+
+    @Inject
+    private KSU002Finder kSU002Finder;
 
 
     /**
@@ -166,27 +242,7 @@ public class BasicInformationQuery {
         //Input.週合計判定 == true
         if (isTotalDisplay) {
             //Optional<社員の法定労働時間>
-            legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(new GetLegalWorkTimeOfEmployeeService.Require() {
-                @Override
-                public Optional<WorkingConditionItem> getHistoryItemBySidAndBaseDate(String sid, GeneralDate baseDate) {
-                    return workingConditionItemRepository.getBySidAndStandardDate(sid, baseDate);
-                }
-
-                @Override
-                public List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod) {
-                    return employmentHisScheduleAdapter.getEmploymentPeriod(Arrays.asList(sid), period);
-                }
-
-                @Override
-                public MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate) {
-                    return RequiredDependency.flexMonAndWeekStatutoryTime(companyId, employmentCd, employeeId, baseDate, ym);
-                }
-
-                @Override
-                public Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate, WorkingSystem workingSystem) {
-                    return RequiredDependency.monAndWeekStatutoryTime(companyId, employmentCd, employeeId, baseDate, ym, workingSystem);
-                }
-            }, employeeId, period);
+            legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(new LegalWorkTimeRequireImpl(companyId), employeeId, period);
         }
 
         return new BasicInformationDto(
@@ -227,5 +283,141 @@ public class BasicInformationQuery {
             });
         }
         return historyDtoList;
+    }
+
+    @RequiredArgsConstructor
+    public class LegalWorkTimeRequireImpl implements GetLegalWorkTimeOfEmployeeService.Require {
+
+        private final String companyId;
+
+        @Override
+        public Optional<WorkingConditionItem> getHistoryItemBySidAndBaseDate(String sid, GeneralDate baseDate) {
+            return workingConditionItemRepository.getBySidAndStandardDate(sid, baseDate);
+        }
+
+        @Override
+        public List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod) {
+            List<String> listEmpId = new ArrayList<String>();
+            listEmpId.add(sid);
+            return employmentHisScheduleAdapter.getEmploymentPeriod(listEmpId, datePeriod);
+        }
+
+        @Override
+        public MonthlyFlexStatutoryLaborTime flexMonAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate) {
+            return MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(new Require1(), new CacheCarrier(), companyId, employmentCd, employeeId, baseDate, ym);
+        }
+
+        @Override
+        public Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId, GeneralDate baseDate, WorkingSystem workingSystem) {
+            return MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(new Require2(), new CacheCarrier(), companyId, employmentCd, employeeId, baseDate, ym, workingSystem);
+        }
+
+    }
+
+    @RequiredArgsConstructor
+    private class Require1 implements MonthlyStatutoryWorkingHours.RequireM1 {
+        @Override
+        public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findEmployee(cid, sid, laborAttr, ym);
+        }
+
+        @Override
+        public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findEmployment(cid, empCode, laborAttr, ym);
+        }
+
+        @Override
+        public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findCompany(cid, laborAttr, ym);
+        }
+
+        @Override
+        public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findWorkplace(cid, workplaceId, laborAttr, ym);
+        }
+
+        @Override
+        public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate) {
+            return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
+            return usageUnitSettingRepository.findByCompany(companyId);
+        }
+    }
+
+
+    @RequiredArgsConstructor
+    private class Require2 implements MonthlyStatutoryWorkingHours.RequireM4 {
+        @Override
+        public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
+            return regularLaborTimeComRepo.find(companyId);
+        }
+
+        @Override
+        public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
+            return deforLaborTimeComRepo.find(companyId);
+        }
+
+        @Override
+        public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
+            return regularLaborTimeWkpRepo.find(cid, wkpId);
+        }
+
+        @Override
+        public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
+            return deforLaborTimeWkpRepo.find(cid, wkpId);
+        }
+
+        @Override
+        public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
+            return regularLaborTimeEmpRepo.findById(cid, employmentCode);
+        }
+
+        @Override
+        public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
+            return deforLaborTimeEmpRepo.find(cid, employmentCode);
+        }
+
+        @Override
+        public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
+            return regularLaborTimeShaRepo.find(Cid, EmpId);
+        }
+
+        @Override
+        public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
+            return deforLaborTimeShaRepo.find(cid, empId);
+        }
+
+        @Override
+        public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate) {
+            return affWorkplaceAdapter.findAffiliatedWorkPlaceIdsToRootRequire(cacheCarrier, companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findWorkplace(cid, workplaceId, laborAttr, ym);
+        }
+
+        @Override
+        public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findEmployee(cid, sid, laborAttr, ym);
+        }
+
+        @Override
+        public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findEmployment(cid, empCode, laborAttr, ym);
+        }
+
+        @Override
+        public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, MonthlyWorkTimeSet.LaborWorkTypeAttr laborAttr, YearMonth ym) {
+            return monthlyWorkTimeSet.findCompany(cid, laborAttr, ym);
+        }
+
+        @Override
+        public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
+            return usageUnitSettingRepository.findByCompany(companyId);
+        }
     }
 }
