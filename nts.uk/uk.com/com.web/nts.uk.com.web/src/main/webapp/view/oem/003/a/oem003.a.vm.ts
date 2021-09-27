@@ -2,10 +2,8 @@
 module nts.uk.com.view.oem003.a {
 
   const API = {
-    getEquipmentList: 'query/equipment/classificationmaster/getAll',
-    insetEquipment: 'ctx/office/equipment/classificationmaster/insert',
-    updateEquipment: 'ctx/office/equipment/classificationmaster/update',
-    deleteEquipment: 'com/screen/oem004/delete',
+    register: 'ctx/office/equipment/achivement/register',
+    findSettings: 'com/screen/oem003/findSettings',
   };
 
   @bean()
@@ -13,28 +11,39 @@ module nts.uk.com.view.oem003.a {
     equipmentList: KnockoutObservableArray<any> = ko.observableArray([]);
     checkAll: KnockoutObservable<boolean> = ko.observable(false);
 
-    code: KnockoutObservable<string> = ko.observable('');
-    name: KnockoutObservable<string> = ko.observable('');
-
-    selectedItemNo: KnockoutObservable<number> = ko.observable(0);
-    dataTables: KnockoutObservableArray<DataTable>;
+    dataTables: KnockoutObservableArray<DataTable> = ko.observableArray([]);
 
     formTitle: KnockoutObservable<string> = ko.observable(this.$i18n('OEM003_25'));
     
     created() {
       const vm = this;
-      vm.dataTables = ko.observableArray([
-        new DataTable('', 1,1,1,12,'kg',true,'1', 1),
-        new DataTable('', 1,1,1,12,'kg',true,'2', 2),
-        new DataTable('', 1,1,1,12,'kg',true,'3', 3)
-      ]);
-
       vm.checkAll.subscribe(value => {
         const checkData = _.forEach(vm.dataTables(), item => {
           item.selected(value);
         });
         vm.dataTables(checkData);
-      })
+      });
+    }
+
+    mounted() {
+      const vm = this;
+      vm.startPage();
+    }
+
+    startPage(): JQueryPromise<any> {
+      const vm = this;
+      const dfd = $.Deferred();
+      vm
+        .$ajax('com', API.findSettings)
+        .then((response : EquipmentUsageSetting) => {
+
+          dfd.resolve();
+        })
+        .fail(error => {
+          dfd.reject();
+        });
+      
+      return dfd.promise();
     }
 
     clickAdd() {
@@ -105,11 +114,20 @@ module nts.uk.com.view.oem003.a {
       vm.dataTables(data);
     }
 
-    clickRegister() {}
+    clickRegister() {
+      const vm = this;
+      const command: EquipmentUsageSetting = new EquipmentUsageSetting(
+        __viewContext.user.companyId,
+        vm.formTitle(),
+        vm.dataTables()
+      )
+
+      vm.$ajax('com', API.register, command)
+    }
     clickExport() {}
 
     defaultDataTable(order: number): DataTable {
-      return new DataTable('', 6, null, null, null, '', false, '', order);
+      return new DataTable('', 6, null, null, null, null, '', false, '', order);
     }
 
   }
@@ -119,12 +137,13 @@ module nts.uk.com.view.oem003.a {
     checked: KnockoutObservable<boolean> = ko.observable(false);
     itemName: KnockoutObservable<string>;
     displayWidth: KnockoutObservable<number>;
-    itemType: KnockoutObservable<number>;
+    itemNo: KnockoutObservable<number>;
     min: KnockoutObservable<number>;
     max: KnockoutObservable<number>;
+    digitsNo: KnockoutObservable<number>;
     unit: KnockoutObservable<string>;
     require: KnockoutObservable<boolean>;
-    desc: KnockoutObservable<string>;
+    memo: KnockoutObservable<string>;
     order: KnockoutObservable<number>;
     index: number;
 
@@ -148,27 +167,28 @@ module nts.uk.com.view.oem003.a {
 
     constructor(
       itemName: string, displayWidth: number,
-      itemType: number, min: number, max: number,
-      unit: string, require: boolean, desc: string, order: number
+      itemNo: number, min: number, max: number, digitsNo: number,
+      unit: string, require: boolean, memo: string, order: number
     ) {
       super();
       const vm = this;
       vm.id = nts.uk.util.randomId();
       vm.itemName = ko.observable(itemName);
       vm.displayWidth = ko.observable(displayWidth);
-      vm.itemType = ko.observable(itemType);
+      vm.itemNo = ko.observable(itemNo);
       vm.min = ko.observable(min);
       vm.max = ko.observable(max);
+      vm.digitsNo = ko.observable(digitsNo);
       vm.unit = ko.observable(unit);
       vm.require = ko.observable(require);
-      vm.desc = ko.observable(desc);
+      vm.memo = ko.observable(memo);
       vm.order = ko.observable(order);
 
-      vm.isCharacter = ko.computed(() => 1 <= this.itemType() && this.itemType() <= 3);
-      vm.isNumeric = ko.computed(() => 4 <= this.itemType() && this.itemType() <= 6);
-      vm.isTime = ko.computed(() => 7 <= this.itemType() && this.itemType() <= 9);
+      vm.isCharacter = ko.computed(() => 1 <= this.itemNo() && this.itemNo() <= 3);
+      vm.isNumeric = ko.computed(() => 4 <= this.itemNo() && this.itemNo() <= 6);
+      vm.isTime = ko.computed(() => 7 <= this.itemNo() && this.itemNo() <= 9);
       vm.isCharOrNumber = ko.computed(() => vm.isCharacter() || vm.isNumeric());
-      vm.isItemTypeNull = ko.computed(() => _.isNull(vm.itemType()));
+      vm.isItemTypeNull = ko.computed(() => _.isNull(vm.itemNo()));
       vm.index = order;
     }
 
@@ -193,5 +213,87 @@ module nts.uk.com.view.oem003.a {
       vm.checked(selected);
     }
 
+  }
+
+  enum ItemClassification {
+    TEXT = 0,
+    NUMBER = 1,
+    TIME = 2,
+  }
+
+  class EquipmentUsageSetting {
+    // 設備帳票設定
+    formSetting: {
+      cid: string,
+      title: string
+    };
+
+    // 設備利用実績の項目設定
+    itemSettings: {
+      cid: string, itemNo: string,
+      inputControl: {
+        itemCls: number,
+        require: boolean,
+        digitsNo: number,
+        maximum: number,
+        minimum: number,
+      }, 
+      items: {
+        itemName: string,
+        unit: string,
+        memo: string,
+      },
+    }[];
+
+    // 設備の実績入力フォーマット設定
+    formatSetting: {
+      cid: string,
+      itemDisplaySettings: {
+        displayWidth: number,
+        displayOrder: number,
+        itemNo: string
+      }[],
+    };
+
+    constructor(cid: string, title: string, dataTables: DataTable[]) {
+      const vm = this;
+      vm.formSetting = { cid, title };
+      const itemSettings: any[] = [];
+      const itemDisplaySettings: any[] = [];
+      _.forEach(dataTables, item => {
+        itemDisplaySettings.push({
+          displayWidth: item.displayWidth(),
+          displayOrder: item.order(),
+          itemNo: item.itemNo(),
+        });
+
+        itemSettings.push({
+          cid, itemNo: item.itemNo(),
+          inputControl: {
+            itemCls: item.isCharacter()
+              ? ItemClassification.TEXT
+              : item.isNumeric()
+                ? ItemClassification.NUMBER
+                : ItemClassification.TIME,
+            require: item.require(),
+            digitsNo: item.digitsNo(),
+            maximum: item.max(),
+            minimum: item.min(),
+          }, 
+          items: {
+            itemName: item.itemName(),
+            unit: item.unit(),
+            memo: item.memo(),
+          },
+        })
+      });
+      
+      vm.itemSettings = itemSettings;
+      vm.formatSetting = { cid, itemDisplaySettings };
+    }
+
+    toDataTables() {
+      
+    }
   }
 }

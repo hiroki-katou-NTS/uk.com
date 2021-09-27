@@ -177,7 +177,7 @@
                                 options: itemTypes,
                                 optionsValue: 'itemNo',
                                 visibleItemsCount: 5,
-                                value: itemType,
+                                value: itemNo,
                                 optionsText: 'text',
                                 editable: false,
                                 enable: true,
@@ -244,7 +244,7 @@
                               <input data-bind="ntsNumberEditor: {
                                 name: '#[OEM003_12]',
                                 constraint: 'DigitsNumber',
-                                value: max,
+                                value: digitsNo,
                                 required: true,
                                 option: { textalign: 'center', width: '38px' }
                               }"/>
@@ -268,7 +268,7 @@
                             <!-- A4_D9 -->
                             <textarea style="overflow-y: scroll;" data-bind="ntsMultilineEditor: {
                               name: '#[OEM003_15]',
-                              value: desc,
+                              value: memo,
                               option: {
                                 resizeable: false,
                                 width: '277px',

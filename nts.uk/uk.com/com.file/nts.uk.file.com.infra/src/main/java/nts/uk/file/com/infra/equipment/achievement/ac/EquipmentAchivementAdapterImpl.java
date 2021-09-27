@@ -8,7 +8,7 @@ import nts.uk.file.com.app.equipment.achievement.ac.EquipmentUsageSettingsImport
 import nts.uk.query.pub.equipment.achievement.EquipmentUsageSettingsPub;
 
 @Stateless
-public class EquipmentUsageSettingsAdapterImpl implements EquipmentUsageSettingsAdapter {
+public class EquipmentAchivementAdapterImpl implements EquipmentUsageSettingsAdapter {
 
 	@Inject
 	private EquipmentUsageSettingsPub pub;
