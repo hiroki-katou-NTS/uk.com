@@ -1767,6 +1767,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_16"));
         // K2_2
         cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_17"));
+
         if (isUndigestedPause) {
             cells.copyRows(cells, !checkCopyRow(dataSource,employee) ? NUMBER_ROW_OF_HEADER + 22 :  71 , firstRow+2, 1);
             // K2_3
@@ -1774,10 +1775,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             totalRows += 1;
             count += 1;
         }
+        val row = isUndigestedPause ? 3:2;
         if (isOvertimeRemaining) {
-            cells.copyRows(cells, !checkCopyRow(dataSource,employee) ? NUMBER_ROW_OF_HEADER+  23 :  72    , firstRow+3, 1);
+
+            cells.copyRows(cells, !checkCopyRow(dataSource,employee) ? NUMBER_ROW_OF_HEADER+  23 : (isUndigestedPause? 72 : 71)    , firstRow+row, 1);
             // K2_4
-            cells.get(firstRow+3, 9).setValue(TextResource.localize("KDR001_18"));
+            cells.get(firstRow+row, 9).setValue(TextResource.localize("KDR001_18"));
             totalRows += 1;
             count += 1;
         }
@@ -1797,7 +1800,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     setBackgroundGray(cells.get(firstRow+2, 10 + i));
                 }
                 if (isOvertimeRemaining) {
-                    setBackgroundGray(cells.get(firstRow+3, 10 + i));
+                    setBackgroundGray(cells.get(firstRow+ row, 10 + i));
                 }
             }
         }
@@ -2804,18 +2807,21 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.copyRows(cells, !checkCopyRowK(dataSource,employee)? NUMBER_ROW_OF_HEADER + 24 : 73   , firstRow, countL);
         // L1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_21"));
-        if (listItemsOutput.getHolidays().isMonthlyPublic()) {
-            // L2_4
-            cells.get(firstRow + 3, 9).setValue(TextResource.localize("KDR001_80"));
-        }
-        if (listItemsOutput.getHolidays().isOutputHolidayForward()) {
-            // L2_1
-            cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_23"));
-        }
+        //2
+        val isOutputHolidayForward = listItemsOutput.getHolidays().isOutputHolidayForward();
+        //3
+        val isMonthlyPublic = listItemsOutput.getHolidays().isMonthlyPublic();
+        // L2_1
+        cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_23"));
         // L2_2
         cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_22"));
+        if(isOutputHolidayForward)
         // L2_3
         cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_17"));
+        if(isMonthlyPublic)
+        // L2_4
+        cells.get(firstRow + (isOutputHolidayForward?3:2), 9).setValue(TextResource.localize("KDR001_80"));
+
         if(employee.getCurrentMonth().isPresent()){
             YearMonth currentMonth = employee.getCurrentMonth().get();
             //  Set background
@@ -3042,9 +3048,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val checkEmLeave = compensLeaveEmSetRepository.find(cid, employmentCode);
         if (!holidaysRemainingManagement.getListItemsOutput().getSubstituteHoliday().isOutputItemSubstitute()) {
             return false;
+        }if(checkEmLeave == null){
+            return compensatoryLeaveComSetting.isManaged();
+        }else {
+            return compensatoryLeaveComSetting.isManaged()&&checkEmLeave.getIsManaged() == ManageDistinct.YES ;
         }
-        return compensatoryLeaveComSetting.isManaged() &&checkEmLeave.getIsManaged() == ManageDistinct.YES ;
-
     }
 
     // I - CASE 2
@@ -3079,8 +3087,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (!checkPause) {
             return false;
         } else {
-            return substVacation.map(ComSubstVacation::isManaged).orElse(false)
-                    && empSubstVacation.map(e->e.getManageDistinct() == ManageDistinct.YES).orElse(false);
+            if(!empSubstVacation.isPresent()){
+                return substVacation.map(ComSubstVacation::isManaged).orElse(false);
+            }else {
+                return  substVacation.map(ComSubstVacation::isManaged).orElse(false)
+                        && empSubstVacation.map(e->e.getManageDistinct() == ManageDistinct.YES).orElse(false);
+            }
         }
 
     }
@@ -3176,15 +3188,21 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return firstRow;
         }
         val listSphdCode = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getSpecialHoliday();
+
         Collections.sort(listSphdCode);
         List<SpecialHoliday> specialHolidays = dataSource.getVariousVacationControl().getListSpecialHoliday();
         for (Integer specialHolidayCode : listSphdCode) {
+
             Optional<SpecialHoliday> specialHolidayOpt = specialHolidays.stream()
                     .filter(c -> c.getSpecialHolidayCode().v() == specialHolidayCode).findFirst();
+            val listFrameNo = specialHolidayOpt.get().getTargetItem().getFrameNo();
+            val itemFrame = specialHolidayFrameRepository.findHolidayFrameByListFrame(AppContexts.user().companyId(), listFrameNo)
+                    .stream().filter(e -> e.getTimeMngAtr().value == NotUseAtr.USE.value).collect(Collectors.toList());
+            val isTime = !itemFrame.isEmpty();
             if (!specialHolidayOpt.isPresent()) {
                 continue;
             }
-            firstRow += 4;
+            firstRow += isTime?4:2;
         }
         return firstRow;
     }
