@@ -11,15 +11,13 @@ import nts.uk.shr.com.permit.DescriptionOfAvailabilityPermissionBase;
 public class ExOutCtg extends DescriptionOfAvailabilityPermissionBase {
 
 	/**
-	 * カテゴリID
-	 */
-	private CategoryCd categoryId;
-
-	/**
 	 * オフィスヘルパシステム区分
 	 */
 	private SystemUsability officeHelperSysAtr;
-
+	/**
+	 * カテゴリID
+	 */
+	private CategoryCd categoryId;
 	/**
 	 * カテゴリ名
 	 */
@@ -39,15 +37,35 @@ public class ExOutCtg extends DescriptionOfAvailabilityPermissionBase {
 	 * 勤怠システム区分
 	 */
 	private SystemUsability attendanceSysAtr;
-
+	/**
+	 * 外部出期間区分: 外部出期間区分
+	 */
+	private OutingPeriodClassific outingPeriodClassific;
 	/**
 	 * 給与システム区分
 	 */
 	private SystemUsability payrollSysAtr;
 
-	public ExOutCtg(int categoryId, int officeHelperSysAtr, String categoryName, int categorySet,
-			int personSysAtr, int attendanceSysAtr, int payrollSysAtr, int functionNo, String functionName,
-			String explanation, int displayOrder, boolean defaultValue) {
+	/**
+	 * 締め使う区分
+	 */
+	private ClassificationToUse classificationToUse;
+
+	public ExOutCtg(
+			int categoryId,
+			int officeHelperSysAtr,
+			String categoryName,
+			int categorySet,
+			int personSysAtr,
+			int attendanceSysAtr,
+			int payrollSysAtr,
+			int functionNo,
+			String functionName,
+			String explanation,
+			int displayOrder,
+			boolean defaultValue,
+			int outingPeriodClassific,
+			int classificationToUse) {
 		super(functionNo, functionName, explanation, displayOrder, defaultValue);
 		this.categoryId = new CategoryCd(categoryId);
 		this.officeHelperSysAtr = EnumAdaptor.valueOf(officeHelperSysAtr, SystemUsability.class);
@@ -56,5 +74,7 @@ public class ExOutCtg extends DescriptionOfAvailabilityPermissionBase {
 		this.personSysAtr = EnumAdaptor.valueOf(personSysAtr, SystemUsability.class);
 		this.attendanceSysAtr = EnumAdaptor.valueOf(attendanceSysAtr, SystemUsability.class);
 		this.payrollSysAtr = EnumAdaptor.valueOf(payrollSysAtr, SystemUsability.class);
+		this.outingPeriodClassific = EnumAdaptor.valueOf(outingPeriodClassific,OutingPeriodClassific.class);
+		this.classificationToUse = EnumAdaptor.valueOf(classificationToUse,ClassificationToUse.class);
 	}
 }
