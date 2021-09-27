@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
 public class ManHrTaskDetail {
 	
 	/** 作業項目値*/
-	private List<TaskItemValue> taskItemValue;
+	private List<TaskItemValue> taskItemValues;
 	
 	/** 応援勤務枠No*/
 	private SupportFrameNo supNo;
