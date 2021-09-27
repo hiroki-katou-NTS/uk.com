@@ -20,6 +20,9 @@ import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.Upda
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.delete.DeleteStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.AddEmpMedicalWorkCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.UpdateEmpMedicalWorkCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.DeleteEmpMedicalWorkCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.DeleteAnnuaLeaveCommand;
@@ -331,6 +334,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00092
 			new TypeLiteral<PeregAddCommandHandler<AddEmpSocialInsGradeInforCommand>>() {
+			},
+			// CS00098 医療
+			new TypeLiteral<PeregAddCommandHandler<AddEmpMedicalWorkCommand>>() {
 			}
 	);
 	/** Update handlers */
@@ -460,6 +466,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00092
 			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpSocialInsGradeInforCommand>>() {
+			},
+			// CS00098 医療
+			new TypeLiteral<PeregUpdateCommandHandler<UpdateEmpMedicalWorkCommand>>() {
 			}
 
 	);
@@ -519,6 +528,9 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			},
 			// CS00092
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpSocialInsGradeInforCommand>>() {
+			},
+			// CS00098 医療
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpMedicalWorkCommand>>() {
 			}
 	);
 	

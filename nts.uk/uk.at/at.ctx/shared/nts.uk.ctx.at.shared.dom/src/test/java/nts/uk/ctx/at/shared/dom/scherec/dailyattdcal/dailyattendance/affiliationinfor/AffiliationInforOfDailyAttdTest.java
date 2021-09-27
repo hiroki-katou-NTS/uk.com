@@ -58,7 +58,8 @@ public class AffiliationInforOfDailyAttdTest {
 						new DatePeriod(
 							GeneralDate.ymd(2020, 1, 1), 
 							GeneralDate.ymd(2020, 12, 31)), 
-						"job-name");
+						"job-name",
+						"job-code");
 		}};
 		
 		String result = NtsAssert.Invoke.staticMethod(AffiliationInforOfDailyAttd.class, "getJobTitleId", 
@@ -293,7 +294,8 @@ public class AffiliationInforOfDailyAttdTest {
 					new DatePeriod(
 							GeneralDate.ymd(2020, 1, 1), 
 							GeneralDate.ymd(2020, 2, 1)), 
-					"jobTitleName");
+					"jobTitleName",
+					"jobtitelCode");
 		}
 		
 		static SharedAffWorkPlaceHisImport createWorkplace(String workplaceId) {

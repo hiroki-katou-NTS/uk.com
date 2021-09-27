@@ -13,6 +13,7 @@ import find.person.contact.PersonContactDto;
 import find.person.info.PersonDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.businesstype.BusinessTypeDto;
 import nts.uk.ctx.at.record.app.find.stamp.card.stampcard.PeregStampCardDto;
+import nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle.EmpMedicalWorkDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.annualleave.AnnualLeaveDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave10informationDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.empinfo.basicinfo.Specialleave11informationDto;
@@ -265,6 +266,9 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			},
 			// CS00092
 			new TypeLiteral<PeregFinder<EmpSocialInsGradeInforDto>>() {
+			},
+			// CS00098 医療
+			new TypeLiteral<PeregFinder<EmpMedicalWorkDto>>() {
 			}
 	);
 

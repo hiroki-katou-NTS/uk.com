@@ -2032,7 +2032,14 @@ public class CheckPersonInfoProcess {
 		masterName.put("IS00776" , "残数");		
 		masterName.put("IS00777" , "残日数");		
 		masterName.put("IS00778" , "残時間");		
-		masterName.put("IS00779" , "カード番号");		
+		masterName.put("IS00779" , "カード番号");
+		masterName.put("IS01090" , "期間");		
+		masterName.put("IS01091" , "開始日");		
+		masterName.put("IS01092" , "終了日");	
+		masterName.put("IS01093" , "夜勤専従者として扱う");		
+		masterName.put("IS01094" , "医療勤務形態");		
+		masterName.put("IS01095" , "他部署の兼務");	
+		masterName.put("IS01096" , "看護区分");
 
 		return masterName;
 			
