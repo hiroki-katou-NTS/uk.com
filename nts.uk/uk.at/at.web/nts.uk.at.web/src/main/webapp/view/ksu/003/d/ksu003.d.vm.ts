@@ -86,7 +86,7 @@ module nts.uk.at.view.ksu003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.init).then(data => {
-                vm.selected2WorkDisplay(data.workManagementMulti.useATR);
+                vm.selected2WorkDisplay(data.workManagementMulti.useATR == 0 ? 1 : 2);
                 vm.actualDisplay(!_.isNull(data.scheFuncControl) ? data.scheFuncControl.displayActual : false);
                 dfd.resolve();
             }).fail(error => {
