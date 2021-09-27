@@ -98,7 +98,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public created() {
         const self = this;
 
-        if (self.params) {
+        if (self.params && self.params.isDetailMode) {
             self.mode = false;
             self.dataOutput = self.params;
             self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
@@ -106,11 +106,13 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
     }
     public mounted() {
-        let self = this;
-        self.fetchStart();
+        let self = this,
+            employeeID = self.params ? self.params.employeeID : null,
+            date = self.params ? self.params.date : null;
+        self.fetchStart(employeeID ? employeeID : null, date ? [date] : []);
     }
 
-    public fetchStart() {
+    public fetchStart(employeeID?: string, dateLst?: Array<string>) {
         const self = this;
         if (self.mode) {
             self.$mask('show');
@@ -123,7 +125,12 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.user = usr;
         }).then(() => {
             if (self.mode) {
-                return self.loadCommonSetting(AppType.GO_RETURN_DIRECTLY_APPLICATION);
+                return self.loadCommonSetting(
+                    AppType.GO_RETURN_DIRECTLY_APPLICATION, 
+                    employeeID, 
+                    null, 
+                    dateLst, 
+                    null);
             }
 
             return true;
@@ -135,8 +142,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
             if (loadData) {
                 return self.$http.post('at', API.startS09, {
                     companyId: self.user.companyId,
-                    employeeId: self.user.employeeId,
-                    dates: [],
+                    employeeId: employeeID ? employeeID : self.user.employeeId,
+                    dates: dateLst,
                     mode: self.mode,
                     inforGoBackCommonDirectDto: self.dataOutput ? self.dataOutput : null,
                     appDispInfoStartupDto: self.dataOutput ? self.dataOutput.appDispInfoStartup : self.appDispInfoStartupOutput
@@ -147,8 +154,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
                     return self.$http.post('at', API.startS09, {
                         companyId: self.user.companyId,
-                        employeeId: self.user.employeeId,
-                        dates: [],
+                        employeeId: employeeID ? employeeID : self.user.employeeId,
+                        dates: dateLst,
                         mode: self.mode,
                         inforGoBackCommonDirectDto: self.dataOutput ? self.dataOutput : null,
                         appDispInfoStartupDto: self.dataOutput ? self.dataOutput.appDispInfoStartup : self.appDispInfoStartupOutput
@@ -210,6 +217,11 @@ export class KafS09AComponent extends KafS00ShrComponent {
             },
             detailModeContent: null
         };
+        if (self.mode) {
+            if (self.params && self.params.date) {
+                _.set(paramb.newModeContent, 'appDate', self.params.date);    
+            }
+        }
         if (!self.mode) {
             paramb.detailModeContent = {
                 prePostAtr: self.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
@@ -727,6 +739,21 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public kafs00CValid(kafs00CValid) {
         const self = this;
         self.isValidateAll = self.getValidAllValue();
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        if (self.params && self.params.isDetailMode) {
+            self.mode = false;
+            self.dataOutput = self.params;
+            self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
+        } else {
+            self.mode = true;
+        }
+        let employeeID = self.params ? self.params.employeeID : null,
+            date = self.params ? self.params.date : null;
+        self.fetchStart(employeeID ? employeeID : null, date ? [date] : []);
     }
 
 }

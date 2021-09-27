@@ -44,8 +44,7 @@ export class Kdws03AComponent extends Vue {
         dateTarget: null,
         initClock: null,
         transitionDesScreen: null,
-        errorRefStartAtr: false,
-        // formatCodes: []
+        errorRefStartAtr: false
     }) })
     public readonly params: Params;
 
@@ -54,7 +53,6 @@ export class Kdws03AComponent extends Vue {
     public rownum: number = 0;
     public rowHeight: number = 0;
     public displayFormat: any = '0';
-    public formatCode: string = '';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
     public optionalHeader: Array<any> = [];
@@ -229,12 +227,7 @@ export class Kdws03AComponent extends Vue {
     //日別実績データの取得
     public startPage() {
         let self = this;
-        let selectedCode: Array<any> = [];
-
-        self.$mask('show', { message: true });        
-        if (!_.isNil(self.formatCode) && self.formatCode != '') {
-            selectedCode.push(self.formatCode);
-        }        
+        self.$mask('show', { message: true });
 
         let param = {
             changePeriodAtr: self.params.changePeriodAtr,
@@ -251,7 +244,6 @@ export class Kdws03AComponent extends Vue {
             displayDateRange: null,
             transitionDesScreen: self.params.transitionDesScreen,
             closureId: self.params.closureID,
-            formatCodes: selectedCode
         };
 
         self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
@@ -681,32 +673,26 @@ export class Kdws03AComponent extends Vue {
                     monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
                     timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
                     selfConfirm: this.paramData.showPrincipal,
-                }).then((params: any) => {
-                    if (params != undefined && params.openB) {
+                    closureDate: self.dateRanger.startDate
+                }).then((param: any) => {
+                    if (param != undefined && param.openB) {
                         //open B
                         let rowData = null;
                         if (self.displayFormat == '0') {
-                            rowData = _.find(self.displayDataLst, (x) => x.dateDetail == params.date);
+                            rowData = _.find(self.displayDataLst, (x) => x.dateDetail == param.date);
                         } else {
-                            rowData = _.find(self.displayDataLst, (x) => x.employeeId == params.employeeId);
+                            rowData = _.find(self.displayDataLst, (x) => x.employeeId == param.employeeId);
                         }
 
                         self.$modal('kdws03b', {
-                            'employeeID': params.employeeId,
-                            'employeeName': params.employeeName,
-                            'date': params.date,
+                            'employeeID': param.employeeId,
+                            'employeeName': param.employeeName,
+                            'date': param.date,
                             'rowData': rowData,
                             'paramData': self.paramData
                         });
                     }
-
-                    // close dialog I
-                    if (!_.isNil(params)) {
-                        self.formatCode = params;
-                        this.startPage();
-                    }
-
-                    if (!_.isNil(params) && params.reload) {
+                    if (!_.isNil(param) && param.reload) {
                         this.startPage();
                     }
 
@@ -912,6 +898,4 @@ interface Params {
     transitionDesScreen: any;
     // エラー参照を起動する
     errorRefStartAtr: boolean;
-
-    formatCodes: Array<string>;
 }

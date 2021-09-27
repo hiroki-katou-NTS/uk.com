@@ -174,14 +174,16 @@
 		                            </div>
                             </div>
                             <div id="holiday-agree" class="agree-row" >
-	                            <div id="numberHoliday" style="float: left; margin-right: 5px ; max-width: 225px">
+	                            <div id="numberHoliday" style="float: left; margin-right: 5px ; max-width: 375px">
 		                            <table id="fixed-table">
 		                                <thead>
 		                                    <tr>
 		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_CompensationHoliday"])}</th>
 		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
-		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
+		                                        <th class="ui-widget-header" style="width: 70px;">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
 		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+		                                        <th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_7',["#Com_ChildNurseHoliday"])}</th>
+		                                        <th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_7',["#Com_CareHoliday"])}</th>
 		                                    </tr>
 		                                </thead>
 		                                <tbody>
@@ -198,6 +200,12 @@
 		                                        <td class="ui-widget-body remain-reserve-day">
 		                                        	<a class="text-holiday hyperlink" style="color: inherit;" data-bind="text: dataHoliday().reserve, click: openkdl029Dialog"></a>
 		                                        </td>
+		                                        <td class="ui-widget-body remain-childCare-day">
+		                                        	<a class="text-holiday hyperlink" style="color: inherit;" data-bind="text: dataHoliday().childCareValue, click: openKDL051Dialog"></a>
+		                                        </td>
+		                                        <td class="ui-widget-body remain-longTermCare-day">
+		                                        	<a class="text-holiday hyperlink" style="color: inherit;" data-bind="text: dataHoliday().longTermCareValue, click: openKDL052Dialog"></a>
+		                                        </td>
 		                                    </tr>
 		                                    <!-- <tr>
 		                                        <td class="ui-widget-body remain-compen-time">
@@ -211,7 +219,7 @@
 		                                    </tr> -->
 		                                </tbody>
 		                            </table>
-		                            <div style="width: 300px">
+		                            <div style="width: 350px">
 		                            <label data-bind="text: dataHoliday().dispSysDate, visible: referenceVacation().allVacation()" style="max-width: 100px"></label>
 		                            <label style="max-width: 125px" data-bind="text: dataHoliday().dispNextGrantDate, visible: referenceVacation().yearHoliday20()"></label>
 		                            </div>

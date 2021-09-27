@@ -47,6 +47,7 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.service.TimeLe
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -369,6 +370,19 @@ public class TimeLeaveApplicationFinder {
         Application application;
         TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfoDto.mappingData(params.getTimeLeaveAppDisplayInfo());
 
+        int over60h = 0;
+        int nursingTime = 0;
+        int childCareTime = 0;
+        int subHolidayTime = 0;
+        int annualTime = 0;
+        for (TimeLeaveAppDetailDto time : params.getDetails()) {
+            over60h += time.getApplyTime().getSuper60AppTime();
+            nursingTime += time.getApplyTime().getCareAppTime();
+            childCareTime += time.getApplyTime().getChildCareAppTime();
+            subHolidayTime += time.getApplyTime().getSubstituteAppTime();
+            annualTime += time.getApplyTime().getAnnualAppTime();
+        }
+        
         if (params.getApplicationNew() != null) {
             String employeeId = AppContexts.user().employeeId();
             application = Application.createFromNew(
@@ -391,6 +405,7 @@ public class TimeLeaveApplicationFinder {
 
             // アルゴリズム「2-1.新規画面登録前の処理」を実行する
             System.out.println("2-1.新規画面登録前の処理");
+            
             confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
                     companyId,
                     EmploymentRootAtr.APPLICATION,
@@ -399,7 +414,11 @@ public class TimeLeaveApplicationFinder {
                     null,
                     output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
-                    output.getAppDispInfoStartup()
+                    output.getAppDispInfoStartup(), 
+                    new ArrayList<String>(), 
+                    Optional.of(new TimeDigestionParam(over60h, nursingTime, childCareTime, subHolidayTime, annualTime, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
+                    Optional.empty(), 
+                    false
             );
         } else {
             application = params.getApplicationUpdate().toDomain(params.getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
@@ -414,7 +433,10 @@ public class TimeLeaveApplicationFinder {
                     application.getVersion(),
                     null,
                     null,
-                    output.getAppDispInfoStartup()
+                    output.getAppDispInfoStartup(), 
+                    new ArrayList<String>(), 
+                    Optional.of(new TimeDigestionParam(over60h, nursingTime, childCareTime, subHolidayTime, annualTime, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
+                    false
             );
             confirmMsgOutputs = new ArrayList<>();
         }

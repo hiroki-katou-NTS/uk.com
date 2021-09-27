@@ -4,8 +4,6 @@ import { storage } from '@app/utils';
 import { KdwS03DComponent } from 'views/kdw/s03/d';
 import { KdwS03FComponent } from 'views/kdw/s03/f';
 import { KdwS03GComponent } from 'views/kdw/s03/g';
-import { KdwS03IComponent } from 'views/kdw/s03/i';
-
 
 @component({
     name: 'kdws03amenu',
@@ -16,14 +14,12 @@ import { KdwS03IComponent } from 'views/kdw/s03/i';
         'kdws03d': KdwS03DComponent,
         'kdws03f': KdwS03FComponent,
         'kdws03g': KdwS03GComponent,
-        'kdws03i': KdwS03IComponent,
     }
 })
 export class KdwS03AMenuComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params: MenuParam;
     public dailyCorrectionState: any = null;
-    public selectedCode: string = '';
 
     public title: string = 'KdwS03AMenu';
 
@@ -40,7 +36,7 @@ export class KdwS03AMenuComponent extends Vue {
             endDate: this.dailyCorrectionState.dateRange.endDate
         }).then((v: any) => {
             if (v != undefined && v.openB) {
-                this.$close(v);                
+                this.$close(v);
             }
         });
 
@@ -51,20 +47,9 @@ export class KdwS03AMenuComponent extends Vue {
     }
 
     public openKdws03g(param: boolean) {
-        this.createMask();
-        this.$modal('kdws03g', { 'remainDisplay': param });
-    }
-
-    public openKdws03i() {
         let self = this;
         this.createMask();
-        this.$modal('kdws03i', {selectedCode: this.dailyCorrectionState.paramData.lstControlDisplayItem.formatCode[0]}).then((params: any) => {            
-            self.selectedCode = params; 
-        });
-    }
-
-    public closeDialog() {
-        this.$close(this.selectedCode);
+        this.$modal('kdws03g', { 'remainDisplay': param, closureDate: self.params.closureDate });
     }
 
     public processConfirmAll(processFlag: string) {
@@ -109,7 +94,7 @@ export class KdwS03AMenuComponent extends Vue {
                 return;
             }
 
-            this.$http.post('at', servicePath.confirmAll, dataCheckSign).then(( v: any ) => {
+            this.$http.post('at', servicePath.confirmAll, dataCheckSign).then((result: { data: any }) => {
                 this.$mask('show', 0.5);
                 if (processFlag == 'confirm') {
                     this.$modal.info({ messageId: 'Msg_15' }).then((v: any) => {
@@ -155,7 +140,7 @@ interface MenuParam {
     monthActualReferButtonDis: boolean;
     timeExcessReferButtonDis: boolean;
     allConfirmButtonDis: boolean;
-    selectedCode: string;
+    closureDate: any;
 }
 const servicePath = {
     confirmAll: 'screen/at/correctionofdailyperformance/confirmAll'

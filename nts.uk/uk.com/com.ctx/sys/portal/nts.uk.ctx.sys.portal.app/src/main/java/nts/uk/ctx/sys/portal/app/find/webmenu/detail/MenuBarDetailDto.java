@@ -48,16 +48,6 @@ public class MenuBarDetailDto {
 	private int menuCls;
 
 	/**
-	 * Background color
-	 */
-	private String backgroundColor;
-
-	/**
-	 * Text color
-	 */
-	private String textColor;
-
-	/**
 	 * Display order
 	 */
 	private int displayOrder;

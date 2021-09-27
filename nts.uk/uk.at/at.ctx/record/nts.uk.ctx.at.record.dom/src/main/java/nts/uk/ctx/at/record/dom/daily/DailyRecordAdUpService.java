@@ -109,6 +109,10 @@ public interface DailyRecordAdUpService {
 			Optional<ApprovalProcessingUseSetting> approvalSet);
 
 	default void addAllDomain(IntegrationOfDaily domain) {
+		addAllDomain(domain, false);
+	}
+	
+	default void addAllDomain(IntegrationOfDaily domain, boolean remove) {
 
 		// ドメインモデル「日別実績の勤務情報」を更新する
 		adUpWorkInfo(
@@ -167,7 +171,7 @@ public interface DailyRecordAdUpService {
 		// ドメインモデル「日別実績の応援作業別勤怠時間」を更新する
 		adUpOuenWorkTime(Optional.of(OuenWorkTimeOfDaily.create(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTime())));
 
-		adUpEmpError(domain.getEmployeeError(), new ArrayList<>(), false);
+		adUpEmpError(domain.getEmployeeError(), remove ? Arrays.asList(Pair.of(domain.getEmployeeId(), domain.getYmd())) : new ArrayList<>(), remove);
 
 		adTimeAndAnyItemAdUp(Arrays.asList(domain));
 	}

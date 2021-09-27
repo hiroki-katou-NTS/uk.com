@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -133,7 +132,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 				editStateList.add(new EditStateOfDailyPerformance(d.getEmployeeId(), d.getYmd(), editState));
 			}
 			this.editState.updateByKey(editStateList);
-			this.editState.deleteExclude(editStateList);
+			this.editState.deleteExclude(d.getEmployeeId(), d.getYmd(), editStateList);
 		});
 		return daily;
 	}

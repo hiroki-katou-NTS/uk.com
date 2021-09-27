@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.gateway.infra.entity.securitypolicy;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
+import lombok.val;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -44,10 +46,32 @@ public class SgwmtPasswordPolicy extends UkJpaEntity implements Serializable {
 	public int symbolCharacters;
 	@Column(name = "ALPHABET_DIGIT")
 	public int alphabetDigit;
+	
+	public static final JpaEntityMapper<SgwmtPasswordPolicy> MAPPER = new JpaEntityMapper<>(SgwmtPasswordPolicy.class);
 
 	@Override
 	protected Object getKey() {
 		return this.contractCd;
 	}
+	
+	public PasswordPolicy toDomain() {
+		
+		val complexity = PasswordComplexityRequirement.createFromJavaType(
+				lowestDigits,
+				alphabetDigit,
+				numberOfDigits,
+				symbolCharacters);
+		
+		return PasswordPolicy.createFromJavaType(
+				contractCd,
+				notificationPasswordChange,
+				loginCheck,
+				initialPasswordChange,
+				isUse,
+				historyCount,
+				validityPeriod,
+				complexity);
+	}
+
 
 }

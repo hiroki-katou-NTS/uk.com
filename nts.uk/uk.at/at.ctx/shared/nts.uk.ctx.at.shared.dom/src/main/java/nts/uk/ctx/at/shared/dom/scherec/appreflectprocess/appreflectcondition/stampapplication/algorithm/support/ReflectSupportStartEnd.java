@@ -69,7 +69,7 @@ public class ReflectSupportStartEnd {
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(
 					new WorkNo(data.getDestinationTimeApp().getSupportWork().orElse(null)),
-					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
+					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()),
 							data.getTimeOfDay())),
 					Optional.empty());
 			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
@@ -103,7 +103,7 @@ public class ReflectSupportStartEnd {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(old.getTimeSheet().getWorkNo(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getStart()
-									.map(x -> x.getReasonTimeChange().getEngravingMethod()).orElse(null)),
+									.flatMap(x -> x.getReasonTimeChange().getEngravingMethod())),
 							data.getTimeOfDay())),
 					old.getTimeSheet().getEnd());
 			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));

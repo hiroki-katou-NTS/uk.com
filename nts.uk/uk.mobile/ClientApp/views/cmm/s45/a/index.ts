@@ -385,7 +385,10 @@ export class CmmS45AComponent extends Vue {
                         appName: self.appTypeName(app.appType, app.opAppTypeDisplay),
                         prePostAtr: app.prePostAtr,
                         reflectStatus: app.reflectionStatus,
-                        appStatusNo: self.convertReflectToInt(app.reflectionStatus)
+                        appStatusNo: self.convertReflectToInt(app.reflectionStatus),
+                        opComplementLeaveApp: app.opComplementLeaveApp,
+                        opAppStartDate: app.opAppStartDate,
+                        opAppEndDate: app.opAppEndDate
                     }));
                 }
             }
@@ -414,6 +417,14 @@ export class CmmS45AComponent extends Vue {
         //     }));
         // });
     }
+    
+    public isLinkApp(opComplementLeaveApp: any) {
+
+        const isLinkApp = _.get(opComplementLeaveApp, 'linkAppID');
+
+        return !_.isNil(isLinkApp);
+    }
+
     public convertReflectToInt(value: string) {
         const self = this;
         if (value == 'CMMS45_7') {

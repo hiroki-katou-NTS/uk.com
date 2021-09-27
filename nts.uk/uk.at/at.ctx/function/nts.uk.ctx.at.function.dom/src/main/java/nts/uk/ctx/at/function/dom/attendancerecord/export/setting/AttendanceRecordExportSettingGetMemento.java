@@ -78,4 +78,6 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 * @return the monthly confirmed display
 	 */
 	MonthlyConfirmedDisplay getMonthlyConfirmedDisplay();
+	
+	DayOfWeek getStartOfWeek();
 }

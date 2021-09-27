@@ -74,8 +74,8 @@ public class TimeStampDto implements ItemConst, AttendanceItemDataGate {
 	}
 	
 	public static TimeStampDto createTimeStamp(WorkStamp c) {
-		return  c == null || c.getTimeDay().getTimeWithDay()  == null || c.getTimeDay().getReasonTimeChange() ==null || c.getTimeDay().getReasonTimeChange().getTimeChangeMeans() ==null  || !c.getTimeDay().getTimeWithDay().isPresent()? null : new TimeStampDto(
-					c.getTimeDay().getTimeWithDay().isPresent() && c.getTimeDay().getTimeWithDay() !=null ? c.getTimeDay().getTimeWithDay().get().valueAsMinutes():null,
+		return  c == null || c.getTimeDay().getReasonTimeChange() ==null || c.getTimeDay().getReasonTimeChange().getTimeChangeMeans() ==null ? null : new TimeStampDto(
+				c.getTimeDay().getTimeWithDay() !=null && c.getTimeDay().getTimeWithDay().isPresent() ? c.getTimeDay().getTimeWithDay().get().valueAsMinutes():null,
 												!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
 												c.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value);
 	}
@@ -86,9 +86,9 @@ public class TimeStampDto implements ItemConst, AttendanceItemDataGate {
 	}
 	
 	public static WorkStamp toDomain(TimeStampDto c) {
-		return c == null || c.getTimesOfDay() == null ? null 
+		return c == null ? null 
 				: new WorkStamp(
-				new TimeWithDayAttr(c.getTimesOfDay()),
+				c.getTimesOfDay() == null ? null : new TimeWithDayAttr(c.getTimesOfDay()),
 				c.getPlaceCode() == null ? null : new WorkLocationCD(c.getPlaceCode()),
 				c.stampInfo());
 	}

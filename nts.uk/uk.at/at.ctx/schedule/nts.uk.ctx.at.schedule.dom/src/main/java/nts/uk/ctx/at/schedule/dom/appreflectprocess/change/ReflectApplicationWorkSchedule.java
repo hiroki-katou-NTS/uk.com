@@ -50,7 +50,7 @@ public class ReflectApplicationWorkSchedule {
 
 		/** 事前申請を勤務予定に反映する */
 		if(preAppWorkScheReflectAttr == 0) { /** [反映しない] */
-			
+			reflectStatus.setReflectStatus(SCReflectedState.REFLECTED);
 			return Pair.of(reflectStatus, AtomTask.of(() -> {}));
 		}
 		Optional<SnapShot> snapshot = Optional.empty();
