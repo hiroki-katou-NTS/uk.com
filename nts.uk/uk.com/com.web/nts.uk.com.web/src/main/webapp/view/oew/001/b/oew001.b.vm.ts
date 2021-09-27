@@ -48,10 +48,10 @@ module nts.uk.com.view.oew001.b {
       const vm = this;
       return vm.$ajax(API.insert, param)
         .then(() => {
-          return vm.$dialog.info("Msg_15");
+          return vm.$dialog.info({ messageId: "Msg_15" });
         })
         .fail(err => {
-          vm.$dialog.error(err.msgId);
+          vm.$dialog.error(err.messageId);
         });
     }
 
@@ -62,9 +62,9 @@ module nts.uk.com.view.oew001.b {
       const vm = this;
       return vm.$ajax(API.update, param)
       .then(() => {
-        return vm.$dialog.info("Msg_15");
+        return vm.$dialog.info({ messageId: "Msg_15" });
       })
-      .fail(err => vm.$dialog.error(err.msgId));
+      .fail(err => vm.$dialog.error(err.messageId));
     }
 
     /**
@@ -74,9 +74,9 @@ module nts.uk.com.view.oew001.b {
       const vm = this;
       return vm.$ajax(API.delete, param)
       .then(() => {
-        return vm.$dialog.info("Msg_16");
+        return vm.$dialog.info({ messageId: "Msg_16" });
       })
-      .fail(err => vm.$dialog.error(err.msgId));
+      .fail(err => vm.$dialog.error(err.messageId));
     }
 
     public processSave() {

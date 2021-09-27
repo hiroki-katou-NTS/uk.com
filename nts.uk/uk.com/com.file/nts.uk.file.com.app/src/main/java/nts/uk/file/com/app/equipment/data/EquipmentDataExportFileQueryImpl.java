@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -24,6 +25,7 @@ import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
+import nts.uk.file.com.app.equipment.data.dto.EquipmentUsageRecordItemSettingDto;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
@@ -70,6 +72,7 @@ public class EquipmentDataExportFileQueryImpl implements EquipmentDataExportFile
 		Optional<String> optEquipmentCode = Optional.ofNullable(query.getEquipmentCode());
 		YearMonth ym = YearMonth.of(query.getYm());
 		String cid = AppContexts.user().companyId();
+		EquipmentDataReportType reportType = EnumAdaptor.valueOf(query.getPrintType(), EquipmentDataReportType.class);
 
 		// $対象期間 = 期間# 1ヶ月の期間を作る(INPUT「年月」)
 		DatePeriod period = DatePeriod.daysFirstToLastIn(ym);
@@ -112,6 +115,9 @@ public class EquipmentDataExportFileQueryImpl implements EquipmentDataExportFile
 		return EquipmentDataExportDataSource.builder().employees(employees)
 				.equipmentClassifications(equipmentClassifications).equipmentDatas(equipmentDatas)
 				.equipmentInfos(equipmentInfos).formSetting(optEquipmentFormSetting).companyInfo(optCompanyInfo)
-				.build();
+				.itemSettings(query.getItemSettings().stream().map(EquipmentUsageRecordItemSettingDto::toDomain)
+						.collect(Collectors.toList()))
+				.optEquipmentClsCode(optEquipmentClsCode).optEquipmentInfoCode(optEquipmentCode)
+				.formatSetting(query.getFormatSettings().toDomain()).reportType(reportType).yearMonth(ym).build();
 	}
 }

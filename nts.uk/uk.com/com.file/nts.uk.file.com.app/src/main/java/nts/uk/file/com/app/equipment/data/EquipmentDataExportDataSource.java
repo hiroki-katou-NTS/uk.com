@@ -5,8 +5,11 @@ import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentFormSetting;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentPerformInputFormatSetting;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
@@ -44,5 +47,13 @@ public class EquipmentDataExportDataSource {
 	 * 社員情報<List>
 	 */
 	private List<EmployeeInformation> employees;
+	
+	// export params
+	private Optional<String> optEquipmentClsCode;
+	private Optional<String> optEquipmentInfoCode;
+	private EquipmentDataReportType reportType;
+	private YearMonth yearMonth;
+	private List<EquipmentUsageRecordItemSetting> itemSettings;
+	private EquipmentPerformInputFormatSetting formatSetting;
 }
 

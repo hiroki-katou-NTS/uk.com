@@ -2,6 +2,7 @@ package nts.uk.screen.com.app.find.equipment.achievement;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
 
 @Data
@@ -24,5 +25,10 @@ public class EquipmentUsageRecordItemSettingDto {
 		return EquipmentUsageRecordItemSettingDto.builder().cid(domain.getCid())
 				.inputControl(ItemInputControlDto.fromDomain(domain.getInputcontrol())).itemNo(domain.getItemNo().v())
 				.items(DisplayOfItemsDto.fromDomain(domain.getItems())).build();
+	}
+	
+	public EquipmentUsageRecordItemSetting toDomain() {
+		return new EquipmentUsageRecordItemSetting(cid, new EquipmentItemNo(itemNo), inputControl.toDomain(),
+				items.toDomain());
 	}
 }

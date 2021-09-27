@@ -1,7 +1,12 @@
 package nts.uk.screen.com.app.find.equipment.achievement;
 
+import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Data;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.office.dom.equipment.achievement.DigitsNumber;
+import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemInputControl;
 import nts.uk.ctx.office.dom.equipment.achievement.MaximumUsageRecord;
 import nts.uk.ctx.office.dom.equipment.achievement.MinimumUsageRecord;
@@ -26,9 +31,16 @@ public class ItemInputControlDto {
 	private Integer minimum;
 
 	public static ItemInputControlDto fromDomain(ItemInputControl domain) {
-		return ItemInputControlDto.builder().digitsNo(domain.getDigitsNo().orElse(null))
+		return ItemInputControlDto.builder().digitsNo(domain.getDigitsNo().map(DigitsNumber::v).orElse(null))
 				.itemCls(domain.getItemCls().value).maximum(domain.getMaximum().map(MaximumUsageRecord::v).orElse(null))
 				.minimum(domain.getMinimum().map(MinimumUsageRecord::v).orElse(null)).require(domain.isRequire())
 				.build();
+	}
+	
+	public ItemInputControl toDomain() {
+		return new ItemInputControl(EnumAdaptor.valueOf(itemCls, ItemClassification.class), require,
+				Optional.ofNullable(digitsNo).map(DigitsNumber::new),
+				Optional.ofNullable(maximum).map(MaximumUsageRecord::new),
+				Optional.ofNullable(minimum).map(MinimumUsageRecord::new));
 	}
 }

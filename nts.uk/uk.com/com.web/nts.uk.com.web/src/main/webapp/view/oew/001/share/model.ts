@@ -22,6 +22,10 @@ module nts.uk.com.view.oew001.share.model {
 
     // 備考
     remark: string;
+
+    constructor(init?: Partial<EquipmentInformationDto>) {
+      $.extend(this, init);
+    }
   }
 
   /**
@@ -232,6 +236,9 @@ module nts.uk.com.view.oew001.share.model {
 
 module nts.uk.com.view.oew001.share.model.constants {
   export const YYYY_MM_DD = "YYYY/MM/DD";
+  export const SELECT_ALL_CODE = ' ';
+  // 固定値Ａ
+  export const FIXED_VALUE_A = 8;
 }
 
 module nts.uk.com.view.oew001.share.model.enums {
@@ -244,5 +251,10 @@ module nts.uk.com.view.oew001.share.model.enums {
 
     // 時間
     TIME = 2
+  }
+
+  export enum PrintType {
+    EXCEL = 0,
+    CSV = 1
   }
 }

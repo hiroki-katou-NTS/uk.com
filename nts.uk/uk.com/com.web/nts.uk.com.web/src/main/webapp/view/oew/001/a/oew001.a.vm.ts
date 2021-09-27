@@ -14,7 +14,6 @@ module nts.uk.com.view.oew001.a {
   export class ScreenModel extends ko.ViewModel {
     selectedEquipmentClsCode: KnockoutObservable<string> = ko.observable("");
     equipmentClsName: KnockoutObservable<string> = ko.observable("");
-    equipmentInfoList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedEquipmentInfoCode: KnockoutObservable<string> = ko.observable("");
     yearMonth: KnockoutObservable<string> = ko.observable("");
     hasExtractData: KnockoutObservable<boolean> = ko.observable(false);
@@ -46,9 +45,6 @@ module nts.uk.com.view.oew001.a {
         vm.selectedEquipmentClsCode(value.code);
         vm.equipmentClsName(value.name);
       });
-      vm.selectedEquipmentClsCode.subscribe(value => {
-        vm.equipmentInfoList(_.filter(vm.equipmentInformationList(), { "equipmentClsCode": value }));
-      });
     }
 
     mounted() {
@@ -76,7 +72,7 @@ module nts.uk.com.view.oew001.a {
           vm.equipmentInformationList(result.equipmentInformationList);
           vm.selectedEquipmentClsCode.valueHasMutated();
         }
-      }).fail(err => vm.$dialog.error({ messageId: err.msgId }));
+      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     // Ａ2：「設備利用実績の項目設定」を取得する
@@ -90,12 +86,14 @@ module nts.uk.com.view.oew001.a {
           // Init empty grid
           vm.columns(_.clone(vm.staticColumns));
           _.each(vm.itemSettings(), (data, index) => {
-            const displaySetting = _.find(vm.formatSetting().itemDisplaySettings, { "itemNo": data.itemNo });
-            vm.columns().push(vm.getColumnHeader(index, data.items.itemName, data.inputControl.itemCls, displaySetting.displayWidth));
+            if (vm.formatSetting().itemDisplaySettings) {
+              const displaySetting = _.find(vm.formatSetting().itemDisplaySettings, { "itemNo": data.itemNo });
+              vm.columns().push(vm.getColumnHeader(index, data.items.itemName, data.inputControl.itemCls, displaySetting.displayWidth));
+            }
           });
           vm.$nextTick(() => vm.initGrid());
         }
-      }).fail(err => vm.$dialog.error({ messageId: err.msgId }));
+      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     private initGrid() {
@@ -132,7 +130,7 @@ module nts.uk.com.view.oew001.a {
         equipmentClsCode: vm.selectedEquipmentClsCode(),
         equipmentClsName: vm.equipmentClsName(),
         equipmentInfoCode: vm.selectedEquipmentInfoCode(),
-        equipmentInfoName: _.find(vm.equipmentInfoList(), { "code": vm.selectedEquipmentInfoCode() }).name,
+        equipmentInfoName: _.find(vm.equipmentInformationList(), { "code": vm.selectedEquipmentInfoCode() }).name,
         sid: __viewContext.user.employeeId,
         employeeName: ko.observable(null)
       });
@@ -160,16 +158,36 @@ module nts.uk.com.view.oew001.a {
 
     public openDialogC() {
       const vm = this;
-      vm.$window.modal("/view/oew/001/c/index.xhtml");
+      const param = {
+        equipmentClsCode: vm.selectedEquipmentClsCode(),
+        equipmentClsName: vm.equipmentClsName(),
+        equipmentCode: vm.selectedEquipmentInfoCode(),
+        yearMonth: vm.yearMonth()
+      }
+      vm.$window.modal("/view/oew/001/c/index.xhtml", param);
     }
 
     public openDialogD() {
       const vm = this;
-      vm.$window.modal("/view/oew/001/d/index.xhtml", vm.selectedEquipmentClsCode())
+      const paramDialogD = {
+        equipmentClsCode: vm.selectedEquipmentClsCode(),
+        isOpenFromA: true
+      }
+      vm.$window.modal("/view/oew/001/d/index.xhtml", paramDialogD)
         .then(result => {
-          vm.selectedEquipmentClsCode(result.code);
-          vm.equipmentClsName(result.name);
-          vm.$nextTick(() => $("#A4_3").focus());
+          if (!!result) {
+            vm.$blockui("grayout");
+            vm.selectedEquipmentClsCode(result.code);
+            vm.equipmentClsName(result.name);
+
+            const param = {
+              equipmentClsCode: vm.selectedEquipmentClsCode(),
+              baseDate: moment.utc().toISOString(),
+              isInput: true
+            };
+            vm.$ajax(API.getEquipmentInfoList, param).then(result => vm.equipmentInformationList(result)).always(() => vm.$blockui("clear"));
+            vm.$nextTick(() => $("#A4_3").focus());
+          }
         });
     }
 
@@ -212,14 +230,18 @@ module nts.uk.com.view.oew001.a {
     
     private saveCharacteristic() {
       const vm = this;
-      (nts.uk as any).characteristics.save("OEW001_設備利用実績の入力", {
+      (nts.uk as any).characteristics.save("OEW001_設備利用実績の入力"
+      + "_companyId_" + __viewContext.user.companyId
+      + "_userId_" + __viewContext.user.employeeId, {
         equipmentCode: vm.selectedEquipmentInfoCode(),
         equipmentClsCode: vm.selectedEquipmentClsCode()
       });
     }
 
     private restoreCharacteristic(): any {
-      return (nts.uk as any).characteristics.restore("OEW001_設備利用実績の入力");
+      return (nts.uk as any).characteristics.restore("OEW001_設備利用実績の入力"
+      + "_companyId_" + __viewContext.user.companyId
+      + "_userId_" + __viewContext.user.employeeId);
     }
 
     private getColumnHeader(index: number, headerText: string, itemCls: number, width: number): any {
@@ -256,19 +278,24 @@ module nts.uk.com.view.oew001.a {
     // Create grid optional datas from acquired datas
     public createOptionalItems(data: model.EquipmentDataDto, itemSettings: model.EquipmentUsageRecordItemSettingDto[],
       formatSetting: model.EquipmentPerformInputFormatSettingDto): void {
+      if (itemSettings.length === 0 || !formatSetting.itemDisplaySettings) {
+        this.optionalItems = [];
+        return;
+      }
 
       // Map datas to grid
       this.optionalItems = _.chain(data.itemDatas).map(itemData => {
         const itemSetting = _.find(itemSettings, { itemNo: itemData.itemNo });
         const itemDisplay = _.find(formatSetting.itemDisplaySettings, { itemNo: itemData.itemNo });
         const itemCls = itemSetting.inputControl.itemCls;
+        const actualValue = itemCls === model.enums.ItemClassification.TIME ? (nts.uk.time as any).format.byId("Time_Short_HM", itemData.actualValue)
+                                                                            : itemData.actualValue;
 
         return new model.OptionalItem({
           itemName: itemSetting.items.itemName,
           itemCls: itemCls,
-          value: ko.observable(itemData.actualValue),
-          // TODO: gán tạm bằng 項目表示.表示幅
-          width: itemDisplay.displayWidth,
+          value: ko.observable(actualValue),
+          width: itemDisplay.displayWidth * model.constants.FIXED_VALUE_A,
           displayOrder: itemDisplay.displayOrder,
         });
         // Sort optionalItems by 表示順番

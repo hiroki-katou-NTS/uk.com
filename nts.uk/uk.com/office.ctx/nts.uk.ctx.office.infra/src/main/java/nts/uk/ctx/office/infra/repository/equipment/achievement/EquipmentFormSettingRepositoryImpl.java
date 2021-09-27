@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.infra.repository.equipment.information.data;
+package nts.uk.ctx.office.infra.repository.equipment.achievement;
 
 import java.util.Optional;
 

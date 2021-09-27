@@ -51,6 +51,7 @@
           <!-- 文字項目 -->
           <com:ko-if bind="itemCls === nts.uk.com.view.oew001.share.model.enums.ItemClassification.TEXT">
             <input class="B2_2_1" data-bind="ntsTextEditor: {
+              name: itemName,
               value: value,
               required: required,
               option: { width: width }
@@ -59,6 +60,7 @@
           <!-- 数字項目 -->
           <com:ko-if bind="itemCls === nts.uk.com.view.oew001.share.model.enums.ItemClassification.NUMBER">
             <input class="B2_2_1" data-bind="ntsNumberEditor: {
+              name: itemName,
               value: value,
               required: required,
               option: { width: width }
@@ -67,12 +69,13 @@
           <!-- 時間項目 -->
           <com:ko-if bind="itemCls === nts.uk.com.view.oew001.share.model.enums.ItemClassification.TIME">
             <input class="B2_2_1" data-bind="ntsTimeWithDayEditor: {
+              name: itemName,
               value: value,
               required: required,
               option: { timeWithDay: false }
             }" tabindex="2" />
           </com:ko-if>
-          <com:ko-if bind="itemCls !== nts.uk.com.view.oew001.share.model.enums.ItemClassification.TIME">4
+          <com:ko-if bind="itemCls !== nts.uk.com.view.oew001.share.model.enums.ItemClassification.TIME">
             <label class="B3_3" data-bind="text: unit"></label>
           </com:ko-if>
           <button class="B3_4" data-bind="ntsHelpButton: { textId: memo, position: 'right-center' }"></button>
@@ -80,7 +83,8 @@
       </div>
       <div id="functions-area-bottom">
         <button id="B4_1" class="proceed" data-bind="click: processSave" tabindex="3">#{i18n.getText('OEW001_35')}</button>
-        <button id="B4_2" class="danger" data-bind="click: processDelete, enable: $vm.data().isNewMode" tabindex="4">#{i18n.getText('OEW001_36')}</button>
+        <button id="B4_2" class="danger" data-bind="click: processDelete, 
+          enable: ko.computed(function() { return !data().isNewMode; })" tabindex="4">#{i18n.getText('OEW001_36')}</button>
         <button id="B4_3" data-bind="click: processCancel" tabindex="5">#{i18n.getText('OEW001_37')}</button>
       </div>
     </ui:define>

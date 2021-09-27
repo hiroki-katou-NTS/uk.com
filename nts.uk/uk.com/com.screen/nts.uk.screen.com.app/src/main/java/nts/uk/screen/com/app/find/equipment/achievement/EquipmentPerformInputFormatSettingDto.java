@@ -22,4 +22,9 @@ public class EquipmentPerformInputFormatSettingDto {
 		return new EquipmentPerformInputFormatSettingDto(domain.getCid(),
 				domain.getItemDisplaySettings().stream().map(ItemDisplayDto::fromDomain).collect(Collectors.toList()));
 	}
+	
+	public EquipmentPerformInputFormatSetting toDomain() {
+		return new EquipmentPerformInputFormatSetting(cid,
+				itemDisplaySettings.stream().map(ItemDisplayDto::toDomain).collect(Collectors.toList()));
+	}
 }
