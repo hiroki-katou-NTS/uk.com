@@ -93,28 +93,6 @@ public enum ImportingDomainId {
 	
 	/** 休出管理データ */
 	HOLIDAY_WORK(121, HolidayWorkCanonicalization::new),
-	
-	/** 作業 */
-	TASK(200, w -> new IndependentCanonicalization(w) {
-		@Override
-		protected String getParentTableName() {
-			return "KSRMT_TASK_MASTER";
-		}
-		
-		@Override
-		protected List<String> getChildTableNames() {
-			return Collections.emptyList();
-		}
-		
-		@Override
-		protected List<DomainDataColumn> getDomainDataKeys() {
-			return Arrays.asList(
-					DomainDataColumn.CID,
-					new DomainDataColumn("FRAME_NO", INT),
-					new DomainDataColumn("CD", STRING));
-		}
-	}),
-	
 	;
 	
 	public final int value;

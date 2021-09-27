@@ -414,7 +414,7 @@ public class VacationClass {
             }
             case WORK_HOUR_DUR_hd: {
                 // 平日時の就業時間帯コードを取得する
-                Optional<WorkTimeCode> workTimeCode = workConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode();
+                Optional<WorkTimeCode> workTimeCode = workConditionItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
                 if (workTimeCode.isPresent()) {
                     // 所定時間を取得する
                     return predTimeForCalc.get().getAdditionSet().getPredTime();

@@ -2,16 +2,14 @@ package nts.uk.ctx.exio.dom.input.importableitem;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.Value;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 
 /**
  *  値のドメイン制約
  */
-@AllArgsConstructor
-@Getter
+@Value
 public class DomainConstraint {
 	
 	private CheckMethod checkMethod;

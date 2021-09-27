@@ -89,17 +89,17 @@ module nts.uk.com.cmf001.x {
 				ajax("/exio/input/prepare", prepareCommand).done((prepareResult) => {
 					// サーバーへタスクの進捗問い合わせ
 					this.observeExecution(prepareResult);
-				}).fail(function(err) {
+				}).fail((err) => {
 					// 受入準備に失敗
 					this.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
 					this.messageBox(this.errorMessage());
 					this.processEnd();
-				}).always(function () {
+				}).always(() => {
 					// 一度アップロードしたファイルを変更後、再度アップロードするとブラウザでエラーになってしまう
 					// その問題を避けるためここで消す
 					this.clearFile();
 				});
-			}).fail(function(err) {
+			}).fail((err) => {
 				// ファイルのアップロードに失敗
 				this.csvFileId("");
 				this.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
@@ -120,7 +120,7 @@ module nts.uk.com.cmf001.x {
 				.pause(1000)).done((info: any) => {
 
 					let process = info.taskDatas.find(d => d.key === "process");
-					if (process.valueAsString === "failed") {
+					if (process && process.valueAsString === "failed") {
 						ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
 						this.processEnd();
 						return;

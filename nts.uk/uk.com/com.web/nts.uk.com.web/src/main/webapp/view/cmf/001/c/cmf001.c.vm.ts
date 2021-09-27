@@ -139,10 +139,16 @@ module nts.uk.com.cmf001.c {
             current.def.name(selectedItem.name);
             current.def.type(selectedItem.type);
             current.selectedMappingType(selectedItem.source);
-            current.fixedMapping(selectedItem.fixedValue);
+
+            let fixedValue = selectedItem.fixedValue;
+            if (selectedItem.type === 'TIME_POINT' || selectedItem.type === 'TIME_DURATION') {
+                fixedValue = Number(fixedValue || 0);
+            }
+            current.fixedMapping(fixedValue);
 
             this.loadImportableItem();
             this.loadReviseItem();
+			this.checkError();
         }
 
         loadImportableItem() {
@@ -214,68 +220,77 @@ module nts.uk.com.cmf001.c {
             });
         }
 
+		checkError(){
+			nts.uk.ui.errors.clearAll()
+			$('.check-target').ntsError('check');
+		}
+
         canSave = ko.computed(() => this.$errors.length === 0 && this.isItemSelected());
 
 		save() {
-			let path = "/screen/com/cmf/cmf001/save";
+            
+			this.checkError();
+			if(!nts.uk.ui.errors.hasError()){
+                let path = "/screen/com/cmf/cmf001/save";
 
-			let item = this.currentItem();
+                let item = this.currentItem();
 
-			let fixedValue = item.fixedMapping();
-			if (item.def.type() === 'DATE' && fixedValue) {
-				let splitValue = fixedValue.split("T");
-				if(splitValue.length === 0){
-					fixedValue = "";
-				}else{
-					fixedValue = splitValue[0].replace(/-/g, "");
-				}
-			}
+                let fixedValue = item.fixedMapping();
+                if (item.def.type() === 'DATE' && fixedValue) {
+                    let splitValue = fixedValue.split("T");
+                    if(splitValue.length === 0){
+                        fixedValue = "";
+                    }else{
+                        fixedValue = splitValue[0].replace(/-/g, "");
+                    }
+                }
 
-			let s = item.csvMapping.revisingValue;
-            let revisingValue = (<any> ko).mapping.toJS({
-                usePadding: s.usePadding,
-                paddingLength: s.paddingLength,
-                paddingMethod: s.paddingMethod,
-                useCodeConvert: s.useCodeConvert,
-                codeConvert: s.codeConvert,
-                isDecimalization: s.isDecimalization,
-                decimalizationLength: s.decimalizationLength,
-                timeHourlySegment: s.timeHourlySegment,
-                timeBaseNumber: s.timeBaseNumber,
-                timeDelimiter: s.timeDelimiter,
-                timeRounding: s.timeRounding,
-                dateFormat: s.dateFormat,
-            });
+                let s = item.csvMapping.revisingValue;
+                let revisingValue = (<any> ko).mapping.toJS({
+                    usePadding: s.usePadding,
+                    paddingLength: s.paddingLength,
+                    paddingMethod: s.paddingMethod,
+                    useCodeConvert: s.useCodeConvert,
+                    codeConvert: s.codeConvert,
+                    isDecimalization: s.isDecimalization,
+                    decimalizationLength: s.decimalizationLength,
+                    timeHourlySegment: s.timeHourlySegment,
+                    timeBaseNumber: s.timeBaseNumber,
+                    timeDelimiter: s.timeDelimiter,
+                    timeRounding: s.timeRounding,
+                    dateFormat: s.dateFormat,
+                });
 
-			if (revisingValue.codeConvert) {
-				let convertDetailsText = revisingValue.codeConvert.convertDetailsText;
-				if(convertDetailsText){
-					revisingValue.codeConvert.details = convertDetailsText
-						.split("\n")
-						.map(l => {
-							let p = l.split(",");
-							if (p.length !== 2) return null;
-							return { before: p[0], after: p[1] };
-						})
-						.filter(d => d !== null);
-				}else{
-					revisingValue.codeConvert.details = [];
-				}
-			}
+                if (revisingValue.codeConvert) {
+                    let convertDetailsText = revisingValue.codeConvert.convertDetailsText;
+                    if(convertDetailsText){
+                        revisingValue.codeConvert.details = convertDetailsText
+                            .split("\n")
+                            .map(l => {
+                                let p = l.split(",");
+                                if (p.length !== 2) return null;
+                                return { before: p[0], after: p[1] };
+                            })
+                            .filter(d => d !== null);
+                    }else{
+                        revisingValue.codeConvert.details = [];
+                    }
+                }
 
-            let command = {
-                settingCode: this.settingCode,
-                domainId: this.domainId,
-                itemNo: this.selectedItemNo(),
-                mappingSource: item.selectedMappingType(),
-                fixedValue: fixedValue,
-                revisingValue: revisingValue,
-            };
+                let command = {
+                    settingCode: this.settingCode,
+                    domainId: this.domainId,
+                    itemNo: this.selectedItemNo(),
+                    mappingSource: item.selectedMappingType(),
+                    fixedValue: fixedValue,
+                    revisingValue: revisingValue,
+                };
 
-            this.$ajax(path, command).done(res => {
-                ui.dialog.info({ messageId: "Msg_15" });
-                this.loadSetting();
-            });
+                this.$ajax(path, command).done(res => {
+                    ui.dialog.info({ messageId: "Msg_15" });
+                    this.loadSetting();
+                });
+            }
         }
 
         canDeleteSetting = ko.computed(() => this.isItemSelected());

@@ -1,10 +1,14 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Value;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
@@ -38,6 +42,9 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		
 		List<String> employeeCodes = require.getStringsOfRevisedData(context, itemNoEmployeeCode());
 		
+		// 重複チェック用
+		Set<RecordKey> keys = new HashSet<>();
+		
 		for (String employeeCode : employeeCodes) {
 			
 			employeeCodeCanonicalization.canonicalize(require, context, employeeCode)
@@ -45,10 +52,44 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 					errors.forEach(error -> require.add(ExternalImportError.of(error)));
 				})
 				.ifRight(interms -> {
-					List<IntermediateResult> intermsList = interms.collect(Collectors.toList());
-					saveToDelete(require, context, intermsList);
-					intermsList.forEach(interm -> canonicalizeRecord(require, context, interm));
+					canonicalize(require, context, keys, interms.collect(Collectors.toList()));
 				});
+		}
+	}
+
+	private void canonicalize(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context,
+			Set<RecordKey> keys,
+			List<IntermediateResult> interms) {
+		
+		saveToDelete(require, context, interms);
+		
+		for (val interm : interms) {
+
+			val key = RecordKey.of(interm);
+			if (keys.contains(key)) {
+				require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
+				continue;
+			}
+			keys.add(key);
+			
+			canonicalizeRecord(require, context, interm);
+		}
+	}
+	
+	/**
+	 * 重複チェック用
+	 */
+	@Value
+	private static class RecordKey {
+		String employeeId;
+		GeneralDate date; // nullable
+		
+		static RecordKey of(IntermediateResult interm) {
+			String employeeId = interm.getItemByNo(Items.SID).get().getString();
+			GeneralDate date = interm.getItemByNo(Items.TARGET_DATE).map(e -> e.getDate()).orElse(null);
+			return new RecordKey(employeeId, date);
 		}
 	}
 	
@@ -63,15 +104,18 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 			ExecutionContext context,
 			List<IntermediateResult> intermsList) {
 			
-		if(intermsList.size() >= 1) {
-			int itemNo = getItemNoOfEmployeeId();
-			String employeeId = intermsList.get(0).getItemByNo(itemNo).get().getString();
-			
-			val toDelete = AnyRecordToDelete.create(context)
-					.addKey(itemNo, StringifiedValue.of(employeeId));
-			
-			require.save(context, toDelete);
+		if (intermsList.isEmpty()) {
+			return;
 		}
+		
+		int itemNo = getItemNoOfEmployeeId();
+		String employeeId = intermsList.get(0).getItemByNo(itemNo).get().getString();
+		
+		val toDelete = AnyRecordToDelete.create(context)
+				.addKey(itemNo, StringifiedValue.of(employeeId));
+		
+		require.save(context, toDelete);
+		
 	}
 	
 	private void canonicalizeRecord(
@@ -113,6 +157,9 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		
 		// 対象日（振休日とか休出日とか）
 		static final int TARGET_DATE = 2;
+		
+		// 社員ID
+		static final int SID = 101;
 		
 		// 日付不明
 		static final int TARGET_DATE_UNKNOWN = 102;

@@ -60,7 +60,7 @@ public class ImportingMapping {
 		
 		mappings.clear();
 		mappings.addAll(newMappings);
-
+		this.resetCsvColumnNoByOrder();
 	}
 	
 	public static interface RequireMerge {

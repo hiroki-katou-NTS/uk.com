@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -65,13 +66,22 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 					.add(105, "") // 採用区分コード
 					);
 			
-			// 退職日の既定値
-			interm = interm.optionalItem(CanonicalItem.of(3, GeneralDate.ymd(9999, 12, 31)));
-			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
 		}
 		
 		return results;
+	}
+	
+	@Override
+	protected List<IntermediateResult> canonicalizeHistory(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context, List<IntermediateResult> employeeCanonicalized) {
+		List<IntermediateResult> addedRetireDay = employeeCanonicalized.stream()
+				// 退職日の既定値
+				.map(interm -> interm.optionalItem(CanonicalItem.of(3, GeneralDate.ymd(9999, 12, 31))))
+				.collect(Collectors.toList());
+				
+		return super.canonicalizeHistory(require, context, addedRetireDay);
 	}
 	
 	public static interface RequireCanonicalizeExtends {
