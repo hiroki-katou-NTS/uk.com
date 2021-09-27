@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.input.setting;
 
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,15 +51,6 @@ public class ExternalImportSetting implements DomainAggregate {
 		this.name = name;
 		this.csvFileInfo = csvFileInfo;
 		this.domainSettings = domainSettings;
-	}
-
-	/**
-	 * マッピングを更新する 
-	 * けす
-	 * @param itemList
-	 */
-	public void merge(DomainImportSetting.RequireMerge require, ImportingDomainId domainId, List<Integer> itemList) {
-		domainSettings.get(domainId).merge(require, itemList, code, domainId);
 	}
 
 	public void assemble(DomainImportSetting.RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
