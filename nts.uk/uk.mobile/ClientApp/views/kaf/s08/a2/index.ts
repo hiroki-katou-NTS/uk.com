@@ -281,7 +281,15 @@ export class KafS08A2Component extends KafS00ShrComponent {
         vm.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
             businessTripDto: paramsBusinessTrip,
+            application: vm.application,
             screenDetails
+        }).then((res: any) => {
+            if (res) {
+                let errList = res.data;
+                if (!_.isEmpty(errList)) {
+                    vm.handleErrorMessage(errList);
+                }
+            }
         }).then((res: any) => {
             vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         }).catch((err: any) => {

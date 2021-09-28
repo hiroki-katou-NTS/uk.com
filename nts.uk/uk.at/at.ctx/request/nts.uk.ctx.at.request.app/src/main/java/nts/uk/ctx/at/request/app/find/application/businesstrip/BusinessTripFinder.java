@@ -460,32 +460,69 @@ public class BusinessTripFinder {
     /**
      * アルゴリズム「出張申請個別エラーチェック」を実行する
      */
-    public void checkBeforeRegisterMobile(DetailScreenDto param) {
+    public List<ConfirmMsgOutput> checkBeforeRegisterMobile(DetailScreenDto param) {
         String sid = AppContexts.user().employeeId();
         String cid = AppContexts.user().companyId();
         List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
 
-        BusinessTrip businessTrip = new BusinessTrip();
-        businessTrip.setDepartureTime(param.getBusinessTripDto().getDepartureTime() == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.getBusinessTripDto().getDepartureTime())));
-        businessTrip.setReturnTime(param.getBusinessTripDto().getReturnTime() == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.getBusinessTripDto().getReturnTime())));
-        businessTrip.setInfos(param.getBusinessTripDto().getTripInfos().stream().map(i -> i.toDomain()).collect(Collectors.toList()));
+        ApplicationDto applicationDto = param.getApplication();
 
-        BusinessTripInfoOutput businessTripInfoOutput = param.getBusinessTripInfoOutputDto().toDomain();
+        Application application = Application.createFromNew(
+                EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
+                sid,
+                EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
+                new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
+                sid,
+                Optional.empty(),
+                Optional.empty(),
+                applicationDto.getOpAppStartDate() == null ?
+                        Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                applicationDto.getOpAppEndDate() == null ?
+                        Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+                applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
+                applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
+                ));
 
-        if (businessTrip.getInfos().isEmpty()) {
-            throw new BusinessException("Msg_1703");
-        }
+        BusinessTripInfoOutput output = param.getBusinessTripInfoOutputDto().toDomain();
+        BusinessTrip businessTrip = param.getBusinessTripDto().toDomain(application);
 
-        businessTripService.businessTripIndividualCheck(
-                businessTrip.getInfos(),
-                businessTripInfoOutput,
-                param.getScreenDetails()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                i -> GeneralDate.fromString(i.getDate(), "yyyy/MM/dd"),
-                                i -> new ScreenWorkInfoName(i.getWorkTypeName(), i.getWorkTimeName()))
-                        )
+        // アルゴリズム「2-1.新規画面登録前の処理」を実行する
+        Optional<WorkTimeCode> optWorkTimeCode = businessTrip.getInfos().stream()
+                .filter(x -> x.getWorkInformation().getWorkTimeCode() != null)
+                .map(x -> x.getWorkInformation().getWorkTimeCode())
+                .findFirst();
+        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+                cid,
+                EmploymentRootAtr.APPLICATION,
+                true,
+                application,
+                null,
+                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
+                Collections.emptyList(),
+                output.getAppDispInfoStartup(), 
+                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
+                Optional.empty(), 
+                optWorkTimeCode.isPresent() ? optWorkTimeCode.map(WorkTimeCode::v) : Optional.empty(), 
+                false
         );
+
+
+        if (confirmMsgOutputs.isEmpty()) {
+            // アルゴリズム「出張申請個別エラーチェック」を実行する
+            if (businessTrip.getInfos().isEmpty()) {
+                throw new BusinessException("Msg_1703");
+            }
+            businessTripService.businessTripIndividualCheck(
+                    businessTrip.getInfos(),
+                    output,
+                    param.getScreenDetails()
+                            .stream()
+                            .collect(Collectors.toMap(
+                                    i -> GeneralDate.fromString(i.getDate(), "yyyy/MM/dd"),
+                                    i -> new ScreenWorkInfoName(i.getWorkTypeName(), i.getWorkTimeName()))
+                            ));
+        }
+        return confirmMsgOutputs;
     }
 
     /**
