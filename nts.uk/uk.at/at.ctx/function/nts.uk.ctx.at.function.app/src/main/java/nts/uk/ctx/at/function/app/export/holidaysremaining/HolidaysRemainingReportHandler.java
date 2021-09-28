@@ -331,10 +331,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         List<ChildNursingLeaveStatus> monthlyConfirmedCareForEmployees;
         // RQ 344
         List<NursingCareLeaveMonthlyRemaining> obtainMonthlyConfirmedCareForEmployees;
-        List<ChildNursingLeaveThisMonthFutureSituation> childCareRemNumWithinPeriodRight = Collections.emptyList();
+        List<ChildNursingLeaveThisMonthFutureSituation> childCareRemNumWithinPeriodRight = new ArrayList<>();
         ChildNursingLeaveThisMonthFutureSituation childCareRemNumWithinPeriodLeft;
 
-        List<NursingCareLeaveThisMonthFutureSituation> nursingCareLeaveThisMonthFutureSituationRight = Collections.emptyList();
+        List<NursingCareLeaveThisMonthFutureSituation> nursingCareLeaveThisMonthFutureSituationRight = new ArrayList<>();
         NursingCareLeaveThisMonthFutureSituation nursingCareLeaveThisMonthFutureSituationLeft;
 
         if (!closureInforOpt.isPresent()) {
