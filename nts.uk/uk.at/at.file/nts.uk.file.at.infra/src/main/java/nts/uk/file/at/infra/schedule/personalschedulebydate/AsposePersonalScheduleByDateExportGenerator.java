@@ -413,8 +413,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         System.out.println("-------------------------------------");
         System.out.println("Input start: " + start);
         System.out.println("Input end: " + end);
-        System.out.println("TimeConverted Start: " + startTime);
-        System.out.println("TimeConverted End: " + endTime);
+        System.out.println("TimeConverted Start: " + startTime.getHour() + " : " + + startTime.getMinute());
+        System.out.println("TimeConverted End: " + endTime.getHour() + ":" + endTime.getMinute());
         System.out.println("left: " + left);
         System.out.println("minuteEnd: " + minuteEnd);
         System.out.println("columnStart: " + columnStart);
