@@ -20,21 +20,21 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 	private TimeSheetOfAttendanceEachOuenSheet timeSheet;
 	
 	/** 作業時間入力フラグ*/
-	private Optional<Boolean> inputFlag;
+	//private Optional<Boolean> inputFlag;
 
 	private OuenWorkTimeSheetOfDailyAttendance(SupportFrameNo workNo, WorkContent workContent, 
-			TimeSheetOfAttendanceEachOuenSheet timeSheet, Optional<Boolean> inputFlag) {
+			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		super();
 		this.workNo = workNo;
 		this.workContent = workContent;
 		this.timeSheet = timeSheet;
-		this.inputFlag = inputFlag;
+		//this.inputFlag = inputFlag;
 	}
 	
 	public static OuenWorkTimeSheetOfDailyAttendance create(SupportFrameNo workNo, WorkContent workContent, 
-			TimeSheetOfAttendanceEachOuenSheet timeSheet, Optional<Boolean> inputFlag) {
+			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		
-		return new OuenWorkTimeSheetOfDailyAttendance(workNo, workContent, timeSheet, inputFlag);
+		return new OuenWorkTimeSheetOfDailyAttendance(workNo, workContent, timeSheet);
 	}
 
 	public void setWorkNo(int workNo) {
