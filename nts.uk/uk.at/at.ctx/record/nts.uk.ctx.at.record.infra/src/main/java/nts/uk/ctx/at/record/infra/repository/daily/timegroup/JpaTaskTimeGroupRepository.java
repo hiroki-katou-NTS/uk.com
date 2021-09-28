@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -11,13 +13,13 @@ import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroup;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroupRepository;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeZone;
 import nts.uk.ctx.at.record.infra.entity.daily.timegroup.KsrdtTaskTsGroup;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSet;
 
 /**
  * 
  * @author tutt
  *
  */
+@Stateless
 public class JpaTaskTimeGroupRepository extends JpaRepository implements TaskTimeGroupRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT g FROM KsrdtTaskTsGroup g";

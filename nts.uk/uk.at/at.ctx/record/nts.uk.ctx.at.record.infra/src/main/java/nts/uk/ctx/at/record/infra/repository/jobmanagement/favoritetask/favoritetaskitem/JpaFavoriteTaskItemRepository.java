@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.infra.repository.jobmanagement.favoritetask.favorit
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItem;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItemRepository;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetask
  * @author tutt
  *
  */
+@Stateless
 public class JpaFavoriteTaskItemRepository extends JpaRepository implements FavoriteTaskItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM KrcdtTaskFavFrameSet s";

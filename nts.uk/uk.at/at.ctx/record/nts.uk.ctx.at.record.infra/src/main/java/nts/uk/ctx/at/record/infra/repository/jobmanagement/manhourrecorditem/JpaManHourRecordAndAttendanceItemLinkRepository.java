@@ -3,10 +3,11 @@ package nts.uk.ctx.at.record.infra.repository.jobmanagement.manhourrecorditem;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLink;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLinkRepository;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecorditem.KrcmtManHrItem;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecorditem.KrcmtManHrItemLink;
 
 /**
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecor
  * @author tutt
  *
  */
+@Stateless
 public class JpaManHourRecordAndAttendanceItemLinkRepository extends JpaRepository
 		implements ManHourRecordAndAttendanceItemLinkRepository {
 

@@ -2,11 +2,11 @@ package nts.uk.ctx.at.record.infra.repository.jobmanagement.manhourrecorditem;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItem;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItemRepository;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSet;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSetDisporder;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecorditem.KrcmtManHrItem;
 
 /**
@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecor
  * @author tutt
  *
  */
+@Stateless
 public class JpaManHourRecordItemRepository extends JpaRepository implements ManHourRecordItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT i FROM KrcmtManHrItem i";

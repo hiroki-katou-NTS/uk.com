@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.infra.repository.jobmanagement.favoritetask.onedayf
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteSet;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteTaskSetRepository;
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.One
  * @author tutt
  *
  */
+@Stateless
 public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements OneDayFavoriteTaskSetRepository {
 
 	@Override

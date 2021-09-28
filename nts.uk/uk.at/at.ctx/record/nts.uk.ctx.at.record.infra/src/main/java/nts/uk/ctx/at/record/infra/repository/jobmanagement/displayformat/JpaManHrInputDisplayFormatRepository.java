@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.infra.repository.jobmanagement.displayformat;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormat;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormatRepository;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFor
  * @author tutt
  *
  */
+@Stateless
 public class JpaManHrInputDisplayFormatRepository extends JpaRepository implements ManHrInputDisplayFormatRepository {
 
 	@Override
