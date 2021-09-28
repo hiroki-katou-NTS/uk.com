@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 
  * @author tutt 
- * RP: 工数実績項目と勤怠項目の紐付けRepository
+ * RP: 工数実績項目Repository
  */
 public interface ManHourRecordItemRepository {
 	/**

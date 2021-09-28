@@ -31,7 +31,6 @@ public interface ManHourRecordAndAttendanceItemLinkRepository {
 	 * @param 工数実績項目リスト items
 	 * @return 紐付けリスト
 	 */
-	//TODO: List<工数実績項目ID> 工数実績項目ID ? primitive QA120063
 	List<ManHourRecordAndAttendanceItemLink> get(String cId, List<Integer> items);
 	
 	/**

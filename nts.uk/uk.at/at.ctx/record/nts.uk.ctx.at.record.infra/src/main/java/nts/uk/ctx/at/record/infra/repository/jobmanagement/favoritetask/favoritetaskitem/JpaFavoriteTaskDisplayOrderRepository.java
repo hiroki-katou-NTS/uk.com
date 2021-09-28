@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.jobmanagement.favoritetask.favoritetaskitem;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -46,10 +48,17 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 
 	@Override
 	public Optional<FavoriteTaskDisplayOrder> get(String sId) {
-		Optional<KrcdtTaskFavFrameSetDisporder> entity = this.queryProxy()
-				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getSingle();
-		// TODO: mapping với FavoriteTaskDisplayOrder
-		return null;
+
+		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
+
+		List<KrcdtTaskFavFrameSetDisporder> entities = this.queryProxy()
+				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getList();
+
+		for (KrcdtTaskFavFrameSetDisporder e : entities) {
+			displayOrders.add(new FavoriteDisplayOrder(e.pk.favId, e.pk.disporder));
+		}
+
+		return Optional.of(new FavoriteTaskDisplayOrder(sId, displayOrders));
 	}
 
 }

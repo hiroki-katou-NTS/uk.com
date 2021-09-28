@@ -49,28 +49,45 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 
 	@Override
 	public void delete(String hisId) {
-		Optional<KrcmtTaskSupInfoChoicesHist> histEntity = this.queryProxy()
+		List<KrcmtTaskSupInfoChoicesHist> histEntity = this.queryProxy()
 				.query("SELECT h FROM KrcmtTaskSupInfoChoicesHist h WHERE h.pk.histId = :hisId",
 						KrcmtTaskSupInfoChoicesHist.class)
-				.setParameter("hisId", hisId).getSingle();
+				.setParameter("hisId", hisId).getList();
 
-		Optional<KrcmtTaskSupInfoChoicesDetail> detailEntity = this.queryProxy()
+		List<KrcmtTaskSupInfoChoicesDetail> detailEntity = this.queryProxy()
 				.query("SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.histId = :hisId",
 						KrcmtTaskSupInfoChoicesDetail.class)
-				.setParameter("hisId", hisId).getSingle();
+				.setParameter("hisId", hisId).getList();
 
-		if (histEntity.isPresent()) {
-			this.commandProxy().remove(histEntity.get());
+		if (!histEntity.isEmpty()) {
+			for (KrcmtTaskSupInfoChoicesHist h : histEntity) {
+				this.commandProxy().remove(h);
+			}
 		}
 
-		if (detailEntity.isPresent()) {
-			this.commandProxy().remove(detailEntity.get());
+		if (!detailEntity.isEmpty()) {
+			for (KrcmtTaskSupInfoChoicesDetail d : detailEntity) {
+				this.commandProxy().remove(d);
+			}
 		}
 	}
 
 	@Override
-	public void update(String hisId, ChoiceCode code) {
-		// TODO Auto-generated method stub
+	public void delete(String hisId, ChoiceCode choiceCode) {
+		String code = choiceCode.v();
+		
+		List<KrcmtTaskSupInfoChoicesDetail> detailEntity = this.queryProxy()
+				.query("SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.histId = :hisId AND d.pk.code = :code",
+						KrcmtTaskSupInfoChoicesDetail.class)
+				.setParameter("hisId", hisId)
+				.setParameter("code", code)
+				.getList();
+		
+		if (!detailEntity.isEmpty()) {
+			for (KrcmtTaskSupInfoChoicesDetail d : detailEntity) {
+				this.commandProxy().remove(d);
+			}
+		}
 	}
 
 	@Override

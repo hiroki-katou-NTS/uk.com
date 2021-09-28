@@ -1,34 +1,26 @@
-package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem;
+package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import nts.arc.task.tran.AtomTask;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskDisplayOrder;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.DeleteFavoriteTaskService.Require;
 
 /**
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.お気に入り作業項目.お気に入り作業を削除する
  * DS: お気に入り作業を削除する
  * 
  * @author tutt
- *
+ * @name UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.1日お気に入りセット.お気に入り作業を削除する
  */
-public class DeleteFavoriteTaskService {
+public class DeleteOneDayFavoriteTaskService {
 
-//■Public
-	/**
-	 * [1] 追加する
-	 * 
-	 * @param require
-	 * @param employeeId 社員ID
-	 * @param favoriteId お気に入りID
-	 * @return AtomTask
-	 */
 	public static AtomTask create(Require require, String employeeId, String favoriteId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
 		// $表示順 = require.表示順を取得する(社員ID)
-		Optional<FavoriteTaskDisplayOrder> favoriteTaskDisplayOrder = require.get(employeeId);
+		Optional<OneDayFavoriteTaskDisplayOrder> favoriteTaskDisplayOrder = require.get(employeeId);
 
 		// $表示順.お気に入りの表示順を削除する(お気に入りID)
 		if (favoriteTaskDisplayOrder.isPresent()) {
@@ -50,22 +42,23 @@ public class DeleteFavoriteTaskService {
 		});
 	}
 
-// ■Require
+	// ■Require
 	public static interface Require {
 		// [R-1] 表示順を取得する
-		// お気に入り作業の表示順Repository.Get(社員ID)
-		Optional<FavoriteTaskDisplayOrder> get(String employeeId);
+		// 1日お気に入り作業の表示順Repository.Get(社員ID)
+		Optional<OneDayFavoriteTaskDisplayOrder> get(String employeeId);
 
 		// [R-2] お気に入りを削除する
-		// お気に入り作業項目Repository.Delete(社員ID,お気に入りID)
+		// 1日お気に入り作業セットRepository.Delete(社員ID,お気に入りID)
 		void delete(String employeeId, String favoriteId);
 
 		// [R-3] 表示順を削除する
-		// お気に入り作業の表示順Repository.Delete(社員ID)
+		// 1日お気に入り作業の表示順Repository.Delete(社員ID)
 		void delete(String employeeId);
 
 		// [R-4] 表示順を更新する
-		// お気に入り作業の表示順Repository.Update(お気に入り作業の表示順)
-		void update(FavoriteTaskDisplayOrder favoriteTaskDisplayOrder);
+		// 1日お気に入り作業の表示順Repository.Update(1日お気に入り作業の表示順)
+		void update(OneDayFavoriteTaskDisplayOrder favoriteTaskDisplayOrder);
 	}
+
 }

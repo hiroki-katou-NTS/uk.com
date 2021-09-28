@@ -38,9 +38,9 @@ public interface TaskSupInfoChoicesHistoryRepository {
 	void delete(String historyId);
 	
 	/**
-	 * @name [6] update(履歴ID,コード)
+	 * @name [6] delete(履歴ID,コード)
 	 */
-	void update(String historyId, ChoiceCode code);
+	void delete(String historyId, ChoiceCode code);
 	
 	/**
 	 * @name [7] 全ての履歴を取得する

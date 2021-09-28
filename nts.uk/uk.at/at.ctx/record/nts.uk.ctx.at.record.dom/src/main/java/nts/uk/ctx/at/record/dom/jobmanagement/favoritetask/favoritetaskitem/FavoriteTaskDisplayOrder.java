@@ -42,7 +42,7 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	public FavoriteTaskDisplayOrder(String employeeId, String favoriteId) {
 		super();
 		this.employeeId = employeeId;
-		//QA
+		this.add(favoriteId);
 	}
 
 	/**
