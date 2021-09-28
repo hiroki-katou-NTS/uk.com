@@ -10,9 +10,11 @@ module nts.uk.at.view.kmk006.k {
         public isEnable: KnockoutObservable<boolean>;
         public isEditable: KnockoutObservable<boolean>;
 
-        public datePeriod: KnockoutObservable<string> = ko.observable('1990/01/28 ~ 9999/01/28');
+        public datePeriod: KnockoutObservable<string> = ko.observable('1990/01/28 ~ 9999/12/31');
         public item: KnockoutObservableArray<Model> = ko.observableArray([]);
         public currentCode: KnockoutObservable<string> = ko.observable('');
+        public currentName: KnockoutObservable<string> = ko.observable('');
+        public currentMemo: KnockoutObservable<string> = ko.observable('');
 
         created() {
             const vm = this;
@@ -28,7 +30,7 @@ module nts.uk.at.view.kmk006.k {
             vm.isEditable = ko.observable(true);
 
             for (var i = 1; i <= 20; i++) {
-                vm.item.push({ id: i + '', code: '00' + i, name: 'Employee' + i });
+                vm.item.push({ id: '000000000' + i , code: '00' + i, name: 'Employee' + i });
             }
 
         }
