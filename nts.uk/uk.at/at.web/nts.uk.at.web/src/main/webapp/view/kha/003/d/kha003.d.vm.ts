@@ -25,6 +25,7 @@ module nts.uk.at.kha003.d {
         preriod: KnockoutObservable<any>;
         maxDateRange: any = 0;
         level: number = 1;
+        girdWidth: KnockoutObservable<any>;
 
         constructor() {
             super();
@@ -44,6 +45,7 @@ module nts.uk.at.kha003.d {
             vm.agCommand = ko.observable();
             vm.preriod = ko.observable();
             vm.contents = ko.observableArray([]);
+            vm.girdWidth = ko.observable("100%")
         }
 
         created() {
@@ -88,6 +90,21 @@ module nts.uk.at.kha003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
+                /* if (data.summaryTableFormat.totalUnit == 1) {
+                     let dateHeaders: Array<DateHeader> = [];
+                     for (let contentItem of data.outputContent.verticalTotalValues) {
+                         let date = contentItem.yearMonth.toString();
+                         vm.dateHeaders.push(
+                             new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
+                         );
+                     }
+                     // vm.dateHeaders(dateHeaders);
+                 }*/
+                if (!data) {
+                    vm.$dialog.error({messageId: 'Msg_2171'}).then(() => {
+                        vm.displayKha003CScreen();
+                    });
+                }
                 vm.agCommand(data);
                 vm.printContents(data);
                 vm.initGrid();
@@ -100,30 +117,62 @@ module nts.uk.at.kha003.d {
             });
         }
 
+        widthOfCoulmn() {
+            let vm = this;
+            let totalHeaders = vm.dateHeaders().length
+            let width = "70px";
+
+            if (totalHeaders <= 5) {
+                width = '400px';
+            }
+            if (totalHeaders == 6) {
+                width = '280px';
+            }
+            return width;
+        }
+
         initGrid() {
             const vm = this;
             const columns: Array<any> = [
                 {headerText: "", key: "ID", dataType: "string", hidden: true, width: '0px'}
             ];
+            let colWidth: any = 0;
             for (let i = 0; i < vm.dateHeaders().length; i++) {
-                columns.push({
+                let column = {
                     headerText: vm.dateHeaders()[i].text,
                     key: "c" + (i + 1),
                     dataType: "object",
-                    width: i < vm.level || i == vm.dateHeaders().length - 1 ? '130px' : '70px'
-                });
+                    width: i < vm.level ? '130px' : i == vm.dateHeaders().length - 1 ? '85px' : '70px',
+                    height: '30px'
+                }
+                columns.push(column);
+                colWidth += parseInt(column.width)
+            }
+            let widthScreen = $(document).width();
+            let windowHeight = $(window).height();
+            let height = (.76 * windowHeight);
+            if (window.devicePixelRatio <= 1) {
+                height = (.736 * windowHeight);
+            }
+            let width = Math.min(widthScreen, colWidth);
+            let widthInPX = width + "px";
+            if (width === widthScreen) {
+                // width = width - 15;
+                widthInPX = '100%';
             }
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
-                width: '100%',
-                height: '470px',
+                width: widthInPX,
+                height: height + 'px',
+                //height: '95%',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
+
                 features: [
                     {
                         name: "CellMerging",
@@ -131,8 +180,16 @@ module nts.uk.at.kha003.d {
                         mergeType: "physical",
                         mergeStrategy: (prevRec: any, curRec: any, columnKey: string) => {
                             const idx = parseInt(columnKey.substring(1));
+                            if (idx === 4) {
+                                return false;
+                            }
+
+                            if (idx ===3) {
+                                let condition=!_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey] && prevRec["c" + (idx-1)] === curRec["c" + (idx-1)] && prevRec["c" + (idx-2)] === curRec["c" + (idx-2)];
+                                return condition;
+                            }
                             if (idx <= vm.level) {
-                                return !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey];
+                                return !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey] && prevRec["c" + (idx - 1)] === curRec["c" + (idx - 1)];
                             }
                             return false;
                         }
@@ -696,7 +753,9 @@ module nts.uk.at.kha003.d {
          */
         backToAScreen() {
             let vm = this;
-            vm.$jump('/view/kha/003/a/index.xhtml');
+            vm.$window.storage('dScreenCode', {code: vm.cScreenData().code}).then(() => {
+                vm.$jump('/view/kha/003/a/index.xhtml');
+            });
         }
 
         /**
@@ -769,6 +828,8 @@ module nts.uk.at.kha003.d {
         getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1): JQueryPromise<any> {
             let vm = this;
             let dfd = $.Deferred<any>();
+            let fromDateParam = fromDate;
+            let toDateParam = toDate;
             if (displayFormat === 1) {
                 fromDate = vm.correctformat(fromDate);
                 toDate = vm.correctformat(toDate);
@@ -790,27 +851,37 @@ module nts.uk.at.kha003.d {
                     }
                     break;
                 case 1:
-                    const fromYear = fromDate.getFullYear();
-                    const fromMonth = fromDate.getMonth() + 1;
-                    const toYear = toDate.getFullYear();
-                    const toMonth = toDate.getMonth() + 1;
-                    const months = [];
-                    for (let year = fromYear; year <= toYear; year++) {
-                        let month = year === fromYear ? fromMonth : 0;
-                        const monthLimit = year === toYear ? toMonth : 11;
-                        for (; month <= monthLimit; month++) {
-                            if (month < 10) {
-                                month = '0' + month;
-                            }
-                            vm.dateHeaders.push(
-                                new DateHeader('', '', '' + year + '/' + month)
-                            );
-                        }
-                    }
+                    vm.dateRangeYerMonth(fromDateParam, toDateParam);
+
                     break;
             }
             dfd.resolve();
             return dfd.promise();
+        }
+
+        dateRangeYerMonth(startDate: any, endDate: any) {
+            let vm = this;
+            startDate = startDate.substring(0, 4) + '-' + startDate.substring(4);
+            endDate = endDate.substring(0, 4) + '-' + endDate.substring(4);
+            var start = startDate.split('-');
+            var end = endDate.split('-');
+            var startYear = parseInt(start[0]);
+            var endYear = parseInt(end[0]);
+            // var dates = [];
+
+            for (var i = startYear; i <= endYear; i++) {
+                var endMonth = i != endYear ? 11 : parseInt(end[1]) - 1;
+                var startMon = i === startYear ? parseInt(start[1]) - 1 : 0;
+                for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
+                    var month = j + 1;
+                    var displayMonth = month < 10 ? '0' + month : month;
+                    //  dates.push([i, displayMonth, '01'].join('-'));
+                    vm.dateHeaders.push(
+                        new DateHeader(null, null, [i, displayMonth].join('/'))
+                    )
+                }
+            }
+            // return dates;
         }
 
         mounted() {

@@ -67,15 +67,15 @@ module nts.uk.at.view.kdw002.a {
                 ]);
                 self.lineBreakPositions = ko.observableArray([
                     new Items(0, nts.uk.resource.getText('KDW002_68')),
-                    new Items(1, nts.uk.resource.getText('KDW002_69', '2')),
-                    new Items(2, nts.uk.resource.getText('KDW002_69', '3')),
-                    new Items(3, nts.uk.resource.getText('KDW002_69', '4')),
-                    new Items(4, nts.uk.resource.getText('KDW002_69', '5')),
-                    new Items(5, nts.uk.resource.getText('KDW002_69', '6')),
-                    new Items(6, nts.uk.resource.getText('KDW002_69', '7')),
-                    new Items(7, nts.uk.resource.getText('KDW002_69', '8')),
-                    new Items(8, nts.uk.resource.getText('KDW002_69', '9')),
-                    new Items(9, nts.uk.resource.getText('KDW002_69', '10'))
+                    new Items(1, nts.uk.resource.getText('KDW002_69', '1')),
+                    new Items(2, nts.uk.resource.getText('KDW002_69', '2')),
+                    new Items(3, nts.uk.resource.getText('KDW002_69', '3')),
+                    new Items(4, nts.uk.resource.getText('KDW002_69', '4')),
+                    new Items(5, nts.uk.resource.getText('KDW002_69', '5')),
+                    new Items(6, nts.uk.resource.getText('KDW002_69', '6')),
+                    new Items(7, nts.uk.resource.getText('KDW002_69', '7')),
+                    new Items(8, nts.uk.resource.getText('KDW002_69', '8')),
+                    new Items(9, nts.uk.resource.getText('KDW002_69', '9'))
                 ]);
 
                 // --
@@ -159,6 +159,8 @@ module nts.uk.at.view.kdw002.a {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
                                     self.roundingUnitValue(null);
+									self.selectDefaultUnitComobox();
+									
                                 }
                             });
                         } else {
@@ -183,6 +185,7 @@ module nts.uk.at.view.kdw002.a {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
                                     self.roundingUnitValue(null);
+									self.selectDefaultUnitComobox();
                                 }
                             });
                         }
@@ -311,6 +314,13 @@ module nts.uk.at.view.kdw002.a {
                 }*/
 
             }
+
+			selectDefaultUnitComobox(): void {
+				const self = this;
+				self.timeUnit(self.timeUnits()[0].code);
+				self.numberOfTimesUnit(self.numberOfTimesUnits()[0].code);
+				self.moneyUnit(self.moneyUnits()[0].code);
+			}
 
             navigateView(): void {
                 var self = this;

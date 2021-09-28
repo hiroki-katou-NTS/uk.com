@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -77,8 +78,8 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 				"(c.kshmtWorkTypePK.workTypeCode, c.name, c.abbreviationName, c.symbolicName, c.deprecateAtr, c.memo, c.worktypeAtr, c.oneDayAtr, c.morningAtr, c.afternoonAtr, c.calculatorMethod, 0) ");
 		stringBuilder.append("FROM KshmtWorkType c ");
 		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0 ");
-		stringBuilder.append("AND (c.morningAtr = :workTypeAtr ");
-		stringBuilder.append("OR c.afternoonAtr = :workTypeAtr) ");
+		stringBuilder.append("AND ((c.worktypeAtr = 0 and c.oneDayAtr = :workTypeAtr) ");
+		stringBuilder.append("OR (c.worktypeAtr = 1 and (c.morningAtr = :workTypeAtr or c.afternoonAtr = :workTypeAtr))) ");
 		stringBuilder.append("ORDER BY c.kshmtWorkTypePK.workTypeCode ASC ");
 		SELECT_WORKTYPE_KDW006G = stringBuilder.toString();   
 		
@@ -325,19 +326,11 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 	public List<WorkTypeDto> findWorkType(String companyId, List<Integer> workTypeAtrList) {
 		List<WorkTypeDto> listNew = new ArrayList<>();
 		if(!workTypeAtrList.isEmpty()){
-			for(int item: workTypeAtrList){
-				if(item == 0){
-					List<WorkTypeDto> dto = this.queryProxy().query(SELECT_WORKTYPE_KDW006, WorkTypeDto.class).setParameter("companyId", companyId)
-													.setParameter("workTypeAtr", item).getList();
-					if(!dto.isEmpty()){
-						listNew.addAll(dto);
-					}
-				}else{
-					List<WorkTypeDto> typeDto = this.queryProxy().query(SELECT_WORKTYPE_KDW006G, WorkTypeDto.class).setParameter("companyId", companyId)
-							.setParameter("workTypeAtr", item).getList();
-					if(!typeDto.isEmpty()){
-						listNew.addAll(typeDto);
-					}
+			for (int item: workTypeAtrList) {
+				List<WorkTypeDto> typeDto = this.queryProxy().query(SELECT_WORKTYPE_KDW006G, WorkTypeDto.class).setParameter("companyId", companyId)
+						.setParameter("workTypeAtr", item).getList();
+				if(!typeDto.isEmpty()){
+					listNew.addAll(typeDto);
 				}
 			}
 		}

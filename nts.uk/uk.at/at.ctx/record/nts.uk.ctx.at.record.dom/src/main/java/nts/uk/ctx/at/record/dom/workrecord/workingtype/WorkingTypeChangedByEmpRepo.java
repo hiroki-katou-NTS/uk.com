@@ -21,5 +21,9 @@ public interface WorkingTypeChangedByEmpRepo {
 	public void save(WorkingTypeChangedByEmployment workingType);
 	
 	void copyEmployment(String companyId, WorkingTypeChangedByEmployment sourceData, List<String> targetEmploymentCodes);
+	
+	public void deleteEmploymentSetting(String companyId, String empCode);
+	
+	public List<String> getDistinctEmpCodeByCompanyId(String companyId);
 
 }

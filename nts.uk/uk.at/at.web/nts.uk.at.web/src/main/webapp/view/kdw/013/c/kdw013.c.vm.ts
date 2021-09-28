@@ -1188,6 +1188,7 @@ module nts.uk.ui.at.kdw013.c {
         }
     
         changed(pos:'TIME'|'TASK'|'DES'|'ALL'){
+
             const vm = this;
             const { params, model} = vm;
             const { data } = params;
@@ -1203,6 +1204,7 @@ module nts.uk.ui.at.kdw013.c {
                 if (pos == 'TIME' || pos == 'ALL') {
                     if (start.getTime() != setTimeOfDate(start, tr.start).getTime()) {
                         event.setExtendedProp('isChanged', true);
+
                         return true;
                     }
 
@@ -1211,8 +1213,9 @@ module nts.uk.ui.at.kdw013.c {
                         return true;
                     }
                 }
-                
+             
                 if (pos == 'TASK'|| pos == 'ALL') {
+
                     if (task) {
                         const { displayInfo } = task;
 
@@ -1220,18 +1223,21 @@ module nts.uk.ui.at.kdw013.c {
                             const { color, taskName } = displayInfo;
                             if (vm.isTaskChanged(event)) {
                                 event.setExtendedProp('isChanged', true);
+
                                 return true;
                             }
                         }
                     }
                 }
-                
+
                 if (pos == 'WORKLOC'|| pos == 'ALL') {
+
                     const {workplace} = model;
                     const wkp = ko.unwrap(workplace);
                     if (wkp) {
                         if (wkp != _.get(event,'extendedProps.workLocationCD')) {
                             event.setExtendedProp('isChanged', true);
+
                             return true;
                         }
                     }
@@ -1240,6 +1246,7 @@ module nts.uk.ui.at.kdw013.c {
                 if (pos == 'DES'|| pos == 'ALL') {
                     if (_.get(event, 'extendedProps.remarks') != descriptions()) {
                          event.setExtendedProp('isChanged', true);
+
                         return true;
                     }
                 }

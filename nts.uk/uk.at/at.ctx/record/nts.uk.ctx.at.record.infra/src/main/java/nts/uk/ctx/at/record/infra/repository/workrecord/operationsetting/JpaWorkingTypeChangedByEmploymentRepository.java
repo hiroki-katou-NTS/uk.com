@@ -41,6 +41,9 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 	
 	private static final String GET_ALL_OF_EMPLOYEE_FOR_GRP_DETAIL = "SELECT wtc FROM KrcmtChangeableWktpGrpDetail wtc"
 			+ " WHERE wtc.pk.cid = :companyId AND wtc.pk.empCd = :employeeCode";
+	
+	private static final String GET_EMPCODE_BY_COMPANYID = "SELECT DISTINCT wtc.pk.empCd FROM KrcmtChangeableWktpGrpDetail wtc"
+			+ " WHERE wtc.pk.cid = :companyId";
 
 	@Override
 	public WorkingTypeChangedByEmployment get(CompanyId companyId, EmploymentCode empCode) {
@@ -64,6 +67,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 			if (!map.containsKey(entGrp.pk.workTypeGroupNo.intValue())) {
 				group = new ChangeableWorktypeGroup(entGrp.pk.workTypeGroupNo.intValue(), entGrp.workTypeGroupName);
 				map.put(entGrp.pk.workTypeGroupNo.intValue(), group);
+				
 			}
 		});
 		
@@ -112,17 +116,13 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 		// create and insert new results
 		workingType.getChangeableWorkTypeGroups().forEach(group -> {
 			
-			if (group.getNo() >= 5 && group.getNo() <= 10) {
+			if (group.getNo() >= 5 && group.getNo() <= 10 && group.getWorkTypeList() != null && group.getWorkTypeList().size() > 0 ) {
 				KrcmtChangeableWktpGrpPk grpPk = new KrcmtChangeableWktpGrpPk(cid, empCode, new BigDecimal(group.getNo()));
 				KrcmtChangeableWktpGrp grpEntity = new KrcmtChangeableWktpGrp(grpPk, group.getName() == null ? null : group.getName().v());
 				this.commandProxy().insert(grpEntity);
 			}
 			
-			if (group.getWorkTypeList().isEmpty()) {
-				KrcmtChangeableWktpGrpDetailPk grpDetailPk = new KrcmtChangeableWktpGrpDetailPk(cid, empCode, new BigDecimal(group.getNo()), "");
-				KrcmtChangeableWktpGrpDetail grpDetailEntity = new KrcmtChangeableWktpGrpDetail(grpDetailPk);
-				this.commandProxy().insert(grpDetailEntity);
-			} else {
+			if(group.getWorkTypeList() != null && group.getWorkTypeList().size() > 0) {
 				group.getWorkTypeList().forEach(workTypeCode -> {
 					KrcmtChangeableWktpGrpDetailPk grpDetailPk = new KrcmtChangeableWktpGrpDetailPk(cid, empCode, new BigDecimal(group.getNo()), workTypeCode);
 					KrcmtChangeableWktpGrpDetail grpDetailEntity = new KrcmtChangeableWktpGrpDetail(grpDetailPk);
@@ -185,6 +185,33 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository i
 		WorkingTypeChangedByEmployment search = this.get(new CompanyId(companyId), new EmploymentCode(employmentCode));
 		search.setChangeableWorkTypeGroups(sourceData.getChangeableWorkTypeGroups());
 		this.save(search);
+	}
+
+	@Override
+	public void deleteEmploymentSetting(String companyId, String empCode) {
+		// Get list KrcmtChangeableWktpGrp by companyID && employmentCode => remove
+		List<KrcmtChangeableWktpGrp> deleteEmpGrp = this.queryProxy()
+														.query(GET_ALL_OF_EMPLOYEE_FOR_GRP, KrcmtChangeableWktpGrp.class)
+														.setParameter("companyId", companyId)
+														.setParameter("employeeCode", empCode)
+														.getList();
+		this.commandProxy().removeAll(deleteEmpGrp);
+		
+		// Get list KrcmtChangeableWktpGrpDetail by companyID && employmentCode => remove
+		List<KrcmtChangeableWktpGrpDetail> deleteGrpDetail = this.queryProxy()
+														.query(GET_ALL_OF_EMPLOYEE_FOR_GRP_DETAIL, KrcmtChangeableWktpGrpDetail.class)
+														.setParameter("companyId", companyId)
+														.setParameter("employeeCode", empCode)
+														.getList();
+		
+		this.commandProxy().removeAll(deleteGrpDetail);
+	}
+
+	@Override
+	public List<String> getDistinctEmpCodeByCompanyId(String companyId) {
+		List<String> EmpCodes = this.queryProxy().query(GET_EMPCODE_BY_COMPANYID, String.class).setParameter("companyId", companyId).getList();
+		return EmpCodes;
+				
 	}
 	
 
