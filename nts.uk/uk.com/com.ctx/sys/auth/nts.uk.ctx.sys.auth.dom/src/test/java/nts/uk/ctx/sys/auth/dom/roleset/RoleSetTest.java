@@ -24,7 +24,6 @@ public class RoleSetTest {
 		assertThat(roleSet.getCompanyId()).isEqualTo(cid);
 		assertThat(roleSet.getRoleSetCd().v()).isEqualTo(roleSetCd);
 		assertThat(roleSet.getRoleSetName().v()).isEqualTo(roleSetName);
-		assertThat(roleSet.getApprovalAuthority()).isEqualTo(ApprovalAuthority.HasRight );
 		assertThat(roleSet.getPersonInfRoleId().get()).isEqualTo(personInfoRoleId.get());
 		assertThat(roleSet.getEmploymentRoleId().get()).isEqualTo(attendanceRoleId.get());
 		assertThat(roleSet.getHRRoleId()).isEmpty();
@@ -47,7 +46,6 @@ public class RoleSetTest {
 		assertThat(roleSet.getCompanyId()).isEqualTo(cid);
 		assertThat(roleSet.getRoleSetCd().v()).isEqualTo(roleSetCd);
 		assertThat(roleSet.getRoleSetName().v()).isEqualTo(roleSetName);
-		assertThat(roleSet.getApprovalAuthority()).isEqualTo(ApprovalAuthority.HasRight );
 		assertThat(roleSet.getPersonInfRoleId()).isEmpty();
 		assertThat(roleSet.getEmploymentRoleId()).isEmpty();
 		assertThat(roleSet.getHRRoleId()).isEmpty();
@@ -167,7 +165,7 @@ public class RoleSetTest {
 				, Optional<String> officeHelperRoleId) {
 			
 			return new RoleSet("cid",	new RoleSetCode("roleSetCode")
-					,	new RoleSetName("roleSetName"),		ApprovalAuthority.HasRight
+					,	new RoleSetName("roleSetName")
 					,	attendanceRoleId,	personInfRoleId,	salaryRoleId
 					,	hRRoleId,	myNumberRoleId,	officeHelperRoleId);
 		}

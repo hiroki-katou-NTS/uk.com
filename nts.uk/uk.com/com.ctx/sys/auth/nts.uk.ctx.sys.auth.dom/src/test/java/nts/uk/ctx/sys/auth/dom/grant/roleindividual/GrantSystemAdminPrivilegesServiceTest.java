@@ -348,7 +348,7 @@ public class GrantSystemAdminPrivilegesServiceTest {
 	 * excepted: false
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_systemManager_duplicate() {
+	public void testIsAlwaysASystemAdmin_case1() {
 		
 		val grantRoles = Arrays.asList(
 					RoleIndividualGrantHelper.createSystemManangerOfGrantInfo("userID_1", GeneralDate.ymd(2020, 01, 01), GeneralDate.ymd(2021, 05, 31) )
@@ -403,7 +403,7 @@ public class GrantSystemAdminPrivilegesServiceTest {
 	 * excepted: true
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_all_systemManager_period_continous() {
+	public void testIsAlwaysASystemAdmin_case2() {
 		
 		val grantRoles = Arrays.asList(
 					RoleIndividualGrantHelper.createSystemManangerOfGrantInfo("userID_1", GeneralDate.ymd(2000, 01, 01), GeneralDate.ymd(2021, 05, 31) )
@@ -464,7 +464,7 @@ public class GrantSystemAdminPrivilegesServiceTest {
 	 * excepted: true
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_systemDate_from_systemManager_period_continous() {
+	public void testIsAlwaysASystemAdmin_case3() {
 		
 		val grantRoles = Arrays.asList(
 					RoleIndividualGrantHelper.createSystemManangerOfGrantInfo("userID_1", GeneralDate.ymd(2000, 1, 01), GeneralDate.ymd(2016, 5, 31) )
@@ -526,7 +526,7 @@ public class GrantSystemAdminPrivilegesServiceTest {
 	 * excepted: false
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_have_expirationPeriod_future() {
+	public void testIsAlwaysASystemAdmin_case4() {
 		//有効期間
 		val expirationPeriod = new DatePeriod( GeneralDate.ymd(2035, 01, 01), GeneralDate.ymd(9999, 12, 31) );
 		
@@ -566,7 +566,7 @@ public class GrantSystemAdminPrivilegesServiceTest {
 	 * excepted: true
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_expirationPeriod_past() {
+	public void testIsAlwaysASystemAdmin_case5() {
 		//有効期間
 		val expirationPeriod = new DatePeriod( GeneralDate.ymd(2000, 12, 01), GeneralDate.ymd(2025, 12, 31) );
 		
@@ -594,4 +594,5 @@ public class GrantSystemAdminPrivilegesServiceTest {
 		assertThat( result ).isFalse();
 		
 	}
+	
 }

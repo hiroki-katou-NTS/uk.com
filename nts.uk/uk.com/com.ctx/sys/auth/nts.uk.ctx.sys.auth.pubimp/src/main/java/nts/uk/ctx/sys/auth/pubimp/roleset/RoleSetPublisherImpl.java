@@ -38,7 +38,6 @@ public class RoleSetPublisherImpl implements RoleSetPublisher {
 		roleSetDto.setCompanyId(domain.getCompanyId());
 		roleSetDto.setRoleSetCd(domain.getRoleSetCd().v());
 		roleSetDto.setRoleSetName(domain.getRoleSetName().v());
-		roleSetDto.setApprovalAuthority(domain.getApprovalAuthority().value);
 		
 		if(domain.getEmploymentRoleId().isPresent()) {
 			roleSetDto.setEmploymentRoleId(domain.getEmploymentRoleId().get());

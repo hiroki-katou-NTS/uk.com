@@ -16,8 +16,6 @@ public class RoleSetDto {
 
     private String roleSetName;
 
-    private int approvalAuthority;
-
     private String officeHelperRoleId;
 
     private String myNumberRoleId;
