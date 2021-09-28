@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecor
 public class JpaManHourRecordItemRepository extends JpaRepository implements ManHourRecordItemRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT i FROM KrcmtManHrItem i";
-	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE i.cId = :cId";
+	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE i.pk.cId = :cId";
 	private static final String SELECT_BY_CID_AND_ITEM = SELECT_BY_CID + " AND i.pk.manHrItemId IN :items";
 	
 	@Override
@@ -34,12 +34,18 @@ public class JpaManHourRecordItemRepository extends JpaRepository implements Man
 
 	@Override
 	public List<ManHourRecordItem> get(String cId) {
-		return this.queryProxy().query(SELECT_BY_CID, KrcmtManHrItem.class).getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtManHrItem.class)
+				.setParameter("cId", cId)
+				.getList(item -> item.toDomain());
 	}
 
 	@Override
 	public List<ManHourRecordItem> get(String cId, List<Integer> items) {
-		return this.queryProxy().query(SELECT_BY_CID_AND_ITEM, KrcmtManHrItem.class).getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_BY_CID_AND_ITEM, KrcmtManHrItem.class)
+				.setParameter("cId", cId)
+				.setParameter("items", items)
+				.getList(item -> item.toDomain());
+		
 	}
 
 }
