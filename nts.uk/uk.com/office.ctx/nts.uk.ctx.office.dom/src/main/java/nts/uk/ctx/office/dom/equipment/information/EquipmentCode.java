@@ -14,14 +14,9 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 @ZeroPaddedCode
 public class EquipmentCode extends StringPrimitiveValue<EquipmentCode> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public EquipmentCode(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
-	
 }
