@@ -102,7 +102,6 @@ module nts.uk.com.view.oew001.b {
 
     public processSave() {
       const vm = this;
-      vm.validateUseDate(moment.utc(vm.data().useDate(), model.constants.YYYY_MM_DD));
       vm.$validate().then(isValid => {
         if (!isValid) {
           return;
