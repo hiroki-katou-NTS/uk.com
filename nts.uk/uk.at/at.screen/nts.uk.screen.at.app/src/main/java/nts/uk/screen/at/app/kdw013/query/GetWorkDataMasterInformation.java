@@ -135,19 +135,6 @@ public class GetWorkDataMasterInformation {
     }
     
     /**
-     * @name 作業入力パネルを起動する
-     */
-    public WorkDataMasterInformationDispLayDto getWorkDataMasterInformationDispLay(GeneralDate refDate) {
-    	//1: 取得する():Optional<工数入力表示フォーマット>
-    	Optional<ManHrInputDisplayFormat> manHrInputDisplayFormat = manHrInputDisplayFormatRepo.get(AppContexts.user().companyId());
-    	
-    	//2 call
-    	//QA: 120127
-    	WorkDataMasterInformationDto workDataMasterInformation = this.get(refDate, itemIds);
-    	return new WorkDataMasterInformationDispLayDto(workDataMasterInformation, manHrInputDisplayFormat);
-    }
-    
-    /**
      * @name 勤怠項目マスタ情報を取得する
      * @param itemId List<工数実績項目ID>
      */
