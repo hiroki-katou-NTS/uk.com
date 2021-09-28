@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ModeData;
@@ -21,13 +20,11 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
+import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
 import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,9 +37,6 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class CreateAchievementRegistrationParam {
     
-    @Inject
-    private FindClosureDateService findClosureDateService; 
-    
     @Inject 
     private ApprovalStatusActualDayChange approvalStatusActualDayChange;
     
@@ -51,6 +45,9 @@ public class CreateAchievementRegistrationParam {
     
     @Inject
     private GetWorkDataMasterInformation getWorkDataMasterInformation;
+    
+    @Inject
+    private DailyModifyRCommandFacade dailyModifyRCommandFacade;
     
     /**
      * @name 実績内容を登録する
@@ -62,7 +59,9 @@ public class CreateAchievementRegistrationParam {
     	DPItemParent DPItemParent = this.create(empTarget, targetDate, items, integrationOfDaily);
     	
     	//Call 修正した実績を登録する
-    	//QA: 120067
+    	//QA: 120067 -  đang hỏi anh thanhNX - Anh thanhNX trả lời là hàm DailyModifyRCommandFacade.insertItemDomain()
+    	//Vì param 「過去修正モード」"Mode sửa quá khứ " là đang thiết kế nên vẫn chưa có source code.
+    	dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
     	
     }
     
@@ -116,7 +115,7 @@ public class CreateAchievementRegistrationParam {
     			new HashMap<>(), 
     			new ArrayList<>(), 
     			new ArrayList<>(), 
-    			false, //QA: 120066 is boolean type can't set null
+    			false, 
     			new ArrayList<>(), 
     			false, 
     			false, 

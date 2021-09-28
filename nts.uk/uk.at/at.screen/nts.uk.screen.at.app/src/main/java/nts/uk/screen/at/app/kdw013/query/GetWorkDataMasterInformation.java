@@ -13,9 +13,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
-import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormat;
-import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormatRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItem;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItemRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
@@ -60,9 +57,6 @@ public class GetWorkDataMasterInformation {
     
     @Inject
     private ManHourRecordItemRepository manHourRecordItemRepo;
-    
-    @Inject
-    private ManHrInputDisplayFormatRepository manHrInputDisplayFormatRepo;
     
     @Inject
     private CompanyDailyItemService companyDailyItemService;
