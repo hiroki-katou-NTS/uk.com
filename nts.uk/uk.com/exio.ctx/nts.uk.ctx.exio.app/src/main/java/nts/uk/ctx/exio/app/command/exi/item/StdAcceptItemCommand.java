@@ -1,12 +1,16 @@
 package nts.uk.ctx.exio.app.command.exi.item;
 
+import java.util.Optional;
+
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.app.command.exi.condset.AcScreenCondSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.ChrDataFormatSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.DateDataFormSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.InsTimeDatFmSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.NumDataFormatSetCommand;
 import nts.uk.ctx.exio.app.command.exi.dataformat.TimeDatFmSetCommand;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
@@ -79,9 +83,16 @@ public class StdAcceptItemCommand {
 			dataFormatSet = this.timeFormatSetting == null ? null : this.timeFormatSetting.toDomain();
 			break;
 		}
-		return new StdAcceptItem(companyId, this.systemType, this.getConditionSettingCode(), this.acceptItemNumber,
-				this.categoryItemNo, this.csvItemNumber, this.csvItemName, this.itemType,
-				this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain(), dataFormatSet);
+		StdAcceptItem domain = new StdAcceptItem(companyId,
+				new AcceptanceConditionCode(this.conditionSettingCode),
+				this.acceptItemNumber,
+				Optional.ofNullable(this.csvItemNumber),
+				Optional.ofNullable(this.csvItemName),
+				EnumAdaptor.valueOf(this.itemType, ItemType.class),
+				this.categoryItemNo,
+				Optional.ofNullable(this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain()),
+				Optional.ofNullable(dataFormatSet));
+		return domain;
 	}
 
 }

@@ -53,7 +53,7 @@ public class WithinStatutoryMidNightTime {
 			Optional<WorkTimeCode> workTimeCode,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 
-		// フレックスかどうか判断
+		// フレックス勤務日かどうか
 		boolean isFlex = false;
 		if (recordReGet.getWorkTimeSetting().isPresent()){
 			isFlex = recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().isFlexWorkDay(conditionItem);

@@ -55,7 +55,8 @@ public class JpaLoginPasswordOfUserRepository extends JpaRepository implements L
 				.getList(rec -> rec.toDomain());
 	}
 	
-	private void delete(String userId) {
+	@Override
+	public void delete(String userId) {
 		
 		String query 	= " delete "
 						+ " from SGWDT_USER_LOGIN_PASSWORD "

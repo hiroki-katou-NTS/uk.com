@@ -21,6 +21,12 @@ public class TranferOvertimeCompensatory {
 
 	public static IntegrationOfDaily process(Require require, String cid, IntegrationOfDaily dailyRecord) {
 
+		if (!dailyRecord.getAttendanceTimeOfDailyPerformance().isPresent()
+				|| !dailyRecord.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
+			return dailyRecord;
+		}
+		
 		// 最大の時間帯でworkを作成
 		IntegrationOfDaily dailyRecordNew = CreateWorkMaxTimeZone.process(require, cid, dailyRecord);
 
@@ -49,7 +55,9 @@ public class TranferOvertimeCompensatory {
 		}).collect(Collectors.toList()));
 
 		// input.日別勤怠(work）から残業枠時間（List）の内容を移送し、[申請を反映させた後の時間]へセットする
-		timeAfterReflectApp.addAll(overTimeWork.getOverTimeWorkFrameTime().stream().map(x -> {
+		timeAfterReflectApp.addAll(dailyRecord.getAttendanceTimeOfDailyPerformance().get()
+				.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork()
+				.get().getOverTimeWorkFrameTime().stream().map(x -> {
 			return new OvertimeHourTransfer(x.getOverWorkFrameNo().v(), x.getOverTimeWork().getTime(),
 					x.getTransferTime().getTime());
 		}).collect(Collectors.toList()));

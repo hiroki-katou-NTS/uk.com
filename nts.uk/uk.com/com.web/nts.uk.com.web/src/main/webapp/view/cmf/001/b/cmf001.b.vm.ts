@@ -1,278 +1,301 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmf001.b.viewmodel {
-    import block = nts.uk.ui.block;
-    import getText = nts.uk.resource.getText;
-    import model = cmf001.share.model;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
+	import ajax = nts.uk.request.ajax;
+	import info = nts.uk.ui.dialog.info;
+	import setShared = nts.uk.ui.windows.setShared;
+	import getShared = nts.uk.ui.windows.getShared;
 
-    export class ScreenModel {
-        systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
-        systemType: KnockoutObservable<number>;
-        screenMode: KnockoutObservable<number>;
-        deleteExistDataMethod: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getDeleteExistDataMethod());
-        radioItemList: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(1, getText('CMF001_56')),
-            new model.ItemModel(0, getText('CMF001_57'))
-        ]);
-        acceptModes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([
-            new model.ItemModel(0, getText('CMF001_66')),
-            new model.ItemModel(1, getText('CMF001_67')),
-            new model.ItemModel(2, getText('CMF001_68'))
-        ]);
-        
-        listStandardImportSetting: KnockoutObservableArray<model.StandardAcceptanceConditionSetting>;
-        selectedStandardImportSettingCode: KnockoutObservable<string>;
-        selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting>;
-        transitData: any;
-        init: KnockoutObservable<boolean> = ko.observable(true);
-        constructor(data?: any) {
-            var self = this;
-            if (data) self.transitData = data;
-            self.systemType = ko.observable(-1);
-            self.screenMode = ko.observable(model.SCREEN_MODE.NEW);
-            self.listStandardImportSetting = ko.observableArray([]);
-            self.selectedStandardImportSettingCode = ko.observable('');
-            self.selectedStandardImportSetting = ko.observable(new model.StandardAcceptanceConditionSetting(0, '', '', 1));
-            self.selectedStandardImportSettingCode.subscribe((data) => {
-                if (data) {
-                    block.invisible();
-                    let d1 = service.getOneStdData(self.systemType(), data);
-                    let d2 = service.getAllStdItemData(self.systemType(), data);
-                    $.when( d1, d2 ).done(function ( result, rs ) {
-                        if (result) {
-                            let item = new model.StandardAcceptanceConditionSetting(
-                                result.systemType, result.conditionSettingCode, result.conditionSettingName, 
-                                result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, 
-                                result.csvDataStartLine, result.characterCode, result.deleteExistDataMethod, result.categoryId);
-                            self.selectedStandardImportSetting(item);
-                            self.screenMode(model.SCREEN_MODE.UPDATE);
-                            if (!nts.uk.util.isNullOrUndefined(self.transitData)) $("#B4_21").focus();
-                            _.defer(() => {nts.uk.ui.errors.clearAll()});
-                        }
-                        if (rs && rs.length) {
-                            self.selectedStandardImportSetting().alreadySetting(true);
-                        }
-                    }).fail(function(error) {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
-                    });
-                } else {
-                    self.createNewCondition();
-                    setTimeout(() => {
-                        nts.uk.ui.errors.clearAll();
-                    }, 10);
-                }
-            });
-            
-            self.systemType.subscribe((data) => {
-                nts.uk.ui.errors.clearAll();
-                self.getAllData();
-            });
-        }
-        
-        private openCMF001d() {
-            let self = this;
-            nts.uk.request.jump("/view/cmf/001/d/index.xhtml", {
-                systemType: self.systemType(),
-                conditionCode: self.selectedStandardImportSetting().conditionSetCode()
-            });
-        }
-        
-        private openCMF001m() {
-            let self = this;
-            setShared('CMF001mParams', {
-                activation: model.M_ACTIVATION.Duplicate_Standard,
-                systemType: self.systemType(),
-                conditionCode: self.selectedStandardImportSetting().conditionSetCode(),
-                conditionName: self.selectedStandardImportSetting().conditionSetName()
-            }, true);
-            
-            modal("/view/cmf/001/m/index.xhtml").onClosed(function() {
-                let output = getShared('CMF001mOutput');
-                if (output) {
-                    block.invisible();
-                    let isOverride = output.checked;
-                    let desCode = output.code;
-                    let desName = output.name;
-                    
-                    //process copy condition setting.
-                    let copyParam : any = {systemType: self.selectedStandardImportSetting().systemType(),
-                                            sourceCondSetCode: self.selectedStandardImportSetting().conditionSetCode(),
-                                            destCondSetCode: desCode,
-                                            destCondSetName: desName,
-                                            override: isOverride};
-                    service.copyStdData(copyParam).done(function(sourceCondSet: any){
-                        //Reload grid condition setting
-                        self.getAllData(desCode);
-                    }).fail(function(error) {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
-                    });;
-                }
-            });
-        }
-        
-        startPage(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            block.invisible();
-            service.getSysTypes().done(function(data: Array<any>) {
-                if (data && data.length) {
-                    let _rsList: Array<model.ItemModel> = _.map(data, rs => {
-                        return new model.ItemModel(rs.type, rs.name);
-                    });
-                    _rsList = _.sortBy(_rsList, ['code']);
-                    self.systemTypes(_rsList);
-                    if (self.init() && !nts.uk.util.isNullOrUndefined(self.transitData) && !nts.uk.util.isNullOrUndefined(self.transitData.sysType))
-                        self.systemType(self.transitData.sysType);
-                    else
-                        self.systemType(self.systemTypes()[0].code);
-                } else {
-                    nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                dfd.reject();
-            }).always(() => {
-                block.clear();
-            });
-            return dfd.promise();
-        }
+	function deleteButton(required, data) {
+		if (required === "false") {
+				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">削除</button>';
+		} else {
+				return '';
+		}
+	}
 
-        getAllData(code?: string): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            block.invisible();
-            self.listStandardImportSetting.removeAll();
+	$(function() {
+		$("#layout-list").on("click",".delete-button",function(){
+			let vm = nts.uk.ui._viewModel.content;
+			vm.removeItem($(this).data("target"));
+		});
+	})
 
-            service.getAllStdData(self.systemType()).done(function(data: Array<any>) {
-                if (data && data.length) {
-                    let _rsList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rs => {
-                        return new model.StandardAcceptanceConditionSetting(rs.systemType, 
-                        rs.conditionSettingCode,
-                        rs.conditionSettingName,
-                        rs.deleteExistData);
-                    });
-//                    _rsList = _.sortBy(_rsList, ['code']);
-                    if (code) {
-                        if (code == self.selectedStandardImportSettingCode())
-                            self.selectedStandardImportSettingCode.valueHasMutated();
-                        else
-                            self.selectedStandardImportSettingCode(code);
-                    }
-                    else {
-                        if (self.init() && !nts.uk.util.isNullOrUndefined(self.transitData) && !nts.uk.util.isNullOrUndefined(self.transitData.conditionCode)) {
-                            self.selectedStandardImportSettingCode(self.transitData.conditionCode);
-                            self.init(false);
-                        } else
-                            self.selectedStandardImportSettingCode(_rsList[0].dispConditionSettingCode);
-                    }
-                    self.listStandardImportSetting(_rsList);
-                } else {
-                    self.createNewCondition();
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                dfd.reject();
-            }).always(() => {
-                block.clear();
-            });
-            return dfd.promise();
-        }
-        
-        private createNewCondition() {
-            let self = this;
-            nts.uk.ui.errors.clearAll();
-            self.selectedStandardImportSettingCode('');
-            self.selectedStandardImportSetting(new model.StandardAcceptanceConditionSetting(self.systemType(), '', '', 1));
-            self.screenMode(model.SCREEN_MODE.NEW);
-            $("#B4_3").focus();
-        }
+	@bean()
+	class ViewModel extends ko.ViewModel {
+		isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
-        registerCondition() {
-            let self = this;
-            let data = new model.StandardAcceptanceConditionSetting(
-                self.selectedStandardImportSetting().systemType(), 
-                self.selectedStandardImportSetting().conditionSetCode(), 
-                self.selectedStandardImportSetting().conditionSetName(), 
-                self.selectedStandardImportSetting().deleteExistData(), 
-                self.selectedStandardImportSetting().acceptMode(), 
-                self.selectedStandardImportSetting().csvDataItemLineNumber(), 
-                self.selectedStandardImportSetting().csvDataStartLine(), 
-                self.selectedStandardImportSetting().characterCode(), 
-                self.selectedStandardImportSetting().deleteExistDataMethod(), 
-                self.selectedStandardImportSetting().categoryId());
-            if (data.deleteExistData() ==  model.NOT_USE_ATR.NOT_USE) {
-                data.deleteExistDataMethod(null);
-            } else {
-                data.acceptMode(null);
-            }
-            data.action(self.screenMode());
-            let command: any = ko.toJS(data);
-            $(".nts-input").trigger("validate");
-            if (!nts.uk.ui.errors.hasError()) {
-                block.invisible();
-                service.registerStdData(command).done(function() {
-                    self.getAllData(data.conditionSetCode()).done(() => {
-                        info({ messageId: "Msg_15" }).then(() => {
-                            if (self.screenMode() != model.SCREEN_MODE.UPDATE) $("#B4_3").focus();
-                            else $("#B3_4_container").focus();
-                        });
-                    });
-                }).fail(error => {
-                    alertError(error);
-                }).always(() => {
-                    block.clear();
+		settingList: KnockoutObservableArray<Setting> = ko.observableArray([]);
+
+		settingCode: KnockoutObservable<string> = ko.observable();
+		settingName: KnockoutObservable<string> = ko.observable();
+		importDomain: KnockoutObservable<number> = ko.observable();
+		importMode: KnockoutObservable<number> = ko.observable();
+		itemNameRow: KnockoutObservable<number> = ko.observable();
+		importStartRow: KnockoutObservable<number> = ko.observable();
+		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
+
+		importDomainOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingDomainId);
+		importModeOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingMode);
+
+		selectedCode: KnockoutObservable<string> = ko.observable();
+
+		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
+		selectedItem: KnockoutObservable<string> = ko.observable();
+
+	    canEditDetail = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+	    
+		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
+			{ headerText: "コード", 				key: "code", 					width: 50 	},
+			{ headerText: "名称", 					key: "name", 					width: 200 	},
+		]);
+
+		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
+			{ headerText: "削除", 					key: "required", 		width: 50 , 	formatter: deleteButton },
+			{ headerText: "NO", 						key: "itemNo", 				width: 100 , 	hidden: true },
+			{ headerText: "名称", 					key: "name", 					width: 300 		},
+			{ headerText: "型", 						key: "type", 					width: 80 		},
+			{ headerText: "受入元", 				key: "source", 				width: 80 		},
+		]);
+
+		constructor() {
+			super();
+			var self = this;
+
+			self.startPage();
+
+			self.selectedCode.subscribe((value) => {
+				if (value) {
+					self.updateMode();
+				} else {
+					self.newMode();
+				}
+			})
+
+			self.importDomain.subscribe((value) => {
+				if (value) {
+					let condition = {
+						settingCode: self.settingCode(),
+						importingDomainId: self.importDomain(),
+						itemNoList: []};
+					ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition).done((itemNoList: number[]) => {
+						self.layoutItemNoList(itemNoList);
+					});
+				}else{
+					self.layoutItemNoList([]);
+				}
+			})
+
+			self.layoutItemNoList.subscribe((value) => {
+				self.setLayout(value);
+			})
+		}
+
+		startPage(){
+			var self = this;
+			let dfd = $.Deferred();
+			self.getListData().done(function() {
+				if (self.settingList().length !== 0) {
+					self.selectedCode(self.settingList()[0].code.toString());
+				}
+				dfd.resolve();
+			});
+			return dfd.promise();
+		}
+
+		reloadPage(){
+			var self = this;
+			let dfd = $.Deferred();
+			self.getListData().done(function() {
+				dfd.resolve();
+			});
+		}
+
+		getListData(){
+			var self = this;
+			let dfd = $.Deferred();
+			ajax("screen/com/cmf/cmf001/b/get/setting/all").done((lstData: Array<viewmodel.Setting>) => {
+				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+				self.settingList(sortedData);
+				dfd.resolve();
+			}).fail(function(error) {
+				dfd.reject();
+				alert(error.message);
+			})
+			return dfd.promise();
+		}
+
+		newMode() {
+			let self = this;
+			self.selectedCode("");
+			self.setInfo(SettingInfo.new());
+			self.isNewMode(true);
+		}
+
+		updateMode(){
+			let self = this;
+			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
+				self.setInfo(infoData);
+				self.setLayout(infoData.itemNoList);
+				self.isNewMode(false);
+				self.checkError();
+			});
+		}
+
+		checkError(){
+			nts.uk.ui.errors.clearAll()
+			$('.check-target').ntsError('check');
+		}
+
+		setInfo(info: SettingInfo){
+			let self = this;
+			self.settingCode(info.code);
+			self.settingName(info.name);
+			self.importDomain(info.domain);
+			self.importMode(info.mode);
+			self.itemNameRow(info.itemNameRow);
+			self.importStartRow(info.importStartRow);
+			//self.layoutItemNoList(info.itemNoList);
+		}
+
+		setLayout(itemNoList: number[]){
+			let self = this;
+			if(itemNoList.length > 0){
+				let condition = {
+					settingCode: self.settingCode(),
+					importingDomainId: self.importDomain(),
+					itemNoList: itemNoList};
+				ajax("screen/com/cmf/cmf001/b/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
+					self.layout(layoutItems);
+				});
+			}else{
+				self.layout([]);
+			}
+		}
+
+		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
+
+		save(){
+			let self = this;
+			self.checkError();
+			if(!nts.uk.ui.errors.hasError()){
+				let saveContents = {
+					createMode: self.isNewMode(),
+					setting: new SettingInfo(
+						__viewContext.user.companyId,
+						self.settingCode(),
+						self.settingName(),
+						self.importDomain(),
+						self.importMode(),
+						self.itemNameRow(),
+						self.importStartRow(),
+						self.layoutItemNoList()),
+				};
+				ajax("screen/com/cmf/cmf001/b/save", saveContents).done(() => {
+					info(nts.uk.resource.getMessage("Msg_15", []));
+					self.reloadPage();
+					self.selectedCode(self.settingCode());
                 });
-            }
-        }
+			}
+		}
 
-        deleteCondition() {
-            nts.uk.ui.errors.clearAll();
-            let self = this, data = self.selectedStandardImportSetting();
-            data.systemType(self.systemType());
-            let command: any = ko.toJS(data);
+    	canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
 
-            confirm({ messageId: "Msg_18" }).ifYes(() => {
-                block.invisible();
-                let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSetCode() == data.conditionSettingCode(); });
-                self.listStandardImportSetting.remove(function(item) { return item.conditionSetCode() == data.conditionSettingCode(); });
-                service.deleteStdData(command).done(function() {
-                    if (self.listStandardImportSetting().length == 0) {
-                        self.selectedStandardImportSettingCode(null);
-                    } else {
-                        if (indexItemDelete == self.listStandardImportSetting().length) {
-                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete - 1].conditionSetCode());
-                        } else {
-                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete].conditionSetCode());
-                        }
-                    }
+		remove(){
+			let self = this;
+			let target = {code: self.selectedCode()};
 
-                    self.getAllData(self.selectedStandardImportSettingCode()).done(() => {
-                        info({ messageId: "Msg_16" }).then(() => {
-                            if (self.screenMode() != model.SCREEN_MODE.UPDATE) {
-                                $("#B4_3").focus();
-                            } else {
-                                $("#B3_4_container").focus();
-                            }
-                        });
-                    });
-                }).fail(error => {
-                    alertError(error);
-                }).always(() => {
-                    block.clear();
+			
+
+            ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                this.$ajax("exio/input/setting/remove", target).done(() => {
+					info(nts.uk.resource.getMessage("Msg_16", []));
+					self.reloadPage();
+					self.selectedCode("");
                 });
-
-            }).ifNo(() => {
             });
-        }
-    }
+		}
+
+		selectLayout() {
+			let self = this;
+			setShared('CMF001DParams', {
+					domainId: self.importDomain(),
+					selectedItems: self.layoutItemNoList()
+			}, true);
+
+			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
+				// ダイアログを閉じたときの処理
+				if(!getShared('CMF001DCancel')){
+					let ItemNoList: string[] = getShared('CMF001DOutput')
+					console.log("closed: " + ItemNoList)
+					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
+				}
+			});
+		}
+
+		gotoDetailSetting() {
+			request.jump("../c/index.xhtml", { settingCode: this.settingCode() });
+		}
+
+		removeItem(target){
+			let self = this;
+			self.layoutItemNoList(self.layoutItemNoList().filter(function(itemNo){
+				return itemNo !== target;
+			}))
+		}
+	}
+
+
+
+
+	export class Setting {
+		code: string;
+		name: string;
+
+		constructor(code: string, name: string) {
+				this.code = code;
+				this.name = name;
+		}
+	}
+
+	export class SettingInfo {
+		companyId: string;
+		code: string;
+		name: string;
+		domain: number;
+		mode: number;
+		itemNameRow: number;
+		importStartRow: number;
+		itemNoList: Array<number>;
+
+		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
+			this.companyId = companyId;
+			this.code = code;
+			this.name = name;
+			this.domain = domain;
+			this.mode = mode;
+			this.itemNameRow = itemNameRow;
+			this.importStartRow = importStartRow;
+			this.itemNoList = itemNoList;
+		}
+
+		static new(){
+			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, null, [])
+		}
+	}
+
+	export class Layout {
+		itemNo: number;
+		name: string;
+		required: boolean;
+		type: string;
+		source: string;
+
+		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string) {
+			this.itemNo = itemNo;
+			this.name = name;
+			this.required = required;
+			this.type = type;
+			this.source = source;
+		}
+	}
 }
