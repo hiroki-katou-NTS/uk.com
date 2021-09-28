@@ -35,7 +35,7 @@ public class RoleIdWorkDomServiceHelper {
 					null,
 					null,
 					null,
-					r,
+					Optional.ofNullable(r),
 					null
 					));
 		}
