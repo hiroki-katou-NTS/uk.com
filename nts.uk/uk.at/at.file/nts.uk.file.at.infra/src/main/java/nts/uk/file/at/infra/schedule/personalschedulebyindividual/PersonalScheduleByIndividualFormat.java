@@ -3,6 +3,7 @@ package nts.uk.file.at.infra.schedule.personalschedulebyindividual;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Data
 public class PersonalScheduleByIndividualFormat {
@@ -69,4 +70,6 @@ public class PersonalScheduleByIndividualFormat {
     private BigDecimal D23;
     private String D24;
     private String D25;
+    private Map<Integer, Map<Integer, String>> holiday;
+    private Integer weekNo;
 }
