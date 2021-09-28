@@ -69,11 +69,11 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 		if (roleSet.isPresent()) {
 			RoleSet rs = roleSet.get();
 			
-			if (org.apache.commons.lang3.StringUtils.isBlank(rs.getEmploymentRoleId().orElse(null))) {
+			if (!rs.getEmploymentRoleId().isPresent()) {
 				return false;
 			} else {
 				// 就業ロールIDから承認権限がある就業ロールを取得する
-				Optional<Role> role = roleRepository.getRoleWorks(companyId, rs.getEmploymentRoleId().orElse(null));
+				Optional<Role> role = roleRepository.getRoleWorks(companyId, rs.getEmploymentRoleId().get());
 				
 				
 				return role.flatMap(x -> x.getApprovalAuthority()).orElse(false);
