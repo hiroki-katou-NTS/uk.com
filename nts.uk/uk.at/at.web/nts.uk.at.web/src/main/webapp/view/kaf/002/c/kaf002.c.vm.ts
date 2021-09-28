@@ -169,6 +169,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       // set visible for flag column
       isVisibleComlumn: boolean = true;
       isPreAtr: KnockoutObservable<boolean> = ko.observable(true);
+      date: KnockoutObservable<string> = ko.observable(null);
       comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       // tab visible condition
@@ -249,25 +250,25 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                    });       
                }
            }
-		_.forEach(self.dataSourceOb()[0], i => {
-			self.bindDataRequest(i, 1);
-		})
-           self.isM(true);
-           self.tabs.subscribe(value => {
-              if (value) {
-                if (data.appStampReflectOptional && self.tabs()) {
-                    let reflect = data.appStampReflectOptional;
-                    self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) || self.isAttendence || self.isTemporaryAttendence );
-                    self.tabs()[1].visible(reflect.outingHourse == 1 || self.isOutingHourse);
-                    self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
-                    self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
-                    self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
-                    // not use
-                    self.tabs()[5].visible(false);
-                
+            _.forEach(self.dataSourceOb()[0], i => {
+                self.bindDataRequest(i, 1);
+            })
+            self.isM(true);
+            self.tabs.subscribe(value => {
+                if (value) {
+                    if (data.appStampReflectOptional && self.tabs()) {
+                        let reflect = data.appStampReflectOptional;
+                        self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) || self.isAttendence || self.isTemporaryAttendence );
+                        self.tabs()[1].visible(reflect.outingHourse == 1 || self.isOutingHourse);
+                        self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
+                        self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
+                        self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
+                        // not use
+                        self.tabs()[5].visible(false);
+                    
+                    } 
                 } 
-              } 
-           });
+            });
        } 
        
        
@@ -768,6 +769,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             self.approvalReason = params.approvalReason;
             
             self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);
+            self.date(self.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
             self.dataSourceOb = ko.observableArray( [] );
             self.fetchData();
 
