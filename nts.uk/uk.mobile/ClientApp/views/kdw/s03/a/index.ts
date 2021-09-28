@@ -53,6 +53,7 @@ export class Kdws03AComponent extends Vue {
     public rownum: number = 0;
     public rowHeight: number = 0;
     public displayFormat: any = '0';
+    public formatCode: string = '';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
     public optionalHeader: Array<any> = [];
@@ -227,7 +228,12 @@ export class Kdws03AComponent extends Vue {
     //日別実績データの取得
     public startPage() {
         let self = this;
+        let selectedCode: Array<any> = [];
         self.$mask('show', { message: true });
+
+        if (!_.isNil(self.formatCode) && self.formatCode != '') {
+            selectedCode.push(self.formatCode);
+        }    
 
         let param = {
             changePeriodAtr: self.params.changePeriodAtr,
@@ -244,6 +250,7 @@ export class Kdws03AComponent extends Vue {
             displayDateRange: null,
             transitionDesScreen: self.params.transitionDesScreen,
             closureId: self.params.closureID,
+            formatCodes: selectedCode
         };
 
         self.$http.post('at', servicePath.initMOB, param).then(async (result: { data: any }) => {
@@ -692,6 +699,13 @@ export class Kdws03AComponent extends Vue {
                             'paramData': self.paramData
                         });
                     }
+
+                    // close dialog I
+                    if (!_.isNil(param)) {
+                        self.formatCode = param;
+                        this.startPage();
+                    }
+
                     if (!_.isNil(param) && param.reload) {
                         this.startPage();
                     }
@@ -898,4 +912,6 @@ interface Params {
     transitionDesScreen: any;
     // エラー参照を起動する
     errorRefStartAtr: boolean;
+
+    formatCodes: Array<string>;
 }
