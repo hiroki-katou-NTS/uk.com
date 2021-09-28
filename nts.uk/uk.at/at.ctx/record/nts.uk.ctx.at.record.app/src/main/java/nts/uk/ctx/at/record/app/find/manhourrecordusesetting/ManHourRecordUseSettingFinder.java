@@ -68,7 +68,7 @@ public class ManHourRecordUseSettingFinder {
 					companyId, "T001", 1, 1, true, 0);
 			erAlAttendanceItemCondition.setCountableTarget(Arrays.asList(559), 
 					Arrays.asList(1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701));
-			erAlAttendanceItemCondition.setCompareRange(6, new CheckedTimeDuration(0), new CheckedTimeDuration(0));
+			erAlAttendanceItemCondition.setCompareRange(7, new CheckedTimeDuration(0), new CheckedTimeDuration(0));
 			
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Arrays.asList(erAlAttendanceItemCondition);
 			
