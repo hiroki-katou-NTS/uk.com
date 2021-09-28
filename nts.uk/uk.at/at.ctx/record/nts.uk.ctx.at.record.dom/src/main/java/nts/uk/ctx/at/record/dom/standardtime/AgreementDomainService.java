@@ -267,7 +267,7 @@ public class AgreementDomainService {
 					val agreementTimeOfCls = require.agreementTimeOfClassification(companyId, laborSystemAtr, classCd);
 					if (agreementTimeOfCls.isPresent()){
 						result.put(employeeId, agreementTimeOfCls.get().getSetting());
-						break;
+						continue;
 					}
 				}
 			}
@@ -284,7 +284,7 @@ public class AgreementDomainService {
 						break;
 					}
 				}
-				if(kt) break;
+				if(kt) continue;
 			}
 			if (agreementUnitSet.getEmploymentUseAtr() == UseClassificationAtr.USE){
 				
@@ -295,7 +295,7 @@ public class AgreementDomainService {
 					val agreementTimeOfEmp = require.agreementTimeOfEmployment(companyId, employmentCd, laborSystemAtr);
 					if (agreementTimeOfEmp.isPresent()){
 						result.put(employeeId, agreementTimeOfEmp.get().getSetting());
-						break;
+						continue;
 					}
 				}
 			}
@@ -304,7 +304,7 @@ public class AgreementDomainService {
 			val agreementTimeOfCmpOpt = require.agreementTimeOfCompany(companyId, laborSystemAtr);
 			if (agreementTimeOfCmpOpt.isPresent()){
 				result.put(employeeId, agreementTimeOfCmpOpt.get().getSetting());
-				break;
+				continue;
 			}
 			result.put(employeeId, getDefault());
 		}
