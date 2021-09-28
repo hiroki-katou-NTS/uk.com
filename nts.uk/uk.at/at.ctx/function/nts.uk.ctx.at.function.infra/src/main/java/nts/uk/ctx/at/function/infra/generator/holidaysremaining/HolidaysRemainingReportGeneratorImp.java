@@ -470,7 +470,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 .sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate))
                 .collect(Collectors.toList());
         if(!isTime){
-            val isThinBoderTop = (listAnnLeaGrant == null ||listAnnLeaGrant.size() == 0 ||listAnnLeaGrant.size() == 1) &&!isTime;
+            // val isThinBoderTop = (listAnnLeaGrant == null ||listAnnLeaGrant.size() == 0 ||listAnnLeaGrant.size() == 1) &&!isTime;
             Style styleCopy = cells.get(firstRow, 10).getStyle();
             cells.get(firstRow, 9).setStyle(styleCopy);
 
@@ -487,23 +487,23 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             Style styleE113 = cells.get(firstRow+1, 5).getStyle();
             styleE113.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
             styleE113.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            if(isThinBoderTop)
-                styleE113.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+
+            styleE113.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
             cells.get(firstRow+1, 5).setStyle(styleE113);
 
             Style styleE114 = cells.get(firstRow+1, 6).getStyle();
             styleE114.setBorder(BorderType.RIGHT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
             styleE114.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
             styleE114.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            if(isThinBoderTop)
-                styleE114.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+
+            styleE114.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
             cells.get(firstRow+1, 6).setStyle(styleE114);
 
             Style styleE115 = cells.get(firstRow+1, 7).getStyle();
             styleE115.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
             styleE115.setBorder(BorderType.LEFT_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
-            if(isThinBoderTop)
-                styleE115.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+
+            styleE115.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
             cells.get(firstRow+1, 7).setStyle(styleE115);
 
         }
@@ -1267,14 +1267,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         }
                     }
                     if (isShow51) {
-                        cells.get(firstRow + 3, 10 + totalMonth)
+                        cells.get(firstRow + (isShow41 ? 3 :2), 10 + totalMonth)
                                 .setValue(remain);
                         if (isDate && statusHolidayItem.getRemainDays() != null && statusHolidayItem.getRemainDays() < 0) {
-                            setForegroundRed(cells.get(firstRow + (show1item ? 2 :3) , 10 + totalMonth));
+                            setForegroundRed(cells.get(firstRow + (isShow41 ? 3 :2) , 10 + totalMonth));
                         }
 
                         if (isTimes && statusHolidayItem.getRemainTimes() != null && statusHolidayItem.getRemainTimes() < 0) {
-                            setForegroundRed(cells.get(firstRow + (show1item ? 2 :3), 10 + totalMonth));
+                            setForegroundRed(cells.get(firstRow + (isShow41 ? 3 :2), 10 + totalMonth));
                         }
                     }
                 }
@@ -1345,12 +1345,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             remain = (statusHolidayItem.getRemainTime() == null ? "" :
                                     df.format(statusHolidayItem.getRemainDay().v()));
                         }
-                        cells.get(firstRow + (show1item ? 2 :3), 10 + totalMonth)
+                        cells.get(firstRow + (isShow41 ? 3 :2), 10 + totalMonth)
                                 .setValue(remain);
                         if (isTime && statusHolidayItem.getRemainTime() != null && statusHolidayItem.getRemainTime().v() < 0) {
-                            setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
+                            setForegroundRed(cells.get(firstRow + (isShow41 ? 3 :2), 10 + totalMonth));
                         }   if (!isTime && statusHolidayItem.getRemainDay() != null && statusHolidayItem.getRemainDay().v() < 0) {
-                            setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
+                            setForegroundRed(cells.get(firstRow + (isShow41 ? 3 :2), 10 + totalMonth));
                         }
                     }
                 } else {
@@ -1545,7 +1545,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         if (isNumberRemainingPause) {
             rowIndexNumberRemainingPause = firstRow + totalRows;
-            cells.copyRows(cells, !checkIG? NUMBER_ROW_OF_HEADER + 19 :  68 , rowIndexNumberRemainingPause, 1);
+            cells.copyRows(cells, !checkIG? NUMBER_ROW_OF_HEADER + 19 :  isUndigestedPause?68:67 , rowIndexNumberRemainingPause, 1);
             // J2_4
             cells.get(rowIndexNumberRemainingPause, 9).setValue(TextResource.localize("KDR001_18"));
             totalRows += 1;
@@ -1592,10 +1592,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 }
                 if (isNumberRemainingPause) {
                     // J2_8 振休_残数
-                    cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
+                    cells.get(isUndigestedPause ? rowIndexNumberRemainingPause: rowIndexNumberRemainingPause - 1 , 10 + totalMonth)
                             .setValue(df.format(statusOfHDItem.getRemainingDays().doubleValue()));
                     if (statusOfHDItem.getRemainingDays() < 0) {
-                        setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
+                        setForegroundRed(cells.get(isUndigestedPause ? rowIndexNumberRemainingPause: rowIndexNumberRemainingPause - 1 , 10 + totalMonth));
                     }
                 }
             }
@@ -1628,10 +1628,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             }
                             if (isNumberRemainingPause) {
                                 // J2_8 振休_残数
-                                cells.get(rowIndexNumberRemainingPause, 10 + totalMonth)
+                                cells.get(isUndigestedPause? rowIndexNumberRemainingPause :rowIndexNumberRemainingPause-1 , 10 + totalMonth)
                                         .setValue(df.format(holidayRemainItem.getMonthEndRemain().doubleValue()));
                                 if (holidayRemainItem.getMonthEndRemain() < 0) {
-                                    setForegroundRed(cells.get(rowIndexNumberRemainingPause, 10 + totalMonth));
+                                    setForegroundRed(cells.get(isUndigestedPause? rowIndexNumberRemainingPause :rowIndexNumberRemainingPause-1, 10 + totalMonth));
                                 }
                             }
                         }
@@ -1644,10 +1644,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 dataSource.getEndMonth().yearMonth()); i++) {
             if (dataSource.getStartMonth().addMonths(i).yearMonth().compareTo(currentMonth) > 0) {
                 if (isUndigestedPause) {
-                    setBackgroundGray(cells.get(rowIndexUndigestedPause, 10 + i));
+                    setBackgroundGray(cells.get(firstRow+2, 10 + i));
                 }
                 if (isNumberRemainingPause) {
-                    setBackgroundGray(cells.get(rowIndexNumberRemainingPause, 10 + i));
+                    setBackgroundGray(cells.get(isUndigestedPause? (firstRow+3) :(firstRow+2),10+i ));
                 }
             }
         }
@@ -1657,6 +1657,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             for (int index = 0; index < NUMBER_COLUMN - 2; index++) {
                 setBottomBorderStyle(cells.get(firstRow - 1, 2 + index));
                 setBottomBorderStyle(cells.get(firstRow + totalRows - 1, 2 + index));
+            }
+            if(!isNumberRemainingPause){
+                setBackgroundGray(cells.get(firstRow, 7));
+            }
+            if(!isUndigestedPause){
+                setBackgroundGray(cells.get(firstRow, 8));
             }
             firstRow += totalRows;
             count += totalRows;
@@ -1690,6 +1696,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }else {
             setBackgroundGray(cells.get(firstRow, 8));
         }
+
         for (int index = 0; index < NUMBER_COLUMN - 2; index++) {
             setBottomBorderStyle(cells.get(firstRow - 1, 2 + index));
             setBottomBorderStyle(cells.get(firstRow + totalRows - 1, 2 + index));
@@ -2811,13 +2818,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         val isOutputHolidayForward = listItemsOutput.getHolidays().isOutputHolidayForward();
         //3
         val isMonthlyPublic = listItemsOutput.getHolidays().isMonthlyPublic();
-        // L2_1
-        cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_23"));
+
+
+        if(isOutputHolidayForward){
+            // L2_1
+            cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_23"));
+        }
         // L2_2
-        cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_22"));
-        if(isOutputHolidayForward)
-            // L2_3
-            cells.get(firstRow + 2, 9).setValue(TextResource.localize("KDR001_17"));
+        cells.get(firstRow + (isOutputHolidayForward?1:0), 9).setValue(TextResource.localize("KDR001_22"));
+        // L2_3
+        cells.get(firstRow + (isOutputHolidayForward?2:1), 9).setValue(TextResource.localize("KDR001_17"));
+
         if(isMonthlyPublic)
             // L2_4
             cells.get(firstRow + (isOutputHolidayForward?3:2), 9).setValue(TextResource.localize("KDR001_80"));
@@ -3054,7 +3065,22 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return compensatoryLeaveComSetting.isManaged()&&checkEmLeave.getIsManaged() == ManageDistinct.YES ;
         }
     }
-
+    private boolean checkJ1(HolidayRemainingDataSource dataSource, HolidaysRemainingEmployee employee) {
+        val companyId = AppContexts.user().companyId();
+        val checkPause = dataSource.getHolidaysRemainingManagement().getListItemsOutput().
+                getPause().isPauseItem();
+        val substVacation = comSubstVacationRepository.findById(companyId);
+        val empSubstVacation = substVacationRepository.findById(companyId,employee.getEmploymentCode());
+        if (!checkPause) {
+            return false;
+        }
+        if(!empSubstVacation.isPresent()){
+            return substVacation.map(ComSubstVacation::isManaged).orElse(false);
+        }else {
+            return  substVacation.map(ComSubstVacation::isManaged).orElse(false)
+                    && empSubstVacation.map(e->e.getManageDistinct() == ManageDistinct.YES).orElse(false);
+        }
+    }
     // I - CASE 2
     private boolean checkTakeABreak_02(HolidaysRemainingManagement holidaysRemainingManagement) {
         return holidaysRemainingManagement.getListItemsOutput().getSubstituteHoliday().isRepresentSubstitute();
@@ -3078,24 +3104,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
     }
 
-    private boolean checkJ1(HolidayRemainingDataSource dataSource, HolidaysRemainingEmployee employee) {
-        val companyId = AppContexts.user().companyId();
-        val checkPause = dataSource.getHolidaysRemainingManagement().getListItemsOutput().
-                getPause().isPauseItem();
-        val substVacation = comSubstVacationRepository.findById(companyId);
-        val empSubstVacation = substVacationRepository.findById(companyId,employee.getEmploymentCode());
-        if (!checkPause) {
-            return false;
-        } else {
-            if(!empSubstVacation.isPresent()){
-                return substVacation.map(ComSubstVacation::isManaged).orElse(false);
-            }else {
-                return  substVacation.map(ComSubstVacation::isManaged).orElse(false)
-                        && empSubstVacation.map(e->e.getManageDistinct() == ManageDistinct.YES).orElse(false);
-            }
-        }
-
-    }
 
     private String convertToTime(int minute) {
         val minuteAbs = Math.abs(minute);
