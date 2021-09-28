@@ -24,7 +24,7 @@ public class JpaManHrInputUsageSettingRepository extends JpaRepository implement
 
 	@Override
 	public void update(ManHrInputUsageSetting usageSetting) {
-		this.commandProxy().insert(new KrcmtManHrUse(usageSetting));
+		this.commandProxy().update(new KrcmtManHrUse(usageSetting));
 	}
 
 	@Override
