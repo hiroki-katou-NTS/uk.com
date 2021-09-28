@@ -89,18 +89,9 @@ public class CreateAchievementRegistrationParam {
     	//DPItemValueを作成する
     	List<DPItemValue> itemValues = items.stream().map(i -> new DPItemValue(empTarget, targetDate, i)).collect(Collectors.toList());
     	
-    	//QA: 120066 check Optional empty
-    	//DPItemValueを作成する
-    	Optional<ClosurePeriod> closurePeriod = findClosureDateService.getClosurePeriod(empTarget, targetDate);
-    	
-    	//DPMonthValueを作成する
-    	DPMonthValue monthValue = new DPMonthValue(empTarget, closurePeriod.get().getYearMonth().v(), closurePeriod.get().getClosureId().value, ClosureDateDto.from(closurePeriod.get().getClosureDate()), new ArrayList<DPItemValue>());
-    	
-    	//QA: 120066 check giá trị ModeData.NORMAL.value
     	//[No.585]日の実績の承認状況を取得する（NEW）
     	List<ApprovalStatusActualResult> lstApproval = approvalStatusActualDayChange.processApprovalStatus(loginUserContext.companyId(), loginUserContext.employeeId(), Arrays.asList(empTarget), Optional.of(new DatePeriod(targetDate, targetDate)), Optional.empty(), ModeData.NORMAL.value);
     	
-    	//QA: 120066 check giá trị Arrays.asList(targetDate)
     	//[No.584]日の実績の確認状況を取得する（NEW）
     	List<ConfirmStatusActualResult> lstConfirm = confirmStatusActualDayChange.processConfirmStatus(loginUserContext.companyId(), loginUserContext.employeeId(), Arrays.asList(empTarget), Optional.of(new DatePeriod(targetDate, targetDate)), Optional.empty());
     	
@@ -116,7 +107,7 @@ public class CreateAchievementRegistrationParam {
     			new ArrayList<>(), 
     			new DateRange(targetDate, targetDate), 
     			null, 
-    			monthValue, 
+    			null, 
     			Arrays.asList(DailyRecordDto.from(integrationOfDaily)), 
     			Arrays.asList(DailyRecordDto.from(integrationOfDaily)), 
     			Arrays.asList(DailyRecordDto.from(integrationOfDaily)), 
