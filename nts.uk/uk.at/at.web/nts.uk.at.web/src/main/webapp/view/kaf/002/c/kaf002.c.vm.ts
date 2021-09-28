@@ -90,6 +90,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                             tabMs: tabMs,
                                             isVisibleComlumn: isVisibleComlumn,
                                             isPreAtr: isPreAtr,
+                                            date: date,
                                             comment1: comment1,
                                             comment2: comment2
                                         }
