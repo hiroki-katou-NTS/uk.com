@@ -706,7 +706,6 @@ export class KdwS03BComponent extends Vue {
        
         dateParam15 =  moment(self.params.date).format('YYYY/MM/DD');       
         for (let itemTaskKey in keyList) {
-            let temp = _.includes(_.get(WORK_FRAME_MAP, keyList[itemTaskKey]), parseInt(self.getAttendanceItem(key).id));
             if (_.includes(_.get(WORK_FRAME_MAP, keyList[itemTaskKey]), parseInt(self.getAttendanceItem(key).id))) {
                 taskFrameNo = parseInt(keyList[itemTaskKey]);
                 break;	
@@ -726,7 +725,7 @@ export class KdwS03BComponent extends Vue {
             if (data) {
                 self.screenData[0][key] = data.selectedTask.code;
                 rowData.value0 = data.selectedTask.code;
-                rowData.value = data.selectedTask.taskAbName;
+                rowData.value = data.selectedTask.taskName;
             }
         });
     }
