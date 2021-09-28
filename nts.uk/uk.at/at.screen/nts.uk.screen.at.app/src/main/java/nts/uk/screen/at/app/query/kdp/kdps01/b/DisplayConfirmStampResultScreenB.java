@@ -83,21 +83,22 @@ public class DisplayConfirmStampResultScreenB {
 			}
 		}
 		
-		String workLocationCd = empDatas.stream()
+		Optional<StampInfoDisp> stampInfo = empDatas.stream()
 				.map(x -> x.getListStampInfoDisp())
 				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
-				.findFirst()
-				.map(x -> x.getStamp()
-						.stream()
-						.findFirst()
-						.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
-							.map(wInfo -> wInfo.getWorkLocationCD()
-									.map(workLoc -> workLoc != null ? workLoc.v() : null)
-									.orElse(null))
-							.orElse(null))
-						.orElse(null))
-				.orElse(null);
+				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
+				.findFirst();
+		
+		String workLocationCd = null;
+		if (stampInfo.isPresent()){
+			if (stampInfo.get().getStamp().isPresent()) {
+				if (stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().isPresent()) {
+					if (stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
+						workLocationCd = stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v();
+					}
+				}
+			}
+		}
 		
 		String workLocationName = this.workLocationRepo.findByCode(AppContexts.user().companyId(), workLocationCd)
 				.map(x -> x.getWorkLocationName() != null ? x.getWorkLocationName().v() : null).orElse("");
@@ -108,21 +109,16 @@ public class DisplayConfirmStampResultScreenB {
 		String cid = AppContexts.user().companyId();
 		
 		//職場ID
-		String wkpId =  empDatas.stream()
-				.map(x -> x.getListStampInfoDisp())
-				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
-				.findFirst()
-				.map(x -> x.getStamp()
-						.stream()
-						.findFirst()
-						.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
-								.map(wInfo -> wInfo.getWorkplaceID()
-										.map(w -> w!= null ? w : null)
-										.orElse(null))
-										.orElse(null))
-									.orElse(null))
-							.orElse(null);
+		String wkpId = null;
+		if (stampInfo.isPresent()){
+			if (stampInfo.get().getStamp().isPresent()) {
+				if (stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().isPresent()) {
+					if (stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent()) {
+						wkpId = stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get();
+					}
+				}
+			}
+		}
 						
 		//基準日
 		GeneralDate refDate = empDatas.stream()

@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,37 +67,144 @@ public class ToppageAlarmDataTest {
 	/**
 	 * [3] 部下の社員IDを変更する 
 	 * 表示社員区分 = 上長
+	 * domain.SubSids : 1,2,3,4
+	 * 部下のエラーがある員ID = 1,2,3,5
+	 * 部下のエラーがない社員ID == empty
 	 */
 	@Test
 	public void changeSubSidsTest() {
 		//give
-		String sid = "sid";
-		ToppageAlarmData domain = ToppageAlarmDataHelper.mockDomainWithDispAtr(DisplayAtr.SUPERIOR);
-		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		ToppageAlarmData domain = ToppageAlarmDataHelper
+				.mockDomainWithSubSidsAndDispAtr(Arrays.asList("1", "2", "3", "4"), DisplayAtr.SUPERIOR);
+		List<String> newSubSid = Stream.of("1", "2", "3", "5").collect(Collectors.toList());
+		List<String> noErrSids = Collections.emptyList();
 		
 		//when
-		domain.changeSubSids(newSubSid);
+		domain.changeSubSids(newSubSid, noErrSids);
 		
 		//then
-		assertThat(domain.getSubSids()).isEqualTo(newSubSid);
+		assertThat(domain.getSubSids()).isEqualTo(Arrays.asList("1", "2", "3", "4", "5"));
 	}
 	
 	/**
 	 * [3] 部下の社員IDを変更する 
 	 * 表示社員区分 != 上長
+	 * 部下のエラーがある員ID = 1,2
+	 * 部下のエラーがない社員ID == empty
 	 */
 	@Test
 	public void changeSubSidsTest2() {
 		//give
-		String sid = "sid";
 		ToppageAlarmData domain = ToppageAlarmDataHelper.mockDomainWithDispAtr(DisplayAtr.PRINCIPAL);
-		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		List<String> newSubSid = Stream.of("1", "2").collect(Collectors.toList());
+		List<String> noErrSids = Collections.emptyList();
 		
 		//when
-		domain.changeSubSids(newSubSid);
+		domain.changeSubSids(newSubSid, noErrSids);
 		
 		//then
 		assertThat(domain.getSubSids()).isEmpty();
+	}
+	
+	/**
+	 * [3] 部下の社員IDを変更する 
+	 * domain.SubSids : 1,2,3,4
+	 * 表示社員区分 = 上長
+	 * 部下のエラーがある員ID = 1,2,3,5
+	 * 部下のエラーがない社員ID = 4
+	 */
+	@Test
+	public void changeSubSidsTest3() {
+		//give
+		ToppageAlarmData domain = ToppageAlarmDataHelper
+				.mockDomainWithSubSidsAndDispAtr(Arrays.asList("1", "2", "3", "4"), DisplayAtr.SUPERIOR);
+		List<String> newSubSid = Stream.of("1", "2", "3", "5").collect(Collectors.toList());
+		List<String> noErrSids = Arrays.asList("4");
+		
+		//when
+		domain.changeSubSids(newSubSid, noErrSids);
+		
+		//then
+		assertThat(domain.getSubSids()).isEqualTo(Arrays.asList("1", "2", "3", "5"));
+	}
+	
+	/**
+	 * [3] 部下の社員IDを変更する 
+	 * domain.SubSids : 1,2,3,4
+	 * 表示社員区分 = 上長
+	 * 部下のエラーがある員ID = empty
+	 * 部下のエラーがない社員ID = 1,2,3,4
+	 */
+	@Test
+	public void changeSubSidsTest4() {
+		//give
+		ToppageAlarmData domain = ToppageAlarmDataHelper
+				.mockDomainWithSubSidsAndDispAtr(Arrays.asList("1", "2", "3", "4"), DisplayAtr.SUPERIOR);
+		List<String> newSubSid = Collections.emptyList();
+		List<String> noErrSids = Arrays.asList("1", "2", "3", "4");
+		
+		//when
+		domain.changeSubSids(newSubSid, noErrSids);
+		
+		//then
+		assertThat(domain.getSubSids()).isEmpty();
+	}
+	
+	/**
+	 * [4]上長の場合はエラーが解消済みになるか
+	 * 表示社員区分 == 上長
+	 */
+	@Test
+	public void isErrResolvedTest() {
+		//give
+		String sid = "sid";
+		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		List<String> noErrSids = newSubSid;
+		
+		//when
+		ToppageAlarmData domain = ToppageAlarmDataHelper
+				.mockDomainWithSubSidsAndDispAtr(newSubSid, DisplayAtr.SUPERIOR);
+		
+		//then
+		assertThat(domain.isErrorResolved(new ArrayList<>())).isFalse();
+		assertThat(domain.isErrorResolved(noErrSids)).isTrue();
+	}
+	
+	/**
+	 * [4]上長の場合はエラーが解消済みになるか
+	 * 表示社員区分 != 上長
+	 */
+	@Test
+	public void isErrResolvedTest2() {
+		//give
+		String sid = "sid";
+		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		List<String> noErrSids = newSubSid;
+		
+		//when
+		ToppageAlarmData domain = ToppageAlarmDataHelper
+				.mockDomainWithSubSidsAndDispAtr(newSubSid, DisplayAtr.PRINCIPAL);
+		
+		//then
+		assertThat(domain.isErrorResolved(noErrSids)).isFalse();
+	}
+	
+	/**
+	 * [4]上長の場合はエラーが解消済みになるか
+	 * 表示社員区分 = 上長
+	 */
+	@Test
+	public void isErrResolvedTest3() {
+		//give
+		List<String> newSubSid = Stream.of("1", "2", "3").collect(Collectors.toList());
+		List<String> noErrSids = Arrays.asList("1");
+		
+		//when
+		ToppageAlarmData domain = ToppageAlarmDataHelper
+				.mockDomainWithSubSidsAndDispAtr(newSubSid, DisplayAtr.SUPERIOR);
+		
+		//then
+		assertThat(domain.isErrorResolved(noErrSids)).isFalse();
 	}
 	
 	/**

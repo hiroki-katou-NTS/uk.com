@@ -297,7 +297,9 @@ public class DeductionTimeSheet {
 		return new DeductionTimeSheetAdjustDuplicationTime(reNewSheetList).reCreate(
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 										integrationOfWorkTime.getRestClockManageAtr(),
-										FluidFixedAtr.of(integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType)),
+										todayWorkType.getDecisionAttendanceHolidayAttr()
+												? FluidFixedAtr.FixedWork //1日休日系の場合は区分自体必要ない為、固定値を渡している
+												: FluidFixedAtr.of(integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType)),
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
 	}
 
@@ -348,7 +350,8 @@ public class DeductionTimeSheet {
 																					Finally.of(BreakClassification.BREAK),
 																					Optional.empty(),
 																					DeductionClassification.BREAK,
-																					Optional.empty());
+																					Optional.empty(),
+																					false);
 	}
 	
 	/**
@@ -411,7 +414,8 @@ public class DeductionTimeSheet {
 				return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(timeSheet,
 						dedTimeSheet.getRounding(), dedTimeSheet.getRecordedTimeSheet(), dedTimeSheet.getDeductionTimeSheet(),
 						dedTimeSheet.getWorkingBreakAtr(), dedTimeSheet.getGoOutReason(), dedTimeSheet.getBreakAtr(), 
-						dedTimeSheet.getShortTimeSheetAtr(), dedTimeSheet.getDeductionAtr(), dedTimeSheet.getChildCareAtr());
+						dedTimeSheet.getShortTimeSheetAtr(), dedTimeSheet.getDeductionAtr(), dedTimeSheet.getChildCareAtr(),
+						dedTimeSheet.isRecordOutside());
 			}).orElse(null);
 		}).filter(c -> c != null).collect(Collectors.toList());
 	}
@@ -527,7 +531,8 @@ public class DeductionTimeSheet {
 				Finally.empty(),
 				decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
 				DeductionClassification.CHILD_CARE,
-				Optional.of(sts.getChildCareAttr()));
+				Optional.of(sts.getChildCareAttr()),
+				false);
 	}
 	
 	/**
@@ -553,7 +558,8 @@ public class DeductionTimeSheet {
 							timeSheet.getRounding(), timeSheet.getRecordedTimeSheet(), timeSheet.getDeductionTimeSheet(),
 							timeSheet.getWorkingBreakAtr(),
 							timeSheet.getGoOutReason(), timeSheet.getBreakAtr(), 
-							timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
+							timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr(),
+							timeSheet.isRecordOutside()));
 
 				}
 				break;
@@ -830,7 +836,7 @@ public class DeductionTimeSheet {
 				Optional<TimeLeavingWork> firstTimeLeave = calcRange.getAttendanceLeavingWork().getAttendanceLeavingWork(new WorkNo(1));
 				
 				/** 計算範囲を判断 */
-				val within = calcRange.createWithinWorkTimeFrameIncludingCalculationRange(workType,
+				val within = calcRange.createWithinWorkTimeFrameIncludingCalculationRange(workType, workTime,
 						firstTimeLeave.orElse(getTimeLeaveWork(integrationOfDaily)), predetermineTimeSet);
 				
 				/** 計算開始時刻を取得 */
@@ -886,6 +892,11 @@ public class DeductionTimeSheet {
 			// 重複している時間帯を返す
 			val dupCalcRange = timeSheet.getTimeSheet().getDuplicatedWith(timeSpan);
 			if (dupCalcRange.isPresent()) {
+				if(timeSheet.isRecordOutside()) {
+					//「勤務外を計上する==true」の場合には絞り込まない
+					returnList.add(timeSheet.clone());
+					continue;
+				}
 				// 処理中の「控除項目の時間帯」を重複した時間帯で作り直す
 				TimeSheetOfDeductionItem divideStartTime = timeSheet.reCreateOwn(dupCalcRange.get().getTimeSpan().getStart(), false);
 				TimeSheetOfDeductionItem correctAfterTimeSheet = divideStartTime.reCreateOwn(dupCalcRange.get().getTimeSpan().getEnd(), true);
@@ -1108,5 +1119,73 @@ public class DeductionTimeSheet {
 		else {
 			return new TimeSpanForDailyCalc(endOclock, oneDayRange.getTimeSpan().getEnd());
 		}
+	}
+	
+	/**
+	 * 指定条件の時間帯部分を除く
+	 * @param deductionAtr 控除区分
+	 * @param deductionClass 控除種別
+	 * @param timeSpan 時間帯
+	 * @return 控除時間帯
+	 */
+	public DeductionTimeSheet exceptTimeSheet(
+			DeductionAtr deductionAtr,
+			DeductionClassification deductionClass,
+			TimeSpanForDailyCalc timeSpan){
+
+		// 処理後控除用リスト
+		List<TimeSheetOfDeductionItem> afterDudList = this.forDeductionTimeZoneList;
+		// 処理後計上用リスト
+		List<TimeSheetOfDeductionItem> afterRecList = this.forRecordTimeZoneList;
+		switch (deductionAtr){
+		case Deduction:
+			afterDudList = this.getTimeSheetListExceptTimeSheet(DeductionAtr.Deduction, deductionClass, timeSpan);
+			break;
+		case Appropriate:
+			afterRecList = this.getTimeSheetListExceptTimeSheet(DeductionAtr.Appropriate, deductionClass, timeSpan);
+			break;
+		}
+		return new DeductionTimeSheet(
+				afterDudList,
+				afterRecList,
+				this.breakTimeOfDailyList,
+				this.dailyGoOutSheet,
+				this.shortTimeSheets);
+	}
+	
+	/**
+	 * 指定条件の時間帯部分を除いた時間帯リストを取得
+	 * @param deductionAtr 控除区分
+	 * @param deductionClass 控除種別
+	 * @param timeSpan 時間帯
+	 * @return 結果時間帯リスト
+	 */
+	private List<TimeSheetOfDeductionItem> getTimeSheetListExceptTimeSheet(
+			DeductionAtr deductionAtr,
+			DeductionClassification deductionClass,
+			TimeSpanForDailyCalc timeSpan){
+	
+		// 対象時間帯リスト
+		List<TimeSheetOfDeductionItem> target = this.forDeductionTimeZoneList;
+		if (deductionAtr == DeductionAtr.Appropriate) target = this.forRecordTimeZoneList;
+		// 結果時間帯リスト
+		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
+		
+		result.addAll(target.stream()
+				.filter(c -> !c.getDeductionAtr().equals(deductionClass)).collect(Collectors.toList()));
+		
+		// 対象種別時間帯リスト
+		List<TimeSheetOfDeductionItem> targetClass = target.stream()
+				.filter(c -> c.getDeductionAtr().equals(deductionClass)).collect(Collectors.toList());
+		for (TimeSheetOfDeductionItem targetItem : targetClass){
+			// 重複外時間帯リスト
+			List<TimeSpanForDailyCalc> notDupList = targetItem.getTimeSheet().getNotDuplicationWith(timeSpan);
+			result.addAll(notDupList.stream()
+							.map(c -> targetItem.cloneWithNewTimeSpan(Optional.of(c))).collect(Collectors.toList()));
+		}
+		
+		return result.stream()
+				.sorted((a, b) -> a.getTimeSheet().getStart().compareTo(b.getTimeSheet().getStart()))
+				.collect(Collectors.toList());
 	}
 }

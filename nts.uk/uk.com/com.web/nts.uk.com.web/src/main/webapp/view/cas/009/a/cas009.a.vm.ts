@@ -36,6 +36,7 @@ module cas009.a.viewmodel {
         });
 
         enableDetail: KnockoutObservable<boolean> = ko.observable(true);
+        canOpenDialog: KnockoutObservable<boolean> = ko.observable(false);	// 遷移先のダイアログに表示するメニューがないためボタン自体を非表示#117357
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {

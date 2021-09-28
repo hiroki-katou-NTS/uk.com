@@ -54,9 +54,10 @@ public class SpecialHolidayProcess {
 
 			/** 特別休暇残数更新 */
 			return AtomTask.of(updateRemainSpecialHoliday(require, output, empId, period.getPeriod(),
-														specialHoliday.getSpecialHolidayCode().v(), specialHoliday.getAutoGrant().value));
+														specialHoliday.getSpecialHolidayCode().v(), specialHoliday.getAutoGrant().value))
 					/** 特別休暇暫定データ削除 */
-							//.then(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.SPECIAL));
+							.then(deleteTemp(
+									require, empId, specialHoliday.getSpecialHolidayCode().v(), period.getPeriod()));
 		}).collect(Collectors.toList());
 
 		return AtomTask.bundle(atomTask);
@@ -172,12 +173,27 @@ public class SpecialHolidayProcess {
 
 		return SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(require, cacheCarrier, param);
 	}
+	
+	
+	/**
+	 * 特別休暇暫定データ削除
+	 * @param require
+	 * @param employeeId
+	 * @param specialLeaveCode
+	 * @param period
+	 * @return
+	 */
+	public static AtomTask deleteTemp(
+			RequireM4 require, String employeeId, int specialLeaveCode,  DatePeriod period){
+		
+		return AtomTask.of(() -> require.deleteTempSpecialSidPeriod(employeeId, specialLeaveCode, period));
+	}
 
 	public static interface RequireM1 extends SpecialLeaveManagementService.RequireM5 {
 
 	}
 
-	public static interface Require extends RequireM1, RequireM2 {
+	public static interface Require extends RequireM1, RequireM2, RequireM4 {
 
 		List<SpecialHoliday> specialHoliday(String companyId);
 	}
@@ -194,5 +210,9 @@ public class SpecialHolidayProcess {
 		void updateSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data);
 
 		void addSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data);
+	}
+	
+	public static interface RequireM4{
+		void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period);
 	}
 }

@@ -396,7 +396,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public void addAllDomain(IntegrationOfDaily domain) {
+		public void addAllDomain(IntegrationOfDaily domain, boolean removeError) {
 			dailyRecordAdUpService.addAllDomain(domain);
 		}
 
@@ -460,7 +460,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, integrationOfDaily);
 		}
 
 		@Override
@@ -518,7 +518,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily) {
-			dailyRecordAdUpService.removeConfirmApproval(domainDaily, Optional.empty(), Optional.empty());
+			dailyRecordAdUpService.removeConfirmApproval(domainDaily);
 		}
 
 		@Override

@@ -535,6 +535,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// Process designer
 			reportContext.processDesigner();
 			
+			// Set cursor position
+			sheet.setActiveCell("A1");
+			
 			// Get current date and format it
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
@@ -2312,6 +2315,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
 					Range employeeRange = cells.createRange(currentRow, 0, 1, contentPosition);
 					employeeRange.copy(employeeRangeTemp);
+					employeeRange.setRowHeight(employeeRangeTemp.getRowHeight());
 //					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
 //						rowPageTracker.useRemainingRow(dataRowCount);
 //						rowPageTracker.resetRemainingRow();
@@ -2429,7 +2433,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						int curRow = currentRow;
 						int start, length;
 						List<ActualValue> lstItemRow;
-						
+
 				        for(int i = 0; i < numOfChunks; i++) {
 				            start = i * chunkSize;
 				            length = Math.min(lstItem.size() - start, chunkSize);
@@ -2480,13 +2484,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					Range personalTotalRange = cells.createRange(currentRow, 0, dataRowCount, contentPosition);
 					personalTotalRange.copy(personalTotalRangeTemp);
 					personalTotalRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-					if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
-						rowPageTracker.useRemainingRow(dataRowCount);
-						rowPageTracker.resetRemainingRow();
-					}
-					else {
-						rowPageTracker.useRemainingRow(dataRowCount);
-					}
 					
 					// A6_1
 					Cell personalTotalCellTag = cells.get(currentRow, 0);
@@ -2511,6 +2508,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            }
 			            currentRow++;
 			        }
+			        
+			        if (rowPageTracker.checkRemainingRowSufficient(dataRowCount) == 0) {
+						rowPageTracker.useRemainingRow(dataRowCount);
+						if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
+							cells = sheetInfo.getSheet().getCells();
+							currentRow = sheetInfo.getStartDataIndex();
+						}
+						rowPageTracker.resetRemainingRow();
+					}
+					else {
+						rowPageTracker.useRemainingRow(dataRowCount);
+					}
 				}
 		        
 				// Total count day
@@ -2999,7 +3008,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
 			//rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
-            if (rowPageTracker.checkRemainingRowSufficient(2) < 0) {
+            if (rowPageTracker.checkRemainingRowSufficient(dataRowCount + 2) < 0) {
                 rowPageTracker.resetRemainingRow();
                 if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
                     cells = sheetInfo.getSheet().getCells();
@@ -3940,6 +3949,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_WORKPLACE_ROW);
 		Range workplaceRange = cells.createRange(currentRow, 0, 1, contentPosition);
 		workplaceRange.copy(workplaceRangeTemp);
+		workplaceRange.setRowHeight(workplaceRangeTemp.getRowHeight());
 		Cell workplaceTagCell = cells.get(currentRow, 0);
 		workplaceTagCell.setValue(title);
 		currentRow++;
@@ -3952,6 +3962,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Range employeeRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_EMPLOYEE_ROW);
 		Range employeeRange = cells.createRange(currentRow, 0, 1, contentPosition);
 		employeeRange.copy(employeeRangeTemp);
+		employeeRange.setRowHeight(employeeRangeTemp.getRowHeight());
 		Cell employeeTagCell = cells.get(currentRow, 0);
 		employeeTagCell.setValue(title);
 		currentRow++;
@@ -3965,6 +3976,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Range dateRange = cells.createRange(currentRow, 0, 1, contentPosition);
 //		dateRangeTemp.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		dateRange.copy(dateRangeTemp);
+		dateRange.setRowHeight(dateRangeTemp.getRowHeight());
 		Cell dateTagCell = cells.get(currentRow, 0);
 		dateTagCell.setValue(titleDate);
 		currentRow++;
@@ -3977,6 +3989,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
         Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DAILY_WORKPLACE_ROW);
         Range workplaceRange = cells.createRange(currentRow, 0, 1, contentPosition);
         workplaceRange.copy(workplaceRangeTemp);
+        workplaceRange.setRowHeight(workplaceRangeTemp.getRowHeight());
         Cell workplaceTagCell = cells.get(currentRow, 0);
         workplaceTagCell.setValue(workplaceTitle);
         currentRow++;
