@@ -1507,7 +1507,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			Optional<String> workplaceGroupId = Optional.empty();
 			if(generalInfoImport.getEmpWorkplaceGroup() != null &&  !generalInfoImport.getEmpWorkplaceGroup().get(day).isEmpty()){
 				workplaceGroupId = generalInfoImport.getEmpWorkplaceGroup().get(day).stream()
-						.filter(i -> i.getEmpId().equals(employeeId)).findFirst().map(x -> x.getWorkplaceGroupId())
+						.filter(i -> i.getEmpId().toString().equals(employeeId)).findFirst().map(x -> x.getWorkplaceGroupId())
 						.orElse(Optional.empty());
 				
 			}

@@ -81,4 +81,21 @@ public class EmployeeGeneralInfoImport {
 		this.empLicense = empLicense;
 	}
 	
+	public EmployeeGeneralInfoImport(List<ExEmploymentHistoryImport> employmentHistoryImports,
+			List<ExClassificationHistoryImport> exClassificationHistoryImports,
+			List<ExJobTitleHistoryImport> exJobTitleHistoryImports,
+			List<ExWorkPlaceHistoryImport> exWorkPlaceHistoryImports,
+			Map<GeneralDate, List<EmpOrganizationImport>> empWorkplaceGroup,
+			Map<GeneralDate, List<EmpLicenseClassification>> empLicense) {
+		super();
+		this.employmentHistoryImports = employmentHistoryImports;
+		this.exClassificationHistoryImports = exClassificationHistoryImports;
+		this.exJobTitleHistoryImports = exJobTitleHistoryImports;
+		this.exWorkPlaceHistoryImports = exWorkPlaceHistoryImports;
+		this.exWorkTypeHistoryImports = new ArrayList<>();
+		this.empWorkplaceGroup = empWorkplaceGroup;
+		this.empLicense = empLicense;
+	}
+
+	
 }

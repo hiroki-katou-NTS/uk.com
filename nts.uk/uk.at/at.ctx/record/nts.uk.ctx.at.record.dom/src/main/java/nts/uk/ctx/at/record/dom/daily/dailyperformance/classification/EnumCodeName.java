@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 
 @Data
@@ -48,6 +49,14 @@ public class EnumCodeName {
     	List<EnumCodeName> list = new ArrayList<>();
     	for(int i =0; i< TimeLimitUpperLimitSetting.values().length; i++){
     		list.add(new EnumCodeName(TimeLimitUpperLimitSetting.values()[i].value, TimeLimitUpperLimitSetting.values()[i].description));
+    	}
+    	return list;
+    }
+    
+    public static List<EnumCodeName> getNursingLicenseCls(){
+    	List<EnumCodeName> list = new ArrayList<>();
+    	for(int i =0; i< LicenseClassification.values().length; i++){
+    		list.add(new EnumCodeName(LicenseClassification.values()[i].value, LicenseClassification.values()[i].name));
     	}
     	return list;
     }

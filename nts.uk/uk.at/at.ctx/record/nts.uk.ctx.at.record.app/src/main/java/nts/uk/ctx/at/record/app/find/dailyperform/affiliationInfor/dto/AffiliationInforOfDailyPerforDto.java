@@ -204,9 +204,9 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		case WKP_GROUP_ID:
 			return Optional.of(ItemValue.builder().value(workplaceGroupID).valueType(ValueType.CODE));
 		case NURSE_LICENSE_CLS:
-			return Optional.of(ItemValue.builder().value(nursingLicenseClass).valueType(ValueType.CODE));
+			return Optional.of(ItemValue.builder().value(nursingLicenseClass).valueType(ValueType.ATTR));
 		case IS_NURSE_ADMINISTRATOR:
-			return Optional.of(ItemValue.builder().value(nursingManager).valueType(ValueType.CODE));
+			return Optional.of(ItemValue.builder().value(nursingManager).valueType(ValueType.ATTR));
 		default:
 			return Optional.empty();
 		}

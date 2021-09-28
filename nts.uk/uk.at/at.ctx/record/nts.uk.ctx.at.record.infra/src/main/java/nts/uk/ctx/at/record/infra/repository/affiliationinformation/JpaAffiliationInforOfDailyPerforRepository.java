@@ -83,7 +83,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 					+ domain.getAffiliationInfor().getJobTitleID() + "' , '"
 					+ domain.getAffiliationInfor().getClsCode().v() + "' , '"
 					+ domain.getAffiliationInfor().getWplID() + "' , "
-					+ bonusPaycode +" , " + businessTypeCode + " , " + workplaceGroupId + " , " + nursingLicenseClass + " , " + nursingManager + " )";
+					+ bonusPaycode +" , " + businessTypeCode + " , '" + workplaceGroupId + "' , " + nursingLicenseClass + " , " + nursingManager + " )";
 			Statement statementI = con.createStatement();
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 		} catch (Exception e) {
@@ -161,7 +161,7 @@ public class JpaAffiliationInforOfDailyPerforRepository extends JpaRepository
 		String updateTableSQL = " UPDATE KRCDT_DAY_AFF_INFO SET EMP_CODE = '"
 				+ domain.getAffiliationInfor().getEmploymentCode().v() + "' , JOB_ID = '" + domain.getAffiliationInfor().getJobTitleID()
 				+ "' , CLS_CODE = '" + domain.getAffiliationInfor().getClsCode().v() + "' , WKP_ID = '" + domain.getAffiliationInfor().getWplID()
-				+ "' , BONUS_PAY_CODE = " + bonusPaycode +",WORK_TYPE_CODE ="+ businessTypeCode + ", WKP_GROUP_ID ="+ workplaceGroupId + ", NURSE_LICENSE_ATR ="+ nursingLicenseClass +  ", IS_NURSE_ADMINISTRATOR ="+ nursingManager + "  WHERE SID = '"
+				+ "' , BONUS_PAY_CODE = " + bonusPaycode +",WORK_TYPE_CODE ="+ businessTypeCode + ", WKP_GROUP_ID = '"+ workplaceGroupId + "' , NURSE_LICENSE_ATR ="+ nursingLicenseClass +  " , IS_NURSE_ADMINISTRATOR = "+ nursingManager + "  WHERE SID = '"
 				+ domain.getEmployeeId() + "' AND YMD = '" + domain.getYmd() + "'";
 		try {
 				con.createStatement().executeUpdate(JDBCUtil.toUpdateWithCommonField(updateTableSQL));
