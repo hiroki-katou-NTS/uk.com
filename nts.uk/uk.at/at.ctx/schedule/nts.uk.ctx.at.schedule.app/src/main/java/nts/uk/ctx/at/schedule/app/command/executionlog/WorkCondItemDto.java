@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -54,7 +54,7 @@ public class WorkCondItemDto {
 
 	private WorkingSystem laborSystem;
 
-	private Optional<BreakdownTimeDay> holidayAddTimeSet;
+	private Optional<BreakDownTimeDay> holidayAddTimeSet;
 
 	/** 予定作成方法 */
 	private Optional<ScheduleMethod> scheduleMethod;

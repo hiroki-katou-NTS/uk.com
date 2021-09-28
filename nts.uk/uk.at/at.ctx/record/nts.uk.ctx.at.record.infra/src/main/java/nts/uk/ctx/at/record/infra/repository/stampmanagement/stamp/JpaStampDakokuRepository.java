@@ -180,8 +180,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString()
 						: null,
-				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent()) ? stamp.getImprintReflectionStatus().getReflectedDate().get() : null // REFLECTED_INTO_DATE
-		);	
+				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent()) ? stamp.getImprintReflectionStatus().getReflectedDate().get() : null, // REFLECTED_INTO_DATE,
+				stamp.getStampRecordId()); 
 		
 		
 		
@@ -219,8 +219,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						stampNumber, 
 						entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty());
-
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty(), entity.stampRecordId);
 	}
 	
 	private Stamp toDomainVer2(Object[] object) {
@@ -245,7 +244,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate)),
 				Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null ) ? null
 						: new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue())), 
-				Optional.empty());
+				Optional.empty(),
+				entity.stampRecordId);
 		return stamp;
 	}
 
@@ -272,7 +272,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 					new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate)),
 					Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null) ? null :
 						new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue())),
-					Optional.empty()
+					Optional.empty(),
+					entity.stampRecordId
 			);
 		return stamp;
 	}

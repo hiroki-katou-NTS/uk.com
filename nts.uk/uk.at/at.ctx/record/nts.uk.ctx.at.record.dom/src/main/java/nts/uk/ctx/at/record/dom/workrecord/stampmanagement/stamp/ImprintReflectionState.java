@@ -47,7 +47,7 @@ public class ImprintReflectionState implements DomainValue, Cloneable {
 	
 	@Override
 	public ImprintReflectionState clone() {
-		return new ImprintReflectionState(reflectedCategory, reflectedDate);
+	    return new ImprintReflectionState(reflectedCategory, reflectedDate);
 	}
 	
 }

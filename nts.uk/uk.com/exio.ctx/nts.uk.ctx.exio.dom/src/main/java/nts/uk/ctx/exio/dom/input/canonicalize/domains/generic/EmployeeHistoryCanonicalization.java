@@ -151,6 +151,11 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 						.ifRight(c -> containers.add(c))
 						.ifLeft(e -> require.add(context, ExternalImportError.record(interm.getRowNo(), e.getText()))));
 
+		// エラー行が除外された結果、空になったらここで終了
+		if (containers.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
 		

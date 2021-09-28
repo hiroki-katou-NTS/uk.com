@@ -134,6 +134,7 @@ public class StartScreenA {
 			DeadlineLimitCurrentMonth deadLine = appDeadlineSettingGet.getApplicationDeadline(cid, employeeId,
 				topPageDisplayDate.isPresent() ? topPageDisplayDate.get().getClosureId() : employeeIdClosureId.get(0).getClosureId());
 			result.setDueDate(deadLine.getOpAppDeadline().map(x -> x).orElse(GeneralDate.today()));
+			result.setDeadlineSetting(deadLine.isUseAtr());
 		}
 		
 		//取得した「申請状況の詳細設定」．表示区分をチェックする

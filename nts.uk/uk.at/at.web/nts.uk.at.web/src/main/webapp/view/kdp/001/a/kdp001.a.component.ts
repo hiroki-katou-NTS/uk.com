@@ -49,8 +49,7 @@ module nts.uk.ui.kdp001.a {
         getOmissionContents: '/at/record/stamp/employment_system/get_omission_contents',
         getStampToSuppress: '/at/record/stamp/employment_system/get_stamp_to_suppress',
         getLocation: 'at/record/stamp/employment_system/get_location_stamp_input',
-        WORKPLACE_INFO: "screen/at/kdp003/workplace-info",
-        CREATE_DAILY: 'at/record/stamp/craeteDaily'
+        WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
     };
 
     //個人
@@ -714,12 +713,6 @@ module nts.uk.ui.kdp001.a {
                     stampMeans: STAMP_MEANS_PORTAL
                 }))
                 .then((res: any) => {
-                    var param = {
-                        sid: vm.$user.employeeId,
-                        date: vm.$date.now()
-                    }
-
-                    vm.$ajax('at', REST_API.CREATE_DAILY, param);
 
                     switch (buttonPositionNo) {
                         case 1:

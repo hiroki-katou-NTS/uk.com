@@ -44,4 +44,7 @@ public class RemainingNumberInforDto {
 	// 付与日数
 	private double grantDays;
 	
+	// #119877
+	private int subHolidayTimeManage;
+	
 }

@@ -66,12 +66,15 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		
 		for (val interm : interms) {
 
-			val key = RecordKey.of(interm);
-			if (keys.contains(key)) {
-				require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
-				continue;
+			// 日付不明（受け入れない）ならば重複チェック不要
+			if (interm.isImporting(Items.TARGET_DATE)) {
+				val key = RecordKey.of(interm);
+				if (keys.contains(key)) {
+					require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
+					continue;
+				}
+				keys.add(key);
 			}
-			keys.add(key);
 			
 			canonicalizeRecord(require, context, interm);
 		}
@@ -87,7 +90,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		
 		static RecordKey of(IntermediateResult interm) {
 			String employeeId = interm.getItemByNo(Items.SID).get().getString();
-			GeneralDate date = interm.getItemByNo(Items.TARGET_DATE).map(e -> e.getDate()).orElse(null);
+			GeneralDate date = interm.getItemByNo(Items.TARGET_DATE).get().getDate();
 			return new RecordKey(employeeId, date);
 		}
 	}

@@ -42,7 +42,7 @@ public class ShortWorkTimeHistoryItem extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public ShortWorkTimeHistoryItem(SWorkTimeHistItemGetMemento memento) {
-		this(memento.getHistoryId(), memento.getEmployeeId(), memento.getChildCareAtr(), memento.getLstTimeSlot());
+		this(memento.getEmployeeId(), memento.getHistoryId(), memento.getChildCareAtr(), memento.getLstTimeSlot());
 	}
 	
 	public ShortWorkTimeHistoryItem(String employeeId, String historyId, ChildCareAtr childCareAtr, List<SChildCareFrame> lstTimeSlot) {
