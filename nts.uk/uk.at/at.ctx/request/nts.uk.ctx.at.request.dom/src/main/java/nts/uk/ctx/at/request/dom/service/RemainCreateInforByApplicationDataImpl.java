@@ -101,6 +101,19 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		return this.lstResult(cid, sid, lstAppData);
 	}
 
+	@Override
+	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, GeneralDate baseDate) {
+		List<Integer> lstReflect = new ArrayList<>();
+		lstReflect.add(ReflectedState.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		List<Integer> lstAppType = this.lstAppType();
+		List<Application> lstAppData = new ArrayList<>();
+		if(!lstAppType.isEmpty()) {
+			lstAppData = appRepository.getByPeriodReflectType(sid, baseDate, lstReflect, lstAppType);
+		}
+		return this.lstResult(cid, sid, lstAppData);
+	}
+	
 	private List<Integer> lstAppType(){
 		List<Integer> lstAppType = new ArrayList<>();
 		//反映する時、エラーが発生してるので、とりあえずコメントする（暫定データ処理は申請の新ドメインをまだ対応しない）

@@ -80,11 +80,12 @@ public class ConvertAlarmListToTopPageAlarmDataService {
                 0,
                 finalAlarmListAggreRsMap.get(x),
                 x,
-                1,
+                0,
                 Optional.of(patternCode.v()),
                 Optional.ofNullable(finalPatternName),
                 Optional.empty(),
                 Optional.empty(),
+                new ArrayList<>(),
                 new ArrayList<>()
         )).collect(Collectors.toList());
 

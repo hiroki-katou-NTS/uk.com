@@ -73,14 +73,14 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
+        pageSetup.setHeader(0, "&7&\"ＭＳ ゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"ＭＳ ゴシック,Bold\""
                 + dataSource.getTitle());
         pageSetup.setCenterHorizontally(true);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
-                "&7&\"MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&7&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         if (dataSource.getMode() == EXPORT_EXCEL) {
             pageSetup.setZoom(100);
@@ -434,7 +434,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     }
     private void setBottomBorderStyle(Cell cell) {
         Style style = cell.getStyle();
-        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.DASHED, Color.getBlack());
         cell.setStyle(style);
     }
     @AllArgsConstructor

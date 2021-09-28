@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -26,13 +27,11 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPgAlTrRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData.StampDataBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordStampService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -47,6 +46,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampDataReflectResultExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
@@ -58,6 +59,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
@@ -69,9 +74,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerminalRepository;
-
-	@Inject
-	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
@@ -120,16 +122,25 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	
     @Inject
     private CalculateDailyRecordServiceCenter calcService;
+    
+    @Inject
+    private ClosureRepository closureRepo;
 
+    @Inject
+	 private ClosureEmploymentRepository closureEmploymentRepo;
+
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
+    
 	@Override
 	public  Optional<StampDataReflectResultExport> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
-		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
+		RequireImpl require = new RequireImpl(empInfoTerminalRepository,
 				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
 				dailyRecordAdUpService, dailyRecordShareFinder, getMngInfoFromEmpIDListAdapter, companyAdapter, iGetInfoForLogin, loginUserContextManager,
-				calcService);
+				calcService, closureRepo, closureEmploymentRepo, shareEmploymentAdapter);
 
 		Optional<StampDataReflectResult> convertDataOpt = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
@@ -148,8 +159,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	public static class RequireImpl implements ConvertTimeRecordStampService.Require {
 
 		private final EmpInfoTerminalRepository empInfoTerminalRepository;
-
-		private final TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 		private final StampDakokuRepository stampDakokuRepository;
 
@@ -182,6 +191,12 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		private LoginUserContextManager loginUserContextManager;
 		
 		 private CalculateDailyRecordServiceCenter calcService;
+		 
+		 private ClosureRepository closureRepo;
+
+		 private ClosureEmploymentRepository closureEmploymentRepo;
+		 
+		 private ShareEmploymentAdapter shareEmploymentAdapter;
 
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -193,13 +208,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
 				GeneralDateTime dateTime) {
 			return stampRecordRepository.get(contractCode.v(), stampNumber.v(), dateTime);
-		}
-
-		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
-				ContractCode contractCode) {
-
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 
 		@Override
@@ -242,7 +250,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, integrationOfDaily);
 		}
 
 		@Override
@@ -297,6 +305,22 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public void loggedOut() {
 			loginUserContextManager.loggedOut();
+		}
+
+		@Override
+		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+		}
+
+		@Override
+		public Optional<Closure> closure(String companyId, int closureId) {
+			return closureRepo.findById(companyId, closureId);
 		}
 
 	}

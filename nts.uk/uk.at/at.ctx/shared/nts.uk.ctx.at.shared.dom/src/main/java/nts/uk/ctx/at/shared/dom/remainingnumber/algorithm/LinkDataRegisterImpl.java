@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
@@ -70,8 +71,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public void deleteBreakOffMngWithPeriod(String sid, DatePeriod period) {
-			interimBreakDayOffMngRepo.deleteBreakoffWithPeriod(sid, period);
+		public void deleteBreakoffWithDateList(String sid, List<GeneralDate> lstDate) {
+			interimBreakDayOffMngRepo.deleteBreakoffWithDateList(sid, lstDate);
 
 		}
 
@@ -81,8 +82,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public void deleteDayoffWithPeriod(String sid, DatePeriod period) {
-			interimBreakDayOffMngRepo.deleteDayoffWithPeriod(sid, period);
+		public void deleteDayoffWithDateList(String sid, List<GeneralDate> lstDate) {
+			interimBreakDayOffMngRepo.deleteDayoffWithDateList(sid, lstDate);
 		}
 
 		@Override
@@ -126,8 +127,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public void deleteRecMngWithPeriod(String sid, DatePeriod period) {
-			interimRecAbasMngRepo.deleteRecMngWithPeriod(sid, period);
+		public void deleteRecMngWithDateList(String sid, List<GeneralDate> lstDate) {
+			interimRecAbasMngRepo.deleteRecMngWithDateList(sid, lstDate);
 		}
 
 		@Override
@@ -136,8 +137,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public void deleteAbsMngWithPeriod(String sid, DatePeriod period) {
-			interimRecAbasMngRepo.deleteAbsMngWithPeriod(sid, period);
+		public void deleteAbsMngWithDateList(String sid, List<GeneralDate> lstDate) {
+			interimRecAbasMngRepo.deleteAbsMngWithDateList(sid, lstDate);
 		}
 
 		@Override
@@ -168,6 +169,46 @@ public class LinkDataRegisterImpl {
 		@Override
 		public List<PayoutManagementData> getPayoutMana(String sid) {
 			return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
+		}
+
+		@Override
+		public List<PayoutSubofHDManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
+			return payoutSubofHDManaRepo.getByListDate(sid, lstDate);
+		}
+
+		@Override
+		public List<PayoutSubofHDManagement> getByListOccDate(String sid, List<GeneralDate> lstDate) {
+			return payoutSubofHDManaRepo.getByListOccDate(sid, lstDate);
+		}
+
+		@Override
+		public List<InterimAbsMng> getAbsBySidDateList(String sid, List<GeneralDate> lstDate) {
+			return interimRecAbasMngRepo.getAbsBySidDateList(sid, lstDate);
+		}
+
+		@Override
+		public List<InterimRecMng> getRecBySidDateList(String sid, List<GeneralDate> lstDate) {
+			return interimRecAbasMngRepo.getRecBySidDateList(sid, lstDate);
+		}
+
+		@Override
+		public List<LeaveComDayOffManagement> getLeavByListDate(String sid, List<GeneralDate> lstDate) {
+			return leaveComDayOffManaRepo.getByListDate(sid, lstDate);
+		}
+
+		@Override
+		public List<LeaveComDayOffManagement> getLeavByListOccDate(String sid, List<GeneralDate> lstDate) {
+			return leaveComDayOffManaRepo.getLeavByListOccDate(sid, lstDate);
+		}
+
+		@Override
+		public List<InterimBreakMng> getBreakBySidDateList(String sid, List<GeneralDate> lstDate) {
+			return interimBreakDayOffMngRepo.getBreakBySidDateList(sid, lstDate);
+		}
+
+		@Override
+		public List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate) {
+			return interimBreakDayOffMngRepo.getDayOffDateList(sid, lstDate);
 		}
 
 	}

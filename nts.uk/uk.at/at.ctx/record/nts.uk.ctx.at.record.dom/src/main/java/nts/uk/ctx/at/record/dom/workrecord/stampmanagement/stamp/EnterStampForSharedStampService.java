@@ -26,6 +26,8 @@ public class EnterStampForSharedStampService {
 	 * @param require
 	 * @param ContractCode
 	 *            契約コード
+	 * @param cid
+	 *            会社ID
 	 * @param employeeID
 	 *            社員ID
 	 * @param stampCardNo

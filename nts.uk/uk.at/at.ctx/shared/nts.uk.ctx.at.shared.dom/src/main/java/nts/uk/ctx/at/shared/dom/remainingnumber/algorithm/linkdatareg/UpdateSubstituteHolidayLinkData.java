@@ -7,9 +7,9 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.vacationdetail.RequestChangeDigestOccr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.AfterChangeHolidayDaikyuInfoResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.GetCompenChangeOccDigest;
@@ -27,6 +27,19 @@ public class UpdateSubstituteHolidayLinkData {
 	// [1] 更新する
 	public static AtomTask updateProcess(Require require, String sid, List<GeneralDate> lstDate,
 			List<InterimDayOffMng> lstDayoff, List<InterimBreakMng> lstBreakoff) {
+
+		// $紐付いている発生一覧
+		val lstBreakMng = getOccurTempDataFromAssoci(require, sid, lstDate).stream()
+						.filter(x -> lstBreakoff.stream().noneMatch(y -> y.getYmd().equals(x.getYmd())))
+						.collect(Collectors.toList());
+
+		// $紐付いている消化一覧
+		val lstDayoffMng = getDigestTempDataFromAssoci(require, sid, lstDate).stream()
+						.filter(x -> lstDayoff.stream().noneMatch(y -> y.getYmd().equals(x.getYmd())))
+						.collect(Collectors.toList());
+
+		lstDayoff.addAll(lstDayoffMng);
+		lstBreakoff.addAll(lstBreakMng);
 
 		// ＄逐次消化一覧
 		val lstDigest = lstDayoff.stream().map(x -> x.convertSeqVacationState()).collect(Collectors.toList());
@@ -49,22 +62,61 @@ public class UpdateSubstituteHolidayLinkData {
 		val linkCouple = afterResult.getSeqVacInfoList().getSeqVacInfoList().stream()
 				.map(x -> new LeaveComDayOffManagement(sid, x)).collect(Collectors.toList());
 
-		List<InterimBreakMng> kyusyutsu = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
-				.filter(x -> x.getBreakMng().isPresent()).map(x -> x.getBreakMng().get()).collect(Collectors.toList());
+		//	$変更後の発生一覧 
+		List<AccumulationAbsenceDetail> kyusyutsuChange = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+				.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE).collect(Collectors.toList());
+		//$変更後の消化一覧
+		List<AccumulationAbsenceDetail> daikyuChange = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+				.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.DIGESTION).collect(Collectors.toList());
 
-		List<InterimDayOffMng> daikyu = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
-				.filter(x -> x.getDayOffMng().isPresent()).map(x -> x.getDayOffMng().get()).collect(Collectors.toList());
+		List<InterimBreakMng> kyusyutsu = lstBreakoff.stream().map(x -> {
+			val dataTemp = kyusyutsuChange.stream().filter(y -> y.getManageId().equals(x.getRemainManaID()))
+					.findFirst();
+			return dataTemp.map(z -> x.updateUnoffsetNum(z)).orElse(null);
+		}).collect(Collectors.toList());
+
+		List<InterimDayOffMng> daikyu = lstDayoff.stream().map(x -> {
+			val dataTemp = daikyuChange.stream().filter(y -> y.getManageId().equals(x.getRemainManaID())).findFirst();
+			return dataTemp.map(z -> x.updateUnoffsetNum(z)).orElse(null);
+		}).collect(Collectors.toList());
 		
+		// $暫定休出管理を削除する年月日一覧
+		List<GeneralDate> lstKyusyutsu = kyusyutsu.stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
+		lstKyusyutsu.addAll(lstDate);
+
+		// $暫定代休管理を削除する年月日一覧
+		List<GeneralDate> lstDaikyu = daikyu.stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
+		lstDaikyu.addAll(lstDate);
 		return AtomTask.of(() -> {
 			require.deleteDayoffLinkWithPeriod(sid, period);
 			require.insertDayOffLinkList(linkCouple);
-			require.deleteBreakOffMngWithPeriod(sid, period);
+			require.deleteBreakoffWithDateList(sid, lstKyusyutsu);
 			require.insertBreakoffMngList(kyusyutsu);
-			require.deleteDayoffWithPeriod(sid, period);
+			require.deleteDayoffWithDateList(sid, lstDaikyu);
 			require.insertDayoffList(daikyu);
 		});
 	}
 
+	// [1] 変更要求と紐付いている暫定データを取得する(発生)
+	private static List<InterimBreakMng> getOccurTempDataFromAssoci(Require require, String sid,
+			List<GeneralDate> lstDate) {
+		// $紐付け一覧
+		List<LeaveComDayOffManagement> linkData = require.getLeavByListDate(sid, lstDate);
+
+		return require.getBreakBySidDateList(sid,
+				linkData.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList()));
+	}
+
+	// [2] 変更要求と紐付いている暫定データを取得する(消化)
+	private static List<InterimDayOffMng> getDigestTempDataFromAssoci(Require require, String sid,
+			List<GeneralDate> lstDate) {
+		// $紐付け一覧
+		List<LeaveComDayOffManagement> linkData = require.getLeavByListOccDate(sid, lstDate);
+
+		return require.getDayOffDateList(sid,
+				linkData.stream().map(x -> x.getAssocialInfo().getDateOfUse()).collect(Collectors.toList()));
+	}
+		
 	public static interface Require extends GetCompenChangeOccDigest.Require {
 
 		// [R-1] 休出代休紐付け管理を削除する
@@ -77,17 +129,25 @@ public class UpdateSubstituteHolidayLinkData {
 
 		// [R-3] 暫定休出管理を削除する
 		// InterimBreakDayOffMngRepository.deleteBreakoffWithPeriod
-		void deleteBreakOffMngWithPeriod(String sid, DatePeriod period);
+		void deleteBreakoffWithDateList(String sid, List<GeneralDate> lstDate);
 
 		// [R-4] 暫定休出管理を登録する
 		// InterimBreakDayOffMngRepository.insertList
 		void insertBreakoffMngList(List<InterimBreakMng> lstDomain);
 
 		// [R-5] 暫定代休管理を削除する
-		void deleteDayoffWithPeriod(String sid, DatePeriod period);
+		void deleteDayoffWithDateList(String sid, List<GeneralDate> lstDate);
 
 		// [R-6] 暫定代休管理を登録する
 		void insertDayoffList(List<InterimDayOffMng> lstDomain);
+		
+		List<LeaveComDayOffManagement> getLeavByListDate(String sid, List<GeneralDate> lstDate);
+		
+		List<LeaveComDayOffManagement> getLeavByListOccDate(String sid, List<GeneralDate> lstDate);
+		
+		List<InterimBreakMng> getBreakBySidDateList(String sid, List<GeneralDate> lstDate);
+		
+		List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate);
 
 	}
 

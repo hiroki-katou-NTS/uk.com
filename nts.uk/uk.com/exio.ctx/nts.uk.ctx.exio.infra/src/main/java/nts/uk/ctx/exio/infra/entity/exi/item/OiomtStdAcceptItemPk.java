@@ -29,13 +29,6 @@ public class OiomtStdAcceptItemPk implements Serializable {
 	public String cid;
 
 	/**
-	 * システム種類
-	 */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
-
-	/**
 	 * 条件設定コード
 	 */
 	@Basic(optional = false)

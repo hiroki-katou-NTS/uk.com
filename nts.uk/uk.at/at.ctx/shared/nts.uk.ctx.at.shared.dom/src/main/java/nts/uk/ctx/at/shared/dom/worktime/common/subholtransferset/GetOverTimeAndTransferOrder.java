@@ -32,13 +32,15 @@ public class GetOverTimeAndTransferOrder {
 				
 			// 代休振替設定．使用区分を取得する
 			if (sht.isUseDivision() || sht.getSubHolTransferSetAtr() == SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL) {
-				// 一定時間を超えたら代休とする時
+				// 一定時間を超えたら代休とする時の残業振替区分を取得する
 				return getOrderForCertainTime(reverse);
 			}
 			
+			/** 指定した時間を代休とする時の残業振替区分を取得する */
 			return getOrderForSpecifiedTime(reverse);
 		}).orElseGet(() -> {
 			
+			/** 指定した時間を代休とする時の残業振替区分を取得する */
 			return getOrderForSpecifiedTime(reverse);
 		});
 	}
@@ -46,9 +48,11 @@ public class GetOverTimeAndTransferOrder {
 	// 一定時間を超えたら代休とする時
 	private static List<OverTimeAndTransferAtr> getOrderForCertainTime(boolean reverse) {
 		/**　逆時系列にするか確認する */
-		if (reverse){
+		if (reverse) {
+			/** ○終了状態：振替→残業で処理する */
 			return Arrays.asList(OverTimeAndTransferAtr.TRANSFER, OverTimeAndTransferAtr.OVER_TIME);
 		} else {
+			/** ○終了状態：残業→振替で処理する */
 			return Arrays.asList(OverTimeAndTransferAtr.OVER_TIME, OverTimeAndTransferAtr.TRANSFER);
 		}
 	}
@@ -56,9 +60,11 @@ public class GetOverTimeAndTransferOrder {
 	// 指定した時間を代休とする時
 	private static List<OverTimeAndTransferAtr> getOrderForSpecifiedTime(boolean reverse) {
 		/**　逆時系列にするか確認する */
-		if (reverse){
+		if (reverse) {
+			/** ○終了状態：残業→振替で処理する */
 			return Arrays.asList(OverTimeAndTransferAtr.OVER_TIME, OverTimeAndTransferAtr.TRANSFER);
 		} else {
+			/** ○終了状態：振替→残業で処理する */
 			return Arrays.asList(OverTimeAndTransferAtr.TRANSFER, OverTimeAndTransferAtr.OVER_TIME);
 		}
 	}
