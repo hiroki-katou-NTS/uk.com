@@ -406,8 +406,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         }
 
         int shapeWidth = minuteEnd == 0
-                ? (columnEnd * 25) - (columnStart * 25) - marginLeft
-                : ((columnEnd * 25) + Math.round(calcRatioCell() * minuteEnd)) - (columnStart * 25) - marginLeft;
+                ? (columnEnd * 32) - (columnStart * 32) - marginLeft
+                : ((columnEnd * 32) + Math.round(calcRatioCell() * minuteEnd)) - (columnStart * 32) - marginLeft;
 
         return new DrawRectangleProperties(columnStart, marginLeft, shapeWidth);
     }
