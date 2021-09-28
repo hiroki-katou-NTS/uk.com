@@ -121,16 +121,56 @@ module nts.uk.at.kha003.c {
                             || data.c31.type != oldData.c31.type
                             || data.c41.type != oldData.c41.type
                             || data.c51.type != oldData.c51.type)) {
-                        vm.$dialog.error({messageId: "Msg_2168"});
+                        vm.$dialog.error({messageId: "Msg_2168"}).then(() => {
+                            vm.selectBox();
+                        });
                         vm.$window.storage('kha003CShareData_' + data.code, {});
                     } else {
                         vm.$window.storage('kha003CShareData_' + data.code).done(savedDataC => {
                             const dataC = savedDataC || {};
                             if (dataC.code == data.code) {
-                                vm.c24CurrentCodeList(dataC.c24CurrentCodeList || []);
-                                vm.c34CurrentCodeList(dataC.c34CurrentCodeList || []);
-                                vm.c44CurrentCodeList(dataC.c44CurrentCodeList || []);
-                                vm.c54CurrentCodeList(dataC.c54CurrentCodeList || []);
+                                let list24: Array<string> = _.map(vm.c24Items(), x => x.code);
+                                let list34: Array<string> = _.map(vm.c34Items(), x => x.code);
+                                let list44: Array<string> = _.map(vm.c44Items(), x => x.code);
+                                let list54: Array<string> = _.map(vm.c54Items(), x => x.code);
+                                if (dataC.isC24SectAll) {
+                                    vm.c24CurrentCodeList(list24);
+                                } else {
+                                    vm.c24CurrentCodeList(_.remove(dataC.c24CurrentCodeList, (x: any) => {
+                                        return _.findIndex(list24, function (y) {
+                                            return y == x
+                                        }) != -1;
+                                    }) || list24);
+                                }
+                                if (dataC.isC34SectAll) {
+                                    vm.c34CurrentCodeList(list34);
+                                } else {
+                                    vm.c34CurrentCodeList(_.remove(dataC.c34CurrentCodeList, (x: any) => {
+                                        return _.findIndex(list34, function (y) {
+                                            return y == x
+                                        }) != -1;
+                                    }) || list34);
+                                }
+                                if (dataC.isC44SectAll) {
+                                    vm.c44CurrentCodeList(list44);
+                                } else {
+                                    vm.c44CurrentCodeList(_.remove(dataC.c44CurrentCodeList, (x: any) => {
+                                        return _.findIndex(list44, function (y) {
+                                            return y == x
+                                        }) != -1;
+                                    }) || list44);
+                                }
+                                if (dataC.isC54SectAll) {
+                                    vm.c54CurrentCodeList(list54);
+                                } else {
+                                    vm.c54CurrentCodeList(_.remove(dataC.c54CurrentCodeList, (x: any) => {
+                                        return _.findIndex(list54, function (y) {
+                                            return y == x
+                                        }) != -1;
+                                    }) || list54);
+                                }
+                            } else {
+                                vm.selectBox();
                             }
                         });
                     }
@@ -143,11 +183,23 @@ module nts.uk.at.kha003.c {
                 vm.c34Items(this.getItemData(vm.c31Params().type, data));
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
+                window.setTimeout(function () {
+                    document.getElementById('multi-list-c2_4_container').focus();
+                }, 0);
             });
             // $(document).ready(function () {
             //     vm.gridRows((12 * $(window).height()) / 768);
             // });
         }
+
+        selectBox() {
+            let vm = this;
+            vm.c24CurrentCodeList(_.map(vm.c24Items(), x => x.code));
+            vm.c34CurrentCodeList(_.map(vm.c34Items(), x => x.code));
+            vm.c44CurrentCodeList(_.map(vm.c44Items(), x => x.code));
+            vm.c54CurrentCodeList(_.map(vm.c54Items(), x => x.code));
+        }
+
 
         /**
          * function for get item data to map with UI
@@ -214,6 +266,27 @@ module nts.uk.at.kha003.c {
             nts.uk.ui.windows.close();
         }
 
+        arrangeStorageData(): any {
+            let vm = this;
+            let list24: Array<string> = _.map(vm.c24Items(), x => x.code);
+            let list34: Array<string> = _.map(vm.c34Items(), x => x.code);
+            let list44: Array<string> = _.map(vm.c44Items(), x => x.code);
+            let list54: Array<string> = _.map(vm.c54Items(), x => x.code);
+            let shareData = {
+                code: vm.code,
+                c24CurrentCodeList: vm.c24CurrentCodeList(),
+                c34CurrentCodeList: vm.c34CurrentCodeList(),
+                c44CurrentCodeList: vm.c44CurrentCodeList(),
+                c54CurrentCodeList: vm.c54CurrentCodeList(),
+                isC24SectAll: _.isEqual(vm.c24CurrentCodeList(), list24),
+                isC34SectAll: _.isEqual(vm.c34CurrentCodeList(), list34),
+                isC44SectAll: _.isEqual(vm.c44CurrentCodeList(), list44),
+                isC54SectAll: _.isEqual(vm.c54CurrentCodeList(), list54),
+                dateRange: vm.dateRange()
+            };
+            return shareData;
+        }
+
         /**
          * Event on click decide button.
          */
@@ -226,15 +299,8 @@ module nts.uk.at.kha003.c {
                 if (vm.ifAnyDialogNotSelected()) {
                     vm.$errors("#multi-list-c2_4", "Msg_2165");
                 } else {
-                    let shareData = {
-                        code: vm.code,
-                        c24CurrentCodeList: vm.c24CurrentCodeList(),
-                        c34CurrentCodeList: vm.c34CurrentCodeList(),
-                        c44CurrentCodeList: vm.c44CurrentCodeList(),
-                        c54CurrentCodeList: vm.c54CurrentCodeList(),
-                        dateRange: vm.dateRange()
-                    };
-					vm.$window.storage('kha003CShareData_' + vm.code, shareData);
+                    let shareData = vm.arrangeStorageData();
+                    vm.$window.storage('kha003CShareData_' + vm.code, shareData);
                     vm.$window.storage('kha003CShareData', shareData).then(() => {
                         vm.$jump('/view/kha/003/d/index.xhtml');
                         nts.uk.ui.windows.close();

@@ -122,13 +122,6 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             }
         }
 
-//        double columnWith = 0.41;
-//        for (int i = 0; i <= 3 ; i++) {
-//            cells.setColumnWidthInch(i,columnWith);
-//        }
-//        for (int i = 0; i <= headerList.size() - 4 ; i++) {
-//            cells.setColumnWidthInch(i,columnWith);
-//        }
         cells.clearContents(0, 0, cells.getMaxRow(), cells.getMaxColumn());
         //A1_1
         cells.get(0, 0).setValue(title);
@@ -144,15 +137,19 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         switch (totalLevel) {
             case 1:
                 printData1Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                worksheet.freezePanes(2, 1, 2, cells.getMaxColumn());
                 break;
             case 2:
                 printData2Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                worksheet.freezePanes(2, 2, 2, cells.getMaxColumn());
                 break;
             case 3:
                 printData3Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                worksheet.freezePanes(2, 3, 2, cells.getMaxColumn());
                 break;
             case 4:
                 printData4Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                worksheet.freezePanes(2, 4, 2, cells.getMaxColumn());
                 break;
         }
 
@@ -160,7 +157,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         if (columnHandle > 0) {
             cells.deleteColumns(headerList.size(), columnHandle, true);
         }
-        worksheet.freezePanes(2, 4, 2, cells.getMaxColumn());
+//        worksheet.freezePanes(2, 4, 2, cells.getMaxColumn());
     }
 
     private void printData1Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, int unit) throws Exception {
@@ -177,11 +174,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             cell.setStyle(style);
             val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
             for (int c = 1; c < maxDateRange + 1; c++) {
-                cells.get(countRow, c).setValue(workingTimeMap1.getOrDefault(headerList.get(c), ""));
+                cells.get(countRow, c).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(workingTimeMap1.getOrDefault(headerList.get(c), "")) : workingTimeMap1.getOrDefault(headerList.get(c), ""));
                 setHorizontalAlignment(cells.get(countRow, c));
             }
             if (isDispTotal) {  // Tong chieu ngang level
-                cells.get(countRow, headerList.size() - 1).setValue(level1.getTotalPeriod());
+                cells.get(countRow, headerList.size() - 1).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(level1.getTotalPeriod()) : level1.getTotalPeriod());
                 setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
             }
             countRow++;
@@ -212,11 +209,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 cells.get(countRow, 1).setValue(level2.getDisplayInfo().getName());
                 val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
                 for (int c = 2; c < maxDateRange + 2; c++) {
-                    cells.get(countRow, c).setValue(workingTimeMap2.getOrDefault(headerList.get(c), ""));
+                    cells.get(countRow, c).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(workingTimeMap2.getOrDefault(headerList.get(c), "")) : workingTimeMap2.getOrDefault(headerList.get(c), ""));
                     setHorizontalAlignment(cells.get(countRow, c));
                 }
                 if (isDispTotal) {  // Tong chieu ngang level 3
-                    cells.get(countRow, headerList.size() - 1).setValue(level2.getTotalPeriod());
+                    cells.get(countRow, headerList.size() - 1).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(level2.getTotalPeriod()) : level2.getTotalPeriod());
                     setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                 }
                 countRow++;
@@ -268,11 +265,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                     cells.get(countRow, 2).setValue(level3.getDisplayInfo().getName());
                     val workingTimeMap3 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
                     for (int c = 3; c < maxDateRange + 3; c++) {
-                        cells.get(countRow, c).setValue(workingTimeMap3.getOrDefault(headerList.get(c), ""));
+                        cells.get(countRow, c).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(workingTimeMap3.getOrDefault(headerList.get(c), "")) : workingTimeMap3.getOrDefault(headerList.get(c), ""));
                         setHorizontalAlignment(cells.get(countRow, c));
                     }
                     if (isDispTotal) {  // Tong chieu ngang level 3
-                        cells.get(countRow, headerList.size() - 1).setValue(level3.getTotalPeriod());
+                        cells.get(countRow, headerList.size() - 1).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(level3.getTotalPeriod()) : level3.getTotalPeriod());
                         setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                     }
                     countRow++;
@@ -338,11 +335,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                         cells.get(countRow, 3).setValue(level4.getDisplayInfo().getName());
                         val workingTimeMap4 = this.getWorkingTimeByDate(unit, level4.getVerticalTotalList());
                         for (int c = 4; c < maxDateRange + 4; c++) {
-                            cells.get(countRow, c).setValue(workingTimeMap4.getOrDefault(headerList.get(c), ""));
+                            cells.get(countRow, c).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(workingTimeMap4.getOrDefault(headerList.get(c), "")) : workingTimeMap4.getOrDefault(headerList.get(c), ""));
                             setHorizontalAlignment(cells.get(countRow, c));
                         }
                         if (isDispTotal) {  // Tong chieu ngang level 4
-                            cells.get(countRow, headerList.size() - 1).setValue(level4.getTotalPeriod());
+                            cells.get(countRow, headerList.size() - 1).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(level4.getTotalPeriod()) : level4.getTotalPeriod());
                             setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                         }
                         countRow++;
@@ -388,9 +385,9 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         for (int t = 1; t <= maxDateRange; t++) {
             val mapTotal = this.getWorkingTimeByDate(unit, summaryItemDetail.getVerticalTotalList());
             setHorizontalAlignment(cells.get(row, t + index));
-            cells.get(row, t + index).setValue(mapTotal.getOrDefault(headerList.get(t + index), ""));
+            cells.get(row, t + index).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(mapTotal.getOrDefault(headerList.get(t + index), "")) : mapTotal.getOrDefault(headerList.get(t + index), ""));
         }
-        cells.get(row, headerList.size() - 1).setValue(summaryItemDetail.getTotalPeriod());
+        cells.get(row, headerList.size() - 1).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(summaryItemDetail.getTotalPeriod()) : summaryItemDetail.getTotalPeriod());
     }
 
     // All total by vertical
@@ -400,9 +397,9 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         for (int t = 1; t <= maxDateRange; t++) {
             val mapTotal = this.getWorkingTimeByDate(unit, outputContent.getVerticalTotalValues());
             setHorizontalAlignment(cells.get(row, t + index));
-            cells.get(row, t + index).setValue(mapTotal.getOrDefault(headerList.get(t + index), ""));
+            cells.get(row, t + index).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(mapTotal.getOrDefault(headerList.get(t + index), "")) : mapTotal.getOrDefault(headerList.get(t + index), ""));
         }
-        cells.get(row, headerList.size() - 1).setValue(outputContent.getTotalPeriod());
+        cells.get(row, headerList.size() - 1).setValue(dispFormat == DisplayFormat.MINUTE ? removeComma(outputContent.getTotalPeriod()) : outputContent.getTotalPeriod());
     }
 
     private int checkTotalColumn(int maxColumnTemplate, int countColumn) {
@@ -447,6 +444,10 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         if (isDispTotal) lstHeader.add(TextResource.localize(HORIZONTAL_TOTAL));
 
         return lstHeader;
+    }
+
+    private String removeComma(String total){
+        return total.contains(",") ? total.replace(",","") : total;
     }
 
     private void setVerticalAlignment(Cell cell) {

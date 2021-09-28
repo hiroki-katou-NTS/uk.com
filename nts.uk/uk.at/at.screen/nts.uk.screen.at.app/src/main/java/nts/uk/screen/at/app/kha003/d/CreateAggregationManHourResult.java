@@ -92,7 +92,7 @@ public class CreateAggregationManHourResult {
                 getSummaryItemDetails(x.getChildHierarchyList(), displayFormat),
                 convertValueDaily(x.getVerticalTotalList(), displayFormat),
                 formatValue((double)x.getTotalPeriod().orElse(0), displayFormat)
-        )).sorted(Comparator.comparing(SummaryItemDetailDto::getCode)).collect(Collectors.toList());
+        )).sorted(Comparator.comparing(x -> x.getDisplayInfo().getCode())).collect(Collectors.toList());
     }
 
     private List<VerticalValueDailyDto> convertValueDaily(List<VerticalValueDaily> dailyValues, DisplayFormat displayFormat) {

@@ -382,7 +382,7 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		String historyId = wkpConfig.items().get(0).identifier();
 		
 		List<WorkplaceInformation> opWkpConfigInfos = workplaceInformationRepository.getAllWorkplaceByCompany(companyId, historyId);
-		if (!opWkpConfigInfos.isEmpty()) {
+		if (opWkpConfigInfos.isEmpty()) {
 			return Collections.emptyList();
 		}
 		

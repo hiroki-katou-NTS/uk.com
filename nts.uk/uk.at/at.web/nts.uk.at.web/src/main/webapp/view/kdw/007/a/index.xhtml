@@ -119,7 +119,7 @@
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: selectedErrorAlarm().typeAtr,
-										enable: selectedErrorAlarm().fixedAtr() != 1 }"></div>
+										enable: ko.computed(function(){return selectedErrorAlarm().fixedAtr() != 1}, this) }"></div>
 								</div>
 								<!--A4_22-->
 								<div class="label" id="noticed-label">#{i18n.getText('KDW007_91')}</div>
@@ -132,8 +132,9 @@
 										options: listRemarkCancelErrorInput,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedErrorAlarm().remarkCancelErrorInput,
-										enable: (selectedErrorAlarm().fixedAtr() != 1) &amp;&amp; (selectedErrorAlarm().typeAtr() != 2)  }"></div>
+										enable: ko.computed(function(){return selectedErrorAlarm().fixedAtr() != 1 &amp;&amp; selectedErrorAlarm().typeAtr() != 2}, this),
+										value: selectedErrorAlarm().remarkCancelErrorInput
+										  }"></div>
 									<!--A4_25-->
 									<div id="remark-no-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW007_106')}</div>
 									<!--A4_26-->

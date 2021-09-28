@@ -372,7 +372,6 @@ module nts.uk.at.view.kdw008.b {
                     self.businessTypeFormatMonthlyValue.removeAll();
                     self.monthlyDataSource.removeAll();
                     self.monthlyDataSource(_.cloneDeep(self.monthlyAttItems()));
-
                     if (data) {
                         let dat = self.mapAttItemFormatDetail(self.monthlyAttItems(), data.businessTypeFormatMonthlyDtos);
                         self.businessTypeFormatMonthlyValue(dat);
@@ -734,12 +733,19 @@ module nts.uk.at.view.kdw008.b {
         class AttendanceItemDto {
             attendanceItemId: number;
             attendanceItemName: string;
+            displayName: string;
             attendanceItemDisplayNumber: number;
             columnWidth?: number;
             constructor(data: IAttendanceItemDto) {
                 if (!data) return;
                 this.attendanceItemId = data.attendanceItemId;
-                this.attendanceItemName = data.attendanceItemName || "";
+                //this.attendanceItemName = data.attendanceItemName || "";
+                if(data.displayName && data.displayName.length > 0) {
+                    this.attendanceItemName = data.displayName;
+                }
+                else {
+                    this.attendanceItemName = data.attendanceItemName
+                }
                 this.attendanceItemDisplayNumber = data.attendanceItemDisplayNumber;
                 this.columnWidth = null;
             }
@@ -754,6 +760,7 @@ module nts.uk.at.view.kdw008.b {
         interface IAttendanceItemDto {
             attendanceItemId: number;
             attendanceItemName: string;
+            displayName: string;
             attendanceItemDisplayNumber: number;
         }
 

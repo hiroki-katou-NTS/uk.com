@@ -297,10 +297,10 @@ module nts.uk.ui.at.kdw013.a {
                 confirm: ko.computed({
                     read: () => {
                         let confirms = _.get(vm.$datas(),'lstComfirmerDto');
-                        if (!_.isEmpty(confirms) && confirms.length === 5) {
+                        if (!_.isEmpty(confirms) && confirms.length >= 5) {
                             return false;
                         }
-                        if (vm.employee() == vm.$user.employeeId) {
+                        if (_.find(confirms, { confirmSID: vm.$user.employeeId })) {
                             return false;
                         }
                         const editable = ko.unwrap(vm.editable);
@@ -481,7 +481,10 @@ module nts.uk.ui.at.kdw013.a {
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
                             if (value) {
-                                vm.initialView(value.initialView);
+                                vm.initialView(value.initialView || 'oneDay');
+                                vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
+                                vm.scrollTime(value.scrollTime || 420);
+                                vm.slotDuration(value.slotDuration || 30);
                             }
                         });
                 
@@ -535,9 +538,9 @@ module nts.uk.ui.at.kdw013.a {
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
     
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
-
+            
             const command: RegisterWorkContentCommand = {
-                changedDate: moment().format(DATE_TIME_FORMAT),
+                changedDates: dateRanges().map((date) => {return moment(date).format(DATE_TIME_FORMAT);}),
                 editStateSetting,
                 employeeId: sid,
                 mode,

@@ -17,10 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +61,7 @@ public class ManHourSummaryDataFinder {
         GeneralDate baseDate = targetPeriod.end();
 
         // 2.参照可能範囲を取得する(@Require, 会社ID, ユーザID, 社員ID, 年月日): Map<社員ID,職場ID>
-        RequireImpl require = new RequireImpl();
+        RequireImpl require = new RequireImpl(empWithWkpAdapter, workplaceOfEmpAdapter);
         Map<String, String> rangeMap = new HashMap<>();
         if (optManHourRecordRef.isPresent()) {
             rangeMap = optManHourRecordRef.get().getWorkCorrectionStartDate(require, cid, userId, employeeId, baseDate);
@@ -129,6 +126,8 @@ public class ManHourSummaryDataFinder {
 
     @AllArgsConstructor
     private class RequireImpl implements ManHourRecordReferenceSetting.Require {
+        private GetAllEmployeeWithWorkplaceAdapter empWkpAdapter;
+        private GetWorkplaceOfEmployeeAdapter workplaceAdapter;
 
         @Override
         public ManHourRecordReferenceSetting get() {
@@ -142,12 +141,12 @@ public class ManHourSummaryDataFinder {
 
         @Override
         public Map<String, String> getWorkPlace(String userID, String employeeID, GeneralDate date) {
-            return workplaceOfEmpAdapter.get(userID, employeeID, date);
+            return workplaceAdapter.get(userID, employeeID, date);
         }
 
         @Override
         public Map<String, String> getByCID(String companyId, GeneralDate baseDate) {
-            return empWithWkpAdapter.get(companyId, baseDate);
+            return empWkpAdapter.get(companyId, baseDate);
         }
     }
 }

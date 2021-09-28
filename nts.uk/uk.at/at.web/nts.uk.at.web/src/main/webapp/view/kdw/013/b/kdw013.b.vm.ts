@@ -52,19 +52,19 @@ module nts.uk.ui.at.kdw013.b {
             </div>
             <table>
                 <colgroup>
-                    <col width="80px" />
+                    <col width="90px" />
                 </colgroup>
                 <tbody data-bind="foreach: { data: $component.dataSources, as: 'pair' }">
                     <tr>
-                        <td data-bind="i18n: pair.key"></td>
-                        <td data-bind="content: pair"></td>
+                        <td ><div data-bind="i18n: pair.key"> </div></td>
+                        <td style="padding-top: 6px;vertical-align: top;padding-left: 10px;"><div data-bind="content: pair"> </div></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <style>
             .detail-event {
-                width: 300px;
+                width: 320px;
             }
             .detail-event .header {
                 box-sizing: border-box;
@@ -194,7 +194,7 @@ module nts.uk.ui.at.kdw013.b {
 
                         //
                         model.push({ key: 'KDW013_27', value: `${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}` });
-                        model.push({ key: 'KDW013_25', value: number2String(workingHours) });
+                        model.push({ key: 'KDW013_25', value: number2String(workingHours || endTime - startTime) });
 
                         if (first && first.useAtr === 1) {
                             vm.setTaskData(model, _.get(shared, 'taskListDto1'), workCD1, first);

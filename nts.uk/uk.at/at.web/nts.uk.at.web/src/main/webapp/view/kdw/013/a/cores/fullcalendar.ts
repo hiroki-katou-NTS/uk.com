@@ -1192,7 +1192,7 @@ module nts.uk.ui.at.kdw013.calendar {
             const checkEditDialog = () => {
                 let dfd = $.Deferred();
                 let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
-                if (vm.$view() == "edit" && vm.params.$settings().isChange || !!eventNotSave) {
+                if (vm.$view() == "edit" && vm.params.$settings().isChange) {
                     vm.$dialog
                         .confirm({ messageId: 'Msg_2094' })
                         .then((v: 'yes' | 'no') => {
@@ -1207,6 +1207,9 @@ module nts.uk.ui.at.kdw013.calendar {
                             dfd.resolve(v);
                         });
                 } else {
+                    if (eventNotSave) {
+                        eventNotSave.remove();
+                    }
                     popupPosition.event(null);
                     popupPosition.setting(null);
                     dfd.resolve('yes');
@@ -1613,6 +1616,23 @@ module nts.uk.ui.at.kdw013.calendar {
                 });
             }
 
+            const removeNotSaveEvents = (event: EventApi | null) => {
+
+                _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                    // remove new event (empty data)
+                    if (!e.extendedProps.id) {
+                        e.remove();
+                        dataEvent.delete(false);
+                        popupPosition.event(null);
+                        popupPosition.setting(null);
+                    } else if (e.groupId === SELECTED) {
+                        e.setProp(GROUP_ID, '');
+                        // unselect events
+                        e.setProp(BORDER_COLOR, TRANSPARENT);
+                    }
+                });
+            }
+
             const dragger = new FC.Draggable($dg, {
                 itemSelector: '.title',
                 eventData: (el) => {
@@ -1675,81 +1695,69 @@ module nts.uk.ui.at.kdw013.calendar {
                     const events = vm.calendar.getEvents();
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workCorrectionStartDate'));
-                    
-                    
 
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
-
-                    if (!hasEventNotSave) {
-                        if (vm.$view() == "edit" && vm.params.$settings().isChange) {
-                            vm.$dialog
-                                .confirm({ messageId: 'Msg_2094' })
-                                .then((v: 'yes' | 'no') => {
-                                    if (v === 'yes') {
-                                        dataEvent.delete(false);
-                                        popupPosition.event(null);
-                                        popupPosition.setting(null);
-                                    }
-
+                    
+                    if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                        vm.$dialog
+                            .confirm({ messageId: 'Msg_2094' })
+                            .then((v: 'yes' | 'no') => {
+                                if (v === 'yes') {
                                     dataEvent.delete(false);
-
-                                });
-                            return;
-                        }
-                        
-                        if (startDate.isAfter(formatDate(info.date))) {
-                            return;
-                        }
-                        
-
-                        const event = vm.calendar
-                            .addEvent({
-                                id: randomId(),
-                                start: formatDate(info.date),
-                                end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()),
-                                [BORDER_COLOR]: BLACK,
-                                [GROUP_ID]: SELECTED,
-                                extendedProps: {
-                                    status: 'new',
-                                    employeeId: vm.params.employee() || vm.$user.employeeId
+                                    popupPosition.event(null);
+                                    popupPosition.setting(null);
+                                    if (hasEventNotSave) {
+                                        removeNotSaveEvents();
+                                    }
                                 }
+
+                                dataEvent.delete(false);
+
                             });
+                        return;
+                    }
 
-                        $caches.new(event);
-                        const el: HTMLElement = vm.$el.querySelector(`[event-id="${event.id}"]`);
+                    if (hasEventNotSave) {
+                        removeNotSaveEvents();
+                    }
 
-                        if (el) {
-                            const { view } = vm.calendar;
+                    if (startDate.isAfter(formatDate(info.date))) {
+                        return;
+                    }
 
-                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true });
-                        }
-                        
-                    } else {
-                        _.each(events, (e: EventApi) => {
-                            // remove new event (empty data)
-                            if (!e.extendedProps.id) {
+                    const events = vm.calendar.getEvents();
 
-                                vm.$dialog
-                                    .confirm({ messageId: 'Msg_2094' })
-                                    .then((v: 'yes' | 'no') => {
-                                        if (v === 'yes') {
-                                            e.remove();
-                                            dataEvent.delete(false);
-                                            popupPosition.event(null);
-                                            popupPosition.setting(null);
-                                        }
+                    let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isSameOrAfter(moment(info.date)) });
 
-                                        dataEvent.delete(false);
-                                    });
-                            } else if (e.groupId === SELECTED) {
-                                e.setProp(GROUP_ID, '');
-                                // unselect events
-                                e.setProp(BORDER_COLOR, TRANSPARENT);
+                    if (isHasTask) {
+                        return;
+                    }
+
+
+
+                    const event = vm.calendar
+                        .addEvent({
+                            id: randomId(),
+                            start: formatDate(info.date),
+                            end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()),
+                            [BORDER_COLOR]: BLACK,
+                            [GROUP_ID]: SELECTED,
+                            extendedProps: {
+                                status: 'new',
+                                employeeId: vm.params.employee() || vm.$user.employeeId
                             }
                         });
 
+                    $caches.new(event);
+                    const el: HTMLElement = vm.$el.querySelector(`[event-id="${event.id}"]`);
 
+                    if (el) {
+                        const { view } = vm.calendar;
+
+                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true });
                     }
+
+
                 },
                 dropAccept: () => !!ko.unwrap(true),
                 dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
@@ -1948,11 +1956,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
                 },
                 dayCellClassNames: (arg) => {
-                    if (arg.date > moment()) {
-                        return ['pika']
-                    } else {
-                        return ['mieo']
-                    }
                 }
                 ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
@@ -1968,42 +1971,29 @@ module nts.uk.ui.at.kdw013.calendar {
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workCorrectionStartDate'));
                     
-                    if (hasEventNotSave && !noCheckSave) {
-                        _.each(events, (e: EventApi) => {
-                            // remove new event (empty data)
-                            if (!e.extendedProps.id) {
-
-                                vm.$dialog
-                                    .confirm({ messageId: 'Msg_2094' })
-                                    .then((v: 'yes' | 'no') => {
-                                        if (v === 'yes') {
-                                            e.remove();
-                                            dataEvent.delete(false);
-                                            popupPosition.event(null);
-                                            popupPosition.setting(null);
-                                        }
-
-                                        dataEvent.delete(false);
-                                    });
-                            }
-                        });
-                        return;
-                    }
-                    
                     if (vm.$view() == "edit" && vm.params.$settings().isChange) {
                         vm.$dialog
                             .confirm({ messageId: 'Msg_2094' })
                             .then((v: 'yes' | 'no') => {
                                 if (v === 'yes') {
-                                    dataEvent.delete(false);
-                                    popupPosition.event(null);
-                                    popupPosition.setting(null);
+                                    if (hasEventNotSave) {
+                                        removeNotSaveEvents();
+                                    } else {
+                                        dataEvent.delete(false);
+                                        popupPosition.event(null);
+                                        popupPosition.setting(null);
+                                    }
                                 }
 
                                 dataEvent.delete(false);
 
                             });
                         return;
+                    }
+                    
+                    if (hasEventNotSave && !noCheckSave && !moment(event.start).isSame(popupData.event().start)) {
+                        removeNotSaveEvents();
+                        //return;
                     }
                     
                     if (startDate.isAfter(formatDate(event.start))) {
@@ -2386,7 +2376,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         const { setting } = popupData;
                         const { firstDay, scrollTime, slotDuration } = value;
 
-                        if (firstDay)
+                        if (firstDay !== undefined)
                             setting.firstDay(firstDay);
                         if (scrollTime)
                             setting.scrollTime(scrollTime);
@@ -2659,17 +2649,17 @@ module nts.uk.ui.at.kdw013.calendar {
             let dfd = $.Deferred();
             const vm = this;
             let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
-            if (vm.$view() == "edit" && vm.params.$settings().isChange  || !!eventNotSave) {
+            if (vm.$view() == "edit" && vm.params.$settings().isChange) {
                 vm.$dialog
                     .confirm({ messageId: 'Msg_2094' })
                     .then((v: 'yes' | 'no') => {
-                        if(v=='yes'){
-                            if (eventNotSave)
-                                eventNotSave.remove();
-                        }
+                        if (eventNotSave)
+                            eventNotSave.remove();
                         dfd.resolve(v);
                     });
             } else {
+                if (eventNotSave)
+                    eventNotSave.remove();
                 dfd.resolve('yes');
             }
             return dfd.promise();
@@ -2728,6 +2718,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const cv = $tg.hasClass('fc-one-day-button') || $tg.hasClass('fc-full-week-button') ;
                             const ts = $tg.hasClass('fc-timegrid-slot');
                             const ovl = $tg.hasClass('ui-widget-overlay');
+                            
                     
                                 if (ovl) {
                                 return;
@@ -2738,15 +2729,15 @@ module nts.uk.ui.at.kdw013.calendar {
                             const targ = $tg
                                 .closest('.fc-timegrid-event.fc-v-event.fc-event').length ? 'event' :
                                 ($tg.hasClass('fc-non-business') || $tg.hasClass('fc-timegrid-slot')) ? 'date' : null;
-
+    
                             dataEvent.target(targ);
 
 
 
                             // close popup if target isn't owner & poper.
-                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts) {
+                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event) {
                                 vm.checkEditDialog().done((v) => {
-                                    if (v == 'yes') {   
+                                    if (v == 'yes') {
                                         popupPosition.event(null);
                                         popupPosition.setting(null);
 
@@ -3142,9 +3133,11 @@ module nts.uk.ui.at.kdw013.calendar {
                 });
 
                 vm.event = (evt: JQueryEventObject) => {
-                    evt.preventDefault();
 
                     const tg = evt.target as HTMLElement;
+                    //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
+                    if ($(tg).closest('#master-content').length > 0)
+                        evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {
                         if (!tg.classList.contains(POWNER_CLASS_CPY) && !$(tg).closest(`.${POWNER_CLASS_CPY}`).length && !$(tg).closest('.fc-popup-setting').length) {

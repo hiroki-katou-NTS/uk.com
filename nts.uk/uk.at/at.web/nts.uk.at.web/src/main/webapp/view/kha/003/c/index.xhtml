@@ -31,15 +31,17 @@
                     <div style="width: 300px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list-c2_4',
 	                items: c24Items, selected: c24CurrentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}"/>
                     <!-- C2_3 -->
-                    <table tabindex="1" id="multi-list-c2_4" data-bind="ntsGridList: {
-                       rows: 12,
+                    <a id="C2_3">
+                        <table tabindex="1" id="multi-list-c2_4" data-bind="ntsGridList: {
+                         rows: 12,
                             options: c24Items,
                             optionsValue: 'code',
                             columns: columns,
                             multiple: true,
                             value: c24CurrentCodeList
 	                        }">
-                    </table>
+                        </table>
+                    </a>
                 </div>
                 <div class="cell valign-top" data-bind="if:vm.c31isVisible()" >
                     <!-- C3_1 -->

@@ -39,7 +39,7 @@ module nts.uk.ui.at.kdw013.share {
                 color: #fff;
                 background-color: #007fff;
             }
-            .dropdown-container .highlight {
+            .dropdown-container .highlight , .dropdown-container .highlight div {
                 background-color: #91c8ff;
             }
             .nts-dropdown.show {
@@ -226,10 +226,10 @@ module nts.uk.ui.at.kdw013.share {
                             const { code, name } = item;
 
                             $(element)
-                                .html(`<div style='height:31px;' >${code}</div><div style='margin-left:10px;' >${name}</div>`);
+                                .html(`<div style='height:31px;' >${code}</div><div style='margin-left:10px;white-space: nowrap;' >${name}</div>`);
                         } else {
                             $(element)
-                                .html(`<div style='height:31px;' ></div><div style='margin-left:10px;' >${vm.$i18n('KDW013_41')}</div>`);
+                                .html(`<div style='height:31px;' ></div><div style='margin-left:10px;white-space: nowrap;' >${vm.$i18n('KDW013_41')}</div>`);
                         }
                     },
                     disposeWhenNodeIsRemoved: element
@@ -281,7 +281,7 @@ module nts.uk.ui.at.kdw013.share {
                     <div style="width: 280px;overflow: auto;" data-bind="foreach: { data: $component.items, as: 'item' }"> 
                         <div style='display: flex;line-height: 31px;padding-left: 5px;' data-bind="click: function(item, evt) { $component.selecteItem(item, evt) }, css: { selected: item.selected, highlight: item.highlight }">  
                                     <div data-bind="text: item.code"></div>
-                                    <div style='margin-left:10px;' data-bind="text: item.name"></div> 
+                                    <div style='margin-left:10px;white-space: nowrap;' data-bind="text: item.name"></div> 
                         </div>
                     </div>
                 </div>

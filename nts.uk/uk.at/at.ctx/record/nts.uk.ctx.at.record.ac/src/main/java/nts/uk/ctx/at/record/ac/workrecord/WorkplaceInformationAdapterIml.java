@@ -8,6 +8,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,6 @@ public class WorkplaceInformationAdapterIml implements WorkplaceInformationAdapt
         return listWorkPlaceInfoExport.stream().map(e -> new WorkplaceInfor(e.getWorkplaceId(),
                 e.getHierarchyCode(), e.getWorkplaceCode(), e.getWorkplaceName(), e.getWorkplaceDisplayName(),
                 e.getWorkplaceGenericName(), e.getWorkplaceExternalCode()
-        )).collect(Collectors.toList());
+        )).sorted(Comparator.comparing(WorkplaceInfor::getWorkplaceCode)).collect(Collectors.toList());
     }
 }
