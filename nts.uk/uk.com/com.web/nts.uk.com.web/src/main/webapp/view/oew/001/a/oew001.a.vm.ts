@@ -34,7 +34,7 @@ module nts.uk.com.view.oew001.a {
       const vm = this;
       vm.staticColumns = [
         { headerText: "", key: "id", dataType: "string", ntsControl: "Label" },
-        { headerText: "", key: "editRecord", width: "80px", dataType: "string", ntsControl: "EditButton" },
+        { headerText: "", key: "editRecord", width: "85px", dataType: "string", ntsControl: "EditButton" },
         { headerText: vm.$i18n("OEW001_19"), key: "useDate", width: "100px", dataType: "string" },
         { headerText: vm.$i18n("OEW001_20"), key: "employeeName", width: "150px", dataType: "string" }
       ];
