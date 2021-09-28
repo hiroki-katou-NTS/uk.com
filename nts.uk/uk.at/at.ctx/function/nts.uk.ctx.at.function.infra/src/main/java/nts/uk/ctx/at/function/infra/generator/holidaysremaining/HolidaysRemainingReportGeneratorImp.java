@@ -2639,6 +2639,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             cells.copyRows(cells, !checkCopyRowL(dataSource,employee) ? 103 : 101 , firstRow, 2);
 
         }
+        // N1_1
+        cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_47"));
+        // N2_1
+        cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
+        // N2_2
+        cells.get(firstRow + (isTime? 2 : 1), 9).setValue(TextResource.localize("KDR001_18"));
         YearMonth currentMonth = employee.getCurrentMonth().get();
         // Result RequestList206
         ChildNursingLeaveThisMonthFutureSituation currentSituationImportedLeft = hdRemainingInfor.getChildCareRemNumWithinPeriodLeft();
