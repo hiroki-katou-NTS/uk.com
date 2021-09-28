@@ -10,7 +10,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
         elapsedMonthsValue: KnockoutObservable<any>;
 
         useAtr: KnockoutObservable<number>;
-        useAtrTask: KnockoutObservable<number>;
+        useAtrTask: KnockoutObservable<number | null>;
         time: KnockoutObservable<number>;
         displayMessage: KnockoutObservable<string>;
         messageColor: KnockoutObservable<string>;
@@ -24,20 +24,20 @@ module nts.uk.at.view.kdw006.i.viewmodel {
 
             let referenceRangeTemp: any[] = [];
             _.forEach(__viewContext.enums.ReferenceRange, (item) => {
-                referenceRangeTemp.push({value: item.value, name: item.name});
+                referenceRangeTemp.push({ value: item.value, name: item.name });
             });
             self.referenceRange = ko.observableArray(referenceRangeTemp);
             self.referenceRangeValue = ko.observable(0);
 
             let elapsedMonthsTemp: any[] = [];
             _.forEach(__viewContext.enums.ElapsedMonths, (item) => {
-                elapsedMonthsTemp.push({value: item.value, name: item.name});
+                elapsedMonthsTemp.push({ value: item.value, name: item.name });
             });
             self.elapsedMonths = ko.observableArray(elapsedMonthsTemp);
             self.elapsedMonthsValue = ko.observable(0);
 
             self.useAtr = ko.observable(0);
-            self.useAtrTask = ko.observable(0);
+            self.useAtrTask = ko.observable(null);
             self.time = ko.observable(0);
             self.displayMessage = ko.observable("test");
             self.messageColor = ko.observable("");
@@ -64,7 +64,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
         init(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.start().done(function(res: ManHourRecordUseSettingDto) {
+            service.start().done(function (res: ManHourRecordUseSettingDto) {
                 if (res) {
                     let manHourRecordReferenceSetting: ManHourRecordReferenceSettingDto = res.manHourRecordReferenceSetting;
                     let errorAlarmWorkRecord: ErrorAlarmWorkRecordDto = res.errorAlarmWorkRecord;
@@ -82,6 +82,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
                     self.oldValues.displayMessage = self.displayMessage();
                     self.oldValues.messageColor = self.messageColor();
                     self.oldValues.boldAtr = self.boldAtr();
+                    self.useAtrTask(res.usrAtr);
                     dfd.resolve();
                 } else {
                     dfd.resolve();
@@ -97,7 +98,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
             self.$blockui("grayout");
             self.$validate().then((valid: boolean) => {
                 if (valid) {
-                    service.register(command).done(function() {
+                    service.register(command).done(function () {
                         self.$blockui("show");
                         self.$dialog.info({ messageId: "Msg_15" }).then(() => {
                             location.reload();
@@ -114,6 +115,8 @@ module nts.uk.at.view.kdw006.i.viewmodel {
 
         toRegisterCommand(): ManHourRecordUseSettingDto {
             let self = this;
+
+            var usrAtr: number = ko.unwrap(self.useAtrTask);
 
             let manHourRecordReferenceSetting: ManHourRecordReferenceSettingDto = {
                 elapsedMonths: self.elapsedMonthsValue(),
@@ -132,25 +135,27 @@ module nts.uk.at.view.kdw006.i.viewmodel {
                 messageColor: self.useAtr() == 1 ? self.messageColor() : self.oldValues.messageColor,
             };
 
-            return {manHourRecordReferenceSetting, errorAlarmWorkRecord};
+
+            return { manHourRecordReferenceSetting, errorAlarmWorkRecord, usrAtr };
         }
 
         jumpTo() {
             nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
-        }  
+        }
     }
 
     export interface ManHourRecordUseSettingDto {
         errorAlarmWorkRecord: ErrorAlarmWorkRecordDto;
         manHourRecordReferenceSetting: ManHourRecordReferenceSettingDto;
+        usrAtr: number;
     }
 
-    export interface ManHourRecordReferenceSettingDto { 
+    export interface ManHourRecordReferenceSettingDto {
         elapsedMonths: number;
         referenceRange: number;
     }
 
-    export interface ErrorAlarmWorkRecordDto { 
+    export interface ErrorAlarmWorkRecordDto {
         useAtr: number;
         erAlAtdItemConditionGroup1: Array<ErAlAtdItemConditionDto>;
         displayMessage: string;

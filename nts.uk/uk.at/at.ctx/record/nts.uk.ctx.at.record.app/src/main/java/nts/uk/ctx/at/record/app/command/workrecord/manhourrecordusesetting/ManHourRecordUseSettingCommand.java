@@ -21,4 +21,7 @@ public class ManHourRecordUseSettingCommand {
 	
 	//工数実績参照設定
 	ManHourRecordReferenceSettingDto manHourRecordReferenceSetting;
+	
+	// 使用区分
+	int usrAtr;
 }

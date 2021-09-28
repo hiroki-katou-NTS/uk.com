@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.jobmanagement.usagesetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -12,6 +13,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class ManHrInputUsageSetting extends AggregateRoot {
 	
