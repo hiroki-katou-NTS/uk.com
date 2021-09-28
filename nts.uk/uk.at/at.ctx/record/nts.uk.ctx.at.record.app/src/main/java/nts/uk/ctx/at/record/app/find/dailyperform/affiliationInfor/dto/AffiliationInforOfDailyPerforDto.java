@@ -182,7 +182,7 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 												this.businessTypeCode ==null?null:new BusinessTypeCode(this.businessTypeCode),
 												this.workplaceGroupID,
 												this.nursingLicenseClass == null ? null : EnumAdaptor.valueOf(this.nursingLicenseClass, LicenseClassification.class),
-												this.nursingManager == 1 ? true : false	);
+												this.nursingManager==null?null: this.nursingManager == 1 ? true : false	);
 		return domain.getAffiliationInfor();
 	}
 	
@@ -204,9 +204,9 @@ public class AffiliationInforOfDailyPerforDto extends AttendanceItemCommon {
 		case WKP_GROUP_ID:
 			return Optional.of(ItemValue.builder().value(workplaceGroupID).valueType(ValueType.CODE));
 		case NURSE_LICENSE_CLS:
-			return Optional.of(ItemValue.builder().value(nursingLicenseClass).valueType(ValueType.ATTR));
+			return Optional.of(ItemValue.builder().value(nursingLicenseClass).valueType(ValueType.CODE));
 		case IS_NURSE_ADMINISTRATOR:
-			return Optional.of(ItemValue.builder().value(nursingManager).valueType(ValueType.ATTR));
+			return Optional.of(ItemValue.builder().value(nursingManager).valueType(ValueType.CODE));
 		default:
 			return Optional.empty();
 		}
