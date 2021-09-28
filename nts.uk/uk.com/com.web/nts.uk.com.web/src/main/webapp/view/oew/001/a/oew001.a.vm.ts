@@ -95,7 +95,7 @@ module nts.uk.com.view.oew001.a {
     private initGrid() {
       const vm = this;
       $("#A6").ntsGrid({
-        // width: "1220px",
+        width: '1200px',
         height: '259px',
         rows: 10,
         dataSource: vm.dataSource(),
@@ -113,7 +113,7 @@ module nts.uk.com.view.oew001.a {
             name: 'Selection',
             mode: 'row',
             multipleSelection: false
-          }
+          },
         ],
         ntsFeatures: []
       });

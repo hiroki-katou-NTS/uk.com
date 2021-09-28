@@ -56,7 +56,7 @@ public class InsertEquipmentDataCommandHandler extends CommandHandler<EquipmentD
 		boolean isUseDateValid = this.validateUseDate(equipmentCode, command.getUseDate());
 		// 2.[有効期限内か＝false]
 		if (!isUseDateValid) {
-			throw new BusinessException("Msg_2232");
+			throw new BusinessException("Msg_2233");
 		}
 		Map<EquipmentItemNo, ActualItemUsageValue> itemDataMap = command.getItemDatas().stream()
 				.collect(Collectors.toMap(data -> new EquipmentItemNo(data.getItemNo()),

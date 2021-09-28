@@ -227,7 +227,7 @@ module nts.uk.com.view.oew001.share.model.constants {
   export const SELECT_ALL_CODE = ' ';
   // 固定値Ａ
   export const FIXED_VALUE_A = 9;
-  export const MAXIMUM_COL_WIDTH = 300;
+  export const MAXIMUM_COL_WIDTH = 450;
 }
 
 module nts.uk.com.view.oew001.share.model.enums {

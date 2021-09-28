@@ -8,11 +8,19 @@
   margin-top: 10px;
 }
 
-.dynamic-zone > .div-line {
+.dynamic-zone .flex.valign-center {
   margin-bottom: 10px;
 }
 
-.form-label {
+.dynamic-zone td {
+  min-width: 108px;
+}
+
+.name-label {
+  width: 110px;
+}
+
+.dynamic-item {
   width: 100px;
 }
 

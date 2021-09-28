@@ -20,8 +20,12 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
+import com.aspose.cells.Encoding;
+import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Style;
 import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.TxtSaveOptions;
+import com.aspose.cells.TxtValueQuoteType;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
@@ -127,6 +131,9 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				extension = EXCEL_EXTENSION;
 			} else {
 				this.printHeaderCsv(sheet, reportContext, dataSource);
+				Cells cells = sheet.getCells();
+				cells.deleteBlankRows();
+				cells.deleteBlankColumns();
 				extension = CSV_EXTENSION;
 			}
 			this.printData(sheet, reportContext, dataSource);
@@ -138,7 +145,10 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 			if (dataSource.getReportType().equals(EquipmentDataReportType.EXCEL)) {
 				reportContext.saveAsExcel(outputStream);
 			} else {
-				reportContext.saveAsCSV(outputStream);
+				TxtSaveOptions saveOptions = new TxtSaveOptions(SaveFormat.CSV);
+				saveOptions.setQuoteType(TxtValueQuoteType.MINIMUM);
+				saveOptions.setEncoding(Encoding.getUTF8());
+				reportContext.saveWithOtherOption(outputStream, saveOptions);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -204,9 +214,9 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 		List<EquipmentData> equipmentDatas = dataSource.getEquipmentDatas();
 		// Sort data (①設備分類コー ②設備コード ③日付 ④社員コード ⑤利用回目)
 		equipmentDatas.sort(Comparator.comparing(EquipmentData::getEquipmentClassificationCode)
-				.thenComparing(EquipmentData::getEquipmentCode).thenComparing(EquipmentData::getInputDate)
+				.thenComparing(EquipmentData::getEquipmentCode).thenComparing(EquipmentData::getUseDate)
 				.thenComparing(EquipmentData::getSid, (s1, s2) -> this.compareSids(s1, s2, dataSource))
-				.thenComparing(EquipmentData::getUseDate));
+				.thenComparing(EquipmentData::getInputDate));
 
 		AtomicInteger currentRow = new AtomicInteger(isPrintExcel ? DATA_ROW : CSV_DATA_ROW);
 		AtomicBoolean isBlueBackground = new AtomicBoolean(false);
@@ -283,7 +293,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 						if (itemData.getItemClassification().equals(ItemClassification.NUMBER) && isPrintExcel) {
 							value = String.format("%,d", Integer.valueOf(value));
 							alignType = TextAlignmentType.RIGHT;
-						} else if (itemData.getItemClassification().equals(ItemClassification.TIME)) {
+						} else if (itemData.getItemClassification().equals(ItemClassification.TIME) && isPrintExcel) {
 							value = LocalTime.MIN.plus(Duration.ofMinutes(Integer.valueOf(value))).toString();
 							alignType = TextAlignmentType.RIGHT;
 						}

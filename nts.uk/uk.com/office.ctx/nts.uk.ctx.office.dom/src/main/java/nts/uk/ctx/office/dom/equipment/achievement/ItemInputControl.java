@@ -81,11 +81,11 @@ public class ItemInputControl extends ValueObject {
 	 * @return エラー
 	 */
 	public Optional<ErrorMessage> checkErrors(EquipmentItemNo itemNo, UsageItemName itemName, Optional<ActualItemUsageValue> inputVal) {
-		if (this.require && !inputVal.isPresent()) {
+		if (this.require && !this.isValidInput(inputVal)) {
 			return Optional.of(new I18NErrorMessage(I18NText.main("Msg_2228").addRaw(itemName.v()).build()));
 		}
 		
-		if (!inputVal.isPresent() || StringUtil.isNullOrEmpty(inputVal.get().v(), true)) {
+		if (!this.isValidInput(inputVal)) {
 			return Optional.empty();
 		}
 		
@@ -142,5 +142,9 @@ public class ItemInputControl extends ValueObject {
 		int h = Math.abs(minute) / 60;
 		int m = Math.abs(minute) % 60;
 		return h + ":" + (m < 10 ? "0" + m : m);
+	}
+	
+	private boolean isValidInput(Optional<ActualItemUsageValue> optValue) {
+		return optValue.isPresent() && !StringUtil.isNullOrEmpty(optValue.get().v(), true);
 	}
 }
