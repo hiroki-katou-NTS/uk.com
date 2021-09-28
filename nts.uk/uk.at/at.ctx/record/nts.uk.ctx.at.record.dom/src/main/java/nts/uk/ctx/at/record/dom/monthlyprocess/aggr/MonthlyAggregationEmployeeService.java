@@ -179,8 +179,6 @@ public class MonthlyAggregationEmployeeService {
 			val closureId = aggrPeriod.getClosureId();
 			val closureDate = aggrPeriod.getClosureDate();
 			val datePeriod = aggrPeriod.getPeriod();
-			//get employmentCode
-			String employmentCode = employments.stream().filter(x->x.getPeriod().contains(datePeriod.start())).findFirst().get().getEmploymentCode();
 			//ConcurrentStopwatches.start("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 
 			// 中断依頼が出されているかチェックする
@@ -202,6 +200,11 @@ public class MonthlyAggregationEmployeeService {
 					return AggregationResult.build(status);
 				}
 			}
+			
+			//get employmentCode
+			String employmentCode = employments.stream().filter(x->x.getPeriod().contains(datePeriod.start()))
+					.findFirst().map(c -> c.getEmploymentCode()).orElse(null);
+			if (employmentCode == null) continue; 
 			
 			//実績締めロックされない期間を取得する
 			List<DatePeriod> listPeriod = ClosingGetUnlockedPeriod.get(require, datePeriod, employmentCode, ignoreFlagDuringLock, AchievementAtr.MONTHLY);
