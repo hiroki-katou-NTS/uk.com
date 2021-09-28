@@ -158,12 +158,12 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         cells.deleteRows(9, 60);
 
         // Set CopyOptions.ReferToDestinationSheet to true
-        CopyOptions options = new CopyOptions();
-        options.setReferToDestinationSheet(true);
-        // Set PasteOptions
-        PasteOptions pasteOptions = new PasteOptions();
-        pasteOptions.setPasteType(PasteType.ALL);
-        pasteOptions.setOnlyVisibleCells(true);
+//        CopyOptions options = new CopyOptions();
+//        options.setReferToDestinationSheet(true);
+//        // Set PasteOptions
+//        PasteOptions pasteOptions = new PasteOptions();
+//        pasteOptions.setPasteType(PasteType.ALL);
+//        pasteOptions.setOnlyVisibleCells(true);
 
         int rowCount = 9;
         int pageIndex = 0;
@@ -207,12 +207,14 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             if (graphVacationDisplay) {
                 // C3_2_1
                 if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
+                    System.out.println("-----------C3_2_1-----------");
                     val shape1a = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape1a.getColumn() != null) {
                         drawRectangle(shapes, rowCount, shape1a.getColumn(), shape1a.getWidth(), shape1a.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
                     }
 
                     if (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) {
+                        System.out.println("-----------C3_2_1-----------");
                         val shape1b = calculateConvertToShape(graphStartTime, item.getStartTime2(), item.getEndTime2());
                         if (shape1b.getColumn() != null) {
                             drawRectangle(shapes, rowCount, shape1b.getColumn(), shape1b.getWidth(), shape1b.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
@@ -222,6 +224,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
                 // C3_2_4
                 if (item.getWorkType().equals(WorkTimeForm.FLOW.value)) {
+                    System.out.println("-----------C3_2_4-----------");
                     val shape4a = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape4a.getColumn() != null) {
                         drawRectangle(shapes, rowCount, shape4a.getColumn(), shape4a.getWidth(), shape4a.getLeft(), getBarColor(BarType.FLOWING_WORKING_HOURS), false, null);
@@ -258,6 +261,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                         if (!isDoubleWorkDisplay) {
                             timeChecked = checkTime(graphStartTime, overTime.getStartTime(), overTime.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()));
                         }
+                        System.out.println("-----------C3_2_3-----------");
                         val shape3 = calculateConvertToShape(graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
                         if (shape3.getColumn() != null) {
                             drawRectangle(shapes, rowCount, shape3.getColumn(), shape3.getWidth(), shape3.getLeft(), getBarColor(BarType.OVERTIME_HOURS), false, null);
@@ -274,6 +278,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                             timeChecked = checkTime(graphStartTime, breakTime.getStartTime().v(), breakTime.getEndTime().v(),
                                     new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()));
                         }
+                        System.out.println("-----------C3_2_2-----------");
                         val shape2 = calculateConvertToShape(graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
                         if (shape2.getColumn() != null) {
                             drawRectangle(shapes, rowCount, shape2.getColumn(), shape2.getWidth(), shape2.getLeft(), getBarColor(BarType.BREAK_TIME), false, null);
@@ -348,7 +353,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
             // Paging
             if (isNextPage(rowCount, pageIndex)) {
-                cells.copyRows(cellsTemplate, 57, rowCount, 1, options);  // close ruler
+                cells.copyRows(cellsTemplate, 57, rowCount, 1);  // close ruler
                 rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
@@ -356,7 +361,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
             // Ruler close
             if (i == employeeWorkScheduleList.size()) {
-                cells.copyRows(cellsTemplate, 57, rowCount, 1, options);
+                cells.copyRows(cellsTemplate, 57, rowCount, 1);
                 rowCount += 1;
             }
         }
@@ -393,9 +398,9 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             columnStart += 1;
             minuteStart -= 30;
         }
-        int marginLeft = 0;
+        int left = 0;
         if (startTime.getMinute() != 0) {
-            marginLeft = Math.round(calcRatioCell() * minuteStart);
+            left = Math.round(calcRatioCell() * minuteStart);
         }
 
         int columnEnd = hourColumnMap.get(endTime.getHour()) == null ? 0 : hourColumnMap.get(endTime.getHour()) + 1;
@@ -405,11 +410,21 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             minuteEnd -= 30;
         }
 
+        System.out.println("-------------------------------------");
+        System.out.println("Input start: " + start);
+        System.out.println("Input end: " + end);
+        System.out.println("TimeConverted Start: " + startTime);
+        System.out.println("TimeConverted End: " + endTime);
+        System.out.println("left: " + left);
+        System.out.println("minuteEnd: " + minuteEnd);
+        System.out.println("columnStart: " + columnStart);
+        System.out.println("columnEnd: " + columnEnd);
         int shapeWidth = minuteEnd == 0
-                ? (columnEnd * 32) - (columnStart * 32) - marginLeft
-                : ((columnEnd * 32) + Math.round(calcRatioCell() * minuteEnd)) - (columnStart * 32) - marginLeft;
+                ? (columnEnd * 25) - (columnStart * 25) - left
+                : ((columnEnd * 25) + Math.round(calcRatioCell() * minuteEnd)) - (columnStart * 25) - left;
+        System.out.println("shapeWidth: " + shapeWidth);
 
-        return new DrawRectangleProperties(columnStart, marginLeft, shapeWidth);
+        return new DrawRectangleProperties(columnStart, left, shapeWidth);
     }
 
     private TimeCheckedDto checkTime(int graphStartTime, Integer start, Integer end, TimeRangeLimitDto timeRange) {
