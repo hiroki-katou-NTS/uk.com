@@ -48,7 +48,7 @@ public class RoleIdWorkDomService {
 					 .collect(Collectors.toMap(
 							 x -> x.getKey(), 
 							 x -> require.getRoleSetFromUserId(x.getValue(), date)
-							 					.map(y -> y.getEmploymentRoleId())
+							 					.map(y -> y.getEmploymentRoleId().orElse(""))
 							 					.orElse("")))
 					 .entrySet()
 					 .stream()
