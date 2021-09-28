@@ -128,10 +128,10 @@ public class MonAggrEmployeeSettings {
 			if (employmentOpt.isPresent()){
 				domain.employments.add(employmentOpt.get());
 				empCriteria = employmentOpt.get().getPeriod().end();
-				if (empCriteria.afterOrEquals(GeneralDate.max())) break;
-				empCriteria = empCriteria.addDays(1);
+//				if (empCriteria.afterOrEquals(GeneralDate.max())) break;
 			}
-			else break;
+//			else break;
+			empCriteria = empCriteria.addDays(1);
 		}
 		
 		// 所属職場履歴
@@ -147,10 +147,10 @@ public class MonAggrEmployeeSettings {
 				domain.workPlacesToRoot.put(workplaceOpt.get().getWorkplaceId(), workplacesToRoot);
 				
 				// 次の履歴へ
-				if (wkpCriteria.afterOrEquals(GeneralDate.max())) break;
-				wkpCriteria = wkpCriteria.addDays(1);
+//				if (wkpCriteria.afterOrEquals(GeneralDate.max())) break;
 			}
-			else break;
+//			else break;
+			wkpCriteria = wkpCriteria.addDays(1);
 		}
 		
 		// 社員別通常勤務労働時間
