@@ -731,7 +731,7 @@ module nts.uk.ui.at.kdw013.c {
                 .subscribe((taskCode: string) => {
                     const { $settings } = params;
                     const settings = ko.unwrap($settings);
-                    settings.isChange = vm.changed();
+                    settings.isChange = vm.changed('TASK');
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -758,7 +758,7 @@ module nts.uk.ui.at.kdw013.c {
                     const { $settings } = params;
                     const settings = ko.unwrap($settings);
                     if(settings)
-                    settings.isChange = vm.changed();
+                    settings.isChange = vm.changed('TASK');
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -786,7 +786,7 @@ module nts.uk.ui.at.kdw013.c {
                     const settings = ko.unwrap($settings);
                     
                     if(settings)
-                    settings.isChange = vm.changed();
+                    settings.isChange = vm.changed('TASK');
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -813,7 +813,7 @@ module nts.uk.ui.at.kdw013.c {
                     const { $settings } = params;
                     const settings = ko.unwrap($settings);
                     if(settings)
-                    settings.isChange = vm.changed();
+                    settings.isChange = vm.changed('TASK');
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -834,56 +834,46 @@ module nts.uk.ui.at.kdw013.c {
                             .always(() => vm.$blockui('clearView'));
                     }
                 });
-                
-                
+        
+            task5
+                .subscribe((taskCode: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if (settings)
+                        settings.isChange = vm.changed('TASK');
+                });
+        
+            workLocation
+                .subscribe((taskCode: string) => {
+                    const { $settings } = params;
+                    const settings = ko.unwrap($settings);
+                    if (settings)
+                        settings.isChange = vm.changed('WORKLOC');
+                });
+        
+          
         
             timeRange
                 .subscribe((data: string) => {
                     const { $settings } = params;
                     const settings = ko.unwrap($settings);
                     if(settings)
-                    settings.isChange = vm.changed();
+                    settings.isChange = vm.changed('TIME');
                 });
 
             descriptions
                 .subscribe((data: string) => {
                     const { $settings } = params;
                     const settings = ko.unwrap($settings);
-                    if(settings)
-                    settings.isChange = vm.changed();
+                    if (settings)
+                        settings.isChange = vm.changed('DES');
                 });
 
-            /*
-            task5
-                .subscribe((taskCode: string) => {
-                    if (taskCode) {
-                        const { employeeId } = vm.$user;
-                        const { start } = ko.unwrap(data);
-
-                        const params: SelectWorkItemParam = {
-                            refDate: moment(start).format(DATE_TIME_FORMAT),
-                            sId: employeeId,
-                            taskCode,
-                            taskFrameNo: 5
-                        };
-
-                        vm
-                            .$blockui('grayoutView')
-                            .then(() => vm.$ajax('at', API.SELECT, params))
-                            .then((data: TaskDto[]) => {
-                                console.log(data);
-                            })
-                            .always(() => vm.$blockui('clearView'));
-                    }
-                });
-            */
+           
+            
 
             position
                 .subscribe((p: any) => {
-                    const { $settings } = params;
-                    const settings = ko.unwrap($settings);
-                    if(settings)
-                    settings.isChange = vm.changed();
                     if (!p) {
                         hasError(false);
                         cache.view = 'view';
@@ -980,7 +970,7 @@ module nts.uk.ui.at.kdw013.c {
         getTaskInfo(){
             const vm = this;
             const {  model, combobox} = vm;
-            const { task1, task2, task3, task4, task5, workplace } = model;
+            const { task1, task2, task3, task4, task5 } = model;
             const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
             const t1 = ko.unwrap(task1);
             const t2 = ko.unwrap(task2);
@@ -1185,6 +1175,7 @@ module nts.uk.ui.at.kdw013.c {
 
                             event.setExtendedProp('sId', employeeId);
                             event.setExtendedProp('workLocationCD', ko.unwrap(workplace));
+                          
 
                             event.setExtendedProp('remarks', descriptions());
                             event.setExtendedProp('workingHours', tr.end - tr.start);
@@ -1196,7 +1187,8 @@ module nts.uk.ui.at.kdw013.c {
                 });
         }
     
-        changed(){
+        changed(pos:'TIME'|'TASK'|'DES'|'ALL'){
+
             const vm = this;
             const { params, model} = vm;
             const { data } = params;
@@ -1209,29 +1201,59 @@ module nts.uk.ui.at.kdw013.c {
                 const { start, end } = event;
                 const task = vm.getTaskInfo();
 
-                if (start.getTime() != setTimeOfDate(start, tr.start).getTime())
-                    return true;
+                if (pos == 'TIME' || pos == 'ALL') {
+                    if (start.getTime() != setTimeOfDate(start, tr.start).getTime()) {
+                        event.setExtendedProp('isChanged', true);
 
-                if (end.getTime() != setTimeOfDate(start, tr.end).getTime())
-                    return true;
+                        return true;
+                    }
 
-                if (task) {
-                    const { displayInfo } = task;
+                    if (end.getTime() != setTimeOfDate(start, tr.end).getTime()) {
+                        console.log('time changed');
+                        return true;
+                    }
+                }
+             
+                if (pos == 'TASK'|| pos == 'ALL') {
+                    if (task) {
+                        const { displayInfo } = task;
 
-                    if (displayInfo) {
-                        const { color, taskName } = displayInfo;
-                        if (vm.isTaskChanged(event))
+                        if (displayInfo) {
+                            const { color, taskName } = displayInfo;
+                            if (vm.isTaskChanged(event)) {
+                                event.setExtendedProp('isChanged', true);
+
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                if (pos == 'WORKLOC'|| pos == 'ALL') {
+                    const {workplace} = model;
+                    const wkp = ko.unwrap(workplace);
+                    if (wkp) {
+                        if (wkp != _.get(event,'extendedProps.workLocationCD')) {
+                            event.setExtendedProp('isChanged', true);
+
                             return true;
+                        }
+                    }
+                }
+
+                if (pos == 'DES'|| pos == 'ALL') {
+                    if (_.get(event, 'extendedProps.remarks') != descriptions()) {
+                         event.setExtendedProp('isChanged', true);
+
+                        return true;
                     }
                 }
                 
-                if (_.get(event, 'extendedProps.remarks') != descriptions())
-                    return true;
-                
+                return false;
             }
             return false;
         }
-    }
+}
 
     type Params = {
         close: (result?: 'yes' | 'cancel' | null) => void;

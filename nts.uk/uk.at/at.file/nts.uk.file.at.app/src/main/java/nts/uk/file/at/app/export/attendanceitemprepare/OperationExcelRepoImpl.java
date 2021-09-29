@@ -100,7 +100,7 @@ public class OperationExcelRepoImpl implements MasterListData {
     	String canImplement = TextResource.localize("KDW006_299");
     	String cannotImplement = TextResource.localize("KDW006_300");
     	String maru = "〇";
-    	String dash = "ー";
+    	String dash = "-";
     	
     	Optional<DaiPerformanceFun> daiPerformanceFunOpt = operationExcelRepo.getDaiPerformanceFunById(companyId);
         Optional<MonPerformanceFun> monPerformanceFunOpt = operationExcelRepo.getMonPerformanceFunById(companyId);

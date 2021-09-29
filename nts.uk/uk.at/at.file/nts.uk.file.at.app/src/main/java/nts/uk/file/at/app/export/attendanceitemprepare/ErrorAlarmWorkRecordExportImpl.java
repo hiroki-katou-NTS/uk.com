@@ -979,11 +979,11 @@ public class ErrorAlarmWorkRecordExportImpl {
                         if (c.getMessage().getBoldAtr()) { //G11_7
                         	data.put("設定 メッセージを太字にする", "〇");
                         } else {
-                        	data.put("設定 メッセージを太字にする", "ー");
+                        	data.put("設定 メッセージを太字にする", "-");
                         }
                         
                         if (!checkTargetCondition.getFilterByEmployment()) { //G11_8
-                        	data.put("チェック対象範囲設定 雇用", "ー");
+                        	data.put("チェック対象範囲設定 雇用", "-");
                         } else {
                         	data.put("チェック対象範囲設定 雇用", "〇");
                         	List<String> lstEmpCode = checkTargetCondition.getLstEmploymentCode().stream()
@@ -1009,7 +1009,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                         }
                         
                         if (!checkTargetCondition.getFilterByClassification()) { //G11_10
-                        	data.put("チェック対象範囲設定 分類", "ー");
+                        	data.put("チェック対象範囲設定 分類", "-");
                         } else {
                             data.put("チェック対象範囲設定 分類", "〇");
                             List<String> lstClassificationCode= checkTargetCondition.getLstClassificationCode().stream()
@@ -1035,7 +1035,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                         }
                         
                         if (!checkTargetCondition.getFilterByJobTitle()) { //G11_12
-                        	data.put("チェック対象範囲設定 職位", "ー");
+                        	data.put("チェック対象範囲設定 職位", "-");
                         } else {
                         	data.put("チェック対象範囲設定 職位", "〇");
                             List<String> lstJobTitleId= checkTargetCondition.getLstJobTitleId();
@@ -1074,7 +1074,7 @@ public class ErrorAlarmWorkRecordExportImpl {
                        
                         if (AppContexts.optionLicense().customize().ootsuka()) { //※1
                         	if(!checkTargetCondition.getFilterByBusinessType()){ //G11_14
-	                            data.put("チェック対象範囲設定 勤務種別", "ー");
+	                            data.put("チェック対象範囲設定 勤務種別", "-");
 	                        } else {
 	                            data.put("チェック対象範囲設定 勤務種別", "〇");
 	                            List<String> lstBusinessTypeCode= checkTargetCondition.getLstBusinessTypeCode().stream()
@@ -1252,7 +1252,7 @@ public class ErrorAlarmWorkRecordExportImpl {
     		if	(errorAlarmWorkRecordOpt.get().getMessage().getBoldAtr()) { //M11_7
     			data.put("値", "〇");
     		} else {
-    			data.put("値", "ー");
+    			data.put("値", "-");
     		}
         }
         datas.add(alignMasterData3(data, AlignmentType.LEFT));
