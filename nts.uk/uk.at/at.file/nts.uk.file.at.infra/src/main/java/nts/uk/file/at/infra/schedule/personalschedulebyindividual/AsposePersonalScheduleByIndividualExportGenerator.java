@@ -3,7 +3,6 @@ package nts.uk.file.at.infra.schedule.personalschedulebyindividual;
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
-import com.aspose.cells.CellArea;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
@@ -21,6 +20,7 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.PersonalScheduleByIndividualExportGenerator;
@@ -36,15 +36,17 @@ import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @Stateless
 public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByIndividualExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
     private final String EXCEL_EXT = ".xlsx";
-    private static final String TEMPLATE_FILE = "report/KSU002B.xlsx";
+    private static final String TEMPLATE_FILE = "report/KSU002B_up.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 37;
     private final String SPACE = "　";
     private final String COLON = "　：　";
@@ -68,11 +70,18 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet wsSource = worksheets.get(0);
+            if (query.isTotalDisplay()) {
+                wsSource = worksheets.get(1);
+                worksheets.removeAt(0);
+            } else {
+                worksheets.removeAt(1);
+            }
 
             //  Worksheet wsDestination = worksheets.get(1);
             pageSetting(wsSource, dataSource);
             printHeader(wsSource, dataSource, query);
             printContent(wsSource, dataSource, query);
+
             reportContext.processDesigner();
 
 
@@ -118,19 +127,41 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         // B2_3
         cells.get(2, 7).setValue(query.getEmployeeName());
         // B3_1
-        cells.get(2, 7).setValue(GeneralDate.fromString(query.getDate(), "yyyy/MM/dd").yearMonth());
+        cells.get(2, 18).setValue(GeneralDate.fromString(query.getDate(), "yyyy/MM/dd").yearMonth());
         if (query.isTotalDisplay()) {
-            cells.get(5, 36).setValue(getText("KSU002_68"));
+            cells.get("AG6").setValue(getText("KSU002_68"));
         }
     }
 
+    private void printCalender(Cells cells, int rowCount, int col,
+                               String l1P1, String l1P2, String l2P1, String l2P2, Integer l3P1, Integer l3P2, Map<Integer, String> holidayMap, int colNO) {
+        int secondLieOfCalender = rowCount + 2;
+        int thirdLieOfCalender = rowCount + 4;
+        String divider = getText("KSU002_67");
+        if (l1P1 == null) l1P1 = "";
+        if (l1P2 == null) l1P2 = "";
+        if (l2P1 == null) l2P1 = "";
+        if (l2P2 == null) l2P2 = "";
+        if (l3P1 == null) l3P1 = 0;
+        if (!holidayMap.containsKey(colNO)) {
+            cells.get(rowCount, col).setValue(l1P1 + "   " + l1P2);
+            cells.get(secondLieOfCalender, col).setValue(l2P1 + "  " + l2P2);
+            if (l3P1 != null && l3P2 != null) {
+                cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
+            }
+        } else {
+            cells.get(rowCount, col).setValue(l1P1);
+            cells.get(secondLieOfCalender, col).setValue(holidayMap.get(col));
+            Style style = cells.get(secondLieOfCalender, col).getStyle();
+            style.setForegroundColor(Color.getRed());
+        }
+    }
 
     private void printContent(Worksheet wsSource, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) throws Exception {
         Cells cells = wsSource.getCells();
-        Cells cellsTemplate = wsSource.getCells();
+        //Cells cellsTemplate = wsSource.getCells();
         ShapeCollection shapes = wsSource.getShapes();
         HorizontalPageBreakCollection hPageBreaks = wsSource.getHorizontalPageBreaks();
-        cells.deleteRows(7, 38);
         List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource);
         // Set CopyOptions.ReferToDestinationSheet to true
         CopyOptions options = new CopyOptions();
@@ -140,77 +171,103 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         pasteOptions.setPasteType(PasteType.ALL);
         pasteOptions.setOnlyVisibleCells(true);
 
-        int rowCount = 7; // start from row index 9
+        int rowCount = 6; // start from row index 9
         int pageIndex = 0;
         String divider = getText("KSU002_67");
         for (PersonalScheduleByIndividualFormat item : dataBuildList) {
-            cells.copyRows(cellsTemplate, 7, rowCount, 5);
-            cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
             int secondLieOfCalender = rowCount + 2;
             int thirdLieOfCalender = rowCount + 4;
+            int weekNO = item.getWeekNo();
+            Map<Integer, String> holiday = item.getHoliday().get(weekNO);
 
-            //calender item first for each row
-            cells.get(rowCount, 0).setValue(item.getColn1C21());
-            cells.get(rowCount, 2).setValue(item.getColn1C22());
-            cells.get(secondLieOfCalender, 0).setValue(item.getColn1C231());
-            cells.get(secondLieOfCalender, 3).setValue(item.getColn1C232());
-            cells.get(thirdLieOfCalender, 0).setValue(item.getColn1C233());
-            cells.get(thirdLieOfCalender, 2).setValue(divider);
-            cells.get(thirdLieOfCalender, 3).setValue(item.getColn1C234());
+            printCalender(cells,
+                    rowCount,
+                    0,
+                    item.getColn1C21(),
+                    item.getColn1C22(),
+                    item.getColn1C231(),
+                    item.getColn1C232(),
+                    item.getColn1C233(),
+                    item.getColn1C234(),
+                    holiday,
+                    1
+            );
+            printCalender(cells,
+                    rowCount,
+                    5,
+                    item.getColn2C21(),
+                    item.getColn2C22(),
+                    item.getColn2C231(),
+                    item.getColn2C232(),
+                    item.getColn2C233(),
+                    item.getColn2C234(),
+                    holiday,
+                    2
+            );
 
-            //calender item second for each row
-            cells.get(rowCount, 5).setValue(item.getColn2C21());
-            cells.get(rowCount, 7).setValue(item.getColn2C22());
-            cells.get(secondLieOfCalender, 5).setValue(item.getColn2C231());
-            cells.get(secondLieOfCalender, 8).setValue(item.getColn2C232());
-            cells.get(thirdLieOfCalender, 5).setValue(item.getColn2C233());
-            cells.get(thirdLieOfCalender, 7).setValue(divider);
-            cells.get(thirdLieOfCalender, 8).setValue(item.getColn2C234());
+            printCalender(cells,
+                    rowCount,
+                    11,
+                    item.getColn3C21(),
+                    item.getColn3C22(),
+                    item.getColn3C231(),
+                    item.getColn3C232(),
+                    item.getColn3C233(),
+                    item.getColn3C234(),
+                    holiday,
+                    3
+            );
+            printCalender(cells,
+                    rowCount,
+                    16,
+                    item.getColn4C21(),
+                    item.getColn4C22(),
+                    item.getColn4C231(),
+                    item.getColn4C232(),
+                    item.getColn4C233(),
+                    item.getColn4C234(),
+                    holiday,
+                    4
+            );
 
-            //calender item third for each row
-            cells.get(rowCount, 11).setValue(item.getColn3C21());
-            cells.get(rowCount, 13).setValue(item.getColn3C22());
-            cells.get(secondLieOfCalender, 11).setValue(item.getColn3C231());
-            cells.get(secondLieOfCalender, 14).setValue(item.getColn3C232());
-            cells.get(thirdLieOfCalender, 11).setValue(item.getColn3C233());
-            cells.get(thirdLieOfCalender, 13).setValue(divider);
-            cells.get(thirdLieOfCalender, 14).setValue(item.getColn3C234());
-
-            //calender item four for each row
-            cells.get(rowCount, 16).setValue(item.getColn4C21());
-            cells.get(rowCount, 18).setValue(item.getColn4C22());
-            cells.get(secondLieOfCalender, 16).setValue(item.getColn4C231());
-            cells.get(secondLieOfCalender, 19).setValue(item.getColn4C232());
-            cells.get(thirdLieOfCalender, 16).setValue(item.getColn4C233());
-            cells.get(thirdLieOfCalender, 18).setValue(divider);
-            cells.get(thirdLieOfCalender, 19).setValue(item.getColn4C234());
-
-            //calender item five for each row
-            cells.get(rowCount, 21).setValue(item.getColn5C21());
-            cells.get(rowCount, 23).setValue(item.getColn5C22());
-            cells.get(secondLieOfCalender, 21).setValue(item.getColn5C231());
-            cells.get(secondLieOfCalender, 24).setValue(item.getColn5C232());
-            cells.get(thirdLieOfCalender, 21).setValue(item.getColn5C233());
-            cells.get(thirdLieOfCalender, 23).setValue(divider);
-            cells.get(thirdLieOfCalender, 24).setValue(item.getColn5C234());
-
-            //calender item six for each row
-            cells.get(rowCount, 26).setValue(item.getColn6C21());
-            cells.get(rowCount, 28).setValue(item.getColn6C22());
-            cells.get(secondLieOfCalender, 26).setValue(item.getColn6C231());
-            cells.get(secondLieOfCalender, 29).setValue(item.getColn6C232());
-            cells.get(thirdLieOfCalender, 26).setValue(item.getColn6C233());
-            cells.get(thirdLieOfCalender, 28).setValue(divider);
-            cells.get(thirdLieOfCalender, 29).setValue(item.getColn6C234());
+            printCalender(cells,
+                    rowCount,
+                    21,
+                    item.getColn5C21(),
+                    item.getColn5C22(),
+                    item.getColn5C231(),
+                    item.getColn5C232(),
+                    item.getColn5C233(),
+                    item.getColn5C234(),
+                    holiday,
+                    5
+            );
+            printCalender(cells,
+                    rowCount,
+                    26,
+                    item.getColn6C21(),
+                    item.getColn6C22(),
+                    item.getColn6C231(),
+                    item.getColn6C232(),
+                    item.getColn6C233(),
+                    item.getColn6C234(),
+                    holiday,
+                    6
+            );
 
             //calender item seven for each row
-            cells.get(rowCount, 31).setValue(item.getColn7C21());
-            cells.get(rowCount, 33).setValue(item.getColn7C22());
-            cells.get(secondLieOfCalender, 31).setValue(item.getColn7C231());
-            cells.get(secondLieOfCalender, 34).setValue(item.getColn7C232());
-            cells.get(thirdLieOfCalender, 31).setValue(item.getColn7C233());
-            cells.get(thirdLieOfCalender, 33).setValue(divider);
-            cells.get(thirdLieOfCalender, 34).setValue(item.getColn7C234());
+            printCalender(cells,
+                    rowCount,
+                    31,
+                    item.getColn7C21(),
+                    item.getColn7C22(),
+                    item.getColn7C231(),
+                    item.getColn7C232(),
+                    item.getColn7C233(),
+                    item.getColn7C234(),
+                    holiday,
+                    6
+            );
             if (query.isTotalDisplay()) {
                 //calender item seven for each row
                 cells.get(rowCount, 36).setValue(item.getD21());
@@ -226,8 +283,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             if (isNextPage(rowCount, pageIndex)) {
                 PasteOptions opts = new PasteOptions();
                 opts.setPasteType(PasteType.FORMATS);
-                cells.copyRows(cellsTemplate, 36, rowCount, 1, options);  // copy close ruler
-                removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
+                // cells.copyRows(cellsTemplate, 36, rowCount, 1, options);  // copy close ruler
+                // removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
                 rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
@@ -248,15 +305,48 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - 8 > MAX_ROW_IN_PAGE;
     }
 
+    int getInit(List<DateInformation> dateInfolist) {
+        int count = 0;
+        if (dateInfolist.size() > 0) {
+            DayOfWeek dateInfo = dateInfolist.get(0).getDayOfWeek();
+            switch (dateInfo) {
+                case SUNDAY:
+                    count = 0;
+                    break;
+                case MONDAY:
+                    count = 1;
+                    break;
+                case TUESDAY:
+                    count = 2;
+                    break;
+                case WEDNESDAY:
+                    count = 3;
+                    break;
+                case THURSDAY:
+                    count = 4;
+                    break;
+                case FRIDAY:
+                    count = 5;
+                    break;
+
+                case SATURDAY:
+                    count = 6;
+                    break;
+            }
+        }
+        return count;
+    }
+
     private List<PersonalScheduleByIndividualFormat> buildData(PersonalScheduleIndividualDataSource dataSource) {
         List<DateInformation> dateInfolist = dataSource.getDateInformationList();
         List<WorkScheduleWorkInforDto> workInforDtoList = dataSource.getWorkInforDtoList();
         List<WeeklyAgreegateResult> weeklyAgreegateResults = dataSource.getAgreegateResults();
         Optional<LegalWorkTimeOfEmployee> legalWorktime = dataSource.getLegalWorkTimeOfEmployee();
-        int count = 0;
+        int count = getInit(dateInfolist);
         boolean isFirst = true;
         List<PersonalScheduleByIndividualFormat> dataList = new ArrayList<>();
         PersonalScheduleByIndividualFormat format = new PersonalScheduleByIndividualFormat();
+        Map<Integer, String> holiday = new HashMap<>();
         String divider = getText("KSU002_67");
         String d11 = getText("KSU002_68");
         String d12 = getText("KSU002_69");
@@ -264,7 +354,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         String d22 = getText("KSU002_76");
         String d26 = getText("KSU002_78");
         String d24 = getText("KSU002_77");
+        int size = dateInfolist.size();
         int weekCount = 0;
+        int iteration = 0;
         for (DateInformation dateInfo : dateInfolist) {
             if (count == 0) {
                 format.setColn1C21(getDate(dateInfo.getYmd(), isFirst));
@@ -277,6 +369,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     format.setColn1C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
                 }
                 isFirst = false;
+                if (dateInfo.isHoliday()) {
+                    holiday.put(1, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
+                }
             }
             if (count == 1) {
                 format.setColn2C21(getDate(dateInfo.getYmd(), false));
@@ -287,6 +382,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn2C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn2C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                }
+                if (dateInfo.isHoliday()) {
+                    holiday.put(2, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
                 }
             }
             if (count == 2) {
@@ -299,6 +397,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     format.setColn3C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn3C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
                 }
+                if (dateInfo.isHoliday()) {
+                    holiday.put(3, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
+                }
             }
             if (count == 3) {
                 format.setColn4C21(getDate(dateInfo.getYmd(), false));
@@ -309,6 +410,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn4C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn4C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                }
+                if (dateInfo.isHoliday()) {
+                    holiday.put(4, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
                 }
             }
             if (count == 4) {
@@ -321,6 +425,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     format.setColn5C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn5C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
                 }
+                if (dateInfo.isHoliday()) {
+                    holiday.put(5, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
+                }
             }
             if (count == 5) {
                 format.setColn6C21(getDate(dateInfo.getYmd(), false));
@@ -331,6 +438,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn6C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn6C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                }
+                if (dateInfo.isHoliday()) {
+                    holiday.put(6, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
                 }
             }
             if (count == 6) {
@@ -343,8 +453,13 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     format.setColn7C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn7C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
                 }
+                if (dateInfo.isHoliday()) {
+                    holiday.put(7, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
+                }
             }
             count++;
+            iteration++;
+
             if (count > 6) {
                 count = 0;
                 weekCount++;
@@ -368,8 +483,42 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setD22(d26);
                 format.setD24(d26);
                 format.setFromTo(divider);
+                Map<Integer, Map<Integer, String>> holidayd = new HashMap<>();
+                holidayd.put(Integer.valueOf(weekCount), holiday);
+                format.setHoliday(holidayd);
+                format.setWeekNo(weekCount);
                 dataList.add(format);
                 format = new PersonalScheduleByIndividualFormat();
+                holiday = new HashMap<>();
+            } else {
+                if (iteration == size) {
+                    Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
+                    if (weekTotal.isPresent()) {
+                        format.setD27(weekTotal.get().getHolidays());
+                        format.setD23(weekTotal.get().getWorkingHours());
+                    }
+                    if (!legalWorktime.isPresent()) {
+                        format.setD25("0");
+                    }
+                    if (legalWorktime.isPresent()) {
+                        if (legalWorktime.get().getWeeklyEstimateTime().isPresent()) {
+                            format.setD25(legalWorktime.get().getWeeklyEstimateTime().get().hour() + ":" + legalWorktime.get().getWeeklyEstimateTime().get().minute());
+                        }
+                    }
+                    format.setD11(d11);
+                    format.setD12(d12);
+                    format.setD21(d21);
+                    format.setD22(d22);
+                    format.setD22(d26);
+                    format.setD24(d26);
+                    format.setFromTo(divider);
+                    Map<Integer, Map<Integer, String>> holidayd = new HashMap<>();
+                    holidayd.put(Integer.valueOf(weekCount), holiday);
+                    format.setHoliday(holidayd);
+                    format.setWeekNo(weekCount);
+                    dataList.add(format);
+                    break;
+                }
             }
         }
         return dataList;
@@ -382,7 +531,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     private String getDate(GeneralDate date, boolean isMdFormat) {
         if (date.day() == 1 || isMdFormat) {
-            return (date.month() + 1) + "/" + date.day();
+            return (date.month()) + "/" + date.day();
         }
         return String.valueOf(date.day());
     }
