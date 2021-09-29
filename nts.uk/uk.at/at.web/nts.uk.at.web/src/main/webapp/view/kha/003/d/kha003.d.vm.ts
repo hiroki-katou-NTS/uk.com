@@ -46,6 +46,13 @@ module nts.uk.at.kha003.d {
             vm.preriod = ko.observable();
             vm.contents = ko.observableArray([]);
             vm.girdWidth = ko.observable("100%")
+
+            window.onresize = function(evt){
+                $('#grid1_table_virtualContainer').height(window.innerHeight - 200);
+                $('#grid1_table_container').height(window.innerHeight - 200);
+                $('#grid1_virtualContainer').height(window.innerHeight - 200);
+                $('#grid1_table_scrollContainer').height(window.innerHeight - 200);
+            }
         }
 
         created() {
@@ -90,16 +97,6 @@ module nts.uk.at.kha003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
-                /* if (data.summaryTableFormat.totalUnit == 1) {
-                     let dateHeaders: Array<DateHeader> = [];
-                     for (let contentItem of data.outputContent.verticalTotalValues) {
-                         let date = contentItem.yearMonth.toString();
-                         vm.dateHeaders.push(
-                             new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
-                         );
-                     }
-                     // vm.dateHeaders(dateHeaders);
-                 }*/
                 if (!data) {
                     vm.$dialog.error({messageId: 'Msg_2171'}).then(() => {
                         vm.displayKha003CScreen();
