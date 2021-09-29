@@ -220,8 +220,6 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 						dfd.resolve();
 					}
 					self.showHideItem(data);
-					$("#ui-area").css('display','');
-					$("#functions-area-bottom").css('display','');
 					$('#cancel-btn').focus();
 					
 					let id = _.filter($("div > div > div > div"), (x: any) => {
@@ -237,8 +235,6 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 					self.bindDataToText(z, index);
 				});
 				self.showHideItem(self.dataHoliday());
-				$("#ui-area").css('display','');
-				$("#functions-area-bottom").css('display','');
 				$('#cancel-btn').focus();
 				self.holidayDataOld({ ...self.holidayData() });
 				dfd.resolve();

@@ -21,7 +21,6 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			<div id="ui-area" style="display: none;">
 				<!-- Search Box -->
 				<div tabindex="-1" id="area-right" style="float: left;">
 					<div>
@@ -52,7 +51,7 @@
 						<label id="A5" style="font-size: 23px;">#{i18n.getText('KDL005_39')}</label>
 					</div>
 					<div id="area-info">
-						<div>
+						<div style="width: 660px;">
 							<!-- A2_3 -->
 							<label id="A2_3">#{i18n.getText('KDL005_60')}</label>
 							<!-- A2_4 -->
@@ -72,17 +71,18 @@
 							<button tabindex="-1" id="btn-help-2"
 								data-bind="ntsHelpButton: {textId: 'KDL005_43', textParams:['{#KDL005_43}', '', '', ''], position: 'right center' }">？</button>
 						</div>
-						<div style="margin-left: 20px; margin-top: 10px;">
+						<div style="margin-left: 20px; margin-top: 10px; width: 660px;">
 							<!-- A2_8 -->
 							<label id="A2_8">#{i18n.getText('KDL005_62')}</label>
 							<!-- A2_9 -->
 							<label id="A2_9" style="margin-left: 10px;"
 								data-bind="text:expiredWithinMonth"></label> <label id="A6_2"
 								style="margin-left: 10px;">#{i18n.getText('KDL005_56')}</label>
-							<!-- A2_10 -->
-							<label id="A2_10">#{i18n.getText('KDL005_59')}</label>
 							<!-- A2_21 -->
-							<label id="A2_21" data-bind="text:dayCloseDeadline"></label>
+							<label id="A2_21" style="float: right; margin-right: 48px;" data-bind="text:dayCloseDeadline"></label>	
+							<!-- A2_10 -->
+							<label id="A2_10" style="float: right; margin-right: 10px;">#{i18n.getText('KDL005_59')}</label>
+							
 						</div>
 						<div>
 							<div tabindex="2" id="combo-box"
@@ -118,11 +118,9 @@
 							<label id="A6">#{i18n.getText('KDL005_55')}</label>
 						</div>
 					</div>
-
 				</div>
 			</div>
-			</div>
-			<div id="functions-area-bottom" style="background-color: white; display: none;">
+			<div id="functions-area-bottom" style="background-color: white;">
 				<button tabindex="1" id="cancel-btn" data-bind="click: cancel"
 					class="large">#{i18n.getText('KDL005_17')}</button>
 			</div>
