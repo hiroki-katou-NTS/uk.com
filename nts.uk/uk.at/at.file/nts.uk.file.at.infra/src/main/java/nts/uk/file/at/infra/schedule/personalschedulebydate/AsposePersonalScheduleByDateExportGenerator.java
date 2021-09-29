@@ -400,7 +400,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             minuteStart -= 30;
         }
         int left = 0;
-        if (startTime.getMinute() != 0) {
+        if (startTime.getMinute() != 0 || startTime.getMinute() != 30) {
             left = Math.round(calcRatioCell() * minuteStart);
         }
 
