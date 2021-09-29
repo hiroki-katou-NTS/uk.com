@@ -16,17 +16,20 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.GetPeriodExcluseEntryRetireTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WorkingTimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -77,7 +80,7 @@ public class MonAggrEmployeeSettings {
 	private MonAggrEmployeeSettings(String employeeId){
 		this.employeeId = employeeId;
 		this.employee = null;
-		this.employments = new ArrayList<>();
+		this.employments = new ArrayList<>() ;
 		this.workplaces = new ArrayList<>();
 		this.workPlacesToRoot = new HashMap<>();
 		this.regLaborTime = Optional.empty();
@@ -119,7 +122,18 @@ public class MonAggrEmployeeSettings {
 		if (period.start().after(GeneralDate.min().addMonths(1))) findStart = period.start().addMonths(-1);
 		GeneralDate findEnd = GeneralDate.max();
 		if (period.end().before(GeneralDate.max().addMonths(-1))) findEnd = period.end().addMonths(1);
-		DatePeriod findPeriod = new DatePeriod(findStart, findEnd);
+		DatePeriod findPeriod = GetPeriodExcluseEntryRetireTime.getPeriodExcluseEntryRetireTime(new GetPeriodExcluseEntryRetireTime.Require() {
+
+			@Override
+			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+				return domain.employee;
+			}
+		}, cacheCarrier, employeeId, new DatePeriod(findStart, findEnd)).orElse(null);
+		
+		if (findPeriod == null) {
+			domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
+			return domain;
+		}
 		
 		// 所属雇用履歴
 		GeneralDate empCriteria = findPeriod.start();
@@ -129,6 +143,10 @@ public class MonAggrEmployeeSettings {
 				domain.employments.add(employmentOpt.get());
 				empCriteria = employmentOpt.get().getPeriod().end();
 //				if (empCriteria.afterOrEquals(GeneralDate.max())) break;
+			} else {
+
+				domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
+				return domain;
 			}
 //			else break;
 			empCriteria = empCriteria.addDays(1);
@@ -148,6 +166,10 @@ public class MonAggrEmployeeSettings {
 				
 				// 次の履歴へ
 //				if (wkpCriteria.afterOrEquals(GeneralDate.max())) break;
+			} else {
+
+				domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
+				return domain;
 			}
 //			else break;
 			wkpCriteria = wkpCriteria.addDays(1);
@@ -177,11 +199,22 @@ public class MonAggrEmployeeSettings {
 		domain.closureStatusMngs = require.employeeClosureStatusManagements(employeeIds, period);
 		
 		// 「労働条件項目」を取得
-		List<WorkingConditionItem> workingConditionItems = require.workingConditionItem(employeeId, period);
-		if (!workingConditionItems.isEmpty()){
-			// 同じ労働制の履歴を統合　と　「労働条件」の確認
-			domain.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
+		empCriteria = findPeriod.start();
+		List<WorkingConditionItem> workingConditionItems = new ArrayList<>();
+		while (empCriteria.beforeOrEquals(findPeriod.end())){
+			val workConditions = require.workingCondition(employeeId, new DatePeriod(empCriteria, empCriteria));
+			if (!workConditions.isEmpty()){
+				workingConditionItems.add(workConditions.get(0).getWorkingConditionItem());
+				empCriteria = workConditions.get(0).getDatePeriod().end();
+			} else {
+
+				domain.errorInfos.put("002", new ErrMessageContent(TextResource.localize("Msg_1156")));
+				return domain;
+			}
+			empCriteria = empCriteria.addDays(1);
 		}
+		// 同じ労働制の履歴を統合　と　「労働条件」の確認
+		domain.integrateHistoryOfSameWorkSys(require, workingConditionItems);
 		
 		return domain;
 	}
@@ -191,7 +224,7 @@ public class MonAggrEmployeeSettings {
 	 * @param target 労働条件項目リスト　（統合前）
 	 * @param repositories 月別集計が必要とするリポジトリ
 	 */
-	private void IntegrateHistoryOfSameWorkSys(RequireM1 require, List<WorkingConditionItem> target){
+	private void integrateHistoryOfSameWorkSys(RequireM1 require, List<WorkingConditionItem> target){
 
 		this.workingConditionItems = new ArrayList<>();
 		this.workingConditions = new HashMap<>();
@@ -246,7 +279,8 @@ public class MonAggrEmployeeSettings {
 	 * @return 所属雇用履歴
 	 */
 	public Optional<BsEmploymentHistoryImport> getEmployment(GeneralDate ymd){
-		return this.employments.stream().filter(c -> c.getPeriod().contains(ymd)).findFirst();
+		return this.employments.stream().filter(c -> c.getPeriod().contains(ymd))
+				.findFirst().map(c -> new BsEmploymentHistoryImport(getEmployeeId(), c.getEmploymentCode(), "", c.getPeriod()));
 	}
 	
 	/**
@@ -319,11 +353,12 @@ public class MonAggrEmployeeSettings {
 		
 		Optional<SharedAffWorkPlaceHisImport> affWorkPlace(String employeeId, GeneralDate baseDate);
 		
-		Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
+		Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, GeneralDate baseDate);
 		
 		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
 		
-		List<WorkingConditionItem> workingConditionItem(String sId, DatePeriod datePeriod);
+		List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod);
 	}
 	
 	public static interface RequireM1 {
