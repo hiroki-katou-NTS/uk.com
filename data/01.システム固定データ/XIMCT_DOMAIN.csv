@@ -1,4 +1,5 @@
 DOMAIN_ID,NAME,AVAILABLE_MODES,TRANSACTION_UNIT
+13,"職場マスタ",0,1
 100,"個人基本情報",4,2
 101,"入社退職履歴",4,2
 102,"所属雇用履歴",4,2
