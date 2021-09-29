@@ -70,6 +70,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         tabMs: Array<TabM>;
 
         isPreAtr: KnockoutObservable<boolean>;
+        date: KnockoutObservable<string>;
         tabsTemp: any;
         selectedTemp: any;
         reasonList: Array<GoOutTypeDispControl>;
@@ -102,6 +103,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.reasonList = params.reasonList
             self.tabMs = params.tabMs;
             self.isPreAtr = params.isPreAtr;
+            self.date = params.date;
             self.isVisibleComlumn = params.isVisibleComlumn;
             self.dataSourceOb = params.dataSourceOb;
             self.dataSource = self.dataSourceOb();
@@ -181,6 +183,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
 
             });
+
+            self.date.subscribe((value) => {
+                self.loadAll();
+            })
 
 
 
@@ -293,7 +299,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         i.id = indexI + 1;
                         i.index = index;
                         // change text element to know value biding from array
-                        i.changeElement();
+                        i.changeElement(self.date);
 
                         if (ko.toJS(self.isPreAtr)) {
                             //                            self.isVisibleComlumn = false; 
@@ -338,7 +344,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     i.index = index;
 
                     // change text element to know value biding from array
-                    i.changeElement();
+                    i.changeElement(self.date);
                 });
             });
 
@@ -658,7 +664,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
 
 
-        public changeElement() {
+        public changeElement(date: KnockoutObservable<string>) {
             let self = this;
             let parseTime = nts.uk.time.minutesBased.clock.dayattr;
             let start = _.isNull(self.startTimeActual) ? '--:--' : parseTime.create(self.startTimeActual).shortText;
@@ -670,7 +676,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<span style="display: block; text-align: center">' + start + '</span>'
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
+                + 'style:{\'background-color\':' + date() + '? ((' + param + '[' + idGetList + '].startTimeActual == null && ' + param + '[' + idGetList + '].endTimeActual == null) ? (' + idGetList + ' === 0 ? \'#ffc0cb\' : ('+ param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\')) : (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\')) : \'\'},'
                 + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameStart +'\'}" />'
                 + '</div>'
                 + '</div>';
@@ -678,7 +684,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<span style="display: block; text-align: center">' + end + '</span>'
                 + '<div align="center">'
                 + '<input style="width: 90px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
+                + 'style:{\'background-color\':' + date() + '? ((' + param + '[' + idGetList + '].startTimeActual == null && ' + param + '[' + idGetList + '].endTimeActual == null) ? (' + idGetList + ' === 0 ? \'#ffc0cb\' : ('+ param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\')) : (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\')) : \'\'},'
                 + 'ntsTimeWithDayEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'TimeWithDayAttr\', inputFormat: \'time\', mode: \'time\', required: false, name: \''+ self.nameEnd +'\'}" />'
                 + '</div>'
                 + '</div>';

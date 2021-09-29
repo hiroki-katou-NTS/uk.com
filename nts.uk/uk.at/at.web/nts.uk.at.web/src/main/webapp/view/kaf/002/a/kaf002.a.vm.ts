@@ -37,6 +37,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
         mode: KnockoutObservable<number> = ko.observable(0); // 0 ->a, 1->b, 2->b(view)
         reasonList: Array<GoOutTypeDispControl>;
+        date: KnockoutObservable<string> = ko.observable(null);
 
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
@@ -136,6 +137,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 					self.$errors('clear');
                     self.isPreAtr(value == 0);
                 }
+            });
+            self.application().appDate.subscribe(value => {
+                self.date(value);
             });
             if(loadDataFlag) {
 				self.application().employeeIDLst(empLst);

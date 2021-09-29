@@ -193,6 +193,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         tripRequestSet.ifPresent(output::setSetting);
         // ドメインモデル「出張申請」を取得する
         Optional<BusinessTrip> businessTrip = businessTripRepository.findByAppId(companyId, appId);
+        val applicationOpt = appRepo.findByID(appId);
 
         Optional<AppEmploymentSet> opEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
         // アルゴリズム「出張申請勤務種類を取得する」を実行する
@@ -212,6 +213,10 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         // ドメインモデル「勤務種類」を取得する
         List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
         if (businessTrip.isPresent()) {
+            if (applicationOpt.isPresent()) {
+                businessTrip.get().setApplication(applicationOpt.get());
+            }
+            
             List<String> cds = businessTrip.get().getInfos().stream()
                     .map(i -> i.getWorkInformation().getWorkTypeCode().v())
                     .distinct()
