@@ -912,6 +912,23 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.getList(x -> toDomain(x));
 	}
 	
+	private static final String SELECT_HOLIDAY_WORK_TYPE_CLO = "SELECT c FROM KshmtWorkType c JOIN c.worktypeSetList w WHERE c.kshmtWorkTypePK.companyId = :companyId"
+			+ "　AND c.deprecateAtr = :deprecateAtr AND c.worktypeAtr = :worktypeAtr AND c.oneDayAtr = :oneDayAtr"
+			+ "　AND w.closeAtr = :closeAtr"
+			+ " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
+	@Override
+	public List<WorkType> findHolidayWorkTypeClo(String companyId, int deprecateAtr, int worktypeAtr, int workTypeClf,
+			int closeAtr) {
+		
+		return this.queryProxy().query(SELECT_HOLIDAY_WORK_TYPE_CLO, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("deprecateAtr", deprecateAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("oneDayAtr", workTypeClf)
+				.setParameter("closeAtr", closeAtr)
+				.getList(x -> toDomain(x));
+	}
+	
 
 	private static final String SELECT_ALL_FOR_KAF008;
 	static {
