@@ -2,9 +2,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.OptimisticLockException;
@@ -27,15 +25,12 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.closegetunlockedperiod.ClosingGetUnlockedPeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
@@ -172,7 +167,7 @@ public class MonthlyAggregationEmployeeService {
 				.map(c -> c ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK)
 				.orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
 		
-		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
+//		List<BsEmploymentHistoryImport> employments = employeeSets.getEmployments();
 		
 		for (val aggrPeriod : aggrPeriods){
 			val yearMonth = aggrPeriod.getYearMonth();
@@ -202,7 +197,8 @@ public class MonthlyAggregationEmployeeService {
 			}
 			
 			//get employmentCode
-			String employmentCode = employments.stream().filter(x->x.getPeriod().contains(datePeriod.start()))
+			String employmentCode = employeeSets.getEmployments()
+					.stream().filter(x -> x.getPeriod().contains(datePeriod))
 					.findFirst().map(c -> c.getEmploymentCode()).orElse(null);
 			if (employmentCode == null) continue; 
 			
