@@ -192,7 +192,7 @@ public class StampType implements DomainValue, Cloneable{
 	@Override
 	public StampType clone() {
 		return new StampType(changeHalfDay, goOutArt.map(x -> GoingOutReason.valueOf(x.value)),
-				SetPreClockArt.valueOf(setPreClockArt.value), ChangeClockArt.valueOf(changeClockArt.value),
+				SetPreClockArt.valueOf(setPreClockArt.value), ChangeClockAtr.valueOf(changeClockArt.value),
 				ChangeCalArt.valueOf(changeCalArt.value));
 	}
 }
