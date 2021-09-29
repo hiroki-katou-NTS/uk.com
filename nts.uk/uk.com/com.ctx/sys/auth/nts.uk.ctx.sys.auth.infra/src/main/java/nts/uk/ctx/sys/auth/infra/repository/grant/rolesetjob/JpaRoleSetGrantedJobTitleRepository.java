@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
@@ -15,6 +16,7 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
 import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitleDetailPK;
 
 /**
  * 
@@ -27,35 +29,63 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobT
 public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implements RoleSetGrantedJobTitleRepository {
 
 	private static final String FIND_BY_CID_JOBTITLES = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
+			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId";
+
+	private static final String FIND_BY_CID_JOBTITLES_AND_LISTCD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
 			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
 			+ " AND c.roleSetCd IN :roleCDLst";
-	
+
+	private RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitleDetail entity) {
+
+		return new RoleSetGrantedJobTitle(
+				entity.roleSetGrantedJobTitleDetailPK.companyId,
+				entity.roleSetGrantedJobTitleDetailPK.jobTitleId,
+				new RoleSetCode(entity.roleSetCd)
+		);
+	}
+	private SacmtRoleSetGrantedJobTitleDetail toEntity(RoleSetGrantedJobTitle domain) {
+		SacmtRoleSetGrantedJobTitleDetailPK key = new SacmtRoleSetGrantedJobTitleDetailPK(domain.getJobTitleId(), domain.getCompanyId());
+		return new SacmtRoleSetGrantedJobTitleDetail(
+				domain.getRoleSetCd().v(),
+				key.jobTitleId,
+				key.companyId
+		);
+	}
+
 	@Override
-	// TODO implement please
 	public List<RoleSetGrantedJobTitle> getByCompanyId(String companyId) {
-		return Collections.emptyList();
+		return this.queryProxy().query(FIND_BY_CID_JOBTITLES, SacmtRoleSetGrantedJobTitleDetail.class)
+				.setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 	}
 	
 	@Override
-	// TODO implement please
 	public Optional<RoleSetGrantedJobTitle> getByJobTitleId(String companyId, String jobTitleId) {
-		return Optional.empty();
+		SacmtRoleSetGrantedJobTitleDetailPK pk = new SacmtRoleSetGrantedJobTitleDetailPK(companyId, jobTitleId);
+		return this.queryProxy().find(pk, SacmtRoleSetGrantedJobTitleDetail.class).map(c -> toDomain(c));
 	}
 
 	@Override
-	// TODO implement please
 	public void insert(RoleSetGrantedJobTitle domain) {
+		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	// TODO implement please
 	public void update(RoleSetGrantedJobTitle domain) {
+		Optional<SacmtRoleSetGrantedJobTitleDetail> upEntity = this.queryProxy().find(
+				new SacmtRoleSetGrantedJobTitleDetailPK(domain.getJobTitleId(), domain.getCompanyId()),
+				SacmtRoleSetGrantedJobTitleDetail.class);
+		if (upEntity.isPresent()) {
+			upEntity.get().roleSetCd = domain.getRoleSetCd().v();
+			this.commandProxy().update(upEntity.get());
+		}
 	}
 
 	@Override
-	// TODO implement please
 	public boolean checkRoleSetCdExist(String companyId, RoleSetCode roleSetCd) {
-		return false;
+		List<String> listCd = Collections.singletonList(roleSetCd.v());
+		val listItem = this.findJobTitleByRoleCDLst(companyId,listCd);
+		return !listItem.isEmpty();
 	}
 
 	@Override
@@ -65,7 +95,7 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		}
 		List<String> resultList = new ArrayList<>();
 		CollectionUtil.split(roleCDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_CID_JOBTITLES ,SacmtRoleSetGrantedJobTitleDetail.class )
+			resultList.addAll(this.queryProxy().query(FIND_BY_CID_JOBTITLES_AND_LISTCD ,SacmtRoleSetGrantedJobTitleDetail.class )
 				.setParameter("companyId", companyID)
 				.setParameter("roleCDLst", subList)
 				.getList( c -> c.roleSetGrantedJobTitleDetailPK.jobTitleId));

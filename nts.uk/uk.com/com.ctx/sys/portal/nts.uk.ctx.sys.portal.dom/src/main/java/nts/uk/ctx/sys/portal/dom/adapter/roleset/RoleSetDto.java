@@ -27,4 +27,5 @@ public class RoleSetDto {
     private String employmentRoleId;
 
     private String salaryRoleId;
+
 }

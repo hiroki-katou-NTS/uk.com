@@ -26,8 +26,6 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.SimpleJobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
-import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
@@ -44,9 +42,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
@@ -70,9 +68,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 	
 	@Inject
 	private EmployeeAdapter employeeAdapter;
-	
-	@Inject
-	private JobAssignSettingRepository jobAssignSetRepository;
 	
 	@Inject
 	private WorkplaceApproverAdapter wkApproverAdapter;
@@ -302,12 +297,6 @@ public class CollectApprovalRootImpl implements CollectApprovalRootService {
 		List<ConcurrentEmployeeImport> employeeList = employeeAdapter.getConcurrentEmployee(cid, jobTitleId, baseDate);
 		if(CollectionUtil.isEmpty(employeeList)) {
 			return Collections.emptyList();
-		}
-		// ドメインモデル「職位指定の設定」を取得する
-		Optional<JobAssignSetting> assignSet = jobAssignSetRepository.findById();
-		if (assignSet.get().getIsConcurrently()) {
-			// 取得した職位対象者から兼務役職者を除く
-			employeeList.removeIf(x -> x.isConcurrent());
 		}
 		
 		List<String> approvers = new ArrayList<>();

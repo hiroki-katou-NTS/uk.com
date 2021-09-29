@@ -73,6 +73,7 @@ public class Role extends AggregateRoot {
 		this.contractCode = memento.getContractCode();
 		this.assignAtr = memento.getAssignAtr();
 		this.companyId = memento.getCompanyId();
+		this.approvalAuthority = memento.getApprovalAuthority();
 	}
 	
 	public Role(String roleId,RoleCode roleCode, RoleType roleType, EmployeeReferenceRange employeeReferenceRange,
@@ -174,6 +175,7 @@ public class Role extends AggregateRoot {
 		memento.setContractCode(this.contractCode);
 		memento.setAssignAtr(this.assignAtr);
 		memento.setCompanyId(this.companyId);
+		memento.setApprovalAuthority(this.approvalAuthority);
 	}
 		
 	public boolean canInsert(){
