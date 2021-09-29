@@ -129,10 +129,13 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.getItemByNo(this.getItemNoOfEmployeeId())
 				.get().getString();
 
-		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
+		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId)));
 		
-		//既存履歴
+		// 既存履歴
 		val existingHistory = require.getHistory(id, this.historyType, getKeyColumnNames());
+		
+		// 暫定仕様として、既存履歴は常に削除
+		deleteAllExistingHistory(require, context, employeeId, existingHistory);
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -181,6 +184,29 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		return newContainers.stream()
 				.map(c -> c.complete())
 				.collect(toList());
+	}
+
+	/**
+	 * 既存履歴をすべて削除する
+	 * @param require
+	 * @param context
+	 * @param employeeId
+	 * @param existingHistory
+	 */
+	private void deleteAllExistingHistory(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context,
+			String employeeId,
+			ExternalImportHistory existingHistory) {
+		
+		// 削除の補正データを作る
+		existingHistory.items().stream()
+			.map(e -> new EmployeeHistoryItem(employeeId, e))
+			.map(e -> e.toDelete(context))
+			.forEach(d -> require.save(context, d));
+		
+		// インスタンスからも除去
+		existingHistory.items().clear();
 	}
 	
 	/**
