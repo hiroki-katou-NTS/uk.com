@@ -84,7 +84,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					self.layoutItemNoList([]);
 				}
 			})
-
+	
 			self.layoutItemNoList.subscribe((value) => {
 				self.setLayout(value);
 			})
@@ -109,11 +109,11 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 				dfd.resolve();
 			});
 		}
-
+	
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			ajax("screen/com/cmf/cmf001/b/get/setting/all").done((lstData: Array<viewmodel.Setting>) => {
+			ajax("screen/com/cmf/cmf001/b/get/setting/domainbase").done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
 				dfd.resolve();
@@ -130,7 +130,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.setInfo(SettingInfo.new());
 			self.isNewMode(true);
 		}
-
+	
 		updateMode(){
 			let self = this;
 			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
@@ -145,7 +145,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			nts.uk.ui.errors.clearAll()
 			$('.check-target').ntsError('check');
 		}
-
+	
 		setInfo(info: SettingInfo){
 			let self = this;
 			self.settingCode(info.code);
@@ -173,7 +173,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		}
 
 		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
-
+	
 		save(){
 			let self = this;
 			self.checkError();
@@ -194,25 +194,25 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					info(nts.uk.resource.getMessage("Msg_15", []));
 					self.reloadPage();
 					self.selectedCode(self.settingCode());
-                });
+	            });
 			}
 		}
 
-    	canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
-
+		canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+	
 		remove(){
 			let self = this;
 			let target = {code: self.selectedCode()};
-
+	
 			
-
-            ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                this.$ajax("exio/input/setting/remove", target).done(() => {
+	
+	        ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+	            this.$ajax("exio/input/setting/remove", target).done(() => {
 					info(nts.uk.resource.getMessage("Msg_16", []));
 					self.reloadPage();
 					self.selectedCode("");
-                });
-            });
+	            });
+	        });
 		}
 
 		selectLayout() {
@@ -221,7 +221,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					domainId: self.importDomain(),
 					selectedItems: self.layoutItemNoList()
 			}, true);
-
+	
 			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
 				// ダイアログを閉じたときの処理
 				if(!getShared('CMF001DCancel')){
@@ -238,7 +238,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 				domainId: this.importDomain()
 			});
 		}
-
+	
 		removeItem(target){
 			let self = this;
 			self.layoutItemNoList(self.layoutItemNoList().filter(function(itemNo){
@@ -249,17 +249,17 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 
 
-
+	
 	export class Setting {
 		code: string;
 		name: string;
-
+	
 		constructor(code: string, name: string) {
 				this.code = code;
 				this.name = name;
 		}
 	}
-
+	
 	export class SettingInfo {
 		companyId: string;
 		code: string;
@@ -269,7 +269,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		itemNameRow: number;
 		importStartRow: number;
 		itemNoList: Array<number>;
-
+	
 		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
 			this.companyId = companyId;
 			this.code = code;
@@ -280,19 +280,19 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			this.importStartRow = importStartRow;
 			this.itemNoList = itemNoList;
 		}
-
+	
 		static new(){
 			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, null, [])
 		}
 	}
-
+	
 	export class Layout {
 		itemNo: number;
 		name: string;
 		required: boolean;
 		type: string;
 		source: string;
-
+	
 		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string) {
 			this.itemNo = itemNo;
 			this.name = name;

@@ -47,6 +47,16 @@ public class GetExternalImportSettingRequire {
 		}
 
 		@Override
+		public List<ExternalImportSetting> getDomainBaseSettings(String companyId) {
+			return externalImportSettingRepo.getDomainBase(companyId);
+		}
+
+		@Override
+		public List<ExternalImportSetting> getCsvBaseSettings(String companyId) {
+			return externalImportSettingRepo.getCsvBase(companyId);
+		}
+
+		@Override
 		public Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode) {
 			return externalImportSettingRepo.get(companyId, settingCode);
 		}

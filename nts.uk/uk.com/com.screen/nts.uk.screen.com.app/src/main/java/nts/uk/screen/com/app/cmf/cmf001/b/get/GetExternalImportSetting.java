@@ -23,6 +23,18 @@ public class GetExternalImportSetting {
 		return ExternalImportSettingListItemDto.fromDomain(settings);
 	}
 
+	public List<ExternalImportSettingListItemDto> getDomainBase() {
+		val require = this.require.create();
+		val settings = require.getDomainBaseSettings(AppContexts.user().companyId());
+		return ExternalImportSettingListItemDto.fromDomain(settings);
+	}
+
+	public List<ExternalImportSettingListItemDto> getCsvBase() {
+		val require = this.require.create();
+		val settings = require.getCsvBaseSettings(AppContexts.user().companyId());
+		return ExternalImportSettingListItemDto.fromDomain(settings);
+	}
+
 	public ExternalImportSettingDto get(String settingCode) {
 		val require = this.require.create();
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode));
@@ -31,6 +43,8 @@ public class GetExternalImportSetting {
 
 	public static interface Require extends ExternalImportLayoutDto.Require {
 		List<ExternalImportSetting> getSettings(String companyId);
+		List<ExternalImportSetting> getDomainBaseSettings(String companyId);
+		List<ExternalImportSetting> getCsvBaseSettings(String companyId);
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }

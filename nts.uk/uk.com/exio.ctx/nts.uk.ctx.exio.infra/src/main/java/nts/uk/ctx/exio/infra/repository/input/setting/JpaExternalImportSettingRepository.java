@@ -16,6 +16,7 @@ import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
+import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
@@ -60,6 +61,37 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		});
 	}
 
+	@Override
+	public List<ExternalImportSetting> getCsvBase(String companyId) {
+		return getByBaseType(companyId, ImportSettingBaseType.CSV_BASE);
+	}
+
+	@Override
+	public List<ExternalImportSetting> getDomainBase(String companyId) {
+		return getByBaseType(companyId, ImportSettingBaseType.DOMAIN_BASE);
+	}
+
+	private List<ExternalImportSetting> getByBaseType(String companyId, ImportSettingBaseType baseType) {
+		String sql 	= " select f "
+				+ " from XimmtImportSetting f "
+				+ " where f.pk.companyId = :companyID "
+				+ " and f.baseType = :baseType ";
+
+		List<ExternalImportSetting> domains = this.queryProxy().query(sql, XimmtImportSetting.class)
+				.setParameter("companyID", companyId)
+				.setParameter("baseType", baseType.value)
+				.getList(rec -> rec.toDomain());
+		
+		domains.forEach(d -> {
+			List<DomainImportSetting> domainImportSettings = domainImportSettings(
+					companyId, d.getCode(), d.getCsvFileInfo());
+			domainImportSettings.forEach(domainImportSetting ->{
+				d.putDomainSettings(domainImportSetting.getDomainId(), domainImportSetting);
+			});
+		});
+		return domains;
+	}
+	
 	@Override
 	public List<ExternalImportSetting> getAll(String companyId) {
 		String sql 	= " select f "

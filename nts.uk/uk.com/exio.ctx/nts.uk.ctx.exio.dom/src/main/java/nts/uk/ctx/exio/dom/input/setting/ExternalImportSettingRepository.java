@@ -13,6 +13,9 @@ public interface ExternalImportSettingRepository {
 
 	List<ExternalImportSetting> getAll(String companyId);
 
+	List<ExternalImportSetting> getCsvBase(String companyId);
+	List<ExternalImportSetting> getDomainBase(String companyId);
+
 	Optional<ExternalImportSetting> get(String companyId, ExternalImportCode settingCode);
 
 	boolean exist(String companyId, ExternalImportCode settingCode);
