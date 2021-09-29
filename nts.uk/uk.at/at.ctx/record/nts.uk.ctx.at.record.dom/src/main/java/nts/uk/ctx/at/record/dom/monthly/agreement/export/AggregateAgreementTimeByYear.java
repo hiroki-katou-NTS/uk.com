@@ -74,7 +74,7 @@ public class AggregateAgreementTimeByYear {
 											oneYearSet.getSpecConditionLimit()),
 									AgreementTimeOfYear.of(
 											new AgreementOneYearTime(yearTime.getAgreementTime().valueAsMinutes()), 
-											OneYearTime.of(oneYearSet.getBasic(), new AgreementOneYearTime(0))),
+											OneYearTime.of(oneYearSet.getBasic())),
 									state);
 	}
 	
