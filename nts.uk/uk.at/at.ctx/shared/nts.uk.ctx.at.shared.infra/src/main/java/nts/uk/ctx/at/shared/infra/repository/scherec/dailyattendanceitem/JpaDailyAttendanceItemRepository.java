@@ -97,8 +97,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	@Override
 	public List<DailyAttendanceItem> getListTobeUsed(String companyId, int userCanUpdateAtr) {
 		return this.queryProxy().query(FIND, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.getList(f -> toDomain(f))
-				.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+				.getList(f -> toDomain(f));
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -113,16 +112,14 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 								.setParameter("dailyAttendanceItemIds", subList)
 								.getList(f -> toDomain(f)));
 		});
-		return resultList
-				.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+		return resultList;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<DailyAttendanceItem> getList(String companyId) {
 		return this.queryProxy().query(FIND_ALL, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.getList(f -> toDomain(f))
-				.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+				.getList(f -> toDomain(f));
 	}
 
 	private static DailyAttendanceItem toDomain(KrcmtDailyAttendanceItem krcmtDailyAttendanceItem) {
@@ -143,8 +140,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	@Override
 	public Optional<DailyAttendanceItem> getDailyAttendanceItem(String companyId, int attendanceItemId) {
 		return this.queryProxy().query(FIND_SINGLE, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("attendanceItemId", attendanceItemId).getSingle(f -> toDomain(f))
-				.filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624);
+				.setParameter("attendanceItemId", attendanceItemId).getSingle(f -> toDomain(f));
 	}
 
 	/*
@@ -157,8 +153,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	@Override
 	public List<DailyAttendanceItem> findByAtr(String companyId, DailyAttendanceAtr itemAtr) {
 		return this.queryProxy().query(FIND_BY_ATR, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("dailyAttendanceAtr", itemAtr.value).getList(f -> toDomain(f))
-				.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+				.setParameter("dailyAttendanceAtr", itemAtr.value).getList(f -> toDomain(f));
 	}
 
 	/*
@@ -177,8 +172,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 					.setParameter("dailyAttendanceAtrs", subList)
 					.getList(f -> toDomain(f)));
 		});
-		return resultList
-				.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+		return resultList;
 	}
 
 	/**
@@ -222,8 +216,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 				resultList.addAll(query.getList(f -> toDomain(f)));
 			});
 		});
-		return resultList
-				.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+		return resultList;
 	}
 
 	@Override
@@ -242,7 +235,6 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 						.getList(f -> toDomain(f)));
 			});
 		}
-		return result
-				.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+		return result;
 	}
 }
