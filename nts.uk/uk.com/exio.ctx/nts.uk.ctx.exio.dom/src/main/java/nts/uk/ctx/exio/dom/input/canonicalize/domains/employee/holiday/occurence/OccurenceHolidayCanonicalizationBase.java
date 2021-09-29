@@ -69,7 +69,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 
 			val key = RecordKey.of(interm);
 			if (keys.contains(key)) {
-				require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
+				require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
 				continue;
 			}
 			keys.add(key);
