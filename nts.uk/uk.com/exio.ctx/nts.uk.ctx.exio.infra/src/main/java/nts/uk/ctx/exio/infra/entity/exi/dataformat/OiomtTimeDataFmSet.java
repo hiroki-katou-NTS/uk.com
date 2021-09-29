@@ -33,7 +33,10 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 	 */
 	@EmbeddedId
 	public OiomtTimeDataFmSetPk timeDatFmSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 区切り文字設定
 	 */
@@ -81,7 +84,7 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 	 */
 	@Basic(optional = true)
 	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
+	public Integer valueOfFixedValue;
 
 	/**
 	 * 有効桁数開始桁
@@ -106,7 +109,6 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtExAcItem acceptItem;
@@ -116,11 +118,11 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 		return timeDatFmSetPk;
 	}
 
-	public OiomtTimeDataFmSet(String cid, int sysType, String conditionCode, int acceptItemNum, int delimiterSet,
+	public OiomtTimeDataFmSet(String cid, String conditionCode, int acceptItemNum, int delimiterSet,
 			int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc, int decimalSelect,
-			String valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
+			Integer valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
 		super();
-		this.timeDatFmSetPk = new OiomtTimeDataFmSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.timeDatFmSetPk = new OiomtTimeDataFmSetPk(cid, conditionCode, acceptItemNum);
 		this.delimiterSet = delimiterSet;
 		this.fixedValue = fixedValue;
 		this.hourMinSelect = hourMinSelect;
@@ -134,7 +136,7 @@ public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializa
 	}
 
 	public static OiomtTimeDataFmSet fromDomain(StdAcceptItem item, TimeDataFormatSet domain) {
-		return new OiomtTimeDataFmSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtTimeDataFmSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getDelimiterSet().value, domain.getFixedValue().value,
 				domain.getHourMinSelect().value, domain.getEffectiveDigitLength().value, domain.getRoundProc().value,
 				domain.getDecimalSelect().value,

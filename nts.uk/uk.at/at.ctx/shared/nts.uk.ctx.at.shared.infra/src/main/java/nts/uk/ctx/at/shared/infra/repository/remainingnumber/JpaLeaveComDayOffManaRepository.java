@@ -50,10 +50,10 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 			+ " OR a.krcmtLeaveDayOffManaPK.digestDate IN :digestDates)";
 	
 	private static final String QUERY_BY_DIGEST_OCC = String.join(" ", QUERY,
-			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate = :digestDate and lc.krcmtLeaveDayOffManaPK.occDate >= :baseDate");
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate = :digestDate and lc.krcmtLeaveDayOffManaPK.occDate > :baseDate");
 	
 	private static final String QUERY_BY_OCC_DIGEST = String.join(" ", QUERY,
-			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate = :occDate and lc.krcmtLeaveDayOffManaPK.digestDate >= :baseDate");
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate = :occDate and lc.krcmtLeaveDayOffManaPK.digestDate > :baseDate");
 	
 	
 	@Override
@@ -170,6 +170,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	
 	@Override
 	public List<LeaveComDayOffManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
 			return this.queryProxy().query(QUERY_BY_LIST_DATE,KrcmtLeaveDayOffMana.class)
 					.setParameter("sid", sid)
 					.setParameter("lstDate", lstDate)
@@ -276,4 +277,59 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 				.setParameter("baseDate", baseDate).getList().stream()
 				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
+
+	
+	private static final String QUERY_OCC_DIGEST_BY_PERIOD = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid ",
+			"and ( lc.krcmtLeaveDayOffManaPK.digestDate between :startDate and :endDate or  lc.krcmtLeaveDayOffManaPK.occDate between :startDate and :endDate)");
+
+	@Override
+	public List<LeaveComDayOffManagement> getDigestOccByListComId(String sid, DatePeriod period) {
+		return this.queryProxy().query(QUERY_OCC_DIGEST_BY_PERIOD, KrcmtLeaveDayOffMana.class).setParameter("sid", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
+	}
+
+	private static final String DELETE_BY_PERIOD = "DELETE FROM KrcmtLeaveDayOffMana lc"
+			+ " WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid "
+			+ " and ( lc.krcmtLeaveDayOffManaPK.digestDate between :startDate and :endDate "
+			+ "or  lc.krcmtLeaveDayOffManaPK.occDate between :startDate and :endDate)";
+
+	@Override
+	public void deleteWithPeriod(String sid, DatePeriod period) {
+		this.getEntityManager().createQuery(DELETE_BY_PERIOD, KrcmtLeaveDayOffMana.class).setParameter("sid", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).executeUpdate();
+	}
+
+	@Override
+	public void insertList(List<LeaveComDayOffManagement> lstDomain) {
+		this.commandProxy().insertAll(lstDomain.stream().map(x -> toEntity(x)).collect(Collectors.toList()));
+
+	}
+
+	@Override
+	public void updateOrInsert(LeaveComDayOffManagement domain) {
+		KrcmtLeaveDayOffManaPK key = new KrcmtLeaveDayOffManaPK(domain.getSid(),
+				domain.getAssocialInfo().getOutbreakDay(), domain.getAssocialInfo().getDateOfUse());
+		Optional<KrcmtLeaveDayOffMana> existed = this.queryProxy().find(key, KrcmtLeaveDayOffMana.class);
+		if (existed.isPresent()) {
+			this.commandProxy().update(toEntity(domain));
+		}else{
+			this.commandProxy().insert(toEntity(domain));
+		}
+		
+	}
+	
+	private static final String QUERY_OCC_BY_LIST_DATE = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate IN :lstDate");
+
+	@Override
+	public List<LeaveComDayOffManagement> getLeavByListOccDate(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query(QUERY_OCC_BY_LIST_DATE,KrcmtLeaveDayOffMana.class)
+				.setParameter("sid", sid)
+				.setParameter("lstDate", lstDate)
+			.getList().stream().map(item->toDomain(item)).collect(Collectors.toList());
+	}
+	
 }

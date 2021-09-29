@@ -108,7 +108,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(1, 240, 240), Tuple.tuple(2, 120, 240));
+								.contains(Tuple.tuple(1, 0, 480), Tuple.tuple(2, 0, 360));
 
 	}
 
@@ -138,7 +138,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(1, 330, 360), Tuple.tuple(2, 0, 120));
+								.contains(Tuple.tuple(1, 0, 690), Tuple.tuple(2, 0, 120));
 
 	}
 
@@ -198,7 +198,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(3, 210, 480), Tuple.tuple(4, 120, 0));
+								.contains(Tuple.tuple(3, 0, 690), Tuple.tuple(4, 0, 120));
 
 	}
 
@@ -258,7 +258,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(1, 0, 450), Tuple.tuple(4, 330, 30));
+								.contains(Tuple.tuple(1, 0, 450), Tuple.tuple(4, 0, 360));
 
 	}
 
@@ -288,7 +288,7 @@ public class TranferHdWorkCompensatoryTest {
 								.extracting(x -> x.getHolidayFrameNo().v(),
 										x -> x.getHolidayWorkTime().get().getTime().v(),
 										x -> x.getTransferTime().get().getTime().v())
-								.contains(Tuple.tuple(3, 90, 360), Tuple.tuple(2, 0, 120));
+								.contains(Tuple.tuple(3, 0, 450), Tuple.tuple(2, 0, 120));
 
 	}
 

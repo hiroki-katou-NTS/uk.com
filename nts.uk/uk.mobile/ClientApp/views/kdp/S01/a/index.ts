@@ -15,6 +15,7 @@ const servicePath = {
     registerStamp: basePath + 'register-stamp',
     getSuppress: basePath + 'get-suppress',
     getOmission: basePath + 'get-omission',
+
     getSettingStampCommon: 'at/record/stamp/settings_stamp_common',
     create_daily: 'at/record/stamp/craeteDaily',
     getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping'
@@ -354,6 +355,9 @@ export class KdpS01AComponent extends Vue {
                                 vm.showError(res);
                             });
                         }
+
+                    }).catch((res: any) => {
+                        vm.showError(res);
                     });
                 });
                 

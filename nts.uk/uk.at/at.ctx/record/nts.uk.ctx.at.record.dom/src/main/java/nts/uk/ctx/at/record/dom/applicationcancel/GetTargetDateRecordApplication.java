@@ -49,8 +49,8 @@ public class GetTargetDateRecordApplication {
 				new Relieve(AuthcMethod.ID_AUTHC, StampMeans.NAME_SELECTION),
 				new StampType(false,
 						applicaton.getAppStampGoOutAtr().map(x -> EnumAdaptor.valueOf(x.value, GoingOutReason.class)),
-						SetPreClockArt.NONE, ChangeClockAtr.GOING_TO_WORK, ChangeCalArt.NONE),
-				new RefectActualResult(null, null, null, null), Optional.empty());
+						SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
+				new RefectActualResult(null, null, null, null), Optional.empty(), lstCard.get(0).getStampCardId());
 
 		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, cid, applicaton.getEmployeeID(),
 				stamp);

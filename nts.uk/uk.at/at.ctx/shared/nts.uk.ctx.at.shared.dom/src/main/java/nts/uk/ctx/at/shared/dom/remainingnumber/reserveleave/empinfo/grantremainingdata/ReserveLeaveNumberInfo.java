@@ -40,12 +40,14 @@ public class ReserveLeaveNumberInfo extends LeaveNumberInfo implements Serializa
 			double usedDays,
 			Integer usedMinutes,
 			Double stowageDays,
+			Double numberOverDays,
+			Integer timeOver,
 			double remainDays,
 			Integer remainMinutes,
 			double usedPercent) {
 
 		super(grantDays, grantMinutes, usedDays, usedMinutes,
-			stowageDays, remainDays, remainMinutes,usedPercent);
+			stowageDays, numberOverDays, timeOver, remainDays, remainMinutes,usedPercent);
 	}
 
 	public ReserveLeaveNumberInfo(double grantDays, double usedDays,

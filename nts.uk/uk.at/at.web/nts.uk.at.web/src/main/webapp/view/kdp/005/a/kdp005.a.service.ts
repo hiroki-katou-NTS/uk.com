@@ -14,9 +14,11 @@ module nts.uk.at.view.kdp005.a {
 			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress',
             getEmployeeIdByICCard: 'at/record/stamp/ICCardStamp/getEmployeeIdByICCard',
             authenticateOnlyStamped: 'at/record/stamp/ICCardStamp/authenticateOnlyStamped',
+
             getLogginSetting: 'ctx/sys/gateway/kdp/login/getLogginSetting',
 			createDaily: 'at/record/stamp/craeteDaily',
 			getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping'
+
 		}
 
 		export function startPage(): JQueryPromise<any> {
@@ -53,6 +55,7 @@ module nts.uk.at.view.kdp005.a {
         export function getLogginSetting(param): JQueryPromise<any> {
             return ajax("at", url.getLogginSetting, {contractCode: param});
         }
+
 		export function createDaily(data): JQueryPromise<any> {
 			return ajax("at", url.createDaily, data);
 		}
@@ -60,6 +63,7 @@ module nts.uk.at.view.kdp005.a {
 		export function getEmployeeWorkByStamping(param: any): JQueryPromise<any> {
 			return ajax("at", url.getEmployeeWorkByStamping, param);
 		}
+
 	}
 
 }

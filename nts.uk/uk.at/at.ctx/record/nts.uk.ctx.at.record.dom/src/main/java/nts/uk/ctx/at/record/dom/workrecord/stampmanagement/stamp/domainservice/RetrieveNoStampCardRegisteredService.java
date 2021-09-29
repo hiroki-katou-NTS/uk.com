@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS : 打刻カード未登録の打刻データを取得する
@@ -35,11 +35,11 @@ public class RetrieveNoStampCardRegisteredService {
 		return listStampRecord.stream().map(rc -> {
 			// $対象打刻 = $打刻 in 打刻リスト : find $打刻記録.打刻カード番号 = $打刻.打刻カード番号 AND
 			// $打刻記録.打刻日時 = $打刻.打刻日時
-			List<Stamp> stamps = listStamp.stream().filter(s -> rc.getStampDateTime().equals(s.getStampDateTime())
-					&& rc.getStampNumber().equals(s.getCardNumber())).collect(Collectors.toList());
+			Optional<Stamp> stamp = listStamp.stream().filter(s -> rc.getStampDateTime().equals(s.getStampDateTime())
+					&& rc.getStampNumber().equals(s.getCardNumber())).findFirst();
 			// map 表示する打刻情報#打刻区分を作成する($打刻記録.打刻カード番号, $打刻記録.打刻日時, $打刻記録.表示する打刻区分,
 			// $対象打刻)
-			return new StampInfoDisp(rc.getStampNumber(), rc.getStampDateTime(), rc.getStampTypeDisplay().v(), stamps);
+			return new StampInfoDisp(rc.getStampNumber(), rc.getStampDateTime(), rc.getStampTypeDisplay().v(), stamp);
 		}).collect(Collectors.toList());
 
 	}

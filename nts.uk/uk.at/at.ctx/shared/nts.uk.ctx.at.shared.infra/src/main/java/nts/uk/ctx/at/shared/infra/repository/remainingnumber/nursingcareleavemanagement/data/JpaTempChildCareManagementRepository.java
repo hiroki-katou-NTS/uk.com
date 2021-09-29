@@ -23,20 +23,26 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaTempChildCareManagementRepository extends JpaRepository implements TempChildCareManagementRepository{
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KshdtInterimChildCare a "
-			+ "WHERE a.pk.sID = :employeeId "
-			+ "AND a.pk.ymd >= :startYmd "
-			+ "AND a.pk.ymd <= :endYmd "
-			+ "ORDER BY a.pk.ymd ";
+			+ " WHERE a.pk.sID = :employeeId "
+			+ " AND a.pk.ymd >= :startYmd "
+			+ " AND a.pk.ymd <= :endYmd "
+			+ " ORDER BY a.pk.ymd ";
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimChildCare a"
 			+ " WHERE a.pk.sID = :employeeID"
-			+ "AND a.pk.ymd =  : ymd "
+			+ " AND a.pk.ymd =  : ymd "
 			+ " ORDER BY a.pk.ymd ASC";
 
 	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
 			+ " WHERE a.pk.sID = :sid"
 			+ " AND a.pk.ymd =  :ymd";
 
+	
+	private static final String REMOVE_BY_SID_PERIOD = "DELETE FROM KshdtInterimChildCare a"
+			+ " WHERE a.pk.sID = :sid "
+			+ " AND a.pk.ymd >= :startYmd "
+			+ " AND a.pk.ymd <= :endYmd ";
+	
 	/** 検索 */
 	@Override
 	public List<TempChildCareManagement> find(String employeeId, GeneralDate ymd){
@@ -89,27 +95,14 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 
 	/** 削除 */
 	@Override
-	public void remove(String employeeId, GeneralDate ymd, TempChildCareManagement domain) {
+	public void remove(TempChildCareManagement domain) {
 
 		val key = domain.getRemainManaID();
 
 		this.commandProxy().remove(KshdtInterimChildCare.class, key);
 	}
 
-	/**
-	 * 暫定子の看護管理データの取得
-	 * @param 社員ID employeeId
-	 * @param 期間 period
-	 */
-	@Override
-	public List<TempChildCareManagement> findBySidPeriod(String employeeId, DatePeriod period){
 
-		return queryProxy().query(SELECT_BY_PERIOD, KshdtInterimChildCare.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startYmd", period.start())
-				.setParameter("endYmd", period.end())
-				.getList(c -> c.toDomain());
-	}
 
 	@Override
 	public void removeBySidAndYmd(String sid, GeneralDate ymd) {
@@ -117,5 +110,12 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 		.setParameter("sid", sid)
 		.setParameter("ymd", ymd)
 		.executeUpdate();
+	}
+	
+	public void deleteByPeriod(String sid, DatePeriod period){
+		this.getEntityManager().createQuery(REMOVE_BY_SID_PERIOD)
+		.setParameter("sid", sid)
+		.setParameter("startYmd", period.start())
+		.setParameter("endYmd", period.end());
 	}
 }

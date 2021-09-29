@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm.service.updatealarmdata;
 
 import java.util.List;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmListPatternCode;
@@ -17,11 +18,14 @@ public class UpdateAlarmDataDs {
 	private UpdateAlarmDataDs() {}
 
 	public static AtomTask create(UpdateAlarmDataRequire rq, String cid, List<String> sids, String patternCode,
-			Integer displayEmpClassfication) {
+			List<String> noErrSids, Integer displayEmpClassfication) {
 
 		List<ToppageAlarmData> updateList = rq.getAlarmList(cid, sids,
 				EnumAdaptor.valueOf(displayEmpClassfication, DisplayAtr.class), new AlarmListPatternCode(patternCode));
-
+		if (displayEmpClassfication == DisplayAtr.SUPERIOR.value) {
+			updateList.removeIf(data -> !data.isErrorResolved(noErrSids));
+		}
+		
 		updateList.stream().forEach(data -> data.changeResolvedStatus());
 		
 		return AtomTask.of(() -> rq.updateAll(updateList));

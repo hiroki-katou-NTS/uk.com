@@ -16,6 +16,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.*;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService.NextExecutionDateTimeDto;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
@@ -129,23 +130,19 @@ public class ProcessExecutionLogFinder {
 
 			// 作成した「実行項目情報．実行タスク設定．更新処理
 			ExecutionTaskSettingDto execTaskSetDto = dto.getExecutionTaskSetting();
+			NextExecutionDateTimeDto nextExecutionDateTimeDto = null;
 			// 作成した「実行項目情報．実行タスク設定．更新処理有効設定」を確認する
 			if (execTaskSetDto != null && execTaskSetDto.isEnabledSetting()) {
-				// 次回実行日時作成処理
-				GeneralDateTime nextExecDateTime = this.processExecutionService
-						.processNextExecDateTimeCreation(executionTaskSetting);
+				// 次回実行日時を過ぎているか
+				nextExecutionDateTimeDto = this.processExecutionService
+						.isPassNextExecutionDateTime(companyId, execItemCd);
+				GeneralDateTime nextExecDateTime = nextExecutionDateTimeDto.getNextExecDateTime().orElse(null);
 
 				// 作成した「実行項目情報」を更新する
 				execTaskSetDto.setNextExecDateTime(nextExecDateTime);
 				dto.setExecutionTaskSetting(execTaskSetDto);
 				dto.setNextExecDate(nextExecDateTime);
-
-				// 取得した「次回実行日時」とシステム日時を比較する
-				// 次回実行日時 < システム日時
-				if (nextExecDateTime == null || nextExecDateTime.before(GeneralDateTime.now())) {
-					// 「実行項目情報」を更新する
-					dto.setIsPastNextExecDate(true);
-				}
+				dto.setIsPastNextExecDate(nextExecutionDateTimeDto.isPassNextExecDateTime());
 			}
 
 			// 「実行項目情報．更新処理自動実行管理」を確認する

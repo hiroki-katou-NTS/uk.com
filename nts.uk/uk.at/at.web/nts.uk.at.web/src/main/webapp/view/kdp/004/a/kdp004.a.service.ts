@@ -60,6 +60,7 @@ module nts.uk.at.view.kdp004.a {
 		export function getEmployeeWorkByStamping(param: any): JQueryPromise<any> {
 			return ajax("at", url.getEmployeeWorkByStamping, param);
 		}
+
 	}
 
 }

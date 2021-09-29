@@ -110,6 +110,10 @@ public class StampReceptionData implements ReceptionData {
 	public String getIdNumber() {
 		return idNumber.trim();
 	}
+	
+	public String getLeavingCategory() {
+		return this.leavingCategory.trim();
+	}
 
 	// 認証方法
 	public AuthcMethod convertAuthcMethod() {

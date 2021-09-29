@@ -64,7 +64,11 @@ public class GetEmployeeWorkByStamping {
 		Optional<TaskCode> taskCode = Optional.empty();
 
 		if (param.getUpperFrameWorkCode() != null) {
-			taskCode = Optional.of(new TaskCode(param.getUpperFrameWorkCode()));
+			if (param.getUpperFrameWorkCode().equals("")) {
+				taskCode = Optional.empty();
+			}else {
+				taskCode = Optional.of(new TaskCode(param.getUpperFrameWorkCode()));
+			}
 		}
 
 		GetWorkAvailableToEmployeesServiceImp require = new GetWorkAvailableToEmployeesServiceImp();

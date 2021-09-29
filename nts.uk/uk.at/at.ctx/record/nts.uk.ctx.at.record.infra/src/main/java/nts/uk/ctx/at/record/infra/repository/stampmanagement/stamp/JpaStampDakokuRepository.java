@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.ImprintReflectionState;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -46,8 +47,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author ThanhNX
- *
- *         打刻Repository
+ * 打刻Repository
  */
 @Stateless
 public class JpaStampDakokuRepository extends JpaRepository implements StampDakokuRepository {
@@ -158,7 +158,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getType().getSetPreClockArt().value, 
 				stamp.getType().isChangeHalfDay(),
 				stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null,
-				stamp.isReflectedCategory(),
+				stamp.getImprintReflectionStatus().isReflectedCategory(),
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
 						: null,
@@ -186,9 +186,11 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD2().map(t -> t.v()).orElse(null)).orElse(null),
 				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD3().map(t -> t.v()).orElse(null)).orElse(null),
 				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD4().map(t -> t.v()).orElse(null)).orElse(null),
-				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null)); 
-		
-		
+				stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null), 
+				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent())
+						? stamp.getImprintReflectionStatus().getReflectedDate().get() 
+						: null, // REFLECTED_INTO_DATE,
+				stamp.getStampRecordId());
 		
 	}
 
@@ -228,16 +230,16 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
 				overtime, workGroup);
 		
+		val imprintReflectionState = new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate));
+		
 		return new Stamp(new ContractCode(entity.pk.contractCode) ,
 						stampNumber, 
 						entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						entity.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty());
-
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty(), entity.stampRecordId);
 	}
 	
 	private Stamp toDomainVer2(Object[] object) {
-		String workLocationName = (String) object[0];
 		KrcdtStamp entity = (KrcdtStamp) object[1];
 		
 		WorkInformationStamp workInformationStamp = new WorkInformationStamp(
@@ -266,18 +268,16 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
 						entity.overTime == null ? null
 								: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-										new AttendanceTime(entity.lateNightOverTime)), 
-						workGroup),
-				entity.reflectedAtr,
+										new AttendanceTime(entity.lateNightOverTime)),workGroup),
+				new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate)),
 				Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null ) ? null
 						: new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue())), 
-				Optional.empty());
+				Optional.empty(),
+				entity.stampRecordId);
 		return stamp;
 	}
 
 	private Stamp toDomainVer3(Object[] object) {
-		String personId = (String) object[0];
-		String workLocationName = (String) object[1];
 		KrcdtStamp entity = (KrcdtStamp) object[2];
 		ContractCode contractCd = new ContractCode(AppContexts.user().contractCode());
 		
@@ -304,17 +304,19 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 							SetPreClockArt.valueOf(entity.preClockArt), ChangeClockAtr.valueOf(entity.pk.changeClockArt),
 							ChangeCalArt.valueOf(entity.changeCalArt)),
 
-					new RefectActualResult(workInformationStamp,
+					new RefectActualResult(
+							workInformationStamp,
 							entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
 							entity.overTime == null ? null
-									: new OvertimeDeclaration(new AttendanceTime(entity.overTime),
-											new AttendanceTime(entity.lateNightOverTime)),
+									: new OvertimeDeclaration(
+										new AttendanceTime(entity.overTime), new AttendanceTime(entity.lateNightOverTime)), 
 							workGroup),
+					new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate)),
 
-					entity.reflectedAtr,
 					Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null) ? null :
 						new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue())),
-					Optional.empty()
+					Optional.empty(),
+					entity.stampRecordId
 			);
 		return stamp;
 	}

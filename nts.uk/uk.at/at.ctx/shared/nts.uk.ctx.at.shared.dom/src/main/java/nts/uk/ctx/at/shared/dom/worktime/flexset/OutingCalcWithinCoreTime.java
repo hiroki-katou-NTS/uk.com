@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -50,4 +51,19 @@ public class OutingCalcWithinCoreTime extends WorkTimeDomainObject {
         memento.setRemoveFromWorkTime(this.removeFromWorkTime);
 
     }
+
+    /**
+     * コア内と外を分けて計算するかどうか判断
+     * @param reason 外出理由
+     * @return 分けるかどうか（true:分ける、false:分けない）
+     */
+	public boolean isSeparateCoreInOutCalc(GoingOutReason reason){
+		switch (reason){
+		case PUBLIC:		// 公用
+		case COMPENSATION:	// 有償
+			return false;
+		default:
+			return this.especialCalc.isUse();
+		}
+	}
 }

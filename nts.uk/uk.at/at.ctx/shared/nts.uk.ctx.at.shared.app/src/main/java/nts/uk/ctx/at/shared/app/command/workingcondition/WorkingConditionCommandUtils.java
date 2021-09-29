@@ -192,8 +192,7 @@ public class WorkingConditionCommandUtils {
 	}
 	
 	public static Optional<SingleDaySchedule> getOptionalSingleDay(SingleDaySchedule value){
-		if (value.getWorkTypeCode().isPresent()
-				|| !value.getWorkingHours().isEmpty()
+		if (!value.getWorkingHours().isEmpty()
 				|| value.getWorkTimeCode().isPresent()){
 			return Optional.of(value);
 		}

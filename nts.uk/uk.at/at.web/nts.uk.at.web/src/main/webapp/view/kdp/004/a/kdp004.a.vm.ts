@@ -649,19 +649,9 @@ module nts.uk.at.view.kdp004.a {
 																};
 
 																service.stampInput(registerdata).done((res) => {
-
-																	const param = {
-																		sid: employeeId,
-																		date: vm.$date.now()
-																	}
-
-																	service.createDaily(param);
-
 																	//phat nhac
 																	self.playAudio(button.audioType);
-																	// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
-
-
+																	
 																	if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																		self.openScreenC(button, layout, loginInfo.em);
 																	} else {
@@ -695,19 +685,9 @@ module nts.uk.at.view.kdp004.a {
 														};
 
 														service.stampInput(registerdata).done((res) => {
-
-															const param = {
-																sid: employeeId,
-																date: vm.$date.now()
-															}
-
-															service.createDaily(param);
-
 															//phat nhac
 															self.playAudio(button.audioType);
-															// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
-
-
+															
 															if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																self.openScreenC(button, layout, loginInfo.em);
 															} else {
@@ -722,6 +702,7 @@ module nts.uk.at.view.kdp004.a {
 														});
 													}
 												})
+
 										}
 									}
 								});
@@ -763,19 +744,9 @@ module nts.uk.at.view.kdp004.a {
 												};
 
 												service.stampInput(registerdata).done((res) => {
-
-													const param = {
-														sid: employeeId,
-														date: vm.$date.now()
-													}
-
-													service.createDaily(param);
-
 													//phat nhac
 													self.playAudio(button.audioType);
-													// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
-
-
+													
 													if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 														self.openScreenC(button, layout, loginInfo.em);
 													} else {
@@ -810,17 +781,9 @@ module nts.uk.at.view.kdp004.a {
 
 										service.stampInput(registerdata).done((res) => {
 
-											const param = {
-												sid: employeeId,
-												date: vm.$date.now()
-											}
-
-											service.createDaily(param);
-
 											//phat nhac
 											self.playAudio(button.audioType);
-											// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
-
+											
 											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 												self.openScreenC(button, layout, loginInfo.em);
 											} else {

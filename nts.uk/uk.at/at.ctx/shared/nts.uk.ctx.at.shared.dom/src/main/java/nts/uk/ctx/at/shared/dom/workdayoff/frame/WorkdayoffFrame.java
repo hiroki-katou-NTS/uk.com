@@ -4,9 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workdayoff.frame;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @Getter
 @Setter
@@ -14,6 +21,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * The Class WorkdayoffFrame.
  */
 //休出枠
+@AllArgsConstructor
 public class WorkdayoffFrame extends AggregateRoot{
 	
 	/** The company id. */
@@ -111,7 +119,45 @@ public class WorkdayoffFrame extends AggregateRoot{
 		return true;
 	}
 	
+	/** 対象日の実績から休出時間を求める区分を取得する */
+	public HolidayAtr getHolWorkAtrforDailyRecord(Require require, WorkInformation workInfo) {
+		
+		switch (role) {
+		case NON_STATUTORY_HOLIDAYS:
+			/** 「法定外休出」を返す */
+			return HolidayAtr.NON_STATUTORY_HOLIDAYS;
+		case STATUTORY_HOLIDAYS:
+			/** 「法定内休出」を返す */
+			return HolidayAtr.STATUTORY_HOLIDAYS;
+		case MIX_WITHIN_OUTSIDE_STATUTORY:
+			
+			/** 勤務種類を取得する */
+			val holAtr = require.workType(this.companyId, workInfo.getWorkTypeCode().v())
+									.map(c -> {
+										val typeSet = c.getWorkTypeSet();
+										if (typeSet == null) {
+											return HolidayAtr.NON_STATUTORY_HOLIDAYS;
+										}
+										return typeSet.getHolidayAtr();
+									}).orElse(HolidayAtr.NON_STATUTORY_HOLIDAYS);
+			
+			if (holAtr == HolidayAtr.STATUTORY_HOLIDAYS) {
+				/** 「法定内休出」を返す */
+				return HolidayAtr.STATUTORY_HOLIDAYS;
+			}
+			
+		default:
+			/** 「法定外休出」を返す */
+			return HolidayAtr.NON_STATUTORY_HOLIDAYS;
+		}
+	}
+
 	public boolean isUse() {
 		return this.useClassification == NotUseAtr.USE;
+	}
+	
+	public static interface Require {
+		
+		Optional<WorkType> workType(String companyId, String workTypeCd);
 	}
 }

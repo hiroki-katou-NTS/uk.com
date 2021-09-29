@@ -1031,20 +1031,8 @@ public class ProgramIdConsts {
 	// CMF001
 	public static final String CMF001A = "CMF001A";
 	public static final String CMF001B = "CMF001B";
-	public static final String CMF001D = "CMF001D";
-	public static final String CMF001E = "CMF001E";
-	public static final String CMF001F = "CMF001F";
-	public static final String CMF001G = "CMF001G";
-	public static final String CMF001H = "CMF001H";
-	public static final String CMF001I = "CMF001I";
-	public static final String CMF001J = "CMF001J";
-	public static final String CMF001K = "CMF001K";
-	public static final String CMF001L = "CMF001L";
-	public static final String CMF001M = "CMF001M";
-	public static final String CMF001O = "CMF001O";// O, P: is wizard screen
-	public static final String CMF001Q = "CMF001Q";
-	public static final String CMF001R = "CMF001R";
-	public static final String CMF001S = "CMF001S";
+	public static final String CMF001C = "CMF001C";
+	public static final String CMF001X = "CMF001X";
 
 	// CMF002
 	public static final String CMF002A = "CMF002A";

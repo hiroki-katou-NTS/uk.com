@@ -69,7 +69,7 @@ public class DailyModifyResCommandFacade {
 		String companyId = AppContexts.user().companyId();
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
-		boolean onlyErrorOld = true;
+		boolean onlyErrorOld = false;
 		val cacheCarrier = new CacheCarrier();
 		val require = requireService.createRequire();
 		for (String emp : employeeIds) {
@@ -117,38 +117,51 @@ public class DailyModifyResCommandFacade {
 			}
 
 			// 勤務種類が変更されているかチェックする
-			val itemEdit28s = lstItemEdits.stream().filter(it -> it.getEmployeeId().equals(emp) && it.getItemId() == 28)
-					.map(it -> it.getValue()).collect(Collectors.toList());
-			val lstWTClassification = new HashSet<>();
-			if (!itemEdit28s.isEmpty()) {
-				List<WorkType> lstWType = workTypeRepository.getPossibleWorkType(companyId, itemEdit28s);
-				for (WorkType wt : lstWType) {
-					// lstWType.stream().forEach(wt -> {
-					val wtTemp = checkInGroupWorkPer(wt);
-					if (wtTemp != null) {
-						lstWTClassification.add(convertError(wtTemp));
-						onlyErrorOld = false;
-						val itemRow = lstItemEdits.stream()
-								.filter(it -> it.getEmployeeId().equals(emp) && it.getItemId() == 28
-										&& it.getValue().equals(wt.getWorkTypeCode().v()))
-								.map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
-						detailEmployeeError.addAll(itemRow);
-					}
-					// });
-				}
-
-			}
+//			val itemEdit28s = lstItemEdits.stream().filter(it -> it.getEmployeeId().equals(emp) && it.getItemId() == 28)
+//					.map(it -> it.getValue()).collect(Collectors.toList());
+//			val lstWTClassification = new HashSet<>();
+//			if (!itemEdit28s.isEmpty()) {
+//				List<WorkType> lstWType = workTypeRepository.getPossibleWorkType(companyId, itemEdit28s);
+//				for (WorkType wt : lstWType) {
+//					// lstWType.stream().forEach(wt -> {
+//					val wtTemp = checkInGroupWorkPer(wt);
+//					if (wtTemp != null) {
+//						lstWTClassification.add(convertError(wtTemp));
+//						onlyErrorOld = false;
+//						val itemRow = lstItemEdits.stream()
+//								.filter(it -> it.getEmployeeId().equals(emp) && it.getItemId() == 28
+//										&& it.getValue().equals(wt.getWorkTypeCode().v()))
+//								.map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
+//						detailEmployeeError.addAll(itemRow);
+//					}
+//					// });
+//				}
+//
+//			}
+//			
+			
 			// boolean hasErrorInDB = !lstEmpMonthError.stream().filter(x ->
 			// x.getErrorType()).collect(Collectors.toList()).isEmpty();
-			lstEmpMonthError = lstWTClassification.isEmpty() ? lstEmpMonthError
-					: lstEmpMonthError.stream()
-							.filter(lstErrorTemp -> lstWTClassification.contains(lstErrorTemp.getErrorType()))
-							.collect(Collectors.toList());
+//            lstEmpMonthError = lstWTClassification.isEmpty() ? lstEmpMonthError
+//                    : lstEmpMonthError.stream()
+//                            .filter(lstErrorTemp -> lstWTClassification.contains(lstErrorTemp.getErrorType())
+//                                    || lstErrorTemp.getErrorType() == ErrorType.CHILDCARE_HOLIDAY
+//                                    || lstErrorTemp.getErrorType() == ErrorType.CARE_HOLIDAY)
+//                            .collect(Collectors.toList());
+			
 
 			monthPer.addAll(lstEmpMonthError);
 			// });
 		}
 
+        if (!monthPer.isEmpty()) {
+            employeeChange.forEach(data -> {
+                val itemRow = lstItemEdits.stream()
+                        .filter(it -> it.getEmployeeId().equals(data.getKey()) && it.getDate().equals(data.getValue()))
+                        .map(x -> Pair.of(x.getEmployeeId(), x.getDate())).collect(Collectors.toSet());
+                detailEmployeeError.addAll(itemRow);
+		});
+        }
 		return new LeaveDayErrorDto(onlyErrorOld, monthPer, detailEmployeeError);
 	}
 

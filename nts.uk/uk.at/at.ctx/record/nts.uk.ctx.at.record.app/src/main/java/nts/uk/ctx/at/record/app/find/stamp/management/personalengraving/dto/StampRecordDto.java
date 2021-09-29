@@ -107,7 +107,7 @@ public class StampRecordDto {
 				this.overTime = getTimeString(overtime.getOverTime().v());
 				this.overLateNightTime = getTimeString(overtime.getOverLateNightTime().v());
 			}
-			this.reflectedCategory = stamp.isReflectedCategory();
+			this.reflectedCategory = stamp.getImprintReflectionStatus().isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
 				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
 				this.latitude = stampLocate.getLatitude();
@@ -132,7 +132,7 @@ public class StampRecordDto {
 		this.stampDate = info.getStampDatetime().toString("yyyy/MM/dd");
 		this.stampTime = info.getStampDatetime().toString("HH:mm");
 		this.stampTimeWithSec = stampDate.toString();
-		Stamp stamp = !info.getStamp().isEmpty() ? info.getStamp().get(0) : null;
+		Stamp stamp = info.getStamp().map(m -> m).orElse(null);
 		this.stampHow = getCorrectTimeString(stamp != null ? stamp.getRelieve().getStampMeans() : null);
 		this.stampArt = info.getStampAtr();
 		this.stampArtName = info.getStampAtr();
@@ -162,7 +162,7 @@ public class StampRecordDto {
 				this.overTime = getTimeString(overtime.getOverTime().v());
 				this.overLateNightTime = getTimeString(overtime.getOverLateNightTime().v());
 			}
-			this.reflectedCategory = stamp.isReflectedCategory();
+			this.reflectedCategory = stamp.getImprintReflectionStatus().isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
 				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
 				this.latitude = stampLocate.getLatitude();

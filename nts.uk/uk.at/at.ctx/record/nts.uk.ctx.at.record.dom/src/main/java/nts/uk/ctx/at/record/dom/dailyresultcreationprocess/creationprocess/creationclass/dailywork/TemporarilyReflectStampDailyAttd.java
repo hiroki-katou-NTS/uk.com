@@ -70,7 +70,7 @@ public class TemporarilyReflectStampDailyAttd {
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.DIRECT) {
 				// 出勤を反映する (Phản ánh 出勤)
 				reflectWork.reflectWork(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
-				if (!stamp.isReflectedCategory()) {
+				if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
 			}else {
@@ -88,7 +88,7 @@ public class TemporarilyReflectStampDailyAttd {
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.BOUNCE) {
 				// 退勤を反映する （Phản ánh 退勤）
 				reflectLeavingWork.reflectLeaving(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
-				if (!stamp.isReflectedCategory()) {
+				if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
 			}else {
@@ -105,21 +105,21 @@ public class TemporarilyReflectStampDailyAttd {
 		case RETURN:
 			//外出・戻りを反映する (Phản ánh 外出・戻り)
 			reflectGoingOutAndReturn.reflect(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
-			if (!stamp.isReflectedCategory()) {
+			if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
 			break;
 		case TEMPORARY_WORK://臨時開始 or 臨時終了
 		case TEMPORARY_LEAVING:
 			reflectTemporaryStartEnd.reflect(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
-			if (!stamp.isReflectedCategory()) {
+			if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
 			break;
 		case BRARK: //退門Or入門
 		case OVER_TIME:
 			entranceAndExit.entranceAndExit(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
-			if (!stamp.isReflectedCategory()) {
+			if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
 			break;
@@ -127,7 +127,7 @@ public class TemporarilyReflectStampDailyAttd {
 		case PC_LOG_OFF:
 			//PCログオン情報反映す
 			reflectPcLogonInfo.reflect(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
-			if (!stamp.isReflectedCategory()) {
+			if (!stamp.getImprintReflectionStatus().isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
 			break;
