@@ -38,6 +38,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private static int MINUTES_IN_AN_HOUR = 60;
     private static int ROUNDING_INCREMENTS = 5;
     private static final int MAX_ROW_B5 = 4;
+    private static final int PIXEL_OF_COLUMN = 27;
 
     @Override
     public void generate(FileGeneratorContext context, PersonalScheduleByDateDataSource dataSource) {
@@ -410,19 +411,19 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             minuteEnd -= 30;
         }
 
-        System.out.println("-------------------------------------");
+        int shapeWidth = minuteEnd == 0
+                ? (columnEnd * PIXEL_OF_COLUMN) - (columnStart * PIXEL_OF_COLUMN) - left
+                : ((columnEnd * PIXEL_OF_COLUMN) + Math.round(calcRatioCell() * minuteEnd)) - (columnStart * PIXEL_OF_COLUMN) - left;
         System.out.println("Input start: " + start);
         System.out.println("Input end: " + end);
-        System.out.println("TimeConverted Start: " + startTime.getHour() + " : " + + startTime.getMinute());
+        System.out.println("TimeConverted Start: " + startTime.getHour() + ":" + + startTime.getMinute());
         System.out.println("TimeConverted End: " + endTime.getHour() + ":" + endTime.getMinute());
         System.out.println("left: " + left);
         System.out.println("minuteEnd: " + minuteEnd);
         System.out.println("columnStart: " + columnStart);
         System.out.println("columnEnd: " + columnEnd);
-        int shapeWidth = minuteEnd == 0
-                ? (columnEnd * 25) - (columnStart * 25) - left
-                : ((columnEnd * 25) + Math.round(calcRatioCell() * minuteEnd)) - (columnStart * 25) - left;
         System.out.println("shapeWidth: " + shapeWidth);
+        System.out.println("------------------------");
 
         return new DrawRectangleProperties(columnStart, left, shapeWidth);
     }
@@ -636,11 +637,11 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     }
 
     private int calcWidthCells(int column) {
-        return column * 25;
+        return column * PIXEL_OF_COLUMN;
     }
 
     private float calcRatioCell() {
-        return (float) 25 / 30;
+        return (float) PIXEL_OF_COLUMN / 30;
     }
 
     private int roundUp(int num, int multipleOf) {
@@ -672,8 +673,15 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         shape.getLine().setFillType(FillType.SOLID);
         shape.getLine().getSolidFill().setColor(Color.getBlack());
         if (zOrderIndex != null) {
+            System.out.println("ZIndex before: " + shape.getZOrderPosition());
             shape.setZOrderPosition(zOrderIndex);
+            System.out.println("ZIndex after: " + shape.getZOrderPosition());
         }
+        System.out.println("getName: " + shape.getName());
+        System.out.println("getWidth: " + shape.getWidth());
+        System.out.println("getWidthCM: " + shape.getWidthCM());
+        System.out.println("getWidthInch: " + shape.getWidthInch());
+        System.out.println("getWidthInShape: " + shape.getWidthInShape());
     }
 
     private Color getBarColor(BarType barType) {
