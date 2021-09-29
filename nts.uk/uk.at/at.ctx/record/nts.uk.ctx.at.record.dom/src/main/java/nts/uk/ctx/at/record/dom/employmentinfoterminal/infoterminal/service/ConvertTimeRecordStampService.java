@@ -74,26 +74,18 @@ public class ConvertTimeRecordStampService {
 //		}
 	}
 
-	// [pvt-1] 新しいを作成することができる
-	private static boolean canCreateNewData(Require require, ContractCode contractCode,
-			StampReceptionData stampReceptData) {
-
-		Optional<StampRecord> stampRecord = require.getStampRecord(contractCode,
-				new StampNumber(stampReceptData.getIdNumber()), stampReceptData.getDateTime());
-		return !stampRecord.isPresent();
-	}
-	
 	//打刻を作成する
 	private static Pair<Optional<Stamp>, AtomTask> createStamp(Require require, Optional<EmpInfoTerminal> empInfoTerOpt,
 			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData){
 		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTerOpt.get().getCreateStampInfo().createStamp(contractCode, stampReceptData, empInfoTerCode);
 		if(!stamp.isPresent()) return Pair.of(Optional.empty(), AtomTask.none());
 		
-		if (!canCreateNewData(require, contractCode, stampReceptData))
-			return Pair.of(Optional.empty(), AtomTask.none());
-		AtomTask stampReflectResult = StampDataReflectProcessService.registerStamp(require,
+		Optional<AtomTask> stampReflectResult = StampDataReflectProcessService.registerStamp(require,
 				stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
-		return  Pair.of(Optional.of(stamp.get().getLeft()), stampReflectResult);
+		if(!stampReflectResult.isPresent()) {
+			return Pair.of(Optional.empty(), AtomTask.none());
+		}
+		return  Pair.of(Optional.of(stamp.get().getLeft()), stampReflectResult.get());
 	}
 
 	//社員IDを取得する
