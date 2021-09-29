@@ -172,7 +172,7 @@ public class BusinessTripFinder {
                 Optional.of(businessTripWorkTypes),
                 Optional.empty()
         );
-        return BusinessTripInfoOutputDto.convertToDto(output);
+        return BusinessTripInfoOutputDto.convertToDto(businessTripService.setInitValueAppWorkTime(output));
     }
 
     /**
