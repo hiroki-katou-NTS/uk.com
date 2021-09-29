@@ -212,8 +212,7 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 							OneYearTime.of(
 									OneYearErrorAlarmTime.of(
 											new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getErrorTime()),
-											new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getAlarmTime())), 
-									new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getUpperLimit()))), 
+											new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getAlarmTime())))), 
 					EnumAdaptor.valueOf(agreementTimeYearExport.getStatus(), AgreementTimeStatusOfMonthly.class));
 		}
 		if(agreementTimeExport.getAgreMaxAverageTimeMulti().isPresent()) {
