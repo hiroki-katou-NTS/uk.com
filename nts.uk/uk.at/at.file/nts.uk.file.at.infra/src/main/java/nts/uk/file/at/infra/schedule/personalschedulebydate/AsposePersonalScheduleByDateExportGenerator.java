@@ -174,12 +174,15 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         val graphVacationDisplay = dataSource.getQuery().isGraphVacationDisplay();
         int graphStartTime = dataSource.getQuery().getGraphStartTime();
         int pixelOfColumn = cells.getColumnWidthPixel(8);
-        System.out.println("pixelOfColumn: " + cells.getColumnWidth(8));
+        System.out.println("pixelOfColumn: " + pixelOfColumn);
 
         for (int i = 1; i <= employeeWorkScheduleList.size(); i++) {
             EmployeeWorkScheduleResultDto item = employeeWorkScheduleList.get(i - 1);
             if (i == employeeWorkScheduleList.size())
-                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
+                if (employeeWorkScheduleList.size() == 1)
+                    cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 18 : 21, rowCount, 2);
+                else
+                    cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
             else
                 cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (isEndOfPage(rowCount, pageIndex) ? 49 : 9), rowCount, 2);
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
