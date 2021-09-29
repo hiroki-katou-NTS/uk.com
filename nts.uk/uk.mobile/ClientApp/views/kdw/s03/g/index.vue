@@ -116,7 +116,7 @@
                 <!-- G8-1: 超過時間	-->
                 <th class="pl-0 pr-0 text-center" colspan="2">{{'KDWS03_54' | i18n}}</th>
                 <!-- G10-1: 超過回数	-->
-                <th class="pl-0 pr-0 text-center" colspan="2">{{'KDWS03_56' | i18n}}</th>            
+                <th class="pl-0 pr-0 text-center" >{{'KDWS03_56' | i18n}}</th>            
               </tr>
             </thead>
             <tbody>
@@ -126,7 +126,7 @@
                 <!-- G9-2: 超過上限時間	-->
                 <td class="pl-0 pr-0 text-center" v-bind:class="time36CssAgree">{{ time36.maxTime36 | timedr }}</td>
                 <!-- G10-2: 超過回数-->
-                <td id="agree-excess" class="pl-0 pr-0 text-center" colspan="2" v-bind:class="time36CssFrequency">{{'KDWS03_57' | i18n(time36.excessFrequency)}}</td>          
+                <td id="agree-excess" class="pl-0 pr-0 text-center"  v-bind:class="time36CssFrequency">{{'KDWS03_57' | i18n(time36.excessNumber)}}</td>          
               </tr>
             </tbody>
           </table>           
