@@ -1,5 +1,6 @@
 package nts.uk.query.app.equipment.achievement;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -59,7 +60,9 @@ public class EquipmentUsageSettingsQuery {
 					itemSettings.stream().map(this::convertItemSetting).collect(Collectors.toList()),
 					this.convertFormatSetting(formatSetting));
 		}
-		return null;
+		return new EquipmentUsageSettingsModel(
+				new ArrayList<EquipmentUsageRecordItemSettingModel>(),
+				new EquipmentPerformInputFormatSettingModel("", new ArrayList<ItemDisplayModel>()));
 	}
 
 	private EquipmentPerformInputFormatSettingModel convertFormatSetting(EquipmentPerformInputFormatSetting domain) {
