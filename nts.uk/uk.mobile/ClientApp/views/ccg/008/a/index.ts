@@ -217,6 +217,19 @@ export class Ccg008AComponent extends Vue {
                 prefix: 'KTG029_60'
             }); 
         }
+        // next grantDate
+        if (yearlyHld && yearlyHld.nextGrantDate) {
+            let grantDays = 0;
+            if (yearlyHld.nextGrantDateInfo && yearlyHld.nextGrantDateInfo.day) {
+                grantDays = yearlyHld.nextGrantDateInfo.day;
+            }
+            results.push({
+                name: 'CCGS08_16', 
+                value: moment(new Date(yearlyHld.nextGrantDate)).format('YY/MM/DD') + '　' + grantDays + vm.$i18n('CCGS08_19'), 
+                // prefix: 'KTG029_60'
+            });
+        }
+        // 積立年休残数
         if (item.reservedYearsRemainNo) {
             if (item.reservedYearsRemainNo.showAfter) {
                 results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});

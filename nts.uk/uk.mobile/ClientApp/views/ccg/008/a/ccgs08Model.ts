@@ -123,7 +123,7 @@ class YearlyHolidayDto {
   public afterGrantDateInfo: DateInfoDto;
   public grantedDaysNo: Number;
   public nextGrantDateInfo: DateInfoDto;
-  public nextGrantDate: String;
+  public nextGrantDate: string;
   public attendanceRate: Number;
   public calculationMethod: Number;
   public nextTime: String;
@@ -134,7 +134,7 @@ class YearlyHolidayDto {
 }
 
 export class DateInfoDto {
-  public day: Number;
+  public day: number;
   public hours: TimeDto;
   public remaining: Number;
   public timeYearLimit: TimeDto;
