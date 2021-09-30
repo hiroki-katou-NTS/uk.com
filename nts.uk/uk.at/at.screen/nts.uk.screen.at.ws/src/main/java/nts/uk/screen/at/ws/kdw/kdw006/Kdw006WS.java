@@ -12,6 +12,9 @@ import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWork;
 import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWorkDto;
 import nts.uk.screen.at.app.kdw006.k.GetManHourRecordItemSpecifiedIDListDto;
 import nts.uk.screen.at.app.kdw006.k.GetManHourRecordItemSpecifiedIDListParam;
+import nts.uk.screen.at.app.kdw006.k.GetWorkInforDetails;
+import nts.uk.screen.at.app.kdw006.k.GetWorkInforDetailsDto;
+import nts.uk.screen.at.app.kdw006.k.GetWorkInforDetailsInput;
 import nts.uk.screen.at.app.kdw006.k.WorkInfomations;
 
 /**
@@ -26,9 +29,12 @@ public class Kdw006WS extends WebService {
 
 	@Inject
 	private WorkInfomations workInfomations;
-	
+
 	@Inject
 	private AcquireSelectionHistoryOfWork acquireSelectionHistoryOfWork;
+
+	@Inject
+	private GetWorkInforDetails getWorkInforDetails;
 
 	// 作業補足情報の選択項目を取得する
 	@POST
@@ -42,6 +48,13 @@ public class Kdw006WS extends WebService {
 	@Path("view-k/get-list-history")
 	public List<AcquireSelectionHistoryOfWorkDto> getListHistory() {
 		return this.acquireSelectionHistoryOfWork.get();
+	}
+
+	// 作業補足情報の選択肢詳細を取得する
+	@POST
+	@Path("view-k/get-work-info-detail")
+	public List<GetWorkInforDetailsDto> getWorkInforDetails(GetWorkInforDetailsInput param) {
+		return this.getWorkInforDetails.getWorkInforDetails(param);
 	}
 
 }

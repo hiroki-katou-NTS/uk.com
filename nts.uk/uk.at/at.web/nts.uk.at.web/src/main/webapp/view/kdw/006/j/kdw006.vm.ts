@@ -12,9 +12,9 @@ module nts.uk.at.view.kmk006.j {
         ]);
         public selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
         public columns1: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: this.$i18n('KDW006_44'), key: 'code', width: 70 },
-            { headerText: 'number', key: 'id', hidden: true, width: 100 },
-            { headerText: this.$i18n('KDW006_45'), key: 'name', width: 200, formatter: _.escape }
+            { headerText: this.$i18n('KDW006_44'), key: 'code', width: 55 },
+            { headerText: 'number', key: 'id', hidden: true, width: 50 },
+            { headerText: this.$i18n('KDW006_45'), key: 'name', width: 175, formatter: _.escape }
         ]);
 
         // Value Tab1
@@ -34,11 +34,11 @@ module nts.uk.at.view.kmk006.j {
             const vm = this;
 
             for (var i = 1; i <= 20; i++) {
-                vm.itemsLeft.push({ id: i + '', code: '00' + i, name: 'Employee' + i });
+                vm.itemsLeft.push({ id: i + '', code: '00' + i, name: '勤怠項目名称00' + i });
             }
 
             for (var i = 1; i <= 20; i++) {
-                vm.itemsRight.push({ id: i + '', code: '00' + i, name: 'Employee' + i });
+                vm.itemsRight.push({ id: i + '', code: '00' + i, name: '勤怠項目名称00' + i });
             }
 
             console.log(ko.unwrap(vm.itemsLeft));
