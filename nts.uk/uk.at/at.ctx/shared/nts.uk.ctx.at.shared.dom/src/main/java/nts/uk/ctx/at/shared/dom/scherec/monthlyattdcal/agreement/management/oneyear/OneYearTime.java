@@ -27,7 +27,8 @@ public class OneYearTime {
 		this.upperLimit = upperLimit;
 	}
 	
-	public static OneYearTime of(OneYearErrorAlarmTime erAlTime, AgreementOneYearTime upperLimit) {
+	/**　不変条件チェックするコンストラクタ　*/
+	public static OneYearTime createWithCheck(OneYearErrorAlarmTime erAlTime, AgreementOneYearTime upperLimit) {
 
 		/** 不変条件: @上限時間 ≧ @エラーアラーム時間.エラー時間 */
 		if (upperLimit.lessThan(erAlTime.getError())) {
@@ -36,8 +37,9 @@ public class OneYearTime {
 
 		return new OneYearTime(erAlTime, upperLimit);
 	}
-	
-	public static OneYearTime of(OneYearErrorAlarmTime erAlTime) {
+
+	/**　上限時間セットしないまた不変条件チェックしないコンストラクタ　*/
+	public static OneYearTime createWithNoUpperLimit(OneYearErrorAlarmTime erAlTime) {
 
 		return new OneYearTime(erAlTime, new AgreementOneYearTime(0));
 	}
