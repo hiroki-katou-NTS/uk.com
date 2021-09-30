@@ -20,6 +20,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNu
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterType;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResult;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetActualResultRepository;
@@ -303,18 +304,22 @@ public class AggregateWorkplaceTotalQuery {
                     break;
                 case EXTERNAL_BUDGET: // 外部予算実績を取得する
                     List<ExternalBudget> externalBudgets = externalBudgetRepo.findAll(companyId);
-                    Map<GeneralDate, Map<ExternalBudget, ExternalBudgetValues>> resultMap = new HashMap<>();
+                    Map<GeneralDate, Map<ExternalBudgetCd, ExternalBudgetValues>> resultMap = new HashMap<>();
                     externalBudgets.forEach(item -> {
                         List<ExternalBudgetActualResult> extBudgetDailies = extBudgetDailyRepository.getByPeriod(
                                 targetOrg,
                                 period,
                                 item.getExternalBudgetCd()
                         );
-                        resultMap.putAll(extBudgetDailies.stream().collect(Collectors.toMap(e -> e.getYmd(), e -> {
-                            Map<ExternalBudget, ExternalBudgetValues> tmp = new HashMap<>();
-                            tmp.put(item, e.getActualValue());
-                            return tmp;
-                        })));
+                        extBudgetDailies.forEach(externalBudget -> {
+                            if (resultMap.containsKey(externalBudget.getYmd())) {
+                                resultMap.get(externalBudget.getYmd()).put(item.getExternalBudgetCd(), externalBudget.getActualValue());
+                            } else {
+                                Map<ExternalBudgetCd, ExternalBudgetValues> tmp = new HashMap<>();
+                                tmp.put(item.getExternalBudgetCd(), externalBudget.getActualValue());
+                                resultMap.put(externalBudget.getYmd(), tmp);
+                            }
+                        });
                     });
                     result.put(WorkplaceCounterCategory.EXTERNAL_BUDGET, (Map<GeneralDate, T>) resultMap);
                     break;
