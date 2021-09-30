@@ -68,6 +68,7 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 		List<OfimtEquipmentDayItemPK> pkList = itemNos.stream()
 				.map(data -> new OfimtEquipmentDayItemPK(cid, Integer.valueOf(data.v()))).collect(Collectors.toList());
 		this.commandProxy().removeAll(OfimtEquipmentDayItem.class, pkList);
+		this.getEntityManager().flush();
 	}
 
 	@Override

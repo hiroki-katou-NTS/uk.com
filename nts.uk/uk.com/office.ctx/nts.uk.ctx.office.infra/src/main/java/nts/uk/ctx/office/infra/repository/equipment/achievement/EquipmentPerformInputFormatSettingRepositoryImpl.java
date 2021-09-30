@@ -50,6 +50,7 @@ public class EquipmentPerformInputFormatSettingRepositoryImpl extends JpaReposit
 				.setParameter("cid", cid)
 				.getList();
 		this.commandProxy().removeAll(entities);
+		this.getEntityManager().flush();
 	}
 
 	@Override
