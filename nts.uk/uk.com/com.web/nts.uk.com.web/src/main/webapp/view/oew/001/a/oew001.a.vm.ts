@@ -58,7 +58,11 @@ module nts.uk.com.view.oew001.a {
       const vm = this;
       vm.$blockui("grayout");
       vm.restoreCharacteristic().then(param => vm.initEquipmentInfo(param)).then(() => vm.initEquipmentSetting())
-      .then(() => $("#A5_1").focus()).always(() => vm.$blockui("clear"));
+      .always(() => {
+        $("#A5_1").focus();
+        vm.initGrid();
+        vm.$blockui("clear");
+      });
     }
 
     // Ａ1：設備分類と設備情報を取得する
@@ -76,7 +80,7 @@ module nts.uk.com.view.oew001.a {
           vm.equipmentInformationList(result.equipmentInformationList);
           vm.selectedEquipmentInfoCode(param.equipmentCode);
         }
-      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
+      }, err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     // Ａ2：「設備利用実績の項目設定」を取得する
@@ -94,8 +98,7 @@ module nts.uk.com.view.oew001.a {
           const optionalItems = temp.optionalItems;
           vm.createColumns(optionalItems);
         }
-        vm.$nextTick(() => vm.initGrid());
-      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
+      }, err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     private initGrid() {
