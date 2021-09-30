@@ -22,6 +22,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNu
 import nts.uk.ctx.at.aggregation.dom.scheduletable.*;
 import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetValues;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
@@ -90,7 +91,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     private final int START_DATE_COL = 3;
     private final int PERSONAL_INFO_COLUMN = 0;
     private final int ADDITIONAL_PERSONAL_INFO_COLUMN = 2;
-    private final int MAX_ROWS_PER_PAGE_WITHOUT_ADDITIONAL_INFO = 37;
 
     private int startRow = START_DATA_ROW;
     private final List<Integer> indexes = new ArrayList<>();
@@ -744,6 +744,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             AggregationUnitOfLaborCosts unit = units.get(i);
                             LaborCostAndTime laborCostAndTime = workplaceCounterLaborCostAndTime.get().getLaborCostAndTimeList().get(unit);
                             if (laborCostAndTime.getUseClassification() == NotUseAtr.USE) {
+                                indexes.add(startRow);
                                 int count = 0, copyStartRow = startRow;
                                 if (laborCostAndTime.isTargetAggregation(LaborCostItemType.TIME)) {
                                     this.setWorkplaceLaborCostTimeTotalValue(
@@ -836,7 +837,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     }
                     break;
                 case EXTERNAL_BUDGET:
-                    Map<GeneralDate, Map<ExternalBudget, ExternalBudgetValues>> externalBudgetMap = (Map<GeneralDate, Map<ExternalBudget, ExternalBudgetValues>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                    Map<GeneralDate, Map<ExternalBudgetCd, ExternalBudgetValues>> externalBudgetMap = (Map<GeneralDate, Map<ExternalBudgetCd, ExternalBudgetValues>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
                     List<ExternalBudget> externalBudgets = externalBudgetRepo.findAll(companyId);
                     for (int i = 0; i < externalBudgets.size(); i++) {
                         ExternalBudget externalBudget = externalBudgets.get(i);
@@ -850,8 +851,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         BigDecimal total = BigDecimal.ZERO;
                         for (int j = 0; j < dataSource.getDateInfos().size(); j++) {
                             DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(j);
-                            Map<ExternalBudget, ExternalBudgetValues> valueMap = externalBudgetMap.getOrDefault(dateInfo.getYmd(), new HashMap<>());
-                            ExternalBudgetValues value = valueMap.get(externalBudget);
+                            Map<ExternalBudgetCd, ExternalBudgetValues> valueMap = externalBudgetMap.getOrDefault(dateInfo.getYmd(), new HashMap<>());
+                            ExternalBudgetValues value = valueMap.get(externalBudget.getExternalBudgetCd());
                             if (value != null) {
                                 BigDecimal bdValue = new BigDecimal(value.toString());
                                 total = total.add(bdValue);
@@ -911,6 +912,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         BigDecimal total2 = BigDecimal.ZERO;
                         BigDecimal total3 = BigDecimal.ZERO;
                         for (int j = 0; j < dataSource.getDateInfos().size(); j++) {
+                            indexes.add(startRow);
                             DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(j);
                             List<NumberOfPeopleByEachWorkMethod<CodeNameValue>> values = shiftTimeMap.get(dateInfo.getYmd());
                             Optional<NumberOfPeopleByEachWorkMethod<CodeNameValue>> value = values.stream().filter(s -> s.getWorkMethod().getCode().equals(master.getCode())).findFirst();
@@ -918,6 +920,9 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                                 cells.get(startRow, START_DATE_COL + j).setValue(value.get().getPlanNumber().toString());
                                 cells.get(startRow + 1, START_DATE_COL + j).setValue(value.get().getScheduleNumber().toString());
                                 cells.get(startRow + 2, START_DATE_COL + j).setValue(value.get().getActualNumber().toString());
+                                total = total.add(value.get().getPlanNumber());
+                                total2 = total2.add(value.get().getScheduleNumber());
+                                total3 = total3.add(value.get().getActualNumber());
                             } else {
                                 cells.get(startRow, START_DATE_COL + j).setValue("0");
                                 cells.get(startRow + 1, START_DATE_COL + j).setValue("0");
@@ -1069,18 +1074,20 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     }
 
     private void handlePageBreak(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource) {
-        int start = START_DATA_ROW, maxRowPerPage = MAX_ROWS_PER_PAGE_WITHOUT_ADDITIONAL_INFO;
-        if (dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count() == 0) {
-            maxRowPerPage += 3;
+        int start = START_DATA_ROW, totalColWidth = 17, maxRowPerPage;
+        if (dataSource.getOutputSetting().getOutputItem().getAdditionalColumnUseAtr() == NotUseAtr.USE
+                && dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count() > 0) {
+            totalColWidth += 9;
         }
+        totalColWidth += dataSource.getPeriod().datesBetween().size() * COLUMN_WIDTH;
         for (PersonalCounterCategory category : dataSource.getOutputSetting().getPersonalCounterCategories()) {
             switch (category) {
                 case WORKING_HOURS:
-                    maxRowPerPage = maxRowPerPage + 3 + 1;
+                    totalColWidth += 3 * COLUMN_WIDTH;
                     break;
                 case MONTHLY_EXPECTED_SALARY:
                 case CUMULATIVE_ESTIMATED_SALARY:
-                    maxRowPerPage = maxRowPerPage + 2 + 1;
+                    totalColWidth += 2 * COLUMN_WIDTH;
                     break;
                 case TIMES_COUNTING_1:
                 case TIMES_COUNTING_2:
@@ -1095,16 +1102,19 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     if (timesNumberCounterSelection.isPresent()) {
                         List<TotalTimes> totalTimes = totalTimesRepo.getTotalTimesDetailByListNo(AppContexts.user().companyId(), timesNumberCounterSelection.get().getSelectedNoList())
                                 .stream().filter(t -> t.getUseAtr() == UseAtr.Use).collect(Collectors.toList());
-                        maxRowPerPage += totalTimes.size() + 1;
+                        totalColWidth += totalTimes.size() * COLUMN_WIDTH;
+                    } else {
+                        totalColWidth += COLUMN_WIDTH;
                     }
                     break;
                 case ATTENDANCE_HOLIDAY_DAYS:
-                    maxRowPerPage = maxRowPerPage + 2 + 1;
+                    totalColWidth += 2 * COLUMN_WIDTH;
                     break;
                 default:
                     break;
             }
         }
+        maxRowPerPage = (int) Math.floor(totalColWidth / 3.8) + 1;
         for (int i = 0; i < indexes.size(); i++) {
             if (indexes.get(i) - start > maxRowPerPage) {
                 worksheet.getHorizontalPageBreaks().add(indexes.get(i - 1).intValue());
