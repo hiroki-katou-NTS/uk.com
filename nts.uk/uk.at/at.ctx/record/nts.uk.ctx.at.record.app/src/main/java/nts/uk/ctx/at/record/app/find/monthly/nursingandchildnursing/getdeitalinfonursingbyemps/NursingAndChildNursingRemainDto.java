@@ -44,12 +44,12 @@ public class NursingAndChildNursingRemainDto {
 	private String maxNumberOfYear;
 
 	/**
-	 * 上限日数
+	 * 消化詳細一覧
 	 */
 	private List<DigestionDetails> listDigestionDetails = new ArrayList<>();
 
 	/**
-	 * 上限日数
+	 * 管理区分
 	 */
 	private boolean managementSection;
 

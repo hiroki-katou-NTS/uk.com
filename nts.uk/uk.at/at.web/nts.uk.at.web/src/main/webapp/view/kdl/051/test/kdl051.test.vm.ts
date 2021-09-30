@@ -75,13 +75,13 @@ module nts.uk.at.view.kdl051.test.viewmodel {
 				return self.listComponentOption.selectedCode().contains(z.code + "");
 			}), (a: any) => a.name);
 
-			nts.uk.ui.windows.setShared('KDL009_DATA', empIds);
+			nts.uk.ui.windows.setShared('KDL051A_PARAM', empIds);
 			if(empIds.length == 0){
 				nts.uk.ui.dialog.alertError({ messageId: "List Employee empty !!!" });
 			}else if(empIds.length == 1){
-				nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 770, height: 650});
+				nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
 			}else{
-				nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 1100, height: 650});
+				nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 980, height: 570});
 			}
 			
 		}

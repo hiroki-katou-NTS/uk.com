@@ -1,64 +1,3 @@
-table#table-top td {
-	padding-bottom:2vh;
-	border-top: none;
-}
-.color-grid {    
-	background-color: #CFF1A5;
-	border: solid 1px #ccc;
-    padding-left: 5px;
-}
-
-#table-bottom > thead > tr > td:nth-child(1), #table-bottom > tbody > tr > td:nth-child(1) { width: 33%;}
-#table-bottom > thead > tr > td:nth-child(2), #table-bottom > tbody > tr > td:nth-child(2) { width: 16%;}
-#table-bottom > thead > tr > td:nth-child(3), #table-bottom > tbody > tr > td:nth-child(3) { width: 20%;}
-#table-bottom > thead > tr > td:nth-child(4), #table-bottom > tbody > tr > td:nth-child(4) { width: 30%;}
-
-table#table-bottom >tbody >tr > td{
-	border-left : solid 1px #ccc;
-	border-bottom: 1px #ccc dotted;
-}
-
-#table-bottom > tbody {
-    overflow-y:scroll;
-   	height:230px;
-   	display:block;
-}
-
-table#table-bottom {
-  width: 100%;
-}
-table#table-bottom> td {
-  border-collapse: collapse;
-  border: 1px solid #000;
-}
-
-table#table-bottom >thead {
-  display: table; /* to take the same width as tr */
-  width: calc(100% - 18px); /* - 17px because of the scrollbar width */
-}
-
-table#table-bottom > tbody {
-  display: block; /* to enable vertical scrolling */
-  max-height: 230px; /* e.g. */
-  overflow-y: scroll; /* keeps the scrollbar even if it doesn't need it; display purpose */
-}
-
-.icon-default{
-	width: 18px;
-    text-align: center;
-}
-.icon-default-1{
-	width: 13px;
-    text-align: center;
-}
-.icon-default-2{
-	width: 30px;
-    text-align: center;
-}
-.border-solid{
-	border-top: solid 1px #ccc !important;
-}
-
 #area-left {
 	float: left;
 }
@@ -75,4 +14,16 @@ table#table-bottom > tbody {
 }
 #kcp005 div {
     nav-index: -1;
+}
+
+table#single-list >tr>td {
+	margin-left: 10px;
+}
+.numberOfUseCss{
+	padding-left: 15px;
+}
+
+table#table-top td {
+    padding-bottom:1.5vh;
+    border-top: none;
 }

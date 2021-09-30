@@ -40,6 +40,11 @@ module nts.uk.at.view.kdl051.a {
 			expiredWithinMonthSelect: KnockoutObservable<string> =  ko.observable("");
 			dayCloseDeadlineSelect: KnockoutObservable<string> =  ko.observable("");
 			
+			//table bottom
+			items: KnockoutObservableArray<DigestionDetailsDto>;
+        	columns: KnockoutObservableArray<NtsGridListColumn>;
+			currentCode: KnockoutObservable<any>;
+			
 			listDataFull : any;
             constructor(data: any) {
 				let self = this;
@@ -100,7 +105,24 @@ module nts.uk.at.view.kdl051.a {
 				});
 				
 				
-				
+				//table bottom
+				self.items = ko.observableArray([]);
+            	self.currentCode = ko.observable();
+                self.items.push(new DigestionDetailsDtoTest("0.5日","2021/09/23（木）　" ,'')); 
+				self.items.push(new DigestionDetailsDtoTest("1.0日","2021/09/24（金）　" ,''));
+				self.items.push(new DigestionDetailsDtoTest("1.0日","2021/09/26（日）　" ,''));
+	            self.items.push(new DigestionDetailsDtoTest("0.5日","2021/10/05（火）　" ,'予'));
+				self.items.push(new DigestionDetailsDtoTest("1.0日","2021/10/20（水）　" ,'予'));
+	            
+	            self.columns = ko.observableArray([
+					{ headerText: '', key: 'digestionStatus', width: 200,hidden: true } ,
+	                { headerText: getText('KDL051_25'), key: 'digestionDate', width: 200,formatter: function (digestionDate, record) {
+                        return "<div style='margin-left: 5px;display: flex;'><div style='width: 20px;' >"+record.digestionStatus.toString()+"</div> <div style='width: 155px;float:right;'> " + digestionDate + " </div></div>";   
+                	} }, 
+	                { headerText: getText('KDL051_26'), key: 'numberOfUse', width: 100,formatter: v => {
+                    	return '<div style="margin-left: 10px;">' + v + '</div>';
+                    } } 
+	            ]); 
 				
 			}
 
@@ -156,8 +178,8 @@ module nts.uk.at.view.kdl051.a {
                 let dfd = $.Deferred();
 				service.getChildNursingLeave(listEmp).done((data: any) => {
 					self.dataOneEmp(data);
-					self.listEmployeeImport = data.listEmployeeImport;
-					_.forEach(data.listEmployeeImport, (a: any, ind) => {
+					self.listEmployeeImport = data.lstEmployee;
+					_.forEach(data.lstEmployee, (a: any, ind) => {
 						self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName })
 					});
 					dfd.resolve();
@@ -171,15 +193,9 @@ module nts.uk.at.view.kdl051.a {
                 let self = this;
                 let dfd = $.Deferred();
 				service.getDeitalInfoNursingByEmp(emp).done((data: any) => {
-					/*self.dataOneEmp().remainNumConfirmDto =data;
+					self.dataOneEmp(data);
 					self.listDataInfo([]);
-					self.managementCheck(data.management);
-					if(data !=null && data.detailRemainingNumbers.length>0){
-						let temp = _.map(data.detailRemainingNumbers, (a: any) => new RemainNumberDetailedInfoDto(a));
-						self.listDataInfo(temp);
-						
-						self.listDataFull(self.listDataInfo());
-					}*/
+					self.managementCheck(data.managementSection?1:0);
 					
 	                //xóa index kcp005
 	               	let id = _.filter($("#kcp005 > div > div  "), (x) => {
@@ -231,6 +247,24 @@ module nts.uk.at.view.kdl051.a {
             self.numberOfUse = data.numberOfUse;
 		    self.digestionDate = data.digestionDate;
 			self.digestionStatus = data.digestionStatus;
+    	}
+	}
+	
+	export class DigestionDetailsDtoTest {
+        //使用数
+		numberOfUse : string;
+		//消化日
+		digestionDate : string;
+		//消化状況
+		digestionStatus : string;
+		
+        constructor(numberOfUse : string,
+					digestionDate : string,
+					digestionStatus : string ) {
+            let self = this;
+            self.numberOfUse = numberOfUse;
+		    self.digestionDate = digestionDate;
+			self.digestionStatus = digestionStatus;
     	}
 	}
 }
