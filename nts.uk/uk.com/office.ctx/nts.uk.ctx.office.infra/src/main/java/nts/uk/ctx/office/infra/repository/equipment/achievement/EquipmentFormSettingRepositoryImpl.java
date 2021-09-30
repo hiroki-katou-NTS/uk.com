@@ -29,6 +29,7 @@ public class EquipmentFormSettingRepositoryImpl extends JpaRepository implements
 	@Override
 	public void delete(String cid) {
 		this.commandProxy().remove(OfimtEquipmentDayRpt.class, cid);
+		this.getEntityManager().flush();
 	}
 
 	@Override
