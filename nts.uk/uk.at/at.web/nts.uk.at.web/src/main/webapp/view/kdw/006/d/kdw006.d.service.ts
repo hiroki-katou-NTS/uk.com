@@ -23,7 +23,7 @@ module nts.uk.at.view.kdw006.d.service {
         return nts.uk.request.ajax(paths.copyDaiPerfAuth, command);
     }
 
-    export function register(roleId: number, functionalRestriction: any): JQueryPromise<Array<any>> {
+    export function register(roleId: string, functionalRestriction: any): JQueryPromise<Array<any>> {
         let command = {
             roleId : roleId,
             authFuncRests : functionalRestriction

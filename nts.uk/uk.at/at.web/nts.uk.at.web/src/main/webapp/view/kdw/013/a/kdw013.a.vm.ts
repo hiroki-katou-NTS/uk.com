@@ -221,7 +221,8 @@ module nts.uk.ui.at.kdw013.a {
                                                     workCD4,
                                                     workCD5,
                                                     workLocationCD,
-                                                    workingHours
+                                                    workingHours,
+                                                    isChanged: false
                                                 } as any
                                             };
                                         })
@@ -606,9 +607,30 @@ module nts.uk.ui.at.kdw013.a {
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
     
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
+
+            let changedDates = dateRanges().map(date => {
+                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'day') });
+                const data = _.find(vm.$datas().lstWorkRecordDetailDto, (e) => { return moment(e.date).isSame(date, 'day') });
+
+                if (events.length != _.size(_.get(data, 'lstWorkDetailsParamDto'))) {
+                    return { date: date, changed: true };
+                }
+
+
+                const isChanged = _.find(events, (e) => { return _.get(e, 'extendedProps.isChanged') });
+
+                if (isChanged) {
+                    return { date: date, changed: true };
+                }
+
+                return { date: date, changed: false };
+
+
+            });
+
             
             const command: RegisterWorkContentCommand = {
-                changedDates: dateRanges().map((date) => {return moment(date).format(DATE_TIME_FORMAT);}),
+                changedDates: _.chain(changedDates).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value(),
                 editStateSetting,
                 employeeId: sid,
                 mode,
