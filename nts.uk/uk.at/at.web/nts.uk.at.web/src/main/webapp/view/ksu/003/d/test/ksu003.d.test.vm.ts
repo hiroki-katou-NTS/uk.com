@@ -34,7 +34,8 @@ module nts.uk.at.view.ksu003.d.test {
                 vm.dateValue.valueHasMutated();
             });
 
-            vm.selectedEmployeeIdTxt = ko.observable("4f1ceb83-c59d-482f-bbd5-85c42dda1c5c,74c2fe23-8772-4bb7-b3fc-bcc98324521f");
+            vm.selectedEmployeeIdTxt = ko.observable("xxxxxx000000000004-0004-000000000001,xxxxxx000000000004-0004-000000000002" +
+                ",xxxxxx000000000004-0004-000000000003");
         }
 
         created(params: any) {
