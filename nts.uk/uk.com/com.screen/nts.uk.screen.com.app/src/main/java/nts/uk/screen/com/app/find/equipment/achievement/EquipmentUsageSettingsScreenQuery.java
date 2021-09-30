@@ -1,5 +1,7 @@
 package nts.uk.screen.com.app.find.equipment.achievement;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -29,8 +31,8 @@ public class EquipmentUsageSettingsScreenQuery {
 		// 1. get(ログイン会社ID)
 		EquipmentUsageSettingsImport settings = this.equipmentUsageSettingsAdapter.findSettings();
 		// 2. get(ログイン会社ID)
-		EquipmentFormSetting formSetting = this.equipmentFormSettingRepository.findByCid(cid).orElse(null);
+		Optional<EquipmentFormSetting> optFormSetting = this.equipmentFormSettingRepository.findByCid(cid);
 		return new EquipmentUsageSettingsDto(settings.getItemSettings(), settings.getFormatSetting(),
-				EquipmentFormSettingDto.fromDomain(formSetting));
+				optFormSetting.map(EquipmentFormSettingDto::fromDomain).orElse(null));
 	}
 }
