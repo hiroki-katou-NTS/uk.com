@@ -1,29 +1,25 @@
-package nts.uk.ctx.at.request.app.find.dialog.annualholiday;
+package nts.uk.ctx.at.request.app.find.dialog.suspensionholiday;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto.AnnualHolidaysDto;
-import nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto.AnnualHolidaysRemainingDto;
+import nts.uk.ctx.at.request.app.find.dialog.annualholiday.InforAnnualHolidaysAccHolidayDto;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-
 /**
- * 
+ * 積休確認ダイアログを起動する
+ * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL029_積休ダイアログ.アルゴリズム.積休確認ダイアログを起動する
  * @author phongtq
- * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL020_年休ダイアログ.アルゴリズム.年休確認を起動する
- * 年休確認を起動する
  *
  */
 @Stateless
-public class AnnualHolidaysFinder {
-
+public class SuspensionHolidayFinder {
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
 
-	public InforAnnualHolidaysAccHolidayDto findAnnualHolidays(List<String> sIDs) {
+	public InforAnnualHolidaysAccHolidayDto findSuspensionHoliday(List<String> sIDs) {
 		// 社員ID(List)から個人社員基本情報を取得
 		List<EmployeeImport> lstEmp = this.empEmployeeAdapter.findByEmpId(sIDs);
 
@@ -33,7 +29,7 @@ public class AnnualHolidaysFinder {
 		InforAnnualHolidaysAccHolidayDto confirmDto = null;
 		// Input．社員IDリストをチェック
 		if (sIDs.size() == 1)
-			// 社員の代休残数詳細情報を取得
+			// 社員の積休残数詳細情報を取得
 			confirmDto = null; //substituteHoliday.getSubstituteHoliday(AppContexts.user().companyId(), sIDs.get(0));
 		else
 			mode = 1; // 画面 ＝ 複数モード
