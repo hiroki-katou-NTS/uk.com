@@ -17,6 +17,8 @@ import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHand
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommand;
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
+import nts.uk.ctx.exio.app.find.exo.category.ClosureIdAndPeriod;
+import nts.uk.ctx.exio.app.find.exo.category.Cmf002Dto;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
@@ -103,9 +105,9 @@ public class StdOutConSetWebService extends WebService {
 	}
 	@POST
 	@Path("getExOutCtgDto/{categoryId}")
-	public ExOutCtgDto getExOutCtgDto(@PathParam("categoryId") Integer categoryId) {
+	public Cmf002Dto getExOutCtgDto(@PathParam("categoryId") Integer categoryId) {
 		return stdOutputCondSetFinder.getExOutCtgDto(categoryId);
-		
+
 	}
 	
 	@POST

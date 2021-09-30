@@ -81,6 +81,19 @@
 							</colgroup>
 							<tr>
 								<td style="padding: 5px 0px">
+									<!--P7 条件コード/名称-->
+									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_78')}</div>
+								</td>
+								<td>
+									<!--P7_1 条件設定名-->
+									<div class="label">
+										<span data-bind="text: selectedConditionCd"></span>　<span
+											data-bind="text: selectedConditionName"></span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 5px 0px">
 									<!--P6 処理する年月日(ラベル)-->
 									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_223')}</div>
 								</td>
@@ -94,19 +107,7 @@
 												name: '#[CMF002_224]' }" />
 								</td>
 							</tr>
-							<tr>
-								<td style="padding: 5px 0px">
-									<!--P7 条件コード/名称-->
-									<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_78')}</div>
-								</td>
-								<td>
-									<!--P7_1 条件設定名-->
-									<div class="label">
-										<span data-bind="text: selectedConditionCd"></span>　<span
-											data-bind="text: selectedConditionName"></span>
-									</div>
-								</td>
-							</tr>
+
 						</table>
 					</div>
 				</td>

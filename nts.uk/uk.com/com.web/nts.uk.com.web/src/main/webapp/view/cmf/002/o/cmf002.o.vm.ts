@@ -57,6 +57,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isLoadScreenQ: boolean = false;
 
         roleAuthority: any;
+        exOutCtgDto:any;
 
         constructor() {
             var self = this;
@@ -117,6 +118,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 else{
                     let conditionName = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).name;
                     self.selectedConditionName(conditionName);
+                    let catelogoryId: number = _.find(self.listCondition(), { 'code': self.selectedConditionCd() }).catelogoryId;
+                    service.getExOutCtgDto(catelogoryId).done(data => {
+                        if(data){
+                            self.exOutCtgDto(data.exOutCtgDto());
+                        }
+                    });
                 }
             });
 
