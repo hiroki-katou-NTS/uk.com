@@ -64,6 +64,12 @@ module nts.uk.com.view.oew001.a {
     // Ａ1：設備分類と設備情報を取得する
     private initEquipmentInfo(param: any): JQueryPromise<any> {
       const vm = this;
+      if (!param) {
+        param = {
+          equipmentClsCode: null,
+          equipmentCode: null
+        };
+      }
       return vm.$ajax(API.initEquipmentInfo, param).then(result => {
         if (result) {
           vm.equipmentClassification(result.equipmentClassification);
@@ -94,8 +100,8 @@ module nts.uk.com.view.oew001.a {
 
     private initGrid() {
       const vm = this;
-      $("#A6").ntsGrid({
-        width: '1200px',
+      const maxWidth = _.chain(vm.columns()).map(data => Number(data.width?.substring(0, data.width.length - 2) | 0)).sum().value();
+      let param: any = {
         height: '259px',
         rows: 10,
         dataSource: vm.dataSource(),
@@ -114,9 +120,12 @@ module nts.uk.com.view.oew001.a {
             mode: 'row',
             multipleSelection: false
           },
-        ],
-        ntsFeatures: []
-      });
+        ]
+      };
+      if (maxWidth > model.constants.MAXIMUM_GRID_WIDTH) {
+        param.width = `${model.constants.MAXIMUM_GRID_WIDTH}px`;
+      }
+      $("#A6").ntsGrid(param);
     }
 
     public openDialogB(input?: any) {

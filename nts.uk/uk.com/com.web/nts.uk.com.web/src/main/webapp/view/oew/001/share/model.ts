@@ -228,6 +228,7 @@ module nts.uk.com.view.oew001.share.model.constants {
   // 固定値Ａ
   export const FIXED_VALUE_A = 9;
   export const MAXIMUM_COL_WIDTH = 450;
+  export const MAXIMUM_GRID_WIDTH = 1200;
 }
 
 module nts.uk.com.view.oew001.share.model.enums {
