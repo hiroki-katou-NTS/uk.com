@@ -95,8 +95,12 @@ module nts.uk.com.view.oem004.a {
 
     clickRegister() {
       const vm = this;
-      if (vm.isNewMode()) vm.createEquipmentCls()
-      else vm.updateEquipmentCls();
+      vm.$validate().then(valid => {
+        if (!valid) return;
+
+        if (vm.isNewMode()) vm.createEquipmentCls();
+        if (!vm.isNewMode()) vm.updateEquipmentCls();
+      })
     }
 
     /**
