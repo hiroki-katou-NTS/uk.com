@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.Value;
 import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.LeaveCategory;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -75,7 +76,9 @@ public class CreateStampInfo implements DomainValue {
 			return Optional.empty();
 
 		Stamp stamp = new Stamp(contractCode, new StampNumber(recept.getIdNumber().trim()), recept.getDateTime(), relieve,
-				stampType.get(), refActualResults, Optional.empty());
+				stampType.get(), refActualResults, Optional.empty(),
+				// 新しいGUIDを作成する
+				IdentifierUtil.randomUniqueId());
 
 		StampRecord stampRecord = createStampRecord(contractCode, recept, stamp);
 		return Optional.of(Pair.of(stamp, stampRecord));

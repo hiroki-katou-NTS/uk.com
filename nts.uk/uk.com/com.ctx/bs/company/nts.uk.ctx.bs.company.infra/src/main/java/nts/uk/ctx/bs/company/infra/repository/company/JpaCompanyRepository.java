@@ -214,7 +214,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.add_2 = domain.getAdd_2().v();
 		entity.addKana_1 = domain.getAddKana_1().v();
 		entity.addKana_2 = domain.getAddKana_2().v();
-		entity.postCd = domain.getPostCd().v() != null ? domain.getPostCd().v() : null;
+		entity.postCd = domain.getPostCd() != null ? domain.getPostCd().v() : "";
 		entity.phoneNum = domain.getPhoneNum().v();
 		return entity;
 	}
@@ -260,23 +260,24 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		oldEntity.startMonth = entity.startMonth;
 		oldEntity.taxNo = entity.taxNo;
 		this.commandProxy().update(oldEntity);
-
-		if (company.getAddInfor() != null) {
-			Optional<BcmmtAddInfor> oldAddEntityOpt = this.queryProxy().find(entity.bcmmtAddInfor.bcmmtAddInforPK, BcmmtAddInfor.class);
-			BcmmtAddInfor newAddEntity = entity.bcmmtAddInfor;
-			if (oldAddEntityOpt.isPresent()) {
-				BcmmtAddInfor oldAddEntity = oldAddEntityOpt.get();
-				oldAddEntity.add_1 = newAddEntity.add_1;
-				oldAddEntity.add_2 = newAddEntity.add_2;
-				oldAddEntity.addKana_1 = newAddEntity.addKana_1;
-				oldAddEntity.addKana_2 = newAddEntity.addKana_2;
-				oldAddEntity.faxNum = newAddEntity.faxNum;
-				oldAddEntity.phoneNum = newAddEntity.phoneNum;
-				oldAddEntity.postCd = newAddEntity.postCd;
-				this.commandProxy().update(oldAddEntity);
-			} else {
-				this.commandProxy().insert(newAddEntity);
-			}
+		
+		BcmmtAddInforPK bcmmtAddInforPK = new BcmmtAddInforPK(entity.bcmmtCompanyInforPK.companyId);
+		Optional<BcmmtAddInfor> oldAddEntityOpt = this.queryProxy().find(bcmmtAddInforPK, BcmmtAddInfor.class);
+		BcmmtAddInfor newAddEntity = entity.bcmmtAddInfor;
+		if (oldAddEntityOpt.isPresent() && newAddEntity != null) {
+			BcmmtAddInfor oldAddEntity = oldAddEntityOpt.get();
+			oldAddEntity.add_1 = newAddEntity.add_1;
+			oldAddEntity.add_2 = newAddEntity.add_2;
+			oldAddEntity.addKana_1 = newAddEntity.addKana_1;
+			oldAddEntity.addKana_2 = newAddEntity.addKana_2;
+			oldAddEntity.faxNum = newAddEntity.faxNum;
+			oldAddEntity.phoneNum = newAddEntity.phoneNum;
+			oldAddEntity.postCd = newAddEntity.postCd;
+			this.commandProxy().update(oldAddEntity);
+		} else if (newAddEntity != null) {
+			this.commandProxy().insert(newAddEntity);
+		} else if (oldAddEntityOpt.isPresent()) {
+			this.commandProxy().remove(oldAddEntityOpt.get());
 		}
 	}
 

@@ -174,6 +174,13 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 	@Column(name = "TIME_RECORD_CODE")
 	public String timeRecordCode;
 
+	/**
+	 * 打刻記録ID
+	 */
+	@Basic(optional = false)
+	@Column(name = "STAMP_RECORD_ID")
+	public String stampRecordId;
+
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -206,6 +213,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getLatitude()):null;
 		this.workplaceId = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get() : null;
 		this.timeRecordCode = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString() : null;
+		this.stampRecordId = stamp.getStampRecordId();
 		
 		return this;
 	}
@@ -234,15 +242,14 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				this.workTime == null ? null : new WorkTimeCode(this.workTime),
-				overtime );
+				overtime);
 		
 		return new Stamp(new ContractCode(this.pk.contractCode) ,
 						stampNumber, 
 						this.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						this.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty());
+						this.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty(),
+						this.stampRecordId);
 
 	}
-	
-	
 }
