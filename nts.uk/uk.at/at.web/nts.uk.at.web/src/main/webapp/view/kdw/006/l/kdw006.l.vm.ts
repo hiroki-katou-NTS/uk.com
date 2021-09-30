@@ -6,7 +6,7 @@ module nts.uk.at.view.kmk006.l {
 
     @bean()
     export class ViewModel extends ko.ViewModel {
-        screenMode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.SELECT);
+        screenMode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.NEW);
         initMode: KnockoutObservable<number> = ko.observable(INIT_MODE.WORKPLACE);
         lstWpkHistory: KnockoutObservableArray<HistoryItem> = ko.observableArray([]);
         selectedHistoryId: KnockoutObservable<string> = ko.observable('');
