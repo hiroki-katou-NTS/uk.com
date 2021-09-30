@@ -21,6 +21,9 @@ public class WorkContent implements DomainObject {
 	/** 備考: 作業入力備考 */
 	@Setter
 	private Optional<WorkinputRemarks> workRemarks;
+	
+	/** 作業補足情報 */
+	private Optional<WorkSuppInfo> workSuppInfo;
 
 	private WorkContent(WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work, Optional<WorkinputRemarks> workRemarks) {
 		super();

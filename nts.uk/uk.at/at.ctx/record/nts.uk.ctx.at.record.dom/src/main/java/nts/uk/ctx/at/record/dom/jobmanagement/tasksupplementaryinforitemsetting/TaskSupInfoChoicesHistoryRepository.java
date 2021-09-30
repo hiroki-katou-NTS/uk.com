@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
 
 /**
  * RP: 作業補足情報の選択肢履歴Repository
