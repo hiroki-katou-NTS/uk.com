@@ -94,7 +94,7 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 		List<TaskSupInfoChoicesHistory> result = new ArrayList<>();
 
 		List<KrcmtTaskSupInfoChoicesHist> histEntity = this.queryProxy()
-				.query("SELECT h FROM KrcmtTaskSupInfoChoicesHist h WHERE h.cid = :companyId",
+				.query("SELECT h FROM KrcmtTaskSupInfoChoicesHist h WHERE h.companyId = :companyId",
 						KrcmtTaskSupInfoChoicesHist.class)
 				.setParameter("companyId", companyId).getList();
 
@@ -115,7 +115,7 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 	@Override
 	public List<TaskSupInfoChoicesDetail> get(String companyId, int itemId, GeneralDate refDate) {
 		return this.queryProxy().query(
-				"SELECT d FROM KrcmtTaskSupInfoChoicesDetail d JOIN KrcmtTaskSupInfoChoicesHist h WHERE d.pk.histId = h.pk.hisId AND d.cid = :companyId "
+				"SELECT d FROM KrcmtTaskSupInfoChoicesDetail d JOIN KrcmtTaskSupInfoChoicesHist h WHERE d.pk.histId = h.pk.hisId AND d.companyId = :companyId "
 						+ "AND d.pk.manHrItemId = :itemId AND h.startDate <= :refDate AND h.endDate >= :refDate ORDER BY d.pk.code ASC",
 				KrcmtTaskSupInfoChoicesDetail.class).setParameter("companyId", companyId).setParameter("itemId", itemId)
 				.setParameter("refDate", refDate).getList(a -> a.toDomain());
