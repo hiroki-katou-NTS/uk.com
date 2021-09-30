@@ -6,7 +6,7 @@
         text-align: center;
         th {
             border: none;           
-            width: 50px;           
+            width: 80px;           
         }        
         td {            
             border: none;
@@ -17,15 +17,15 @@
     }
     
     .state-alarm {
-        background-color: #F6F636;;
+        background-color: #FFFF99;
     }
     
     .state-error {
-        background-color: #FD4D4D;
+        background-color: #FF99CC;
     }
     
     .text-alarm{
-        color: #ff0000;
+        color: #ff9900;
     }
     
     .text-error{
