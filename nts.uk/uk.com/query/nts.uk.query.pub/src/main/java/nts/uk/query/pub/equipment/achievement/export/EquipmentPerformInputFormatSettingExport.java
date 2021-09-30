@@ -1,5 +1,6 @@
 package nts.uk.query.pub.equipment.achievement.export;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,12 @@ public class EquipmentPerformInputFormatSettingExport {
 	private List<ItemDisplayExport> itemDisplaySettings;
 
 	public static EquipmentPerformInputFormatSettingExport fromModel(EquipmentPerformInputFormatSettingModel model) {
+		if (model == null) {
+			return new EquipmentPerformInputFormatSettingExport(
+					null,
+					new ArrayList<ItemDisplayExport>()
+			);
+		}
 		return new EquipmentPerformInputFormatSettingExport(model.getCid(),
 				model.getItemDisplaySettings().stream().map(ItemDisplayExport::fromModel).collect(Collectors.toList()));
 	}
