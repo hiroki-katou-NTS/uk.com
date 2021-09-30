@@ -189,21 +189,16 @@ module nts.uk.com.view.oew001.share.model {
     itemCls: number;
     value: KnockoutObservable<string> = ko.observable(null);
     unit: string;
-    width: number;
+    width: string;
     displayOrder: number;
     required: boolean;
     memo: string;
-    constraint: CustomConstraint;
+    helpContent: string;
+    constraint: ui.vm.Constraint;
 
     constructor(init?: Partial<OptionalItem>) {
       $.extend(this, init);
     }
-  }
-
-  export class CustomConstraint {
-    valueType: "String" | "Number" | "Time";
-    minLength?: number;
-    maxLength?: number;
   }
 
   export class Oew001BData {
@@ -218,18 +213,11 @@ module nts.uk.com.view.oew001.share.model {
     inputDate: string;
     required: boolean;
     optionalItems: KnockoutObservableArray<model.OptionalItem> = ko.observableArray([]);
+    validStartDate: moment.Moment;
+    validEndDate: moment.Moment;
 
     constructor(init?: Partial<Oew001BData>) {
       $.extend(this, init);
-    }
-  }
-
-  export function getDataType(itemCls: number) {
-    switch (itemCls) {
-      case enums.ItemClassification.TEXT, enums.ItemClassification.TIME:
-        return "string";
-      case enums.ItemClassification.NUMBER:
-        return "number";
     }
   }
 }
@@ -238,7 +226,9 @@ module nts.uk.com.view.oew001.share.model.constants {
   export const YYYY_MM_DD = "YYYY/MM/DD";
   export const SELECT_ALL_CODE = ' ';
   // 固定値Ａ
-  export const FIXED_VALUE_A = 8;
+  export const FIXED_VALUE_A = 9;
+  export const MAXIMUM_COL_WIDTH = 450;
+  export const MAXIMUM_GRID_WIDTH = 1200;
 }
 
 module nts.uk.com.view.oew001.share.model.enums {

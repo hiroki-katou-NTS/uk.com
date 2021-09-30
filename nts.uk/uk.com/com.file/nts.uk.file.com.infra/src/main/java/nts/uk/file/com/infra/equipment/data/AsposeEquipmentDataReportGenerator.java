@@ -14,11 +14,18 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import com.aspose.cells.BackgroundType;
+import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
+import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
+import com.aspose.cells.Encoding;
+import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Style;
 import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.TxtSaveOptions;
+import com.aspose.cells.TxtValueQuoteType;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
@@ -59,17 +66,29 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	private static final String USE_DATE_HEADER = "E2";
 	// B2_6 氏名ヘッダー
 	private static final String BUSINESS_NAME_HEADER = "F2";
+	// D3_1 設備分類コード見出し
+	private static final String CSV_EQUIPMENT_CLS_CODE_HEADER = "A3";
+	// D3_2 設備分類名称見出し
+	private static final String CSV_EQUIPMENT_CLS_NAME_HEADER = "B3";
+	// D3_3 設備コード見出し
+	private static final String CSV_EQUIPMENT_CODE_HEADER = "C3";
+	// D3_4 設備名称見出し
+	private static final String CSV_EQUIPMENT_NAME_HEADER = "D3";
+	// D3_5 利用日付見出し
+	private static final String CSV_USE_DATE_HEADER = "E3";
 	// D3_6 社員コード見出し
-	private static final String CSV_SCD_HEADER = "F2";
+	private static final String CSV_SCD_HEADER = "F3";
 	// D3_7 社員名称見出し
-	private static final String CSV_BUSINESS_NAME_HEADER = "G2";
+	private static final String CSV_BUSINESS_NAME_HEADER = "G3";
 	// The column where dynamic header or dynamic data begins (G~)
 	private static final int DYNAMIC_COL_START = 6;
 	private static final int CSV_DYNAMIC_COL_START = 7;
 	// Header row index
 	private static final int HEADER_ROW = 1;
+	private static final int CSV_HEADER_ROW = 2;
 	// First data row index
 	private static final int DATA_ROW = 2;
+	private static final int CSV_DATA_ROW = 3;
 	// First data col index
 	private static final int DATA_COL = 0;
 	// C1_1 設備分類コード
@@ -97,6 +116,8 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	private static final String CSV_EXTENSION = ".csv";
 	// 固定値Ｃ
 	private static final int FIXED_VALUE_C = 8;
+	// Max col width
+	private static final int MAX_COLUMN_WIDTH = 300;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EquipmentDataExportDataSource dataSource) {
@@ -110,17 +131,24 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				extension = EXCEL_EXTENSION;
 			} else {
 				this.printHeaderCsv(sheet, reportContext, dataSource);
+				Cells cells = sheet.getCells();
+				cells.deleteBlankRows();
+				cells.deleteBlankColumns();
 				extension = CSV_EXTENSION;
 			}
 			this.printData(sheet, reportContext, dataSource);
-
+			sheet.autoFitRows();
+			
 			String fileName = dataSource.getFormSetting().map(data -> data.getTitle().v()).orElse("") + extension;
-			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
+			OutputStream outputStream = this.createNewFile(generatorContext, this.getReportName(fileName));
 			reportContext.processDesigner();
 			if (dataSource.getReportType().equals(EquipmentDataReportType.EXCEL)) {
 				reportContext.saveAsExcel(outputStream);
 			} else {
-				reportContext.saveAsCSV(outputStream);
+				TxtSaveOptions saveOptions = new TxtSaveOptions(SaveFormat.CSV);
+				saveOptions.setQuoteType(TxtValueQuoteType.MINIMUM);
+				saveOptions.setEncoding(Encoding.getUTF8());
+				reportContext.saveWithOtherOption(outputStream, saveOptions);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -139,7 +167,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 		sheet.getPageSetup().setHeader(0, "&\"ＭＳ ゴシック\"" + companyName);
 		sheet.getPageSetup().setHeader(1, "&\"ＭＳ ゴシック\"" + titleName);
 		this.printCell(sheet.getCells().get(EXPORT_YM_HEADER), TextResource.localize("OEW001_101"),
-				TextAlignmentType.LEFT, null);
+				TextAlignmentType.LEFT, false);
 	}
 
 	private void printHeaderCsv(Worksheet sheet, AsposeCellsReportContext reportContext,
@@ -161,7 +189,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				dataSource.getFormSetting().map(data -> data.getTitle().v()).orElse(null), TextAlignmentType.LEFT,
 				null);
 		this.printCell(cells.get(CSV_CONDITIONS_INDEX, CSV_LINE_START_COL_INDEX),
-				TextResource.localize("OEW001_100") + equipmentName + "、" + yearMonth, TextAlignmentType.LEFT, null);
+				TextResource.localize("OEW001_100") + "：" + equipmentName + "、" + yearMonth, TextAlignmentType.LEFT, null);
 	}
 
 	private void printData(Worksheet sheet, AsposeCellsReportContext reportContext,
@@ -171,27 +199,29 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 
 		// Print headers
 		// Print fixed headers
-		this.printFixedColumnsHeader(cells, isPrintExcel);
+		if (isPrintExcel) {
+			this.printFixedColumnsHeaderExcel(cells);
+		} else {
+			this.printFixedColumnsHeaderCsv(cells);
+		}
 
 		// Print dynamic headers
 		List<ItemDisplay> itemDisplays = dataSource.getFormatSetting().getItemDisplaySettings().stream()
 				.sorted(Comparator.comparing(ItemDisplay::getDisplayOrder)).collect(Collectors.toList());
-		this.printDynamicColumnsHeader(cells, itemDisplays, dataSource.getItemSettings());
+		this.printDynamicColumnsHeader(cells, itemDisplays, dataSource.getItemSettings(), isPrintExcel);
 
 		// Print data
 		List<EquipmentData> equipmentDatas = dataSource.getEquipmentDatas();
-		// Sort data (①設備分類コー	②設備コード	③日付	④社員コード	⑤利用回目)
+		// Sort data (①設備分類コー ②設備コード ③日付 ④社員コード ⑤利用回目)
 		equipmentDatas.sort(Comparator.comparing(EquipmentData::getEquipmentClassificationCode)
-				.thenComparing(EquipmentData::getEquipmentCode).thenComparing(EquipmentData::getInputDate)
+				.thenComparing(EquipmentData::getEquipmentCode).thenComparing(EquipmentData::getUseDate)
 				.thenComparing(EquipmentData::getSid, (s1, s2) -> this.compareSids(s1, s2, dataSource))
-				.thenComparing(EquipmentData::getUseDate));
-		
-		AtomicInteger currentRow = new AtomicInteger(DATA_ROW);
+				.thenComparing(EquipmentData::getInputDate));
+
+		AtomicInteger currentRow = new AtomicInteger(isPrintExcel ? DATA_ROW : CSV_DATA_ROW);
 		AtomicBoolean isBlueBackground = new AtomicBoolean(false);
 		equipmentDatas.forEach(equipmentData -> {
 			AtomicInteger currentColumn = new AtomicInteger(DATA_COL);
-			int col = currentColumn.get();
-			Cell cell = cells.get(currentRow.get(), currentColumn.getAndIncrement());
 
 			Optional<EquipmentClassification> optEquipmentCls = dataSource.getEquipmentClassifications().stream()
 					.filter(data -> data.getCode().equals(equipmentData.getEquipmentClassificationCode())).findFirst();
@@ -201,68 +231,76 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 					.filter(data -> data.getEmployeeId().equals(equipmentData.getSid())).findFirst();
 
 			// Print fixed data
-			int colStart = isPrintExcel ? DYNAMIC_COL_START : CSV_DYNAMIC_COL_START;
-			if (col < colStart) {
-				switch (col) {
+			int colDataStart = isPrintExcel ? DYNAMIC_COL_START : CSV_DYNAMIC_COL_START;
+			while (currentColumn.get() < colDataStart) {
+				Cell cell = cells.get(currentRow.get(), currentColumn.get());
+				switch (currentColumn.get()) {
 				case EQUIPMENT_CLS_CODE_INDEX:
-					this.printCell(cell, equipmentData.getEquipmentClassificationCode().v(), TextAlignmentType.CENTER,
+					this.printDataCell(cell, equipmentData.getEquipmentClassificationCode().v(), TextAlignmentType.CENTER,
 							isBlueBackground.get());
 					break;
 				case EQUIPMENT_CLS_NAME_INDEX:
-					this.printCell(cell, optEquipmentCls.map(data -> data.getName().v()).orElse(null),
+					this.printDataCell(cell, optEquipmentCls.map(data -> data.getName().v()).orElse(null),
 							TextAlignmentType.LEFT, isBlueBackground.get());
 					break;
 				case EQUIPMENT_CODE_INDEX:
-					this.printCell(cell, equipmentData.getEquipmentCode().v(), TextAlignmentType.CENTER,
+					this.printDataCell(cell, equipmentData.getEquipmentCode().v(), TextAlignmentType.CENTER,
 							isBlueBackground.get());
 					break;
 				case EQUIPMENT_NAME_INDEX:
-					this.printCell(cell, optEquipmentInfo.map(data -> data.getEquipmentName().v()).orElse(null),
+					this.printDataCell(cell, optEquipmentInfo.map(data -> data.getEquipmentName().v()).orElse(null),
 							TextAlignmentType.LEFT, isBlueBackground.get());
 					break;
 				case USE_DATE_INDEX:
-					this.printCell(cell, equipmentData.getUseDate().toString("yyyy/MM/dd"), TextAlignmentType.CENTER,
+					this.printDataCell(cell, equipmentData.getUseDate().toString("yyyy/MM/dd"), TextAlignmentType.CENTER,
 							isBlueBackground.get());
 					break;
 				case BUSINESS_NAME_INDEX:
 					if (isPrintExcel) {
-						this.printCell(cell, optEmployee.map(EmployeeInformation::getBusinessName).orElse(null),
+						this.printDataCell(cell, optEmployee.map(EmployeeInformation::getBusinessName).orElse(null),
 								TextAlignmentType.LEFT, isBlueBackground.get());
 					} else {
 						// case CSV_SCD_INDEX
-						this.printCell(cell, optEmployee.map(EmployeeInformation::getEmployeeCode).orElse(null),
+						this.printDataCell(cell, optEmployee.map(EmployeeInformation::getEmployeeCode).orElse(null),
 								TextAlignmentType.LEFT, isBlueBackground.get());
 					}
 					break;
 				case CSV_BUSINESS_NAME_INDEX:
-					this.printCell(cell, optEmployee.map(EmployeeInformation::getBusinessName).orElse(null),
+					this.printDataCell(cell, optEmployee.map(EmployeeInformation::getBusinessName).orElse(null),
 							TextAlignmentType.LEFT, isBlueBackground.get());
 					break;
 				}
-			} else {
-				// Print dynamic data
-				// Get display number
-				int displayNo = col - DYNAMIC_COL_START + 1;
-				Optional<ItemDisplay> optItemDisplay = itemDisplays.stream()
-						.filter(data -> data.getDisplayOrder() == displayNo).findFirst();
-				optItemDisplay.ifPresent(itemDisplay -> {
-					Optional<ItemData> optItemData = equipmentData.getItemDatas().stream()
-							.filter(data -> data.getItemNo().equals(itemDisplay.getItemNo())).findFirst();
+				currentColumn.getAndIncrement();
+			}
+			// Print dynamic data
+			// Get display number
+			itemDisplays.forEach(itemDisplay -> {
+				Cell cell = cells.get(currentRow.get(), currentColumn.getAndIncrement());
+				Optional<EquipmentUsageRecordItemSetting> optItemSetting = dataSource.getItemSettings().stream()
+						.filter(data -> data.getItemNo().equals(itemDisplay.getItemNo())).findFirst();
+				if (!optItemSetting.isPresent()) {
+					this.printCell(cell, null, TextAlignmentType.LEFT, isBlueBackground.get());
+				} else {
+					Optional<ItemData> optItemData = equipmentData.getItemDatas().stream().filter(
+							data -> data.getItemNo().equals(itemDisplay.getItemNo()) && data.getItemClassification()
+									.equals(optItemSetting.get().getInputcontrol().getItemCls()))
+							.findFirst();
 					optItemData.ifPresent(itemData -> {
 						String value = itemData.getActualValue().map(ActualItemUsageValue::v).orElse(null);
 						int alignType = TextAlignmentType.LEFT;
 
-						if (itemData.getItemClassification().equals(ItemClassification.NUMBER)) {
+						// Only format number data if excel
+						if (itemData.getItemClassification().equals(ItemClassification.NUMBER) && isPrintExcel) {
 							value = String.format("%,d", Integer.valueOf(value));
 							alignType = TextAlignmentType.RIGHT;
-						} else if (itemData.getItemClassification().equals(ItemClassification.TIME)) {
+						} else if (itemData.getItemClassification().equals(ItemClassification.TIME) && isPrintExcel) {
 							value = LocalTime.MIN.plus(Duration.ofMinutes(Integer.valueOf(value))).toString();
 							alignType = TextAlignmentType.RIGHT;
 						}
-						this.printCell(cell, value, alignType, isBlueBackground.get());
+						this.printDataCell(cell, value, alignType, isBlueBackground.get());
 					});
-				});
-			}
+				}
+			});
 			// Row + 1 and change background color
 			currentRow.incrementAndGet();
 			isBlueBackground.set(!isBlueBackground.get());
@@ -270,27 +308,33 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	}
 
 	/**
-	 * Print cells A2~F2
+	 * Print cells A2~F2 (excel)
 	 * 
 	 * @param cells
 	 */
-	private void printFixedColumnsHeader(Cells cells, boolean isPrintExcel) {
+	private void printFixedColumnsHeaderExcel(Cells cells) {
 		int alignType = TextAlignmentType.CENTER;
 		this.printCell(cells.get(EQUIPMENT_CLS_CODE_HEADER), TextResource.localize("OEW001_102"), alignType, null);
 		this.printCell(cells.get(EQUIPMENT_CLS_NAME_HEADER), TextResource.localize("OEW001_103"), alignType, null);
 		this.printCell(cells.get(EQUIPMENT_CODE_HEADER), TextResource.localize("OEW001_104"), alignType, null);
 		this.printCell(cells.get(EQUIPMENT_NAME_HEADER), TextResource.localize("OEW001_105"), alignType, null);
 		this.printCell(cells.get(USE_DATE_HEADER), TextResource.localize("OEW001_106"), alignType, null);
-		if (isPrintExcel) {
-			this.printCell(cells.get(BUSINESS_NAME_HEADER), TextResource.localize("OEW001_107"), alignType, null);
-		} else {
-			this.printCell(cells.get(CSV_SCD_HEADER), null, alignType, null);
-			this.printCell(cells.get(CSV_BUSINESS_NAME_HEADER), TextResource.localize("OEW001_107"), alignType, null);
-		}
+		this.printCell(cells.get(BUSINESS_NAME_HEADER), TextResource.localize("OEW001_107"), alignType, null);
+	}
+	
+	private void printFixedColumnsHeaderCsv(Cells cells) {
+		int alignType = TextAlignmentType.CENTER;
+		this.printCell(cells.get(CSV_EQUIPMENT_CLS_CODE_HEADER), TextResource.localize("OEW001_102"), alignType, null);
+		this.printCell(cells.get(CSV_EQUIPMENT_CLS_NAME_HEADER), TextResource.localize("OEW001_103"), alignType, null);
+		this.printCell(cells.get(CSV_EQUIPMENT_CODE_HEADER), TextResource.localize("OEW001_104"), alignType, null);
+		this.printCell(cells.get(CSV_EQUIPMENT_NAME_HEADER), TextResource.localize("OEW001_105"), alignType, null);
+		this.printCell(cells.get(CSV_USE_DATE_HEADER), TextResource.localize("OEW001_106"), alignType, null);
+		this.printCell(cells.get(CSV_SCD_HEADER), TextResource.localize("OEW001_108"), alignType, null);
+		this.printCell(cells.get(CSV_BUSINESS_NAME_HEADER), TextResource.localize("OEW001_107"), alignType, null);
 	}
 
 	/**
-	 * Print cells G2~
+	 * Print cells G2~ (excel) / H2~ (csv)
 	 * 
 	 * @param cells
 	 * @param col
@@ -298,24 +342,42 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	 * @param width
 	 */
 	private void printDynamicColumnsHeader(Cells cells, List<ItemDisplay> itemDisplays,
-			List<EquipmentUsageRecordItemSetting> itemSettings) {
-		AtomicInteger currentCol = new AtomicInteger(DYNAMIC_COL_START);
-
+			List<EquipmentUsageRecordItemSetting> itemSettings, boolean isPrintExcel) {
+		AtomicInteger currentCol = new AtomicInteger(isPrintExcel ? DYNAMIC_COL_START : CSV_DYNAMIC_COL_START);
+		int headerRow = isPrintExcel ? HEADER_ROW : CSV_HEADER_ROW;
 		itemDisplays.forEach(itemDisplay -> {
 			EquipmentUsageRecordItemSetting itemSetting = itemSettings.stream()
 					.filter(data -> data.getItemNo().equals(itemDisplay.getItemNo())).findFirst().orElse(null);
 			if (itemSetting != null) {
 				int col = currentCol.getAndIncrement();
 				int alignType = TextAlignmentType.CENTER;
-				Cell cell = cells.get(HEADER_ROW, col);
+				Cell cell = cells.get(headerRow, col);
 
 				// Set column value
 				this.printCell(cell, itemSetting.getItems().getItemName().v(), alignType, null);
 
 				// Set column width
-				cells.setColumnWidth(col, itemDisplay.getDisplayWidth().v() * FIXED_VALUE_C);
+				int width = Math.min(MAX_COLUMN_WIDTH, itemDisplay.getDisplayWidth().v() * FIXED_VALUE_C);
+				cells.setColumnWidthPixel(col, width);
+
+				// Set style header
+				Style style = cell.getStyle();
+				style.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+				style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+				style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOTTED, Color.getBlack());
+				style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getBlack());
+				cell.setStyle(style);
 			}
 		});
+	}
+	
+	private void printDataCell(Cell cell, String value, int alignType, Boolean isBlueBackground) {
+		this.printCell(cell, value, alignType, isBlueBackground);
+		// Set style data
+		Style style = cell.getStyle();
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getBlack());
+		cell.setStyle(style);
 	}
 
 	/**
@@ -334,21 +396,27 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 		Style style = cell.getStyle();
 		style.setHorizontalAlignment(alignType);
 		style.setVerticalAlignment(TextAlignmentType.CENTER);
+		style.setPattern(BackgroundType.SOLID);
 		if (isBlueBackground != null) {
 			if (isBlueBackground) {
 				// Even row background color
-				style.setBackgroundColor(Color.fromArgb(221, 235, 247));
+				style.setForegroundColor(Color.fromArgb(221, 235, 247));
 			} else {
 				// Odd row background color
-				style.setBackgroundColor(Color.getWhite());
+				style.setForegroundColor(Color.getWhite());
 			}
+		} else {
+			// Header background color
+			style.setForegroundColor(Color.fromArgb(155, 194, 230));
 		}
+		cell.setStyle(style);
 	}
-	
+
 	/**
 	 * Compare 2 employees by SCD from SID
-	 * @param s1	sid1
-	 * @param s2	sid2
+	 * 
+	 * @param s1         sid1
+	 * @param s2         sid2
 	 * @param dataSource
 	 * @return
 	 */

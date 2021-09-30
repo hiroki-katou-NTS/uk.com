@@ -111,6 +111,7 @@ public class EquipmentData extends AggregateRoot {
 		// $項目データ作成 ＝ 項目データMap：map 実績データ#新規追加(require、会社ID、$.項目NO、$.項目値)
 		List<ItemCreationResultTemp> itemTempList = itemDataMap.entrySet().stream()
 				.map(entry -> ItemData.createTempData(require, cid, entry.getKey(), entry.getValue()))
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 		// $エラー情報 ＝ $項目データ作成 ： filter $.エラー.isPresent()
 		// map key: $.項目NO

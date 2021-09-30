@@ -7,7 +7,7 @@ import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetti
 import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentRecordItemSettingRepository;
 
 @AllArgsConstructor
-public class RequireImpl implements ItemData.Require {
+public class ItemDataRequireImpl implements ItemData.Require {
 	
 	private EquipmentRecordItemSettingRepository repository;
 

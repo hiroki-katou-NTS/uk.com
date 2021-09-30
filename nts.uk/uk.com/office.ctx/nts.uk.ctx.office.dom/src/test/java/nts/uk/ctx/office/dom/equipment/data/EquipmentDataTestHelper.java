@@ -31,7 +31,7 @@ public class EquipmentDataTestHelper {
 				.collect(Collectors.toMap(ItemData::getItemNo, data -> data.getActualValue().orElse(null)));
 	}
 	
-	private static ItemData createItemData(String itemNo, ItemClassification itemCls, String value) {
+	public static ItemData createItemData(String itemNo, ItemClassification itemCls, String value) {
 		return new ItemData(new EquipmentItemNo(itemNo), itemCls, Optional.of(value).map(ActualItemUsageValue::new));
 	}
 	

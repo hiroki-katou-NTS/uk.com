@@ -21,9 +21,20 @@ module nts.uk.com.view.oew001.b {
       vm.data(new model.Oew001BData(param));
       vm.data().employeeName = ko.observable(param.employeeName);
       vm.data().useDate = ko.observable(param.useDate);
-      _.forEach(param.optionalItems, data => data.value = ko.observable(data.value));
+      _.forEach(param.optionalItems, data => {
+        if (param.isNewMode) {
+          data.value = ko.observable("");
+        } else if (data.itemCls === model.enums.ItemClassification.NUMBER) {
+          data.value = ko.observable(Number(data.value));
+        } else {
+          data.value = ko.observable(data.value);
+        }
+        data.helpContent = vm.buildHelpContent(data);
+      });
       vm.data().optionalItems = ko.observableArray(param.optionalItems);
       vm.data.valueHasMutated();
+
+      vm.data().useDate.subscribe(value => vm.validateUseDate(moment.utc(value, model.constants.YYYY_MM_DD)));
     }
 
     mounted() {
@@ -51,7 +62,11 @@ module nts.uk.com.view.oew001.b {
           return vm.$dialog.info({ messageId: "Msg_15" });
         })
         .fail(err => {
-          vm.$dialog.error(err.messageId);
+          if (!!err.messageId) {
+            vm.$dialog.error({ messageId: err.messageId });
+          } else if (!!err.errors) {
+            (nts.uk.ui.dialog as any).bundledErrors(err);
+          }
         });
     }
 
@@ -64,7 +79,13 @@ module nts.uk.com.view.oew001.b {
       .then(() => {
         return vm.$dialog.info({ messageId: "Msg_15" });
       })
-      .fail(err => vm.$dialog.error(err.messageId));
+      .fail(err => {
+        if (!!err.messageId) {
+          vm.$dialog.error({ messageId: err.messageId });
+        } else if (!!err.errors) {
+          (nts.uk.ui.dialog as any).bundledErrors(err);
+        }
+      });
     }
 
     /**
@@ -76,30 +97,36 @@ module nts.uk.com.view.oew001.b {
       .then(() => {
         return vm.$dialog.info({ messageId: "Msg_16" });
       })
-      .fail(err => vm.$dialog.error(err.messageId));
+      .fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     public processSave() {
       const vm = this;
-      vm.$blockui("grayout");
-      const input = vm.data();
-      const itemDatas = _.map(input.optionalItems(), data => new model.ItemDataDto({
-        itemNo: data.itemNo,
-        itemClassification: data.itemCls,
-        actualValue: data.value()
-      }));
-      const param = new model.EquipmentDataDto({
-        equipmentClassificationCode: input.equipmentClsCode,
-        equipmentCode: input.equipmentInfoCode,
-        inputDate: moment.utc().toISOString(),
-        useDate: moment.utc(input.useDate(), model.constants.YYYY_MM_DD).toISOString(),
-        sid: input.sid,
-        itemDatas: itemDatas
+      vm.$validate().then(isValid => {
+        if (!isValid) {
+          return;
+        }
+
+        vm.$blockui("grayout");
+        const input = vm.data();
+        const itemDatas = _.map(input.optionalItems(), data => new model.ItemDataDto({
+          itemNo: data.itemNo,
+          itemClassification: data.itemCls,
+          actualValue: data.value()
+        }));
+        const param = new model.EquipmentDataDto({
+          equipmentClassificationCode: input.equipmentClsCode,
+          equipmentCode: input.equipmentInfoCode,
+          inputDate: vm.data().isNewMode ? moment.utc().toISOString() : moment.utc(input.inputDate).toISOString(),
+          useDate: moment.utc(input.useDate(), model.constants.YYYY_MM_DD).toISOString(),
+          sid: input.sid,
+          itemDatas: itemDatas
+        });
+        let call = vm.data().isNewMode ? vm.insert(param) : vm.update(param);
+        call.then(() => vm.$window.close({
+          isSaveSuccess: true
+        })).always(() => vm.$blockui("clear"));
       });
-      let call = vm.data().isNewMode ? vm.insert(param) : vm.update(param);
-      call.then(() => vm.$window.close({
-        isSaveSuccess: true
-      })).always(() => vm.$blockui("clear"));
     }
 
     public processDelete() {
@@ -110,12 +137,13 @@ module nts.uk.com.view.oew001.b {
           const input = vm.data();
           const param = {
             equipmentCode: input.equipmentInfoCode,
-            inputDate: moment.utc(input.inputDate, model.constants.YYYY_MM_DD).toISOString(),
+            inputDate: moment.utc(input.inputDate).toISOString(),
             useDate: moment.utc(input.useDate(), model.constants.YYYY_MM_DD).toISOString(),
           };
           vm.delete(param).then(() => vm.$window.close({
             isDeleteSuccess: true
-          })).always(() => vm.$blockui("clear"));
+          }))
+          .always(() => vm.$blockui("clear"));
         }
       })
     }
@@ -123,6 +151,35 @@ module nts.uk.com.view.oew001.b {
     public processCancel() {
       const vm = this;
       vm.$window.close();
+    }
+
+    private buildHelpContent(item: model.OptionalItem): string {
+      const vm = this;
+      let temp: string;
+      let maximum: string, minimum: string;
+      switch(item.itemCls) {
+        case model.enums.ItemClassification.TEXT:
+          temp = `${vm.$i18n("OEW001_63")}　${item.constraint.maxLength}${vm.$i18n("OEW001_64")}\n${vm.$i18n("OEW001_67")}${item.memo}`;
+          break;
+        case model.enums.ItemClassification.NUMBER:
+          maximum = nts.uk.ntsNumber.formatNumber(Number(item.constraint.max), { formatId: 'Number_Separated' });
+          minimum = nts.uk.ntsNumber.formatNumber(Number(item.constraint.min), { formatId: 'Number_Separated' });
+          temp = `${vm.$i18n("OEW001_65")}　${minimum}　${vm.$i18n("OEW001_66")}　${maximum}\n${vm.$i18n("OEW001_67")}${item.memo}`;
+          break;
+        case model.enums.ItemClassification.TIME:
+          maximum = String(item.constraint.max);
+          minimum = String(item.constraint.min);
+          temp = `${vm.$i18n("OEW001_65")}　${minimum}　${vm.$i18n("OEW001_66")}　${maximum}\n${vm.$i18n("OEW001_67")}${item.memo}`;
+          break;
+      }
+      return temp;
+    }
+
+    private validateUseDate(date: moment.Moment) {
+      const vm = this;
+      if (date.isBefore(vm.data().validStartDate) || date.isAfter(vm.data().validEndDate)) {
+        vm.$dialog.error({ messageId: "Msg_2233" });
+      }
     }
   }
 }

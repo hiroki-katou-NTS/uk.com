@@ -21,6 +21,7 @@ import nts.uk.ctx.office.dom.equipment.data.ItemData;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
 import nts.uk.ctx.office.infra.entity.equipment.data.OfidtEquipmentDayAtd;
 import nts.uk.ctx.office.infra.entity.equipment.data.OfidtEquipmentDayAtdPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EquipmentDataRepositoryImpl extends JpaRepository implements EquipmentDataRepository {
@@ -45,7 +46,7 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 			+ "WHERE t.companyId = :cid AND t.equipmentClsCode = :equipmentClsCode "
 			+ AND_WITHIN_PERIOD;
 	private static final String SELECT_BY_PERIOD = SELECT_ALL
-			+ "WHERE t.companyId = :cid"
+			+ "WHERE t.companyId = :cid "
 			+ AND_WITHIN_PERIOD;
 	
 	@Override
@@ -68,8 +69,8 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		return this.queryProxy().query(SELECT_BY_EQ_CD_AND_PERIOD, OfidtEquipmentDayAtd.class)
 				.setParameter("cid", cid)
 				.setParameter("equipmentCode", equipmentCode)
-				.setParameter("startDate", period.start().toLocalDate())
-				.setParameter("endDate", period.end().toLocalDate())
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
 				.getList(this::toDomain);
 	}
 
@@ -102,8 +103,8 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		return this.queryProxy().query(SELECT_BY_EQ_CLS_CD_AND_PERIOD, OfidtEquipmentDayAtd.class)
 				.setParameter("cid", cid)
 				.setParameter("equipmentClsCode", equipmentClsCode)
-				.setParameter("startDate", period.start().toLocalDate())
-				.setParameter("endDate", period.end().toLocalDate())
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
 				.getList(this::toDomain);
 	}
 
@@ -111,8 +112,8 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	public List<EquipmentData> findByPeriod(String cid, DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_PERIOD, OfidtEquipmentDayAtd.class)
 				.setParameter("cid", cid)
-				.setParameter("startDate", period.start().toLocalDate())
-				.setParameter("endDate", period.end().toLocalDate())
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
 				.getList(this::toDomain);
 	}
 
@@ -163,6 +164,8 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		OfidtEquipmentDayAtdPK pk = new OfidtEquipmentDayAtdPK(domain.getSid(), domain.getInputDate());
 		OfidtEquipmentDayAtd entity = new OfidtEquipmentDayAtd();
 		entity.setPk(pk);
+		entity.setCompanyId(AppContexts.user().companyId());
+		entity.setContractCd(AppContexts.user().contractCode());
 		entity.setEquipmentClsCode(domain.getEquipmentClassificationCode().v());
 		entity.setEquipmentCode(domain.getEquipmentCode().v());
 		entity.setUseDate(domain.getUseDate());

@@ -19,7 +19,7 @@ import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentUsageCreationResultTemp;
 import nts.uk.ctx.office.dom.equipment.data.ItemData.Require;
-import nts.uk.ctx.office.dom.equipment.data.RequireImpl;
+import nts.uk.ctx.office.dom.equipment.data.ItemDataRequireImpl;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -40,7 +40,7 @@ public class UpdateEquipmentDataCommandHandler extends CommandHandler<EquipmentD
 		String cid = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 
-		Require require = new RequireImpl(equipmentRecordItemSettingRepository);
+		Require require = new ItemDataRequireImpl(equipmentRecordItemSettingRepository);
 		EquipmentDataCommand command = context.getCommand();
 		// 1.get(設備コード、ログイン社員ID、利用日、入力日)
 		Optional<EquipmentData> optEquipmentData = this.equipmentDataRepository.findByUsageInfo(cid,

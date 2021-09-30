@@ -9,14 +9,10 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(200)
 public class EquipmentRemark extends StringPrimitiveValue<EquipmentRemark> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public EquipmentRemark(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 	
 }
