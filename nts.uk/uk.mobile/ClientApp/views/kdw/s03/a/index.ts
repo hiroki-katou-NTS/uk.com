@@ -229,11 +229,15 @@ export class Kdws03AComponent extends Vue {
     public startPage() {
         let self = this;
         let selectedCode: Array<any> = [];
+        let cache: any = storage.session.getItem('selectedCode');
         self.$mask('show', { message: true });
 
-        if (!_.isNil(self.formatCode) && self.formatCode != '') {
-            selectedCode.push(self.formatCode);
-        }    
+        // if (!_.isNil(self.formatCode) && self.formatCode != '') {
+        //     selectedCode.push(self.formatCode);
+        // }    
+        if (!_.isNil(cache)) {
+            selectedCode.push(cache.selectedCode);
+        }  
 
         let param = {
             changePeriodAtr: self.params.changePeriodAtr,
