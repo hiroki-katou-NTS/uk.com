@@ -257,7 +257,7 @@ public class MonthlyPerformanceCorrectionProcessor {
 		// アルゴリズム「締め情報の表示」を実行する move 締め情報の表示 in authority 2.
 		//set A3_2
 		yearMonth = 0;
-		if (param.getYearMonth() == 0) {
+		if (param.getYearMonth() == null || (param.getYearMonth() != null && param.getYearMonth() == 0)) {
 			if (presentClosingPeriodExport.isPresent()) {
 				yearMonth = presentClosingPeriodExport.get().getProcessingYm().v();
 				param.setYearMonth(yearMonth);

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.NextDayAfterPeriodEndWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
@@ -391,7 +392,7 @@ public class SpecialLeaveManagementService {
 
 			// 集計開始日←取得した「締め開始日」
 			// 集計終了日←パラメータ「集計開始日」の前日
-			paramStart.setComplileDate(new DatePeriod(closureStart, closureStart.addDays(-1)));
+			paramStart.setComplileDate(new DatePeriod(closureStart, aggrPeriod.start().addDays(-1)));
 
 			// 実績のみ参照区分←パラメータ「実績のみ参照区分」
 			paramStart.setMode(mode.equals(InterimRemainMngMode.MONTHLY));
@@ -672,6 +673,16 @@ public class SpecialLeaveManagementService {
 
 			if ( isFirst ){
 				isFirst = false;
+				SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
+				= SpecialLeaveAggregatePeriodWork.of(
+					new DatePeriod(aggrPeriod.start(), c.getYmd().addDays(-1)),
+					new NextDayAfterPeriodEndWork(),
+					new SpecialLeaveLapsedWork(false),
+					new SpecialLeaveGrantWork(),
+					GrantPeriodAtr.BEFORE_GRANT);
+
+				aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
+
 				specialLeaveDividedDayEachProcess_pre = Optional.of(c);
 				preYmd = c.getYmd();
 				continue;

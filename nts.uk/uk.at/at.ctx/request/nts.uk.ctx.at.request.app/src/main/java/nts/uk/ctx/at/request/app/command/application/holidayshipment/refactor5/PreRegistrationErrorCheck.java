@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.service.UseDateDeadlineFromDatePeriod.RequireM1;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
@@ -76,7 +77,8 @@ public class PreRegistrationErrorCheck {
 	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, 
 	        List<ActualContentDisplay> opActualContentDisplayLst, 
 	        EmployeeInfoImport employeeInfo, String employmentCode, 
-	        Optional<WorkInformationForApplicationDto> absWorkInformationForApp, Optional<WorkInformationForApplicationDto> recWorkInformationForApp) {
+	        Optional<WorkInformationForApplicationDto> absWorkInformationForApp, Optional<WorkInformationForApplicationDto> recWorkInformationForApp, 
+	        List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean checkFlag) {
 		//アルゴリズム「事前条件チェック」を実行する
 		this.preconditionCheck(abs, rec, absWorkInformationForApp, recWorkInformationForApp);
 		
@@ -101,6 +103,10 @@ public class PreRegistrationErrorCheck {
 		//アルゴリズム「終日半日矛盾チェック」を実行する
 		this.allDayAndHalfDayContradictionCheck(companyId, abs, rec);
 		
+		// INPUT．振出申請がNULL　AND　INPUT．振休申請がNULLじゃない　AND　INPUT.振休申請.振出振休紐付け管理＝設定なし
+		if (!rec.isPresent() && abs.isPresent() && checkFlag && payoutSubofHDManagements.isEmpty()) {
+		    throw new BusinessException("Msg_2223");
+		}
 	}
 	
 	

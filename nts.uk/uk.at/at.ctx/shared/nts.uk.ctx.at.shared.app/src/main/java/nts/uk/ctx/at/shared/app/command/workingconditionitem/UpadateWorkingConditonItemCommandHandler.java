@@ -35,7 +35,7 @@ public class UpadateWorkingConditonItemCommandHandler extends CommandHandler<Wor
 		if(optional.isPresent()) {	
 			WorkingConditionItem workingConditionItem = new WorkingConditionItem(
 					command.getHistId(), optional.get().getScheduleManagementAtr(), 
-					optional.get().getWorkDayOfWeek(), optional.get().getWorkCategory(), 
+					optional.get().getWorkCategory(), 
 					optional.get().getAutoIntervalSetAtr(), optional.get().getAutoIntervalSetAtr(),
 					command.getEmployeeId(), optional.get().getVacationAddedTimeAtr(), 
 					optional.get().getContractTime(), optional.get().getLaborSystem(), 

@@ -74,6 +74,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         displayCancelButton: KnockoutObservable<boolean> = ko.observable(true);
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(true);
+		displayCancelLabel: KnockoutObservable<boolean> = ko.observable(false);
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -150,7 +151,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					$('.pg-name > span').text(appNameInfo.opProgramID + opString + " " + appNameInfo.appName);
+					$('.pg-name > span').text(appNameInfo.appName);
 				} else {
 					$('.pg-name > span').text("");
 				}
@@ -230,12 +231,18 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				(state == Status.NOTREFLECTED || state == Status.REMAND)
 			);
 
-            vm.displayCancelButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER)
-                && loginFlg);
-            vm.enableCancelButton(
-				!pastApp &&
-				state == Status.REFLECTED
-				);
+			if(state == Status.CANCELED) {
+				vm.displayCancelButton(false);
+				vm.displayCancelLabel(true);	
+			} else {
+				vm.displayCancelButton(true);
+				vm.displayCancelLabel(false);
+			}
+			if(pastApp) {
+				vm.enableCancelButton(false);	
+			} else {
+				vm.enableCancelButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT) && state != Status.CANCELED);
+			}
 
             vm.displayApprovalLabel((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue == ApprovalAtr.APPROVED));
@@ -448,14 +455,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_249" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                    return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
+                    return vm.$ajax(API.cancel, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
 	                    vm.loadData();
 	                });
-				}
+				} 
+				// else {
+				// 	vm.$dialog.info({ messageId: "Msg_2188" }).then(() => {
+	            //         vm.loadData();
+	            //     });
+				// }
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
@@ -582,7 +594,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
 			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
 			if(appNameInfo) {
-				$('.pg-name > span').text(appNameInfo.opProgramID + "B " + appNameInfo.appName);
+				$('.pg-name > span').text(appNameInfo.appName);
 			} else {
 				$('.pg-name > span').text("");
 			}

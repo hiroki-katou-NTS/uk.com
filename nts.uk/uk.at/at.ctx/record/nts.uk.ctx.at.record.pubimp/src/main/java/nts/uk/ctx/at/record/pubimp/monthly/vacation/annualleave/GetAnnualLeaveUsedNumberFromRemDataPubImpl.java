@@ -56,8 +56,12 @@ public class GetAnnualLeaveUsedNumberFromRemDataPubImpl implements GetAnnualLeav
 	public List<LeaveGrantRemainingDataExport> getAnnualLeaveGrantRemData(String companyId, String employeeId,
 			List<LeaveGrantRemainingDataExport> remainingData, LeaveUsedNumberExport usedNumber) {
 
-		LeaveUsedNumber usedNumberDom = LeaveUsedNumber.createFromJavaType(usedNumber.getDays(),
-				usedNumber.getMinutes().orElse(null), usedNumber.getStowageDays().orElse(null));
+		LeaveUsedNumber usedNumberDom = LeaveUsedNumber.createFromJavaType(
+				usedNumber.getDays(),
+				usedNumber.getMinutes().orElse(null), 
+				usedNumber.getStowageDays().orElse(null), 
+				usedNumber.leaveOverLimitNumber.map(c->c.numberOverDays).orElse(null), 
+				usedNumber.leaveOverLimitNumber.map(c->c.timeOver.orElse(null)).orElse(null));
 		usedNumberDom.setLeaveOverLimitNumber(usedNumber.getLeaveOverLimitNumber()
 				.map(x -> new LeaveOverNumber(x.getNumberOverDays(), x.getTimeOver().orElse(null))));
 
@@ -100,7 +104,9 @@ public class GetAnnualLeaveUsedNumberFromRemDataPubImpl implements GetAnnualLeav
 		LeaveUsedNumber leaveUsedNumberDom = LeaveUsedNumber.createFromJavaType(
 				data.getDetails().getUsedNumber().getDays(),
 				data.getDetails().getUsedNumber().getMinutes().orElse(null),
-				data.getDetails().getUsedNumber().getStowageDays().orElse(null));
+				data.getDetails().getUsedNumber().getStowageDays().orElse(null),
+				data.getDetails().getUsedNumber().leaveOverLimitNumber.map(c->c.numberOverDays).orElse(null), 
+				data.getDetails().getUsedNumber().leaveOverLimitNumber.map(c->c.timeOver.orElse(null)).orElse(null));
 		leaveUsedNumberDom.setLeaveOverLimitNumber(data.getDetails().getUsedNumber().getLeaveOverLimitNumber()
 				.map(x -> LeaveOverNumber.createFromJavaType(x.getNumberOverDays(), x.getTimeOver().orElse(null))));
 

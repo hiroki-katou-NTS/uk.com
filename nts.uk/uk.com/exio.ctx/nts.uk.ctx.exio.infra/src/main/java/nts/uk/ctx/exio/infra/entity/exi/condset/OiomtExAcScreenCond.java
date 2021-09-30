@@ -12,11 +12,15 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -24,6 +28,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 @Entity
 @Table(name = "OIOMT_EX_AC_SCREEN_COND")
 public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializable {
@@ -34,7 +41,10 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 	 */
 	@EmbeddedId
 	public OiomtAcScreenCondSetPk acScreenCondSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 比較条件選択
 	 */
@@ -114,7 +124,6 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtExAcItem acceptItem;
@@ -124,12 +133,13 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 		return acScreenCondSetPk;
 	}
 
-	public OiomtExAcScreenCond(String cid, int sysType, String conditionCode, int acceptItemNum,
+	public OiomtExAcScreenCond(String cid, String conditionCode, int acceptItemNum,
 			Integer selCompareCond, Integer timeCondVal1, Integer timeCondVal2, Integer timeMoCondVal1,
 			Integer timeMoCondVal2, GeneralDate dateCondVal1, GeneralDate dateCondVal2, String charCondVal1,
 			String charCondVal2, BigDecimal numCondVal1, BigDecimal numCondVal2) {
 		super();
-		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, conditionCode, acceptItemNum);
+		this.contractCd = AppContexts.user().contractCode();
 		this.selCompareCond = selCompareCond;
 		this.timeCondVal2 = timeCondVal2;
 		this.timeCondVal1 = timeCondVal1;
@@ -144,10 +154,9 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 	}
 
 	public static OiomtExAcScreenCond fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
-		return new OiomtExAcScreenCond(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtExAcScreenCond(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(),
-				domain.getSelectComparisonCondition().isPresent() ? domain.getSelectComparisonCondition().get().value
-						: null,
+				domain.getSelectComparisonCondition().value,
 				domain.getTimeConditionValue1().isPresent() ? domain.getTimeConditionValue1().get().v() : null,
 				domain.getTimeConditionValue2().isPresent() ? domain.getTimeConditionValue2().get().v() : null,
 				domain.getTimeMomentConditionValue1().isPresent() ? domain.getTimeMomentConditionValue1().get().v()

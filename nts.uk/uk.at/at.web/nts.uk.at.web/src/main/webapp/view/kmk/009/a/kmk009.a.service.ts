@@ -156,6 +156,7 @@ module nts.uk.at.view.kmk009.a {
                 lowerLimitSettingAtr: number;
                 thresoldUpperLimit: number;
                 thresoldLowerLimit: number;
+                attendanceItemId: number;
             }
 
             export class Enum {

@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.shared.dom.scherec.closurestatus;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -40,6 +43,21 @@ public class ClosureStatusManagement extends AggregateRoot {
 		this.closureId = EnumAdaptor.valueOf(closureId, ClosureId.class);
 		this.closureDate = closureDate;
 		this.period = period;
+	}
+	
+	/**
+	 * 	[１] 締めされていない期間を求める
+	 * @param period
+	 * @return 	締めされていない期間
+	 */
+	public Optional<DatePeriod> closureStateManagenent(DatePeriod period) {
+		if(period.end().before(this.period.end())) {
+			return Optional.empty();
+		}
+		if(period.start().after(this.period.end())) {
+			return Optional.of(period);
+		}
+		return Optional.of(new DatePeriod(this.period.start(), period.end())); 
 	}
 
 }

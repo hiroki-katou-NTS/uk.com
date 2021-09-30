@@ -6,7 +6,10 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.AnnualLeaveProcess;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.care.CareProcess;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.childcare.ChildCareProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.compensatoryholiday.CompensatoryHolidayProcess;
+import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.publicHoliday.PublicHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.SpecialHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.substitutionholiday.SubstitutionHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
@@ -40,7 +43,7 @@ public class MonthlyClosureRemainNumProcess {
 												attTimeMonthly.getYearMonth(), period.getClosureId(), period.getClosureDate());
 		
 		/** 年休処理 */
-		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, cid, period, empId, interimRemainMng.getDaily(), attTimeMonthly)
+		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, cid, period, empId, interimRemainMng.getDaily())
 				/** 振休処理 */
 				.then(SubstitutionHolidayProcess.substitutionHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng))
 				/** 代休処理 */
@@ -48,13 +51,18 @@ public class MonthlyClosureRemainNumProcess {
 				/** 特別休暇処理 */
 				.then(SpecialHolidayProcess.specialHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng.getDaily()))
 				/** TODO: 公休処理 */
+				.then(PublicHolidayProcess.process(require, cacheCarrier, period, empId, interimRemainMng.getDaily()))
 				/** TODO: 60H超休処理 */
+				
 				/** TODO: 子の看護休暇処理 */
-				/** TODO: 介護休暇処理 */;
+				.then(ChildCareProcess.process(require, cacheCarrier, period, empId, interimRemainMng.getDaily()))
+				/** TODO: 介護休暇処理 */
+				.then(CareProcess.process(require, cacheCarrier, period, empId, interimRemainMng.getDaily()));
 	}
 	
 	public static interface RequireM1 extends AnnualLeaveProcess.Require, SubstitutionHolidayProcess.Require,
-		CompensatoryHolidayProcess.Require, SpecialHolidayProcess.Require {
+		CompensatoryHolidayProcess.Require, SpecialHolidayProcess.Require, PublicHolidayProcess.Require,
+		ChildCareProcess.Require, CareProcess.Require{
 		
 		FixedRemainDataForMonthlyAgg monthInterimRemainData(CacheCarrier cacheCarrier, String cid, String sid,
 				DatePeriod dateData, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);

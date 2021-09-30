@@ -4,7 +4,7 @@ import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerRange;
 
 /**
- * 休暇使用日数  
+ * 月別休暇使用日数
  * @author masaaki_jinno
  *
  */
