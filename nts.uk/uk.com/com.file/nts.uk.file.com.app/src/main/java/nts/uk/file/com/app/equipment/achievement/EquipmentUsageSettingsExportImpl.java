@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import com.google.common.collect.ImmutableMap;
 
+import nts.arc.error.BusinessException;
 import nts.uk.file.com.app.equipment.achievement.ac.EquipmentUsageSettingsImport;
 import nts.uk.file.com.app.equipment.achievement.ac.ItemDisplayImport;
 import nts.uk.shr.com.i18n.TextResource;
@@ -57,6 +58,10 @@ public class EquipmentUsageSettingsExportImpl implements MasterListData {
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		EquipmentUsageSettingsImport settings = this.repository.findSettings();
+		if (settings.getItemSettings().isEmpty()) {
+			throw new BusinessException("Msg_35");
+		}
+		
 		return settings.getItemSettings().stream().map(itemSetting -> {
 			ItemDisplayImport itemDisplay = settings.getFormatSetting().getItemDisplaySettings().stream()
 					.filter(data -> data.getItemNo().equals(itemSetting.getItemNo())).findFirst().orElse(null);

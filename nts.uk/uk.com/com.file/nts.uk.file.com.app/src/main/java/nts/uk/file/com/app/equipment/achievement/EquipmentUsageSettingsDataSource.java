@@ -9,13 +9,23 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.file.com.app.equipment.achievement.ac.EquipmentUsageRecordItemSettingImport;
 import nts.uk.file.com.app.equipment.achievement.ac.ItemDisplayImport;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Data
 @Builder
 public class EquipmentUsageSettingsDataSource {
 
-	private static final String[] ITEM_TYPE_RESOURCE_IDS = { "OEM003_26", "OEM003_27", "OEM003_28", "OEM003_29",
-			"OEM003_30", "OEM003_31", "OEM003_32", "OEM003_33", "OEM003_34" };
+	private static final String[] ITEM_TYPE_RESOURCE_IDS = {
+		"OEM003_26",
+		"OEM003_27",
+		"OEM003_28",
+		"OEM003_29",
+		"OEM003_30",
+		"OEM003_31",
+		"OEM003_32",
+		"OEM003_33",
+		"OEM003_34"
+	};
 	private static final String TRUE_SYMBOL = "○";
 	private static final String NONE_SYMBOL = "－";
 
@@ -72,8 +82,16 @@ public class EquipmentUsageSettingsDataSource {
 		}
 		String required = itemSetting.getInputControl().isRequire() ? TRUE_SYMBOL : NONE_SYMBOL;
 		String memo = itemSetting.getItems().getMemo();
-		return EquipmentUsageSettingsDataSource.builder().displayNo(displayNo).displayWidth(displayWidth)
-				.itemName(itemName).itemType(itemType).maximum(maximum).minimum(minimum).memo(memo).required(required)
-				.unit(unit).build();
+		return EquipmentUsageSettingsDataSource.builder()
+				.displayNo(displayNo)
+				.displayWidth(displayWidth)
+				.itemName(itemName)
+				.itemType(TextResource.localize(itemType))
+				.maximum(maximum)
+				.minimum(minimum)
+				.memo(memo)
+				.required(required)
+				.unit(unit)
+				.build();
 	}
 }

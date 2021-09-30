@@ -44,7 +44,10 @@ module nts.uk.com.view.oew001.b {
         vm.data().employeeName(_.find(vm.employeeList(), { "employeeId": vm.data().sid }).businessName);
         vm.data.valueHasMutated();
       })
-      .always(() => vm.$blockui("clear"));
+      .always(() => {
+        $("#B2_2").focus();
+        vm.$blockui("clear");
+      });
     }
 
     private getEmployeeList(): JQueryPromise<any> {
