@@ -51,7 +51,7 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 		List<String> empIds = wkpAdapter.findListSIdByCidAndWkpIdAndPeriod(workplaceId, period.start(), period.end())
 				.stream().map(item -> item.getEmployeeId()).collect(Collectors.toList());
 
-		// TODO 2021.09.28 RoleSet in delete field approvalAuthority
+		// TODO 2021.09.28 delete field approvalAuthority in domain RoleSet
 		//Acquire the domain model "Role set"
 		//roleSetRepo.findByCompanyId(companyId).stream().filter(item -> item.getApprovalAuthority() == ApprovalAuthority.HasRight).collect(Collectors.toList());
 		List<RoleSet> roleSets = new ArrayList<>();
@@ -89,7 +89,7 @@ public class RoleSetGrantedEmployeePubImpl implements RoleSetGrantedEmployeePub 
 		List<String> lst1 = lst0;		
 		//ドメインモデル「ロールセット」を取得する-(Lấy domain [RoleSet])
 		//条件： 会社ID←ログイン会社ID; 承認権限＝true
-		// TODO 2021.09.28 RoleSet in delete field approvalAuthority 
+		// TODO 2021.09.28 delete field approvalAuthority in domain RoleSet
 		List<String> roleSetCDLst = new ArrayList<>();
 		/**roleSetRepo.findByCompanyId(companyId).stream()
 				.filter(item -> item.getApprovalAuthority() == ApprovalAuthority.HasRight)
