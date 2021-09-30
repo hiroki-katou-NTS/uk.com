@@ -6,13 +6,14 @@ module nts.uk.com.view.oem003.a {
     findSettings: 'com/screen/oem003/findSettings',
   };
 
+  const COMMA = '、';
+
   @bean()
   export class ViewModel extends ko.ViewModel {
     equipmentList: KnockoutObservableArray<any> = ko.observableArray([]);
     checkAll: KnockoutObservable<boolean> = ko.observable(false);
 
     dataTables: KnockoutObservableArray<DataTable> = ko.observableArray([]);
-
     formTitle: KnockoutObservable<string> = ko.observable(this.$i18n('OEM003_25'));
     
     created() {
@@ -30,20 +31,16 @@ module nts.uk.com.view.oem003.a {
       vm.startPage();
     }
 
-    startPage(): JQueryPromise<any> {
+    startPage() {
       const vm = this;
-      const dfd = $.Deferred();
       vm
-        .$ajax('com', API.findSettings)
-        .then((response : EquipmentUsageSetting) => {
-
-          dfd.resolve();
+        .$blockui('grayout')
+        .then(() => vm.$ajax('com', API.findSettings))
+        .then((response: EquipmentUsageSetting) => {
+          vm.toDataDisplay(response);
+          $('#form-title').focus()
         })
-        .fail(error => {
-          dfd.reject();
-        });
-      
-      return dfd.promise();
+        .always(() => vm.$blockui('clear'));
     }
 
     clickAdd() {
@@ -54,6 +51,34 @@ module nts.uk.com.view.oem003.a {
 
       const order = dataLength + 1;
       vm.dataTables.push(vm.defaultDataTable(order));
+      $('table[tabindex="4"]').focus();
+    }
+
+    clickExport() {
+      const vm = this;
+      if (_.isEmpty(vm.dataTables())) {
+        vm.$dialog.error({ messageId: 'Msg_37' });
+        return;
+      }
+      vm.$blockui('grayout');
+      const program = nts.uk.ui._viewModel.kiban.programName().split(' ');
+      let domainType = 'OEM003設備利用実績の設定';
+      if (program.length > 1) {
+        program.shift();
+        domainType = domainType + program.join(' ');
+      }
+      nts.uk.request
+        .exportFile('/masterlist/report/print', {
+          domainId: 'EquipmentUsageSettings',
+          domainType: domainType,
+          languageId: __viewContext.user.selectedLanguage.basicLanguageId,
+          reportType: 0,
+        })
+        .fail(err => vm.$dialog.error({ messageId: err.messageId }))
+        .always(() => {
+          vm.$blockui('clear');
+          $('table[tabindex="4"]').focus();
+        });
     }
 
     removeData(delOrder: KnockoutObservable<number>) {
@@ -69,6 +94,7 @@ module nts.uk.com.view.oem003.a {
       });
 
       vm.dataTables(filterArr);
+      $('table[tabindex="4"]').focus();
     }
 
     toOrderBy(type: 'before' | 'after') {
@@ -114,22 +140,167 @@ module nts.uk.com.view.oem003.a {
       vm.dataTables(data);
     }
 
+    beforeRegisted(): JQueryPromise<any> {
+      const vm = this, dfd = $.Deferred();
+      let isErrors = false;
+      const data = ko.unwrap<DataTable>(vm.dataTables);
+      if (_.isEmpty(data)) {
+        vm.$dialog.error({ messageId: 'Msg_2219' });
+        dfd.reject();
+      }
+
+      // Error lines cause of min and max
+      const minmaxEL: any[] = [];
+      // Error lines cause of item no
+      let itemNoEL: any[] = [];
+      _.map(data, (item) => {
+        // If min greater than max, add to error list
+        if ((item.isNumeric() || item.isTime()) && item.min() > item.max()) {
+          minmaxEL.push(item.order());
+        }
+        if (!_.includes(itemNoEL, item.order())) {
+          const errorLines = vm.checkItemNo(item.itemNo());
+          itemNoEL = _.concat(itemNoEL, errorLines);
+
+          // If has more than 1 lines duplicate item no, show error
+          if (errorLines.length > 1) {
+            isErrors = true;
+            const messageParams = [errorLines.join(COMMA)];
+            const selector = `.data-${item.order()}`
+            const msg = { messageId: 'Msg_2218', messageParams }
+            vm.$errors(selector, msg);
+          }
+
+          if (errorLines.length <= 1) {
+            item.itemTypeError(false);
+          }
+        }
+      });
+
+      if (!_.isEmpty(minmaxEL)) {
+        isErrors = true;
+        const messageParams = [minmaxEL.join(COMMA)];
+        vm.$dialog.error({ messageId: 'Msg_2220', messageParams });
+      }
+
+      if (isErrors) dfd.reject();
+      if (!isErrors) dfd.resolve();
+      return dfd.promise();
+    }
+
     clickRegister() {
       const vm = this;
-      const command: EquipmentUsageSetting = new EquipmentUsageSetting(
-        __viewContext.user.companyId,
-        vm.formTitle(),
-        vm.dataTables()
-      )
-
-      vm.$ajax('com', API.register, command)
+      vm
+        .beforeRegisted()
+        .then(() => {
+          const command: EquipmentUsageSetting = new EquipmentUsageSetting(
+            __viewContext.user.companyId,
+            vm.formTitle(),
+            vm.dataTables()
+          );
+    
+          vm
+            .$validate()
+            .then((valid) => {
+              if (!valid) return;
+              vm
+                .$blockui('grayout')
+                .then(() => vm.$ajax('com', API.register, command))
+                .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                .then(() => $('table[tabindex="4"]').focus())
+                .always(() => vm.$blockui('clear'))
+            });
+        });
     }
-    clickExport() {}
 
     defaultDataTable(order: number): DataTable {
-      return new DataTable('', 6, null, null, null, null, '', false, '', order);
+      const vm = this;
+      const data = new DataTable('', 6, null, null, null, null, '', false, '', order);
+      vm.subscribeItemNo(data);
+      return data;
     }
 
+    toDataDisplay({ itemSettings, formatSetting, formSetting }: EquipmentUsageSetting) {
+      const vm = this;
+      const merged = _.reduce(itemSettings, (arr, e) => {
+        arr.push(
+          $.extend({}, e, _.find(formatSetting.itemDisplaySettings, a => a.itemNo === e.itemNo))
+        );
+        return arr;
+      }, []);
+
+      const dataTables = _.map(merged, item => {
+        const data = new DataTable(
+          item.items.itemName,
+          item.displayWidth,
+          item.itemNo,
+          item.inputControl.minimum,
+          item.inputControl.maximum,
+          item.inputControl.digitsNo,
+          item.items.unit,
+          item.inputControl.require,
+          item.items.memo,
+          item.displayOrder
+        );
+        vm.subscribeItemNo(data);
+        return data;
+      });
+
+      vm.formTitle(formSetting.title);
+      vm.dataTables(dataTables);
+    }
+
+    subscribeItemNo(data: DataTable) {
+      const vm = this;
+      data.itemNo.subscribe(() => {
+        data.min(null);
+        data.max(null);
+        data.digitsNo(null);
+        data.unit('');
+        data.$errors('clear');
+      }, 'beforeChange');
+
+      data.itemNo.subscribe(value => {
+        _.forEach(vm.dataTables(), i => i.itemTypeError(false));
+        vm
+          .$errors('clear', [
+            '.data-1', '.data-2', '.data-3',
+            '.data-4', '.data-5', '.data-6',
+            '.data-7', '.data-8', '.data-9',
+          ])
+          .then(() => data.$validate())
+          .then(() => {
+            const errorLines = vm.checkItemNo(value);
+            if (errorLines.length <= 1) {
+              data.itemTypeError(false)
+              return;
+            }
+
+            const messageParams = [errorLines.join(COMMA)];
+            const selector = `.data-${data.order()}`
+            const msg = { messageId: 'Msg_2218', messageParams }
+            vm.$errors(selector, msg);
+          });
+      });
+    }
+
+    checkItemNo(value: number): number[] {
+      const vm = this;
+      const finder = _.filter(vm.dataTables(), item => {
+        if (item.itemNo() != value) {
+          return false;
+        }
+          
+        if (item.itemNo() == value) {
+          item.itemTypeError(true);
+          return true;
+        }
+
+        return false;
+      });
+
+      return _.map(finder, i => i.order());
+    }
   }
 
   class DataTable extends ko.ViewModel {
@@ -164,6 +335,8 @@ module nts.uk.com.view.oem003.a {
     isTime: KnockoutComputed<boolean>;
     isCharOrNumber: KnockoutComputed<boolean>;
     isItemTypeNull: KnockoutComputed<boolean>;
+    itemTypeError: KnockoutObservable<boolean> = ko.observable(false);
+    css: KnockoutComputed<any>;
 
     constructor(
       itemName: string, displayWidth: number,
@@ -189,6 +362,13 @@ module nts.uk.com.view.oem003.a {
       vm.isTime = ko.computed(() => 7 <= this.itemNo() && this.itemNo() <= 9);
       vm.isCharOrNumber = ko.computed(() => vm.isCharacter() || vm.isNumeric());
       vm.isItemTypeNull = ko.computed(() => _.isNull(vm.itemNo()));
+      vm.css = ko.computed(() => {
+        const data = `data-${vm.order()}`;
+        return {
+          [data]: true,
+          'active': vm.checked()
+        }
+      });
       vm.index = order;
     }
 
@@ -290,10 +470,6 @@ module nts.uk.com.view.oem003.a {
       
       vm.itemSettings = itemSettings;
       vm.formatSetting = { cid, itemDisplaySettings };
-    }
-
-    toDataTables() {
-      
     }
   }
 }
