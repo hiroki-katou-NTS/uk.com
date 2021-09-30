@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * 1日お気に入り作業の表示順 OneDayFavoriteTaskDisplayOrder
@@ -20,16 +20,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_DAY_DISPORDER")
-public class KrcdtTaskFavDayDispOrder extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavDayDispOrder extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
 	public KrcdtTaskFavDayDispOrderPk pk;
 
-	@Column(name = "CID")
-	public String cId;
-	
 	@Column(name = "SID")
 	public String sId;
 	

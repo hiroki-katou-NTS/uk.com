@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * 
@@ -20,16 +20,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_DAY_SET_TS")
-public class KrcdtTaskFavDaySetTs extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavDaySetTs extends ContractCompanyUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
 	public KrcdtTaskFavDaySetTsPk pk;
 
-	@Column(name = "CID")
-	public String cid;
-	
 	@Column(name = "END_CLOCK")
 	public int endClock;
 

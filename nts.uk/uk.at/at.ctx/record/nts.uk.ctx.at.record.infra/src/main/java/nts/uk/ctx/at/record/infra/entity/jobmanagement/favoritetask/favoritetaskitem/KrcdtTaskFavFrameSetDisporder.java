@@ -10,9 +10,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskDisplayOrder;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * お気に入り作業の表示順 FavoriteTaskDisplayOrder
@@ -24,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_FRAME_SET_DISPORDER")
-public class KrcdtTaskFavFrameSetDisporder extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavFrameSetDisporder extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,9 +32,6 @@ public class KrcdtTaskFavFrameSetDisporder extends ContractUkJpaEntity implement
 
 	@Column(name = "SID")
 	public String sId;
-
-	@Column(name = "CID")
-	public String cid;
 
 	@Override
 	protected Object getKey() {
@@ -47,7 +43,6 @@ public class KrcdtTaskFavFrameSetDisporder extends ContractUkJpaEntity implement
 	}
 
 	public KrcdtTaskFavFrameSetDisporder(String sId, FavoriteDisplayOrder order) {
-		this.cid = AppContexts.user().companyId();
 		this.sId = sId;
 		this.pk = new KrcdtTaskFavFrameSetDisporderPk(order.getFavId(), order.getOrder());
 	}

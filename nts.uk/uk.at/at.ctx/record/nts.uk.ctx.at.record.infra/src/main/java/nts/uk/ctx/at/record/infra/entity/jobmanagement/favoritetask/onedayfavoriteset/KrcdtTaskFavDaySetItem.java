@@ -9,8 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.workconfirmation.KrcdtTaskConfirmPK;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * 
@@ -21,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_DAY_SET_ITEM")
-public class KrcdtTaskFavDaySetItem extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavDaySetItem extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,9 +41,6 @@ public class KrcdtTaskFavDaySetItem extends ContractUkJpaEntity implements Seria
 
 	@Column(name = "TASK_CD5")
 	public String taskCd5;
-
-	@Column(name = "CID")
-	public String cid;
 
 	@Override
 	protected Object getKey() {

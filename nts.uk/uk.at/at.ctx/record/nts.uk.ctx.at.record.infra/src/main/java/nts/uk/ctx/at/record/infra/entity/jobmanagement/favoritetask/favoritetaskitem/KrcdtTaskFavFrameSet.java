@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItem;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * @name お気に入り作業項目 FavoriteTaskItem
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_FRAME_SET")
-public class KrcdtTaskFavFrameSet extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavFrameSet extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,9 +46,6 @@ public class KrcdtTaskFavFrameSet extends ContractUkJpaEntity implements Seriali
 	@Column(name = "TASK_CD5")
 	public String taskCd5;
 
-	@Column(name = "CID")
-	public String cid;
-
 	@Column(name = "FAV_NAME")
 	public String favName;
 
@@ -61,8 +58,6 @@ public class KrcdtTaskFavFrameSet extends ContractUkJpaEntity implements Seriali
 	}
 	
 	public KrcdtTaskFavFrameSet (FavoriteTaskItem domain) {
-		this.cid = AppContexts.user().companyId();
-		this.favId = domain.getFavoriteId();
 		this.sId = domain.getEmployeeId();
 		this.favName = domain.getTaskName().v();
 		//TODO: mapping task name

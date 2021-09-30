@@ -9,9 +9,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteSet;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -24,16 +24,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_DAY_SET")
-public class KrcdtTaskFavDaySet extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavDaySet extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "FAV_ID")
 	public String favId;
-
-	@Column(name = "CID")
-	public String cId;
 
 	@Column(name = "FAV_NAME")
 	public String favName;
@@ -48,7 +45,6 @@ public class KrcdtTaskFavDaySet extends ContractUkJpaEntity implements Serializa
 
 	public KrcdtTaskFavDaySet(OneDayFavoriteSet domain) {
 		this.favId = domain.getFavId();
-		this.cId = AppContexts.user().companyId();
 		this.favName = domain.getTaskName().v();
 		this.sId = domain.getSId();
 	}
