@@ -156,6 +156,7 @@ interface MenuParam {
     timeExcessReferButtonDis: boolean;
     allConfirmButtonDis: boolean;
     closureDate: any;
+    authoryView: boolean;
 }
 const servicePath = {
     confirmAll: 'screen/at/correctionofdailyperformance/confirmAll'
