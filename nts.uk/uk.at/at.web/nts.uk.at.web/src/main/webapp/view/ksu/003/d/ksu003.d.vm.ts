@@ -23,6 +23,8 @@ module nts.uk.at.view.ksu003.d {
         selectedSupportScheduleDisplay: KnockoutObservable<number>;        // D5_2
         wkpNameDispOfSupporter: KnockoutObservable<boolean>;               // D5_2_4
         dataFromA: IDataFromScreenA;
+        show2Work: KnockoutObservable<boolean> = ko.observable(false);
+        showActual: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(params: any) {
             super();
@@ -64,6 +66,7 @@ module nts.uk.at.view.ksu003.d {
             vm.selectedTotalAmountDisplay = ko.observable(1);
             vm.selectedSupportScheduleDisplay = ko.observable(1);
             vm.wkpNameDispOfSupporter = ko.observable(false);
+            vm.initData();
         }
 
         created(params?: any) {
@@ -74,7 +77,6 @@ module nts.uk.at.view.ksu003.d {
                 vm.dataFromA.targetPeriod = data.targetPeriod;
             });
             vm.restoreCharacteristics();
-            vm.initData();
         }
 
         mounted() {
@@ -86,8 +88,14 @@ module nts.uk.at.view.ksu003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.init).then(data => {
-                vm.selected2WorkDisplay(data.workManagementMulti.useATR == 0 ? 1 : 2);
-                vm.actualDisplay(!_.isNull(data.scheFuncControl) ? data.scheFuncControl.displayActual : false);
+                vm.show2Work(data.workManagementMulti.useATR === 1);
+                if(!vm.show2Work()){
+                    $('#double-work').hide();
+                }
+                vm.showActual(!_.isNull(data.scheFuncControl) ? data.scheFuncControl.displayActual : false);
+                if(!vm.showActual()){
+                    $('#display-actual').hide();
+                }
                 dfd.resolve();
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -101,7 +109,7 @@ module nts.uk.at.view.ksu003.d {
             let vm = this;
             let query: IScheduleByDateOutputSettingQuery = {
                 orgUnit: vm.dataFromA.targetOrg.unit,
-                orgId: vm.dataFromA.targetOrg.unit == 0 ? vm.dataFromA.targetOrg.workplaceId : vm.dataFromA.targetOrg.workplaceGroupId,
+                orgId: vm.dataFromA.targetOrg.unit === 0 ? vm.dataFromA.targetOrg.workplaceId : vm.dataFromA.targetOrg.workplaceGroupId,
                 baseDate: vm.dataFromA.targetPeriod.endDate,
                 sortedEmployeeIds: vm.dataFromA.employeeIds,
                 graphStartTime: parseInt(vm.selectedGraphStartTime()),
