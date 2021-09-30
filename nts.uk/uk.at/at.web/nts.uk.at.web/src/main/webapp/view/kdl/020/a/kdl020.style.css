@@ -1,16 +1,11 @@
-#A2_3, #A2_6 {
+#A2_3 {
 	font-size: 18px !important;
 	margin-top: 10px;
 }
 
 #btn-help-1 {
-	margin-left: 27px;
 	margin-top: 10px;
-}
-
-#btn-help-2 {
-	margin-left: 99px;
-	margin-top: 10px;
+	margin-left: 32px;
 }
 
 #area-left {
@@ -18,29 +13,9 @@
 	margin-left: 50px;
 }
 
-#A2_23 {
-	float: right;
-	margin-right: 155px;
-	margin-top: 18px;
-}
-
-#A2_10 {
-	float: right;
-	margin-right: 238px;
-}
-
-#A2_21 {
-	float: right;
-	margin-right: -300px;
-}
-
-#A6_3 {
-	float: right;
-	margin-top: -21px;
-}
-
-#single-list>tbody>tr>td {
-	border-bottom: 1px #CCC dotted;
+#description-label {
+	margin-top: 10px;
+	margin-left: 250px;
 }
 
 #search-btn {
@@ -48,6 +23,10 @@
 	margin-top: -32px;
 	float: right;
 	margin-right: 20px;
+}
+
+.nts-help-button-image{
+	top : -26px !important;
 }
 
 .img-icon {

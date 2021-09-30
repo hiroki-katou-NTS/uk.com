@@ -31,9 +31,17 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		currentCode: KnockoutObservable<any>;
 		currentCodeList: KnockoutObservableArray<any>;
 		count: number = 100;
-		switchOptions: KnockoutObservableArray<any>;
 		holidayData: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
 		holidayDataOld: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
+		
+		//
+		columns2: KnockoutObservableArray<any>;
+		currentCode2: KnockoutObservable<any>;
+		currentCodeList2: KnockoutObservableArray<any>;
+		count2: number = 100;
+		switchOptions2: KnockoutObservableArray<any>;
+		holidayData2: KnockoutObservableArray<HolidayInfo2> = ko.observableArray([]);
+		holidayDataOld2: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
 
 		//
 		itemList: KnockoutObservableArray<ItemModel>;
@@ -71,21 +79,26 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			self.isShowSelectAllButton = ko.observable(false);
 			self.disableSelection = ko.observable(false);
 
-			//
+			//Number of grants Heda
 			self.columns = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 200 },
-				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 150 },
-				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 130 },
-				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 220 }
+				{ headerText: nts.uk.resource.getText('KDL020_52'), key: 'grantdate', width: 130 },
+				{ headerText: nts.uk.resource.getText('KDL020_53'), key: 'numbergrants', width: 70 },
+				{ headerText: nts.uk.resource.getText('KDL020_54'), key: 'numberuses', width: 120 },
+				{ headerText: nts.uk.resource.getText('KDL020_55'), key: 'remaining', width: 120 },
+				{ headerText: nts.uk.resource.getText('KDL020_56'), key: 'expirationdate', width: 130 }
+			]);
+			
+			//
+			self.columns2 = ko.observableArray([
+				{ headerText: nts.uk.resource.getText('KDL020_59'), key: 'digestionday', width: 150 },
+				{ headerText: nts.uk.resource.getText('KDL020_60'), key: 'digestionuse', width: 70 }
 			]);
 
-			self.switchOptions = ko.observableArray([
-				{ code: "1", name: '四捨五入' },
-				{ code: "2", name: '切り上げ' },
-				{ code: "3", name: '切り捨て' }
-			]);
 			self.currentCode = ko.observable(0);
 			self.currentCodeList = ko.observableArray([]);
+			
+			self.currentCode2 = ko.observable(0);
+			self.currentCodeList2 = ko.observableArray([]);
 
 			if (self.paramData.length > 1) {
 				$("#area-right").show();
@@ -152,9 +165,6 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 					}
 				}
 
-				if (self.checkSolid != 0) {
-					$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
-				}
 			})
 
 			$("#search-btn").on({
@@ -185,9 +195,6 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 				});
 				self.listComponentOption.selectedCode(self.employeeList()[0].code);
 				$(".search-btn").hide();
-				if (self.checkSolid != 0) {
-					$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
-				}
 			});
 			dfd.resolve();
 			return dfd.promise();
@@ -220,25 +227,18 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 						dfd.resolve();
 					}
 					self.showHideItem(data);
-					$("#ui-area").css('display','');
-					$("#functions-area-bottom").css('display','');
 					$('#cancel-btn').focus();
 					
 					let id = _.filter($("div > div > div > div"), (x: any) => {
 							return _.includes(x.id, "container") && !_.includes(x.id, "single-list");
 					})
 					$("#" + id[0].id).attr('tabindex', -1);
-					if (self.checkSolid != 0) {
-						$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
-					}
 				});
 			} else {
 				_.forEach(self.dataHoliday().remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
 					self.bindDataToText(z, index);
 				});
 				self.showHideItem(self.dataHoliday());
-				$("#ui-area").css('display','');
-				$("#functions-area-bottom").css('display','');
 				$('#cancel-btn').focus();
 				self.holidayDataOld({ ...self.holidayData() });
 				dfd.resolve();
@@ -251,11 +251,12 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			let self = this, textA3_11_12_13 = "", text_A3_31_32 = "", text_A4_41_42_43 = "",
 				text45 = "<span style='color:#FF2D2D;'>" + z.dueDateStatus + "</span>";
 
-			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate + " " + z.numberOccurrences;
+			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate ;
 			text_A3_31_32 = "<span>" + text45 + " " + z.deadline; + "</span>"
 			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + " " + z.digestionCount
 
-			self.holidayData.push(new HolidayInfo(textA3_11_12_13, z.digestionStatus, text_A3_31_32, text_A4_41_42_43));
+			self.holidayData.push(new HolidayInfo("2021/09/" + (index + 10), (index + "日"), (index + "日" +" " + "と" + "2:00"), (index + "日" +" " + "と" + "6:00"), "2021/11/" + (index + 10)));
+			self.holidayData2.push(new HolidayInfo2(textA3_11_12_13, (index + "日")));
 
 			if ((_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
 				|| _.includes(z.digestionDateStatus, nts.uk.resource.getText('KDL005_40')))) {
@@ -441,17 +442,28 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			this.displayName = displayName;
 		}
 	}
-
+			
 	class HolidayInfo {
-		accrualDate: string;
-		digestionStatus: string;
-		deadline: string;
-		digestionDate: string;
-		constructor(accrualDate: string, digestionStatus: string, deadline: string, digestionDate: string) {
-			this.accrualDate = accrualDate;
-			this.digestionStatus = digestionStatus;
-			this.deadline = deadline;
-			this.digestionDate = digestionDate;
+		grantdate: string;
+		numbergrants: string;
+		numberuses: string;
+		remaining: string;
+		expirationdate: string;
+		constructor(grantdate: string, numbergrants: string, numberuses: string, remaining: string, expirationdate : string) {
+			this.grantdate = grantdate;
+			this.numbergrants = numbergrants;
+			this.numberuses = numberuses;
+			this.remaining = remaining;
+			this.expirationdate = expirationdate;
+		}
+	}
+	
+	class HolidayInfo2 {
+		digestionday: string;
+		digestionuse: string;
+		constructor(digestionday: string, digestionuse: string) {
+			this.digestionday = digestionday;
+			this.digestionuse = digestionuse;
 		}
 	}
 

@@ -1,4 +1,4 @@
-module kdl020.test {
+module nts.uk.at.view.kdl020.test.viewmodel {
         export class ScreenModel {
 		date: KnockoutObservable<any>;
 		empList: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -82,9 +82,9 @@ module kdl020.test {
 
 			nts.uk.ui.windows.setShared('KDL005_DATA', self.empList());
 			if (empIds.length > 1)
-				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1140, height: 640 });
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1100, height: 640 });
 			else
-				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 850, height: 640 });
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 710, height: 640 });
 		}
 	}
 
