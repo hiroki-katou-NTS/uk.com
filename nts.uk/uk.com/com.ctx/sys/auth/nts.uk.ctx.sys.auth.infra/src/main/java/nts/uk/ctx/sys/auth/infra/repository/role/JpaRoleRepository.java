@@ -223,17 +223,6 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 		return this.queryProxy().query(query, SacmtRole.class)
 				.setParameter("roleId", roleId).getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
 	}
-    //TODO method [exists]があるので、このメソッド「findRoleByRoleCode」を削除予定です
-    @Override
-	public Optional<Role> findRoleByRoleCode(String companyId,String roleCode, int roleType) {
-		String query ="SELECT e FROM SacmtRole e WHERE e.code = :code AND e.roleType = :roleType "
-				+ " AND e.cid = :companyId ";
-		return this.queryProxy().query(query, SacmtRole.class)
-				.setParameter("code", roleCode)
-				.setParameter("roleType", roleType)
-				.setParameter("companyId", companyId)
-				.getList().stream().map(x ->new Role(new JpaRoleGetMemento(x))).findFirst();
-	}
 
 	@Override
 	public Optional<Role> findByContractCDRoleTypeAndCompanyID(String contractCD, int roleType, String companyID) {

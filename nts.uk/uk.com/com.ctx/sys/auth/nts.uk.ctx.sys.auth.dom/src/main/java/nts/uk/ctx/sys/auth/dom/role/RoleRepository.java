@@ -28,17 +28,6 @@ public interface RoleRepository {
 	Optional<Role> findByRoleId(String roleId);
 
 	/**
-	 * Find role by role code and role type
-	 * 
-	 * @param roleCode
-	 * @param RoleType
-	 * @return
-	 */
-	//TODO method [exists]があるので、このメソッド「findRoleByRoleCode」を削除予定です
-	Optional<Role> findRoleByRoleCode(String companyId,String roleCode, int roleType);
-	
-
-	/**
 	 * Find by list role id.
 	 *
 	 * @param companyId

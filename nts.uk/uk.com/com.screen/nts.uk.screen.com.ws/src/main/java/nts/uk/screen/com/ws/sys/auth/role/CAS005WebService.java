@@ -32,9 +32,6 @@ public class CAS005WebService extends WebService {
     @Inject
     private DeleteRoleCas005CommandHandler deleteRoleCas005CommandHandler;
     
-    @Inject
-    private CopyRoleCas005CommandHandler copyRoleCas005CommandHandler;
-    
     /**
      * copy role 
      * @param command
@@ -43,7 +40,7 @@ public class CAS005WebService extends WebService {
     @POST
     @Path("copyrolecas005")
     public void copyRoleCas005(CopyRoleCas005Command command) {
-        this.copyRoleCas005CommandHandler.handle(command);
+        // deleted the copy function
     }
 
     /**
