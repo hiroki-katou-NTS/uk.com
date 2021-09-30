@@ -38,7 +38,8 @@ export class Kdls12Component extends Vue {
         }
 
         self.baseDate = params.baseDate || self.baseDate;
-        self.taskFrameNo = params.taskFrameNo || self.taskFrameNo;       
+        self.taskFrameNo = params.taskFrameNo || self.taskFrameNo;
+        self.selectedTaskCD = params.selectionCodeList.length > 0 ? params.selectionCodeList[0] : '';       
     }
 
     public back() {
@@ -86,8 +87,7 @@ export class Kdls12Component extends Vue {
             for (let i = 0; i < data.length; i++) {
                 result.push(new TaskManager(data[i].code, data[i].taskName, data[i].taskAbName, data[i].expirationStartDate, data[i].expirationEndDate, data[i].remark));
               }        
-
-            self.selectedTaskCD = result[0].code;
+           
             self.listTask = result;
             self.listTaskDisplay = result;
         }
@@ -110,7 +110,7 @@ export class Kdls12Component extends Vue {
         let self = this;
 
         let selectedItem = _.find(self.listTask, function (item) { return item.code == self.selectedTaskCD; });
-        self.selectedTask = selectedItem ? selectedItem : self.listTask[0];
+        self.selectedTask = selectedItem ? selectedItem : '';
     }
 
     public chooseTask(item: TaskManager) {
@@ -149,4 +149,5 @@ class TaskManager {
 interface IParam {
     taskFrameNo: string;
     baseDate: string;
+    selectionCodeList: Array<string>;
 }
