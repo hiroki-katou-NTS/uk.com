@@ -54,6 +54,7 @@ module nts.uk.com.view.oem002.a {
       vm.$blockui("grayout");
       vm.getAll().always(() => vm.$blockui("clear"));
       $("#A2_10").focus();
+      vm.$nextTick(() => vm.fixReadonlyA2_9());
     }
 
     private getAll(selectedCode?: string): JQueryPromise<any> {

@@ -83,18 +83,18 @@ module nts.uk.com.view.oew001.a {
     private initEquipmentSetting(): JQueryPromise<any> {
       const vm = this;
       return vm.$ajax(API.initEquipmentSetting).then(result => {
+        vm.columns(_.clone(vm.staticColumns));
         if (result) {
           vm.itemSettings(result.itemSettings);
           vm.formatSetting(result.formatSetting);
 
           // Init empty grid
-          vm.columns(_.clone(vm.staticColumns));
           const temp = new DisplayData();
           temp.createOptionalItems(null, vm.itemSettings(), vm.formatSetting());
           const optionalItems = temp.optionalItems;
           vm.createColumns(optionalItems);
-          vm.$nextTick(() => vm.initGrid());
         }
+        vm.$nextTick(() => vm.initGrid());
       }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
