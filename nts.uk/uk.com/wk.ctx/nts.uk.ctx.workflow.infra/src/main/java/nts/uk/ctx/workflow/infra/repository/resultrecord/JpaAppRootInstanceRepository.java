@@ -112,7 +112,11 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			+ " AND appRoot.ROOT_TYPE = rootType" + " AND appRoot.END_DATE >= 'startDate'"
 			+ " AND appRoot.START_DATE <= 'endDate') result)";
 
-	private final String FIND_BY_CONTAIN_DATE = 
+	private final String FIND_BY_CONTAIN_DATE = BASIC_SELECT + " WHERE appRoot.CID = 'companyID'"
+			+ " AND appRoot.EMPLOYEE_ID = 'employeeID'" + " AND appRoot.ROOT_TYPE = rootType"
+			+ " AND appRoot.START_DATE <= 'recordDate'" + " AND appRoot.END_DATE >= 'recordDate'";
+	
+	private final String FIND_ROOT_ID_BY_CONTAIN_DATE = 
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE "
 			+ "FROM WWFDT_INST_ROUTE appRoot "
 			+ " WHERE appRoot.CID = 'companyID'"
@@ -574,6 +578,23 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			} else {
 				return Optional.of(listResult.get(0));
 			}
+		}
+	}
+	
+	@Override
+	@SneakyThrows
+	public String findIDByContainDate(
+			String companyID,
+			String employeeID,
+			GeneralDate recordDate,
+			RecordRootType rootType) {
+		String query = FIND_ROOT_ID_BY_CONTAIN_DATE;
+		query = query.replaceAll("companyID", companyID);
+		query = query.replaceAll("employeeID", employeeID);
+		query = query.replaceAll("rootType", String.valueOf(rootType.value));
+		query = query.replaceAll("recordDate", recordDate.toString("yyyy-MM-dd"));
+		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			return new NtsResultSet(pstatement.executeQuery()).getSingle(x -> x.getString("ROOT_ID")).orElse(null);
 		}
 	}
 
