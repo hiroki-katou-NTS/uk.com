@@ -4557,7 +4557,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param: any = { sIDs: self.sids(), startDate: moment(self.dateTimePrev()).format('YYYY/MM/DD'), endDate: moment(self.dateTimeAfter()).format('YYYY/MM/DD') };
-            nts.uk.ui.windows.sub.modal("/view/kdl/055/a/index.xhtml", param).onClosed(() => {
+            setShared('dataShareDialogKDL055', param);
+            nts.uk.ui.windows.sub.modal("/view/kdl/055/a/index.xhtml").onClosed(() => {
                 let result = getShared('paramB');
                 console.log(result);
                 if (result) {
