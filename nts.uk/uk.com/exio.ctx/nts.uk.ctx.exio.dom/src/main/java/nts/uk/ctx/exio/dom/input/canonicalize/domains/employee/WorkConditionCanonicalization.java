@@ -171,102 +171,6 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 	}
 	
 	/**
-	 * このドメインにエラーが発生してるかチェックする 
-	 */
-	private static class ErrorChecker{
-		/**
-		 * チェック依頼窓口 
-		 */
-		public static Optional<ExternalImportError> check(IntermediateResult interm, Set<KeyValues> importingKeys, KeyValues targetKey){
-			if (importingKeys.contains(targetKey)) {
-				return Optional.of(ExternalImportError.record(interm.getRowNo(), "社員コードが重複しています。"));
-			}
-			return getLackItemError(interm);
-		}
-
-		private static final Map<Integer,String> addingTime = new HashMap<>();
-		static {
-			addingTime.put(Items.加算時間1日, "加算時間1日");
-			addingTime.put(Items.加算時間午前, "加算時間午前");
-			addingTime.put(Items.加算時間午後, "加算時間午後");
-		}
-		
-		private static final Map<Integer,String> calender = new HashMap<>();
-		static {
-			calender.put(Items.営業日カレンダーの参照先, "営業日カレンダーの参照先");
-			calender.put(Items.カレンダー作成時の就業時間帯の参照先, "カレンダー作成時の就業時間帯の参照先");
-		}		
-		
-		private static final Map<Integer,String> monthPattern = new HashMap<>();
-		static {
-			monthPattern.put(Items.月間パターンコード, "月間パターンコード");
-			monthPattern.put(Items.月間パターン作成時の就業時間帯の参照先, "月間パターン作成時の就業時間帯の参照先");
-		}		
-		
-		public static Optional<ExternalImportError> getLackItemError(IntermediateResult interm) {
-			//休暇加算時間
-			if(!hasTimeAllItemNoOrAllNothing(interm, addingTime.keySet())) {
-				return  Optional.of(ExternalImportError.record(interm.getRowNo(),
-						addingTime.values().stream().collect(Collectors.joining("、")) 
-						+ "は同時に受入れなければなりません。"
-					));
-			}
-			return a(interm);
-		}
-
-		
-		private static Optional<ExternalImportError> a(IntermediateResult interm) {
-			if(useSchedule(interm)) {
-				if(interm.getItemByNo(Items.スケジュール作成方法).isPresent()
-			 && !interm.getItemByNo(Items.スケジュール作成方法).get().isNull()) {
-					val b = EnumAdaptor.valueOf(interm.getItemByNo(Items.スケジュール作成方法).get().getInt().intValue(),WorkScheduleBasicCreMethod.class);
-					switch(b) {
-						case BUSINESS_DAY_CALENDAR:
-							if(calender.keySet().stream().allMatch(key -> interm.getItemByNo(key).isPresent() && !interm.getItemByNo(key).get().isNull())) {
-								return Optional.empty();
-							}
-							else {
-								return Optional.of(ExternalImportError.record(interm.getRowNo(),
-										"スケジュール作成方法がカレンダー参照なので、" + 
-										calender.values().stream().collect(Collectors.joining("、"))
-										+" は必須です。"));
-							}
-								
-						case MONTHLY_PATTERN:
-							if(monthPattern.keySet().stream().allMatch(key -> interm.getItemByNo(key).isPresent() && !interm.getItemByNo(key).get().isNull())) {
-								return Optional.empty();
-							}
-							return Optional.of(ExternalImportError.record(interm.getRowNo(),
-									"スケジュール作成方法が月間パターン参照なので、"+ 
-									monthPattern.values().stream().collect(Collectors.joining("、"))
-									+" は必須です。"));
-					   //曜日別は特にチェック無
-						case PERSONAL_DAY_OF_WEEK:
-							return Optional.empty();
-						default :
-							throw new RuntimeException("unknown value :" + b);
-					}
-				}
-				return Optional.of(ExternalImportError.record(interm.getRowNo(), "スケジュール管理する場合はスケジュール作成方法 を受入れなければなりません。"));
-			}
-			return Optional.empty();
-		}
-		
-		private static boolean useSchedule(IntermediateResult interm ) {
-			return interm.getItemByNo(Items.スケジュール管理設定)
-				.map(t -> t.getInt().intValue() == ManageAtr.USE.value) // スケジュール管理する 
-				.orElse(false);
-		}
-		
-		/**
-		 * All or Nothing でTrue,歯抜けの時はは抜けてる項目名 
-		 */
-		private static boolean hasTimeAllItemNoOrAllNothing(IntermediateResult interm, Set<Integer> items) {
-			return (items.stream().allMatch(t -> interm.getItemByNo(t).get().isNull())
-			|| items.stream().allMatch(t -> !interm.getItemByNo(t).get().isNull()));
-		}
-	}
-	/**
 	 * 追加の正準化処理が必要ならoverrideすること
 	 */
 	@Override
@@ -291,5 +195,95 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 			results.add(new Container(interm, container.getAddingHistoryItem()));
 		}
 		return results;
+	}
+	
+	/**
+	 * このドメインにエラーが発生してるかチェックする 
+	 */
+	private static class ErrorChecker{
+		/**
+		 * チェック依頼窓口 
+		 */
+		public static Optional<ExternalImportError> check(IntermediateResult interm, Set<KeyValues> importingKeys, KeyValues targetKey){
+			//PK
+			if (importingKeys.contains(targetKey)) {
+				return Optional.of(ExternalImportError.record(interm.getRowNo(), "社員コードが重複しています。"));
+			}
+			//休暇加算時間
+			if(!hasTimeAllItemNoOrAllNothing(interm, addingTime.keySet())) {
+				return  Optional.of(ExternalImportError.record(interm.getRowNo(),
+						addingTime.values().stream().collect(Collectors.joining("、")) 
+						+ "は同時に受入れなければなりません。"
+					));
+			}
+			//スケジュール
+			return checkSchedule(interm);
+		}
+		
+		private static Optional<ExternalImportError> checkSchedule(IntermediateResult interm) {
+			if(useSchedule(interm)) {
+				if(interm.getItemByNo(Items.スケジュール作成方法).isPresent()
+			 && !interm.getItemByNo(Items.スケジュール作成方法).get().isNull()) {
+					val createMethod = EnumAdaptor.valueOf(interm.getItemByNo(Items.スケジュール作成方法).get().getInt().intValue(),WorkScheduleBasicCreMethod.class);
+					switch(createMethod) {
+						case BUSINESS_DAY_CALENDAR:
+							return lackScheduleItem("カレンダー", calender, interm);
+						case MONTHLY_PATTERN:
+							return lackScheduleItem("月間パターン", monthPattern, interm);
+					   //曜日別は特にチェック無
+						case PERSONAL_DAY_OF_WEEK:
+							return Optional.empty();
+						default :
+							throw new RuntimeException("unknown value :" + createMethod);
+					}
+				}
+				return Optional.of(ExternalImportError.record(interm.getRowNo(), "スケジュール管理する場合はスケジュール作成方法 を受入れなければなりません。"));
+			}
+			return Optional.empty();
+		}
+
+
+		private static Optional<ExternalImportError> lackScheduleItem(String createScheduleMethod, Map<Integer, String> itemsMap, IntermediateResult interm) {
+			if(itemsMap.keySet().stream().allMatch(t -> !interm.getItemByNo(t).get().isNull())) {
+				return Optional.empty();
+			}
+			return Optional.of(ExternalImportError.record(interm.getRowNo(),
+					"スケジュール作成方法が" +createScheduleMethod +  "参照なので、"+ 
+					itemsMap.values().stream().collect(Collectors.joining("、"))
+					+" は必須です。"));
+		}
+		
+		private static boolean useSchedule(IntermediateResult interm ) {
+			return interm.getItemByNo(Items.スケジュール管理設定)
+				.map(t -> t.getInt().intValue() == ManageAtr.USE.value) // スケジュール管理する 
+				.orElse(false);
+		}
+		
+		/**
+		 * All or Nothing でTrue,歯抜けの時はは抜けてる項目名 
+		 */
+		private static boolean hasTimeAllItemNoOrAllNothing(IntermediateResult interm, Set<Integer> items) {
+			return (items.stream().allMatch(t -> interm.getItemByNo(t).get().isNull())
+			|| items.stream().allMatch(t -> !interm.getItemByNo(t).get().isNull()));
+		}
+
+		private static final Map<Integer,String> addingTime = new HashMap<>();
+		static {
+			addingTime.put(Items.加算時間1日, "加算時間1日");
+			addingTime.put(Items.加算時間午前, "加算時間午前");
+			addingTime.put(Items.加算時間午後, "加算時間午後");
+		}
+		
+		private static final Map<Integer,String> calender = new HashMap<>();
+		static {
+			calender.put(Items.営業日カレンダーの参照先, "営業日カレンダーの参照先");
+			calender.put(Items.カレンダー作成時の就業時間帯の参照先, "カレンダー作成時の就業時間帯の参照先");
+		}		
+		
+		private static final Map<Integer,String> monthPattern = new HashMap<>();
+		static {
+			monthPattern.put(Items.月間パターンコード, "月間パターンコード");
+			monthPattern.put(Items.月間パターン作成時の就業時間帯の参照先, "月間パターン作成時の就業時間帯の参照先");
+		}		
 	}
 }
