@@ -600,7 +600,7 @@ public class StampTypeTest {
 				false, //dummy
         		null,//dummy
         		SetPreClockArt.valueOf(0),//dummy
-        		ChangeClockArt.valueOf(0), //dummy
+        		ChangeClockAtr.valueOf(0), //dummy
         		ChangeCalArt.valueOf(3));
 		String workTypeCode = "workType";
 		
@@ -641,7 +641,7 @@ public class StampTypeTest {
 				false, //dummy
         		null,//dummy
         		SetPreClockArt.valueOf(0),//dummy
-        		ChangeClockArt.valueOf(0), //dummy
+        		ChangeClockAtr.valueOf(0), //dummy
         		ChangeCalArt.valueOf(2));
 		String workTypeCode = "workType";
 		
