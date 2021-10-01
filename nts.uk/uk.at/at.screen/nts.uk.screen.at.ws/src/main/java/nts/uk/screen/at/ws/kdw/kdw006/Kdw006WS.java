@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.DeleteTheChoiceCommand;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.DeleteTheChoiceCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.RegisterNewOptionsCommand;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.RegisterNewOptionsCommandHandeler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.UpdateAndRegisterOptionsCommandHandler;
@@ -45,6 +47,9 @@ public class Kdw006WS extends WebService {
 	@Inject
 	private UpdateAndRegisterOptionsCommandHandler updateOption;
 
+	@Inject
+	private DeleteTheChoiceCommandHandler delete;
+
 	// 作業補足情報の選択項目を取得する
 	@POST
 	@Path("view-k/get-list-work")
@@ -78,6 +83,13 @@ public class Kdw006WS extends WebService {
 	@Path("view-k/update-obtion")
 	public void update(RegisterNewOptionsCommand command) {
 		this.updateOption.handle(command);
+	}
+
+	// 選択肢を削除する
+	@POST
+	@Path("view-k/delete")
+	public void delete(DeleteTheChoiceCommand command) {
+		this.delete.handle(command);
 	}
 
 }
