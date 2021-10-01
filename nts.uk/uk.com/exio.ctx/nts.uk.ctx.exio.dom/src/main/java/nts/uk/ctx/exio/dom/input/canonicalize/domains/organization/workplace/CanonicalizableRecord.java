@@ -7,13 +7,10 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization.Items;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
-import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
@@ -29,9 +26,11 @@ class CanonicalizableRecord {
 		return new CanonicalizableRecord(IntermediateResult.noChange(record));
 	}
 	
-	void canonicalize(
-			DomainCanonicalization.RequireCanonicalize require,
-			ExecutionContext context,
+	int getRowNo() {
+		return revised.getRowNo();
+	}
+	
+	Either<ErrorMessage, IntermediateResult> canonicalize(
 			String historyId,
 			DatePeriod period,
 			WorkplaceIdMap idMap) {
@@ -46,16 +45,9 @@ class CanonicalizableRecord {
 				.addCanonicalized(CanonicalItem.of(Items.終了日, period.end()))
 				.optionalItem(CanonicalItem.of(Items.削除フラグ, 0));
 		
-		this.canonicalizeHierarchyCode()
-			.ifLeft(error -> {
-				require.add(context, ExternalImportError.record(revised.getRowNo(), error.getText()));
-			})
-			.ifRight(hierarchyCode -> {
-				val canonicalized = interm
-						.addCanonicalized(CanonicalItem.of(Items.職場階層コード, hierarchyCode))
-						.complete();
-				require.save(context, canonicalized);
-			});
+		return this.canonicalizeHierarchyCode()
+			.map(hierarCode -> interm.addCanonicalized(CanonicalItem.of(Items.職場階層コード, hierarCode)));
+		
 	}
 	
 	private Either<ErrorMessage, String> canonicalizeHierarchyCode() {

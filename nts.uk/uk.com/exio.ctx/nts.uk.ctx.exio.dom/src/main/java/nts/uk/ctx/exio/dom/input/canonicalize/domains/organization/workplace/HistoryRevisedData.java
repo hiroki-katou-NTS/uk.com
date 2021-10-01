@@ -5,7 +5,9 @@ import static java.util.stream.Collectors.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +16,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization.Items;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
@@ -114,7 +118,7 @@ public class HistoryRevisedData {
 			val error = ExternalImportError.record(
 					record.revised.getRowNo(),
 					"受入データの中にある直前の履歴（終了日:" + prev.period.end().toString("yyyy/MM/dd") + "）と連続していません。");
-		
+			
 			require.add(context, error);
 		}
 	}
@@ -123,11 +127,64 @@ public class HistoryRevisedData {
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			WorkplaceIdMap idMap) {
-		
+
 		String historyId = IdentifierUtil.randomUniqueId();
-		records.forEach(r -> {
-			r.canonicalize(require, context, historyId, period, idMap);
-		});
+		
+		List<IntermediateResult> canonicalRecords = new ArrayList<>();
+		for (val record : records) {
+			record.canonicalize(historyId, period, idMap)
+				.ifLeft(error -> {
+					require.add(context, ExternalImportError.record(record.getRowNo(), error.getText()));
+				})
+				.ifRight(interm -> {
+					canonicalRecords.add(interm);
+				});
+		}
+
+		// 職場コードと階層コードの重複チェック
+		val checked = checkDuplicatedCodes(require, context, canonicalRecords);
+		
+		for (val interm : checked) {
+			require.save(context, interm.complete());
+		}
+	}
+
+	/**
+	 * 職場コードと階層コードの重複をチェックし、重複はエラー処理、重複なければ返す
+	 * @param require
+	 * @param context
+	 * @return
+	 */
+	private List<IntermediateResult> checkDuplicatedCodes(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context,
+			List<IntermediateResult> records) {
+		
+		List<IntermediateResult> canonicalRecords = new ArrayList<>();
+		
+		Set<String> workplaceCodes = new HashSet<>();
+		Set<String> hierarchyCode = new HashSet<>();
+		
+		for (val record : records) {
+			
+			String wkp = record.getItemByNo(Items.職場コード).get().getString();
+			if (workplaceCodes.contains(wkp)) {
+				require.add(context, ExternalImportError.record(record.getRowNo(), "職場コードが重複しています。"));
+				continue;
+			}
+			workplaceCodes.add(wkp);
+
+			String hie = record.getItemByNo(Items.職場階層コード).get().getString();
+			if (hierarchyCode.contains(hie)) {
+				require.add(context, ExternalImportError.record(record.getRowNo(), "職場階層コードが重複しています。"));
+				continue;
+			}
+			hierarchyCode.add(hie);
+			
+			canonicalRecords.add(record);
+		}
+		
+		return canonicalRecords;
 	}
 	
 	private void changeEndToMax() {
