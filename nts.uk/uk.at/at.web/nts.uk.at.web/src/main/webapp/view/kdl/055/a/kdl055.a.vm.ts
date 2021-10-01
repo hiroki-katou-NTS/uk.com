@@ -31,12 +31,17 @@ module nts.uk.at.view.kdl055.a.viewmodel {
                     vm.scheduleImport.bindingData(obj);
                 }
             });
-
-            if (params) {
+            
+            let dataShare = getShared('dataShareDialogKDL055');
+            if(dataShare){
+                vm.sIDs  = dataShare.sIDs;
+                vm.startDate = dataShare.startDate;
+                vm.endDate   = dataShare.endDate;
+            } else if (params) {
                 // vm.targetInfo = params.targetInfo;
                 vm.sIDs = params.sIDs;
                 vm.startDate = params.startDate;
-                vm.endDate = params.endDate;
+                vm.endDate   = params.endDate;
             }
         }
 
