@@ -2940,7 +2940,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if (maxNumberOfDaysAfterGrant != null) {
                 val vl17 = new StringBuilder();
                 vl17.append(maxNumberOfDaysBeforeGrant == null ? "0.0" : df.format(maxNumberOfDaysBeforeGrant));
-                vl17.append("/").append(maxNumberOfDaysAfterGrant.toString());
+                vl17.append("/").append(df.format(maxNumberOfDaysAfterGrant));
                 cells.get(firstRow + 1, 8).setValue(vl17);
             } else {
                 cells.get(firstRow + 1, 8).setValue(maxNumberOfDaysBeforeGrant == null ? "0.0" : df.format(maxNumberOfDaysBeforeGrant));
@@ -3012,7 +3012,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                             if (daysOfUseAfterGrant != null) {
                                 val vl23 = new StringBuilder();
-                                vl23.append(numberOfDaysUsedBeforeGrant == null ? "0.0" : numberOfDaysUsedBeforeGrant.toString());
+                                vl23.append(numberOfDaysUsedBeforeGrant == null ? "0.0" : df.format(numberOfDaysUsedBeforeGrant));
                                 vl23.append("/").append(daysOfUseAfterGrant.toString());
                                 cells.get(firstRow, 10 + totalMonth).setValue(vl23);
 
