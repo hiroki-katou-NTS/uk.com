@@ -220,6 +220,14 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 			return checkSchedule(interm);
 		}
 		
+		/**
+		 * All or Nothing でTrue,歯抜けの時はは抜けてる項目名 
+		 */
+		private static boolean hasTimeAllItemNoOrAllNothing(IntermediateResult interm, Set<Integer> items) {
+			return (items.stream().allMatch(t -> interm.getItemByNo(t).get().isNull())
+			|| items.stream().allMatch(t -> !interm.getItemByNo(t).get().isNull()));
+		}
+		
 		private static Optional<ExternalImportError> checkSchedule(IntermediateResult interm) {
 			if(useSchedule(interm)) {
 				if(interm.getItemByNo(Items.スケジュール作成方法).isPresent()
@@ -242,7 +250,6 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 			return Optional.empty();
 		}
 
-
 		private static Optional<ExternalImportError> lackScheduleItem(String createScheduleMethod, Map<Integer, String> itemsMap, IntermediateResult interm) {
 			if(itemsMap.keySet().stream().allMatch(t -> !interm.getItemByNo(t).get().isNull())) {
 				return Optional.empty();
@@ -259,13 +266,7 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 				.orElse(false);
 		}
 		
-		/**
-		 * All or Nothing でTrue,歯抜けの時はは抜けてる項目名 
-		 */
-		private static boolean hasTimeAllItemNoOrAllNothing(IntermediateResult interm, Set<Integer> items) {
-			return (items.stream().allMatch(t -> interm.getItemByNo(t).get().isNull())
-			|| items.stream().allMatch(t -> !interm.getItemByNo(t).get().isNull()));
-		}
+
 
 		private static final Map<Integer,String> addingTime = new HashMap<>();
 		static {
