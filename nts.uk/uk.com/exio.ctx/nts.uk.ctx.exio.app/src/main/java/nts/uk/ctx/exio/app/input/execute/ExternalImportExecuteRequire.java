@@ -21,6 +21,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaData
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -124,9 +126,16 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepo;
+	
+	@Inject
+	private WorkplaceConfigurationRepository wkpConfigRepo;
 
 	@Inject
 	private StampCardRepository stampCardRepo;
+	
+	@Inject
+	private WorkplaceInformationRepository wkpInfoRepo;
+	
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
@@ -279,6 +288,16 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public void deleteStampCardByTenant(String tenantCode) {
 			stampCardRepo.deleteByTenantCode(tenantCode);
+		}
+
+		@Override
+		public void deleteAllWorkplaceConfigurations(String companyId) {
+			wkpConfigRepo.deleteAll(companyId);
+		}
+
+		@Override
+		public void deleteAllWorkplaceInformations(String companyId) {
+			wkpInfoRepo.deleteAll(companyId);
 		}
 	}
 }

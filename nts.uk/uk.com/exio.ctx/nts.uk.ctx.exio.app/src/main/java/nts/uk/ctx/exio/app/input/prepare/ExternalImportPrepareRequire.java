@@ -20,6 +20,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -127,11 +129,15 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ExternalImportErrorsRepository errorsRepo;
+	
+	@Inject
+	private WorkplaceConfigurationRepository wkpConfigRepo;
 
 	@Inject
-	private WorkplaceInformationRepository wkpinfoRepo;
+	private WorkplaceInformationRepository wkpInfoRepo;
 	
-	@Inject JobTitleInfoRepository jobTitleInfoRepo;
+	@Inject
+	private JobTitleInfoRepository jobTitleInfoRepo;
 	
 	@Inject
 	private UserRepository userRepo;
@@ -253,6 +259,11 @@ public class ExternalImportPrepareRequire {
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
 			return revisedDataRecordRepo.findByRowNo(this, context, rowNo);
 		}
+
+		@Override
+		public List<RevisedDataRecord> getAllRevisedDataRecords(ExecutionContext context) {
+			return revisedDataRecordRepo.findAll(this, context);
+		}
 		
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordWhere(
@@ -295,7 +306,7 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public Optional<WorkplaceInformation> getWorkplaceByCode(String workplaceCode, GeneralDate startdate) {
-			return wkpinfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
+			return wkpInfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
 		}
 
 
@@ -323,5 +334,17 @@ public class ExternalImportPrepareRequire {
 		public Optional<StampCard> getStampCardByCardNumber(String cardNumber) {
 			return stampCardRepo.getByCardNoAndContractCode(cardNumber, contractCode);
 		}
+
+		@Override
+		public Optional<WorkplaceConfiguration> getWorkplaceConfigurations(String companyId) {
+			return wkpConfigRepo.getWkpConfig(companyId);
+		}
+
+
+		@Override
+		public List<WorkplaceInformation> getAllWorkplaceInformations(String companyId) {
+			return wkpInfoRepo.findAll(companyId);
+		}
+
 	}
 }
