@@ -340,6 +340,12 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 if (!vacationControl || vacationControl.yearlyReservedSetting == false) {
                     self.currentHoliday().yearlyReserved(false);
                 }
+                if (!vacationControl || vacationControl.halfDayYearlySetting == false) {
+                    self.currentHoliday().insideHalfDay(false);
+                }
+                if (!vacationControl || vacationControl.hourlyLeaveSetting == false) {
+                    self.currentHoliday().insideHours(false);
+                }
                 if (!vacationControl || vacationControl.substituteHolidaySetting == false) {
                     self.currentHoliday().outputItemSubstitute(false);
                     self.currentHoliday().representSubstitute(false);
