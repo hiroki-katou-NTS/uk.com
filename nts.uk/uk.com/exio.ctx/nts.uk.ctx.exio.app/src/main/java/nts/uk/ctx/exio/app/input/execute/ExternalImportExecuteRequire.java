@@ -15,6 +15,7 @@ import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
@@ -123,7 +124,9 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private LeaveManaDataRepository leaveManaDataRepo;
-	
+
+	@Inject
+	private StampCardRepository stampCardRepo;
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
@@ -266,6 +269,16 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public void deleteAllLeaveManagementData(String employeeId) {
 			leaveManaDataRepo.deleteAllByEmployeeId(employeeId);
+		}
+
+		@Override
+		public void deleteStampCardById(String stampCardId) {
+			stampCardRepo.delete(stampCardId);
+		}
+
+		@Override
+		public void deleteStampCardByTenant(String tenantCode) {
+			stampCardRepo.deleteByTenantCode(tenantCode);
 		}
 	}
 }

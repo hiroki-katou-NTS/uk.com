@@ -8,6 +8,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffJobTitleHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffWorkplaceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.CardNumberCanonicalaization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.OccurenceHolidayCanonicalizationBase;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
@@ -74,7 +75,8 @@ public interface DomainCanonicalization {
 		EmployeeHistoryCanonicalization.RequireCanonicalize,
 		AffJobTitleHistoryCanonicalization.RequireCanonicalize,
 		AffWorkplaceHistoryCanonicalization.RequireCanonicalize,
-		OccurenceHolidayCanonicalizationBase.RequireCanonicalize {
+		OccurenceHolidayCanonicalizationBase.RequireCanonicalize, 
+		CardNumberCanonicalaization.RequireCanonicalize{
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
 
@@ -86,7 +88,8 @@ public interface DomainCanonicalization {
 		EmployeeHistoryCanonicalization.RequireAdjust,
 		AffJobTitleHistoryCanonicalization.RequireAdjust,
 		AffWorkplaceHistoryCanonicalization.RequireAdjust,
-		OccurenceHolidayCanonicalizationBase.RequireAdjust {
+		OccurenceHolidayCanonicalizationBase.RequireAdjust, 
+		CardNumberCanonicalaization.RequireAdjust{
 		
 	}
 }

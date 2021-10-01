@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffClassHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.CardNumberCanonicalaization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffJobTitleHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffWorkplaceHistoryCanonicalization;
@@ -53,6 +54,9 @@ public enum ImportingDomainId {
 	
 	/** 短時間勤務 */
 	SHORT_WORK_TIME(108, ShortWorkTimeCanonicalization::new),
+	
+	/** カードNO */
+	CARD_NO(110, CardNumberCanonicalaization::new),
 	
 	/** 社員の年休付与設定*/
 	EMPLOYEE_ANNUAL_LEAVE_SETTING(111, EmployeeAnnualLeaveSettingCanonicalization::new),	
