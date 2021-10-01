@@ -2,14 +2,22 @@ package nts.uk.screen.at.app.kdw006.k;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ChoiceName;
+import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ExternalCode;
+import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistory;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistoryRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * ScreenQuery: 作業補足情報の選択肢履歴を取得する
@@ -39,6 +47,15 @@ public class AcquireSelectionHistoryOfWork {
 			
 			result.add(new AcquireSelectionHistoryOfWorkDto(f.getItemId(), dateHis));
 		});
+		
+		for (int i = 25 ; i < 30; i++) {
+			List<DateHistoryItem> a = new ArrayList<>();
+			a.add(new DateHistoryItem(i+"", new DatePeriod(GeneralDate.today(), GeneralDate.max())));
+			a.add(new DateHistoryItem(i+"", new DatePeriod(GeneralDate.min(), GeneralDate.max())));
+			taskSupInfoChoicesHistoryRepo.insert(new TaskSupInfoChoicesHistory(i, a),
+					new TaskSupInfoChoicesDetail(i+"", i, new ChoiceCode(i+""), new ChoiceName("History"+i), Optional.of(new ExternalCode(i+"")))
+					);
+		}
 		
 		return result;
 	}
