@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCano
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.ShortWorkTimeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.TempAbsenceHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.WorkConditionCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.AnnualLeaveRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.EmployeeAnnualLeaveSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.MaxAnnualLeaveCanonicalization;
@@ -53,6 +54,9 @@ public enum ImportingDomainId {
 	
 	/** 短時間勤務 */
 	SHORT_WORK_TIME(108, ShortWorkTimeCanonicalization::new),
+	
+	/** 労働条件*/
+	WORKING_CONDITION(109, WorkConditionCanonicalization::new),	
 	
 	/** 社員の年休付与設定*/
 	EMPLOYEE_ANNUAL_LEAVE_SETTING(111, EmployeeAnnualLeaveSettingCanonicalization::new),	
