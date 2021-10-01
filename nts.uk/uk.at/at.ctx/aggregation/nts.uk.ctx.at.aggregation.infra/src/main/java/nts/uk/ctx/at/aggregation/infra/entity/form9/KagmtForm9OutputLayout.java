@@ -257,7 +257,7 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
     }
 
     public static KagmtForm9OutputLayout toEntity(String companyId, Form9Layout layout) {
-        var pk = new KagmtForm9OutputLayoutPk(companyId,layout.getCode().v());
+        KagmtForm9OutputLayoutPk pk = new KagmtForm9OutputLayoutPk(companyId,layout.getCode().v());
         Form9Cover cover = layout.getCover();
         Form9NursingTable nursingTable = layout.getNursingTable();
         DetailSettingOfForm9 nurseDetailSetting = nursingTable.getDetailSetting();
@@ -305,7 +305,7 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
     }
 
     public static Form9Layout toDomain(KagmtForm9OutputLayout entity) {
-        var cover = Form9Cover.create(
+        Form9Cover cover = Form9Cover.create(
                 Optional.of(new OutputCell(entity.coverCellYear)),
                 Optional.of(new OutputCell(entity.coverCellMonth)),
                 Optional.of(new OutputCell(entity.coverCellNightShiftStart)),
@@ -314,7 +314,7 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
                 Optional.of(new OutputCell(entity.coverCellPrintingPerIod))
         );
 
-        var nursingTable = Form9NursingTable.create(
+        Form9NursingTable nursingTable = Form9NursingTable.create(
                 new OutputColumn(entity.nurseColName),
                 new OutputColumn(entity.nurseBodyStartCol),
                 DetailSettingOfForm9.create(new OutputRow(entity.nursebodyStartRow),
@@ -330,7 +330,7 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
                 Optional.of(new OutputColumn(entity.nurseColWorkstyleConpost)),
                 Optional.of(new OutputColumn(entity.nurseColNightShiftOnly))
         );
-        var nursingAideTable = Form9NursingAideTable.create(
+        Form9NursingAideTable nursingAideTable = Form9NursingAideTable.create(
                 new OutputColumn(entity.nuringAideColName),
                 new OutputColumn(entity.nuringAideBodyStartCol),
                 DetailSettingOfForm9.create(new OutputRow(entity.nuringAideBodyStartRow),

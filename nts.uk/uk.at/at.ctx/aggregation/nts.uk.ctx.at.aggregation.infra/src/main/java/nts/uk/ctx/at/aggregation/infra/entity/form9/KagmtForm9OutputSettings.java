@@ -49,7 +49,7 @@ public class KagmtForm9OutputSettings extends ContractUkJpaEntity implements Ser
     }
 
     public static KagmtForm9OutputSettings toEntity(String companyId, Form9DetailOutputSetting detailOutputSetting) {
-        var pk = new KagmtForm9OutputSettingsPk(companyId);
+        KagmtForm9OutputSettingsPk pk = new KagmtForm9OutputSettingsPk(companyId);
         return new KagmtForm9OutputSettings(
                 pk,
                 detailOutputSetting.getTimeRoundingSetting().getRoundingUnit().value,
