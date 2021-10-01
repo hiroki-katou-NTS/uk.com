@@ -57,23 +57,21 @@ public class ApplicationReflectHistory implements DomainAggregate {
 	 * [1] 同時に値を戻す必要がある反映履歴を取得する
 	 */
 	public Optional<ApplicationReflectHistory> getReflectHistNeedReturn(Require require,
-			ScheduleRecordClassifi classification, Integer itemId) {
+			ScheduleRecordClassifi classification, Integer itemId, String appId) {
 		// $反映履歴
 		Optional<ApplicationReflectHistory> cancelHistOtherIdLst = require.getCancelHistOtherId(this.employeeId,
-				this.date, this.applicationId, this.appExecInfo.getReflectionTime(), classification).stream()
+				this.date, appId, this.appExecInfo.getReflectionTime(), classification).stream()
 				.findFirst();
 		if (!cancelHistOtherIdLst.isPresent())
 			return Optional.empty();
-
-		// $修正履歴
-		List<CorrectRecordDailyResultImport> recordEditList = require.getBySpecifyItemId(this.employeeId, this.date,
-				itemId);
-
-		// $取得した反映履歴との間の修正履歴
-		if (recordEditList.stream().anyMatch(x -> x.getCorrectTime().before(this.appExecInfo.getReflectionTime())
-				&& x.getCorrectTime().after(cancelHistOtherIdLst.get().appExecInfo.getReflectionTime()))) {
+		boolean correctHist = existsCorrectHist(require, cancelHistOtherIdLst.get(), itemId);
+		
+		boolean unreflectHistInHists = existsUnreflectHistInHists(require, cancelHistOtherIdLst.get(), itemId);
+		
+		if(correctHist || unreflectHistInHists) {
 			return Optional.empty();
 		}
+		
 		return cancelHistOtherIdLst;
 	}
 
@@ -92,6 +90,26 @@ public class ApplicationReflectHistory implements DomainAggregate {
 		return attBeforeRereflect.isPresent() ? attBeforeRereflect : this.getBeforeSpecifiAttReflected(itemId);
 	}
 
+	//[1] 反映履歴の間に手修正が存在するか確認
+	private boolean existsCorrectHist(Require require, ApplicationReflectHistory appHist, int itemId) {
+		
+		return require.getBySpecifyItemId(this.employeeId, this.date, itemId).stream()
+				.anyMatch(x -> x.getCorrectTime().before(this.appExecInfo.getReflectionTime())
+						&& x.getCorrectTime().after(appHist.getAppExecInfo().getReflectionTime()));
+
+	}
+	
+	//	[2] 反映履歴の間に未取消の反映履歴が存在するか確認
+	private boolean existsUnreflectHistInHists(Require require, ApplicationReflectHistory appHist, int itemId) {
+		List<ApplicationReflectHistory> lstHist = require.getHistWithSidDate(this.employeeId, this.date, this.classification);
+		return lstHist.stream().anyMatch(x -> x.getAppExecInfo().getReflectionTime().before(this.getAppExecInfo().getReflectionTime()) 
+				&& x.getAppExecInfo().getReflectionTime().after(appHist.getAppExecInfo().getReflectionTime())
+				&& x.getLstAttBeforeAppReflect().stream().anyMatch(y -> y.getAttendanceId() == itemId)
+				&& !x.isCancellationCate()
+				&& x.getClassification() == this.classification
+				&& !x.getApplicationId().equals(this.applicationId));
+	}
+	
 	public static interface Require extends AppReflectExecInfo.Require {
 
 		// [R-1] 指定した時刻以前の申請IDが異なる取り消し済み反映履歴を取得する

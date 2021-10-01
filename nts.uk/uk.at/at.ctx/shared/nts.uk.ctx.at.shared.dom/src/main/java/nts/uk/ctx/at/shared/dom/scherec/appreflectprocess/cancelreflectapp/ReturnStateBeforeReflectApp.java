@@ -33,7 +33,7 @@ public class ReturnStateBeforeReflectApp {
 		while (true) {
 			// $同時に値を戻す反映履歴
 			Optional<ApplicationReflectHistory> restoreHist = restoreHistResult.getReflectHistNeedReturn(require,
-					classification, itemId);
+					classification, itemId, hist.getApplicationId() );
 			if (!restoreHist.isPresent()) {
 				break;
 			}
