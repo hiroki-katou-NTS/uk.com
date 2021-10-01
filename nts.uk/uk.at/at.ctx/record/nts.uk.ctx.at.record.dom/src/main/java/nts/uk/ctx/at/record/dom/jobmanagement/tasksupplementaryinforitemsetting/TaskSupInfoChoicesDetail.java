@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
 
 /**
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
  */
 @Getter
 @AllArgsConstructor
-public class TaskSupInfoChoicesDetail {
+public class TaskSupInfoChoicesDetail extends AggregateRoot {
 
 	/** 履歴ID */
 	private final String historyId;
