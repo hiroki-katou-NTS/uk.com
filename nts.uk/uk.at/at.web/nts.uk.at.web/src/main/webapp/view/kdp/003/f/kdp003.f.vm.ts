@@ -358,18 +358,18 @@ module nts.uk.at.kdp003.f {
 			const model: ModelData = ko.toJS(vm.model);
 			const { password, companyCode } = model;
 			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
+			const message = ko.unwrap(vm.message);
 
+			var dataResultLogin: TimeStampLoginData;
+			var roleEmployee: RoleEmployee;
+			var showDialogError: boolean = false;
 			var submitData: any = {};
 			submitData.companyCode = _.escape(model.companyCode);
 			submitData.employeeCode = _.escape(model.employeeCode);
 			submitData.password = _.escape(model.password);
 
-			var showDialogError: boolean = false;
-
-			const message = ko.unwrap(vm.message);
-
-			var dataResultLogin: TimeStampLoginData;
-			var roleEmployee: RoleEmployee;
+			let dfdVeryLogin = $.Deferred();
+			let dfdRole = $.Deferred();
 
 			if (message) {
 				return vm.$dialog.error(message);
@@ -394,18 +394,6 @@ module nts.uk.at.kdp003.f {
 						.then(() => {
 							vm.$blockui('show')
 								.then(() => vm.$ajax('com', api, submitData))
-								// .fail((response: any) => {
-								// 	const { message, messageId } = response;
-
-								// 	console.log(message);
-								// 	console.log(messageId);
-
-								// 	if (!messageId) {
-								// 		vm.$dialog.error(message);
-								// 	} else {
-								// 		vm.$dialog.error({ messageId });
-								// 	}
-								// })
 								.fail((data: any) => {
 									if (data.msgErrorId !== null) {
 										vm.$dialog.error({ messageId: data.messageId, message: data.message });
@@ -415,7 +403,7 @@ module nts.uk.at.kdp003.f {
 								})
 								.done((response: TimeStampLoginData) => {
 									dataResultLogin = response;
-									
+
 									if (response.msgErrorId !== null) {
 										vm.$dialog.error({ messageId: response.msgErrorId });
 										showDialogError = true;
@@ -428,6 +416,7 @@ module nts.uk.at.kdp003.f {
 										vm.$ajax('com', API.VERIFI_LOGIN, param)
 											.done((data: any) => {
 												dataResultLogin.em = data.employeeInformation;
+												dfdVeryLogin.resolve();
 											})
 									}
 								})
@@ -441,10 +430,12 @@ module nts.uk.at.kdp003.f {
 														vm.$dialog.error({ messageId: 'Msg_1887' });
 													}
 												}
+												dfdRole.resolve();
 											})
 									}
 								})
-								.then(() => {
+								$.when(dfdVeryLogin, dfdRole)
+								.done(() => {
 									if (!showDialogError) {
 										const { successMsg } = dataResultLogin;
 										if (!!successMsg) {
@@ -466,13 +457,11 @@ module nts.uk.at.kdp003.f {
 											password,
 											companyCode
 										});
-										setTimeout(() => {
-											if (roleEmployee) {
-												if (roleEmployee.employeeReferenceRange != 3) {
-													vm.$window.close(dataResultLogin);
-												}
+										if (roleEmployee) {
+											if (roleEmployee.employeeReferenceRange != 3) {
+												vm.$window.close(dataResultLogin);
 											}
-										}, 100);
+										}
 									}
 								})
 								.always(() => vm.$blockui('clear'));
@@ -547,7 +536,7 @@ module nts.uk.at.kdp003.f {
 										return vm.$dialog.error({ messageId: 'Msg_176' });
 									})
 									.done((data: any) => {
-										if(data.employeeId == null) {
+										if (data.employeeId == null) {
 											vm.$dialog.error({ messageId: 'Msg_176' });
 										} else {
 											var dataConvent = {
@@ -584,12 +573,13 @@ module nts.uk.at.kdp003.f {
 			submitData.companyCode = _.escape(model.companyCode);
 			submitData.employeeCode = _.escape(model.employeeCode);
 			submitData.password = _.escape(model.password);
-
 			const message = ko.unwrap(vm.message);
 
 			var dataResultLogin: TimeStampLoginData;
-
 			var roleEmployee: RoleEmployee;
+
+			let dfdVeryLogin = $.Deferred();
+			let dfdRole = $.Deferred();
 
 			if (message) {
 				if (message.messageId !== 'Msg_1645') {
@@ -633,10 +623,11 @@ module nts.uk.at.kdp003.f {
 									}
 									if (response.successMsg === 'Msg_1475') {
 										return vm.$dialog
-												.info({ messageId: 'Msg_1475' })
-												.then(() => dataResultLogin = response);
+											.info({ messageId: 'Msg_1475' })
+											.then(() => dataResultLogin = response);
 									}
 									dataResultLogin = response;
+									dfdVeryLogin.resolve();
 								})
 								.then(() => {
 									vm.$ajax(API.ROLE)
@@ -647,9 +638,11 @@ module nts.uk.at.kdp003.f {
 													vm.$dialog.error({ messageId: 'Msg_1887' });
 												}
 											}
+											dfdRole.resolve();
 										})
 								})
-								.then(() => {
+								$.when(dfdVeryLogin, dfdRole)
+								.done(() => {
 
 									_.extend(dataResultLogin, {
 										companies
@@ -659,15 +652,13 @@ module nts.uk.at.kdp003.f {
 										password,
 										companyCode
 									});
-									setTimeout(() => {
-										if (!dataResultLogin.msgErrorId) {
-											if (roleEmployee) {
-												if (roleEmployee.employeeReferenceRange != 3) {
-													vm.$window.close('loginSuccess');
-												}
+									if (!dataResultLogin.msgErrorId) {
+										if (roleEmployee) {
+											if (roleEmployee.employeeReferenceRange != 3) {
+												vm.$window.close('loginSuccess');
 											}
 										}
-									}, 100);
+									}
 								})
 								.always(() => vm.$blockui('clear'));
 
