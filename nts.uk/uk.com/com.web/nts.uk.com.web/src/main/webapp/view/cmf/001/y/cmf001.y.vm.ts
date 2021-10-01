@@ -5,21 +5,6 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 	import setShared = nts.uk.ui.windows.setShared;
 	import getShared = nts.uk.ui.windows.getShared;
 
-	function deleteButton(required, data) {
-		if (required === "false") {
-				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">削除</button>';
-		} else {
-				return '';
-		}
-	}
-
-	$(function() {
-		$("#layout-list").on("click",".delete-button",function(){
-			let vm = nts.uk.ui._viewModel.content;
-			vm.removeItem($(this).data("target"));
-		});
-	})
-
 	@bean()
 	class ViewModel extends ko.ViewModel {
 		isNewMode: KnockoutObservable<boolean> = ko.observable(true);
@@ -28,35 +13,23 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 
 		settingCode: KnockoutObservable<string> = ko.observable();
 		settingName: KnockoutObservable<string> = ko.observable();
-		importDomain: KnockoutObservable<number> = ko.observable();
-		importMode: KnockoutObservable<number> = ko.observable();
+		
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
-		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
 
 		importDomainOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingDomainId);
-		importModeOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingMode);
 
 		selectedCode: KnockoutObservable<string> = ko.observable();
-
-		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
+		
 		selectedItem: KnockoutObservable<string> = ko.observable();
 
-	    canEditDetail = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+	    canEditDetail = KnockoutObservable<boolean> = ko.observable(false);
 	    
 		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "コード", 				key: "code", 					width: 50 	},
 			{ headerText: "名称", 					key: "name", 					width: 200 	},
 		]);
-
-		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
-			{ headerText: "削除", 					key: "required", 		width: 50 , 	formatter: deleteButton },
-			{ headerText: "NO", 						key: "itemNo", 				width: 100 , 	hidden: true },
-			{ headerText: "名称", 					key: "name", 					width: 300 		},
-			{ headerText: "型", 						key: "type", 					width: 80 		},
-			{ headerText: "受入元", 				key: "source", 				width: 80 		},
-		]);
-
+		
 		constructor() {
 			super();
 			var self = this;
@@ -70,26 +43,8 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 					self.newMode();
 				}
 			})
-
-			self.importDomain.subscribe((value) => {
-				if (value) {
-					let condition = {
-						settingCode: self.settingCode(),
-						importingDomainId: self.importDomain(),
-						itemNoList: []};
-					ajax("com", "screen/com/cmf/cmf001/y/get/layout", condition).done((itemNoList: number[]) => {
-						self.layoutItemNoList(itemNoList);
-					});
-				}else{
-					self.layoutItemNoList([]);
-				}
-			})
-	
-			self.layoutItemNoList.subscribe((value) => {
-				self.setLayout(value);
-			})
 		}
-
+		
 		startPage(){
 			var self = this;
 			let dfd = $.Deferred();
@@ -113,7 +68,8 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			ajax("screen/com/cmf/cmf001/y/get/setting/csvbase").done((lstData: Array<viewmodel.Setting>) => {
+			ajax("screen/com/cmf/cmf001/y/get/settings/csvbase")
+			.done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
 				dfd.resolve();
@@ -133,9 +89,9 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 	
 		updateMode(){
 			let self = this;
-			ajax("com", "screen/com/cmf/cmf001/y/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
+			ajax("com", "screen/com/cmf/cmf001/y/get/setting/" + self.selectedCode())
+			.done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
-				self.setLayout(infoData.itemNoList);
 				self.isNewMode(false);
 				self.checkError();
 			});
@@ -150,30 +106,15 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 			let self = this;
 			self.settingCode(info.code);
 			self.settingName(info.name);
-			self.importDomain(info.domain);
-			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
-			//self.layoutItemNoList(info.itemNoList);
 		}
 
-		setLayout(itemNoList: number[]){
+		uploadCsv() {
 			let self = this;
-			if(itemNoList.length > 0){
-				let condition = {
-					settingCode: self.settingCode(),
-					importingDomainId: self.importDomain(),
-					itemNoList: itemNoList};
-				ajax("screen/com/cmf/cmf001/y/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
-					self.layout(layoutItems);
-				});
-			}else{
-				self.layout([]);
-			}
 		}
 
 		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
-	
 		save(){
 			let self = this;
 			self.checkError();
@@ -184,11 +125,8 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 						__viewContext.user.companyId,
 						self.settingCode(),
 						self.settingName(),
-						self.importDomain(),
-						self.importMode(),
 						self.itemNameRow(),
-						self.importStartRow(),
-						self.layoutItemNoList()),
+						self.importStartRow())
 				};
 				ajax("screen/com/cmf/cmf001/y/save", saveContents).done(() => {
 					info(nts.uk.resource.getMessage("Msg_15", []));
@@ -199,12 +137,9 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		}
 
 		canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
-	
 		remove(){
 			let self = this;
 			let target = {code: self.selectedCode()};
-	
-			
 	
 	        ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
 	            this.$ajax("exio/input/setting/remove", target).done(() => {
@@ -214,42 +149,15 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 	            });
 	        });
 		}
-
-		selectLayout() {
-			let self = this;
-			setShared('CMF001DParams', {
-					domainId: self.importDomain(),
-					selectedItems: self.layoutItemNoList()
-			}, true);
-	
-			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
-				// ダイアログを閉じたときの処理
-				if(!getShared('CMF001DCancel')){
-					let ItemNoList: string[] = getShared('CMF001DOutput')
-					console.log("closed: " + ItemNoList)
-					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
-				}
-			});
-		}
-
+		
 		gotoDetailSetting() {
-			request.jump("../c/index.xhtml", {
-				settingCode: this.settingCode(),
-				domainId: this.importDomain()
+			request.jump("../z/index.xhtml", {
+				settingCode: this.settingCode()
+				settingName: this.settingName()
 			});
-		}
-	
-		removeItem(target){
-			let self = this;
-			self.layoutItemNoList(self.layoutItemNoList().filter(function(itemNo){
-				return itemNo !== target;
-			}))
 		}
 	}
 
-
-
-	
 	export class Setting {
 		code: string;
 		name: string;
@@ -264,41 +172,19 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		companyId: string;
 		code: string;
 		name: string;
-		domain: number;
-		mode: number;
 		itemNameRow: number;
 		importStartRow: number;
-		itemNoList: Array<number>;
 	
-		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
+		constructor(companyId: string, code: string, name: string, itemNameRow: number, importStartRow: number) {
 			this.companyId = companyId;
 			this.code = code;
 			this.name = name;
-			this.domain = domain;
-			this.mode = mode;
 			this.itemNameRow = itemNameRow;
 			this.importStartRow = importStartRow;
-			this.itemNoList = itemNoList;
 		}
 	
 		static new(){
-			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, null, [])
-		}
-	}
-	
-	export class Layout {
-		itemNo: number;
-		name: string;
-		required: boolean;
-		type: string;
-		source: string;
-	
-		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string) {
-			this.itemNo = itemNo;
-			this.name = name;
-			this.required = required;
-			this.type = type;
-			this.source = source;
+			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null)
 		}
 	}
 }

@@ -1,6 +1,5 @@
 package nts.uk.screen.com.app.cmf.cmf001.b.get;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,20 +29,13 @@ public class ExternalImportSettingDto {
 	/** 受入設定名称 */
 	private String name;
 
-	/** 受入ドメインID */
-	private int domain;
-
-	/** 受入モード */
-	private int mode;
-
 	/** CSVの項目名取得行 */
 	private int itemNameRow;
 
 	/** CSVの取込開始行 */
 	private int importStartRow;
-
-	/** レイアウト項目リスト */
-	private List<Integer> itemNoList;
+	
+	private List<ImportDomainDto> domains;
 
 	public static interface RequireMerge extends
 		ExternalImportSetting.RequireMerge{
@@ -51,28 +43,27 @@ public class ExternalImportSettingDto {
 
 	public static ExternalImportSettingDto fromDomain(ExternalImportSetting setting) {
 
-		DomainImportSetting domainSetting = setting.getDomainSettings().stream().findFirst().get();
+		List<ImportDomainDto> domains = setting.getDomainSettings().stream()
+			.map(ds -> new ImportDomainDto(ds.getDomainId().value, ds.getAssembly().getAllItemNo()))
+			.collect(Collectors.toList());
 		
 		return new ExternalImportSettingDto(
 				setting.getCompanyId(),
 				setting.getCode().toString(),
 				setting.getName().toString(),
-				domainSetting.getDomainId().value,
-				domainSetting.getImportingMode().value,
 				setting.getCsvFileInfo().getItemNameRowNumber().hashCode(),
 				setting.getCsvFileInfo().getImportStartRowNumber().hashCode(),
-				domainSetting.getAssembly().getMapping().getMappings().stream()
-				.map(m -> m.getItemNo())
-				.collect(Collectors.toList()));
+				domains);
 	}
 
 	public ExternalImportSetting toDomain() {
-		DomainImportSetting domainSetting = new DomainImportSetting(
-			ImportingDomainId.valueOf(domain),
-			ImportingMode.DELETE_RECORD_BEFOREHAND,
-			ExternalImportAssemblyMethod.create(itemNoList));
-		Map<ImportingDomainId, DomainImportSetting> domainSettings = new HashMap<>();
-		domainSettings.put(ImportingDomainId.valueOf(domain), domainSetting);
+		Map<ImportingDomainId, DomainImportSetting> domainSettings = this.domains.stream()
+			.map(d -> new DomainImportSetting(
+				ImportingDomainId.valueOf(d.getDomainId()),
+				ImportingMode.DELETE_RECORD_BEFOREHAND,
+				ExternalImportAssemblyMethod.create(d.getItemNoList())))
+			.collect(Collectors.toMap(DomainImportSetting::getDomainId, d -> d));
+		
 		return new ExternalImportSetting(
 				ImportSettingBaseType.DOMAIN_BASE,
 				AppContexts.user().companyId(),

@@ -12,9 +12,7 @@ import javax.ws.rs.core.MediaType;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingDto;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingListItemDto;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetExternalImportSetting;
-import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayout;
-import nts.uk.screen.com.app.cmf.cmf001.b.save.Cmf001bSaveCommand;
-import nts.uk.screen.com.app.cmf.cmf001.b.save.Cmf001bSaveCommandHandler;
+
 
 @Path("screen/com/cmf/cmf001/y")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,15 +20,9 @@ public class Cmf001yWebService {
 	
 	@Inject
 	private GetExternalImportSetting setting;
-	
-	@Inject
-	private GetLayout layout;
-	
-	@Inject
-	private Cmf001bSaveCommandHandler saveCmd;
-	
+
 	@POST
-	@Path("get/setting/csvbase")
+	@Path("get/settings/csvbase")
 	public List<ExternalImportSettingListItemDto> getAll() {
 		List<ExternalImportSettingListItemDto> result = setting.getCsvBase();
 		return result;
@@ -41,11 +33,5 @@ public class Cmf001yWebService {
 	public ExternalImportSettingDto get(@PathParam("settingCode") String settingCode) {
 		ExternalImportSettingDto result = setting.get(settingCode);
 		return result;
-	}
-
-	@POST
-	@Path("save")
-	public void save(Cmf001bSaveCommand command) {
-		saveCmd.handle(command);
 	}
 }

@@ -113,7 +113,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			ajax("screen/com/cmf/cmf001/b/get/setting/domainbase").done((lstData: Array<viewmodel.Setting>) => {
+			ajax("screen/com/cmf/cmf001/b/get/settings/domainbase").done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
 				dfd.resolve();
@@ -135,7 +135,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
-				self.setLayout(infoData.itemNoList);
+				self.setLayout(infoData.domains[0].itemNoList);
 				self.isNewMode(false);
 				self.checkError();
 			});
@@ -150,11 +150,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			self.settingCode(info.code);
 			self.settingName(info.name);
-			self.importDomain(info.domain);
 			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
-			//self.layoutItemNoList(info.itemNoList);
+
+			self.importDomain(info.domains[0].domainId);
+			self.layoutItemNoList(info.domains[0].itemNoList);
 		}
 
 		setLayout(itemNoList: number[]){
@@ -264,25 +265,29 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		companyId: string;
 		code: string;
 		name: string;
-		domain: number;
 		mode: number;
 		itemNameRow: number;
 		importStartRow: number;
-		itemNoList: Array<number>;
+		domains:[];
 	
 		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
 			this.companyId = companyId;
 			this.code = code;
 			this.name = name;
-			this.domain = domain;
 			this.mode = mode;
 			this.itemNameRow = itemNameRow;
 			this.importStartRow = importStartRow;
-			this.itemNoList = itemNoList;
+			
+			this.domains = [
+				{
+					domainId:domain
+					itemNoList:itemNoList
+				}
+			]);
 		}
 	
 		static new(){
-			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, null, [])
+			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, [])
 		}
 	}
 	

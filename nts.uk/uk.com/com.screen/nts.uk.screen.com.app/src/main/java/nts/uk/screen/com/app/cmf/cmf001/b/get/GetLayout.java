@@ -63,7 +63,7 @@ public class GetLayout {
 		if (settingOpt.isPresent()) {
  			val setting = settingOpt.get();
 			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId());
-			return getSaved(require, query, domainSetting.get());
+			return getSaved(require, query, domainSetting);
 		}
 		else {
 			return getAllImportables(require, query);
@@ -79,7 +79,7 @@ public class GetLayout {
 		if (settingOpt.isPresent()) {
  			val setting = settingOpt.get();
 			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId());
-			results.addAll(getSaved(require, query, domainSetting.get()).stream()
+			results.addAll(getSaved(require, query, domainSetting).stream()
 					.filter(s -> query.getItemNoList().contains(s.getItemNo()))
 					.collect(toList()));
 		}
@@ -116,8 +116,11 @@ public class GetLayout {
 	private List<ExternalImportLayoutDto> getSaved(
 			GetLayout.Require require,
 			GetLayoutParam query,
-			DomainImportSetting setting) {
-		return toLayouts(require, query, setting.getAssembly().getMapping().getMappings());
+			Optional<DomainImportSetting> setting) {
+		List<ImportingItemMapping> mappings = setting.isPresent()
+			? setting.get().getAssembly().getMapping().getMappings()
+			: new ArrayList<>();
+		return toLayouts(require, query, mappings);
 	}
 	
 	private List<ExternalImportLayoutDto> toLayouts(GetLayout.Require require, GetLayoutParam query,

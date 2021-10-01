@@ -15,6 +15,10 @@
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportName
 					nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber
 				</com:ValidatorScript>
+				<com:EnumScript>
+					nts.uk.ctx.exio.dom.input.domain.ImportingDomainId
+					nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode 
+				</com:EnumScript>
 			</ui:define>
 
 			<ui:define name="content">
@@ -74,16 +78,16 @@
 									constraint: ['ExternalImportName']}" />
 							</div>
 							<div class="item-name-row">
-								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの項目名の行</div>
-								<input class="check-target rowNumber" id="itemNameRow" data-bind="ntsTextEditor: {
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの項目名の行</div>
+								<input class="check-target" id="itemNameRow" data-bind="ntsNumberEditor: {
 									name: '項目名の行', 
 									value: itemNameRow,  
 									required: true, 
 									constraint: ['ExternalImportRowNumber']}" />
 							</div>
 							<div class="import-start-row">
-								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの受入開始行</div>
-								<input class="check-target rowNumber" id="importStartRow" data-bind="ntsTextEditor: {
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの受入開始行</div>
+								<input class="check-target" id="importStartRow" data-bind="ntsNumberEditor: {
 									name: '受入開始行', 
 									value: importStartRow,  
 									required: true, 
@@ -91,17 +95,13 @@
 							</div>
 						</div>
 						
-						<div class="csvUpload">
+						<div class="uploadCsv">
+							<div class="divi">受入CSV</div><hr />
+							<button class="normal" id="bntUploadCsv" data-bind="text: 'CSVレイアウト取込'"></button>
+						</div>
+						<div class="uploadCsv">
 							<div class="divi">受入レイアウト</div><hr />
-							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
-							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting, enable: canEditDetail" ></button>
-							<table class="check-target" id="layout-list" data-bind="ntsGridList: {
-								height: '300px',
-								dataSource: layout,
-								primaryKey: 'itemNo',
-								columns: layoutListColumns,
-								value: selectedItem}">
-							</table>
+							<button class="normal" id="bntOpenDetail" data-bind="text: '詳細設定', click: gotoDetailSetting, enable: canEditDetail"></button>
 						</div>
 					</div>
 				</div>
