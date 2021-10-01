@@ -502,8 +502,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				Optional.of(DeductionAtr.Deduction));
 		
 		AttendanceTime result = new AttendanceTime(0);
-		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
-			result = withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
+		if(flexTime.getFlexTime().getCalcTime().greaterThan(0)) {
+			result = withinTime.minusMinutes(flexTime.getFlexTime().getCalcTime().valueAsMinutes());
 		}
 		else {
 			result = withinTime;
