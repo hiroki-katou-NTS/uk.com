@@ -674,7 +674,7 @@ export class Kdws03AComponent extends Vue {
     //メニュー画面を開く
     public openMenu() {
         let self = this;
-        let authory: any = _.filter(self.paramData.authorityDto, (x) => x.functionNo == 8 );
+        let authory: any = _.find(self.paramData.authorityDto, (x) => x.functionNo == 8 ); 
         if (self.displayFormat == '0') {//個人別モード
             self.$modal('kdws03amenu',
                 {
@@ -686,7 +686,7 @@ export class Kdws03AComponent extends Vue {
                     timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
                     selfConfirm: this.paramData.showPrincipal,
                     closureDate: self.dateRanger.startDate,
-                    authoryView: authory.availability
+                    authoryView: authory.availability,
                 }).then((param: any) => {
                     if (param != undefined && param.openB) {
                         //open B
@@ -718,7 +718,7 @@ export class Kdws03AComponent extends Vue {
 
                 });
         } else {//日付別モード
-            this.$modal('kdws03c').then((paramOpenB: any) => {
+            self.$modal('kdws03c').then((paramOpenB: any) => {
                 if (paramOpenB != undefined && paramOpenB.openB) {
                     //open B
                     let rowData = null;

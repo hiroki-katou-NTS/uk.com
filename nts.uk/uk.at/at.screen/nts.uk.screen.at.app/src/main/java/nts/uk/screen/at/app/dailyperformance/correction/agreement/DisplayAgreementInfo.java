@@ -10,13 +10,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementExcessInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.standardtime.AgreementMonthSettingAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
@@ -40,6 +38,8 @@ public class DisplayAgreementInfo {
 	private static String ALARM = "state-alarm text-alarm";
 	
 	private static String EXCEPTION = "state-exception";
+	
+	private static String EX_SPECIAL = "state-ex-special text-ex-special";
 	
 	private static final String FORMAT_HH_MM = "%d:%02d";
 	
@@ -147,6 +147,8 @@ public class DisplayAgreementInfo {
 				|| value == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM.value) {
 			// text alarm
 			return ALARM;
+		} else if(value == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY.value) {
+			return EX_SPECIAL;
 		} else {
 			return "";
 		}

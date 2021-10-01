@@ -116,17 +116,20 @@ export class KdwS03GComponent extends Vue {
     public processState(cssAgree: any, cssFrequency: any) {
         let self = this;
         let isError: boolean, isException: boolean, isAlarm: boolean, 
-            isErrorFre: boolean, isAlarmFre: boolean;    
+            isErrorFre: boolean, isAlarmFre: boolean, isSpecial: boolean;    
 
         cssAgree === 'state-excepiton' ? isException = true : isException = false;
         cssAgree === 'state-error text-error' ? isError = true : isError = false;
         cssAgree === 'state-alarm text-alarm' ? isAlarm = true : isAlarm = false;
+        cssAgree === 'state-ex-special text-ex-special' ? isSpecial = true : isSpecial = false;
         self.time36CssAgree = {
             'state-exception' : isException,
             'state-error' : isError,	
-            'state-alarm' : isAlarm,	
+            'state-alarm' : isAlarm,
+            'state-ex-special': isSpecial,	
             'text-error' : isError,
             'text-alarm' : isAlarm,
+            'text-ex-special': isSpecial,
         };
        
         cssFrequency === 'state-error text-error' ? isErrorFre = true : isErrorFre = false;
