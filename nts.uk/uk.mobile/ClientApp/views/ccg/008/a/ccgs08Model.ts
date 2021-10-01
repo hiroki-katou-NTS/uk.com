@@ -121,7 +121,7 @@ export class WidgetDisplayItemType {
 
 class YearlyHolidayDto {
   public afterGrantDateInfo: DateInfoDto;
-  public grantedDaysNo: Number;
+  public grantedDaysNo: number;
   public nextGrantDateInfo: DateInfoDto;
   public nextGrantDate: string;
   public attendanceRate: Number;

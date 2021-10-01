@@ -220,8 +220,8 @@ export class Ccg008AComponent extends Vue {
         // next grantDate
         if (yearlyHld && yearlyHld.nextGrantDate) {
             let grantDays = 0;
-            if (yearlyHld.nextGrantDateInfo && yearlyHld.nextGrantDateInfo.day) {
-                grantDays = yearlyHld.nextGrantDateInfo.day;
+            if (yearlyHld.nextGrantDateInfo && yearlyHld.grantedDaysNo) {
+                grantDays = yearlyHld.grantedDaysNo;
             }
             results.push({
                 name: 'CCGS08_16', 
