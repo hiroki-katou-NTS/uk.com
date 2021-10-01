@@ -8,9 +8,11 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffJobTitleHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffWorkplaceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.CardNumberCanonicalaization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.OccurenceHolidayCanonicalizationBase;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
@@ -69,12 +71,14 @@ public interface DomainCanonicalization {
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethodRequire,
 		IndependentCanonicalization.RequireCanonicalize,
+		WorkplaceCanonicalization.RequireCanonicalize,
 		EmployeeIndependentCanonicalization.RequireCanonicalize,
 		EmployeeBasicCanonicalization.RequireCanonicalize,
 		EmployeeHistoryCanonicalization.RequireCanonicalize,
 		AffJobTitleHistoryCanonicalization.RequireCanonicalize,
 		AffWorkplaceHistoryCanonicalization.RequireCanonicalize,
-		OccurenceHolidayCanonicalizationBase.RequireCanonicalize {
+		OccurenceHolidayCanonicalizationBase.RequireCanonicalize, 
+		CardNumberCanonicalaization.RequireCanonicalize{
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
 
@@ -82,11 +86,13 @@ public interface DomainCanonicalization {
 	
 	public static interface RequireAdjsut extends
 		IndependentCanonicalization.RequireAdjust,
+		WorkplaceCanonicalization.RequireAdjust,
 		EmployeeBasicCanonicalization.RequireAdjust,
 		EmployeeHistoryCanonicalization.RequireAdjust,
 		AffJobTitleHistoryCanonicalization.RequireAdjust,
 		AffWorkplaceHistoryCanonicalization.RequireAdjust,
-		OccurenceHolidayCanonicalizationBase.RequireAdjust {
+		OccurenceHolidayCanonicalizationBase.RequireAdjust, 
+		CardNumberCanonicalaization.RequireAdjust{
 		
 	}
 }

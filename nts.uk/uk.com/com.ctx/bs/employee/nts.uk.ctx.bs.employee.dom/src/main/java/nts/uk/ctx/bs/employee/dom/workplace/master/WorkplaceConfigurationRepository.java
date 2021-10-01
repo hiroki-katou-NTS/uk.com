@@ -19,6 +19,8 @@ public interface WorkplaceConfigurationRepository {
 	
 	public void updateWorkplaceConfig(WorkplaceConfiguration workplaceConfig); 
 	
+	public void deleteAll(String companyId);
+	
 	public void deleteWorkplaceConfig(String companyId, String workplaceHistoryId);
 	
 	public Optional<WorkplaceConfiguration> findByDate(String companyID, GeneralDate date);
