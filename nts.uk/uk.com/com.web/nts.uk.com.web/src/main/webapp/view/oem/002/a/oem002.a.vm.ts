@@ -84,7 +84,7 @@ module nts.uk.com.view.oem002.a {
     public processSave(): void {
       const vm = this;
       vm.$validate().then(isValid => {
-        if (isValid) {
+        if (isValid && !nts.uk.ui.errors.hasError()) {
           vm.$blockui("grayout");
           const param = EquipmentInformationDto.createFromData(vm.selectedEquipmentInfo());
           const code = param.code;
