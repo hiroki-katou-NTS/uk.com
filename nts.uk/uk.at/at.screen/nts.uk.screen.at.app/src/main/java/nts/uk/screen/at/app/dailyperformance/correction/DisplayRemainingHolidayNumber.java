@@ -180,7 +180,7 @@ public class DisplayRemainingHolidayNumber {
             }
 			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(),
 					remainNum.getAnnualLeaveRemainNumberExport() != null
-							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() : 0,
+							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay() : 0,
 					yearHourRemain);
 		} else {
 			return new YearHolidaySettingDto(false, false, null, null);

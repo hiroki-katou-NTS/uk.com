@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  * @author masaaki_jinno
  *
  */
+@Getter
 @AllArgsConstructor
 public class LeaveOverNumber {
 
