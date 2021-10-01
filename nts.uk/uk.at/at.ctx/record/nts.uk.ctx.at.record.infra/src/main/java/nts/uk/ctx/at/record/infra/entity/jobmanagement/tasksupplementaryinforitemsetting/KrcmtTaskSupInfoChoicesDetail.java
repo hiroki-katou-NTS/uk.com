@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_TAST_SUP_INFO_CHOICES_DETAIL")
+@Table(name = "KRCMT_TASK_SUP_INFO_CHOICES_DETAIL")
 public class KrcmtTaskSupInfoChoicesDetail extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
