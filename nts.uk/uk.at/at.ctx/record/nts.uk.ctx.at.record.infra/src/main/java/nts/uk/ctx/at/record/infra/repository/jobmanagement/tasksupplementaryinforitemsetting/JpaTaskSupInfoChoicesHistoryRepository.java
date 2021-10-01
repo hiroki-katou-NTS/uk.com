@@ -121,4 +121,9 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 				.setParameter("refDate", refDate).getList(a -> a.toDomain());
 	}
 
+	@Override
+	public Optional<TaskSupInfoChoicesDetail> get(String historyId, int itemId, ChoiceCode code) {
+		return this.queryProxy().find(new KrcmtTaskSupInfoChoicesDetailPk(historyId, code.v(), itemId), KrcmtTaskSupInfoChoicesDetail.class).map(m -> m.toDomain());
+	}
+
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
@@ -63,4 +64,7 @@ public interface TaskSupInfoChoicesHistoryRepository {
 	 * @output List<作業補足情報の選択肢詳細>
 	 */
 	List<TaskSupInfoChoicesDetail> get(String companyId, int itemId, GeneralDate refDate);
+	
+	
+	Optional<TaskSupInfoChoicesDetail> get(String historyId, int itemId, ChoiceCode code);
 }
