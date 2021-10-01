@@ -80,15 +80,15 @@ public class ReturnStateBeforeReflectApp {
 		if (histOpt.get().getEditState().isPresent()) {
 			// 日別勤怠(work）の編集状態を元に戻す
 			val lstResult = new ArrayList<EditStateOfDailyAttd>();
-			domainDaily.getEditState()
-					.removeIf(x -> x.getAttendanceItemId() == editStateInDom.get().getAttendanceItemId());
+			domainDaily.getEditState().removeIf(x -> x.getAttendanceItemId() == histOpt.get().getAttendanceId());
 			lstResult.addAll(domainDaily.getEditState());
-			editStateInDom.get().setEditStateSetting(histOpt.get().getEditState().get().getEditStateSetting());
-			lstResult.add(editStateInDom.get());
+
+			lstResult.add(new EditStateOfDailyAttd(histOpt.get().getAttendanceId(),
+					histOpt.get().getEditState().get().getEditStateSetting()));
 			domainDaily.setEditState(lstResult);
 		} else {
 			// 日別勤怠(work）の編集状態から該当の編集状態を削除する
-			domainDaily.getEditState()
+			if(editStateInDom.isPresent()) domainDaily.getEditState()
 					.removeIf(x -> x.getAttendanceItemId() == editStateInDom.get().getAttendanceItemId());
 		}
 		return domainDaily;
