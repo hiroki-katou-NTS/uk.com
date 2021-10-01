@@ -38,7 +38,7 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 	public ReNumAnnLeaReferenceDateImport getReferDateAnnualLeaveRemainNumber(String employeeID, GeneralDate date) {
 		ReNumAnnLeaReferenceDateExport reNum = this.annLeavePub.getReferDateAnnualLeaveRemainNumber(employeeID, date);
 		return new ReNumAnnLeaReferenceDateImport(
-											mapNumber(reNum.getAnnualLeaveRemainNumberExport()),
+											mapNumber(reNum.getAnnualLeaveRemainNumberExport().getRemainNumberWithMinusExport()),
 											mapLeaveGrants(reNum.getAnnualLeaveGrantExports()),
 											mapManageInfors(reNum.getAnnualLeaveManageInforExports()));
 	}
@@ -88,17 +88,14 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 											number.getAnnualLeaveGrantPreDay(), 
 											number.getAnnualLeaveGrantPreTime(),
 											number.getNumberOfRemainGrantPre(), 
-											number.getTimeAnnualLeaveWithMinusGrantPre(), 
+											number.getNumberOfRemainGrantPre(), 
 											number.getAnnualLeaveGrantPostDay(),
 											number.getAnnualLeaveGrantPostTime(), 
 											number.getNumberOfRemainGrantPost(), 
-											number.getTimeAnnualLeaveWithMinusGrantPost(),
-											number.getAnnualLeaveGrantDay(),
-											number.getAnnualLeaveGrantTime(),
+											number.getTimeAnnualLeaveGrantPost(),
 											number.getNumberOfRemainGrant(),
-											number.getTimeAnnualLeaveWithMinusGrant(),
-											number.getAttendanceRate(),
-											number.getWorkingDays());
+											number.getTimeAnnualLeaveGrant()
+											);
 	}
 
 }

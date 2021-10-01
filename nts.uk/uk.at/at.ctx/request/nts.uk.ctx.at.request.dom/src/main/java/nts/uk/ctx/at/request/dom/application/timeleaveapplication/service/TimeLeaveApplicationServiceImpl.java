@@ -353,8 +353,8 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // 基準日時点の年休残数を取得する
             ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, baseDate);
             if (reNumAnnLeave != null && reNumAnnLeave.getAnnualLeaveRemainNumberExport() != null) {
-                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() != null) {
-                    timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
+                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay() != null) {
+                    timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantPreDay());
                 }
                 int yearHourRemain = 0;
                 for (int i = 0; i < reNumAnnLeave.getAnnualLeaveGrantExports().size(); i++) {
