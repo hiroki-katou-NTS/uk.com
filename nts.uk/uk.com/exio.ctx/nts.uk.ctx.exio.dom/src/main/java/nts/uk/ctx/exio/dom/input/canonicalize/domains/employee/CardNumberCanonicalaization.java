@@ -122,7 +122,10 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 	}
 
 	@Override
-	public AtomTask adjust(RequireAdjsut require, List<AnyRecordToChange> recordsToChange,
+	public AtomTask adjust(
+			RequireAdjsut require,
+			ExecutionContext context,
+			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		
 		return AtomTask.of(() -> {
