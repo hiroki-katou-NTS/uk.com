@@ -538,7 +538,10 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
             if (i > maxLength) break;
             destination.append(source.charAt(i - 1));
             if(source.length()>4){
-                if (i == 4 || i == 8) destination.append("\n");
+                if (i == 4) destination.append("\n");
+                if(source.length()>8){
+                    if (i == 8) destination.append("\n");
+                }
             }
         }
         return destination.toString();
