@@ -97,6 +97,7 @@ module nts.uk.ui.at.kdw013.a {
         scrollTime: KnockoutObservable<number> = ko.observable(420);
         slotDuration: KnockoutObservable<number> = ko.observable(30);
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
+        isShowBreakTime: KnockoutObservable<boolean> = ko.observable(false);
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
@@ -578,6 +579,10 @@ module nts.uk.ui.at.kdw013.a {
     
         }
 
+        equipmentInput(){
+            console.log('equipmentInput click');
+        }
+
         saveData() {
             const vm = this;
             const { events, dateRange } = vm;
@@ -840,32 +845,41 @@ module nts.uk.ui.at.kdw013.a {
 
         @component({
             name: 'kdw013-department',
-            template: `<h3 data-bind="i18n: 'KDW013_4'"></h3>
-            <div data-bind="ntsComboBox: {
-                name: $component.$i18n('KDW013_5'),
-                options: $component.departments,
-                visibleItemsCount: 14,
-                value: $component.department,
-                editable: true,
-                selectFirstIfNull: true,
-                optionsValue: 'workplaceId',
-                optionsText: 'wkpDisplayName',
-                columns: [
-                    { prop: 'workplaceCode', length: 4 },
-                    { prop: 'wkpDisplayName', length: 10 }
-                ]
-            }"></div>
-            <ul class="list-employee" data-bind="foreach: { data: $component.employees, as: 'item' }">
-                <li class="item" data-bind="
-                    click: function() { $component.selectEmployee(item.employeeId) },
-                    timeClick: -1,
-                    css: {
-                        'selected': ko.computed(function() { return item.employeeId === ko.unwrap($component.params.employee); })
-                    }">
-                    <div data-bind="text: item.employeeCode"></div>
-                    <div data-bind="text: item.employeeName"></div>
-                </li>
-            </ul>`
+            template: `
+            <div data-bind="ntsAccordion: { active: 0}">
+                <h3>
+                    <label data-bind="i18n: 'KDW013_4'"></label>
+                </h3>
+
+                <div class='fc-employees'>
+                        <div data-bind="ntsComboBox: {
+                        name: $component.$i18n('KDW013_5'),
+                        options: $component.departments,
+                        visibleItemsCount: 14,
+                        value: $component.department,
+                        editable: true,
+                        selectFirstIfNull: true,
+                        optionsValue: 'workplaceId',
+                        optionsText: 'wkpDisplayName',
+                        columns: [
+                            { prop: 'workplaceCode', length: 4 },
+                            { prop: 'wkpDisplayName', length: 10 }
+                        ]
+                    }"></div>
+                <ul class="list-employee" data-bind="foreach: { data: $component.employees, as: 'item' }">
+                    <li class="item" data-bind="
+                        click: function() { $component.selectEmployee(item.employeeId) },
+                        timeClick: -1,
+                        css: {
+                            'selected': ko.computed(function() { return item.employeeId === ko.unwrap($component.params.employee); })
+                        }">
+                        <div data-bind="text: item.employeeCode"></div>
+                        <div data-bind="text: item.employeeName"></div>
+                    </li>
+                </ul>
+                </div>
+            </div> 
+            `
         })
         export class EmployeeDepartmentComponent extends ko.ViewModel {
             department: KnockoutObservable<string> = ko.observable('');
@@ -996,6 +1010,62 @@ module nts.uk.ui.at.kdw013.a {
         }
     }
 
+    export module datePicker {
+        type Kdw013DatePickerParams = {
+            initialDate: Date | KnockoutObservable<Date>;
+            firstDay: KnockoutObservable<number>;
+        };
+
+        @component({
+            name: 'kdw013-date-picker',
+            template: `<div id='fc-date-picker'></div>
+            <style rel="stylesheet">
+                .fc-date-picker{
+                    height:240px;
+                    padding: 0 !important;
+                }
+                .fc-date-picker .nts-input {
+                    display: none;
+                }
+            </style>
+        `
+        })
+        export class Kdw013DatePickerComponent extends ko.ViewModel {
+            constructor(public params: Kdw013DatePickerParams) {
+                $('#fc-date-picker').fcdatepicker({
+                language: 'ja-JP',
+                format: "YYYY/MM/DD",
+                date: params.initialDate(),
+                autoShow: true,
+                weekStart: params.firstDay(),
+                inline: true
+            });
+                params.firstDay.subscribe(value => {
+                    if (value == undefined) {
+                        return;
+                    }
+                    $('#fc-date-picker').fcdatepicker('destroy');
+                    $('#fc-date-picker').fcdatepicker({
+                                    language: 'ja-JP',
+                                    format: "YYYY/MM/DD",
+                                    date: params.initialDate(),
+                                    autoShow: true,
+                                    weekStart: value,
+                                    inline: true
+                                });
+                });
+                ko.utils.registerEventHandler('#fc-date-picker', "change", function(event) {
+                    if(!moment(vm.initialDate()).isSame(moment($('#fc-date-picker').fcdatepicker('getDate'))))
+                   vm.initialDate($('#fc-date-picker').fcdatepicker('getDate'));
+                });
+                params.initialDate.subscribe((value) => {
+                    $('#fc-date-picker').fcdatepicker('setDate', value);
+                });
+                super();
+            }
+        }
+    }
+
     export module approved {
         type Kdw013ApprovedParams = {
             mode: KnockoutObservable<boolean>;
@@ -1005,13 +1075,21 @@ module nts.uk.ui.at.kdw013.a {
 
         @component({
             name: 'kdw013-approveds',
-            template: `<h3 data-bind="i18n: 'KDW013_6'"></h3>
-            <ul data-bind="foreach: { data: $component.params.confirmers, as: 'item' }">
-                <li class="item">
-                    <div data-bind="text: item.code"></div>
-                    <div data-bind="text: item.name"></div>
-                </li>
-            </ul>`
+            template: `
+             <div data-bind="ntsAccordion: { active: 0}">
+                <h3>
+                    <label data-bind="i18n: 'KDW013_6'"></label>
+                </h3>
+                <div class='fc-employees'>
+                    <ul data-bind="foreach: { data: $component.params.confirmers, as: 'item' }">
+                        <li class="item">
+                            <div data-bind="text: item.code"></div>
+                            <div data-bind="text: item.name"></div>
+                        </li>
+                   </ul>
+                </div>
+            </div>
+           `
         })
         export class Kdw013ApprovedComponent extends ko.ViewModel {
             constructor(public params: Kdw013ApprovedParams) {
@@ -1023,25 +1101,92 @@ module nts.uk.ui.at.kdw013.a {
     export module event {
         @component({
             name: 'kdw013-events',
-            template: `<h3 data-bind="i18n: 'KDW013_7'"></h3>
-            <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
-                <li class="title" data-bind="attr: {
-                    'data-id': _.get(item.extendedProps, 'relateId', ''),
-                    'data-color': item.backgroundColor
-                }">
-                    <div data-bind="style: {
-                        'background-color': item.backgroundColor
-                    }"></div>
-                    <div>
-                        <label  class='limited-label' style='width:100%'  data-bind='text: item.title'>
-                        </label>
-                    </div>
-                </li>
-            </ul>`
+            template: `
+            <div class='edit-popup'>
+                    <ul>
+                        <li data-bind="i18n: 'KDW013_65' ,click:$component.openFdialog"></li>
+                        <li data-bind="i18n: 'KDW013_66' ,click:$component.removeFav"></li>
+                    </ul>
+            </div>
+            <div data-bind="ntsAccordion: { active: 0}">
+                <h3>
+                    <label data-bind="i18n: 'KDW013_63'"></label>
+                </h3>
+                <div class='fc-events'>
+                    <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
+                        <li class="title" data-bind="attr: {
+                            'data-id': _.get(item.extendedProps, 'relateId', ''),
+                            'data-color': item.backgroundColor
+                        }">
+                            <div data-bind="style: {
+                                'background-color': item.backgroundColor
+                            }"></div>
+                            <div style="display: flex;">
+                                <label  class='limited-label' style='width:90%;cursor: pointer;'  data-bind='text: item.title'>
+                                </label>
+                                <i data-bind="ntsIcon: { no: 2, width: 20, height: 25  },click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'relateId', '')) }">
+                                </i>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <style rel="stylesheet">
+                .fc-container .fc-events .edit-popup{
+                    visibility: hidden;
+                    position: fixed;
+                    z-index: 99;
+                    box-shadow: 1px 1px 5px 2px #888;
+                    background-color: #fff;
+                    padding: 0 10px;
+                }
+                .fc-container .fc-events .edit-popup ul li{
+                    cursor: pointer;
+                    padding: 5px 5px;
+                }
+                .fc-container .fc-events .edit-popup ul li:hover{
+                    background: #CDE2CD;
+                    color: #0086EA ;
+                }
+                .fc-container .fc-events .show {
+                    visibility: visible;
+                }
+            </style>
+           `
         })
         export class Kdw013EventComponent extends ko.ViewModel {
             constructor(public params: EventParams) {
                 super();
+            }
+            
+            editFav(e,id) {
+                let editPopup = $('.fc-events .edit-popup');
+                let pst = e.target;
+                if(!pst){
+                   editPopup.removeClass('show'); 
+                }
+                const { top, left, height, width } = pst.getBoundingClientRect();
+                editPopup.addClass('show');
+                editPopup.css({ "top": top, "left": left+width });
+                editPopup.data('relateId', id);
+            }
+            
+            removeFav(data) {
+                const vm = this;
+                let id = $('.fc-events .edit-popup').data('relateId');
+
+                let newArrays = _.filter(vm.params.items(), item => {
+                    return _.get(item, 'extendedProps.relateId') != $('.fc-events .edit-popup').data('relateId');
+                });
+
+                vm.params.items(newArrays);
+                $('.fc-events .edit-popup').removeClass('show');
+            }
+            
+            openFdialog() {
+                const vm = this;
+                $('.fc-events .edit-popup').removeClass('show');
+                console.log('open F');
             }
         }
 
