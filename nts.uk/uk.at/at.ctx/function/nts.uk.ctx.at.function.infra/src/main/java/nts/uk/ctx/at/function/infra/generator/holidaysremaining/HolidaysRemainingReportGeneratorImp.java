@@ -3673,40 +3673,57 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     }
 
     private int countJ(HolidayRemainingDataSource dataSource, HolidaysRemainingEmployee employee) {
-        int firstRow = 0;
-        if (!dataSource.getVariousVacationControl().isPauseItemHolidaySettingCompany()) {
-            return firstRow;
+        // 振休
+        Integer count = 0;
+        Integer first = 0;
+        NumberFormat df = new DecimalFormat("#0.0");
+        if (!checkJ1(dataSource, employee)) {
+
+            return count;
         }
         val holiday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getPause();
         boolean isPauseItem = holiday.isPauseItem();
         boolean isUndigestedPause = holiday.isUndigestedPause();
         boolean isNumberRemainingPause = holiday.isNumberRemainingPause();
+
         if (!isPauseItem) {
-            return firstRow;
+
+            return count;
         }
         int totalRows = 2;
-        val hdRemainingInfor = dataSource.getMapEmployees()
-                .get(employee.getEmployeeId()).getHolidayRemainingInfor();
+
+        val showI = checkTakeABreak_01(dataSource.getHolidaysRemainingManagement(),employee.getEmploymentCode());
+        val isShow41 = checkTakeABreak_02(dataSource.getHolidaysRemainingManagement());
+        val isShow51 = checkTakeABreak_03(dataSource.getHolidaysRemainingManagement());
+        val show1item = (isShow51 && !isShow41) ||(!isShow51 && isShow41);
+        val checkG = checkLimitHourlyHoliday(dataSource.getHolidaysRemainingManagement());
+
+        val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
         if (hdRemainingInfor == null) {
-            return firstRow + 2;
+            count += 2;
+            return count;
         }
+
         if (isUndigestedPause) {
 
             totalRows += 1;
         }
         if (isNumberRemainingPause) {
-
             totalRows += 1;
         }
+
         if (!employee.getCurrentMonth().isPresent()) {
-            return firstRow + totalRows;
+            count += totalRows;
+            return count;
         }
         val currentHolidayRemainLeft = hdRemainingInfor.getCurrentHolidayRemainLeft();
         // Current month
         if (currentHolidayRemainLeft == null) {
-            return firstRow + totalRows;
+            count += totalRows;
+            return count;
         }
-        return firstRow + totalRows;
+        count += totalRows;
+        return count;
     }
 
     private int countK(HolidayRemainingDataSource dataSource, HolidaysRemainingEmployee employee) {
