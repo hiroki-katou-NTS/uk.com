@@ -5,6 +5,10 @@ module nts.uk.com.view.oem001.a {
   @bean()
   export class ScreenModel extends ko.ViewModel {
 
+    mounted() {
+      $("#A1_5").focus();
+    }
+
     public openScreenOEM002(): void {
       const vm = this;
       vm.$jump("/view/oem/002/a/index.xhtml");
