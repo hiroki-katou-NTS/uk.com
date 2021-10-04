@@ -14,9 +14,7 @@ import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ExternalCode;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 

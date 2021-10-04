@@ -47,7 +47,7 @@ public class KsrdtTaskTsGroup extends ContractUkJpaEntity implements Serializabl
 	}
 
 	public KsrdtTaskTsGroup(TaskTimeZone timezone, String sId, GeneralDate date) {
-		this.pk = new KsrdtTaskTsGroupPk(sId, date, timezone.getCaltimeSpan().start(), timezone.getSupNo().v());
+		this.pk = new KsrdtTaskTsGroupPk(sId, date, timezone.getCaltimeSpan().start(), timezone.getSubNo().v());
 		this.cid = AppContexts.user().companyId();
 		this.endClock = timezone.getCaltimeSpan().end();
 	}

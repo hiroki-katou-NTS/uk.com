@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforit
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -44,18 +45,25 @@ public class KrcmtTaskSupInfoChoicesHist extends ContractCompanyUkJpaEntity impl
 		return this.pk;
 	}
 	
-	public KrcmtTaskSupInfoChoicesHist(TaskSupInfoChoicesHistory domain) {
+	public static List<KrcmtTaskSupInfoChoicesHist> toEntities(TaskSupInfoChoicesHistory domain) {
+		List<KrcmtTaskSupInfoChoicesHist> result = new ArrayList<>();
 		
+		result = domain.getDateHistoryItems().stream().map(m -> {
+			return new KrcmtTaskSupInfoChoicesHist(new KrcmtTaskSupInfoChoicesHistPK(domain.getItemId(), m.identifier()) , m.start(), m.end());
+		}).collect(Collectors.toList());
+		
+		return result;
 	}
 
-	public static List<DateHistoryItem> toDomain(List<KrcmtTaskSupInfoChoicesHist> entities) {
+	public TaskSupInfoChoicesHistory toDomain() {
+		
 		List<DateHistoryItem> dateHistoryItems = new ArrayList<>();
+		
+		dateHistoryItems.add(new DateHistoryItem(this.pk.histId, new DatePeriod(this.startDate, this.endDate)));
+		
+		TaskSupInfoChoicesHistory domain = new TaskSupInfoChoicesHistory(this.pk.manHrItemId, dateHistoryItems);
 
-		for (KrcmtTaskSupInfoChoicesHist hist : entities) {
-			dateHistoryItems.add(new DateHistoryItem(hist.pk.histId, new DatePeriod(hist.startDate, hist.endDate)));
-		}
-
-		return dateHistoryItems;
+		return domain;
 	}
 
 }

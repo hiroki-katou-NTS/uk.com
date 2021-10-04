@@ -20,6 +20,7 @@ import nts.uk.screen.at.app.kdw006.k.GetManHourRecordItemSpecifiedIDListParam;
 import nts.uk.screen.at.app.kdw006.k.GetWorkInforDetails;
 import nts.uk.screen.at.app.kdw006.k.GetWorkInforDetailsDto;
 import nts.uk.screen.at.app.kdw006.k.GetWorkInforDetailsInput;
+import nts.uk.screen.at.app.kdw006.k.GetWorkInforDetailsbyListInput;
 import nts.uk.screen.at.app.kdw006.k.WorkInfomations;
 
 /**
@@ -69,6 +70,13 @@ public class Kdw006WS extends WebService {
 	@Path("view-k/get-work-info-detail")
 	public List<GetWorkInforDetailsDto> getWorkInforDetails(GetWorkInforDetailsInput param) {
 		return this.getWorkInforDetails.getWorkInforDetails(param);
+	}
+	
+	// 作業補足情報の選択肢詳細を取得する
+	@POST
+	@Path("view-k/get-list-work-info-detail")
+	public List<GetWorkInforDetailsDto> getWorkInforDetailsByList(GetWorkInforDetailsbyListInput param) {
+		return this.getWorkInforDetails.getWorkInforDetailsbyList(param);
 	}
 
 	// 選択肢を新規登録する
