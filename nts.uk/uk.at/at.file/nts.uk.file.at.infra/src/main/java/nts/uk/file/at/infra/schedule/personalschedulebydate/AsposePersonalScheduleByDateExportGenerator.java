@@ -445,7 +445,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private TimeCheckedDto checkRangeLimit(int graphStartTime, Integer start, Integer end) {
         val timeLimit = getTimeLimit(graphStartTime, OutputType.TOTAL_MINUTE);
-        if (isNotInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) || isNotInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
+        if (!isNotInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) || !isNotInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
             if (start < timeLimit.getMinLimit()) {
                 start = timeLimit.getMinLimit();
             }
@@ -496,8 +496,12 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private TimeCheckedDto checkOverlapRange(Integer start, Integer end, TimeRangeLimitDto rangeTime1, TimeRangeLimitDto rangeTime2) {
         Integer startTime = start, endTime = end;
-        if (!isInRange(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit()) && (rangeTime2 != null && !isInRange(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit()))) {
-            return null;
+
+        if (rangeTime2 == null) {
+            if (!isInRange(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit())) return null;
+        } else {
+            if (!isInRange(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit()) && !isInRange(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit()))
+                return null;
         }
 
         if (isInRange(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit())) {
@@ -720,8 +724,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     }
 
     private boolean isNotInRange(int i, int minValueInclusive, int maxValueInclusive) {
-//        return (i >= minValueInclusive && i <= maxValueInclusive);
-        return (i < minValueInclusive && i > maxValueInclusive);
+        return (i >= minValueInclusive && i <= maxValueInclusive);
+//        return (i < minValueInclusive && i > maxValueInclusive);
     }
 
     private boolean isInRange(int startTime, int endTime, int minValue, int maxValue) {
