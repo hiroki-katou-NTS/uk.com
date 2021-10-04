@@ -56,7 +56,6 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 			entity.roleSetPK.companyId,
 			new RoleSetCode(entity.roleSetPK.roleSetCd),
 			new RoleSetName(entity.roleSetName),
-			//EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class),//TODO dev delete 
 			Optional.ofNullable(entity.employmentRole),
 			Optional.ofNullable(entity.personInfRole),
 			Optional.ofNullable(entity.salaryRole),
@@ -76,8 +75,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
         return new SacmtRoleSet(
 			key,
 			domain.getRoleSetName().v(),
-			//TODO dev delete domain.getApprovalAuthority().value
-			//domain.getApprovalAuthority().value,
+			0,//TODO because field approvalAuthority in domain [RoleSet], dev fix
 			domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"",
 			domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): "",
 			domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): "",
@@ -97,8 +95,7 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		upEntity.buildEntity(
 			upEntity.roleSetPK,
 			domain.getRoleSetName().v(),
-			//TODO dev delete domain.getApprovalAuthority().value
-			//domain.getApprovalAuthority().value,
+			0,//TODO because field approvalAuthority in domain [RoleSet], dev fix
 			domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"",
 			domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): "",
 			domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): "",

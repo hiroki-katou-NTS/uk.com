@@ -30,17 +30,6 @@ public class CAS005WebService extends WebService {
     @Inject
     private DeleteRoleCas005CommandHandler deleteRoleCas005CommandHandler;
     
-    //TODO dev delele 
-    /**
-     * copy role 
-     * @param command
-     * @return
-    @POST
-    @Path("copyrolecas005")
-    public void copyRoleCas005(CopyRoleCas005Command command) {
-        // deleted the copy function
-    }*/
-
     /**
      * add new role 
      * @param command
