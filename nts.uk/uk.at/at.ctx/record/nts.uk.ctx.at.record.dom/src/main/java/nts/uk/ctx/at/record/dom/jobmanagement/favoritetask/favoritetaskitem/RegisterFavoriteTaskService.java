@@ -26,8 +26,7 @@ public class RegisterFavoriteTaskService {
 	 * @param contents   お気に入り内容
 	 * @return
 	 */
-	public static AtomTask add(Require require, String employeeId, FavoriteTaskName taskName,
-			List<TaskContent> contents) {
+	public AtomTask add(Require require, String employeeId, FavoriteTaskName taskName, List<TaskContent> contents) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
 		// $既存データ = require.お気に入り作業項目を取得する(社員ID,お気に入り内容)
@@ -37,41 +36,46 @@ public class RegisterFavoriteTaskService {
 		// BusinessException: Msg_2245 {0}：「$既存データ.名称」を代入する。複数ある場合は「,」繋げる
 
 		if (displayOrders.size() > 0) {
-
 			String nameString = "";
 			throw new BusinessException("Msg_2245", nameString);
 		}
 
 		// $追加お気に入り = お気に入り作業項目#新規追加(社員ID, 名称, お気に入り内容)
-		
+		FavoriteTaskItem favItem = new FavoriteTaskItem(employeeId, taskName, contents);
+
+		// $追加お気に入り.お気に入りID
+		String newFavId = favItem.getFavoriteId();
 
 		// $表示順 = require.表示順を取得する(社員ID)
-		Optional<FavoriteDisplayOrder> displayOrder = require.get(employeeId);
+		Optional<FavoriteTaskDisplayOrder> OptdisplayOrder = require.get(employeeId);
 
-		if (displayOrder.isPresent()) {
+		// $新規表示順
+		FavoriteTaskDisplayOrder favOrder = null;
+
+		// if $表示順.isPresent
+		if (OptdisplayOrder.isPresent()) {
 			// $表示順.新しいお気に入りの表示順を追加する($追加お気に入り.お気に入りID)
+			OptdisplayOrder.get().add(newFavId);
 
 		} else {
 			// $新規表示順 = お気に入り作業の表示順#新規追加(社員ID, $追加お気に入り.お気に入りID)
-
+			favOrder = new FavoriteTaskDisplayOrder(employeeId, newFavId);
 		}
 
-		// return AtomTask:
-		return AtomTask.of(() -> {
-			// $登録対象.add(require.お気に入りを追加する($追加お気に入り)
-//			atomTasks.add(AtomTask.of(() -> require.insert()));
-			
-			if(true) {
-				//	$登録対象.add(require.表示順を追加する($新規表示順)
-//				atomTasks.add(AtomTask.of(() -> require.insert()));
-				
-			}else {
-				//	$登録対象.add(require.表示順を更新する($表示順)
-//				atomTasks.add(AtomTask.of(() -> require.update(displayOrder.get())));
-			}
+		// $登録対象.add(require.お気に入りを追加する($追加お気に入り)
+		atomTasks.add(AtomTask.of(() -> require.insert(favItem)));
 
-		});
+		// if $新規表示順.isPresent
+		if (favOrder != null) {
+			// $登録対象.add(require.表示順を追加する($新規表示順)
+			atomTasks.add(AtomTask.of(() -> require.insert(new FavoriteTaskDisplayOrder(employeeId, newFavId))));
 
+		} else {
+			// $登録対象.add(require.表示順を更新する($表示順)
+			atomTasks.add(AtomTask.of(() -> require.update(OptdisplayOrder.get())));
+		}
+
+		return AtomTask.bundle(atomTasks);
 	}
 
 	// ■Require
@@ -79,7 +83,7 @@ public class RegisterFavoriteTaskService {
 
 		// [R-1] 表示順を取得する
 		// お気に入り作業の表示順Repository.Get(社員ID)
-		Optional<FavoriteDisplayOrder> get(String employeeId);
+		Optional<FavoriteTaskDisplayOrder> get(String employeeId);
 
 		// [R-2] お気に入りを追加する
 		// お気に入り作業項目Repository.Insert(お気に入り作業項目)

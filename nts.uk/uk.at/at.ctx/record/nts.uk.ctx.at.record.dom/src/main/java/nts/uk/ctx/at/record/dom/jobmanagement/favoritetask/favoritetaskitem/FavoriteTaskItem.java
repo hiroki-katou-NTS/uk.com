@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.IdentifierUtil;
 
 /**
  * @name UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.お気に入り作業項目.お気に入り作業項目
@@ -27,10 +28,10 @@ public class FavoriteTaskItem extends AggregateRoot {
 	private final List<TaskContent> favoriteContents;
 
 	/**
-	 * [C-1] 新規追加
+	 * [C-0] 1日お気に入り作業セット (社員ID,お気に入りID,名称,お気に入り内容)
 	 * @param employeeId 社員ID
 	 * @param favoriteId お気に入りID
-	 * @param taskName 名称
+	 * @param taskName お気に入り内容
 	 * @param favoriteContents お気に入り内容
 	 */
 	public FavoriteTaskItem(String employeeId, String favoriteId, FavoriteTaskName taskName,
@@ -41,4 +42,21 @@ public class FavoriteTaskItem extends AggregateRoot {
 		this.taskName = taskName;
 		this.favoriteContents = favoriteContents;
 	}
+	
+	/**
+	 * [C-1] 新規追加
+	 * @param employeeId 社員ID
+	 * @param favoriteId お気に入りID
+	 * @param taskName 名称
+	 * @param favoriteContents お気に入り内容
+	 */
+	public FavoriteTaskItem(String employeeId, FavoriteTaskName taskName,
+			List<TaskContent> favoriteContents) {
+		super();
+		this.employeeId = employeeId;
+		this.favoriteId = IdentifierUtil.randomUniqueId();
+		this.taskName = taskName;
+		this.favoriteContents = favoriteContents;
+	}
+
 }
