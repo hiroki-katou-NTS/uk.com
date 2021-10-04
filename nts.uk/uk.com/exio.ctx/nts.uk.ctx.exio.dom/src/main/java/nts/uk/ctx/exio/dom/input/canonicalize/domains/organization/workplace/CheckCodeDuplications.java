@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.util.Either;
@@ -23,7 +24,7 @@ class CheckCodeDuplications {
 			return Either.sequenceEmpty();
 		}
 		
-		List<Either.Sequence<ExternalImportError, RecordWithPeriod>> results = records.stream()
+		val results = records.stream()
 			.collect(Collectors.groupingBy(r -> r.period))
 			.values()
 			.stream()
