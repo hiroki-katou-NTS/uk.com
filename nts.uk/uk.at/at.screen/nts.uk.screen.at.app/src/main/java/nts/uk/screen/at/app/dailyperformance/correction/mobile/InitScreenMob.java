@@ -294,6 +294,7 @@ public class InitScreenMob {
 			setStateParam(screenDto, resultPeriod, displayFormat, false);
 			return screenDto;
 		}
+		screenDto.setDisItem(disItem);
 
 		// 日次項目の取得
 		// 日別実績の取得

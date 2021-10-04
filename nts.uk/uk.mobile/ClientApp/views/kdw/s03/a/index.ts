@@ -686,7 +686,8 @@ export class Kdws03AComponent extends Vue {
                     timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
                     selfConfirm: this.paramData.showPrincipal,
                     closureDate: self.dateRanger.startDate,
-                    authoryView: authory.availability,
+                    functionNoView: authory.availability,
+                    authoryView: self.paramData.disItem.settingUnit,
                 }).then((param: any) => {
                     if (param != undefined && param.openB) {
                         //open B
