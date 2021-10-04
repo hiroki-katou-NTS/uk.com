@@ -86,7 +86,6 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 				// $工数実績作業詳細.工数項目リスト.追加する($作業項目値)
 				optManHrTaskDetail.get().getTaskItemValues().add(itemValue);
 			}
-
 		}
 
 		// return 工数実績変換結果#工数実績変換結果(日別勤怠(Work).年月日,$工数実績リスト,$勤怠項目値)

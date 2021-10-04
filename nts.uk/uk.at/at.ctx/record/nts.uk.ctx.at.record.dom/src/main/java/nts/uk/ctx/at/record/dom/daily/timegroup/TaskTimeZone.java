@@ -21,5 +21,5 @@ public class TaskTimeZone implements DomainValue {
 	private final TimeSpanForCalc caltimeSpan;
 
 	/** 対象応援勤務枠 */
-	private final SupportFrameNo subNo;
+	private final SupportFrameNo supNo;
 }

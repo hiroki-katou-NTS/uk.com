@@ -24,7 +24,7 @@ public class DeleteFavoriteTaskService {
 	 * @param favoriteId お気に入りID
 	 * @return AtomTask
 	 */
-	public static AtomTask create(Require require, String employeeId, String favoriteId) {
+	public AtomTask create(Require require, String employeeId, String favoriteId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
 		// $表示順 = require.表示順を取得する(社員ID)
@@ -37,17 +37,18 @@ public class DeleteFavoriteTaskService {
 
 		// return Atom Task:
 		// $登録対象.add(require.お気に入りを削除する(社員ID, お気に入りID)
-		return AtomTask.of(() -> {
-			atomTasks.add(AtomTask.of(() -> require.delete(employeeId, favoriteId)));
+		atomTasks.add(AtomTask.of(() -> require.delete(employeeId, favoriteId)));
 
-			if (favoriteTaskDisplayOrder.isPresent()) {
-				if (favoriteTaskDisplayOrder.get().getDisplayOrders().isEmpty()) {
-					atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
-				} else {
-					atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
-				}
+		if (favoriteTaskDisplayOrder.isPresent()) {
+			if (favoriteTaskDisplayOrder.get().getDisplayOrders().isEmpty()) {
+				atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
+			} else {
+				atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
 			}
-		});
+		}
+	
+		//return AtomTask.bundle($登録対象)
+		return AtomTask.bundle(atomTasks);
 	}
 
 // ■Require
