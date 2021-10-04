@@ -102,8 +102,10 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         val companyEvent = dateInfo.getOptCompanyEventName().isPresent() ? dateInfo.getOptCompanyEventName().get().v() : EMPTY;
         cells.get(3, 5).setValue(getText("KSU003_142") + companyEvent);
         // B4_1, B4_2
-        val workplaceEvent = dateInfo.getOptWorkplaceEventName().isPresent() ? dateInfo.getOptWorkplaceEventName().get().v() : EMPTY;
-        cells.get(4, 5).setValue(getText("KSU003_143") + workplaceEvent);
+        if (dataSource.getQuery().getOrgUnit() == TargetOrganizationUnit.WORKPLACE.value && dateInfo.getOptWorkplaceEventName().isPresent()) {
+            cells.get(4, 5).setValue(getText("KSU003_143") + dateInfo.getOptWorkplaceEventName().get().v());
+            setBottomBorder(cells, 4, 5, 11);
+        }
 
         // B5_1
         printB5(cells, dateInfo.getListSpecDayNameCompany(), dateInfo.getListSpecDayNameWorkplace());
@@ -159,7 +161,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         HorizontalPageBreakCollection hPageBreaks = wsDestination.getHorizontalPageBreaks();
         cells.deleteRows(9, 60);
 
-        // Set CopyOptions.ReferToDestinationSheet to true
+//        // Set CopyOptions.ReferToDestinationSheet to true
 //        CopyOptions options = new CopyOptions();
 //        options.setReferToDestinationSheet(true);
 //        // Set PasteOptions
