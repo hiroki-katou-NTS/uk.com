@@ -47,6 +47,8 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		DailyAfterAppReflectResult cancellationResult = CancellationOfApplication.process(require, application, date,
 				ScheduleRecordClassifi.SCHEDULE, domainDaily);
 		domainDaily = cancellationResult.getDomainDaily().getDomain();
+		// remove Optional<OutingTimeOfDailyAttd> outingTime
+		domainDaily.getOutingTime().ifPresent(x -> x.removeTimeDayNull());
 
 //		// 労働条件項目を取得
 //		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(require,
