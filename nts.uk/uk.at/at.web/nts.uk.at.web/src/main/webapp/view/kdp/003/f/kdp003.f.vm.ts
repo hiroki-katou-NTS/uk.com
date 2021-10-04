@@ -358,11 +358,7 @@ module nts.uk.at.kdp003.f {
 			const model: ModelData = ko.toJS(vm.model);
 			const { password, companyCode } = model;
 			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
-			const message = ko.unwrap(vm.message);
 
-			var dataResultLogin: TimeStampLoginData;
-			var roleEmployee: RoleEmployee;
-			var showDialogError: boolean = false;
 			var submitData: any = {};
 			submitData.companyCode = _.escape(model.companyCode);
 			submitData.employeeCode = _.escape(model.employeeCode);
@@ -370,6 +366,13 @@ module nts.uk.at.kdp003.f {
 
 			let dfdVeryLogin = $.Deferred();
 			let dfdRole = $.Deferred();
+
+			var showDialogError: boolean = false;
+
+			const message = ko.unwrap(vm.message);
+
+			var dataResultLogin: TimeStampLoginData;
+			var roleEmployee: RoleEmployee;
 
 			if (message) {
 				return vm.$dialog.error(message);
@@ -434,8 +437,7 @@ module nts.uk.at.kdp003.f {
 											})
 									}
 								})
-								$.when(dfdVeryLogin, dfdRole)
-								.done(() => {
+								.then(() => {
 									if (!showDialogError) {
 										const { successMsg } = dataResultLogin;
 										if (!!successMsg) {
@@ -457,11 +459,14 @@ module nts.uk.at.kdp003.f {
 											password,
 											companyCode
 										});
-										if (roleEmployee) {
-											if (roleEmployee.employeeReferenceRange != 3) {
-												vm.$window.close(dataResultLogin);
-											}
-										}
+										$.when(dfdVeryLogin, dfdRole)
+											.done(() => {
+												if (roleEmployee) {
+													if (roleEmployee.employeeReferenceRange != 3) {
+														vm.$window.close(dataResultLogin);
+													}
+												}
+											})
 									}
 								})
 								.always(() => vm.$blockui('clear'));
@@ -573,9 +578,11 @@ module nts.uk.at.kdp003.f {
 			submitData.companyCode = _.escape(model.companyCode);
 			submitData.employeeCode = _.escape(model.employeeCode);
 			submitData.password = _.escape(model.password);
+
 			const message = ko.unwrap(vm.message);
 
 			var dataResultLogin: TimeStampLoginData;
+
 			var roleEmployee: RoleEmployee;
 
 			let dfdVeryLogin = $.Deferred();
@@ -639,10 +646,9 @@ module nts.uk.at.kdp003.f {
 												}
 											}
 											dfdRole.resolve();
-										})
+										});
 								})
-								$.when(dfdVeryLogin, dfdRole)
-								.done(() => {
+								.then(() => {
 
 									_.extend(dataResultLogin, {
 										companies
@@ -652,13 +658,16 @@ module nts.uk.at.kdp003.f {
 										password,
 										companyCode
 									});
-									if (!dataResultLogin.msgErrorId) {
-										if (roleEmployee) {
-											if (roleEmployee.employeeReferenceRange != 3) {
-												vm.$window.close('loginSuccess');
+									$.when(dfdVeryLogin, dfdRole)
+										.done(() => {
+											if (!dataResultLogin.msgErrorId) {
+												if (roleEmployee) {
+													if (roleEmployee.employeeReferenceRange != 3) {
+														vm.$window.close('loginSuccess');
+													}
+												}
 											}
-										}
-									}
+										});
 								})
 								.always(() => vm.$blockui('clear'));
 
