@@ -1,11 +1,7 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import lombok.val;
-import nts.gul.text.IdentifierUtil;
 
 /**
  * コードからIDへのマップ
