@@ -44,14 +44,29 @@ public interface Either<L, R> {
 		return new Left<>(left);
 	}
 	
+	/**
+	 * RightがVoidなEitherの正常系インスタンスを作る
+	 * @return
+	 */
 	public static <L> Either<L, Void> rightVoid() {
 		return new Right<>(null);
 	}
 	
+	/**
+	 * LeftがVoidなEitherの異常系インスタンスを作る
+	 * @param left
+	 * @return
+	 */
 	public static <L> Either<L, Void> leftVoid(L left) {
 		return new Left<>(left);
 	}
 	
+	/**
+	 * rightOptionalの値があればその値でRightを、無ければleftSupplierの戻り値でLeftを作る
+	 * @param rightOptional
+	 * @param leftSupplier
+	 * @return
+	 */
 	public static <L, R> Either<L, R> rightOptional(Optional<R> rightOptional, Supplier<L> leftSupplier) {
 		if (rightOptional.isPresent()) {
 			return Either.right(rightOptional.get());
@@ -80,8 +95,16 @@ public interface Either<L, R> {
 		}
 	}
 	
+	/**
+	 * Rightならtrueを返す
+	 * @return
+	 */
 	boolean isRight();
 	
+	/**
+	 * Leftならtrueを返す
+	 * @return
+	 */
 	default boolean isLeft() {
 		return !isRight();
 	}
@@ -104,10 +127,18 @@ public interface Either<L, R> {
 		return this;
 	}
 	
+	/**
+	 * Rightの値を返す。もしLeftならばRuntimeException
+	 * @return
+	 */
 	default R getRight() {
 		return getOrElseThrow(l -> new RuntimeException("this is Left: " + l));
 	}
 	
+	/**
+	 * Leftの値を返す。もしRightならRuntimeException
+	 * @return
+	 */
 	L getLeft();
 	
 	/**
@@ -252,10 +283,19 @@ public interface Either<L, R> {
 		
 	}
 	
+	/**
+	 * 空のEitherシーケンスを作る
+	 * @return
+	 */
 	public static <L, R> Sequence<L, R> sequenceEmpty() {
 		return new Sequence<>(Collections.emptyList());
 	}
 	
+	/**
+	 * rightsをRight値として持つEitherのシーケンスを作る
+	 * @param rights
+	 * @return
+	 */
 	public static <R> Sequence<Void, R> sequenceOf(Collection<R> rights) {
 		
 		val list = rights.stream()
@@ -265,6 +305,12 @@ public interface Either<L, R> {
 		return new Sequence<>(list);
 	}
 	
+	/**
+	 * leftsをLeft値、rightsをRight値としてマージしたEitherシーケンスを作る
+	 * @param lefts
+	 * @param rights
+	 * @return
+	 */
 	public static <L, R> Sequence<L, R> sequenceOf(Collection<L> lefts, Collection<R> rights) {
 		
 		List<Either<L, R>> list = new ArrayList<>();
@@ -274,11 +320,22 @@ public interface Either<L, R> {
 		return new Sequence<>(list);
 	}
 	
+	/**
+	 * 複数のEitherを一括処理をするためのEitherシーケンス
+	 *
+	 * @param <L>
+	 * @param <R>
+	 */
 	@RequiredArgsConstructor
 	public static class Sequence<L, R> {
 		
 		private final List<Either<L, R>> list;
 		
+		/**
+		 * 複数のシーケンスを1つのシーケンスとしてマージする
+		 * @param sequences
+		 * @return
+		 */
 		public static <L, R> Sequence<L, R> merge(List<Sequence<L, R>> sequences) {
 			
 			List<Either<L, R>> newList = new ArrayList<>();
@@ -290,6 +347,11 @@ public interface Either<L, R> {
 			return new Sequence<>(newList);
 		}
 		
+		/**
+		 * シーケンス内のRightに対してmapEitherを適用した結果のシーケンスを返す（元々のLeftは破棄される）
+		 * @param rightEitherMapper
+		 * @return
+		 */
 		public <L2, R2> Sequence<L2, R2> mapEither(Function<? super R, Either<L2, R2>> rightEitherMapper) {
 			
 			List<Either<L2, R2>> newList = streamRight()
@@ -299,6 +361,11 @@ public interface Either<L, R> {
 			return new Sequence<>(newList);
 		}
 		
+		/**
+		 * シーケンス内の各Eitherに対してmapを適用した結果のシーケンスを返す（元々のLeftはそのまま）
+		 * @param rightMapper
+		 * @return
+		 */
 		public <R2> Sequence<L, R2> map(Function<? super R, R2> rightMapper) {
 
 			List<Either<L, R2>> newList = new ArrayList<>();
@@ -314,6 +381,11 @@ public interface Either<L, R> {
 			return new Sequence<>(newList);
 		}
 		
+		/**
+		 * シーケンス内の各Eitherに対してmapLeftを適用した結果のシーケンスを返す（元々のRightはそのまま）
+		 * @param leftMapper
+		 * @return
+		 */
 		public <L2> Sequence<L2, R> mapLeft(Function<? super L, L2> leftMapper) {
 
 			List<Either<L2, R>> newList = new ArrayList<>();
@@ -329,6 +401,11 @@ public interface Either<L, R> {
 			return new Sequence<>(newList);
 		}
 		
+		/**
+		 * シーケンス内のRightに対して、predicateがtrueとなるものをRight、falseになるものをLeftとしたシーケンスを返す
+		 * @param predicate
+		 * @return
+		 */
 		public Sequence<R, R> separate(Predicate<R> predicate) {
 			
 			List<Either<R, R>> newList = new ArrayList<>();
@@ -343,30 +420,56 @@ public interface Either<L, R> {
 			return new Sequence<>(newList);
 		}
 		
+		/**
+		 * シーケンス内の各Rightに対して処理taskを実行する
+		 * @param task
+		 * @return
+		 */
 		public Sequence<L, R> ifRight(Consumer<R> task) {
 			streamRight().forEach(task);
 			return this;
 		}
 		
+		/**
+		 * シーケンス内の各Leftに対して処理taskを実行する
+		 * @param task
+		 * @return
+		 */
 		public Sequence<L, R> ifLeft(Consumer<L> task) {
 			streamLeft().forEach(task);
 			return this;
 		}
 		
+		/**
+		 * シーケンス内のRightをListとして返す
+		 * @return
+		 */
 		public List<R> listRight() {
 			return streamRight().collect(toList());
 		}
 		
+		/**
+		 * シーケンス内のLeftをListとして返す
+		 * @return
+		 */
 		public List<L> listLeft() {
 			return streamLeft().collect(toList());
 		}
-		
+
+		/**
+		 * シーケンス内のRightをStreamとして返す
+		 * @return
+		 */
 		public Stream<R> streamRight() {
 			return list.stream()
 					.filter(e -> e.isRight())
 					.map(e -> e.getRight());
 		}
-		
+
+		/**
+		 * シーケンス内のLeftをStreamとして返す
+		 * @return
+		 */
 		public Stream<L> streamLeft() {
 			return list.stream()
 					.filter(e -> e.isLeft())
