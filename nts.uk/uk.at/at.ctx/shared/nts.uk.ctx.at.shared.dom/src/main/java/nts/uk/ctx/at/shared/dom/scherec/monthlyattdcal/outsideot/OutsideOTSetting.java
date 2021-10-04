@@ -414,46 +414,33 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		/** 内訳項目に設定されている勤怠項目IDを全て取得 */
 		val breakdownItems = getBreakDownItemIds();
 		
-		/** ○法定内休出の勤怠項目IDを全て取得 */
-		breakdownItems.addAll(getLegalHolidayWorkItems(require, cid));
-		if(breakdownItems.isEmpty()) {
-			monthlyCalculations.forEach(c-> {
-				breakdownMap.put(c.getEmployeeId(), new AgreementTimeBreakdown());
-			});
-			return breakdownMap;
-		}
-		
-		/** 取得した件数分ループ */
-		val attendanceTimes = monthlyCalculations.stream().map(monthlyCalculation -> {
+		for (MonthlyCalculation monthlyCalculation : monthlyCalculations) {
+			val breakdown = new AgreementTimeBreakdown();
 			
-			AttendanceTimeOfMonthly attendanceTimeOfMonthly = new AttendanceTimeOfMonthly(
-					monthlyCalculation.getEmployeeId(),
-					monthlyCalculation.getYearMonth(), 
-					monthlyCalculation.getClosureId(),
-					monthlyCalculation.getClosureDate(), 
-					monthlyCalculation.getProcPeriod());
-			attendanceTimeOfMonthly.setMonthlyCalculation(monthlyCalculation);
-			return attendanceTimeOfMonthly;
-		}).collect(Collectors.toList());
-
-		Map<String, List<ItemValue>> attendanceItemValues = new HashMap<String, List<ItemValue>>();
-		for (AttendanceTimeOfMonthly attendanceTimeOfMonthly : attendanceTimes) {
-			val converter = require.createMonthlyConverter();
-			converter.withAttendanceTime(attendanceTimeOfMonthly);
-			attendanceItemValues.put(attendanceTimeOfMonthly.getEmployeeId(), converter.convert(breakdownItems));
+			/** 休出枠一覧を取得する */
+			val workDayOffFrames = getWorkDayOffFrame(monthlyCalculation);
+			
+			/** ○法定内休出の勤怠項目IDを全て取得 */
+			val holiWorkItems = getLegalHolidayWorkItems(workDayOffFrames);
+			
+			if(breakdownItems.isEmpty() && holiWorkItems.isEmpty()) {
+				breakdownMap.put(monthlyCalculation.getEmployeeId(), breakdown);
+				continue;
+			}
+			
+			/** 対象項目の時間を求める */
+			getBreakDownTimes(require, monthlyCalculation, breakdown, roundSet, breakdownItems);
+			
+			/** 法定内休出時間を取得する */
+			getHolidayWorkTime(require, roundSet, getDailyRecords(monthlyCalculation), 
+					breakdown, holiWorkItems, workDayOffFrames);
+			
+			/** ○36協定上限時間内訳を返す */
+			breakdownMap.put(monthlyCalculation.getEmployeeId(), breakdown);
 		}
 		
-		for (val attendanceItemValue : attendanceItemValues.entrySet()) {
-			AgreementTimeBreakdown breakdown = new AgreementTimeBreakdown();
-			/** ○丸め処理 */
-			attendanceItemValue.getValue().stream().forEach(v -> {
-				val value = new AttendanceTimeMonth(v.valueOrDefault());
-				val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
-				breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
-			});
-			breakdownMap.put(attendanceItemValue.getKey(), breakdown);
-		}
 		return breakdownMap;
+		
 	}
 
 	/** 内訳項目に設定されている勤怠項目IDを全て取得 */

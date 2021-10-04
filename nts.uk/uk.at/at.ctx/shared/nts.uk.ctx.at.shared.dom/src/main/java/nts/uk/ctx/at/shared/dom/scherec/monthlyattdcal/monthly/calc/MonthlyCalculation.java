@@ -579,8 +579,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			// フレックス勤務の月別集計設定
 			this.settingsByFlex.setMonthlyAggrSetOfFlexOpt(Optional.of(companySets.getAggrSetOfFlex()));
 
-			// フレックス勤務所定労働時間
-			this.settingsByFlex.setGetFlexPredWorkTimeOpt(Optional.of(companySets.getFlexPredWorkTime()));
+			this.settingsByFlex.setComFlexSetOpt(companySets.getComFlexSetOpt());
 
 			// フレックス不足の年休補填管理
 			this.settingsByFlex.setInsufficientFlexOpt(companySets.getInsufficientFlexOpt());
@@ -609,11 +608,11 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 休出枠の役割
 		for (val holidayWorkFrame : companySets.getWorkDayoffFrameList()) {
 			this.settingsByReg.getRoleHolidayWorkFrameMap()
-					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
 			this.settingsByDefo.getRoleHolidayWorkFrameMap()
-					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
 			this.settingsByFlex.getRoleHolidayWorkFrameMap()
-					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
 
 			// 自動的に除く休出枠
 			if (holidayWorkFrame.getRole() != WorkdayoffFrameRole.MIX_WITHIN_OUTSIDE_STATUTORY)
