@@ -2,8 +2,10 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceHierarchyUnitCode;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization.Items;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -29,7 +31,7 @@ class CanonicalizeHierarchyCode {
 				getCode(interm, Items.職場階層コード9),
 				getCode(interm, Items.職場階層コード10));
 
-		String fullCode = getCode(interm, Items.職場階層コード);
+		String fullCode = getFullCode(interm);
 		boolean existsFull = fullCode.length() > 0;
 		boolean existsParts = parts.stream().anyMatch(s -> s.length() > 0);
 
@@ -77,9 +79,20 @@ class CanonicalizeHierarchyCode {
 	}
 
 	private static String getCode(RecordWithPeriod record, int itemNo) {
+		// 自動ゼロ埋め
+		return getCode(record, itemNo, s -> new WorkplaceHierarchyUnitCode(s).v());
+	}
+
+	private static String getFullCode(RecordWithPeriod record) {
+		return getCode(record, Items.職場階層コード, s -> s);
+	}
+	
+	private static String getCode(RecordWithPeriod record, int itemNo, UnaryOperator<String> revise) {
 		return record.interm.getItemByNo(itemNo)
 				.map(d -> d.getString())
-				.filter(s -> s != null) // 多分文字列でnullは無いと思うけど、念の為チェックしてすべて "" に揃える
+				// 多分文字列でnullは無いと思うけど、念の為チェックしてすべて "" に揃える
+				.filter(s -> s != null && s.length() > 0)
+				.map(revise)
 				.orElse("");
 	}
 }
