@@ -29,14 +29,18 @@ public class CanonicalizeHistoryContinuity {
 		validPeriods.add(periods.get(0));
 		
 		// 前の履歴との連続性をチェック
+		DatePeriod prev = periods.get(0);
 		for (int i = 1; i < periods.size(); i++) {
 			
 			val current = periods.get(i);
-			val prev = periods.get(i - 1);
 			
-			// 前の履歴と繋がっている
+			// (有効な)前の履歴と繋がっている
 			if (prev.end().addDays(1).equals(current.start())) {
 				validPeriods.add(current);
+				
+				// 履歴がちゃんと繋がったときだけprevを更新する
+				// 一度途切れたら以降は全滅
+				prev = current;
 			}
 		}
 		
