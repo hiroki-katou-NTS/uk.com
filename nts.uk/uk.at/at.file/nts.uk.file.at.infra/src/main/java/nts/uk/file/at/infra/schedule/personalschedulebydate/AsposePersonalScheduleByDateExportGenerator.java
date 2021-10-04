@@ -161,13 +161,13 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         HorizontalPageBreakCollection hPageBreaks = wsDestination.getHorizontalPageBreaks();
         cells.deleteRows(9, 60);
 
-//        // Set CopyOptions.ReferToDestinationSheet to true
-//        CopyOptions options = new CopyOptions();
-//        options.setReferToDestinationSheet(true);
-//        // Set PasteOptions
-//        PasteOptions pasteOptions = new PasteOptions();
-//        pasteOptions.setPasteType(PasteType.ALL);
-//        pasteOptions.setOnlyVisibleCells(true);
+        // Set CopyOptions.ReferToDestinationSheet to true
+        CopyOptions options = new CopyOptions();
+        options.setReferToDestinationSheet(true);
+        // Set PasteOptions
+        PasteOptions pasteOptions = new PasteOptions();
+        pasteOptions.setPasteType(PasteType.ALL);
+        pasteOptions.setOnlyVisibleCells(true);
 
         int rowCount = 9;
         int pageIndex = 0;
@@ -216,14 +216,12 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             if (graphVacationDisplay) {
                 // C3_2_1
                 if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
-                    System.out.println("-----------C3_2_1-----------");
                     val shape1a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape1a.getColumn() != null) {
                         drawRectangle(shapes, rowCount, shape1a.getColumn(), shape1a.getWidth(), shape1a.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
                     }
 
                     if (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) {
-                        System.out.println("-----------C3_2_1-----------");
                         val shape1b = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime2(), item.getEndTime2());
                         if (shape1b.getColumn() != null) {
                             drawRectangle(shapes, rowCount, shape1b.getColumn(), shape1b.getWidth(), shape1b.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
@@ -233,7 +231,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
                 // C3_2_4
                 if (item.getWorkType().equals(WorkTimeForm.FLOW.value)) {
-                    System.out.println("-----------C3_2_4-----------");
                     val shape4a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape4a.getColumn() != null) {
                         drawRectangle(shapes, rowCount, shape4a.getColumn(), shape4a.getWidth(), shape4a.getLeft(), getBarColor(BarType.FLOWING_WORKING_HOURS), false, null);
@@ -270,7 +267,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                                 (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) ? new TimeRangeLimitDto(item.getStartTime2(), item.getEndTime2()) : null);
                         if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
 
-                        System.out.println("-----------C3_2_3-----------");
                         val shape3 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
                         if (shape3.getColumn() != null) {
                             drawRectangle(shapes, rowCount, shape3.getColumn(), shape3.getWidth(), shape3.getLeft(), getBarColor(BarType.OVERTIME_HOURS), false, null);
@@ -286,7 +282,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                                 (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) ? new TimeRangeLimitDto(item.getStartTime2(), item.getEndTime2()) : null);
                         if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
 
-                        System.out.println("-----------C3_2_2-----------");
                         val shape2 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
                         if (shape2.getColumn() != null) {
                             drawRectangle(shapes, rowCount, shape2.getColumn(), shape2.getWidth(), shape2.getLeft(), getBarColor(BarType.BREAK_TIME), false, null);
@@ -399,8 +394,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
         val startTime = timeConverted.getStart();
         val endTime = timeConverted.getEnd();
+        int columnStart = hourColumnMap.containsKey(startTime.getHour()) ? hourColumnMap.get(startTime.getHour()) + 1 : Ksu003Utils.findFirstEntry(hourColumnMap).getValue();
 
-        int columnStart = hourColumnMap.get(startTime.getHour()) == null ? 0 : hourColumnMap.get(startTime.getHour()) + 1;
         int minuteStart = roundUp(startTime.getMinute(), ROUNDING_INCREMENTS);
         if (minuteStart >= 30 && minuteStart <= 60) {
             columnStart += 1;
@@ -644,7 +639,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         int temp = num % multipleOf;
         if (temp < 0)
             temp = multipleOf + temp;
-        if (temp == 0) // Trường hợp num = 5, 10, 15, 20,... thì không làm tròn
+        if (temp == 0)
             return num;
         return num + multipleOf - temp;
     }
@@ -669,9 +664,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         shape.getLine().setFillType(FillType.SOLID);
         shape.getLine().getSolidFill().setColor(Color.getBlack());
         if (zOrderIndex != null) {
-            System.out.println("ZIndex before: " + shape.getZOrderPosition());
             shape.setZOrderPosition(zOrderIndex);
-            System.out.println("ZIndex after: " + shape.getZOrderPosition());
         }
     }
 
