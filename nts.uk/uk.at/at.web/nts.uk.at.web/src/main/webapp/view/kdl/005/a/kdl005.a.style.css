@@ -45,6 +45,15 @@
 	margin-right: 20px;
 }
 
+#A5 {
+	font-weight: bold !important;
+}
+
+#area-non-info{
+	margin-left: 40px;
+    margin-top: 25px;
+}
+
 .img-icon {
 	margin-left: -28px;
 	margin-top: 3px;

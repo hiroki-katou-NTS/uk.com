@@ -107,7 +107,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				isShowWorkPlaceName: self.isShowWorkPlaceName(),
 				isShowSelectAllButton: self.isShowSelectAllButton(),
 				disableSelection: self.disableSelection(),
-				maxRows: 15
+				maxRows: 15.51
 			};
 
 			$('#kcp005component').ntsListComponent(self.listComponentOption);
