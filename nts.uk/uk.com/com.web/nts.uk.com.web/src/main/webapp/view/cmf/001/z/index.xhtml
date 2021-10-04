@@ -27,10 +27,6 @@
 						tabindex="3"
 						data-bind="enable: canSave, click: save, text: '登録'"
 					></button>
-					<button
-						class="normal" 
-						tabindex="4"
-						data-bind="click: uploadCsv, text: 'CSVレイアウト取込'"></button>
 				</div>
 
 				<div id="contents-area" class="fixed-flex-layout">
@@ -59,6 +55,7 @@
 						<div class="layout">
 							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
 							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting" ></button>
+							<!--
 							<table class="check-target" id="layout-list" data-bind="ntsGridList: {
 								height: '300px',
 								dataSource: layout,
@@ -66,6 +63,8 @@
 								columns: layoutListColumns,
 								value: selectedItem}">
 							</table>
+							-->
+						<table id="grid"></table>
 						</div>
 					</div>
 				</div>

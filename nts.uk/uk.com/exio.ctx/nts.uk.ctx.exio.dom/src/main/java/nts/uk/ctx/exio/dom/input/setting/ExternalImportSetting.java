@@ -38,7 +38,7 @@ public class ExternalImportSetting implements DomainAggregate {
 
 	/** ドメイン受入設定 **/
 	private Map<ImportingDomainId, DomainImportSetting> domainSettings;
-	
+
 	public ExternalImportSetting(
 			ImportSettingBaseType baseType,
 			String companyId,

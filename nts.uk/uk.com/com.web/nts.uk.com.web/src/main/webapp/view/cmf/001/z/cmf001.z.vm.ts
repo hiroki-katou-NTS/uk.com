@@ -15,13 +15,17 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 	
 	function selectionCsvItem(csvHeaderName, data){
 		return '<div class="check-target" data-bind="ntsComboBox: {'
-		+ 'name: "csvヘッダ名", '
-		+ 'options: csvItemNameOption,'
-		+ 'optionsValue: "value",'
+		+ 'name: "csvヘッダ名",'
+		+ 'options: csvItemOption,'
+		+ 'optionsValue: "no",'
 		+ 'visibleItemsCount: 10,'
 		+ 'optionsText: "name",'
 		+ 'selectFirstIfNull: false,'
-		+ 'value: csvItemName,'
+		+ 'value: selectedCsvItem,'
+		+ 'columns: ['
+			+ '{ prop: "no",	length:4 },'
+			+ '{ prop: "name", length:30},'
+		+'],'
 		+ 'required: true}"></div>';
 	}
 
@@ -35,7 +39,6 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 	@bean()
 	class ViewModel extends ko.ViewModel {
         settingCode: string;
-		settingName: string;
 		
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
@@ -51,9 +54,13 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		selectedDomainId: KnockoutObservable<number> = ko.observable();
 		
 		//csv
-		csvItemNameOption: KnockoutObservableArray<string> = ko.observableArray([]);
+		csvItemOption: KnockoutObservableArray<CsvItem> = ko.observableArray([]);
+		selectedCsvItem:KnockoutObservableArray<number> = ko.observableArray([]);
+		//selectedCsvItem:KnockoutObservable<number> = ko.observable();
 
 		selectedItem: KnockoutObservable<string> = ko.observable();
+		
+	    $grid!: JQuery;
 	    
 		domainListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "ID", 					key: "domainId", 		width: 50 , 	hidden: true },
@@ -73,7 +80,6 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 			var self = this;
 
 			self.settingCode = __viewContext.transferred.get().settingCode;
-            self.settingName = __viewContext.transferred.get().settingName;
             
 			self.startPage();
 			
@@ -101,6 +107,16 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		startPage(){
 			var self = this;
 			let dfd = $.Deferred();
+			
+			//todo
+			self.csvItemOption=ko.observableArray([
+	            new CsvItem('1', '項目１'),
+	            new CsvItem('2', '項目２'),
+	            new CsvItem('3', '項目３')
+	        ]);
+			self.$grid = $("#grid");
+			self.initGrid();
+		      
 			return dfd.promise();
 		}
 
@@ -110,6 +126,60 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 			self.getListData().done(function() {
 				dfd.resolve();
 			});
+		}
+		
+		initGrid(){
+			var self = this;
+			var comboColumns = [
+				{ prop: "no",	length:4 },
+				{ prop: "name", length:30}
+			];
+			if (self.$grid.data("igGrid")) {
+				self.$grid.ntsGrid("destroy");
+			}
+			
+			self.$grid.ntsGrid({
+				height: '300px',
+				dataSource: self.layout(),
+		        primaryKey: 'itemNo',
+		        rowVirtualization: true,
+		        virtualization: true,
+		        virtualizationMode: 'continuous',
+		        columns: [
+					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, unbound:true, ntsControl: 'DeleteButton'},
+					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
+					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
+					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItem",	dataType: 'number',	width: 250, ntsControl: 'Combobox' },
+					{ headerText: "データ", 				key: "csvData", 				dataType: 'string',		width: 120	}
+				],
+		        features: [
+		          {
+		            name: 'Selection',
+		            mode: 'row',
+		            multipleSelection: false,
+		            activation: false
+		          },
+		        ],
+		        ntsControls: [
+		          {
+		            name: 'DeleteButton',
+		            text: '削除',
+		            controlType: 'DeleteButton',
+		            enable: true
+		          },
+		          {
+		            name: 'Combobox',
+		            options: self.csvItemOption(),
+		            optionsValue: 'no',
+		            optionsText: 'name',
+		            columns: comboColumns,
+		            controlType: 'ComboBox',
+		            visibleItemsCount: 5,
+		            dropDownAttachedToBody: false,
+		            enable: true
+		          }
+		        ]
+		      });
 		}
 
 		checkError(){
@@ -126,6 +196,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 					itemNoList: itemNoList};
 				ajax("screen/com/cmf/cmf001/b/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
+					self.initGrid();
 				});
 			}else{
 				self.layout([]);
@@ -219,7 +290,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 			let self = this;
 			self.layoutItemNoList(self.layoutItemNoList().filter(function(itemNo){
 				return itemNo !== target;
-			}))
+			}));
 		}
 	}
 
@@ -285,13 +356,25 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		required: boolean;
 //		type: string;
 //		source: string;
-		csvItemName: string;
+		selectedCsvItem: number;
+		csvData: string;
 	
-		constructor(itemNo: number,　name: string, required: boolean, csvItemName: string) {
+		constructor(itemNo: number,　name: string, required: boolean, selectedCsvItem: number, csvData: string) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
-			this.csvItemName = csvItemName;
+			this.selectedCsvItem = selectedCsvItem;
+			this.csvData = csvData;
 		}
+	}
+	
+	export class CsvItem {
+	    no: number;
+	    name: string;
+	
+	    constructor(no: number, name: string) {
+	        this.no = no;
+	        this.name = name;
+	    }
 	}
 }

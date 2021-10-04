@@ -1,27 +1,9 @@
-
-#export-button {
-  margin-left: auto;
-}
-
 .form-label {
   width: 250px;
 }
 
-
 #contents-area .domain .uploadCsv {
   margin-left: 25px;
-  /* max-width: 1000px; */
-}
-
-#importDomain{
- width:250px;
- position: relative;
- top: 5px;
- margin-top: -5px;*/
-}
-
-.import-mode{
- display:none;
 }
 
 #settingName{
@@ -36,13 +18,8 @@
  width:27px;
 }
 
-#bntAddImportDomain #bntDelImportDomain{
- top: -5px;
-}
-
-#bntUploadCsv{
-	margin-top:5px;
-	margin-bottom:15px;
+#file-upload{
+ width:280px;
 }
 
 .cell-left {
@@ -55,9 +32,6 @@
 
 .table .domain .cell-left {
   width: 180px;
-}
-.sidebar-content {
-  height: 100%;
 }
 
 .table .cell-left .form-label {

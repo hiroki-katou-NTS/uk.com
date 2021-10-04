@@ -2,15 +2,21 @@ package nts.uk.ctx.exio.infra.entity.input.setting;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.input.csvimport.BaseCsvInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -50,20 +56,37 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	@Column(name = "IMPORT_START_ROW_NUMBER")
 	private int importStartRowNumber;
 	
+	/* CSVファイルID */
+	@Column(name = "BASE_CSV_FILE_ID")
+	private String baseCsvFileId;
+
+	/* ベースCSV */
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="importSetting", orphanRemoval = true)
+	private List<XimmtBaseCsvColumns> baseColumns;
+	
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 	
-	public ExternalImportSetting toDomain() {		
+	public ExternalImportSetting toDomain() {
+		ImportSettingBaseType type = ImportSettingBaseType.valueOf(this.baseType);
+		List<String> baseCsvColumns = this.baseColumns.stream()
+			.map(col -> col.getColumnName())
+			.collect(Collectors.toList());
+		
+		Optional<BaseCsvInfo> baseCsv = (type == ImportSettingBaseType.CSV_BASE)
+					? Optional.of(new BaseCsvInfo(this.baseCsvFileId, baseCsvColumns))
+					: Optional.empty();
 		return new ExternalImportSetting(
-				ImportSettingBaseType.valueOf(this.baseType),
+				type,
 				this.pk.getCompanyId(), 
 				new ExternalImportCode(this.pk.getCode()), 
 				new ExternalImportName(this.name),
 				new ExternalImportCsvFileInfo(
 						new ExternalImportRowNumber(this.itemNameRowNumber),
-						new ExternalImportRowNumber(importStartRowNumber)),
+						new ExternalImportRowNumber(importStartRowNumber),
+						baseCsv),
 				new HashMap<>());
 	}
 }

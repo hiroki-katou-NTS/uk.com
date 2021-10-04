@@ -1,11 +1,16 @@
 package nts.uk.screen.com.app.cmf.cmf001.b.get;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.assertj.core.util.Strings;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
+import nts.uk.ctx.exio.dom.input.csvimport.BaseCsvInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
@@ -35,6 +40,8 @@ public class ExternalImportSettingDto {
 	/** CSVの取込開始行 */
 	private int importStartRow;
 	
+	private String csvFileId;
+	
 	private List<ImportDomainDto> domains;
 
 	public static interface RequireMerge extends
@@ -53,6 +60,7 @@ public class ExternalImportSettingDto {
 				setting.getName().toString(),
 				setting.getCsvFileInfo().getItemNameRowNumber().hashCode(),
 				setting.getCsvFileInfo().getImportStartRowNumber().hashCode(),
+				setting.getCsvFileInfo().getBaseCsvInfo().map(csvinfo -> csvinfo.getCsvFileId()).orElse(""),
 				domains);
 	}
 
@@ -74,9 +82,14 @@ public class ExternalImportSettingDto {
 	}
 
 	private ExternalImportCsvFileInfo toCsvFileInfo() {
+		Optional<BaseCsvInfo> baseCsvInfo = Strings.isNullOrEmpty(this.csvFileId)
+			? Optional.empty()
+			: Optional.of(new BaseCsvInfo(this.csvFileId, new ArrayList<>()));
+		
 		return new ExternalImportCsvFileInfo(
 				new ExternalImportRowNumber(itemNameRow),
-				new ExternalImportRowNumber(importStartRow));
+				new ExternalImportRowNumber(importStartRow),
+				baseCsvInfo);
 	}
 
 }

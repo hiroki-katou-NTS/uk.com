@@ -97,9 +97,17 @@
 						
 						<div class="uploadCsv">
 							<div class="divi">受入CSV</div><hr />
-							<button class="normal" id="bntUploadCsv" data-bind="text: 'CSVレイアウト取込'"></button>
+							<div class="label" data-bind="ntsFormLabel: {}">受入CSVファイル</div>
+							<div id="file-upload" data-bind="ntsFileUpload:{
+								filename: csvFileName,
+								accept: ['csv'],
+								text: '取込',
+								aslink: false,
+								immediateUpload: true,
+								uploadFinished: csvFileUploaded
+							}"></div>
 						</div>
-						<div class="uploadCsv">
+						<div class="detail">
 							<div class="divi">受入レイアウト</div><hr />
 							<button class="normal" id="bntOpenDetail" data-bind="text: '詳細設定', click: gotoDetailSetting, enable: canEditDetail"></button>
 						</div>

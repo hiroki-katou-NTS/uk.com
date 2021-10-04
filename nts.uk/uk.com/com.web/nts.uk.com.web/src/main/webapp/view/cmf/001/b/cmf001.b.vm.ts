@@ -280,10 +280,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			
 			this.domains = [
 				{
-					domainId:domain
+					domainId:domain,
 					itemNoList:itemNoList
 				}
-			]);
+			];
 		}
 	
 		static new(){

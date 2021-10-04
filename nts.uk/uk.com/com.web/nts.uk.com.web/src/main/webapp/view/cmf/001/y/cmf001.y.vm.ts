@@ -23,7 +23,11 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		
 		selectedItem: KnockoutObservable<string> = ko.observable();
 
-	    canEditDetail = KnockoutObservable<boolean> = ko.observable(false);
+	    canEditDetail: KnockoutObservable<boolean> = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+	    
+	    // csv
+		csvFileName: KnockoutObservable<string> = ko.observable();
+		csvFileId: KnockoutObservable<string> = ko.observable();
 	    
 		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "コード", 				key: "code", 					width: 50 	},
@@ -108,12 +112,12 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 			self.settingName(info.name);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
+			self.csvFileId(info.csvFileId);
 		}
 
-		uploadCsv() {
-			let self = this;
+		csvFileUploaded(fileInfo: any){
 		}
-
+		
 		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
 		save(){
 			let self = this;
@@ -126,7 +130,8 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 						self.settingCode(),
 						self.settingName(),
 						self.itemNameRow(),
-						self.importStartRow())
+						self.importStartRow(),
+						fileId: self.csvFileId())
 				};
 				ajax("screen/com/cmf/cmf001/y/save", saveContents).done(() => {
 					info(nts.uk.resource.getMessage("Msg_15", []));
@@ -153,7 +158,6 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		gotoDetailSetting() {
 			request.jump("../z/index.xhtml", {
 				settingCode: this.settingCode()
-				settingName: this.settingName()
 			});
 		}
 	}
@@ -174,17 +178,19 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		name: string;
 		itemNameRow: number;
 		importStartRow: number;
+		csvFileId: string
 	
-		constructor(companyId: string, code: string, name: string, itemNameRow: number, importStartRow: number) {
+		constructor(companyId: string, code: string, name: string, itemNameRow: number, importStartRow: number, csvFileId: string) {
 			this.companyId = companyId;
 			this.code = code;
 			this.name = name;
 			this.itemNameRow = itemNameRow;
 			this.importStartRow = importStartRow;
+			this.csvFileId = csvFileId;
 		}
 	
 		static new(){
-			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null)
+			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, "")
 		}
 	}
 }

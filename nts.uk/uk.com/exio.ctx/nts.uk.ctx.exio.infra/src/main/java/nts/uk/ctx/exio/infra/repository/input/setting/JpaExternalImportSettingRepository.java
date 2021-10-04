@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.input.setting;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,8 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
+import nts.uk.ctx.exio.infra.entity.input.setting.XimmtBaseCsvColumns;
+import nts.uk.ctx.exio.infra.entity.input.setting.XimmtBaseCsvColumnsPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
@@ -147,12 +150,24 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	}
 
 	private XimmtImportSetting toEntitiy(ExternalImportSetting domain) {
+		List<XimmtBaseCsvColumns> csvColumns = new ArrayList<>();
+		if (domain.getBaseType() == ImportSettingBaseType.CSV_BASE) {
+			for (String columnName : domain.getCsvFileInfo().getBaseCsvInfo() .get().getColumns()) {
+				csvColumns.add(new XimmtBaseCsvColumns(
+						new XimmtBaseCsvColumnsPK(domain.getCompanyId(), domain.getCode().toString(), csvColumns.size()),
+						columnName,
+						null));
+			}
+		}
+		
 		return new XimmtImportSetting(
 				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()),
 				domain.getBaseType().value,
 				domain.getName().toString(),
 				domain.getCsvFileInfo().getItemNameRowNumber().v(),
-				domain.getCsvFileInfo().getImportStartRowNumber().v());
+				domain.getCsvFileInfo().getImportStartRowNumber().v(),
+				domain.getCsvFileInfo().getBaseCsvInfo().get().getCsvFileId(),
+				csvColumns);
 	}
 
 	private XimmtDomainImportSetting toEntitiy(String cid, String settingCode, DomainImportSetting domain) {

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
 
@@ -31,6 +32,9 @@ public class ExternalImportCsvFileInfo {
 	
 	/** CSVの取込開始行 */
 	private final ExternalImportRowNumber importStartRowNumber;
+	
+	/** ベースのCSV情報 */
+	private final Optional<BaseCsvInfo> baseCsvInfo;
 	
 	public void parse(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
 

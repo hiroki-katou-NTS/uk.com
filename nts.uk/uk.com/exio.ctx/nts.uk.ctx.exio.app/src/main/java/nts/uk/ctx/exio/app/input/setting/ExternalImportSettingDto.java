@@ -47,11 +47,12 @@ public class ExternalImportSettingDto {
 	/** CSVの取込開始行 */
 	private int importStartRow;
 	
+	private String baseFileId;
+	
 	/** レイアウト */
 	private List<ExternalImportLayoutDto> layouts;
 	
 	public static List<ExternalImportSettingDto> fromDomain(Require require, ExternalImportSetting domain, List<DomainImportSetting> domainSettings) {
-		
 		return domainSettings.stream().map(domainSetting -> new ExternalImportSettingDto(
 				domain.getCompanyId(), 
 				domain.getCode().toString(), 
@@ -59,10 +60,11 @@ public class ExternalImportSettingDto {
 				domainSetting.getDomainId().value, 
 				domainSetting.getImportingMode().value, 
 				domain.getCsvFileInfo().getItemNameRowNumber().hashCode(), 
-				domain.getCsvFileInfo().getImportStartRowNumber().hashCode(), 
+				domain.getCsvFileInfo().getImportStartRowNumber().hashCode(),
+				domain.getCsvFileInfo().getBaseCsvInfo().map(csv -> csv.getCsvFileId()).orElse(""),
 				domainSetting.getAssembly().getMapping().getMappings().stream()
 					.map(m -> ExternalImportLayoutDto.fromDomain(require, domainSetting.getDomainId(), m))
-				.collect(Collectors.toList()))
+					.collect(Collectors.toList()))
 			)
 			.collect(Collectors.toList());
 	}
@@ -76,7 +78,7 @@ public class ExternalImportSettingDto {
 						new ImportingMapping(createMappings(require))));
 		Map<ImportingDomainId, DomainImportSetting> domainSettings = new HashMap<>();
 		domainSettings.put(ImportingDomainId.valueOf(domain), domainSetting);
-		
+
 		return new ExternalImportSetting(
 				ImportSettingBaseType.DOMAIN_BASE,
 				companyId, 
@@ -84,10 +86,11 @@ public class ExternalImportSettingDto {
 				new ExternalImportName(name), 
 				new ExternalImportCsvFileInfo(
 						new ExternalImportRowNumber(itemNameRow), 
-						new ExternalImportRowNumber(importStartRow)),
+						new ExternalImportRowNumber(importStartRow),
+						Optional.empty()),
 				domainSettings);
 	}
-	
+
 	private List<ImportingItemMapping> createMappings(Require require){
 		val optRegisteredSetting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(code));
 		if(optRegisteredSetting.isPresent()) {
