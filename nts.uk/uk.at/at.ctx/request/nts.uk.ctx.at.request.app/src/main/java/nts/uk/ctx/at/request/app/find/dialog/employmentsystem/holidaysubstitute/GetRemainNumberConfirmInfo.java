@@ -36,17 +36,16 @@ public class GetRemainNumberConfirmInfo {
 		List<AccumulationAbsenceDetail> lstAcctAbsenDetail = vacationDetails.getLstAcctAbsenDetail();
 		// Input．List＜逐次発生の休暇明細＞をソートする
 		lstAcctAbsenDetail.sort((a, b) -> {
-			if (a.getDateOccur().isUnknownDate() == false) {
-				return (b.getDateOccur().isUnknownDate() == false) ? 0 : -1;
-			}
-			if (b.getDateOccur().isUnknownDate() == false) {
-				return 1;
-			}
-
 			if (a.getDateOccur().getDayoffDate().isPresent() && b.getDateOccur().getDayoffDate().isPresent())
 				return a.getDateOccur().getDayoffDate().get().compareTo(b.getDateOccur().getDayoffDate().get());
 
 			return 0;
+		});
+		
+		lstAcctAbsenDetail.sort((a, b) -> {
+			boolean b1 = a.getDateOccur().isUnknownDate();
+			boolean b2 = b.getDateOccur().isUnknownDate();
+			return Boolean.compare(b2, b1);
 		});
 
 		// List<残数詳細情報>を作成
