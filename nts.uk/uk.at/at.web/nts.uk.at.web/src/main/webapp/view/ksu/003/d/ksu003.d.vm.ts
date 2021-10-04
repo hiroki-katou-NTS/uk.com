@@ -91,12 +91,12 @@ module nts.uk.at.view.ksu003.d {
                 vm.show2Work(data.workManagementMulti.useATR === 1);
                 if(!vm.show2Work()){
                     $('#double-work').hide();
-                    vm.actualDisplay(false);
+                    vm.selected2WorkDisplay(1);
                 }
                 vm.showActual(!_.isNull(data.scheFuncControl) ? data.scheFuncControl.displayActual : false);
                 if(!vm.showActual()){
                     $('#display-actual').hide();
-                    vm.selected2WorkDisplay(1);
+                    vm.actualDisplay(false);
                 }
                 dfd.resolve();
             }).fail(error => {
