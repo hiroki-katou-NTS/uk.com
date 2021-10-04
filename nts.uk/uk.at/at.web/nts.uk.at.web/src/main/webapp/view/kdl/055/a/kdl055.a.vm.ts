@@ -32,7 +32,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
                 }
             });
             
-            let dataShare = getShared('dataShareDialogKDL055');
+            let dataShare = getShared('dataShareDialogKDL055A');
             if(dataShare){
                 vm.sIDs  = dataShare.sIDs;
                 vm.startDate = dataShare.startDate;

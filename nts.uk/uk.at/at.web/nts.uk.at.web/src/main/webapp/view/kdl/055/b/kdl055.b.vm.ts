@@ -2,6 +2,8 @@
 
 import characteristics = nts.uk.characteristics;
 import IScheduleImport = nts.uk.at.view.kdl055.a.viewmodel.IScheduleImport;
+import setShared = nts.uk.ui.windows.setShared;
+import getShared = nts.uk.ui.windows.getShared;
 
 module nts.uk.at.view.kdl055.b.viewmodel {
 
@@ -25,8 +27,27 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     vm.filename(obj.mappingFile);
                 }
             });
-
-            if (params) {
+            
+            let dataShare = getShared('dataShareDialogKDL055B');
+            if (dataShare) {
+                vm.$blockui('show');
+                vm.$ajax(paths.getCaptureData, { data: dataShare, overwrite: vm.overwrite }).done((res: CaptureDataOutput) => {
+                    if (res) {
+                        console.log(res);
+                        vm.data = res;
+                    }
+                }).then(() => {
+                    if (vm.data) {
+                        vm.convertToGrid(vm.data);
+                        vm.loadGrid();
+                        vm.loadError(vm.data);
+                    }
+                }).fail((err: any) => {
+                    if (err) {
+                        vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
+                    }
+                }).always(() => vm.$blockui('hide'));
+            } else if (params) {
                 vm.$blockui('show');
                 vm.$ajax(paths.getCaptureData, { data: params, overwrite: vm.overwrite }).done((res: CaptureDataOutput) => {
                     if (res) {
