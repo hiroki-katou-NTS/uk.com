@@ -32,7 +32,7 @@ public class CanonicalizeHistoryContinuity {
 		for (int i = 1; i < periods.size(); i++) {
 			
 			val current = periods.get(i);
-			val prev = periods.get(periods.size() - 1);
+			val prev = periods.get(i - 1);
 			
 			// 前の履歴と繋がっている
 			if (prev.end().addDays(1).equals(current.start())) {
