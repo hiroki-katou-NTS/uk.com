@@ -118,7 +118,7 @@ export class KdwS03GComponent extends Vue {
         let isError: boolean, isException: boolean, isAlarm: boolean, 
             isErrorFre: boolean, isAlarmFre: boolean, isSpecial: boolean;    
 
-        cssAgree === 'state-excepiton' ? isException = true : isException = false;
+        cssAgree === 'state-exception' ? isException = true : isException = false;
         cssAgree === 'state-error text-error' ? isError = true : isError = false;
         cssAgree === 'state-alarm text-alarm' ? isAlarm = true : isAlarm = false;
         cssAgree === 'state-ex-special text-ex-special' ? isSpecial = true : isSpecial = false;
