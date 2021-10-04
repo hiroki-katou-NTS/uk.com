@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -139,6 +141,9 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private UserRepository userRepo;
+	
+	@Inject
+	private StampCardRepository stampCardRepo;
 	
 	
 	
@@ -330,6 +335,9 @@ public class ExternalImportPrepareRequire {
 			return wkpConfigRepo.getWkpConfig(companyId);
 		}
 
+		public Optional<StampCard> getStampCardByCardNumber(String cardNumber) {
+			return stampCardRepo.getByCardNoAndContractCode(cardNumber, contractCode);
+		}
 
 		@Override
 		public List<WorkplaceInformation> getAllWorkplaceInformations(String companyId) {
