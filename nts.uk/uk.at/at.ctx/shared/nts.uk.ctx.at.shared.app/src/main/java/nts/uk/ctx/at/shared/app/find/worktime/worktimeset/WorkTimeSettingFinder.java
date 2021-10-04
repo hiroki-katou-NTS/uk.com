@@ -469,22 +469,11 @@ public class WorkTimeSettingFinder {
         // 就業時間帯の指定が0件の場合
 		if (workTimeCodes.isEmpty() || workTimeCodes == null ) { 
 			if (referenceDate != null) {
-				// 職場で利用できる就業時間帯を取得する(上位職場も参照)
-				// 職場IDと基準日から上位職場を取得する
-				GeneralDate baseDate = GeneralDate.fromString(referenceDate, "yyyy/MM/dd");
-				List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID, workplaceID,
-						baseDate);
-				// 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-				// Loop theo AffWorkplace ID + upperWorkplaceID từ đầu đến cuối
-				List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
-				for (String wkpID : workPlaceIdList) {
-					// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
-					List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID,
-							wkpID);
-					workTimeSettingList.addAll(listWorkTimeItem);
-				}
+				
+				// 「職場IDから職場別就業時間帯を取得」
+				List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, workplaceID);
 
-				if (workTimeSettingList.isEmpty())
+				if (listWorkTimeItem.isEmpty())
 					throw new BusinessException("Msg_1525");
 
 				List<PredetemineTimeSetting> predetemineTimeSettingList = this.predetemineTimeSettingRepository
@@ -494,7 +483,7 @@ public class WorkTimeSettingFinder {
 					// 先頭に「選択なし」を追加する / Add 「選択なし/không chọn」 vào đầu
 					result.add(new WorkTimeDto("", "選択なし", "", "", "", "", 0, 0, 0, 0));
 				}
-				result = getWorkTimeDtos(workTimeSettingList, predetemineTimeSettingList);
+				result = getWorkTimeDtos(listWorkTimeItem, predetemineTimeSettingList);
 			} else {
 				throw new BusinessException("Msg_1525");
 				
