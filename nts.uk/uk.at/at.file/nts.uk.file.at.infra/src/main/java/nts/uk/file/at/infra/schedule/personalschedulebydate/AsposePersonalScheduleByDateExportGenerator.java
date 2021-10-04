@@ -4,6 +4,7 @@ import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.calendar.DayOfWeek;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -16,7 +17,6 @@ import nts.uk.screen.at.app.ksu003.start.dto.ChangeableWorkTimeDto;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-import org.apache.commons.lang3.Range;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Stateless
@@ -416,12 +415,9 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         int shapeWidth = minuteEnd == 0
                 ? (columnEnd * pixelOfColumn) - (columnStart * pixelOfColumn) - left
                 : ((columnEnd * pixelOfColumn) + Math.round(calcRatioCell(pixelOfColumn) * minuteEnd)) - (columnStart * pixelOfColumn) - left;
-        System.out.println("Input start: " + start + " ==> " + startTime.getHour() + ":" + +startTime.getMinute());
-        System.out.println("Input end: " + end + " ==> " + endTime.getHour() + ":" + endTime.getMinute());
-        System.out.println("left: " + left);
-        System.out.println("minuteStart: " + minuteStart + " ==> minuteEnd: " + minuteEnd);
-        System.out.println("columnStart: " + columnStart + " ==> columnEnd: " + columnEnd);
-        System.out.println("shapeWidth: " + shapeWidth);
+        System.out.println("Input start: " + start + "=> " + startTime.getHour() + ":" + startTime.getMinute() + ";   " + "Input end: " + end + "=> " + endTime.getHour() + ":" + endTime.getMinute());
+        System.out.println("minuteStart: " + minuteStart + "=> minuteEnd: " + minuteEnd + ";   " + "columnStart: " + columnStart + "==> columnEnd: " + columnEnd);
+        System.out.println("left: " + left + ";   " + "shapeWidth: " + shapeWidth);
 
         return new DrawRectangleProperties(columnStart, left, shapeWidth);
     }
@@ -509,9 +505,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 startTime = rangeTime1.getMinLimit();
             if (end > rangeTime1.getMaxLimit())
                 endTime = rangeTime1.getMaxLimit();
-        }
-
-        if (rangeTime2 != null && isInRange(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit())) {
+        } else if (rangeTime2 != null && isInRange(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit())) {
             if (start < rangeTime2.getMinLimit())
                 startTime = rangeTime2.getMinLimit();
             if (end > rangeTime2.getMaxLimit())
@@ -521,8 +515,19 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         return new TimeCheckedDto(startTime, endTime);
     }
 
-    private <T> List<T> checkContinuityOfTime(List<T> sources) {
-        return null;
+    private <T extends TimeCheckedDto> List<T> checkContinuityOfTime(List<T> sources) {
+        List<T> destinations = new ArrayList<>();
+        if (sources.size() > 0 && sources.size() <= 1) return sources;
+        for (int i = 1; i < sources.size(); i++) {
+            T firstItem = sources.get(i - 1);
+            if (firstItem.getEndTime().equals(sources.get(i).getStartTime())){
+                firstItem.setEndTime(sources.get(i).getEndTime());
+                sources.remove(i);
+                // TODO:
+//                destinations.add(firstItem.getStartTime(), sources.get(i).getEndTime());
+            }
+        }
+        return sources;
     }
 
     /**
@@ -740,10 +745,13 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
     private void printB5(Cells cells, List<SpecificName> specDayCompanies, List<SpecificName> specDayWorkplaces) {
         val mergedSpecDayList = Stream.of(specDayCompanies, specDayWorkplaces).flatMap(Collection::stream).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(mergedSpecDayList)) return;
+
         int rowStart = getRowStartB5(mergedSpecDayList.size());
         int row = rowStart;
         int column = 14;
-        for (SpecificName specDayName : mergedSpecDayList) {
+        for (int i = 0; i < 10; i++) {
+            SpecificName specDayName = mergedSpecDayList.get(i);
             // B5_1, B5_2
             if (row > MAX_ROW_B5) {
                 row = rowStart;
@@ -773,7 +781,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             case 10:
                 return 0;
             default:
-                return 4;
+                return 0;
         }
     }
 
