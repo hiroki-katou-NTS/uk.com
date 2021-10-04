@@ -125,7 +125,7 @@ class ExistingWorkplaceHistory {
 			String historyId = record.getKey(Items.HIST_ID).asString();
 			
 			require.deleteWorkplaceConfigurationHistoryItem(companyId, historyId);
-			require.deleteWorkplaceConfigurationHistoryItem(companyId, historyId);
+			require.deleteWorkplaceInformation(companyId, historyId);
 		}
 		
 		for (val record : recordsToChange) {
