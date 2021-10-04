@@ -21,7 +21,7 @@ public class UtilTest {
 		@Test
 		public void 空リスト() {
 			
-			val actual = Util.collectDuplicated(Collections.emptyList());
+			val actual = PeriodUtil.collectDuplicated(Collections.emptyList());
 			
 			assertThat(actual.isEmpty()).isTrue();
 		}
@@ -35,7 +35,7 @@ public class UtilTest {
 					period(3, 4)
 					);
 			
-			val actual = Util.collectDuplicated(periods);
+			val actual = PeriodUtil.collectDuplicated(periods);
 			
 			assertThat(actual.isEmpty()).isTrue();
 		}
@@ -49,7 +49,7 @@ public class UtilTest {
 					period(4, 5)
 					);
 			
-			val actual = Util.collectDuplicated(periods);
+			val actual = PeriodUtil.collectDuplicated(periods);
 			
 			assertThat(actual.size()).isEqualTo(2);
 			assertThat(actual.contains(periods.get(0))).isTrue();
@@ -66,7 +66,7 @@ public class UtilTest {
 					period(3, 9)
 					);
 			
-			val actual = Util.collectDuplicated(periods);
+			val actual = PeriodUtil.collectDuplicated(periods);
 			
 			assertThat(actual.size()).isEqualTo(2);
 			assertThat(actual.contains(periods.get(0))).isTrue();

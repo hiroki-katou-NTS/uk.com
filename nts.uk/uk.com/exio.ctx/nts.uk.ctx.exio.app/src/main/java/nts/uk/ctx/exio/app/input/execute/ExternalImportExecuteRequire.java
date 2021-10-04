@@ -50,6 +50,7 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUserRepository;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -277,13 +278,18 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void deleteAllWorkplaceConfigurations(String companyId) {
-			wkpConfigRepo.deleteAll(companyId);
+		public void updateWorkplaceConfigurationHistoryItem(String companyId, DateHistoryItem historyItem) {
+			wkpConfigRepo.updateHistoryItem(companyId, historyItem);
 		}
 
 		@Override
-		public void deleteAllWorkplaceInformations(String companyId) {
-			wkpInfoRepo.deleteAll(companyId);
+		public void deleteWorkplaceConfigurationHistoryItem(String companyId, String historyId) {
+			wkpConfigRepo.deleteWorkplaceConfig(companyId, historyId);
+		}
+
+		@Override
+		public void deleteWorkplaceInformation(String companyId, String historyId) {
+			wkpInfoRepo.deleteWorkplaceInforOfHistory(companyId, historyId);
 		}
 	}
 }

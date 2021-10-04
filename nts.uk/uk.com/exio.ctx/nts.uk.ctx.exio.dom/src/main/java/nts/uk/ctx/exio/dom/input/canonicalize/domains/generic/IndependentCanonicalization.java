@@ -151,6 +151,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	@Override
 	public AtomTask adjust(
 			RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		

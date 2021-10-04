@@ -68,11 +68,8 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 	}
 
 	@Override
-	public void deleteAll(String companyId) {
-		String query = "delete from BsymtWorkplaceConfig e where e.pk.companyId = :cid";
-		this.getEntityManager().createQuery(query)
-			.setParameter("cid", companyId)
-			.executeUpdate();
+	public void updateHistoryItem(String companyId, DateHistoryItem historyItem) {
+		this.commandProxy().update(BsymtWorkplaceConfig.fromDomain(companyId, historyItem));
 	}
 
 	@Override

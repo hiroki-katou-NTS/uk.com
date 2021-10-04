@@ -41,8 +41,6 @@ public interface WorkplaceInformationRepository {
 	public void deleteWorkplaceInforOfHistory(String companyId, String wkpHistId);
 	
 	public void deleteWorkplaceInfor(String companyId, String wkpHistId, String wkpId);
-	
-	public void deleteAll(String companyId);
 	/**
 	 * get wkpinfo for new table
 	 * @param companyId

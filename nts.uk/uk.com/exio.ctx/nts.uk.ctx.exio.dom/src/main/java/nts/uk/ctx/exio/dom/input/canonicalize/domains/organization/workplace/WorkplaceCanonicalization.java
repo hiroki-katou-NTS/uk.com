@@ -2,27 +2,26 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import lombok.Value;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 職場マスタの正準化
@@ -58,72 +57,110 @@ public class WorkplaceCanonicalization implements DomainCanonicalization {
 		public static final int 職場ID = 101;
 	}
 
+	/**
+	 * 正準化する
+	 * 手順は以下の通り：
+	 *   1. 期間の逆転をチェックし、エラー行を除外する
+	 *   2. 階層コードを正準化し、エラー行を除外する
+	 *   3. 同一履歴内での職場コードの重複をチェックし、エラー行を除外する
+	 *   4. 同一履歴内での職場階層コードの重複をチェックし、エラー行を除外する
+	 *   5. 履歴同士の重複をチェックし、エラー行を除外する
+	 *   6. 履歴同士の連続性をチェックし、エラー行を除外し、最後の履歴の終了日を99991231に補正
+	 *   7. 受入データに合わせて既存履歴を補正する
+	 *   8. 受入データの職場IDを決定する（既存データから引き継いだり新規生成したり）
+	 *   9. 受入データの履歴IDを生成、削除フラグの既定値を埋める
+	 *   10. 永続化
+	 */
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		
-		// 暫定仕様として、既存データはすべて削除する
-		require.save(context, new CompanyTarget(context).toDelete());
+		List<IntermediateResult> revisedRecords = require.getAllRevisedDataRecords(context).stream()
+				.map(r -> IntermediateResult.noChange(r))
+				.collect(toList());
 		
-		val records = require.getAllRevisedDataRecords(context);
+		if (revisedRecords.isEmpty()) {
+			return;
+		}
+		
+		Consumer<ExternalImportError> saveError = error -> {
+			require.add(context, error);
+		};
+		
+		// 1. 期間の逆転をチェックし、エラー行を除外する
+		List<RecordWithPeriod> records = Either.sequenceOf(revisedRecords)
+				.mapEither(r -> RecordWithPeriod.build(r))
+				.ifLeft(saveError)
+				.listRight();
+		
+		// 2. 階層コードを正準化し、エラー行を除外する
+		records = Either.sequenceOf(records)
+				.mapEither(r -> CanonicalizeHierarchyCode.canonicalize(r))
+				.ifLeft(saveError)
+				.listRight();
+		
+		// 3. 同一履歴内での職場コードの重複をチェックし、エラー行を除外する
+		records = CheckCodeDuplications.check(records, Items.職場コード)
+				.ifLeft(saveError)
+				.listRight();
+		
+		// 4. 同一履歴内での職場階層コードの重複をチェックし、エラー行を除外する
+		records = CheckCodeDuplications.check(records, Items.職場階層コード)
+				.ifLeft(saveError)
+				.listRight();
+
+		// 5. 履歴同士の重複をチェックし、エラー行を除外する
+		records = CheckHistoryDuplications.check(records)
+				.ifLeft(saveError)
+				.listRight();
+		
+		// 6. 履歴同士の連続性をチェックし、エラー行を除外し、最後の履歴の終了日を99991231に補正
+		records = CanonicalizeHistoryContinuity.canonicalize(records)
+				.ifLeft(saveError)
+				.listRight();
 		
 		if (records.isEmpty()) {
 			return;
 		}
 		
-		// 履歴の組み立て
-		val histories = buildHistories(require, context, records);
+		// 7. 受入データに合わせて既存履歴を補正する
+		val existingHistory = getExistingHistory(require, context);
+		existingHistory.canonicalize(require, context, records);
 		
-		val idMap = WorkplaceIdMap.create(histories.stream()
-				.flatMap(h -> h.records.stream())
-				.map(r -> r.revised.getItemByNo(Items.職場コード).get().getString())
-				.collect(toList()));
+		// 8. 受入データの職場IDを決定する（既存データから引き継いだり新規生成したり）
+		records = CanonicalizeWorkplaceId.canonicalize(records, existingHistory);
 		
-		histories.forEach(h -> {
-			h.canonicalize(require, context, idMap);
-		});
+		// 9. 受入データの履歴IDを生成、削除フラグの既定値を埋める
+		records = putHistoryId(records);
+		records = putDeleteFlag(records);
+		
+		// 10. 永続化
+		for (val record : records) {
+			require.save(context, record.interm.complete());
+		}
 	}
 
-	/**
-	 * 編集済みデータを履歴の形に組み立てる
-	 * @param require
-	 * @param context
-	 * @param records
-	 * @return
-	 */
-	private static List<HistoryRevisedData> buildHistories(
-			DomainCanonicalization.RequireCanonicalize require,
-			ExecutionContext context,
-			List<RevisedDataRecord> records) {
+	private static List<RecordWithPeriod> putHistoryId(List<RecordWithPeriod> records) {
 		
-		val periods = records.stream()
-				.map(r -> Util.getPeriod(r))
-				.distinct()
-				.sorted(Comparator.comparing(p -> p.start()))
+		return records.stream()
+				.collect(Collectors.groupingBy(r -> r.period.start()))
+				.entrySet()
+				.stream()
+				.flatMap(e -> {
+					val historyId = CanonicalItem.of(Items.HIST_ID, IdentifierUtil.randomUniqueId());
+					return e.getValue().stream()
+							.map(r -> r.canonicalize(i -> i.addCanonicalized(historyId)));
+				})
 				.collect(toList());
-		
-		// 期間の重複をチェック
-		Set<DatePeriod> duplicatedPeriods = Util.collectDuplicated(periods);
+	}
 
-		List<RevisedDataRecord> acceptableRecords = new ArrayList<>();
-		for (val record : records) {
-			
-			val period = Util.getPeriod(record);
-			
-			if (duplicatedPeriods.contains(period)) {
-				require.add(context, ExternalImportError.record(record.getRowNo(), "他の履歴と期間が重複しています。"));
-			} else {
-				acceptableRecords.add(record);
-			}
-		}
+	private List<RecordWithPeriod> putDeleteFlag(List<RecordWithPeriod> records) {
 		
-		return HistoryRevisedData.build(require, context, acceptableRecords);
+		return records.stream()
+				.map(r -> r.canonicalize(i -> i.optionalItem(CanonicalItem.of(Items.削除フラグ, 0))))
+				.collect(toList());
 	}
 	
-	public static interface RequireCanonicalize {
-		
-		Optional<WorkplaceConfiguration> getWorkplaceConfigurations(String companyId);
-		
-		List<WorkplaceInformation> getAllWorkplaceInformations(String companyId);
+	public static interface RequireCanonicalize extends RequireGetExistingHistory {
 	}
 
 	@Override
@@ -136,40 +173,41 @@ public class WorkplaceCanonicalization implements DomainCanonicalization {
 	@Override
 	public AtomTask adjust(
 			DomainCanonicalization.RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 
 		return AtomTask.of(() -> {
-			for (val toDelete : recordsToDelete) {
-				
-				if (CompanyTarget.isCompanyTarget(toDelete)) {
-					String companyId = toDelete.getCompanyId();
-					require.deleteAllWorkplaceConfigurations(companyId);
-					require.deleteAllWorkplaceInformations(companyId);
-				}
-			}
+			ExistingWorkplaceHistory.adjust(require, context, recordsToChange, recordsToDelete);
 		});
 	}
 	
-	@Value
-	private static class CompanyTarget {
-		ExecutionContext context;
-		
-		static boolean isCompanyTarget(AnyRecordToDelete toDelete) {
-			return toDelete.getTargetName().equals("company");
-		}
-		
-		AnyRecordToDelete toDelete() {
-			return AnyRecordToDelete.create(context, "company")
-					.addKey(0, StringifiedValue.of(context.getCompanyId()));
-		}
-	}
 	
-	public static interface RequireAdjust {
-		
-		void deleteAllWorkplaceConfigurations(String companyId);
-		
-		void deleteAllWorkplaceInformations(String companyId);
+	public static interface RequireAdjust extends ExistingWorkplaceHistory.RequireAdjust {
 	}
 
+	
+	/**
+	 * 既存履歴を取得する
+	 * @param require
+	 * @param context
+	 * @return
+	 */
+	private static ExistingWorkplaceHistory getExistingHistory(
+			RequireGetExistingHistory require,
+			ExecutionContext context) {
+		
+		val config = require.getWorkplaceConfiguration(context.getCompanyId()).get();
+		val informations = require.getAllWorkplaceInformations(context.getCompanyId());
+		
+		return new ExistingWorkplaceHistory(config, informations);
+	}
+	
+	public static interface RequireGetExistingHistory {
+		
+		Optional<WorkplaceConfiguration> getWorkplaceConfiguration(String companyId);
+		
+		List<WorkplaceInformation> getAllWorkplaceInformations(String companyId);
+		
+	}
 }

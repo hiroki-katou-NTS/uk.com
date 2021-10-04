@@ -326,7 +326,7 @@ public class ExternalImportPrepareRequire {
 		}
 
 		@Override
-		public Optional<WorkplaceConfiguration> getWorkplaceConfigurations(String companyId) {
+		public Optional<WorkplaceConfiguration> getWorkplaceConfiguration(String companyId) {
 			return wkpConfigRepo.getWkpConfig(companyId);
 		}
 

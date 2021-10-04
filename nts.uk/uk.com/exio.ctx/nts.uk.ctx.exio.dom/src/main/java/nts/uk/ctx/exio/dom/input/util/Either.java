@@ -1,13 +1,22 @@
 package nts.uk.ctx.exio.dom.input.util;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.val;
 
 /**
  * 正常系と異常系の2種類の戻り値を表現するクラス（Rightが正常系）
@@ -71,6 +80,12 @@ public interface Either<L, R> {
 		}
 	}
 	
+	boolean isRight();
+	
+	default boolean isLeft() {
+		return !isRight();
+	}
+	
 	/**
 	 * Rightであればtaskに値を渡して実行する
 	 * @param task
@@ -88,6 +103,12 @@ public interface Either<L, R> {
 	default Either<L, R> ifLeft(Consumer<L> task) {
 		return this;
 	}
+	
+	default R getRight() {
+		return getOrElseThrow(l -> new RuntimeException("this is Left: " + l));
+	}
+	
+	L getLeft();
 	
 	/**
 	 * Rightであればそれを、Leftであればotherの実行結果を返す
@@ -146,9 +167,19 @@ public interface Either<L, R> {
 		private final R value;
 		
 		@Override
+		public boolean isRight() {
+			return true;
+		}
+		
+		@Override
 		public Either<L, R> ifRight(Consumer<R> task) {
 			task.accept(value);
 			return this;
+		}
+		
+		@Override
+		public L getLeft() {
+			throw new RuntimeException("this is Right: " + value);
 		}
 
 		@Override
@@ -183,9 +214,18 @@ public interface Either<L, R> {
 		private final L value;
 		
 		@Override
+		public boolean isRight() {
+			return false;
+		}
+		
+		@Override
 		public Either<L, R> ifLeft(Consumer<L> task) {
 			task.accept(value);
 			return this;
+		}
+		@Override
+		public L getLeft() {
+			return value;
 		}
 
 		@Override
@@ -210,5 +250,127 @@ public interface Either<L, R> {
 			return Either.left(value);
 		}
 		
+	}
+	
+	public static <L, R> Sequence<L, R> sequenceEmpty() {
+		return new Sequence<>(Collections.emptyList());
+	}
+	
+	public static <R> Sequence<Void, R> sequenceOf(Collection<R> rights) {
+		
+		val list = rights.stream()
+				.map(e -> Either.<Void, R>right(e))
+				.collect(toList());
+		
+		return new Sequence<>(list);
+	}
+	
+	public static <L, R> Sequence<L, R> sequenceOf(Collection<L> lefts, Collection<R> rights) {
+		
+		List<Either<L, R>> list = new ArrayList<>();
+		lefts.forEach(l -> list.add(Either.left(l)));
+		rights.forEach(r -> list.add(Either.right(r)));
+
+		return new Sequence<>(list);
+	}
+	
+	@RequiredArgsConstructor
+	public static class Sequence<L, R> {
+		
+		private final List<Either<L, R>> list;
+		
+		public static <L, R> Sequence<L, R> merge(List<Sequence<L, R>> sequences) {
+			
+			List<Either<L, R>> newList = new ArrayList<>();
+			
+			for (val s : sequences) {
+				newList.addAll(s.list);
+			}
+			
+			return new Sequence<>(newList);
+		}
+		
+		public <L2, R2> Sequence<L2, R2> mapEither(Function<? super R, Either<L2, R2>> rightEitherMapper) {
+			
+			List<Either<L2, R2>> newList = streamRight()
+					.map(rightEitherMapper)
+					.collect(toList());
+
+			return new Sequence<>(newList);
+		}
+		
+		public <R2> Sequence<L, R2> map(Function<? super R, R2> rightMapper) {
+
+			List<Either<L, R2>> newList = new ArrayList<>();
+			
+			list.forEach(e -> {
+				if (e.isRight()) {
+					newList.add(Either.right(rightMapper.apply(e.getRight())));
+				} else {
+					newList.add(Either.left(e.getLeft()));
+				}
+			});
+
+			return new Sequence<>(newList);
+		}
+		
+		public <L2> Sequence<L2, R> mapLeft(Function<? super L, L2> leftMapper) {
+
+			List<Either<L2, R>> newList = new ArrayList<>();
+			
+			list.forEach(e -> {
+				if (e.isLeft()) {
+					newList.add(Either.left(leftMapper.apply(e.getLeft())));
+				} else {
+					newList.add(Either.right(e.getRight()));
+				}
+			});
+
+			return new Sequence<>(newList);
+		}
+		
+		public Sequence<R, R> separate(Predicate<R> predicate) {
+			
+			List<Either<R, R>> newList = new ArrayList<>();
+			streamRight().forEach(r -> {
+				if (predicate.test(r)) {
+					newList.add(Either.right(r));
+				} else {
+					newList.add(Either.left(r));
+				}
+			});
+
+			return new Sequence<>(newList);
+		}
+		
+		public Sequence<L, R> ifRight(Consumer<R> task) {
+			streamRight().forEach(task);
+			return this;
+		}
+		
+		public Sequence<L, R> ifLeft(Consumer<L> task) {
+			streamLeft().forEach(task);
+			return this;
+		}
+		
+		public List<R> listRight() {
+			return streamRight().collect(toList());
+		}
+		
+		public List<L> listLeft() {
+			return streamLeft().collect(toList());
+		}
+		
+		public Stream<R> streamRight() {
+			return list.stream()
+					.filter(e -> e.isRight())
+					.map(e -> e.getRight());
+		}
+		
+		public Stream<L> streamLeft() {
+			return list.stream()
+					.filter(e -> e.isLeft())
+					.map(e -> e.getLeft());
+		}
 	}
 }

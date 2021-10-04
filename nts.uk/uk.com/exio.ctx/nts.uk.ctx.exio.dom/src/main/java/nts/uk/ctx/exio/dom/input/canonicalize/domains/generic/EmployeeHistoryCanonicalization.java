@@ -345,6 +345,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	@Override
 	public AtomTask adjust(
 			RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		

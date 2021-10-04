@@ -50,11 +50,13 @@ public interface DomainCanonicalization {
 	/**
 	 * 受入に影響される既存データを補正する
 	 * @param require
+	 * @param context
 	 * @param recordsToChange
 	 * @param recordsToDelete
 	 */
 	AtomTask adjust(
 			RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete);
 	
