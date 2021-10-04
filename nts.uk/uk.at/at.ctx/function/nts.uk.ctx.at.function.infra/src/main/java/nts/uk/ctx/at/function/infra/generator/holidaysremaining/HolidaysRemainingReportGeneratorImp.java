@@ -377,11 +377,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         totalRowDetails += countM(dataSource, employee);
         totalRowDetails += countO(dataSource, employee);
 
-        if (totalRowDetails < 6) {
+        if (totalRowDetails < 5) {
             // Insert blank rows
-            cells.copyRows(cells, 54, firstRow, 6 - totalRowDetails);
-            firstRow += (6 - totalRowDetails) ;
-            count += (6 - totalRowDetails) ;
+            cells.copyRows(cells, 54, firstRow, 5 - totalRowDetails);
+            firstRow += (5 - totalRowDetails) ;
+            count += (5 - totalRowDetails) ;
         }
         for (int i = 0; i < NUMBER_COLUMN; i++) {
             setBottomBorderStyle(cells.get(firstRow - 1, i));
