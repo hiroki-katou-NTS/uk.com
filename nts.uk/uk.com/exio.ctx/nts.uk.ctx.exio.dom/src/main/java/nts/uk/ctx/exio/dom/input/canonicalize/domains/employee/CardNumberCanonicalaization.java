@@ -54,16 +54,20 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 		Set<KeyValues> importingKeys = new HashSet<>();
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms ->{
 			for(val interm : interms) {
+				//if (context.getMode() == ImportingMode.DELETE_DOMAIN_BEFOREHAND) {
+				if (context.getMode() != ImportingMode.INSERT_ONLY && context.getMode() != ImportingMode.UPDATE_ONLY) {
+					// 既存データがあれば削除する（ドメイン全消し）
+					require.save(context, toDelete(context));
+				}
 				
 				// 重複チェック
 				val keyValues = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValues)) {
 					require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
-					return; // 次のレコードへ
+					continue; // 次のレコードへ
 				}
 				importingKeys.add(keyValues);
 				val addedInterm = interm.addCanonicalized(getFixedItems());
-				
 				
 				if(context.getMode() == ImportingMode.INSERT_ONLY) {
 					
@@ -78,19 +82,15 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 					if(require.getStampCardByCardNumber(keyValues.getString(1)).isPresent()) {
 						require.save(context, addedInterm.complete());
 					}
-					
 				}
-				else if (context.getMode() == ImportingMode.DELETE_RECORD_BEFOREHAND) {
-					// 既存データがあれば削除する（削除時はIDで削除するため、有無をチェックする）
-					val optStampCard = require.getStampCardByCardNumber(keyValues.getString(1));
-					if(require.getStampCardByCardNumber(keyValues.getString(1)).isPresent()) {
-						require.save(context, toDelete(optStampCard.get().getStampCardId(), context));
+				else {
+					if (context.getMode() == ImportingMode.DELETE_RECORD_BEFOREHAND) {
+						// 既存データがあれば削除する（削除時はIDで削除するため、有無をチェックする）
+						val optStampCard = require.getStampCardByCardNumber(keyValues.getString(1));
+						if(require.getStampCardByCardNumber(keyValues.getString(1)).isPresent()) {
+							require.save(context, toDelete(optStampCard.get().getStampCardId(), context));
+						}
 					}
-					require.save(context, addedInterm.complete());
-				}
-				else if (context.getMode() == ImportingMode.DELETE_DOMAIN_BEFOREHAND) {
-					// 既存データがあれば削除する（ドメイン全消し）
-					require.save(context, toDelete(context));
 					require.save(context, addedInterm.complete());
 				}
 			}
