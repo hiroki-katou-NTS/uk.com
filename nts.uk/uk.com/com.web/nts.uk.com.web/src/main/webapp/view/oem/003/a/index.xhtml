@@ -30,7 +30,7 @@
         <!-- A1 -->
         <a class="goback" data-bind="ntsLinkButton: { jump: '/view/oem/001/a/index.xhtml' }">#{i18n.getText('OEM003_20')}</a>
         <!-- A1_1 -->
-        <button tabindex="1" class="proceed" data-bind="enable: $root.errors.isEmpty, click: clickRegister">#{i18n.getText('OEM003_2')}</button>
+        <button id="btn-register" tabindex="1" class="proceed" data-bind="enable: $root.errors.isEmpty, click: clickRegister">#{i18n.getText('OEM003_2')}</button>
         <!-- A1_2 -->
         <button tabindex="2" style="margin-left: 50px;" data-bind="click: clickExport">#{i18n.getText('OEM003_3')}</button>
       </div>
@@ -50,11 +50,11 @@
             constraint: 'EquipmentFormTitle'}"/>
         </div>
         <div class="fixed-flex-layout">
-          <div class="fixed-flex-layout-left" style="padding: 0; width: 1000px; display: inline-flex;">
+          <div class="fixed-flex-layout-left" style="padding: 0; width: 1095px; display: inline-flex;">
             <!-- A3_1 -->
             <div class="label" style="min-width: 175px;" data-bind="ntsFormLabel: { text: $vm.$i18n('OEM003_4') }"></div>
             <!-- A3_2 -->
-            <button style="min-width: 90px; height: 35px;" data-bind="click: clickAdd">#{i18n.getText('OEM003_5')}</button>
+            <button style="min-width: 90px; height: 35px;" data-bind="click: clickAdd, enable: enableButtonAdd()">#{i18n.getText('OEM003_5')}</button>
           </div>
         </div>
         <div class="fixed-flex-layout">
@@ -66,11 +66,11 @@
                   <table class="data-table ui-iggrid-headertable ui-widget-header ui-helper-reset">
                     <colgroup>
                       <col style="width: 40px;"/>
-                      <col style="width: 145px;"/>
+                      <col style="width: 155px;"/>
                       <col style="width: 80px;"/>
                       <col style="width: 150px;"/>
-                      <col style="width: 62px;"/>
-                      <col style="width: 62px;"/>
+                      <col style="width: 94px;"/>
+                      <col style="width: 94px;"/>
                       <col style="width: 62px;"/>
                       <col style="width: 50px;"/>
                       <col style="width: 300px;"/>
@@ -125,15 +125,15 @@
               </tr>
               <tr>
                 <td>
-                  <div class="ui-iggrid-scrolldiv" style="overflow-y: scroll; height: 280px;">
+                  <div class="ui-iggrid-scrolldiv" style="overflow-y: scroll; height: 290px;">
                     <table class="data-table">
                       <colgroup>
                         <col style="width: 40px;"/>
-                        <col style="width: 145px;"/>
+                        <col style="width: 155px;"/>
                         <col style="width: 80px;"/>
                         <col style="width: 150px;"/>
-                        <col style="width: 62px;"/>
-                        <col style="width: 62px;"/>
+                        <col style="width: 94px;"/>
+                        <col style="width: 94px;"/>
                         <col style="width: 62px;"/>
                         <col style="width: 50px;"/>
                         <col style="width: 300px;"/>
@@ -154,7 +154,7 @@
                               required: true,
                               option: {
                                 textalign: 'left',
-                                width: '121px'
+                                width: '131px'
                               }
                             }"/>
                           </td>
@@ -194,14 +194,14 @@
                           </td>
                           <td>
                             <!-- A4_D5 -->
-                            <com:ko-if bind="isCharOrNumber() || isItemTypeNull()">
+                            <com:ko-if bind="isCharOrNumber()	|| isItemTypeNull()">
                               <input tabindex="9" data-bind="ntsNumberEditor: {
                                 name: '#[OEM003_11]',
                                 constraint: 'MinimumUsageRecord',
                                 value: min,
                                 required: ko.computed(() => isNumeric() &amp;&amp; !isItemTypeNull()),
-                                enable: isNumeric() &amp;&amp; !isItemTypeNull(),
-                                option: { textalign: 'center', width: '38px' }
+                                enable: ko.computed(() => isNumeric() &amp;&amp; !isItemTypeNull()),
+                                option: { textalign: 'center', width: '70px' }
                               }"/>
                             </com:ko-if>
                             <!-- A4_D5_1 -->
@@ -213,12 +213,12 @@
                                 inputFormat: 'time',
                                 mode: 'time',
                                 required: isTime(),
-                                option: { textalign: 'center', width: '38px' }
+                                option: { textalign: 'center', width: '70px' }
                               }"/>
                             </com:ko-if>
                           </td>
                           <td>
-                            <com:ko-if bind="isNumeric() || isItemTypeNull()">
+                            <com:ko-if bind="ko.computed(() => isNumeric() || isItemTypeNull())">
                               <!-- A4_D6 -->
                               <input tabindex="10" data-bind="ntsNumberEditor: {
                                 name: '#[OEM003_12]',
@@ -226,7 +226,7 @@
                                 value: max,
                                 required: ko.computed(() => isNumeric() || isItemTypeNull()),
                                 enable: !isItemTypeNull(),
-                                option: { textalign: 'center', width: '38px' }
+                                option: { textalign: 'center', width: '70px' }
                               }"/>
                             </com:ko-if>
                             <com:ko-if bind="isTime()">
@@ -238,7 +238,7 @@
                                 inputFormat: 'time',
                                 mode: 'time',
                                 required: isTime(),
-                                option: { textalign: 'center', width: '38px' }
+                                option: { textalign: 'center', width: '70px' }
                               }"/>
                             </com:ko-if>
                             <com:ko-if bind="isCharacter()">
@@ -248,7 +248,7 @@
                                 constraint: 'DigitsNumber',
                                 value: digitsNo,
                                 required: isCharacter(),
-                                option: { textalign: 'center', width: '38px' }
+                                option: { textalign: 'center', width: '70px' }
                               }"/>
                             </com:ko-if>
                           </td>
@@ -259,7 +259,7 @@
                               constraint: 'UsageRecordUnit',
                               value: unit,
                               enable: isCharOrNumber(),
-                              option: { textalign: 'center', width: '38px' }
+                              option: { textalign: 'center', width: '70px' }
                             }"/>
                           </td>
                           <td>
