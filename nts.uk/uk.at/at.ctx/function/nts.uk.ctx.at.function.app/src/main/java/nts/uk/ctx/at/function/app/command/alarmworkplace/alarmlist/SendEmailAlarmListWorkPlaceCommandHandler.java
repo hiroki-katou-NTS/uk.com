@@ -10,13 +10,21 @@ import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeAlarmListAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.mailserver.MailServerAdapter;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleExportRpAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
 import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.OutputErrorInfo;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSetting;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSettingRepository;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormalRepository;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.NormalAutoClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.SendEmailService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.sendemail.WorkplaceSendEmailService;
@@ -28,7 +36,12 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 /**
@@ -75,6 +88,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 
     @Inject
     private EmployeeAlarmListAdapter employeeAlarmListAdapter;
+
+    @Inject
+    private RoleExportRpAdapter roleExportRpAdapter;
 
 
     @Override
@@ -130,11 +146,11 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                     mailSendFlag = false;
                 }
                 for (Map.Entry<String, String> role : roleMap.entrySet()) {
-                        OptionalInt range = roleAdaptor.findEmpRangeByRoleID(role.getValue());
-                        if (!range.isPresent() || range.getAsInt() == EmployeeReferenceRange.ONLY_MYSELF.value) {
-                            mailSendFlag = false;
-                            break;
-                        }
+                    OptionalInt range = roleAdaptor.findEmpRangeByRoleID(role.getValue());
+                    if (!range.isPresent() || range.getAsInt() == EmployeeReferenceRange.ONLY_MYSELF.value) {
+                        mailSendFlag = false;
+                        break;
+                    }
 
                 }
                 mapFiler.put(entry.getKey(), filterManager);
@@ -168,26 +184,28 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         val exportWkrPl = command.listValueExtractAlarmDto.stream().filter(x -> {
             return isCategoryMatch(command.getWorkplaceIds(), x.getWorkplaceID());
         }).collect(Collectors.toList());
-        if(employeeIdMap.isEmpty() && empIdList.isEmpty()){
+        if (employeeIdMap.isEmpty() && empIdList.isEmpty()) {
             throw new BusinessException("Msg_2295");
         }
-        if (mailSendFlag && !employeeIdMap.isEmpty()) {            //アルゴリズム「メール送信処理」を実行する。
-            managerErrorList = workplaceSendEmailService.alarmWorkplacesendEmail(
-                    employeeIdMap,
-                    exportWkrPl,
-                    exMailListNOrmal.get(),
-                    command.getCurrentAlarmCode(),
-                    useAuthentication
-            );
-        }
-        //取得したList<メール送信社員ID>　！＝　Empty
-        if (mailSendFlag && !empIdList.isEmpty()) {
-            personError = workplaceSendEmailService.alarmWorkplacesendEmail(empIdList,
-                    exportWkrPl,
-                    exMailListNOrmal.get(),
-                    command.getCurrentAlarmCode(),
-                    useAuthentication
-            );
+        if (roleExportRpAdapter.getCurrentLoginerRole().isEmployeeCharge()) {
+            if (mailSendFlag && !employeeIdMap.isEmpty()) {            //アルゴリズム「メール送信処理」を実行する。
+                managerErrorList = workplaceSendEmailService.alarmWorkplacesendEmail(
+                        employeeIdMap,
+                        exportWkrPl,
+                        exMailListNOrmal.get(),
+                        command.getCurrentAlarmCode(),
+                        useAuthentication
+                );
+            }
+            //取得したList<メール送信社員ID>　！＝　Empty
+            if (mailSendFlag && !empIdList.isEmpty()) {
+                personError = workplaceSendEmailService.alarmWorkplacesendEmail(empIdList,
+                        exportWkrPl,
+                        exMailListNOrmal.get(),
+                        command.getCurrentAlarmCode(),
+                        useAuthentication
+                );
+            }
         }
 
         if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
