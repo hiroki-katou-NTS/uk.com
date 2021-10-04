@@ -4557,14 +4557,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param: any = { sIDs: self.sids(), startDate: moment(self.dateTimePrev()).format('YYYY/MM/DD'), endDate: moment(self.dateTimeAfter()).format('YYYY/MM/DD') };
-            setShared('dataShareDialogKDL055', param);
+            setShared('dataShareDialogKDL055A', param);
             nts.uk.ui.windows.sub.modal("/view/kdl/055/a/index.xhtml").onClosed(() => {
-                let result = getShared('paramB');
-                console.log(result);
-                if (result) {
-                    self.getNewData(userInfor.disPlayFormat).done(() => {
-                        if (self.mode() == 'edit' && self.selectedModeDisplayInBody() == 'time') {
-                            self.diseableCellsTime();
+                let paramB = getShared('paramB');
+                console.log(paramB);
+                if (paramB) {
+                    setShared('dataShareDialogKDL055B', paramB);
+                    nts.uk.ui.windows.sub.modal("/view/kdl/055/b/index.xhtml").onClosed(() => {
+                        let resultB = getShared('resultB');
+                        console.log(resultB);
+                        if (resultB == 'Updated') {
+                            self.getNewData(userInfor.disPlayFormat).done(() => {
+                                if (self.mode() == 'edit' && self.selectedModeDisplayInBody() == 'time') {
+                                    self.diseableCellsTime();
+                                }
+                            });
                         }
                     });
                 }
