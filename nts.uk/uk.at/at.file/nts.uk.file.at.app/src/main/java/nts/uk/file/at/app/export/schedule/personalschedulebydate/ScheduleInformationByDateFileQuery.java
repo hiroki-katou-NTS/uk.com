@@ -85,7 +85,8 @@ public class ScheduleInformationByDateFileQuery {
             // 勤務種類コード = 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード
             val workTypeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
             // 就業時間帯コード = 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード
-            val workTimeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
+            val workTimeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ? dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v() : null;
+            if (workTimeCode == null) continue;
 
             val workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst();
             val workTimeSetOpt = workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst();
