@@ -534,13 +534,12 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
 
     private String charLineBreak(String source, int maxLength) {
         StringBuilder destination = new StringBuilder();
-        if(source.length()<= 8 && source.length()>= 4){
-            destination.append("\n");
-        }
         for (int i = 1; i <= source.length(); i++) {
             if (i > maxLength) break;
             destination.append(source.charAt(i - 1));
-            if (i == 4 || i == 8) destination.append("\n");
+            if(source.length()>4){
+                if (i == 4 || i == 8) destination.append("\n");
+            }
         }
         return destination.toString();
     }
