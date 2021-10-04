@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="ksu008.a.main.css"/>
+        <com:scriptfile path="ksu008.a.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area" tabindex="-1">
+            <button tabindex="1" data-bind="">#{i18n.getText('KSU008_5')}</button>
+            <button tabindex="2" data-bind="">#{i18n.getText('KSU008_6')}</button>
+        </div>
+
+        <div tabindex="-1" id="contents-area">
+            <div class="table">
+                <div class="cell valign-top">
+
+                </div>
+
+                <div class="cell valign-top">
+
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
