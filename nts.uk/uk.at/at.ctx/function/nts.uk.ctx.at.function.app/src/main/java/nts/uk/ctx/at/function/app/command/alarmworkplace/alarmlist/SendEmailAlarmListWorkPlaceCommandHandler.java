@@ -168,6 +168,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         val exportWkrPl = command.listValueExtractAlarmDto.stream().filter(x -> {
             return isCategoryMatch(command.getWorkplaceIds(), x.getWorkplaceID());
         }).collect(Collectors.toList());
+        if(employeeIdMap.isEmpty() && empIdList.isEmpty()){
+            throw new BusinessException("Msg_2295");
+        }
         if (mailSendFlag && !employeeIdMap.isEmpty()) {            //アルゴリズム「メール送信処理」を実行する。
             managerErrorList = workplaceSendEmailService.alarmWorkplacesendEmail(
                     employeeIdMap,
