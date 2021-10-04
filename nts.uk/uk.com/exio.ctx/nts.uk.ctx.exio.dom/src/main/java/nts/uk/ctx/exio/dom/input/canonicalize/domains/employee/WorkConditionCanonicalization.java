@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,7 +18,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
@@ -143,31 +141,24 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-		// 受入データ内の重複チェック
-		Set<KeyValues> importingKeys = new HashSet<>();
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
+			List<ExternalImportError> employeeErrors = new ArrayList<>();
+			
 			for(val interm : interms) {
-				
-				val targetKey = getPrimaryKeys(interm);
-				val error = ErrorChecker.check(interm, importingKeys, targetKey);
-				if(error.isPresent()) {
-					require.add(context, error.get());
-					return; // 次のレコードへ
-				}
-				importingKeys.add(targetKey);
+				ErrorChecker.check(interm).ifPresent(error ->{
+					employeeErrors.add(error);
+					require.add(context, error);
+				});
+			}
+			if(employeeErrors.isEmpty()) {
 				//既存データのチェックと保存は継承先に任せる
-				super.canonicalizeHistory(require, context, Arrays.asList(interm))
+				super.canonicalizeHistory(require, context, interms)
 					.forEach(result -> {
 						require.save(context, result.complete());
-					});
+					});				
 			}
 		});
-	}
-	
-	private static KeyValues getPrimaryKeys(IntermediateResult interm) {
-		//このドメインのKeyはSIDなので、Stringで取り出す。
-		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
 	}
 	
 	/**
@@ -204,11 +195,7 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 		/**
 		 * チェック依頼窓口 
 		 */
-		public static Optional<ExternalImportError> check(IntermediateResult interm, Set<KeyValues> importingKeys, KeyValues targetKey){
-			//PK
-			if (importingKeys.contains(targetKey)) {
-				return Optional.of(ExternalImportError.record(interm.getRowNo(), "社員コードが重複しています。"));
-			}
+		public static Optional<ExternalImportError> check(IntermediateResult interm){
 			//休暇加算時間
 			if(!hasTimeAllItemNoOrAllNothing(interm, addingTime.keySet())) {
 				return  Optional.of(ExternalImportError.record(interm.getRowNo(),
@@ -224,15 +211,14 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 		 * All or Nothing でTrue,歯抜けの時はは抜けてる項目名 
 		 */
 		private static boolean hasTimeAllItemNoOrAllNothing(IntermediateResult interm, Set<Integer> items) {
-			return (items.stream().allMatch(t -> interm.getItemByNo(t).get().isNull())
-			|| items.stream().allMatch(t -> !interm.getItemByNo(t).get().isNull()));
+			return (items.stream().allMatch(t -> interm.isImporting(t))
+			|| items.stream().allMatch(t -> !interm.isImporting(t)));
 		}
 		
 		private static Optional<ExternalImportError> checkSchedule(IntermediateResult interm) {
 			if(useSchedule(interm)) {
-				if(interm.getItemByNo(Items.スケジュール作成方法).isPresent()
-			 && !interm.getItemByNo(Items.スケジュール作成方法).get().isNull()) {
-					val createMethod = EnumAdaptor.valueOf(interm.getItemByNo(Items.スケジュール作成方法).get().getInt().intValue(),WorkScheduleBasicCreMethod.class);
+				if(interm.isImporting(Items.スケジュール作成方法)) {
+					val createMethod = EnumAdaptor.valueOf(interm.getItemByNo(Items.スケジュール作成方法).get().getJavaInt(),WorkScheduleBasicCreMethod.class);
 					switch(createMethod) {
 						case BUSINESS_DAY_CALENDAR:
 							return lackScheduleItem("カレンダー", calender, interm);
@@ -251,7 +237,7 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 		}
 
 		private static Optional<ExternalImportError> lackScheduleItem(String createScheduleMethod, Map<Integer, String> itemsMap, IntermediateResult interm) {
-			if(itemsMap.keySet().stream().allMatch(t -> !interm.getItemByNo(t).get().isNull())) {
+			if(itemsMap.keySet().stream().allMatch(t -> interm.isImporting(t))) {
 				return Optional.empty();
 			}
 			return Optional.of(ExternalImportError.record(interm.getRowNo(),
