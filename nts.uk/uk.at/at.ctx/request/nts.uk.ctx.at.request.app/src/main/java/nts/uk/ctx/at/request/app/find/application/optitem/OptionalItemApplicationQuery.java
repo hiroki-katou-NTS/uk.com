@@ -115,7 +115,7 @@ public class OptionalItemApplicationQuery {
             AnyItemValueDto inputOptionalItem = iterator.next();
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
             ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(DailyItemList.getOption(inputOptionalItem.getItemNo()).map(i -> i.itemId).orElse(0));
-            Optional<BigDecimal> unit = controlOfAttendanceItems != null ? controlOfAttendanceItems.getInputUnitOfTimeItem() : Optional.empty();
+            Optional<BigDecimal> unit = Optional.empty();
             /* kiểm tra bội của đơn vị, không phải là bội thì thông báo lỗi Msg_1693*/
             OptionalItem optionalItem = optionalItemMap.get(inputOptionalItem.getItemNo());
             CalcResultRange range = optionalItem.getCalcResultRange();

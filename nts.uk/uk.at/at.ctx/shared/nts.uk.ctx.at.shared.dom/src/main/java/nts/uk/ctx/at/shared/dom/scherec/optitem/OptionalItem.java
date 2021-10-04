@@ -61,6 +61,9 @@ public class OptionalItem extends AggregateRoot {
 	// 属性
 	private OptionalItemAtr optionalItemAtr;
 
+	// チェックボックスで入力する
+	private boolean inputCheck;
+
 	/** The calculation result range. */
 	// 計算結果の範囲
 	private CalcResultRange calcResultRange;
@@ -161,6 +164,7 @@ public class OptionalItem extends AggregateRoot {
 		this.calcAtr = memento.getCalcAtr();
 		this.note = memento.getNote();
 		this.description = memento.getDescription();
+		this.inputCheck = memento.isInputCheck();
 	}
 
 	/**
@@ -181,6 +185,7 @@ public class OptionalItem extends AggregateRoot {
 		memento.setCalAtr(this.calcAtr);
 		memento.setNote(this.note);
 		memento.setDescription(this.description);
+		memento.setInputCheck(this.inputCheck);
 	}
 
 	/* (non-Javadoc)

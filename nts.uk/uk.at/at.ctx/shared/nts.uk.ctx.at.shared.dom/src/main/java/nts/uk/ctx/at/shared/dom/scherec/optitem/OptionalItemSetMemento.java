@@ -96,4 +96,6 @@ public interface OptionalItemSetMemento {
 	 * @param description
 	 */
 	void setDescription(Optional<DescritionOptionalItem> description);
+
+	void setInputCheck(boolean inputCheck);
 }

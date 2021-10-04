@@ -161,4 +161,9 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
         this.entity.setDescription(description.isPresent() ? description.get().v() : null);
     }
 
+	@Override
+	public void setInputCheck(boolean inputCheck) {
+		this.entity.setInputCheck(inputCheck);
+	}
+
 }

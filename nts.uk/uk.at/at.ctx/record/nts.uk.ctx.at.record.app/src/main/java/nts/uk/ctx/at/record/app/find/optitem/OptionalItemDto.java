@@ -67,6 +67,8 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	/** The description */
 	private String description;
 
+	private boolean inputCheck;
+
 	/*
 	 * (non-Javadoc)
 	 * 

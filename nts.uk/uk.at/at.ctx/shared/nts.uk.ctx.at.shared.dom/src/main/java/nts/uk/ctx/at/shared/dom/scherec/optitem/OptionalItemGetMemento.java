@@ -93,4 +93,6 @@ public interface OptionalItemGetMemento {
 	 * @return the descroption
 	 */
 	Optional<DescritionOptionalItem> getDescription();
+
+	boolean isInputCheck();
 }

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.event.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.event.OptionalItemAtrExport;
@@ -33,25 +34,25 @@ public class AttendanceAtrServiceImpl implements AttendanceAtrService {
 		// ドメインモデル「日次の勤怠項目」を更新する
 		if (performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
 		    int dailyAttId = this.getDailyAttId(domainEvent.getOptionalItemNo().v());
-		    Optional<DailyAttendanceItem> dailyItemOtp = dailyAttendanceItemRepository.getDailyAttendanceItem(companyId,
-		            dailyAttId);
-		    if (dailyItemOtp.isPresent()) {
-		        DailyAttendanceItem dailyItem = dailyItemOtp.get();
-		        dailyItem.setDailyAttendanceAtr(this.getDailyAttendanceAtr(domainEvent.getOptionalItemAtr()));
-		        dailyItem.setPrimitiveValue(this.getDailyPrimitiveValue(domainEvent.getOptionalItemAtr()));
-		        dailyAttendanceItemRepository.update(dailyItem);
-		    }
-		} else {
-		    int monthlyAttId = this.getMonthlyAttId(domainEvent.getOptionalItemNo().v());
-		    Optional<MonthlyAttendanceItem> monthlyItemOtp = monthlyAttendanceItemRepository
-		            .findByAttendanceItemId(companyId, monthlyAttId);
-		    if (monthlyItemOtp.isPresent()) {
-		        MonthlyAttendanceItem monthlyItem = monthlyItemOtp.get();
-		        monthlyItem.setMonthlyAttendanceAtr(this.getMonthlyAttendanceAtr(domainEvent.getOptionalItemAtr()));
-		        monthlyItem.setPrimitiveValue(this.getMonthlyPrimitiveValue(domainEvent.getOptionalItemAtr()));
-		        monthlyAttendanceItemRepository.update(monthlyItem);
-		    }
+		    dailyAttendanceItemRepository.getDailyAttendanceItem(companyId, dailyAttId).ifPresent(dailyItem -> {
+				dailyItem.setDailyAttendanceAtr(this.getDailyAttendanceAtr(domainEvent.getOptionalItemAtr()));
+				dailyItem.setPrimitiveValue(this.getDailyPrimitiveValue(domainEvent.getOptionalItemAtr()));
+				if (domainEvent.isUse() && !domainEvent.isCalculated() && domainEvent.getOptionalItemAtr() == OptionalItemAtr.NUMBER && domainEvent.isInputCheck()) {
+					dailyItem.setMasterType(Optional.of(TypesMasterRelatedDailyAttendanceItem.NOT_USE_ATR));
+				} else {
+					dailyItem.setMasterType(Optional.empty());
+				}
+				dailyAttendanceItemRepository.update(dailyItem);
+			});
 		}
+		// 日次実績の場合、月次の勤怠項目へも同じ処理を実行する
+		// ＥＡ修正履歴NO4079
+		int monthlyAttId = this.getMonthlyAttId(domainEvent.getOptionalItemNo().v());
+		monthlyAttendanceItemRepository.findByAttendanceItemId(companyId, monthlyAttId).ifPresent(monthlyItem -> {
+			monthlyItem.setMonthlyAttendanceAtr(this.getMonthlyAttendanceAtr(domainEvent.getOptionalItemAtr()));
+			monthlyItem.setPrimitiveValue(this.getMonthlyPrimitiveValue(domainEvent.getOptionalItemAtr()));
+			monthlyAttendanceItemRepository.update(monthlyItem);
+		});
 	}
 
 	private DailyAttendanceAtr getDailyAttendanceAtr(OptionalItemAtr optionalItemAtr) {

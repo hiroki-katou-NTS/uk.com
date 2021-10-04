@@ -45,4 +45,10 @@ public interface CalcResultRangeSetMemento {
 	 * @param range the new amount range
 	 */
 	void setAmountRange(Optional<AmountRange> range);
+
+	/**
+	 * Set daily input unit
+	 * @param inputUnit
+	 */
+	void setInputUnit(Optional<DailyResultInputUnit> inputUnit);
 }

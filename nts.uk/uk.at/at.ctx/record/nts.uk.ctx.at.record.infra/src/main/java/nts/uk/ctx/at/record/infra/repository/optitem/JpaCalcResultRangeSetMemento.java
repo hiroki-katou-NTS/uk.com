@@ -13,11 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.AmountRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcRangeCheck;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRangeSetMemento;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.NumberRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.TimeRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.*;
 
 /**
  * The Class JpaCalcResultRangeSetMemento.
@@ -136,6 +132,13 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
             typeValue.setLowerMonTimeRange(lowerMonAmountOpt.isPresent() ? lowerMonAmountOpt.get().v() : null);
             typeValue.setUpperMonTimeRange(upperMonAmountOpt.isPresent() ? upperMonAmountOpt.get().v() : null);
         }
+	}
+
+	@Override
+	public void setInputUnit(Optional<DailyResultInputUnit> inputUnit) {
+		typeValue.setTimeItemInputUnit(inputUnit.isPresent() ? inputUnit.get().getTimeItemInputUnit().map(i -> i.value).orElse(null) : null);
+		typeValue.setNumberItemInputUnit(inputUnit.isPresent() ? inputUnit.get().getNumberItemInputUnit().map(i -> i.value).orElse(null) : null);
+		typeValue.setAmountItemInputUnit(inputUnit.isPresent() ? inputUnit.get().getAmountItemInputUnit().map(i -> i.value).orElse(null) : null);
 	}
 
 }

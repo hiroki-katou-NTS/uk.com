@@ -43,6 +43,7 @@ public class DailyAttendanceItem extends AggregateRoot {
 	private int nameLineFeedPosition;
 	
 	/*	マスタの種類 */
+	@Setter
 	private Optional<TypesMasterRelatedDailyAttendanceItem> masterType;
 	
 	/*	怠項目のPrimitiveValue */

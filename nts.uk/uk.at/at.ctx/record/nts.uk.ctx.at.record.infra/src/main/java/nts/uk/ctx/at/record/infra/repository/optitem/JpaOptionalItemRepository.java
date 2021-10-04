@@ -119,7 +119,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				item.setCalcAtr(rec.getInt("CALC_ATR"));
 				item.setNote(rec.getString("ITEM_NOTE"));
 				item.setDescription(rec.getString("ITEM_DESCRIP"));
-
+				item.setInputCheck(rec.getBoolean("INPUT_WITH_CHECKBOX"));
 				KrcmtAnyfResultRange range = new KrcmtAnyfResultRange();
 				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				
@@ -239,7 +239,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
                 item.setCalcAtr(rec.getInt("CALC_ATR"));
                 item.setNote(rec.getString("ITEM_NOTE"));
                 item.setDescription(rec.getString("ITEM_DESCRIP"));
-
+				item.setInputCheck(rec.getBoolean("INPUT_WITH_CHECKBOX"));
 				KrcmtAnyfResultRange range = new KrcmtAnyfResultRange();
 				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				if (rec.getInt("UPPER_LIMIT_ATR") != null) {

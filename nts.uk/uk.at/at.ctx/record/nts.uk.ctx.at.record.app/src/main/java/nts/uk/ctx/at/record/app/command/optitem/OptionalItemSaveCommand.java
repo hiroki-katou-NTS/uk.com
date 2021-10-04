@@ -68,6 +68,8 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	
 	private String description;
 
+	private boolean inputCheck;
+
 	/*
 	 * (non-Javadoc)
 	 * 

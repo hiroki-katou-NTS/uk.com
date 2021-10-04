@@ -21,9 +21,6 @@ public class ControlOfAttendanceItemsCmd {
 	
 	/**	日別実績のヘッダ背景色*/
 	private String headerBgColorOfDailyPer;
-
-	/**	時間項目の入力単位*/
-	private BigDecimal inputUnitOfTimeItem;
 	
 	private UpdateDailyAttendanceItemCommand updateDailyAttendanceItemCommand;
 	
@@ -31,8 +28,7 @@ public class ControlOfAttendanceItemsCmd {
 		return new ControlOfAttendanceItems(
 				command.getCompanyID(),
 				command.getItemDailyID(),
-				command.getHeaderBgColorOfDailyPer()==null?null: new HeaderBackgroundColor(command.getHeaderBgColorOfDailyPer()),
-				command.getInputUnitOfTimeItem()==null? null : command.getInputUnitOfTimeItem() 
-				);
+				command.getHeaderBgColorOfDailyPer() == null ? null : new HeaderBackgroundColor(command.getHeaderBgColorOfDailyPer())
+		);
 	}
 }

@@ -37,12 +37,13 @@ public class JpaControlOfAttendanceItemsRepository extends JpaRepository impleme
 
 	@Override
 	public void updateControlOfAttendanceItem(ControlOfAttendanceItems controlOfAttendanceItems) {
-		//KshmtDayAtdCtr newEntity =KshmtDayAtdCtr.toEntity(controlOfAttendanceItems);
-		KshmtDayAtdCtr updateEntity = this.queryProxy().find(new KshmtDayAtdCtrPK(
-				controlOfAttendanceItems.getCompanyID(), controlOfAttendanceItems.getItemDailyID()), KshmtDayAtdCtr.class).get();
-		updateEntity.headerBgColorOfDailyPer = controlOfAttendanceItems.getHeaderBgColorOfDailyPer().map(h -> h.v()).orElse(null);
-		updateEntity.inputUnitOfTimeItem = controlOfAttendanceItems.getInputUnitOfTimeItem().orElse(null);
-		this.commandProxy().update(updateEntity);
+		this.queryProxy().find(
+				new KshmtDayAtdCtrPK(controlOfAttendanceItems.getCompanyID(), controlOfAttendanceItems.getItemDailyID()),
+				KshmtDayAtdCtr.class
+		).ifPresent(updateEntity -> {
+			updateEntity.headerBgColorOfDailyPer = controlOfAttendanceItems.getHeaderBgColorOfDailyPer().map(h -> h.v()).orElse(null);
+			this.commandProxy().update(updateEntity);
+		});
 	}
 
 	@Override

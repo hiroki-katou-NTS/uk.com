@@ -169,4 +169,9 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
         return this.typeValue.getDescription() == null ? Optional.empty() : Optional.of(new DescritionOptionalItem(this.typeValue.getDescription()));
     }
 
+	@Override
+	public boolean isInputCheck() {
+		return this.typeValue.isInputCheck();
+	}
+
 }

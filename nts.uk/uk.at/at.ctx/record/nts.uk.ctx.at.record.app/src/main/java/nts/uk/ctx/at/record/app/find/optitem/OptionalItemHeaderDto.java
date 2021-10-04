@@ -169,4 +169,9 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
         // TODO Auto-generated method stub
         
     }
+
+	@Override
+	public void setInputCheck(boolean inputCheck) {
+
+	}
 }

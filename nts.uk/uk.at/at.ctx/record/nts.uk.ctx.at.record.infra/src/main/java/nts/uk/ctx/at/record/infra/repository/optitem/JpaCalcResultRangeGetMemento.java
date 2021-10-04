@@ -6,18 +6,9 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.Optional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.AmountRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcRangeCheck;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRangeGetMemento;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.DailyAmountRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.DailyTimeRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.DailyTimesRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.MonthlyAmountRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.MonthlyTimeRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.MonthlyTimesRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.NumberRange;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.TimeRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.*;
 
 /**
  * The Class JpaCalcResultRangeGetMemento.
@@ -108,6 +99,17 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	    return Optional.of(new AmountRange(
 	            Optional.of(new DailyAmountRange(this.typeValue.getUpperdayAmountRange(), this.typeValue.getLowerDayAmountRange())),
 	            Optional.of(new MonthlyAmountRange(this.typeValue.getUpperMonAmountRange(), this.typeValue.getLowerMonAmountRange()))));
+	}
+
+	@Override
+	public Optional<DailyResultInputUnit> getInputUnit() {
+		if (this.typeValue.getTimeItemInputUnit() == null && this.typeValue.getNumberItemInputUnit() == null && this.typeValue.getAmountItemInputUnit() == null)
+			return Optional.empty();
+		return Optional.of(new DailyResultInputUnit(
+				Optional.ofNullable(this.typeValue.getTimeItemInputUnit() == null ? null : EnumAdaptor.valueOf(this.typeValue.getTimeItemInputUnit(), TimeItemInputUnit.class)),
+				Optional.ofNullable(this.typeValue.getNumberItemInputUnit() == null ? null : EnumAdaptor.valueOf(this.typeValue.getNumberItemInputUnit(), NumberItemInputUnit.class)),
+				Optional.ofNullable(this.typeValue.getAmountItemInputUnit() == null ? null : EnumAdaptor.valueOf(this.typeValue.getAmountItemInputUnit(), AmountItemInputUnit.class))
+		));
 	}
 
 }

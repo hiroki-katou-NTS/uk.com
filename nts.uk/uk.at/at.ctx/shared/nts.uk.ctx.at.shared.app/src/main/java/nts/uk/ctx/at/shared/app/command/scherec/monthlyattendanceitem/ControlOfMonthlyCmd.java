@@ -20,9 +20,6 @@ public class ControlOfMonthlyCmd {
 	
 	/**日別実績のヘッダ背景色*/
 	private String headerBgColorOfMonthlyPer;
-
-	/**時間項目の入力単位*/
-	private BigDecimal inputUnitOfTimeItem;
 	
 	private UpdateMonthlyAttendanceItemCommand updateMonthlyAttendanceItemCommand;
 	
@@ -30,9 +27,8 @@ public class ControlOfMonthlyCmd {
 		return new ControlOfMonthlyItems(
 				command.getCompanyID(),
 				command.getItemMonthlyID(),
-				command.getHeaderBgColorOfMonthlyPer()==null?null: new HeaderBackgroundColor(command.getHeaderBgColorOfMonthlyPer()),
-				command.getInputUnitOfTimeItem()==null? null : command.getInputUnitOfTimeItem() 
-				);
+				command.getHeaderBgColorOfMonthlyPer() == null ? null : new HeaderBackgroundColor(command.getHeaderBgColorOfMonthlyPer())
+		);
 	}
 	
 }

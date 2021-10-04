@@ -41,30 +41,6 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	/** The lower limit atr. */
 	@Column(name = "LOWER_LIMIT_ATR")
 	private int lowerLimitAtr;
-
-//	/** The upper time range. */
-//	@Column(name = "UPPER_TIME_RANGE")
-//	private Integer upperTimeRange;
-//
-//	/** The lower time range. */
-//	@Column(name = "LOWER_TIME_RANGE")
-//	private Integer lowerTimeRange;
-//
-//	/** The upper number range. */
-//	@Column(name = "UPPER_NUMBER_RANGE")
-//	private Double upperNumberRange;
-//
-//	/** The lower number range. */
-//	@Column(name = "LOWER_NUMBER_RANGE")
-//	private Double lowerNumberRange;
-//
-//	/** The upper amount range. */
-//	@Column(name = "UPPER_AMOUNT_RANGE")
-//	private Integer upperAmountRange;
-//
-//	/** The lower amount range. */
-//	@Column(name = "LOWER_AMOUNT_RANGE")
-//	private Integer lowerAmountRange;
 	
 	@Column(name = "UPPER_DAY_TIME_RANGE")
 	private Integer upperDayTimeRange;
@@ -101,6 +77,15 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	
 	@Column(name = "LOWER_MON_AMOUNT_RANGE")
 	private Integer lowerMonAmountRange;
+
+	@Column(name = "INPUT_UNIT_TIME")
+	private Integer timeItemInputUnit;
+
+	@Column(name = "INPUT_UNIT_NUMBER")
+	private Integer numberItemInputUnit;
+
+	@Column(name = "INPUT_UNIT_AMOUNT")
+	private Integer amountItemInputUnit;
 
 	/**
 	 * Instantiates a new krcst calc result range.
