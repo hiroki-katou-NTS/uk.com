@@ -54,6 +54,8 @@ public class GetChildcareRemNumEachMonthImpl implements IGetChildcareRemNumEachM
                 ChildcareRemNumEachMonth monChildHdRemain = rmm.getMonChildHdRemain();
                 val thisYearUsedInfo = monChildHdRemain.getRemNumEachMonth()
                         .getThisYearUsedInfo();
+                val thisYearRemainInfo = monChildHdRemain.getRemNumEachMonth()
+                        .getThisYearRemainNumber();
                 YearMonth ym = entry.getKey();
 
                 /**    終了年月日 */
@@ -68,18 +70,20 @@ public class GetChildcareRemNumEachMonthImpl implements IGetChildcareRemNumEachM
                         /** 時間 */
                         Optional<TimeOfUse> usedTimes = usedNumber.getUsedTimes();
                         // 使用日数←子の看護休暇月別残数データ．本年使用数．使用数．日数
-                        output.setDaysOfUse(output.getDaysOfUse() == null ? 0 : output.getDaysOfUse() +
-                                usedDay.v());
+                        val oldDayOfUse = output.getDaysOfUse();
+                        output.setDaysOfUse( (oldDayOfUse == null ? 0: oldDayOfUse) + usedDay.v());
                         // 使用時間←子の看護休暇月別残数データ．本年使用数．使用数．時間
-                        usedTimes.ifPresent(timeOfUse -> output.setUsageTime(output.getUsageTime() == null ? 0 :
-                                output.getUsageTime() + timeOfUse.v()));
+                        usedTimes.ifPresent(timeOfUse -> output.setUsageTime((output.getUsageTime() == null ? 0 :
+                                output.getUsageTime()) + timeOfUse.v()));
 
                         //※子の看護休暇月別残数データ．残数に限り、合算せずに締め期間．終了日が遅い方のみ保持する
-                        if (endDate.afterOrEquals(endDateRemainingMax)) {
+                        if (endDate.afterOrEquals(endDateRemainingMax) && thisYearRemainInfo!=null) {
                             //残日数:残日数　←子の看護休暇月別残数データ．本年使用数．使用数．日数
-                            output.setRemainingDays(usedDay.v());
+                            output.setRemainingDays(thisYearRemainInfo.getRemainDay().v());
                             // 残時間:残時間　←子の看護休暇月別残数データ．本年使用数．使用数．時間
-                            usedTimes.ifPresent(e->output.setTimeRemaining(e.v()));
+                            output.setTimeRemaining(thisYearRemainInfo.getRemainTimes().isPresent() ? thisYearRemainInfo.getRemainTimes().get().v() : null);
+
+
                         }
                     }
                 }
@@ -112,36 +116,35 @@ public class GetChildcareRemNumEachMonthImpl implements IGetChildcareRemNumEachM
                 CareRemNumEachMonth monCareHdRemain = rmm.getMonCareHdRemain();
                 val thisYearUsedInfo = monCareHdRemain.getRemNumEachMonth()
                         .getThisYearUsedInfo();
+
+                val thisYearRemainInfo = monCareHdRemain.getRemNumEachMonth()
+                        .getThisYearRemainNumber();
                 YearMonth ym = entry.getKey();
 
                 /**    終了年月日 */
                 GeneralDate endDate = closurePeriod.start();
                 GeneralDate endDateRemainingMax = GeneralDate.ymd(ym.year(), ym.month(), 1);
-                if (thisYearUsedInfo == null) {
-                    continue;
-                }
+
                 /** 使用数 */
-                ChildCareNurseUsedNumber usedNumber = thisYearUsedInfo.getUsedNumber();
-                if (usedNumber == null) {
-                    continue;
-                }
+                ChildCareNurseUsedNumber usedNumber = thisYearUsedInfo == null? null : thisYearUsedInfo.getUsedNumber();
+
                 /** 日数 */
-                DayNumberOfUse usedDay = usedNumber.getUsedDay();
+                DayNumberOfUse usedDay = usedNumber == null? null: usedNumber.getUsedDay();
                 /** 時間 */
-                Optional<TimeOfUse> usedTimes = usedNumber.getUsedTimes();
+                Optional<TimeOfUse> usedTimes = usedNumber == null ? Optional.empty() :  usedNumber.getUsedTimes();
                 // 使用日数←子の看護休暇月別残数データ．本年使用数．使用数．日数
-                output.setDaysOfUse(output.getDaysOfUse() == null ? 0 : output.getDaysOfUse() +
-                        usedDay.v());
+                output.setDaysOfUse((output.getDaysOfUse() == null ? 0 : output.getDaysOfUse()) +
+                        (usedDay == null ? 0 : usedDay.v()));
                 // 使用時間←子の看護休暇月別残数データ．本年使用数．使用数．時間
-                usedTimes.ifPresent(timeOfUse -> output.setUsageTime(output.getUsageTime() == null ? 0 :
-                        output.getUsageTime() + timeOfUse.v()));
+                usedTimes.ifPresent(timeOfUse -> output.setUsageTime((output.getUsageTime() == null ? 0 :
+                        output.getUsageTime()) + timeOfUse.v()));
 
                 //※子の看護休暇月別残数データ．残数に限り、合算せずに締め期間．終了日が遅い方のみ保持する
-                if (endDate.afterOrEquals(endDateRemainingMax)) {
+                if (endDate.afterOrEquals(endDateRemainingMax) && thisYearRemainInfo!=null) {
                     //残日数:残日数　←子の看護休暇月別残数データ．本年使用数．使用数．日数
-                    output.setRemainingDays(usedDay.v());
+                    output.setRemainingDays(thisYearRemainInfo.getRemainDay().v());
                     // 残時間:残時間　←子の看護休暇月別残数データ．本年使用数．使用数．時間
-                    usedTimes.ifPresent(e->output.setTimeRemaining(e.v()));
+                    output.setTimeRemaining(thisYearRemainInfo.getRemainTimes().isPresent() ? thisYearRemainInfo.getRemainTimes().get().v() : null);
                 }
             }
             listOuput.add(output);
