@@ -189,7 +189,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 counts += 5;
             }
             val countStep = checkStepCount(employee, dataSource);
-            if ((MAX_ROW_IN_PAGE - counts) > (countStep + 5)) {
+            int countEmployInfo = 3;
+            boolean isDisplayHolidayYear = dataSource.getVariousVacationControl().isAnnualHolidaySetting()
+                    && dataSource.getHolidaysRemainingManagement()
+                    .getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
+            Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
+                    .getHolidayRemainingInfor().getGrantDate();
+            if (isDisplayHolidayYear) {
+                if(grantDate.isPresent()){
+                    countEmployInfo+=1;
+                }
+                countEmployInfo+=1;
+            }
+            if ((MAX_ROW_IN_PAGE - counts) > (countStep + countEmployInfo)) {
                 cells.copyRows(cells, 5, firstRow, 1);
                 cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
                         + SPACE + employee.getWorkplaceName());
@@ -268,7 +280,19 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 counts += 5;
             }
             val countStep = checkStepCount(employee, dataSource);
-            if ((MAX_ROW_IN_PAGE - counts) > (countStep + 5)) {
+            int countEmployInfo = 3;
+            boolean isDisplayHolidayYear = dataSource.getVariousVacationControl().isAnnualHolidaySetting()
+                    && dataSource.getHolidaysRemainingManagement()
+                    .getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
+            Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
+                    .getHolidayRemainingInfor().getGrantDate();
+            if (isDisplayHolidayYear) {
+                if(grantDate.isPresent()){
+                    countEmployInfo+=1;
+                }
+                countEmployInfo+=1;
+            }
+            if ((MAX_ROW_IN_PAGE - counts) > (countStep + countEmployInfo)) {
                 cells.copyRows(cells, 5, firstRow, 1);
                 cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
                         + SPACE + employee.getWorkplaceName());
@@ -376,18 +400,31 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         totalRowDetails += countN(dataSource, employee);
         totalRowDetails += countM(dataSource, employee);
         totalRowDetails += countO(dataSource, employee);
+        int countEmployInfo = 3;
+        boolean isDisplayHolidayYear = dataSource.getVariousVacationControl().isAnnualHolidaySetting()
+                && dataSource.getHolidaysRemainingManagement()
+                .getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
+        Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
+                .getHolidayRemainingInfor().getGrantDate();
+        if (isDisplayHolidayYear) {
+            if(grantDate.isPresent()){
+                countEmployInfo+=1;
+            }
+            countEmployInfo+=1;
+        }
         boolean checkInsertBlank = true;
-        if (totalRowDetails < 5) {
+        if (totalRowDetails < countEmployInfo) {
             // Insert blank rows
-            cells.copyRows(cells, 54, firstRow, 5 - totalRowDetails);
-            firstRow += (5 - totalRowDetails) ;
-            count += (5 - totalRowDetails) ;
+            cells.copyRows(cells, 54, firstRow, countEmployInfo - totalRowDetails);
+            firstRow += (countEmployInfo - totalRowDetails) ;
+            count += (countEmployInfo - totalRowDetails) ;
             checkInsertBlank = false;
         }
-        if(count < 11 && checkInsertBlank){
-            cells.copyRows(cells, 54, firstRow, 11 - count);
-            firstRow += (11 - count) ;
-            count += (11 - count) ;
+        int countHeaderAndInfo = 6 + countEmployInfo;
+        if(count < countHeaderAndInfo && checkInsertBlank){
+            cells.copyRows(cells, 54, firstRow, countHeaderAndInfo - count);
+            firstRow += (countHeaderAndInfo - count) ;
+            count += (countHeaderAndInfo - count) ;
         }
 
         for (int i = 0; i < NUMBER_COLUMN; i++) {
@@ -3813,15 +3850,17 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.get(firstRow + 2, 0).setValue(d2_6);
         // D2_3 No.369
         if (isDisplayHolidayYear) {
-            // D2_3
-            cells.merge(firstRow + 3, 0, 1, 2, true);
-            grantDate.ifPresent(generalDate -> cells.get(firstRow + 3, 0)
-                    .setValue(TextResource.localize("KDR001_71",
-                            generalDate.toString("yyyy/MM/dd"))));
-
-             cells.merge(firstRow + 4, 0, 1, 2, true);
+            if(grantDate.isPresent()){
+                val date = grantDate.get();
+                // D2_3
+                cells.merge(firstRow + 3, 0, 1, 2, true);
+                 cells.get(firstRow + 3, 0)
+                        .setValue(TextResource.localize("KDR001_71",
+                                date.toString("yyyy/MM/dd")));
+            }
+             cells.merge(firstRow + (grantDate.isPresent()?4:3), 0, 1, 2, true);
              String yearHoliday = "0.0";// #120238
-             cells.get(firstRow + 4, 0).setValue(TextResource.localize("KDR001_72",yearHoliday));
+             cells.get(firstRow + (grantDate.isPresent()?4:3), 0).setValue(TextResource.localize("KDR001_72",yearHoliday));
 
         }
     }
