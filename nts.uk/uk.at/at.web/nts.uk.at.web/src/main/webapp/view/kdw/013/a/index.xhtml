@@ -21,6 +21,8 @@
 			<com:scriptfile path="../share/description.js" />
 			<com:scriptfile path="./cores/fullcalendar.js" />
 
+			
+
 			<com:stylefile path="./kdw013.a.css" />
 			<com:scriptfile path="./kdw013.a.vm.js" />
 
@@ -32,6 +34,7 @@
 				<button id='btn_register' data-bind="i18n: 'KDW013_1', click: $vm.saveData, mutable: $vm.$toggle.save, hasFocus: true" class="proceed"></button>
 				<button data-bind="i18n: 'KDW013_2', click: $vm.confirm, kdw-toggle: $vm.$toggle.confirm"></button>
 				<button data-bind="i18n: 'KDW013_3', click: $vm.removeConfirm, kdw-toggle: $vm.$toggle.remove"></button>
+				<button data-bind="i18n: 'KDW013_62', click: $vm.equipmentInput"></button>
 			</div>
 			<div id="contents-area">
 				<div data-bind="
@@ -44,6 +47,7 @@
 					slotDuration: $vm.slotDuration,
 					initialDate: $vm.initialDate,
 					initialView: $vm.initialView,
+					isShowBreakTime:$vm.isShowBreakTime,
 					availableView: $vm.availableView,
 					breakTime: $vm.breakTime,
 					businessHours: $vm.businessHours,

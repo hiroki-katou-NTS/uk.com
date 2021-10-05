@@ -243,11 +243,6 @@ module nts.uk.ui.at.kdw013.calendar {
             border-top-right-radius: 0px;
             border-bottom-right-radius: 0px;
         }
-        .fc-container .fc-button-group button:not(:first-child) {
-            margin-left: -1px;
-            border-top-left-radius: 0px;
-            border-bottom-left-radius: 0px;
-        }
         .fc-container .fc-button-group>.nts-datepicker-wrapper>input.nts-input {
             width: 110px;
             height: 33px;
@@ -367,6 +362,21 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-timegrid-event-harness{
             width: 100%;
             left: 0% !important;
+        }
+        .fc-current-day-button{
+            width: 70px;
+        }
+        .fc-preview-day-button,
+        .fc-next-day-button{
+            margin-left: .75em;
+        }
+        .ui-accordion .ui-accordion-header,
+        .ui-accordion .ui-accordion-content
+        {
+            border:none  !important;
+        }
+        .fc-toolbar-chunk{
+            display: flex;
         }
 `;
 
@@ -604,6 +614,11 @@ module nts.uk.ui.at.kdw013.calendar {
                     'edit-mode': ko.unwrap($component.params.editable),
                     'view-mode': !ko.unwrap($component.params.editable)
                 }">
+            <div class="fc-date-picker" data-bind="
+                    kdw013-date-picker: 'kdw013-date-picker',
+                    initialDate: $component.params.initialDate,
+                    firstDay: $component.params.firstDay
+                "></div>
             <div class="fc-employees" data-bind="
                     kdw013-department: 'kdw013-department',
                     mode: $component.params.editable,
@@ -849,6 +864,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 firstDay,
                 editable,
                 initialDate,
+                isShowBreakTime,
                 initialView,
                 availableView,
                 viewModel,
@@ -889,11 +905,11 @@ module nts.uk.ui.at.kdw013.calendar {
 
                 const $btn = $el.find('.fc-current-day-button');
 
-                if (!current.isBetween(start, end, 'date', '[)')) {
-                    $btn.removeAttr('disabled');
-                } else {
-                    $btn.attr('disabled', 'disabled');
-                }
+//                if (!current.isBetween(start, end, 'date', '[)')) {
+//                    $btn.removeAttr('disabled');
+//                } else {
+//                    $btn.attr('disabled', 'disabled');
+//                }
             };
 
             const weekends: KnockoutObservable<boolean> = ko.observable(true);
@@ -1048,24 +1064,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .chain(workGroupDtos)
                                 .map((wg) => {
                                     const task = getTask(wg, tasks);
-                                    const { workCD1, workCD2, workCD3, workCD4, workCD5 , dropInfo} = wg;
 
                                     if (!task) {
                                         return null;
                                     }
 
                                     const relateId = randomId();
-                                    const {
-                                        taskFrameNo,
-                                        code,
-                                        cooperationInfo,
-                                        displayInfo,
-                                        expirationEndDate,
-                                        expirationStartDate,
-                                        childTaskList,
-                                        workingHours
-                                    } = task;
-
                                     return {
                                         start: new Date(),
                                         end: new Date(),
@@ -1073,23 +1077,11 @@ module nts.uk.ui.at.kdw013.calendar {
                                         backgroundColor: getBackground(wg, tasks),
                                         textColor: '',
                                         extendedProps: {
+                                            ...task,
+                                            ...wg,
                                             relateId,
                                             status: 'new',
-                                            taskFrameNo,
-                                            code,
-                                            cooperationInfo,
-                                            displayInfo,
-                                            expirationEndDate,
-                                            expirationStartDate,
-                                            childTaskList,
-                                            workCD1,
-                                            workCD2,
-                                            workCD3,
-                                            workCD4,
-                                            workCD5,
                                             remarks: '',
-                                            workingHours,
-                                            dropInfo
                                         } as any
                                     };
                                 })
@@ -1139,8 +1131,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         $(`.${POWNER_CLASS_CPY}`).removeClass(POWNER_CLASS_CPY);
                     }
                 });
-
-            $
+            
 
             // update drag item
             $datas
@@ -1359,12 +1350,17 @@ module nts.uk.ui.at.kdw013.calendar {
                     text: vm.$i18n('今日'),
                     click: () => {
                         clearSelection();
-
+                        
+                        if (moment(initialDate()).isSame(moment(new Date()), 'day')) {
+                            return;
+                        }
                         if (ko.isObservable(initialDate)) {
                             initialDate(new Date());
                         } else {
                             vm.calendar.gotoDate(formatDate(new Date()));
                         }
+                        const sc = ko.unwrap(scrollTime);
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'next-day': {
@@ -1503,14 +1499,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     click: (evt) => {
                         
                         checkEditDialog().done((v) => {
-                            if (v == 'yes') {
-                               const tg: HTMLElement = evt.target as any;
-
-                        if (tg) {
-                            tg.classList.add(POWNER_CLASS_CPY);
-
-                            popupPosition.setting(tg);
-                        } 
+                                if (v == 'yes') {
+                                   const tg: HTMLElement = evt.target as any;
+    
+                                if (tg) {
+                                    tg.classList.add(POWNER_CLASS_CPY);
+        
+                                    popupPosition.setting(tg);
+                                } 
                             }
                         });
                         
@@ -1519,8 +1515,8 @@ module nts.uk.ui.at.kdw013.calendar {
             };
 
             const headerToolbar: FullCalendar.ToolbarInput = {
-                left: 'preview-day,next-day',
-                center: 'title',
+                left: 'current-day,preview-day,next-day',
+                center: '',
                 right: 'settings'
             };
 
@@ -1796,6 +1792,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     const min = milliseconds / 60000;
                     const hour = Math.floor(min / 60);
                     const brkt = ko.unwrap(params.breakTime);
+                    const minite = Math.floor(min % 60);
                     const className = [`fc-timegrid-slot-lane-${hour}`];
 
                     // add breaktime class
@@ -1892,58 +1889,70 @@ module nts.uk.ui.at.kdw013.calendar {
                                             ko.applyBindingsToNode(sidebar, { 'sb-resizer': vm.calendar }, vm);
                                         }
                                     }
+                                    
+                                    //add check button 
+                                    const checkBtn =  $('<div class="fc-ckb-break-time">').insertBefore('.fc-settings-button').get(0);
+                                    if (checkBtn) {
+                                        const value = ko.observable(ko.unwrap(isShowBreakTime) || false);
+                                        value.subscribe((v: boolean) => {
+                                            console.log('isShowBreakTime: ' + v);
+                                        });
+                                        
+                                        ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: value, enable:ko.observable(true) , text: vm.$i18n('KDW013_54'), readonly:ko.observable(false)} });
+                                        
+                                    }
 
                                     // add date picker to both next/prev button
-                                    const dpker = $('<div>').insertAfter('.fc-preview-day-button').get(0);
-
-                                    if (dpker) {
-                                        const startDate = ko.computed({
-                                            read: () => {
-                                                const { start } = ko.unwrap(validRange);
-
-                                                return start || null;
-                                            }
-                                        });
-                                        const endDate = ko.computed({
-                                            read: () => {
-                                                const { end } = ko.unwrap(validRange);
-
-                                                if (end) {
-                                                    return moment(end).subtract(1, 'day').toDate();
-                                                }
-
-                                                return null;
-                                            }
-                                        });
-
-                                        const value = ko.observable(ko.unwrap(initialDate) || new Date());
-
-                                        value.subscribe((v: Date | null) => {
-                                            if (ko.isObservable(initialDate)) {
-                                                if (_.isDate(v)) {
-                                                    if (!moment(v).isSame(ko.unwrap(initialDate), 'date')) {
-                                                        initialDate(v);
-                                                    }
-                                                } else {
-                                                    value(ko.unwrap(initialDate) || new Date());
-                                                }
-                                            }
-                                        });
-
-                                        if (ko.isObservable(initialDate)) {
-                                            initialDate.subscribe((d: Date | null) => {
-                                                if (_.isDate(d)) {
-                                                    if (!moment(d).isSame(ko.unwrap(value), 'date')) {
-                                                        value(d);
-                                                    }
-                                                } else {
-                                                    value(new Date());
-                                                }
-                                            });
-                                        }
-
-                                        ko.applyBindingsToNode(dpker, { ntsDatePicker: { name:vm.$i18n('KDW013_8') ,value, startDate, endDate } }, vm);
-                                    }
+//                                    const dpker = $('<div>').insertAfter('.fc-preview-day-button').get(0);
+//
+//                                    if (dpker) {
+//                                        const startDate = ko.computed({
+//                                            read: () => {
+//                                                const { start } = ko.unwrap(validRange);
+//
+//                                                return start || null;
+//                                            }
+//                                        });
+//                                        const endDate = ko.computed({
+//                                            read: () => {
+//                                                const { end } = ko.unwrap(validRange);
+//
+//                                                if (end) {
+//                                                    return moment(end).subtract(1, 'day').toDate();
+//                                                }
+//
+//                                                return null;
+//                                            }
+//                                        });
+//
+//                                        const value = ko.observable(ko.unwrap(initialDate) || new Date());
+//
+//                                        value.subscribe((v: Date | null) => {
+//                                            if (ko.isObservable(initialDate)) {
+//                                                if (_.isDate(v)) {
+//                                                    if (!moment(v).isSame(ko.unwrap(initialDate), 'date')) {
+//                                                        initialDate(v);
+//                                                    }
+//                                                } else {
+//                                                    value(ko.unwrap(initialDate) || new Date());
+//                                                }
+//                                            }
+//                                        });
+//
+//                                        if (ko.isObservable(initialDate)) {
+//                                            initialDate.subscribe((d: Date | null) => {
+//                                                if (_.isDate(d)) {
+//                                                    if (!moment(d).isSame(ko.unwrap(value), 'date')) {
+//                                                        value(d);
+//                                                    }
+//                                                } else {
+//                                                    value(new Date());
+//                                                }
+//                                            });
+//                                        }
+//
+//                                        //ko.applyBindingsToNode(dpker, { ntsDatePicker: { name:vm.$i18n('KDW013_8') ,value, startDate, endDate } }, vm);
+//                                    }
 
                                     const setting = $('.fc-settings-button').get(0);
 
@@ -2616,11 +2625,11 @@ module nts.uk.ui.at.kdw013.calendar {
                     datesSet({ start, end });
 
                     // enable, disable today button when change dateRange
-                    if (!current.isBetween(start, end, 'date', '[)') && isValidRange()) {
-                        $curt.removeAttr('disabled');
-                    } else {
-                        $curt.attr('disabled', 'disabled');
-                    }
+//                    if (!current.isBetween(start, end, 'date', '[)') && isValidRange()) {
+//                        $curt.removeAttr('disabled');
+//                    } else {
+//                        $curt.attr('disabled', 'disabled');
+//                    }
 
                     // enable, disable preview button with validRange
                     if (vrs) {
@@ -2635,7 +2644,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // enable, disable next button with validRange
                     if (vre) {
-                        if (moment(end).isBefore(vre, 'day')) {
+                        
+                        let validEnd = vre == '9999-12-32' ? '9999-12-31' : vre;
+                        if (moment(end).isBefore(validEnd, 'day')) {
                             $next.removeAttr('disabled');
                         } else {
                             $next.attr('disabled', 'disabled');
@@ -2752,10 +2763,12 @@ module nts.uk.ui.at.kdw013.calendar {
             ko.computed({
                 read: () => {
                     const id = ko.unwrap<Date>(initialDate);
+                    const sc = ko.unwrap(scrollTime);
 
                     clearSelection();
 
                     vm.calendar.gotoDate(formatDate(id));
+                    vm.calendar.scrollToTime(formatTime(sc));
 
                     // update selected header color
                     
@@ -3034,9 +3047,15 @@ module nts.uk.ui.at.kdw013.calendar {
                             const cv = $tg.hasClass('fc-one-day-button') || $tg.hasClass('fc-full-week-button') ;
                             const ts = $tg.hasClass('fc-timegrid-slot');
                             const ovl = $tg.hasClass('ui-widget-overlay');
+                            const edp = $tg.closest('.fc-events li').length > 0;
+                            
+
+                            if (!edp) {
+                                $('.fc-events .edit-popup').removeClass('show');
+                            }
                             
                     
-                                if (ovl) {
+                            if (ovl) {
                                 return;
                             }
 
@@ -3056,7 +3075,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                     if (v == 'yes') {
                                         popupPosition.event(null);
                                         popupPosition.setting(null);
-
                                     }
                                 });
                             }
@@ -3369,7 +3387,7 @@ module nts.uk.ui.at.kdw013.calendar {
             validatable: false,
             virtual: false
         })
-        export class FullCalendarCopyBindingHandler implements KnockoutBindingHandler {
+        export class FullCalendarSettingBindingHandler implements KnockoutBindingHandler {
             init(element: HTMLElement, valueAccessor: () => EventApi, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const name = S_COMP_NAME;
                 const data = valueAccessor();
@@ -3388,7 +3406,7 @@ module nts.uk.ui.at.kdw013.calendar {
             }
         }
 
-        type COPY_PARAMS = {
+        type SETTING_PARAMS = {
             name: string;
             data: SettingApi;
             position: KnockoutObservable<null | HTMLElement>;
@@ -3401,7 +3419,7 @@ module nts.uk.ui.at.kdw013.calendar {
         export class FullCalendarSettingComponent extends ko.ViewModel {
             event!: (evt: JQueryEventObject) => void;
 
-            constructor(private params: COPY_PARAMS) {
+            constructor(private params: SETTING_PARAMS) {
                 super();
             }
 
@@ -3452,7 +3470,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     const tg = evt.target as HTMLElement;
                     //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
-                    if ($(tg).closest('#master-content').length > 0)
+                    if ($(tg).closest('#master-content').length > 0 && !$(tg).closest('.fc-ckb-break-time').length > 0)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {
@@ -3572,12 +3590,19 @@ module nts.uk.ui.at.kdw013.calendar {
             template:
                 `<td data-bind="i18n: 'KDW013_20'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'day' } -->
-                <td class="fc-event-note fc-day" data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
-                    <div data-bind="foreach: { data: day.events, as: 'note' }">
+                <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
+                    <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
                         <div class="text-note limited-label" data-bind="text: note"></div>
                     </div>
+                    <i class='openHIcon' data-bind="ntsIcon: { no: 2, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
                 </td>
-                <!-- /ko -->`
+                <!-- /ko -->
+                <style rel="stylesheet">
+                    .openHIcon{
+                        cursor: pointer;
+                        }
+                </style>
+                `
         })
         export class FullCalendarEventHeaderComponent extends ko.ViewModel {
             today: string = moment().format(DATE_FORMAT);
@@ -3612,6 +3637,10 @@ module nts.uk.ui.at.kdw013.calendar {
                 // fix display on ie
                 vm.$el.removeAttribute('style');
             }
+            openHDialog(){
+                const vm = this;  
+                console.log('open H');  
+            }
         }
 
         @component({
@@ -3619,8 +3648,14 @@ module nts.uk.ui.at.kdw013.calendar {
             template:
                 `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.data, as: 'time' } -->
-                <td class="fc-day" data-bind="html: $component.formatTime(time.value), attr: { 'data-date': time.date }"></td>
-                <!-- /ko -->`
+                    <td class="fc-day" data-bind="html: $component.formatTime(time.value,time), attr: { 'data-date': time.date }"></td>
+                <!-- /ko -->
+                <style rel="stylesheet">
+                    .warningIcon{
+    
+                        }
+                </style>
+                `
         })
         export class FullCalendarTimesHeaderComponent extends ko.ViewModel {
             today: string = moment().format(DATE_FORMAT);
@@ -3656,15 +3691,20 @@ module nts.uk.ui.at.kdw013.calendar {
                 vm.$el.removeAttribute('style');
             }
 
-            formatTime(time: number | null) {
-                if (!time) {
+            formatTime(value: number | null, time) {
+                
+                let isHasproblem = true;
+                if (!value) {
                     return '&nbsp;';
                 }
 
-                const hour = Math.floor(time / 60);
-                const minute = Math.floor(time % 60);
-
-                return `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
+                const hour = Math.floor(value / 60);
+                const minute = Math.floor(value % 60);
+                let timeString = `${hour}:${_.padStart(`${minute}`, 2, '0')}`
+                if (!isHasproblem) {
+                    return timeString;
+                }
+                return timeString;
             }
         }
 
@@ -3674,11 +3714,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 <div id='fc'>
                     <table>
                         <tbody>
-                            <tr>
-                                <td colspan="2">
-                                    <div data-bind="ntsFormLabel: { text: $component.$i18n('KDW013_12') }"></div>
-                                </td>
-                            </tr>
                             <tr>
                                 <td style='width:' data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
@@ -3834,6 +3869,22 @@ module nts.uk.ui.at.kdw013.calendar {
                     .removeAttr('data-bind')
                     .find('[data-bind]')
                     .removeAttr('data-bind');
+            }
+        }
+    }
+
+
+    export module datePicker {
+        @handler({
+            bindingName: 'kdw013-date-picker'
+        })
+        export class Kdw013DatePickerBindingHandler implements KnockoutBindingHandler {
+            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
+                const name = componentName();
+                const params = { ...allBindingsAccessor() };
+                ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
+
+                return { controlsDescendantBindings: true };
             }
         }
     }

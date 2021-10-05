@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.jobmanagement.tasksupplementaryinf
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -11,9 +12,9 @@ import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistory;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistoryRepository;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforitemsetting.KrcmtTaskSupInfoChoicesDetail;
+import nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforitemsetting.KrcmtTaskSupInfoChoicesDetailPk;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforitemsetting.KrcmtTaskSupInfoChoicesHist;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * 
@@ -26,7 +27,10 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 
 	@Override
 	public void insert(TaskSupInfoChoicesHistory history, TaskSupInfoChoicesDetail detail) {
-		this.commandProxy().insert(new KrcmtTaskSupInfoChoicesHist(history));
+		List<KrcmtTaskSupInfoChoicesHist> entites = KrcmtTaskSupInfoChoicesHist.toEntities(history);
+		entites.stream().forEach(f -> {
+			this.commandProxy().insert(f);
+		});
 		this.commandProxy().insert(new KrcmtTaskSupInfoChoicesDetail(detail));
 	}
 
@@ -37,7 +41,10 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 
 	@Override
 	public void update(TaskSupInfoChoicesHistory history) {
-		this.commandProxy().update(new KrcmtTaskSupInfoChoicesHist(history));
+		List<KrcmtTaskSupInfoChoicesHist> entites = KrcmtTaskSupInfoChoicesHist.toEntities(history);
+		entites.stream().forEach(f -> {
+			this.commandProxy().insert(f);
+		});
 
 	}
 
@@ -54,7 +61,7 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 				.setParameter("hisId", hisId).getList();
 
 		List<KrcmtTaskSupInfoChoicesDetail> detailEntity = this.queryProxy()
-				.query("SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.histId = :hisId",
+				.query("SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.hisId = :hisId",
 						KrcmtTaskSupInfoChoicesDetail.class)
 				.setParameter("hisId", hisId).getList();
 
@@ -76,7 +83,7 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 		String code = choiceCode.v();
 		
 		List<KrcmtTaskSupInfoChoicesDetail> detailEntity = this.queryProxy()
-				.query("SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.histId = :hisId AND d.pk.code = :code",
+				.query("SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.hisId = :hisId AND d.pk.code = :code",
 						KrcmtTaskSupInfoChoicesDetail.class)
 				.setParameter("hisId", hisId)
 				.setParameter("code", code)
@@ -91,24 +98,17 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 
 	@Override
 	public List<TaskSupInfoChoicesHistory> getAll(String companyId) {
-		List<TaskSupInfoChoicesHistory> result = new ArrayList<>();
 
-		List<KrcmtTaskSupInfoChoicesHist> histEntity = this.queryProxy()
+		return this.queryProxy()
 				.query("SELECT h FROM KrcmtTaskSupInfoChoicesHist h WHERE h.companyId = :companyId",
 						KrcmtTaskSupInfoChoicesHist.class)
-				.setParameter("companyId", companyId).getList();
-
-		List<DateHistoryItem> items = KrcmtTaskSupInfoChoicesHist.toDomain(histEntity);
-
-		// TODO: Chưa biết xử lý tiếp như thế nào.
-
-		return result;
+				.setParameter("companyId", companyId).getList(m -> m.toDomain());
 	}
 
 	@Override
 	public List<TaskSupInfoChoicesDetail> get(String hisId) {
 		return this.queryProxy().query(
-				"SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.histId = :hisId ORDER BY d.pk.code ASC",
+				"SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.hisId = :hisId ORDER BY d.pk.code ASC",
 				KrcmtTaskSupInfoChoicesDetail.class).setParameter("hisId", hisId).getList(a -> a.toDomain());
 	}
 
@@ -124,6 +124,19 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 	@Override
 	public Optional<TaskSupInfoChoicesDetail> get(String historyId, int itemId, ChoiceCode code) {
 		return this.queryProxy().find(new KrcmtTaskSupInfoChoicesDetailPk(historyId, code.v(), itemId), KrcmtTaskSupInfoChoicesDetail.class).map(m -> m.toDomain());
+	}
+
+	@Override
+	public List<TaskSupInfoChoicesDetail> get(List<String> historyIds) {
+		
+		List<TaskSupInfoChoicesDetail> result = new ArrayList<>();
+		
+		List<KrcmtTaskSupInfoChoicesDetail> details =  this.queryProxy()
+				.query("SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.pk.hisId in :hisIds ORDER BY d.pk.code ASC",
+						KrcmtTaskSupInfoChoicesDetail.class)
+				.setParameter("hisIds", historyIds).getList();
+		
+		return result;
 	}
 
 }
