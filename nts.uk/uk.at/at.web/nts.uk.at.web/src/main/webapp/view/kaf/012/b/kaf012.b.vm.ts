@@ -225,6 +225,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 return;
             }
             const details: Array<any> = [];
+            let errors: any[] = [];
             vm.applyTimeData().forEach((row : DataModel) => {
                 if (row.display()) {
                     if (row.appTimeType < 4) {
@@ -264,6 +265,26 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
                             specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
                         };
+                        _.forEach(privateTimeZones, (privateTimeZone: any) => {
+                            if ((privateTimeZone.startTime() && !privateTimeZone.endTime()) || (!privateTimeZone.startTime() && privateTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_2294' }).length == 0) {
+                                    errors.push({
+                                        message: this.$i18n.message('Msg_2294'), 
+                                        messageId: 'Msg_2294',
+                                        supplements: {}
+                                    })
+                                }
+                            }
+                            if ((privateTimeZone.startTime() && privateTimeZone.endTime()) && (privateTimeZone.startTime() > privateTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_857' }).length == 0) {
+                                    errors.push({ 
+                                        message: this.$i18n.message('Msg_857'), 
+                                        messageId: 'Msg_857', 
+                                        supplements: {}
+                                     })
+                                }
+                            }
+                        });
                         if (privateApplyTime.substituteAppTime > 0
                             || privateApplyTime.annualAppTime > 0
                             || privateApplyTime.childCareAppTime > 0
@@ -286,6 +307,26 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[1].specialAppTime() : 0,
                             specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[1].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
                         };
+                        _.forEach(unionTimeZones, (unionTimeZone: any) => {
+                            if ((unionTimeZone.startTime() && !unionTimeZone.endTime()) || (!unionTimeZone.startTime() && unionTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_2294' }).length == 0) {
+                                    errors.push({
+                                        message: this.$i18n.message('Msg_2294'), 
+                                        messageId: 'Msg_2294',
+                                        supplements: {}
+                                    })
+                                }
+                            }
+                            if ((unionTimeZone.startTime() && unionTimeZone.endTime()) && (unionTimeZone.startTime() > unionTimeZone.endTime())) {
+                                if (_.filter(errors, { 'messageId': 'Msg_857' }).length == 0) {
+                                    errors.push({ 
+                                        message: this.$i18n.message('Msg_857'), 
+                                        messageId: 'Msg_857', 
+                                        supplements: {}
+                                     })
+                                }
+                            }
+                        });
                         if (unionApplyTime.substituteAppTime > 0
                             || unionApplyTime.annualAppTime > 0
                             || unionApplyTime.childCareAppTime > 0
