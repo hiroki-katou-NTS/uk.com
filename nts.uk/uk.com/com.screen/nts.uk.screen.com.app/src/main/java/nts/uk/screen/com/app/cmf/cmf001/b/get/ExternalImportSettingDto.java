@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.assertj.core.util.Strings;
-
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.BaseCsvInfo;
@@ -82,7 +80,7 @@ public class ExternalImportSettingDto {
 	}
 
 	private ExternalImportCsvFileInfo toCsvFileInfo() {
-		Optional<BaseCsvInfo> baseCsvInfo = Strings.isNullOrEmpty(this.csvFileId)
+		Optional<BaseCsvInfo> baseCsvInfo = (this.csvFileId == null || this.csvFileId.equals(""))
 			? Optional.empty()
 			: Optional.of(new BaseCsvInfo(this.csvFileId, new ArrayList<>()));
 		

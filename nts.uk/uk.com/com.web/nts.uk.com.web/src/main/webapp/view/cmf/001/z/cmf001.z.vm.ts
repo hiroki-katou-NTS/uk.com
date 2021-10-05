@@ -4,30 +4,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 	import info = nts.uk.ui.dialog.info;
 	import setShared = nts.uk.ui.windows.setShared;
 	import getShared = nts.uk.ui.windows.getShared;
-
-	function deleteButton(required, data) {
-		if (required === "false") {
-				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">削除</button>';
-		} else {
-				return '';
-		}
-	}
 	
-	function selectionCsvItem(csvHeaderName, data){
-		return '<div class="check-target" data-bind="ntsComboBox: {'
-		+ 'name: "csvヘッダ名",'
-		+ 'options: csvItemOption,'
-		+ 'optionsValue: "no",'
-		+ 'visibleItemsCount: 10,'
-		+ 'optionsText: "name",'
-		+ 'selectFirstIfNull: false,'
-		+ 'value: selectedCsvItem,'
-		+ 'columns: ['
-			+ '{ prop: "no",	length:4 },'
-			+ '{ prop: "name", length:30},'
-		+'],'
-		+ 'required: true}"></div>';
-	}
 
 	$(function() {
 		$("#layout-list").on("click",".delete-button",function(){
@@ -56,7 +33,6 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		//csv
 		csvItemOption: KnockoutObservableArray<CsvItem> = ko.observableArray([]);
 		selectedCsvItem:KnockoutObservableArray<number> = ko.observableArray([]);
-		//selectedCsvItem:KnockoutObservable<number> = ko.observable();
 
 		selectedItem: KnockoutObservable<string> = ko.observable();
 		
@@ -65,14 +41,6 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		domainListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "ID", 					key: "domainId", 		width: 50 , 	hidden: true },
 			{ headerText: "受入ドメイン", 	key: "name", 			width: 280},
-		]);
-
-		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
-			{ headerText: "削除", 				key: "required", 		width: 50 , 	formatter: deleteButton },
-			{ headerText: "NO", 					key: "itemNo", 			width: 100 , 	hidden: true },
-			{ headerText: "名称", 				key: "name", 			width: 250},
-			{ headerText: "CSVヘッダ名", 	key: "csvHeaderName",	width: 250,	formatter: selectionCsvItem },
-			{ headerText: "データ", 				key: "csvData", 				width: 120	},
 		]);
 
 		constructor() {
@@ -149,12 +117,14 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, unbound:true, ntsControl: 'DeleteButton'},
 					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
 					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
+					{ headerText: "名称", 				key: "mappingAtr",		dataType: 'number',	width: 100, ntsControl: 'SwitchButtons'},
 					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItem",	dataType: 'number',	width: 250, ntsControl: 'Combobox' },
 					{ headerText: "データ", 				key: "csvData", 				dataType: 'string',		width: 120	}
 				],
 		        features: [
 		          {
 		            name: 'Selection',
+		            kay:{}self
 		            mode: 'row',
 		            multipleSelection: false,
 		            activation: false
@@ -165,7 +135,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		            name: 'DeleteButton',
 		            text: '削除',
 		            controlType: 'DeleteButton',
-		            enable: true
+		            enable: self.isDeletable()
 		          },
 		          {
 		            name: 'Combobox',
@@ -181,6 +151,10 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		        ]
 		      });
 		}
+		
+		isDeletable() {
+			return true;
+		}
 
 		checkError(){
 			nts.uk.ui.errors.clearAll()
@@ -194,7 +168,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 					settingCode: self.settingCode,
 					importingDomainId: self.selectedDomainId(),
 					itemNoList: itemNoList};
-				ajax("screen/com/cmf/cmf001/b/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
+				ajax("screen/com/cmf/cmf001/z/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
 					self.initGrid();
 				});
@@ -355,14 +329,15 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		name: string;
 		required: boolean;
 //		type: string;
-//		source: string;
+		source: string;
 		selectedCsvItem: number;
 		csvData: string;
 	
-		constructor(itemNo: number,　name: string, required: boolean, selectedCsvItem: number, csvData: string) {
+		constructor(itemNo: number, name: string, required: boolean, source: string, selectedCsvItem: number, csvData: string) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
+			this.source = source;
 			this.selectedCsvItem = selectedCsvItem;
 			this.csvData = csvData;
 		}

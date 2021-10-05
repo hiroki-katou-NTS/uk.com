@@ -42,6 +42,12 @@ public class ExternalImportCsvFileInfo {
 		parser.parse(csvFileStream, readRecords);
 	}
 	
+	public void readBaseCsv(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
+
+		val parser = new Parser(0);
+		parser.parse(csvFileStream, readRecords);
+	}
+	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Parser {
 
