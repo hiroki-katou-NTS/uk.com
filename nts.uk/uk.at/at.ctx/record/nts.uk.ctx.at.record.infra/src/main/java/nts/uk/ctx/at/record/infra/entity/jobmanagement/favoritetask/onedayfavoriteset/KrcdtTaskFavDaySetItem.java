@@ -5,6 +5,10 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -41,6 +45,11 @@ public class KrcdtTaskFavDaySetItem extends ContractCompanyUkJpaEntity implement
 
 	@Column(name = "TASK_CD5")
 	public String taskCd5;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "FAV_ID", referencedColumnName = "FAV_ID"),
+		@PrimaryKeyJoinColumn(name = "START_CLOCK", referencedColumnName = "START_CLOCK") })
+	public KrcdtTaskFavDaySetTs krcdtTaskFavDaySetTs;
 
 	@Override
 	protected Object getKey() {

@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
@@ -25,6 +25,7 @@ public class OneDayFavoriteSet extends AggregateRoot {
 	private final String favId;
 
 	/** お気に入り作業名称 */
+	@Setter
 	private FavoriteTaskName taskName;
 
 	/** お気に入り内容 */
@@ -60,8 +61,5 @@ public class OneDayFavoriteSet extends AggregateRoot {
 		this.taskBlockDetailContents = taskBlockDetailContents;
 		this.favId = IdentifierUtil.randomUniqueId();
 	}
-	
-	
-	
 	
 }
