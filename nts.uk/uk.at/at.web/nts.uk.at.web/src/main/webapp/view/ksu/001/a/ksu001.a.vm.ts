@@ -3525,7 +3525,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						endDate: self.dateTimeAfter() 	
 					});
 					setShared('name', self.targetOrganizationName());
-		            nts.uk.ui.windows.sub.modal("/view/ksu/001/r/index.xhtml");
+		            nts.uk.ui.windows.sub.modal("/view/ksu/001/r/index.xhtml").onClosed(() => {
+						self.getAggregatedInfo(false, true);
+					});
 					break;
 		        case WorkplaceCounterCategory.EXTERNAL_BUDGET: // 外部予算実績
 					setShared('target', {
@@ -3537,7 +3539,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						endDate: self.dateTimeAfter() 	
 					});
 					setShared('name', self.targetOrganizationName());
-					nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml");
+					nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml").onClosed(() => {
+						self.getAggregatedInfo(false, true);
+					});
 					break;
 //		        TIMES_COUNTING = 2, // 回数集計
 //		        WORKTIME_PEOPLE = 3, // 就業時間帯別の利用人数
