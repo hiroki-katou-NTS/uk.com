@@ -6,6 +6,7 @@ import lombok.Data;
 
 /**
  * 年休・積休残数詳細情報DTO
+ * 
  * @author phongtq
  *
  */

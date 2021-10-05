@@ -9,10 +9,12 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.annualholiday.AnnLeaveRemainAdapter;
+import nts.uk.ctx.at.request.dom.application.annualholiday.AnnualLeaveInfoExport;
+import nts.uk.ctx.at.request.dom.application.annualholiday.AnnualLeaveRemainingNumberExport;
 import nts.uk.ctx.at.request.dom.application.annualholiday.GetPeriodPrvNextGrantDateAdapter;
 import nts.uk.ctx.at.request.dom.application.annualholiday.GrantPeriodDto;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.annualholiday.ReNumAnnLeaReferenceDateExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
@@ -31,13 +33,16 @@ public class GetInforRemainAnnualHoliday {
 	private RemainNumberTempRequireService requireService;
 	
 	@Inject
-	private AnnLeaveRemainNumberAdapter leaveAdapter;
+	private AnnLeaveRemainAdapter annAdapter;
 	
 	@Inject 
 	private GetPeriodPrvNextGrantDateAdapter dateAdapter;
 	
 	@Inject
 	private GetListAnnualLeave annualLeave;
+	
+	@Inject
+	private AdjustRemainingNumberInformation numberInformation;
 	
 	public InforAnnualHolidaysAccHolidayDto getGetInforRemainAnnualHoliday(GeneralDate baseDate, String sID) {
 		val require = requireService.createRequire();
@@ -51,11 +56,16 @@ public class GetInforRemainAnnualHoliday {
 		// 年休管理するかないかチェック (取得した年休管理区分をチェック)
 		if (annualHd.isYearHolidayManagerFlg()) { 
 			// if Trueの場合
-			// No.198 基準日時点の年休残数を取得する - todo dang doi ben nhat
-			ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(sID, baseDate);
+			// No.198 基準日時点の年休残数を取得する 
+			// ReNumAnnLeaReferenceDateExport reNumAnnLeave = annAdapter.getReferDateAnnualLeaveRemainNumber(sID, baseDate);
+			ReNumAnnLeaReferenceDateExport reNumAnnLeave = new ReNumAnnLeaReferenceDateExport(
+					new AnnualLeaveInfoExport(GeneralDate.today(), new AnnualLeaveRemainingNumberExport(5, 10)) , 
+					new ArrayList<>(), 
+					0.5, 
+					10);
 			
-			// 残数情報を調整 - todo doi thuat toan ben tren
-			accHolidayDto = null;
+			// 残数情報を調整 
+			accHolidayDto = numberInformation.adjustRemainingNumberInformation(reNumAnnLeave, annualHd.isSuspensionTimeYearFlg());
 			
 			// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 			Optional<GrantPeriodDto> periodGrantDate = dateAdapter.getPeriodYMDGrant(cId, sID, null, null, Optional.empty());
@@ -75,11 +85,16 @@ public class GetInforRemainAnnualHoliday {
 				annuaAccumulatedHoliday = annualLeave.getListAnnualLeave(sID);
 		}
 		
+		accHolidayDto.setLstAnnAccHoliday(annuaAccumulatedHoliday);
+		
 		// 年休・積休残数詳細情報DTOの値を返す - toDo
 			// 年休・積休残数詳細情報DTO．年休管理区分　＝　取得した年休管理区分
+			accHolidayDto.setAnnAccManaAtr(annualHd.isYearHolidayManagerFlg());
+			
 			// 年休・積休残数詳細情報DTO．時間年休管理区分　＝　取得した時間年休管理区分
+			accHolidayDto.setAnnManaAtr(annualHd.isSuspensionTimeYearFlg());
 		
-		return null;
+		return accHolidayDto;
 	}
 
 }
