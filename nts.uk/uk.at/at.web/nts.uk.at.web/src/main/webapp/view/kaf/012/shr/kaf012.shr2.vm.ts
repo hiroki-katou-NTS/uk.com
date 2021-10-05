@@ -190,7 +190,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; substituteAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -206,7 +206,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; annualAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -222,7 +222,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; childCareAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -238,7 +238,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; careAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -254,7 +254,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; super60AppTime > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -270,7 +270,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; specialAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -434,7 +434,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         },
                         {
                             code: 1,
-                            name: vm.$i18n('KAF012_4'),
+                            name: vm.$i18n('KAF012_55'),
                             display: (value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.annualVacationTime == 1)
                                         || vm.leaveType() == LeaveType.ANNUAL
                                         || (vm.leaveType() == LeaveType.COMBINATION && checkData(1))
