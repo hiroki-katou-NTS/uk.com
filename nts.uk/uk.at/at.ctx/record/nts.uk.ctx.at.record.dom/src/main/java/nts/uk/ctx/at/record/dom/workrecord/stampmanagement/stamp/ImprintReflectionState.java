@@ -32,6 +32,10 @@ public class ImprintReflectionState implements DomainValue, Cloneable {
 		if(!this.reflectedCategory)
 			return true;
 		
+		if(!this.reflectedDate.isPresent()) {
+			return true;
+		}
+		
 		if(this.reflectedDate.isPresent() && this.reflectedDate.get().afterOrEquals(baseDate))
 			return true;
 		

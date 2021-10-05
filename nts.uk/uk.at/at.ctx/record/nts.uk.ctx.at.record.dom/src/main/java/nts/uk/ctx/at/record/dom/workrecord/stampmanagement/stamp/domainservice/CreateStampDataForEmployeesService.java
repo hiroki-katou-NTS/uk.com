@@ -69,7 +69,7 @@ public class CreateStampDataForEmployeesService {
 		//	if not $打刻作成するか
 		if(!stampAtr) {
 			// $永続化処理 = 打刻データ反映処理#打刻を登録する(require, $打刻記録, $打刻データ)
-			AtomTask reflectResult = StampDataReflectProcessService.registerStamp(require, stampRecord, Optional.empty());
+			AtomTask reflectResult = StampDataReflectProcessService.registerStamp(require, stampRecord, Optional.empty()).orElse(AtomTask.none());
 			// $処理結果 = 打刻データ反映処理結果#打刻データ反映処理結果(Optional.Empty,$永続化処理)
 			StampDataReflectResult stampDataReflectResult = new StampDataReflectResult(Optional.empty(), reflectResult);
 			//	return 打刻入力結果#打刻入力結果($処理結果, $打刻カード作成結果.永続化処理)	
@@ -80,7 +80,7 @@ public class CreateStampDataForEmployeesService {
 		Stamp stamp = new Stamp(stampRecord, relieve, buttonType.getStampType().get(), refActualResults, stampLocationInfor);
 		
 		// $永続化処理 = 打刻データ反映処理#打刻を登録する(require, $打刻記録, $打刻データ)
-		AtomTask atom = StampDataReflectProcessService.registerStamp(require, stampRecord, Optional.of(stamp));
+		AtomTask atom = StampDataReflectProcessService.registerStamp(require, stampRecord, Optional.of(stamp)).orElse(AtomTask.none());
 		
 		// $打刻反映結果 = データタイムレコードを打刻に変換する#日別実績を処理する(require, 会社ID, 社員ID, $永続化処理)
 		Optional<StampDataReflectResult> reflectResult = ConvertTimeRecordStampService.createDailyData(require,

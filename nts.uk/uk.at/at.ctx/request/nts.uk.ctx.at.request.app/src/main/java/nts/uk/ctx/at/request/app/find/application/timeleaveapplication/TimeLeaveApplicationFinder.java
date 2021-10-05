@@ -384,13 +384,12 @@ public class TimeLeaveApplicationFinder {
         }
         
         if (params.getApplicationNew() != null) {
-            String employeeId = AppContexts.user().employeeId();
             application = Application.createFromNew(
                     EnumAdaptor.valueOf(params.getApplicationNew().getPrePostAtr(), PrePostAtr.class),
-                    employeeId,
+                    params.getApplicationNew().getEmployeeID(),
                     EnumAdaptor.valueOf(params.getApplicationNew().getAppType(), ApplicationType.class),
                     new ApplicationDate(GeneralDate.fromString(params.getApplicationNew().getAppDate(), "yyyy/MM/dd")),
-                    employeeId,
+                    params.getApplicationNew().getEnteredPerson(),
                     Optional.empty(),
                     Optional.empty(),
                     Optional.of(new ApplicationDate(GeneralDate.fromString(params.getApplicationNew().getOpAppStartDate(), "yyyy/MM/dd"))),
