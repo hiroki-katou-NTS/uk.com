@@ -450,14 +450,14 @@ public class RegulationInfoEmployeeFinder {
 	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(LoginEmployeeQuery query) {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getDate(), query.getSystemType());
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getBaseDate().toDate(), query.getSystemType());
 
 		switch(EnumAdaptor.valueOf(query.getSystemType(), CCG001SystemType.class)) {
 			case SALARY:
 				if (loginEmployee == null || !loginEmployee.getDepartmentId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
-				List<DepartmentInfoImport> departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().get()), query.getDate());
+				List<DepartmentInfoImport> departmentInfoImports = departmentAdapter.getDepartmentInfoByDepIds(companyId, Arrays.asList(loginEmployee.getDepartmentId().get()), query.getBaseDate().toDate());
 				return RegulationInfoEmployeeDto.builder()
 						.employeeCode(loginEmployee.getEmployeeCode())
 						.employeeId(loginEmployee.getEmployeeID())
@@ -470,7 +470,7 @@ public class RegulationInfoEmployeeFinder {
 				if (loginEmployee == null || !loginEmployee.getWorkplaceId().isPresent()) {
 					throw new BusinessException("Msg_317");
 				}
-				List<WorkplaceInfoImport> workplaceInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getDate());
+				List<WorkplaceInfoImport> workplaceInfoImports = queryWorkplaceAdapter.getWorkplaceInfoByWkpIds(companyId, Arrays.asList(loginEmployee.getWorkplaceId().get()), query.getBaseDate().toDate());
 				return RegulationInfoEmployeeDto.builder()
 					.employeeCode(loginEmployee.getEmployeeCode())
 					.employeeId(loginEmployee.getEmployeeID())
