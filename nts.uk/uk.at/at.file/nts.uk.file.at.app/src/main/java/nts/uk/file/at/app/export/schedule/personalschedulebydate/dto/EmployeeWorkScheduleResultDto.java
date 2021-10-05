@@ -35,15 +35,10 @@ public class EmployeeWorkScheduleResultDto {
     // List<残業時間帯>
     private List<ChangeableWorkTimeDto> overTimeList;
 
-//    // List<実績残業時間帯>
-//    private List<ChangeableWorkTimeDto> actualOverTimeList;
-
     // List<育児介護短時間帯> : ★時間帯(実装コードなし/使用不可)
-//    private List<ShortWorkingTimeSheet> shortTimeChildCareList;
     private List<TimeShortDto> childCareShortTimeList;
 
     // Map<時間休暇種類, 時間休暇>
-//    private Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap;
     private List<TimeVacationAndTypeDto> listTimeVacationAndType;
 
     //コア開始時刻

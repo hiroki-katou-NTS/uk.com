@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 @Stateless
 public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByDateExportGenerator {
-    private static final String TEMPLATE_FILE = "report/KSU003_v2.xlsx";
+    private static final String TEMPLATE_FILE = "report/KSU003.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int MAX_ROW_IN_PAGE = 60;
     private static final int MAX_ROW_HEADER_IN_PAGE = 8;
@@ -262,7 +262,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 // C3_2_3
                 if (!item.getOverTimeList().isEmpty()) {
                     for (ChangeableWorkTimeDto overTime : item.getOverTimeList()) {
-                        TimeCheckedDto timeChecked = checkTime(graphStartTime, overTime.getStartTime(), overTime.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
+                        TimeCheckedDto timeChecked = validateTime(graphStartTime, overTime.getStartTime(), overTime.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
                                 (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) ? new TimeRangeLimitDto(item.getStartTime2(), item.getEndTime2()) : null);
                         if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
 
@@ -277,7 +277,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 if (!item.getBreakTimeList().isEmpty()) {
                     val breakTimeList = item.getBreakTimeList();
                     for (BreakTimeSheet breakTime : breakTimeList) {
-                        TimeCheckedDto timeChecked = checkTime(graphStartTime, breakTime.getStartTime().v(), breakTime.getEndTime().v(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
+                        TimeCheckedDto timeChecked = validateTime(graphStartTime, breakTime.getStartTime().v(), breakTime.getEndTime().v(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
                                 (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) ? new TimeRangeLimitDto(item.getStartTime2(), item.getEndTime2()) : null);
                         if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
 
@@ -340,7 +340,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 // C3_2_16
                 if (!item.getOverTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
                     for (val time : item.getOverTimeList()) {
-                        TimeCheckedDto timeChecked = checkTime(graphStartTime, time.getStartTime(), time.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
+                        TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime(), time.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
                                 (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) ? new TimeRangeLimitDto(item.getStartTime2(), item.getEndTime2()) : null);
                         if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
 
@@ -422,7 +422,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         return new DrawRectangleProperties(columnStart, left, shapeWidth);
     }
 
-    private TimeCheckedDto checkTime(int graphStartTime, Integer start, Integer end, TimeRangeLimitDto timeRange1, TimeRangeLimitDto timeRange2) {
+    private TimeCheckedDto validateTime(int graphStartTime, Integer start, Integer end, TimeRangeLimitDto timeRange1, TimeRangeLimitDto timeRange2) {
         // Check data time in range of ruler time?
         val timeChecked = checkRangeLimit(graphStartTime, start, end);
 
@@ -441,7 +441,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private TimeCheckedDto checkRangeLimit(int graphStartTime, Integer start, Integer end) {
         val timeLimit = getTimeLimit(graphStartTime, OutputType.TOTAL_MINUTE);
-        if (!isNotInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) || !isNotInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
+        if (!isInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) || !isInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
             if (start < timeLimit.getMinLimit()) {
                 start = timeLimit.getMinLimit();
             }
@@ -494,18 +494,18 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         Integer startTime = start, endTime = end;
 
         if (rangeTime2 == null) {
-            if (!isInRange(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit())) return null;
+            if (!isOverlap(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit())) return null;
         } else {
-            if (!isInRange(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit()) && !isInRange(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit()))
+            if (!isOverlap(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit()) && !isOverlap(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit()))
                 return null;
         }
 
-        if (isInRange(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit())) {
+        if (isOverlap(start, end, rangeTime1.getMinLimit(), rangeTime1.getMaxLimit())) {
             if (start < rangeTime1.getMinLimit())
                 startTime = rangeTime1.getMinLimit();
             if (end > rangeTime1.getMaxLimit())
                 endTime = rangeTime1.getMaxLimit();
-        } else if (rangeTime2 != null && isInRange(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit())) {
+        } else if (rangeTime2 != null && isOverlap(start, end, rangeTime2.getMinLimit(), rangeTime2.getMaxLimit())) {
             if (start < rangeTime2.getMinLimit())
                 startTime = rangeTime2.getMinLimit();
             if (end > rangeTime2.getMaxLimit())
@@ -520,14 +520,12 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         if (sources.size() > 0 && sources.size() <= 1) return sources;
         for (int i = 1; i < sources.size(); i++) {
             T firstItem = sources.get(i - 1);
-            if (firstItem.getEndTime().equals(sources.get(i).getStartTime())){
+            if (firstItem.getEndTime().equals(sources.get(i).getStartTime())) {
                 firstItem.setEndTime(sources.get(i).getEndTime());
-                sources.remove(i);
-                // TODO:
-//                destinations.add(firstItem.getStartTime(), sources.get(i).getEndTime());
+                destinations.add(firstItem);
             }
         }
-        return sources;
+        return destinations;
     }
 
     /**
@@ -728,17 +726,15 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         }
     }
 
-    private boolean isNotInRange(int i, int minValueInclusive, int maxValueInclusive) {
+    private boolean isInRange(int i, int minValueInclusive, int maxValueInclusive) {
         return (i >= minValueInclusive && i <= maxValueInclusive);
 //        return (i < minValueInclusive && i > maxValueInclusive);
     }
 
-    private boolean isInRange(int startTime, int endTime, int minValue, int maxValue) {
+    private boolean isOverlap(int startTime, int endTime, int minValue, int maxValue) {
 //        Range<Integer> range = Range.between(minValue, maxValue);
 //        return range.contains(startTime) || range.contains(endTime);
-
-//        return (IntStream.rangeClosed(minValue, maxValue).anyMatch(n -> n == startTime)) ||
-//         (IntStream.rangeClosed(minValue, maxValue).anyMatch(n -> n == endTime));
+//        return (IntStream.rangeClosed(minValue, maxValue).anyMatch(n -> n == startTime)) || (IntStream.rangeClosed(minValue, maxValue).anyMatch(n -> n == endTime));
 
         return startTime <= maxValue && minValue <= endTime;
     }

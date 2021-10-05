@@ -61,7 +61,6 @@ public class GetPerformanceInfoByDateExportQuery {
                     dailyInfo.getEmployeeId(),
                     Collections.emptyList(),
                     dailyInfo.getBreakTime().getBreakTimeSheets(),  // actualBreakTimeList
-//                    Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList(),
                     Collections.emptyList(),

@@ -21,6 +21,7 @@ class DoubleWorkTimeCheckedDto {
 
 @AllArgsConstructor
 @Getter
+@Setter
 class TimeCheckedDto {
     private Integer startTime;
     private Integer endTime;

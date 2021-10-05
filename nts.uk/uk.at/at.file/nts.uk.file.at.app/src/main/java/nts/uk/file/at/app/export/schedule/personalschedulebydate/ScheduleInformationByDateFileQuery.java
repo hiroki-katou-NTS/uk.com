@@ -140,9 +140,6 @@ public class ScheduleInformationByDateFileQuery {
             Integer startTime1 = null, startTime2 = null, endTime1 = null, endTime2 = null;
 
             // List<育児介護短時間帯>= 日別勤怠(Work)．短時間勤務時間帯．時間帯 : ※項目の値は存在しない場合はempty
-//            List<ShortWorkingTimeSheet> shortWorkingTimeSheets = dailyInfo.getShortTime().isPresent()
-//                    ? dailyInfo.getShortTime().get().getShortWorkingTimeSheets()
-//                    : Collections.emptyList();
             List<TimeShortDto> shortWorkingTimeSheets = !dailyInfo.getShortTime().isPresent()
                     ? Collections.emptyList()
                     : dailyInfo.getShortTime().get().getShortWorkingTimeSheets().stream().map(x -> new TimeShortDto(
