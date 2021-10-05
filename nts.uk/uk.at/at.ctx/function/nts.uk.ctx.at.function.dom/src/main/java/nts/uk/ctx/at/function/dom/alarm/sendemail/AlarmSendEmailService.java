@@ -128,7 +128,7 @@ public class AlarmSendEmailService implements SendEmailService {
 					List<ValueExtractAlarmDto> valueExtractAlarmManagers = valueExtractAlarmDtos.stream()
 							.filter(c -> c.getEmployeeID().equals(empId)).collect(Collectors.toList());
 					try {
-						boolean isSuccess = sendMail(companyID, empId, functionID,
+						boolean isSuccess = sendMailManager(companyID, empId, functionID,
 								valueExtractAlarmManagers, mailSettingsParamDto.getSubjectAdmin(),
 								mailSettingsParamDto.getTextAdmin(), currentAlarmCode,
 								useAuthentication, mailSettingAdmin, senderAddress);
@@ -142,22 +142,6 @@ public class AlarmSendEmailService implements SendEmailService {
 			}
 		}
 
-		//String empployeeNameError = isErrorSendMailEmp + ";";// return status check display alert error
-//		if (!CollectionUtil.isEmpty(errors)) {
-//			int index = 0;
-//			int errorsSize = errors.size();
-//			for (String sId : errors) {
-//				// save using request list 346
-//				String empNames =  employeeSprPubAlarmAdapter.getEmployeeNameBySId(sId);
-//				if (!StringUtils.isEmpty(empNames)) {
-//					empployeeNameError += empNames;
-//				}
-//				index++;
-//				if(index != errorsSize){
-//					empployeeNameError += "<br/>";
-//                }
-//			}
-//		}
 		OutputErrorInfo outputErrorInfo = createErrorInfo.getErrorInfo(GeneralDate.today(),errors,mapWorkplaceAndListSid,listworkplaceError);
 		String errorInfo = "";
 		if(!outputErrorInfo.getError().equals("")) {
@@ -272,6 +256,7 @@ public class AlarmSendEmailService implements SendEmailService {
 	 * @param bodyEmail
 	 * @return true : send mail successful/false : send mail error
 	 */
+    @SuppressWarnings("Duplicates")
 	private boolean sendMail(String companyID, String employeeId, Integer functionID,
 			List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail,
 			String bodyEmail,String currentAlarmCode,
@@ -336,6 +321,54 @@ public class AlarmSendEmailService implements SendEmailService {
 				}
 			}
 		}
+		return true;
+	}
+
+	// Fix #120220
+    @SuppressWarnings("Duplicates")
+	private boolean sendMailManager(String companyID, String employeeId, Integer functionID,
+									List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail, String bodyEmail, String currentAlarmCode,
+									boolean useAuthentication, Optional<MailSettings> mailSetting, Optional<String> senderAddress) throws BusinessException {
+		val mailDestinationAlarmImport = iMailDestinationAdapter.getEmpEmailAddress(companyID, employeeId, functionID);
+		List<OutGoingMailAlarm> emailAddress = mailDestinationAlarmImport != null ? mailDestinationAlarmImport.getOutGoingMails().stream()
+				.filter(c -> c.getEmailAddress() != null).filter(x -> !x.getEmailAddress().equals("")).collect(Collectors.toList()) : Collections.emptyList();
+
+		// Prepare attach file
+		if (StringUtils.isEmpty(subjectEmail)) subjectEmail = TextResource.localize("KAL010_300");
+		AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport, currentAlarmCode);
+		List<MailAttachedFileItf> attachedFiles = Collections.singletonList(new MailAttachedFilePath(alarmExportDto.getPath(), alarmExportDto.getFileName()));
+		MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
+
+		List<String> replyToList = new ArrayList<>();
+		List<String> ccList = new ArrayList<>();
+		List<String> bccList = new ArrayList<>();
+		List<String> toList = emailAddress.stream().map(OutGoingMailAlarm::getEmailAddress).collect(Collectors.toList());
+		String senderAddressInput = senderAddress.orElse("");
+
+		mailSetting.ifPresent(mailSet -> {
+			ccList.addAll(mailSet.getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()));
+			bccList.addAll(mailSet.getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()));
+			mailSetting.get().getMailRely().ifPresent(mailReply -> {
+				if (StringUtils.isNotEmpty(mailReply.v()))
+					replyToList.add(mailReply.v());
+			});
+		});
+
+		MailSendOptions mailSendOptions = new MailSendOptions(senderAddressInput, replyToList, toList, ccList, bccList);
+		try {
+			if (useAuthentication) {
+				mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
+			} else {
+				if (senderAddress.isPresent() && !senderAddress.get().equals("")) {
+					mailSender.send(mailContent, companyID, mailSendOptions);
+				} else {
+					mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
+				}
+			}
+		} catch (SendMailFailedException e) {
+			throw e;
+		}
+
 		return true;
 	}
 }
