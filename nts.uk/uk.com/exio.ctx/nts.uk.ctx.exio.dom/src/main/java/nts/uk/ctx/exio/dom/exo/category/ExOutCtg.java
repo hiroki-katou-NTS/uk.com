@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.exo.category;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exo.execlog.RoleType;
 import nts.uk.shr.com.permit.DescriptionOfAvailabilityPermissionBase;
 
 /**
@@ -76,5 +77,20 @@ public class ExOutCtg extends DescriptionOfAvailabilityPermissionBase {
 		this.payrollSysAtr = EnumAdaptor.valueOf(payrollSysAtr, SystemUsability.class);
 		this.outingPeriodClassific = EnumAdaptor.valueOf(outingPeriodClassific,OutingPeriodClassific.class);
 		this.classificationToUse = EnumAdaptor.valueOf(classificationToUse,ClassificationToUse.class);
+	}
+
+	public SystemUsability getSysUsability(int roleType) {
+		switch (roleType){
+			case 3:  // 就業
+				return attendanceSysAtr;
+			case 4:  // 給与
+				return payrollSysAtr;
+			case 5:  // 人事
+				return personSysAtr;
+			case 6:  // OH
+				return officeHelperSysAtr;
+			default:
+				return SystemUsability.UNVAILABLE;
+		}
 	}
 }

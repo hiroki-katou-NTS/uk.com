@@ -17,9 +17,14 @@ import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHand
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommand;
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthCommand;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthCommand;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.category.ClosureIdAndPeriod;
 import nts.uk.ctx.exio.app.find.exo.category.Cmf002Dto;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
+import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgFinder;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
@@ -58,6 +63,15 @@ public class StdOutConSetWebService extends WebService {
 	
 	@Inject
 	private SaveOutputPeriodSetCommandHandler saveOutputPeriodSettingCommandHandler;
+
+	@Inject
+	private ExOutCtgFinder exOutCtgFinder;
+
+	@Inject
+	private RegisterOrUpdateExOutputCtgAuthCommandHandler registerExOutputCtgAuthCommand;
+
+	@Inject
+	private DuplicateExOutputCtgAuthCommandHandler duplicateExOutputCtgAuthCommand;
 
 	@POST
 	@Path("excuteCopy")
@@ -133,6 +147,24 @@ public class StdOutConSetWebService extends WebService {
 	@Path("saveOutputPeriodSetting")
 	public void saveOutputPeriodSetting(SaveOutputPeriodSetCommand command) {
 		this.saveOutputPeriodSettingCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("getExOutCategory")
+	public List<ExOutCtgDto> getInitExOutCategory(int roleType) {
+		return this.exOutCtgFinder.get(roleType);
+	}
+
+	@POST
+	@Path("exOutCtgAuth/register")
+	public void RegisterExOutCtgAuth(List<RegisterOrUpdateExOutputCtgAuthCommand> commands) {
+		this.registerExOutputCtgAuthCommand.handle(commands);
+	}
+
+	@POST
+	@Path("exOutCtgAuth/copy")
+	public void DuplicateExOutCtgAuth(List<DuplicateExOutputCtgAuthCommand> commands) {
+		this.duplicateExOutputCtgAuthCommand.handle(commands);
 	}
 
 }
