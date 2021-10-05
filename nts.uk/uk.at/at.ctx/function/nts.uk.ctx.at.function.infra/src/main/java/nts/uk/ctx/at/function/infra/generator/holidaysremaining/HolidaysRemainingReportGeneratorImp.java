@@ -3093,7 +3093,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     cells.get(firstRow + 3, 10 + totalMonth).setValue(vl26);
                                 } else {
                                     cells.get(firstRow + 3, 10 + totalMonth)
-                                            .setValue(remainingTimesBeforeGrant == null || remainingTimesBeforeGrant == 0 ? null : convertToTime(remainingTimesBeforeGrant));
+                                            .setValue(remainingTimesBeforeGrant == null ? null : convertToTime(remainingTimesBeforeGrant));
                                 }
                                 if (remainingTimesBeforeGrant != null && remainingTimesBeforeGrant < 0) {
                                     setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
