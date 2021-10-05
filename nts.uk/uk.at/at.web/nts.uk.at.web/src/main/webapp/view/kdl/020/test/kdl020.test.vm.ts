@@ -88,56 +88,6 @@ module nts.uk.at.view.kdl020.test.viewmodel {
 		}
 	}
 
-	export class DataParam {
-		employeeBasicInfo: Array<EmployeeBasicInfoDto>;
-		baseDate: string;
-
-		constructor(param: IDataParam) {
-			var self = this;
-			self.employeeBasicInfo = ko.observable(param.employeeBasicInfo);
-			self.baseDate = ko.observable(param.baseDate);
-		}
-	}
-
-	export interface IDataParam {
-		employeeBasicInfo: Array<EmployeeBasicInfoDto>;
-		baseDate: string;
-	}
-
-	export class EmployeeBasicInfoDto {
-		personId: string;
-		employeeId: string;
-		businessName: string;
-		gender: number;
-		birthday: string;
-		employeeCode: string;
-		jobEntryDate: string;
-		retirementDate: string;
-
-		constructor(param: IEmployeeBasicInfoDto) {
-			var self = this;
-			self.personId = ko.observable(param.personId);
-			self.employeeId = ko.observable(param.employeeId);
-			self.businessName = ko.observable(param.businessName);
-			self.gender = ko.observable(param.gender);
-			self.birthday = ko.observable(param.birthday);
-			self.employeeCode = ko.observable(param.employeeCode);
-			self.jobEntryDate = ko.observable(param.jobEntryDate);
-			self.retirementDate = ko.observable(param.retirementDate);
-		}
-	}
-
-	export interface IEmployeeBasicInfoDto {
-		personId: string;
-		employeeId: string;
-		businessName: string;
-		gender: number;
-		birthday: string;
-		employeeCode: string;
-		jobEntryDate: string;
-		retirementDate: string;
-	}
-
 	export interface IEmployeeParam {
 		employeeIds: Array<string>;
 		baseDate: string;

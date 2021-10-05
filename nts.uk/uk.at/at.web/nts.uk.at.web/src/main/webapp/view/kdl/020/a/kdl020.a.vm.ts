@@ -2,7 +2,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 	export class ScreenModel {
 		date: KnockoutObservable<any>;
 		empList: KnockoutObservableArray<string> = ko.observableArray([]);
-		dataHoliday: KnockoutObservable<any> = ko.observable();
+		dataHoliday: KnockoutObservable<InforAnnualHolidaysAccHolidayDto> = ko.observable();
 
 		//_____KCP005________
 		listComponentOption: any = [];
@@ -26,15 +26,15 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		// area left
 		employeeCodeName: KnockoutObservable<string> = ko.observable('');
 
-		//
+		// Grid A_3
 		columns: KnockoutObservableArray<any>;
 		currentCode: KnockoutObservable<any>;
 		currentCodeList: KnockoutObservableArray<any>;
 		count: number = 100;
 		holidayData: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
 		holidayDataOld: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
-		
-		//
+
+		// Grid A_5
 		columns2: KnockoutObservableArray<any>;
 		currentCode2: KnockoutObservable<any>;
 		currentCodeList2: KnockoutObservableArray<any>;
@@ -43,19 +43,18 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		holidayData2: KnockoutObservableArray<HolidayInfo2> = ko.observableArray([]);
 		holidayDataOld2: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
 
-		//
-		itemList: KnockoutObservableArray<ItemModel>;
-		selectedCodeCbb: KnockoutObservable<string>;
-		isEnable: KnockoutObservable<boolean>;
-		isEditable: KnockoutObservable<boolean>;
-		checkBindData: boolean = true;
-
 		checkSolid: number = 0;
 
-		//
-		currentRemainNumber: KnockoutObservable<string> = ko.observable('');
-		expiredWithinMonth: KnockoutObservable<string> = ko.observable('');
-		dayCloseDeadline: KnockoutObservable<string> = ko.observable('');
+		// A2_5 
+		currentRemainNum: KnockoutObservable<string> = ko.observable('6日 と6:00');
+		// A2_8 
+		nextScheDate: KnockoutObservable<string> = ko.observable('2020/09/10 (木)');
+		// A2_11
+		annMaxTime: KnockoutObservable<string> = ko.observable('16:00');
+		// A2_9
+		annLimitStart: KnockoutObservable<string> = ko.observable('2020/08/10');
+		// A2_12
+		annLimitEnd: KnockoutObservable<string> = ko.observable('2021/09/10');
 
 		searchText: KnockoutObservable<string> = ko.observable('');
 
@@ -87,7 +86,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 				{ headerText: nts.uk.resource.getText('KDL020_55'), key: 'remaining', width: 120 },
 				{ headerText: nts.uk.resource.getText('KDL020_56'), key: 'expirationdate', width: 130 }
 			]);
-			
+
 			//
 			self.columns2 = ko.observableArray([
 				{ headerText: nts.uk.resource.getText('KDL020_59'), key: 'digestionday', width: 150 },
@@ -96,7 +95,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 
 			self.currentCode = ko.observable(0);
 			self.currentCodeList = ko.observableArray([]);
-			
+
 			self.currentCode2 = ko.observable(0);
 			self.currentCodeList2 = ko.observableArray([]);
 
@@ -126,51 +125,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			$('#kcp005component').ntsListComponent(self.listComponentOption);
 
 			self.listComponentOption.selectedCode.subscribe((value: any) => {
-				if (value == null) return;
-				self.checkSolid = 0;
-				let name: any = _.filter(self.employeeList(), (x: any) => {
-					return _.isEqual(x.code, value);
-				});
-				self.employeeCodeName(name[0].code + " " + name[0].name);
-				self.bindDataToGrid(value).done(() => {
-					self.selectedCodeCbb("1");
-				});
-			})
 
-			//
-			self.itemList = ko.observableArray([
-				new ItemModel(1, nts.uk.resource.getText('KDL005_63')),
-				new ItemModel(2, nts.uk.resource.getText('KDL005_48'))
-			]);
-
-			self.selectedCodeCbb = ko.observable('1');
-			self.isEnable = ko.observable(true);
-			self.isEditable = ko.observable(true);
-
-			self.selectedCodeCbb.subscribe((value: any) => {
-				self.holidayData([]);
-				if (value == 1) {
-					_.each(self.holidayDataOld(), (x: any) => {
-						self.holidayData.push(x);
-					});
-					console.log(self.holidayData());
-				} else {
-					let data = (_.filter(self.dataHoliday().remainNumConfirmDto.detailRemainingNumbers, (x: any) => {
-						return _.includes(x.digestionStatus, "残り");
-					}));
-					if (data.length > 0) {
-						_.forEach(data, (z: any, index: number) => {
-							self.bindDataToText(z, index);
-						});
-					}
-				}
-
-			})
-
-			$("#search-btn").on({
-				"click": function() {
-					console.log("");
-				}
 			})
 
 		}
@@ -178,23 +133,12 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		startPage(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			nts.uk.ui.block.grayout();
-			let param = {
-				employeeIds: self.paramData,
-				baseDate: ""
-			};
-			service.getHolidaySub(param).done((data: any) => {
+			service.findAnnualHolidays(self.paramData).done((data: any) => {
 				self.dataHoliday(data);
-				if (data.remainNumConfirmDto != null) {
-					self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
-					self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
-					self.dayCloseDeadline(data.remainNumConfirmDto.dayCloseDeadline);
-				}
-
-				_.forEach(data.empImport, (a: any, ind) => {
+				_.forEach(data.employeeImports, (a: any, ind) => {
 					self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName, workplaceName: 'HN' })
 				});
 				self.listComponentOption.selectedCode(self.employeeList()[0].code);
-				$(".search-btn").hide();
 			});
 			dfd.resolve();
 			return dfd.promise();
@@ -202,103 +146,17 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 
 		bindDataToGrid(value: any): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
-			if (_.isNil(self.dataHoliday())) return;
-			self.holidayData([]);
-			if (self.dataHoliday().remainNumConfirmDto == null || (self.dataHoliday().remainNumConfirmDto != null && !_.includes(self.dataHoliday().remainNumConfirmDto.employeeId.slice(-12), value))) {
-				let sid = _.map(_.filter(self.paramData, (o: any) => _.isEqual(o.slice(-12), value)), (z: any) => {
-					return z;
-				})
-				let param = {
-					employeeIds: sid,
-					baseDate: ""
-				};
-				service.getHolidaySub(param).done((data: any) => {
-					self.dataHoliday(data);
 
-					if (data.remainNumConfirmDto != null) {
-						self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
-						self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
-						self.dayCloseDeadline(data.remainNumConfirmDto.dayCloseDeadline);
-
-						_.forEach(data.remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
-							self.bindDataToText(z, index);
-						});
-						self.holidayDataOld({ ...self.holidayData() });
-						dfd.resolve();
-					}
-					self.showHideItem(data);
-					$('#cancel-btn').focus();
-					
-					let id = _.filter($("div > div > div > div"), (x: any) => {
-							return _.includes(x.id, "container") && !_.includes(x.id, "single-list");
-					})
-					$("#" + id[0].id).attr('tabindex', -1);
-				});
-			} else {
-				_.forEach(self.dataHoliday().remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
-					self.bindDataToText(z, index);
-				});
-				self.showHideItem(self.dataHoliday());
-				$('#cancel-btn').focus();
-				self.holidayDataOld({ ...self.holidayData() });
-				dfd.resolve();
-			}
 
 			return dfd.promise();
 		}
 
 		bindDataToText(z: any, index: number) {
-			let self = this, textA3_11_12_13 = "", text_A3_31_32 = "", text_A4_41_42_43 = "",
-				text45 = "<span style='color:#FF2D2D;'>" + z.dueDateStatus + "</span>";
 
-			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate ;
-			text_A3_31_32 = "<span>" + text45 + " " + z.deadline; + "</span>"
-			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + " " + z.digestionCount
-
-			self.holidayData.push(new HolidayInfo("2021/09/" + (index + 10), (index + "日"), (index + "日" +" " + "と" + "2:00"), (index + "日" +" " + "と" + "6:00"), "2021/11/" + (index + 10)));
-			self.holidayData2.push(new HolidayInfo2(textA3_11_12_13, (index + "日")));
-
-			if ((_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
-				|| _.includes(z.digestionDateStatus, nts.uk.resource.getText('KDL005_40')))) {
-				if (self.checkSolid == 0) {
-					self.checkSolid = index;
-				}
-			}
 		}
 
 		showHideItem(data: any) {
-			let remainNumConfirmDto = data.remainNumConfirmDto;
 
-			// ※１ && ※4
-			if (remainNumConfirmDto != null && remainNumConfirmDto.management == 1 &&
-				remainNumConfirmDto.dayCloseDeadline.length > 0) {
-				$("#A2_10").show();
-				$("#A2_21").show();
-			} else {
-				$("#A2_10").hide();
-				$("#A2_21").hide();
-			}
-
-			// ※2
-			if (remainNumConfirmDto != null && remainNumConfirmDto.management == 1) {
-				$("#area-info").show();
-				$("#area-non-info").hide();
-			} else {
-				$("#area-info").hide();
-				$("#area-non-info").show();
-			}
-
-			// ※3
-			if (remainNumConfirmDto != null && remainNumConfirmDto.unit == 0) {
-				$("#A6_1").hide();
-				$("#A6_2").hide();
-				$("#A6_3").hide();
-			} else {
-				$("#A6_1").show();
-				$("#A6_2").show();
-				$("#A6_3").show();
-			}
-			nts.uk.ui.block.clear();
 		}
 
 		findData(data: any) {
@@ -368,67 +226,95 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		isAlreadySetting: boolean;
 	}
 
-	/** 残数確認ダイアログDTO */
-	export class RemainNumberConfirmDto {
-		expiredWithinMonth: KnockoutObservable<string>; // 1ヶ月以内期限切れ数 - A2_9
-		unit: KnockoutObservable<number>; // 単位  0 : 日, 1 : 時間
-		dayCloseDeadline: KnockoutObservable<string>; // 期限の一番近い日 - A2_21
-		detailRemainingNumbers: KnockoutObservableArray<RemainNumberDetailedInfo>; // 残数詳細一覧 - 残数詳細情報
-		currentRemainNumber: KnockoutObservable<string>; // 現時点残数 - A2_5
-		employeeId: KnockoutObservable<string>; // 社員ID
-		management: KnockoutObservable<number>; // 管理する
+	/** 年休・積休残数詳細情報DTO */
+	export class InforAnnualHolidaysAccHolidayDto {
+		/** 年休・積休残数一覧  (年休・積休残数詳細) */
+		lstRemainAnnAccHoliday: KnockoutObservableArray<AnnualAccumulatedHoliday>;
+		/** 年休・積休消化一覧  (年休・積休消化詳細) */
+		lstAnnAccHoliday: KnockoutObservableArray<DetailsAnnuaAccumulatedHoliday>;
+		/** 年休・積休管理区分 */
+		annAccManaAtr: KnockoutObservable<boolean>;
+		/** 時間年休の年間上限時間 */
+		annMaxTime: KnockoutObservable<string>;
+		/** 時間年休の年間上限開始日 */
+		annLimitStart: KnockoutObservable<string>;
+		/** 時間年休の年間上限終了日 */
+		annLimitEnd: KnockoutObservable<string>;
+		/** 時間年休管理区分 */
+		annManaAtr: KnockoutObservable<boolean>;
+		/** 次回付与予定日 */
+		nextScheDate: KnockoutObservable<string>;
+		/** 現時点残数 */
+		currentRemainNum: KnockoutObservable<string>;
 		constructor(
-			expiredWithinMonth: string,
-			unit: number,
-			dayCloseDeadline: string,
-			detailRemainingNumbers: Array<RemainNumberDetailedInfo>,
-			currentRemainNumber: string,
-			employeeId: string,
-			management: number
+			lstRemainAnnAccHoliday: Array<AnnualAccumulatedHoliday>,
+			lstAnnAccHoliday: Array<DetailsAnnuaAccumulatedHoliday>,
+			annAccManaAtr: boolean,
+			annMaxTime: string,
+			annLimitStart: string,
+			annLimitEnd: string,
+			annManaAtr: boolean,
+			nextScheDate: string,
+			currentRemainNum: string
 		) {
 			let self = this;
-			self.expiredWithinMonth = ko.observable(expiredWithinMonth);
-			self.unit = ko.observable(unit);
-			self.dayCloseDeadline = ko.observable(dayCloseDeadline);
-			self.detailRemainingNumbers = ko.observableArray(detailRemainingNumbers);
-			self.currentRemainNumber = ko.observable(currentRemainNumber);
-			self.employeeId = ko.observable(employeeId);
-			self.management = ko.observable(management);
+			self.lstRemainAnnAccHoliday = ko.observableArray(lstRemainAnnAccHoliday);
+			self.lstAnnAccHoliday = ko.observableArray(lstAnnAccHoliday);
+			self.annAccManaAtr = ko.observable(annAccManaAtr);
+			self.annMaxTime = ko.observable(annMaxTime);
+			self.annLimitStart = ko.observable(annLimitStart);
+			self.annLimitEnd = ko.observable(annLimitEnd);
+			self.annManaAtr = ko.observable(annManaAtr);
+			self.nextScheDate = ko.observable(nextScheDate);
+			self.currentRemainNum = ko.observable(currentRemainNum);
 		}
 	}
 
-	/** 残数詳細情報 */
-	export class RemainNumberDetailedInfo {
-		deadline: KnockoutObservable<string>; // 期限日 - A3_32
-		dueDateStatus: KnockoutObservable<string>; // 期限日状況 - A3_31
-		digestionCount: KnockoutObservable<string>; // 消化数 - A3_43
-		digestionDate: KnockoutObservable<string>; // 消化日  - A3_42
-		digestionDateStatus: KnockoutObservable<string>; // 消化日状況  - A3_41
-		digestionStatus: KnockoutObservable<string>; // 消化状況  - A3_21
-		numberOccurrences: KnockoutObservable<string>; // 発生数 - A3_13
-		accrualDate: KnockoutObservable<string>; // 発生日 - A3_12
-		occurrenceDateStatus: KnockoutObservable<string>; // 発生日状況 - A3_11
+	export class AnnualAccumulatedHoliday {
+		/** 付与数 */
+		numberGrants: KnockoutObservable<string>;
+		/** 付与日 */
+		grandDate: KnockoutObservable<string>;
+		/** 使用数 */
+		numberOfUse: KnockoutObservable<string>;
+		/** 有効期限 */
+		dateOfExpiry: KnockoutObservable<string>;
+		/** 残数 */
+		numberOfRemain: KnockoutObservable<string>;
+
 		constructor(
-			deadline: string,
-			dueDateStatus: string,
-			digestionCount: string,
-			digestionDate: string,
-			digestionDateStatus: string,
-			digestionStatus: string,
-			numberOccurrences: string,
-			accrualDate: string,
-			occurrenceDateStatus: string
+			numberGrants: string,
+			grandDate: string,
+			numberOfUse: string,
+			dateOfExpiry: string,
+			numberOfRemain: string
 		) {
 			let self = this;
-			self.deadline = ko.observable(deadline);
-			self.dueDateStatus = ko.observable(dueDateStatus);
-			self.digestionCount = ko.observable(digestionCount);
+			self.numberGrants = ko.observable(numberGrants);
+			self.grandDate = ko.observable(grandDate);
+			self.numberOfUse = ko.observable(numberOfUse);
+			self.dateOfExpiry = ko.observable(dateOfExpiry);
+			self.numberOfRemain = ko.observable(numberOfRemain);
+		}
+	}
+
+	export class DetailsAnnuaAccumulatedHoliday {
+		/** 使用数 */
+		numberOfUse: KnockoutObservable<string>;
+		/** 年休消化状況 */
+		annualHolidayStatus: KnockoutObservable<string>;
+		/** 消化日 */
+		digestionDate: KnockoutObservable<string>;
+
+		constructor(
+			numberOfUse: string,
+			annualHolidayStatus: string,
+			digestionDate: string
+		) {
+			let self = this;
+			self.numberOfUse = ko.observable(numberOfUse);
+			self.annualHolidayStatus = ko.observable(annualHolidayStatus);
 			self.digestionDate = ko.observable(digestionDate);
-			self.digestionDateStatus = ko.observable(digestionDateStatus);
-			self.digestionStatus = ko.observable(digestionStatus);
-			self.numberOccurrences = ko.observable(numberOccurrences);
-			self.accrualDate = ko.observable(accrualDate);
-			self.occurrenceDateStatus = ko.observable(occurrenceDateStatus);
 		}
 	}
 
@@ -442,14 +328,14 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			this.displayName = displayName;
 		}
 	}
-			
+
 	class HolidayInfo {
 		grantdate: string;
 		numbergrants: string;
 		numberuses: string;
 		remaining: string;
 		expirationdate: string;
-		constructor(grantdate: string, numbergrants: string, numberuses: string, remaining: string, expirationdate : string) {
+		constructor(grantdate: string, numbergrants: string, numberuses: string, remaining: string, expirationdate: string) {
 			this.grantdate = grantdate;
 			this.numbergrants = numbergrants;
 			this.numberuses = numberuses;
@@ -457,7 +343,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			this.expirationdate = expirationdate;
 		}
 	}
-	
+
 	class HolidayInfo2 {
 		digestionday: string;
 		digestionuse: string;
