@@ -157,7 +157,7 @@ public class GetDetailInfoEmpRemainHoliday {
 					requireM11Imp, new CacheCarrier(), employeeId, GeneralDate.today());
 			currentRemainNumber = leaveRemainingDayNumber.v().toString();
 			
-			DatePeriod datePeriod = new DatePeriod(closureDate.get(), closureDate.get().addMonths(1).addDays(-1));
+			DatePeriod datePeriod = new DatePeriod(closureDate.get(), closureDate.get().addYears(1).addDays(-1));
 			AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(
 					companyId,
 					employeeId,

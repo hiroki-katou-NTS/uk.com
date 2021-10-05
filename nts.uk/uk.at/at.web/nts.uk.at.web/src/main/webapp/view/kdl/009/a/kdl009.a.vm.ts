@@ -296,6 +296,15 @@ module nts.uk.at.view.kdl009.a {
 			self.accrualDate = data.accrualDate;
 			self.occurrenceDateStatus = data.occurrenceDateStatus;
 			
+			if(_.isEqual(self.digestionStatus.substring(0,2), "残り")){
+				self.dueDateStatus = data.dueDateStatus;
+				self.deadline = data.deadline;
+			}else{
+				self.dueDateStatus = " ";
+				self.deadline = " ";
+			}
+			
+			
 			if(self.occurrenceDateStatus != ""){
 				self.isFuture = true;
 				self.displayA3_41 = (self.digestionDate == "" ? "" : self.digestionDateStatus);
