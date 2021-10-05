@@ -105,7 +105,7 @@ module nts.uk.at.view.kdw002.a {
                         let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(displayNumber) });
                         self.txtItemName(attendanceItem.attendanceItemName);
                         // ver8
-                        if(attendanceItem.frameCategory){
+                        if(attendanceItem.frameCategory != null && attendanceItem.frameCategory != undefined) {
                             self.displayName(attendanceItem.attendanceItemName);
                             self.displayNameEnable(false);
                         } else {
