@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaRemNumUsageDe
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.TmpReserveLeaveMngExport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
-
+@Stateless
 public class GetRsvLeaRemNumUsageDetailPubImpl implements GetRsvLeaRemNumUsageDetailPub{
 
 	@Inject
