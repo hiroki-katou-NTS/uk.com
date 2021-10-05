@@ -189,7 +189,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 counts += 5;
             }
             val countStep = checkStepCount(employee, dataSource);
-            if ((MAX_ROW_IN_PAGE - counts) > (countStep + 1)) {
+            if ((MAX_ROW_IN_PAGE - counts) > (countStep + 5)) {
                 cells.copyRows(cells, 5, firstRow, 1);
                 cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
                         + SPACE + employee.getWorkplaceName());
@@ -268,7 +268,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 counts += 5;
             }
             val countStep = checkStepCount(employee, dataSource);
-            if ((MAX_ROW_IN_PAGE - counts) > (countStep + 1)) {
+            if ((MAX_ROW_IN_PAGE - counts) > (countStep + 5)) {
                 cells.copyRows(cells, 5, firstRow, 1);
                 cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
                         + SPACE + employee.getWorkplaceName());
@@ -376,13 +376,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         totalRowDetails += countN(dataSource, employee);
         totalRowDetails += countM(dataSource, employee);
         totalRowDetails += countO(dataSource, employee);
-
+        boolean checkInsertBlank = true;
         if (totalRowDetails < 5) {
             // Insert blank rows
             cells.copyRows(cells, 54, firstRow, 5 - totalRowDetails);
             firstRow += (5 - totalRowDetails) ;
             count += (5 - totalRowDetails) ;
+            checkInsertBlank = false;
         }
+        if(count < 11 && checkInsertBlank){
+            cells.copyRows(cells, 54, firstRow, 11 - count);
+            firstRow += (11 - count) ;
+            count += (11 - count) ;
+        }
+
         for (int i = 0; i < NUMBER_COLUMN; i++) {
             setBottomBorderStyle(cells.get(firstRow - 1, i));
         }
@@ -2724,7 +2731,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         //残日数
                         Double remainingDays = item.getRemainingDays();
                         cells.get(firstRow + (isTime?2:1), 10 + totalMonth)
-                                .setValue(remainingDays == null || remainingDays == 0 ? null : df.format(remainingDays));
+                                .setValue(remainingDays == null ? null : df.format(remainingDays));
                         if (remainingDays != null && remainingDays < 0) {
                             setForegroundRed(cells.get(firstRow + (isTime?2:1), 10 + totalMonth));
                         }
@@ -2781,7 +2788,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                                 if (remainingTimesAfterGrant == null) {
                                     cells.get(firstRow + 3, 10 + totalMonth)
-                                            .setValue(remainingTimesBeforeGrant == null || remainingTimesBeforeGrant == 0 ? null : convertToTime(remainingTimesBeforeGrant));
+                                            .setValue(remainingTimesBeforeGrant == null ? null : convertToTime(remainingTimesBeforeGrant));
                                 } else {
                                     val vl26 = new StringBuilder();
                                     vl26.append(remainingTimesBeforeGrant == null ? "0:00" : convertToTime(remainingTimesBeforeGrant));
@@ -2801,7 +2808,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                             if (remainingDaysAfterGrant == null) {
                                 cells.get(firstRow + (isTime?2:1), 10 + totalMonth)
-                                        .setValue(remainingDaysBeforeGrant == null || remainingDaysBeforeGrant == 0 ? null : df.format(remainingDaysBeforeGrant));
+                                        .setValue(remainingDaysBeforeGrant == null  ? null : df.format(remainingDaysBeforeGrant));
                             } else {
                                 val vl25 = new StringBuilder();
                                 vl25.append(remainingDaysBeforeGrant == null ? "0.0" : df.format(remainingDaysBeforeGrant));
@@ -2985,7 +2992,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         //残日数
                         Double remainingDays = item.getRemainingDays();
                         cells.get(firstRow + (isTime?2:1), 10 + totalMonth)
-                                .setValue(remainingDays == null || remainingDays == 0 ? null : df.format(remainingDays));
+                                .setValue(remainingDays == null  ? null : df.format(remainingDays));
                         if (remainingDays != null && remainingDays < 0) {
                             setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
                         }
@@ -3070,7 +3077,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                             } else {
                                 cells.get(firstRow + (isTime?2:1), 10 + totalMonth)
-                                        .setValue(remainingDaysBeforeGrant == null || remainingDaysBeforeGrant == 0 ? null : df.format(remainingDaysBeforeGrant));
+                                        .setValue(remainingDaysBeforeGrant == null ? null : df.format(remainingDaysBeforeGrant));
                             }
                             if (remainingDaysBeforeGrant != null && remainingDaysBeforeGrant < 0) {
                                 setForegroundRed(cells.get(firstRow + (isTime?2:1), 10 + totalMonth));
