@@ -396,27 +396,18 @@ public class WorkTimeSettingFinder {
 
         } else {
             if (date != null) {
-                // 職場で利用できる就業時間帯を取得する(上位職場も参照)
-                // 職場IDと基準日から上位職場を取得する
-                GeneralDate baseDate = GeneralDate.fromString(date, "yyyy/MM/dd");
-                List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
-                        workPlaceId, baseDate);
-                // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-                // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
-                List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
-                for (String wkpID : workPlaceIdList) {
-                    // アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
-                    List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
-                    workTimeSettingList.addAll(listWorkTimeItem);
-                }
+            	
+                // 職場IDから職場別就業時間帯を取得
+                List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, workPlaceId);
+                
                 List<PredetemineTimeSetting> predetemineTimeSettingList = this.predetemineTimeSettingRepository
                         .findByCompanyID(companyID);
-                val rs = getWorkTimeDtos(workTimeSettingList, predetemineTimeSettingList);
+                val rs = getWorkTimeDtos(listWorkTimeItem, predetemineTimeSettingList);
                 // 選択可能な就業時間帯＝上記取得した職場別のList＜就業時間帯の設定＞
                 // 職場別の就業時間帯
                 workingHoursByWorkplace.addAll(rs);
 
-                if (!workTimeSettingList.isEmpty()) {
+                if (!listWorkTimeItem.isEmpty()) {
                     allCheckStatus = 0;
                 } else {
                     allCheckStatus = 1;
