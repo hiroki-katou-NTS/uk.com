@@ -174,7 +174,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		//get list mail by list sID
 		List<MailDestinationImport> lstMail = envAdapter.getEmpEmailAddress(cid, employeeList, 6);
 //		Optional<AppDispName> appDispName = repoAppDispName.getDisplay(application.getAppType().value);
-		String appName = "";
+		String appName = application.getAppType().name;
 //		if(appDispName.isPresent()){
 //			appName = appDispName.get().getDispName().v();
 //		}
