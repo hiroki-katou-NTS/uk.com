@@ -60,7 +60,6 @@ module nts.uk.com.view.oem003.a {
 
     clickExport() {
       const vm = this;
-      const $focus = $(':focus');
       if (_.isEmpty(vm.dataTables())) {
         vm.$dialog.error({ messageId: 'Msg_37' });
         return;
@@ -82,7 +81,7 @@ module nts.uk.com.view.oem003.a {
         .fail(err => vm.$dialog.error({ messageId: err.messageId }))
         .always(() => {
           vm.$blockui('clear');
-          if (!_.isNil(vm.$focus) && _.isEmpty(vm.dataTables))
+          if (!_.isNil(vm.$focus) && !_.isEmpty(vm.dataTables))
             vm.$focus.focus();
         });
     }
@@ -122,6 +121,16 @@ module nts.uk.com.view.oem003.a {
       const vm = this;
       // Clone data list of table
       const data = _.cloneDeep(vm.dataTables());
+
+      // Get old position top of first selected item
+      const firstSelected = _.find(vm.dataTables(), i => i.checked()).order();
+      const $container = $('.ui-iggrid-scrolldiv');
+      const $scrollTo = $(`.data-${firstSelected}`);
+      const oldOffsetTop = $scrollTo.offset().top;
+      const newOffsetTop = type === 'before'
+        ? oldOffsetTop - $scrollTo.height()
+        : oldOffsetTop + $scrollTo.height();
+
       const move = (fromOrder: number, toOrder: number) => {
         const from = fromOrder - 1;
         const to = toOrder - 1;
@@ -157,8 +166,13 @@ module nts.uk.com.view.oem003.a {
         item.order(index + 1);
         item.index = index + 1;
       });
-
+      
       vm.dataTables(data);
+      vm.setFocusEvent();
+
+      this.$nextTick(() => {
+        $container.scrollTop(newOffsetTop - $container.offset().top + $container.scrollTop());
+      });
     }
 
     beforeRegisted(): JQueryPromise<any> {
@@ -211,7 +225,6 @@ module nts.uk.com.view.oem003.a {
 
     clickRegister() {
       const vm = this;
-      const $focus = $(':focus');
       vm
         .beforeRegisted()
         .then(() => {
@@ -275,9 +288,13 @@ module nts.uk.com.view.oem003.a {
         vm.formTitle(formSetting.title);
       }
       vm.dataTables(dataTables);
+      vm.setFocusEvent();
+    }
 
+    setFocusEvent() {
+      const vm = this;
       $('.ui-iggrid-scrolldiv table.data-table tr td *').focusin((e) => {
-        this.$focus = e.target;
+        vm.$focus = e.target;
       })
     }
 
