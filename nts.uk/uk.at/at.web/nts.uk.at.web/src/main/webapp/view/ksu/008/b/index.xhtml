@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web"/>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="ksu008.b.main.css"/>
+        <com:scriptfile path="ksu008.b.vm.js"/>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="functions-area" tabindex="-1">
+            <!--B1_1-->
+            <button tabindex="1" data-bind="">#{i18n.getText('KSU008_31')}</button>
+            <!--B1_2-->
+            <button tabindex="2" class="proceed" data-bind="">#{i18n.getText('KSU008_32')}</button>
+            <!--B1_3-->
+            <button tabindex="3" class="danger" data-bind="">#{i18n.getText('KSU008_33')}</button>
+            <!--B1_4-->
+            <button tabindex="4" data-bind="">#{i18n.getText('KSU008_34')}</button>
+            <!--B1_5-->
+            <button tabindex="5" data-bind="">#{i18n.getText('KSU008_35')}</button>
+        </div>
+
+        <div tabindex="-1" id="contents-area">
+
+
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
