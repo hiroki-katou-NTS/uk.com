@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
+import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.お気に入り作業項目.お気に入り作業を登録する
@@ -26,7 +27,8 @@ public class RegisterFavoriteTaskService {
 	 * @param contents   お気に入り内容
 	 * @return
 	 */
-	public AtomTask add(Require require, String employeeId, FavoriteTaskName taskName, List<TaskContent> contents) {
+	public static AtomTask add(Require require, String employeeId, FavoriteTaskName taskName,
+			List<TaskContent> contents) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
 		// $既存データ = require.お気に入り作業項目を取得する(社員ID,お気に入り内容)
@@ -36,8 +38,20 @@ public class RegisterFavoriteTaskService {
 		// BusinessException: Msg_2245 {0}：「$既存データ.名称」を代入する。複数ある場合は「,」繋げる
 
 		if (displayOrders.size() > 0) {
-			String nameString = "";
-			throw new BusinessException("Msg_2245", nameString);
+			String nameArr = "";
+			List<String> names = displayOrders.stream().map(m -> m.getTaskName().v()).collect(Collectors.toList());
+
+			if (names.size() == 1) {
+				nameArr = names.get(0);
+
+			} else {
+				for (int i = 0; i < names.size(); i++) {
+
+					String nameString = i == names.size() - 1 ? names.get(i) : names.get(i).concat(",");
+					nameArr = nameArr + nameString;
+				}
+			}
+			throw new BusinessException("Msg_2245", nameArr);
 		}
 
 		// $追加お気に入り = お気に入り作業項目#新規追加(社員ID, 名称, お気に入り内容)
@@ -47,15 +61,15 @@ public class RegisterFavoriteTaskService {
 		String newFavId = favItem.getFavoriteId();
 
 		// $表示順 = require.表示順を取得する(社員ID)
-		Optional<FavoriteTaskDisplayOrder> OptdisplayOrder = require.get(employeeId);
+		Optional<FavoriteTaskDisplayOrder> optdisplayOrder = require.get(employeeId);
 
 		// $新規表示順
 		FavoriteTaskDisplayOrder favOrder = null;
 
 		// if $表示順.isPresent
-		if (OptdisplayOrder.isPresent()) {
+		if (optdisplayOrder.isPresent()) {
 			// $表示順.新しいお気に入りの表示順を追加する($追加お気に入り.お気に入りID)
-			OptdisplayOrder.get().add(newFavId);
+			optdisplayOrder.get().add(newFavId);
 
 		} else {
 			// $新規表示順 = お気に入り作業の表示順#新規追加(社員ID, $追加お気に入り.お気に入りID)
@@ -72,7 +86,7 @@ public class RegisterFavoriteTaskService {
 
 		} else {
 			// $登録対象.add(require.表示順を更新する($表示順)
-			atomTasks.add(AtomTask.of(() -> require.update(OptdisplayOrder.get())));
+			atomTasks.add(AtomTask.of(() -> require.update(optdisplayOrder.get())));
 		}
 
 		return AtomTask.bundle(atomTasks);

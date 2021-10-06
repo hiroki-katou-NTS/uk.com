@@ -23,7 +23,7 @@ public class RegisterOneDayFavoriteTaskService {
 	 * @param contents   List<作業ブロック詳細内容>
 	 * @return
 	 */
-	public AtomTask add(Require require, String employeeId, FavoriteTaskName taskName,
+	public static AtomTask add(Require require, String employeeId, FavoriteTaskName taskName,
 			List<TaskBlockDetailContent> contents) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 

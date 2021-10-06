@@ -38,7 +38,6 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 	public ManHrRecordConvertResult convert(Require require, IntegrationOfDaily inteDaiy, List<Integer> itemIds) {
 
 		// $勤怠項目値 = 日別勤怠(Work)からList<ItemValue>に変換する
-
 		// 1.クラスを生成
 		// AttendanceItemConvertFactory.createDailyConverter()
 		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
