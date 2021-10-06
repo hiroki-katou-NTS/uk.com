@@ -37,7 +37,7 @@ module nts.uk.at.view.kdw003.cg {
         ENDDATE_LATEST: string = '9999/12/31';
         startDate: KnockoutObservable<string> = ko.observable(new Date().toString());
         startDatePeriod: KnockoutObservable<string> = ko.observable('');
-        endDate: KnockoutObservable<string> = ko.observable('2021/12/31');
+        endDate: KnockoutObservable<string> = ko.observable(this.ENDDATE_LATEST);
 
         enableNewBtn: KnockoutObservable<boolean> = ko.observable(true);
         enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(false); 
@@ -72,37 +72,7 @@ module nts.uk.at.view.kdw003.cg {
             const self = this;
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(true);
-            self.selectedItem = ko.observable(null);
-            self.endDate('2021/12/31');
-            self.selectedHist.subscribe(histId => {                
-                self.findTaskItemDetail(histId);
-                self.enableNewBtn(true);
-            });
-            
-
-            self.columns = ko.observableArray([
-                { headerText: 'No', key: 'id', width: 50, hidden: true }, 
-                { headerText: nts.uk.resource.getText('KDW003_128'), key: 'dateRange', width: 200 }
-            ]);
-
-            self.selectedEmployee.subscribe((employeeCode) => {
-                self.findDetail(employeeCode, false);
-            });
-
-            self.startDate.subscribe(value => {
-                let date = moment(value).format('YYYY/MM/DD');
-                let listTaskFrame1 = _.filter(self.taskListFrame1(), task => { return date <= task.endDate && date >= task.startDate });
-                let listTaskFrame2 = _.filter(self.taskListFrame2(), task => { return date <= task.endDate && date >= task.startDate });
-                let listTaskFrame3 = _.filter(self.taskListFrame3(), task => { return date <= task.endDate && date >= task.startDate });
-                let listTaskFrame4 = _.filter(self.taskListFrame4(), task => { return date <= task.endDate && date >= task.startDate });
-                let listTaskFrame5 = _.filter(self.taskListFrame5(), task => { return date <= task.endDate && date >= task.startDate });                
-                
-                self.listTaskFrame1(listTaskFrame1);
-                self.listTaskFrame2(listTaskFrame2);
-                self.listTaskFrame3(listTaskFrame3);
-                self.listTaskFrame4(listTaskFrame4);
-                self.listTaskFrame5(listTaskFrame5);               
-            });
+            self.selectedItem = ko.observable(null);           
 
             let ccg001ComponentOption: any = {
                 /** Common properties */
@@ -156,10 +126,7 @@ module nts.uk.at.view.kdw003.cg {
                         }
                     });
                     self.lstEmployee(_.orderBy(items, ['code'], ['asc']));
-                    // let employeeLoginInList = _.find(self.lstEmployee(), (emp) =>{
-                    //     return __viewContext.user.employeeId == emp.id;
-                    //  });
-                    //  self.selectedEmployee(_.isEmpty(employeeLoginInList) ? self.lstEmployee()[0].id : employeeLoginInList.id);
+                   
                     self.selectedEmployee(self.lstEmployee()[0].id);
                     self.loadKcp009();
                     //Fix bug 42, bug 43
@@ -169,7 +136,43 @@ module nts.uk.at.view.kdw003.cg {
                 }
             }
             $('#ccgcomponent').ntsGroupComponent(ccg001ComponentOption);  
+
+            self.selectedHist.subscribe(histId => {                
+                self.findTaskItemDetail(histId);
+                self.enableNewBtn(true);
+            });
+            
+
+            self.columns = ko.observableArray([
+                { headerText: 'No', key: 'id', width: 50, hidden: true }, 
+                { headerText: getText('KDW003_128'), key: 'dateRange', width: 200 }
+            ]);
+
+            self.selectedEmployee.subscribe((employeeCode) => {
+                self.findDetail(employeeCode, false);                
+                
+            });
+
+            self.startDate.subscribe(value => {
+                let date = moment(value).format('YYYY/MM/DD');
+                
+                let listTaskFrame1 = _.filter(self.taskListFrame1(), task => { return (date <= task.endDate && date >= task.startDate) });
+                let listTaskFrame2 = _.filter(self.taskListFrame2(), task => { return (date <= task.endDate && date >= task.startDate) });
+                let listTaskFrame3 = _.filter(self.taskListFrame3(), task => { return (date <= task.endDate && date >= task.startDate) });
+                let listTaskFrame4 = _.filter(self.taskListFrame4(), task => { return (date <= task.endDate && date >= task.startDate) });
+                let listTaskFrame5 = _.filter(self.taskListFrame5(), task => { return (date <= task.endDate && date >= task.startDate) });                
+                
+                self.listTaskFrame1(listTaskFrame1);
+                self.listTaskFrame2(listTaskFrame2);
+                self.listTaskFrame3(listTaskFrame3);
+                self.listTaskFrame4(listTaskFrame4);
+                self.listTaskFrame5(listTaskFrame5);               
+            });
             self.loadData();
+        }
+
+        find(taskCode: string, listTask: Array<TaskModel>): boolean {
+            return  _.find(listTask, task => task.taskCode == taskCode) != undefined;          
         }
 
         loadKcp009() {
@@ -270,6 +273,7 @@ module nts.uk.at.view.kdw003.cg {
                     self.listHistPeriod(lstHist);
                     if(!reload){
                         self.selectedHist(self.listHistPeriod()[0].id);
+                        self.findTaskItemDetail(self.listHistPeriod()[0].id);
                     }  
 
                     self.selectedHist.valueHasMutated(); 
@@ -291,7 +295,7 @@ module nts.uk.at.view.kdw003.cg {
             if (id === "") return;
 
             self.enableDeleteBtn(id == self.listHistPeriod()[0].id);
-            taskItem = _.filter(self.listTaskItemInfo(), itemInfo => { return itemInfo.id == id; })[0];
+            taskItem = _.find(self.listTaskItemInfo(), itemInfo => itemInfo.id == id );
 
             self.startDate(taskItem.startDate);
             self.endDate(taskItem.endDate);
@@ -304,40 +308,50 @@ module nts.uk.at.view.kdw003.cg {
                 listTaskFrame5 = self.listTaskFrame5();
 
             if (!_.isEmpty(listTaskFrame1) && _.isEmpty(_.filter(listTaskFrame1, code => { return code.taskCode === taskItem.task1 }))) {
-                if (taskItem.task1 != null && taskItem.task1 != "") {
+                if (taskItem.task1 != null && taskItem.task1 != "" && !self.find(taskItem.task1, self.taskListFrame1())) {
                     listTaskFrame1.push(new TaskModel(taskItem.task1, taskItem.task1 + " " + getText("KDW003_81")));                    
+                } else {
+                    listTaskFrame1.push(_.find(self.taskListFrame1(), x => x.taskCode === taskItem.task1)); 
                 }
             }            
             self.listTaskFrame1(listTaskFrame1);
             self.selectedTaskCode1(taskItem.task1);
 
             if (!_.isEmpty(listTaskFrame2) && _.isEmpty(_.filter(listTaskFrame2, code => { return code.taskCode === taskItem.task2 }))) {
-                if (taskItem.task2 != null && taskItem.task2 != "") {
+                if (taskItem.task2 != null && taskItem.task2 != "" && !self.find(taskItem.task2, self.taskListFrame2())) {
                     listTaskFrame2.push(new TaskModel(taskItem.task2, taskItem.task2 + " " + getText("KDW003_81")));
+                } else {
+                    listTaskFrame1.push(_.find(self.taskListFrame2(), x => x.taskCode === taskItem.task2)); 
                 }
             }
             self.listTaskFrame2(listTaskFrame2);
             self.selectedTaskCode2(taskItem.task2);
 
             if (!_.isEmpty(listTaskFrame3) && _.isEmpty(_.filter(listTaskFrame3, code => { return code.taskCode === taskItem.task3 }))) {
-                if (taskItem.task3 != null && taskItem.task3 != "") {
+                if (taskItem.task3 != null && taskItem.task3 != "" && !self.find(taskItem.task3, self.taskListFrame3())) {
                     listTaskFrame3.push(new TaskModel(taskItem.task3, taskItem.task3 + " " + getText("KDW003_81")));
-                }                
+                } else {
+                    listTaskFrame1.push(_.find(self.taskListFrame3(), x => x.taskCode === taskItem.task3)); 
+                }         
             }
             self.listTaskFrame3(listTaskFrame3);
             self.selectedTaskCode3(taskItem.task3);
 
             if (!_.isEmpty(listTaskFrame4) && _.isEmpty(_.filter(listTaskFrame4, code => { return code.taskCode === taskItem.task4 }))) {
-                if (taskItem.task4 != null && taskItem.task4 != "") {
+                if (taskItem.task4 != null && taskItem.task4 != "" && !self.find(taskItem.task4, self.taskListFrame4())) {
                     listTaskFrame4.push(new TaskModel(taskItem.task4, taskItem.task4 + " " + getText("KDW003_81")));
+                } else {
+                    listTaskFrame1.push(_.find(self.taskListFrame4(), x => x.taskCode === taskItem.task4)); 
                 }
             }
             self.listTaskFrame4(listTaskFrame4);
             self.selectedTaskCode4(taskItem.task4);
 
             if (!_.isEmpty(listTaskFrame5) && _.isEmpty(_.filter(listTaskFrame5, code => { return code.taskCode === taskItem.task5 }))) {
-                if (taskItem.task5 != null && taskItem.task5 != "") {
+                if (taskItem.task5 != null && taskItem.task5 != "" && !self.find(taskItem.task5, self.taskListFrame5())) {
                     listTaskFrame5.push(new TaskModel(taskItem.task5, taskItem.task5 + " " + getText("KDW003_81")));
+                } else {
+                    listTaskFrame1.push(_.find(self.taskListFrame5(), x => x.taskCode === taskItem.task5)); 
                 }
             }
             self.listTaskFrame5(listTaskFrame5);
