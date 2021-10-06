@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,20 @@ public class GetAgreementTime {
 	}
 	
 	/**
+	 * clones from 【NO.333】36協定時間の取得
+	 * for fix performance 
+	 */
+	public static List<AgreementTimeOfManagePeriod> getClones(RequireM6 require, List<String> sid, YearMonth ym,
+			List<IntegrationOfDaily> dailyRecord, GeneralDate baseDate, ScheRecAtr scheRecAtr) {
+		
+		/** 「月別実績の月の計算」を取得する */
+		val monthlyCalc = getMonthlyCalcDataClones(require, sid, ym, dailyRecord, baseDate, scheRecAtr);
+		
+		/** 管理期間の36協定時間の作成 */
+		return AgreementTimeOfManagePeriod.aggregateClones(require, sid, baseDate, ym, monthlyCalc);
+	}
+	
+	/**
 	 * 「月別実績の月の計算」を取得する
 	 * @param require
 	 * @param sid 社員ID
@@ -103,6 +118,48 @@ public class GetAgreementTime {
 		return monthlyCalc;
 	}
 	
+	/**
+	 * clones from 「月別実績の月の計算」を取得する
+	 */
+	private static List<MonthlyCalculation> getMonthlyCalcDataClones(RequireM6 require, List<String> sid, YearMonth ym,
+			List<IntegrationOfDaily> dailyRecord, GeneralDate baseDate, ScheRecAtr scheRecAtr) {
+		
+		/** ○３６協定運用設定を取得 */
+		val agrementOperationSet = require.agreementOperationSetting(AppContexts.user().companyId()).orElse(null);
+		if (agrementOperationSet == null) {
+			return new ArrayList<MonthlyCalculation>();
+		}
+		
+		/** 年月から集計期間を取得 */
+		val period = agrementOperationSet.getAggregatePeriodByYearMonth(ym);
+		
+		/** 日別実績の取得(予実区分付き) */
+		val dbRecords = getDailyRecordsClones(require, sid, period, scheRecAtr);
+		
+		/** 対象の日別勤怠一覧にパラメータ。日別勤怠（List）を上書きする */
+		val processRecords = dbRecords.stream().map(r -> {
+			
+			return dailyRecord.stream()
+					.filter(or -> r.getEmployeeId().equals(or.getEmployeeId())
+							&& r.getYmd().equals(or.getYmd()))
+					.findFirst().orElse(r);
+		}).collect(Collectors.toList());
+		
+		/** 「労働条件項目」を取得する */
+		val workConItem = require.workingConditionItem(AppContexts.user().companyId(), baseDate, sid);
+		if (workConItem.isEmpty()) {
+			return new ArrayList<MonthlyCalculation>();
+		}
+		
+		/** 労働条件ごとに月別実績を集計する */
+		val monthlyCalc = MonthlyCalculationByWorkCondition.calcMonthClones(require, 
+				AppContexts.user().companyId(), sid, processRecords, 
+				ym, baseDate, workConItem, period);
+		
+		/** 「月別実績の月の計算」を返す */
+		return monthlyCalc;
+	}
+	
 	/** 日別実績の取得(予実区分付き) */
 	private static List<IntegrationOfDaily> getDailyRecords(RequireM7 require, String sid,
 			DatePeriod period, ScheRecAtr scheRecAtr) {
@@ -120,15 +177,35 @@ public class GetAgreementTime {
 		return records;
 	}
 	
+	/** 日別実績の取得(予実区分付き) */
+	private static List<IntegrationOfDaily> getDailyRecordsClones(RequireM7 require, List<String> sid, DatePeriod period, ScheRecAtr scheRecAtr) {
+		
+		/** ○日別実績(Work)を取得 */
+		val records = require.integrationOfDailyClones(sid, period);
+		
+		/** ○INPUT．予実区分を確認 */
+		if (scheRecAtr == ScheRecAtr.SCHEDULE) {
+			
+			/** TODO: 日別実績への申請反映結果を取得 */
+		}
+		
+		/** ○日別実績(Work)Listを返す */
+		return records;
+	}
+	
 	public static interface RequireM7 {
 		
 		List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period);
+		
+		List<IntegrationOfDaily> integrationOfDailyClones(List<String> sid, DatePeriod period);
 	}
 	
 	public static interface RequireM6 extends AgreementTimeOfManagePeriod.RequireM2,
 		RequireM7, MonthlyCalculationByWorkCondition.RequireM3 {
 		
 		Optional<WorkingConditionItem> workingConditionItem(String cid , GeneralDate ymd, String sid);
+		
+		List<WorkingConditionItem> workingConditionItem(String cid , GeneralDate ymd, List<String> sid);
 		
 		Optional<AgreementOperationSetting> agreementOperationSetting(String companyId);
 		

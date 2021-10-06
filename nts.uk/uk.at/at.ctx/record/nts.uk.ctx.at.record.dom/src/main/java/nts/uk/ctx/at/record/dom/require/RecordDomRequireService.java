@@ -22,7 +22,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
+
 import nts.arc.time.calendar.period.YearMonthPeriod;
+
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
@@ -94,6 +98,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -132,6 +137,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfo
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
@@ -760,6 +766,8 @@ public class RecordDomRequireService {
 		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require{
 
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
+		
+		List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate);
 
 	}
 
@@ -1472,6 +1480,11 @@ public class RecordDomRequireService {
 		public Optional<SharedAffWorkPlaceHisImport> affWorkPlace(String employeeId, GeneralDate baseDate) {
 			return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, baseDate);
 		}
+		
+		@Override
+		public Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> affWorkPlace(String companyId, List<String> employeeId, DatePeriod baseDate) {
+			return sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHisClones(companyId, employeeId, baseDate);
+		}
 
 		@Override
 		public Optional<WorkingCondition> workingCondition(String historyId) {
@@ -1603,6 +1616,13 @@ public class RecordDomRequireService {
 		public Optional<AgreementMonthSetting> agreementMonthSetting(String employeeId, YearMonth yearMonth) {
 			return agreementMonthSettingRepo.findByKey(employeeId, yearMonth);
 		}
+		
+		@Override
+		public List<AgreementMonthSetting> agreementMonthSettingClones(List<String> employeeId, YearMonth yearMonth) {
+			List<YearMonth> yearMonths = new ArrayList<YearMonth>();
+			yearMonths.add(yearMonth);
+			return agreementMonthSettingRepo.findByKey(employeeId, yearMonths);
+		}
 
 		@Override
 		public Optional<AgreementTimeOfManagePeriod> agreementTimeOfManagePeriod(String employeeId,
@@ -1680,6 +1700,11 @@ public class RecordDomRequireService {
 		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
 		}
+		
+		@Override
+		public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
+			return workingConditionItemRepo.getByListSidAndStandardDate(employeeId, baseDate);
+		}
 
 		@Override
 		public List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod) {
@@ -1708,7 +1733,7 @@ public class RecordDomRequireService {
 				DatePeriod baseDate) {
 			return affClassficationAdapter.finds(companyId, employeeId, baseDate);
 		}
-
+		
 		@Override
 		public Optional<AgreementTimeOfClassification> agreementTimeOfClassification(String companyId,
 				LaborSystemtAtr laborSystemAtr, String classificationCode) {
@@ -2351,17 +2376,34 @@ public class RecordDomRequireService {
 
 			return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(cid, ymd, sid);
 		}
+		
+		@Override
+		public List<WorkingConditionItem> workingConditionItem(String cid, GeneralDate ymd, List<String> sid) {
+			return workingConditionRepo.getWorkingConditionItemByLstEmpIDAndDate(cid, ymd, sid);
+		}
 
 		@Override
 		public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate) {
 
 			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, ym);
 		}
+		
+		@Override
+		public Map<String, BasicAgreementSettingForCalc> basicAgreementSettingClones(String cid, List<String> sid, YearMonth ym, GeneralDate baseDate) {
+
+			return AgreementDomainService.getBasicSetClones(this, cid, sid, baseDate, ym);
+		}
 
 		@Override
 		public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
 
 			return integrationOfDailyGetter.getIntegrationOfDaily(sid, period);
+		}
+		
+		@Override
+		public List<IntegrationOfDaily> integrationOfDailyClones(List<String> sid, DatePeriod period) {
+
+			return integrationOfDailyGetter.getIntegrationOfDailyClones(sid, period);
 		}
 
 		@Override
@@ -2375,6 +2417,13 @@ public class RecordDomRequireService {
 				String employeeId, DatePeriod period) {
 
 			return MonAggrEmployeeSettings.loadSettings(this, cacheCarrier, companyId, employeeId, period);
+		}
+		
+		@Override
+		public List<MonAggrEmployeeSettings> monAggrEmployeeSettingsClones(CacheCarrier cacheCarrier, String companyId,
+				List<String> employeeId, DatePeriod period) {
+
+			return MonAggrEmployeeSettings.loadSettingsClones(this, cacheCarrier, companyId, employeeId, period);
 		}
 
 		@Override
@@ -2850,5 +2899,77 @@ public class RecordDomRequireService {
 		public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
 			return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
 		}
+
+		@Override
+		public List<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String cId, List<String> employeeId) {
+			return annLeaEmpBasicInfoRepo.getAll(cId, employeeId);
+		}
+
+		@Override
+		public List<ShaFlexMonthActCalSet> monthFlexCalcSetbyEmployee(String cid, List<String> sId) {
+			return shaFlexMonthActCalSetRepo.findAllShaByCid(cid).stream().filter(c -> sId.contains(c.getEmpId())).collect(Collectors.toList());
+		}
+
+		@Override
+		public List<ShaDeforLaborMonthActCalSet> monthDeforLaborCalcSetByEmployee(String cId, List<String> sId) {
+			return shaDeforLaborMonthActCalSetRepo.findByCid(cId).stream().filter(c -> sId.contains(c.getEmployeeId())).collect(Collectors.toList());
+		}
+
+		@Override
+		public List<ShaRegulaMonthActCalSet> monthRegulaCalcSetByEmployee(String cid, List<String> sId) {
+			List<ShaRegulaMonthActCalSet> list = shaRegulaMonthActCalSetRepo.findRegulaMonthActCalSetByCid(cid);
+			return list.stream().filter(c -> sId.contains(c.getEmployeeId())).collect(Collectors.toList());
+		}
+
+		@Override
+		public List<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, List<String> empId) {
+			return deforLaborTimeShaRepo.findList(cid, empId);
+		}
+
+		@Override
+		public List<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, List<String> EmpId) {
+			return regularLaborTimeShaRepo.findList(Cid, EmpId);
+		}
+
+		@Override
+		public List<EmployeeImport> employee(List<String> empId) {
+			return empEmployeeAdapter.findByEmpId(empId);
+		}
+
+		@Override
+		public List<WorkingConditionItem> workingConditionItem(List<String> sId, DatePeriod datePeriod) {
+			return workingConditionItemRepo.getBySidsAndDatePeriodNew(sId, datePeriod);
+		}
+
+		@Override
+		public Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> dailyAttendanceTimesclones(
+				List<String> employeeId, DatePeriod datePeriod) {
+			List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPerformance = attendanceTimeRepo.finds(employeeId, datePeriod);
+			Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> result = new HashMap<String, Map<GeneralDate,AttendanceTimeOfDailyAttendance>>();
+			
+			for (String id : employeeId) {
+				List<AttendanceTimeOfDailyPerformance> attendance = attendanceTimeOfDailyPerformance.stream().filter(c->c.getEmployeeId().equals(id)).collect(Collectors.toList());
+				result.put(id, attendance.stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())));
+			}
+			
+			return result;
+		}
+
+		@Override
+		public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+			return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+		}
+
+		@Override
+		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+			return closureRepo.findByListId(companyId, closureId);
+		}
+
+		@Override
+		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+				GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
 	}
 }
