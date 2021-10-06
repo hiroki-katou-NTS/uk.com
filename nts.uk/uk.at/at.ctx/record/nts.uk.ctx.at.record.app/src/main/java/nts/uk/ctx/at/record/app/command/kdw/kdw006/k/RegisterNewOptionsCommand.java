@@ -25,7 +25,7 @@ public class RegisterNewOptionsCommand {
 	public String optionName;
 	
 	// <<Optional>>選択肢の外部コード：作業補足情報の外部コード
-	public Integer eternalCodeOfChoice;
+	public String eternalCodeOfChoice;
 	
 	/** 項目ID */
 	public int itemId;
