@@ -38,6 +38,14 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 	public void insert(TaskSupInfoChoicesDetail detail) {
 		this.commandProxy().insert(new KrcmtTaskSupInfoChoicesDetail(detail));
 	}
+	
+	@Override
+	public void insert(TaskSupInfoChoicesHistory history) {
+		List<KrcmtTaskSupInfoChoicesHist> entites = KrcmtTaskSupInfoChoicesHist.toEntities(history);
+		entites.stream().forEach(f -> {
+			this.commandProxy().insert(f);
+		});
+	}
 
 	@Override
 	public void update(TaskSupInfoChoicesHistory history) {

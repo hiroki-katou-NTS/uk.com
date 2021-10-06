@@ -24,6 +24,8 @@ public interface TaskSupInfoChoicesHistoryRepository {
 	 */
 	void insert(TaskSupInfoChoicesDetail detail);
 	
+	void insert(TaskSupInfoChoicesHistory history);
+	
 	/**
 	 * @name [3] update(作業補足情報の選択肢履歴)
 	 */
