@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforitemsetting.KrcmtTaskSupInfoChoicesDetail;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforitemsetting.KrcmtTaskSupInfoChoicesDetailPk;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforitemsetting.KrcmtTaskSupInfoChoicesHist;
+import nts.uk.ctx.at.record.infra.entity.jobmanagement.tasksupplementaryinforitemsetting.KrcmtTaskSupInfoChoicesHistPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
 
 /**
@@ -145,6 +146,11 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 				.setParameter("hisIds", historyIds).getList();
 		
 		return result;
+	}
+
+	@Override
+	public Optional<TaskSupInfoChoicesHistory> get(String historyId, int itemId) {
+		return this.queryProxy().find(new KrcmtTaskSupInfoChoicesHistPK(itemId, historyId), KrcmtTaskSupInfoChoicesHist.class).map(m -> m.toDomain());
 	}
 
 }
