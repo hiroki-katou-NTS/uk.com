@@ -152,7 +152,7 @@ public class GetInfoRemainSubstituteHoliday {
 			// call [No.505]代休残数を取得する
 			consecutiveVacation = this.getBreakDayOffMngRemain(sID, GeneralDate.today(), cID);
 			
-			DatePeriod datePeriod = new DatePeriod(closure.get(), closure.get().addMonths(1).addDays(-1));
+			DatePeriod datePeriod = new DatePeriod(closure.get(), closure.get().addYears(1).addDays(-1));
 			BreakDayOffRemainMngRefactParam breakDay = new BreakDayOffRemainMngRefactParam(cID, sID, datePeriod, false,
 					closure.get(), false, Collections.emptyList(), Optional.empty(),
 					Optional.empty(), Optional.empty(), new FixedManagementDataMonth());
@@ -169,7 +169,7 @@ public class GetInfoRemainSubstituteHoliday {
 		String currentRemainNumber = "";
 		if (consecutiveVacation != null) {
 			if (consecutiveVacation.getRemainTime() != null && subHd.isTimeOfPeriodFlg()) {
-				currentRemainNumber = consecutiveVacation.getRemainTime() + "";
+				currentRemainNumber = this.getHoursMinu(consecutiveVacation.getRemainTime().v().intValue());
 			} else {
 				currentRemainNumber = consecutiveVacation.getDays() + TextResource.localize("KDL005_47");
 			}
@@ -192,6 +192,12 @@ public class GetInfoRemainSubstituteHoliday {
 		 Optional<GeneralDate> closure = GetClosureStartForEmployee.algorithm(require, cache, sID);
 		 
 		 return closure;
+	}
+	
+	private String getHoursMinu(int time) {
+		String minu = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60) : 0 + String.valueOf(time % 60);
+		String result = String.valueOf(time / 60) + ":" + minu;
+		return result;
 	}
 	
 	public NumberConsecutiveVacation getBreakDayOffMngRemain(String sID, GeneralDate date, String cID) {
