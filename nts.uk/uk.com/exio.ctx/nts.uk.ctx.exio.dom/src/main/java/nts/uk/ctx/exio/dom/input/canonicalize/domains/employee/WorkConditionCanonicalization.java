@@ -181,7 +181,11 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 					.add(Items.就業時間帯の自動設定区分, 0)
 					.add(Items.休暇加算時間利用区分, 
 							interm.isImporting(Items.加算時間1日) ?  1 : 0))
-			.optionalItem(new CanonicalItem(Items.スケジュール作成方法, Long.valueOf(0)));
+			.optionalItem(new CanonicalItem(Items.スケジュール作成方法, Long.valueOf(0)))
+			.optionalItem(new CanonicalItem(Items.営業日カレンダーの参照先, Long.valueOf(0)))
+			.optionalItem(new CanonicalItem(Items.カレンダー作成時の就業時間帯の参照先, Long.valueOf(0)))
+			.optionalItem(new CanonicalItem(Items.月間パターン作成時の就業時間帯の参照先, Long.valueOf(0)))
+			;
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
 		}
