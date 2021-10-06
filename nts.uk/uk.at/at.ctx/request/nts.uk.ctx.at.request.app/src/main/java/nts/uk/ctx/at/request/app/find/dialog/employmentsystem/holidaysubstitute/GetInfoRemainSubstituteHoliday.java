@@ -153,9 +153,18 @@ public class GetInfoRemainSubstituteHoliday {
 			consecutiveVacation = this.getBreakDayOffMngRemain(sID, GeneralDate.today(), cID);
 			
 			DatePeriod datePeriod = new DatePeriod(closure.get(), closure.get().addYears(1).addDays(-1));
-			BreakDayOffRemainMngRefactParam breakDay = new BreakDayOffRemainMngRefactParam(cID, sID, datePeriod, false,
-					closure.get(), false, Collections.emptyList(), Optional.empty(),
-					Optional.empty(), Optional.empty(), new FixedManagementDataMonth());
+			BreakDayOffRemainMngRefactParam breakDay = new BreakDayOffRemainMngRefactParam(
+					cID, 
+					sID, 
+					datePeriod, 
+					false,
+					closure.get(), 
+					false, 
+					Collections.emptyList(), 
+					Optional.empty(),
+					Optional.empty(), 
+					Optional.empty(), 
+					new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
 			
 			// [№203]期間内の休出代休残数を取得する
 			SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess

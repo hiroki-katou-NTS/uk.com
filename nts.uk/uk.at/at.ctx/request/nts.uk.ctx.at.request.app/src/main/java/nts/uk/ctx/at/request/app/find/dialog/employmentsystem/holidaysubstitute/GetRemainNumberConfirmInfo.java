@@ -225,7 +225,7 @@ public class GetRemainNumberConfirmInfo {
 			}
 		}
 		// Input．逐次発生の休暇明細一覧．指定した期間内に未消化となる情報を取得するを呼び出す
-		DatePeriod dateperiod = new DatePeriod(GeneralDate.today().addMonths(-1), GeneralDate.today());
+		DatePeriod dateperiod = new DatePeriod(GeneralDate.today(), GeneralDate.today().addMonths(1));
 		List<AccumulationAbsenceDetail> undigestInfoInPeriod = vacationDetails.getUndigestInfoInPeriod(dateperiod);
 		VacationDetails vacationDetailsNew = new VacationDetails(undigestInfoInPeriod);
 		// 1ヶ月以内期限切れ数をセットする
