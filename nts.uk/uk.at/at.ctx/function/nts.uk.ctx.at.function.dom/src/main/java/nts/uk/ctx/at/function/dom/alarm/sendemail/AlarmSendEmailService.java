@@ -123,22 +123,20 @@ public class AlarmSendEmailService implements SendEmailService {
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			for (val entry : managerTargetMap.entrySet()) {
 				val targetPersonIds = entry.getValue().stream().filter(Objects::nonNull).collect(Collectors.toList()); //List＜対象者ID＞
-				for (val empId : targetPersonIds) {
 					// ＜抽出元＞: INPUT.アラーム抽出結果, ＜条件＞: 社員ID＝　ループ中のList＜対象者ID＞
 					List<ValueExtractAlarmDto> valueExtractAlarmManagers = valueExtractAlarmDtos.stream()
-							.filter(c -> c.getEmployeeID().equals(empId)).collect(Collectors.toList());
+							.filter(c -> targetPersonIds.contains(c.getEmployeeID())).collect(Collectors.toList());
 					try {
-						boolean isSuccess = sendMailManager(companyID, empId, functionID,
+						boolean isSuccess = sendMail(companyID, entry.getKey(), functionID,
 								valueExtractAlarmManagers, mailSettingsParamDto.getSubjectAdmin(),
 								mailSettingsParamDto.getTextAdmin(), currentAlarmCode,
 								useAuthentication, mailSettingAdmin, senderAddress);
 						if (!isSuccess) {
-							errors.add(empId);
+							errors.add(entry.getKey());
 						}
 					} catch (SendMailFailedException e) {
 						throw e;
 					}
-				}
 			}
 		}
 
@@ -256,7 +254,6 @@ public class AlarmSendEmailService implements SendEmailService {
 	 * @param bodyEmail
 	 * @return true : send mail successful/false : send mail error
 	 */
-    @SuppressWarnings("Duplicates")
 	private boolean sendMail(String companyID, String employeeId, Integer functionID,
 			List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail,
 			String bodyEmail,String currentAlarmCode,
@@ -321,54 +318,6 @@ public class AlarmSendEmailService implements SendEmailService {
 				}
 			}
 		}
-		return true;
-	}
-
-	// Fix #120220
-    @SuppressWarnings("Duplicates")
-	private boolean sendMailManager(String companyID, String employeeId, Integer functionID,
-									List<ValueExtractAlarmDto> listDataAlarmExport, String subjectEmail, String bodyEmail, String currentAlarmCode,
-									boolean useAuthentication, Optional<MailSettings> mailSetting, Optional<String> senderAddress) throws BusinessException {
-		val mailDestinationAlarmImport = iMailDestinationAdapter.getEmpEmailAddress(companyID, employeeId, functionID);
-		List<OutGoingMailAlarm> emailAddress = mailDestinationAlarmImport != null ? mailDestinationAlarmImport.getOutGoingMails().stream()
-				.filter(c -> c.getEmailAddress() != null).filter(x -> !x.getEmailAddress().equals("")).collect(Collectors.toList()) : Collections.emptyList();
-
-		// Prepare attach file
-		if (StringUtils.isEmpty(subjectEmail)) subjectEmail = TextResource.localize("KAL010_300");
-		AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport, currentAlarmCode);
-		List<MailAttachedFileItf> attachedFiles = Collections.singletonList(new MailAttachedFilePath(alarmExportDto.getPath(), alarmExportDto.getFileName()));
-		MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
-
-		List<String> replyToList = new ArrayList<>();
-		List<String> ccList = new ArrayList<>();
-		List<String> bccList = new ArrayList<>();
-		List<String> toList = emailAddress.stream().map(OutGoingMailAlarm::getEmailAddress).collect(Collectors.toList());
-		String senderAddressInput = senderAddress.orElse("");
-
-		mailSetting.ifPresent(mailSet -> {
-			ccList.addAll(mailSet.getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()));
-			bccList.addAll(mailSet.getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()));
-			mailSetting.get().getMailRely().ifPresent(mailReply -> {
-				if (StringUtils.isNotEmpty(mailReply.v()))
-					replyToList.add(mailReply.v());
-			});
-		});
-
-		MailSendOptions mailSendOptions = new MailSendOptions(senderAddressInput, replyToList, toList, ccList, bccList);
-		try {
-			if (useAuthentication) {
-				mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
-			} else {
-				if (senderAddress.isPresent() && !senderAddress.get().equals("")) {
-					mailSender.send(mailContent, companyID, mailSendOptions);
-				} else {
-					mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
-				}
-			}
-		} catch (SendMailFailedException e) {
-			throw e;
-		}
-
 		return true;
 	}
 }
