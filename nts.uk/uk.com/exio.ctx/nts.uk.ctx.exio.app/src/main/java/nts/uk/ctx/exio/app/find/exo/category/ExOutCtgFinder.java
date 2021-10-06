@@ -28,8 +28,8 @@ public class ExOutCtgFinder {
     public List<ExOutCtgDto> get(int roleType) {
         // カテゴリ設定　≠　0（出力しない）
         //・システム使用可否　＝　ロール種類が「使用可」となっている
-        return finder.getAllExOutCtg().stream().filter(item -> item.getCategorySet() != CategorySetting.CATEGORY_SETTING
-                && item.getSysUsability(roleType) == SystemUsability.AVAILABLE)
+        return finder.getExOutCtgList(CategorySetting.CATEGORY_SETTING)
+                .stream().filter(item -> item.getSysUsability(roleType) == SystemUsability.AVAILABLE)
                 .map(ExOutCtgDto::fromDomain)
                 .sorted(Comparator.comparing(ExOutCtgDto::getDisplayOrder).thenComparing(ExOutCtgDto::getCategoryId))
                 .collect(Collectors.toList());

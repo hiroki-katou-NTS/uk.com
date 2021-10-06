@@ -17,11 +17,10 @@ import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHand
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommand;
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthCommand;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthCommandHandler;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthCommand;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthCommandHandler;
-import nts.uk.ctx.exio.app.find.exo.category.ClosureIdAndPeriod;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthSettingCommand;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthCommandSettingHandler;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthSettingCommand;
+import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthSettingCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.category.Cmf002Dto;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgFinder;
@@ -68,10 +67,10 @@ public class StdOutConSetWebService extends WebService {
 	private ExOutCtgFinder exOutCtgFinder;
 
 	@Inject
-	private RegisterOrUpdateExOutputCtgAuthCommandHandler registerExOutputCtgAuthCommand;
+	private RegisterOrUpdateExOutputCtgAuthSettingCommandHandler registerExOutputCtgAuthCommand;
 
 	@Inject
-	private DuplicateExOutputCtgAuthCommandHandler duplicateExOutputCtgAuthCommand;
+	private DuplicateExOutputCtgAuthCommandSettingHandler duplicateExOutputCtgAuthCommand;
 
 	@POST
 	@Path("excuteCopy")
@@ -156,15 +155,15 @@ public class StdOutConSetWebService extends WebService {
 	}
 
 	@POST
-	@Path("exOutCtgAuth/register")
-	public void RegisterExOutCtgAuth(List<RegisterOrUpdateExOutputCtgAuthCommand> commands) {
+	@Path("exOutCtgAuthSet/register")
+	public void RegisterExOutCtgAuth(RegisterOrUpdateExOutputCtgAuthSettingCommand commands) {
 		this.registerExOutputCtgAuthCommand.handle(commands);
 	}
 
 	@POST
-	@Path("exOutCtgAuth/copy")
-	public void DuplicateExOutCtgAuth(List<DuplicateExOutputCtgAuthCommand> commands) {
-		this.duplicateExOutputCtgAuthCommand.handle(commands);
+	@Path("exOutCtgAuthSet/copy")
+	public void DuplicateExOutCtgAuth(DuplicateExOutputCtgAuthSettingCommand command) {
+		this.duplicateExOutputCtgAuthCommand.handle(command);
 	}
 
 }

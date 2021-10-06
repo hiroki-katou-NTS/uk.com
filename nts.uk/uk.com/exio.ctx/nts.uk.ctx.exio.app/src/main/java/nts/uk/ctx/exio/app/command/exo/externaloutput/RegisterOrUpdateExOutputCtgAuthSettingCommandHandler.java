@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class RegisterOrUpdateExOutputCtgAuthCommandHandler extends CommandHandler<RegisterOrUpdateExOutputCtgAuthCommand> {
+public class RegisterOrUpdateExOutputCtgAuthSettingCommandHandler extends CommandHandler<RegisterOrUpdateExOutputCtgAuthSettingCommand> {
     @Inject
     private ExOutCtgAuthSetRepository exOutCtgAuthRepo;
 
     @Override
-    protected void handle(CommandHandlerContext<RegisterOrUpdateExOutputCtgAuthCommand> commandHandlerContext) {
+    protected void handle(CommandHandlerContext<RegisterOrUpdateExOutputCtgAuthSettingCommand> commandHandlerContext) {
         String companyId = AppContexts.user().companyId();
         val command = commandHandlerContext.getCommand();
         if (command == null) return;

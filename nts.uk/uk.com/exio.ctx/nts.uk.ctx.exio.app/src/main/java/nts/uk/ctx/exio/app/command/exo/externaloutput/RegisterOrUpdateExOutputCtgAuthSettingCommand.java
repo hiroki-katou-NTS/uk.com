@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Value
-public class RegisterOrUpdateExOutputCtgAuthCommand {
+public class RegisterOrUpdateExOutputCtgAuthSettingCommand {
     String roleId;
 
     List<FunctionAuthSetting> functionAuthSettings;
