@@ -228,6 +228,12 @@ export class Ccg008AComponent extends Vue {
                 value: moment(new Date(yearlyHld.nextGrantDate)).format('YY/MM/DD') + '　' + grantDays + vm.$i18n('CCGS08_19'), 
                 // prefix: 'KTG029_60'
             });
+        } else {
+            results.push({
+                name: 'CCGS08_16', 
+                value: vm.$i18n('CCGS08_38'), 
+                // prefix: 'KTG029_60'
+            });
         }
         // 積立年休残数
         if (item.reservedYearsRemainNo) {
