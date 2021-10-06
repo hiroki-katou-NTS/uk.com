@@ -142,7 +142,11 @@ module nts.uk.com.view.cmf001.e.viewmodel {
 						self.csvFileId())
 				};
 				ajax("screen/com/cmf/cmf001/b/save", saveContents).done(() => {
-					info(nts.uk.resource.getMessage("Msg_15", []));
+					info(nts.uk.resource.getMessage("Msg_15", [])).then(() => {
+				        ui.dialog.confirm("続けて受入レイアウトを登録しますか？").ifYes(() => {
+				        	self.gotoDetailSetting();
+				        });
+					});
 					self.reloadPage();
 					self.selectedCode(self.settingCode());
 	            });

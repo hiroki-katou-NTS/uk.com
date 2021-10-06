@@ -46,9 +46,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		constructor() {
 			super();
 			var self = this;
+			
+			var params = __viewContext.transferred.get();
+			self.settingCode = params.settingCode;
 
-			self.settingCode = __viewContext.transferred.get().settingCode;
-            
 			self.startPage();
 			
 			self.selectedDomainId.subscribe((value) => {
@@ -65,6 +66,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			self.layoutItemNoList.subscribe((value) => {
 				self.setLayout(value);
 			})
+			
+			if (params.domainId !== undefined){
+				self.selectedDomainId(params.domainId);
+			}
 		}
 		
 		setDomain(info: DomainInfo) {
@@ -254,9 +259,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		}
 
 		gotoDetailSetting() {
+			let self = this;
 			request.jump("../c/index.xhtml", {
-				settingCode: this.settingCode,
-				domainId: this.importDomain()
+				settingCode: self.settingCode,
+				domainId: self.self.selectedDomainId(),
+				screenId: 'cmf001f'
 			});
 		}
 	

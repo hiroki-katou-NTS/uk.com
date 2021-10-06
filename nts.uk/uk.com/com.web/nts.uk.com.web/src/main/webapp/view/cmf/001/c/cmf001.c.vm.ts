@@ -92,12 +92,17 @@ module nts.uk.com.cmf001.c {
         isItemSelected = ko.computed(() => !util.isNullOrEmpty(this.selectedItemNo()));
 
         currentItem: any = ko.observable();
+        
+        backUrl: string;
 
         constructor() {
             super();
 
             this.settingCode = __viewContext.transferred.get().settingCode;
             this.domainId = __viewContext.transferred.get().domainId;
+            this.backUrl = __viewContext.transferred.get().screenId === 'cmf001f'
+            	? '../f/index.xhtml'
+            	: '../b/index.xhtml';
 
             this.currentItem({
                 def: datasource.importableItem.init(),
@@ -311,6 +316,14 @@ module nts.uk.com.cmf001.c {
                     this.itemSelected(itemNo);
                 });
             });
+        }
+        
+        clickBackButton() {
+			let self = this;
+			request.jump(backUrl, {
+				settingCode: self.settingCode(),
+				domainId: self.domainId()
+			});
         }
     }
 

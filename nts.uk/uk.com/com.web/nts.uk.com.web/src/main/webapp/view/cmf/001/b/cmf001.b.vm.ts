@@ -241,7 +241,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		gotoDetailSetting() {
 			request.jump("../c/index.xhtml", {
 				settingCode: this.settingCode(),
-				domainId: this.importDomain()
+				domainId: this.importDomain(),
+				screenId: 'cmf001b'
 			});
 		}
 	
