@@ -17,6 +17,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.error.BusinessException;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 @RunWith(JMockit.class)
@@ -287,6 +288,7 @@ public class GrantSystemAdminRoleServiceTest {
 			}
 		};
 		
+		
 		new Expectations( RoleIndividualGrant.class ) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( "userID_2", RoleType.SYSTEM_MANAGER );
@@ -474,23 +476,18 @@ public class GrantSystemAdminRoleServiceTest {
 	 * excepted: false
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_have_unmanager_period_in_checkTargetPeriod() {
+	public void testIsAlwaysASystemAdmin_dont_have_manager_period_in_checkTargetPeriod() {
 		val grantRole_1 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_1" );
 		val grantRole_2 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_2" );
 		val grantRole_3 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_3" );
 		val grantRole_4 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_4" );
-		val validPeriod_1 = new DatePeriod( GeneralDate.ymd(2021, 10, 1) , GeneralDate.ymd(2021, 10, 15) );
-		val validPeriod_2 = new DatePeriod( GeneralDate.ymd(2021, 11, 15) , GeneralDate.ymd(2021, 12, 15) );
-		val validPeriod_3 = new DatePeriod( GeneralDate.ymd(2021, 12, 16) , GeneralDate.ymd(9999, 12, 31) );
 		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3, grantRole_4 );
 		
-		//システム日付:	2021/10/05
-		new MockUp< GeneralDate >() {
-			@Mock
-			public GeneralDate today() {
-				return  GeneralDate.ymd( 2021, 10, 05 );
-			}
-		};
+		val validPeriod_1 = new DatePeriod( GeneralDate.ymd(2021, 10, 1) , GeneralDate.ymd(2021, 10, 15) );
+		val validPeriod_3 = new DatePeriod( GeneralDate.ymd(2021, 11, 15) , GeneralDate.ymd(2021, 12, 15) );
+		val validPeriod_4 = new DatePeriod( GeneralDate.ymd(2021, 12, 16) , GeneralDate.ymd(9999, 12, 31) );
+		
+		GeneralDateTime.FAKED_NOW = GeneralDateTime.ymdhms(2021, 10, 5, 0, 0, 0);
 		
 		new Expectations( grantRole_1, grantRole_2, grantRole_3, grantRole_4 ) {
 			{
@@ -501,10 +498,10 @@ public class GrantSystemAdminRoleServiceTest {
 				result = Optional.of( validPeriod_1 );
 				
 				grantRole_3.getCorrectedValidPeriodByUserInfo( require );
-				result = Optional.of( validPeriod_2 );
+				result = Optional.of( validPeriod_3 );
 				
 				grantRole_4.getCorrectedValidPeriodByUserInfo( require );
-				result = Optional.of( validPeriod_3 );
+				result = Optional.of( validPeriod_4 );
 			}
 		};
 		
@@ -527,16 +524,17 @@ public class GrantSystemAdminRoleServiceTest {
 	 * excepted: true
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_all_time_have_system_admin() {
+	public void testIsAlwaysASystemAdmin_have_manager_period_in_checkTargetPeriod() {
 		
 		val grantRole_1 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_1" );
 		val grantRole_2 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_2" );
 		val grantRole_3 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_3" );
 		val grantRole_4 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_4" );
-		val validPeriod_1 = new DatePeriod( GeneralDate.ymd(2021, 10, 1) , GeneralDate.ymd(2021, 10, 31) );
-		val validPeriod_2 = new DatePeriod( GeneralDate.ymd(2021, 10, 15) , GeneralDate.ymd(9999, 12, 31) );
-		val validPeriod_3 = new DatePeriod( GeneralDate.ymd(2021, 11, 15) , GeneralDate.ymd(2021, 12, 15) );
 		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3, grantRole_4 );
+		
+		val validPeriod_1 = new DatePeriod( GeneralDate.ymd(2021, 10, 1) , GeneralDate.ymd(2021, 10, 31) );
+		val validPeriod_3 = new DatePeriod( GeneralDate.ymd(2021, 10, 15) , GeneralDate.ymd(9999, 12, 31) );
+		val validPeriod_4 = new DatePeriod( GeneralDate.ymd(2021, 11, 15) , GeneralDate.ymd(2021, 12, 15) );
 		
 		//システム日付:	2021/10/05
 		new MockUp< GeneralDate >() {
@@ -555,10 +553,10 @@ public class GrantSystemAdminRoleServiceTest {
 				result = Optional.of( validPeriod_1 );
 				
 				grantRole_3.getCorrectedValidPeriodByUserInfo( require );
-				result = Optional.of( validPeriod_2 );
+				result = Optional.of( validPeriod_3 );
 				
 				grantRole_4.getCorrectedValidPeriodByUserInfo( require );
-				result = Optional.of( validPeriod_3 );
+				result = Optional.of( validPeriod_4 );
 			}
 		};
 		
@@ -639,11 +637,13 @@ public class GrantSystemAdminRoleServiceTest {
 		val grantRole_1 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_1" );
 		val grantRole_2 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_2" );
 		val grantRole_3 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_3" );
+		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3 );
+		
 		val validPeriod_1 = new DatePeriod( GeneralDate.ymd(2021, 10, 5) , GeneralDate.ymd(2021, 12, 5) );
-		val validPeriod_2 = new DatePeriod( GeneralDate.ymd(2021, 1, 1) , GeneralDate.ymd(2022, 1, 5) );
+		val validPeriod_3 = new DatePeriod( GeneralDate.ymd(2021, 1, 1) , GeneralDate.ymd(2022, 1, 5) );
 		//有効期間
 		val validPeriod = new DatePeriod( GeneralDate.ymd(2021, 12, 01), GeneralDate.ymd(9999, 12, 31) );
-		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3 );
+		
 		
 		//システム日付:	2021/10/05
 		new MockUp< GeneralDate >() {
@@ -662,7 +662,7 @@ public class GrantSystemAdminRoleServiceTest {
 				result = Optional.of( validPeriod_1 );//userID_1
 				
 				grantRole_3.getCorrectedValidPeriodByUserInfo( require );
-				result = Optional.of( validPeriod_2 );//userID_3
+				result = Optional.of( validPeriod_3 );//userID_3
 			}
 		};
 		
@@ -689,11 +689,13 @@ public class GrantSystemAdminRoleServiceTest {
 		val grantRole_1 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_1" );
 		val grantRole_2 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_2" );
 		val grantRole_3 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_3" );
+		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3 );
+		
 		val validPeriod_1 = new DatePeriod( GeneralDate.ymd(2021, 10, 5) , GeneralDate.ymd(2021, 12, 5) );
-		val validPeriod_2 = new DatePeriod( GeneralDate.ymd(2021, 1, 1) , GeneralDate.ymd(2022, 1, 5) );
+		val validPeriod_3 = new DatePeriod( GeneralDate.ymd(2021, 1, 1) , GeneralDate.ymd(2022, 1, 5) );
 		//有効期間
 		val validPeriod = new DatePeriod( GeneralDate.ymd(2021, 12, 01), GeneralDate.ymd(9999, 12, 31) );
-		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3 );
+		
 		
 		//システム日付:	2021/10/05
 		new MockUp< GeneralDate >() {
@@ -712,7 +714,7 @@ public class GrantSystemAdminRoleServiceTest {
 				result = Optional.of( validPeriod_1 );//userID_1
 				
 				grantRole_3.getCorrectedValidPeriodByUserInfo( require );
-				result = Optional.of( validPeriod_2 );//userID_3
+				result = Optional.of( validPeriod_3 );//userID_3
 			}
 		};
 		
@@ -735,16 +737,17 @@ public class GrantSystemAdminRoleServiceTest {
 	 * excepted: false
 	 */
 	@Test
-	public void testIsAlwaysASystemAdmin_validPeriod_not_empty_and_have_not_system_admin_in_checkPeriodTarget() {
+	public void testIsAlwaysASystemAdmin_validPeriod_not_empty_and_dont_have_system_admin_in_checkPeriodTarget() {
 		
 		val grantRole_1 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_1" );
 		val grantRole_2 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_2" );
 		val grantRole_3 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_3" );
+		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3 );
+		
 		val validPeriod_1 = new DatePeriod( GeneralDate.ymd(2021, 8, 1) , GeneralDate.ymd(2020, 9, 1) );
-		val validPeriod_2 = new DatePeriod( GeneralDate.ymd(2021, 9, 15) , GeneralDate.ymd(2021, 10, 15) );
+		val validPeriod_3 = new DatePeriod( GeneralDate.ymd(2021, 9, 15) , GeneralDate.ymd(2021, 10, 15) );
 		//有効期間
 		val validPeriod = new DatePeriod( GeneralDate.ymd(2021, 12, 01), GeneralDate.ymd(9999, 12, 31) );
-		val grantRoles = Arrays.asList( grantRole_1, grantRole_2, grantRole_3 );
 		
 		//システム日付:	2021/10/05
 		new MockUp< GeneralDate >() {
@@ -763,7 +766,7 @@ public class GrantSystemAdminRoleServiceTest {
 				result = Optional.of( validPeriod_1 );//userID_1
 				
 				grantRole_3.getCorrectedValidPeriodByUserInfo( require );
-				result = Optional.of( validPeriod_2 );//userID_3
+				result = Optional.of( validPeriod_3 );//userID_3
 			}
 		};
 		

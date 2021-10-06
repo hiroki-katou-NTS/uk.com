@@ -94,11 +94,11 @@ public class GrantSystemAdminRoleService {
 			,	String userId
 			,	Optional<DatePeriod> validPeriod ) {
 		
-		List<RoleIndividualGrant> RoleIndividualGrant = require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER ).stream()
+		List<RoleIndividualGrant> roleIndividualGrants = require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER ).stream()
 				.filter( role -> !role.getUserId().equals( userId ) )
 				.collect( Collectors.toList() );
 		
-		val validPeriods = RoleIndividualGrant.stream()
+		val validPeriods = roleIndividualGrants.stream()
 				.map( role -> role.getCorrectedValidPeriodByUserInfo( require ) )
 				.flatMap( OptionalUtil::stream )
 				.collect( Collectors.toList() );

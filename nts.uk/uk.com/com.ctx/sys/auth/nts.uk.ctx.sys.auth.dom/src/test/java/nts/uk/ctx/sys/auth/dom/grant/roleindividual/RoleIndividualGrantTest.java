@@ -40,12 +40,10 @@ public class RoleIndividualGrantTest {
 	@Test
 	public void testCreateFromRole() {
 		
+		val role = RoleIndividualGrantHelper.createRole( "company-id-of-role", "roleId", RoleType.PERSONAL_INFO );
 		val grantTargetUser = "userId";
-		val validPeriod = new DatePeriod( GeneralDate.ymd(2000, 1, 1), GeneralDate.ymd( 9999, 12, 31));
 		val grantTargetCompany = "cid";
-		val roleId = "roleId";
-		val roleType = RoleType.PERSONAL_INFO;
-		val role = RoleIndividualGrantHelper.createRole( grantTargetCompany, roleId, roleType );
+		val validPeriod = new DatePeriod( GeneralDate.ymd(2000, 1, 1), GeneralDate.ymd( 9999, 12, 31));
 		
 		//Act
 		RoleIndividualGrant result = NtsAssert.Invoke.staticMethod(	RoleIndividualGrant.class, "createFromRole"
@@ -54,8 +52,8 @@ public class RoleIndividualGrantTest {
 		//Assert
 		assertThat( result.getUserId()).isEqualTo( grantTargetUser );
 		assertThat( result.getCompanyId() ).isEqualTo( grantTargetCompany );
-		assertThat( result.getRoleType() ).isEqualTo( roleType );
-		assertThat( result.getRoleId() ).isEqualTo( roleId );
+		assertThat( result.getRoleType() ).isEqualTo( role.getRoleType() );
+		assertThat( result.getRoleId() ).isEqualTo( role.getRoleId() );
 		assertThat( result.getValidPeriod().start() ).isEqualTo( validPeriod.start() );
 		assertThat( result.getValidPeriod().end() ).isEqualTo( validPeriod.end() );
 		
@@ -66,11 +64,9 @@ public class RoleIndividualGrantTest {
 	 */
 	@Test
 	public void testCreateGrantInfoOfSystemMananger() {
-		val cid = "cid";
-		val roleId = "roleId";
 		val grantTargetUser = "userId";
 		val period = new DatePeriod( GeneralDate.ymd(2000, 1, 1), GeneralDate.ymd( 9999, 12, 31));
-		val role = RoleIndividualGrantHelper.createRole(cid, roleId, RoleType.SYSTEM_MANAGER);
+		val role = RoleIndividualGrantHelper.createRole("cid", "roleId", RoleType.SYSTEM_MANAGER);
 		
 		new Expectations( ) {
 			{
@@ -84,9 +80,9 @@ public class RoleIndividualGrantTest {
 		
 		//Assert
 		assertThat( result.getUserId() ).isEqualTo( grantTargetUser );
-		assertThat( result.getCompanyId() ).isEqualTo( cid );
+		assertThat( result.getCompanyId() ).isEqualTo( role.getCompanyId() );
 		assertThat( result.getRoleType() ).isEqualTo( RoleType.SYSTEM_MANAGER );
-		assertThat( result.getRoleId() ).isEqualTo( roleId );
+		assertThat( result.getRoleId() ).isEqualTo( role.getRoleId() );
 		assertThat( result.getValidPeriod().start() ).isEqualTo( period.start() );
 		assertThat( result.getValidPeriod().end() ).isEqualTo( period.end() );
 		
@@ -97,11 +93,10 @@ public class RoleIndividualGrantTest {
 	 */	
 	@Test
 	public void testCreateGrantInfoOfCompanyManager() {
-		val cid = "cid";
-		val roleId = "roleId";
+		val grantCompanyId = "cid";
 		val grantTargetUser = "userId";
 		val validPeriod = new DatePeriod( GeneralDate.ymd(2000, 1, 1), GeneralDate.ymd( 9999, 12, 31));
-		val role = RoleIndividualGrantHelper.createRole(cid, roleId, RoleType.COMPANY_MANAGER);
+		val role = RoleIndividualGrantHelper.createRole("company-id-of-role", "role-id", RoleType.COMPANY_MANAGER);
 		
 		new Expectations() {
 			{
@@ -111,13 +106,13 @@ public class RoleIndividualGrantTest {
 		};
 		
 		//Act
-		val result = RoleIndividualGrant.createGrantInfoOfCompanyManager(require, grantTargetUser, cid, validPeriod );
+		val result = RoleIndividualGrant.createGrantInfoOfCompanyManager(require, grantTargetUser, grantCompanyId, validPeriod );
 		
 		//Assert
 		assertThat( result.getUserId() ).isEqualTo( grantTargetUser );
-		assertThat( result.getCompanyId() ).isEqualTo( cid );
+		assertThat( result.getCompanyId() ).isEqualTo( grantCompanyId );
 		assertThat( result.getRoleType() ).isEqualTo( RoleType.COMPANY_MANAGER );
-		assertThat( result.getRoleId() ).isEqualTo( roleId );
+		assertThat( result.getRoleId() ).isEqualTo( role.getRoleId() );
 		assertThat( result.getValidPeriod().start() ).isEqualTo( validPeriod.start() );
 		assertThat( result.getValidPeriod().end() ).isEqualTo( validPeriod.end() );
 		
