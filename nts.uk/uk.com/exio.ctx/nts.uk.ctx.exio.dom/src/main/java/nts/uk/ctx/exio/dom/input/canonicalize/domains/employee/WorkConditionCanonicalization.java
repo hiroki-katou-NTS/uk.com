@@ -59,9 +59,8 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 		public static final int スケジュール管理設定 = 12;
 		public static final int スケジュール作成方法 = 13;
 		public static final int 営業日カレンダーの参照先 = 14;
-		public static final int カレンダー作成時の就業時間帯の参照先 = 15;
+		public static final int 就業時間帯の参照先 = 15;
 		public static final int 月間パターンコード = 16;
-		public static final int 月間パターン作成時の就業時間帯の参照先 = 17;
 		public static final int 平日時の勤務種類コード = 18;
 		public static final int 平日時の就業時間帯コード = 19;
 		public static final int 平日時の開始時刻1 = 20;
@@ -183,8 +182,7 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 							interm.isImporting(Items.加算時間1日) ?  1 : 0))
 			.optionalItem(new CanonicalItem(Items.スケジュール作成方法, Long.valueOf(0)))
 			.optionalItem(new CanonicalItem(Items.営業日カレンダーの参照先, Long.valueOf(0)))
-			.optionalItem(new CanonicalItem(Items.カレンダー作成時の就業時間帯の参照先, Long.valueOf(0)))
-			.optionalItem(new CanonicalItem(Items.月間パターン作成時の就業時間帯の参照先, Long.valueOf(0)))
+			.optionalItem(new CanonicalItem(Items.就業時間帯の参照先, Long.valueOf(0)))
 			;
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
@@ -268,13 +266,13 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 		private static final Map<Integer,String> calender = new HashMap<>();
 		static {
 			calender.put(Items.営業日カレンダーの参照先, "営業日カレンダーの参照先");
-			calender.put(Items.カレンダー作成時の就業時間帯の参照先, "カレンダー作成時の就業時間帯の参照先");
+			calender.put(Items.就業時間帯の参照先, "就業時間帯の参照先");
 		}		
 		
 		private static final Map<Integer,String> monthPattern = new HashMap<>();
 		static {
 			monthPattern.put(Items.月間パターンコード, "月間パターンコード");
-			monthPattern.put(Items.月間パターン作成時の就業時間帯の参照先, "月間パターン作成時の就業時間帯の参照先");
+			monthPattern.put(Items.就業時間帯の参照先, "就業時間帯の参照先");
 		}		
 	}
 }
