@@ -78,7 +78,7 @@ public class ReflectAttendance {
 										.setStamp(Optional.of(WorkStamp.createDefault()));
 							}
 							attendanceLeave.flatMap(c -> c.getStampOfAttendance()).ifPresent(at -> {
-								at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getStartTime()));
+								at.getTimeDay().setTimeWithDay(Optional.ofNullable(timeZone.getTimeZone().getStartTime()));
 								at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(timeChangeMeanOpt.get());
 								
 								lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
@@ -95,7 +95,7 @@ public class ReflectAttendance {
 								attendanceLeave.get().getLeaveStamp().get().setStamp(Optional.of(WorkStamp.createDefault()));
 							}
 							attendanceLeave.flatMap(c -> c.getStampOfLeave()).ifPresent(at -> {
-								at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getEndTime()));
+								at.getTimeDay().setTimeWithDay(Optional.ofNullable(timeZone.getTimeZone().getEndTime()));
 								at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(timeChangeMeanOpt.get());
 								
 								lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));

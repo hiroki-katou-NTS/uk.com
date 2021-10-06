@@ -1,27 +1,32 @@
 package nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip;
 
+import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 
-import java.util.List;
-import java.util.Optional;
-// 出張勤務情報(反映用)
+// 出張申請(反映用)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class BusinessTripInfoShare {
+public class BusinessTripInfoShare extends ApplicationShare {
 
-    // 勤務情報
-    private WorkInformation workInformation;
+	// 勤務情報
+	private WorkInformation workInformation;
 
-    // 年月日
-    private GeneralDate date;
+	// 勤務時間帯
+	private Optional<List<TimeZoneWithWorkNo>> workingHours;
 
-    // 勤務時間帯
-    private Optional<List<TimeZoneWithWorkNo>> workingHours;
+	public BusinessTripInfoShare(ApplicationShare appShare, WorkInformation workInformation,
+			Optional<List<TimeZoneWithWorkNo>> workingHours) {
+		super(appShare);
+		this.workInformation = workInformation;
+		this.workingHours = workingHours;
+	}
 
 }

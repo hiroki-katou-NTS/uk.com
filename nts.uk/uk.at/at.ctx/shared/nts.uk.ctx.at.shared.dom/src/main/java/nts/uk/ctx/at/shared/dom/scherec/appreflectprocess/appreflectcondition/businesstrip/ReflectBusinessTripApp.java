@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ReflectAppDestination;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectDirectBounceClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
  * @author thanh_nx
@@ -36,83 +36,85 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		this.companyId = companyId;
 	}
 
-	//出張申請の反映（勤務実績）
-	public Collection<Integer> reflectRecord(Require require, BusinessTripShare bussinessTrip,
-			DailyRecordOfApplication dailyApp, GeneralDate date) {
+	// 出張申請の反映（勤務実績）
+	public Collection<Integer> reflectRecord(Require require, BusinessTripInfoShare bussinessTrip,
+			DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstItemId = new ArrayList<>();
-		// 該当する出張勤務情報を取得
-		Optional<BusinessTripInfoShare> businessTripInfo = bussinessTrip.getInfos().stream()
-				.filter(x -> x.getDate().equals(date)).findFirst();
+		// 勤務情報を反映する
+		lstItemId.addAll(reflectWorkInfo(require, bussinessTrip, dailyApp, ReflectAppDestination.RECORD));
 
-		if (!businessTripInfo.isPresent()) {
-			return lstItemId;
-		}
-
-		// 該当の[出張勤務情報.勤務情報]を勤務情報DTOへセット
-		WorkInfoDto workInfoDto = new WorkInfoDto(
-				Optional.of(businessTripInfo.get().getWorkInformation().getWorkTypeCode()),
-				businessTripInfo.get().getWorkInformation().getWorkTimeCodeNotNull());
-
-		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp, Optional.of(true),
-				Optional.of(true)));
-
-		// 該当の[出張勤務情報. 勤務時間帯]をチェック
-		if (!businessTripInfo.get().getWorkingHours().isPresent()
-				|| businessTripInfo.get().getWorkingHours().get().isEmpty()) {
-			return lstItemId;
-		}
+		// 始業終業時刻の反映
+		lstItemId.addAll(reflectStartEndTime(require, bussinessTrip, dailyApp, ReflectAppDestination.SCHEDULE));
 
 		// 出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get(),
-				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
+		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, bussinessTrip.getWorkingHours().get(),
+				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true),
+				Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
 
-		// 直行直帰区分の反映
-		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, NotUseAtr.USE, NotUseAtr.USE));
 		return lstItemId;
 	}
 
-	//出張申請の反映（勤務予定）
-	public Collection<Integer> reflectSchedule(Require require, BusinessTripShare bussinessTrip,
-			DailyRecordOfApplication dailyApp, GeneralDate date) {
+	// 出張申請の反映（勤務予定）
+	public Collection<Integer> reflectSchedule(Require require, BusinessTripInfoShare bussinessTrip,
+			DailyRecordOfApplication dailyApp) {
 
 		List<Integer> lstItemId = new ArrayList<>();
-		// 該当する出張勤務情報を取得
-		Optional<BusinessTripInfoShare> businessTripInfo = bussinessTrip.getInfos().stream()
-				.filter(x -> x.getDate().equals(date)).findFirst();
+		// 勤務情報を反映する
+		lstItemId.addAll(reflectWorkInfo(require, bussinessTrip, dailyApp, ReflectAppDestination.SCHEDULE));
 
-		if (!businessTripInfo.isPresent()) {
-			return lstItemId;
-		}
+		// 始業終業時刻の反映
+		lstItemId.addAll(reflectStartEndTime(require, bussinessTrip, dailyApp, ReflectAppDestination.RECORD));
 
-		// 該当の[出張勤務情報.勤務情報]を勤務情報DTOへセット
-		WorkInfoDto workInfoDto = new WorkInfoDto(
-				Optional.of(businessTripInfo.get().getWorkInformation().getWorkTypeCode()),
-				businessTripInfo.get().getWorkInformation().getWorkTimeCodeNotNull());
-
-		// 勤務情報の反映
-		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp,
-				Optional.of(true), Optional.of(true)));
-
-		// 該当の[出張勤務情報. 勤務時間帯]をチェック
-		if (!businessTripInfo.get().getWorkingHours().isPresent()
-				|| businessTripInfo.get().getWorkingHours().get().isEmpty()) {
-			return lstItemId;
-		}
-
-		// 出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get(),
-				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
-
-		// 直行直帰区分の反映
-		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, NotUseAtr.USE, NotUseAtr.USE));
 		return lstItemId;
+	}
+
+	// 勤務情報を反映する
+	private List<Integer> reflectWorkInfo(Require require, BusinessTripInfoShare bussinessTrip,
+			DailyRecordOfApplication dailyApp, ReflectAppDestination destination) {
+		List<Integer> itemIds = new ArrayList<>();
+		// 該当の[出張勤務情報.勤務情報]を勤務情報DTOへセット
+		WorkInformation recordInfo = dailyApp.getWorkInformation().getRecordInfo();
+		WorkInfoDto workInfoDto = new WorkInfoDto(Optional.of(bussinessTrip.getWorkInformation().getWorkTypeCode()),
+				bussinessTrip.getWorkInformation().getWorkTimeCodeNotNull());
+		if (!recordInfo.getWorkTypeCode().v().equals(workInfoDto.getWorkTypeCode().get().v())
+				|| (recordInfo.getWorkTimeCodeNotNull().isPresent() && !workInfoDto.getWorkTimeCode().isPresent())
+				|| (!recordInfo.getWorkTimeCodeNotNull().isPresent() && workInfoDto.getWorkTimeCode().isPresent())
+				|| (recordInfo.getWorkTimeCodeNotNull().isPresent() && workInfoDto.getWorkTimeCode().isPresent()
+						&& !recordInfo.getWorkTimeCodeNotNull().get().v()
+								.equals(workInfoDto.getWorkTimeCode().get().v()))) {
+			itemIds.addAll(ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp,
+					Optional.of(true), Optional.of(true)));
+		}
+
+		return itemIds;
+	}
+
+	// 始業終業時刻を反映する
+	private List<Integer> reflectStartEndTime(Require require, BusinessTripInfoShare bussinessTrip,
+			DailyRecordOfApplication dailyApp, ReflectAppDestination destination) {
+		List<Integer> itemIds = new ArrayList<>();
+		Optional<WorkType> workTypeOpt = require.getWorkType(bussinessTrip.getWorkInformation().getWorkTimeCode().v());
+		if (!workTypeOpt.isPresent() || !workTypeOpt.get().isHolidayWork())
+			return itemIds;
+		// 出退勤の反映
+		itemIds.addAll(ReflectAttendance.reflect(require, companyId, bussinessTrip.getWorkingHours().get(),
+				EnumAdaptor.valueOf(destination.value, ScheduleRecordClassifi.class), dailyApp, Optional.of(true),
+				Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
+
+		return itemIds;
 	}
 
 	public static interface Require
 			extends ReflectWorkInformation.Require, ReflectAttendance.Require, ReflectStartEndWork.Require {
 
+		/**
+		 * 勤務種類を取得する
+		 * 
+		 * @param workTypeCd 就業時間帯コード
+		 * @return
+		 */
+		Optional<WorkType> getWorkType(String workTypeCd);
 	}
-	
+
 }
