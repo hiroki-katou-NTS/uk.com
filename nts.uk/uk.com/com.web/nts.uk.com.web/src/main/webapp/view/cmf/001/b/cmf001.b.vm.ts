@@ -33,6 +33,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
 		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
+		
+		csvFileId:string = "";
 
 		importDomainOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingDomainId);
 		importModeOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingMode);
@@ -153,6 +155,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
+			self.csvFileId=info.csvFileId;
 
 			self.importDomain(info.domains[0].domainId);
 			self.layoutItemNoList(info.domains[0].itemNoList);
@@ -181,6 +184,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			if(!nts.uk.ui.errors.hasError()){
 				let saveContents = {
 					createMode: self.isNewMode(),
+					baseType: 1,
 					setting: new SettingInfo(
 						__viewContext.user.companyId,
 						self.settingCode(),
@@ -189,6 +193,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 						self.importMode(),
 						self.itemNameRow(),
 						self.importStartRow(),
+						self.csvFileId,
 						self.layoutItemNoList()),
 				};
 				ajax("screen/com/cmf/cmf001/b/save", saveContents).done(() => {
@@ -268,15 +273,17 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		mode: number;
 		itemNameRow: number;
 		importStartRow: number;
+		csvFileId: string,
 		domains:[];
 	
-		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
+		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, csvFileId: string, itemNoList: Array<number>) {
 			this.companyId = companyId;
 			this.code = code;
 			this.name = name;
 			this.mode = mode;
 			this.itemNameRow = itemNameRow;
 			this.importStartRow = importStartRow;
+			this.csvFileId = csvFileId;
 			
 			this.domains = [
 				{

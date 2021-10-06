@@ -10,11 +10,11 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayoutForCsvBase;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayoutParam;
-import nts.uk.screen.com.app.cmf.cmf001.z.get.CsvBaseLayoutDto;
+import nts.uk.screen.com.app.cmf.cmf001.f.get.CsvBaseLayoutDto;
 
-@Path("screen/com/cmf/cmf001/z")
+@Path("screen/com/cmf/cmf001/f")
 @Produces(MediaType.APPLICATION_JSON)
-public class Cmf001zWebService {
+public class Cmf001fWebService {
 	
 	@Inject
 	private GetLayoutForCsvBase layout;

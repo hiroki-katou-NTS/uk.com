@@ -2,26 +2,24 @@ package nts.uk.ctx.exio.infra.entity.input.setting;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.exio.dom.input.csvimport.BaseCsvInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.FromCsvBaseSettingToDomainRequire;
 import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -38,7 +36,7 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	private XimmtImportSettingPK pk; 
+	private XimmtImportSettingPK pk;
 
 	/* 受入設定名称 */
 	@Column(name = "BASE_TYPE")
@@ -59,25 +57,26 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	/* CSVファイルID */
 	@Column(name = "BASE_CSV_FILE_ID")
 	private String baseCsvFileId;
-
-	/* ベースCSV */
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="importSetting", orphanRemoval = true)
-	private List<XimmtBaseCsvColumns> baseColumns;
 	
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 	
-	public ExternalImportSetting toDomain() {
+	/**
+	 * @param require CSVベースの場合かつベースCSVを読む必要がある場合に指定する。通常実装クラスはFromCsvBaseSettingToDomainRequireImplを使用すること
+	 * @return
+	 */
+	public ExternalImportSetting toDomain(Optional<FromCsvBaseSettingToDomainRequire> require) {
 		ImportSettingBaseType type = ImportSettingBaseType.valueOf(this.baseType);
-		List<String> baseCsvColumns = this.baseColumns.stream()
-			.map(col -> col.getColumnName())
-			.collect(Collectors.toList());
-		
-		Optional<BaseCsvInfo> baseCsv = (type == ImportSettingBaseType.CSV_BASE)
-					? Optional.of(new BaseCsvInfo(this.baseCsvFileId, baseCsvColumns))
-					: Optional.empty();
+
+		val fileInfo = new ExternalImportCsvFileInfo(
+				new ExternalImportRowNumber(this.itemNameRowNumber),
+				new ExternalImportRowNumber(this.importStartRowNumber),
+				Optional.empty());
+		Optional<BaseCsvInfo> baseCsv = (type == ImportSettingBaseType.CSV_BASE && require.isPresent())
+					? require.get().createBaseCsvInfo(this.baseCsvFileId, fileInfo)
+					: Optional.of(new BaseCsvInfo(this.baseCsvFileId, null));
 		return new ExternalImportSetting(
 				type,
 				this.pk.getCompanyId(), 
@@ -89,4 +88,5 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 						baseCsv),
 				new HashMap<>());
 	}
+	
 }

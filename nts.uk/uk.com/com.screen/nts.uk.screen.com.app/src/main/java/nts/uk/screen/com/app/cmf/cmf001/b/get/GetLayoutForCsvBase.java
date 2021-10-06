@@ -3,7 +3,6 @@ package nts.uk.screen.com.app.cmf.cmf001.b.get;
 import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,16 +11,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.app.file.storage.FileStorage;
-import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.app.input.setting.FromCsvBaseSettingToDomainRequireImpl;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
-import nts.uk.screen.com.app.cmf.cmf001.z.get.CsvBaseLayoutDto;
+import nts.uk.screen.com.app.cmf.cmf001.f.get.CsvBaseLayoutDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -45,8 +43,9 @@ public class GetLayoutForCsvBase {
 	
 	// すべての項目のレイアウトを取得する
 	private List<CsvBaseLayoutDto> getAll(GetLayoutParam query) {
-		
-		val settingOpt = settingRepo.get(AppContexts.user().companyId(), query.getSettingCode());
+
+		val require = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
+		val settingOpt = settingRepo.get(Optional.of(require), AppContexts.user().companyId(), query.getSettingCode());
 		if (settingOpt.isPresent()) {
  			val setting = settingOpt.get();
 			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId());
@@ -61,8 +60,9 @@ public class GetLayoutForCsvBase {
 	private List<CsvBaseLayoutDto> getSpecified(GetLayoutParam query) {
 		
 		val results = new ArrayList<CsvBaseLayoutDto>();
-		
-		val settingOpt = settingRepo.get(AppContexts.user().companyId(), query.getSettingCode());
+
+		val require = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
+		val settingOpt = settingRepo.get(Optional.of(require), AppContexts.user().companyId(), query.getSettingCode());
 		if (settingOpt.isPresent()) {
  			val setting = settingOpt.get();
 			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId());
@@ -118,8 +118,9 @@ public class GetLayoutForCsvBase {
 			List<ImportingItemMapping> mappings,
 			ExternalImportCsvFileInfo fileInfo) {
 
+		val require = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
 		val importableItems = importableItemsRepo.get(query.getImportingDomainId());
-		Map<Integer, List<String>> csvData = getBaseCsvData(fileInfo);
+		Map<Integer, List<String>> csvData = require.readBaseCsvWithFirstData(fileInfo);
 
 		return mappings.stream()
 				.map(i -> CsvBaseLayoutDto.fromDomain(
@@ -133,42 +134,4 @@ public class GetLayoutForCsvBase {
 				.collect(Collectors.toList());
 	}
 
-	@SneakyThrows
-	private Map<Integer, List<String>> getBaseCsvData(ExternalImportCsvFileInfo fileInfo) {
-		String fileId = fileInfo.getBaseCsvInfo().get().getCsvFileId();
-		Map<Integer, List<String>> result = new HashMap<>();
-		
-		if (fileId == null || fileId.equals("")) return result;
-		
-		try (val inputStream = fileStorage.getStream(fileId)
-				.orElseThrow(() -> new RuntimeException("file not found: " + fileId))) {
-			fileInfo.readBaseCsv(inputStream, r-> readBaseCsvRecord(r, fileInfo, result));
-		}
-		
-		return result;
-	}
-
-	private void readBaseCsvRecord(CsvRecord r, ExternalImportCsvFileInfo fileInfo, Map<Integer, List<String>> result) {
-		if(r.getRowNo() > fileInfo.getImportStartRowNumber().v()) return;
-
-		if(fileInfo.getImportStartRowNumber().v() <= fileInfo.getItemNameRowNumber().v()) {
-			throw new RuntimeException("import start row number value  need setting more than value of header row number.");
-		}
-		
-		if(r.getRowNo() == fileInfo.getItemNameRowNumber().v()) {
-			for(int i=0; i<r.getRawItems().size(); i++) {
-				String item = r.getRawItems().get(i);
-				List<String> col = new ArrayList<>();
-				col.add(item);
-				result.put(i, col);
-			}
-		}
-		
-		if(r.getRowNo() == fileInfo.getImportStartRowNumber().v()) {
-			for(int i=0; i<r.getRawItems().size(); i++) {
-				String item = r.getRawItems().get(i);
-				result.get(i).add(item);
-			}
-		}
-	}
 }

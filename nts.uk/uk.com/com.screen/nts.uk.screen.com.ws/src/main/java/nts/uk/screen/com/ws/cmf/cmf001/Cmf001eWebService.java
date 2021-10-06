@@ -14,9 +14,9 @@ import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingListItemDto;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetExternalImportSetting;
 
 
-@Path("screen/com/cmf/cmf001/y")
+@Path("screen/com/cmf/cmf001/e")
 @Produces(MediaType.APPLICATION_JSON)
-public class Cmf001yWebService {
+public class Cmf001eWebService {
 	
 	@Inject
 	private GetExternalImportSetting setting;

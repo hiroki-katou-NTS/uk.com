@@ -8,8 +8,8 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<com:scriptfile set="IGNITE" />
-				<com:stylefile path="cmf001.y.css" />
-				<com:scriptfile path="cmf001.y.vm.js" />
+				<com:stylefile path="cmf001.e.css" />
+				<com:scriptfile path="cmf001.e.vm.js" />
 				<com:ValidatorScript>
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportCode
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportName
@@ -93,24 +93,22 @@
 									required: true, 
 									constraint: ['ExternalImportRowNumber']}" />
 							</div>
+							<div class="row">
+									<div class="formLabel" data-bind="ntsFormLabel: {required: true}">サンプルCSVファイル</div>
+									<div class="detail">
+										<div id="file-upload" data-bind="ntsFileUpload:{
+											filename: csvFileName,
+											accept: ['csv'],
+											text: '取込',
+											aslink: false,
+											immediateUpload: true,
+											uploadFinished: csvFileUploaded
+										}"></div>
+									</div>
+							</div>
 						</div>
-						
-						<div class="uploadCsv">
-							<div class="divi">受入CSV</div><hr />
-							<div class="label" data-bind="ntsFormLabel: {}">受入CSVファイル</div>
-							<div id="file-upload" data-bind="ntsFileUpload:{
-								filename: csvFileName,
-								accept: ['csv'],
-								text: '取込',
-								aslink: false,
-								immediateUpload: true,
-								uploadFinished: csvFileUploaded
-							}"></div>
-						</div>
-						<div class="detail">
-							<div class="divi">受入レイアウト</div><hr />
-							<button class="normal" id="bntOpenDetail" data-bind="text: '詳細設定', click: gotoDetailSetting, enable: canEditDetail"></button>
-						</div>
+						<span class="caret-bottom"></span>
+						<button class="x-large" id="bntOpenDetail" data-bind="text: '受入レイアウトの設定', click: gotoDetailSetting, enable: canEditDetail"></button>
 					</div>
 				</div>
 			</ui:define>

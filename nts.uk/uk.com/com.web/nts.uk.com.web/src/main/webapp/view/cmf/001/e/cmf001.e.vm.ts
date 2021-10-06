@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.com.view.cmf001.y.viewmodel {
+module nts.uk.com.view.cmf001.e.viewmodel {
 	import ajax = nts.uk.request.ajax;
 	import info = nts.uk.ui.dialog.info;
 	import setShared = nts.uk.ui.windows.setShared;
@@ -72,7 +72,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			ajax("screen/com/cmf/cmf001/y/get/settings/csvbase")
+			ajax("screen/com/cmf/cmf001/e/get/settings/csvbase")
 			.done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
@@ -93,11 +93,16 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 	
 		updateMode(){
 			let self = this;
-			ajax("com", "screen/com/cmf/cmf001/y/get/setting/" + self.selectedCode())
+			ajax("com", "screen/com/cmf/cmf001/e/get/setting/" + self.selectedCode())
 			.done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
 				self.isNewMode(false);
 				self.checkError();
+
+				ajax("com", "shr/infra/file/storage/infor/" + self.csvFileId())
+				.done(res => {
+					self.csvFileName(res.originalName);
+				});
 			});
 		}
 
@@ -116,6 +121,8 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		}
 
 		csvFileUploaded(fileInfo: any){
+			let self = this;
+			self.csvFileId(fileInfo.id);
 		}
 		
 		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
@@ -125,15 +132,16 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 			if(!nts.uk.ui.errors.hasError()){
 				let saveContents = {
 					createMode: self.isNewMode(),
+					baseType: 2,
 					setting: new SettingInfo(
 						__viewContext.user.companyId,
 						self.settingCode(),
 						self.settingName(),
 						self.itemNameRow(),
 						self.importStartRow(),
-						fileId: self.csvFileId())
+						self.csvFileId())
 				};
-				ajax("screen/com/cmf/cmf001/y/save", saveContents).done(() => {
+				ajax("screen/com/cmf/cmf001/b/save", saveContents).done(() => {
 					info(nts.uk.resource.getMessage("Msg_15", []));
 					self.reloadPage();
 					self.selectedCode(self.settingCode());
@@ -156,7 +164,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		}
 		
 		gotoDetailSetting() {
-			request.jump("../z/index.xhtml", {
+			request.jump("../f/index.xhtml", {
 				settingCode: this.settingCode()
 			});
 		}
@@ -179,6 +187,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 		itemNameRow: number;
 		importStartRow: number;
 		csvFileId: string
+		domains: ImportDomain[]
 	
 		constructor(companyId: string, code: string, name: string, itemNameRow: number, importStartRow: number, csvFileId: string) {
 			this.companyId = companyId;
@@ -187,10 +196,21 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 			this.itemNameRow = itemNameRow;
 			this.importStartRow = importStartRow;
 			this.csvFileId = csvFileId;
+			this.domains = [];
 		}
 	
 		static new(){
 			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, "")
+		}
+	}
+
+	export class ImportDomain {
+		domainId: int;
+		itemNo: number[];
+	
+		constructor(domainId: int, itemNo: number[]) {
+				this.domainId = domainId;
+				this.itemNo = itemNo;
 		}
 	}
 }

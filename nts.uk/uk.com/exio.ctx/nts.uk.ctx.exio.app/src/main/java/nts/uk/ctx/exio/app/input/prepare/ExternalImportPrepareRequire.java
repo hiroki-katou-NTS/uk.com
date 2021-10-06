@@ -167,7 +167,7 @@ public class ExternalImportPrepareRequire {
 		
 		@Override
 		public ExternalImportSetting getExternalImportSetting(ExternalImportCode settingCode) {
-			return settingRepo.get(companyId, settingCode)
+			return settingRepo.get(null, companyId, settingCode)
 						.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
 		

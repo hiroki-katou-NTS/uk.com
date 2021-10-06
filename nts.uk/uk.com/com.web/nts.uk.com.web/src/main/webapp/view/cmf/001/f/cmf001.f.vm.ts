@@ -1,5 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.com.view.cmf001.y.viewmodel {
+module nts.uk.com.view.cmf001.f.viewmodel {
 	import ajax = nts.uk.request.ajax;
 	import info = nts.uk.ui.dialog.info;
 	import setShared = nts.uk.ui.windows.setShared;
@@ -168,7 +168,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 					settingCode: self.settingCode,
 					importingDomainId: self.selectedDomainId(),
 					itemNoList: itemNoList};
-				ajax("screen/com/cmf/cmf001/z/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
+				ajax("screen/com/cmf/cmf001/f/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
 					self.initGrid();
 				});
@@ -195,7 +195,7 @@ module nts.uk.com.view.cmf001.y.viewmodel {
 						self.layoutItemNoList()),
 					domains: self.domainInfoList()
 				};
-				ajax("screen/com/cmf/cmf001/y/save", saveContents).done(() => {
+				ajax("screen/com/cmf/cmf001/e/save", saveContents).done(() => {
 					info(nts.uk.resource.getMessage("Msg_15", []));
 					self.reloadPage();
 	            });

@@ -62,7 +62,7 @@ public class ExternalImportSettingDto {
 				domains);
 	}
 
-	public ExternalImportSetting toDomain() {
+	public ExternalImportSetting toDomain(ImportSettingBaseType baseType) {
 		Map<ImportingDomainId, DomainImportSetting> domainSettings = this.domains.stream()
 			.map(d -> new DomainImportSetting(
 				ImportingDomainId.valueOf(d.getDomainId()),
@@ -71,7 +71,7 @@ public class ExternalImportSettingDto {
 			.collect(Collectors.toMap(DomainImportSetting::getDomainId, d -> d));
 		
 		return new ExternalImportSetting(
-				ImportSettingBaseType.DOMAIN_BASE,
+				baseType,
 				AppContexts.user().companyId(),
 				new ExternalImportCode(code),
 				new ExternalImportName(name),
@@ -80,9 +80,7 @@ public class ExternalImportSettingDto {
 	}
 
 	private ExternalImportCsvFileInfo toCsvFileInfo() {
-		Optional<BaseCsvInfo> baseCsvInfo = (this.csvFileId == null || this.csvFileId.equals(""))
-			? Optional.empty()
-			: Optional.of(new BaseCsvInfo(this.csvFileId, new ArrayList<>()));
+		Optional<BaseCsvInfo> baseCsvInfo = Optional.of(new BaseCsvInfo(this.csvFileId, new ArrayList<>()));
 		
 		return new ExternalImportCsvFileInfo(
 				new ExternalImportRowNumber(itemNameRow),
