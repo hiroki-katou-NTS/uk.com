@@ -164,7 +164,7 @@ public class JpaForm9LayoutRepository extends JpaRepository implements Form9Layo
                 .setParameter("isFixed", true)
                 .getList();
         fromDb.forEach(x -> {
-            x.isUse = true;
+            x.isUse = isUse;
         });
         commandProxy().updateAll(fromDb);
     }

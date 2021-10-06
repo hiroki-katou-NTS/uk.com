@@ -1,0 +1,20 @@
+.mergin-top {
+    margin-top: 15px;
+}
+
+.panel, .table_row {
+    border: 2px solid #ece3e3;
+}
+
+table tr td:nth-child(1) {
+    background-color: #b0de85;
+}
+
+.td-coom {
+    width: 150px;
+    text-align: center;
+}
+
+.padding-5 {
+    padding: 5px;
+}

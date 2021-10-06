@@ -12,14 +12,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.PositionImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.WorkplaceImport;
-import nts.uk.ctx.bs.employee.pub.classification.SyClassificationPub;
-import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
-import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
-import nts.uk.query.pub.person.EmployeeInfoPublisher;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,7 +29,7 @@ import java.util.stream.Collectors;
  * The Class EmpEmployeeAdapterImpl.
  */
 @Stateless
-public class EmployeeAdapterImpl implements EmployeeAdapter {
+public class EmployeeShareAdapterImpl implements EmployeeAdapter {
 
     /**
      * The employee pub.
@@ -42,18 +38,7 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
     private SyEmployeePub employeePub;
 
     @Inject
-    private PersonEmpBasicInfoPub personEmpBasicInfoPub;
-
-    @Inject
-    private SyCompanyPub syCompanyPub;
-    @Inject
-    private SyClassificationPub classPub;
-
-    @Inject
     EmployeeInformationPub employeeInformationPub;
-
-    @Inject
-    EmployeeInfoPublisher employeeInfoPublisher;
 
 
     /**

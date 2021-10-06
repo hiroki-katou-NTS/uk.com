@@ -7,6 +7,8 @@
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+        <com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web"/>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="ksu008.a.main.css"/>
         <com:scriptfile path="ksu008.a.vm.js"/>
@@ -21,14 +23,204 @@
         </div>
 
         <div tabindex="-1" id="contents-area">
-            <div class="table">
+            <div class="table" style="width: 100%">
                 <!--A2_0-->
-                <div class="cell valign-top">
-
+                <div class="cell valign-center" style="width: 30%;margin-right: 10px">
+                    <div class="panel " style="margin-right: 15px">
+                        <div class="table">
+                            <div class="cell valign-top">
+                                <!--A2_1-->
+                                <div data-bind="ntsFormLabel: {}">Com_WorkplaceGroup</div>
+                            </div>
+                            <!--A2_2-->
+                            <div class="cell valign-center">
+                                <div data-bind="component: {
+                            name: componentName,
+                            params: {options: options}
+                        }"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!--A3_0-->
-                <div class="cell valign-top">
+                <div class="cell valign-top" style="width: 50%">
+                    <div class="panel">
+                        <div class="table">
+                            <div class="cell valign-center">
+                                <!--A3_1-->
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_7')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--A3_2-->
+                                <div  data-bind="ntsRadioBoxGroup: {
+                                options: itemList,
+                                optionsValue: 'id',
+                                optionsText: 'name',
+                                value: selectedId,
+                                enable: true}"></div>
+                            </div>
+                        </div>
 
+                        <div class="table">
+                            <div class="cell valign-top">
+                                <!--A4_1-->
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_11')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--A4_2-->
+                                <div data-bind="ntsDatePicker: {name: '#[KSU008_12]', value: dateTime, dateFormat: 'YYYY/MM/DD', required: true, fiscalMonthsMode: true, cssRanger: cssRangerYMD, defaultClass: 'round-orange',showJumpButtons: true }"></div>
+
+                                <br/>
+                                <br/>
+                                <div class="table">
+                                    <!--A4_5-->
+                                    <div class="label" data-bind="text:vm.model.dispPeriod()"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--A5_0-->
+                    <div class="panel  mergin-top">
+                        <div class="table">
+                            <div class="cell valign-top">
+                                <!--A5_1-->
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_13')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--A5_2-->
+                                <div tabindex="8" id="combo-box" data-bind="ntsComboBox: {
+                                    name: '#[KSU008_14]',
+                                    options: comBOItemList,
+                                    optionsValue: 'code',
+                                    visibleItemsCount: 10,
+                                    value: selectedCode,
+                                    optionsText: 'name',
+                                    editable: true,
+                                    enable: true,
+                                    required: true,
+                                    selectFirstIfNull: true,
+                                    width:'350px',
+                                    columns: [
+                                        { prop: 'code', length: 4 },
+                                        { prop: 'name', length: 100, lengthDropDown: 250 },
+	                            ]}"></div>
+                            </div>
+                            <div class="cell valign-top">
+                                <!--A5_3-->
+                                <button style="height: 29px;margin-left: 15px" tabindex="9"
+                                        data-bind="">#{i18n.getText('KSU008_15')}</button>
+                            </div>
+                        </div>
+
+                        <div class="table">
+                            <div class="cell valign-top">
+                                <!--A6_1-->
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_15')}</div>
+                            </div>
+                            <div class="cell valign-center">
+                                <!--A6_2-->
+                                <div style="margin-left: 22px" class="cf" data-bind="ntsSwitchButton: {
+                                    name: '#[KSU008_17]',
+                                    options: roundingRules,
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: selectedRuleCode,
+                                    required: true,
+                                    enable: true }"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--A7_0-->
+                    <div class="panel  mergin-top">
+                        <div class="table">
+                            <div class="cell valign-top">
+                                <!--A7_1-->
+                                <div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU008_21')}</div>
+                            </div>
+                            <div class="cell valign-top">
+                                <!--A7_2-->
+                                <table>
+                                    <tr class="table_row">
+                                        <td>
+                                            <!--A7_3-->
+                                            <div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KSU008_22')}</div>
+                                        </td>
+                                        <td class="padding-5">
+                                            <!--A7_3_1-->
+                                            <div style="top: 4px;height: 36px" tabindex="8" id="combo-box" data-bind="ntsComboBox: {
+                                            name: '#[KSU008_23]',
+                                            options: comBOItemList,
+                                            optionsValue: 'code',
+                                            visibleItemsCount: 2,
+                                            value: selectedCode,
+                                            optionsText: 'name',
+                                            editable: true,
+                                            enable: true,
+                                            required: true,
+                                            selectFirstIfNull: true,
+                                            columns: [
+                                                { prop: 'code'},
+                                                { prop: 'name'},
+	                                       ]}"></div>
+                                        </td>
+                                        <!--A7_3_3-->
+                                        <td colspan="2" style="text-align: right">
+                                            <div tabindex="3" id="colorpicker"
+                                                 data-bind="ntsColorPicker: {value: model.a733, enable: true, width: 50,height:36}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <!--A7_4-->
+                                            <div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KSU008_24')}</div>
+                                        </td>
+                                        <td class="padding-5">
+                                            <!--A7_4_1-->
+                                            <div style="top: 4px;height: 36px" tabindex="8" id="combo-box"
+                                                 data-bind="ntsComboBox: {
+                                            name: '#[KSU008_23]',
+                                            options: comBOItemList,
+                                            optionsValue: 'code',
+                                            visibleItemsCount: 2,
+                                            value: selectedCode,
+                                            optionsText: 'name',
+                                            editable: true,
+                                            enable: true,
+                                            required: true,
+                                            selectFirstIfNull: true,
+                                            columns: [
+                                                { prop: 'code'},
+                                                { prop: 'name'},
+	                                       ]}"></div>
+                                        </td>
+                                        <td class="td-coom">
+                                            <!--A7_4_3-->
+                                            <div class="label">#{i18n.getText('KSU008_27')}</div>
+                                        </td>
+                                        <td>
+                                            <!--A7_4_4-->
+                                            <div tabindex="6" id="A7_4_4"
+                                                 data-bind="ntsColorPicker: {value: model.a744, enable: true, width: 50,height:36,name:'#[KSU008_28]'}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="td-coom" >
+                                            <!--A7_4_5-->
+                                            <div class="label">#{i18n.getText('KSU008_29')}</div>
+                                        </td>
+                                        <td>
+                                            <!--A7_4_5-->
+                                            <div tabindex="7"
+                                                 data-bind="ntsColorPicker: {value: model.a746, enable: true, width: 50,height:36,name:'#[KSU008_30]'}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

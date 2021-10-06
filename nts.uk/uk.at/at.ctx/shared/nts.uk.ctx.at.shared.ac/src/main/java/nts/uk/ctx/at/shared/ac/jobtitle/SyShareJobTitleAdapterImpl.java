@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  *
  */
 @Stateless
-public class SyScheduleJobTitleAdapterImpl implements SyJobTitleAdapter {
+public class SyShareJobTitleAdapterImpl implements SyJobTitleAdapter {
 
 	@Inject
 	private SyJobTitlePub syJobTitlePub;
