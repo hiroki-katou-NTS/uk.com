@@ -42,18 +42,18 @@ public class RoleIndividualGrantTest {
 		
 		val grantTargetUser = "userId";
 		val validPeriod = new DatePeriod( GeneralDate.ymd(2000, 1, 1), GeneralDate.ymd( 9999, 12, 31));
-		val cid = "cid";
+		val grantTargetCompany = "cid";
 		val roleId = "roleId";
 		val roleType = RoleType.PERSONAL_INFO;
-		
-		val role = RoleIndividualGrantHelper.createRole( cid, roleId, roleType );
+		val role = RoleIndividualGrantHelper.createRole( grantTargetCompany, roleId, roleType );
 		
 		//Act
-		val result = RoleIndividualGrant.createFromRole(role, grantTargetUser, validPeriod);
+		RoleIndividualGrant result = NtsAssert.Invoke.staticMethod(	RoleIndividualGrant.class, "createFromRole"
+				,	role, grantTargetUser, grantTargetCompany, validPeriod );
 		
 		//Assert
-		assertThat( result.getUserId() ).isEqualTo( grantTargetUser );
-		assertThat( result.getCompanyId() ).isEqualTo( cid );
+		assertThat( result.getUserId()).isEqualTo( grantTargetUser );
+		assertThat( result.getCompanyId() ).isEqualTo( grantTargetCompany );
 		assertThat( result.getRoleType() ).isEqualTo( roleType );
 		assertThat( result.getRoleId() ).isEqualTo( roleId );
 		assertThat( result.getValidPeriod().start() ).isEqualTo( validPeriod.start() );
@@ -62,10 +62,10 @@ public class RoleIndividualGrantTest {
 	}
 
 	/**
-	 * target : createSystemManangerOfGrantInfo
+	 * target : createGrantInfoOfSystemMananger
 	 */
 	@Test
-	public void testCreateSystemManangerOfGrantInfo() {
+	public void testCreateGrantInfoOfSystemMananger() {
 		val cid = "cid";
 		val roleId = "roleId";
 		val grantTargetUser = "userId";
@@ -80,7 +80,7 @@ public class RoleIndividualGrantTest {
 		};
 		
 		//Act
-		val result = RoleIndividualGrant.createGrantInfoOfSystemMananger(require, grantTargetUser, period );
+		val result = RoleIndividualGrant.createGrantInfoOfSystemMananger( require, grantTargetUser, period );
 		
 		//Assert
 		assertThat( result.getUserId() ).isEqualTo( grantTargetUser );
@@ -93,10 +93,10 @@ public class RoleIndividualGrantTest {
 	}
 	
 	/**
-	 * target : createCompanyManagerOfGrantInfo
+	 * target : createGrantInfoOfCompanyManager
 	 */	
 	@Test
-	public void testCreateCompanyManagerOfGrantInfo() {
+	public void testCreateGrantInfoOfCompanyManager() {
 		val cid = "cid";
 		val roleId = "roleId";
 		val grantTargetUser = "userId";
@@ -111,7 +111,7 @@ public class RoleIndividualGrantTest {
 		};
 		
 		//Act
-		val result = RoleIndividualGrant.createCompanyManagerOfGrantInfo(require, grantTargetUser, cid, validPeriod );
+		val result = RoleIndividualGrant.createGrantInfoOfCompanyManager(require, grantTargetUser, cid, validPeriod );
 		
 		//Assert
 		assertThat( result.getUserId() ).isEqualTo( grantTargetUser );

@@ -61,16 +61,18 @@ public class RoleIndividualGrant extends AggregateRoot {
 	 * ロールから作成する
 	 * @param role ロール
 	 * @param grantTargetUser 付与対象ユーザ
+	 * @param grantTargetCompany 付与対象会社
 	 * @param validPeriod 有効期間
 	 * @return
 	 */
-	public static RoleIndividualGrant createFromRole( Role role
+	private static RoleIndividualGrant createFromRole( Role role
 			,	String grantTargetUser
+			,	String grantTargetCompany
 			,	DatePeriod validPeriod) {
 		
 		return new RoleIndividualGrant(
 						grantTargetUser
-					,	role.getCompanyId()
+					,	grantTargetCompany
 					,	role.getRoleType()
 					,	role.getRoleId()
 					,	validPeriod
@@ -90,7 +92,7 @@ public class RoleIndividualGrant extends AggregateRoot {
 		
 		val role = require.getRoleByRoleType( RoleType.SYSTEM_MANAGER );
 		
-		return RoleIndividualGrant.createFromRole( role, grantTargetUser, validPeriod);
+		return createFromRole( role, grantTargetUser, role.getCompanyId(), validPeriod);
 	}
 	
 	/**
@@ -101,14 +103,14 @@ public class RoleIndividualGrant extends AggregateRoot {
 	 * @param validPeriod 有効期間
 	 * @return
 	 */
-	public static RoleIndividualGrant createCompanyManagerOfGrantInfo( Require require
+	public static RoleIndividualGrant createGrantInfoOfCompanyManager( Require require
 			,	String grantTargetUser
 			,	String grantTargetCompany
 			,	DatePeriod validPeriod ) {
 		
 		val role = require.getRoleByCompanyIdAndRoleType( RoleType.COMPANY_MANAGER );
 		
-		return RoleIndividualGrant.createFromRole( role, grantTargetUser, validPeriod );
+		return createFromRole( role, grantTargetUser, grantTargetCompany, validPeriod );
 		
 	}
 	
