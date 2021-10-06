@@ -19,20 +19,20 @@ import nts.uk.ctx.sys.auth.dom.role.RoleType;
  * @author lan_lt
  *
  */
-public class GrantSystemAdminPrivilegesService {
+public class GrantSystemAdminRoleService {
 	
 	/**
 	 * 付与する
 	 * @param require
 	 * @param userId ユーザID
-	 * @param expirationPeriod 有効期間
+	 * @param validPeriod 有効期間
 	 * @return
 	 */
 	public static AtomTask grant( Require require
 			,	String userId
-			,	DatePeriod expirationPeriod ) {
+			,	DatePeriod validPeriod ) {
 		
-		val grantInfo = RoleIndividualGrant.createSystemManangerOfGrantInfo( require, userId, expirationPeriod );
+		val grantInfo = RoleIndividualGrant.createGrantInfoOfSystemMananger( require, userId, validPeriod );
 		grantInfo.checkStatusNormal( require );
 		
 		return AtomTask.of(() ->{
@@ -44,15 +44,15 @@ public class GrantSystemAdminPrivilegesService {
 	 * 有効期間を更新する
 	 * @param require
 	 * @param userId ユーザID
-	 * @param expirationPeriod 有効期間
+	 * @param validPeriod 有効期間
 	 * @return
 	 */
-	public static AtomTask updateExpirationPeriod( Require require
+	public static AtomTask updateValidPeriod( Require require
 			,	String userId
-			,	DatePeriod expirationPeriod ) {
+			,	DatePeriod validPeriod ) {
 		
 		val grantInfo = require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
-		grantInfo.setValidPeriod(expirationPeriod);
+		grantInfo.setValidPeriod(validPeriod);
 		
 		grantInfo.checkStatusNormal( require );
 		
@@ -74,7 +74,7 @@ public class GrantSystemAdminPrivilegesService {
 		
 		val grantInfo = require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
 		
-		if( !isAlwaysASystemAdmin(require, grantInfo.getUserId(), grantInfo.getCorrectedValidPeriodByUserInfo(require)))
+		if( !isAlwaysASystemAdmin(require, grantInfo.getUserId(), Optional.empty()) )
 			throw new BusinessException( "Msg_331" );
 		
 		return AtomTask.of(() ->{
@@ -87,31 +87,34 @@ public class GrantSystemAdminPrivilegesService {
 	 * システム管理者が常に存在するか		
 	 * @param require
 	 * @param userId ユーザID
-	 * @param expirationPeriod 有効期間
+	 * @param validPeriod 有効期間
 	 * @return
 	 */
 	private static boolean isAlwaysASystemAdmin( Require require
 			,	String userId
-			,	Optional<DatePeriod> expirationPeriod ) {
+			,	Optional<DatePeriod> validPeriod ) {
 		
-		val expirationDates = require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER ).stream()
+		List<RoleIndividualGrant> RoleIndividualGrant = require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER ).stream()
 				.filter( role -> !role.getUserId().equals( userId ) )
+				.collect( Collectors.toList() );
+		
+		val validPeriods = RoleIndividualGrant.stream()
 				.map( role -> role.getCorrectedValidPeriodByUserInfo( require ) )
 				.flatMap( OptionalUtil::stream )
 				.collect( Collectors.toList() );
 		
-		if( expirationPeriod.isPresent() ) {
-			expirationDates.add( expirationPeriod.get() );
+		if( validPeriod.isPresent() ) {
+			validPeriods.add( validPeriod.get() );
 		}
 		
 		val checkTargetPeriod = new DatePeriod( GeneralDate.today(), GeneralDate.ymd(9999, 12, 31) );
 		
-		val sortExpirationDates = expirationDates.stream()
+		val sortValidPeriods = validPeriods.stream()
 				.filter( period  -> checkTargetPeriod.compare( period ).isDuplicated() )
 				.sorted(Comparator.comparing( DatePeriod::start ))
 				.collect(Collectors.toList());
 		
-		val systemManagerPeriod = sortExpirationDates.stream().reduce((prev, next) -> {
+		val systemManagerPeriod = sortValidPeriods.stream().reduce((prev, next) -> {
 			//連続しない場合
 			if( prev.end().before(next.start()) &&  prev.end().before(next.start().addDays(-1))) {
 				return next;

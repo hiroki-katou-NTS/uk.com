@@ -80,7 +80,7 @@ public class RoleIndividualGrantTest {
 		};
 		
 		//Act
-		val result = RoleIndividualGrant.createSystemManangerOfGrantInfo(require, grantTargetUser, period );
+		val result = RoleIndividualGrant.createGrantInfoOfSystemMananger(require, grantTargetUser, period );
 		
 		//Assert
 		assertThat( result.getUserId() ).isEqualTo( grantTargetUser );
@@ -203,6 +203,36 @@ public class RoleIndividualGrantTest {
 	
 	/**
 	 * target : checkStatusNormal
+	 * pattern : $ユーザ.有効期限 < @有効期間.開始日
+	 * excepted: Msg_2211 
+	 */	
+	@Test
+	public void testCheckStatusNormal_user_expired() {
+		
+		val user = RoleIndividualGrantHelper.createUser( "userId", GeneralDate.ymd(2020, 12, 31) );//有効期限= 2020/12/31
+		val validPeriod = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2020, 12, 31));//有効期間.開始日 = 2021/01/01
+		val roleGrant = RoleIndividualGrantHelper.createRoleIndividualGrant(
+					"userId" //dummy
+				,	RoleType.SYSTEM_MANAGER //システム管理者
+				,	validPeriod ); //dummy
+		
+		new Expectations (){
+			{
+				require.getUser( (String) any );
+				result = Optional.of( user );
+			}
+		};
+		
+		NtsAssert.businessException( "Msg_2211", () -> {
+			
+			roleGrant.checkStatusNormal(require);
+			
+		});
+	}
+	
+	
+	/**
+	 * target : checkStatusNormal
 	 * pattern : ロール種類 = 会社管理者, not デフォルトユーザ
 	 * excepted: error がない
 	 */
@@ -239,6 +269,13 @@ public class RoleIndividualGrantTest {
 					"userId" //dummy
 				,	RoleType.COMPANY_MANAGER //dummy
 				,	validPeriod );//dummy
+		
+		new Expectations (){
+			{
+				require.getUser( (String) any );
+			}
+		};
+		
 		//Act
 		val result = roleGrant.getCorrectedValidPeriodByUserInfo( require );
 		

@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.dom.grant.roleindividual;
 
 import java.util.Optional;
 
+import mockit.Injectable;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
@@ -18,6 +19,8 @@ import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class RoleIndividualGrantHelper {
+	@Injectable
+	private static DatePeriod validPeriod;
 	/**
 	 * ロールを作る
 	 * @param cid 会社ID
@@ -35,15 +38,14 @@ public class RoleIndividualGrantHelper {
 				,	roleType
 				,	RoleAtr.GENERAL
 				,	EmployeeReferenceRange.DEPARTMENT_ONLY
-				,	Optional.empty());
+				,	Optional.empty() );
 	}
 	
 	/**
 	 * ロール個人別付与を作る
 	 * @param userId ユーザID
 	 * @param roleType ロール種類
-	 * @param startDate 開始日
-	 * @param endDate 終了日
+	 * @param validPeriod 期間
 	 * @return
 	 */
 	public static RoleIndividualGrant createRoleIndividualGrant(
@@ -101,21 +103,51 @@ public class RoleIndividualGrantHelper {
 	/**
 	 * システム管理者ロールの付与情報を作成する
 	 * @param userId ユーザID
-	 * @param startDate 開始日
-	 * @param endDate 終了日
+	 * @param period 期間
 	 * @return
 	 */
-	public static RoleIndividualGrant createSystemManangerOfGrantInfo(
+	public static RoleIndividualGrant createGrantInfoOfSystemMananger(
 				String userId
-			,	GeneralDate startDate
-			,	GeneralDate endDate) {
+			,	DatePeriod period) {
 		
 		return new RoleIndividualGrant(
 					userId
 				,	"companyId" //DUMMY
 				,	RoleType.SYSTEM_MANAGER //DUMMY
 				,	"roleId" //DUMMY
-				,	new DatePeriod( startDate, endDate) );
-	}	
+				,	period );
+	}
+	
+	/**
+	 * システム管理者ロールの付与情報を作成する
+	 * @param userId ユーザID
+	 * @return
+	 */
+	public static RoleIndividualGrant createGrantInfoOfSystemMananger( String userId ) {
+		
+		return new RoleIndividualGrant(
+					userId
+				,	"companyId" //DUMMY
+				,	RoleType.SYSTEM_MANAGER //DUMMY
+				,	"roleId" //DUMMY
+				,	validPeriod );
+	}
+	
+	/**
+	 * ロールの付与情報を作成する
+	 * @param userId ユーザID
+	 * @param cid 会社ID
+	 * @param roleType ロール種類
+	 * @return
+	 */
+	public static RoleIndividualGrant createRoleIndividualGrant( String userId, String cid, RoleType roleType ) {
+		
+		return new RoleIndividualGrant(
+					userId
+				,	cid
+				,	roleType
+				,	"roleId" //DUMMY
+				,	validPeriod );
+	}
 
 }

@@ -139,13 +139,13 @@ public class RoleTypeTest {
 	
 	/**
 	 * target: isManagerRole
-	 * pattern: ロール種類 = オフィスヘルパー
+	 * pattern: ロール種類 = マイナンバー
 	 * excepted: false
 	 */
 	@Test
 	public void testIsManagerRole_myNumber() {
 		
-		val roleType = RoleType.OFFICE_HELPER;
+		val roleType = RoleType.MY_NUMBER;
 		
 		//Act
 		val actual = roleType.isManagerRole();

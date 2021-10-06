@@ -84,7 +84,7 @@ public class RoleIndividualGrant extends AggregateRoot {
 	 * @param validPeriod 有効期間
 	 * @return
 	 */
-	public static RoleIndividualGrant createSystemManangerOfGrantInfo( Require require
+	public static RoleIndividualGrant createGrantInfoOfSystemMananger( Require require
 			,	String grantTargetUser
 			,	DatePeriod validPeriod) {
 		
@@ -118,7 +118,7 @@ public class RoleIndividualGrant extends AggregateRoot {
 	 */
 	public void checkStatusNormal( Require require ) {
 		
-		if(!this.roleType.isManagerRole()) {
+		if(!this.roleType.isManagerRole() ) {
 			throw new RuntimeException("this role is not manager role!!!");
 		}
 		
@@ -128,11 +128,13 @@ public class RoleIndividualGrant extends AggregateRoot {
 			throw new BusinessException( "Msg_2210", this.userId );
 		}
 		
-		if( user.get().isDefaultUser()) {
+		if( user.get().isDefaultUser() ) {
 			throw new RuntimeException("this user is default user!!!");
 		}
 		
-		
+		if( !this.getCorrectedValidPeriodByUserInfo(require).isPresent() ) {
+			throw new BusinessException( "Msg_2211" );
+		}
 	}
 	
 	/**
