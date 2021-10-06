@@ -250,7 +250,7 @@ module nts.uk.com.view.oew001.a {
       vm.optionalItems(_.clone(optionalItems));
       // Create column info
       vm.columns(_.clone(vm.staticColumns));
-      _.each(optionalItems, (data, index) => vm.columns().push(vm.getColumnHeader(index, data.itemName, data.itemCls, data.width)));
+      _.each(optionalItems, data => vm.columns().push(vm.getColumnHeader(data.displayOrder, data.itemName, data.width)));
     }
     
     private saveCharacteristic() {
@@ -269,7 +269,7 @@ module nts.uk.com.view.oew001.a {
       + "_userId_" + __viewContext.user.employeeId);
     }
 
-    private getColumnHeader(index: number, headerText: string, itemCls: number, width: string): any {
+    private getColumnHeader(index: number, headerText: string, width: string): any {
       const key = `value${index}`;
       const columnHeader = { 
         headerText: headerText, 
@@ -311,7 +311,6 @@ module nts.uk.com.view.oew001.a {
       }
 
       // Map datas to grid
-      let i = 0;
       this.optionalItems = _.chain(itemSettings).map(itemSetting => {
         const itemData = !!data ? _.find(data.itemDatas, itemData => itemData.itemNo === itemSetting.itemNo 
           && !nts.uk.text.isNullOrEmpty(itemData.actualValue) && itemData.actualValue !== "null") : null;
@@ -349,7 +348,7 @@ module nts.uk.com.view.oew001.a {
             actualValue = (nts.uk.time as any).format.byId("Time_Short_HM", actualValue);
           }
         }
-        (this as any)["value" + i++] = actualValue;
+        (this as any)["value" + itemDisplay.displayOrder] = actualValue;
         return optionalItem;
         // Sort optionalItems by 表示順番
       }).orderBy("displayOrder").value();
