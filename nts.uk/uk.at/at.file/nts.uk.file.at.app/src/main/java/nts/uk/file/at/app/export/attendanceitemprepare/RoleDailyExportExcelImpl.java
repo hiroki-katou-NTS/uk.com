@@ -362,8 +362,8 @@ public class RoleDailyExportExcelImpl {
                 ColumnTextAlign.LEFT, "", true));
         columns.add(new MasterHeaderColumn("ヘッダー色", TextResource.localize("KDW006_152"),
                 ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn("丸め単位", TextResource.localize("KDW006_153"),
-                ColumnTextAlign.LEFT, "", true));
+//        columns.add(new MasterHeaderColumn("丸め単位", TextResource.localize("KDW006_153"),
+//                ColumnTextAlign.LEFT, "", true));
         return columns;
     }
     
@@ -387,25 +387,25 @@ public class RoleDailyExportExcelImpl {
                         if(color!=null){
                         	data.put("ヘッダー色", color.replace("#", ""));
                         }
-    	                Float inputUnit = controlItem.getInputUnitOfTimeItem()==null ? 0 : controlItem.getInputUnitOfTimeItem();
+//    	                Float inputUnit = controlItem.getInputUnitOfTimeItem()==null ? 0 : controlItem.getInputUnitOfTimeItem();
 
-    	                switch (c.getAttendanceAtr()) {
-    	                	case 5:	//DailyAttendanceAtr.Time
-    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_154") : 
-    	                			inputUnit + TextResource.localize("KDW006_154"));
-    	                		break;
-    	                	case 2: //DailyAttendanceAtr.NumberOfTime
-    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_230") : 
-    	                			inputUnit + TextResource.localize("KDW006_230"));
-    	                		break;
-    	                	case 3: //DailyAttendanceAtr.AmountOfMoney
-    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_231"): 
-    	                			inputUnit + TextResource.localize("KDW006_231"));
-    	                		break;
-    	                	default:
-    	                		data.put("丸め単位","");
-    	                		break;
-    	                }
+//    	                switch (c.getAttendanceAtr()) {
+//    	                	case 5:	//DailyAttendanceAtr.Time
+//    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_154") :
+//    	                			inputUnit + TextResource.localize("KDW006_154"));
+//    	                		break;
+//    	                	case 2: //DailyAttendanceAtr.NumberOfTime
+//    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_230") :
+//    	                			inputUnit + TextResource.localize("KDW006_230"));
+//    	                		break;
+//    	                	case 3: //DailyAttendanceAtr.AmountOfMoney
+//    	                		data.put("丸め単位", inputUnit % 1 == 0 ? (int) Math.floor(inputUnit) + TextResource.localize("KDW006_231"):
+//    	                			inputUnit + TextResource.localize("KDW006_231"));
+//    	                		break;
+//    	                	default:
+//    	                		data.put("丸め単位","");
+//    	                		break;
+//    	                }
 
                         datas.add(alignMasterDataSheet2(data));
                     }
@@ -421,7 +421,7 @@ public class RoleDailyExportExcelImpl {
         data.put("表示名称","");
         data.put("改行位置","");
         data.put("ヘッダー色","");
-        data.put("丸め単位","");
+//        data.put("丸め単位","");
     }
     private MasterData alignMasterDataSheet2(Map<String, Object> data) {
         MasterData masterData = new MasterData(data, null, "");
@@ -430,7 +430,7 @@ public class RoleDailyExportExcelImpl {
         masterData.cellAt("表示名称").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
         masterData.cellAt("改行位置").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
         masterData.cellAt("ヘッダー色").setStyle(MasterCellStyle.build().backgroundColor((data.get("ヘッダー色").toString())).horizontalAlign(ColumnTextAlign.LEFT));
-        masterData.cellAt("丸め単位").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+//        masterData.cellAt("丸め単位").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
         return masterData;
     }
     

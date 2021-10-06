@@ -9,26 +9,23 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.RoundingUnitPrimitive
+				<!--nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.RoundingUnitPrimitive-->
 				nts.uk.ctx.at.shared.dom.attendance.AttendanceName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdw002.a.main.css" />
-			<com:scriptfile path="kdw002.a.start.js" />
-			<com:scriptfile path="kdw002.a.vm.js" />
 			<com:scriptfile path="kdw002.a.service.js" />
+			<com:scriptfile path="kdw002.a.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<!-- <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kdw/006/a/index.xhtml' }">#{i18n.getText('KDW002_8')}</a> -->
 				<!--A1_1-->
 				<a tabindex="1" id="button1" class="goback"
-					data-bind="ntsLinkButton: { action: jumpToHome}">#{i18n.getText('KDW002_21')}</a>
+					data-bind="ntsLinkButton: { jump: '/view/kdw/006/a/index.xhtml' }">#{i18n.getText('KDW002_21')}</a>
 				<!--A1_2-->
 				<button tabindex="2" data-prevent-click="true" class="proceed"
-					data-bind="click: submitData,enable :isSave &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KDW002_2')}</button>
-
+					data-bind="click: submitData, enable: $root.errors.isEmpty, timeClick: 500">#{i18n.getText('KDW002_2')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="leftpanel"
@@ -55,8 +52,8 @@
 							columns: attendanceItemColumn,
 							optionsValue: 'displayNumber',
 							multiple: false,
-							enable: true,										
-							showCheckBox: false}">
+							enable: true
+						}">
 					</table>
 				</div>
 				<div class="rightContent"></div>
@@ -82,7 +79,7 @@
 						</tr>
 						<tr>
 							<td><div id="A7_1"
-									data-bind="ntsFormLabel: {constraint: 'AttendanceName', required: true}">#{i18n.getText('KDW002_65')}</div></td>
+									data-bind="ntsFormLabel: {constraint: 'AttendanceName', required: false}">#{i18n.getText('KDW002_65')}</div></td>
 							<td><input id="A7_2" tabindex="5" class="detailContent" style="width: 155px;"
 								data-bind="ntsTextEditor: {
 									value: displayName,
@@ -114,49 +111,49 @@
 															name:'#[KDW002_26]',
 															width: 50}"></div></td>
 						</tr>
-						<tr data-bind="if: unit() !== null">
-							<td><div id="A5_1"
-									data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KDW002_27')}</div></td>
-							<td>
-								<!-- ver 8 A5_4, A5_5 5-->
-								<div id="A5_4" tabindex="8" class="detailContent" style="width: 95px;"
-												data-bind="ntsComboBox: {
-																	name: '{#KDW002_48}',
-																	options: moneyUnits,
-																	optionsValue: 'code',
-																	visibleItemsCount: 5,
-																	value: moneyUnit,
-																	optionsText: 'name',
-																	enable: true,
-																	required: false},
-																	visible: unit() === 2">
-								</div> <!-- ver 8 A5_6, A5_7 2-->
-								<div id="A5_6" tabindex="9" class="detailContent" style="width: 95px;"
-												data-bind="ntsComboBox: {
-																	name: '{#KDW002_48}',
-																	options: numberOfTimesUnits,
-																	optionsValue: 'code',
-																	visibleItemsCount: 5,
-																	value: numberOfTimesUnit,
-																	optionsText: 'name',
-																	enable: true,
-																	required: false},
-																	visible: unit() === 1">
-								</div> <!-- ver 8 A5_8, A5_9-->
-								<div id="A5_8" tabindex="10" class="detailContent" style="width: 95px;"
-												data-bind="ntsComboBox: {
-																	name: '{#KDW002_48}',
-																	options: timeUnits,
-																	optionsValue: 'code',
-																	visibleItemsCount: 5,
-																	value: timeUnit,
-																	optionsText: 'name',
-																	enable: true,
-																	required: false},
-																	visible: unit() === 0">
-								</div>
-							</td>
-						</tr>
+						<!--<tr data-bind="if: unit() !== null">-->
+							<!--<td><div id="A5_1"-->
+									<!--data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KDW002_27')}</div></td>-->
+							<!--<td>-->
+								<!--&lt;!&ndash; ver 8 A5_4, A5_5 5&ndash;&gt;-->
+								<!--<div id="A5_4" tabindex="8" class="detailContent" style="width: 95px;"-->
+												<!--data-bind="ntsComboBox: {-->
+																	<!--name: '{#KDW002_48}',-->
+																	<!--options: moneyUnits,-->
+																	<!--optionsValue: 'code',-->
+																	<!--visibleItemsCount: 5,-->
+																	<!--value: moneyUnit,-->
+																	<!--optionsText: 'name',-->
+																	<!--enable: true,-->
+																	<!--required: false},-->
+																	<!--visible: unit() === 2">-->
+								<!--</div> &lt;!&ndash; ver 8 A5_6, A5_7 2&ndash;&gt;-->
+								<!--<div id="A5_6" tabindex="9" class="detailContent" style="width: 95px;"-->
+												<!--data-bind="ntsComboBox: {-->
+																	<!--name: '{#KDW002_48}',-->
+																	<!--options: numberOfTimesUnits,-->
+																	<!--optionsValue: 'code',-->
+																	<!--visibleItemsCount: 5,-->
+																	<!--value: numberOfTimesUnit,-->
+																	<!--optionsText: 'name',-->
+																	<!--enable: true,-->
+																	<!--required: false},-->
+																	<!--visible: unit() === 1">-->
+								<!--</div> &lt;!&ndash; ver 8 A5_8, A5_9&ndash;&gt;-->
+								<!--<div id="A5_8" tabindex="10" class="detailContent" style="width: 95px;"-->
+												<!--data-bind="ntsComboBox: {-->
+																	<!--name: '{#KDW002_48}',-->
+																	<!--options: timeUnits,-->
+																	<!--optionsValue: 'code',-->
+																	<!--visibleItemsCount: 5,-->
+																	<!--value: timeUnit,-->
+																	<!--optionsText: 'name',-->
+																	<!--enable: true,-->
+																	<!--required: false},-->
+																	<!--visible: unit() === 0">-->
+								<!--</div>-->
+							<!--</td>-->
+						<!--</tr>-->
 					</table>
 
 				</div>
