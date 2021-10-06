@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.CorrectionShortWorkingHour;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.BreakTimeSheetCorrector;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.breaktime.CreateOneDayRangeCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -106,13 +107,17 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
 
+	
+	@Inject
+	private CorrectionShortWorkingHour correctShortWorkingHour;
+	
 	// 勤怠ルールの補正処理
 	@Override
 	public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
 
 		String companyId = AppContexts.user().companyId();
 
-		val optionalItems =
+		val optionalItems = 
 				optionalItem.findAll(companyId).stream()
 				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
 
@@ -133,14 +138,15 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		IntegrationOfDaily afterDomain = correctionAfterTimeChange
 				.corection(domainDaily, changeAtt, workCondOpt).getRight();
 
-		if (changeAtt.workInfo || changeAtt.isDirectBounceClassifi()) {
+		if (changeAtt.workInfo || changeAtt.isDirectBounceClassifi() ) {
 			// 変更する勤怠項目を確認
 			//// 勤務情報変更後の補正
 			afterDomain = correctionAfterChangeWorkInfo.correction(companyId, afterDomain, workCondOpt,
 					changeAtt);
 
 		}
-
+		
+		//出退勤変更後の補正
 		if(changeAtt.attendance) {
 			SupportDataWorkImport workImport = supportAdapter.correctionAfterChangeAttendance(domainDaily);
 
@@ -148,6 +154,12 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 				afterDomain = workImport.getIntegrationOfDaily();
 		}
 
+		
+		if(changeAtt.workInfo || changeAtt.isDirectBounceClassifi() || changeAtt.attendance) {
+		//短時間勤務の補正
+			afterDomain = correctShortWorkingHour.correct(companyId, afterDomain);
+		}
+		
 		/** 休憩時間帯の補正 */
 		BreakTimeSheetCorrector.correct(createBreakRequire(optionalItems), afterDomain, changeAtt.correctValCopyFromSche);
 
