@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.pub.remainnumber.annualleave.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 年休付与情報Export
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AnnualLeaveGrantInfoExport {
 
@@ -49,4 +47,13 @@ public class AnnualLeaveGrantInfoExport {
 	 */
 	private Double attendanceRate;
 	
+	public AnnualLeaveGrantInfoExport(){
+		this.grantDays = 0.00;
+		this.grantPrescribedDays = 0.00;
+		this.grantWorkingDays = 0.00;
+		this.grantDeductedDays = 0.00;
+		this.deductedDaysBeforeGrant = 0.00;
+		this.deductedDaysAfterGrant = 0.00;
+		this.attendanceRate = 0.00;
+	}
 }

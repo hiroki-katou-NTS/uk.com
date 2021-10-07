@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.pub.remainnumber.annualleave.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -12,7 +11,6 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AnnualLeaveRemainingDetailExport {
 	

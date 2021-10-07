@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.record.pub.remainnumber.annualleave.export;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AnnualLeaveInfoExport {
 
@@ -66,4 +65,19 @@ public class AnnualLeaveInfoExport {
 	 * 使用時間
 	 */
 	private Integer usedTime;
+	
+	
+	public AnnualLeaveInfoExport(String sid){
+		this.ymd =  GeneralDate.min();
+		this.remainNumberWithMinusExport = new AnnualLeaveRemainingNumberExport();
+		this.remainNumberNoMinusExport = new AnnualLeaveRemainingNumberExport();
+		this.leaveUndigestDay = 0.00;
+		this.leaveUndigesttime = 0;
+		this.annualLeaveGrantExports = new ArrayList<>();
+		this.annualLeaveMaxDataExport = new AnnualLeaveMaxDataExport(sid);
+		this.annualLeaveGrantInfoExport = new AnnualLeaveGrantInfoExport();
+		this.usedDays = 0.00;
+		this.usedTime = 0;
+	}
+	
 }
