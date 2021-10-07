@@ -1431,7 +1431,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				val prevAttendanceTimeList = require.attendanceTimeOfMonthly(employeeId, indexYm, closureId, closureDate);
 
 				// 「基準時間合計」に「基準時間」を加算する
-				if (!prevAttendanceTimeList.isPresent()) {
+				if (prevAttendanceTimeList.isPresent()) {
 					val prevAttendanceTime = prevAttendanceTimeList.get();
 					val prevFlexTime = prevAttendanceTime.getMonthlyCalculation().getFlexTime();
 					FlexTimeCurrentMonth prevCurrentMonth = prevFlexTime.getFlexTime().getFlexTimeCurrentMonth();
