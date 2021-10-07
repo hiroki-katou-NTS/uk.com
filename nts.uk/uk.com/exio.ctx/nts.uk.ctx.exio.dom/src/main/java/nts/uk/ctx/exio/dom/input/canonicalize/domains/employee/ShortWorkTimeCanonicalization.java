@@ -174,11 +174,4 @@ public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalizati
 	protected List<String> getChildTableNames() {
 		return Arrays.asList("KSHMT_SHORTTIME_HIST_ITEM", "KSHMT_SHORTTIME_TS");
 	}
-	
-	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(
-				DomainDataColumn.SID,
-				DomainDataColumn.HIST_ID);
-	}
 }

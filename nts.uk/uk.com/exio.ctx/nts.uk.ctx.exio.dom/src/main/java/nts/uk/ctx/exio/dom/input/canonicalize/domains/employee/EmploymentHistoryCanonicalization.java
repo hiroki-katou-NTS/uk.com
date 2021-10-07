@@ -42,9 +42,4 @@ public class EmploymentHistoryCanonicalization extends EmployeeHistoryCanonicali
 	protected List<String> getChildTableNames() {
 		return Arrays.asList("BSYMT_AFF_EMP_HIST_ITEM");
 	}
-
-	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(new DomainDataColumn("HIST_ID", DataType.STRING));
-	}
 }

@@ -81,14 +81,6 @@ public class TempAbsenceHistoryCanonicalization extends EmployeeHistoryCanonical
 	}
 	
 	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(
-				DomainDataColumn.SID,
-				DomainDataColumn.HIST_ID
-		);
-	}
-	
-	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
 		return super.appendMeta(source);
 	}

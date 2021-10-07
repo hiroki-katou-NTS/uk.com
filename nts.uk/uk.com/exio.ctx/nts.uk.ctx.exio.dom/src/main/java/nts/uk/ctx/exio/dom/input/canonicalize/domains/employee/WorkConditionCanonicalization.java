@@ -130,13 +130,6 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 										 "KSHMT_WORKCOND_WORKINFO",
 										 "KSHMT_WORKCOND_WORK_TS");
 	}
-
-	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(
-				DomainDataColumn.SID,
-				DomainDataColumn.HIST_ID);
-	}
 	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {

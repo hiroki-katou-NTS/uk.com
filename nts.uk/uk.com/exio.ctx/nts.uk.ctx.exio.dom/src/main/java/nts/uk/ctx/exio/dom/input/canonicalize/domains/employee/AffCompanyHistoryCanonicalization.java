@@ -54,11 +54,6 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	}
 	
 	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(new DomainDataColumn("HIST_ID", DataType.STRING));
-	}
-	
-	@Override
 	protected List<String> getChildTableNames() {
 		return Arrays.asList("BSYMT_AFF_COM_HIST_ITEM");
 	}

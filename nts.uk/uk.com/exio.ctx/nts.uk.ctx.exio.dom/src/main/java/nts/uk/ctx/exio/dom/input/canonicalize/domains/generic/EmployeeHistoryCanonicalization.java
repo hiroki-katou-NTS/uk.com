@@ -92,8 +92,6 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	protected abstract String getParentTableName();
 	
 	protected abstract List<String> getChildTableNames();
-	
-	protected abstract List<DomainDataColumn> getDomainDataKeys();
 
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
@@ -428,6 +426,10 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		}
 		
 		return keyValues;
+	}
+
+	protected List<DomainDataColumn> getDomainDataKeys() {
+		return Arrays.asList(DomainDataColumn.HIST_ID);
 	}
 	
 	public static interface RequireAdjust{
