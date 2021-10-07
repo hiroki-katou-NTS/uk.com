@@ -26,9 +26,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteFavoriteForOneDayCommandHandler extends CommandHandler<DeleteFavoriteForOneDayCommand> {
 
 	@Inject
-	private DeleteOneDayFavoriteTaskService service;
-
-	@Inject
 	private OneDayFavoriteTaskDisplayOrderRepository orderRepo;
 
 	@Inject
@@ -42,7 +39,7 @@ public class DeleteFavoriteForOneDayCommandHandler extends CommandHandler<Delete
 		Require require = new Require(orderRepo, setRepo);
 
 		// 1. 削除する
-		AtomTask atom = service.create(require, AppContexts.user().employeeId(), command.getFavId());
+		AtomTask atom = DeleteOneDayFavoriteTaskService.create(require, AppContexts.user().employeeId(), command.getFavId());
 
 		// 2. persist()
 		transaction.execute(() -> atom.run());

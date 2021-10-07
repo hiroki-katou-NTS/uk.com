@@ -14,7 +14,7 @@ import nts.arc.task.tran.AtomTask;
  */
 public class DeleteOneDayFavoriteTaskService {
 
-	public AtomTask create(Require require, String employeeId, String favoriteId) {
+	public static AtomTask create(Require require, String employeeId, String favoriteId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
 		// $表示順 = require.表示順を取得する(社員ID)
