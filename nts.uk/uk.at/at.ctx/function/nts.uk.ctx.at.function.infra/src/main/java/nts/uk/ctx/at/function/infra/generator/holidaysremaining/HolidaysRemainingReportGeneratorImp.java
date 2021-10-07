@@ -2947,8 +2947,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_48"));
         // O2_1
         cells.get(firstRow, 9).setValue(TextResource.localize("KDR001_9"));
+        Style style1 = cells.get(firstRow, 9).getStyle();
+        style1.setHorizontalAlignment(TextAlignmentType.LEFT);
+        cells.get(firstRow,9).setStyle(style1);
         // O2_2
         cells.get(firstRow + (isTime?2:1), 9).setValue(TextResource.localize("KDR001_18"));
+        Style style2 = cells.get(firstRow + (isTime?2:1), 9).getStyle();
+        style1.setHorizontalAlignment(TextAlignmentType.LEFT);
+        cells.get(firstRow + (isTime?2:1),9).setStyle(style2);
+
         if (currentSituationImportedLeft != null) {
             // O1_2 子の看護休暇_使用数日数
             val numberOfDaysUsedBeforeGrant = currentSituationImportedLeft.getNumberOfDaysUsedBeforeGrant();
