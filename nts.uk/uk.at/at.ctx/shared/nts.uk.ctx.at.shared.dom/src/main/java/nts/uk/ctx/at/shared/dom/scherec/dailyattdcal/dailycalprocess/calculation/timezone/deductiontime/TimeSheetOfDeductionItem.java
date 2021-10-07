@@ -874,7 +874,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 						: Finally.empty(),
 					this.shortTimeSheetAtr.map(s -> ShortTimeSheetAtr.valueOf(s.toString())),
 					DeductionClassification.valueOf(this.deductionAtr.toString()),
-					this.childCareAtr.map(c -> ChildCareAtr.valueOf(c.value)));
+					this.childCareAtr.map(c -> ChildCareAtr.valueOf(c.value)),
+					this.recordOutside ? true : false);
 		}
 		return this.clone();
 	}

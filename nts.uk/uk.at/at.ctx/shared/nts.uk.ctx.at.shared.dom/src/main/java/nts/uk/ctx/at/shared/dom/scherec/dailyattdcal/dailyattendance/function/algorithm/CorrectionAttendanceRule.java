@@ -107,10 +107,6 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
 
-	
-	@Inject
-	private CorrectionShortWorkingHour correctShortWorkingHour;
-	
 	@Inject
 	private CorrectionShortWorkingHour correctShortWorkingHour;
 	
