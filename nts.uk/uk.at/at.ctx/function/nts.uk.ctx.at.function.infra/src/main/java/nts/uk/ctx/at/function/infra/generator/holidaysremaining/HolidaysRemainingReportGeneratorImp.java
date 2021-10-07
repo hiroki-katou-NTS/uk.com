@@ -196,12 +196,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
                     .getHolidayRemainingInfor().getGrantDate();
             if (isDisplayHolidayYear) {
-                if(grantDate.isPresent()){
-                    countEmployInfo+=1;
-                }
-                countEmployInfo+=1;
+                countEmployInfo+=2;
             }
-            if ((MAX_ROW_IN_PAGE - counts) > (countStep + countEmployInfo)) {
+            if ((MAX_ROW_IN_PAGE - counts) > ( countStep > countEmployInfo ? countStep : countEmployInfo)) {
                 cells.copyRows(cells, 5, firstRow, 1);
                 cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
                         + SPACE + employee.getWorkplaceName());
@@ -287,12 +284,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
                     .getHolidayRemainingInfor().getGrantDate();
             if (isDisplayHolidayYear) {
-                if(grantDate.isPresent()){
-                    countEmployInfo+=1;
-                }
-                countEmployInfo+=1;
+
+                countEmployInfo+=2;
             }
-            if ((MAX_ROW_IN_PAGE - counts) > (countStep + countEmployInfo)) {
+            if ((MAX_ROW_IN_PAGE - counts) > ( countStep > countEmployInfo ? countStep : countEmployInfo)) {
                 cells.copyRows(cells, 5, firstRow, 1);
                 cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
                         + SPACE + employee.getWorkplaceName());
@@ -407,10 +402,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
                 .getHolidayRemainingInfor().getGrantDate();
         if (isDisplayHolidayYear) {
-            if(grantDate.isPresent()){
-                countEmployInfo+=1;
-            }
-            countEmployInfo+=1;
+
+            countEmployInfo+=2;
         }
         boolean checkInsertBlank = true;
         if (totalRowDetails < countEmployInfo) {
@@ -2731,7 +2724,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 vl17.append("/").append(df.format(maxNumberOfDaysAfterGrant));
                 cells.get(firstRow + 1, 8).setValue(vl17);
             }
-            if (maxNumberOfDaysAfterGrant != null && maxNumberOfDaysAfterGrant > 0) {
+            if ((maxNumberOfDaysAfterGrant != null && maxNumberOfDaysAfterGrant > 0)||(maxNumberOfDaysBeforeGrant != null && maxNumberOfDaysBeforeGrant > 0)) {
                 setForegroundRed(cells.get(firstRow + 1, 8));
             }
 
@@ -2793,7 +2786,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             // {1}:付与後使用日数
                             Double daysOfUseAfterGrant = thisMonthFutureSituation.getDaysOfUseAfterGrant();
 
-                            if (daysOfUseAfterGrant == null) {
+                            if (daysOfUseAfterGrant == null || daysOfUseAfterGrant == 0) {
                                 cells.get(firstRow, 10 + totalMonth)
                                         .setValue(numberOfDaysUsedBeforeGrant == null || numberOfDaysUsedBeforeGrant == 0 ? null : df.format(numberOfDaysUsedBeforeGrant));
                             } else {
@@ -2808,7 +2801,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 Integer usageTimeBeforeGrant = thisMonthFutureSituation.getUsageTimeBeforeGrant();
                                 //{1}:付与後使用時間
                                 Integer usageTimeAfterGrant = thisMonthFutureSituation.getUsageTimeAfterGrant();
-                                if (usageTimeAfterGrant == null) {
+                                if (usageTimeAfterGrant == null || usageTimeAfterGrant == 0 ) {
                                     cells.get(firstRow + 1, 10 + totalMonth)
                                             .setValue(usageTimeBeforeGrant == null || usageTimeBeforeGrant == 0 ? null : convertToTime(usageTimeBeforeGrant));
                                 } else {
@@ -2988,8 +2981,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 cells.get(firstRow + 1, 8).setValue(vl17);
             } else {
                 cells.get(firstRow + 1, 8).setValue(maxNumberOfDaysBeforeGrant == null ? "0.0" : df.format(maxNumberOfDaysBeforeGrant));
+
             }
-            if (maxNumberOfDaysAfterGrant != null && maxNumberOfDaysAfterGrant > 0) {
+            if ((maxNumberOfDaysAfterGrant != null && maxNumberOfDaysAfterGrant > 0)||(maxNumberOfDaysBeforeGrant != null && maxNumberOfDaysBeforeGrant > 0)) {
                 setForegroundRed(cells.get(firstRow + 1, 8));
             }
         }
@@ -3054,7 +3048,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             // {1}:付与後使用日数
                             Double daysOfUseAfterGrant = thisMonthFutureSituation.getDaysOfUseAfterGrant();
 
-                            if (daysOfUseAfterGrant != null) {
+                            if (daysOfUseAfterGrant != null && daysOfUseAfterGrant ==0) {
                                 val vl23 = new StringBuilder();
                                 vl23.append(numberOfDaysUsedBeforeGrant == null ? "0.0" : df.format(numberOfDaysUsedBeforeGrant));
                                 vl23.append("/").append(daysOfUseAfterGrant.toString());
@@ -3070,7 +3064,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 Integer usageTimeBeforeGrant = thisMonthFutureSituation.getUsageTimeBeforeGrant();
                                 //{1}:付与後使用時間
                                 Integer usageTimeAfterGrant = thisMonthFutureSituation.getUsageTimeAfterGrant();
-                                if (usageTimeAfterGrant != null) {
+                                if (usageTimeAfterGrant != null && usageTimeAfterGrant !=0) {
                                     val vl24 = new StringBuilder();
                                     vl24.append(usageTimeBeforeGrant == null ? "0:00" : convertToTime(usageTimeBeforeGrant));
                                     vl24.append("/").append(convertToTime(usageTimeAfterGrant));
@@ -3786,7 +3780,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (hdRemainingInfor == null) {
             return firstRow + 2;
         }
-        ;
         if (isUndigestedPause) {
             totalRows += 1;
         }
@@ -3858,10 +3851,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         .setValue(TextResource.localize("KDR001_71",
                                 date.toString("yyyy/MM/dd")));
             }
-             cells.merge(firstRow + (grantDate.isPresent()?4:3), 0, 1, 2, true);
+             cells.merge(firstRow + 4, 0, 1, 2, true);
              String yearHoliday = "0.0";// #120238
-             cells.get(firstRow + (grantDate.isPresent()?4:3), 0).setValue(TextResource.localize("KDR001_72",yearHoliday));
-
+             cells.get(firstRow + 4, 0).setValue(TextResource.localize("KDR001_72",yearHoliday));
         }
     }
 
