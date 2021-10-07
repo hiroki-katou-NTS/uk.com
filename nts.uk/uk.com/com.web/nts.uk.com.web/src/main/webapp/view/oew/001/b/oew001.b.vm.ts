@@ -34,6 +34,8 @@ module nts.uk.com.view.oew001.b {
       vm.data().optionalItems = ko.observableArray(param.optionalItems);
       vm.data.valueHasMutated();
 
+      // Add constraint
+      _.each(vm.data().optionalItems(), data => __viewContext.primitiveValueConstraints[data.constraintName] = data.constraint);
       vm.data().useDate.subscribe(value => vm.validateUseDate(moment.utc(value, model.constants.YYYY_MM_DD)));
     }
 

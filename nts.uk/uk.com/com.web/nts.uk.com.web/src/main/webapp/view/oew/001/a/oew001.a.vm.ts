@@ -62,7 +62,7 @@ module nts.uk.com.view.oew001.a {
     private initScreen() {
       const vm = this;
       vm.$blockui("grayout");
-      vm.restoreCharacteristic().then(param => vm.initEquipmentInfo(param)).then(() => vm.initEquipmentSetting())
+      vm.restoreCharacteristic().then(() => vm.initEquipmentInfo()).then(() => vm.initEquipmentSetting())
       .then(() => vm.searchData(new SearchDataParam(vm.selectedEquipmentClsCode(), vm.selectedEquipmentInfoCode(), moment.utc().format("YYYYMM"))))
       .always(() => {
         vm.isInitComplete = true;
@@ -74,14 +74,12 @@ module nts.uk.com.view.oew001.a {
     }
 
     // Ａ1：設備分類と設備情報を取得する
-    private initEquipmentInfo(param: any): JQueryPromise<any> {
+    private initEquipmentInfo(): JQueryPromise<any> {
       const vm = this;
-      if (!param) {
-        param = {
-          equipmentClsCode: null,
-          equipmentCode: null
-        };
-      }
+      const param = {
+        equipmentClsCode: vm.selectedEquipmentClsCode(),
+        equipmentCode: vm.selectedEquipmentInfoCode()
+      };
       return vm.$ajax(API.initEquipmentInfo, param).then(result => {
         if (result) {
           vm.equipmentClassification(result.equipmentClassification);
@@ -364,6 +362,7 @@ module nts.uk.com.view.oew001.a {
           width: `${Math.min(model.constants.MAXIMUM_COL_WIDTH, width)}px`,
           displayOrder: itemDisplay.displayOrder,
           constraint: constraint,
+          constraintName: `CustomContraint${itemDisplay.displayOrder}`,
           itemNo: itemSetting.itemNo,
           memo: itemSetting.items.memo,
           required: itemSetting.inputControl.require,

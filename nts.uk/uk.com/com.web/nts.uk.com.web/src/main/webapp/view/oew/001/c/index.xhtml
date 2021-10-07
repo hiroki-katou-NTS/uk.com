@@ -21,12 +21,12 @@
     <ui:define name="content">
       <div id="contents-area">
         <div class="div-line flex valign-center">
-          <div id="C1_1" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('OEW001_40')}</div>
+          <div id="C1_1" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('OEW001_40')}</div>
           <button id="C1_2" data-bind="click: openDialogD" tabindex="1">#{i18n.getText('OEW001_41')}</button>
           <label id="C1_3" class="ml-10" data-bind="text: equipmentClsName"></label>
         </div>
         <div class="div-line flex valign-center">
-          <div id="C2_1" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('OEW001_42')}</div> 
+          <div id="C2_1" class="setting-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('OEW001_42')}</div> 
           <div id="C2_2" data-bind="ntsComboBox: {
             name: '#[OEW001_43]',
             options: equipmentInformationList,
