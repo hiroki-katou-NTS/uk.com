@@ -125,7 +125,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 
         //管理者を取得する
 
-        val employeeIdMap = angAnAdministrator(command.getWorkplaceIds(), GeneralDate.today());
+        val employeeIdMap = angAnAdministrator(command.getWorkplaceIds(), executeDate);
 
 
         //ドメインモデル「アラームメール送信ロール」を取得する
