@@ -9,7 +9,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.DisplayManHrRecordItem;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * 
@@ -20,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MAN_HR_FORMAT_TASK")
-public class KrcmtManHrFormatDialogTask extends ContractUkJpaEntity implements Serializable {
+public class KrcmtManHrFormatDialogTask extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,5 +34,14 @@ public class KrcmtManHrFormatDialogTask extends ContractUkJpaEntity implements S
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	public KrcmtManHrFormatDialogTask(DisplayManHrRecordItem domain) {
+		this.pk.manHrItemId = domain.getAttendanceItemId();
+		this.dispOrder = domain.getOrder();
+	}
+	
+	public DisplayManHrRecordItem toDomain() {
+		return new DisplayManHrRecordItem(this.pk.manHrItemId, this.dispOrder);
 	}
 }

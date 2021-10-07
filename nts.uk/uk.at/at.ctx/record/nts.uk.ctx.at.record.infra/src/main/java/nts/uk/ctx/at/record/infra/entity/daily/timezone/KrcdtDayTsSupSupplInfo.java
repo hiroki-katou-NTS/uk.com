@@ -9,9 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.infra.entity.daily.timegroup.KsrdtTaskTsGroupPk;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * @name 日別時間帯別実績
@@ -22,15 +20,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_TS_SUP_SUPPL_INFO")
-public class KrcdtDayTsSupSupplInfo extends ContractUkJpaEntity implements Serializable {
+public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public KrcdtDayTsSupSupplInfoPk pk;
 
-	@Column(name = "CID")
-	public String cid;
-	
 	@Column(name = "SUPPL_INFO_TIME1")
 	public int supplInfoTime1;
 	

@@ -25,16 +25,17 @@ public class WorkContent implements DomainObject {
 	/** 作業補足情報 */
 	private Optional<WorkSuppInfo> workSuppInfo;
 
-	private WorkContent(WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work, Optional<WorkinputRemarks> workRemarks) {
+	private WorkContent(WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work, Optional<WorkinputRemarks> workRemarks, Optional<WorkSuppInfo> workSuppInfo) {
 		super();
 		this.workplace = workplace;
 		this.work = work;
 		this.workRemarks = workRemarks;
+		this.workSuppInfo = workSuppInfo;
 	}
 	
-	public static WorkContent create(WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work, Optional<WorkinputRemarks> workRemarks) {
+	public static WorkContent create(WorkplaceOfWorkEachOuen workplace, Optional<WorkGroup> work, Optional<WorkinputRemarks> workRemarks, Optional<WorkSuppInfo> workSuppInfo) {
 		
-		return new WorkContent(workplace, work, workRemarks);
+		return new WorkContent(workplace, work, workRemarks, workSuppInfo);
 	}
 
 	public void setWork(Optional<WorkGroup> work) {

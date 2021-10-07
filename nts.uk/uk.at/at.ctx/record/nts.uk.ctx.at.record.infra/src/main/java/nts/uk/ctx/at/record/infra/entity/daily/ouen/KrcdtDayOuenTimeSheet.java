@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
+import nts.uk.ctx.at.record.infra.entity.daily.timezone.KrcdtDayTsSupSupplInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
@@ -85,6 +88,10 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 	/** 作業CD5 */
 	@Column(name = "WORK_REMARKS")
 	public String workRemarks;
+	
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	public KrcdtDayTsSupSupplInfo krcdtDayTsSupSupplInfo;
+	
 
 	@Override
 	protected Object getKey() {

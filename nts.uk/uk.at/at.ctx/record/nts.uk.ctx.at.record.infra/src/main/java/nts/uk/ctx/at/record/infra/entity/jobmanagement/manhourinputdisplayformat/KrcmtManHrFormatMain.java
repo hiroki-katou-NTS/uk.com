@@ -9,7 +9,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.RecordColumnDispName;
+import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.RecordColumnDisplayItem;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * 
@@ -20,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MAN_HR_FORMAT_MAIN")
-public class KrcmtManHrFormatMain extends ContractUkJpaEntity implements Serializable {
+public class KrcmtManHrFormatMain extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,6 +38,16 @@ public class KrcmtManHrFormatMain extends ContractUkJpaEntity implements Seriali
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	public KrcmtManHrFormatMain(RecordColumnDisplayItem domain) {
+		this.pk.attItemId = domain.getAttendanceItemId();
+		this.name = domain.getDisplayName().v();
+		this.dispOrder = domain.getOrder();
+	}
+	
+	public RecordColumnDisplayItem toDomain() {
+		return new RecordColumnDisplayItem(this.dispOrder, this.pk.attItemId, new RecordColumnDispName(this.name));
 	}
 	
 }
