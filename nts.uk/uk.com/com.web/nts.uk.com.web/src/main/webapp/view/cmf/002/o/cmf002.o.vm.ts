@@ -23,8 +23,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         selectedConditionName: KnockoutObservable<string> = ko.observable('');
 
         periodDateValue: KnockoutObservable<any> = ko.observable({
-            startDate:'',
-            endDate: ''
+            startDate: moment.utc().format("YYYY/MM/DD"),
+            endDate: moment.utc().format("YYYY/MM/DD")
         });
         listOutputItem: KnockoutObservableArray<model.StandardOutputItem> = ko.observableArray([]);
         selectedOutputItemCode: KnockoutObservable<string> = ko.observable('');
@@ -63,7 +63,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         isLoadScreenQ: boolean = false;
 
         roleAuthority: any;
-        exOutCtgDto: any;
+        exOutCtgDto:  KnockoutObservable<any> = ko.observable('');
         closureId: KnockoutObservable<any> = ko.observable('');
         closureLists: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -77,6 +77,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         show81Date: KnockoutObservable<boolean> = ko.observable(false);
         baseDate: KnockoutObservable<any>;
         valueItemFixedForm: KnockoutObservable<any>;
+        date61:  KnockoutObservable<any> = ko.observable('');
 
         constructor() {
             var self = this;
@@ -90,7 +91,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.dataEmployeeId = [];
             self.valueItemFixedForm = ko.observable('');
             // set up date time P6_1
-            self.periodDateValue().start = ko.observable({});
             self.stepSelected = ko.observable({id: 'step-4', content: '.step-4'});
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
@@ -138,72 +138,82 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
                     service.getExOutCtgDto(catelogoryId).done(data => {
                         if (data) {
-                            let ex: ExOutCtgDto = data.exOutCtgDto();
-                            let closureExports : [any] = data.closureExports();
+                            let ex: ExOutCtgDto = data.exOutCtgDto;
+                            let closureExports: [any] = data.closureExports;
                             self.closureLists(closureExports);
-                            if(!isNullOrEmpty(closureExports)){
-                                self.closureId(closureExports[0].closureId)
-                            }
+
                             self.exOutCtgDto(ex);
                             // show61DatePeriod
                             //外部出期間区分
                             let outingPeriodClassific = ex.outingPeriodClassific;
                             let classificationToUse = ex.classificationToUse;
-                            if(outingPeriodClassific == OUTPUTCLASSS.DATE){
+                            if (outingPeriodClassific == OUTPUTCLASSS.DATE) {
                                 if (classificationToUse === TOUSE.DO_NOT_USE) {
                                     self.show61DatePeriod(true);
-                                    self.periodDateValue({
-                                        startDate: moment.utc().format("YYYY/MM/DD"),
-                                        endDate: moment.utc().format("YYYY/MM/DD")
-                                    });
-                                }else {
+                                } else {
                                     self.show81DatePeriod(true);
-                             }
+                                }
                             }
-                            if(outingPeriodClassific == OUTPUTCLASSS.YEAR_MONTH){
-                                if(classificationToUse === TOUSE.DO_NOT_USE){
+                            if (outingPeriodClassific == OUTPUTCLASSS.YEAR_MONTH) {
+                                if (classificationToUse === TOUSE.DO_NOT_USE) {
                                     self.show61YmPeriod(true);
-                                    self.periodDateValue({
-                                        startDate: moment.utc().format("YYYY/MM"),
-                                        endDate: moment.utc().format("YYYY/MM")
-                                    });
-                                }else {
+                                } else {
                                     self.show81YmPeriod(true);
                                 }
                             }
                             if (outingPeriodClassific == OUTPUTCLASSS.REFERENCE_DATE) {
+                                self.date61( moment.utc().format("YYYY/MM/DD"));
                                 self.show61Date(true);
-                                self.periodDateValue({
-                                    startDate: moment.utc().format("YYYY/MM/DD"),
-                                    endDate: moment.utc().format("YYYY/MM/DD")
-                                });
+
                             }
-                            if(outingPeriodClassific == OUTPUTCLASSS.NO_SETTING){
+                            if (outingPeriodClassific == OUTPUTCLASSS.NO_SETTING) {
                                 self.show81Date(true);
+                                self.periodDateValue({
+                                    startDate:  null,
+                                    endDate: null
+                                });
                             }
                         }
                     });
                 }
             });
-            self.closureId.subscribe((closureId)=>{
-                let cl =  _.find(self.closureLists(), {'closureId': closureId});
-                let startDate = moment(cl.startDate).format('YYYYMMDD');
-                let startDateYm = moment(cl.startDate).format('YYYYMM');
-                let endDate = moment(cl.endDate).format('YYYYMMDD');
-                let endDateYm = moment(cl.endDate).format('YYYYMM');
-                if(self.show81Date()){
-                    self.periodDateValue().startDate = null;
-                    self.periodDateValue().endDate = null;
+
+            self.date61.subscribe((date)=>{
+                self.periodDateValue({
+                    startDate:  self.date61(),
+                    endDate: null
+                });
+            });
+            self.periodDateValue.subscribe((data)=>{
+             let   periodStartDate =  moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
+             console.log(periodStartDate);
+            });
+            self.closureId.subscribe((closureId) => {
+                let cl = _.find(self.closureLists(), {'closureId': closureId});
+                let startDate = cl.startDate;
+                let endDate = cl.endDate;
+                if (self.show81Date()) {
+                    self.periodDateValue({
+                        startDate :null,
+                        endDate :null
+                    });
                 }
-                if(self.show81DatePeriod()){
-                    self.periodDateValue().startDate = startDate;
-                    self.periodDateValue().endDate = endDate;
+                if (self.show81DatePeriod()) {
+                    self.periodDateValue({
+                        startDate :startDate,
+                        endDate :endDate
+                    });
                 }
-                if(self.show61YmPeriod()){
-                    self.periodDateValue().startDate = startDateYm;
-                    self.periodDateValue().endDate = endDateYm;
-                } })
+
+                if (self.show81YmPeriod()) {
+                    self.periodDateValue({
+                        startDate :startDate,
+                        endDate :endDate
+                    });
+                }
+            })
         }
+
         /**
          * apply ccg001 search data to kcp005
          */
@@ -366,8 +376,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
             let conditionSetCd = self.selectedConditionCd();
             let userId = "";
-            let startDate = self.periodDateValue().startDate;
-            let endDate = self.periodDateValue().endDate;
+            let startDate = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
+            let endDate = moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD").toISOString();
             let referenceDate = self.referenceDate();
             let standardType = true;
             let sidList = self.dataEmployeeId;
@@ -383,7 +393,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     selectedConditionCd: conditionSetCd,
                     selectedConditionName: self.selectedConditionName()
                 };
-
                 setShared("CMF002_R_PARAMS", params);
                 nts.uk.ui.windows.sub.modal("/view/cmf/002/s/index.xhtml").onClosed(() => {
                     $('#ex_output_wizard').ntsWizard("goto", 0);
@@ -730,3 +739,4 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         DO_NOT_USE = 0
 
     }
+}

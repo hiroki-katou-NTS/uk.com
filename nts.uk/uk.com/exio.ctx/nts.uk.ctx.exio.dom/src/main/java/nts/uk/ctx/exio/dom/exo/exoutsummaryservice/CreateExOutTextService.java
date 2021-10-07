@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.uk.ctx.exio.dom.exo.category.*;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -33,13 +35,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
-import nts.uk.ctx.exio.dom.exo.category.Association;
-import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
-import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
-import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
-import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
-import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.cdconvert.CdConvertDetail;
@@ -612,7 +607,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
-		
+		Optional<ExOutCtg> exOutCtgOpt = settingResult.getExOutCtg();
+		OutingPeriodClassific outingPeriodClassific =null;
+		ClassificationToUse classificationToUse =null;
+		if(exOutCtgOpt.isPresent()){
+			val exOutCtg = exOutCtgOpt.get();
+			 outingPeriodClassific = exOutCtg.getOutingPeriodClassific();
+			 classificationToUse = 	exOutCtg.getClassificationToUse();
+		}
+
 		Map<String, String> sqlAndParams = new HashMap<String, String>();
 		sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
 		sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
