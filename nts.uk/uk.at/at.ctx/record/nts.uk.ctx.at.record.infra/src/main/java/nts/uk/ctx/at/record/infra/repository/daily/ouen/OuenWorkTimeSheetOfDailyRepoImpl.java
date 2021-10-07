@@ -324,6 +324,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				rec.getInt("TOTAL_TIME"));
 	}
 	
+	@Override
 	public List<OuenWorkTimeSheetOfDaily> find(List<String> sid, DatePeriod ymd) {
 		List<KrcdtDayOuenTimeSheet> entitis = new ArrayList<>();
 		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
