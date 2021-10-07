@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ChoiceName;
+import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ExternalCode;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistoryRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
@@ -31,10 +33,14 @@ public class UpdateAndRegisterOptionsCommandHandler extends CommandHandler<Regis
 	protected void handle(CommandHandlerContext<RegisterNewOptionsCommand> context) {
 		RegisterNewOptionsCommand command = context.getCommand();
 		
-		Optional<TaskSupInfoChoicesDetail> domain = this.taskRepo.get(command.getHistoryId(), command.getItemId(), new ChoiceCode(command.getChoiceCode()));
+		Optional<TaskSupInfoChoicesDetail> optdomain = this.taskRepo.get(command.getHistoryId(), command.getItemId(), new ChoiceCode(command.getChoiceCode()));
 		
-		if (domain.isPresent()) {
-			this.taskRepo.update(domain.get());
+		if (optdomain.isPresent()) {
+			TaskSupInfoChoicesDetail domain = new TaskSupInfoChoicesDetail(command.getHistoryId(), command.getItemId(),
+					new ChoiceCode(command.getChoiceCode()), new ChoiceName(command.getOptionName()),
+					command.getEternalCodeOfChoice().equals("") ? Optional.empty()
+							: Optional.of(new ExternalCode(command.getEternalCodeOfChoice())));
+			this.taskRepo.update(domain);
 		}
 	}
 

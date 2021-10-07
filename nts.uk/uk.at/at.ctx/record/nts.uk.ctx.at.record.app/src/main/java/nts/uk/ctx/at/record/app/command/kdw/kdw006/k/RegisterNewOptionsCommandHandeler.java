@@ -37,9 +37,11 @@ public class RegisterNewOptionsCommandHandeler  extends CommandHandler<RegisterN
 		
 		List<TaskSupInfoChoicesDetail> choicesDetails = this.taskRepo.get(command.getHistoryId());
 		
-		if (!choicesDetails.isEmpty()) {
-			throw new BusinessException("Msg_3");
-		}
+		choicesDetails.stream().forEach(f -> {
+			if (f.getCode().v().equals(command.getChoiceCode())) {
+				throw new BusinessException("Msg_3");
+			}
+		});
 		
 		TaskSupInfoChoicesDetail domain = new TaskSupInfoChoicesDetail(command.getHistoryId(),
 				command.getItemId(), 

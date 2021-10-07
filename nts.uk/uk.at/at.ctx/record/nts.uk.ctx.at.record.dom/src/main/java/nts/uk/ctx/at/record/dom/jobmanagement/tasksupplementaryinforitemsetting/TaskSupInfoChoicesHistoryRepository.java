@@ -24,6 +24,8 @@ public interface TaskSupInfoChoicesHistoryRepository {
 	 */
 	void insert(TaskSupInfoChoicesDetail detail);
 	
+	void insert(TaskSupInfoChoicesHistory history);
+	
 	/**
 	 * @name [3] update(作業補足情報の選択肢履歴)
 	 */
@@ -69,4 +71,6 @@ public interface TaskSupInfoChoicesHistoryRepository {
 	Optional<TaskSupInfoChoicesDetail> get(String historyId, int itemId, ChoiceCode code);
 	
 	List<TaskSupInfoChoicesDetail> get(List<String> historyIds);
+	
+	Optional<TaskSupInfoChoicesHistory> get(String historyId, int itemId);
 }

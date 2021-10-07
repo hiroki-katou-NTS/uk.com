@@ -34,29 +34,20 @@ public class AcquireSelectionHistoryOfWork {
 	private TaskSupInfoChoicesHistoryRepository taskSupInfoChoicesHistoryRepo;
 
 	public List<AcquireSelectionHistoryOfWorkDto> get() {
-		
+
 		List<AcquireSelectionHistoryOfWorkDto> result = new ArrayList<>();
-		String cid = AppContexts.user().companyId();	
-		
+		String cid = AppContexts.user().companyId();
+
 		List<TaskSupInfoChoicesHistory> doamins = taskSupInfoChoicesHistoryRepo.getAll(cid);
-		
+
 		doamins.forEach(f -> {
 			List<DateHistoryItemDto> dateHis = f.getDateHistoryItems().stream().map(m -> {
-				return new DateHistoryItemDto("", m.start(), m.end());
+				return new DateHistoryItemDto(m.identifier(), m.start(), m.end());
 			}).collect(Collectors.toList());
-			
+
 			result.add(new AcquireSelectionHistoryOfWorkDto(f.getItemId(), dateHis));
 		});
-		
-		for (int i = 25 ; i < 30; i++) {
-			List<DateHistoryItem> a = new ArrayList<>();
-			a.add(new DateHistoryItem(i+"", new DatePeriod(GeneralDate.today(), GeneralDate.max())));
-			a.add(new DateHistoryItem(i+"", new DatePeriod(GeneralDate.min(), GeneralDate.max())));
-			taskSupInfoChoicesHistoryRepo.insert(new TaskSupInfoChoicesHistory(i, a),
-					new TaskSupInfoChoicesDetail(i+"", i, new ChoiceCode(i+""), new ChoiceName("History"+i), Optional.of(new ExternalCode(i+"")))
-					);
-		}
-		
+
 		return result;
 	}
 

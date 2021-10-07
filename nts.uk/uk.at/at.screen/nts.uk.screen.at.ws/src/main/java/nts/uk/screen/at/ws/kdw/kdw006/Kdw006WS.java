@@ -13,6 +13,9 @@ import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.DeleteTheChoiceCommandHandl
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.RegisterNewOptionsCommand;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.RegisterNewOptionsCommandHandeler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.UpdateAndRegisterOptionsCommandHandler;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.AddHistoryCommand;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.AddHistoryCommandHander;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.UpdateHistoryCommandHandler;
 import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWork;
 import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWorkDto;
 import nts.uk.screen.at.app.kdw006.k.GetManHourRecordItemSpecifiedIDListDto;
@@ -51,6 +54,12 @@ public class Kdw006WS extends WebService {
 	@Inject
 	private DeleteTheChoiceCommandHandler delete;
 
+	@Inject
+	private AddHistoryCommandHander addHistory;
+
+	@Inject
+	private UpdateHistoryCommandHandler updateHistory;
+
 	// 作業補足情報の選択項目を取得する
 	@POST
 	@Path("view-k/get-list-work")
@@ -71,7 +80,7 @@ public class Kdw006WS extends WebService {
 	public List<GetWorkInforDetailsDto> getWorkInforDetails(GetWorkInforDetailsInput param) {
 		return this.getWorkInforDetails.getWorkInforDetails(param);
 	}
-	
+
 	// 作業補足情報の選択肢詳細を取得する
 	@POST
 	@Path("view-k/get-list-work-info-detail")
@@ -98,6 +107,20 @@ public class Kdw006WS extends WebService {
 	@Path("view-k/delete")
 	public void delete(DeleteTheChoiceCommand command) {
 		this.delete.handle(command);
+	}
+
+	// 履歴を追加する
+	@POST
+	@Path("view-l/register-history")
+	public void addHistory(AddHistoryCommand param) {
+		this.addHistory.handle(param);
+	}
+
+	// 履歴を更新する
+	@POST
+	@Path("view-l/update-history")
+	public void updateHistory(AddHistoryCommand param) {
+		this.updateHistory.handle(param);
 	}
 
 }
