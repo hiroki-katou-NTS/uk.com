@@ -1,9 +1,8 @@
-package nts.uk.ctx.exio.app.command.exo.externaloutput;
+package nts.uk.ctx.exio.app.command.exo.authset;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.exio.dom.exo.authset.ExOutCtgAuthSet;
 import nts.uk.ctx.exio.dom.exo.authset.ExOutCtgAuthSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -11,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.Optional;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)

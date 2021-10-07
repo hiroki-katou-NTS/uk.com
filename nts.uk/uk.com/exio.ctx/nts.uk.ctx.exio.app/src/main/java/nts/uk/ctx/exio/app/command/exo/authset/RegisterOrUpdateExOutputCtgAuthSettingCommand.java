@@ -1,14 +1,12 @@
-package nts.uk.ctx.exio.app.command.exo.externaloutput;
+package nts.uk.ctx.exio.app.command.exo.authset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.permit.RestoreAvailabilityPermission;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Value
 public class RegisterOrUpdateExOutputCtgAuthSettingCommand {

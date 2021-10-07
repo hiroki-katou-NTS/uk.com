@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.command.exo.externaloutput;
+package nts.uk.ctx.exio.app.command.exo.authset;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;

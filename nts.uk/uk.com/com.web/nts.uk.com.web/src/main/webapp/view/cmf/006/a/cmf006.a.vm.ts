@@ -1,6 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kal012.a {
     import windows = nts.uk.ui.windows;
+    import util = nts.uk.util;
     import block = nts.uk.ui.block;
     import alertError = nts.uk.ui.dialog.alertError;
     import modal = windows.sub.modal;
@@ -16,9 +17,10 @@ module nts.uk.at.view.kal012.a {
     import ROLE_TYPE = ccg026.component.ROLE_TYPE;
 
     const fetch = {
-        initData: "exio/exo/condset/getExOutCategory",
-        register: "exio/exo/condset/getExOutCategory/exOutCtgAuthSet/register",
-        copy: "exio/exo/condset/getExOutCategory/exOutCtgAuthSet/exOutCtgAuthSet/copy"
+        permissionInfos: "exio/exo/condset/getExOutCategory/",
+        availabilityPermission: "exio/exo/condset/exOutCtgAuthSet/",
+        register: "exio/exo/condset/exOutCtgAuthSet/register",
+        copy: "exio/exo/condset/exOutCtgAuthSet/copy"
     };
 
     @bean()
@@ -29,63 +31,51 @@ module nts.uk.at.view.kal012.a {
         roleName: KnockoutObservable<string> = ko.observable(null);
 
         //ccg026
-        roleId: KnockoutObservable<string> = ko.observable(null);// role id
-        roleType: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.COMPANY_MANAGER);
+        roleId: KnockoutObservable<string> = ko.observable(null); // role id
+        roleType: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.EMPLOYMENT);
         // roleType1: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.PERSONAL_INFO);
-        // roleType2: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.PERSONAL_INFO);
 
-        permissionSettings : KnockoutObservableArray<IPermission> = ko.observableArray([]);
+        permissionList: KnockoutObservableArray<IPermission> = ko.observableArray([]);
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        data: any;
 
         constructor(params: any) {
             super();
             const vm = this;
 
             vm.listRole = ko.observableArray([]);
-
-            vm.initialCCG025026();
+            vm.componentCcg025 = new ccg025.component.viewmodel.ComponentModel({
+                roleType: vm.roleType(),
+                multiple: false,
+                isAlreadySetting: false
+            });
+            vm.fetchPermissionSettingList();
+            vm.fetchRoleList();
         }
 
         created(params: any) {
-            let vm = this;
+            const vm = this;
+
+            vm.roleId.subscribe((newValue) => {
+                if (!_.isEmpty(newValue)) vm.fetchAvailabilityPermission(newValue);
+            });
+            vm.componentCcg025.currentCode.subscribe((roleId: any) => {
+                if (vm.listRole().length <= 0) vm.listRole(vm.componentCcg025.listRole());
+                vm.roleId(roleId);
+                vm.findRoleName(roleId);
+            });
         }
 
         mounted() {
             let vm = this;
         }
 
-        initialCCG025026() {
-            let vm = this;
-            vm.componentCcg025 = new ccg025.component.viewmodel.ComponentModel({
-                roleType: 3,
-                multiple: false,
-                isAlreadySetting: false
-            });
-            vm.componentCcg025 = new ccg025.component.viewmodel.ComponentModel({
-                roleType: ROLE_TYPE.EMPLOYMENT,
-                multiple: false
-            });
-
-            vm.getDataCCG025();
-            vm.componentCcg025.currentCode.subscribe((roleId: any) => {
-                if (vm.listRole().length <= 0) vm.listRole(vm.componentCcg025.listRole());
-                vm.roleId(roleId);
-                vm.findRole(roleId);
-            });
-
-            vm.roleId.subscribe((newRoleId) => {
-                if (!_.isEmpty(newRoleId)) vm.getRoleInfor(newRoleId);
-            });
-        }
-
-        findRole(roleId?: string) {
-            let vm = this;
-            let role = _.find(vm.listRole(), (x) => { return x.roleId === roleId; });
-            if (role) vm.roleName(role.roleName);
-        }
-
-        getDataCCG025(): JQueryPromise<any> {
-            let vm = this;
+        /**
+         * CCG025
+         * @returns {JQueryPromise<any>}
+         */
+        fetchRoleList(): JQueryPromise<any> {
+            const vm = this;
             let dfd = $.Deferred();
             vm.componentCcg025.startPage().done(() => {
                 vm.listRole(vm.componentCcg025.listRole());
@@ -94,31 +84,102 @@ module nts.uk.at.view.kal012.a {
             return dfd.promise();
         }
 
-        getRoleInfor(roleId: string) {
-            let vm = this;
-            // vm.$blockui("show");
-            // vm.$ajax(fetch.getRoleInfor + roleId).done((data) => {
-            //     if (data) {
-            //         vm.data = data;
-            //         vm.basicFunctionControl(data.useAtr || 0);
-            //         vm.dateSelected(data.deadLineDay || 0);
-            //         vm.convertToPermissionList(data);
-            //     }
-            // }).fail(error => {
-            //     vm.$dialog.error(error);
-            // }).always(() => {
-            //     vm.$blockui("hide");
-            // });
+        /**
+         * CCG026
+         */
+        fetchPermissionSettingList(): void {
+            const vm = this;
+            vm.$blockui("show");
+            vm.$ajax(fetch.permissionInfos + vm.roleType()).done((data: any) => {
+                if (data) {
+                    vm.mappingPermissionList(data);
+                }
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
-        save() {
-
+        /**
+         * Find ExOutCtgAuthSet
+         * @param {string} roleId
+         */
+        fetchAvailabilityPermission(roleId: string): void {
+            const vm = this;
+            vm.$blockui("show");
+            console.log("RoleId: ", roleId);
+            vm.$ajax(fetch.availabilityPermission + roleId).done((data) => {
+                if (data) {
+                    vm.mappingAvailabilityPermission(data);
+                    vm.isNewMode(false);
+                }
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
-        copy() {
-
+        findRoleName(roleId?: string): void {
+            const vm = this;
+            let role = _.find(vm.listRole(), (x) => {
+                return x.roleId === roleId;
+            });
+            if (role) vm.roleName(role.roleName);
         }
 
+        private mappingPermissionList(data: any): void {
+            const vm = this;
+            vm.permissionList(data.map((i: any) => ({
+                available: false,
+                description: i.explanation,
+                functionName: i.functionName,
+                functionNo: i.functionNo,
+                orderNumber: i.displayOrder
+            })));
+        }
+
+        private mappingAvailabilityPermission(authSet: any): void {
+            const vm = this;
+            const availableAuths = authSet.filter((i: any) => i.available).map((i: any) => i.functionNo);
+            vm.permissionList(vm.permissionList().map((i: any) => ({
+                available: availableAuths.indexOf(i.functionNo) >= 0,
+                description: i.description,
+                functionName: i.functionName,
+                functionNo: i.functionNo,
+                orderNumber: i.orderNumber
+            })));
+        }
+
+        save(): void {
+            const vm = this;
+            vm.$blockui("invisible");
+            let command : IRegisterExOutCtgAuthSetCommand = {
+                roleId: vm.roleId(),
+                functionAuthSettings: ko.toJS(vm.permissionList()).map((i: any) => ({
+                    functionNo: i.functionNo,
+                    available: i.available
+                }))
+            };
+            vm.$ajax(fetch.register, command).then(data => {
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
+    }
+
+    interface IRegisterExOutCtgAuthSetCommand {
+        roleId: string;
+        functionAuthSettings: Array<IPermissionSetting>;
+    }
+
+    interface IPermissionSetting {
+        functionNo: number;
+        available: boolean;
     }
 
     export interface IRole {

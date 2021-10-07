@@ -17,10 +17,12 @@ import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHand
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommand;
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthSettingCommand;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.DuplicateExOutputCtgAuthCommandSettingHandler;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthSettingCommand;
-import nts.uk.ctx.exio.app.command.exo.externaloutput.RegisterOrUpdateExOutputCtgAuthSettingCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.authset.DuplicateExOutputCtgAuthSettingCommand;
+import nts.uk.ctx.exio.app.command.exo.authset.DuplicateExOutputCtgAuthCommandSettingHandler;
+import nts.uk.ctx.exio.app.command.exo.authset.RegisterOrUpdateExOutputCtgAuthSettingCommand;
+import nts.uk.ctx.exio.app.command.exo.authset.RegisterOrUpdateExOutputCtgAuthSettingCommandHandler;
+import nts.uk.ctx.exio.app.find.exo.authset.ExOutCtgAuthSetDTO;
+import nts.uk.ctx.exio.app.find.exo.authset.ExOutCtgAuthSetFinder;
 import nts.uk.ctx.exio.app.find.exo.category.Cmf002Dto;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgFinder;
@@ -65,6 +67,9 @@ public class StdOutConSetWebService extends WebService {
 
 	@Inject
 	private ExOutCtgFinder exOutCtgFinder;
+
+	@Inject
+	private ExOutCtgAuthSetFinder exOutCtgAuthSetFinder;
 
 	@Inject
 	private RegisterOrUpdateExOutputCtgAuthSettingCommandHandler registerExOutputCtgAuthCommand;
@@ -149,9 +154,15 @@ public class StdOutConSetWebService extends WebService {
 	}
 
 	@POST
-	@Path("getExOutCategory")
-	public List<ExOutCtgDto> getInitExOutCategory(int roleType) {
+	@Path("getExOutCategory/{roleType}")
+	public List<ExOutCtgDto> getInitExOutCategory(@PathParam("roleType") int roleType) {
 		return this.exOutCtgFinder.get(roleType);
+	}
+
+	@POST
+	@Path("exOutCtgAuthSet/{roleId}")
+	public List<ExOutCtgAuthSetDTO> getExOutCtgPermissionSetting(@PathParam("roleId") String roleId) {
+		return this.exOutCtgAuthSetFinder.get(roleId);
 	}
 
 	@POST

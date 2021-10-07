@@ -13,7 +13,7 @@ public class JpaExOutCtgAuthSetRepository
 		extends JpaAvailablityPermissionRepositoryBase<ExOutCtgAuthSet, OiomtExOutCtgAuthSet>
 		implements ExOutCtgAuthSetRepository {
 	private static final String SELECT_BY_ROLE_ID = "SELECT f FROM OiomtExOutCtgAuthSet f"
-			+ " WHERE  f.PK.companyId =:cid AND f.pk.roleId =:roleId ";
+			+ " WHERE f.pk.companyId =:cid AND f.pk.roleId =:roleId ";
 
 	@Override
 	protected Class<OiomtExOutCtgAuthSet> getEntityClass() {

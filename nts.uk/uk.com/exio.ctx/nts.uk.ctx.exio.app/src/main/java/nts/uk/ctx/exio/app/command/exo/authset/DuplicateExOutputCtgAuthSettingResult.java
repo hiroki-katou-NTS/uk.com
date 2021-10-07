@@ -1,7 +1,6 @@
-package nts.uk.ctx.exio.app.command.exo.externaloutput;
+package nts.uk.ctx.exio.app.command.exo.authset;
 
 import lombok.Data;
-import lombok.Value;
 
 @Data
 public class DuplicateExOutputCtgAuthSettingResult {
