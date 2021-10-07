@@ -28,6 +28,7 @@ public class OptionalItemAppPubImp implements OptionalItemAppPub {
                         .calcResultRange(optItem.getCalcResultRange())
                         .optionalItemAtr(optItem.getOptionalItemAtr())
                         .description(optItem.getDescription().isPresent() ? optItem.getDescription().get().v() : null)
+                        .inputCheck(optItem.isInputCheck())
                         .build())
                 .collect(Collectors.toList());
     }

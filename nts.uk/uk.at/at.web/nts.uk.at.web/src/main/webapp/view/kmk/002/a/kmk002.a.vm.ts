@@ -1008,13 +1008,13 @@ module nts.uk.at.view.kmk002.a {
                 dto.usageAtr = self.usageAtr();
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
-                dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
+                dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange, self.optionalItemAtr());
                 dto.unit = self.optionalItemAtr() == 0 ? null : self.unit();
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
                 dto.calAtr = self.selectedClac();
                 dto.note = self.note();
                 dto.description = self.description();
-                dto.inputCheck = self.selectedClac() == 0 && self.performanceAtr() == 1 && self.optionalItemAtr() == 1 && self.enableUnit() ? true : false;
+                dto.inputCheck = self.selectedClac() == 0 && self.performanceAtr() == 1 && self.optionalItemAtr() == 1 && self.enableUnit();
 
                 switch(self.optionalItemAtr()) {
                     case 0:
@@ -1502,7 +1502,7 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Convert view model to dto
              */
-            public toDto(calcResultRangeStash: CalcResultRangeDto) {
+            public toDto(calcResultRangeStash: CalcResultRangeDto, optionalItemAtr: number) {
                 let self = this;
                 let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
@@ -1579,9 +1579,9 @@ module nts.uk.at.view.kmk002.a {
                             lowerLimit: dto.amountLowerMonth
                         }
                     },
-                    timeInputUnit: self.timeInputUnit(),
-                    numberInputUnit: self.numberInputUnit(),
-                    amountInputUnit: self.amountInputUnit()
+                    timeInputUnit: optionalItemAtr == 0 ? self.timeInputUnit() : null,
+                    numberInputUnit: optionalItemAtr == 1 ? self.numberInputUnit() : null,
+                    amountInputUnit: optionalItemAtr == 2 ? self.amountInputUnit() : null
                 };
                 
                 return output;

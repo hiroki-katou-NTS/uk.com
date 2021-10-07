@@ -76,10 +76,10 @@ public class OptionalItemApplicationQuery {
         OptionalItemAppSetDto setting = optionalItemAppSetFinder.findByCode(new OptionalItemApplicationTypeCode(settingCode).v());
         List<Integer> optionalItemNos = setting.getSettingItems().stream().map(i -> i.getNo()).collect(Collectors.toList());
         List<OptionalItemImport> optionalItems = optionalItemAdapter.findOptionalItem(cid, optionalItemNos);
-        List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid,
-                optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList())
-        );
-        detail.setControlOfAttendanceItems(controlOfAttendanceItems.stream().map(ControlOfAttendanceItemsDto::fromDomain).collect(Collectors.toList()));
+//        List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid,
+//                optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList())
+//        );
+//        detail.setControlOfAttendanceItems(controlOfAttendanceItems.stream().map(ControlOfAttendanceItemsDto::fromDomain).collect(Collectors.toList()));
         detail.setApplication(OptionalItemApplicationDto.fromDomain(domain));
         detail.getApplication().setName(setting.getName());
         detail.getApplication().setNote(setting.getNote());
@@ -91,6 +91,7 @@ public class OptionalItemApplicationQuery {
                     optionalItemDto.setOptionalItemNo(item.getOptionalItemNo());
                     optionalItemDto.setOptionalItemName(item.getOptionalItemName());
                     optionalItemDto.setUnit(item.getOptionalItemUnit());
+                    optionalItemDto.setInputCheck(item.isInputCheck());
                     optionalItemDto.setCalcResultRange(calcResultRangeDto);
                     optionalItemDto.setOptionalItemAtr(item.getOptionalItemAtr().value);
                     optionalItemDto.setDescription(item.getDescription());

@@ -148,6 +148,9 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				} else {
 				    range.setLowerLimitAtr(0);
 				}
+				range.setTimeItemInputUnit(rec.getInt("INPUT_UNIT_TIME"));
+				range.setNumberItemInputUnit(rec.getInt("INPUT_UNIT_NUMBER"));
+				range.setAmountItemInputUnit(rec.getInt("INPUT_UNIT_AMOUNT"));
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
@@ -267,6 +270,9 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
                 } else {
                     range.setLowerLimitAtr(0);
                 }
+                range.setTimeItemInputUnit(rec.getInt("INPUT_UNIT_TIME"));
+                range.setNumberItemInputUnit(rec.getInt("INPUT_UNIT_NUMBER"));
+                range.setAmountItemInputUnit(rec.getInt("INPUT_UNIT_AMOUNT"));
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
