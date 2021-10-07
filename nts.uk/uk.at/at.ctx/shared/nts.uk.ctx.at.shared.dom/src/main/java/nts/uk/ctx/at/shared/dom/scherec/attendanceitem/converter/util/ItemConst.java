@@ -174,13 +174,9 @@ public interface ItemConst extends Cloneable {
 
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_CODE = LAYOUT_K;
 	public final String MONTHLY_CHILD_CARE_HD_REMAIN_NAME = "子の看護月別残数データ";
-<<<<<<< HEAD
-
-=======
 	
 	public final String MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME = "公休月別残数データ";
 	
->>>>>>> pj/at/release_ver4
 	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE = LAYOUT_L;
 	public final String AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME = "管理期間の36協定時間";
 
