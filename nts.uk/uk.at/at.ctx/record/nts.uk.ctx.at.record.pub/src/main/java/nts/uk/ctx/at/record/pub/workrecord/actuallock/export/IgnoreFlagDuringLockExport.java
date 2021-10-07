@@ -17,23 +17,4 @@ public enum IgnoreFlagDuringLockExport {
 	
 	/** The name id. */
 	public final String nameId;
-
-	private final static IgnoreFlagDuringLockExport[] values = IgnoreFlagDuringLockExport.values();
-	
-	public static IgnoreFlagDuringLockExport valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (IgnoreFlagDuringLockExport val : IgnoreFlagDuringLockExport.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
-	}
 }
