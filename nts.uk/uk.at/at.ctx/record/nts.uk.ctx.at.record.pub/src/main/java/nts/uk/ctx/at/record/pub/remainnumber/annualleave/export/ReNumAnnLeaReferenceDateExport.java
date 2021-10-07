@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.record.pub.remainnumber.annualleave.export;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 基準日時点年休残数
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class ReNumAnnLeaReferenceDateExport {
 	
@@ -51,4 +50,16 @@ public class ReNumAnnLeaReferenceDateExport {
 	 * 年休残時間
 	 */
 	private Integer remainingTime;
+	
+	
+	
+	public ReNumAnnLeaReferenceDateExport(String sid){
+		this.annualLeaveRemainNumberExport = new AnnualLeaveInfoExport(sid);
+		this.annualLeaveManageInforExports = new ArrayList<>();
+		this.annualLeaveGrantExports = new ArrayList<>();
+		this.attendanceRate = 0.00;
+		this.workingDays = 0.00;
+		this.remainingDays = 0.00;
+		this.remainingTime = 0;
+	}
 }

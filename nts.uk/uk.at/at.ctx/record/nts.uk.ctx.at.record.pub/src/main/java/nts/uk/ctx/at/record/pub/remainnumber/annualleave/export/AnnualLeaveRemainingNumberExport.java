@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.record.pub.remainnumber.annualleave.export;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author loivt
  * 年休残数Export
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AnnualLeaveRemainingNumberExport {
 	
@@ -118,4 +117,26 @@ public class AnnualLeaveRemainingNumberExport {
 	private Integer annualLeaveUsedDayTimes;
 	
 
+	public AnnualLeaveRemainingNumberExport(){
+		this.annualLeaveGrantPreDay = 0.00;
+		this.annualLeaveGrantPostDay = 0.00;
+		this.annualLeaveGrantPreTime = 0;
+		this.annualLeaveGrantPostTime = 0;
+		this.detailGrantPre = new ArrayList<>();
+		this.detailGrantPost = new ArrayList<>();
+		this.numberOfRemainGrant = 0;
+		this.numberOfRemainGrantPre = 0;
+		this.numberOfRemainGrantPost = 0;
+		this.timeAnnualLeaveGrant = 0;
+		this.timeAnnualLeaveGrantPre = 0;
+		this.timeAnnualLeaveGrantPost = 0;
+		this.usedDays = 0.00;
+		this.usedNumberBeforeGrantDay = 0.00;
+		this.usedNumberAfterGrantDay = 0.00;
+		this.usedTime = 0;
+		this.usedNumberBeforeGrantTime = 0;
+		this.usedNumberAfterGrantTime = 0;
+		this.annualLeaveUsedTimes = 0;
+		this.annualLeaveUsedDayTimes = 0;
+	}
 }

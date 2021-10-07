@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.pub.remainnumber.annualleave.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * 上限データExport
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AnnualLeaveMaxDataExport {
 	
@@ -47,5 +45,15 @@ public class AnnualLeaveMaxDataExport {
 	 * 上限残時間
 	 */
 	private Integer timeAnnualLeaveMaxremainingMinutes;
+	
+	public AnnualLeaveMaxDataExport(String sid){
+		this.employeeId = sid;
+		this.halfdayAnnualLeaveMaxTimes = 0;
+		this.halfdayAnnualLeaveMaxUsedTimes = 0;
+		this.halfdayAnnualLeaveMaxRemainingTimes = 0;
+		this.timeAnnualLeaveMaxMinutes = 0;
+		this.timeAnnualLeaveMaxusedMinutes = 0;
+		this.timeAnnualLeaveMaxremainingMinutes = 0;
+	}
 	
 }
