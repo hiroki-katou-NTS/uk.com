@@ -500,6 +500,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.diseableCellsTime();
                 }
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 self.flag = false;
                 dfd.resolve();
             }).fail(function(error) {
@@ -646,6 +650,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setPositionButonA13A14A15();
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 self.listCellUpdatedWhenChangeModeBg = [];
                 self.hasChangeModeBg = false;
                 
@@ -697,6 +705,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setPositionButonA13A14A15();
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -743,6 +755,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
                 self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
 
                 dfd.resolve();
             }).fail(function(error) {
@@ -4295,6 +4311,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
                 self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -4356,6 +4377,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
 
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
+                
+                self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
                 
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
@@ -5404,6 +5431,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.setPositionButonA13A14A15();
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 nts.uk.ui.block.clear();
                 
             }).fail(function(error) {
@@ -6033,6 +6064,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
                 self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
 
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
@@ -6062,6 +6097,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let widthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
                 $(document.getElementsByClassName('ex-area-line')[1]).css('left', widthA8 + widthA10 - 1 + 'px');
             }
+        }
+
+        disableLinkDetailHeader() {
+            let self = this;
+            setTimeout(() => {
+                $('.extable-header-detail a').css("pointer-events", "none");
+            }, 500);
         }
     }
 
