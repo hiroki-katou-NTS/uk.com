@@ -264,6 +264,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	}
 
 	@Override
+<<<<<<< HEAD
 	public List<WorkDetailData> getWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period) {
 		String sql =
 				" SELECT " +
@@ -325,6 +326,31 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				rec.getString("WORK_CD4") != null ? rec.getString("WORK_CD4").trim() : rec.getString("WORK_CD4"),
 				rec.getString("WORK_CD5") != null ? rec.getString("WORK_CD5").trim() : rec.getString("WORK_CD5"),
 				rec.getInt("TOTAL_TIME"));
+=======
+	public List<OuenWorkTimeSheetOfDaily> find(List<String> sid, DatePeriod ymd) {
+		List<KrcdtDayOuenTimeSheet> entitis = new ArrayList<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			entitis.addAll(this.queryProxy().query("SELECT s FROM KrcdtDayOuenTimeSheet s WHERE s.pk.sid IN :sid"
+				+ " AND s.pk.ymd >= :start AND s.pk.ymd <= :end", KrcdtDayOuenTimeSheet.class)
+				.setParameter("sid", p)
+				.setParameter("start", ymd.start())
+				.setParameter("end", ymd.end())
+				.getList()
+			);
+		});
+		if(entitis.isEmpty())
+			return new ArrayList<>();
+		List<OuenWorkTimeSheetOfDaily> rs = new ArrayList<>();
+		sid.forEach(id -> {
+			ymd.datesBetween().forEach(item -> {
+				List<KrcdtDayOuenTimeSheet> entitisBySidAndDate = entitis.stream().filter(i -> i.pk.sid.equals(id) && i.pk.ymd.equals(item)).collect(Collectors.toList());
+				if(!entitisBySidAndDate.isEmpty()){
+					rs.add(toDomain(entitisBySidAndDate));
+				}
+			});
+		});
+		return rs;
+>>>>>>> pj/at/release_ver4
 	}
 
 }

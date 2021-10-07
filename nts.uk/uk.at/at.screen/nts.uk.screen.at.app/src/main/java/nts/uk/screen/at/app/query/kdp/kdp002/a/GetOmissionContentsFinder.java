@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -183,6 +184,22 @@ public class GetOmissionContentsFinder {
 		@Override
 		public Optional<PortalStampSettings> getSettingPortal() {
 			return settingPotal.get(AppContexts.user().companyId());
+		}
+
+		@Override
+		public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+			return closureEmploymentRepository.findListEmployment(companyID, employmentCD);
+		}
+
+		@Override
+		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+			return closureRepository.findByListId(companyId, closureId);
+		}
+
+		@Override
+		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+				GeneralDate baseDate) {
+			return shrEmpAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 		}
 
 	}

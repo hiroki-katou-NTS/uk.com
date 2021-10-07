@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.personallaborcondition;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 
 /**
  * The Interface PersonalLaborConditionSetMemento.
@@ -24,7 +25,7 @@ public interface PersonalLaborConditionSetMemento {
 	 *
 	 * @param holidayAddTimeSet the new holiday add time set
 	 */
-	public void setHolidayAddTimeSet(BreakdownTimeDay holidayAddTimeSet);
+	public void setHolidayAddTimeSet(BreakDownTimeDay holidayAddTimeSet);
 	
 	
 	/**

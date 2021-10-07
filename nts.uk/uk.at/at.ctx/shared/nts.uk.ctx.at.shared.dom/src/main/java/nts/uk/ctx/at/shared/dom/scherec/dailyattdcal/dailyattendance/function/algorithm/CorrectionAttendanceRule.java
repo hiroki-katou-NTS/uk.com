@@ -111,6 +111,9 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 	@Inject
 	private CorrectionShortWorkingHour correctShortWorkingHour;
 	
+	@Inject
+	private CorrectionShortWorkingHour correctShortWorkingHour;
+	
 	// 勤怠ルールの補正処理
 	@Override
 	public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
@@ -154,6 +157,11 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 				afterDomain = workImport.getIntegrationOfDaily();
 		}
 
+		
+		if(changeAtt.workInfo || changeAtt.isDirectBounceClassifi() || changeAtt.attendance) {
+		//短時間勤務の補正
+			afterDomain = correctShortWorkingHour.correct(companyId, afterDomain);
+		}
 		
 		if(changeAtt.workInfo || changeAtt.isDirectBounceClassifi() || changeAtt.attendance) {
 		//短時間勤務の補正

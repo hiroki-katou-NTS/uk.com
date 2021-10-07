@@ -96,6 +96,9 @@ module nts.layout {
                     }
 
                     if (element && !!x.editable) {
+                        if ((x.itemCode == 'IS00379' || x.itemCode == 'IS01101' || x.itemCode == 'IS00384' || x.itemCode == 'IS01102') && !!x.readonly) {
+                            return;
+                        }
                         if (element.tagName.toUpperCase() == "INPUT") {
                             $element
                                 .trigger('blur')
@@ -212,6 +215,8 @@ module nts.layout {
         get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
+        get_remain_days: (sid: string) => ajax('at', `at/record/remainnumber/getRemainDays/${sid}`),
+        get_remain_left: (sid: string) => ajax('at', `at/record/remainnumber/getRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
         get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param),
         checkFunctionNo: () => ajax(`ctx/pereg/functions/auth/find-with-role-person-info`),
@@ -371,12 +376,22 @@ module nts.layout {
             if (CS00035_IS00366) {
                 fetch.check_remain_days(empId).done(x => {
                     CS00035_IS00366.data.numberedit(x);
+                    if (!x) {
+                        fetch.get_remain_days(empId).done(value => {
+                            CS00035_IS00366.data.value(value);
+                        })
+                    }
                 });
             }
 
             if (CS00035_IS00368) {
                 fetch.check_remain_left(empId).done(x => {
                     CS00035_IS00368.data.numberedit(x);
+                    if (!x) {
+                        fetch.get_remain_left(empId).done(value => {
+                            CS00035_IS00368.data.value(value);
+                        })
+                    }
                 });
             }
         }
@@ -431,11 +446,11 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00036',
                         radioCode: 'IS00375',
-                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
+                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379', 'IS01101']
                     }, {
                         ctgCode: 'CS00036',
                         radioCode: 'IS00380',
-                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
+                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384', 'IS01102']
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',
@@ -479,11 +494,14 @@ module nts.layout {
                     }],
                 comboboxs = ["IS00297", "IS00304", "IS00311", "IS00318", "IS00325", "IS00332", "IS00339", "IS00346", "IS00353", "IS00360", "IS00372",
                     		 "IS00561", "IS00568", "IS00575", "IS00582", "IS00589", "IS00596", "IS00603", "IS00610", "IS00617", "IS00624"],
+				textBoxs = ["IS00298", "IS00305", "IS00312", "IS00319", "IS00326", "IS00334", "IS00340", "IS00347", "IS00354", "IS00361",
+                    		 "IS00562", "IS00569", "IS00576", "IS00583", "IS00590", "IS00597", "IS00604", "IS00611", "IS00618", "IS00625"],
                 validation = (radio: IGrandRadio) => {
                     let rd: IFindData = finder.find(radio.rdctCode || radio.ctgCode, radio.radioCode),
                         ctrls: Array<IFindData> = _.map(radio.relateCode, x => finder.find(radio.ctgCode, x));
                     if (rd) {
                         rd.data.value.subscribe(v => {
+							var cbValue = _.find(ctrls, function(o) { return _.includes(comboboxs, o.data.itemCode); });
                             _.each(ctrls, c => {
                                 if (c && c.data) {
                                     var cb = _.find(comboboxs, function(o) { return c.data.itemCode == o; });
@@ -493,7 +511,10 @@ module nts.layout {
                                         if (cb) {
                                             c.data.editable(true);
                                         } else {
-                                             if (c && c.data) {
+											var tb = _.find(textBoxs, function(o) { return c.data.itemCode == o; });
+											if(tb && cbValue && cbValue.data){
+												c.data.editable(cbValue.data.value() === '1');
+											}else if (c && c.data) {
 			                                    c.data.editable(true);
 			                                }
                                         }
@@ -515,7 +536,7 @@ module nts.layout {
                 comboboxs: Array<IGrandCombobox> = [{
                     ctgCode: 'CS00025',
                     comboboxCode: 'IS00297',
-                    relateCode: ['IS00296','IS00298', 'IS00299', 'IS00300', 'IS00301']
+                    relateCode: ['IS00296','IS00298', 'IS00299', 'IS00300']
                 }, {
                         ctgCode: 'CS00026',
                         comboboxCode: 'IS00304',
@@ -593,16 +614,25 @@ module nts.layout {
                         comboboxCode: 'IS00624',
                         relateCode: ['IS00623','IS00625', 'IS00626', 'IS00627', 'IS00628']
                     }],
-
+				radios = ['IS00296','IS00303', 'IS00310','IS00317', 'IS00324', 'IS00331', 'IS00338', 'IS00345', 'IS00352', 'IS00359', 'IS00370',
+                        'IS00375', 'IS00380', 'IS00560', 'IS00567', 'IS00574', 'IS00581', 'IS00588', 'IS00595', 'IS00602', 'IS00609', 'IS00616', 'IS00623'],
+				btns = ['IS00301','IS00308', 'IS00315','IS00322', 'IS00329', 'IS00336', 'IS00343', 'IS00350', 'IS00357', 'IS00364', 'IS00565',
+                        'IS00572', 'IS00579', 'IS00586', 'IS00593', 'IS00602', 'IS00600', 'IS00607', 'IS00614', 'IS00621', 'IS00628'],
                 validation = (combobox: IGrandCombobox) => {
                     let cb: IFindData = finder.find(combobox.rdctCode || combobox.ctgCode, combobox.comboboxCode),
                         ctrls: Array<IFindData> = _.map(combobox.relateCode, x => finder.find(combobox.ctgCode, x));
                     if (cb) {
+						var rb = _.find(ctrls, function(o) { return _.includes(radios, o.data.itemCode); });
                         cb.data.value.subscribe(v => {
                             if (ctrls[0].data.value() == 1){
                                 for (i = 1; i < ctrls.length; i++) {
                                     if (ctrls[i] && ctrls[i].data) {
-                                        ctrls[i].data.editable(v == 1);
+										var btn = _.find(btns, function(o) { return ctrls[i].data.itemCode == o });
+										if(btn && rb && rb.data){
+											ctrls[i].data.editable(rb.data.value() === '1');
+										}else {
+                                        	ctrls[i].data.editable(v == 1);
+										}
                                     }
                                 }
                             }
@@ -1052,6 +1082,44 @@ module nts.layout {
                     }
 
                     if (!workType) {
+                        if(workTime) {
+                            // handle click event of workTime
+                            workTime.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workTime.ctrl.data('safeClick');
+
+                                // prevent multi click
+                                workTime.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
+                                }
+                                setShared("kdl00showNoSelectionRow", workTime.data.required == true ? false: true);
+                                setShared("kml001multiSelectMode", false);
+                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                setShared("kml001isSelection", true);
+                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('kml001selectedTimes');
+                                    if (childData) {
+                                        if (childData.length > 0) {
+                                            let data: any = childData[0];
+                                            setData(workTime, data.selectedWorkTimeCode);
+
+                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                            validateEditable(group, workTime.data.value);
+                                        }
+                                    }
+                                });
+                            });
+                        }
                         return;
                     }
 
@@ -1068,10 +1136,16 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
+                                let possibleItems = _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue);
+                                possibleItems.sort();
                                 setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false:true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
-                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                setShared("KDL002_SelectedItemId", 
+                                    _.isNil(workType.data.value()) 
+                                    ? (workType.data.required && possibleItems.length > 0 ? possibleItems[0] : []) 
+                                    : [workType.data.value()], 
+                                    true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1103,7 +1177,8 @@ module nts.layout {
                                         workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                                         selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
                                         workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value,
+                                        showNone: false
                                     }, true);
 
                                     modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -1124,10 +1199,16 @@ module nts.layout {
                                         }
                                     });
                                 } else {
+                                    let possibleItems = _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue);
+                                    possibleItems.sort();
                                     setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false: true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
-                                    setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                    setShared("KDL002_SelectedItemId", 
+                                        _.isNil(workType.data.value()) 
+                                        ? (workType.data.required && possibleItems.length > 0 ? possibleItems[0] : []) 
+                                        : [workType.data.value()], 
+                                        true);
                                     setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                     modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1158,7 +1239,8 @@ module nts.layout {
                                         workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                                         selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
                                         workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value,
+                                        showNone: false
                                     }, true);
 
                                     modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -1180,7 +1262,7 @@ module nts.layout {
                                     });
                                 } else {
 
-
+                                    setShared("kdl00showNoSelectionRow", workTime.data.required == true ? false: true);
                                     setShared("kml001multiSelectMode", false);
                                     setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
                                     setShared("kml001isSelection", true);
@@ -1395,18 +1477,20 @@ module nts.layout {
                 CS00020_IS00123.data.value.subscribe(v => {
                     switch (v) {
                         case "0":
+                        case "1":
+                        case "2":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(true);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(true);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(true);
                             CS00020_IS00127 && CS00020_IS00127.data.editable(false);
                             break;
-                        case "1":
+                        case "3":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(false);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(false);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(true);
                             CS00020_IS00127 && CS00020_IS00127.data.editable(true);
                             break;
-                        case "2":
+                        case "4":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(false);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(false);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(false);

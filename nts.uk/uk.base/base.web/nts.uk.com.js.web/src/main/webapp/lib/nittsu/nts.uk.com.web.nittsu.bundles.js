@@ -565,6 +565,7 @@ var nts;
                             break;
                         case 'Decimal':
                         case 'Integer':
+                        case 'HalfInt':
                         case 'Date':
                         case 'Time':
                         case 'Clock':
@@ -1896,7 +1897,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -20488,6 +20489,10 @@ var nts;
                         });
                         $input.on('input', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = ((devt || {}).originalEvent || {}), ival = evt.target.value, dval = $input.data(_val);
+                            //Japanese input always return keyCode 229 -> skip constraining input, and validate after input is committed to editor's value
+                            if (dorgi == null || dorgi == undefined || dorgi.keyCode == 229) {
+                                return;
+                            }
                             // ival = ival
                             //     .replace(/。/, '.')
                             //     .replace(/ー/, '-')
@@ -30662,7 +30667,10 @@ var nts;
                                 }
                                 else if (txt) {
                                     if (controlDef_1.pattern && controlDef_1.list) {
-                                        var itemList = controlDef_1.pattern[controlDef_1.list[id]], item = _.find(itemList, function (i) { return i[controlDef_1.optionsValue || "code"] === val; });
+                                        var itemList = controlDef_1.pattern[controlDef_1.list[id]];
+                                        if (!itemList)
+                                            itemList = controlDef_1.pattern[controlDef_1.list["null"]];
+                                        var item = _.find(itemList, function (i) { return i[controlDef_1.optionsValue || "code"] === val; });
                                         if (item)
                                             content = item[controlDef_1.optionsText || "name"];
                                     }

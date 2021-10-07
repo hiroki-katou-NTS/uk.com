@@ -254,7 +254,7 @@ public class EmpInfoTerminalTest {
 		assertThat(resultActual.getRefActualResults().getWorkTimeCode())
 				.isEqualTo(recordExpect.getRefActualResults().getWorkTimeCode());
 
-		assertThat(resultActual.isReflectedCategory()).isEqualTo(recordExpect.isReflectedCategory());
+		assertThat(resultActual.getImprintReflectionStatus().isReflectedCategory()).isEqualTo(recordExpect.getImprintReflectionStatus().isReflectedCategory());
 
 		assertThat(resultActual.getLocationInfor()).isEqualTo(recordExpect.getLocationInfor());
 	}

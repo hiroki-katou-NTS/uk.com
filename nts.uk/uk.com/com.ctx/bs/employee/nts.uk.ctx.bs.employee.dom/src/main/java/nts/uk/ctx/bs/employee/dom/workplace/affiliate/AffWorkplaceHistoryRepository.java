@@ -37,6 +37,8 @@ public interface AffWorkplaceHistoryRepository {
 	
 	List<AffWorkplaceHistory> findByEmployees(List<String> employeeIds, GeneralDate date);
 	
+	Map<GeneralDate, List<AffWorkplaceHistory>> findByEmployees(String companyId, List<String> employeeIds, List<GeneralDate> date);
+	
 	List<AffWorkplaceHistory> findByEmployeesWithPeriod(List<String> employeeIds, DatePeriod period);
 	
 	Optional<AffWorkplaceHistory> getByHistIdAndBaseDate(String histId, GeneralDate date);

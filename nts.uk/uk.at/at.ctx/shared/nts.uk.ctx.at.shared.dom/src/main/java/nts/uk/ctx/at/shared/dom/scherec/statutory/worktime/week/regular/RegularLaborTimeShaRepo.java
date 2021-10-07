@@ -49,4 +49,12 @@ public interface RegularLaborTimeShaRepo {
     * @return the list
     */
    List<RegularLaborTimeSha> findAll(String cid);
+   
+   /**
+    * Find list.
+    *
+    * @param cid the cid, empId
+    * @return the list
+    */
+   List<RegularLaborTimeSha> findList(String cid, List<String> empId);
 }

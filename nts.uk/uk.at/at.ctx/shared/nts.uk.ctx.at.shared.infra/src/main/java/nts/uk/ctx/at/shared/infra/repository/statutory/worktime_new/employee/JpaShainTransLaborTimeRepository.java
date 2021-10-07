@@ -4,20 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegaltimeDDefSya;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegaltimeDRegSya;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTimePK;
 
 /**
@@ -29,6 +35,7 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 	private static final String SELECT_BY_CID = "SELECT c FROM KshmtLegaltimeDDefSya c"
 			+ " WHERE c.kshstShaTransLabTimePK.cid = :cid";
 	
+	private static final String SELECT_BY_CID_EMPLOYEE = SELECT_BY_CID + " AND c.kshstShaTransLabTimePK.sid IN :sid ";
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime)
 	 */
@@ -104,5 +111,19 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 		return entitys.stream().map(m -> {
 			return toDomain(m);
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DeforLaborTimeSha> findList(String cid, List<String> empId) {
+		if (empId.isEmpty())
+			return Collections.emptyList();
+		List<DeforLaborTimeSha> result = new ArrayList<>();
+		CollectionUtil.split(empId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+			result.addAll(this.queryProxy().query(SELECT_BY_CID_EMPLOYEE, KshmtLegaltimeDDefSya.class)
+					.setParameter("cid", cid)
+					.setParameter("sid", subIdList)
+					.getList(f -> toDomain(f)));
+		});
+		return result;
 	}
 }

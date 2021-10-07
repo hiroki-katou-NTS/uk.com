@@ -5505,6 +5505,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
 			this.dispChildCare = childCareVacation == null ? false : childCareVacation.manageNursing;
 			this.dispLongTermCare = longTermCareVacation == null ? false : longTermCareVacation.manageNursing;
+<<<<<<< HEAD
 			
 			if (this.dispCompensationDay && (!_.isNull(compensatoryLeave.compenLeaveRemain) || !_.isNull(compensatoryLeave.timeRemain))) {
 				if (_.isNull(compensatoryLeave.compenLeaveRemain)) compensatoryLeave.compenLeaveRemain = 0;
@@ -5523,6 +5524,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				this.compensationDay = "";
 			}
 			if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
+=======
+            // if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
+            //     this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
+            //     if (compensatoryLeave.compenLeaveRemain < 0)
+            //         $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
+            //     else
+            //         $("#fixed-table td.remain-compen-day").css("color", "");
+            // } else
+            //     this.compensationDay = "";
+            // if (this.dispCompensationTime && compensatoryLeave.timeRemain != null) {
+            //     this.compensationTime = nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain);
+            //     if (compensatoryLeave.timeRemain < 0)
+            //         $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
+            //     else
+            //         $("#fixed-table td.remain-compen-time").css("color", "");
+            // } else
+            //     this.compensationTime = "";
+            if (this.dispCompensationDay) {
+                this.compensationDay = this.remainCompensation(compensatoryLeave.compenLeaveRemain, compensatoryLeave.timeRemain, compensatoryLeave.manageTimeOff);
+            }
+            if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
+>>>>>>> pj/at/release_ver4
                 this.substitute = getText("KDW003_8", [substitutionLeave.holidayRemain]);
                 if (substitutionLeave.holidayRemain < 0)
                     $("#fixed-table td.remain-subst-day").css("color", "#ff0000");
@@ -5588,6 +5611,37 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-longTermCare-day").css("color", "#06c");
             } else
                 this.longTermCareValue = "";
+        }
+
+        public remainCompensation(day: any, time: any, manage: any) {
+            let output = "";
+            let timeString = nts.uk.time.format.byId("Time_Short_HM", time);
+            let dayString = getText("KDW003_8", [day.toString()]);
+            if (time) {
+                if (time < 0)
+                    $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
+                else {
+                    $("#fixed-table td.remain-compen-time").css("color", "");
+                }
+                output = timeString;
+            } else if (day) {
+                if (day < 0)
+                    $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
+                else {
+                    $("#fixed-table td.remain-compen-day").css("color", "");
+                }
+                output = dayString;
+            } else {
+                if (manage) {
+                    output = timeString; 
+                    $("#fixed-table td.remain-compen-time").css("color", "");
+                } else {
+                    output = dayString;
+                    $("#fixed-table td.remain-compen-day").css("color", "");
+                }
+            }
+
+            return output;
         }
     }
 

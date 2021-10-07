@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,15 +9,15 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.interim.InterimHolidayMng;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.DayOfVacationUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceTime;
@@ -82,7 +81,7 @@ public class TempRemainCreateEachData {
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				RemainType.ANNUAL,
 				new WorkTypeCode(inforData.getWorkTypeRemainInfor(workTypeClass).get().getWorkTypeCode()),
-				new LeaveUsedNumber(occUseDetail.get().getDays(), null, null),
+				new LeaveUsedNumber(occUseDetail.get().getDays(), null, null, null, null),
 				Optional.empty());
 		mngData.getRecAbsData().add(annualMng);
 
@@ -438,7 +437,7 @@ public class TempRemainCreateEachData {
 				WorkTypeRemainInfor.getCreateData(),
 				RemainType.ANNUAL,
 				new WorkTypeCode(WorkTypeRemainInfor.getWorkTypeCode()),
-				new LeaveUsedNumber(0d, usageTimeDetail.getTimes(), 0d),
+				new LeaveUsedNumber(0d, usageTimeDetail.getTimes(), 0d, null, null),
 				Optional.of(DigestionHourlyTimeType.of(true, Optional.empty())));
 
 	}
@@ -462,10 +461,12 @@ public class TempRemainCreateEachData {
 			WorkTypeRemainInfor Rinfor = inforData.getWorkTypeRemainInfor(workTypeClass).map(ri -> ri)
 					.orElse(inforData.getWorkTypeRemainInforByOd(workTypeClass));
 
-			InterimHolidayMng holidayMng = new InterimHolidayMng(IdentifierUtil.randomUniqueId(), inforData.getSid(),
+			TempPublicHolidayManagement holidayMng = new TempPublicHolidayManagement(IdentifierUtil.randomUniqueId(), inforData.getSid(),
 					inforData.getYmd(), Rinfor.getCreateData(),
-					RemainType.PUBLICHOLIDAY, x.getDays());
+					RemainType.PUBLICHOLIDAY, new DayOfVacationUse(x.getDays()));
 			mngData.getRecAbsData().add(holidayMng);
+			mngData.getPublicHolidayData().add(holidayMng);
+			
 		});
 
 		return mngData;
@@ -637,7 +638,7 @@ public class TempRemainCreateEachData {
 					vac.getCreateData(),
 					RemainType.ANNUAL,
 					new WorkTypeCode(vac.getWorkTypeCode()),
-					new LeaveUsedNumber(0d, vac.getTotalTimes(), null),
+					new LeaveUsedNumber(0d, vac.getTotalTimes(), null, null, null),
 					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 		});
