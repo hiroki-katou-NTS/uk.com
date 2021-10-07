@@ -241,7 +241,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
-		ReNumAnnLeaReferenceDateExport result = new ReNumAnnLeaReferenceDateExport();
+		ReNumAnnLeaReferenceDateExport result = new ReNumAnnLeaReferenceDateExport(employeeID);
 		List<AnnualLeaveGrantExport> annualLeaveGrantExports = new ArrayList<>();
 		List<AnnualLeaveManageInforExport> annualLeaveManageInforExports = new ArrayList<>();
 

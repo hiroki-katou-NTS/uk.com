@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.pub.remainnumber.annualleave.export;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -10,7 +9,6 @@ import nts.arc.time.GeneralDate;
  * 年休付与残数データExport
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class AnnualLeaveGrantExport {
 	
