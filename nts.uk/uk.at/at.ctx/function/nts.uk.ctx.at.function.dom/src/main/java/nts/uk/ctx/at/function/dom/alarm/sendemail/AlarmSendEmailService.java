@@ -175,18 +175,19 @@ public class AlarmSendEmailService implements SendEmailService {
 		List<WkpManagerImport> wkplManagerList = workplaceAdapter.findByWkpIdsAndDate(wkpIds, executeDate);
 
 		// Map＜管理者ID、List＜対象者ID＞＞にデータを追加
-		Map<String, List<String>> managerMap = wkplManagerList.stream()
-				.collect(Collectors.groupingBy(
-						WkpManagerImport::getEmployeeId,
-						Collectors.mapping(
-								i -> managerTargetList.stream()
-										.filter(a -> a.getWorkplaceID().equals(i.getWorkplaceId()))
-										.map(ManagerTagetDto::getEmployeeID)
-										.findFirst()
-										.orElse(null),
-								Collectors.toList()
-						)
-				));
+		Map<String, List<String>> managerMap = new HashMap<>();
+		wkplManagerList.forEach(wkp -> {
+			val personIds = managerTargetList.stream().filter(a -> a.getWorkplaceID().equals(wkp.getWorkplaceId()))
+                                .map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
+
+			if (!managerMap.containsKey(wkp.getEmployeeId())) {
+				managerMap.put(wkp.getEmployeeId(), personIds);
+			} else {
+				List<String> newValues = managerMap.get(wkp.getEmployeeId());
+				newValues.addAll(personIds);
+				managerMap.put(wkp.getEmployeeId(), newValues);
+			}
+		});
 
 		// ドメインモデル「アラームメール送信ロール」を取得する
 		val mailSendingRole = alarmMailSendingRoleRepo.find(cid, IndividualWkpClassification.INDIVIDUAL.value);
