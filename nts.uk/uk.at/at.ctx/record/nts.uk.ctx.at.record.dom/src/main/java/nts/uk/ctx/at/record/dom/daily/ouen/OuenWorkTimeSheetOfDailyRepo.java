@@ -25,13 +25,9 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	boolean findPK(String empId, GeneralDate ymd, int ouenNo);
 
 	List<OuenWorkTimeSheetOfDaily> find(String sid, DatePeriod ymd);
-<<<<<<< HEAD
-
-=======
 	
 	List<OuenWorkTimeSheetOfDaily> find(List<String> sid, DatePeriod ymd);
 	
->>>>>>> pj/at/release_ver4
 	List<OuenWorkTimeSheetOfDaily> find(Map<String, List<GeneralDate>> param);
 
 	void removePK(String sid, GeneralDate ymd, int ouenNo);

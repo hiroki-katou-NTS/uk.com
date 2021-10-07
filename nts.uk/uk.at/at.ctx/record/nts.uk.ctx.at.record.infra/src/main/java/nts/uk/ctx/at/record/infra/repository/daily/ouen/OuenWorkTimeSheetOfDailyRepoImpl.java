@@ -15,9 +15,6 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -264,7 +261,6 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	}
 
 	@Override
-<<<<<<< HEAD
 	public List<WorkDetailData> getWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period) {
 		String sql =
 				" SELECT " +
@@ -326,7 +322,8 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				rec.getString("WORK_CD4") != null ? rec.getString("WORK_CD4").trim() : rec.getString("WORK_CD4"),
 				rec.getString("WORK_CD5") != null ? rec.getString("WORK_CD5").trim() : rec.getString("WORK_CD5"),
 				rec.getInt("TOTAL_TIME"));
-=======
+	}
+	
 	public List<OuenWorkTimeSheetOfDaily> find(List<String> sid, DatePeriod ymd) {
 		List<KrcdtDayOuenTimeSheet> entitis = new ArrayList<>();
 		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
@@ -350,7 +347,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 			});
 		});
 		return rs;
->>>>>>> pj/at/release_ver4
 	}
-
+	
 }
+
