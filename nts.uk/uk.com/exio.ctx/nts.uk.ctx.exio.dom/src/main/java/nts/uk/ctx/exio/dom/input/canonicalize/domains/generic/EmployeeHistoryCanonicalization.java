@@ -430,10 +430,6 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		return keyValues;
 	}
 	
-	
-	@Inject
-	private DomainDataRepository domainDataRepo;
-	
 	public static interface RequireAdjust{
 		void delete(DomainDataId id);
 		
