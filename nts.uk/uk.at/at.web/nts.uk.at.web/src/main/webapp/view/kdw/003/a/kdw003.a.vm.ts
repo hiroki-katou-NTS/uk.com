@@ -5505,26 +5505,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
 			this.dispChildCare = childCareVacation == null ? false : childCareVacation.manageNursing;
 			this.dispLongTermCare = longTermCareVacation == null ? false : longTermCareVacation.manageNursing;
-<<<<<<< HEAD
-			
-			if (this.dispCompensationDay && (!_.isNull(compensatoryLeave.compenLeaveRemain) || !_.isNull(compensatoryLeave.timeRemain))) {
-				if (_.isNull(compensatoryLeave.compenLeaveRemain)) compensatoryLeave.compenLeaveRemain = 0;
-				if (_.isNull(compensatoryLeave.timeRemain)) compensatoryLeave.timeRemain = 0;
-				if (compensatoryLeave.timeRemain != 0) {
-					this.compensationDay = getText("KDW003_132", [compensatoryLeave.compenLeaveRemain, nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain)]);	
-				} else {
-					this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);	
-				}
-				if (compensatoryLeave.compenLeaveRemain < 0 || (compensatoryLeave.compenLeaveRemain == 0  && compensatoryLeave.timeRemain < 0)) {
-					$("#fixed-table td.remain-compen-day").css("color", "#ff0000");	
-				} else {
-					$("#fixed-table td.remain-compen-day").css("color", "#06c");
-				}
-			} else {
-				this.compensationDay = "";
-			}
-			if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
-=======
             // if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
             //     this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
             //     if (compensatoryLeave.compenLeaveRemain < 0)
@@ -5545,7 +5525,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 this.compensationDay = this.remainCompensation(compensatoryLeave.compenLeaveRemain, compensatoryLeave.timeRemain, compensatoryLeave.manageTimeOff);
             }
             if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
->>>>>>> pj/at/release_ver4
                 this.substitute = getText("KDW003_8", [substitutionLeave.holidayRemain]);
                 if (substitutionLeave.holidayRemain < 0)
                     $("#fixed-table td.remain-subst-day").css("color", "#ff0000");
