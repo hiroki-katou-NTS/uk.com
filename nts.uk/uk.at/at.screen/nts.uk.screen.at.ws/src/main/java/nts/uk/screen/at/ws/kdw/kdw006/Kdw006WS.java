@@ -16,6 +16,10 @@ import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.UpdateAndRegisterOptionsCom
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.AddHistoryCommand;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.AddHistoryCommandHander;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.UpdateHistoryCommandHandler;
+import nts.uk.screen.at.app.kdw006.j.AcquireManHourRecordItems;
+import nts.uk.screen.at.app.kdw006.j.AcquireManHourRecordItemsDto;
+import nts.uk.screen.at.app.kdw006.j.GetDisplayFormat;
+import nts.uk.screen.at.app.kdw006.j.GetDisplayFormatDto;
 import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWork;
 import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWorkDto;
 import nts.uk.screen.at.app.kdw006.k.GetManHourRecordItemSpecifiedIDListDto;
@@ -62,7 +66,9 @@ public class Kdw006WS extends WebService {
 	
 	@Inject
 	private AcquireManHourRecordItems acquireManHourRecordItems;
-	
+
+	@Inject
+	private GetDisplayFormat getDisplayFormat;
 
 	// 作業補足情報の選択項目を取得する
 	@POST
@@ -132,6 +138,13 @@ public class Kdw006WS extends WebService {
 	@Path("view-j/get-man-hour-record-item")
 	public List<AcquireManHourRecordItemsDto> getManHourRecordItems() {
 		return this.acquireManHourRecordItems.get();
+	}
+
+	// Query: 工数実績項目を取得する
+	@POST
+	@Path("view-j/get-display-format")
+	public GetDisplayFormatDto getDisplayFormat() {
+		return this.getDisplayFormat.get();
 	}
 
 }
