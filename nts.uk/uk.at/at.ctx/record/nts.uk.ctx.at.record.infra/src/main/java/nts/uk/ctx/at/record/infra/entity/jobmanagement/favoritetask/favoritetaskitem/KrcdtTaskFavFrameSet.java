@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItem;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.TaskContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
@@ -58,14 +61,26 @@ public class KrcdtTaskFavFrameSet extends ContractCompanyUkJpaEntity implements 
 	}
 	
 	public KrcdtTaskFavFrameSet (FavoriteTaskItem domain) {
+		this.favId = domain.getFavoriteId();
 		this.sId = domain.getEmployeeId();
 		this.favName = domain.getTaskName().v();
-		//TODO: mapping task name
+		this.taskCd1 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 4).findAny().map(m -> m.getTaskCode().v()).orElse("");
+		this.taskCd2 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 5).findAny().map(m -> m.getTaskCode().v()).orElse("");
+		this.taskCd3 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 6).findAny().map(m -> m.getTaskCode().v()).orElse("");
+		this.taskCd4 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 7).findAny().map(m -> m.getTaskCode().v()).orElse("");
+		this.taskCd5 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 8).findAny().map(m -> m.getTaskCode().v()).orElse("");
 	}
 	
 	public FavoriteTaskItem toDomain() {
-		//TODO: mapping taskCd 1 -> 5 với AR FavoriteTaskItem.
-		return new FavoriteTaskItem(this.sId, this.favId, new FavoriteTaskName(this.favName), null);
+		List<TaskContent> favoriteContents = new ArrayList<>();
+		
+		favoriteContents.add(new TaskContent(4, new WorkCode(this.taskCd1)));
+		favoriteContents.add(new TaskContent(5, new WorkCode(this.taskCd2)));
+		favoriteContents.add(new TaskContent(6, new WorkCode(this.taskCd3)));
+		favoriteContents.add(new TaskContent(7, new WorkCode(this.taskCd4)));
+		favoriteContents.add(new TaskContent(8, new WorkCode(this.taskCd5)));
+		
+		return new FavoriteTaskItem(this.sId, this.favId, new FavoriteTaskName(this.favName), favoriteContents);
 	}
 
 }

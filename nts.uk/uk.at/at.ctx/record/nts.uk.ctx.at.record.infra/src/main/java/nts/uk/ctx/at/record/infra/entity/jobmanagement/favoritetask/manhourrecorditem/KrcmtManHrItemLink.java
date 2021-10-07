@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.manhourrecorditem;
 
-import java.applet.AppletContext;
 import java.io.Serializable;
 
 import javax.persistence.Column;

@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavor
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -24,14 +24,18 @@ public class KrcdtTaskFavDayDispOrder extends ContractCompanyUkJpaEntity impleme
 
 	private static final long serialVersionUID = 1L;
 	
-	@EmbeddedId
-	public KrcdtTaskFavDayDispOrderPk pk;
+	@Id
+	@Column(name = "FAV_ID")
+	public String favId;
 
 	@Column(name = "SID")
 	public String sId;
 	
+	@Column(name = "DISPORDER")
+	public int disporder;
+	
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.favId;
 	}
 }

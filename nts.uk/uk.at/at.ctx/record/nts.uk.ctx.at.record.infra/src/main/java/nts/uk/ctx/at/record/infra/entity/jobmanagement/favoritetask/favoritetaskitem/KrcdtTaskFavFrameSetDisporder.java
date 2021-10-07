@@ -3,14 +3,13 @@ package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetas
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
@@ -27,24 +26,29 @@ public class KrcdtTaskFavFrameSetDisporder extends ContractCompanyUkJpaEntity im
 
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KrcdtTaskFavFrameSetDisporderPk pk;
+	@Id
+	@Column(name = "FAV_ID")
+	public String favId;
 
 	@Column(name = "SID")
 	public String sId;
+	
+	@Column(name = "DISPORDER")
+	public int disporder;
 
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.favId;
 	}
 
 	public FavoriteDisplayOrder toDomain() {
-		return new FavoriteDisplayOrder(this.pk.favId, this.pk.disporder);
+		return new FavoriteDisplayOrder(this.favId, this.disporder);
 	}
 
 	public KrcdtTaskFavFrameSetDisporder(String sId, FavoriteDisplayOrder order) {
 		this.sId = sId;
-		this.pk = new KrcdtTaskFavFrameSetDisporderPk(order.getFavId(), order.getOrder());
+		this.favId = order.getFavId();
+		this.disporder = order.getOrder();
 	}
 
 }

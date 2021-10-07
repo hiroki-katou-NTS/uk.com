@@ -15,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
+import nts.uk.screen.at.app.kdw013.a.DeleteOneDayTaskSet;
+import nts.uk.screen.at.app.kdw013.a.DeleteTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
@@ -24,6 +26,20 @@ import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
 import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanel;
+import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteCommand;
+import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteForOneDayCommand;
+import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteCommand;
+import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteForOneDayCommand;
+import nts.uk.screen.at.app.kdw013.command.UpdateFavNameCommand;
+import nts.uk.screen.at.app.kdw013.command.UpdateOneDayFavNameCommand;
+import nts.uk.screen.at.app.kdw013.f.AddNewFavoriteTask;
+import nts.uk.screen.at.app.kdw013.f.StartTaskFavoriteRegister;
+import nts.uk.screen.at.app.kdw013.f.UpdateFavName;
+import nts.uk.screen.at.app.kdw013.g.AddOneDayNewFavoriteTaskSet;
+import nts.uk.screen.at.app.kdw013.g.StartOneDayTaskSetRegister;
+import nts.uk.screen.at.app.kdw013.g.UpdateOneDayTaskSetName;
+import nts.uk.screen.at.app.kdw013.query.FavoriteTaskItemDto;
+import nts.uk.screen.at.app.kdw013.query.OneDayFavoriteSetDto;
 
 /**
  * 
@@ -55,6 +71,29 @@ public class KDW013WebService {
 	@Inject
 	private RegisterWorkContentHandler registerHandler;
 	
+	@Inject
+	private DeleteOneDayTaskSet deleteOneDayTaskSet;
+	
+	@Inject
+	private UpdateFavName updateFavName;
+	
+	@Inject
+	private DeleteTaskSet deleteTaskSet;
+	
+	@Inject
+	private StartTaskFavoriteRegister startTaskFavoriteRegister;
+	
+	@Inject
+	private AddNewFavoriteTask addNewFavoriteTask;
+	
+	@Inject
+	private AddOneDayNewFavoriteTaskSet addOneDayNewFavoriteTaskSet;
+	
+	@Inject
+	private StartOneDayTaskSetRegister startOneDayTaskSetRegister;
+	
+	@Inject
+	private UpdateOneDayTaskSetName updateOneDayTaskSetName;
 	
 	// 初期起動処理
 	@POST
@@ -108,6 +147,70 @@ public class KDW013WebService {
 	public List<TaskDto> selectWorkItem(SelectWorkItemParam param) {
 		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getEmployeeId(), param.getRefDate(),
 				new TaskFrameNo(param.getTaskFrameNo()), Optional.of(new TaskCode(param.getTaskCode()))));
+	}
+	
+	// A:1日作業セットを削除する
+	@POST
+	@Path("a/delete_oneday_task_set")
+	public void deleteOneDayTaskSet(DeleteFavoriteForOneDayCommand command) {
+		deleteOneDayTaskSet.deleteOneDayTaskSet(command);
+	}
+	
+	// A:お気に入り作業の順番を変更する
+	@POST
+	@Path("a/update_task_dis_order")
+	public void updateTaskDisplayOrder(UpdateFavNameCommand command) {
+		updateFavName.updateFavName(command);
+		
+	}
+	
+	// A: お気に入り作業を削除する
+	@POST
+	@Path("a/delete_task_set")
+	public void deleteTaskSet(DeleteFavoriteCommand command) {
+		deleteTaskSet.deleteTaskSet(command);
+	}
+	
+	// F: 作業お気に入り登録を起動する
+	@POST
+	@Path("f/start_task_fav_register")
+	public Optional<FavoriteTaskItemDto> startTaskFavRegister(StartTaskFavoriteRegisterParam param) {
+		return startTaskFavoriteRegister.startTaskFavRegister(param.getFavId());
+	}
+	
+	// F: 作業お気に入り名称を変更する
+	@POST
+	@Path("f/update_task_name")
+	public void updateTaskName(UpdateFavNameCommand command) {
+		updateFavName.updateFavName(command);
+	}
+	
+	// F: 作業お気に入りを新規追加する
+	@POST
+	@Path("f/create_task_fav")
+	public void createTaskFav(RegisterFavoriteCommand command) {
+		addNewFavoriteTask.addNewFavoriteTask(command);
+	}
+	
+	// G: 1日作業セットを新規追加する
+	@POST
+	@Path("g/create_task_fav")
+	public void createTaskFav(RegisterFavoriteForOneDayCommand command) {
+		addOneDayNewFavoriteTaskSet.addOneDayNewFavoriteTaskSet(command);
+	}
+	
+	// G: 1日作業お気に入り名称を変更する
+	@POST
+	@Path("g/update_task_name")
+	public void updateTaskName(UpdateOneDayFavNameCommand command) {
+		updateOneDayTaskSetName.updateOneDayTaskSetName(command);
+	}
+		
+	// G: 1日作業お気に入り登録を起動する
+	@POST
+	@Path("g/start_task_fav_register")
+	public Optional<OneDayFavoriteSetDto> startOneDayTaskFavRegister(StartTaskFavoriteRegisterParam param) {
+		return startOneDayTaskSetRegister.startOneDayTaskSetRegister(param.getFavId());
 	}
 
 }
