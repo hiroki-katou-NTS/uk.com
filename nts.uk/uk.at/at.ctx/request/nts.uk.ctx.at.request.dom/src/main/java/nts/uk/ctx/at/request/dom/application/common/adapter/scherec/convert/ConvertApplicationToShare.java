@@ -130,8 +130,10 @@ public class ConvertApplicationToShare {
 
 		case BUSINESS_TRIP_APPLICATION:
 			BusinessTrip bussinessTrip = (BusinessTrip) application;
-			BusinessTripInfo info = bussinessTrip.getInfos().stream().filter(x -> x.getDate().equals(dateTarget)).findFirst().orElse(null);
-			return new BusinessTripInfoShare(appShare, info.getWorkInformation(), info.getWorkingHours());
+			BusinessTripInfo info = bussinessTrip.getInfos().stream().filter(x -> x.getDate().equals(dateTarget))
+					.findFirst().orElse(null);
+			return new BusinessTripInfoShare(appShare, info.getWorkInformation(),
+					info.getWorkingHours().orElse(new ArrayList<>()));
 
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GoBackDirectly goBack = (GoBackDirectly) application;

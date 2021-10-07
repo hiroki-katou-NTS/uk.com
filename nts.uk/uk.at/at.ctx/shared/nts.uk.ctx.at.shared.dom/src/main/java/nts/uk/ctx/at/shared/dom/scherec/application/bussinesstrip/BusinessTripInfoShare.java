@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,10 +19,10 @@ public class BusinessTripInfoShare extends ApplicationShare {
 	private WorkInformation workInformation;
 
 	// 勤務時間帯
-	private Optional<List<TimeZoneWithWorkNo>> workingHours;
+	private List<TimeZoneWithWorkNo> workingHours;
 
 	public BusinessTripInfoShare(ApplicationShare appShare, WorkInformation workInformation,
-			Optional<List<TimeZoneWithWorkNo>> workingHours) {
+			List<TimeZoneWithWorkNo> workingHours) {
 		super(appShare);
 		this.workInformation = workInformation;
 		this.workingHours = workingHours;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -47,11 +48,14 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		// 始業終業時刻の反映
 		lstItemId.addAll(reflectStartEndTime(require, bussinessTrip, dailyApp, ReflectAppDestination.SCHEDULE));
 
-		// 出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, bussinessTrip.getWorkingHours().get(),
-				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true),
-				Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
-
+		bussinessTrip.getWorkingHours().forEach(workHour -> {
+			// 出退勤の反映
+			lstItemId.addAll(ReflectAttendance.reflect(require, companyId, Arrays.asList(workHour),
+					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(workHour.getTimeZone().getStartTime() != null),
+					Optional.of(workHour.getTimeZone().getEndTime() != null),
+					Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
+		});
+		
 		return lstItemId;
 	}
 
@@ -98,9 +102,13 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		if (!workTypeOpt.isPresent() || !workTypeOpt.get().isHolidayWork())
 			return itemIds;
 		// 出退勤の反映
-		itemIds.addAll(ReflectAttendance.reflect(require, companyId, bussinessTrip.getWorkingHours().get(),
-				EnumAdaptor.valueOf(destination.value, ScheduleRecordClassifi.class), dailyApp, Optional.of(true),
-				Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
+		bussinessTrip.getWorkingHours().forEach(workHour -> {
+			itemIds.addAll(ReflectAttendance.reflect(require, companyId, Arrays.asList(workHour),
+					EnumAdaptor.valueOf(destination.value, ScheduleRecordClassifi.class), dailyApp,
+					Optional.of(workHour.getTimeZone().getStartTime() != null),
+					Optional.of(workHour.getTimeZone().getEndTime() != null),
+					Optional.of(TimeChangeMeans.APPLICATION)));
+		});
 
 		return itemIds;
 	}

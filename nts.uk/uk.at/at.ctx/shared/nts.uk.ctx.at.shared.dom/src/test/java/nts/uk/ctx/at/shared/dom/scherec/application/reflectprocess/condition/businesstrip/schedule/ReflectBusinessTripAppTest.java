@@ -140,7 +140,7 @@ public class ReflectBusinessTripAppTest {
 	private BusinessTripInfoShare createTripInfo(List<TimeZoneWithWorkNo> workingHours) {
 		BusinessTripInfoShare info = new BusinessTripInfoShare(
 				ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT), new WorkInformation("1", "2"),
-				Optional.of(workingHours));
+				workingHours);
 
 		return info;
 	}
@@ -148,7 +148,7 @@ public class ReflectBusinessTripAppTest {
 	private BusinessTripInfoShare createTripInfoSameWork(List<TimeZoneWithWorkNo> workingHours) {
 		BusinessTripInfoShare info = new BusinessTripInfoShare(
 				ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT), new WorkInformation("001", "001"),
-				Optional.of(workingHours));
+				workingHours);
 
 		return info;
 	}
