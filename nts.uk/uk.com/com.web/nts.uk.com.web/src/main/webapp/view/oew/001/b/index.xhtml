@@ -37,11 +37,12 @@
             </div>
           </div>
           <div class="div-line flex valign-center">
-            <div id="B2_1" class="name-label" data-bind="ntsFormLabel: {}">#{i18n.getText('OEW001_33')}</div>
+            <div id="B2_1" class="name-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('OEW001_33')}</div>
             <div id="B2_2" data-bind="ntsDatePicker: {
               name: '#[OEW001_34]',
               value: useDate,
               enable: isNewMode,
+              required: isNewMode,
               dateFormat: 'YYYY/MM/DD',
               showJumpButtons: true
             }" tabindex="1"></div>

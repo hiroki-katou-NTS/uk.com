@@ -46,6 +46,7 @@
           <div id="C3_2" data-bind="ntsDatePicker: {
             name: '#[OEW001_45]',
             value: yearMonth,
+            required: true,
             dateFormat: 'yearmonth',
             valueFormat: 'YYYYMM',
             showJumpButtons: true
@@ -55,7 +56,7 @@
       <div id="functions-area-bottom">
         <button id="C4_1" class="large proceed" data-bind="click: processExportExcel">#{i18n.getText('OEW001_46')}</button>
         <button id="C4_2" class="large proceed" data-bind="click: processExportCsv">#{i18n.getText('OEW001_47')}</button>
-        <button id="C4_3" class="large" data-bind="click: processCancel">#{i18n.getText('OEW001_48')}</button>
+        <button id="C4_3" class="large" data-bind="click: processCloseDialog">#{i18n.getText('OEW001_48')}</button>
       </div>
     </ui:define>
   </ui:composition>

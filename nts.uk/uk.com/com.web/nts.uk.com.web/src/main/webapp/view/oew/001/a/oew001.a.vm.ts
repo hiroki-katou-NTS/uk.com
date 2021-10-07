@@ -35,7 +35,7 @@ module nts.uk.com.view.oew001.a {
       const vm = this;
       vm.staticColumns = [
         { headerText: "", key: "id", dataType: "string", ntsControl: "Label" },
-        { headerText: "", key: "editRecord", width: "85px", dataType: "string", ntsControl: "EditButton" },
+        { headerText: "", key: "editRecord", width: "85px", dataType: "boolean", ntsControl: "EditButton" },
         { headerText: vm.$i18n("OEW001_19"), key: "useDate", width: "100px", dataType: "string" },
         { headerText: vm.$i18n("OEW001_20"), key: "employeeName", width: "150px", dataType: "string" }
       ];
@@ -67,6 +67,7 @@ module nts.uk.com.view.oew001.a {
       .always(() => {
         vm.isInitComplete = true;
         $("#A5_1").focus();
+        vm.$nextTick(() => model.setReadOnly("#A4_2"));
         vm.initGrid();
         vm.$blockui("clear");
       });
@@ -93,17 +94,11 @@ module nts.uk.com.view.oew001.a {
     // Ａ2：「設備利用実績の項目設定」を取得する
     private initEquipmentSetting(): JQueryPromise<any> {
       const vm = this;
+      vm.columns(_.clone(vm.staticColumns));
       return vm.$ajax(API.initEquipmentSetting).then(result => {
-        // vm.columns(_.clone(vm.staticColumns));
         if (result) {
           vm.itemSettings(result.itemSettings);
           vm.formatSetting(result.formatSetting);
-
-          // // Init empty grid
-          // const temp = new DisplayData();
-          // temp.createOptionalItems(null, vm.itemSettings(), vm.formatSetting());
-          // const optionalItems = temp.optionalItems;
-          // vm.createColumns(optionalItems);
         }
       }, err => vm.$dialog.error({ messageId: err.messageId }));
     }
@@ -115,8 +110,6 @@ module nts.uk.com.view.oew001.a {
       return vm.$ajax(API.getResultHistory, param).then(result => {
         if (_.isEmpty(result.equipmentDatas)) {
           vm.dataSource([]);
-          // Init grid
-          $("#A6").ntsGrid("destroy");
           return;
         }
         vm.hasExtractData(true);
@@ -127,20 +120,26 @@ module nts.uk.com.view.oew001.a {
           return displayData;
         });
         // Sort by 日付、社員CD、入力日
-        dataSource = _.orderBy(dataSource, ['useDate', 'scd', 'inputDate']);
+        dataSource = _.orderBy(dataSource, ['useDate', 'scd', 'inputDate'], ['asc', 'asc', 'asc']);
         vm.dataSource(dataSource);
         if (vm.dataSource().length > 0) {
           // Get first data for column format reference
           const optionalItems = dataSource[0].optionalItems;
           vm.createColumns(optionalItems);
-          // Init grid
-          $("#A6").ntsGrid("destroy");
         }
       })
     }
 
     private initGrid() {
       const vm = this;
+      if ($("#A6").data("igGrid")) {
+        $("#A6").ntsGrid("destroy");
+      }
+      const cellStates = _.chain(vm.dataSource()).map(data => {
+        if (!data.editRecord) {
+          return new CellState(data.id, "editRecord", ['disabled']);
+        }
+      }).filter(data => !!data).value();
       const maxWidth = _.chain(vm.columns()).map(data => Number(data.width?.substring(0, data.width.length - 2) | 0)).sum().value();
       let param: any = {
         height: '319px',
@@ -161,12 +160,25 @@ module nts.uk.com.view.oew001.a {
             mode: 'row',
             multipleSelection: false
           },
+        ],
+        ntsFeatures: [
+          {
+            name: 'CellState',
+            rowId: 'rowId',
+            columnKey: 'columnKey',
+            state: 'state',
+            states: cellStates
+          },
         ]
       };
+
+      // Set grid maxWidth
       if (maxWidth > model.constants.MAXIMUM_GRID_WIDTH) {
         param.width = `${model.constants.MAXIMUM_GRID_WIDTH}px`;
       }
       $("#A6").ntsGrid(param);
+      // Set disable A8_1
+      $("#A6_container").ready(() => $("#A6 .disabled button").attr("disabled", "disabled"));
     }
 
     public openDialogB(input?: any) {
@@ -275,8 +287,8 @@ module nts.uk.com.view.oew001.a {
       return (nts.uk as any).characteristics.restore("OEW001_設備利用実績の入力"
       + "_companyId_" + __viewContext.user.companyId
       + "_userId_" + __viewContext.user.employeeId).then((result: any) => {
-        vm.selectedEquipmentClsCode(result.equipmentClsCode);
-        vm.selectedEquipmentInfoCode(result.equipmentCode);
+        vm.selectedEquipmentClsCode(result?.equipmentClsCode || null);
+        vm.selectedEquipmentInfoCode(result?.equipmentCode || null);
       });
     }
 
@@ -300,7 +312,7 @@ module nts.uk.com.view.oew001.a {
 
   export class DisplayData {
     id: string = nts.uk.util.randomId();
-    editRecord: number;
+    editRecord: boolean;
     inputDate: string;
     useDate: string;
     sid: string;
@@ -311,7 +323,7 @@ module nts.uk.com.view.oew001.a {
     constructor(data?: model.EquipmentDataDto, employees?: model.EmployeeInfoDto[], currentSid?: string) {
       if (!!data && !!currentSid) {
         const employeeInfo = _.find(employees, { employeeId: data.sid });
-        this.editRecord = data.sid === currentSid ? 1 : 0;
+        this.editRecord = data.sid === currentSid;
         this.inputDate = data.inputDate;
         this.useDate = data.useDate;
         this.sid = data.sid;
@@ -384,4 +396,15 @@ module nts.uk.com.view.oew001.a {
       this.ym = ym;
     }
   }
+
+  export class CellState {
+    rowId: number;
+    columnKey: string;
+    state: any[];
+    constructor(rowId: any, columnKey: string, state: any[]) {
+        this.rowId = rowId;
+        this.columnKey = columnKey;
+        this.state = state;
+    }
+}
 }

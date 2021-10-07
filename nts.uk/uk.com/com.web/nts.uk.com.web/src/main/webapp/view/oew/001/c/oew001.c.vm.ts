@@ -48,7 +48,9 @@ module nts.uk.com.view.oew001.c {
     }
 
     mounted() {
+      const vm = this;
       $("#C4_1").focus();
+      vm.$nextTick(() => model.setReadOnly("#C3_2"));
     }
 
     private getEquipmentInfoList(equipmentInfoCode?: string): JQueryPromise<any> {
@@ -86,7 +88,9 @@ module nts.uk.com.view.oew001.c {
       if (vm.selectedEquipmentInfoCode() !== model.constants.SELECT_ALL_CODE) {
         param.equipmentCode = vm.selectedEquipmentInfoCode();
       }
-      return nts.uk.request.exportFile(API.export, param).fail(err => vm.$dialog.error({ messageId: err.messageId }));
+      return nts.uk.request.exportFile(API.export, param)
+      .then(() => vm.processCloseDialog())
+      .fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     private focusOnItemAfterInit(itemId: string) {
@@ -115,17 +119,23 @@ module nts.uk.com.view.oew001.c {
 
     public processExportExcel(): void {
       const vm = this;
+      if (nts.uk.ui.errors.hasError()) {
+        return;
+      }
       vm.$blockui("grayout");
       vm.exportReport(model.enums.PrintType.EXCEL).always(() => vm.$blockui("clear"));
     }
 
     public processExportCsv(): void {
       const vm = this;
+      if (nts.uk.ui.errors.hasError()) {
+        return;
+      }
       vm.$blockui("grayout");
       vm.exportReport(model.enums.PrintType.CSV).always(() => vm.$blockui("clear"));
     }
 
-    public processCancel(): void {
+    public processCloseDialog(): void {
       const vm = this;
       vm.$window.close();
     }

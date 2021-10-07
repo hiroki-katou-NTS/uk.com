@@ -289,13 +289,15 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 						String value = itemData.getActualValue().map(ActualItemUsageValue::v).orElse(null);
 						int alignType = TextAlignmentType.LEFT;
 
-						// Only format number data if excel
-						if (itemData.getItemClassification().equals(ItemClassification.NUMBER) && isPrintExcel) {
-							value = String.format("%,d", Integer.valueOf(value));
-							alignType = TextAlignmentType.RIGHT;
-						} else if (itemData.getItemClassification().equals(ItemClassification.TIME) && isPrintExcel) {
-							value = LocalTime.MIN.plus(Duration.ofMinutes(Integer.valueOf(value))).toString();
-							alignType = TextAlignmentType.RIGHT;
+						if (value != null) {
+							// Only format number data if excel
+							if (itemData.getItemClassification().equals(ItemClassification.NUMBER) && isPrintExcel) {
+								value = String.format("%,d", Integer.valueOf(value));
+								alignType = TextAlignmentType.RIGHT;
+							} else if (itemData.getItemClassification().equals(ItemClassification.TIME) && isPrintExcel) {
+								value = LocalTime.MIN.plus(Duration.ofMinutes(Integer.valueOf(value))).toString();
+								alignType = TextAlignmentType.RIGHT;
+							}
 						}
 						this.printDataCell(cell, value, alignType, isBlueBackground.get());
 					});

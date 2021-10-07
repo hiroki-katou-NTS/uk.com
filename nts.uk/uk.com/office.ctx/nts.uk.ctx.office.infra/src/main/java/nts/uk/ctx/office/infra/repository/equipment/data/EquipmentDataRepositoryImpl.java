@@ -149,7 +149,7 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 				Field f = this.getField(type, i);
 				Optional<ActualItemUsageValue> actualValue;
 				try {
-					actualValue = Optional.ofNullable(String.valueOf(f.get(entity))).map(ActualItemUsageValue::new);
+					actualValue = Optional.ofNullable(f.get(entity)).map(String::valueOf).map(ActualItemUsageValue::new);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					actualValue = Optional.empty();
 				}

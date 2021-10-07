@@ -23,11 +23,11 @@ module nts.uk.com.view.oew001.b {
       vm.data().useDate = ko.observable(param.useDate);
       _.forEach(param.optionalItems, data => {
         if (param.isNewMode) {
-          data.value = ko.observable(null);
+          data.value = ko.observable("");
         } else if (data.itemCls === model.enums.ItemClassification.NUMBER && !!data.value) {
           data.value = ko.observable(Number(data.value));
         } else {
-          data.value = ko.observable(data.value);
+          data.value = ko.observable(_.isNil(data.value) ? "" : data.value);
         }
         data.helpContent = vm.buildHelpContent(data);
       });
@@ -46,6 +46,7 @@ module nts.uk.com.view.oew001.b {
       })
       .always(() => {
         $("#B2_2").focus();
+        vm.$nextTick(() => model.setReadOnly("#B2_2"));
         vm.$blockui("clear");
       });
     }
