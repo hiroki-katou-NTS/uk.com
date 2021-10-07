@@ -180,9 +180,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
             self.date61.subscribe((date)=>{
                 self.periodDateValue({
-                    startDate:  self.date61(),
-                    endDate: null
+                    startDate: date,
+                    endDate:  date
                 });
+                self.referenceDate(date);
+
             });
             self.periodDateValue.subscribe((data)=>{
              let   periodStartDate =  moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
