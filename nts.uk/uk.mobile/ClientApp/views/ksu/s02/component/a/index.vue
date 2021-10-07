@@ -462,10 +462,10 @@
                       <div
                         id="only-shift"
                         style="
-                          height: 31vh;
                           top: 60px;
                           overflow: scroll;
                         "
+                        :class="screenSmall ? 'mode-shift-small' : 'mode-shift-big'"
                        >
                        <div v-if="isCurrentMonth">
                           <nts-checkbox v-for="(option, k) in listShiftMasterInfo" 
@@ -491,16 +491,18 @@
                                     text-align: center;
                                   "
                                   >{{option.shiftMaster.shiftMasterName}}</span> 
+                                   &nbsp;&nbsp;  
+                                  <span style="font-weight: bold;font-size: 3.5vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
                                 </div>
                                 <div v-else>
                                   <span v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                   class="form-control select-el"
                                   style="
-                                    margin-top: 0.4vh;
-                                    font-size: 3vh;
+                                    margin-top: 1.1vh;
+                                    font-size: 2.5vh;
                                     width: 42px;
                                     height: 4.5vh;
-                                    padding: 0.4vw;
+                                    padding: 0.3vw;
                                     float: left;
                                     margin-left: 10px;
                                     font-weight: bold;
@@ -508,9 +510,11 @@
                                     text-align: center;
                                   "
                                   >{{option.shiftMaster.shiftMasterName}}</span> 
+                                   &nbsp;&nbsp;  
+                                  <span style="font-weight: bold;font-size: 3.5vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
                                 </div>
-                                &nbsp;&nbsp;  
-                                <span style="font-weight: bold;font-size: 3vw;">{{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
+                               </div>
+                               
                           </nts-checkbox>
                         </div>
                         <div v-else>
@@ -523,7 +527,7 @@
                                 v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                   class="form-control select-el"
                                   style="
-                                    margin-top: 0.9vh;
+                                    margin-top: 1.2vh;
                                     font-size: 3vh;
                                     width: 42px;
                                     height: 4.5vh;
@@ -541,11 +545,11 @@
                                 v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                   class="form-control select-el"
                                   style="
-                                    margin-top: 0.4vh;
-                                    font-size: 3vh;
+                                    margin-top: 1.7vh;
+                                    font-size: 2.5vh;
                                     width: 42px;
                                     height: 4.5vh;
-                                    padding: 0.4vw;
+                                    padding: 0.3vw;
                                     float: left;
                                     margin-left: 10px;
                                     font-weight: bold;
@@ -555,7 +559,7 @@
                                   >{{option.shiftMaster.shiftMasterName}}</span>
 
                                 </div>
-                                  <span style="float: left;margin-top: 2.1vh;font-weight: bold;font-size: 3vw;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
+                                  <span style="float: left;margin-top: 2.1vh;font-weight: bold;font-size: 3.5vw;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
                                   
                             </div>
                           </div>
@@ -588,19 +592,7 @@
                           <div
                             class="input-group input-group-transparent"
                           >
-                            <!-- <textarea
-                              v-model="memoCurent"
-                              disabled
-                              type=""
-                              rows="2"
-                              v-bind:placeholder="$i18n('KSUS02_12')"
-                              class="form-control"
-                              style="
-                                margin-top: 0px;
-                                margin-bottom: 0px;
-                                height: 80px; 
-                              "
-                            ></textarea> -->
+                            
                             <nts-text-area
                               id="text-area-1"
                               v-model="memoCurent"

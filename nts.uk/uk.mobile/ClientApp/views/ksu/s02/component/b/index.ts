@@ -61,6 +61,10 @@ export class CalendarBComponent extends Vue {
 
     public isCaretLeft = true;
 
+    public endRight = true;
+
+    public endLeft = true;
+
     private startWork = '';
 
     public created() {
@@ -321,7 +325,7 @@ export class CalendarBComponent extends Vue {
         let self = this;
         if (self.showPopup) {
             self.showPopup = false;
-            
+
             return;
         }
         self.showPopup = false;
@@ -346,11 +350,24 @@ export class CalendarBComponent extends Vue {
             self.showPopup = true;
             let offset = $('#' + el.currentTarget.id).offset();
             let offsetLeft = offset.left - 10;
-            if (self.idCurent == 'd6' || self.idCurent == 'd13' || self.idCurent == 'd20' || self.idCurent == 'd27') {
-                offsetLeft = offset.left - 60;
+            if (self.idCurent == 'd5' || self.idCurent == 'd12' || self.idCurent == 'd19' || self.idCurent == 'd26' || self.idCurent == 'd33' || self.idCurent == 'd40') {
+                offsetLeft = offset.left - 20;
+            }
+
+            if (self.idCurent == 'd6' || self.idCurent == 'd13' || self.idCurent == 'd20' || self.idCurent == 'd27' || self.idCurent == 'd34' || self.idCurent == 'd41') {
+                offsetLeft = offset.left - 75;
                 self.isCaretLeft = false;
+                self.endLeft = false;
+                self.endRight = true;
+            } else if (self.idCurent == 'd0' || self.idCurent == 'd7' || self.idCurent == 'd14' || self.idCurent == 'd21' || self.idCurent == 'd28' || self.idCurent == 'd35') {
+                offsetLeft = offset.left + 10;
+                self.isCaretLeft = false;
+                self.endLeft = true;
+                self.endRight = false;
             } else {
                 self.isCaretLeft = true;
+                self.endLeft = false;
+                self.endRight = false;
             }
             $(popup)
                 .fadeIn()
