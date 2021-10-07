@@ -31,9 +31,6 @@ import java.util.stream.Collectors;
 public class RegisterFavoriteForOneDayCommandHandler extends CommandHandler<RegisterFavoriteForOneDayCommand> {
 
 	@Inject
-	private RegisterOneDayFavoriteTaskService service;
-
-	@Inject
 	private OneDayFavoriteTaskDisplayOrderRepository orderRepo;
 
 	@Inject
@@ -48,7 +45,7 @@ public class RegisterFavoriteForOneDayCommandHandler extends CommandHandler<Regi
 				.collect(Collectors.toList());
 
 		// 1. 追加する
-		AtomTask atom = service.add(require, AppContexts.user().employeeId(),
+		AtomTask atom = RegisterOneDayFavoriteTaskService.add(require, AppContexts.user().employeeId(),
 				new FavoriteTaskName(command.getTaskName()), contents);
 
 		// 2. persist
