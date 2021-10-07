@@ -89,4 +89,9 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 								Optional.empty()))
 						.unbalanceNumber(new NumberConsecuVacation(this.remainDays, Optional.empty())).build();
 	}
+
+	// 2] 残数が残っている
+	public boolean zansuRemain() {
+		return this.remainDays.v() > 0.0;
+	}
 }
