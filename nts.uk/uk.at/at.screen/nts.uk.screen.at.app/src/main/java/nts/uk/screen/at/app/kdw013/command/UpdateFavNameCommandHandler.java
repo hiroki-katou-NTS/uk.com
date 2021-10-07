@@ -8,12 +8,13 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItem;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItemRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteSet;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteTaskSetRepository;
 
 /**
- * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.お気に入り作業項目.App.お気に入り名称を変更する
+ * <<Command>> お気に入り名称を変更する
  * @author tutt
  *
  */
@@ -22,22 +23,21 @@ import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.One
 public class UpdateFavNameCommandHandler extends CommandHandler<UpdateFavNameCommand> {
 
 	@Inject
-	private OneDayFavoriteTaskSetRepository repo;
-
+	private FavoriteTaskItemRepository repo;
+	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFavNameCommand> context) {
-
 		UpdateFavNameCommand command = context.getCommand();
-
+		
 		// 1. Get(お気に入りID)
-		Optional<OneDayFavoriteSet> optOneDayFavoriteSet = repo.getByFavoriteId(command.getFavId());
-
-		// 2. 1日お気に入り作業セット.isPresent
-		if (optOneDayFavoriteSet.isPresent()) {
-			optOneDayFavoriteSet.get().setTaskName(new FavoriteTaskName(command.getFavName()));
-
+		Optional<FavoriteTaskItem> optFavoriteTaskItem = repo.getByFavoriteId(command.getFavId());
+		
+		// 2. お気に入り作業セット.isPresent
+		if (optFavoriteTaskItem.isPresent()) {
+			optFavoriteTaskItem.get().setTaskName(new FavoriteTaskName(command.getFavName()));
+		
 			// 3. persist()
-			repo.update(optOneDayFavoriteSet.get());
+			repo.update(optFavoriteTaskItem.get());
 		}
 	}
 

@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.IdentifierUtil;
 
@@ -22,6 +22,7 @@ public class FavoriteTaskItem extends AggregateRoot {
 	private final String favoriteId;
 	
 	/** 名称*/
+	@Setter
 	private FavoriteTaskName taskName;
 	
 	/** お気に入り内容*/

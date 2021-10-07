@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.1日お気に入りセット.App.お気に入りを登録する
- * 
- * @author tutt <<Command>> お気に入りを登録する
+ * <<Command>> お気に入りを登録する
+ * @author tutt 
  */
 @Stateless
 @Transactional
@@ -38,6 +38,7 @@ public class RegisterFavoriteForOneDayCommandHandler extends CommandHandler<Regi
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterFavoriteForOneDayCommand> context) {
+		
 		RegisterFavoriteForOneDayCommand command = context.getCommand();
 		Require require = new Require(orderRepo, setRepo);
 

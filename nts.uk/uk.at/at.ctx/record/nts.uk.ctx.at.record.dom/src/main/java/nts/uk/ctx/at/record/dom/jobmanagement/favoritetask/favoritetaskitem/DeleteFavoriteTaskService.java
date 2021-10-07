@@ -24,7 +24,7 @@ public class DeleteFavoriteTaskService {
 	 * @param favoriteId お気に入りID
 	 * @return AtomTask
 	 */
-	public AtomTask create(Require require, String employeeId, String favoriteId) {
+	public static AtomTask create(Require require, String employeeId, String favoriteId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
 		// $表示順 = require.表示順を取得する(社員ID)
