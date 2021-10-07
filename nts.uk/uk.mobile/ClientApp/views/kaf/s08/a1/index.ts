@@ -85,6 +85,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         const vm = this;
         if (vm.params) {
             this.data = vm.params;
+            vm.appDispInfoStartupOutput = vm.params.businessTripInfoOutputDto.appDispInfoStartup;
             vm.derpartureTime = vm.params.businessTripDto.departureTime;
             vm.returnTime = vm.params.businessTripDto.returnTime;
         }
@@ -113,7 +114,11 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         vm.$auth.user.then((usr: any) => {
             vm.user = usr;
         }).then(() => {
-            return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
+            if (vm.mode) {
+                return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
+            }
+            
+            return true;
         }).then((loadData: any) => {
             if (loadData) {
                 let params = vm.mode ? {
