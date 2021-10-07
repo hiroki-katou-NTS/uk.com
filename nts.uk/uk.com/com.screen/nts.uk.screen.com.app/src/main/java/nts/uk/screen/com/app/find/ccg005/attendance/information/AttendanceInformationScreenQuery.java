@@ -182,8 +182,8 @@ public class AttendanceInformationScreenQuery {
 			// 14: create()
 			List<ApplicationDto> applicationDtos = applications.stream()
 					.map(item -> ApplicationDto.toDto(item, mapAppIdAndOTAttr))
-					.collect(Collectors.toMap(ApplicationDto::getAppType, p -> p, (p, q) -> p)).values().stream()
-						.collect(Collectors.toList());
+					.collect(Collectors.toMap(item -> (item.getAppType() + "-" + item.getOtherType()), p -> p, (p, q) -> p))
+					.values().stream().collect(Collectors.toList());
 			
 			// 6: create() - start
 			String sid = empId.getSid();

@@ -66,7 +66,7 @@ public class ExtractAlarmListFinder {
 		}
 
 		// 集計結果を元に社員を取得する
-		Set<String> employeeIdSet = alarmListExtractResults.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toSet());
+//		Set<String> employeeIdSet = alarmListExtractResults.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toSet());
 
 		// 集計結果を元に職場を取得する
 		Set<String> workplaceIdSet = new HashSet<>();
@@ -81,7 +81,7 @@ public class ExtractAlarmListFinder {
 		});
 
 		// 社員ID(List)から個人社員基本情報を取得
-		Map<String, EmployeeInfoFunAdapterDto> employeeInfoMap = empInfoAdapter.getListPersonInfor(new ArrayList<>(employeeIdSet))
+		Map<String, EmployeeInfoFunAdapterDto> employeeInfoMap = empInfoAdapter.getListPersonInfor(employeeIds)
 				.stream().collect(Collectors.toMap(EmployeeInfoFunAdapterDto::getEmployeeId, Function.identity()));
 
 		// [No.560]職場IDから職場の情報をすべて取得する

@@ -273,5 +273,10 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         public Optional<AgreementOperationSetting> find() {
             return agreementOperationSettingRepository.find(AppContexts.user().companyId());
         }
+
+		@Override
+		public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
+			return this.require.workingConditionItemClones(employeeId, baseDate);
+		}
     }
 }

@@ -24,6 +24,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
@@ -325,6 +327,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     
     @Inject
     private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
+    
+    @Inject
+    private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
+    
+    @Inject
+    private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
     
     @Inject
     private InterimRemainDataMngCheckRegisterRequest remainDataCheckRegister;
@@ -809,16 +817,19 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// 「子看護管理区分」を確認する
 		if (childNursingManagement.equals(ManageDistinct.YES)) {
 		    // [NO.206]期間中の子の看護休暇残数を取得
-		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
-		            employeeID, 
-		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-		            InterimRemainMngMode.OTHER, 
-		            baseDate, 
-		            Optional.of(false), 
-		            Optional.empty(), 
-		            Optional.empty(), 
-		            Optional.empty(), 
-		            Optional.empty());
+//		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+//		            employeeID, 
+//		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//		            InterimRemainMngMode.OTHER, 
+//		            baseDate, 
+//		            Optional.of(false), 
+//		            Optional.empty(), 
+//		            Optional.empty(), 
+//		            Optional.empty(), 
+//		            Optional.empty());
+		    // 基準日時点の子の看護残数を取得する
+		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareAdapter
+		            .getRemainingNumberChildCare(companyID, employeeID, GeneralDate.today());
 		    
 		    childNursingDayRemain = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays();
 		    if (childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent()) {
@@ -829,17 +840,21 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// 「介護管理区分」を確認する
 		if (longTermCareManagement.equals(ManageDistinct.YES)) {
 		    // [NO.207]期間中の介護休暇残数を取得
-		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-		            companyID, 
-		            employeeID, 
-		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-		            InterimRemainMngMode.OTHER, 
-		            baseDate, 
-		            Optional.of(false), 
-		            new ArrayList<TempChildCareNurseManagementImport>(),
-                    Optional.empty(), 
-                    Optional.empty(), 
-                    Optional.empty());
+//		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+//		            companyID, 
+//		            employeeID, 
+//		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//		            InterimRemainMngMode.OTHER, 
+//		            baseDate, 
+//		            Optional.of(false), 
+//		            new ArrayList<TempChildCareNurseManagementImport>(),
+//                    Optional.empty(), 
+//                    Optional.empty(), 
+//                    Optional.empty());
+		    
+		    // 基準日時点の介護残数を取得する
+		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberNursingAdapter
+		            .getRemainingNumberNursing(companyID, employeeID, GeneralDate.today());
 		    
 		    nursingRemain = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays();
 		    if (longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent()) {
@@ -1200,17 +1215,17 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         }
 
         // INPUT．「労働条件項目」をチェックする
-        if (workingCondition.isPresent() && workingCondition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
+        if (workingCondition.isPresent() && workingCondition.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()) {
             // INPUT．「労働条件項目．区分別勤務．平日時．就業時間帯コード」を返す
-            return Optional.of(workingCondition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
+            return Optional.of(workingCondition.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get().v());
         }
 
         // 社員の労働条件を取得する
         Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, date);
 
         // 取得した「労働条件項目」をチェックする
-        if (opWorkingConditionItem.isPresent() && opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-            return Optional.of(opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
+        if (opWorkingConditionItem.isPresent() && opWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()) {
+            return Optional.of(opWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get().v());
         }
 
         // Emptyを返す
@@ -1954,26 +1969,26 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
         if (!leaveComDayOffMana.isEmpty()) {
+            // ドメインモデル「休出代休紐付け管理」を削除する
+            this.leaveComDayOffManaRepo.deleteByDigestTarget(
+                    leaveComDayOffMana.get(0).getSid(), 
+                    leaveComDayOffMana.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
+            
             for (LeaveComDayOffManagement leaveMana : leaveComDayOffMana) {
-                // ドメインモデル「休出代休紐付け管理」を削除する
-                this.leaveComDayOffManaRepo.deleteByDigestTarget(
-                        leaveMana.getSid(), 
-                        leaveMana.getAssocialInfo().getDateOfUse(), 
-                        TargetSelectionAtr.REQUEST);
-                
                 // ドメインモデル「休出代休紐付け管理」を登録する
                 this.leaveComDayOffManaRepo.add(leaveMana);
             }
         }
 
         if (!payoutSubofHDManagements.isEmpty()) {
+            // ドメインモデル「振出振休紐付け管理」を削除する
+            this.payoutHdManaRepo.deleteByDigestTarget(
+                    payoutSubofHDManagements.get(0).getSid(), 
+                    payoutSubofHDManagements.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
+            
             for (PayoutSubofHDManagement payoutHdMana : payoutSubofHDManagements) {
-                // ドメインモデル「振出振休紐付け管理」を削除する
-                this.payoutHdManaRepo.deleteByDigestTarget(
-                        payoutHdMana.getSid(), 
-                        payoutHdMana.getAssocialInfo().getDateOfUse(), 
-                        TargetSelectionAtr.REQUEST);
-                
                 // ドメインモデル「振出振休紐付け管理」を登録する
                 this.payoutHdManaRepo.add(payoutHdMana);
             }

@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualRes
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
@@ -73,6 +72,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		
 		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
 		String employeeId = "employeeId";//dummy
+		String cid = "cid";//dummy
 		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
 		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
 		Relieve relieve = StampHelper.getRelieveDefault();//dummy
@@ -94,7 +94,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		};
 		
 		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+				require, cid, contractCd, employeeId, stampNumber, stampDateTime,
 				relieve, buttonType, refActualResults, stampLocationInfor);
 		
 		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
@@ -105,13 +105,13 @@ public class CreateStampDataForEmployeesServiceTest {
 				any -> require.insert((Stamp) any.get())
 		);
 	}
-	
-	/**
-	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
-	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType().isPensent() == true;
-	 * positionInfo.isPresent() == false
-	 */
+//	
+//	/**
+//	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
+//	 * 打刻区分を取得する
+//	 * ButtonType buttonType.getStampType().isPensent() == true;
+//	 * positionInfo.isPresent() == false
+//	 */
 	@Test
 	public void testCreateStampDataForEmployee_3() {
 		
@@ -149,12 +149,12 @@ public class CreateStampDataForEmployeesServiceTest {
 		);
 		
 	}
-	
-	/**
-	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
-	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType().isPensent() == false;
-	 */
+//	
+//	/**
+//	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
+//	 * 打刻区分を取得する
+//	 * ButtonType buttonType.getStampType().isPensent() == false;
+//	 */
 	@Test
 	public void testCreateStampDataForEmployee_4() {
 		
@@ -189,7 +189,5 @@ public class CreateStampDataForEmployeesServiceTest {
 				any -> require.insert((StampRecord) any.get())
 		);
 	}
-	
-	
 
 }

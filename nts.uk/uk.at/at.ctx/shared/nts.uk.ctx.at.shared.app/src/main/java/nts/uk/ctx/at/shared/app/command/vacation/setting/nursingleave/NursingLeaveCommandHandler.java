@@ -49,8 +49,9 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
         // Check fields enable/disable.
 //        this.validateField(command, result);
 
-        NursingLeaveSetting nursingSetting = command.getNursingSetting().toDomain(companyId);
-        NursingLeaveSetting childNursingSetting = command.getChildNursingSetting().toDomain(companyId);
+        //because in frontend code, nursingSetting and childNursingSetting is in wrong order
+        NursingLeaveSetting nursingSetting = command.getChildNursingSetting().toDomain(companyId);
+        NursingLeaveSetting childNursingSetting = command.getNursingSetting().toDomain(companyId);
         if (CollectionUtil.isEmpty(result)) {
             this.nursingLeaveRepo.add(nursingSetting, childNursingSetting);
         } else {
@@ -69,17 +70,17 @@ public class NursingLeaveCommandHandler extends CommandHandler<NursingLeaveComma
         }
 
 		//check managementCategory change
-		boolean manageType1 = command.getNursingSetting().getManageType() != manageTypeDB1;
+		boolean manageType1 = command.getChildNursingSetting().getManageType() != manageTypeDB1; //because in frontend code, nursingSetting and childNursingSetting is in wrong order
 		if (manageType1) {
-			boolean manage = command.getNursingSetting().getManageType() == ManageDistinct.YES.value;
+			boolean manage = command.getChildNursingSetting().getManageType() == ManageDistinct.YES.value; //because in frontend code, nursingSetting and childNursingSetting is in wrong order
 			val nursingLeaveSettingEvent = new NursingLeaveSettingDomainEvent(manage);
 			nursingLeaveSettingEvent.toBePublished();
 		}
 
 		//check managementCategory change
-		boolean manageType2 = command.getChildNursingSetting().getManageType() != manageTypeDB2;
+		boolean manageType2 = command.getNursingSetting().getManageType() != manageTypeDB2; //because in frontend code, nursingSetting and childNursingSetting is in wrong order
 		if (manageType2) {
-			boolean manage = command.getChildNursingSetting().getManageType() == ManageDistinct.YES.value;
+			boolean manage = command.getNursingSetting().getManageType() == ManageDistinct.YES.value; //because in frontend code, nursingSetting and childNursingSetting is in wrong order
 			val childNursingLeaveSettingEvent = new ChildNursingLeaveSettingDomainEvent(manage);
 			childNursingLeaveSettingEvent.toBePublished();
 		}

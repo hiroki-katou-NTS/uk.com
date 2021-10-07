@@ -32,8 +32,13 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 	@Override
 	public List<TempAnnualLeaveMngsExport> getTempAnnualLeaveData(String employeeId, LeaveUsedNumberExport usedNumber) {
 
-		LeaveUsedNumber usedNumberDom = LeaveUsedNumber.createFromJavaType(usedNumber.getDays(),
-				usedNumber.getMinutes().orElse(null), usedNumber.getStowageDays().orElse(null));
+		LeaveUsedNumber usedNumberDom = LeaveUsedNumber.createFromJavaType(
+				usedNumber.getDays(),
+				usedNumber.getMinutes().orElse(null), 
+				usedNumber.getStowageDays().orElse(null), 
+				usedNumber.leaveOverLimitNumber.map(c->c.numberOverDays).orElse(null), 
+				usedNumber.leaveOverLimitNumber.map(c->c.timeOver.orElse(null)).orElse(null));
+
 		
 		//TODO:付与残数データからパラメータで渡された使用数を減算して、返すように修正すること
 		

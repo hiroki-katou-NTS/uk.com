@@ -266,6 +266,11 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 
 	}
 	// sonnlb code end
+	
+	@Override
+	public void delete(String personId) {
+		this.commandProxy().remove(BpsmtPerson.class, new BpsmtPersonPk(personId));
+	}
 
 	@Override
 	@SneakyThrows

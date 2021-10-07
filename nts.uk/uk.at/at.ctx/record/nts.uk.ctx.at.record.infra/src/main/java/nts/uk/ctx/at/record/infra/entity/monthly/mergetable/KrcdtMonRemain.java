@@ -18,7 +18,6 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
@@ -29,6 +28,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
@@ -70,6 +72,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.D
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.RemainDataTimesMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
@@ -1545,6 +1548,23 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	public Integer careRemainMinutesAfter;
 
 
+	/* KRCDT_MON_PUBLIC_REMAIN */
+	/** 公休日数 */
+	@Column(name ="PU_GRANT_DAYS")
+	public double puGrantDays;
+	/** 繰越数 */
+	@Column(name ="PU_CARRYFORWARD_DAYS")
+	public double puCarryforwardDays;
+	/** 取得数 */
+	@Column(name ="PU_USED_DAYS")
+	public double puUsedDays;
+	/** 翌月繰越数 */
+	@Column(name ="PU_NEXTMONTH_CARRYFORWARD_DAYS")
+	public double puNextmonthCarryforwardDays;
+	/** 未消化数 */
+	@Column(name ="PU_UNUSED_DAYS")
+	public double puUnusedDays;
+
 
 	@Override
 	protected Object getKey() {
@@ -1574,6 +1594,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.toEntityAbsenceLeaveRemainData(domain.getAbsenceLeaveRemainData());
 		this.toEntityCareRemainData(domain.getMonCareHdRemain());
 		this.toEntityChildRemainData(domain.getMonChildHdRemain());
+		this.toEntityPublicHoliday(domain.getMonPublicHoliday());
 	}
 
 	public RemainMerge toDomain(){
@@ -1590,6 +1611,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		domains.setAbsenceLeaveRemainData(this.toDomainAbsenceLeaveRemainData());
 		domains.setMonCareHdRemain(this.toDomainMonCareHdRemain());
 		domains.setMonChildHdRemain(this.toDomainMonChildHdRemain());
+		domains.setMonPublicHoliday(this.toDomainMonPublicHolidayRemain());
 		return domains;
 	}
 
@@ -2811,6 +2833,31 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.childRemainDaysAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainDay().v()).orElse(0.0);
 		this.childRemainMinutesBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainTimes().map(mapper->mapper.v()).orElse(0);
 		this.childRemainMinutesAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainTimes().map(c->c.v()).orElse(0)).orElse(0);
+	}
+	
+	public void toEntityPublicHoliday(PublicHolidayRemNumEachMonth domain) {
+		this.deletePublicHoliday();
+		if (domain == null) return;
+
+		this.closureStatus = domain.getClosureStatus().value;
+		/** 公休日数 */
+		this.puGrantDays = domain.getPublicHolidayday().v();
+		/** 繰越数 */ 
+		this.puCarryforwardDays = domain.getCarryForwardNumber().v();
+		/** 取得数 */
+		this.puUsedDays = domain.getNumberOfAcquisitions().v();
+		/** 翌月繰越数 */
+		this.puNextmonthCarryforwardDays = domain.getNumberCarriedOverToTheNextMonth().v();
+		/** 未消化数 */
+		this.puUnusedDays = domain.getUnDegestionNumber().v();
+	}
+	
+	public void deletePublicHoliday(){
+		this.puGrantDays = 0.0;
+		this.puCarryforwardDays = 0.0;
+		this.puUsedDays = 0.0;
+		this.puNextmonthCarryforwardDays = 0.0;
+		this.puUnusedDays = 0.0;
 	}
 
 	public void deleteChildRemainData(){
@@ -4137,5 +4184,24 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				careRemNumEachMonth
 				);
 
+	}
+	/**
+	 * 公休月別残数データ
+	 * @return
+	 */
+	public PublicHolidayRemNumEachMonth toDomainMonPublicHolidayRemain(){
+		return new PublicHolidayRemNumEachMonth(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
+				new ClosureDate(
+						this.krcdtMonRemainPk.getClosureDay(),
+						this.krcdtMonRemainPk.getIsLastDay()==1),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
+				new LeaveGrantDayNumber(this.puGrantDays),
+				new LeaveRemainingDayNumber(this.puCarryforwardDays),
+				new LeaveUsedDayNumber(this.puUsedDays),
+				new LeaveRemainingDayNumber(this.puNextmonthCarryforwardDays),
+				new LeaveRemainingDayNumber(this.puUnusedDays));
 	}
 }

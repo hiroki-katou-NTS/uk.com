@@ -30,6 +30,8 @@ public class EnterStampFromSmartPhoneService {
 	 * 
 	 * @param 契約コード
 	 *            contractCode
+	 * @param 会社ID
+	 *            cid
 	 * @param 社員ID
 	 *            employeeID
 	 * @param 打刻日時

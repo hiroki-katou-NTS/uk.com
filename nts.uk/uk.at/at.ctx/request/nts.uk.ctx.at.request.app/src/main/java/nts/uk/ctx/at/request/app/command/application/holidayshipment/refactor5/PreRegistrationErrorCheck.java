@@ -262,6 +262,16 @@ public class PreRegistrationErrorCheck {
 			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
 				return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
 			}
+
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return closureRepo.findByListId(companyId, closureId);
+			}
 		};
 	}
 	

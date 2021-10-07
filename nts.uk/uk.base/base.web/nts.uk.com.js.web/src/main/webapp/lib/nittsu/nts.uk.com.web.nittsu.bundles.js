@@ -565,6 +565,7 @@ var nts;
                             break;
                         case 'Decimal':
                         case 'Integer':
+                        case 'HalfInt':
                         case 'Date':
                         case 'Time':
                         case 'Clock':
@@ -30666,7 +30667,10 @@ var nts;
                                 }
                                 else if (txt) {
                                     if (controlDef_1.pattern && controlDef_1.list) {
-                                        var itemList = controlDef_1.pattern[controlDef_1.list[id]], item = _.find(itemList, function (i) { return i[controlDef_1.optionsValue || "code"] === val; });
+                                        var itemList = controlDef_1.pattern[controlDef_1.list[id]];
+                                        if (!itemList)
+                                            itemList = controlDef_1.pattern[controlDef_1.list["null"]];
+                                        var item = _.find(itemList, function (i) { return i[controlDef_1.optionsValue || "code"] === val; });
                                         if (item)
                                             content = item[controlDef_1.optionsText || "name"];
                                     }

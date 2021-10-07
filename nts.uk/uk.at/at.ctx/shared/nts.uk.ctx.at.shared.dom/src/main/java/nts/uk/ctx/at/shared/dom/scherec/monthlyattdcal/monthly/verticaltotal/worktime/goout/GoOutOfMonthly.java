@@ -78,16 +78,19 @@ public class GoOutOfMonthly implements Serializable{
 			
 			this.goOuts.putIfAbsent(goingOutReason, new AggregateGoOut(goingOutReason));
 			val targetGoOut = this.goOuts.get(goingOutReason);
-			targetGoOut.addMinutesToLegalTime(
+			targetGoOut.addMinutesToLegalTime(/** 集計外出。所定内時間 */
 					recordTotal.getWithinTotalTime().getTotalTime().getTime().v(),
 					recordTotal.getWithinTotalTime().getTotalTime().getCalcTime().v());
-			targetGoOut.addMinutesToIllegalTime(
+			targetGoOut.addMinutesToIllegalTime(/** 集計外出。所定外時間 */
 					recordTotal.getExcessTotalTime().getTime().v(),
 					recordTotal.getExcessTotalTime().getCalcTime().v());
-			targetGoOut.addMinutesToTotalTime(
+			targetGoOut.addMinutesToTotalTime(/** 集計外出。合計時間 */
 					recordTotal.getTotalTime().getTime().v(),
 					recordTotal.getTotalTime().getCalcTime().v());
-			targetGoOut.addTimes(outingTime.getWorkTime().v());
+			targetGoOut.addMinutesToCoreOutTime(/** 集計外出。コアタイム外時間 */
+					recordTotal.getWithinTotalTime().getWithinCoreTime().getTime().valueAsMinutes(), 
+					recordTotal.getWithinTotalTime().getWithinCoreTime().getCalcTime().valueAsMinutes());
+			targetGoOut.addTimes(outingTime.getWorkTime().v()); /** 集計外出。回数 */
 		}
 		
 		// 日別実績の「短時間・回数」を集計する
@@ -96,8 +99,14 @@ public class GoOutOfMonthly implements Serializable{
 			
 			this.goOutForChildCares.putIfAbsent(childCareAtr, new GoOutForChildCare(childCareAtr));
 			val targetChildCare = this.goOutForChildCares.get(childCareAtr);
+			/** 回数 */
 			targetChildCare.addTimes(shortTime.getWorkTimes().v());
+			/** 時間 */
 			targetChildCare.addMinutesToTime(shortTime.getTotalTime().getTotalTime().getTime().v());
+			/** 所定外介護時間 */
+			targetChildCare.addMinutesToExcessTime(shortTime.getTotalTime().getExcessOfStatutoryTotalTime().getTime().valueAsMinutes());
+			/** 所定内介護時間 */
+			targetChildCare.addMinutesToWithinTime(shortTime.getTotalTime().getWithinStatutoryTotalTime().getTime().valueAsMinutes());
 		}
 	}
 

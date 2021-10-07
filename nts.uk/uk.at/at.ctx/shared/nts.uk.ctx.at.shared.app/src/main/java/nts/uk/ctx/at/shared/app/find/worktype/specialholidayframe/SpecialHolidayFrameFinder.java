@@ -23,6 +23,9 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class SpecialHolidayFrameFinder {
+	public static int USE = 1;
+	public static int NOT_USE = 0;
+	
 	@Inject
 	private SpecialHolidayFrameRepository specialHolidayFrameRepository;
 	
@@ -42,6 +45,14 @@ public class SpecialHolidayFrameFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		return this.specialHolidayFrameRepository.findAll(companyId).stream().map(c -> SpecialHolidayFrameDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
+	
+	public List<SpecialHolidayFrameDto> findByUseCls() {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+		
+		return this.specialHolidayFrameRepository.findByCompanyIdAndUseCls(companyId, USE).stream().map(c -> SpecialHolidayFrameDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 	

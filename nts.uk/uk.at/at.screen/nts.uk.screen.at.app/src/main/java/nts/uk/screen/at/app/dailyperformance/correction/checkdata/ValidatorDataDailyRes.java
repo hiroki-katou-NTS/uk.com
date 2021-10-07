@@ -676,7 +676,11 @@ public class ValidatorDataDailyRes {
 			messageIds.add("Msg_1415");
 		} else if(errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value){
 			messageIds.add("Msg_1414");
-		}
+		} else if(errroType.value == ErrorType.CHILDCARE_HOLIDAY.value){
+            messageIds.add("Msg_2264");
+        } else if(errroType.value == ErrorType.CARE_HOLIDAY.value){
+            messageIds.add("Msg_2265");
+        }
 
 		return messageIds;
 	}

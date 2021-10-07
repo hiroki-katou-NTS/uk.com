@@ -282,11 +282,25 @@ public class PeregCommandFacade {
 			ctg.getItems().addAll(listDefault);
 
 			List<String> listItemAfter = ctg.getItems().stream().map(i -> i.itemCode()).collect(Collectors.toList());
+			
+			Map<String, ItemValue> itemValMap = new HashMap<String, ItemValue>();
+			ctg.getItems().forEach(i -> {
+				ItemValue itemInMap = itemValMap.get(i.itemCode());
+				if (itemInMap == null) {
+					itemValMap.put(i.itemCode(), i);
+				} else {
+					if (i.value() != null && itemInMap.value() == null) {
+						itemValMap.put(i.itemCode(), i);
+					}
+				}
+			});
 
 			if (requiredItemByCtgId.containsKey(ctg.getCategoryId())) {
 
 				itemExclude.addAll(requiredItemByCtgId.get(ctg.getCategoryId()).stream()
-						.filter(i -> !listItemAfter.contains(i.getItemCode())).collect(Collectors.toList()));
+						.filter(i -> !listItemAfter.contains(i.getItemCode()) 
+								|| (itemValMap.get(i.getItemCode()) != null && itemValMap.get(i.getItemCode()).value() == null))
+						.collect(Collectors.toList()));
 			}
 
 		});

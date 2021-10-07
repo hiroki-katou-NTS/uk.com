@@ -47,7 +47,7 @@ public interface WorkingConditionItemSetMemento {
 	 *
 	 * @param workCategory the new work category
 	 */
-	void setWorkCategory(PersonalWorkCategory workCategory, String employeeId);
+	void setWorkCategory(WorkByIndividualWorkDay workCategory, String employeeId);
 
 	/**
 	 * Sets the contract time.

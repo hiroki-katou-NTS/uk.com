@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.common.dayandtime;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 
 /**
   * 日と時間
@@ -90,24 +92,31 @@ public class DayAndTime {
 		TimeOfUse resultTime = beSubtracted.time;
 
 		// 積み崩しが必要か
+		// １日に相当する契約時間を取得する
+		Optional<LaborContractTime> contractTime = LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
+
+		if(!contractTime.isPresent()){
+			contractTime = Optional.of(new LaborContractTime(0));
+		}
+		
+		
 		// ===積み崩し発生条件
 		// ===「 1<=計算結果の日と時間.日 and 1<=減算する日と時間.時間 and 計算結果の日と時間.時間 < 減算する日.時間」
-		if(1 <= resultDay.v() && 1 <= subtract.time.v() && resultTime.v() < subtract.time.v()) {
+		while (1 <= resultDay.v() && 1 <= subtract.time.v() &&  resultTime.v() <= subtract.time.v()) {
 			// 必要の場合
-			// INPUT．Require．契約時間取得する
-			LaborContractTime contractTime = require.empContractTime(employeeId, criteriaDate);
-
 			// 減算される日と時間を積み崩し
 			// ===計算結果の日と時間.日数から１をマイナス。
 			// ===計算結果の日と時間.時間に、「契約時間」を加算。
 			resultDay = new DayNumberOfUse(resultDay.v() - 1);
-			resultTime = resultTime.addMinutes(contractTime.v());
-		} else {
-			// 不要の場合
-			// 時間の減算を行う
-			// ===計算結果の日と時間．時間　＝　減算される日と時間．時間　ー　減算する日と時間．時間
-			resultTime = resultTime.minusMinutes(subtract.time.v());
+			resultTime = resultTime.addMinutes(contractTime.get().v());
 		}
+		
+		
+		
+		// 時間の減算を行う
+		// ===計算結果の日と時間．時間　＝　減算される日と時間．時間　ー　減算する日と時間．時間
+		resultTime = resultTime.minusMinutes(subtract.time.v());
+		
 
 		DayAndTime subDayAndTime = DayAndTime.of(resultTime, resultDay);
 
@@ -115,16 +124,8 @@ public class DayAndTime {
 		return subDayAndTime;
 	}
 
-	public static interface RequireM3 {
+	public static interface RequireM3 extends LeaveRemainingNumber.RequireM3{
 
-		// 会社の年休設定を取得する（会社ID）
-		AnnualPaidLeaveSetting annualLeaveSet(String companyId);
-
-		// 社員の契約時間を取得する（社員ID、基準日）
-		LaborContractTime empContractTime(String employeeId, GeneralDate criteriaDate );
-
-		// 年休の契約時間を取得する（会社ID、社員ID、基準日）
-		LaborContractTime contractTime(String companyId, String employeeId,  GeneralDate criteriaDate);
 	}
 
 }

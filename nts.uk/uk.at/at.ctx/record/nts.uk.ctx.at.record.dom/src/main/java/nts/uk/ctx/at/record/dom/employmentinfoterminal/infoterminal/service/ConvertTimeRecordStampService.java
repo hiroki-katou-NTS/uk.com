@@ -128,7 +128,7 @@ public class ConvertTimeRecordStampService {
 	}
 	
 	//日別実績を処理する
-	private static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
+	public static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
 			Optional<String> sid, Optional<Stamp> stamp, AtomTask atomTask) {
 
 		if (!sid.isPresent() || !cid.isPresent()) {
@@ -149,7 +149,7 @@ public class ConvertTimeRecordStampService {
 						ExecutionType.NORMAL_EXECUTION);
 				AtomTask task = atomTask.then(() -> {
 					require.addAllDomain(domAfterCalc.get(0));
-					require.loggedOut();
+					//require.loggedOut();
 				});
 				return Optional.of(new StampDataReflectResult(reflectDate, task));
 			}
@@ -157,10 +157,11 @@ public class ConvertTimeRecordStampService {
 		return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
 	}
 	
-    //[pvt-5] チェック日が当月かどうかを確認する
+    //[pvt-6] チェック日が当月以降かどうかを確認する
 	private static boolean checkInClosurePeriod(Require require, String sid, GeneralDate date) {
 		DatePeriod period = ClosureService.findClosurePeriod(require, new CacheCarrier(), sid, date);
-		return period == null ? false : period.contains(date);
+		
+		return period == null ? false : date.afterOrEquals(period.start());
 	}
 	
 	// [pvt-2] 就業情報端末通信用トップページアラームを作る

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualTimePerDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualTimePerDayRefer;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
@@ -282,9 +283,6 @@ public class LeaveRemainingNumber {
 		String employeeId,
 		GeneralDate baseDate){
 
-		// 契約時間
-		Optional<LaborContractTime> contractTime = Optional.empty();
-
 		// ドメインモデル「年休設定」を取得する
 		AnnualPaidLeaveSetting annualPaidLeave = require.annualPaidLeaveSetting(companyID);
 		if(annualPaidLeave == null){
@@ -292,45 +290,13 @@ public class LeaveRemainingNumber {
 		}
 
 		// 1日の時間を取得
-		Optional<AnnualTimePerDay> annualTimePerDayOpt
-			= annualPaidLeave.getTimeSetting().getAnnualTimePerDay();
-		// 2021/1/21 watanabe repositoryに不具合があるので、いったん固定値を入れて実行します。
-		annualTimePerDayOpt = Optional.of(new AnnualTimePerDay(AnnualTimePerDayRefer.CompanyUniform,
-				new LaborContractTime(480), ContractTimeRound.Do_not_round));
-		if ( !annualTimePerDayOpt.isPresent() ){
-			return Optional.empty();
-		}
+		TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay
+			= annualPaidLeave.getTimeSetting().getTimeAnnualLeaveTimeDay();
 
-		AnnualTimePerDay annualTimePerDay = annualTimePerDayOpt.get();
-
-		// 会社一律で設定されているとき
-		if ( annualTimePerDay.getAnnualTimePerDayRefer().equals(AnnualTimePerDayRefer.CompanyUniform)){
-
-			// １日の時間をセット
-			contractTime = Optional.of(new LaborContractTime(annualTimePerDay.getLaborContractTime().v()));
-
-		} else { // 社員の契約時間により算定
-
-			// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
-			Optional<WorkingConditionItem> workCond
-				= require.workingConditionItem(employeeId, baseDate);
-
-			if (workCond.isPresent()) {
-				contractTime = Optional.ofNullable(workCond.get().getContractTime());
-
-				// 丸め処理
-				if ( contractTime.isPresent()){
-					// 取得した契約時間を1時間単位で切り上げる
-					if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.Round_up_to_1_hour) ){
-							contractTime = Optional.of(contractTime.get().roundUp1Hour());
-					}
-				}
-			}
-		}
-		return contractTime;
+		return timeAnnualLeaveTimeDay.getContractTime(require, employeeId, baseDate);
 	}
 
-	public static interface RequireM3 extends AbsenceTenProcess.RequireM1 {
+	public static interface RequireM3 extends AbsenceTenProcess.RequireM1,TimeAnnualLeaveTimeDay.Require  {
 
 		// 労働条件取得
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
