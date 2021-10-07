@@ -153,15 +153,12 @@ public class AppAbsenceFinder {
 	public AppAbsenceStartInfoDto getChangeAppDate(String companyID, AppAbsenceStartInfoDto appAbsenceStartInfoOutput, List<String> appDates, int holidayType, AppDispInfoWithDateDto appWithDate) {
 		// INPUT．「休暇申請起動時の表示情報」を更新する
 	    appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appWithDate);
-		// 承認ルートの基準日を確認する
-		int requestSetting = appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getRecordDate();
-		if(requestSetting == RecordDate.APP_DATE.value) {
-		    // 休暇種類変更時処理
-		    AppAbsenceStartInfoOutput appAbsence = this.absenseProcess.holidayTypeChangeProcess(companyID, appAbsenceStartInfoOutput.toDomain(companyID), appDates, EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
-		    
-			// INPUT．「休暇申請起動時の表示情報」を更新する
-			appAbsenceStartInfoOutput = AppAbsenceStartInfoDto.fromDomain(appAbsence);
-		}
+	    // 休暇種類変更時処理
+	    AppAbsenceStartInfoOutput appAbsence = this.absenseProcess.holidayTypeChangeProcess(companyID, appAbsenceStartInfoOutput.toDomain(companyID), appDates, EnumAdaptor.valueOf(holidayType, HolidayAppType.class));
+	    
+	    // INPUT．「休暇申請起動時の表示情報」を更新する
+	    appAbsenceStartInfoOutput = AppAbsenceStartInfoDto.fromDomain(appAbsence);
+	    
 		// 各休暇の管理区分を取得する
 		CheckDispHolidayType checkDispHolidayType = absenseProcess.checkDisplayAppHdType(
 				companyID, 
