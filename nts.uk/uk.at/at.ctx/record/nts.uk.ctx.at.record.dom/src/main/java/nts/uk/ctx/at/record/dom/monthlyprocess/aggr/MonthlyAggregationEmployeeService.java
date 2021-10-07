@@ -196,14 +196,8 @@ public class MonthlyAggregationEmployeeService {
 				}
 			}
 			
-			//get employmentCode
-			String employmentCode = employeeSets.getEmployments()
-					.stream().filter(x -> x.getPeriod().contains(datePeriod))
-					.findFirst().map(c -> c.getEmploymentCode()).orElse(null);
-			if (employmentCode == null) continue; 
-			
 			//実績締めロックされない期間を取得する
-			List<DatePeriod> listPeriod = ClosingGetUnlockedPeriod.get(require, datePeriod, employmentCode, ignoreFlagDuringLock, AchievementAtr.MONTHLY);
+			List<DatePeriod> listPeriod = ClosingGetUnlockedPeriod.get(require, datePeriod, closureId.value, ignoreFlagDuringLock, AchievementAtr.MONTHLY);
 			if(listPeriod.isEmpty()) {
 				continue;
 			}
