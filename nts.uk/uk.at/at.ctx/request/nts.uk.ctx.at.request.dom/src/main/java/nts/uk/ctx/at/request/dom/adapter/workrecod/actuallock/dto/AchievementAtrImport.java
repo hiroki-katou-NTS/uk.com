@@ -17,23 +17,4 @@ public enum AchievementAtrImport {
 	
 	/** The name id. */
 	public final String nameId;
-
-	private final static AchievementAtrImport[] values = AchievementAtrImport.values();
-	
-	public static AchievementAtrImport valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (AchievementAtrImport val : AchievementAtrImport.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
-	}
 }

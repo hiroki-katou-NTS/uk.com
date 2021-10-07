@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.pub.workrecord.actuallock.GetPeriodCanProcessePub;
 import nts.uk.ctx.at.record.pub.workrecord.actuallock.export.AchievementAtrExport;
@@ -29,8 +30,8 @@ public class GetPeriodCanProcesseAC implements GetPeriodCanProcesseAdapter {
 				listEmploymentHis.stream()
 						.map(x -> new EmploymentHistoryExport(x.getEmployeeId(), x.getEmploymentCode(), x.getPeriod()))
 						.collect(Collectors.toList()),
-				IgnoreFlagDuringLockExport.valueOf(ignoreFlagDuringLock.value),
-				AchievementAtrExport.valueOf(achievementAtr.value));
+				EnumAdaptor.valueOf(ignoreFlagDuringLock.value, IgnoreFlagDuringLockExport.class),
+				EnumAdaptor.valueOf(achievementAtr.value, AchievementAtrExport.class));
 	}
 
 }

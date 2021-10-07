@@ -17,23 +17,4 @@ public enum AchievementAtrExport {
 	
 	/** The name id. */
 	public final String nameId;
-
-	private final static AchievementAtrExport[] values = AchievementAtrExport.values();
-	
-	public static AchievementAtrExport valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (AchievementAtrExport val : AchievementAtrExport.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
-	}
 }
