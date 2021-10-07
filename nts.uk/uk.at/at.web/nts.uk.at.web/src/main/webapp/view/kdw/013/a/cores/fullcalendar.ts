@@ -378,6 +378,7 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-toolbar-chunk{
             display: flex;
         }
+        .favIcon{ float:right }
 `;
 
     @handler({
@@ -1836,6 +1837,11 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     return undefined;
                 },
+                dayHeaderDidMount : (arg, createElement) => {
+                   $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon' data-bind="ntsIcon: { no: 2, width: 20, height: 20 }" ></i>`);
+                   setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 2, size: '20px', width: 20, height: 20 } }); }, 300);
+                }
+                ,
                 viewDidMount: ({ el, view }) => {
                     // render attendence time & total time by ko binding
                     if (['timeGridDay', 'timeGridWeek'].indexOf(view.type) > -1) {
@@ -1848,7 +1854,6 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             header.append(_events);
                             header.append(__times);
-
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => {
@@ -2843,41 +2848,46 @@ module nts.uk.ui.at.kdw013.calendar {
             // set businessHours
             ko.computed({
                 read: () => {
-                    const breakTime = ko.unwrap<BreakTime>(params.breakTime);
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
-
                     if (!businessHours.length) {
-                         vm.calendar.setOption('businessHours', false);
-                         //vm.updateStyle('breaktime', '');
+                        vm.calendar.setOption('businessHours', false);
+
+                        //vm.updateStyle('breaktime', '');
                     } else {
-                        const { startTime, endTime, backgroundColor } = breakTime;
+                        const breakTimes = ko.unwrap<BreakTime[]>(params.breakTime);
 
-                        if (businessHours.length) {
-                            const starts = businessHours.map((m) => ({
-                                ...m,
-                                startTime: formatTime(m.startTime),
-                                endTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(startTime) : formatTime(0)
-                            }));
-                            const ends = businessHours.map((m) => ({
-                                ...m,
-                                startTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(endTime) : formatTime(0),
-                                endTime: formatTime(m.endTime)
-                            }));
-
-                            vm.calendar.setOption('businessHours', [...starts, ...ends]);
-                        } else {
-                            vm.calendar.setOption('businessHours', [{
-                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-                                startTime: formatTime(0),
-                                endTime: formatTime(startTime)
-                            }, {
-                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-                                startTime: formatTime(endTime),
-                                endTime: formatTime(24 * 60)
-                            }]);
+                        const bhs = [];
+                        for (let i = 0; i < businessHours.length; i++) {
+                            const cbh = businessHours[i];
+                            const breakOfDay = _.find(breakTimes, { 'dayOfWeek': cbh.dayOfWeek });
+                            if (breakOfDay && breakOfDay.breakTimes.length) {
+                                for (let j = 0; j < breakOfDay.breakTimes.length; j++) {
+                                    const brTime = breakOfDay.breakTimes[j];
+                                    const brBeforeTime = breakOfDay.breakTimes[j - 1];
+                                    bhs.push({
+                                        daysOfWeek: [cbh.dayOfWeek],
+                                        startTime: !brBeforeTime ? formatTime(cbh.start, false) : formatTime(brBeforeTime.end, false),
+                                        endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
+                                    },
+                                        {
+                                            daysOfWeek: [cbh.dayOfWeek],
+                                            startTime: formatTime(brTime.end, false),
+                                            endTime: formatTime(cbh.end, false)
+                                        }
+                                    );
+                                }
+                            } else {
+                                bhs.push({
+                                     daysOfWeek: [cbh.dayOfWeek],
+                                     startTime: formatTime(cbh.start, false),
+                                     endTime: formatTime(cbh.end, false)
+                                });  
+                            }
                         }
+                        
+                        vm.calendar.setOption('businessHours', bhs );
 
-                        vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
+                        //vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
                     }
                     
                 },
@@ -3078,13 +3088,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                     }
                                 });
                             }
-
-                        
-                    
-                   
-                    
-
-                    
                 })
                 .registerEvent('mousemove', () => {
                     if (ko.unwrap(dataEvent.mouse)) {
@@ -3652,7 +3655,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 <!-- /ko -->
                 <style rel="stylesheet">
                     .warningIcon{
-    
+                         float: right;
                         }
                 </style>
                 `
@@ -3692,19 +3695,18 @@ module nts.uk.ui.at.kdw013.calendar {
             }
 
             formatTime(value: number | null, time) {
-                
-                let isHasproblem = true;
+                    let icon =  `<i class='warningIcon'> </i>`;
+                    setTimeout(function() { ko.applyBindingsToNode($('.warningIcon'), { ntsIcon: { no: 2, size: '20px', width: 20, height: 20 } }); }, 300);
                 if (!value) {
-                    return '&nbsp;';
+                    return '&nbsp;'+icon;
                 }
 
                 const hour = Math.floor(value / 60);
                 const minute = Math.floor(value % 60);
                 let timeString = `${hour}:${_.padStart(`${minute}`, 2, '0')}`
-                if (!isHasproblem) {
-                    return timeString;
-                }
-                return timeString;
+                
+                
+                return timeString ;
             }
         }
 
