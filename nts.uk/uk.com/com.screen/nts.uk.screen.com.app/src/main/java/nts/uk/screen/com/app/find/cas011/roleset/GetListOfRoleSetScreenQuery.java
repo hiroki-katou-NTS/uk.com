@@ -61,7 +61,7 @@ public class GetListOfRoleSetScreenQuery {
 
     private RoleSetDto convertToDto(RoleSet domain) {
         RoleSetDto roleSetDto = new RoleSetDto();
-        roleSetDto.setApprovalAuthority(domain.getApprovalAuthority().value);
+        //roleSetDto.setApprovalAuthority(domain.getApprovalAuthority().value);//TODO dev delete
         roleSetDto.setRoleSetName(domain.getRoleSetName().v());
         roleSetDto.setCompanyId(domain.getCompanyId());
         roleSetDto.setRoleSetCd(domain.getRoleSetCd().v());

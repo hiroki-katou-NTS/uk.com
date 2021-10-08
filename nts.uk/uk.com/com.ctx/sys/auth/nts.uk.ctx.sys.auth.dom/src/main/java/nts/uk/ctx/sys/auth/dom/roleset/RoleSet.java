@@ -28,9 +28,6 @@ public class RoleSet extends AggregateRoot {
 
     /** 名称*/
     private RoleSetName roleSetName;
-
-    /** 承認権限*/
-    private ApprovalAuthority approvalAuthority;
     
     /** 就業ロール */
     private Optional<String> employmentRoleId;
@@ -67,42 +64,9 @@ public class RoleSet extends AggregateRoot {
     	return new RoleSet(cid
     			,	new RoleSetCode(roleSetCd)
     			,	new RoleSetName(roleSetName)
-    			,	ApprovalAuthority.HasRight //今、承認権限の値 = あり、今後　承認権限を削除するつもりです。
     			,	attendanceRoleId, personInfoRoleId
     			,	Optional.empty(),	Optional.empty()
     			,	Optional.empty(),	Optional.empty() );
-    }
-
-    /**
-     * If has approval Authority right.
-     *
-     * @return true
-     */
-    public boolean hasApprovalAuthority() {
-        return this.approvalAuthority == ApprovalAuthority.HasRight;
-    }
-
-    /**
-     * If hasn't approval Authority right.
-     *
-     * @return true
-     */
-    public boolean hasntApprovalAuthority() {
-        return this.approvalAuthority == ApprovalAuthority.HasntRight;
-    }
-
-    /**
-     * set approval authority
-     */
-    public void setApprovalAuthority() {
-        this.approvalAuthority = ApprovalAuthority.HasRight;
-    }
-
-    /**
-     * Remove approval authority
-     */
-    public void removeApprovalAuthority() {
-        this.approvalAuthority = ApprovalAuthority.HasntRight;
     }
 
     /**
