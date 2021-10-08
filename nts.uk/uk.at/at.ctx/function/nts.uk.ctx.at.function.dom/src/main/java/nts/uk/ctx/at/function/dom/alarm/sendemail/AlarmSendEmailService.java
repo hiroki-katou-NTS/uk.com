@@ -123,41 +123,23 @@ public class AlarmSendEmailService implements SendEmailService {
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			for (val entry : managerTargetMap.entrySet()) {
 				val targetPersonIds = entry.getValue().stream().filter(Objects::nonNull).collect(Collectors.toList()); //List＜対象者ID＞
-				for (val empId : targetPersonIds) {
 					// ＜抽出元＞: INPUT.アラーム抽出結果, ＜条件＞: 社員ID＝　ループ中のList＜対象者ID＞
 					List<ValueExtractAlarmDto> valueExtractAlarmManagers = valueExtractAlarmDtos.stream()
-							.filter(c -> c.getEmployeeID().equals(empId)).collect(Collectors.toList());
+							.filter(c -> targetPersonIds.contains(c.getEmployeeID())).collect(Collectors.toList());
 					try {
-						boolean isSuccess = sendMail(companyID, empId, functionID,
+						boolean isSuccess = sendMail(companyID, entry.getKey(), functionID,
 								valueExtractAlarmManagers, mailSettingsParamDto.getSubjectAdmin(),
 								mailSettingsParamDto.getTextAdmin(), currentAlarmCode,
 								useAuthentication, mailSettingAdmin, senderAddress);
 						if (!isSuccess) {
-							errors.add(empId);
+							errors.add(entry.getKey());
 						}
 					} catch (SendMailFailedException e) {
 						throw e;
 					}
-				}
 			}
 		}
 
-		//String empployeeNameError = isErrorSendMailEmp + ";";// return status check display alert error
-//		if (!CollectionUtil.isEmpty(errors)) {
-//			int index = 0;
-//			int errorsSize = errors.size();
-//			for (String sId : errors) {
-//				// save using request list 346
-//				String empNames =  employeeSprPubAlarmAdapter.getEmployeeNameBySId(sId);
-//				if (!StringUtils.isEmpty(empNames)) {
-//					empployeeNameError += empNames;
-//				}
-//				index++;
-//				if(index != errorsSize){
-//					empployeeNameError += "<br/>";
-//                }
-//			}
-//		}
 		OutputErrorInfo outputErrorInfo = createErrorInfo.getErrorInfo(GeneralDate.today(),errors,mapWorkplaceAndListSid,listworkplaceError);
 		String errorInfo = "";
 		if(!outputErrorInfo.getError().equals("")) {
@@ -193,18 +175,19 @@ public class AlarmSendEmailService implements SendEmailService {
 		List<WkpManagerImport> wkplManagerList = workplaceAdapter.findByWkpIdsAndDate(wkpIds, executeDate);
 
 		// Map＜管理者ID、List＜対象者ID＞＞にデータを追加
-		Map<String, List<String>> managerMap = wkplManagerList.stream()
-				.collect(Collectors.groupingBy(
-						WkpManagerImport::getEmployeeId,
-						Collectors.mapping(
-								i -> managerTargetList.stream()
-										.filter(a -> a.getWorkplaceID().equals(i.getWorkplaceId()))
-										.map(ManagerTagetDto::getEmployeeID)
-										.findFirst()
-										.orElse(null),
-								Collectors.toList()
-						)
-				));
+		Map<String, List<String>> managerMap = new HashMap<>();
+		wkplManagerList.forEach(wkp -> {
+			val personIds = managerTargetList.stream().filter(a -> a.getWorkplaceID().equals(wkp.getWorkplaceId()))
+                                .map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
+
+			if (!managerMap.containsKey(wkp.getEmployeeId())) {
+				managerMap.put(wkp.getEmployeeId(), personIds);
+			} else {
+				List<String> newValues = managerMap.get(wkp.getEmployeeId());
+				newValues.addAll(personIds);
+				managerMap.put(wkp.getEmployeeId(), newValues);
+			}
+		});
 
 		// ドメインモデル「アラームメール送信ロール」を取得する
 		val mailSendingRole = alarmMailSendingRoleRepo.find(cid, IndividualWkpClassification.INDIVIDUAL.value);
