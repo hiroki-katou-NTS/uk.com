@@ -1417,13 +1417,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         // ドメインモデル「実行ログ」を新規登録する
         ExecutionLog dailyCreateLog = new ExecutionLog(execId, ExecutionContent.DAILY_CREATION, ErrorPresent.NO_ERROR,
                 new ExecutionTime(GeneralDateTime.now(), GeneralDateTime.now()), ExecutionStatus.INCOMPLETE,
-                new ObjectPeriod(period.end(), period.end()), null);
+                new ObjectPeriod(period.end(), period.end()), Optional.empty());
         dailyCreateLog.setDailyCreationSetInfo(
                 new SettingInforForDailyCreation(ExecutionContent.DAILY_CREATION, ExecutionType.NORMAL_EXECUTION,
                         IdentifierUtil.randomUniqueId(), DailyRecreateClassification.REBUILD, Optional.empty()));
         ExecutionLog dailyCalLog = new ExecutionLog(execId, ExecutionContent.DAILY_CALCULATION, ErrorPresent.NO_ERROR,
                 new ExecutionTime(GeneralDateTime.now(), GeneralDateTime.now()), ExecutionStatus.INCOMPLETE,
-                new ObjectPeriod(period.start(), period.end()), null);
+                new ObjectPeriod(period.start(), period.end()), Optional.empty());
         dailyCalLog.setDailyCalSetInfo(new CalExeSettingInfor(ExecutionContent.DAILY_CALCULATION,
                 ExecutionType.NORMAL_EXECUTION, IdentifierUtil.randomUniqueId()));
         this.executionLogRepository.addExecutionLog(dailyCreateLog);
@@ -2051,7 +2051,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         GeneralDateTime now = GeneralDateTime.now();
         ExecutionLog executionLog = new ExecutionLog(execId, ExecutionContent.REFLRCT_APPROVAL_RESULT,
                 ErrorPresent.NO_ERROR, new ExecutionTime(now, now), ExecutionStatus.INCOMPLETE,
-                new ObjectPeriod(period.start(), period.end()), null);
+                new ObjectPeriod(period.start(), period.end()), Optional.empty());
         executionLog.setReflectApprovalSetInfo(new SetInforReflAprResult(ExecutionContent.REFLRCT_APPROVAL_RESULT,
 				processExecution.getExecutionType() == ProcessExecType.NORMAL_EXECUTION
                         ? ExecutionType.NORMAL_EXECUTION
@@ -2370,7 +2370,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         GeneralDateTime now = GeneralDateTime.now();
         ExecutionLog executionLog = new ExecutionLog(execId, ExecutionContent.MONTHLY_AGGREGATION,
                 ErrorPresent.NO_ERROR, new ExecutionTime(now, now), ExecutionStatus.INCOMPLETE,
-                new ObjectPeriod(period.start(), period.end()), null);
+                new ObjectPeriod(period.start(), period.end()), Optional.empty());
         executionLog.setMonlyAggregationSetInfo(new CalExeSettingInfor(ExecutionContent.MONTHLY_AGGREGATION,
                 ExecutionType.NORMAL_EXECUTION, IdentifierUtil.randomUniqueId()));
         this.executionLogRepository.addExecutionLog(executionLog);
@@ -3054,7 +3054,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         } else {
             try {
                 processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId, period,
-                        Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog.getIsCalWhenLock());
+                        Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog.getIsCalWhenLock().orElse(false));
                 //暫定データの登録
                 this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
             } catch (Exception e) {
@@ -3108,7 +3108,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         try {
             // 社員の日別実績を計算
             ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(empId, period, Optional.empty(),
-                    empCalAndSumExeLogId, dailyCreateLog.getIsCalWhenLock());
+                    empCalAndSumExeLogId, dailyCreateLog.getIsCalWhenLock().orElse(false));
             //暫定データの登録
             this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, empId, period.datesBetween());
 		log.info("更新処理自動実行_日別実績の計算_END_" + procExec.getExecItemCode() + "_" + GeneralDateTime.now());
