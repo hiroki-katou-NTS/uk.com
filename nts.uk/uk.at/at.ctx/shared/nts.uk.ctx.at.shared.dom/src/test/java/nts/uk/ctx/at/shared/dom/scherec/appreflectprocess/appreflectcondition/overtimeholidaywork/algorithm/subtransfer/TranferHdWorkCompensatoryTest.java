@@ -34,26 +34,26 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @RunWith(JMockit.class)
 public class TranferHdWorkCompensatoryTest {
 
-	// @Injectable
-	// private TranferHdWorkCompensatory.Require require;
+	@Injectable
+	private TranferHdWorkCompensatory.Require require;
 
-	// private String cid = "1";
+	private String cid = "1";
 
-	// /*
-	 // * テストしたい内容
-	 // * 
-	 // * 
-	 // * →休日出勤時間の代休振替
-	 // * 
-	 // * 
-	 // * 準備するデータ
-	 // * 
-	 // * → 代休振替処理から最大の時間.振替時間, 時間 = (999, 666)
-	 // * 
-	 // */
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test01(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked SubstituteTransferProcess sub) {
+	/*
+	 * テストしたい内容
+	 * 
+	 * 
+	 * →休日出勤時間の代休振替
+	 * 
+	 * 
+	 * 準備するデータ
+	 * 
+	 * → 代休振替処理から最大の時間.振替時間, 時間 = (999, 666)
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test01(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked SubstituteTransferProcess sub) {
 
 		// DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				// .createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
@@ -79,14 +79,14 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 666, 999));
 
-	// }
+	}
 
-	// /**
-	 // * 1 代休に必要な時間->1日8ｈ 申請時間① 1 普通残業 8:00 4 深夜残業 6:00
-	 // */
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test11(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	/**
+	 * 1 代休に必要な時間->1日8ｈ 申請時間① 1 普通残業 8:00 4 深夜残業 6:00
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test11(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// DailyRecordOfApplication dailyApp = createRCHdCase();
 
@@ -110,12 +110,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 0, 480), Tuple.tuple(2, 0, 360));
 
-	// }
+	}
 
-	申請時間①
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a1(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間①
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a1(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(1, 690, 0), create(2, 120, 0)));
@@ -140,12 +140,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 0, 690), Tuple.tuple(2, 0, 120));
 
-	// }
+	}
 
-	申請時間②
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a2(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間②
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a2(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(1, 330, 0), create(2, 120, 0)));
@@ -170,12 +170,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 330, 0), Tuple.tuple(2, 120, 0));
 
-	// }
+	}
 
-	申請時間③
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a3(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間③
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a3(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(3, 690, 0), create(4, 120, 0)));
@@ -200,12 +200,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(3, 0, 690), Tuple.tuple(4, 0, 120));
 
-	// }
+	}
 
-	申請時間④
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a4(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間④
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a4(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(3, 330, 0), create(4, 120, 0)));
@@ -230,12 +230,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(3, 330, 0), Tuple.tuple(4, 120, 0));
 
-	// }
+	}
 
-	申請時間⑤
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a5(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間⑤
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a5(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(1, 450, 0), create(4, 360, 0)));
@@ -260,12 +260,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 0, 450), Tuple.tuple(4, 0, 360));
 
-	// }
+	}
 
-	申請時間⑥
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a6(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間⑥
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a6(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(3, 450, 0), create(2, 120, 0)));
@@ -290,13 +290,13 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(3, 0, 450), Tuple.tuple(2, 0, 120));
 
-	// }
+	}
 
-	申請時間①
-	代休に必要な時間->1日0ｈ
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2b1(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間①
+	// 代休に必要な時間->1日0ｈ
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2b1(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(1, 690, 0), create(2, 120, 0)));
@@ -321,12 +321,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 690, 0), Tuple.tuple(2, 120, 0));
 
-	// }
+	}
 
-	申請時間②
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2b2(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間②
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2b2(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(1, 330, 0), create(2, 120, 0)));
@@ -351,13 +351,13 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 330, 0), Tuple.tuple(2, 120, 0));
 
-	// }
+	}
 
-	申請時間⑦
-	勤務種類の設定->代休を発生させない
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a7(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間⑦
+	// 勤務種類の設定->代休を発生させない
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a7(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(3, 690, 0), create(4, 120, 0)));
@@ -381,12 +381,12 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(3, 690, 0), Tuple.tuple(4, 120, 0));
 
-	// }
+	}
 
-	申請時間⑧
-	// @SuppressWarnings("unchecked")
-	// @Test
-	// public void test2a8(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
+	// 申請時間⑧
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test2a8(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked GetSubHolOccurrenceSetting getSub) {
 
 		// List<HolidayWorkFrameTime> hdTimeWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
 		// hdTimeWorkFrameTime.addAll(Arrays.asList(create(1, 690, 0), create(2, 120, 0)));
@@ -410,7 +410,7 @@ public class TranferHdWorkCompensatoryTest {
 										// x -> x.getTransferTime().get().getTime().v())
 								// .contains(Tuple.tuple(1, 690, 0), Tuple.tuple(2, 120, 0));
 
-	// }
+	}
 
 	// public DailyRecordOfApplication createRCHdCase2(List<HolidayWorkFrameTime> lstFrameTime) {
 
