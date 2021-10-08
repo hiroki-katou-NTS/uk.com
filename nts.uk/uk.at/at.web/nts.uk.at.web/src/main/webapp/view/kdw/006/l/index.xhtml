@@ -9,7 +9,7 @@
 			<script>
 				var dialogSize = {
 					width: 620,
-					height: 360
+					height: 330
 				};
 			</script>
 
@@ -22,7 +22,7 @@
 		<ui:define name="content">
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">
-					<div class="valign-center control-group" style="padding-top: 20px">
+					<div class="valign-center control-group" style="padding-top: 5px">
 						<button tabindex="1"
 							data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
 						<button tabindex="2"
@@ -31,21 +31,8 @@
 							data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
 					</div>
 
-					<!-- <div tabindex="4" id="B1_4" data-bind="ntsListBox: {
-						name: '#[KDW006_330]',
-						options: lstWpkHistory,
-						optionsValue: 'historyId',
-						optionsText: 'displayText',
-						multiple: false,
-						value: selectedHistoryId,
-						enable: true,
-						rows: 5,
-						columns: [
-							{ headerText: $i18n('KDW006_330'), key: 'displayText', length: 15 }
-						]}"></div> -->
-
 					<table id="single-list" data-bind="ntsGridList: {
-						options: lstWpkHistory,
+						options: $vm.lstWpkHistory,
 						optionsValue: 'historyId',
 						columns: [
 							{ headerText: $i18n('KDW006_44'), prop: 'historyId', width: 0 },
@@ -93,7 +80,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="7"
-					data-bind="enable: $root.errors.isEmpty &amp;&amp; !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId())">#{i18n.getText('CMM011_127')}</button>
+					data-bind="enable: $root.errors.isEmpty &amp;&amp; !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId()), click: AddOrUpdate">#{i18n.getText('CMM011_127')}</button>
 				<button class="large" tabindex="8" data-bind="click: cancel">#{i18n.getText('CMM011_128')}</button>
 			</div>
 		</ui:define>
