@@ -39,26 +39,18 @@ module nts.uk.ui.at.kdw013.calendar {
 
     type EventStatus = 'new' | 'add' | 'update' | 'delete' | 'normal';
 
-    export type EventRaw = EventSlim & {
-        title: string;
-        backgroundColor: string;
-        textColor: string;
-        extendedProps: Record<string, any> & {
-            id: string;
-            status: EventStatus;
-            description: string;
-            sId: string;
-            workCD1: string;
-            workCD2: string;
-            workCD3: string;
-            workCD4: string;
-            workCD5: string;
-            workLocationCD: string;
-            remarks: string;
-            workingHours:number;
-            isTimeBreak:boolean;
-        };
-    };
+	export type EventRaw = EventSlim & {
+		title: string;
+		backgroundColor: string;
+		textColor: string;
+		isTimeBreak: boolean;
+		employeeId: string;
+		extendedProps: {
+			id: string;
+			status: EventStatus;
+			taskBlocks: IManHrPerformanceTaskBlock;
+		};
+	};
 
     const CM2KBC = /([a-z0-9]|(?=[A-Z]))([A-Z])/g;
     const toKebabCase = (s: string) => s.replace(CM2KBC, '$1-$2').toLowerCase();
