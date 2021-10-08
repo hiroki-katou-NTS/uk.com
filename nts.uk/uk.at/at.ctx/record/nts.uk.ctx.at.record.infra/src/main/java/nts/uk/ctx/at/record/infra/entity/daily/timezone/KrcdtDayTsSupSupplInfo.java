@@ -2,13 +2,19 @@ package nts.uk.ctx.at.record.infra.entity.daily.timezone;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
@@ -85,6 +91,13 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 	
 	@Column(name = "SUPPL_INFO_CODE5")
 	public String supplInfoCode5;
+	
+	@OneToOne
+	@JoinColumns({
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false),
+		@JoinColumn(name = "SUP_NO", referencedColumnName = "SUP_NO", insertable = false, updatable = false)})
+	public KrcdtDayOuenTimeSheet krcdtDayOuenTimeSheet;
 	
 	@Override
 	protected Object getKey() {
