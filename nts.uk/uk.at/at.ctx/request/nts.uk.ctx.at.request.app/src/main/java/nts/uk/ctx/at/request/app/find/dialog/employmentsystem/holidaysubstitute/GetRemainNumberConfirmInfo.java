@@ -120,6 +120,7 @@ public class GetRemainNumberConfirmInfo {
 							detailedInfo.setOccurrenceDateStatus(TextResource.localize("KDL005_40"));
 						}
 						
+						
 						String textDay = this.getDayOfJapan(detail.getDateOccur().getDayoffDate().get().dayOfWeek());
 						// 残数詳細情報．発生日をセットする - 発生日
 						detailedInfo.setAccrualDate(TextResource.localize("KDL005_41",
@@ -148,9 +149,29 @@ public class GetRemainNumberConfirmInfo {
 						detailedInfo.setDigestionStatus(TextResource.localize("KDL005_44"));
 					}
 					
+					//逐次発生の休暇明細一覧の消化状態を判断（システム日付）
+					DigestionAtr dataDigestionAtr = occurrDetail.judgeDigestiveStatus(GeneralDate.today());
+					
 					// ループ中の逐次発生の休暇明細一覧．休暇発生明細．消化区分　＝　消滅　＃119869
 					if (occurrDetail.getDigestionCate() == DigestionAtr.EXPIRED) {
-						detailedInfo.setDigestionStatus(TextResource.localize("KDL005_42"));
+						
+						if(dataDigestionAtr == DigestionAtr.EXPIRED ) {
+							detailedInfo.setDigestionStatus(TextResource.localize("KDL005_42"));
+						}else { //未消化
+							// Input．時間管理区分　＝　False
+							String text = detail.getUnbalanceNumber().getDay() + TextResource.localize("KDL005_47");
+							// Input．時間管理区分　＝　True
+							if (unit) {
+								String minu = String.valueOf(detail.getUnbalanceNumber().getTime().get().minute()).length() > 1
+										? String.valueOf(detail.getUnbalanceNumber().getTime().get().minute())
+										: 0 + String.valueOf(detail.getUnbalanceNumber().getTime().get().minute());
+								String hoursMinu = String.valueOf(detail.getUnbalanceNumber().getTime().get().hour()) + ":"
+										+ minu;
+								text = hoursMinu;
+							} 
+
+							detailedInfo.setDigestionStatus(TextResource.localize("KDL005_51", text));
+						}
 					}
 
 					// ループ中の逐次発生の休暇明細一覧．休暇発生明細．消化区分 ＝ 未消化
@@ -183,7 +204,8 @@ public class GetRemainNumberConfirmInfo {
 					// AND 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
 					Optional<AccumulationAbsenceDetail> acctAbsenFil = lstAcctAbsenSort.stream()
 							.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE
-									&& ((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED
+									&& (((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED 
+											|| ((LeaveOccurrDetail) x).judgeDigestiveStatus(GeneralDate.today()) == DigestionAtr.UNUSED) 
 									&& !x.getDateOccur().isUnknownDate())
 							.findFirst();
 
@@ -191,14 +213,18 @@ public class GetRemainNumberConfirmInfo {
 						// 探した逐次発生の休暇明細一覧．休暇発生明細
 						LeaveOccurrDetail occurrDetailFil = (LeaveOccurrDetail) acctAbsenFil.get(); // get LeaveOccurrDetail extends AccumulationAbsenceDetail
 						// 探した逐次発生の休暇明細一覧．休暇発生明細．期限日＝＝ループ中の逐次発生の休暇明細．休暇発生明細．期限日
+						// 探した逐次発生の休暇明細一覧．休暇発生明細．期限日＝＝ループ中の逐次発生の休暇明細．休暇発生明細．期限日
 						if (occurrDetailFil.getDeadline().equals(occurrDetail.getDeadline())) {
 							detailedInfo.setDueDateStatus(TextResource.localize("KDL005_45"));
 						}
 					}
-					String textDayDe = this.getDayOfJapan(occurrDetail.getDeadline().dayOfWeek());
-					// 残数詳細情報．期限日をセットする
-					detailedInfo.setDeadline(TextResource.localize("KDL005_41", occurrDetail.getDeadline().toString(), textDayDe));
-
+					
+					if(occurrDetail.getDigestionCate()  == DigestionAtr.UNUSED || dataDigestionAtr == DigestionAtr.UNUSED) { 
+						String textDayDe = this.getDayOfJapan(occurrDetail.getDeadline().dayOfWeek());
+						// 残数詳細情報．期限日をセットする
+						detailedInfo.setDeadline(TextResource.localize("KDL005_41", occurrDetail.getDeadline().toString(), textDayDe));
+					}
+						
 					// 逐次休暇の紐付け情報を絞り込む
 					Optional<SeqVacationAssociationInfo> seqVacationFil = lstSeqVacation.stream()
 							.filter(x -> detail.getDateOccur().getDayoffDate().isPresent()
@@ -244,7 +270,8 @@ public class GetRemainNumberConfirmInfo {
 
 			Optional<AccumulationAbsenceDetail> undigestInfoFil = accAbsDetail.stream().filter(x -> {
 				return x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE && // 逐次発生の休暇明細一覧．発生消化区分 ＝＝ 発生
-				((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED && // 逐次発生の休暇明細一覧．発生数．消化区分 ＝＝ 未消化 -
+				(((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED || // 逐次発生の休暇明細一覧．発生数．消化区分 ＝＝ 未消化 -
+				((LeaveOccurrDetail) x).judgeDigestiveStatus(GeneralDate.today()) == DigestionAtr.UNUSED )&& 
 				!x.getDateOccur().isUnknownDate(); // 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
 			}).findFirst();
 			
