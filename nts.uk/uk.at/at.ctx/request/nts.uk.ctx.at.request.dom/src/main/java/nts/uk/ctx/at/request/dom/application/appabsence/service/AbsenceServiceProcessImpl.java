@@ -1066,7 +1066,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		            appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 		            appDates.isEmpty() ? Optional.empty() : Optional.of(GeneralDate.fromString(appDates.get(0), FORMAT_DATE)),
 		            workTypeCD,
-		            appAbsenceStartInfoOutput.getSelectedWorkTimeCD(),
+		            appAbsenceStartInfoOutput.isWorkTimeChange() ? appAbsenceStartInfoOutput.getSelectedWorkTimeCD() : Optional.empty(),
 		            Optional.empty(),
 		            Optional.empty(),
 		            Optional.empty());
@@ -2018,6 +2018,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         appAbsenceStartInfoOutput.setHdAppSet(holidayRequestSetOutput.getHdAppSet());
         appAbsenceStartInfoOutput.setVacationAppReflect(holidayRequestSetOutput.getVacationAppReflect());
         appAbsenceStartInfoOutput.setRemainVacationInfo(remainVacationInfo);
+        appAbsenceStartInfoOutput.setWorkTimeChange(applyForLeave.isPresent() ? applyForLeave.get().getReflectFreeTimeApp().getWorkChangeUse().isUse() : false);
 
         // 勤務種類・就業時間帯情報を取得する
         appAbsenceStartInfoOutput = this.getWorkTypeWorkTimeInfo(companyID, applyForLeave.isPresent() ? applyForLeave.get() : null, appAbsenceStartInfoOutput);
