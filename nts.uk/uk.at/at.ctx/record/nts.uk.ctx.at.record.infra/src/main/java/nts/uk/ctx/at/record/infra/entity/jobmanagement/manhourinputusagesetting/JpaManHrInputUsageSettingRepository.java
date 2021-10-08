@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask;
+package nts.uk.ctx.at.record.infra.entity.jobmanagement.manhourinputusagesetting;
 
 import java.util.Optional;
 
@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.manhourinputusagesetting.KrcmtManHrUse;
 
 /**
  * 

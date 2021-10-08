@@ -3,16 +3,14 @@ package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetas
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskDisplayOrder;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * お気に入り作業の表示順 FavoriteTaskDisplayOrder
@@ -24,32 +22,33 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_FRAME_SET_DISPORDER")
-public class KrcdtTaskFavFrameSetDisporder extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavFrameSetDisporder extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KrcdtTaskFavFrameSetDisporderPk pk;
+	@Id
+	@Column(name = "FAV_ID")
+	public String favId;
 
 	@Column(name = "SID")
 	public String sId;
-
-	@Column(name = "CID")
-	public String cid;
+	
+	@Column(name = "DISPORDER")
+	public int disporder;
 
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.favId;
 	}
 
 	public FavoriteDisplayOrder toDomain() {
-		return new FavoriteDisplayOrder(this.pk.favId, this.pk.disporder);
+		return new FavoriteDisplayOrder(this.favId, this.disporder);
 	}
 
 	public KrcdtTaskFavFrameSetDisporder(String sId, FavoriteDisplayOrder order) {
-		this.cid = AppContexts.user().companyId();
 		this.sId = sId;
-		this.pk = new KrcdtTaskFavFrameSetDisporderPk(order.getFavId(), order.getOrder());
+		this.favId = order.getFavId();
+		this.disporder = order.getOrder();
 	}
 
 }

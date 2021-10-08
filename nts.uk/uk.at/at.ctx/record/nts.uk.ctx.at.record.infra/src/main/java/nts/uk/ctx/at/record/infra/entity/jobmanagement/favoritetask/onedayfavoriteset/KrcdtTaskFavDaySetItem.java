@@ -5,12 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.workconfirmation.KrcdtTaskConfirmPK;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * 
@@ -21,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_DAY_SET_ITEM")
-public class KrcdtTaskFavDaySetItem extends ContractUkJpaEntity implements Serializable {
+public class KrcdtTaskFavDaySetItem extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -42,9 +45,11 @@ public class KrcdtTaskFavDaySetItem extends ContractUkJpaEntity implements Seria
 
 	@Column(name = "TASK_CD5")
 	public String taskCd5;
-
-	@Column(name = "CID")
-	public String cid;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "FAV_ID", referencedColumnName = "FAV_ID"),
+		@PrimaryKeyJoinColumn(name = "START_CLOCK", referencedColumnName = "START_CLOCK") })
+	public KrcdtTaskFavDaySetTs krcdtTaskFavDaySetTs;
 
 	@Override
 	protected Object getKey() {

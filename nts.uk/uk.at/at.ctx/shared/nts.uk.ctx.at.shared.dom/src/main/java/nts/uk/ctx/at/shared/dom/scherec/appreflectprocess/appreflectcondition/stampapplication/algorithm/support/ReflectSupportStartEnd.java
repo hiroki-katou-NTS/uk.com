@@ -86,7 +86,7 @@ public class ReflectSupportStartEnd {
 				data.getWorkLocationCd().orElse(null));
 		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 
-		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty());
+		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty(), Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
 						SupportFrameNo.of(data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE)), workContent, sheet),
@@ -126,7 +126,7 @@ public class ReflectSupportStartEnd {
 			workplace = old.getWorkContent().getWorkplace();
 		}
 
-		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty());
+		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty(), Optional.empty());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet), lstItemId);
 
 	}

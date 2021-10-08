@@ -35,6 +35,5 @@ public interface ManHourRecordItemRepository {
 	 * @param items 項目リスト
 	 * @return 工数実績項目リスト
 	 */
-	//TODO: List<工数実績項目ID> 工数実績項目ID ? primitive QA120063
 	List<ManHourRecordItem> get(String cId, List<Integer> items);
 }

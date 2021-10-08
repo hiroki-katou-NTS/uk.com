@@ -14,8 +14,8 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  *
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class WorkSuppInfo implements DomainObject {
 
 	/** 補足時間情報: List<補足情報の時間項目> */
@@ -29,5 +29,5 @@ public class WorkSuppInfo implements DomainObject {
 	
 	/** 補足選択項目情報: List<補足情報の選択項目> */
 	private List<SuppInfoSelectionItem> suppInfoSelectionItems;
-
+	
 }

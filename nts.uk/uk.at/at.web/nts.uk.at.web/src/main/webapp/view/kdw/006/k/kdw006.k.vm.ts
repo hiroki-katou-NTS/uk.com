@@ -2,6 +2,10 @@
 
 module nts.uk.at.view.kmk006.k {
 
+    const API = {
+        LIST_WORK_INFO: 'at/record/kdw006/view-k/get-list-work'
+    }
+
     @bean()
     export class ViewModel extends ko.ViewModel {
 
@@ -16,8 +20,28 @@ module nts.uk.at.view.kmk006.k {
         public currentName: KnockoutObservable<string> = ko.observable('');
         public currentMemo: KnockoutObservable<string> = ko.observable('');
 
+        public screenMode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.UPDATE);
+
         created() {
             const vm = this;
+
+            const inputListWork = {
+                cId: vm.$user.companyId,
+                items: [25, 26, 27, 28, 29]
+            }
+
+            vm.$blockui('invisible')
+                .then(() => {
+                    vm.$ajax('at', API.LIST_WORK_INFO, inputListWork)
+                        .then((data: any) => {
+                            if (data.length === 0) {
+                                // vm.screenMode(SCREEN_MODE.NOT_HISTORY);
+                            }
+                        })
+                })
+                .always(() => {
+                    vm.$blockui('clear');
+                })
 
             vm.itemList = ko.observableArray([
                 { code: '1', name: '基本給' },
@@ -30,7 +54,7 @@ module nts.uk.at.view.kmk006.k {
             vm.isEditable = ko.observable(true);
 
             for (var i = 1; i <= 20; i++) {
-                vm.item.push({ id: '000000000' + i , code: '00' + i, name: 'Employee' + i });
+                vm.item.push({ id: '000000000' + i, code: '00' + i, name: 'ちゅん　ちゅん' + i });
             }
 
         }
@@ -55,5 +79,11 @@ module nts.uk.at.view.kmk006.k {
         id: string;
         code: string;
         name: string;
+    }
+
+    enum SCREEN_MODE {
+        NEW = 1,
+        UPDATE = 2,
+        NOT_HISTORY = 3
     }
 }

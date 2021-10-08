@@ -28,7 +28,7 @@ public class ActualManHrTaskBlockCreationService {
 	 * @param taskDetails 工数実績項目リスト
 	 * @return 日別実績の工数実績作業
 	 */
-	public static DailyActualManHrActualTask create(Require require, String sId, GeneralDate date,
+	public DailyActualManHrActualTask create(Require require, String sId, GeneralDate date,
 			List<ManHrTaskDetail> taskDetails) {
 
 		// $作業ブロックリスト = List.Empty
@@ -50,7 +50,7 @@ public class ActualManHrTaskBlockCreationService {
 
 				// $作業詳細 = 工数実績項目リスト：$2.応援勤務枠No.含む($1.対象応援勤務枠)
 				for (ManHrTaskDetail d : taskDetails) {
-					if (d.getSupNo() == t.getSubNo()) {
+					if (d.getSupNo().equals(t.getSupNo())) {
 						lstTaskDetail.add(d);
 					}
 				}
