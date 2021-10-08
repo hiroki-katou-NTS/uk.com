@@ -32,6 +32,10 @@ public class GrantSystemAdminRoleService {
 			,	String userId
 			,	DatePeriod validPeriod ) {
 		
+		if( require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER ).isPresent() ) {
+			throw new BusinessException("Msg_61", "Com_User");
+		}
+		
 		val grantInfo = RoleIndividualGrant.createGrantInfoOfSystemMananger( require, userId, validPeriod );
 		grantInfo.checkStatusNormal( require );
 		
@@ -51,7 +55,7 @@ public class GrantSystemAdminRoleService {
 			,	String userId
 			,	DatePeriod validPeriod ) {
 		
-		val grantInfo = require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
+		val grantInfo = require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER ).get();
 		grantInfo.setValidPeriod(validPeriod);
 		
 		grantInfo.checkStatusNormal( require );
@@ -72,7 +76,7 @@ public class GrantSystemAdminRoleService {
 	 */
 	public static AtomTask deprive( Require require, String userId) {
 		
-		val grantInfo = require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
+		val grantInfo = require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER ).get();
 		
 		if( !isAlwaysASystemAdmin(require, grantInfo.getUserId(), Optional.empty()) )
 			throw new BusinessException( "Msg_331" );
@@ -137,7 +141,7 @@ public class GrantSystemAdminRoleService {
 		 * @param roleType ロール種類
 		 * @return
 		 */
-		RoleIndividualGrant getGrantInfoByRoleTypeOfUser( String userId, RoleType roleType );
+		Optional<RoleIndividualGrant> getGrantInfoByRoleTypeOfUser( String userId, RoleType roleType );
 	
 		/**
 		 * ロール種類から付与情報を取得する

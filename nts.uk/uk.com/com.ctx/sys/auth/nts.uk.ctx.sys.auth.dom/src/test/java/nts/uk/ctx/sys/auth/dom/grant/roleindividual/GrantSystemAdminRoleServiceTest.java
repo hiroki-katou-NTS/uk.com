@@ -25,6 +25,24 @@ public class GrantSystemAdminRoleServiceTest {
 
 	@Injectable
 	private GrantSystemAdminRoleService.Require require;
+	
+	@Test
+	public void testGrant_msg3() {
+		val userId = "userId";
+		val validPeriod = new DatePeriod( GeneralDate.ymd(2000, 01, 01) , GeneralDate.ymd(2030, 12, 31) );
+		val grantInfo = RoleIndividualGrantHelper.createRoleIndividualGrant( userId, RoleType.SYSTEM_MANAGER, 
+				new DatePeriod( GeneralDate.ymd(2020, 01, 01) , GeneralDate.ymd(2020, 12, 31) ));
+		
+		new Expectations( RoleIndividualGrant.class ) {
+			{
+				require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
+				result = Optional.of(grantInfo);
+			}
+		};
+		
+		//Act
+		NtsAssert.businessException( "Msg_61", () -> GrantSystemAdminRoleService.grant( require, userId, validPeriod ) );
+	}
 
 	/**
 	 * target: grant
@@ -170,7 +188,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations( RoleIndividualGrant.class ) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
-				result = grantRole;
+				result = Optional.of(grantRole);
 			
 				grantRole.checkStatusNormal( require );
 				result = new RuntimeException("this role is not manager role!!!");
@@ -196,7 +214,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations( RoleIndividualGrant.class ) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
-				result = grantRole;
+				result = Optional.of(grantRole);
 			
 				grantRole.checkStatusNormal( require );
 				result = new BusinessException( "Msg_2210" );
@@ -222,7 +240,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations( RoleIndividualGrant.class ) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
-				result = grantRole;
+				result = Optional.of(grantRole);
 			
 				grantRole.checkStatusNormal( require );
 				result = new RuntimeException("this user is default user!!!");
@@ -248,7 +266,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations( RoleIndividualGrant.class ) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( userId, RoleType.SYSTEM_MANAGER );
-				result = grantRole;
+				result = Optional.of(grantRole);
 			
 				grantRole.checkStatusNormal( require );
 				result = new BusinessException("Msg_2211");
@@ -292,7 +310,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations( RoleIndividualGrant.class ) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( "userID_2", RoleType.SYSTEM_MANAGER );
-				result = grantRole_2;
+				result = Optional.of(grantRole_2);
 			
 				grantRole_2.checkStatusNormal( require );
 				
@@ -346,7 +364,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations(grantRole_1, grantRole_2, grantRole_3) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( "userID_2", RoleType.SYSTEM_MANAGER );
-				result = grantRole_2;
+				result = Optional.of(grantRole_2);
 			
 				grantRole_2.checkStatusNormal( require );
 				
@@ -399,7 +417,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations( RoleIndividualGrant.class, grantRole_1, grantRole_3 ) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( "userID_2", RoleType.SYSTEM_MANAGER );
-				result = grantRole_2;
+				result = Optional.of(grantRole_2);
 				
 				require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER);
 				result = grantRoles;
@@ -446,7 +464,7 @@ public class GrantSystemAdminRoleServiceTest {
 		new Expectations( RoleIndividualGrant.class , grantRole_1, grantRole_3) {
 			{
 				require.getGrantInfoByRoleTypeOfUser( "userID_2", RoleType.SYSTEM_MANAGER );
-				result = grantRole_2;
+				result = Optional.of(grantRole_2);
 				
 				require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER );
 				result = grantRoles;
