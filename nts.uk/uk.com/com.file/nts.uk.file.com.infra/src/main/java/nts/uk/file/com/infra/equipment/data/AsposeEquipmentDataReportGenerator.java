@@ -137,7 +137,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				extension = CSV_EXTENSION;
 			}
 			this.printData(sheet, reportContext, dataSource);
-			sheet.autoFitRows();
+			sheet.setActiveCell(EXPORT_YM_HEADER);
 			
 			String fileName = dataSource.getFormSetting().map(data -> data.getTitle().v()).orElse("") + extension;
 			OutputStream outputStream = this.createNewFile(generatorContext, this.getReportName(fileName));
