@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.j.RegisterNewFormatSettingsCommand;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.j.RegisterNewFormatSettingsCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.DeleteTheChoiceCommand;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.DeleteTheChoiceCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.RegisterNewOptionsCommand;
@@ -63,12 +65,15 @@ public class Kdw006WS extends WebService {
 
 	@Inject
 	private UpdateHistoryCommandHandler updateHistory;
-	
+
 	@Inject
 	private AcquireManHourRecordItems acquireManHourRecordItems;
 
 	@Inject
 	private GetDisplayFormat getDisplayFormat;
+
+	@Inject
+	private RegisterNewFormatSettingsCommandHandler registerOrUpdateSetting;
 
 	// 作業補足情報の選択項目を取得する
 	@POST
@@ -145,6 +150,13 @@ public class Kdw006WS extends WebService {
 	@Path("view-j/get-display-format")
 	public GetDisplayFormatDto getDisplayFormat() {
 		return this.getDisplayFormat.get();
+	}
+
+	// Command: フォーマット設定を新規登録する / フォーマット設定を更新登録する
+	@POST
+	@Path("view-j/register-or-upate")
+	public void registerOrUpdate(RegisterNewFormatSettingsCommand command) {
+		this.registerOrUpdateSetting.handle(command);;
 	}
 
 }
