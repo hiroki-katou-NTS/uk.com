@@ -2786,14 +2786,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             // {1}:付与後使用日数
                             Double daysOfUseAfterGrant = thisMonthFutureSituation.getDaysOfUseAfterGrant();
 
-                            if (daysOfUseAfterGrant == null || daysOfUseAfterGrant == 0) {
+                            if (daysOfUseAfterGrant == null ) {
                                 cells.get(firstRow, 10 + totalMonth)
                                         .setValue(numberOfDaysUsedBeforeGrant == null || numberOfDaysUsedBeforeGrant == 0 ? null : df.format(numberOfDaysUsedBeforeGrant));
                             } else {
-                                val vl23 = new StringBuilder();
-                                vl23.append(numberOfDaysUsedBeforeGrant == null ? "0.0" : numberOfDaysUsedBeforeGrant.toString());
-                                vl23.append("/").append(daysOfUseAfterGrant.toString());
-                                cells.get(firstRow, 10 + totalMonth).setValue(vl23);
+                                if((numberOfDaysUsedBeforeGrant == null || numberOfDaysUsedBeforeGrant == 0) && (daysOfUseAfterGrant ==0)){
+                                    cells.get(firstRow + 1, 10 + totalMonth).setValue(null);
+                                }else {
+                                    val vl23 = new StringBuilder();
+                                    vl23.append(numberOfDaysUsedBeforeGrant == null ? "0.0" : numberOfDaysUsedBeforeGrant.toString());
+                                    vl23.append("/").append(daysOfUseAfterGrant.toString());
+                                    cells.get(firstRow, 10 + totalMonth).setValue(vl23);
+                                }
                             }
                             if(isTime){
                                 // N2_4 子の看護休暇_使用数時間実績値
@@ -2801,14 +2805,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 Integer usageTimeBeforeGrant = thisMonthFutureSituation.getUsageTimeBeforeGrant();
                                 //{1}:付与後使用時間
                                 Integer usageTimeAfterGrant = thisMonthFutureSituation.getUsageTimeAfterGrant();
-                                if (usageTimeAfterGrant == null || usageTimeAfterGrant == 0 ) {
+                                if (usageTimeAfterGrant == null ) {
                                     cells.get(firstRow + 1, 10 + totalMonth)
                                             .setValue(usageTimeBeforeGrant == null || usageTimeBeforeGrant == 0 ? null : convertToTime(usageTimeBeforeGrant));
                                 } else {
-                                    val vl24 = new StringBuilder();
-                                    vl24.append(usageTimeBeforeGrant == null ? "0:00" : convertToTime(usageTimeBeforeGrant));
-                                    vl24.append("/").append(convertToTime(usageTimeAfterGrant));
-                                    cells.get(firstRow + 1, 10 + totalMonth).setValue(vl24);
+                                        if((usageTimeBeforeGrant == null || usageTimeBeforeGrant == 0) && (usageTimeAfterGrant ==0)){
+                                            cells.get(firstRow + 1, 10 + totalMonth).setValue(null);
+                                        }else {
+                                            val vl24 = new StringBuilder();
+                                            vl24.append(usageTimeBeforeGrant == null ? "0:00" : convertToTime(usageTimeBeforeGrant));
+                                            vl24.append("/").append(convertToTime(usageTimeAfterGrant));
+                                            cells.get(firstRow + 1, 10 + totalMonth).setValue(vl24);
+                                        }
                                 }
                                 //N2_6 子の看護休暇_残数時間実績値
                                 //{0}:付与前残時間
@@ -2829,7 +2837,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
                                 }
                             }
-
                             //N_25子の看護休暇_残数日数実績値
                             //{0}:付与前残日数
                             Double remainingDaysBeforeGrant = thisMonthFutureSituation.getRemainingDaysBeforeGrant();
@@ -3055,12 +3062,16 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             // {1}:付与後使用日数
                             Double daysOfUseAfterGrant = thisMonthFutureSituation.getDaysOfUseAfterGrant();
 
-                            if (daysOfUseAfterGrant != null && daysOfUseAfterGrant ==0) {
-                                val vl23 = new StringBuilder();
-                                vl23.append(numberOfDaysUsedBeforeGrant == null ? "0.0" : df.format(numberOfDaysUsedBeforeGrant));
-                                vl23.append("/").append(daysOfUseAfterGrant.toString());
-                                cells.get(firstRow, 10 + totalMonth).setValue(vl23);
+                            if (daysOfUseAfterGrant != null) {
 
+                                if(daysOfUseAfterGrant == 0 && (numberOfDaysUsedBeforeGrant == null || numberOfDaysUsedBeforeGrant ==0)){
+                                    cells.get(firstRow, 10 + totalMonth).setValue(null);
+                                }else {
+                                    val vl23 = new StringBuilder();
+                                    vl23.append(numberOfDaysUsedBeforeGrant == null ? "0.0" : df.format(numberOfDaysUsedBeforeGrant));
+                                    vl23.append("/").append(daysOfUseAfterGrant.toString());
+                                    cells.get(firstRow, 10 + totalMonth).setValue(vl23);
+                                }
                             } else {
                                 cells.get(firstRow, 10 + totalMonth)
                                         .setValue(numberOfDaysUsedBeforeGrant == null || numberOfDaysUsedBeforeGrant == 0 ? null : df.format(numberOfDaysUsedBeforeGrant));
@@ -3071,11 +3082,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 Integer usageTimeBeforeGrant = thisMonthFutureSituation.getUsageTimeBeforeGrant();
                                 //{1}:付与後使用時間
                                 Integer usageTimeAfterGrant = thisMonthFutureSituation.getUsageTimeAfterGrant();
-                                if (usageTimeAfterGrant != null && usageTimeAfterGrant !=0) {
-                                    val vl24 = new StringBuilder();
-                                    vl24.append(usageTimeBeforeGrant == null ? "0:00" : convertToTime(usageTimeBeforeGrant));
-                                    vl24.append("/").append(convertToTime(usageTimeAfterGrant));
-                                    cells.get(firstRow + 1, 10 + totalMonth).setValue(vl24);
+                                if (usageTimeAfterGrant != null ) {
+                                    if(usageTimeAfterGrant == 0 && (usageTimeBeforeGrant == null || usageTimeBeforeGrant ==0)){
+                                        cells.get(firstRow, 10 + totalMonth).setValue(null);
+                                    }else {
+                                        val vl24 = new StringBuilder();
+                                        vl24.append(usageTimeBeforeGrant == null ? "0:00" : convertToTime(usageTimeBeforeGrant));
+                                        vl24.append("/").append(convertToTime(usageTimeAfterGrant));
+                                        cells.get(firstRow + 1, 10 + totalMonth).setValue(vl24);
+                                    }
 
                                 } else {
                                     cells.get(firstRow + 1, 10 + totalMonth)
