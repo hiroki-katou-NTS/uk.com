@@ -193,7 +193,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD3(), 
 							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD4(), 
 							this.workContent.getWork() == null ? null : this.workContent.getWork().getWorkCD5())), 
-					this.workContent.getWorkRemarks() == null ? Optional.empty() : Optional.of(new WorkinputRemarks(this.workContent.getWorkRemarks())));
+					this.workContent.getWorkRemarks() == null ? Optional.empty() : Optional.of(new WorkinputRemarks(this.workContent.getWorkRemarks())), Optional.empty());
 		} else {
 			workContent = WorkContent.create( 
 					WorkplaceOfWorkEachOuen.create(
@@ -202,6 +202,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 					Optional.ofNullable(WorkGroup.create(
 							null, 
 							Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())), 
+					Optional.empty(),
 					Optional.empty());
 		}
 		ReasonTimeChange reasonTimeChangeStart = null;

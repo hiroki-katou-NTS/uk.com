@@ -39,10 +39,11 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 
 	@Override
 	public void delete(String sId) {
-		Optional<KrcdtTaskFavFrameSetDisporder> entity = this.queryProxy()
-				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getSingle();
-		if (entity.isPresent()) {
-			this.commandProxy().remove(entity.get());
+		List<KrcdtTaskFavFrameSetDisporder> entities = this.queryProxy()
+				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getList();
+		
+		for (KrcdtTaskFavFrameSetDisporder entity: entities) {
+			this.commandProxy().remove(entity);
 		}
 	}
 
@@ -55,7 +56,7 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getList();
 
 		for (KrcdtTaskFavFrameSetDisporder e : entities) {
-			displayOrders.add(new FavoriteDisplayOrder(e.pk.favId, e.pk.disporder));
+			displayOrders.add(new FavoriteDisplayOrder(e.favId, e.disporder));
 		}
 
 		return Optional.of(new FavoriteTaskDisplayOrder(sId, displayOrders));

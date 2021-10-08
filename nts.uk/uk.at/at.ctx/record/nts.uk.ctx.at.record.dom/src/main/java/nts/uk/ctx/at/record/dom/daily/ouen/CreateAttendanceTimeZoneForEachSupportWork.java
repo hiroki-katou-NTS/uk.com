@@ -101,7 +101,7 @@ public class CreateAttendanceTimeZoneForEachSupportWork {
 		//	$職場ID = require.所属職場を取得する(社員ID,年月日)
 		String workplateID = require.getAffWkpHistItemByEmpDate(empId, ymd);
 		return OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(workDetailsParam.getSupportFrameNo().v()), 
-				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId(workplateID), workDetailsParam.getWorkLocationCD().orElse(null)), workDetailsParam.getWorkGroup(), workDetailsParam.getRemarks()), 
+				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId(workplateID), workDetailsParam.getWorkLocationCD().orElse(null)), workDetailsParam.getWorkGroup(), workDetailsParam.getRemarks(), Optional.empty()), 
 				//đã xác nhận QA: http://192.168.50.4:3000/issues/115977
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.ofNullable(workDetailsParam.getTimeZone().getStart()), Optional.ofNullable(workDetailsParam.getTimeZone().getEnd())));
 	}

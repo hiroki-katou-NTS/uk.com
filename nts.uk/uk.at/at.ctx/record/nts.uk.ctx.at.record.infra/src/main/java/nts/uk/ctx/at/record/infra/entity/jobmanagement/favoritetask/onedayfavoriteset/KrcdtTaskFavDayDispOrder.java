@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
@@ -37,5 +38,15 @@ public class KrcdtTaskFavDayDispOrder extends ContractCompanyUkJpaEntity impleme
 	@Override
 	protected Object getKey() {
 		return this.favId;
+	}
+	
+	public FavoriteDisplayOrder toDomain() {
+		return new FavoriteDisplayOrder(this.favId, this.disporder);
+	}
+	
+	public KrcdtTaskFavDayDispOrder(String sId, FavoriteDisplayOrder order) {
+		this.sId = sId;
+		this.favId = order.getFavId();
+		this.disporder = order.getOrder();
 	}
 }
