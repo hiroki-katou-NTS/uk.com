@@ -1193,7 +1193,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					Collections.emptyList(), 
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-					Optional.of(timeDigestionParam), 
+					Optional.ofNullable(timeDigestionParam), 
 					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
 					false);
 			
@@ -1211,7 +1211,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					appHolidayWork.getWorkInformation().getWorkTimeCode().v(),
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-                    Optional.of(timeDigestionParam), 
+                    Optional.ofNullable(timeDigestionParam), 
                     false);
 		}
 		//	遷移する前のエラーチェック

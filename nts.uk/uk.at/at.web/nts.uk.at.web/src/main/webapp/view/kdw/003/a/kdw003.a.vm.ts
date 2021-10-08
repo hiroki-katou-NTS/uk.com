@@ -2965,7 +2965,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
                             lstEmployee = self.lstEmployee();
                         }
-                        let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
+                        /*let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
                         let param = {
                             dateRange: (self.hasEmployee && !hasChangeFormat) ? {
                                 startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
@@ -2979,13 +2979,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             objectShare: null,
                             showLock: self.showLock(),
                             changeFormat: false
-                        };
+                        };*/
+						
                         self.characteristics.authenSelectFormat = data;
                         self.characteristics.employeeId = __viewContext.user.employeeId;
                         self.characteristics.companyId = __viewContext.user.companyId;
-                        self.characteristics.formatExtract = param.displayFormat;
+                        self.characteristics.formatExtract = self.hasEmployee ? self.displayFormat() : _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat;
                         character.save('characterKdw003a', self.characteristics);
-                        nts.uk.ui.block.invisible();
+						self.formatCodes(data);
+						self.reloadScreen();
+						
+                       /* nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.initParam(param).done((dataInit) => {
                             let paramMonth: any = {loadAfterCalc: false}
@@ -3004,12 +3008,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.receiveData(data);
                                 self.extraction();
                                 self.displayNumberZero();
+	
+								self.reloadScreen();
                                 nts.uk.ui.block.clear();
                             });
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alert(error.message);
                             nts.uk.ui.block.clear();
-                        });
+                        });*/
                     }
                 });
             }

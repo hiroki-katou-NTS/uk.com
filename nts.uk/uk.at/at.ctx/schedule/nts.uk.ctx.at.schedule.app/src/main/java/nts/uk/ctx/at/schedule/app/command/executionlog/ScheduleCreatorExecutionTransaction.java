@@ -1085,13 +1085,15 @@ public class ScheduleCreatorExecutionTransaction {
 				
 				List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
 						DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-						optEmploymentInfo.get().getScheManaStatus().value);
+						optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE ? 12 : 13);
 				
-				if (optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
-					lstWorkType = workTypeRepository.findHolidayWorkType(command.getCompanyId(),
+				if ((optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE || optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) 
+						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
+					lstWorkType = workTypeRepository.findHolidayWorkTypeClo(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-							optEmploymentInfo.get().getScheManaStatus().value, // WorkTypeClassification
-							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue()); // HolidayAtr
+							//ScheManaStatus.ON_LEAVE = WorkTypeClassification.LeaveOfAbsence, ScheManaStatus.CLOSED = WorkTypeClassification.Closure
+							optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE ? 12 : 13, 
+							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2); // CloseAtr
 				}
 				
 				if (lstWorkType.isEmpty()) {
@@ -1288,17 +1290,17 @@ public class ScheduleCreatorExecutionTransaction {
 			// パラメータ。作成参照先を確認する
 			if (command.getContent().getSpecifyCreation().getReferenceMaster().isPresent()) {
 				workplaceHistItem = convertEnum(command.getContent().getSpecifyCreation().getReferenceMaster().get());
-				Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache,
+				BasicWorkSetiingDto basicWorkSetting = this.getBasicWorkSetting(command, masterCache,
 						workplaceHistItem, dateInPeriod,
 						masterCache.getEmpGeneralInfo().getClassificationDto(),
 						masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
 				String workType = null;
 				String workTime = null;
-				if(basicWorkSetting.isPresent()) {
-					workType = basicWorkSetting.get().getWorktypeCode() == null ? null : basicWorkSetting.get().getWorktypeCode().v();
-					workTime = basicWorkSetting.get().getWorkingCode() == null ? null : basicWorkSetting.get().getWorkingCode().v();
+				if(basicWorkSetting.getBasicSet().isPresent()) {
+					workType = basicWorkSetting.getBasicSet().get().getWorktypeCode() == null ? null : basicWorkSetting.getBasicSet().get().getWorktypeCode().v();
+					workTime = basicWorkSetting.getBasicSet().get().getWorkingCode() == null ? null : basicWorkSetting.getBasicSet().get().getWorkingCode().v();
 				}
-				return new PrepareWorkOutput(new WorkInformation(workType, workTime), null, null, Optional.empty());
+				return new PrepareWorkOutput(new WorkInformation(workType, workTime), null, null, basicWorkSetting.getScheduleErrorLog());
 			}
 
 			// 営業日カレンダーで勤務予定作成する TQP
@@ -1307,28 +1309,28 @@ public class ScheduleCreatorExecutionTransaction {
 			// if(masterCache.getListWorkingConItem().isEmpty()) {
 
 			// xử lý 「基本勤務設定」を取得する(lấy thông tin 「基本勤務設定」)
-			Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache, workplaceHistItem,
+			BasicWorkSetiingDto basicWorkSetting = this.getBasicWorkSetting(command, masterCache, workplaceHistItem,
 					dateInPeriod, masterCache.getEmpGeneralInfo().getClassificationDto(),
 					masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
 			// fix bug 113909
-			if(!basicWorkSetting.isPresent())
-				return new PrepareWorkOutput(null, null, null, Optional.empty());
+			if(!basicWorkSetting.getBasicSet().isPresent())
+				return new PrepareWorkOutput(null, null, null, basicWorkSetting.getScheduleErrorLog());
 
 			// 勤務種類一覧から勤務種類を取得する
 			List<WorkType> lstWorkTypes = masterCache.getListWorkType();
 			Optional<WorkType> workType = lstWorkTypes.stream()
-					.filter(x -> x.getWorkTypeCode().v().equals(basicWorkSetting.get().getWorktypeCode().v())).findFirst();
+					.filter(x -> x.getWorkTypeCode().v().equals(basicWorkSetting.getBasicSet().get().getWorktypeCode().v())).findFirst();
 
 			// 「就業時間帯コード」を取得する
 			WorkingCode workTimeCode = this.getWorkingCode(command, masterCache, itemDto,
-					basicWorkSetting.isPresent() ? basicWorkSetting.get().getWorkingCode() : null,
+					basicWorkSetting.getBasicSet().isPresent() ? basicWorkSetting.getBasicSet().get().getWorkingCode() : null,
 					workType.isPresent() ? workType.get() : null, dateInPeriod, creator);
 
 			// 「勤務種類コード」、「就業時間帯コード」を返す
 			WorkInformation workInformation = new WorkInformation(workType.map(m -> m.getWorkTypeCode().v()).orElse(""),
 					workTimeCode == null ? null : workTimeCode.v());
 
-			return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
+			return new PrepareWorkOutput(workInformation, null, null, basicWorkSetting.getScheduleErrorLog());
 
 			// }
 			// else {
@@ -1506,12 +1508,12 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @param mapWorkplaceHist      特定期間の社員情報
 	 * @return
 	 */
-	private Optional<BasicWorkSetting> getBasicWorkSetting(ScheduleCreatorExecutionCommand command,
+	private BasicWorkSetiingDto getBasicWorkSetting(ScheduleCreatorExecutionCommand command,
 			CreateScheduleMasterCache masterSche, WorkScheduleMasterReferenceAtr workplaceHistItem,
 			GeneralDate dateInPeriod,
 			List<ExClassificationHistoryImported> mapClassificationHist,
 			List<ExWorkPlaceHistoryImported> mapWorkplaceHist, ScheduleCreator creator) {
-
+		BasicWorkSetiingDto settingDto = new BasicWorkSetiingDto(Optional.empty(), Optional.empty());
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
 		// điều kiện 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
@@ -1529,14 +1531,20 @@ public class ScheduleCreatorExecutionTransaction {
 			} else {
 				// 取得できない
 				// ドメインモデル「スケジュール作成エラーログ」を登録する(đăng ký domain「スケジュール作成エラーログ」)
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_588");
-				return Optional.empty();
+				String errorContent = this.internationalization.localize("Msg_588", "#Msg_588").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			}
 
 			// if 取得できない
 			if (!optionalCompanyBasicWork.isPresent()) {
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
-				return Optional.empty();
+				String errorContent = this.internationalization.localize("Msg_589", "#Msg_589").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			}
 			BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
 					creator.getEmployeeId(), geterCommand, null,
@@ -1545,7 +1553,9 @@ public class ScheduleCreatorExecutionTransaction {
 					.getBasicWorkSettingByClassification(settingByClassification);
 			BasicWorkSetting setting = new BasicWorkSetting(basicWorkSetting.get().getWorktypeCode(),
 					basicWorkSetting.get().getWorkingCode(), basicWorkSetting.get().getWorkdayDivision());
-			return Optional.ofNullable(setting);
+			
+			settingDto.setBasicSet(Optional.ofNullable(setting));
+			return settingDto;
 
 		} else {
 			// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
@@ -1580,7 +1590,7 @@ public class ScheduleCreatorExecutionTransaction {
 								.getWorkdayDivisionByWkp(workdayDivisions);
 						// fix bug 113909
 						if(!workdayDivision.isPresent())
-							return Optional.empty();
+							return settingDto;
 						
 						// 「基本勤務設定」を取得する
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
@@ -1589,14 +1599,17 @@ public class ScheduleCreatorExecutionTransaction {
 								optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId(), null);
 
 						// 取得した「基本勤務設定」を返す
-						return basicWorkSettings;
+						settingDto.setBasicSet(basicWorkSettings);
+						return settingDto;
 					}
 				}
 				// add log error employee => 602
 				// 取得できない
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_602",
-						"#Com_Workplace");
-
+				String errorContent = this.internationalization.localize("Msg_602", "#Com_Workplace").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			} else {
 				// if 分類の場合
 				// xử lý 営業日カレンダーの参照先 is 分類
@@ -1620,22 +1633,25 @@ public class ScheduleCreatorExecutionTransaction {
 								.getWorkdayDivisionByClass(baseGetter);
 						// fix bug 113909
 						if(!workdayDivision.isPresent())
-							return Optional.empty();
+							return settingDto;
 						
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
 								dateInPeriod, creator, workdayDivision, workplaceHistItem, new ArrayList<>(), null,
 								optClassificationHistItem.get().getClassificationItems().get(0)
 										.getClassificationCode());
-						return basicWorkSettings;
+						settingDto.setBasicSet(basicWorkSettings);
+						return settingDto;
 					}
 				}
 				// add log error employee => 602
 				// 取得できない
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_602", "#Com_Class");
+				String errorContent = this.internationalization.localize("Msg_602", "#Com_Class").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			}
 		}
-		// return default optional
-		return Optional.empty();
 	}
 
 	/**

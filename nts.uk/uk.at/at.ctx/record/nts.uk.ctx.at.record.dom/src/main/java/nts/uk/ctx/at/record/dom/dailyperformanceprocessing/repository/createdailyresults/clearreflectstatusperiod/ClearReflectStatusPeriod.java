@@ -36,15 +36,19 @@ public class ClearReflectStatusPeriod {
 	private StampCardRepository stampCardRepository;
 
 	public void clear(List<IntegrationOfDaily> listIntegrationOfDaily) {
+		
+		if(listIntegrationOfDaily.isEmpty()) {
+			return;
+		}
 		// 最初の日別実績の反映範囲を取得する
 		GetFirstReflectOutput getFirstReflect = getFirstReflectFromListDaily.get(listIntegrationOfDaily, true);
-		if (getFirstReflect.getStampReflectRangeOutput().isPresent()) {
+		if (!getFirstReflect.getStampReflectRangeOutput().isPresent()) {
 			return;
 		}
 
 		// 最後の日別実績の一覧から一個目反映範囲を取得する
 		GetFirstReflectOutput getLastReflect = getFirstReflectFromListDaily.get(listIntegrationOfDaily, false);
-		if (getLastReflect.getStampReflectRangeOutput().isPresent()) {
+		if (!getLastReflect.getStampReflectRangeOutput().isPresent()) {
 			return;
 		}
 
