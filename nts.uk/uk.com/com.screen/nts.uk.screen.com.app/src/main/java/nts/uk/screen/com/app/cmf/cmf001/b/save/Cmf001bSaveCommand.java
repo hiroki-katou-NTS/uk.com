@@ -12,8 +12,6 @@ public class Cmf001bSaveCommand {
 	/** 新規モード=true, 更新=false */
 	private boolean createMode;
 	
-	private int baseType;
-
 	/** 登録内容 */
 	private ExternalImportSettingDto setting;
 
@@ -26,6 +24,6 @@ public class Cmf001bSaveCommand {
 	}
 
 	public ExternalImportSetting toDomain() {
-		return this.getSetting().toDomain(ImportSettingBaseType.valueOf(baseType));
+		return this.getSetting().toDomain(ImportSettingBaseType.DOMAIN_BASE);
 	}
 }

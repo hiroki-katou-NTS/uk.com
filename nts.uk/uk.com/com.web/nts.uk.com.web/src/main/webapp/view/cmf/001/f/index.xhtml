@@ -31,7 +31,7 @@
 
 				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
-						<div class="check-target" id="importDomain" data-bind="ntsComboBox: {
+						<div id="importDomain" data-bind="ntsComboBox: {
 							name: '受入ドメイン', 
 							options: $root.content.importDomainOption,
 							optionsValue: 'value',
@@ -39,7 +39,7 @@
 							optionsText: 'name',
 							selectFirstIfNull: false,
 							value: importDomain,
-							required: true}"></div>
+							required: false}"></div>
 						<button class="normal" id="bntAddImportDomain" data-bind="click: addImportDomain, text: '追加'"></button>
 						<button class="normal" id="bntDelImportDomain" data-bind="click: deleteImportDomain, text: '削除'"></button>
 						<table id="domain-list" data-bind="ntsGridList: {

@@ -19,4 +19,8 @@ public interface ExternalImportSettingRepository {
 	Optional<ExternalImportSetting> get(Optional<FromCsvBaseSettingToDomainRequire> require,String companyId, ExternalImportCode settingCode);
 
 	boolean exist(String companyId, ExternalImportCode settingCode);
+
+	void registDomain(ExternalImportSetting setting, DomainImportSetting domain);
+
+	void deleteDomain(String companyId, String code, int domainId);
 }

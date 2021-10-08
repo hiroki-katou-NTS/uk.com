@@ -22,7 +22,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		
 		//domain
 		domainInfoList:KnockoutObservableArray<DomainInfo> = ko.observableArray([]);
-		domainList: KnockoutObservableArray<ImporDomain> = ko.observableArray([]);
+		domainList: KnockoutObservableArray<ImportDomain> = ko.observableArray([]);
 		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
 		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
 
@@ -87,6 +87,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	            new CsvItem('2', '項目２'),
 	            new CsvItem('3', '項目３')
 	        ]);
+			
+			self.getListData().done(function() {
+				if (self.settingList().length !== 0) {
+					self.selectedCode(self.settingList()[0].code.toString());
+				}
+				dfd.resolve();
+			});
+			
 			self.$grid = $("#grid");
 			self.initGrid();
 		      
@@ -99,6 +107,30 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			self.getListData().done(function() {
 				dfd.resolve();
 			});
+		}
+		
+		getListData() {
+			var self = this;
+			let dfd = $.Deferred();
+			ajax("screen/com/cmf/cmf001/e/get/setting/" + self.settingCode)
+			.done((res) => {
+				let importDomains = $.map(res.domains, d => {
+					let target = $.grep(__viewContext.enums.ImportingDomainId, (domain) => domain.value === d.domainId)[0];
+					return new ImportDomain(d.domainId, target.name, true);
+				});
+				let importDomainInfoList = $.map(res.domains, d => {
+					let target = $.grep(__viewContext.enums.ImportingDomainId, (domain) => domain.value === d.domainId)[0];
+					return new DomainInfo(d.domainId, d.itemNoList);
+				});
+				self.domainList(importDomains);
+				self.domainInfoList(importDomainInfoList);
+
+				dfd.resolve();
+			}).fail(function(error) {
+				dfd.reject();
+				alert(error.message);
+			})
+			return dfd.promise();
 		}
 		
 		initGrid(){
@@ -188,19 +220,20 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			let self = this;
 			self.checkError();
 			if(!nts.uk.ui.errors.hasError()){
+				let domains = $.map(self.layout(), l =>{
+					return {
+						itemNo: l.itemNo,
+						isFixedValue: l.isFixedValue,
+						csvItemNo: l.selectedCsvItem,
+						fixedValue: l.fixedValue
+					}
+				});
 				let saveContents = {
-					createMode: self.isNewMode(),
-					setting: new SettingInfo(
-						__viewContext.user.companyId,
-						self.settingCode,
-						self.settingName(),
-						self.importDomain(),
-						self.itemNameRow(),
-						self.importStartRow(),
-						self.layoutItemNoList()),
-					domains: self.domainInfoList()
+					code: self.settingCode,
+					domainId: self.selectedDomainId(),
+					items: domains
 				};
-				ajax("screen/com/cmf/cmf001/e/save", saveContents).done(() => {
+				ajax("screen/com/cmf/cmf001/f/save", saveContents).done(() => {
 					info(nts.uk.resource.getMessage("Msg_15", []));
 					self.reloadPage();
 	            });
@@ -221,7 +254,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			}
 
 			let selected = $.grep(__viewContext.enums.ImportingDomainId, (domain) => domain.value === self.importDomain())[0];
-			self.domainList.push(new ImporDomain(selected.value, selected.name, true ));
+			self.domainList.push(new ImportDomain(selected.value, selected.name, true ));
 			
 			let condition = {
 				settingCode: self.settingCode,
@@ -236,9 +269,22 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		
 		deleteImportDomain() {
 			let self = this;
-			let index = self.domainInfoList().findIndex((di) => di.domainId === self.selectedDomainId());
-			self.domainInfoList.splice(index, 1);
-			self.domainList.splice(index, 1);
+
+	        ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+				ajax("screen/com/cmf/cmf001/f/delete", {
+					code: self.settingCode,
+					domainId: self.selectedDomainId()
+				}).done(() => {
+					info(nts.uk.resource.getMessage("Msg_16", []));
+					
+					let index = self.domainInfoList().findIndex((di) => di.domainId === self.selectedDomainId());
+					self.domainInfoList.splice(index, 1);
+					self.domainList.splice(index, 1);
+					self.selectedDomainId(null);
+					
+					self.reloadPage();
+	            });
+	        }
 		}
 
 		selectLayout() {
@@ -305,15 +351,15 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		}
 	}
 
-	export class ImporDomain {
+	export class ImportDomain {
 		domainId: string;
 		name: string;
 		deletable: boolean;
 	
-		constructor(domainId: string, name: string) {
+		constructor(domainId: string, name: string, deletable: boolean) {
 				this.domainId = domainId;
 				this.name = name;
-				this.deletable = true;
+				this.deletable = deletable;
 		}
 	}
 	
@@ -335,17 +381,18 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		itemNo: number;
 		name: string;
 		required: boolean;
-//		type: string;
-		source: string;
+		isFixedValue: boolean;
 		selectedCsvItem: number;
+		fixedValue: string;
 		csvData: string;
 	
-		constructor(itemNo: number, name: string, required: boolean, source: string, selectedCsvItem: number, csvData: string) {
+		constructor(itemNo: number, name: string, required: boolean, isFixedValue: boolean, selectedCsvItem: number, fixedValue: string, csvData: string) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
-			this.source = source;
+			this.isFixedValue = isFixedValue;
 			this.selectedCsvItem = selectedCsvItem;
+			this.fixedValue = fixedValue;
 			this.csvData = csvData;
 		}
 	}

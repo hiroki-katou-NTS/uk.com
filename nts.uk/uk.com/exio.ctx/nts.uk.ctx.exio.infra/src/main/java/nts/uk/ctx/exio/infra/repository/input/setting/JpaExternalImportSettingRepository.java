@@ -177,4 +177,30 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	public boolean exist(String companyId, ExternalImportCode settingCode) {
 		return this.get(Optional.empty() , companyId, settingCode).isPresent();
 	}
+
+	@Override
+	public void registDomain(ExternalImportSetting setting, DomainImportSetting domain) {
+		setting.putDomainSettings(domain.getDomainId(), domain);
+		update(setting);
+	}
+
+	@Override
+	public void deleteDomain(String companyId, String code, int domainId) {
+		val tables = Arrays.asList(
+				Pair.of("XIMMT_DOMAIN_IMPORT_SETTING", "SETTING_CODE"),
+				Pair.of("XIMMT_ITEM_MAPPING", "SETTING_CODE"));
+		
+		tables.forEach(table -> {
+			String sql = "delete from " + table.getLeft()
+					+ " where CID = @cid"
+					+ " and " + table.getRight() + " = @code"
+					+ " and DOMAIN_ID = @domainId";
+
+			this.jdbcProxy().query(sql)
+				.paramString("cid", companyId)
+				.paramString("code", code)
+				.paramInt("domainId", domainId)
+				.execute();
+		});
+	}
 }

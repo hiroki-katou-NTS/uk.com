@@ -1,8 +1,6 @@
 package nts.uk.screen.com.app.cmf.cmf001.f.get;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
@@ -23,59 +21,42 @@ public class CsvBaseLayoutDto {
 	/** 必須項目 */
 	private boolean required;
 
-	/** 受入元 */
-	private String source;
+	private boolean isFixedValue;
 
-	private Optional<Integer> selectedCsvItemNo;
+	private Integer selectedCsvItemNo;
+	
+	private String fixedValue;
 	
 	private String csvData;
 
 	public static CsvBaseLayoutDto fromDomain(
-			List<ImportableItem> importableItems,
+			ImportableItem importableItem,
 			ExternalImportCode settingCode,
 			ImportingDomainId domainId,
 			ImportingItemMapping domain,
-			Optional<Integer> selectedCsvItemNo,
 			String csvData) {
 
 		return new CsvBaseLayoutDto(
 				domain.getItemNo(),
-				getItemName(importableItems, domainId, domain),
-				checkRequired(importableItems, domainId, domain),
+				importableItem.getItemName(),
+				checkRequired(importableItem),
 				checkImportSource(domain),
-				selectedCsvItemNo,
+				domain.getCsvColumnNo().orElse(null),
+				domain.getFixedValue().map(v -> v.asString()).orElse(null),
 				csvData);
 	}
 
-	private static String getItemName(List<ImportableItem> importableItems, ImportingDomainId domainId, ImportingItemMapping mapping) {
-		return importableItems.stream()
-				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemName();
+	private static boolean checkRequired(ImportableItem importableItem) {
+		return importableItem.isRequired() || importableItem.isPrimaryKey();
 	}
 
-	private static boolean checkRequired(List<ImportableItem> importableItems, ImportingDomainId domainId, ImportingItemMapping mapping) {
-		boolean required = importableItems.stream()
-								.filter(i -> i.getItemNo() == mapping.getItemNo())
-								.collect(Collectors.toList()).get(0).isRequired();
-
-		boolean primary = importableItems.stream()
-								.filter(i -> i.getItemNo() == mapping.getItemNo())
-								.collect(Collectors.toList()).get(0).isPrimaryKey();
-
-
-		return required || primary;
-	}
-
-	private static String checkImportSource(ImportingItemMapping mapping) {
+	private static boolean checkImportSource(ImportingItemMapping mapping) {
 		val optCsvColumnNo = mapping.getCsvColumnNo();
-		val optFixedValue = mapping.getFixedValue();
 		if(optCsvColumnNo.isPresent()){
-			return "CSV";
-		}
-		else if(optFixedValue.isPresent()){
-			return "固定値";
+			return false;
 		}
 		else {
-			return "未設定";
+			return true;
 		}
 	}
 

@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.cmf.cmf001.b.get;
+package nts.uk.screen.com.app.cmf.cmf001.f.get;
 
 import static java.util.stream.Collectors.*;
 
@@ -15,11 +15,12 @@ import lombok.val;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.exio.app.input.setting.FromCsvBaseSettingToDomainRequireImpl;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
-import nts.uk.screen.com.app.cmf.cmf001.f.get.CsvBaseLayoutDto;
+import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayoutParam;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -95,11 +96,10 @@ public class GetLayoutForCsvBase {
 		
 		return importableItems.stream()
 				.map(i -> CsvBaseLayoutDto.fromDomain(
-						importableItems,
+						i,
 						query.getSettingCode(),
 						query.getImportingDomainId(),
 						ImportingItemMapping.noSetting(i.getItemNo()),
-						Optional.empty(),
 						""))
 				.collect(Collectors.toList());
 	}
@@ -119,17 +119,19 @@ public class GetLayoutForCsvBase {
 			ExternalImportCsvFileInfo fileInfo) {
 
 		val require = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
-		val importableItems = importableItemsRepo.get(query.getImportingDomainId());
+		val importableItems = importableItemsRepo.get(query.getImportingDomainId()).stream()
+				.collect(Collectors.groupingBy(ImportableItem::getItemNo));
 		Map<Integer, List<String>> csvData = require.readBaseCsvWithFirstData(fileInfo);
 
 		return mappings.stream()
 				.map(i -> CsvBaseLayoutDto.fromDomain(
-						importableItems,
+						importableItems.get(i.getItemNo()).get(0),
 						query.getSettingCode(),
 						query.getImportingDomainId(),
 						new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue()),
-						i.getCsvColumnNo(),
-						csvData.get( i.getCsvColumnNo().get()).get(1)
+						( i.getCsvColumnNo().isPresent()
+								? csvData.get( i.getCsvColumnNo().get()).get(1)
+								: "")
 						))
 				.collect(Collectors.toList());
 	}
