@@ -162,7 +162,8 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                                 }
                             }
                             if (outingPeriodClassific == OUTPUTCLASSS.REFERENCE_DATE) {
-                                self.date61( moment.utc().format("YYYY/MM/DD"));
+                                let date =  moment.utc().format("YYYY/MM/DD");
+                                self.date61(date);
                                 self.show61Date(true);
 
                             }
@@ -174,12 +175,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 }
             });
 
-            self.date61.subscribe((date)=>{
+            self.date61.subscribe((data)=>{
                 self.periodDateValue({
-                    startDate: date,
-                    endDate:  date
+                    startDate: data,
+                    endDate:  data
                 });
-                self.referenceDate(date);
+                self.referenceDate(data);
 
             });
             self.periodDateValue.subscribe((data)=>{
