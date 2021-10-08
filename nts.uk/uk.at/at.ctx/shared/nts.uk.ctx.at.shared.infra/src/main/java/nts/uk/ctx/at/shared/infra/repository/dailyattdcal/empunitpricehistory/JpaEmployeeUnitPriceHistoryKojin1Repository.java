@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.dailyattdcal.empunitpricehistory.KrcmtU
  * 社員単価履歴Repository
  */
 @Stateless
-public class JpaEmployeeUnitPriceHistoryRepository extends JpaRepository implements EmployeeUnitPriceHistoryRepository{
+public class JpaEmployeeUnitPriceHistoryKojin1Repository extends JpaRepository implements EmployeeUnitPriceHistoryRepository{
 
 	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT upi FROM KrcmtUnitPriceItem upi"
 			+ " INNER JOIN  KrcmtUnitPrice up ON up.pk.histId = upi.pk.histId"
