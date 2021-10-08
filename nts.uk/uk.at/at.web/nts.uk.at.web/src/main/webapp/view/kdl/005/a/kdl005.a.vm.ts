@@ -74,8 +74,8 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			//
 			self.columns = ko.observableArray([
 				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 200 },
-				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 150 },
-				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 130 },
+				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 140 },
+				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 145 },
 				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 220 }
 			]);
 
