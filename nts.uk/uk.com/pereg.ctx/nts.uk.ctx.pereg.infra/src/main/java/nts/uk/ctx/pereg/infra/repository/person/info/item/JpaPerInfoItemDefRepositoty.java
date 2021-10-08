@@ -166,7 +166,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE = String.join(" ", "SELECT pi.itemName",
 			"FROM PpemtItem pi INNER JOIN PpemtCtg pc",
 			"ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId",
-			"WHERE pc.categoryCd = :categoryCd AND pi.itemCd = :itemCd AND pc.cid= '000000000000-0000'");
+			"WHERE pc.categoryCd = :categoryCd AND pi.itemCd = :itemCd AND pc.cid= :cid");
 
 	private final static String SELECT_ITEMS_BY_LIST_CTG_ID_QUERY = String.join(" ", "SELECT i FROM PpemtItem i",
 			"WHERE i.itemCd = :itemCd AND i.perInfoCtgId IN :perInfoCtgIds");
@@ -834,8 +834,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public String getItemDefaultName(String categoryCd, String itemCd) {
+		String cid = AppContexts.user().contractCode() + "-0000";
 		return queryProxy().query(SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE, String.class)
-				.setParameter("categoryCd", categoryCd).setParameter("itemCd", itemCd).getSingleOrNull();
+				.setParameter("categoryCd", categoryCd).setParameter("itemCd", itemCd).setParameter("cid", cid).getSingleOrNull();
 	}
 
 	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtItemSort order) {
