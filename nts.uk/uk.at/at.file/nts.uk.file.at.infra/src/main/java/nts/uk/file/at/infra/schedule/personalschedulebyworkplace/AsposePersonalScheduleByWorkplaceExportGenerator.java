@@ -361,15 +361,15 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             }
         }
 
-        cells.get(0, 0).setValue(comment);
-        Style styleC1 = cells.get(0, 0).getStyle();
+        cells.get(0, START_DATE_COL).setValue(comment);
+        Style styleC1 = cells.get(0, START_DATE_COL).getStyle();
         styleC1.setVerticalAlignment(TextAlignmentType.TOP);
         styleC1.setHorizontalAlignment(TextAlignmentType.RIGHT);
         styleC1.setTextWrapped(true);
         styleC1.getFont().setName(FONT_NAME);
         styleC1.getFont().setSize(FONT_SIZE);
-        cells.get(0, 0).setStyle(styleC1);
-        cells.merge(0, 0, 2, startCol);
+        cells.get(0, START_DATE_COL).setStyle(styleC1);
+        cells.merge(0, START_DATE_COL, 2, startCol - START_DATE_COL);
     }
 
     private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean wrapText, boolean firstRow, boolean lastRow, boolean doubleBorder, boolean wkp) {
@@ -501,13 +501,13 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                                 cells.get(startRow, startCol),
                                 estimatedSalary == null ? "" : df.format(estimatedSalary.getCriterion().v()),
                                 i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
-                                estimatedSalary == null ? Optional.empty() : estimatedSalary.getBackground().map(i -> i.v().substring(1))
+                                estimatedSalary == null ? Optional.empty() : estimatedSalary.getBackground().map(i -> i.v().length() > 6 ? i.v().substring(1) : i.v())
                         );
                         this.setPersonalTotalValue(
                                 cells.get(startRow, startCol + 1),
                                 estimatedSalary == null ? "" : df.format(estimatedSalary.getSalary()),
                                 i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
-                                estimatedSalary == null ? Optional.empty() : estimatedSalary.getBackground().map(i -> i.v().substring(1))
+                                estimatedSalary == null ? Optional.empty() : estimatedSalary.getBackground().map(i -> i.v().length() > 6 ? i.v().substring(1) : i.v())
                         );
                         for (int kk = 1; kk < rows; kk++) {
                             this.setPersonalTotalValue(cells.get(startRow + kk, startCol), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
