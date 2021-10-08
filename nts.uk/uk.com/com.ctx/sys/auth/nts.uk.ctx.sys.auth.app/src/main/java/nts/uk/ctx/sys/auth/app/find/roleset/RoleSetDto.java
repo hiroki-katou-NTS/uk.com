@@ -24,9 +24,6 @@ public class RoleSetDto {
 
     /** ロールセット名称*/
     private String roleSetName;
-
-    /** 承認権限*/
-    private boolean approvalAuthority;
     
     //** ロールID: オフィスヘルパーロール *//*
     private String officeHelperRoleId;
@@ -56,7 +53,6 @@ public class RoleSetDto {
      */
     public static RoleSetDto build(RoleSet roleSet, List<WebMenuImportDto> listWebMenuDto) {
         RoleSetDto result = new RoleSetDto();
-        result.setApprovalAuthority(roleSet.hasApprovalAuthority());
         result.setCompanyId(roleSet.getCompanyId());
         result.setEmploymentRoleId(roleSet.getEmploymentRoleId().orElse(null));
         result.setHumanResourceRoleId(roleSet.getHRRoleId().orElse(null));

@@ -60,7 +60,7 @@ public class GetDetailedRoleSetInformationScreenQuery {
         RoleSetDto roleSetDto = new RoleSetDto();
 
         roleSetDto.setRoleSetName(domain.getRoleSetName().v());
-        roleSetDto.setApprovalAuthority(domain.getApprovalAuthority().value);
+        //roleSetDto.setApprovalAuthority(domain.getApprovalAuthority().value); //TODO dev delete
         roleSetDto.setCompanyId(domain.getCompanyId());
         roleSetDto.setRoleSetCd(domain.getRoleSetCd().v());
 

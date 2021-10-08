@@ -47,7 +47,8 @@ public class GetDataInitCas014ScreenQuery {
         roleSetDto.setRoleSetName(domain.getRoleSetName().v());
         roleSetDto.setCompanyId(domain.getCompanyId());
         roleSetDto.setRoleSetCd(domain.getRoleSetCd().v());
-        roleSetDto.setApprovalAuthority(domain.getApprovalAuthority().value);
+        //TODO dev delete field approvalAuthority
+        //roleSetDto.setApprovalAuthority(domain.getApprovalAuthority().value);
 
         if (domain.getEmploymentRoleId().isPresent()) {
             roleSetDto.setEmploymentRoleId(domain.getEmploymentRoleId().get());

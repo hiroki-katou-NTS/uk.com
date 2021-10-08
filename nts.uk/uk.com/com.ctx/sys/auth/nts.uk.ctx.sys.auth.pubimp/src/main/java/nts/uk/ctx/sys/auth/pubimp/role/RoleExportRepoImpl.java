@@ -333,7 +333,6 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 		roleSetExport.setCompanyId(domain.getCompanyId());
 		roleSetExport.setRoleSetCd(domain.getRoleSetCd().v());
 		roleSetExport.setRoleSetName(domain.getRoleSetName().v());
-		roleSetExport.setApprovalAuthority(domain.getApprovalAuthority().value);
 		
 		if(domain.getEmploymentRoleId().isPresent()) {
 			roleSetExport.setEmploymentRoleId(domain.getEmploymentRoleId().get());
