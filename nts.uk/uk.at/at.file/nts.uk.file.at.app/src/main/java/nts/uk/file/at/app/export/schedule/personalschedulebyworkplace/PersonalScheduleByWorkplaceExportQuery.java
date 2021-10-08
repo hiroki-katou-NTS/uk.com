@@ -155,7 +155,13 @@ public class PersonalScheduleByWorkplaceExportQuery {
             }
         }, period.end());
 
-        List<DateInformation> dateInformationList = period.datesBetween().stream().map(date -> {
+        List<GeneralDate> targetDates = period.datesBetween();
+        List<WorkplaceEvent> workplaceEvents = targetOrgIdenInfor.getWorkplaceId().isPresent()
+                ? workplaceEventRepo.getWorkplaceEventsByListDate(targetOrgIdenInfor.getWorkplaceId().get(), targetDates)
+                : new ArrayList<>();
+        List<CompanyEvent> companyEvents = companyEventRepo.getCompanyEventsByListDate(companyId, targetDates);
+        List<PublicHoliday> publicHolidays = publicHolidayRepo.getHolidaysByListDate(companyId, targetDates);
+        List<DateInformation> dateInformationList = targetDates.stream().map(date -> {
             return DateInformation.create(new DateInformation.Require() {
                 @Override
                 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -170,17 +176,17 @@ public class PersonalScheduleByWorkplaceExportQuery {
                 @Override
                 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                 public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
-                    return workplaceEventRepo.findByPK(workplaceId, date);
+                    return workplaceEvents.stream().filter(e -> e.getDate().equals(date)).findFirst();
                 }
                 @Override
                 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                 public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date) {
-                    return companyEventRepo.findByPK(companyId, date);
+                    return companyEvents.stream().filter(e -> e.getDate().equals(date)).findFirst();
                 }
                 @Override
                 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
                 public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
-                    return publicHolidayRepo.getHolidaysByDate(companyId, date);
+                    return publicHolidays.stream().filter(h -> h.getDate().equals(date)).findFirst();
                 }
                 @Override
                 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
