@@ -168,10 +168,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                             }
                             if (outingPeriodClassific == OUTPUTCLASSS.NO_SETTING) {
                                 self.show81Date(true);
-                                self.periodDateValue({
-                                    startDate:  null,
-                                    endDate: null
-                                });
                             }
                         }
                     });
