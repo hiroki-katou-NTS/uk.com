@@ -46,7 +46,7 @@ module nts.uk.at.ksu008.b {
             this.columns = ko.observableArray([
                 { headerText: self.$i18n('KSU008_40'), prop: 'code', width: 100 },
                 { headerText: self.$i18n('KSU008_41'), prop: 'name', width: 250 },
-                { headerText: self.$i18n('KSU008_42'), prop: 'class', width: 100 },
+                { headerText: self.$i18n('KSU008_42'), prop: 'classification', width: 100 },
             ]);
             this.currentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
