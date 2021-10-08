@@ -424,7 +424,7 @@ public class HolidayServiceImpl implements HolidayService {
 		hdWorkDispInfoWithDateOutput.setInitWorkTimeName(workTime.isPresent() ? Optional.of(workTime.get().getWorkTimeDisplayName().getWorkTimeName()) : Optional.empty());
 		
 		//	01-03_休出時間枠を取得
-		List<WorkdayoffFrame> workdayoffFrameList = workdayoffFrameRepository.getAllWorkdayoffFrame(companyId);
+		List<WorkdayoffFrame> workdayoffFrameList = workdayoffFrameRepository.findByUseAtr(companyId, 1);
 		appHdWorkDispInfoOutput.setWorkdayoffFrameList(workdayoffFrameList);
 		
 //		指定社員の申請残業枠を取得する 
