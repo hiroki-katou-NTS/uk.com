@@ -583,7 +583,7 @@ module nts.uk.at.kha003.a {
                                 + hour + ""
                                 + minutes + ""
                                 + second
-                            link.setAttribute("download", "全て出力_" + pathSuffix + ".csv");
+                            link.setAttribute("download", vm.$i18n('KHA003_121') + pathSuffix + ".csv");
                             link.click();
                         }
                     })
