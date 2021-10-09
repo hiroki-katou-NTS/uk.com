@@ -10,6 +10,8 @@ import nts.uk.shr.com.context.AppContexts;
  * 
  * @author sonnlb
  *
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.作業管理.工数入力表示フォーマット.App.表示フォーマットを取得する
+ * 
  */
 @Stateless
 public class GetManHrInputDisplayFormat {
@@ -19,6 +21,8 @@ public class GetManHrInputDisplayFormat {
 
 	/***
 	 * 表示フォーマットを取得する
+	 * 
+	 * @return 表示フォーマットDto
 	 */
 	public ManHrInputDisplayFormatDto getManHrInputDisplayFormat() {
 		return this.repo.get(AppContexts.user().companyId()).map(x -> new ManHrInputDisplayFormatDto(x)).orElse(null);
