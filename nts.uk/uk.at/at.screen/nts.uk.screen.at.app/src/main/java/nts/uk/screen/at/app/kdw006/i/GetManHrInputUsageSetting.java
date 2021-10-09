@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kdw006.i;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -19,12 +21,12 @@ public class GetManHrInputUsageSetting {
 	private ManHrInputUsageSettingRepository repo;
 
 	/***
-	 * 工数入力の利用設定を取得する
+	 * 取得する
 	 * 
-	 * @return 工数入力の利用設定Dto
+	 * @return Optional<工数入力の利用設定>
 	 */
-	public ManHrInputUsageSettingDto getManHrInputUsageSetting() {
-		return this.repo.get(AppContexts.user().companyId()).map(x -> ManHrInputUsageSettingDto.fromDomain(x))
-				.orElse(null);
+	public Optional<ManHrInputUsageSettingDto> get() {
+		// 1. get(ログイン会社ID)
+		return this.repo.get(AppContexts.user().companyId()).map(x -> ManHrInputUsageSettingDto.fromDomain(x));
 	}
 }

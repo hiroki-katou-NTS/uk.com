@@ -23,7 +23,7 @@ public class RegisterTaskTimeGroupCommandHandler extends CommandHandler<Register
 	private TaskTimeGroupRepository repo;
 
 	/**
-	 * 作業時間帯グループを登録する
+	 * 登録する
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<RegisterTaskTimeGroupCommand> context) {

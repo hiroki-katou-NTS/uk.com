@@ -21,12 +21,14 @@ public class GetManHourRecordItem {
 	private ManHourRecordItemRepository repo;
 
 	/**
-	 * 工数実績項目を取得する
+	 * 取得する
 	 * 
-	 * @return 工数実績項目Dto
+	 * @return List<工数実績項目Dto>
 	 */
-	public List<ManHourRecordItemDto> getManHourRecordItem() {
-		return this.repo.get(AppContexts.user().companyId()).stream().map(x -> new ManHourRecordItemDto(x))
+	public List<ManHourRecordItemDto> get() {
+		// 1. get(ログイン会社ID)
+		return this.repo.get(AppContexts.user().companyId()).stream()
+				.map(x -> new ManHourRecordItemDto(x))
 				.collect(Collectors.toList());
 	}
 }

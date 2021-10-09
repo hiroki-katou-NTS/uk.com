@@ -19,12 +19,12 @@ public class GetManHrInputDisplayFormat {
 	@Inject
 	private ManHrInputDisplayFormatRepository repo;
 
-	/***
-	 * 表示フォーマットを取得する
-	 * 
+	/**
+	 * 取得する
 	 * @return 表示フォーマットDto
 	 */
-	public ManHrInputDisplayFormatDto getManHrInputDisplayFormat() {
+	public ManHrInputDisplayFormatDto get() {
+		// 1 get(ログイン会社ID)
 		return this.repo.get(AppContexts.user().companyId()).map(x -> new ManHrInputDisplayFormatDto(x)).orElse(null);
 	}
 }

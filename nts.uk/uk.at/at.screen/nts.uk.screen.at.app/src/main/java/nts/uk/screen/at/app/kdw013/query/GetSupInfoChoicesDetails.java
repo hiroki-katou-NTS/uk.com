@@ -24,8 +24,11 @@ public class GetSupInfoChoicesDetails {
 	private TaskSupInfoChoicesHistoryRepository repo;
 
 	/**
-	 * 取得する 項目ID: 工数実績項目ID 基準日: 年月日
-	 * @return 
+	 * 取得する
+	 * 工数実績項目ID itemId
+	 * 年月日 refDate
+	 * 
+	 * @return List<作業補足情報の選択肢詳細>
 	 */
 	public List<TaskSupInfoChoicesDetailDto> get(int itemId, GeneralDate refDate) {
 

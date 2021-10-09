@@ -22,12 +22,13 @@ public class GetTaskTimeGroup {
 	private TaskTimeGroupRepository repo;
 
 	/**
-	 * 日別実績の作業時間帯グループを取得する
+	 * 取得する
 	 * 
-	 * @return 日別実績の作業時間帯グループDto
+	 * @param sId 社員ID
+	 * @param period 期間
+	 * @return List<日別実績の作業時間帯グループDto>
 	 */
-
-	public List<TaskTimeGroupDto> getTaskTimeGroup(String sId, DatePeriod period) {
+	public List<TaskTimeGroupDto> get(String sId, DatePeriod period) {
 		// 1. get(社員ID,期間)
 		return this.repo.get(sId, period).stream().map(x -> TaskTimeGroupDto.fromDomain(x))
 				.collect(Collectors.toList());
