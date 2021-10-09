@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.AddAttendanceTimeZoneCommand;
-import nts.uk.ctx.at.record.app.command.workrecord.workrecord.RegisterWorkManHoursCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.workrecord.WorkDetail;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
 import nts.uk.ctx.at.record.dom.daily.ouen.TimeZone;
@@ -41,9 +40,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Stateless
 public class RegisterWorkContentHandler {
-
-	@Inject
-	private RegisterWorkManHoursCommandHandler handler;
 
 	@Inject
 	private GetTargetTime getTargetTime;
@@ -112,33 +108,10 @@ public class RegisterWorkContentHandler {
 				.collect(Collectors.toList());
 
 		param.setWorkDetails(workDetails);
-
-		List<IntegrationOfDaily> integrationOfDailyList = handler.handle(param);
 		
-		//3: <call> List<日別勤怠(Work)>.エラー一覧
-		List<EmployeeDailyPerError> employeeError = new ArrayList<>();
 		
-		for (IntegrationOfDaily i : integrationOfDailyList ) {
-			for (EmployeeDailyPerError e : i.getEmployeeError()) {
-				employeeError.add(e);
-			}
-		}
-		
-		if(!employeeError.isEmpty()) {
-			checkAlarmTargetDate.checkAlarm(employeeError);
-		}
-		
-		//4: [List<日別勤怠(Work)>.isPresent]:<call>(対象者,画面モードList<日別勤怠(Work)>)
-		// 残業申請・休出時間申請の対象時間を取得する
-		//5: [List<残業休出時間>.isPresent]:<call>
-		List<OvertimeLeaveTimeDto> lstOvertimeLeaveTime = new ArrayList<>();
-		
-		if (!integrationOfDailyList.isEmpty()) {
-			lstOvertimeLeaveTime = getTargetTime.get(command.getEmployeeId(), command.getMode(), integrationOfDailyList);
-		}
 		
 		registerWorkContentDto.setLstErrorMessageInfo(lstErrorMessageInfoDto);
-		registerWorkContentDto.setLstOvertimeLeaveTime(lstOvertimeLeaveTime);
 		
 		return registerWorkContentDto;
 	}
