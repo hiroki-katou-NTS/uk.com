@@ -301,8 +301,8 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-popup-editor.show {
             visibility: visible;
-            width: 250px;
-            height: 270px;
+            width: 0px;
+            height: 0px;
             padding: 10px;
             opacity: 1;
         }

@@ -1,4 +1,4 @@
-module nts.uk.ui.at.kdw013.c {
+module nts.uk.ui.at.kdw013 {
 
     export type API = {
         readonly START: string;
@@ -68,7 +68,7 @@ module nts.uk.ui.at.kdw013.c {
 
     export type StartWorkInputPanelParam = {
         // 社員ID
-        sId: string;
+        employeeId: string;
 
         // 基準日
         refDate: string;
@@ -113,16 +113,12 @@ module nts.uk.ui.at.kdw013.c {
 
 
     export type EventModel = {
-        timeRange: KnockoutObservable<share.TimeRange>;
-
+        timeRange: KnockoutObservable<ITimeSpanForCalc>;
         task1: KnockoutObservable<string>;
         task2: KnockoutObservable<string>;
         task3: KnockoutObservable<string>;
         task4: KnockoutObservable<string>;
         task5: KnockoutObservable<string>;
-
-        workplace: KnockoutObservable<string>;
-        descriptions: KnockoutObservable<string>;
     };
 
     export type ConfirmContent = {
@@ -132,7 +128,7 @@ module nts.uk.ui.at.kdw013.c {
 
     export type SelectWorkItemParam = {
         //社員ID
-        sId: string;
+        employeeId: string;
 
         //基準日
         refDate: string;

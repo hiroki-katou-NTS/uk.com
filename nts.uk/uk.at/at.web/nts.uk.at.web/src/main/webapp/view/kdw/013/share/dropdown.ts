@@ -147,7 +147,7 @@ module nts.uk.ui.at.kdw013.share {
                         const $required = ko.unwrap(required);
 
                         if ($required && !$selected) {
-                            return viewModel.$i18n.message('MsgB_2', [ko.unwrap(name)]);
+                            return nts.uk.resource.getMessage('MsgB_2', [ko.unwrap(name)]);
                         }
 
                         return '';

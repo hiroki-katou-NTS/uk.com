@@ -13,6 +13,8 @@ module nts.uk.ui.at.kdw013.a {
 
         // 参照可能職場・社員を取得する
         refWorkplaceAndEmployeeDto: GetRefWorkplaceAndEmployeeResultDto;
+
+		isChange: boolean;
     };
 
     export type ProcessInitialStartDto = {

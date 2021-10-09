@@ -134,7 +134,7 @@ module nts.uk.ui.at.kdw013.share {
             const $wtime = document.createElement('span');
             const $value = document.createElement('span');
             const $error = document.createElement('div');
-            const update: () => void = allBindingsAccessor.get('update');
+            let update: KnockoutObservable<boolean> = allBindingsAccessor.get('update');
             const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
             const excludeTimes: KnockoutObservableArray<BussinessTime> = allBindingsAccessor.get('exclude-times');
             const value = valueAccessor();
@@ -218,8 +218,9 @@ module nts.uk.ui.at.kdw013.share {
                         const id = ko.unwrap(errorId);
                         const params = ko.unwrap(errorParams);
 
-                        viewModel.$nextTick(update);
-
+                        setTimeout(() => {
+							update(!update());
+						}, 1);
                         if (!id) {
                             element.classList.remove('error');
 
