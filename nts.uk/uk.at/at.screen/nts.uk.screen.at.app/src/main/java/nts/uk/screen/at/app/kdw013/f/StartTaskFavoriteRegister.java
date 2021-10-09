@@ -19,8 +19,13 @@ public class StartTaskFavoriteRegister {
 	@Inject
 	private GetFavoriteTaskItem getFavoriteTaskItem;
 	
-	public Optional<FavoriteTaskItemDto> startTaskFavRegister(String favId) {
-		return getFavoriteTaskItem.getFavTaskItem(favId);
+	public FavoriteTaskItemDto startTaskFavRegister(String favId) {
+		Optional<FavoriteTaskItemDto> optItemDto = getFavoriteTaskItem.getFavTaskItem(favId);
+		
+		if (!optItemDto.isPresent()) {
+			return new FavoriteTaskItemDto();
+		}
+		return optItemDto.get();
 		
 	}
 

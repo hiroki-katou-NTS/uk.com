@@ -174,7 +174,7 @@ public class KDW013WebService {
 	// F: 作業お気に入り登録を起動する
 	@POST
 	@Path("f/start_task_fav_register")
-	public Optional<FavoriteTaskItemDto> startTaskFavRegister(StartTaskFavoriteRegisterParam param) {
+	public FavoriteTaskItemDto startTaskFavRegister(StartTaskFavoriteRegisterParam param) {
 		return startTaskFavoriteRegister.startTaskFavRegister(param.getFavId());
 	}
 	
