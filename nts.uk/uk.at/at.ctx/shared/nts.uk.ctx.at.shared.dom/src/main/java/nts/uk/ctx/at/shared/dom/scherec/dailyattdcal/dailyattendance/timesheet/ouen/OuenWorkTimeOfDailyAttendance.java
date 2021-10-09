@@ -125,4 +125,11 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	private static AttendanceAmountDaily calcIncentiveAmount(WorkingHoursUnitPrice priceUnit, AttendanceTime within, AttendanceTime outside) {
 		return new AttendanceAmountDaily(priceUnit.v() * (within.valueAsMinutes() + outside.valueAsMinutes()));
 	}
+
+	public void update(OuenWorkTimeOfDailyAttendance inputTime) {
+		this.workTime = inputTime.getWorkTime();
+		this.moveTime = inputTime.getMoveTime();
+		this.amount = inputTime.getAmount();
+		this.priceUnit = inputTime.getPriceUnit();
+	}
 }

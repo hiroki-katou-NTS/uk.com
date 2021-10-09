@@ -38,4 +38,9 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 	public void setWorkNo(int workNo) {
 		this.workNo = SupportFrameNo.of(workNo);
 	}
+
+	public void update(OuenWorkTimeSheetOfDailyAttendance inputSheet) {
+		this.workContent = inputSheet.getWorkContent();
+		this.timeSheet = inputSheet.getTimeSheet();
+	}
 }
