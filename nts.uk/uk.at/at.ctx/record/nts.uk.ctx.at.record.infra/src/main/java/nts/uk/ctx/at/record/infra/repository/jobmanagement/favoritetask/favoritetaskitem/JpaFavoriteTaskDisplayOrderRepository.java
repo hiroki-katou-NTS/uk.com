@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetask
 public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository implements FavoriteTaskDisplayOrderRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT o FROM KrcdtTaskFavFrameSetDisporder o";
-	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE s.sId = :sId";
+	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE o.sId = :sId";
 
 	@Override
 	public void insert(FavoriteTaskDisplayOrder order) {
