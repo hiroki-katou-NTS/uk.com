@@ -209,7 +209,7 @@ public class KDW013WebService {
 	// G: 1日作業お気に入り登録を起動する
 	@POST
 	@Path("g/start_task_fav_register")
-	public Optional<OneDayFavoriteSetDto> startOneDayTaskFavRegister(StartTaskFavoriteRegisterParam param) {
+	public OneDayFavoriteSetDto startOneDayTaskFavRegister(StartTaskFavoriteRegisterParam param) {
 		return startOneDayTaskSetRegister.startOneDayTaskSetRegister(param.getFavId());
 	}
 

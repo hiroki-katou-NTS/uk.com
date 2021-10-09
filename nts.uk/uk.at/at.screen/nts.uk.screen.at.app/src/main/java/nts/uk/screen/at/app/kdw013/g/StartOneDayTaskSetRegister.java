@@ -19,9 +19,13 @@ public class StartOneDayTaskSetRegister {
 	@Inject
 	private GetFavTaskSetForOneDay getFavTaskSetForOneDay;
 	
-	public Optional<OneDayFavoriteSetDto> startOneDayTaskSetRegister(String favId) {
+	public OneDayFavoriteSetDto startOneDayTaskSetRegister(String favId) {
+		Optional<OneDayFavoriteSetDto> optSetDto =  getFavTaskSetForOneDay.get(favId);
+		if(!optSetDto.isPresent()) {
+			return new OneDayFavoriteSetDto();
+		}
 		
-		return getFavTaskSetForOneDay.get(favId);
+		return optSetDto.get();
 	}
 
 }
