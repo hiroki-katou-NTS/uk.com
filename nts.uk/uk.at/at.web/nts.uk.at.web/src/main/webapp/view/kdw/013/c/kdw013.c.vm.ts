@@ -459,8 +459,8 @@ module nts.uk.ui.at.kdw013.c {
             vm.updatePopupSize();
 		}
 
-        fakeData():IManHrPerformanceTaskBlock{
-            return { caltimeSpan: { start: null, end: null }, 
+        fakeData(start: Date, end: Date):IManHrPerformanceTaskBlock{
+            return { caltimeSpan: { start, end }, 
                     taskDetails: [
                         { 
                             supNo: 0, 
@@ -500,8 +500,7 @@ module nts.uk.ui.at.kdw013.c {
 				if (event) {
                     const {extendedProps, employeeId, start, end } = event as any as calendar.EventRaw;
                     let {taskBlocks} = extendedProps;
-                    taskBlocks = vm.fakeData(),
-                    taskBlocks.caltimeSpan = {start, end};
+                    taskBlocks = vm.fakeData(start, end),
                     vm.taskBlocks.update(taskBlocks, employeeId, true, this.taskFrameSettings());
                     setTimeout(() => {
 						vm.updatePopupSize();
@@ -592,13 +591,7 @@ module nts.uk.ui.at.kdw013.c {
 
 		addTaskDetails(){
 			const vm = this;
-			let taskItemValues: ITaskItemValue[] = [];
-			_.forEach(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
-				taskItemValues.push({ itemId: taskItemValue.itemId, value: taskItemValue.value(), type: taskItemValue.type });
-			});
-			
-			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
-			vm.taskBlocks.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.taskBlocks.caltimeSpan.start, vm.$user.employeeId, vm.flag, true, vm.taskFrameSettings()));
+			vm.taskBlocks.addTaskDetailsView();
 		}
     
         save() {
@@ -656,9 +649,12 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrPerformanceTaskBlockView extends ManHrPerformanceTaskBlock{
 		taskDetailsView: KnockoutObservableArray<ManHrTaskDetailView>;
         caltimeSpanView: KnockoutObservable<{start: number, end: number}> = ko.observable({start: null, end: null});
+		employeeId: string = '';
+		setting: a.TaskFrameSettingDto[] = [];
 		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, loadData: boolean) {
 			super(taskBlocks);
 			const vm = this;
+			vm.employeeId = employeeId;
 			vm.taskDetailsView = ko.observableArray(
 				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, loadData, []))
 			);
@@ -672,10 +668,13 @@ module nts.uk.ui.at.kdw013.c {
         
         update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
 			const vm = this;
+			vm.setting = setting;
+			vm.employeeId = employeeId;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, vm.flag, loadData, setting))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, loadData, setting))
 			);
+			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
             }
@@ -683,10 +682,21 @@ module nts.uk.ui.at.kdw013.c {
         
         updateSetting(setting: a.TaskFrameSettingDto[]){
             const vm = this;
+			vm.setting = setting;
             _.forEach(vm.taskDetailsView(), (t: ManHrTaskDetailView) => {
                 t.setLableUses(setting);
             });
         }
+
+		addTaskDetailsView():void {
+			const vm = this;
+			let taskItemValues: ITaskItemValue[] = [];
+			_.forEach(vm.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
+				taskItemValues.push({ itemId: taskItemValue.itemId, value: taskItemValue.value(), type: taskItemValue.type });
+			});
+			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
+			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, true, vm.setting));
+		}
 
 		isChangedTime(): boolean{
 			const vm = this;
@@ -990,7 +1000,7 @@ module nts.uk.ui.at.kdw013.c {
 				heightTaskDetails = heightTaskDetails + table.offsetHeight + 5;
 			});
 			
-			let aboveBelow = 150;
+			let aboveBelow = 160;
 			if(caltimeSpanViewHeight > 40){
 				aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
 			}
