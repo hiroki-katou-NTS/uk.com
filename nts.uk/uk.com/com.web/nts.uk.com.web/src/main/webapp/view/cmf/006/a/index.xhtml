@@ -24,7 +24,7 @@
                         data-bind="click: $vm.save, enable : $root.errors.isEmpty"
                         class="proceed" tabindex="1">#{i18n.getText('CMF006_3')}</button>
                 <button id="copy"
-                        data-bind="click: $vm.copy, enable: $root.errors.isEmpty"
+                        data-bind="click: $vm.openScreenB"
                         class="normal" tabindex="2">#{i18n.getText('CMF006_4')}</button>
             </div>
         </div>
@@ -32,14 +32,14 @@
             <div class="container cf">
                 <div id="left-content" class="fixed-flex-layout-left"
                      data-bind="with: $vm.componentCcg025">
-                    <div id='text-title'>#{i18n.getText('CMF006_5')}</div>
+                    <div class='left-title'>#{i18n.getText('CMF006_5')}</div>
                     <div id='list_role' tabindex="3">
                         <ui:include src="/view/ccg/025/component/index.xhtml"/>
                     </div>
                 </div>
 
                 <div id="right-content" class="fixed-flex-layout-right">
-                    <div class='text-title'>#{i18n.getText('CMF006_6')}</div>
+                    <div class='right-title'>#{i18n.getText('CMF006_6')}</div>
                     <div class="tab-content-2">
                         <div id="permission-setting" data-bind="component: {
 								    name: 'ccg026-component',

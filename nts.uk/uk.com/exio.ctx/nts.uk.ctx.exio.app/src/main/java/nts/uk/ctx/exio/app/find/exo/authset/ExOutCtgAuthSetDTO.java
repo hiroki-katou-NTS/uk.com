@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.app.find.exo.authset;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.exo.authset.ExOutCtgAuthSet;
 

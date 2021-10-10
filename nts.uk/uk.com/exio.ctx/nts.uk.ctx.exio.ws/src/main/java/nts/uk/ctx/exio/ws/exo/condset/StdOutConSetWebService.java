@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.exio.app.command.exo.authset.*;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutCondSet;
 import nts.uk.ctx.exio.app.command.exo.condset.CopyOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandler;
@@ -17,10 +18,6 @@ import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHand
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommand;
 import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
-import nts.uk.ctx.exio.app.command.exo.authset.DuplicateExOutputCtgAuthSettingCommand;
-import nts.uk.ctx.exio.app.command.exo.authset.DuplicateExOutputCtgAuthCommandSettingHandler;
-import nts.uk.ctx.exio.app.command.exo.authset.RegisterOrUpdateExOutputCtgAuthSettingCommand;
-import nts.uk.ctx.exio.app.command.exo.authset.RegisterOrUpdateExOutputCtgAuthSettingCommandHandler;
 import nts.uk.ctx.exio.app.find.exo.authset.ExOutCtgAuthSetDTO;
 import nts.uk.ctx.exio.app.find.exo.authset.ExOutCtgAuthSetFinder;
 import nts.uk.ctx.exio.app.find.exo.category.Cmf002Dto;
@@ -72,10 +69,10 @@ public class StdOutConSetWebService extends WebService {
 	private ExOutCtgAuthSetFinder exOutCtgAuthSetFinder;
 
 	@Inject
-	private RegisterOrUpdateExOutputCtgAuthSettingCommandHandler registerExOutputCtgAuthCommand;
+	private RegisterOrUpdateExOutCtgAuthCommandHandler registerExOutputCtgAuthCommand;
 
 	@Inject
-	private DuplicateExOutputCtgAuthCommandSettingHandler duplicateExOutputCtgAuthCommand;
+	private DuplicateExOutCtgAuthCommandHandler duplicateExOutputCtgAuthCommand;
 
 	@POST
 	@Path("excuteCopy")
@@ -167,14 +164,13 @@ public class StdOutConSetWebService extends WebService {
 
 	@POST
 	@Path("exOutCtgAuthSet/register")
-	public void RegisterExOutCtgAuth(RegisterOrUpdateExOutputCtgAuthSettingCommand commands) {
+	public void RegisterExOutCtgAuth(RegisterExOutCtgAuthCommand commands) {
 		this.registerExOutputCtgAuthCommand.handle(commands);
 	}
 
 	@POST
 	@Path("exOutCtgAuthSet/copy")
-	public void DuplicateExOutCtgAuth(DuplicateExOutputCtgAuthSettingCommand command) {
-		this.duplicateExOutputCtgAuthCommand.handle(command);
+	public DuplicateExOutputCtgAuthResult DuplicateExOutCtgAuth(DuplicateExOutCtgAuthCommand command) {
+		return this.duplicateExOutputCtgAuthCommand.handle(command);
 	}
-
 }

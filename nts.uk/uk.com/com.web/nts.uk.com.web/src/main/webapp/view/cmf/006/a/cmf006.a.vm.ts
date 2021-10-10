@@ -1,18 +1,12 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.at.view.kal012.a {
+module nts.uk.at.view.cmf006.a {
     import windows = nts.uk.ui.windows;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import util = nts.uk.util;
-    import block = nts.uk.ui.block;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import modal = windows.sub.modal;
-    import text = nts.uk.resource.getText;
-    import info = nts.uk.ui.dialog.info;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import errors = nts.uk.ui.errors;
+    import getText = nts.uk.resource.getText;
 
     import ccg025 = nts.uk.com.view.ccg025.a;
-    // import model = ccg025.component.model;
-
     import ccg026 = nts.uk.com.view.ccg026;
     import ROLE_TYPE = ccg026.component.ROLE_TYPE;
 
@@ -28,13 +22,12 @@ module nts.uk.at.view.kal012.a {
         //ccg025
         componentCcg025: ccg025.component.viewmodel.ComponentModel;
         listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
+        roleId: KnockoutObservable<string> = ko.observable(null);
+        roleCode: KnockoutObservable<string> = ko.observable(null);
         roleName: KnockoutObservable<string> = ko.observable(null);
 
         //ccg026
-        roleId: KnockoutObservable<string> = ko.observable(null); // role id
         roleType: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.EMPLOYMENT);
-        // roleType1: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.PERSONAL_INFO);
-
         permissionList: KnockoutObservableArray<IPermission> = ko.observableArray([]);
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
         data: any;
@@ -43,13 +36,21 @@ module nts.uk.at.view.kal012.a {
             super();
             const vm = this;
 
+            vm.$blockui("grayout");
             vm.listRole = ko.observableArray([]);
             vm.componentCcg025 = new ccg025.component.viewmodel.ComponentModel({
                 roleType: vm.roleType(),
                 multiple: false,
-                isAlreadySetting: false
+                isResize: false,
+                rows: 15,
+                tabindex: 1
             });
             vm.fetchPermissionSettingList();
+            // vm.componentCcg025.columns([
+            //     { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
+            //     { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
+            //     { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
+            // ]);
             vm.fetchRoleList();
         }
 
@@ -62,7 +63,7 @@ module nts.uk.at.view.kal012.a {
             vm.componentCcg025.currentCode.subscribe((roleId: any) => {
                 if (vm.listRole().length <= 0) vm.listRole(vm.componentCcg025.listRole());
                 vm.roleId(roleId);
-                vm.findRoleName(roleId);
+                vm.findRoleById(roleId);
             });
         }
 
@@ -121,12 +122,15 @@ module nts.uk.at.view.kal012.a {
             });
         }
 
-        findRoleName(roleId?: string): void {
+        findRoleById(roleId?: string): void {
             const vm = this;
             let role = _.find(vm.listRole(), (x) => {
                 return x.roleId === roleId;
             });
-            if (role) vm.roleName(role.roleName);
+            if (role) {
+                vm.roleCode(role.roleCode);
+                vm.roleName(role.roleName);
+            }
         }
 
         private mappingPermissionList(data: any): void {
@@ -155,7 +159,7 @@ module nts.uk.at.view.kal012.a {
         save(): void {
             const vm = this;
             vm.$blockui("invisible");
-            let command : IRegisterExOutCtgAuthSetCommand = {
+            let command: IRegisterExOutCtgAuthSetCommand = {
                 roleId: vm.roleId(),
                 functionAuthSettings: ko.toJS(vm.permissionList()).map((i: any) => ({
                     functionNo: i.functionNo,
@@ -163,6 +167,7 @@ module nts.uk.at.view.kal012.a {
                 }))
             };
             vm.$ajax(fetch.register, command).then(data => {
+                vm.$dialog.info({messageId: 'Msg_15'});
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {
@@ -170,6 +175,24 @@ module nts.uk.at.view.kal012.a {
             });
         }
 
+        openScreenB(): void {
+            const vm = this;
+            let param = {
+                roleType: vm.roleType(),
+                sourceRoleId: vm.roleId(),
+                sourceRoleCode: vm.roleCode(),
+                sourceRolName: vm.roleName()
+            };
+            setShared('dataShareCMF006B', param);
+            vm.$window.modal('com', '/view/cmf/006/b/index.xhtml').then((data: any) => {
+                // let result = nts.uk.ui.windows.getShared('dataShareCMF006A');
+                // if (result) {
+                //     if (result.isSuccess) {
+                //         vm.$dialog.info({messageId: 'Msg_15'});
+                //     }
+                // }
+            });
+        }
     }
 
     interface IRegisterExOutCtgAuthSetCommand {
