@@ -52,7 +52,7 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 	public void update(TaskSupInfoChoicesHistory history) {
 		List<KrcmtTaskSupInfoChoicesHist> entites = KrcmtTaskSupInfoChoicesHist.toEntities(history);
 		entites.stream().forEach(f -> {
-			this.commandProxy().insert(f);
+			this.commandProxy().update(f);
 		});
 
 	}
