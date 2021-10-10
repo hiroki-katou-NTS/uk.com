@@ -14,18 +14,21 @@
         </ui:define>
 
         <ui:define name="content">
-            <div id="functions-area">
+            <div tabindex="1" id="functions-area">
                 <a class="goback"
                     data-bind="ntsLinkButton: { jump: '/view/kdw/006/a/index.xhtml' },text: $i18n('KDW006_25')"></a>
-                <button data-bind="text: $i18n('KDW006_322'), enable: $vm.screenMode() == 2, click: $vm.new"></button>
-                <button class="proceed" data-bind="text: $i18n('KDW006_26'), enable: $vm.screenMode() == 1 || $vm.screenMode() == 2, click: $vm.addOrUpdate"></button>
-                <button class="danger" data-bind="text: $i18n('KDW006_306'), enable: $vm.screenMode() == 2, click: $vm.delete"></button>
+                <button tabindex="2"
+                    data-bind="text: $i18n('KDW006_322'), enable: $vm.screenMode() == 2, click: $vm.new"></button>
+                <button tabindex="3" class="proceed"
+                    data-bind="text: $i18n('KDW006_26'), enable: $vm.screenMode() == 1 || $vm.screenMode() == 2, click: $vm.addOrUpdate"></button>
+                <button tabindex="4" class="danger"
+                    data-bind="text: $i18n('KDW006_306'), enable: $vm.screenMode() == 2, click: $vm.delete"></button>
             </div>
             <div id="content-area" class="view-kdw">
                 <div class="left-content">
                     <div class="column-1">
                         <div class="title" data-bind="text: $i18n('KDW006_323')"></div>
-                        <div style="margin-left: 25px;" id="combo-box" data-bind="ntsComboBox: {
+                        <div tabindex="5" style="margin-left: 25px;" id="combo-box" data-bind="ntsComboBox: {
                             name: $i18n('KDW006_323'),
                             options: $vm.itemWorks,
                             optionsValue: 'itemId',
@@ -41,12 +44,12 @@
                     </div>
                     <div class="column-2">
                         <span data-bind="text: $i18n('KDW006_324')"></span>
-                        <samp data-bind="text: $vm.startDate"></samp>
+                        <samp data-bind="text: $vm.modelHistory.startDate"></samp>
                         <samp> ~ </samp>
-                        <samp data-bind="text: $vm.endDate"></samp>
-                        <button data-bind="text: $i18n('履歴選択'), click: $vm.openViewL"></button>
+                        <samp data-bind="text: $vm.modelHistory.endDate"></samp>
+                        <button tabindex="6" data-bind="text: $i18n('履歴選択'), click: $vm.openViewL"></button>
                     </div>
-                    <div class="column-3">
+                    <div tabindex="7" class="column-3">
                         <table id="single-list" data-bind="ntsGridList: {
 							height: 315,
 							options: $vm.historys,
@@ -65,17 +68,29 @@
                     <div class="column1" style="padding-top: 48px;">
                         <div style="width: 100px;" data-bind="ntsFormLabel: { required: true }, text: i18n='KDW006_44'">
                         </div>
-                        <input data-bind="ntsTextEditor: {value: $vm.model.code, name:'#[KDW006_44]'}, enable: $vm.screenMode() == 1" />
+                        <input tabindex="8" class="inputCode" data-bind="ntsTextEditor: {
+                            value: $vm.model.code,
+                            name:'#[KDW006_44]',
+                            enable: $vm.screenMode() == 1,
+                            required: true}" />
                     </div>
                     <div class="column2" style="padding-top: 20px;">
                         <div style="width: 100px;" data-bind="ntsFormLabel: { required: true }, text: i18n='KDW006_45'">
                         </div>
-                        <input data-bind="ntsTextEditor: {value: $vm.model.name, name:'#[KDW006_45]'}, enable: $vm.screenMode() == 1 || $vm.screenMode() == 2" />
+                        <input tabindex="9" data-bind="ntsTextEditor: {
+                            value: $vm.model.name,
+                            name:'#[KDW006_45]',
+                            enable: $vm.screenMode() == 1 || $vm.screenMode() == 2,
+                            required: true}" />
                     </div>
                     <div class="column3" style="padding-top: 20px;">
                         <div style="width: 100px;"
-                            data-bind="ntsFormLabel: { required: false }, text: i18n='KDW006_326'"></div>
-                        <input data-bind="ntsTextEditor: {value: $vm.model.externalCode, name:'#[KDW006_326]'}, enable: $vm.screenMode() == 1 || $vm.screenMode() == 2" />
+                            data-bind="ntsFormLabel: { required: true }, text: i18n='KDW006_326'"></div>
+                        <input tabindex="10" data-bind="ntsTextEditor: {
+                                value: $vm.model.externalCode, 
+                                name:'#[KDW006_326]', 
+                                enable: $vm.screenMode() == 1 || $vm.screenMode() == 2,
+                                required: true}" />
                     </div>
                 </div>
             </div>

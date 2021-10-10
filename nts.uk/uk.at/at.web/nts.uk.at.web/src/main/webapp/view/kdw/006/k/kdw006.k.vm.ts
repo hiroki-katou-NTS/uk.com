@@ -12,7 +12,6 @@ module nts.uk.at.view.kmk006.k {
         REMOTE: 'at/record/kdw006/view-k/delete'
     }
 
-    const dateNow = new Date()
     const DATE_FORMAT = 'YYYY/MM/DD';
 
     @bean()
@@ -24,12 +23,10 @@ module nts.uk.at.view.kmk006.k {
         public isEditable: KnockoutObservable<boolean>;
         public historys: KnockoutObservableArray<IWorkDetail> = ko.observableArray([]);
         public currentCode: KnockoutObservable<String> = ko.observable('');
-        public startDate: KnockoutObservable<String> = ko.observable(moment(dateNow).format(DATE_FORMAT));
-        public endDate: KnockoutObservable<String> = ko.observable(moment(dateNow).format(DATE_FORMAT));
         public screenMode: KnockoutObservable<number> = ko.observable(SCREEN_MODE.UPDATE);
         public historyLocals: IHistory[] = [];
-        public modelHistory: KnockoutObservable<IHistory> = ko.observable();
         public model: WorkDetail = new WorkDetail();
+        public modelHistory: HistoryInfo = new HistoryInfo();
 
 
         created() {
@@ -40,15 +37,19 @@ module nts.uk.at.view.kmk006.k {
                 items: [25, 26, 27, 28, 29]
             }
 
-            vm.selectedItemWork.subscribe(() => {
-                vm.reloadList();
+            vm.selectedItemWork.subscribe((itemId: string) => {
+                vm.changeItemId(itemId);
             });
 
             vm.currentCode.subscribe(() => {
                 vm.reloadData();
                 vm.screenMode(SCREEN_MODE.UPDATE);
                 vm.screenMode.valueHasMutated();
-            })
+            });
+
+            vm.modelHistory.historyId.subscribe(() => {
+                vm.reloadList();
+            });
 
             vm.$blockui('invisible')
                 .then(() => {
@@ -64,11 +65,7 @@ module nts.uk.at.view.kmk006.k {
                         })
                 })
                 .then(() => {
-                    vm.$ajax('at', API.LIST_HISTORY)
-                        .then((history: IHistory[]) => {
-                            vm.historyLocals = history;
-                            vm.getDate();
-                        })
+                    vm.changeItemId();
                 })
                 .always(() => {
                     vm.$blockui('clear');
@@ -76,40 +73,34 @@ module nts.uk.at.view.kmk006.k {
 
             vm.isEnable = ko.observable(true);
             vm.isEditable = ko.observable(true);
-
         }
 
         mounted() {
             const vm = this;
-            const index = _.map(ko.unwrap(vm.historys), m => m.code).indexOf(ko.unwrap(vm.model.code));
 
-            vm.startDate.subscribe(() => vm.reloadList(index));
-            vm.endDate.subscribe(() => vm.startDate.valueHasMutated());
+            vm.selectedItemWork.valueHasMutated();
+            $('#combo-box').focus();
         }
 
-        getDate() {
+        changeItemId(itemId?: string) {
             const vm = this;
-
-            var historys: IHistory[] = [];
-            _.forEach(vm.historyLocals, ((value: IHistory) => {
-                if (value.itemId === ko.unwrap(vm.selectedItemWork)) {
-                    historys.push(value);
-                }
-            }));
-            console.log(ko.unwrap(vm.selectedItemWork));
-            if (historys.length > 0) {
-                _.orderBy(historys, ['itemId'], ['asc']);
-
-                vm.startDate(moment(historys[0].dateHistoryItems[0].startDate).format(DATE_FORMAT));
-                vm.endDate(moment(historys[0].dateHistoryItems[0].endDate).format(DATE_FORMAT));
-                vm.selectedItemWork.valueHasMutated();
-            }
+            vm.$ajax('at', API.LIST_HISTORY)
+                .then((history: IHistory[]) => {
+                    vm.historyLocals = history;
+                    if (itemId) {
+                        const exist = _.find(history, ((value: IHistory) => { return value.itemId === itemId }));
+                        if (exist) {
+                            vm.modelHistory.update(exist.dateHistoryItems[0]);
+                        }
+                    } else {
+                        vm.modelHistory.update(history[0].dateHistoryItems[0]);
+                    }
+                    vm.modelHistory.historyId.valueHasMutated();
+                });
         }
 
         reloadList(index?: number) {
-            const vm = this,
-                startDate = new Date(ko.unwrap(vm.startDate) as string),
-                endDate = new Date(ko.unwrap(vm.endDate) as string);
+            const vm = this;
             var listHistorys: IHistoryInfo[] = [];
             var historyDateils: IWorkDetail[] = [];
             let dfdGetAllData = $.Deferred();
@@ -119,7 +110,7 @@ module nts.uk.at.view.kmk006.k {
                     _.forEach(vm.historyLocals, ((value) => {
                         if (value.itemId === ko.unwrap(vm.selectedItemWork)) {
                             _.forEach(value.dateHistoryItems, ((item: IHistoryInfo) => {
-                                if (new Date(moment(item.startDate).format(DATE_FORMAT)) <= startDate && new Date(moment(item.endDate).format(DATE_FORMAT)) >= endDate) {
+                                if (item.historyId === ko.unwrap(vm.modelHistory.historyId)) {
                                     listHistorys.push(item);
                                 }
                             }))
@@ -144,16 +135,34 @@ module nts.uk.at.view.kmk006.k {
             $.when(dfdGetAllData)
                 .done(() => {
                     vm.historys(_.orderBy(historyDateils, ['code'], ['asc']));
-
-                    if (index) {
-                        vm.currentCode(ko.unwrap(vm.historys)[index].code);
+                    if (ko.unwrap(vm.historys).length > 0) {
+                        if (ko.unwrap(vm.screenMode) == SCREEN_MODE.UPDATE) {
+                            if (index) {
+                                vm.currentCode(ko.unwrap(vm.historys)[index].code);
+                            } else {
+                                vm.currentCode(historyDateils[0].code);
+                            }
+                        }
+                        if (ko.unwrap(vm.screenMode) == SCREEN_MODE.NEW) {
+                            vm.currentCode(ko.unwrap(vm.model.code));
+                            vm.screenMode(SCREEN_MODE.UPDATE);
+                        }
                     } else {
-                        vm.currentCode(historyDateils[0].code);
+                        vm.currentCode('');
+                        vm.model.update({
+                            historyId: ko.unwrap(vm.modelHistory.historyId),
+                            itemId: ko.unwrap(vm.model.itemId),
+                            code: '',
+                            name: '',
+                            externalCode: ''
+                        });
+                        vm.screenMode(SCREEN_MODE.NEW);
+                        $('.inputCode').focus();
                     }
                 })
                 .then(() => {
                     vm.$blockui('clear');
-                })
+                });
         }
 
         reloadData() {
@@ -163,34 +172,53 @@ module nts.uk.at.view.kmk006.k {
 
         openViewL() {
             const vm = this;
-
-            var data: IHistory;
-            _.forEach(vm.historyLocals, (item: IHistory) => {
-                if (item.itemId === ko.unwrap(vm.selectedItemWork)) {
-                    if (_.find(item.dateHistoryItems, ((value: IHistoryInfo) => { return value.historyId === ko.unwrap(vm.model.historyId) }))) {
-                        data = item;
-                    }
-                }
-            });
-
+            const exist = _.find(vm.historyLocals, ((value: IHistory) => { return value.itemId === ko.unwrap(vm.selectedItemWork) }));
             const param = {
                 itemId: ko.unwrap(vm.selectedItemWork),
-                history: data
+                history: exist
             }
+            vm.$window.modal('at', '/view/kdw/006/l/index.xhtml', param)
+                .then((hisId: string) => {
+                    if (hisId) {
+                        vm.$blockui('invisible')
+                            .then(() => {
+                                vm.$ajax(API.LIST_HISTORY)
+                                    .done((history: IHistory[]) => {
+                                        vm.historyLocals = history;
+                                    })
+                                    .then(() => {
+                                        const exist = _.find(vm.historyLocals, ((item: IHistory) => {
+                                            return item.itemId === ko.unwrap(vm.selectedItemWork);
+                                        }));
 
-            vm.$window.modal('at', '/view/kdw/006/l/index.xhtml', param);
+                                        if (exist) {
+                                            const history = _.find(exist.dateHistoryItems, ((value: IHistoryInfo) => {
+
+                                                return value.historyId === hisId;
+                                            }));
+
+                                            if (history) {
+                                                vm.modelHistory.update(history);
+                                            }
+                                        }
+                                    })
+                            })
+                    }
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         new() {
             const vm = this;
             vm.model.update({
-                historyId: ko.unwrap(vm.model.historyId),
+                historyId: ko.unwrap(vm.modelHistory.historyId),
                 itemId: ko.unwrap(vm.model.itemId),
                 code: '',
                 name: '',
                 externalCode: ''
             });
             vm.screenMode(SCREEN_MODE.NEW);
+            $('.inputCode').focus();
         }
 
         addOrUpdate() {
@@ -203,53 +231,44 @@ module nts.uk.at.view.kmk006.k {
                 itemId: ko.unwrap(vm.model.itemId)
             }
             const index = _.map(ko.unwrap(vm.historys), m => m.code).indexOf(ko.unwrap(vm.model.code));
-            let reloadDateSuccess = $.Deferred();
 
-            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.NEW) {
-                vm.$blockui('invisible')
-                    .then(() => {
-                        vm.$ajax('at', API.REGISTER, param)
-                            .done(() => {
-                                vm.$dialog.info('Msg_15');
-                                vm.screenMode(SCREEN_MODE.UPDATE);
-                                vm.reloadList();
-                                reloadDateSuccess.resolve();
-                            })
-                            .fail((data: any) => {
-                                vm.$dialog.error(data.messageId);
-                            });
-                    })
-                    .always(() => {
-                        vm.$blockui('clear');
-                    });
-
-                $.when(reloadDateSuccess)
-                    .done(() => {
-                        vm.currentCode(param.choiceCode);
-                    })
-            }
-            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.UPDATE) {
-                vm.$blockui('invisible')
-                    .then(() => {
-                        vm.$ajax('at', API.UPDATE, param)
-                            .done(() => {
-                                vm.$dialog.info('Msg_15');
-                                vm.reloadList(index);
-                                reloadDateSuccess.resolve();
-                            })
-                            .fail((data: any) => {
-                                vm.$dialog.error(data.messageId);
-                            });
-                    })
-                    .always(() => {
-                        vm.$blockui('clear');
-                    });
-
-                $.when(reloadDateSuccess)
-                    .done(() => {
-                        vm.currentCode(param.choiceCode);
-                    })
-            }
+            vm.validate()
+                .then((valid: boolean) => {
+                    if (valid) {
+                        if (ko.unwrap(vm.screenMode) === SCREEN_MODE.NEW) {
+                            vm.$blockui('invisible')
+                                .then(() => {
+                                    vm.$ajax('at', API.REGISTER, param)
+                                        .done(() => {
+                                            vm.$dialog.info({ messageId: 'Msg_15' });
+                                            vm.reloadList();
+                                        })
+                                        .fail((data: any) => {
+                                            vm.$dialog.info({ messageId: data.messageId });
+                                        });
+                                })
+                                .always(() => {
+                                    vm.$blockui('clear');
+                                });
+                        }
+                        if (ko.unwrap(vm.screenMode) === SCREEN_MODE.UPDATE) {
+                            vm.$blockui('invisible')
+                                .then(() => {
+                                    vm.$ajax('at', API.UPDATE, param)
+                                        .done(() => {
+                                            vm.$dialog.info({ messageId: 'Msg_15' });
+                                            vm.reloadList(index);
+                                        })
+                                        .fail((data: any) => {
+                                            vm.$dialog.error(data.messageId);
+                                        });
+                                })
+                                .always(() => {
+                                    vm.$blockui('clear');
+                                });
+                        }
+                    }
+                })
         }
 
         delete() {
@@ -257,7 +276,8 @@ module nts.uk.at.view.kmk006.k {
             const param = {
                 historyId: ko.unwrap(vm.model.historyId),
                 choiceCode: ko.unwrap(vm.model.code)
-            }, index = _.map(ko.unwrap(vm.historys), m => m.code).indexOf(ko.unwrap(vm.model.code));
+            }, oldIndex = _.map(ko.unwrap(vm.historys), m => m.code).indexOf(ko.unwrap(vm.model.code)),
+                newIndex = oldIndex == ko.unwrap(vm.historys).length - 1 ? oldIndex - 1 : oldIndex;
 
             nts.uk.ui.dialog
                 .confirm({ messageId: "Msg_18" })
@@ -266,7 +286,7 @@ module nts.uk.at.view.kmk006.k {
                         .then(() => {
                             vm.$ajax('at', API.REMOTE, param)
                                 .then(() => vm.$dialog.info({ messageId: "Msg_16" }))
-                                .then(() => vm.reloadList(index))
+                                .then(() => vm.reloadList(newIndex))
                                 .always(() => vm.$blockui('clear'))
                         })
                 })
@@ -278,17 +298,10 @@ module nts.uk.at.view.kmk006.k {
                     .then(() => $('.nts-input').ntsError('clear'));
             } else {
                 return $.Deferred().resolve()
-                    /** Gọi xử lý validate của kiban */
                     .then(() => $('.nts-input').trigger("validate"))
-                    /** Nếu có lỗi thì trả về false, không thì true */
                     .then(() => !$('.nts-input').ntsError('hasError'));
             }
         }
-    }
-
-    interface ItemModel {
-        code: String;
-        name: String;
     }
 
     enum SCREEN_MODE {
@@ -313,37 +326,34 @@ module nts.uk.at.view.kmk006.k {
         dateHistoryItems: IHistoryInfo[];
     }
 
-    class History {
-        itemId: KnockoutObservable<String> = ko.observable('');
-        dateHistoryItems: KnockoutObservableArray<HistoryInfo> = ko.observableArray([]);
-
-        constructor(param: IHistory) {
-            this.itemId(param.itemId);
-            var historyInfos: HistoryInfo[] = [];
-            _.forEach(param.dateHistoryItems, ((value: IHistoryInfo) => {
-                historyInfos.push(new HistoryInfo(value));
-            }));
-            this.dateHistoryItems(historyInfos);
-        }
-    }
-
     interface IHistoryInfo {
-        historyId: String;
+        historyId: string;
         startDate: Date;
         endDate: Date;
     }
 
     class HistoryInfo {
-        historyId: KnockoutObservable<String> = ko.observable('');
-        startDate: KnockoutObservable<Date> = ko.observable(new Date);;
-        endDate: KnockoutObservable<Date> = ko.observable(new Date);
+        historyId: KnockoutObservable<string> = ko.observable('');
+        startDate: KnockoutObservable<Date | null> = ko.observable(null);;
+        endDate: KnockoutObservable<Date | null> = ko.observable(null);
         period: KnockoutObservable<String> = ko.observable('');
 
-        constructor(param: IHistoryInfo) {
-            this.historyId(param.historyId);
-            this.startDate(param.startDate);
-            this.endDate(param.endDate);
-            this.period(param.startDate.toString() + ' ~ ' + param.endDate.toString());
+        constructor(param?: IHistoryInfo) {
+            if (param) {
+                this.historyId(param.historyId);
+                this.startDate(param.startDate);
+                this.endDate(param.endDate);
+                this.period(param.startDate.toString() + ' ~ ' + param.endDate.toString());
+            }
+        }
+
+        public update(param?: IHistoryInfo) {
+            if (param) {
+                this.historyId(param.historyId);
+                this.startDate(param.startDate);
+                this.endDate(param.endDate);
+                this.period(param.startDate.toString() + ' ~ ' + param.endDate.toString());
+            }
         }
     }
 
@@ -385,6 +395,14 @@ module nts.uk.at.view.kmk006.k {
                 this.name(param.name);
                 this.externalCode(param.externalCode);
             }
+        }
+
+        public delete() {
+            this.historyId("");
+            this.itemId("");
+            this.code("");
+            this.name("");
+            this.externalCode("");
         }
     }
 }
