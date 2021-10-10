@@ -286,6 +286,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.changeModeColor(value);
 		}
 		
+		// change color chart when change mode
 		public changeModeColor(value : any){
 			let self = this, mode = "normal";
 			if(value == 1){
@@ -295,7 +296,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.flexType.color("#ccccff")
 				self.otType.color("#ffff00")
 				self.otType.hide(false);
-				self.otType.color("#00ffcc")
+				self.coreType.color("#00ffcc")
 				self.coreType.hide(false);
 				self.breakType.zIndex(1001);
 				self.holidayType.zIndex(1103);
@@ -308,11 +309,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$("#ab1-viewModel").hide();
 				$(".ab-view").addClass('hide-pallet');
 				$(".nts-ganttchart").removeClass("dis-pointer-none");
-				$(".ex-body-leftmost").removeClass("dis-pointer");
+				$(".ex-body-leftmost").removeClass("dis-pointer-none");
 				$(".ex-body-middle").removeClass("dis-pointer");
 				$(".ex-body-detail").removeClass("disable-css");
 				$(".ex-body-detail").removeClass("dis-pointer");
-				$(".x-button").removeClass("dis-pointer");
+				$(".x-button").removeClass("dis-pointer-none");
 				$(".xcell").removeClass("bg-color");
 			} else {
 				if(_.isNil(self.fixedType)) return;
@@ -321,7 +322,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.flexType.color("#fff")
 				self.otType.color("#fff")
 				self.otType.hide(true);
-				self.otType.color("#fff")
+				self.coreType.color("#fff")
 				self.coreType.hide(true);
 				self.breakType.zIndex(1999);
 				self.holidayType.zIndex(1996);
@@ -334,10 +335,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$("#ab1-viewModel").show();
 				$(".ab-view").removeClass('hide-pallet');
 				
-				$(".ex-body-leftmost").addClass("dis-pointer");
+				$(".ex-body-leftmost").addClass("dis-pointer-none");
 				$(".ex-body-middle").addClass("dis-pointer");
 				$(".ex-body-detail").addClass("disable-css");
-				$(".x-button").addClass("dis-pointer");
+				$(".x-button").addClass("dis-pointer-none");
 				if (self.checkDisByDate != false){
 					$(".xcell").addClass("bg-color");
 					$(".extable-header-leftmost").addClass("header-color");
@@ -346,6 +347,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					//$(".nts-ganttchart").addClass("dis-pointer-none");
 					$(".ex-body-detail").addClass("dis-pointer");
 				}
+				
+				_.forEach(self.disableDs, (x : any) => {
+					let ind = x.index + 2,
+					cssBgDis1 = "#extable-ksu003 > div.ex-body-leftmost.dis-pointer-none > table > tbody > tr:nth-child(" + ind + ") > td:nth-child(1)",
+					cssBgDis2 = "#extable-ksu003 > div.ex-body-leftmost.dis-pointer-none > table > tbody > tr:nth-child(" + ind + ") > td:nth-child(2)";
+					$(cssBgDis1).removeClass("bg-color");
+					$(cssBgDis2).removeClass("bg-color");
+				});
 				
 				if(!_.isNil(self.localStore.workSelection)){
 					if(self.localStore.workSelection == 0){
@@ -1796,7 +1805,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 		}
 
-		// Khởi tạo EXTABLE-GANTCHART
+		// Create EXTABLE-GANTCHART
 		initExtableChart(timeGantChart: Array<model.ITimeGantChart>, leftDs: any, midData: any, disableDs: any, type?: any): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred(), displayRange = self.timeRange, totalBreakTime = "0:00";
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
@@ -3162,7 +3171,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								page: taskTime[o].taskCode,
 								text: getText("KSU003_70"),
 								tooltip: getText("KSU003_70"),
-								color: "#fff"
+								color: "#000000"
 							}
 						}
 					self.addTypeOfTask(taskInfo.data.color, taskInfo, false);
@@ -3173,58 +3182,70 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					timeMinus.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus[0].startTime, timeMinus[0].endTime) ||
 						_.inRange(taskTime[o].timeSpanForCalcDto.end, timeMinus[0].startTime, timeMinus[0].endTime))) {
 						
-						ruler.addChartWithType(taskTime[o].taskCode + "TASK", {
-										name : taskTime[o].taskData == null ? getText("KSU003_70") : taskTime[o].taskData.taskDisplayInfoDto.taskName,
-										color: taskTime[o].taskData == null ? "#fff" : taskTime[o].taskData.taskDisplayInfoDto.color,
-										lineWidth: 30,
-										parent: parent,
-										canSlide: false,
-										unitToPx: 3.5,
-										id: id,
-										hide: ruler.loggable(self.selectedDisplayPeriod() == 1 ? false : true),
-										canPaste: true,
-                						canPasteResize: true,
-										lineNo: i,
-										start: (taskTime[o].timeSpanForCalcDto.start / 5) - dispStart,
-										end: (taskTime[o].timeSpanForCalcDto.end / 5) - dispStart,
-										pastingResizeFinished: function (line : any, type : any, start : any, end : any) {
-											let taskFilter = _.filter(ruler.gcChart[line], (tskF : any) => {
-													return tskF.id === id;
-											});
-											
-											if (_.isNil(start) || _.isNil(end)){
+						let checkRuler = _.filter(ruler.definedType, (tsk : any) => {
+							return _.includes(tsk.name, taskTime[o].taskCode); 
+						})
+						
+						if(checkRuler.length > 0){
+							ruler.addChartWithType(taskTime[o].taskCode + "TASK", {
+											name : taskTime[o].taskData == null ? getText("KSU003_70") : taskTime[o].taskData.taskDisplayInfoDto.taskName,
+											color: taskTime[o].taskData == null ? "#000000" : taskTime[o].taskData.taskDisplayInfoDto.color,
+											lineWidth: 30,
+											parent: parent,
+											canSlide: false,
+											unitToPx: 3.5,
+											id: id,
+											hide: ruler.loggable(self.selectedDisplayPeriod() == 1 ? false : true),
+											canPaste: true,
+	                						canPasteResize: true,
+											lineNo: i,
+											start: (taskTime[o].timeSpanForCalcDto.start / 5) - dispStart,
+											end: (taskTime[o].timeSpanForCalcDto.end / 5) - dispStart,
+											pastingResizeFinished: function (line : any, type : any, start : any, end : any) {
+												let taskFilter = _.filter(ruler.gcChart[line], (tskF : any) => {
+														return tskF.id === id;
+												});
 												
-												if (_.isNil(start))
+												if (_.isNil(start) || _.isNil(end)){
+													
+													if (_.isNil(start))
+														start = taskFilter[0].start;
+													
+													if (_.isNil(end)) 
+														end = taskFilter[0].end;
+												}
+												
+												if (_.isNil(start) && _.isNil(end)){
 													start = taskFilter[0].start;
-												
-												if (_.isNil(end)) 
 													end = taskFilter[0].end;
-											}
-											
-											if (_.isNil(start) && _.isNil(end)){
-												start = taskFilter[0].start;
-												end = taskFilter[0].end;
-											}
-						                    console.log(line + "-" + type + "-" + start + "-" + end);
-											self.addTaskResize(line , type , start , end, id);
-						                }
-						});
-						indexLeft = ++indexLeft;
-						self.lstChartTask.push({
-							start : taskTime[o].timeSpanForCalcDto.start,
-							end : taskTime[o].timeSpanForCalcDto.end,
-							id : id,
-							line : i,
-							code : taskTime[o].taskCode
-						});
+												}
+							                    console.log(line + "-" + type + "-" + start + "-" + end);
+												self.addTaskResize(line , type , start , end, id);
+							                }
+							});
+							indexLeft = ++indexLeft;
+							self.lstChartTask.push({
+								start : taskTime[o].timeSpanForCalcDto.start,
+								end : taskTime[o].timeSpanForCalcDto.end,
+								id : id,
+								line : i,
+								code : taskTime[o].taskCode
+							});
+						}
 						}
 						
 						if (timeMinus2.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
 								_.inRange(taskTime[o].timeSpanForCalcDto.end, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
 									id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
+									
+								let checkRuler = _.filter(ruler.definedType, (tsk : any) => {
+									return _.includes(tsk.name, taskTime[o].taskCode); 
+								})	
+								
+								if(checkRuler.length > 0){
 								ruler.addChartWithType(taskTime[o].taskCode + "TASK", {
 									name : taskTime[o].taskData == null ? getText("KSU003_70") : taskTime[o].taskData.taskDisplayInfoDto.taskName,
-									color: taskTime[o].taskData == null ? "#fff" : taskTime[o].taskData.taskDisplayInfoDto.color,
+									color: taskTime[o].taskData == null ? "#000000" : taskTime[o].taskData.taskDisplayInfoDto.color,
 									lineWidth: 30,
 									parent: parent,
 									canSlide: false,
@@ -3266,6 +3287,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									code : taskTime[o].taskCode
 								});
 								indexRight = ++indexRight;
+							}	
 						}
 					}
 				}
