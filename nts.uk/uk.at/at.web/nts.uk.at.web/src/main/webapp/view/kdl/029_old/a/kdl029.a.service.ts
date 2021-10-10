@@ -1,4 +1,4 @@
-import screenModel = nts.uk.at.view.kdl029.a.screenModel;
+import screenModel = nts.uk.at.view.kdl029_old.a.screenModel;
 
 module nts.uk.at.view.kdl029.a.service {
     const paths: any = { 

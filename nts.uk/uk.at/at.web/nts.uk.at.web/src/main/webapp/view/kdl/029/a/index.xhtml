@@ -21,108 +21,81 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-			<div id="ui-area" style="display: none;">
-				<!-- Search Box -->
-				<div tabindex="-1" id="area-right" style="float: left;">
-					<div>
-						<div class="input-wrapper">
-							<span class="nts-editor-wrapped ntsControl"> <input
-								id="input-search" data-bind="text:searchText"
-								class="ntsSearchBox nts-editor ntsSearchBox_Component"
-								type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
-								tabindex="-1" style="width: 187px;"></input>
-							</span> <i id="search-icon-new" class="img-icon"></i>
+					<!-- Search Box -->
+					<div tabindex="-1" id="area-right" style="float: left;">
+						<div>
+							<div class="input-wrapper">
+								<span class="nts-editor-wrapped ntsControl"> <input
+									id="input-search" data-bind="text:searchText"
+									class="ntsSearchBox nts-editor ntsSearchBox_Component"
+									type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
+									tabindex="-1" style="width: 187px;"></input>
+								</span> <i id="search-icon-new" class="img-icon"></i>
+							</div>
+							<button id="search-btn" data-bind=" click: findData"
+								class="caret-bottom " tabindex="-1">検索</button>
 						</div>
-						<button id="search-btn" data-bind=" click: findData"
-							class="caret-bottom " tabindex="-1">検索</button>
+						<!-- KCP005 -->
+						<div tabindex="-1" id="kcp005component"></div>
 					</div>
-					<!-- KCP005 -->
-					<div tabindex="-1" id="kcp005component"></div>
-				</div>
-				<div id="area-left">
-					<!-- A2_1 -->
-					<div>
+					<div id="area-left" style="width: 620px;">
+						<!-- A2_1 -->
 						<div>
 							#{i18n.getText('Com_Person')}<label style="margin-left: 10px;"
 								id="emp-code-name" data-bind="text:employeeCodeName"></label>
 						</div>
-					</div>
-					<!-- A5 -->
-					<div id="area-non-info">
-						<label id="A5" style="font-size: 23px;">#{i18n.getText('KDL005_39')}</label>
-					</div>
-					<div id="area-info">
-						<div>
-							<!-- A2_3 -->
-							<label id="A2_3">#{i18n.getText('KDL005_60')}</label>
-							<!-- A2_4 -->
-							<button tabindex="-1" id="btn-help-1"
-								data-bind="ntsHelpButton: {textId: 'KDL005_58', textParams:['{#KDL005_58}', '', '', ''], position: 'right center' }">？</button>
-							<!-- A2_5 -->
-							<label id="A2_5" style="margin-left: 30px; font-size: 18px;"
-								data-bind="text:currentRemainNumber"></label> <label id="A6_1"
-								style="font-size: 18px; margin-left: 10px;">#{i18n.getText('KDL005_56')}</label>
-							<!-- A2_23 -->
-							<label id="A2_23">#{i18n.getText('KDL005_65')}</label>
+						 <!-- A5 -->
+						<div id="area-non-info">
+							<label id="A7" style="font-size: 23px;" data-bind="visible: changeMode ">#{i18n.getText('KDL029_27')}</label>
 						</div>
-						<div>
-							<!-- A2_6 -->
-							<label id="A2_6">#{i18n.getText('KDL005_42')}</label>
-							<!-- A2_7 -->
-							<button tabindex="-1" id="btn-help-2"
-								data-bind="ntsHelpButton: {textId: 'KDL005_43', textParams:['{#KDL005_43}', '', '', ''], position: 'right center' }">？</button>
-						</div>
-						<div style="margin-left: 20px; margin-top: 10px;">
-							<!-- A2_8 -->
-							<label id="A2_8">#{i18n.getText('KDL005_62')}</label>
-							<!-- A2_9 -->
-							<label id="A2_9" style="margin-left: 10px;"
-								data-bind="text:expiredWithinMonth"></label> <label id="A6_2"
-								style="margin-left: 10px;">#{i18n.getText('KDL005_56')}</label>
-							<!-- A2_10 -->
-							<label id="A2_10">#{i18n.getText('KDL005_59')}</label>
-							<!-- A2_21 -->
-							<label id="A2_21" data-bind="text:dayCloseDeadline"></label>
-						</div>
-						<div>
-							<div tabindex="2" id="combo-box"
-								style="width: 145px; margin-top: 10px;"
-								data-bind="ntsComboBox: {
-							name: '#KDL005_46',
-							options: itemList,
-							optionsValue: 'code',
-							visibleItemsCount: 2,
-							value: selectedCodeCbb,
-							optionsText: 'name',
-							columns: [
-								{ prop: 'name', length: 10 },
-							]}">
+						<div id="area-info" data-bind="visible: showGrid ">
+							<div>
+								<!-- A2_3 -->
+								<label id="A2_3">#{i18n.getText('KDL029_40')}</label>
+								<!-- A2_4 -->
+								<button tabindex="-1" id="btn-help-1"
+									data-bind="ntsHelpButton: {textId: 'KDL029_39', textParams:['{#KDL029_39}', '', '', ''], position: 'bottom left' }">？</button>
+								<!-- A2_5 -->
+								<label id="A2_5" style="margin-left: 36px; font-size: 18px;"
+									data-bind="text : currentRemainNum"></label>
 							</div>
-						</div>
-						<label id="A6_3">#{i18n.getText('KDL005_57')}</label>
-						<!-- A3 -->
-						<div tabindex="-1" id="grid-data" style="margin-top: 10px;">
-							<table tabindex="-1" id="single-list"
-								data-bind="ntsGridList: {
-							name : '#KDL005_50'	,							
+								<!-- A2_6 -->
+								<label id="description-label">#{i18n.getText('KDL029_38')}</label>
+							<!-- A3 -->
+							<div tabindex="-1" id="grid-data" style="margin-top: 10px;">
+								<table tabindex="-1" id="single-list"
+									data-bind="ntsGridList: {
+							name : '#KDL029_37'	,							
 							height: 280,
 							options: holidayData,
 							columns: columns,
 							multiple: false,
 							value: currentCode,
-							rows : 10}">
-							</table>
+							rows : 5}">
+								</table>
+							</div>
+							<div style="margin-top: 10px;">
+								<!-- A4_1 -->
+								<label id="latest-annual-leave">#{i18n.getText('KDL029_31')}</label>
+							</div>
+							<div tabindex="-1" id="grid-data-2" style="margin-top: 10px;">
+								<table tabindex="-1" id="single-list"
+									data-bind="ntsGridList: {
+							name : '#KDL020_30'	,							
+							height: 280,
+							options: holidayData2,
+							columns: columns2,
+							multiple: false,
+							value: currentCode2,
+							rows : 6}">
+								</table>
+							</div>
 						</div>
-						<div>
-							<!-- A6 -->
-							<label id="A6">#{i18n.getText('KDL005_55')}</label>
-						</div>
-					</div>
 
-				</div>
+					</div>
 			</div>
-			</div>
-			<div id="functions-area-bottom" style="background-color: white; display: none;">
+			<div id="functions-area-bottom"
+				style="background-color: white">
 				<button tabindex="1" id="cancel-btn" data-bind="click: cancel"
 					class="large">#{i18n.getText('KDL005_17')}</button>
 			</div>

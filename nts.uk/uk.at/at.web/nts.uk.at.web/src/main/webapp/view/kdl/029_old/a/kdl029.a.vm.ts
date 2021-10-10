@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl029.a.screenModel {
+module nts.uk.at.view.kdl029_old.a.screenModel {
     import getText = nts.uk.resource.getText;
     import text = nts.uk.resource.getText;
     import block = nts.uk.ui.block;

@@ -1,6 +1,8 @@
+module nts.uk.at.view.kdl029.test {
 __viewContext.ready(function() {
-        var screenModel = new kdl029.test.viewmodel.ScreenModel();
-        //screenModel.startPage().done(function() {
-            __viewContext.bind(screenModel);   
-        //});
+		service.getEmployeeList().done((data : any) => {
+			let screenModel = new viewmodel.ScreenModel(data);
+			__viewContext.bind(screenModel);
+		})
     });
+}

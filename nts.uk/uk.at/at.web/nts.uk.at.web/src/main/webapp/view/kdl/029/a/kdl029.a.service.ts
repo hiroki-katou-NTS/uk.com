@@ -4,11 +4,11 @@ module nts.uk.at.view.kdl029.a {
          *  Service paths
          */
 		var servicePath: any = {
-			getHolidaySub: "at/request/employment/getHolidaySub"
+			findSuspensionHoliday: "at/request/dialog/suspensionholidays/findSuspensionHoliday"
 		};
 		
-		export function getHolidaySub(param : any): JQueryPromise<any> {
-            return nts.uk.request.ajax( "at", servicePath.getHolidaySub, param);
+		export function findSuspensionHoliday(param : any): JQueryPromise<any> {
+            return nts.uk.request.ajax( "at", servicePath.findSuspensionHoliday, param);
         }
 	}
 }
