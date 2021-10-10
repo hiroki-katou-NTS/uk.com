@@ -638,8 +638,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		// delete a comma after for
 		if(!ctgItemDataList.isEmpty()) {
 			sql.setLength(sql.length() - COMMA.length());
+		}else {
+			sql.append(" * ");
 		}
-		
 		sql.append(FROM_COND);
 
 		Optional<ExOutLinkTable> exOutLinkTable = settingResult.getExCndOutput();
@@ -715,8 +716,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 					subSqlEtart.append(endDateItemName);
 					subSqlStart.append(" ), 0) ");
 					subSqlEtart.append(" ), 0) ");
-					createWhereCondition(sql, subSqlStart.toString(), " <= ", END_DATE_PARAM);
-					createWhereCondition(sql, subSqlEtart.toString(), " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, subSqlStart.toString(), " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, subSqlEtart.toString(), " <= ", END_DATE_PARAM);
 
 				} else if(outingPeriodClassific == OutingPeriodClassific.DATE){
 					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
