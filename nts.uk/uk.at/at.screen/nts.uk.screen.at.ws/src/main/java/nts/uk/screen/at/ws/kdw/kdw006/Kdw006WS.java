@@ -138,6 +138,13 @@ public class Kdw006WS extends WebService {
 		this.updateHistory.handle(param);
 	}
 
+	// 履歴を削除する
+	@POST
+	@Path("view-l/remote-history")
+	public void remoteHistory(DeleteHistoryCommand param) {
+		this.remoteHistory.handle(param);
+	}
+
 	// Query: 工数実績項目を取得する
 	@POST
 	@Path("view-j/get-man-hour-record-item")
