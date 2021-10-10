@@ -34,10 +34,10 @@ public class SuspensionHolidayFinder {
 		AnnualHolidaysDto suspenHoliday = null; 
 		InforAnnualHolidaysAccHolidayDto confirmDto = null;
 		// Input．社員IDリストをチェック
-		if (sIDs.size() == 1)
+		
 			// 社員の積休残数詳細情報を取得
 			confirmDto = remainDays.getInforNumberRemainEmployees(AppContexts.user().companyId(), sIDs.get(0));
-		else
+			if (sIDs.size() > 1)
 			mode = 1; // 画面 ＝ 複数モード
 		
 		suspenHoliday = new AnnualHolidaysDto(lstEmp, confirmDto, mode);
