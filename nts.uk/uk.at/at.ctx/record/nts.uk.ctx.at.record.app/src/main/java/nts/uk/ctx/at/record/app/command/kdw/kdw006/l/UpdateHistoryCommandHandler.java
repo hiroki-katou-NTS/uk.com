@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.kdw.kdw006.l;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,8 +11,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistory;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistoryRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * Command: 履歴を更新する
@@ -35,8 +39,11 @@ public class UpdateHistoryCommandHandler extends CommandHandler<AddHistoryComman
 				Integer.valueOf(command.getItemId()));
 
 		if (domain.isPresent()) {
-			TaskSupInfoChoicesHistory result = domain.get();
-			result.getDateHistoryItems().get(0).newSpan(command.getStartDate(), command.getEndDate());
+			List<DateHistoryItem> dateHistoryItems = new ArrayList<>();
+			dateHistoryItems.add(new DateHistoryItem(command.getHistoryId(),
+					new DatePeriod(command.getStartDate(), command.getEndDate())));
+			TaskSupInfoChoicesHistory result = new TaskSupInfoChoicesHistory(domain.get().getItemId(),
+					dateHistoryItems);
 			this.taskSupInfoChoicesHistoryRepo.update(result);
 		}
 	}

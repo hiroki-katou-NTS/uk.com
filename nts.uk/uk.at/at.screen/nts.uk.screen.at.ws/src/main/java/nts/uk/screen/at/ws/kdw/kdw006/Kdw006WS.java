@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.j.RegisterNewFormatSettingsCommand;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.j.RegisterNewFormatSettingsCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.DeleteTheChoiceCommand;
@@ -17,6 +18,8 @@ import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.RegisterNewOptionsCommandHa
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.k.UpdateAndRegisterOptionsCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.AddHistoryCommand;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.AddHistoryCommandHander;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.DeleteHistoryCommand;
+import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.DeleteHistoryCommandHandler;
 import nts.uk.ctx.at.record.app.command.kdw.kdw006.l.UpdateHistoryCommandHandler;
 import nts.uk.screen.at.app.kdw006.j.AcquireManHourRecordItems;
 import nts.uk.screen.at.app.kdw006.j.AcquireManHourRecordItemsDto;
@@ -73,6 +76,9 @@ public class Kdw006WS extends WebService {
 	private GetDisplayFormat getDisplayFormat;
 
 	@Inject
+	private DeleteHistoryCommandHandler remoteHistory;
+
+	@Inject
 	private RegisterNewFormatSettingsCommandHandler registerOrUpdateSetting;
 
 	// 作業補足情報の選択項目を取得する
@@ -127,8 +133,11 @@ public class Kdw006WS extends WebService {
 	// 履歴を追加する
 	@POST
 	@Path("view-l/register-history")
-	public void addHistory(AddHistoryCommand param) {
+	public HisIdDto addHistory(AddHistoryCommand param) {
+		String hisId = IdentifierUtil.randomUniqueId();
+		param.setHistoryId(hisId);
 		this.addHistory.handle(param);
+		return new HisIdDto(hisId);
 	}
 
 	// 履歴を更新する
@@ -163,7 +172,7 @@ public class Kdw006WS extends WebService {
 	@POST
 	@Path("view-j/register-or-upate")
 	public void registerOrUpdate(RegisterNewFormatSettingsCommand command) {
-		this.registerOrUpdateSetting.handle(command);;
+		this.registerOrUpdateSetting.handle(command);
 	}
 
 }

@@ -34,7 +34,7 @@ public class AddHistoryCommandHander extends CommandHandler<AddHistoryCommand> {
 		AddHistoryCommand command = context.getCommand();
 
 		List<DateHistoryItem> historys = new ArrayList<>();
-		historys.add(DateHistoryItem.createNewHistory(new DatePeriod(command.getStartDate(), command.getEndDate())));
+		historys.add(new DateHistoryItem(command.getHistoryId(),new DatePeriod(command.getStartDate(), command.getEndDate())));
 
 		TaskSupInfoChoicesHistory domain = new TaskSupInfoChoicesHistory(Integer.parseInt(command.getItemId()),
 				historys);
