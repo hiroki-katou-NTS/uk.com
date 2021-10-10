@@ -26,7 +26,18 @@
 }
 
 .nts-help-button-image{
-	top : -26px !important;
+	top: 63px !important;
+    left: 27px !important;
+    margin-top: 0px !important;
+}
+
+.caret-top, .caret-helpbutton{
+	left: 5px !important; 
+}
+
+#area-non-info {
+	margin-left: 45px;
+    margin-top: 10px;
 }
 
 .img-icon {

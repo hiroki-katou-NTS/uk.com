@@ -18,7 +18,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		disableSelection: KnockoutObservable<boolean>;
 
 		employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
-		paramData: any = nts.uk.ui.windows.getShared('KDL005_DATA');
+		paramData: any = nts.uk.ui.windows.getShared('KDL020_DATA');
 
 		// search
 		items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
@@ -41,7 +41,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		count2: number = 100;
 		switchOptions2: KnockoutObservableArray<any>;
 		holidayData2: KnockoutObservableArray<HolidayInfo2> = ko.observableArray([]);
-		holidayDataOld2: KnockoutObservableArray<HolidayInfo> = ko.observableArray([]);
+		holidayDataOld2: KnockoutObservableArray<HolidayInfo2> = ko.observableArray([]);
 
 		checkSolid: number = 0;
 
@@ -55,6 +55,12 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		annLimitStart: KnockoutObservable<string> = ko.observable('2020/08/10');
 		// A2_12
 		annLimitEnd: KnockoutObservable<string> = ko.observable('2021/09/10');
+
+		//
+		checkEnable: KnockoutObservable<boolean> = ko.observable(false);
+		checkSub: KnockoutObservable<boolean> = ko.observable(false);
+		changeMode : KnockoutObservable<boolean> = ko.observable(false);
+		showGrid : KnockoutObservable<boolean> = ko.observable(false);
 
 		searchText: KnockoutObservable<string> = ko.observable('');
 
@@ -80,11 +86,11 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 
 			//Number of grants Heda
 			self.columns = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL020_52'), key: 'grantdate', width: 130 },
-				{ headerText: nts.uk.resource.getText('KDL020_53'), key: 'numbergrants', width: 70 },
-				{ headerText: nts.uk.resource.getText('KDL020_54'), key: 'numberuses', width: 120 },
-				{ headerText: nts.uk.resource.getText('KDL020_55'), key: 'remaining', width: 120 },
-				{ headerText: nts.uk.resource.getText('KDL020_56'), key: 'expirationdate', width: 130 }
+				{ headerText: nts.uk.resource.getText('KDL020_52'), key: 'grandDate', width: 115 },
+				{ headerText: nts.uk.resource.getText('KDL020_53'), key: 'numbergrants', width: 115 },
+				{ headerText: nts.uk.resource.getText('KDL020_54'), key: 'numberuses', width: 115 },
+				{ headerText: nts.uk.resource.getText('KDL020_55'), key: 'remaining', width: 115 },
+				{ headerText: nts.uk.resource.getText('KDL020_56'), key: 'expirationdate', width: 135 }
 			]);
 
 			//
@@ -125,28 +131,87 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			$('#kcp005component').ntsListComponent(self.listComponentOption);
 
 			self.listComponentOption.selectedCode.subscribe((value: any) => {
-
+				if (value == null) return;
+				self.checkSolid = 0;
+				
+				if (self.checkSub()) {
+					self.getData(value);
+				}
+				
+				self.checkSub(true);
 			})
-
 		}
 
 		startPage(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
-			nts.uk.ui.block.grayout();
-			service.findAnnualHolidays(self.paramData).done((data: any) => {
-				self.dataHoliday(data);
-				_.forEach(data.employeeImports, (a: any, ind) => {
-					self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName, workplaceName: 'HN' })
-				});
-				self.listComponentOption.selectedCode(self.employeeList()[0].code);
-			});
+			self.checkSub(false);
+			self.getData("");
 			dfd.resolve();
 			return dfd.promise();
 		}
 
-		bindDataToGrid(value: any): JQueryPromise<any> {
+		getData(value : any): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
+			nts.uk.ui.block.grayout();
+			service.findAnnualHolidays(self.paramData).done((data: any) => {
 
+				if (data.accHolidayDto != null) {
+					self.dataHoliday(data.accHolidayDto);
+
+					self.currentRemainNum(data.accHolidayDto.currentRemainNum);
+					self.nextScheDate(data.accHolidayDto.nextScheDate);
+					self.annMaxTime(data.accHolidayDto.annMaxTime);
+					self.annLimitStart(data.accHolidayDto.annLimitStart);
+					self.annLimitEnd(data.accHolidayDto.annLimitEnd);
+					
+					// ※2 , ※1
+					if (!data.accHolidayDto.annAccManaAtr)
+						self.changeMode(true);
+					else 
+						self.showGrid(true);
+					
+					// ※3	
+					if (data.accHolidayDto.annManaAtr) {
+						self.checkEnable(true);
+					}
+				} else {
+					self.changeMode(true);
+				}
+				if (!self.checkSub()) {
+					_.forEach(data.employeeImports, (a: any, ind) => {
+						self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName, workplaceName: 'HN' })
+					});
+				}
+
+				self.bindDataToGrid();
+				if (!self.checkSub)
+					self.listComponentOption.selectedCode(self.employeeList()[0].code);
+					
+				let name = null;
+				name = _.filter(self.employeeList(), (x: any) => {
+					return _.isEqual(x.code, value == "" ? self.employeeList()[0].code : value);
+				});
+				
+				if (name.length > 0)
+				self.employeeCodeName(name[0].code + " " + name[0].name);
+
+				nts.uk.ui.block.clear();
+				dfd.resolve();
+			});
+			return dfd.promise();
+		}
+
+		bindDataToGrid(): JQueryPromise<any> {
+			let self = this, dfd = $.Deferred<any>();
+			self.holidayData([]);
+			self.holidayData2([]);
+			if (_.isNil(self.dataHoliday())) return;
+			_.forEach(self.dataHoliday().lstRemainAnnAccHoliday, (x: AnnualAccumulatedHoliday /**  */, index) => {
+				self.holidayData.push(new HolidayInfo(x.grandDate,x.numberGrants, x.numberOfUse,x.numberOfRemain,x.dateOfExpiry));
+			})
+			_.forEach(self.dataHoliday().lstAnnAccHoliday , (x: DetailsAnnuaAccumulatedHoliday, index) => {
+				self.holidayData2.push(new HolidayInfo2(x.annualHolidayStatus + " " + x.digestionDate, x.numberOfUse));
+			})
 
 			return dfd.promise();
 		}
@@ -272,15 +337,15 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 
 	export class AnnualAccumulatedHoliday {
 		/** 付与数 */
-		numberGrants: KnockoutObservable<string>;
+		numberGrants: string;
 		/** 付与日 */
-		grandDate: KnockoutObservable<string>;
+		grandDate: string;
 		/** 使用数 */
-		numberOfUse: KnockoutObservable<string>;
+		numberOfUse: string;
 		/** 有効期限 */
-		dateOfExpiry: KnockoutObservable<string>;
+		dateOfExpiry: string;
 		/** 残数 */
-		numberOfRemain: KnockoutObservable<string>;
+		numberOfRemain: string;
 
 		constructor(
 			numberGrants: string,
@@ -290,21 +355,21 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			numberOfRemain: string
 		) {
 			let self = this;
-			self.numberGrants = ko.observable(numberGrants);
-			self.grandDate = ko.observable(grandDate);
-			self.numberOfUse = ko.observable(numberOfUse);
-			self.dateOfExpiry = ko.observable(dateOfExpiry);
-			self.numberOfRemain = ko.observable(numberOfRemain);
+			self.numberGrants = (numberGrants);
+			self.grandDate = (grandDate);
+			self.numberOfUse = (numberOfUse);
+			self.dateOfExpiry = (dateOfExpiry);
+			self.numberOfRemain = (numberOfRemain);
 		}
 	}
 
 	export class DetailsAnnuaAccumulatedHoliday {
 		/** 使用数 */
-		numberOfUse: KnockoutObservable<string>;
+		numberOfUse: string;
 		/** 年休消化状況 */
-		annualHolidayStatus: KnockoutObservable<string>;
+		annualHolidayStatus: string;
 		/** 消化日 */
-		digestionDate: KnockoutObservable<string>;
+		digestionDate: string;
 
 		constructor(
 			numberOfUse: string,
@@ -312,23 +377,12 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			digestionDate: string
 		) {
 			let self = this;
-			self.numberOfUse = ko.observable(numberOfUse);
-			self.annualHolidayStatus = ko.observable(annualHolidayStatus);
-			self.digestionDate = ko.observable(digestionDate);
+			self.numberOfUse = (numberOfUse);
+			self.annualHolidayStatus = (annualHolidayStatus);
+			self.digestionDate = (digestionDate);
 		}
 	}
-
-	export class ItemModel {
-		code: number;
-		name: string;
-		displayName?: string;
-		constructor(code: number, name: string, displayName?: string) {
-			this.code = code;
-			this.name = name;
-			this.displayName = displayName;
-		}
-	}
-
+	
 	class HolidayInfo {
 		grantdate: string;
 		numbergrants: string;
@@ -343,7 +397,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			this.expirationdate = expirationdate;
 		}
 	}
-
+	
 	class HolidayInfo2 {
 		digestionday: string;
 		digestionuse: string;
@@ -353,4 +407,14 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		}
 	}
 
+	export class ItemModel {
+		code: number;
+		name: string;
+		displayName?: string;
+		constructor(code: number, name: string, displayName?: string) {
+			this.code = code;
+			this.name = name;
+			this.displayName = displayName;
+		}
+	}
 }

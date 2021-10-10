@@ -54,7 +54,7 @@ module nts.uk.at.view.kdl020.test.viewmodel {
 				isShowWorkPlaceName: self.isShowWorkPlaceName(),
 				isShowSelectAllButton: self.isShowSelectAllButton(),
 				disableSelection: self.disableSelection(),
-				maxRows : 15
+				maxRows : 15.51
 			};
 
 			$('#kcp005Com').ntsListComponent(self.listComponentOption);
@@ -80,11 +80,11 @@ module nts.uk.at.view.kdl020.test.viewmodel {
 			}
 			self.empList(empIds);
 
-			nts.uk.ui.windows.setShared('KDL005_DATA', self.empList());
+			nts.uk.ui.windows.setShared('KDL020_DATA', self.empList());
 			if (empIds.length > 1)
-				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1100, height: 640 });
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1100, height: 660 });
 			else
-				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 710, height: 640 });
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 710, height: 660 });
 		}
 	}
 
