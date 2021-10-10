@@ -57,20 +57,21 @@ public class GetInforRemainAnnualHoliday {
 		if (annualHd.isYearHolidayManagerFlg()) { 
 			// if Trueの場合
 			// No.198 基準日時点の年休残数を取得する 
-			// ReNumAnnLeaReferenceDateExport reNumAnnLeave = annAdapter.getReferDateAnnualLeaveRemainNumber(sID, baseDate);
-			ReNumAnnLeaReferenceDateExport reNumAnnLeave = new ReNumAnnLeaReferenceDateExport(
-					new AnnualLeaveInfoExport(GeneralDate.today(), new AnnualLeaveRemainingNumberExport(5, 10)) , 
-					new ArrayList<>(), 
-					0.5, 
-					10);
-			
+			ReNumAnnLeaReferenceDateExport reNumAnnLeave = annAdapter.getReferDateAnnualLeaveRemainNumber(sID, baseDate);
+			/*
+			 * ReNumAnnLeaReferenceDateExport reNumAnnLeave = new
+			 * ReNumAnnLeaReferenceDateExport( new
+			 * AnnualLeaveInfoExport(GeneralDate.today(), new
+			 * AnnualLeaveRemainingNumberExport(5, 10)) , new ArrayList<>(), 0.5, 10);
+			 */
 			// 残数情報を調整 
 			accHolidayDto = numberInformation.adjustRemainingNumberInformation(reNumAnnLeave, annualHd.isSuspensionTimeYearFlg());
 			
 			// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
-			Optional<GrantPeriodDto> periodGrantDate = dateAdapter.getPeriodYMDGrant(cId, sID, null, null, Optional.empty());
+			Optional<GrantPeriodDto> periodGrantDate = dateAdapter.getPeriodYMDGrant(cId, sID, GeneralDate.today(), null, Optional.empty());
 			// getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(cid, employeeId, designatedDate, null, null).map(GrantPeriodDto::getPeriod);
 			
+			if (periodGrantDate.isPresent()) {
 			// 返す「基準日時点年休残数」をセット
 				// ・年休・積休残数詳細情報DTO．時間年休の年間上限開始日　＝　取得した期間．開始日
 				accHolidayDto.setAnnLimitStart(periodGrantDate.get().getPeriod().start().toString());
@@ -79,10 +80,11 @@ public class GetInforRemainAnnualHoliday {
 				accHolidayDto.setAnnLimitEnd(periodGrantDate.get().getPeriod().end().toString());
 				
 				// ・年休・積休残数詳細情報DTO．次回付与予定日　＝　取得した期間．開始日
-				accHolidayDto.setNextScheDate(periodGrantDate.get().getPeriod().start().toString());
+				accHolidayDto.setNextScheDate(periodGrantDate.get().getNextGrantDate().isPresent() ? periodGrantDate.get().getNextGrantDate().get().toString() : "");
 			
 				// 年休消化一覧を取得
 				annuaAccumulatedHoliday = annualLeave.getListAnnualLeave(sID);
+			}
 		}
 		
 		accHolidayDto.setLstAnnAccHoliday(annuaAccumulatedHoliday);
