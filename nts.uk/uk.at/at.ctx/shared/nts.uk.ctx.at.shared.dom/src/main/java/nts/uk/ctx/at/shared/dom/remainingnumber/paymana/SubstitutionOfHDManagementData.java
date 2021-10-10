@@ -91,7 +91,7 @@ public class SubstitutionOfHDManagementData extends AggregateRoot {
 	}
 
 	// 2] 残数が残っている
-	public boolean zansuRemain() {
+	public boolean isRemaing() {
 		return this.remainDays.v() > 0.0;
 	}
 }

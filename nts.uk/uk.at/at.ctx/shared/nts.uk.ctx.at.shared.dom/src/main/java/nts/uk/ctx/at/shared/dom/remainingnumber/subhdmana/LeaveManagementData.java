@@ -166,7 +166,7 @@ public class LeaveManagementData extends AggregateRoot {
 	}
 	
 	// 2] 残数が残っている
-	public boolean zansuRemain() {
+	public boolean isRemaing() {
 		return this.subHDAtr == DigestionAtr.UNUSED;
 	}
 }

@@ -100,7 +100,7 @@ public class CompensatoryDayOffManaData extends AggregateRoot {
 	}
 	
 	// 2] 残数が残っている
-	public boolean zansuRemain() {
+	public boolean isRemaing() {
 		return this.remainDays.v() > 0.0 || this.remainTimes.v() > 0;
 	}
 }

@@ -136,7 +136,7 @@ public class PayoutManagementData extends AggregateRoot {
 	}
 
 	// 2] 残数が残っている
-	public boolean zansuRemain() {
+	public boolean isRemaing() {
 		return this.stateAtr == DigestionAtr.UNUSED;
 	}
 }

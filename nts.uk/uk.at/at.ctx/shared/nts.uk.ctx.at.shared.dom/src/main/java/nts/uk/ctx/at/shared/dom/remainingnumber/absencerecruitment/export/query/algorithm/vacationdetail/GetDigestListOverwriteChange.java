@@ -22,7 +22,7 @@ public class GetDigestListOverwriteChange {
 
 		// $確定データ一覧 = require.振休管理データを取得する(社員ID, 期間)
 		List<SubstitutionOfHDManagementData> lstAbsMngFix = require.getByYmdUnOffset(sid).stream()
-				.filter(x -> x.zansuRemain()).collect(Collectors.toList());
+				.filter(x -> x.isRemaing()).collect(Collectors.toList());
 
 		// $暫定データ一覧 = require.暫定振休管理データを取得する(社員ID, 期間)
 		List<InterimAbsMng> lstTemporary  = require.getAbsBySidDatePeriod(sid, dateData);
