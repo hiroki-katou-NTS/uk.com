@@ -39,8 +39,11 @@ module nts.uk.ui.at.kdw013.c {
         padding-top: 6px;
     }
     .edit-event table>tbody>tr.functional>td {
-        text-align: center;
+        text-align: right;
     }
+	.edit-event table>tbody>tr.functional>td a{
+		color: #30cc40;
+	}
     .edit-event table>tbody>tr>td>.ntsControl {
         width: 255px;
         display: block;
@@ -292,7 +295,9 @@ module nts.uk.ui.at.kdw013.c {
 				<tbody>
 					<tr class="functional">
                         <td>
-                            <button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError && errors()"></button>
+							<a href="#" data-bind="i18n: 'KDW013_57', click: addTaskDetails"></a>
+                            <br />
+							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError && errors()"></button>
                         </td>
                     </tr>
                 </tbody>
@@ -424,8 +429,10 @@ module nts.uk.ui.at.kdw013.c {
 			
 			
 			vm.taskBlocks.taskDetailsView.subscribe(() => {
-				resetHeight();
-				vm.updatePopupSize();
+				setTimeout(() => {
+					resetHeight();
+					vm.updatePopupSize();
+				}, 1);
             });
 
 			$(window).resize(function () {
@@ -442,7 +449,7 @@ module nts.uk.ui.at.kdw013.c {
 
 		checkError(){
             const vm = this;
-			_.each(vm.taskBlocks.taskDetails(), (task: ManHrTaskDetailView)=>{
+			_.each(vm.taskBlocks.taskDetailsView(), (task: ManHrTaskDetailView)=>{
 				if(!task.isErorr()){
 					vm.errors(true);
 					return;
@@ -456,6 +463,16 @@ module nts.uk.ui.at.kdw013.c {
             return { caltimeSpan: { start: null, end: null }, 
                     taskDetails: [
                         { 
+                            supNo: 0, 
+                            taskItemValues: [
+                                { itemId: 3, value: '', type: 1 },
+                                { itemId: 4, value: '', type: 1 },
+                                { itemId: 5, value: '', type: 1 },
+                                { itemId: 6, value: '', type: 1 },
+                                { itemId: 7, value: '', type: 1 },
+                                { itemId: 8, value: '', type: 1 },
+                            ] 
+                        }, { 
                             supNo: 0, 
                             taskItemValues: [
                                 { itemId: 3, value: '', type: 1 },
@@ -572,6 +589,17 @@ module nts.uk.ui.at.kdw013.c {
                     }
                 });
         }
+
+		addTaskDetails(){
+			const vm = this;
+			let taskItemValues: ITaskItemValue[] = [];
+			_.forEach(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
+				taskItemValues.push({ itemId: taskItemValue.itemId, value: taskItemValue.value(), type: taskItemValue.type });
+			});
+			
+			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
+			vm.taskBlocks.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.taskBlocks.caltimeSpan.start, vm.$user.employeeId, vm.flag, true, vm.taskFrameSettings()));
+		}
     
         save() {
             const vm = this;
@@ -632,7 +660,7 @@ module nts.uk.ui.at.kdw013.c {
 			super(taskBlocks);
 			const vm = this;
 			vm.taskDetailsView = ko.observableArray(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, t.supNo, taskBlocks.caltimeSpan.start, employeeId, flag, loadData, []))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, loadData, []))
 			);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
@@ -644,8 +672,9 @@ module nts.uk.ui.at.kdw013.c {
         
         update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
 			const vm = this;
+			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, t.supNo, taskBlocks.caltimeSpan.start, employeeId, vm.flag, loadData, setting))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, vm.flag, loadData, setting))
 			);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
@@ -711,13 +740,11 @@ module nts.uk.ui.at.kdw013.c {
 	}
 	
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
-		supNo: number;
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
 		
-		constructor(manHrTaskDetail: IManHrTaskDetail, supNo: number, private start: Date, employeeId: string, flag: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
+		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, flag: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
 			super(manHrTaskDetail);
-			this.supNo = supNo;
 			this.employeeId = employeeId;
 			this.itemBeforChange = manHrTaskDetail.taskItemValues;
             const vm = this;
@@ -968,10 +995,10 @@ module nts.uk.ui.at.kdw013.c {
 				aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
 			}
 			
-			if(innerHeight > aboveBelow && innerHeight < heightTaskDetails) {
+			if(innerHeight > aboveBelow && (innerHeight - aboveBelow) < heightTaskDetails) {
 				$('.taskDetails').css({ "overflow-y": "scroll"});
 				$('.taskDetails').css({ "max-height": (innerHeight - aboveBelow - 10) + 'px' });	
-			}else if(innerHeight > aboveBelow && innerHeight > heightTaskDetails){
+			}else if(innerHeight > aboveBelow && (innerHeight - aboveBelow) > heightTaskDetails){
 				$('.taskDetails').css({ "overflow-y": "unset"});
 			}
 		}
