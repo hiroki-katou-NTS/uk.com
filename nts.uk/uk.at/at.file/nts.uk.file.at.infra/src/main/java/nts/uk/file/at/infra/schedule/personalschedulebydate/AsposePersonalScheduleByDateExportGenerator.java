@@ -384,6 +384,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
         // Check time limit
         val timeChecked = checkRangeLimit(graphStartTime, start, end);
+        if (timeChecked == null) return new DrawRectangleProperties(null, null, null);
 
         // Convert to hour and minute
         val timeConverted = convertToHourMinute(timeChecked.getStartTime(), timeChecked.getEndTime());
@@ -415,8 +416,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         int shapeWidth = minuteEnd == 0
                 ? (columnEnd * pixelOfColumn) - (columnStart * pixelOfColumn) - left
                 : ((columnEnd * pixelOfColumn) + Math.round(calcRatioCell(pixelOfColumn) * minuteEnd)) - (columnStart * pixelOfColumn) - left;
-        System.out.println("Input start: " + start + "=> " + startTime.getHour() + ":" + startTime.getMinute() + ";   " + "Input end: " + end + "=> " + endTime.getHour() + ":" + endTime.getMinute());
-        System.out.println("minuteStart: " + minuteStart + "=> minuteEnd: " + minuteEnd + ";   " + "columnStart: " + columnStart + "==> columnEnd: " + columnEnd);
+        System.out.println("Input start: " + start + " => " + startTime.getHour() + ":" + startTime.getMinute() + ";   " + "Input end: " + end + " => " + endTime.getHour() + ":" + endTime.getMinute());
+        System.out.println("minuteStart: " + minuteStart + " => minuteEnd: " + minuteEnd + ";   " + "columnStart: " + columnStart + " => columnEnd: " + columnEnd);
         System.out.println("left: " + left + ";   " + "shapeWidth: " + shapeWidth);
 
         return new DrawRectangleProperties(columnStart, left, shapeWidth);
@@ -427,7 +428,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         val timeChecked = checkRangeLimit(graphStartTime, start, end);
 
         // Check overlap
-        val overlapChecked = checkOverlapRange(timeChecked.getStartTime(), timeChecked.getEndTime(), timeRange1, timeRange2);
+        val overlapChecked = timeChecked != null ? checkOverlapRange(timeChecked.getStartTime(), timeChecked.getEndTime(), timeRange1, timeRange2) : null;
         return new TimeCheckedDto(overlapChecked != null ? overlapChecked.getStartTime() : null, overlapChecked != null ? overlapChecked.getEndTime() : null);
     }
 
@@ -441,6 +442,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private TimeCheckedDto checkRangeLimit(int graphStartTime, Integer start, Integer end) {
         val timeLimit = getTimeLimit(graphStartTime, OutputType.TOTAL_MINUTE);
+        if (start > timeLimit.getMaxLimit()) return null;
         if (!isInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) || !isInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
             if (start < timeLimit.getMinLimit()) {
                 start = timeLimit.getMinLimit();
