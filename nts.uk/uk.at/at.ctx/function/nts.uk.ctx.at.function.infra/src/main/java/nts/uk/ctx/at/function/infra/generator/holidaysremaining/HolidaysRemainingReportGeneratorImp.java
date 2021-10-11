@@ -5,6 +5,7 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.annleauseddays.FindAnnLeaUsedDaysAdapter;
 import nts.uk.ctx.at.function.dom.adapter.child.ChildNursingLeaveThisMonthFutureSituation;
 import nts.uk.ctx.at.function.dom.adapter.child.NursingCareLeaveThisMonthFutureSituation;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.*;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataS
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialHolidayRemainDataOutputKdr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -83,6 +85,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private SpecialHolidayFrameRepository specialHolidayFrameRepository;
     @Inject
     private NursingLeaveSettingRepository nursingLeaveSettingRepository;
+
+    @Inject
+    private FindAnnLeaUsedDaysAdapter findAnnLeaUsedDaysAdapter;
 
     private static final String TEMPLATE_FILE = "report/KDR001_v2_template.xlsx";
     private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
@@ -3841,6 +3846,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
     private void printEmployeeInfore(Cells cells, int firstRow, HolidayRemainingDataSource dataSource, HolidaysRemainingEmployee employee)
             throws Exception {
+        NumberFormat df = new DecimalFormat("#0.0");
         for (int j = 0; j < 2; j++) {
             setTopBorderStyle(cells.get(firstRow, j));
         }
@@ -3863,6 +3869,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         // D2_6 +D2_4: EMPLOYMENT CODE +EMPLOYMENT NAME
         cells.merge(firstRow + 2, 0, 1, 2, true);
         cells.get(firstRow + 2, 0).setValue(d2_6);
+        GeneralDate criteriaDate = GeneralDate.today();
         // D2_3 No.369
         if (isDisplayHolidayYear) {
             if(grantDate.isPresent()){
@@ -3873,8 +3880,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         .setValue(TextResource.localize("KDR001_71",
                                 date.toString("yyyy/MM/dd")));
             }
-             cells.merge(firstRow + 4, 0, 1, 2, true);
-             String yearHoliday = "0.0";// #120238
+            cells.merge(firstRow + 4, 0, 1, 2, true);
+            String yearHoliday = "";
+            AnnualLeaveUsedDayNumber yearHolidayDate = findAnnLeaUsedDaysAdapter.findUsedDays(employee.getEmployeeId(),criteriaDate);
+            if(yearHolidayDate!=null){
+                 yearHoliday = df.format(yearHolidayDate.v());
+            }
              cells.get(firstRow + 4, 0).setValue(TextResource.localize("KDR001_72",yearHoliday));
         }
     }
