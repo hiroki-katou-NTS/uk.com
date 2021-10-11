@@ -61,7 +61,7 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 	
 	@Override
 	public Optional<RoleSetGrantedJobTitle> getByJobTitleId(String companyId, String jobTitleId) {
-		SacmtRoleSetGrantedJobTitleDetailPK pk = new SacmtRoleSetGrantedJobTitleDetailPK(companyId, jobTitleId);
+		SacmtRoleSetGrantedJobTitleDetailPK pk = new SacmtRoleSetGrantedJobTitleDetailPK(jobTitleId, companyId);
 		return this.queryProxy().find(pk, SacmtRoleSetGrantedJobTitleDetail.class).map(c -> toDomain(c));
 	}
 
