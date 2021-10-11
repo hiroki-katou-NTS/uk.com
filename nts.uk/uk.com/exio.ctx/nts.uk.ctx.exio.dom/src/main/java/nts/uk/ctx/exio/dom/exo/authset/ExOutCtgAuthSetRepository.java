@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface ExOutCtgAuthSetRepository extends AvailabilityPermissionRepositoryBase<ExOutCtgAuthSet> {
     List<ExOutCtgAuthSet> findByCidAndRoleId(String cid, String roleId);
+    void delete(String cid, String roleId);
 }

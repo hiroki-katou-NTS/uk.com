@@ -1,9 +1,11 @@
 package nts.uk.ctx.exio.app.command.exo.authset;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+@AllArgsConstructor
 @Data
-public class DuplicateExOutputCtgAuthSettingResult {
+public class DuplicateExOutputCtgAuthResult {
     /** 結果（OK/NG) */
     boolean isSuccess;
 

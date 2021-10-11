@@ -1,24 +1,131 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.at.view.kal012.a {
-	const API = {
-        init: "at/function/alarm/kal002/emailSetting/init",
-        register: "at/function/alarm/kal002/emailSetting/register",
+module nts.uk.at.view.cmf006.b {
+    import getText = nts.uk.resource.getText;
+    import ccg025 = nts.uk.com.view.ccg025.a;
+    import setShared = nts.uk.ui.windows.setShared;
+
+    const fetch = {
+        copy: "exio/exo/condset/exOutCtgAuthSet/copy"
     };
-	
-  @bean()
-  class ViewModel extends ko.ViewModel {
 
-    constructor(params: any) {
-      super();
-      const vm = this;
+    @bean()
+    class ViewModel extends ko.ViewModel {
+        componentCcg025: ccg025.component.viewmodel.ComponentModel;
+        listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
+        // roleName: KnockoutObservable<string> = ko.observable(null);
+        roleType: KnockoutObservable<number> = ko.observable(3);
+        sourceRoleId: KnockoutObservable<string> = ko.observable(null);
+        sourceRoleCode: KnockoutObservable<string> = ko.observable(null);
+        sourceRoleName: KnockoutObservable<string> = ko.observable(null);
+        destinationRoleId: KnockoutObservable<string> = ko.observable(null);
+        overwrite: KnockoutObservable<boolean> = ko.observable(false);
+
+        constructor(params: any) {
+            super();
+            const vm = this;
+
+            vm.$window.shared("dataShareCMF006B").done((data: IDataFromCMF006A) => {
+                if (data) {
+                    vm.roleType(data.roleType);
+                    vm.sourceRoleId(data.sourceRoleId);
+                    vm.sourceRoleCode(data.sourceRoleCode);
+                    vm.sourceRoleName(data.sourceRolName);
+                }
+            });
+            vm.listRole = ko.observableArray([]);
+            vm.componentCcg025 = new ccg025.component.viewmodel.ComponentModel({
+                roleType: vm.roleType(),
+                multiple: false,
+                isResize: true,
+                rows: 5,
+                tabindex:1
+            });
+            vm.$blockui("grayout");
+            vm.componentCcg025.columns([
+                { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
+                { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
+                { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
+            ]);
+            vm.fetchRoleList();
+        }
+
+        created(params: any) {
+            const vm = this;
+
+            vm.componentCcg025.currentCode.subscribe((roleId: any) => {
+                if (vm.listRole().length <= 0) vm.listRole(vm.componentCcg025.listRole());
+                vm.destinationRoleId(roleId);
+            });
+        }
+
+        mounted() {
+            const vm = this;
+            $("#multi-list_container").focus();
+        }
+
+        /**
+         * CCG025
+         * @returns {JQueryPromise<any>}
+         */
+        fetchRoleList(): JQueryPromise<any> {
+            const vm = this;
+            let dfd = $.Deferred();
+            vm.componentCcg025.startPage().done(() => {
+                vm.listRole(vm.componentCcg025.listRole());
+            });
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        copy(): void {
+            const vm = this;
+            vm.$blockui("invisible");
+            if (_.isEqual(vm.sourceRoleId(), vm.destinationRoleId())){
+                vm.$dialog.error({ messageId: 'Msg_828' });
+                vm.$blockui("clear");
+                return;
+            }
+            let command: IDuplicateExOutCtgAuthCommand = {
+                sourceRoleId: vm.sourceRoleId(),
+                destinationRoleId: vm.destinationRoleId(),
+                overWrite: vm.overwrite()
+            };
+            vm.$ajax(fetch.copy, command).then((data) => {
+                if (data.isSuccess) {
+                    vm.$dialog.info({messageId: 'Msg_15'});
+                }
+                // let result = {
+                //     isSuccess: data.isSuccess,
+                //     copyDestinationRoleId: data.copyDestinationRoleId,
+                //     isOverwrite: data.isOverwrite
+                // };
+                // setShared('dataShareCMF006A', result);
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
+        cancel(): void {
+            const vm = this;
+            vm.$window.close();
+        }
     }
 
-    created(params: any) {
-      const vm = this;
+    export interface IDuplicateExOutCtgAuthCommand {
+        sourceRoleId: string;
+        destinationRoleId: string;
+        overWrite: boolean;
     }
 
-    mounted() {
-      const vm = this;
+    export interface IDataFromCMF006A {
+        roleType: number;
+        sourceRoleId: string;
+        sourceRoleCode: string;
+        sourceRolName: string;
     }
-  }
+
+    export class Role extends ccg025.component.model.Role {
+    }
 }

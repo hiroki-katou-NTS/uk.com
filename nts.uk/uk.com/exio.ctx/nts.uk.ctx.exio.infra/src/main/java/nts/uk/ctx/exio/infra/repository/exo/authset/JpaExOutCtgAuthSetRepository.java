@@ -14,6 +14,8 @@ public class JpaExOutCtgAuthSetRepository
 		implements ExOutCtgAuthSetRepository {
 	private static final String SELECT_BY_ROLE_ID = "SELECT f FROM OiomtExOutCtgAuthSet f"
 			+ " WHERE f.pk.companyId =:cid AND f.pk.roleId =:roleId ";
+	private static final String DELETE_BY_ROLE_ID = "DELETE from OiomtExOutCtgAuthSet f "
+			+ " WHERE f.pk.companyId =:cid AND f.pk.roleId = :roleId ";
 
 	@Override
 	protected Class<OiomtExOutCtgAuthSet> getEntityClass() {
@@ -31,5 +33,14 @@ public class JpaExOutCtgAuthSetRepository
 				.setParameter("cid", cid)
 				.setParameter("roleId", roleId)
 				.getList(OiomtExOutCtgAuthSet::toDomain);
+	}
+
+	@Override
+	public void delete(String cid, String roleId) {
+		this.getEntityManager().createQuery(DELETE_BY_ROLE_ID)
+				.setParameter("cid", cid)
+				.setParameter("roleId", roleId)
+				.executeUpdate();
+		this.getEntityManager().flush();
 	}
 }
