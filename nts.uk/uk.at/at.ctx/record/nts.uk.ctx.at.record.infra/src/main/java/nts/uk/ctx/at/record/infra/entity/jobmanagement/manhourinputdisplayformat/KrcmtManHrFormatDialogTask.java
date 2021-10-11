@@ -10,7 +10,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.DisplayManHrRecordItem;
-import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -21,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MAN_HR_FORMAT_TASK")
-public class KrcmtManHrFormatDialogTask extends ContractCompanyUkJpaEntity implements Serializable {
+public class KrcmtManHrFormatDialogTask extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,12 +36,13 @@ public class KrcmtManHrFormatDialogTask extends ContractCompanyUkJpaEntity imple
 	protected Object getKey() {
 		return this.pk;
 	}
-	
-	public KrcmtManHrFormatDialogTask(DisplayManHrRecordItem domain) {
-		this.pk.manHrItemId = domain.getAttendanceItemId();
-		this.dispOrder = domain.getOrder();
+
+	public KrcmtManHrFormatDialogTask toEntity(DisplayManHrRecordItem domain) {
+		return new KrcmtManHrFormatDialogTask(
+				new KrcmtManHrFormatDialogTaskPk(domain.getAttendanceItemId(), AppContexts.user().companyId()),
+				domain.getOrder());
 	}
-	
+
 	public DisplayManHrRecordItem toDomain() {
 		return new DisplayManHrRecordItem(this.pk.manHrItemId, this.dispOrder);
 	}
