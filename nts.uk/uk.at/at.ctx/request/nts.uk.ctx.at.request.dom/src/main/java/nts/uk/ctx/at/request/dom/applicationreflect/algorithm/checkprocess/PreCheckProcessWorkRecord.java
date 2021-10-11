@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +26,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class PreCheckProcessWorkRecord {
 
 	public static PreCheckProcessResult preCheck(Require require, String companyId, Application application,
-			int closureId, boolean isCalWhenLock, ReflectStatusResult reflectStatus, GeneralDate targetDate, SEmpHistImport empHist) {
+			int closureId, boolean isCalWhenLock, ReflectStatusResult reflectStatus, GeneralDate targetDate, List<SEmpHistImport> empHist) {
 
 		// ロック中処理のチェック
 		List<DatePeriod> periodLst = require.getPeriodProcess(application.getEmployeeID(),
 				new DatePeriod(targetDate, targetDate),
-				Arrays.asList(new EmploymentHistoryImported(empHist.getEmployeeId(), empHist.getEmploymentCode(),
-						empHist.getPeriod())),
+				empHist.stream().map(x -> new EmploymentHistoryImported(x.getEmployeeId(), x.getEmploymentCode(),
+						x.getPeriod())).collect(Collectors.toList()),
 				isCalWhenLock ? IgnoreFlagDuringLockImport.CAN_CAL_LOCK : IgnoreFlagDuringLockImport.CANNOT_CAL_LOCK,
 				AchievementAtrImport.DAILY);
 		if (periodLst.isEmpty()) {
