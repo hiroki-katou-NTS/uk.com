@@ -366,6 +366,40 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			let selectButtonChoice = _.filter(self.sourceCompany(), x => {
 				return !_.isNil(x.page) && (x.text != getText("KSU003_70") && x.text != getText("KSU003_83"));
 			});
+			
+			if (type == 2){
+				let value : any = null 
+				for(let i =0; i < self.sourceCompany().length; i++) {
+						let cpn = self.sourceCompany()[i];
+						if (!_.isEmpty(cpn)){
+							let column = 0;
+							if (cpn.page == 2 || cpn.page == 7) column = 1;
+							if (cpn.page == 3 || cpn.page == 8) column = 2;
+							if (cpn.page == 4 || cpn.page == 9) column = 3;
+							if (cpn.page == 5 || cpn.page == 10) column = 4;
+							value = {
+								column: column,
+								data: {
+									page: cpn.page,
+									text: cpn.text,
+									tooltip: cpn.tooltip
+								},
+								row: cpn.page > 5 ? 1 : 0
+							}
+						if(!_.isEqual(cpn.text,getText("KSU003_82")) && !_.isEqual(cpn.text,getText("KSU003_70")) && !_.isEqual(cpn.text,getText("KSU003_83")))
+							break;
+						}
+					}
+				if (value == null) {
+					self.selectedButton(0);
+				} else {
+					$("#tableButton1").ntsButtonTable("setSelectedCell",
+							value.data.page > 5 ? 1 : 0, value.column);
+				}
+				
+				
+				return;
+			}
 
 			if (_.isNil(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails) || type == 1) {
 				if (_.isEmpty(self.sourceCompany())) return;
@@ -486,7 +520,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 		clickLinkPage(element: any, indexLinkBtn?: any): void {
 			let self = this;
 			self.selectedPage(indexLinkBtn());
-			self.setDataPalletToButton(indexLinkBtn(), 0);
+			self.setDataPalletToButton(indexLinkBtn(), 2);
 			if(window.innerWidth >= 1366)
 			$("#tableButton1 button").css("min-width", "200px");
 			__viewContext.viewModel.viewmodelA.localStore.pageNo = indexLinkBtn();
@@ -520,7 +554,12 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					} else {
 						self.sourceCompany(soure);
 					}
-					self.checkSelectButton(1);
+					
+					if (type == 1)
+						self.checkSelectButton(1);
+					else
+						self.checkSelectButton(2);
+					
 					self.setErrButton();
 					self.textButtonArr([]);
 					for (let i = 1; i <= 5; i++) {
