@@ -15,6 +15,7 @@ import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtExAcCdConv;
 import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtAcceptCdConvertPk;
 import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtExAcCdConvDtl;
 import nts.uk.ctx.exio.infra.entity.exi.codeconvert.OiomtCdConvertDetailsPk;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaAcceptCdConvertRepository extends JpaRepository implements AcceptCdConvertRepository {
@@ -73,12 +74,15 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 	}
 
 	private OiomtExAcCdConv toEntity(AcceptCdConvert domain) {
+		String contractCd = AppContexts.user().contractCode();
 		return new OiomtExAcCdConv(
-				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd().v()), domain.getConvertName().v(),
+				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd().v()), 
+				contractCd, domain.getConvertName().v(),
 				domain.getAcceptWithoutSetting().value, domain.getListConvertDetails().stream().map(itemDetail -> {
 					return new OiomtExAcCdConvDtl(
 							new OiomtCdConvertDetailsPk(itemDetail.getCid(), itemDetail.getConvertCd(),
 									itemDetail.getLineNumber()),
+							contractCd,
 							itemDetail.getOutputItem().v(), itemDetail.getSystemCd().v(), null);
 				}).collect(Collectors.toList()));
 	}

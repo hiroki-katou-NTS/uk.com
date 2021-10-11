@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp002.a;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -71,7 +72,7 @@ import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
  * UKDesign.UniversalK.就業.KDP_打刻.KDP002_打刻入力(個人打刻).A:打刻入力(個人).メニュー別OCD.打刻入力(個人)を登録する
- * 
+ * đây là class sample để tham khảo
  * @author lamvt
  *
  */
@@ -300,8 +301,9 @@ public class RegisterStampIndividualSampleCommandHandler
 
 		@Override
 		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
-				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag, IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag,
+				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag, 
+				IntegrationOfDaily integrationOfDaily) {
+			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType,
 					integrationOfDaily);
 		}
 
@@ -404,6 +406,22 @@ public class RegisterStampIndividualSampleCommandHandler
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
+		}
+
+		@Override
+		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+				GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+			return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+		}
+
+		@Override
+		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+			return closureRepo.findByListId(companyId, closureId);
 		}
 
 	}

@@ -1632,12 +1632,14 @@ public class CheckPersonInfoProcess {
 		masterName.put("IS00376" , "子の看護上限設定");		
 		masterName.put("IS00377" , "本年度の子の看護上限日数");		
 		masterName.put("IS00378" , "次年度の子の看護上限日数");		
-		masterName.put("IS00379" , "子の看護使用日数");		
+		masterName.put("IS00379" , "子の看護使用日数");
+		masterName.put("IS01101" , "子の看護使用時間");
 		masterName.put("IS00380" , "介護休暇管理");		
 		masterName.put("IS00381" , "介護上限設定");		
 		masterName.put("IS00382" , "本年度の介護上限日数");		
 		masterName.put("IS00383" , "次年度の介護上限日数");		
-		masterName.put("IS00384" , "介護使用日数");		
+		masterName.put("IS00384" , "介護使用日数");
+		masterName.put("IS01102" , "介護使用時間");
 		masterName.put("IS00385" , "年休付与日");		
 		masterName.put("IS00386" , "年休期限日");		
 		masterName.put("IS00387" , "年休期限切れ状態");		

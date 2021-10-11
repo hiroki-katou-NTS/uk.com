@@ -80,7 +80,7 @@ public class RefDesForAdditionalTakeLeave {
     	val workCond = require.workingConditionItem(sid, baseDate);
     	
     	/** 平日時の就業時間帯コードを取得する */ 
-    	val workTimeCode = workCond.flatMap(c -> c.getWorkCategory().getWeekdayTime().getWorkTimeCode());
+    	val workTimeCode = workCond.flatMap(c -> c.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode());
     	if (workTimeCode.isPresent()) {
     		
     		/** 所定時間を取得する */

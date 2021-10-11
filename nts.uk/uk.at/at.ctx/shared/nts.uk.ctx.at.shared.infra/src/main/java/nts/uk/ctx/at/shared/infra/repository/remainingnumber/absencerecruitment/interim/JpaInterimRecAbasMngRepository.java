@@ -101,6 +101,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			+ " WHERE c.recAbsPk.absenceMngID IN :absenceMngIds"
 			+ " AND c.absenceMngAtr = :absenceMngAtr";
 
+
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcdtInterimRecMng.class)
@@ -508,5 +509,48 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		entity.unOffsetDay = domain.getUnOffsetDays().v();
 		entity.createAtr = domain.getCreatorAtr().value;
 		return entity;
+	}
+
+	
+	private static final String DELETE_FURISYUTSU_DATE = "DELETE FROM KrcdtInterimRecMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+
+	@Override
+	public void deleteRecMngWithDateList(String sid, List<GeneralDate> lstDate) {
+		if (lstDate.isEmpty())
+			return;
+		this.getEntityManager().createQuery(DELETE_FURISYUTSU_DATE).setParameter("sid", sid)
+				.setParameter("lstDate", lstDate).executeUpdate();
+	}
+
+	private static final String DELETE_FURIKYU_DATE = "DELETE FROM KrcdtInterimHdSubMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+	
+	@Override
+	public void deleteAbsMngWithDateList(String sid, List<GeneralDate> lstDate) {
+		if (lstDate.isEmpty())
+			return;
+		this.getEntityManager().createQuery(DELETE_FURIKYU_DATE).setParameter("sid", sid)
+		.setParameter("lstDate", lstDate).executeUpdate();
+		
+	}
+
+	private static final String GET_REC_DATE = "SELECT c FROM KrcdtInterimRecMng c "
+			+ " WHERE c.pk.sid = :sid"
+			+ " AND c.pk.ymd IN :ymd";
+
+	@Override
+	public List<InterimRecMng> getRecBySidDateList(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query(GET_REC_DATE, KrcdtInterimRecMng.class).setParameter("sid", sid)
+				.setParameter("ymd", lstDate).getList().stream().map(x -> toDomainRecMng(x)).collect(Collectors.toList());
+	}
+
+	private static final String GET_ABS_DATE = "SELECT c FROM KrcdtInterimHdSubMng c "
+			+ " WHERE c.pk.sid = :sid"
+			+ " AND c.pk.ymd IN :ymd";
+	@Override
+	public List<InterimAbsMng> getAbsBySidDateList(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query(GET_ABS_DATE, KrcdtInterimHdSubMng.class).setParameter("sid", sid)
+				.setParameter("ymd", lstDate).getList().stream().map(x -> toDomainAbsMng(x)).collect(Collectors.toList());
 	}
 }

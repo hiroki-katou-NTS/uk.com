@@ -43,7 +43,7 @@ public interface WorkingConditionItemGetMemento {
 	 *
 	 * @return the work category
 	 */
-	PersonalWorkCategory getWorkCategory();
+	WorkByIndividualWorkDay getWorkCategory();
 	
 	/**
 	 * Gets the contract time.
@@ -71,7 +71,6 @@ public interface WorkingConditionItemGetMemento {
 	 *
 	 * @return the work day of week
 	 */
-	PersonalDayOfWeek getWorkDayOfWeek();
 	
 	/**
 	 * Gets the employee id.

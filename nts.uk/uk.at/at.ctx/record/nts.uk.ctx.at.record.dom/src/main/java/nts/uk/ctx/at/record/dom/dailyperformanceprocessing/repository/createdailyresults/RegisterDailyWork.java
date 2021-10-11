@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -150,7 +151,12 @@ public class RegisterDailyWork {
 			dailyRecordAdUpService.adUpPCLogOn(
 					Optional.of(new PCLogOnInfoOfDaily(employeeId, ymd, integrationOfDaily.getPcLogOnInfo().get())));
 		}
-		
+		if (!integrationOfDaily.getEditState().isEmpty()) {
+			List<EditStateOfDailyPerformance> editStates = integrationOfDaily.getEditState().stream()
+					.map(c -> new EditStateOfDailyPerformance(employeeId, ymd, c)).collect(Collectors.toList());
+			// ドメインモデル「日別実績の編集状態」を登録する
+			dailyRecordAdUpService.adUpEditState(editStates);
+		}
 		//ドメインモデル「打刻」を更新する (Update 「打刻」)
 		if (!listStamp.isEmpty()) {
 			listStamp.forEach(stampItem -> {

@@ -50,6 +50,8 @@ public interface WorkingConditionItemRepository {
 	 * @return the optional
 	 */
 	Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+	
+	List<WorkingConditionItem> getByListSidAndStandardDate(List<String> employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find working condition item by pers work cat.

@@ -2,12 +2,14 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -733,7 +735,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate,
+	public Optional<WorkInformation> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate,
 			String workTypeCode) {
 		return this.workingConditionItemService.getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
 	}
@@ -748,4 +750,20 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
 	}
 
+	@Override
+	public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+		return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+	}
+
+	@Override
+	public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+		return closureRepo.findByListId(companyId, closureId);
+	}
+
+	@Override
+	public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+			GeneralDate baseDate) {
+		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+	}
+	
 }

@@ -47,7 +47,8 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
 								new AttendanceTime(0))),
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
+				new ImprintReflectionState(false, Optional.empty()),
+				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY"
 				);
@@ -74,7 +75,8 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
-				true,Optional.ofNullable(getGeoCoordinateDefault()),
+				new ImprintReflectionState(true, Optional.empty()),
+				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY");
 	}
@@ -100,7 +102,8 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
+				new ImprintReflectionState(false, Optional.empty()),
+				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY"
 				);
@@ -117,7 +120,8 @@ public class StampHelper {
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
+				new ImprintReflectionState(false, Optional.empty()),
+				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY")
 				);
@@ -130,7 +134,8 @@ public class StampHelper {
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
+				new ImprintReflectionState(false, Optional.empty()),
+				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY")
 				);

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.employmentinfoterminal.infoterminal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -250,7 +251,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, integrationOfDaily);
 		}
 
 		@Override
@@ -321,6 +322,22 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
+		}
+
+		@Override
+		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+				GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+			return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+		}
+
+		@Override
+		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+			return closureRepo.findByListId(companyId, closureId);
 		}
 
 	}
