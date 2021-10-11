@@ -85,12 +85,11 @@
                     </div>
                     <div class="column3" style="padding-top: 20px;">
                         <div style="width: 100px;"
-                            data-bind="ntsFormLabel: { required: true }, text: i18n='KDW006_326'"></div>
+                            data-bind="ntsFormLabel: { required: false }, text: i18n='KDW006_326'"></div>
                         <input tabindex="10" data-bind="ntsTextEditor: {
                                 value: $vm.model.externalCode, 
                                 name:'#[KDW006_326]', 
-                                enable: $vm.screenMode() == 1 || $vm.screenMode() == 2,
-                                required: true}" />
+                                enable: $vm.screenMode() == 1 || $vm.screenMode() == 2}" />
                     </div>
                 </div>
             </div>

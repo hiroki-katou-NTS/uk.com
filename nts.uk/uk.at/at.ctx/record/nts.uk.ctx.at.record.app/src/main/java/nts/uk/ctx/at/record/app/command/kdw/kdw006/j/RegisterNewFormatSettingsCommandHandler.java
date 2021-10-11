@@ -17,12 +17,10 @@ import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFor
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormatRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.RecordColumnDispName;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.RecordColumnDisplayItem;
-import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLink;
-import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLinkRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Coomand: フォーマット設定を新規登録する
+ * Command: フォーマット設定を新規登録する
  * UKDesign.UniversalK.就業.KDW_日別実績.KDW006_前準備.J：工数入力画面フォーマット設定.メニュー別OCD.フォーマット設定を新規登録する
  * 
  * @author chungnt
@@ -34,18 +32,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class RegisterNewFormatSettingsCommandHandler extends CommandHandler<RegisterNewFormatSettingsCommand> {
 
 	@Inject
-	private ManHourRecordAndAttendanceItemLinkRepository repoManHourRecord;
-
-	@Inject
 	private ManHrInputDisplayFormatRepository manHrInputDisplayFormatRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterNewFormatSettingsCommand> context) {
-
 		RegisterNewFormatSettingsCommand command = context.getCommand();
-
-		Optional<ManHourRecordAndAttendanceItemLink> domianOpt = this.repoManHourRecord
-				.get(AppContexts.user().companyId(), command.getAttendanceItemId());
 
 		Optional<ManHrInputDisplayFormat> manHrInputDisplay = this.manHrInputDisplayFormatRepo
 				.get(AppContexts.user().companyId());
@@ -68,8 +59,14 @@ public class RegisterNewFormatSettingsCommandHandler extends CommandHandler<Regi
 				displayManHrRecordItems);
 
 		if (manHrInputDisplay.isPresent()) {
-			manHrInputDisplayFormatRepo.update(domain);
-		}else {
+			ManHrInputDisplayFormat displayFormat = manHrInputDisplay.get();
+			if (displayFormat.getDisplayAttItems().isEmpty() && displayFormat.getDisplayManHrRecordItems().isEmpty()
+					&& displayFormat.getRecordColumnDisplayItems().isEmpty()) {
+				manHrInputDisplayFormatRepo.insert(domain);
+			} else {
+				manHrInputDisplayFormatRepo.update(domain);
+			}
+		} else {
 			manHrInputDisplayFormatRepo.insert(domain);
 		}
 	}

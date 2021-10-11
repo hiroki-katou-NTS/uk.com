@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
+import nts.uk.screen.at.app.kdw013.query.GetFavoriteTask;
+import nts.uk.screen.at.app.kdw013.query.GetFavoriteTaskDto;
+import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
 
 /**
  * UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.初期起動処理
@@ -21,66 +21,65 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
  */
 @Stateless
 public class StartProcess {
+	
+	
+	
+	@Inject
+	private StartManHourInputScreenQuery manHourQuery;
 
 	@Inject
-	private StartManHourInputScreenQuery startManHourInputScreenQuery;
+	private GetWorkDataMasterInformation getWorkDataMasterInformation;
 
 	@Inject
-	private GetRefWorkplaceAndEmployee getRefWorkplaceAndEmployee;
+	private GetRefWorkplaceAndEmployee GetRefWorkplaceAndEmployee;
+
+	@Inject
+	private GetFavoriteTask getFavoriteTask;
 
 	public StartProcessDto startProcess() {
-		StartProcessDto startProcessDto = new StartProcessDto();
-
-		// 1: <call>()
-		StartManHourInputResultDto startManHourInputResultDto = new StartManHourInputResultDto();
-
-		StartManHourInput startManHourInput = startManHourInputScreenQuery.startManHourInput();
-
-		TaskFrameUsageSetting taskFrameUsageSetting = startManHourInput.getTaskFrameUsageSetting();
-		List<Task> tasks = startManHourInput.getTasks();
-		List<WorkLocation> workLocations = startManHourInput.getWorkLocations();
-
-		// convert to DTO
-		TaskFrameUsageSettingDto taskFrameUsageSettingDto = new TaskFrameUsageSettingDto();
 		
-		if (taskFrameUsageSetting != null) {
-			taskFrameUsageSettingDto = new TaskFrameUsageSettingDto(taskFrameUsageSetting
-					.getFrameSettingList().stream().map(m -> TaskFrameSettingDto.toDto(m)).collect(Collectors.toList()));
-		}
-		
-		List<TaskDto> taskDtos = new ArrayList<>();
-		
-		if (!tasks.isEmpty()) {
-			taskDtos = tasks.stream().map(m -> TaskDto.toDto(m)).collect(Collectors.toList());
-		}
-		List<WorkLocationDto> lstWorkLocationDto = new ArrayList<>();
-		
-		if (!workLocations.isEmpty()) {
-			lstWorkLocationDto = workLocations.stream().map(m -> WorkLocationDto.fromDomain(m))
+		StartProcessDto result = new StartProcessDto();
+
+		// 1. 工数入力を起動する
+		StartManHourInput manHourInput = this.manHourQuery.startManHourInput();
+
+		result.setManHourInput(manHourInput);
+
+		// 2. call($勤怠項目リスト)
+		AttendanceItemMasterInformationDto itemMasterInfo = this.getWorkDataMasterInformation
+				.getAttendanceItemMasterInformation(collectItemList(manHourInput));
+
+		result.setItemMasterInfo(itemMasterInfo);
+
+		// 3. 画面モード = 確認モード <call>(システム日付)
+		GetRefWorkplaceAndEmployeeDto refWork = this.GetRefWorkplaceAndEmployee.get(GeneralDate.today());
+
+		result.setRefWork(refWork);
+
+		// 4.画面モード = 入力モード
+
+		GetFavoriteTaskDto favTask = this.getFavoriteTask.getFavTask();
+
+		result.setFavTask(favTask);
+
+		// 5. get (bước này làm dưới client)
+
+		return result;
+	}
+	
+	private List<Integer> collectItemList(StartManHourInput manHourInput) {
+
+		List<Integer> result = new ArrayList<>();
+
+		manHourInput.getManHrInputDisplayFormat().ifPresent(x -> {
+			List<Integer> aItems = x.getRecordColumnDisplayItems().stream().map(di -> di.getAttendanceItemId())
 					.collect(Collectors.toList());
-		}
 
-		startManHourInputResultDto.setTaskFrameUsageSetting(taskFrameUsageSettingDto);
-		startManHourInputResultDto.setTasks(taskDtos);
-		startManHourInputResultDto.setWorkLocations(lstWorkLocationDto);
-
-		startProcessDto.setStartManHourInputResultDto(startManHourInputResultDto);
-		
-		// 2: [画面モード = 確認モード]: <call>()
-		GetRefWorkplaceAndEmployeeDto refWorkplaceAndEmployeeDto = getRefWorkplaceAndEmployee.get(GeneralDate.today());
-		
-		if (refWorkplaceAndEmployeeDto != null) {
-			startProcessDto.setRefWorkplaceAndEmployeeDto(new GetRefWorkplaceAndEmployeeResultDto(
-					refWorkplaceAndEmployeeDto.getEmployeeInfos().entrySet().stream()
-							.map(x -> new RefEmpWkpInfoDto(x.getKey(), x.getValue())).collect(Collectors.toList()), 
-					refWorkplaceAndEmployeeDto.getLstEmployeeInfo(),
-					refWorkplaceAndEmployeeDto.getWorkplaceInfos().stream().map(m -> 
-					new WorkplaceInfoDto(m.getWorkplaceId(), m.getWorkplaceCode().v(), m.getWorkplaceName().v()
-							, m.getWkpGenericName().v(), m.getWkpDisplayName().v(), m.getOutsideWkpCode().v())
-					).collect(Collectors.toList())));
-		}
-		
-		return startProcessDto;
+			if (aItems.isEmpty()) {
+				result.addAll(aItems);
+			}
+		});
+		return result;
 	}
 
 }

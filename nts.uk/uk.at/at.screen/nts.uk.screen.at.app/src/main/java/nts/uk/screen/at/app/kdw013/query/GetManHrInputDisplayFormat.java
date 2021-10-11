@@ -1,8 +1,11 @@
 package nts.uk.screen.at.app.kdw013.query;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormat;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormatRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,10 +24,10 @@ public class GetManHrInputDisplayFormat {
 
 	/**
 	 * 取得する
-	 * @return 表示フォーマットDto
+	 * @return Optional<工数入力表示フォーマットDto>
 	 */
-	public ManHrInputDisplayFormatDto get() {
+	public Optional<ManHrInputDisplayFormat> get() {
 		// 1 get(ログイン会社ID)
-		return this.repo.get(AppContexts.user().companyId()).map(x -> new ManHrInputDisplayFormatDto(x)).orElse(null);
+		return this.repo.get(AppContexts.user().companyId());
 	}
 }
