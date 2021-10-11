@@ -3,10 +3,9 @@ package nts.uk.ctx.at.request.app.find.dialog.employmentsystem.holidaysubstitute
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -209,12 +208,11 @@ public class GetRemainNumberConfirmInfo {
 									&& !x.getDateOccur().isUnknownDate())
 							.findFirst();
 
-					if (acctAbsenFil.isPresent()) {
+					if (acctAbsenFil.isPresent() && detail.getDateOccur().getDayoffDate().isPresent() && acctAbsenFil.get().getDateOccur().getDayoffDate().isPresent()) {
 						// 探した逐次発生の休暇明細一覧．休暇発生明細
-						LeaveOccurrDetail occurrDetailFil = (LeaveOccurrDetail) acctAbsenFil.get(); // get LeaveOccurrDetail extends AccumulationAbsenceDetail
-						// 探した逐次発生の休暇明細一覧．休暇発生明細．期限日＝＝ループ中の逐次発生の休暇明細．休暇発生明細．期限日
-						// 探した逐次発生の休暇明細一覧．休暇発生明細．期限日＝＝ループ中の逐次発生の休暇明細．休暇発生明細．期限日
-						if (occurrDetailFil.getDeadline().equals(occurrDetail.getDeadline())) {
+//						LeaveOccurrDetail occurrDetailFil = (LeaveOccurrDetail) acctAbsenFil.get(); // get LeaveOccurrDetail extends AccumulationAbsenceDetail
+						// 探した逐次発生の休暇明細一覧．年月日．年月日＝＝ループ中の逐次発生の休暇明細．年月日．年月日　の場合
+						if (detail.getDateOccur().getDayoffDate().get().equals(acctAbsenFil.get().getDateOccur().getDayoffDate().get())) {
 							detailedInfo.setDueDateStatus(TextResource.localize("KDL005_45"));
 						}
 					}
@@ -268,33 +266,41 @@ public class GetRemainNumberConfirmInfo {
 		List<AccumulationAbsenceDetail> accAbsDetail = vacationDetails.sortAccAbsDetailASC();
 		if (!accAbsDetail.isEmpty()) {
 
-			Optional<AccumulationAbsenceDetail> undigestInfoFil = accAbsDetail.stream().filter(x -> {
+			List<AccumulationAbsenceDetail> undigestInfoFils = accAbsDetail.stream().filter(x -> {
 				return x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE && // 逐次発生の休暇明細一覧．発生消化区分 ＝＝ 発生
 				(((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED || // 逐次発生の休暇明細一覧．発生数．消化区分 ＝＝ 未消化 -
 				((LeaveOccurrDetail) x).judgeDigestiveStatus(GeneralDate.today()) == DigestionAtr.UNUSED )&& 
 				!x.getDateOccur().isUnknownDate(); // 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
-			}).findFirst();
+			}).collect(Collectors.toList());
 			
-			if (undigestInfoFil.isPresent()) {
+			if (!undigestInfoFils.isEmpty()) {
 				// 2.取得した逐次発生の休暇明細一覧　があるの場合
 				String text = "";
-				LeaveOccurrDetail occurrDetailNew = (LeaveOccurrDetail) undigestInfoFil.get();
+				List<LeaveOccurrDetail> occurrDetailNews = undigestInfoFils.stream().map(c-> (LeaveOccurrDetail)c ).collect(Collectors.toList());
 				
 				// 2.1.↑の条件で探した逐次発生の休暇明細一覧があるの場合
-				String textDay = this.getDayOfJapan(occurrDetailNew.getDeadline().dayOfWeek());
-				text = TextResource.localize("KDL005_41", occurrDetailNew.getDeadline().toString(), textDay);
+				String textDay = this.getDayOfJapan(occurrDetailNews.get(0).getDeadline().dayOfWeek());
+				text = TextResource.localize("KDL005_41", occurrDetailNews.get(0).getDeadline().toString(), textDay);
 				// Input．時間管理区分　＝　Trueの場合　＃119874
 				if (unit) {
+					Integer time = 0;
 					// 探した逐次発生の休暇明細一覧．発生数．時間数 - 探した逐次発生の休暇明細一覧．未相殺数．時間数
-					Integer time = undigestInfoFil.get().getNumberOccurren().getTime().get().v()
-							- undigestInfoFil.get().getUnbalanceNumber().getTime().get().v();
+					for (LeaveOccurrDetail x : occurrDetailNews) {
+						time = time + (x.getNumberOccurren().getTime().get().v()
+								- x.getUnbalanceNumber().getTime().get().v());
+					}
+
 					String minu = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60)
 							: 0 + String.valueOf(time % 60);
 					text = text + " " + String.valueOf(time / 60) + ":" + minu;
 					// 探した逐次発生の休暇明細一覧．発生数．日数 - 探した逐次発生の休暇明細一覧．未相殺数．日数
 					dayCloseDeadline = text;
 				} else {
-					dayCloseDeadline = text + " " + undigestInfoFil.get().getNumberOccurren().getDay() + TextResource.localize("KDL005_47");
+					double day = 0.0;
+					for (LeaveOccurrDetail x : occurrDetailNews) {
+						day = day + x.getNumberOccurren().getDay().v();
+					}
+					dayCloseDeadline = text + " " + day + TextResource.localize("KDL005_47");
 				}
 			}
 		}
