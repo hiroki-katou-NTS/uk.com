@@ -41,6 +41,8 @@ public class ExternalImportSettingDto {
 	private String csvFileId;
 	
 	private List<ImportDomainDto> domains;
+	
+	private List<String> csvItems;
 
 	public static interface RequireMerge extends
 		ExternalImportSetting.RequireMerge{
@@ -52,6 +54,10 @@ public class ExternalImportSettingDto {
 			.map(ds -> new ImportDomainDto(ds.getDomainId().value, ds.getAssembly().getAllItemNo()))
 			.collect(Collectors.toList());
 		
+		List<String> items = (setting.getBaseType() != ImportSettingBaseType.CSV_BASE || !setting.getCsvFileInfo().getBaseCsvInfo().isPresent())
+				? new ArrayList<String>()
+				: setting.getCsvFileInfo().getBaseCsvInfo().get().getColumns();
+		
 		return new ExternalImportSettingDto(
 				setting.getCompanyId(),
 				setting.getCode().toString(),
@@ -59,7 +65,8 @@ public class ExternalImportSettingDto {
 				setting.getCsvFileInfo().getItemNameRowNumber().hashCode(),
 				setting.getCsvFileInfo().getImportStartRowNumber().hashCode(),
 				setting.getCsvFileInfo().getBaseCsvInfo().map(csvinfo -> csvinfo.getCsvFileId()).orElse(""),
-				domains);
+				domains,
+				items);
 	}
 
 	public ExternalImportSetting toDomain(ImportSettingBaseType baseType) {

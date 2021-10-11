@@ -274,7 +274,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		mode: number;
 		itemNameRow: number;
 		importStartRow: number;
-		csvFileId: string,
+		csvFileId: string;
 		domains:[];
 	
 		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, csvFileId: string, itemNoList: Array<number>) {

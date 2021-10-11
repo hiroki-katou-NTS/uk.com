@@ -32,7 +32,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		
 		//csv
 		csvItemOption: KnockoutObservableArray<CsvItem> = ko.observableArray([]);
-		selectedCsvItem:KnockoutObservableArray<number> = ko.observableArray([]);
 
 		selectedItem: KnockoutObservable<string> = ko.observable();
 		
@@ -80,19 +79,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		startPage(){
 			var self = this;
 			let dfd = $.Deferred();
-			
-			//todo
-			self.csvItemOption=ko.observableArray([
-	            new CsvItem('1', '項目１'),
-	            new CsvItem('2', '項目２'),
-	            new CsvItem('3', '項目３')
-	        ]);
-			
+						
 			self.getListData().done(function() {
-				if (self.settingList().length !== 0) {
-					self.selectedCode(self.settingList()[0].code.toString());
+				if (self.domainList() !== null && self.domainList().length !== 0) {
+					self.selectedDomainId(self.domainList()[0].domainId);
 				}
-				dfd.resolve();
 			});
 			
 			self.$grid = $("#grid");
@@ -124,6 +115,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				});
 				self.domainList(importDomains);
 				self.domainInfoList(importDomainInfoList);
+				
+				let csvItem = $.map(res.csvItems, function(value, index) {
+					return new CsvItem(index + 1, value);
+				});
+				self.csvItemOption=ko.observableArray(csvItem);
 
 				dfd.resolve();
 			}).fail(function(error) {
@@ -136,8 +132,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		initGrid(){
 			var self = this;
 			var comboColumns = [
-				{ prop: "no",	length:4 },
-				{ prop: "name", length:30}
+				{ prop: "no",	length:2 },
+				{ prop: "name", length:10}
 			];
 			if (self.$grid.data("igGrid")) {
 				self.$grid.ntsGrid("destroy");
@@ -154,17 +150,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, unbound:true, ntsControl: 'DeleteButton'},
 					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
 					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
-					{ headerText: "名称", 				key: "mappingAtr",		dataType: 'number',	width: 100, ntsControl: 'SwitchButtons'},
-					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItem",	dataType: 'number',	width: 250, ntsControl: 'Combobox' },
+					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
+					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
 					{ headerText: "データ", 				key: "csvData", 				dataType: 'string',		width: 120	}
 				],
 		        features: [
 		          {
-		            name: 'Selection',
-		            kay:{}self
-		            mode: 'row',
-		            multipleSelection: false,
-		            activation: false
 		          },
 		        ],
 		        ntsControls: [
@@ -175,6 +166,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		            enable: self.isDeletable()
 		          },
 		          {
+			            name: 'SwitchButtons',
+			            options: [{ value:0, text: 'CSV' },{ value:1, text: '固定値' }],
+                        optionsValue: 'value',
+                        optionsText: 'text',
+                        controlType: 'SwitchButtons',
+                        enable: true 
+		          },
+		          {
 		            name: 'Combobox',
 		            options: self.csvItemOption(),
 		            optionsValue: 'no',
@@ -183,6 +182,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		            controlType: 'ComboBox',
 		            visibleItemsCount: 5,
 		            dropDownAttachedToBody: false,
+		        	selectFirstIfNull: false,
 		            enable: true
 		          }
 		        ]
@@ -224,7 +224,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					return {
 						itemNo: l.itemNo,
 						isFixedValue: l.isFixedValue,
-						csvItemNo: l.selectedCsvItem,
+						csvItemNo: l.selectedCsvItemNo,
 						fixedValue: l.fixedValue
 					}
 				});
@@ -284,7 +284,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					
 					self.reloadPage();
 	            });
-	        }
+	        });
 		}
 
 		selectLayout() {
@@ -378,22 +378,26 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	}
 	
 	export class Layout {
+		csvData: string;
+		fixedValue: string;
 		itemNo: number;
 		name: string;
 		required: boolean;
-		isFixedValue: boolean;
-		selectedCsvItem: number;
-		fixedValue: string;
-		csvData: string;
+		selectedCsvItemNo: number;
+		isFixedValue: number;
 	
-		constructor(itemNo: number, name: string, required: boolean, isFixedValue: boolean, selectedCsvItem: number, fixedValue: string, csvData: string) {
+		constructor(itemNo: number, name: string, required: boolean, selectedCsvItemNo: number, fixedValue: string, csvData: string, isFixedValue: number) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
-			this.isFixedValue = isFixedValue;
-			this.selectedCsvItem = selectedCsvItem;
+			this.selectedCsvItemNo = selectedCsvItemNo;
 			this.fixedValue = fixedValue;
 			this.csvData = csvData;
+			this.isFixedValue = isFixedValue;
+		}
+		
+		isFixedValue() {
+			
 		}
 	}
 	

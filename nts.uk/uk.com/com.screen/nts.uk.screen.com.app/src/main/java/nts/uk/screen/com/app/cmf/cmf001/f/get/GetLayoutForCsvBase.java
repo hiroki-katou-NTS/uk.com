@@ -130,7 +130,7 @@ public class GetLayoutForCsvBase {
 						query.getImportingDomainId(),
 						new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue()),
 						( i.getCsvColumnNo().isPresent()
-								? csvData.get( i.getCsvColumnNo().get()).get(1)
+								? csvData.get( i.getCsvColumnNo().get() - 1).get(1)
 								: "")
 						))
 				.collect(Collectors.toList());

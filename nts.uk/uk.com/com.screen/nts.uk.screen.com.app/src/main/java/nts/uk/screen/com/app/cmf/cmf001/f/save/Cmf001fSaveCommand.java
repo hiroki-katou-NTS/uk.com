@@ -24,7 +24,7 @@ public class Cmf001fSaveCommand {
 				.map(mapping -> new ImportingItemMapping(
 						mapping.getItemNo(),
 						Optional.ofNullable(mapping.getCsvItemNo()),
-						Optional.ofNullable(StringifiedValue.of(mapping.getFixedValue()))))
+						Optional.ofNullable(mapping.getFixedValue()).map(v -> StringifiedValue.of(v))))
 				.collect(Collectors.toList());
 				
 		return new DomainImportSetting(

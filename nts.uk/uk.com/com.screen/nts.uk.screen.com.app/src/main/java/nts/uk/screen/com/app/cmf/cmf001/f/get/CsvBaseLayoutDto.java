@@ -21,7 +21,7 @@ public class CsvBaseLayoutDto {
 	/** 必須項目 */
 	private boolean required;
 
-	private boolean isFixedValue;
+	private Integer isFixedValue;
 
 	private Integer selectedCsvItemNo;
 	
@@ -50,13 +50,13 @@ public class CsvBaseLayoutDto {
 		return importableItem.isRequired() || importableItem.isPrimaryKey();
 	}
 
-	private static boolean checkImportSource(ImportingItemMapping mapping) {
+	private static int checkImportSource(ImportingItemMapping mapping) {
 		val optCsvColumnNo = mapping.getCsvColumnNo();
 		if(optCsvColumnNo.isPresent()){
-			return false;
+			return 0;
 		}
 		else {
-			return true;
+			return 1;
 		}
 	}
 
