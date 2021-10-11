@@ -32,7 +32,7 @@ module nts.uk.ui.at.kdw013.c {
         width: 30px;
     }
     .edit-event table {
-        width: 99%;
+        width: 372px;
     }
     .edit-event table>tbody>tr>td:first-child {
         vertical-align: top;
@@ -354,6 +354,9 @@ module nts.uk.ui.at.kdw013.c {
             .message.overlay+.container .foot button:first-child {
                 margin-right: 10px;
             }
+			.taskDetails{
+				overflow-y: scroll;
+			}
 			.taskDetails::-webkit-scrollbar{
 				width: 8px;
 			}
@@ -429,10 +432,13 @@ module nts.uk.ui.at.kdw013.c {
 			
 			
 			vm.taskBlocks.taskDetailsView.subscribe(() => {
-				setTimeout(() => {
+				let interval = setInterval(function () {
+                    vm.updatePopupSize();
 					resetHeight();
-					vm.updatePopupSize();
-				}, 1);
+                });	
+				setTimeout(() => {
+					clearInterval(interval);
+				}, 1000);
             });
 
 			$(window).resize(function () {
@@ -661,8 +667,20 @@ module nts.uk.ui.at.kdw013.c {
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
             }
-            vm.taskDetailsView.subscribe(()=>{
-                
+            vm.taskDetailsView.subscribe((tasks: ManHrTaskDetailView[])=>{
+				let item = 0;
+				_.forEach(tasks, (task: ITaskItemValue[])=>{
+					_.forEach(task, ()=>{
+						item++;
+					});
+				});
+                setTimeout(() => {
+					flag(!flag());
+				}, item);
+				setTimeout(() => {
+					resetHeight();
+					flag(!flag());
+				}, 1);
             });
         }
         
@@ -825,6 +843,7 @@ module nts.uk.ui.at.kdw013.c {
 					}                       
 				});
 			}
+			
         }
 
 		setLableUse(item: TaskItemValue, settings: a.TaskFrameSettingDto){
@@ -992,24 +1011,24 @@ module nts.uk.ui.at.kdw013.c {
         selected: boolean;
         $raw: any;
     };
-	let resetHeight = () => {
-			let caltimeSpanViewHeight = $('.caltimeSpanView').height();
-			let innerHeight = window.innerHeight
-			let heightTaskDetails = -5; 
-			_.each($('.taskDetails table'),(table:any)=>{
-				heightTaskDetails = heightTaskDetails + table.offsetHeight + 5;
-			});
-			
-			let aboveBelow = 160;
-			if(caltimeSpanViewHeight > 40){
-				aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
-			}
-			
-			if(innerHeight > aboveBelow && (innerHeight - aboveBelow) < heightTaskDetails) {
-				$('.taskDetails').css({ "overflow-y": "scroll"});
-				$('.taskDetails').css({ "max-height": (innerHeight - aboveBelow - 10) + 'px' });	
-			}else if(innerHeight > aboveBelow && (innerHeight - aboveBelow) > heightTaskDetails){
-				$('.taskDetails').css({ "overflow-y": "unset"});
-			}
+	export function resetHeight():void {
+		let caltimeSpanViewHeight = $('.caltimeSpanView').height();
+		let innerHeight = window.innerHeight
+		let heightTaskDetails = -5; 
+		_.each($('.taskDetails table'),(table:any)=>{
+			heightTaskDetails = heightTaskDetails + table.offsetHeight + 5;
+		});
+		
+		let aboveBelow = 160;
+		if(caltimeSpanViewHeight > 40){
+			aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
 		}
+		if(innerHeight - aboveBelow >= heightTaskDetails){
+			$('.taskDetails').css({ "overflow-y": "hidden"});
+			$('.taskDetails').css({ "max-height": heightTaskDetails + 'px' });
+		}else if(innerHeight - aboveBelow < heightTaskDetails){
+			$('.taskDetails').css({ "overflow-y": "scroll"});
+			$('.taskDetails').css({ "max-height": (innerHeight - aboveBelow - 10) + 'px' });
+		}
+	}
 }

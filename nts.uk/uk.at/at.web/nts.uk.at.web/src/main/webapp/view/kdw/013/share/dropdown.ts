@@ -56,7 +56,7 @@ module nts.uk.ui.at.kdw013.share {
             .nts-dropdown.show>div.dropdown-container {
                 height: auto;
                 z-index: 3;
-                position: fixed;
+                position: absolute;
                 overflow-y: auto;
             }
             .nts-dropdown.show>div.dropdown-container {
@@ -197,11 +197,17 @@ module nts.uk.ui.at.kdw013.share {
                             ko.tasks
                                 .schedule(() => {
                                     const { top, height } = $(element).children().get(0).getBoundingClientRect();
-
                                     if (top + height < innerHeight - 10) {
-                                        $ct.style.top = top + 'px';
+										let taskDetails = $('.taskDetails').last();
+										let lastTable = $('.taskDetails table').last();
+										if(taskDetails.offset().top + taskDetails.outerHeight(true) > lastTable.offset().top + lastTable.outerHeight(true)){
+											$ct.style.top = (height - 31) * -1 + 'px';	
+										}else{
+											$ct.style.top = '0px';
+										}
+                                        
                                     } else {
-                                        $ct.style.top = top - height + 31 + 'px';
+                                        $ct.style.top = (height - 31) * -1 + 'px';
                                     }
                                 });
                         }
@@ -346,7 +352,7 @@ module nts.uk.ui.at.kdw013.share {
                 vm.visibleItemsCount = params.visibleItemsCount;
             }
         
-            setvisibleItemCount(show){
+            setvisibleItemCount(show: boolean){
                 const vm = this;
                 const { visibleItemsCount } = vm;
             
