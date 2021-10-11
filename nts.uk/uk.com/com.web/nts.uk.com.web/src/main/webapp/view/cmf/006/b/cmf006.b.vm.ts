@@ -3,6 +3,7 @@ module nts.uk.at.view.cmf006.b {
     import getText = nts.uk.resource.getText;
     import ccg025 = nts.uk.com.view.ccg025.a;
     import setShared = nts.uk.ui.windows.setShared;
+    import util = nts.uk.util;
 
     const fetch = {
         copy: "exio/exo/condset/exOutCtgAuthSet/copy"
@@ -46,6 +47,7 @@ module nts.uk.at.view.cmf006.b {
                 { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
                 { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
             ]);
+            // vm.componentCcg025.currentCode(null);
             vm.fetchRoleList();
         }
 
@@ -85,19 +87,24 @@ module nts.uk.at.view.cmf006.b {
                 vm.$blockui("clear");
                 return;
             }
+            if (util.isNullOrEmpty(vm.destinationRoleId())) {
+                vm.$dialog.error({ messageId: 'Msg_865' });
+                vm.$blockui("clear");
+                return;
+            }
             let command: IDuplicateExOutCtgAuthCommand = {
                 sourceRoleId: vm.sourceRoleId(),
                 destinationRoleId: vm.destinationRoleId(),
                 overWrite: vm.overwrite()
             };
-            vm.$ajax(fetch.copy, command).then((data) => {
-                if (data.isSuccess) {
+            vm.$ajax(fetch.copy, command).then((data: any) => {
+                if (data.success) {
                     vm.$dialog.info({messageId: 'Msg_15'});
                 }
                 // let result = {
-                //     isSuccess: data.isSuccess,
+                //     isSuccess: data.success,
                 //     copyDestinationRoleId: data.copyDestinationRoleId,
-                //     isOverwrite: data.isOverwrite
+                //     isOverwrite: data.overwrite
                 // };
                 // setShared('dataShareCMF006A', result);
             }).fail(error => {

@@ -29,7 +29,9 @@ module nts.uk.at.view.cmf006.a {
         //ccg026
         roleType: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.EMPLOYMENT);
         permissionList: KnockoutObservableArray<IPermission> = ko.observableArray([]);
-        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
+        enableSave: KnockoutObservable<boolean> = ko.observable(true);
+        enableCopy: KnockoutObservable<boolean> = ko.observable(false);
         data: any;
 
         constructor(params: any) {
@@ -64,6 +66,18 @@ module nts.uk.at.view.cmf006.a {
                 if (vm.listRole().length <= 0) vm.listRole(vm.componentCcg025.listRole());
                 vm.roleId(roleId);
                 vm.findRoleById(roleId);
+            });
+            vm.isUpdateMode.subscribe((newValue) => {
+                if (newValue) {
+                    vm.enableSave(true);
+                    vm.enableCopy(true);
+                }
+            });
+            vm.listRole.subscribe((newValue) => {
+                if (_.isEmpty(newValue)) {
+                    vm.enableSave(false);
+                    vm.enableCopy(false);
+                }
             });
         }
 
@@ -109,11 +123,10 @@ module nts.uk.at.view.cmf006.a {
         fetchAvailabilityPermission(roleId: string): void {
             const vm = this;
             vm.$blockui("show");
-            console.log("RoleId: ", roleId);
             vm.$ajax(fetch.availabilityPermission + roleId).done((data) => {
-                if (data) {
+                if (!_.isEmpty(data)) {
                     vm.mappingAvailabilityPermission(data);
-                    vm.isNewMode(false);
+                    vm.enableCopy(true);
                 }
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -167,6 +180,7 @@ module nts.uk.at.view.cmf006.a {
                 }))
             };
             vm.$ajax(fetch.register, command).then(data => {
+                vm.isUpdateMode(true);
                 vm.$dialog.info({messageId: 'Msg_15'});
             }).fail(error => {
                 vm.$dialog.error(error);

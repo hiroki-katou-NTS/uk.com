@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.app.command.exo.authset;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.collection.CollectionUtil;
@@ -29,7 +30,6 @@ public class DuplicateExOutCtgAuthCommandHandler extends CommandHandlerWithResul
 
         val sourceSettings = this.exOutAuthRepo.findByCidAndRoleId(cid, command.getSourceRoleId());
         if (CollectionUtil.isEmpty(sourceSettings)) return null;
-        val destinationSettings = this.exOutAuthRepo.findByCidAndRoleId(cid, destinationRoleId);
 
         if (isOverwrite) {
             exOutAuthRepo.delete(cid, destinationRoleId);
@@ -41,25 +41,36 @@ public class DuplicateExOutCtgAuthCommandHandler extends CommandHandlerWithResul
             );
             isSuccess = true;
         } else {
-            for (ExOutCtgAuthSet source : sourceSettings) {
-                val destinationOpt = destinationSettings.stream().filter(d -> d.getFunctionNo() == source.getFunctionNo()).findFirst();
-                if (destinationOpt.isPresent()) {
-                    if (!destinationOpt.get().isAvailable()) {
-                        exOutAuthRepo.update(new ExOutCtgAuthSet(new ExOutCtgAvailabilityPermissionImpl(
-                                source.getCompanyId(),
-                                destinationRoleId,
-                                source.getFunctionNo(),
-                                source.isAvailable())));
-                    }
-                } else {
-                    exOutAuthRepo.add(new ExOutCtgAuthSet(new ExOutCtgAvailabilityPermissionImpl(
-                            source.getCompanyId(),
-                            destinationRoleId,
-                            source.getFunctionNo(),
-                            source.isAvailable())));
-                }
+            val destinationSettings = this.exOutAuthRepo.findByCidAndRoleId(cid, destinationRoleId);
+            if (!CollectionUtil.isEmpty(destinationSettings)) {
+                throw new BusinessException("Msg_866");
             }
+            sourceSettings.forEach(source -> exOutAuthRepo.add(new ExOutCtgAuthSet(new ExOutCtgAvailabilityPermissionImpl(
+                    source.getCompanyId(),
+                    destinationRoleId,
+                    source.getFunctionNo(),
+                    source.isAvailable())))
+            );
             isSuccess = true;
+
+//            for (ExOutCtgAuthSet source : sourceSettings) {
+//                val destinationOpt = destinationSettings.stream().filter(d -> d.getFunctionNo() == source.getFunctionNo()).findFirst();
+//                if (destinationOpt.isPresent()) {
+//                    if (!destinationOpt.get().isAvailable()) {
+//                        exOutAuthRepo.update(new ExOutCtgAuthSet(new ExOutCtgAvailabilityPermissionImpl(
+//                                source.getCompanyId(),
+//                                destinationRoleId,
+//                                source.getFunctionNo(),
+//                                source.isAvailable())));
+//                    }
+//                } else {
+//                    exOutAuthRepo.add(new ExOutCtgAuthSet(new ExOutCtgAvailabilityPermissionImpl(
+//                            source.getCompanyId(),
+//                            destinationRoleId,
+//                            source.getFunctionNo(),
+//                            source.isAvailable())));
+//                }
+//            }
         }
 
         return new DuplicateExOutputCtgAuthResult(isSuccess, destinationRoleId, isOverwrite);

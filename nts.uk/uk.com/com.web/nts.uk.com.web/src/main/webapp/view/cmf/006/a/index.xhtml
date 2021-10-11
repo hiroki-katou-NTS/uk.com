@@ -21,10 +21,10 @@
         <div id="functions-area">
             <div class="container">
                 <button id="registration"
-                        data-bind="click: $vm.save, enable : $root.errors.isEmpty"
+                        data-bind="click: $vm.save, enable : enableSave"
                         class="proceed" tabindex="1">#{i18n.getText('CMF006_3')}</button>
                 <button id="copy"
-                        data-bind="click: $vm.openScreenB"
+                        data-bind="click: $vm.openScreenB, enable : enableCopy"
                         class="normal" tabindex="2">#{i18n.getText('CMF006_4')}</button>
             </div>
         </div>
