@@ -23,7 +23,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavori
 public class JpaOneDayFavoriteTaskDisplayOrderRepository extends JpaRepository implements OneDayFavoriteTaskDisplayOrderRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT o FROM KrcdtTaskFavDayDispOrder o";
-	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE s.sId = :sId";
+	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE o.sId = :sId";
 	
 	@Override
 	public void insert(OneDayFavoriteTaskDisplayOrder order) {
