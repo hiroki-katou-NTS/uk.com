@@ -147,7 +147,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		        virtualization: true,
 		        virtualizationMode: 'continuous',
 		        columns: [
-					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, unbound:true, ntsControl: 'DeleteButton'},
+					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, ntsControl: 'DeleteButton'},
 					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
 					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
 					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
@@ -163,7 +163,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		            name: 'DeleteButton',
 		            text: '削除',
 		            controlType: 'DeleteButton',
-		            enable: self.isDeletable()
+		            enable: true
 		          },
 		          {
 			            name: 'SwitchButtons',
@@ -290,7 +290,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		selectLayout() {
 			let self = this;
 			setShared('CMF001DParams', {
-					domainId: self.importDomain(),
+					domainId: self.selectedDomainId(),
 					selectedItems: self.layoutItemNoList()
 			}, true);
 	
@@ -308,7 +308,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			let self = this;
 			request.jump("../c/index.xhtml", {
 				settingCode: self.settingCode,
-				domainId: self.self.selectedDomainId(),
+				domainId: self.selectedDomainId(),
 				screenId: 'cmf001f'
 			});
 		}
@@ -394,10 +394,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			this.fixedValue = fixedValue;
 			this.csvData = csvData;
 			this.isFixedValue = isFixedValue;
-		}
-		
-		isFixedValue() {
-			
 		}
 	}
 	
