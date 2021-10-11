@@ -20,22 +20,18 @@ public class IntermediateResult {
 	
 	int rowNo;
 	
-	/** 正準化したデータ */
+	/** 正準化によって作られたデータ */
 	CanonicalItemList itemsAfterCanonicalize;
 	
-	/** 正準化対象の正準化前データ */
-	DataItemList itemsBeforeCanonicalize;
-	
-	/** 正準化対象ではなかったデータ */
-	DataItemList itemsNotCanonicalize;
+	/** 編集済みデータ */
+	RevisedDataRecord itemsNotCanonicalize;
 	
 	public static IntermediateResult noChange(RevisedDataRecord revisedData) {
 		
 		return new IntermediateResult(
 				revisedData.getRowNo(),
 				new CanonicalItemList(),
-				new DataItemList(),
-				new DataItemList(revisedData.getItems()));
+				revisedData);
 	}
 	
 	/**
@@ -45,15 +41,8 @@ public class IntermediateResult {
 	 * @param targetItemNos 正準化対象となる項目Noのリスト
 	 * @return
 	 */
-	public static IntermediateResult create(
-			RevisedDataRecord source,
-			CanonicalItem canonicalizedItem,
-			Integer... targetItemNos) {
-		
-		return create(
-				source,
-				new CanonicalItemList(Arrays.asList(canonicalizedItem)),
-				targetItemNos);
+	public static IntermediateResult create(RevisedDataRecord source, CanonicalItem canonicalizedItem) {
+		return create(source, new CanonicalItemList(Arrays.asList(canonicalizedItem)));
 	}
 	
 	/**
@@ -63,16 +52,8 @@ public class IntermediateResult {
 	 * @param targetItemNos 正準化対象となる項目Noのリスト
 	 * @return
 	 */
-	public static IntermediateResult create(
-			RevisedDataRecord source,
-			CanonicalItemList canonicalizedItems,
-			Integer... targetItemNos) {
-		
-		val before = new DataItemList();
-		val not = new DataItemList();
-		source.getItems().separate(before, not, targetItemNos);
-		
-		return new IntermediateResult(source.getRowNo(), canonicalizedItems, before, not);
+	public static IntermediateResult create(RevisedDataRecord source, CanonicalItemList canonicalizedItems) {
+		return new IntermediateResult(source.getRowNo(), canonicalizedItems, source);
 	}
 	
 	/**
@@ -97,20 +78,13 @@ public class IntermediateResult {
 	 * @param targetItemNos
 	 * @return
 	 */
-	public IntermediateResult addCanonicalized(
-			CanonicalItemList canonicalizedItems,
-			Integer... targetItemNos) {
+	public IntermediateResult addCanonicalized(CanonicalItemList canonicalizedItems) {
 
 		val after = new CanonicalItemList();
 		after.addAll(itemsAfterCanonicalize);
 		after.addAll(canonicalizedItems);
 		
-		val before = new DataItemList();
-		before.addAll(itemsBeforeCanonicalize);
-		val not = new DataItemList();
-		itemsNotCanonicalize.separate(before, not, targetItemNos);
-		
-		return new IntermediateResult(this.rowNo, after, before, not);
+		return new IntermediateResult(this.rowNo, after, itemsNotCanonicalize);
 	}
 	
 	/**
@@ -119,11 +93,8 @@ public class IntermediateResult {
 	 * @param targetItemNos
 	 * @return
 	 */
-	public IntermediateResult addCanonicalized(
-			CanonicalItem canonicalizedItem,
-			Integer... targetItemNos) {
-
-		return addCanonicalized(new CanonicalItemList().addItem(canonicalizedItem), targetItemNos);
+	public IntermediateResult addCanonicalized(CanonicalItem canonicalizedItem) {
+		return addCanonicalized(new CanonicalItemList().addItem(canonicalizedItem));
 	}
 	
 	/**
