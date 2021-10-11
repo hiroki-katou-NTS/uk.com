@@ -221,6 +221,7 @@ module nts.uk.ui.at.kdw013.c {
                                     update: flag,
                                     hasError: $component.timeError,
                                     exclude-times: $component.params.excludeTimes,
+									range: range,
 									showRange: showRange
                                 "></div>
                         </td>
@@ -233,6 +234,19 @@ module nts.uk.ui.at.kdw013.c {
 	                    <col width="105px" />
 	                </colgroup>
                     <tbody data-bind = "foreach: taskItemValues">
+						<!-- ko if: (itemId == 3) && !use() -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<input data-bind="ntsTimeEditor: {
+										value: value,
+										
+										required: true,
+										enable: true,
+										}" />
+								</td>
+                            </tr>
+                        <!-- /ko -->
                         <!-- ko if: (itemId == 4) && use-->
                             <tr>
                                 <td data-bind="text: lable"></td>
@@ -258,7 +272,6 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-                        
 	                </tbody>
 	            </table>
 			</div>
@@ -366,6 +379,8 @@ module nts.uk.ui.at.kdw013.c {
         timeError: KnockoutObservable<boolean> = ko.observable(false);
         taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
         flag: KnockoutObservable<boolean> = ko.observable(false);
+		showRange: KnockoutObservable<boolean> = ko.observable(false);
+		range: KnockoutObservable<number | null> = ko.observable(null);
 		taskBlocks: ManHrPerformanceTaskBlockView = 
 			new ManHrPerformanceTaskBlockView(
 				{ 
@@ -374,10 +389,10 @@ module nts.uk.ui.at.kdw013.c {
 				}, 
                 __viewContext.user.employeeId,
                 this.flag,
+				this.showRange,
                 false
 			);
-		showRange: KnockoutObservable<boolean> = ko.observable(false);
-
+		
         constructor(public params: Params) {
             super();
 
@@ -619,12 +634,12 @@ module nts.uk.ui.at.kdw013.c {
         caltimeSpanView: KnockoutObservable<{start: number, end: number}> = ko.observable({start: null, end: null});
 		employeeId: string = '';
 		setting: a.TaskFrameSettingDto[] = [];
-		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, loadData: boolean) {
+		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, private showRange: KnockoutObservable<boolean>, loadData: boolean) {
 			super(taskBlocks);
 			const vm = this;
 			vm.employeeId = employeeId;
 			vm.taskDetailsView = ko.observableArray(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, loadData, []))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, showRange, loadData, []))
 			);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
@@ -652,7 +667,7 @@ module nts.uk.ui.at.kdw013.c {
 			vm.employeeId = employeeId;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, loadData, setting))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, vm.showRange, loadData, setting))
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
@@ -675,7 +690,7 @@ module nts.uk.ui.at.kdw013.c {
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: taskItemValue.value(), type: taskItemValue.type });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, true, vm.setting));
+			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showRange, true, vm.setting));
 		}
 
 		isChangedTime(): boolean{
@@ -732,7 +747,7 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
-		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
+		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, showRange: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
 			super(manHrTaskDetail);
 			this.employeeId = employeeId;
 			this.itemBeforChange = manHrTaskDetail.taskItemValues;
@@ -741,7 +756,13 @@ module nts.uk.ui.at.kdw013.c {
 
 			let workCD1, workCD2, workCD3, workCD4, workCD5;
 			_.each(vm.taskItemValues(), (item: TaskItemValue) => {
-                if(item.itemId == 4) {
+                if(item.itemId == 3) {
+                    item.use = showRange;
+					workCD1 = item.value();
+					item.value.subscribe(() => {
+	                    vm.flag(!vm.flag());
+                	});
+				}else if(item.itemId == 4) {
                     if (first) {
                         vm.setLableUse(item, first);
                     }
