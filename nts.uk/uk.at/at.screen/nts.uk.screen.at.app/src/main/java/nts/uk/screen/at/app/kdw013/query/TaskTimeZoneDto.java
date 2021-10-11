@@ -20,7 +20,7 @@ public class TaskTimeZoneDto {
 	private TimeSpanForCalcDto caltimeSpan;
 
 	/** 対象応援勤務枠 */
-	private int supNo;
+	private Integer supNo;
 
 	public static TaskTimeZoneDto fromDomain(TaskTimeZone domain) {
 		return new TaskTimeZoneDto(
