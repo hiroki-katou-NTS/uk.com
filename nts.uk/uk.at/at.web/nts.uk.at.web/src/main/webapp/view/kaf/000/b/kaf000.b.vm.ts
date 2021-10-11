@@ -589,7 +589,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				if(obj.appListAtr==1) {
 					param = 1;
 				}
-				vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+				vm.$jump("at", "/view/cmm/045/a/index.xhtml");
             });
 		}
 
