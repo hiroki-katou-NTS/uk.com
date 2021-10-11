@@ -63,8 +63,8 @@ html {
 .setting-container {
 	display: inline-block;
 	margin: 3px ;
-	/* position: relative; */
 	margin-left: 30px;
+	margin-bottom: 0px;
 }
 
 #setting-content {
@@ -393,8 +393,12 @@ button {
     padding-bottom: 5px !important;
 }
 
+#dpGrid {
+	margin-top: 1px;
+}
+
 /* # fix bug 117525 */
-.mgrid-free-table{
+/* .mgrid-free-table{
 	height: 37px !important;
 }
 
@@ -405,3 +409,4 @@ button {
 .mgrid-header {
 	top: 3px !important;
 }
+ */

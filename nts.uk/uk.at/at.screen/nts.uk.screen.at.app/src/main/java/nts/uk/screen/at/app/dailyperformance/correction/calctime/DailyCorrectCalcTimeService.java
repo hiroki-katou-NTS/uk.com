@@ -151,8 +151,13 @@ public class DailyCorrectCalcTimeService {
 
 		DailyRecordDto dailyBeforeEdit =  DailyRecordDto.from(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()), optionalMaster);
 		
-		val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
+		val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(
+				itemEdits.stream().map(x -> x.getItemId()).collect(Collectors.toList()),
+				ScheduleRecordClassifi.RECORD);
 		if(itemEdits.stream().filter(x -> DPText.ITEM_WORKINFO_CHANGE.contains(x.getItemId())).findFirst().isPresent()) {
+			changeSetting.setWorkInfo(true);
+		}
+		if(itemEdits.stream().filter(x -> DPText.ITEM_DIRECT_BOUNCE.contains(x.getItemId())).findFirst().isPresent()) {
 			changeSetting.setWorkInfo(true);
 		}
 		if(itemEdits.stream().filter(x -> DPText.ITEM_ATTLEAV_CHANGE.contains(x.getItemId())).findFirst().isPresent()) {
@@ -306,9 +311,9 @@ public class DailyCorrectCalcTimeService {
 	//セットされている勤務種類、就業時間帯が「マスタ未登録」でないかチェックする
 	private Pair<Boolean, Boolean> checkHasMasterWorkTypeTime(String companyId, DailyRecordDto dailyEdit,  List<DPItemValue> itemEdits) {
 		boolean hasMaster28 = true, hasMaster29 = true;
-		boolean contentItem28 = itemEdits.stream().filter(x -> x.getItemId() == 28).findFirst().isPresent() ? true
+		boolean contentItem28 = itemEdits.stream().filter(x -> x.getItemId() == 28 || x.getItemId() == 859).findFirst().isPresent() ? true
 				: false;
-		boolean contentItem29 = itemEdits.stream().filter(x -> x.getItemId() == 29).findFirst().isPresent() ? true
+		boolean contentItem29 = itemEdits.stream().filter(x -> x.getItemId() == 29 || x.getItemId() == 860).findFirst().isPresent() ? true
 				: false;
 
 		List<DailyModifyResult> resultValues = AttendanceItemUtil.toItemValues(Arrays.asList(dailyEdit)).entrySet()

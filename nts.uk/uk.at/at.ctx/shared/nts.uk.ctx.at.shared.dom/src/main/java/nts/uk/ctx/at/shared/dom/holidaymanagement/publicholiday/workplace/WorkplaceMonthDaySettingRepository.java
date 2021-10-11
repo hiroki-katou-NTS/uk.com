@@ -53,6 +53,15 @@ public interface WorkplaceMonthDaySettingRepository {
 	List<String> findWkpRegisterByYear(CompanyId companyId, Year year);
 	
 	/**
+	 * Find by years.
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @param yearList the list year
+	 * @return
+	 */
+	List<WorkplaceMonthDaySetting> findByYears(CompanyId companyId, String workplaceId, List<Year> yearList);
+	
+	/**
 	 * Adds the.
 	 *
 	 * @param domain the domain

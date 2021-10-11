@@ -106,7 +106,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
     public created() {
         const self = this;
-        if (self.params) {
+        if (self.params && self.params.isDetailMode) {
             self.mode = false;
             self.data = self.params;
             self.appWorkChangeDisp = self.data.appWorkChangeDispInfo;
@@ -125,9 +125,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
     public mounted() {
         const self = this;
-        self.fetchStart();
+        let employeeID = self.params ? self.params.employeeID : null,
+            date = self.params ? self.params.date : null;
+        self.fetchStart(employeeID ? employeeID : null, date ? [date] : []);
     }
-    public fetchStart() {
+    public fetchStart(employeeID?: string, dateLst?: Array<string>) {
         const self = this;
         if (self.mode) {
             self.$mask('show');
@@ -140,7 +142,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
             self.user = usr;
         }).then(() => {
             if (self.mode) {
-                return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
+                return self.loadCommonSetting(
+                    AppType.WORK_CHANGE_APPLICATION,
+                    employeeID, 
+                    null, 
+                    dateLst, 
+                    null);
             }
 
             return true;
@@ -150,8 +157,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 {
                     mode: self.mode,
                     companyId: self.user.companyId,
-                    employeeId: self.user.employeeId,
-                    listDates: [],
+                    employeeId: employeeID ? employeeID : self.user.employeeId,
+                    listDates: dateLst,
                     appWorkChangeOutputDto: null,
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
                 } : 
@@ -176,8 +183,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 {
                     mode: self.mode,
                     companyId: self.user.companyId,
-                    employeeId: self.user.employeeId,
-                    listDates: [],
+                    employeeId: employeeID ? employeeID : self.user.employeeId,
+                    listDates: dateLst,
                     appWorkChangeOutputDto: null,
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
                 } : 
@@ -252,6 +259,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
             },
             detailModeContent: null
         };
+        if (self.mode) {
+            if (self.params && self.params.date) {
+                _.set(paramb.newModeContent, 'appDate', self.params.date);    
+            }
+        }
         if (!self.mode) {
             paramb.detailModeContent = {
                 prePostAtr: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
@@ -784,7 +796,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             applicationDto: self.application,
             appWorkChangeDto: self.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
-            isError: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+            opMsgErrorLst: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opMsgErrorLst,
             appDispInfoStartupDto: self.appDispInfoStartupOutput, 
             appWorkChangeDispInfo: self.appWorkChangeDisp
         }).then((res: any) => {
@@ -1017,6 +1029,21 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public kaf000CChangeAppReason(opAppReason) {
         const self = this;
         self.application.opAppReason = opAppReason;
+    }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const self = this;
+        if (self.params && self.params.isDetailMode) {
+            self.mode = false;
+            self.data = self.params;
+            self.appWorkChangeDisp = self.data.appWorkChangeDispInfo;
+        } else {
+            self.mode = true;
+        }
+        let employeeID = self.params ? self.params.employeeID : null,
+            date = self.params ? self.params.date : null;
+        self.fetchStart(employeeID ? employeeID : null, date ? [date] : []);
     }
 }
 export class Work {

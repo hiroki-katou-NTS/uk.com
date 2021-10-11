@@ -4,7 +4,7 @@ module nts.uk.ui.at.ksu002.a {
 	import c = nts.uk.ui.calendar;
 
 	const template = `
-		<div class="cf" data-bind="
+		<div class="cf" id="yearMonth" data-bind="
 			attr: {
 				tabindex: $component.params.tabIndex
 			},
@@ -252,7 +252,7 @@ module nts.uk.ui.at.ksu002.a {
 						cache.yearMonth = cmd.yearMonth;
 						// vm.$ajax('at', API.BASE_DATE, cmd).then(proccesPeriod);
 					} else if (cache.yearMonth !== cmd.yearMonth) {
-						if(nts.uk.ui.errors.hasError())
+						if($('#yearMonth').ntsError("hasError"))
 							return;
 						if (hasChange) {
 							vm.$dialog

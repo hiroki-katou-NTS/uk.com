@@ -5,6 +5,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.screen.at.app.query.kdp.kdp002.a.CreateDailyAchievementsFromStampDto;
+import nts.uk.screen.at.app.query.kdp.kdp002.a.CreateDailyParam;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.GetWorkManagementMultiple;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommon;
 import nts.uk.screen.at.app.query.kdp.kdp002.a.SettingsStampCommonDto;

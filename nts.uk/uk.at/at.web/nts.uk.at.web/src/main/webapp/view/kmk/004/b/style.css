@@ -416,3 +416,7 @@
     height: 24px;
     z-index: 999999;
 }
+
+#contents-area {
+	overflow: hidden;
+}

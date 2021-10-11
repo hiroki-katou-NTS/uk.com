@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
 
 import lombok.val;
+import nts.arc.system.ServerSystemProperties;
 
 /**
  * Cross-Origin Resource Sharing
@@ -31,7 +32,7 @@ public class CorsPreflightFilter implements Filter {
 		val httpRequest = (HttpServletRequest) request;
 		
 		// webapi "/public" is shared for cross-origin
-		if (httpRequest.getPathInfo() != null && httpRequest.getPathInfo().indexOf("/public") == 0) {
+		if (acceptsCrossOrigin(httpRequest)) {
 			
 			val httpResponse =(HttpServletResponse) response;
 			httpResponse.addHeader("Access-Control-Allow-Origin", "*");
@@ -60,6 +61,25 @@ public class CorsPreflightFilter implements Filter {
 		}
 		
 		chain.doFilter(httpRequest, response);
+	}
+	
+	private static boolean acceptsCrossOrigin(HttpServletRequest request) {
+		
+		String path = request.getPathInfo();
+		
+		if (path == null) {
+			return false;
+		}
+		
+		if (path.indexOf("/public") == 0) {
+			return true;
+		}
+		
+		if (path.indexOf("/develop") == 0 && ServerSystemProperties.isDebugMode()) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override

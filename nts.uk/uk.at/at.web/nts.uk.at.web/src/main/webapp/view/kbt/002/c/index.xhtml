@@ -59,7 +59,9 @@
                     optionsText: 'name',
                     value: $parent.selectExec,
                     enable: !$parent.cloudCreationFlag(),
-                    checked: $parent.optionDialog()}">
+                    checked: $parent.optionDialog(),
+                    hasFocus: true
+                  }">
                   </div>
                 </td>
               </tr>
@@ -82,13 +84,13 @@
                 </td>
                 <td>
                   <!-- C2_4 -->
-                  <input tabindex="3" class="date-picker" style="width: 60px;" id="startTime" data-bind="ntsTimeEditor: {value: startTime,
-                    inputFormat: 'time',
+                  <input tabindex="3" class="date-picker" style="width: 60px;" id="startTime" data-bind="ntsTimeWithDayEditor: {value: startTime,
                     required: true,
                     enable: !$parent.cloudCreationFlag(),
-                    mode: 'time',
                     name: '#[KBT002_56]',
-                    constraint: 'StartTime'}" />
+                    constraint: 'StartTime',
+                    option: {timeWithDay: false}
+                  }" />
                 </td>
               </tr>
             </table>
@@ -103,25 +105,25 @@
                   </div>
                 </td>
                 <td class="width-small">
-                  <div id="C4_6" tabindex="8" class="checkbox-day"
+                  <div id="C4_6" tabindex="4" class="checkbox-day"
                     data-bind="ntsCheckBox: { checked: sunday, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_86')}</div>
-                  <div id="C4_7" tabindex="9" class="checkbox-day"
+                  <div id="C4_7" tabindex="5" class="checkbox-day"
                     data-bind="ntsCheckBox: { checked: monday, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_80')}</div>
-                  <div id="C4_8" tabindex="10" class="checkbox-day"
+                  <div id="C4_8" tabindex="6" class="checkbox-day"
                     data-bind="ntsCheckBox: { checked: tuesday, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_81')}</div>
-                  <div id="C4_9" tabindex="11" class="checkbox-day"
+                  <div id="C4_9" tabindex="7" class="checkbox-day"
                     data-bind="ntsCheckBox: { checked: wednesday, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_82')}</div>
-                  <div id="C4_10" tabindex="12" class="checkbox-day"
+                  <div id="C4_10" tabindex="8" class="checkbox-day"
                     data-bind="ntsCheckBox: { checked: thursday, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_83')}</div>
-                  <div id="C4_11" tabindex="13" class="checkbox-day"
+                  <div id="C4_11" tabindex="9" class="checkbox-day"
                     data-bind="ntsCheckBox: { checked: friday, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_84')}</div>
-                  <div id="C4_12" tabindex="14" class="checkbox-day"
+                  <div id="C4_12" tabindex="10" class="checkbox-day"
                     data-bind="ntsCheckBox: { checked: saturday, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_85')}</div>
                 </td>
@@ -139,40 +141,40 @@
                   </div>
                 </td>
                 <td>
-                  <div id="C6_3" tabindex="15" class="checkbox-month"
+                  <div id="C6_3" tabindex="11" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: january, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_92')}</div>
-                  <div id="C6_4" tabindex="16" class="checkbox-month"
+                  <div id="C6_4" tabindex="12" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: february, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_93')}</div>
-                  <div id="C6_5" tabindex="17" class="checkbox-month"
+                  <div id="C6_5" tabindex="13" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: march, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_94')}</div>
-                  <div id="C6_6" tabindex="18" class="checkbox-month"
+                  <div id="C6_6" tabindex="14" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: april, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_95')}</div>
-                  <div id="C6_7" tabindex="19" class="checkbox-month"
+                  <div id="C6_7" tabindex="15" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: may, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_96')}</div>
-                  <div id="C6_8" tabindex="20" class="checkbox-month"
+                  <div id="C6_8" tabindex="16" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: june, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_97')}</div>
-                  <div id="C6_9" tabindex="21" class="checkbox-month"
+                  <div id="C6_9" tabindex="17" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: july, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_98')}</div>
-                  <div id="C6_10" tabindex="22" class="checkbox-month"
+                  <div id="C6_10" tabindex="18" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: august, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_99')}</div>
-                  <div id="C6_11" tabindex="23" class="checkbox-month"
+                  <div id="C6_11" tabindex="19" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: september, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_100')}</div>
-                  <div id="C6_12" tabindex="24" class="checkbox-month"
+                  <div id="C6_12" tabindex="20" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: october, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_101')}</div>
-                  <div id="C6_13" tabindex="25" class="checkbox-month"
+                  <div id="C6_13" tabindex="21" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: november, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_102')}</div>
-                  <div id="C6_14" tabindex="26" class="checkbox-month"
+                  <div id="C6_14" tabindex="22" class="checkbox-month"
                     data-bind="ntsCheckBox: { checked: december, enable: !$parent.cloudCreationFlag() }">
                     #{i18n.getText('KBT002_103')}</div>
                 </td>
@@ -180,7 +182,7 @@
               <tr class="row-line">
                 <td>
                   <div class="open-dialog-d">
-                    <button id="C6_16" tabindex="27"
+                    <button id="C6_16" tabindex="23"
                     data-bind="click: function() { $parent.openDialogD() } , enable: !$parent.cloudCreationFlag()">
                     <span>#{i18n.getText('KBT002_105')}</span>
                      </button>
@@ -209,7 +211,7 @@
                   </div>
                 </td>
                 <td>
-                  <div id="C2_15" tabindex="4" class="radio-group-small" data-bind="ntsRadioBoxGroup: {
+                  <div id="C2_15" tabindex="24" class="radio-group-small" data-bind="ntsRadioBoxGroup: {
                     name: 'KBT002_66',
                     options: $parent.timeRepeats,
                     optionsValue: 'code',
@@ -229,13 +231,13 @@
                 <td>
                   <div>
                     <!-- C2_18_1 -->
-                    <div tabindex="5" style="width: 81px;" id="oneDayTime" data-bind="ntsComboBox: {
+                    <div tabindex="25" style="width: 81px;" id="oneDayTime" data-bind="ntsComboBox: {
 											name: '#KBT002_69',
 											options: $parent.lstOneDayRepInterval,
 											optionsValue: 'code',
 											value: oneDayRepInterval,
 											optionsText: 'name',
-											enable: oneDayRepCls() == 1
+											enable: oneDayRepCls() == 1 &amp;&amp; !$parent.cloudCreationFlag(),
                       }">
                     </div>
                   </div>
@@ -248,26 +250,26 @@
                   </div>
                 </td>
                 <td>
-                  <div id="C2_29" tabindex="6" style="padding-left: 8px;" class="radio-group-small" data-bind="ntsRadioBoxGroup: {
+                  <div id="C2_29" tabindex="26" style="padding-left: 8px;" class="radio-group-small" data-bind="ntsRadioBoxGroup: {
                     name: 'KBT002_140',
                     options: $parent.endTimes,
                     optionsValue: 'code',
                     optionsText: 'name',
                     value: $parent.selectEndTime,
-                    enable: $parent.isSelectEndTime,
+                    enable: $parent.isSelectEndTime &amp;&amp; !$parent.cloudCreationFlag(),
                     checked: $parent.optionEndTime()}">
                   </div>
                 </td>
                 <td>
                   <!-- C2_6 -->
-                  <input tabindex="7" style="width: 60px;" class="date-picker" id="endTime" data-bind="ntsTimeEditor: {
+                  <input tabindex="7" style="width: 60px;" class="date-picker" id="endTime" data-bind="ntsTimeWithDayEditor: {
                     name: '#[KBT002_58]',
                     value: endTime,
-                    inputFormat: 'time',
                     enable: endTimeCls() == 1,
                     required: endTimeCls() == 1,
-                    mode: 'time',
-                    constraint: 'EndTime'}" />
+                    constraint: 'EndTime',
+                    option: {timeWithDay: false}
+                  }" />
                 </td>
               </tr>
               <tr class="row-line">
@@ -294,7 +296,7 @@
                       name: '#[KBT002_73]',
                       value: endDate, 
                       dateFormat: 'date', 
-                      enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1,
+                      enable: repeatCls() == 1 &amp;&amp; endDateCls() == 1 &amp;&amp; !$parent.cloudCreationFlag(),
                       required: repeatCls() == 1 &amp;&amp; endDateCls() == 1
                     }"></div>
                 </td>

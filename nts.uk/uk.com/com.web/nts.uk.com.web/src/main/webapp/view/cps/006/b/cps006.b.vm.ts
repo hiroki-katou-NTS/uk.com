@@ -17,8 +17,8 @@ module nts.uk.com.view.cps006.b.viewmodel {
         ]);
 
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: '0', name: getText('CPS006_26') },
-            { code: '1', name: getText('CPS006_27') }
+            { code: 0, name: getText('CPS006_26') },
+            { code: 1, name: getText('CPS006_27') }
         ]);
 
         selectedRuleCode: KnockoutObservable<number> = ko.observable(1);

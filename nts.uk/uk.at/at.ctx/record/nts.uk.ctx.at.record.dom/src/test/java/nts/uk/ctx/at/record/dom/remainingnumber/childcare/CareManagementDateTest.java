@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberOfCaregivers
  *
  */
 //@RunWith(JMockit.class)
-public class CareManagementDateTest {
 	/**
 	 * 介護対象期間を確認
 	 */
@@ -55,4 +54,3 @@ public class CareManagementDateTest {
 //				childCareTargetChanged(),
 //				CareTargetPeriod.of(new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15))));
 //	}
-}

@@ -148,7 +148,7 @@
 						</div>
 						<div class="flex-layout">
 							<!--C8 条件設定選択(パネル)-->
-							<div
+							<div class="grid-layout"
 								data-bind="ntsPanel:{width: '310px', height: '215px', direction: 'none', showIcon: true, visible: true}">
 								<div style="margin-bottom: 10px" class="label">#{i18n.getText('CMF002_347')}</div>
 								<div tabindex="13"
@@ -186,8 +186,8 @@
 									<i class="icon icon-button-arrow-left"></i>
 								</button>
 							</div>
-							<div style="padding-top: 60px;">
-								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_94')}</div>
+							<div>
+								<div id="grid-right-label" data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMF002_94')}</div>
 								<div style="margin: 10px 10px 10px 0px">
 									<table id="C10_1"
 										data-bind="ntsGridList: {

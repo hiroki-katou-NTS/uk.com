@@ -55,6 +55,10 @@ module nts.uk.at.view.kaf000.a.viewmodel {
 		
 		handleErrorCommon(failData: any) {
 			const vm = this;
+			if(_.isEmpty(failData.messageId)) {
+				vm.$dialog.error(failData.message);
+				return;
+			}
 			switch(failData.messageId) {
 				case 'Msg_197':
 				case 'Msg_198':

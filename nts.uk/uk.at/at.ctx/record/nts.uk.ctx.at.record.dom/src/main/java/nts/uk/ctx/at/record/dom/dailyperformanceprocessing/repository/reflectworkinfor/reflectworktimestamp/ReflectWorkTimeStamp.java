@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,6 +39,8 @@ public class ReflectWorkTimeStamp {
 				//就業時間帯を反映する
 				integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(worktimeCode);
 	//			integrationOfDaily.getWorkInformation().getScheduleInfo().setWorkTimeCode(worktimeCode);
+				//日別勤怠の編集状態を追加する
+				integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
 			}
 		}
 	}

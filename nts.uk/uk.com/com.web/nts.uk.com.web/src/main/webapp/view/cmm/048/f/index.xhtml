@@ -6,7 +6,7 @@
 <body>
   <ui:composition template="/master/dialog.xhtml">
     <ui:define name="htmlHead">
-      <script> var dialogSize = { width: 400, height: 380 }; </script>
+      <script> var dialogSize = { width: 400, height: 400 }; </script>
       <com:scriptfile set="IGNITE" />
       <com:scriptfile path="./../a/resource/webcam.min.js" />
       <com:scriptfile path="cmm048.f.vm.js" />
@@ -35,7 +35,7 @@
           Webcam.attach('#avatar-zone');
         </script>
       </div>
-      <div id="functions-area-bottom">
+      <div id="functions-area-bottom" style="position: absolute; bottom: 5px;">
         <div data-bind="ifnot: snapYet">
           <div id="E2_5" data-bind="click: snap">
             <img id="img-btn-snap" src="resource/camera.png" />

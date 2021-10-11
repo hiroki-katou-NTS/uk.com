@@ -1,14 +1,17 @@
 package nts.uk.ctx.at.schedule.infra.repository.schedule.workschedules.snapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWork;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.snapshot.DailySnapshotWorkRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.snapshot.KscdtSnapshot;
@@ -37,25 +40,29 @@ public class JpaDailySnapshotWorkRepoImpl extends JpaRepository implements Daily
 
 	@Override
 	public void save(DailySnapshotWork snapshot) {
-
-		this.commandProxy().insert(KscdtSnapshot.create(snapshot));
+		addAndUpdate(snapshot);
 	}
 
 	@Override
 	public void update(DailySnapshotWork snapshot) {
-		val entity = this.queryProxy().find(new KscdtSnapshotPK(snapshot.getSid(), snapshot.getYmd()), KscdtSnapshot.class);
-		
+		addAndUpdate(snapshot);
+	}
+	
+	private void addAndUpdate(DailySnapshotWork snapshot) {
+		val entity = this.queryProxy().find(new KscdtSnapshotPK(snapshot.getSid(), snapshot.getYmd()),KscdtSnapshot.class);
+
 		if (entity.isPresent()) {
 			entity.ifPresent(e -> {
 				e.predeterminedTime = snapshot.getSnapshot().getPredetermineTime().valueAsMinutes();
 				e.workTypeCd = snapshot.getSnapshot().getWorkInfo().getWorkTypeCode().v();
-				e.workTimeCd = snapshot.getSnapshot().getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v()).orElse(null);
-				
+				e.workTimeCd = snapshot.getSnapshot().getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v())
+						.orElse(null);
+
 				this.commandProxy().update(e);
 			});
 		} else {
-			
-			save(snapshot);
+
+			this.commandProxy().insert(KscdtSnapshot.create(snapshot));
 		}
 	}
 
@@ -64,6 +71,20 @@ public class JpaDailySnapshotWorkRepoImpl extends JpaRepository implements Daily
 
 		this.queryProxy().find(new KscdtSnapshotPK(sid, ymd), KscdtSnapshot.class)
 							.ifPresent(e -> this.commandProxy().remove(e));
+	}
+
+	@Override
+	public List<DailySnapshotWork> find(List<String> sid, DatePeriod ymd) {
+		List<DailySnapshotWork> result = new ArrayList<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(this.queryProxy().query("SELECT s FROM KscdtSnapshot s WHERE s.pk.sid IN :sid"
+				+ " AND s.pk.ymd >= :start AND s.pk.ymd <= :end", KscdtSnapshot.class)
+				.setParameter("sid", p)
+				.setParameter("start", ymd.start())
+				.setParameter("end", ymd.end())
+				.getList(c -> c.domain()));
+		});
+		return result;
 	}
 
 }

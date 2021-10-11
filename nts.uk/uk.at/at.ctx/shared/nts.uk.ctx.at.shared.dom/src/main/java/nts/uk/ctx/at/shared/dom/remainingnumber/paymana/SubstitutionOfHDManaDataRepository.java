@@ -39,6 +39,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	void delete(String subOfHDID);
 	
+	void deleteAllByEmployeeId(String employeeId);
+	
 	void update(SubstitutionOfHDManagementData domain);
 	
 	Optional<SubstitutionOfHDManagementData> findByID(String Id);

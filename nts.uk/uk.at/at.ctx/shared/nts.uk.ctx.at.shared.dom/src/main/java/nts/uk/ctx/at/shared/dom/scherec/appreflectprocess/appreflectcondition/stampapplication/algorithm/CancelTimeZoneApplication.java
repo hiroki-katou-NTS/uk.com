@@ -61,8 +61,8 @@ public class CancelTimeZoneApplication {
 			lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(763, data.getEngraveFrameNo(), 2),
 					CancelAppStamp.createItemId(764, data.getEngraveFrameNo(), 2)));
 		} else {
-			lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(7, data.getEngraveFrameNo(), 2),
-					CancelAppStamp.createItemId(8, data.getEngraveFrameNo(), 2)));
+			lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(157, data.getEngraveFrameNo(), 2),
+					CancelAppStamp.createItemId(159, data.getEngraveFrameNo(), 2)));
 		}
 		return lstItemId;
 	}

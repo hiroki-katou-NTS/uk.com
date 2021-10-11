@@ -13,6 +13,7 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.mail.send.MailContents;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
@@ -33,6 +35,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.mail.MailSender;
@@ -69,6 +72,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	
 	@Inject
 	private AppEmailSetRepository appEmailSetRepository;
+	
+	@Inject
+	private IApplicationContentService applicationContentService;
+	
+	@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	/**
 	 * 11-2.詳細画面差し戻し後の処理
@@ -118,6 +127,12 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
 					reflectionStatusOfDay.setScheReflectStatus(ReflectedState.REMAND);
 				}
+				// 暫定データの登録
+				List<GeneralDate> dateLst = new ArrayList<>();
+				GeneralDate startDate = application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(application.getAppDate().getApplicationDate());
+				GeneralDate endDate = application.getOpAppEndDate().map(x -> x.getApplicationDate()).orElse(application.getAppDate().getApplicationDate());
+				dateLst = new DatePeriod(startDate, endDate).datesBetween();
+				interimRemainDataMngRegisterDateChange.registerDateChange(companyID, application.getEmployeeID(), dateLst);
 				//ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする-(Check 「申請種類別設定」．Tự động gửi mail khi approve)
 				if(opAppTypeSetting.map(x -> x.isSendMailWhenApproval()).orElse(false)) {
 					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)
@@ -145,7 +160,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		String cid = AppContexts.user().companyId();
 		String sidLogin = AppContexts.user().employeeId();
 		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
-		String appContent = "";
+		String appContent = applicationContentService.getApplicationContent(application);
 		// String appContent = appContentService.getApplicationContent(application);
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.REMAND);
 		mailTitle = appEmailSet.getEmailContentLst().stream().findFirst().map(x -> x.getOpEmailSubject().map(y -> y.v()).orElse("")).orElse("");

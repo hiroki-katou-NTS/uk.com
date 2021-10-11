@@ -115,7 +115,7 @@ public class WeeklyCalculation implements Cloneable {
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(String companyId, String employeeId, YearMonth yearMonth,
+	public void aggregate(Require require, String companyId, String employeeId, YearMonth yearMonth,
 			DatePeriod weekPeriod, DatePeriod period, WorkingSystem workingSystem,
 			MonthlyAggregateAtr aggregateAtr, SettingRequiredByReg settingsByReg,
 			SettingRequiredByDefo settingsByDefo, AggregateTotalWorkingTime aggregateTotalWorkingTime,
@@ -137,7 +137,7 @@ public class WeeklyCalculation implements Cloneable {
 		case VARIABLE_WORKING_TIME_WORK:
 			
 			// 週割増時間を集計する
-			this.regAndIrgTime.aggregatePremiumTime(companyId, employeeId, weekPeriod,
+			this.regAndIrgTime.aggregatePremiumTime(require, companyId, employeeId, weekPeriod,
 					period, workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
 					aggregateTotalWorkingTime, weekStart, premiumTimeOfPrevMonLast,
 					companySets.getVerticalTotalMethod());
@@ -357,4 +357,6 @@ public class WeeklyCalculation implements Cloneable {
 		results.addAll(this.regAndIrgTime.getErrorInfos());
 		return results;
 	}
+	
+	public static interface Require extends RegAndIrgTimeOfWeekly.Require {}
 }
