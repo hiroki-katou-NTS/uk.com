@@ -249,7 +249,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 
 			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate + z.numberOccurrences;
 			text_A3_31_32 = "<span>" + text45 + " " + z.deadline; + "</span>"
-			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + " " + z.digestionCount
+			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + z.digestionCount
 
 			self.holidayData.push(new HolidayInfo(textA3_11_12_13, z.digestionStatus, text_A3_31_32, text_A4_41_42_43));
 
@@ -288,10 +288,14 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				$("#A6_1").hide();
 				$("#A6_2").hide();
 				$("#A6_3").hide();
+				$("#A2_5").css("margin-left","30px");
+				$("#A2_23").css("margin-right","100px");
 			} else {
 				$("#A6_1").show();
 				$("#A6_2").show();
 				$("#A6_3").show();
+				$("#A2_5").css("margin-left","10px");
+				
 			}
 			nts.uk.ui.block.clear();
 		}
