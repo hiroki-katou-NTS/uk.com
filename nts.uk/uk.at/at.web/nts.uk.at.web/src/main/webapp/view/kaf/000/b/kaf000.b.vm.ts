@@ -446,6 +446,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         handlerExecuteErrorMsg(res: any) {
             const vm = this;
+            if (!_.isEmpty(res.errors)) return; // bundle business exceptions from kaf020
             switch(res.messageId) {
             case "Msg_426":
                 vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
@@ -474,9 +475,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		            });
                 });
                 break;
-            case "Msg_1692":
-            case "Msg_1693":
-                break;
+            // case "Msg_1692":
+            // case "Msg_1693":
+            //     break;
 			case "Msg_1691":
 			case 'Msg_235':
 			case 'Msg_391':

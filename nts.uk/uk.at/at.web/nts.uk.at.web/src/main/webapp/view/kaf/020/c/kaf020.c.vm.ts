@@ -182,16 +182,15 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 						});
                     }
                 }).fail(err => {
-                    if (err && err.messageId) {
-                        if (err && _.includes(["Msg_1692", "Msg_1693"], err.messageId) && err.parameterIds.length > 1) {
-                            let id = '#' + err.parameterIds[1];
+                    if (err.errors) {
+                        err.errors.forEach((error: any) => {
+                            let id = '#' + error.parameterIds[1];
                             vm.$errors({
-                                [id]: err
+                                [id]: error
                             });
-                        }
-                        if (err.messageId == "Msg_236" || err.messageId == "Msg_324" || err.messageId == "Msg_237" || err.messageId == "Msg_238") {
-                            vm.$dialog.error(err);
-                        }
+                        });
+                    } else if (err.messageId == "Msg_236" || err.messageId == "Msg_324" || err.messageId == "Msg_237" || err.messageId == "Msg_238") {
+                        vm.$dialog.error(err);
                     }
                 }).always(() => {
                     vm.$blockui("hide");
