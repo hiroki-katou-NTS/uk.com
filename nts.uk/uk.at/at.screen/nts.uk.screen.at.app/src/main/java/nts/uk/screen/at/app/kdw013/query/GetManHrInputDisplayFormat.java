@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.kdw013.query;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -21,10 +23,10 @@ public class GetManHrInputDisplayFormat {
 
 	/**
 	 * 取得する
-	 * @return 表示フォーマットDto
+	 * @return Optional<工数入力表示フォーマットDto>
 	 */
-	public ManHrInputDisplayFormatDto get() {
+	public Optional<ManHrInputDisplayFormatDto> get() {
 		// 1 get(ログイン会社ID)
-		return this.repo.get(AppContexts.user().companyId()).map(x -> new ManHrInputDisplayFormatDto(x)).orElse(null);
+		return this.repo.get(AppContexts.user().companyId()).map(x -> new ManHrInputDisplayFormatDto(x));
 	}
 }
