@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.pubimp.remainnumber.annualleave;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -10,6 +11,8 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.remainnumber.annualleave.FindAnnLeaUsedDaysFromPreviousToNextGrantDatePub;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 
+
+@Stateless
 public class FindAnnLeaUsedDaysFromPreviousToNextGrantDateImpl implements FindAnnLeaUsedDaysFromPreviousToNextGrantDatePub{
 	
 	@Inject
