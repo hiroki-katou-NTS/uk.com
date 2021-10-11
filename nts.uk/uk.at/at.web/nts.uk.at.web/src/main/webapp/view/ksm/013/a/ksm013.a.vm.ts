@@ -188,16 +188,21 @@ module nts.uk.at.view.ksm013.a {
                 self.isofficeWorker = isofficeWorker;
                 self.isnursingManager = isnursingManager;
                 self.license.subscribe(function(codeChanged: any) {
-                    if (codeChanged != 2) {
-                        self.officeWorker(false);
-                    } else {
-                        self.officeWorker(self.isofficeWorker);
-                    }
-                    if (codeChanged != 0) {
-                        self.nursingManager(false);
-                    } else {
-                        self.nursingManager(self.isnursingManager);    
-                    }
+                    let dfd = $.Deferred();
+                    service.findDetail(self.nurseClassificationCode()).done((dataDetail: NurseDetailClassification) => {
+                        if (codeChanged == 2 && codeChanged == dataDetail.license) {
+                            self.officeWorker(dataDetail.officeWorker);
+                        } else {
+                            self.officeWorker(false);
+                        }
+                        if (codeChanged == 0 && codeChanged == dataDetail.license) {
+                            self.nursingManager(dataDetail.nursingManager);
+                        } else {
+                            self.nursingManager(false);
+                        }
+                        dfd.resolve();
+                    });
+                    return dfd.promise();
                 });
                 self.nurseClassificationName.subscribe(function(codeChanged: string) {
                      self.nurseClassificationName($.trim(self.nurseClassificationName()));
