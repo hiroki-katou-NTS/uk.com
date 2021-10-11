@@ -201,18 +201,22 @@ public class GetRemainNumberConfirmInfo {
 					// 逐次発生の休暇明細一覧．発生消化区分 ＝＝ 発生
 					// AND 逐次発生の休暇明細一覧．休暇発生明細．消化区分　＝＝　未消化
 					// AND 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
-					Optional<AccumulationAbsenceDetail> acctAbsenFil = lstAcctAbsenSort.stream()
+					List<AccumulationAbsenceDetail> acctAbsenFil = lstAcctAbsenSort.stream()
 							.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE
 									&& (((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED 
 											|| ((LeaveOccurrDetail) x).judgeDigestiveStatus(GeneralDate.today()) == DigestionAtr.UNUSED) 
-									&& !x.getDateOccur().isUnknownDate())
-							.findFirst();
+									&& !x.getDateOccur().isUnknownDate()).collect(Collectors.toList());
 
-					if (acctAbsenFil.isPresent() && detail.getDateOccur().getDayoffDate().isPresent() && acctAbsenFil.get().getDateOccur().getDayoffDate().isPresent()) {
+					
+					if (!acctAbsenFil.isEmpty() && detail.getDateOccur().getDayoffDate().isPresent() ) {
 						// 探した逐次発生の休暇明細一覧．休暇発生明細
 //						LeaveOccurrDetail occurrDetailFil = (LeaveOccurrDetail) acctAbsenFil.get(); // get LeaveOccurrDetail extends AccumulationAbsenceDetail
+						Optional<AccumulationAbsenceDetail> acctAbsenFilData = acctAbsenFil.stream()
+								.filter(x -> x.getDateOccur().getDayoffDate().get()
+										.equals(detail.getDateOccur().getDayoffDate().get()))
+								.findFirst();
 						// 探した逐次発生の休暇明細一覧．年月日．年月日＝＝ループ中の逐次発生の休暇明細．年月日．年月日　の場合
-						if (detail.getDateOccur().getDayoffDate().get().equals(acctAbsenFil.get().getDateOccur().getDayoffDate().get())) {
+						if (acctAbsenFilData.isPresent()) {
 							detailedInfo.setDueDateStatus(TextResource.localize("KDL005_45"));
 						}
 					}
