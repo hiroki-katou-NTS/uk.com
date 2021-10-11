@@ -28,7 +28,7 @@ public class ProcessReflectWorkRecord {
 
 	public static Pair<ReflectStatusResult, Optional<AtomTask>> processReflect(Require require, String companyId,
 			int closureId, Application application, boolean isCalWhenLock,
-			GeneralDate targetDate, ReflectStatusResult statusWorkRecord, SEmpHistImport empHist) {
+			GeneralDate targetDate, ReflectStatusResult statusWorkRecord, List<SEmpHistImport> empHist) {
 
 		// [申請反映実行条件]を取得する
 		Optional<AppReflectExecutionCondition> appReFlectExec = require.findAppReflectExecCond(companyId);

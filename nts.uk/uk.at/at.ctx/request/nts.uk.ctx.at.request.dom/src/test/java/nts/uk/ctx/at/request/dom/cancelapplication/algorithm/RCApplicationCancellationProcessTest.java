@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.cancelapplication.algorithm;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -165,6 +166,7 @@ public class RCApplicationCancellationProcessTest {
 	 * →事前申請の処理ができる
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test4(@Mocked PreCheckProcessWorkRecord pre) {
 
@@ -180,7 +182,7 @@ public class RCApplicationCancellationProcessTest {
 						NotUseAtr.NOT_USE, // 
 						NotUseAtr.NOT_USE));//勤務実績が確定状態でも反映する
 				PreCheckProcessWorkRecord.preCheck(require, "", (Application) any, anyInt, anyBoolean,
-						(ReflectStatusResult) any, (GeneralDate) any, (SEmpHistImport)any);
+						(ReflectStatusResult) any, (GeneralDate) any, (List<SEmpHistImport>)any);
 				result = new PreCheckProcessResult(NotUseAtr.USE, null);// 前申請の処理ができる
 
 			}
@@ -217,6 +219,7 @@ public class RCApplicationCancellationProcessTest {
 	 * →事前申請の処理ができない
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test5(@Mocked PreCheckProcessWorkRecord pre) {
 
@@ -232,7 +235,7 @@ public class RCApplicationCancellationProcessTest {
 						NotUseAtr.NOT_USE, // 
 						NotUseAtr.NOT_USE));//勤務実績が確定状態でも反映する
 				PreCheckProcessWorkRecord.preCheck(require, "", (Application) any, anyInt, anyBoolean,
-						(ReflectStatusResult) any, (GeneralDate) any, (SEmpHistImport)any);
+						(ReflectStatusResult) any, (GeneralDate) any, (List<SEmpHistImport>)any);
 				result = new PreCheckProcessResult(NotUseAtr.NOT_USE,
 						ReflectApplicationHelper.createRCReflectStatusResult(ReflectedState.REFLECTED,
 								ReasonNotReflectDaily.ACHIEVEMENTS_LOCKED));// 事前申請の処理ができない
