@@ -131,11 +131,11 @@ module nts.uk.ui.at.kdw013.share {
             const $start = document.createElement('input');
             const $end = document.createElement('input');
             const $space = document.createElement('span');
-            const $wtime = document.createElement('span');
             const $value = document.createElement('span');
             const $error = document.createElement('div');
             let update: KnockoutObservable<boolean> = allBindingsAccessor.get('update');
             const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
+			const showRange: KnockoutObservable<boolean> = allBindingsAccessor.get('showRange');
             const excludeTimes: KnockoutObservableArray<BussinessTime> = allBindingsAccessor.get('exclude-times');
             const value = valueAccessor();
 
@@ -160,8 +160,11 @@ module nts.uk.ui.at.kdw013.share {
                     if (start > end) {
                         return '';
                     }
+					if(showRange && !showRange()){
+						return '';
+					}
 
-                    return number2String(end - start);
+                    return $i18n('KDW013_25') + ' '+ number2String(end - start);
                 },
                 disposeWhenNodeIsRemoved: element
             });
@@ -200,12 +203,10 @@ module nts.uk.ui.at.kdw013.share {
                 .append($start)
                 .append($space)
                 .append($end)
-                .append($wtime)
                 .append($value)
                 .append($error);
 
             ko.applyBindingsToNode($space, { i18n: 'KDW013_30' }, bindingContext);
-            ko.applyBindingsToNode($wtime, { i18n: 'KDW013_25' }, bindingContext);
 
             ko.applyBindingsToNode($value, { text: range }, bindingContext);
 
@@ -218,16 +219,13 @@ module nts.uk.ui.at.kdw013.share {
                         const id = ko.unwrap(errorId);
                         const params = ko.unwrap(errorParams);
 
-                        setTimeout(() => {
-							update(!update());
-						}, 1);
                         if (!id) {
                             element.classList.remove('error');
 
                             if (ko.isObservable(hasError)) {
                                 hasError(false);
                             }
-
+							update(!update());
                             return '';
                         }
 
@@ -236,7 +234,7 @@ module nts.uk.ui.at.kdw013.share {
                         if (ko.isObservable(hasError)) {
                             hasError(true);
                         }
-
+						update(!update());
                         return viewModel.$i18n.message(id, params);
                     },
                     disposeWhenNodeIsRemoved: element

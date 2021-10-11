@@ -32,7 +32,7 @@ module nts.uk.ui.at.kdw013.c {
         width: 30px;
     }
     .edit-event table {
-        width: 372px;
+        width: 370px;
     }
     .edit-event table>tbody>tr>td:first-child {
         vertical-align: top;
@@ -220,7 +220,8 @@ module nts.uk.ui.at.kdw013.c {
                                     kdw-timerange: taskBlocks.caltimeSpanView,
                                     update: flag,
                                     hasError: $component.timeError,
-                                    exclude-times: $component.params.excludeTimes
+                                    exclude-times: $component.params.excludeTimes,
+									showRange: showRange
                                 "></div>
                         </td>
                     </tr>
@@ -241,6 +242,7 @@ module nts.uk.ui.at.kdw013.c {
                                         required: true,
                                         name: lable,
                                         hasError: ko.observable(false),
+										flagError: $parent.flag,
                                         visibleItemsCount:10
                                     "></div></td>
                             </tr>
@@ -297,7 +299,7 @@ module nts.uk.ui.at.kdw013.c {
                         <td>
 							<a href="#" data-bind="i18n: 'KDW013_57', click: addTaskDetails"></a>
                             <br />
-							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError && errors()"></button>
+							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError || errors"></button>
                         </td>
                     </tr>
                 </tbody>
@@ -405,6 +407,7 @@ module nts.uk.ui.at.kdw013.c {
                 this.flag,
                 false
 			);
+		showRange: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(public params: Params) {
             super();
@@ -431,7 +434,8 @@ module nts.uk.ui.at.kdw013.c {
             });
 			
 			
-			vm.taskBlocks.taskDetailsView.subscribe(() => {
+			vm.taskBlocks.taskDetailsView.subscribe((taskDetails: ManHrTaskDetailView[]) => {
+				vm.showRange(taskDetails.length == 1);
 				let interval = setInterval(function () {
                     vm.updatePopupSize();
 					resetHeight();
@@ -444,7 +448,6 @@ module nts.uk.ui.at.kdw013.c {
 			$(window).resize(function () {
 				resetHeight();
 			});
-			
         }
 		
 		// update popup size
@@ -456,7 +459,7 @@ module nts.uk.ui.at.kdw013.c {
 		checkError(){
             const vm = this;
 			_.each(vm.taskBlocks.taskDetailsView(), (task: ManHrTaskDetailView)=>{
-				if(!task.isErorr()){
+				if(task.isErorr()){
 					vm.errors(true);
 					return;
 				}
@@ -469,16 +472,6 @@ module nts.uk.ui.at.kdw013.c {
             return { caltimeSpan: { start, end }, 
                     taskDetails: [
                         { 
-                            supNo: 0, 
-                            taskItemValues: [
-                                { itemId: 3, value: '', type: 1 },
-                                { itemId: 4, value: '', type: 1 },
-                                { itemId: 5, value: '', type: 1 },
-                                { itemId: 6, value: '', type: 1 },
-                                { itemId: 7, value: '', type: 1 },
-                                { itemId: 8, value: '', type: 1 },
-                            ] 
-                        }, { 
                             supNo: 0, 
                             taskItemValues: [
                                 { itemId: 3, value: '', type: 1 },
@@ -770,8 +763,7 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
-		
-		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, flag: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
+		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
 			super(manHrTaskDetail);
 			this.employeeId = employeeId;
 			this.itemBeforChange = manHrTaskDetail.taskItemValues;
@@ -790,7 +782,7 @@ module nts.uk.ui.at.kdw013.c {
                             vm.setWorkList(5, value);
                         }
 						setTimeout(() => {
-                        	flag(!flag());
+                        	vm.flag(!vm.flag());
 						}, 1);
                 	});
 				}else if(item.itemId == 5){

@@ -48,7 +48,7 @@ module nts.uk.ui.at.kdw013.share {
                 height: 31px;
             }
             .nts-dropdown.show.error {
-                height: 52px;
+                height: 54px;
             }
             .nts-dropdown.show>div.message {
                 display: none;
@@ -106,6 +106,7 @@ module nts.uk.ui.at.kdw013.share {
                 const visibleItemsCount = allBindingsAccessor.get('visibleItemsCount'); 
                 const required = allBindingsAccessor.get('required');
                 const hasError: undefined | KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
+				const flagError: undefined | KnockoutObservable<boolean> = allBindingsAccessor.get('flagError');
 
                 const msg = $('<div>', { class: 'message' }).get(0);
                 const subscribe = ($selected: string) => {
@@ -138,6 +139,9 @@ module nts.uk.ui.at.kdw013.share {
                                 $(msg).appendTo(element);
                                 element.classList.add('error');
                             }
+							if(flagError){
+								flagError(!flagError());	
+							}
                         });
                 }
 
@@ -149,7 +153,6 @@ module nts.uk.ui.at.kdw013.share {
                         if ($required && !$selected) {
                             return nts.uk.resource.getMessage('MsgB_2', [ko.unwrap(name)]);
                         }
-
                         return '';
                     },
                     disposeWhenNodeIsRemoved: element
@@ -265,9 +268,7 @@ module nts.uk.ui.at.kdw013.share {
             }
         }
 
-        @component({
-            name: COMPONENT_NAME,
-            template: `
+		let template = `
             <div class="dropdown-container">
                 <input type="text" class="nts-input" data-bind="
                         value: $component.filter,
@@ -293,6 +294,10 @@ module nts.uk.ui.at.kdw013.share {
                 </div>
             </div>
             `
+
+        @component({
+            name: COMPONENT_NAME,
+            template: template
         })
         export class DropdownViewModel extends ko.ViewModel {
             show: KnockoutObservable<boolean> = ko.observable(false);
