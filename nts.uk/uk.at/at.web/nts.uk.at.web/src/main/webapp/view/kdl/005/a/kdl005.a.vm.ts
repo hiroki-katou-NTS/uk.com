@@ -73,10 +73,10 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 
 			//
 			self.columns = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 200 },
-				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 140 },
-				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 145 },
-				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 220 }
+				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 205 },
+				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 115 },
+				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 160 },
+				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 215 }
 			]);
 
 			self.switchOptions = ko.observableArray([
@@ -247,7 +247,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			let self = this, textA3_11_12_13 = "", text_A3_31_32 = "", text_A4_41_42_43 = "",
 				text45 = "<span style='color:#FF2D2D;'>" + z.dueDateStatus + "</span>";
 
-			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate + " " + z.numberOccurrences;
+			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate + z.numberOccurrences;
 			text_A3_31_32 = "<span>" + text45 + " " + z.deadline; + "</span>"
 			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + " " + z.digestionCount
 
