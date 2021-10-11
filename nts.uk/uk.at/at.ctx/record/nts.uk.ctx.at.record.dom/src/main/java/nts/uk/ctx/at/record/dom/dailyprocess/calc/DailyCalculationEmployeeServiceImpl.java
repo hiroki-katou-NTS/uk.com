@@ -198,6 +198,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					listEmploymentHis.stream().map(c -> convert(c)).collect(Collectors.toList()),
 					isCalWhenLock? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK,
 					AchievementAtr.DAILY);
+			boolean optimistLock = false;
 			for(DatePeriod newPeriod : listPeriod) {
 				//ドメインモデル「就業計算と集計実行ログ」を取得し、実行状況を確認する
 				Optional<EmpCalAndSumExeLog> log = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
@@ -220,20 +221,21 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				if(result.getLeft() == 1) {  //co loi haita
 					result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
 					if(result.getLeft() == 1) { 
-						isHappendOptimistLockError.add(true);
+						optimistLock = true;
 					}
-				}
-				
-				if(result.getLeft() == 0 || result.getLeft() == 2) { 
-					counter.accept(ProcessState.SUCCESS);
-					targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
-					return;
 				}
 				
 				//暫定データの登録
                 this.interimData.registerDateChange(cid, employeeId, newPeriod.datesBetween());
 			}
 			
+			if (!optimistLock) {
+
+				counter.accept(ProcessState.SUCCESS);
+				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
+			} else {
+				isHappendOptimistLockError.add(true);
+			}
 			
 		});
 		return isHappendOptimistLockError;
