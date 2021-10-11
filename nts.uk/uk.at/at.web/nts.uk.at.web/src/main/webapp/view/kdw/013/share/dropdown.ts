@@ -427,6 +427,9 @@ module nts.uk.ui.at.kdw013.share {
                             .resolve(true)
                             .then(() => {
                                 if (!ko.unwrap(show)) {
+									if($('.taskDetails').height() < 500){
+										$('.taskDetails').css({ "overflow-y": "unset"});
+									}
                                     vm.show(true);
                                 }
 

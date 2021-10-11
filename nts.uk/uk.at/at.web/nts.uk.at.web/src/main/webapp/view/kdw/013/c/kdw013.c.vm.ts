@@ -233,7 +233,7 @@ module nts.uk.ui.at.kdw013.c {
 	                    <col width="105px" />
 	                </colgroup>
                     <tbody data-bind = "foreach: taskItemValues">
-                        <!-- ko if: itemId == 4 && use-->
+                        <!-- ko if: (itemId == 4) && use-->
                             <tr>
                                 <td data-bind="text: lable"></td>
                                 <td><div data-bind="
@@ -247,7 +247,7 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-                        <!-- ko if: itemId == 5 && use -->
+                        <!-- ko if: (itemId == 5 || itemId == 6 || itemId == 7 || itemId == 8) && use -->
                             <tr>
                                 <td data-bind="text: lable"></td>
                                 <td><div data-bind="
@@ -258,38 +258,7 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-                        <!-- ko if: itemId == 6 && use -->
-                            <tr>
-                                <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                    "></div></td>
-                            </tr>
-                        <!-- /ko -->
-                        <!-- ko if: itemId == 7 && use -->
-                            <tr>
-                                <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                        visibleItemsCount:10
-                                    "></div></td>
-                            </tr>
-                        <!-- /ko -->
-                        <!-- ko if: itemId == 8 && use -->
-                            <tr>
-                                <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                        visibleItemsCount:10
-                                    "></div></td>
-                            </tr>
-                        <!-- /ko -->
+                        
 	                </tbody>
 	            </table>
 			</div>
@@ -474,12 +443,12 @@ module nts.uk.ui.at.kdw013.c {
                         { 
                             supNo: 0, 
                             taskItemValues: [
-                                { itemId: 3, value: '', type: 1 },
-                                { itemId: 4, value: '', type: 1 },
-                                { itemId: 5, value: '', type: 1 },
-                                { itemId: 6, value: '', type: 1 },
-                                { itemId: 7, value: '', type: 1 },
-                                { itemId: 8, value: '', type: 1 },
+                                { itemId: 3, value: '', type: 0 },
+                                { itemId: 4, value: '', type: 0 },
+                                { itemId: 5, value: '', type: 0 },
+                                { itemId: 6, value: '', type: 0 },
+                                { itemId: 7, value: '', type: 0 },
+                                { itemId: 8, value: '', type: 0 },
                             ] 
                         }
                     ]
