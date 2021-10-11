@@ -742,18 +742,20 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private void printB5(Cells cells, List<SpecificName> specDayCompanies, List<SpecificName> specDayWorkplaces) {
         val mergedSpecDayList = Stream.of(specDayCompanies, specDayWorkplaces).flatMap(Collection::stream).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(mergedSpecDayList)) return;
+        int maxSize = mergedSpecDayList.size();
 
-        int rowStart = getRowStartB5(mergedSpecDayList.size());
+        int rowStart = getRowStartB5(maxSize);
         int row = rowStart;
         int column = 14;
         for (int i = 0; i < 10; i++) {
+            if (i > maxSize - 1) break;
             SpecificName specDayName = mergedSpecDayList.get(i);
             // B5_1, B5_2
             if (row > MAX_ROW_B5) {
                 row = rowStart;
                 column = 21;
             }
-            cells.get(row, column).setValue(getText(column == 14 ? "KSU003_186" : "KSU003_187") + specDayName.v());
+            cells.get(row, column).setValue(getText(i <= specDayCompanies.size() - 1 ? "KSU003_186" : "KSU003_187") + specDayName.v());
             setBottomBorder(cells, row, column, column == 14 ? 19 : 26);
             row += 1;
         }
