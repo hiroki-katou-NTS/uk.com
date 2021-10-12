@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.auth.dom.wkpmanager;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -8,6 +9,14 @@ import nts.uk.ctx.sys.auth.dom.export.wkpmanager.WorkPlaceSelectionExportData;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceFunction;
 
 public interface WorkplaceManagerRepository {
+	
+	/**
+	 * IDを指定して職場管理者を取得する
+	 * @param id ID
+	 * @return
+	 */
+	Optional<WorkplaceManager> getWorkplaceManagerByID(String id);
+	
 	// Get workplace manager list by workplace id
 	List<WorkplaceManager> getWkpManagerListByWkpId(String workplaceId);
 	
@@ -57,7 +66,5 @@ public interface WorkplaceManagerRepository {
 	 * @param sid 社員ID
 	 */
 	void deleteByWorkplaceIdAndSid(String workplaceId, String sid);
-	
-	
 
 }
