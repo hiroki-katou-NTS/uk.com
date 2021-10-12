@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
