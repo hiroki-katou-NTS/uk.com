@@ -52,26 +52,26 @@
                         <!--C5-1-->
                         <div id="name" data-bind="ntsFormLabel: {required: true}">
                             #{i18n.getText('KSU003_89')}</div>
-                        <!--C5-3-->
-                        <span class="ntsControl" style="margin-left: 15px; margin-top: 8px;">
-                            <label class="ntsRadioBox">
-                                <input type="radio" name="textRadio"
-                                    data-bind="checkedValue: 0, checked: selectedMode, enable: true" />
-                                <span class="box"></span><span class="label"> #{i18n.getText('KSU003_91')}</span>
-                            </label>
+                        <!--C5-3-->                        
+                        <span style="margin-left: 15px; margin-top: 3px;">
+                            <label data-bind="ntsRadioButton: {
+                                checkedValue: 0,
+                                checked: selectedMode,
+                                optionText: 'KSU003_91',
+                                enable: true}"></label>
                         </span>
                     </div>
                     <div class="container-custom">
 
-                         <!--C5-4-->
-                        <span class="ntsControl" style="margin-left: 57px; margin-top: 4px;" tabindex="4">
-                            <label class="ntsRadioBox" >
-                                <input id="timezone" type="radio" name="textRadio"
-                                    data-bind="checkedValue: 1, checked: selectedMode, enable: true" />
-                                <span class="box"></span><span class="label"> #{i18n.getText('KSU003_92')}</span>
-                            </label>
+                         <!--C5-4--> 
+                        <span style="margin-left: 57px; margin-top: 2px;" tabindex="4">
+                            <label data-bind="ntsRadioButton: {
+                                checkedValue: 1,
+                                checked: selectedMode,
+                                optionText: 'KSU003_92',
+                                enable: true}"></label>
                         </span>
-                        
+
                         <!--C5-4-1-->                       
                         <input id="startTime"  tabindex="5" style="margin-left: 35px;" data-bind="ntsTimeWithDayEditor: {
                             value: startTime,
