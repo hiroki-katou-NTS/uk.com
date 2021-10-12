@@ -102,8 +102,9 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 	 *  受入時に固定の値を入れる物たち
 	 */
 	private IntermediateResult addFixedItems(IntermediateResult interm) {
-	    return interm.addCanonicalized(CanonicalItem.nullValue(100), 100)
-	    		    		   .optionalItem(CanonicalItem.of(2, 0));
+	    return interm
+	    		.addCanonicalized(CanonicalItem.nullValue(100))
+	    		.optionalItem(CanonicalItem.of(2, 0));
 	}
 	
 	@Override

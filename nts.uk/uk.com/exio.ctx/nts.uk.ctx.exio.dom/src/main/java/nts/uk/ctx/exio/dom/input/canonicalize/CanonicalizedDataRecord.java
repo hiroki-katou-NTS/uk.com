@@ -1,10 +1,8 @@
 package nts.uk.ctx.exio.dom.input.canonicalize;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import lombok.Value;
-import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
@@ -17,20 +15,12 @@ public class CanonicalizedDataRecord {
 	int rowNo;
 
 	/** 正準化したデータ */
-	CanonicalItemList itemsAfterCanonicalize;
-	
-	/** 正準化対象の正準化前データ */
-	CanonicalItemList itemsBeforeCanonicalize;
-	
-	/** 正準化対象ではないデータ */
-	CanonicalItemList itemsNotCanonicalize;
+	CanonicalItemList items;
 	
 	public static CanonicalizedDataRecord noChange(RevisedDataRecord revisedData) {
 		
 		return new CanonicalizedDataRecord(
 				revisedData.getRowNo(),
-				new CanonicalItemList(),
-				new CanonicalItemList(),
 				CanonicalItemList.of(revisedData.getItems()));
 	}
 	
@@ -39,16 +29,6 @@ public class CanonicalizedDataRecord {
 	 * @return
 	 */
 	public Optional<CanonicalItem> getItemByNo(int itemNo) {
-		
-		Stream<CanonicalItemList> lists = Stream.of(
-				itemsAfterCanonicalize,  // NotにはSIDなどにNULLが入っているので、Notより前にしないとダメ
-				itemsNotCanonicalize,
-				itemsBeforeCanonicalize);
-		
-		return lists
-				.map(l -> l.getItemByNo(itemNo))
-				.filter(opt -> opt.isPresent())
-				.flatMap(OptionalUtil::stream)
-				.findFirst();
+		return items.getItemByNo(itemNo);
 	}
 }

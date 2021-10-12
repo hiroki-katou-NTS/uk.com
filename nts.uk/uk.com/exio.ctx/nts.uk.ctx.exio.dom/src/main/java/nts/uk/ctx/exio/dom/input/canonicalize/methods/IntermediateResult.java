@@ -1,11 +1,12 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.Arrays;
 import java.util.Optional;
 
 import lombok.Value;
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -20,18 +21,13 @@ public class IntermediateResult {
 	
 	int rowNo;
 	
-	/** 正準化によって作られたデータ */
-	CanonicalItemList itemsAfterCanonicalize;
-	
-	/** 編集済みデータ */
-	RevisedDataRecord itemsNotCanonicalize;
+	CanonicalItemList items;
 	
 	public static IntermediateResult noChange(RevisedDataRecord revisedData) {
 		
 		return new IntermediateResult(
 				revisedData.getRowNo(),
-				new CanonicalItemList(),
-				revisedData);
+				CanonicalItemList.of(revisedData.getItems()));
 	}
 	
 	/**
@@ -53,7 +49,7 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public static IntermediateResult create(RevisedDataRecord source, CanonicalItemList canonicalizedItems) {
-		return new IntermediateResult(source.getRowNo(), canonicalizedItems, source);
+		return noChange(source).addCanonicalized(canonicalizedItems);
 	}
 	
 	/**
@@ -79,12 +75,10 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public IntermediateResult addCanonicalized(CanonicalItemList canonicalizedItems) {
-
-		val after = new CanonicalItemList();
-		after.addAll(itemsAfterCanonicalize);
-		after.addAll(canonicalizedItems);
-		
-		return new IntermediateResult(this.rowNo, after, itemsNotCanonicalize);
+		return canonicalizedItems.stream().reduce(
+				this,
+				(interm, item) -> interm.addCanonicalized(item),
+				(a, b) -> a.addCanonicalized(b.items));
 	}
 	
 	/**
@@ -94,7 +88,14 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public IntermediateResult addCanonicalized(CanonicalItem canonicalizedItem) {
-		return addCanonicalized(new CanonicalItemList().addItem(canonicalizedItem));
+		
+		// 同じ項目NOのものは古いデータを上書き
+		val newItems = items.stream()
+				.filter(item -> item.getItemNo() != canonicalizedItem.getItemNo())
+				.collect(toList());
+		
+		return addCanonicalized(new CanonicalItemList(newItems)
+				.addItem(canonicalizedItem));
 	}
 	
 	/**
@@ -104,12 +105,7 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public Optional<CanonicalItem> getItemByNo(int itemNo) {
-		
-		return itemsAfterCanonicalize.getItemByNo(itemNo)
-				.map(item -> Optional.of(item))
-				.orElseGet(() -> (itemsBeforeCanonicalize.getItemByNo(itemNo).map(CanonicalItem::of)))
-				.map(item -> Optional.of(item))
-				.orElseGet(() -> itemsNotCanonicalize.getItemByNo(itemNo).map(CanonicalItem::of));
+		return items.getItemByNo(itemNo);
 	}
 	
 	/**
@@ -121,11 +117,11 @@ public class IntermediateResult {
 		return getItemByNo(itemNo).map(e -> e.getValue()).orElse(null) != null;
 	}
 	
+	/**
+	 * CanonicalizedDataRecordに変換する
+	 * @return
+	 */
 	public CanonicalizedDataRecord complete() {
-		return new CanonicalizedDataRecord(
-				this.rowNo,
-				itemsAfterCanonicalize,
-				CanonicalItemList.of(itemsBeforeCanonicalize),
-				CanonicalItemList.of(itemsNotCanonicalize));
+		return new CanonicalizedDataRecord(this.rowNo, items);
 	}
 }

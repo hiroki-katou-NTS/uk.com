@@ -242,7 +242,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 					.add(itemNoStartDate, addingHistoryItem.start())
 					.add(itemNoEndDate, addingHistoryItem.end());
 			
-			return interm.addCanonicalized(canonicalizedItems, itemNoStartDate, itemNoEndDate);
+			return interm.addCanonicalized(canonicalizedItems);
 		}
 	}
 	
