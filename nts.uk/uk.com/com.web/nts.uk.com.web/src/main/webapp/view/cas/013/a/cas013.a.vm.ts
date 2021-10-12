@@ -119,7 +119,7 @@ module nts.uk.com.view.cas013.a {
                 {headerText: '', key: 'id', hidden: true},
                 {headerText: nts.uk.resource.getText("CAS013_35"), key: 'employeeCodeAndName', width: 252},
                 {headerText: nts.uk.resource.getText("CAS013_32"), key: 'period', width: 203},
-                {headerText: nts.uk.resource.getText("CAS013_36"), key: 'companyCode', width: 60},
+                {headerText: nts.uk.resource.getText("CAS013_36"), key: 'companyCode', width: 90}
             ]);
 
             vm.columnsIndividual = ko.observableArray([
