@@ -34,10 +34,8 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public IntermediateResult optionalItem(CanonicalItem item) {
-		boolean accepted = this.getItemByNo(item.getItemNo())
-				.map(e -> e.getValue()).orElse(null) != null;
 		
-		if (!accepted) {
+		if (!isImporting(item.getItemNo())) {
 			return addCanonicalized(item);
 		}
 		
