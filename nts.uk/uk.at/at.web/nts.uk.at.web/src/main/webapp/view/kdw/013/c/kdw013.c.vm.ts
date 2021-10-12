@@ -50,6 +50,10 @@ module nts.uk.ui.at.kdw013.c {
         box-sizing: border-box;
         margin-bottom: 10px;
     }
+	.edit-event table>tbody>tr>td>.ntsControl.inputTime input.nts-input{
+		width: 40px;
+	    border: 1px solid #999;
+	}
     .edit-event table>tbody>tr>td>.ntsControl>input {
         width: 100%;
         box-sizing: border-box;
@@ -238,12 +242,14 @@ module nts.uk.ui.at.kdw013.c {
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
-									<input data-bind="ntsTimeEditor: {
-										value: value,
-										
-										required: true,
-										enable: true,
-										}" />
+									<div class="ntsControl inputTime">
+										<input data-bind="ntsTimeEditor: {
+											value: value,
+											mode: 'time',
+											required: true,
+											enable: true,
+											}" />
+									</div>
 								</td>
                             </tr>
                         <!-- /ko -->
@@ -759,6 +765,7 @@ module nts.uk.ui.at.kdw013.c {
                 if(item.itemId == 3) {
                     item.use = showRange;
 					workCD1 = item.value();
+					item.lable(getText("KDW013_25"));
 					item.value.subscribe(() => {
 	                    vm.flag(!vm.flag());
                 	});
