@@ -15,7 +15,9 @@ module nts.uk.com.view.oem003.a {
 
     dataTables: KnockoutObservableArray<DataTable> = ko.observableArray([]);
     formTitle: KnockoutObservable<string> = ko.observable(this.$i18n('OEM003_25'));
-    
+    enableButtonAdd: KnockoutComputed<boolean> = ko.computed(() => this.dataTables().length !== 9);
+    $focus: any = null;
+
     created() {
       const vm = this;
       vm.checkAll.subscribe(value => {
@@ -38,7 +40,7 @@ module nts.uk.com.view.oem003.a {
         .then(() => vm.$ajax('com', API.findSettings))
         .then((response: EquipmentUsageSetting) => {
           vm.toDataDisplay(response);
-          $('#form-title').focus()
+          $('#form-title').focus();
         })
         .always(() => vm.$blockui('clear'));
     }
@@ -50,8 +52,10 @@ module nts.uk.com.view.oem003.a {
       if (dataLength >= 9) return;
 
       const order = dataLength + 1;
-      vm.dataTables.push(vm.defaultDataTable(order));
-      $('table[tabindex="4"]').focus();
+      const data = vm.dataTables();
+      data.push(vm.defaultDataTable(order));
+      vm.dataTables(data);
+      $(`.data-${order} input[tabindex="6"]`).focus();
     }
 
     clickExport() {
@@ -77,14 +81,23 @@ module nts.uk.com.view.oem003.a {
         .fail(err => vm.$dialog.error({ messageId: err.messageId }))
         .always(() => {
           vm.$blockui('clear');
-          $('table[tabindex="4"]').focus();
+          if (!_.isNil(vm.$focus) && !_.isEmpty(vm.dataTables))
+            vm.$focus.focus();
         });
     }
 
     removeData(delOrder: KnockoutObservable<number>) {
       const vm = this;
+      let deleteOrder = 0;
       // filter to remove data
-      const filterArr = _.filter(vm.dataTables(), item => item.order() !== delOrder());
+      const filterArr = _.filter(vm.dataTables(), (item, index) => {
+        if (item.order() !== delOrder())
+          return true
+        
+          deleteOrder = index + 1;
+        item.$errors('clear');
+        return false;
+      });
 
       // set new order for data
       filterArr.map((item, index) => {
@@ -94,13 +107,30 @@ module nts.uk.com.view.oem003.a {
       });
 
       vm.dataTables(filterArr);
-      $('table[tabindex="4"]').focus();
+
+      if (deleteOrder > 0 && deleteOrder <= vm.dataTables().length) {
+        $(`.data-${deleteOrder} input[tabindex="6"]`).focus();
+      }
+
+      if (deleteOrder > 0 && deleteOrder > vm.dataTables().length) {
+        $(`.data-${deleteOrder - 1} input[tabindex="6"]`).focus();
+      }
     }
 
     toOrderBy(type: 'before' | 'after') {
       const vm = this;
       // Clone data list of table
       const data = _.cloneDeep(vm.dataTables());
+
+      // Get old position top of first selected item
+      const firstSelected = _.find(vm.dataTables(), i => i.checked()).order();
+      const $container = $('.ui-iggrid-scrolldiv');
+      const $scrollTo = $(`.data-${firstSelected}`);
+      const oldOffsetTop = $scrollTo.offset().top;
+      const newOffsetTop = type === 'before'
+        ? oldOffsetTop - $scrollTo.height()
+        : oldOffsetTop + $scrollTo.height();
+
       const move = (fromOrder: number, toOrder: number) => {
         const from = fromOrder - 1;
         const to = toOrder - 1;
@@ -136,8 +166,13 @@ module nts.uk.com.view.oem003.a {
         item.order(index + 1);
         item.index = index + 1;
       });
-
+      
       vm.dataTables(data);
+      vm.setFocusEvent();
+
+      this.$nextTick(() => {
+        $container.scrollTop(newOffsetTop - $container.offset().top + $container.scrollTop());
+      });
     }
 
     beforeRegisted(): JQueryPromise<any> {
@@ -155,7 +190,7 @@ module nts.uk.com.view.oem003.a {
       let itemNoEL: any[] = [];
       _.map(data, (item) => {
         // If min greater than max, add to error list
-        if ((item.isNumeric() || item.isTime()) && item.min() > item.max()) {
+        if ((item.isNumeric() || item.isTime()) && Number(item.min()) > Number(item.max())) {
           minmaxEL.push(item.order());
         }
         if (!_.includes(itemNoEL, item.order())) {
@@ -207,8 +242,11 @@ module nts.uk.com.view.oem003.a {
                 .$blockui('grayout')
                 .then(() => vm.$ajax('com', API.register, command))
                 .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                .then(() => $('table[tabindex="4"]').focus())
-                .always(() => vm.$blockui('clear'))
+                .always(() => {
+                  vm.$blockui('clear');
+                  if (!_.isNil(vm.$focus) && !_.isEmpty(vm.dataTables))
+                    vm.$focus.focus();
+                })
             });
         });
     }
@@ -246,8 +284,18 @@ module nts.uk.com.view.oem003.a {
         return data;
       });
 
-      vm.formTitle(formSetting.title);
+      if (formSetting) {
+        vm.formTitle(formSetting.title);
+      }
       vm.dataTables(dataTables);
+      vm.setFocusEvent();
+    }
+
+    setFocusEvent() {
+      const vm = this;
+      $('.ui-iggrid-scrolldiv table.data-table tr td *').focusin((e) => {
+        vm.$focus = e.target;
+      })
     }
 
     subscribeItemNo(data: DataTable) {
@@ -301,6 +349,7 @@ module nts.uk.com.view.oem003.a {
 
       return _.map(finder, i => i.order());
     }
+
   }
 
   class DataTable extends ko.ViewModel {

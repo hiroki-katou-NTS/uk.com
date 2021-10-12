@@ -24,16 +24,18 @@ module nts.uk.com.view.oew001.b {
       _.forEach(param.optionalItems, data => {
         if (param.isNewMode) {
           data.value = ko.observable("");
-        } else if (data.itemCls === model.enums.ItemClassification.NUMBER) {
+        } else if (data.itemCls === model.enums.ItemClassification.NUMBER && !!data.value) {
           data.value = ko.observable(Number(data.value));
         } else {
-          data.value = ko.observable(data.value);
+          data.value = ko.observable(_.isNil(data.value) ? "" : data.value);
         }
         data.helpContent = vm.buildHelpContent(data);
       });
       vm.data().optionalItems = ko.observableArray(param.optionalItems);
       vm.data.valueHasMutated();
 
+      // Add constraint
+      _.each(vm.data().optionalItems(), data => __viewContext.primitiveValueConstraints[data.constraintName] = data.constraint);
       vm.data().useDate.subscribe(value => vm.validateUseDate(moment.utc(value, model.constants.YYYY_MM_DD)));
     }
 
@@ -46,6 +48,7 @@ module nts.uk.com.view.oew001.b {
       })
       .always(() => {
         $("#B2_2").focus();
+        vm.$nextTick(() => model.setReadOnly("#B2_2"));
         vm.$blockui("clear");
       });
     }
@@ -62,13 +65,14 @@ module nts.uk.com.view.oew001.b {
       const vm = this;
       return vm.$ajax(API.insert, param)
         .then(() => {
-          return vm.$dialog.info({ messageId: "Msg_15" });
-        })
-        .fail(err => {
+          return vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.$window.close({
+            isSaveSuccess: true
+          }));
+        }, err => {
           if (!!err.messageId) {
-            vm.$dialog.error({ messageId: err.messageId });
+            return vm.$dialog.error({ messageId: err.messageId });
           } else if (!!err.errors) {
-            (nts.uk.ui.dialog as any).bundledErrors(err);
+            return (nts.uk.ui.dialog as any).bundledErrors(err);
           }
         });
     }
@@ -80,13 +84,14 @@ module nts.uk.com.view.oew001.b {
       const vm = this;
       return vm.$ajax(API.update, param)
       .then(() => {
-        return vm.$dialog.info({ messageId: "Msg_15" });
-      })
-      .fail(err => {
+        return vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.$window.close({
+          isSaveSuccess: true
+        }));
+      }, err => {
         if (!!err.messageId) {
-          vm.$dialog.error({ messageId: err.messageId });
+          return vm.$dialog.error({ messageId: err.messageId });
         } else if (!!err.errors) {
-          (nts.uk.ui.dialog as any).bundledErrors(err);
+          return (nts.uk.ui.dialog as any).bundledErrors(err);
         }
       });
     }
@@ -100,7 +105,9 @@ module nts.uk.com.view.oew001.b {
       .then(() => {
         return vm.$dialog.info({ messageId: "Msg_16" });
       })
-      .fail(err => vm.$dialog.error({ messageId: err.messageId }));
+      .fail(err => {
+        return vm.$dialog.error({ messageId: err.messageId });
+      });
     }
 
     public processSave() {
@@ -126,9 +133,7 @@ module nts.uk.com.view.oew001.b {
           itemDatas: itemDatas
         });
         let call = vm.data().isNewMode ? vm.insert(param) : vm.update(param);
-        call.then(() => vm.$window.close({
-          isSaveSuccess: true
-        })).always(() => vm.$blockui("clear"));
+        call.always(() => vm.$blockui("clear"));
       });
     }
 
@@ -148,7 +153,7 @@ module nts.uk.com.view.oew001.b {
           }))
           .always(() => vm.$blockui("clear"));
         }
-      })
+      });
     }
 
     public processCancel() {

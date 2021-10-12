@@ -34,8 +34,10 @@ module nts.uk.com.view.oem002.b {
             vm.selectedEquipmentClsCode(vm.equipmentClsList()[0].code);
           }
         })
-        .always(() => vm.$blockui("clear"));
-      $("#B1_2").focus();
+        .always(() => {
+          $("#B1_2_container").focus();
+          vm.$blockui("clear");
+        });
     }
 
     public closeDialog() {

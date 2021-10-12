@@ -195,6 +195,7 @@ module nts.uk.com.view.oew001.share.model {
     memo: string;
     helpContent: string;
     constraint: ui.vm.Constraint;
+    constraintName: string;
 
     constructor(init?: Partial<OptionalItem>) {
       $.extend(this, init);
@@ -219,6 +220,10 @@ module nts.uk.com.view.oew001.share.model {
     constructor(init?: Partial<Oew001BData>) {
       $.extend(this, init);
     }
+  }
+
+  export function setReadOnly(itemId: string) {
+    $(itemId).attr("readonly", "readonly");
   }
 }
 
