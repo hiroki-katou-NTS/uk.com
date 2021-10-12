@@ -32,7 +32,7 @@ module nts.uk.ui.at.kdw013.c {
         width: 30px;
     }
     .edit-event table {
-        width: 372px;
+        width: 370px;
     }
     .edit-event table>tbody>tr>td:first-child {
         vertical-align: top;
@@ -50,6 +50,12 @@ module nts.uk.ui.at.kdw013.c {
         box-sizing: border-box;
         margin-bottom: 10px;
     }
+	.edit-event table>tbody>tr>td>.ntsControl.fix input.nts-input{
+	    border: 1px solid #999;
+	}
+	.edit-event table>tbody>tr>td>.ntsControl.fix .error input.nts-input{
+		border-color: #ff6666;
+	}
     .edit-event table>tbody>tr>td>.ntsControl>input {
         width: 100%;
         box-sizing: border-box;
@@ -220,7 +226,9 @@ module nts.uk.ui.at.kdw013.c {
                                     kdw-timerange: taskBlocks.caltimeSpanView,
                                     update: flag,
                                     hasError: $component.timeError,
-                                    exclude-times: $component.params.excludeTimes
+                                    exclude-times: $component.params.excludeTimes,
+									range: range,
+									showRange: showRange
                                 "></div>
                         </td>
                     </tr>
@@ -232,7 +240,23 @@ module nts.uk.ui.at.kdw013.c {
 	                    <col width="105px" />
 	                </colgroup>
                     <tbody data-bind = "foreach: taskItemValues">
-                        <!-- ko if: itemId == 4 && use-->
+						<!-- ko if: (itemId == 3) && !use() -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTimeEditor: {
+											value: value,
+											mode: 'time',
+											required: true,
+											enable: true,
+											option: {width: '40px'}
+											}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+                        <!-- ko if: (itemId == 4) && use-->
                             <tr>
                                 <td data-bind="text: lable"></td>
                                 <td><div data-bind="
@@ -241,11 +265,12 @@ module nts.uk.ui.at.kdw013.c {
                                         required: true,
                                         name: lable,
                                         hasError: ko.observable(false),
+										flagError: $parent.flag,
                                         visibleItemsCount:10
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-                        <!-- ko if: itemId == 5 && use -->
+                        <!-- ko if: (itemId == 5 || itemId == 6 || itemId == 7 || itemId == 8) && use -->
                             <tr>
                                 <td data-bind="text: lable"></td>
                                 <td><div data-bind="
@@ -256,36 +281,74 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-                        <!-- ko if: itemId == 6 && use -->
-                            <tr>
+						<!-- ko if: (itemId == 9) && use -->
+							<tr>
                                 <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                    "></div></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTimeWithDayEditor: { 
+											name: 'Time With Day', 
+											constraint:'TimeWithDayAttr', 
+											value: value, 
+											enable: true, 
+											required: false,
+											option: {
+												width: '80px',
+												timeWithDay: true
+											}
+											 }" />
+									</div>
+								</td>
                             </tr>
                         <!-- /ko -->
-                        <!-- ko if: itemId == 7 && use -->
-                            <tr>
+						<!-- ko if: (itemId == 10) && use -->
+							<tr>
                                 <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                        visibleItemsCount:10
-                                    "></div></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTextEditor: {
+											value: value,
+											option: {width: '233px'},
+											required: false,
+											enable: true,
+											}" />
+									</div>
+								</td>
                             </tr>
                         <!-- /ko -->
-                        <!-- ko if: itemId == 8 && use -->
-                            <tr>
+						<!-- ko if: (itemId == 11) && use -->
+							<tr>
                                 <td data-bind="text: lable"></td>
-                                <td><div data-bind="
-                                        dropdown: value,
-                                        name: lable,
-                                        items: options,
-                                        visibleItemsCount:10
-                                    "></div></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											value: value,
+											option: {
+												width: '223px', 
+												numberGroup: true, 
+												decimallength: 2, 
+												currencyformat: 'JPY'
+											},
+											required: false,
+											enable: true,
+											}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: (itemId == 12) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											value: value,
+											option: {width: '233px'},
+											required: false,
+											enable: true,
+											}" />
+									</div>
+								</td>
                             </tr>
                         <!-- /ko -->
 	                </tbody>
@@ -297,7 +360,7 @@ module nts.uk.ui.at.kdw013.c {
                         <td>
 							<a href="#" data-bind="i18n: 'KDW013_57', click: addTaskDetails"></a>
                             <br />
-							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError && errors()"></button>
+							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError || errors"></button>
                         </td>
                     </tr>
                 </tbody>
@@ -395,6 +458,8 @@ module nts.uk.ui.at.kdw013.c {
         timeError: KnockoutObservable<boolean> = ko.observable(false);
         taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
         flag: KnockoutObservable<boolean> = ko.observable(false);
+		showRange: KnockoutObservable<boolean> = ko.observable(false);
+		range: KnockoutObservable<number | null> = ko.observable(null);
 		taskBlocks: ManHrPerformanceTaskBlockView = 
 			new ManHrPerformanceTaskBlockView(
 				{ 
@@ -403,9 +468,10 @@ module nts.uk.ui.at.kdw013.c {
 				}, 
                 __viewContext.user.employeeId,
                 this.flag,
+				this.showRange,
                 false
 			);
-
+		
         constructor(public params: Params) {
             super();
 
@@ -431,7 +497,8 @@ module nts.uk.ui.at.kdw013.c {
             });
 			
 			
-			vm.taskBlocks.taskDetailsView.subscribe(() => {
+			vm.taskBlocks.taskDetailsView.subscribe((taskDetails: ManHrTaskDetailView[]) => {
+				vm.showRange(taskDetails.length == 1);
 				let interval = setInterval(function () {
                     vm.updatePopupSize();
 					resetHeight();
@@ -444,7 +511,6 @@ module nts.uk.ui.at.kdw013.c {
 			$(window).resize(function () {
 				resetHeight();
 			});
-			
         }
 		
 		// update popup size
@@ -456,7 +522,7 @@ module nts.uk.ui.at.kdw013.c {
 		checkError(){
             const vm = this;
 			_.each(vm.taskBlocks.taskDetailsView(), (task: ManHrTaskDetailView)=>{
-				if(!task.isErorr()){
+				if(task.isErorr()){
 					vm.errors(true);
 					return;
 				}
@@ -471,22 +537,16 @@ module nts.uk.ui.at.kdw013.c {
                         { 
                             supNo: 0, 
                             taskItemValues: [
-                                { itemId: 3, value: '', type: 1 },
-                                { itemId: 4, value: '', type: 1 },
-                                { itemId: 5, value: '', type: 1 },
-                                { itemId: 6, value: '', type: 1 },
-                                { itemId: 7, value: '', type: 1 },
-                                { itemId: 8, value: '', type: 1 },
-                            ] 
-                        }, { 
-                            supNo: 0, 
-                            taskItemValues: [
-                                { itemId: 3, value: '', type: 1 },
-                                { itemId: 4, value: '', type: 1 },
-                                { itemId: 5, value: '', type: 1 },
-                                { itemId: 6, value: '', type: 1 },
-                                { itemId: 7, value: '', type: 1 },
-                                { itemId: 8, value: '', type: 1 },
+                                { itemId: 3, value: '', type: 0 },
+                                { itemId: 4, value: '', type: 0 },
+                                { itemId: 5, value: '', type: 0 },
+                                { itemId: 6, value: '', type: 0 },
+                                { itemId: 7, value: '', type: 0 },
+                                { itemId: 8, value: '', type: 0 },
+								{ itemId: 9, value: '', type: 0 },
+								{ itemId: 10, value: '', type: 0 },
+								{ itemId: 11, value: '', type: 0 },
+								{ itemId: 12, value: '', type: 0 },
                             ] 
                         }
                     ]
@@ -608,7 +668,7 @@ module nts.uk.ui.at.kdw013.c {
             const { employeeId } = vm.$user;
             $.Deferred()
                 .resolve(true)
-                .then(() => $(vm.$el).find('input, textarea').trigger('blur'))
+                .then(() => $(vm.$el).find('input').trigger('blur'))
                 .then(() => vm.errors() && vm.timeError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
@@ -657,12 +717,12 @@ module nts.uk.ui.at.kdw013.c {
         caltimeSpanView: KnockoutObservable<{start: number, end: number}> = ko.observable({start: null, end: null});
 		employeeId: string = '';
 		setting: a.TaskFrameSettingDto[] = [];
-		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, loadData: boolean) {
+		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, private showRange: KnockoutObservable<boolean>, loadData: boolean) {
 			super(taskBlocks);
 			const vm = this;
 			vm.employeeId = employeeId;
 			vm.taskDetailsView = ko.observableArray(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, loadData, []))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, showRange, loadData, []))
 			);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
@@ -690,7 +750,7 @@ module nts.uk.ui.at.kdw013.c {
 			vm.employeeId = employeeId;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, loadData, setting))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, vm.showRange, loadData, setting))
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
@@ -710,10 +770,10 @@ module nts.uk.ui.at.kdw013.c {
 			const vm = this;
 			let taskItemValues: ITaskItemValue[] = [];
 			_.forEach(vm.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
-				taskItemValues.push({ itemId: taskItemValue.itemId, value: taskItemValue.value(), type: taskItemValue.type });
+				taskItemValues.push({ itemId: taskItemValue.itemId, value: '', type: taskItemValue.type });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, true, vm.setting));
+			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showRange, true, vm.setting));
 		}
 
 		isChangedTime(): boolean{
@@ -770,8 +830,7 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
-		
-		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, flag: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
+		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, showRange: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
 			super(manHrTaskDetail);
 			this.employeeId = employeeId;
 			this.itemBeforChange = manHrTaskDetail.taskItemValues;
@@ -780,17 +839,24 @@ module nts.uk.ui.at.kdw013.c {
 
 			let workCD1, workCD2, workCD3, workCD4, workCD5;
 			_.each(vm.taskItemValues(), (item: TaskItemValue) => {
-                if(item.itemId == 4) {
+                if(item.itemId == 3) {
+                    item.use = showRange;
+					workCD1 = item.value();
+					item.lable(getText("KDW013_25"));
+					item.value.subscribe(() => {
+	                    vm.flag(!vm.flag());
+                	});
+				}else if(item.itemId == 4) {
                     if (first) {
                         vm.setLableUse(item, first);
                     }
 					workCD1 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(5, value);
+                            vm.setWorkList(2, value);
                         }
 						setTimeout(() => {
-                        	flag(!flag());
+                        	vm.flag(!vm.flag());
 						}, 1);
                 	});
 				}else if(item.itemId == 5){
@@ -800,7 +866,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD2 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(6, value);
+                            vm.setWorkList(3, value);
 	                    }
                 	});
 				}else if(item.itemId == 6){
@@ -810,7 +876,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD3 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(7, value);
+                            vm.setWorkList(4, value);
 	                    }
                 	});
 				}else if(item.itemId == 7){
@@ -820,7 +886,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD4 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(8, value);
+                            vm.setWorkList(5, value);
 	                    }
                 	});
 				}

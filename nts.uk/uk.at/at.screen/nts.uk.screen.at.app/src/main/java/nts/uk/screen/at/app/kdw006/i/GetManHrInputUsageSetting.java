@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,8 +26,8 @@ public class GetManHrInputUsageSetting {
 	 * 
 	 * @return Optional<工数入力の利用設定>
 	 */
-	public Optional<ManHrInputUsageSettingDto> get() {
+	public Optional<ManHrInputUsageSetting> get() {
 		// 1. get(ログイン会社ID)
-		return this.repo.get(AppContexts.user().companyId()).map(x -> ManHrInputUsageSettingDto.fromDomain(x));
+		return this.repo.get(AppContexts.user().companyId());
 	}
 }

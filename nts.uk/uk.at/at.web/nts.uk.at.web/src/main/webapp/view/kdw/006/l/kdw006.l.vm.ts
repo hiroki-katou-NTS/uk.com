@@ -5,7 +5,9 @@ module nts.uk.at.view.kmk006.l {
     const DATE_FORMAT = 'YYYY/MM/DD';
 
     const API = {
-        RESISTER: 'at/record/kdw006/view-l/register-history'
+        RESISTER: 'at/record/kdw006/view-l/register-history',
+        UPDATE: 'at/record/kdw006/view-l/update-history',
+        REMOTE: 'at/record/kdw006/view-l/remote-history'
     }
 
     @bean()
@@ -22,51 +24,97 @@ module nts.uk.at.view.kmk006.l {
         selectedEndDate: KnockoutObservable<string> = ko.observable('');
         copyPreviousConfig: KnockoutObservable<boolean> = ko.observable(true);
         isLatestHistory: KnockoutObservable<boolean> = ko.observable(true);
+        textTitle: KnockoutObservable<string> = ko.observable('');
         public model: HistoryItem = new HistoryItem();
         public itemId: String = '';
 
         created(param: any) {
             const vm = this;
 
-            vm.itemId = param.itemId;
-            _.forEach(param.history.dateHistoryItems, ((value: IHistoryInfo) => {
-                vm.lstWpkHistory.push(new HistoryItem({
-                    historyId: value.historyId,
-                    startDate: moment(value.startDate).format(DATE_FORMAT),
-                    endDate: moment(value.endDate).format(DATE_FORMAT)
-                }));
-            }));
+            vm.screenMode.subscribe(() => {
+                vm.setTextTitle();
+            });
+            vm.screenMode.valueHasMutated();
+            var hisLocal: HistoryItem[] = [];
+
+            if (param) {
+                vm.itemId = param.itemId;
+                if (param.history) {
+                    if (param.history.dateHistoryItems) {
+                        _.forEach(param.history.dateHistoryItems, ((value: IHistoryInfo) => {
+                            hisLocal.push(new HistoryItem({
+                                historyId: value.historyId,
+                                startDate: moment(value.startDate).format(DATE_FORMAT),
+                                endDate: moment(value.endDate).format(DATE_FORMAT)
+                            }));
+                        }));
+                        vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
+                    }
+                }
+            }
 
             vm.selectedHistoryId.subscribe((value: string) => {
                 vm.model.update(_.find(ko.unwrap(vm.lstWpkHistory), ((f: HistoryItem) => { return f.historyId === value; })));
                 vm.selectedEndDate(vm.model.endDate);
                 vm.selectedStartDateText(vm.model.startDate);
-                // vm.selectedStartDateInput(vm.model.startDate);
+                vm.screenMode(SCREEN_MODE.SELECT);
+                if (value !== ko.unwrap(vm.lstWpkHistory)[0].historyId) {
+                    vm.isLatestHistory(false);
+                } else {
+                    vm.isLatestHistory(true);
+                }
             });
 
             if (ko.unwrap(vm.lstWpkHistory).length > 0) {
                 vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
+            } else {
+                vm.screenMode(SCREEN_MODE.NEW);
+                vm.setEndDate();
             }
         }
 
         mounted() {
             const vm = this;
+
+            $('#single-list').focus();
         }
 
         addHistory() {
             const vm = this;
             vm.screenMode(SCREEN_MODE.ADD);
-            vm.selectedStartDateText(null);
+            vm.selectedStartDateInput(null);
         }
 
         updateHistory() {
             const vm = this;
             vm.screenMode(SCREEN_MODE.UPDATE);
-            vm.selectedStartDateText(vm.model.startDate);
+            vm.selectedStartDateInput(moment(vm.model.startDate).format(DATE_FORMAT));
         }
 
         deleteHistory() {
             const vm = this;
+            const param = { historyId: ko.unwrap(vm.model.historyId) }
+            const oldIndex = _.map(ko.unwrap(vm.lstWpkHistory), m => m.historyId).indexOf(ko.unwrap(vm.model.historyId));
+            const newIndex = oldIndex == ko.unwrap(vm.lstWpkHistory).length - 1 ? oldIndex - 1 : oldIndex;
+
+            nts.uk.ui.dialog
+                .confirm({ messageId: "Msg_18" })
+                .ifYes(() => {
+                    vm.$blockui("invisible")
+                        .then(() => {
+                            vm.$ajax('at', API.REMOTE, param)
+                                .done(() => vm.$dialog.info({ messageId: "Msg_16" }))
+                                .then(() => {
+                                    _.remove(ko.unwrap(vm.lstWpkHistory), ((item: HistoryItem) => { return item.historyId === ko.unwrap(vm.model.historyId) }));
+                                    if (ko.unwrap(vm.lstWpkHistory).length > 0) {
+                                        vm.model.update(ko.unwrap(vm.lstWpkHistory)[newIndex]);
+                                        vm.selectedHistoryId(ko.unwrap(vm.model.historyId));
+                                    }
+                                })
+                                .fail((fail: any) => vm.$dialog.info({ messageId: fail.messageId }))
+                                .always(() => vm.$blockui('clear'))
+                        })
+                })
         }
 
         cancel() {
@@ -79,20 +127,55 @@ module nts.uk.at.view.kmk006.l {
             const param = {
                 itemId: vm.itemId,
                 historyId: ko.unwrap(vm.model.historyId),
-                startDate: new Date(ko.unwrap(vm.selectedStartDateText)),
+                startDate: new Date(ko.unwrap(vm.selectedStartDateInput)),
                 endDate: new Date(ko.unwrap(vm.selectedEndDate))
             }
+            var hisLocal: HistoryItem[] = ko.unwrap(vm.lstWpkHistory);
 
-            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.ADD) {
+            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.ADD || ko.unwrap(vm.screenMode) === SCREEN_MODE.NEW) {
                 vm.$blockui('invisible')
                     .then(() => {
                         vm.$ajax('at', API.RESISTER, param)
-                            .then(() => vm.$dialog.info('Msg_15'))
+                            .then((hisId: any) => {
+                                vm.$dialog.info({ messageId: 'Msg_15' })
+                                    .then(() => {
+                                        hisLocal.push(new HistoryItem({
+                                            historyId: hisId.hisId,
+                                            startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
+                                            endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
+                                        }));
+                                        vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
+                                        vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
+                                    });
+                            })
                     })
-            }
+                    .always(() => vm.$blockui('clear'));
+            } else
+                if (ko.unwrap(vm.screenMode) === SCREEN_MODE.UPDATE) {
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$ajax('at', API.UPDATE, param)
+                                .then(() => {
+                                    vm.$dialog.info({ messageId: 'Msg_15' })
+                                        .then(() => {
+                                            _.remove(hisLocal, (item: HistoryItem) => { return item.historyId === ko.unwrap(vm.model.historyId) })
+                                            hisLocal.push(new HistoryItem({
+                                                historyId: ko.unwrap(vm.model.historyId),
+                                                startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
+                                                endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
+                                            }));
+                                            vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
+                                            vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
+                                        });
+                                })
+                        })
+                        .always(() => vm.$blockui('clear'));
+                } else {
+                    vm.$window.close(ko.unwrap(vm.model.historyId));
+                }
         }
 
-        setEndDate(param: string) {
+        setEndDate(param?: string) {
             const vm = this;
             switch (ko.unwrap(vm.screenMode)) {
                 case SCREEN_MODE.SELECT:
@@ -102,6 +185,22 @@ module nts.uk.at.view.kmk006.l {
                 case SCREEN_MODE.NEW:
                 case SCREEN_MODE.ADD:
                     vm.selectedEndDate('9999/12/31');
+                    break;
+            }
+        }
+
+        setTextTitle() {
+            const vm = this;
+            switch (ko.unwrap(vm.screenMode)) {
+                case SCREEN_MODE.SELECT:
+                case SCREEN_MODE.NEW:
+                    vm.textTitle(vm.$i18n('KDW006_343'));
+                    break
+                case SCREEN_MODE.ADD:
+                    vm.textTitle(vm.$i18n('KDW006_344'));
+                    break
+                case SCREEN_MODE.UPDATE:
+                    vm.textTitle(vm.$i18n('KDW006_345'));
                     break;
             }
         }

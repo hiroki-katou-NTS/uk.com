@@ -9,7 +9,7 @@
 			<script>
 				var dialogSize = {
 					width: 620,
-					height: 330
+					height: 360
 				};
 			</script>
 
@@ -22,20 +22,20 @@
 		<ui:define name="content">
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="fixed-flex-layout-left">
-					<div class="valign-center control-group" style="padding-top: 5px">
+					<div class="valign-center control-group" style="padding-top: 15px">
 						<button tabindex="1"
-							data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory">#{i18n.getText('CMM011_117')}</button>
+							data-bind="enable: screenMode() == 0 || screenMode() == 3, click: addHistory, text: $i18n('KDW006_327')"></button>
 						<button tabindex="2"
-							data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory">#{i18n.getText('CMM011_118')}</button>
+							data-bind="enable: screenMode() == 0 &amp;&amp; isLatestHistory(), click: updateHistory, text: $i18n('KDW006_328')"></button>
 						<button tabindex="3" class="danger"
-							data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory">#{i18n.getText('CMM011_119')}</button>
+							data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory, text: $i18n('KDW006_329')"></button>
 					</div>
 
-					<table id="single-list" data-bind="ntsGridList: {
+					<table tabindex="4" id="single-list" data-bind="ntsGridList: {
 						options: $vm.lstWpkHistory,
 						optionsValue: 'historyId',
 						columns: [
-							{ headerText: $i18n('KDW006_44'), prop: 'historyId', width: 0 },
+							{ headerText: $i18n('KDW006_330'), prop: 'historyId', width: 0 },
 							{ headerText: $i18n('KDW006_330'), prop: 'displayText', length: 15 }
 						],
 						rows: 5,
@@ -46,12 +46,7 @@
 
 				<div class="fixed-flex-layout-right">
 					<div class="valign-center control-group" style="width: 323px; padding-top: 20px">
-						<span class="label"
-							data-bind="visible: screenMode() == 0">#{i18n.getText('編集する履歴を選択してください。')}</span>
-						<span class="label"
-							data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('追加する履歴の開始日を入力してください。')}</span>
-						<span class="label"
-							data-bind="visible: screenMode() == 3">#{i18n.getText('履歴の開始日を編集してください。')}</span>
+						<span class="label" data-bind="text: $vm.textTitle"></span>
 					</div>
 					<div class="valign-center control-group" style="width: 323px;">
 						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_124')}</div>
@@ -69,12 +64,10 @@
 						style="width: 323px;">
 						<div tabindex="6"
 							data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 0">
-							#{i18n.getText('直前の履歴データを引き継ぐ')}</div>
+							#{i18n.getText('KDW006_334')}</div>
 						<div tabindex="6"
 							data-bind="ntsCheckBox: { checked: copyPreviousConfig }, visible: initMode() == 1">
-							#{i18n.getText('直前の履歴データを引き継ぐ')}</div>
-						<button
-							data-bind="visible: false, ntsHelpButton: {textId: 'Help Button Text', position: 'right center' }">？</button>
+							#{i18n.getText('KDW006_334')}</div>
 					</div>
 				</div>
 			</div>
