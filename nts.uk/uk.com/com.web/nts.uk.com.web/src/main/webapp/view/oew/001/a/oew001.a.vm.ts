@@ -108,6 +108,9 @@ module nts.uk.com.view.oew001.a {
       return vm.$ajax(API.getResultHistory, param).then(result => {
         if (_.isEmpty(result.equipmentDatas)) {
           vm.dataSource([]);
+          let temp = new DisplayData();
+          temp.createOptionalItems(null, vm.itemSettings(), vm.formatSetting());
+          vm.createColumns(temp.optionalItems);
           return;
         }
         vm.hasExtractData(true);

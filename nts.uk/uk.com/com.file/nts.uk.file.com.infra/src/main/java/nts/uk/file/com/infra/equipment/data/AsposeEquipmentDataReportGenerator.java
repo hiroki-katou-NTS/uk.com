@@ -1,8 +1,6 @@
 package nts.uk.file.com.infra.equipment.data;
 
 import java.io.OutputStream;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +28,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemDisplay;
@@ -118,6 +117,9 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	private static final int FIXED_VALUE_C = 8;
 	// Max col width
 	private static final int MAX_COLUMN_WIDTH = 300;
+	// Excel Number format: Text
+	// https://docs.aspose.com/cells/net/data-formatting/
+	private static final int TEXT_FORMAT = 49;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EquipmentDataExportDataSource dataSource) {
@@ -295,7 +297,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 								value = String.format("%,d", Integer.valueOf(value));
 								alignType = TextAlignmentType.RIGHT;
 							} else if (itemData.getItemClassification().equals(ItemClassification.TIME) && isPrintExcel) {
-								value = LocalTime.MIN.plus(Duration.ofMinutes(Integer.valueOf(value))).toString();
+								value = this.formatTime(Integer.valueOf(value));
 								alignType = TextAlignmentType.RIGHT;
 							}
 						}
@@ -399,6 +401,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 		style.setHorizontalAlignment(alignType);
 		style.setVerticalAlignment(TextAlignmentType.CENTER);
 		style.setPattern(BackgroundType.SOLID);
+		style.setNumber(TEXT_FORMAT);
 		if (isBlueBackground != null) {
 			if (isBlueBackground) {
 				// Even row background color
@@ -434,5 +437,19 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 			return 1;
 		}
 		return e1.get().getEmployeeCode().compareTo(e2.get().getEmployeeCode());
+	}
+	
+	/**
+	 * Format Time_Short_Hm
+	 * 
+	 * @param value minutes
+	 * @return
+	 */
+	private String formatTime(int value) {
+		final String template = "%d:%s";
+		final int hours = value / 60;
+		final int minutes = value % 60;
+		return String.format(template, hours, 
+				StringUtil.padLeft(String.valueOf(minutes), 2, '0'));
 	}
 }
