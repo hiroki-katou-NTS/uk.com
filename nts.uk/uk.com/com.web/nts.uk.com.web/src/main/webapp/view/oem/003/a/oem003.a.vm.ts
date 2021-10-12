@@ -184,6 +184,13 @@ module nts.uk.com.view.oem003.a {
         dfd.reject();
       }
 
+      // Error lines cause of empty item type
+      vm.$validate(".item-type").then(result => {
+        if (!result) {
+          dfd.reject();
+        }
+      });
+
       // Error lines cause of min and max
       const minmaxEL: any[] = [];
       // Error lines cause of item no

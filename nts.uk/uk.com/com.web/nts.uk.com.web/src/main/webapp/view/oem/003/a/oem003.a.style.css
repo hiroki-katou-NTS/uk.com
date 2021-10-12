@@ -34,7 +34,7 @@ table.data-table .ntsControl:not(.error) .nts-editor {
   border: none !important;
 }
 table.data-table .ui-igcombo-wrapper .ui-igcombo .ui-igcombo-button,
-table.data-table tr td:not(.error-item-type) .ui-igcombo {
+table.data-table tr td:not(.error-item-type) div:not(.error) .ui-igcombo {
   border: none !important;
 }
 table.data-table .ui-igcombo-wrapper .ui-igcombo-buttonicon,
