@@ -86,6 +86,9 @@ module nts.uk.at.view.kmk006.k {
             const vm = this;
             vm.$ajax('at', API.LIST_HISTORY)
                 .then((history: IHistory[]) => {
+                    _.forEach(history, ((item: IHistory) => {
+                        item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
+                    }));
                     vm.historyLocals = history;
                     if (itemId) {
                         const exist = _.find(history, ((value: IHistory) => { return value.itemId === itemId }));
@@ -131,7 +134,8 @@ module nts.uk.at.view.kmk006.k {
                                 }
                             });
                     }));
-                });
+                })
+                .always(() => vm.$blockui('clear'));
             $.when(dfdGetAllData)
                 .done(() => {
                     vm.historys(_.orderBy(historyDateils, ['code'], ['asc']));
@@ -184,6 +188,9 @@ module nts.uk.at.view.kmk006.k {
                             .then(() => {
                                 vm.$ajax(API.LIST_HISTORY)
                                     .done((history: IHistory[]) => {
+                                        _.forEach(history, ((item: IHistory) => {
+                                            item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
+                                        }))
                                         vm.historyLocals = history;
                                     })
                                     .then(() => {
