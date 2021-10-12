@@ -52,6 +52,13 @@ public class BsymtWorkplaceConfig extends ContractUkJpaEntity {
 				.collect(Collectors.toList());
 		return new WorkplaceConfiguration(listEntities.get(0).pk.companyId, listWorkplaceHistories);
 	}
+	
+	public static BsymtWorkplaceConfig fromDomain(String companyId, DateHistoryItem domain) {
+		return new BsymtWorkplaceConfig(
+				new BsymtWorkplaceConfigPk(companyId, domain.identifier()),
+				domain.start(),
+				domain.end());
+	}
 
 	public static List<BsymtWorkplaceConfig> fromDomain(WorkplaceConfiguration domain) {
 		if (domain.items().isEmpty())

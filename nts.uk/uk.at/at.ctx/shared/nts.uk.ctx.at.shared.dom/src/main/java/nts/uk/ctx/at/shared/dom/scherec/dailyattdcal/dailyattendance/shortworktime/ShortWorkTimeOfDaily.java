@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -70,8 +71,14 @@ public class ShortWorkTimeOfDaily {
 		WorkTimes workTimes = new WorkTimes(0);
 		DeductionTotalTime totalTime = DeductionTotalTime.defaultValue();
 		DeductionTotalTime totalDeductionTime = DeductionTotalTime.defaultValue();
-		
 		ChildCareAtr careAtr = getChildCareAttributeToDaily(recordClass.getIntegrationOfDaily());
+		ShortWorkTimeOfDaily zeroValue = new ShortWorkTimeOfDaily(workTimes, totalTime, totalDeductionTime, careAtr);
+		
+		// 勤務種類を確認
+		if (!recordClass.getWorkType().isPresent()) return zeroValue;
+		WorkType workType = recordClass.getWorkType().get();
+		// 出勤系かどうかの判断
+		if (workType.isWorkingDay() == false) return zeroValue;
 		
 		if(recordClass.getCalculatable() && recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
 			//短時間勤務回数

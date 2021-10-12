@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.kdp.kdp004.a;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -415,6 +416,22 @@ public class RegisterFingerStampCommandHandler
 		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
 				ChangeClockArt changeClockArt) {
 			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
+        }
+
+		@Override
+		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+				GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+			return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+		}
+
+		@Override
+		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+			return closureRepo.findByListId(companyId, closureId);
 		}
 	}
 

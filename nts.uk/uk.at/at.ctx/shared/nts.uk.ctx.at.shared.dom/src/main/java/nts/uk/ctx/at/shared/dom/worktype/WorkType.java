@@ -88,9 +88,11 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 	}
 	
-	
-	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
-	public boolean isWokingDay() {
+	/**
+	 * 出勤系かどうか判断
+	 * @return true:出勤系,false:出勤系でない
+	 */
+	public boolean isWorkingDay() {
 		if(dailyWork == null) { return false; }
 		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
 			return isWorkingType(dailyWork.getOneDay());
@@ -98,7 +100,11 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		return isWorkingType(dailyWork.getMorning()) || isWorkingType(dailyWork.getAfternoon());
 	}
 
-	/** 出勤系かチェックする　*/
+	/**
+	 * 出勤系分類かどうか判断
+	 * @param wt 勤務種類の分類
+	 * @return true:出勤系分類,false:出勤系分類でない
+	 */
 	private boolean isWorkingType(WorkTypeClassification wt) {
 		return wt == WorkTypeClassification.Attendance || wt == WorkTypeClassification.Shooting 
 				|| wt == WorkTypeClassification.HolidayWork;
