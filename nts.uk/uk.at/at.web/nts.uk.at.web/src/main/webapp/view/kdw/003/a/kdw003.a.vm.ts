@@ -5600,25 +5600,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let dayString = getText("KDW003_8", [day.toString()]);
             if (time) {
                 if (time < 0)
-                    $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
+                    $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
                 else {
-                    $("#fixed-table td.remain-compen-time").css("color", "");
+                    $("#fixed-table td.remain-compen-day").css("color", "#06c");
                 }
                 output = timeString;
             } else if (day) {
                 if (day < 0)
                     $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
                 else {
-                    $("#fixed-table td.remain-compen-day").css("color", "");
+                    $("#fixed-table td.remain-compen-day").css("color", "#06c");
                 }
                 output = dayString;
             } else {
                 if (manage) {
                     output = timeString; 
-                    $("#fixed-table td.remain-compen-time").css("color", "");
+                    $("#fixed-table td.remain-compen-day").css("color", "#06c");
                 } else {
                     output = dayString;
-                    $("#fixed-table td.remain-compen-day").css("color", "");
+                    $("#fixed-table td.remain-compen-day").css("color", "#06c");
                 }
             }
 
