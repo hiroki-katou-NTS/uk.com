@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kdw013.query;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class AttItemNameDto {
 		this.authority = new AttItemAuthorityDto(domain.getAuthority());
 		this.frameNo = domain.getFrameNo();
 		this.attendanceAtr = domain.getAttendanceAtr();
-		this.dailyAttendanceLinkingList = domain.getDailyAttendanceLinkingList().stream().map(c -> new FrameNoAdapter1Dto(c)).collect(Collectors.toList());
+		this.dailyAttendanceLinkingList = domain.getDailyAttendanceLinkingList() == null? new ArrayList<FrameNoAdapter1Dto>() : domain.getDailyAttendanceLinkingList().stream().map(c -> new FrameNoAdapter1Dto(c)).collect(Collectors.toList());
 	}
 
 }
