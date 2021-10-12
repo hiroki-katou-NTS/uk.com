@@ -63,10 +63,12 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					var info = $.grep(self.domainInfoList(), function (di) {
 						return di.domainId == self.selectedDomainId();
 					});
-					self.setDomain(info[0]);
-				}else{
-					self.layoutItemNoList([]);
+					if (info.length !== 0){
+						self.setDomain(info[0]);
+						return;
+					}
 				}
+				self.layoutItemNoList([]);
 			})
 	
 			self.layoutItemNoList.subscribe((value) => {

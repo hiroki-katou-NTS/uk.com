@@ -320,9 +320,9 @@ module nts.uk.com.cmf001.c {
         
         clickBackButton() {
 			let self = this;
-			request.jump(backUrl, {
-				settingCode: self.settingCode(),
-				domainId: self.domainId()
+			request.jump(self.backUrl, {
+				settingCode: self.settingCode,
+				domainId: self.domainId
 			});
         }
     }
