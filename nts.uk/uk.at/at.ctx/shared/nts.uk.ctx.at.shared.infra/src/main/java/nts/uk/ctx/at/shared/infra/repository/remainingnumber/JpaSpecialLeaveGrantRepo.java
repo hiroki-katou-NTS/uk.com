@@ -23,6 +23,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
@@ -63,11 +64,12 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayUse,
 						x.timeUse,
 						x.useSavingDays,
+						x.numberOverDays, 
+						x.timeOver,
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,
 						x.specialLeaCode);
-
 			list.add(specialLeaveGrantRemainingData);
 		}
 		return list;
@@ -144,8 +146,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				record.getBigDecimal("NUMBER_DAYS_USE") == null ? 0.0 : record.getBigDecimal("NUMBER_DAYS_USE").doubleValue(),
 				record.getInt("TIME_USE"),
 				record.getBigDecimal("USED_SAVING_DAYS") == null ? 0.0 : record.getBigDecimal("USED_SAVING_DAYS").doubleValue(),
-//				record.getBigDecimal("NUMBER_OVER_DAYS") == null ? 0.0 : record.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
-//				record.getInt("TIME_OVER"),
+				record.getBigDecimal("NUMBER_OVER_DAYS") == null ? 0.0 : record.getBigDecimal("NUMBER_OVER_DAYS").doubleValue(),
+				record.getInt("TIME_OVER"),
 				record.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : record.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
 				record.getInt("TIME_REMAIN"),
 				0.0,
@@ -182,16 +184,11 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		// ? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
 		// : 0;
 
-//		// Over
-//		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
-//			entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
-//					.getNumberOverDays().v();
-//			entity.timeOver = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
-//					.isPresent()
-//							? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
-//									.get().v()
-//							: 0;
-//		}
+		// Over
+		if (data.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()) {
+			entity.numberOverDays = data.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v();
+			entity.timeOver = data.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().timeOver.map(c->c.v()).orElse(0);
+		}
 
 	}
 
@@ -235,16 +232,10 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 		// ? data.getDetails().getUsedNumber().getUseSavingDays().get().v()
 		// : 0;
 		entity.useSavingDays = 0d;
-//		// Over
-//		if (data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().isPresent()) {
-//			entity.numberOverDays = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get()
-//					.getNumberOverDays().v();
-//			entity.timeOver = data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
-//					.isPresent()
-//							? data.getDetails().getUsedNumber().getSpecialLeaveOverLimitNumber().get().getTimeOver()
-//									.get().v()
-//							: 0;
-//		}
+		if (data.getDetails().getUsedNumber().getLeaveOverLimitNumber().isPresent()) {
+			entity.numberOverDays = data.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().numberOverDays.v();
+			entity.timeOver = data.getDetails().getUsedNumber().getLeaveOverLimitNumber().get().timeOver.map(c->c.v()).orElse(0);
+		}
 
 		return entity;
 	}
@@ -280,6 +271,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayUse,
 						x.timeUse,
 						x.useSavingDays,
+						x.numberOverDays, 
+						x.timeOver,
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,
@@ -420,6 +413,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayUse,
 						x.timeUse,
 						x.useSavingDays,
+						x.numberOverDays, 
+						x.timeOver,
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,
@@ -496,6 +491,8 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayUse,
 						x.timeUse,
 						x.useSavingDays,
+						x.numberOverDays, 
+						x.timeOver,
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,

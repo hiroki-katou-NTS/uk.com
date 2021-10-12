@@ -165,6 +165,62 @@ public class NewWorkplacePubImpl implements WorkplacePub {
                 .wkpDisplayName(param.getDisplayName())
                 .build());
     }
+    
+    @Override
+	public Map<GeneralDate, Map<String, Optional<SWkpHistExport>>> findBySid(String companyID, List<String> employeeIds, DatePeriod datePeriod) {
+    	
+    	Map<GeneralDate, Map<String, Optional<SWkpHistExport>>> result = new HashMap<GeneralDate, Map<String,Optional<SWkpHistExport>>>();
+    	
+    	Map<GeneralDate, List<AffWorkplaceHistory>> affWrkPlcMap = affWkpHistRepo.findByEmployees(companyID, employeeIds, datePeriod.datesBetween());
+    	
+    	List<String> hisIdAll = new ArrayList<String>();
+    	affWrkPlcMap.entrySet().forEach(affWrkPlc -> {
+    		hisIdAll.addAll(affWrkPlc.getValue().stream().map(c-> c.getHistoryItems().get(0).identifier()).collect(Collectors.toList()));
+    	});
+    	List<AffWorkplaceHistoryItem> affWrkPlcAllItems = affWkpHistItemRepo.findByHistIds(hisIdAll);
+    	List<String> workplaceIdsAll = affWrkPlcAllItems.stream().map(c->c.getWorkplaceId()).collect(Collectors.toList());
+    	Map<GeneralDate, List<WorkplaceInforParam>> lstWkpInfoAll = wkpExpService.getWorkplaceInforFromWkpIds(companyID, workplaceIdsAll, datePeriod);
+    	
+    	for (GeneralDate baseDate : datePeriod.datesBetween()) {
+    		Map<String, Optional<SWkpHistExport>> resultId = new HashMap<String, Optional<SWkpHistExport>>();
+    		
+	    	// get AffWorkplaceHistory
+	        List<AffWorkplaceHistory> affWrkPlcList = affWrkPlcMap.get(baseDate);
+	        
+	        // get AffWorkplaceHistoryItem
+	        List<String> hisIds = affWrkPlcList.stream().map(c-> c.getHistoryItems().get(0).identifier()).collect(Collectors.toList());
+	        List<AffWorkplaceHistoryItem> affWrkPlcItems = affWrkPlcAllItems.stream().filter(c-> hisIds.contains(c.getHistoryId())).collect(Collectors.toList());
+
+	        // Get workplace info.
+	        List<String> workplaceIds = affWrkPlcItems.stream().map(c->c.getWorkplaceId()).collect(Collectors.toList());
+	        List<WorkplaceInforParam> lstWkpInfo = lstWkpInfoAll.get(baseDate).stream().filter(c->workplaceIds.contains(c.getWorkplaceId())).collect(Collectors.toList());
+	        
+	        for (String employeeId : employeeIds) {
+	        	Optional<AffWorkplaceHistoryItem> affWrkPlcItem = affWrkPlcItems.stream().filter(c->c.getEmployeeId().equals(employeeId)).findAny();
+	        	Optional<AffWorkplaceHistory> affWrkPlc = affWrkPlcList.stream().filter(c->c.getEmployeeId().equals(employeeId)).findAny();
+	        	if(affWrkPlcItem.isPresent() && affWrkPlc.isPresent()) {
+	        		Optional<WorkplaceInforParam> wkpInfo = lstWkpInfo.stream().filter(c->c.getWorkplaceId().equals(affWrkPlcItem.get().getWorkplaceId())).findAny();
+	        		if(wkpInfo.isPresent()) {
+	        			Optional<SWkpHistExport> sWkpHistExport = Optional.of(SWkpHistExport.builder()
+	        					.dateRange(affWrkPlc.get().getHistoryItems().get(0).span())
+	        	                .employeeId(employeeId)
+	        	                .workplaceId(wkpInfo.get().getWorkplaceId())
+	        	                .workplaceCode(wkpInfo.get().getWorkplaceCode())
+	        	                .workplaceName(wkpInfo.get().getWorkplaceName())
+	        	                .wkpDisplayName(wkpInfo.get().getDisplayName())
+	        	                .build());
+	        			resultId.put(employeeId, sWkpHistExport);
+	        		}else {
+	        			resultId.put(employeeId, Optional.empty());
+	        		}
+	        	}else {
+	        		resultId.put(employeeId, Optional.empty());
+	        	}
+			}
+	        result.put(baseDate, resultId);
+    	}
+    	return result;
+	}
 
 	@Override
 	public AffWorkplaceHistoryItemExport getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {

@@ -19,7 +19,7 @@ public class AttendanceTimesCorrector {
 		workTimeZones.ifPresent(tz -> {
 			
 			/** 二回勤務使用するかを確認する */
-			if (tz.getTimeZones().size() == 1) return;
+			if (tz.getTimeZones().size() == 2) return;
 			
 			dailyRecord.getAttendanceLeave().flatMap(al -> al.getAttendanceLeavingWork(2)).ifPresent(al -> {
 				

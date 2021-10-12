@@ -1,15 +1,20 @@
 package nts.uk.ctx.exio.dom.exi.execlog;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 
 /**
 * 外部受入実行結果ログ
 */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class ExacExeResultLog extends AggregateRoot
@@ -48,12 +53,12 @@ public class ExacExeResultLog extends AggregateRoot
     /**
     * 定型区分
     */
-    private int standardAtr;
+    private StandardFlg standardAtr;
     
     /**
     * 実行形態
     */
-    private int executeForm;
+    private ExtExecutionMode executeForm;
     
     /**
     * 対象件数
@@ -73,28 +78,32 @@ public class ExacExeResultLog extends AggregateRoot
     /**
     * システム種類
     */
-    private int systemType;
+    private SystemType systemType;
     
     /**
     * 結果状態
     */
-    private int resultStatus;
+    private Optional<ExtResultStatus> resultStatus;
     
     /**
     * 処理終了日時
     */
-    private GeneralDateTime processEndDatetime;
+    private Optional<GeneralDateTime> processEndDatetime;
     
     /**
     * 処理区分
     */
-    private int processAtr;
+    private ProcessingFlg processAtr;
     
-    public static ExacExeResultLog createFromJavaType(Long version, String cid, String conditionSetCd, String externalProcessId, String executorId, String userId, GeneralDateTime processStartDatetime, int standardAtr, int executeForm, int targetCount, int errorCount, String fileName, int systemType, int resultStatus, GeneralDateTime processEndDatetime, int processAtr)
+/*    public static ExacExeResultLog createFromJavaType(Long version, String cid,
+    		String conditionSetCd, String externalProcessId, 
+    		String executorId, String userId, GeneralDateTime processStartDatetime,
+    		int standardAtr, int executeForm, int targetCount, int errorCount,
+    		String fileName, int systemType, int resultStatus, GeneralDateTime processEndDatetime, int processAtr)
     {
         ExacExeResultLog  exacExeResultLog =  new ExacExeResultLog(cid, conditionSetCd, externalProcessId, executorId, userId, processStartDatetime, standardAtr, executeForm, targetCount, errorCount, fileName, systemType, resultStatus, processEndDatetime,  processAtr);
         exacExeResultLog.setVersion(version);
         return exacExeResultLog;
-    }
+    }*/
     
 }

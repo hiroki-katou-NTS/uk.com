@@ -18,6 +18,8 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
@@ -164,6 +166,12 @@ public class DisplayRemainingHolidayNumber {
     private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
     
     @Inject
+    private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
+    
+    @Inject
+    private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
+    
+    @Inject
     private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
 
 	public YearHolidaySettingDto getAnnualLeaveSetting(String companyId, String employeeId, GeneralDate date) {
@@ -259,16 +267,19 @@ public class DisplayRemainingHolidayNumber {
         NursingVacationDto longTermCareVacation = new NursingVacationDto();
         if (childCareSettings.getManageType().equals(ManageDistinct.YES)) {
             // [NO.206]期間中の子の看護休暇残数を取得
-            ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
-                    employeeId, 
-                    new DatePeriod(closureStart, closureStart.addYears(1).addDays(-1)), 
-                    InterimRemainMngMode.OTHER, 
-                    date, 
-                    Optional.of(false), 
-                    Optional.empty(), 
-                    Optional.empty(), 
-                    Optional.empty(), 
-                    Optional.empty());
+//            ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+//                    employeeId, 
+//                    new DatePeriod(closureStart, closureStart.addYears(1).addDays(-1)), 
+//                    InterimRemainMngMode.OTHER, 
+//                    date, 
+//                    Optional.of(false), 
+//                    Optional.empty(), 
+//                    Optional.empty(), 
+//                    Optional.empty(), 
+//                    Optional.empty());
+         // 基準日時点の子の看護残数を取得する
+            ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareAdapter
+                    .getRemainingNumberChildCare(companyId, employeeId, GeneralDate.today());
             
             // OUTPUT「子の看護残数」をセットする
             childCareVacation = new NursingVacationDto(
@@ -281,17 +292,20 @@ public class DisplayRemainingHolidayNumber {
         
         if (nursingLeaveSetting.getManageType().equals(ManageDistinct.YES)) {
             // [NO.207]期間中の介護休暇残数を取得
-            ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-                    companyId, 
-                    employeeId, 
-                    new DatePeriod(closureStart, closureStart.addYears(1).addDays(-1)), 
-                    InterimRemainMngMode.OTHER, 
-                    date, 
-                    Optional.of(false), 
-                    new ArrayList<TempChildCareNurseManagementImport>(),
-                    Optional.empty(), 
-                    Optional.empty(), 
-                    Optional.empty());
+//            ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+//                    companyId, 
+//                    employeeId, 
+//                    new DatePeriod(closureStart, closureStart.addYears(1).addDays(-1)), 
+//                    InterimRemainMngMode.OTHER, 
+//                    date, 
+//                    Optional.of(false), 
+//                    new ArrayList<TempChildCareNurseManagementImport>(),
+//                    Optional.empty(), 
+//                    Optional.empty(), 
+//                    Optional.empty());
+         // 基準日時点の介護残数を取得する
+            ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberNursingAdapter
+                    .getRemainingNumberNursing(companyId, employeeId, GeneralDate.today());
             
             // OUTPUT「介護残数」をセットする
             longTermCareVacation = new NursingVacationDto(

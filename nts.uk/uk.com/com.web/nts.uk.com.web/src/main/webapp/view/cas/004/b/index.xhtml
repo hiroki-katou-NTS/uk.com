@@ -16,19 +16,11 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area-bottom">
-				<!-- B1_009 -->
-				<button class="proceed x-large" tabindex="4"
-					data-bind="click: decision">#{i18n.getText('CAS004_25')}</button>
-				<!-- B1_010 -->
-				<button tabindex="5" data-bind="click: closeDialog">#{i18n.getText('CAS004_26')}</button>
-			</div>
-
 			<div id="contents-area" class="fixed-flex-layout">
 
 				<div class="container">
 					<!-- B1_001 -->
-					<div style="margin-left: 30px; float: left"
+					<div style="margin-left: 40px; margin-right: 10px; float: left"
 						data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS004_6')}</div>
 					<!-- B1_002 -->
 					<div id="combo-box" style="float: left" tabindex="1"
@@ -68,6 +60,13 @@
 							}"></table>
 					</div>
 				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- B1_009 -->
+				<button class="proceed x-large" tabindex="4"
+					data-bind="click: decision">#{i18n.getText('CAS004_25')}</button>
+				<!-- B1_010 -->
+				<button tabindex="5" data-bind="click: closeDialog">#{i18n.getText('CAS004_26')}</button>
 			</div>
 			<!--  end content area -->
 		</ui:define>

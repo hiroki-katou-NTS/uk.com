@@ -115,7 +115,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		// #Msg_662
 		if (this.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)
 				&& this.getEndDate().getEndDate().isPresent()
-				&& this.getStartDate().after(this.getEndDate().getEndDate().get())) {
+				&& this.getStartDate().afterOrEquals(this.getEndDate().getEndDate().get())) {
 			throw new BusinessException("Msg_662");
 		}
 		// 「実行タスク設定．1日の繰り返し間隔．指定区分 = あり」 かつ「実行タスク設定．終了時刻設定．指定区分 = あり」の場合、
@@ -154,6 +154,9 @@ public class ExecutionTaskSetting extends AggregateRoot {
 				for (int day : days) {
 					for (int month : months) {
 						GeneralDate dateToCompare = GeneralDate.ymd(currentYear, month, day);
+						if (dateToCompare.before(range.start())) {
+							dateToCompare = GeneralDate.ymd(currentYear + 1, month, day);
+						}
 						if (!range.contains(dateToCompare)) {
 							isValid = false;
 							break;

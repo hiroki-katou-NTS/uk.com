@@ -6,7 +6,13 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  *
  */
 public enum HourlySegment {
+	/**
+	 * 時分
+	 */
 	HOUR_MINUTE(0, "時分"), 
+	/**
+	 * 分 
+	 */
 	MINUTE(1, "分");
 
 	/** The value. */

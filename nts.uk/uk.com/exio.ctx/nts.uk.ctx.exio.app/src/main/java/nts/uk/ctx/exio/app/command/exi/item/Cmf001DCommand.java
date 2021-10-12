@@ -17,5 +17,9 @@ public class Cmf001DCommand {
 	private StdAcceptCondSetCommand conditionSetting;
 
 	private List<StdAcceptItemCommand> listItem;
+	
+	private String conditionSetCd;
+	
+	private int system;
 
 }

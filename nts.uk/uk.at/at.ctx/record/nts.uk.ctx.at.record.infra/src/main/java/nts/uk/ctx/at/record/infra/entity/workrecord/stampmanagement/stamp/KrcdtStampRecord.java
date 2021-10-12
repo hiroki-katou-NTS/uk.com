@@ -4,12 +4,13 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -29,8 +30,10 @@ public class KrcdtStampRecord extends UkJpaEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KrcdtStampRecordPk pk;
+	@Id
+	@Basic(optional = false)
+	@Column(name = "STAMP_RECORD_ID")
+	public String stampRecordId;
 	
  	/**
 	 * CID
@@ -45,10 +48,31 @@ public class KrcdtStampRecord extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "DISPLAY_STAMP_ART")
 	public String stampTypeDisplay;
+	
+	/**
+	 * 契約コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
+	
+	/**
+	 * 打刻カード番号
+	 */
+	@Basic(optional = false)
+	@Column(name = "CARD_NUMBER")
+	public String cardNumber;
+
+	/**
+	 * 打刻日時
+	 */
+	@Basic(optional = false)
+	@Column(name = "STAMP_DATE_TIME")
+	public GeneralDateTime stampDateTime;
 
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.stampRecordId;
 	}
 
 	public KrcdtStampRecord toUpdateEntity(StampRecord domain) {
