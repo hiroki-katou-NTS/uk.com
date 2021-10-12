@@ -42,7 +42,7 @@
             </div>
             <div class="table row overwrite">
                 <div class="cell" style="width: 85px;"></div>
-                <div id="B4" class="cell"
+                <div id="B4" class="cell" tabindex="2"
                      data-bind="ntsCheckBox: { checked: overwrite, enable: true}">#{i18n.getText('CMF006_11')}</div>
             </div>
             <div class="set-row">
@@ -52,9 +52,9 @@
         <div class="btn-function">
             <button id="copy"
                     data-bind="click: $vm.copy, enable : $root.errors.isEmpty"
-                    class="proceed" tabindex="2">#{i18n.getText('CMF006_12')}</button>
+                    class="proceed" tabindex="3">#{i18n.getText('CMF006_12')}</button>
             <button data-bind="click: $vm.cancel"
-                    class="normal" tabindex="3">#{i18n.getText('CMF006_13')}</button>
+                    class="normal" tabindex="4">#{i18n.getText('CMF006_13')}</button>
         </div>
     </ui:define>
 </ui:composition>

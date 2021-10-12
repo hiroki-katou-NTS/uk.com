@@ -12,13 +12,4 @@ public class DuplicateExOutCtgAuthCommand {
 
     /** 上書き */
     boolean overWrite;
-
-//    /** ロール種類 */
-//    int roleType;
-//
-//    /** 選択ロールID */
-//    int selectedRoleId;
-//
-//    /** 選択ロール名 */
-//    int selectedRoleName;
 }

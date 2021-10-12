@@ -52,25 +52,6 @@ public class DuplicateExOutCtgAuthCommandHandler extends CommandHandlerWithResul
                     source.isAvailable())))
             );
             isSuccess = true;
-
-//            for (ExOutCtgAuthSet source : sourceSettings) {
-//                val destinationOpt = destinationSettings.stream().filter(d -> d.getFunctionNo() == source.getFunctionNo()).findFirst();
-//                if (destinationOpt.isPresent()) {
-//                    if (!destinationOpt.get().isAvailable()) {
-//                        exOutAuthRepo.update(new ExOutCtgAuthSet(new ExOutCtgAvailabilityPermissionImpl(
-//                                source.getCompanyId(),
-//                                destinationRoleId,
-//                                source.getFunctionNo(),
-//                                source.isAvailable())));
-//                    }
-//                } else {
-//                    exOutAuthRepo.add(new ExOutCtgAuthSet(new ExOutCtgAvailabilityPermissionImpl(
-//                            source.getCompanyId(),
-//                            destinationRoleId,
-//                            source.getFunctionNo(),
-//                            source.isAvailable())));
-//                }
-//            }
         }
 
         return new DuplicateExOutputCtgAuthResult(isSuccess, destinationRoleId, isOverwrite);

@@ -47,11 +47,6 @@ module nts.uk.at.view.cmf006.a {
                 tabindex: 1
             });
             vm.fetchPermissionSettingList();
-            // vm.componentCcg025.columns([
-            //     { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
-            //     { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
-            //     { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
-            // ]);
             vm.fetchRoleList();
         }
 
@@ -82,6 +77,7 @@ module nts.uk.at.view.cmf006.a {
 
         mounted() {
             let vm = this;
+            $("#multi-list_container").focus();
         }
 
         /**
@@ -171,6 +167,13 @@ module nts.uk.at.view.cmf006.a {
         save(): void {
             const vm = this;
             vm.$blockui("invisible");
+
+            if (util.isNullOrEmpty(vm.roleId())) {
+                vm.$dialog.error({messageId: 'Msg_865'});
+                vm.$blockui("clear");
+                return;
+            }
+
             let command: IRegisterExOutCtgAuthSetCommand = {
                 roleId: vm.roleId(),
                 functionAuthSettings: ko.toJS(vm.permissionList()).map((i: any) => ({
@@ -201,7 +204,6 @@ module nts.uk.at.view.cmf006.a {
                 let result = getShared('dataShareCMF006A');
                 if (!_.isNil(result)) {
                     vm.componentCcg025.currentCode(result.copyDestinationRoleId);
-                    // vm.fetchAvailabilityPermission(vm.roleId());
                 }
             });
         }
