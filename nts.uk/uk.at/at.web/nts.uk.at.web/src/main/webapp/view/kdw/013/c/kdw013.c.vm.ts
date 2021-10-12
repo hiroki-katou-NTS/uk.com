@@ -316,6 +316,41 @@ module nts.uk.ui.at.kdw013.c {
 								</td>
                             </tr>
                         <!-- /ko -->
+						<!-- ko if: (itemId == 11) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											value: value,
+											option: {
+												width: '223px', 
+												numberGroup: true, 
+												decimallength: 2, 
+												currencyformat: 'JPY'
+											},
+											required: false,
+											enable: true,
+											}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: (itemId == 12) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											value: value,
+											option: {width: '233px'},
+											required: false,
+											enable: true,
+											}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
 	                </tbody>
 	            </table>
 			</div>
@@ -510,6 +545,8 @@ module nts.uk.ui.at.kdw013.c {
                                 { itemId: 8, value: '', type: 0 },
 								{ itemId: 9, value: '', type: 0 },
 								{ itemId: 10, value: '', type: 0 },
+								{ itemId: 11, value: '', type: 0 },
+								{ itemId: 12, value: '', type: 0 },
                             ] 
                         }
                     ]
