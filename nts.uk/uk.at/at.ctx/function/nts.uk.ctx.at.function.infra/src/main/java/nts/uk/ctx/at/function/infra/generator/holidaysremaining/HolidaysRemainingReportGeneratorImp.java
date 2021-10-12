@@ -3949,8 +3949,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         boolean pauseItem = holiday.isPauseItem();
         boolean isUndigestedPauseJ = holiday.isUndigestedPause();
         boolean isNumberRemainingPauseJ = holiday.isNumberRemainingPause();
-        val isShow1itemJ = (pauseItem & (isUndigestedPauseJ & !isNumberRemainingPauseJ))
-                || (pauseItem & (!isUndigestedPauseJ & isNumberRemainingPauseJ));
+        val isShow1itemJ = checkJ1(dataSource,employee) &&((pauseItem & (isUndigestedPauseJ & !isNumberRemainingPauseJ))
+                || (pauseItem & (!isUndigestedPauseJ & isNumberRemainingPauseJ)));
 
         boolean copyNew = false;
         if(!checkG){
