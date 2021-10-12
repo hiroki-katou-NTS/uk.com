@@ -466,6 +466,7 @@ module nts.uk.com.view.cas013.a {
         openBModal(): void {
             let vm = this;
             nts.uk.ui.windows.setShared("cid_from_a", vm.companyId());
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.sub.modal('/view/cas/013/b/index.xhtml').onClosed(() => {
                 let employeeInf = nts.uk.ui.windows.getShared("employeeInf");
                 let cidSelected = nts.uk.ui.windows.getShared("cid");
@@ -477,12 +478,12 @@ module nts.uk.com.view.cas013.a {
                     vm.workplaceCode(employeeInf.workplaceCode);
                     vm.workplaceName(employeeInf.workplaceName);
                     vm.selectedUserID(employeeInf.userId);
+                    $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 }
                 if (!isNullOrUndefined(cidSelected)) {
                     vm.companyName(cidSelected.name);
                     vm.companyCode(cidSelected.code);
                     vm.companyId(cidSelected.id);
-
                 }
 
             });
