@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 //import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -39,9 +40,12 @@ public class StampDataReflectProcessService {
 
 	
 	// [2] 打刻を登録する
-	public static AtomTask registerStamp(Require require, StampRecord stampRecord,
+	public static Optional<AtomTask> registerStamp(Require require, StampRecord stampRecord,
 			Optional<Stamp> stamp) {
-		
+		if (stamp.isPresent() && require.existsStamp(stampRecord.getContractCode(), stampRecord.getStampNumber(),
+				stampRecord.getStampDateTime(), stamp.get().getType().getChangeClockArt())) {
+			return Optional.empty();
+		}
 		//if (employeeId.isPresent()) {
 			// $AtomTask = AtomTask:
 			AtomTask atomTask = AtomTask.of(() -> {
@@ -56,20 +60,7 @@ public class StampDataReflectProcessService {
 
 			});
 			// return 打刻データ反映処理結果#打刻データ反映処理結果($反映対象日, $AtomTask)
-			return atomTask;
-//		} else {
-//
-//			AtomTask atomTask = AtomTask.of(() -> {
-//				// require.打刻記録を追加する(打刻記録)
-//				require.insert(stampRecord);
-//				// if not 打刻.isEmpty
-//				if (stamp.isPresent()) {
-//					require.insert(stamp.get());
-//				}
-//
-//			});
-//			return atomTask;
-//		}
+			return Optional.of(atomTask);
 	}
 
 	/**
@@ -198,6 +189,10 @@ public class StampDataReflectProcessService {
 		//[R-4] 打刻記録を取得する
 		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
 				GeneralDateTime dateTime);
+		
+		//[R-10] 既に同じ打刻あるか
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber,
+				GeneralDateTime dateTime, ChangeClockArt changeClockArt);
 	}
 	
 	public static interface Require2 {
