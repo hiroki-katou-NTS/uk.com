@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 450,
+                width: 470,
                 height: 460
             };
         </script>
@@ -35,7 +35,7 @@
             <div class="table row"
                  data-bind="with: $vm.componentCcg025">
                 <div id="B3" class="cell" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF006_10')}</div>
-                <div id="B3_1" class="cell col" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF006_9')}</div>
+                <div id="B3_1" class="cell col" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF006_9')}</div>
                 <div id='B3_2' tabindex="1">
                     <ui:include src="/view/ccg/025/component/index.xhtml"/>
                 </div>

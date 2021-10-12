@@ -1,8 +1,8 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.cmf006.b {
+    import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
     import ccg025 = nts.uk.com.view.ccg025.a;
-    import setShared = nts.uk.ui.windows.setShared;
     import util = nts.uk.util;
 
     const fetch = {
@@ -13,7 +13,6 @@ module nts.uk.at.view.cmf006.b {
     class ViewModel extends ko.ViewModel {
         componentCcg025: ccg025.component.viewmodel.ComponentModel;
         listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
-        // roleName: KnockoutObservable<string> = ko.observable(null);
         roleType: KnockoutObservable<number> = ko.observable(3);
         sourceRoleId: KnockoutObservable<string> = ko.observable(null);
         sourceRoleCode: KnockoutObservable<string> = ko.observable(null);
@@ -47,7 +46,6 @@ module nts.uk.at.view.cmf006.b {
                 { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
                 { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
             ]);
-            // vm.componentCcg025.currentCode(null);
             vm.fetchRoleList();
         }
 
@@ -99,14 +97,16 @@ module nts.uk.at.view.cmf006.b {
             };
             vm.$ajax(fetch.copy, command).then((data: any) => {
                 if (data.success) {
-                    vm.$dialog.info({messageId: 'Msg_15'});
+                    let result = {
+                        copyDestinationRoleId: data.copyDestinationRoleId,
+                        overwrite: data.overwrite,
+                        success: data.success
+                    };
+                    setShared('dataShareCMF006A', result);
+                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                        vm.cancel();
+                    });
                 }
-                // let result = {
-                //     isSuccess: data.success,
-                //     copyDestinationRoleId: data.copyDestinationRoleId,
-                //     isOverwrite: data.overwrite
-                // };
-                // setShared('dataShareCMF006A', result);
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {

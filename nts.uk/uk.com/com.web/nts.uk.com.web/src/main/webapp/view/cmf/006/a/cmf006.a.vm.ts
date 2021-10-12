@@ -1,14 +1,13 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.cmf006.a {
-    import windows = nts.uk.ui.windows;
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import util = nts.uk.util;
     import getText = nts.uk.resource.getText;
 
     import ccg025 = nts.uk.com.view.ccg025.a;
     import ccg026 = nts.uk.com.view.ccg026;
     import ROLE_TYPE = ccg026.component.ROLE_TYPE;
+    import getShared = nts.uk.ui.windows.getShared;
 
     const fetch = {
         permissionInfos: "exio/exo/condset/getExOutCategory/",
@@ -199,12 +198,11 @@ module nts.uk.at.view.cmf006.a {
             };
             setShared('dataShareCMF006B', param);
             vm.$window.modal('com', '/view/cmf/006/b/index.xhtml').then((data: any) => {
-                // let result = nts.uk.ui.windows.getShared('dataShareCMF006A');
-                // if (result) {
-                //     if (result.isSuccess) {
-                //         vm.$dialog.info({messageId: 'Msg_15'});
-                //     }
-                // }
+                let result = getShared('dataShareCMF006A');
+                if (!_.isNil(result)) {
+                    vm.componentCcg025.currentCode(result.copyDestinationRoleId);
+                    // vm.fetchAvailabilityPermission(vm.roleId());
+                }
             });
         }
     }

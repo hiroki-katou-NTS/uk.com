@@ -39,19 +39,21 @@
                 </div>
 
                 <div id="right-content" class="fixed-flex-layout-right">
-                    <div class='right-title'>#{i18n.getText('CMF006_6')}</div>
-                    <div class="tab-content-2">
-                        <div id="permission-setting" data-bind="component: {
+                    <!--<div class='right-title'>#{i18n.getText('CMF006_6')}</div>-->
+                    <div id="permission-setting" data-bind="component: {
 								    name: 'ccg026-component',
 								    params: {
-								        compId: 'permissionList',
+								        label: {
+											require: true,
+											text: 'CMF006_6'
+										},
+										tabindex: 4,
 									    roleId: roleId,
 									    roleType: roleType,
 									    changeData: permissionList,
 									    maxRow: 15
                                     }
-								}"> </div>
-                    </div>
+						}"></div>
                 </div>
             </div>
         </div>
