@@ -25,6 +25,8 @@ import nts.uk.screen.at.app.kdw006.j.AcquireManHourRecordItems;
 import nts.uk.screen.at.app.kdw006.j.AcquireManHourRecordItemsDto;
 import nts.uk.screen.at.app.kdw006.j.GetDisplayFormat;
 import nts.uk.screen.at.app.kdw006.j.GetDisplayFormatDto;
+import nts.uk.screen.at.app.kdw006.j.GetScreenUsageDetails;
+import nts.uk.screen.at.app.kdw006.j.GetScreenUsageDetailsDto;
 import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWork;
 import nts.uk.screen.at.app.kdw006.k.AcquireSelectionHistoryOfWorkDto;
 import nts.uk.screen.at.app.kdw006.k.GetManHourRecordItemSpecifiedIDListDto;
@@ -80,6 +82,9 @@ public class Kdw006WS extends WebService {
 
 	@Inject
 	private RegisterNewFormatSettingsCommandHandler registerOrUpdateSetting;
+
+	@Inject
+	private GetScreenUsageDetails getScreenUsageDetails;
 
 	// 作業補足情報の選択項目を取得する
 	@POST
@@ -175,4 +180,10 @@ public class Kdw006WS extends WebService {
 		this.registerOrUpdateSetting.handle(command);
 	}
 
+	// ScreenQuery: 画面利用内容を取得する
+	@POST
+	@Path("view-j/get-screen-usage-details")
+	public GetScreenUsageDetailsDto getScreenUsageDetails(RegisterNewFormatSettingsCommand command) {
+		return this.getScreenUsageDetails.get();
+	}
 }
