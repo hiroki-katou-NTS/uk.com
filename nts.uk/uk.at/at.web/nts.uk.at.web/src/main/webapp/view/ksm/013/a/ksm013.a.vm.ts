@@ -189,6 +189,10 @@ module nts.uk.at.view.ksm013.a {
                 self.isnursingManager = isnursingManager;
                 self.license.subscribe(function(codeChanged: any) {
                     let dfd = $.Deferred();
+                    if (_.isEmpty(self.nurseClassificationCode())) {
+                        return;
+                    }
+                    
                     service.findDetail(self.nurseClassificationCode()).done((dataDetail: NurseDetailClassification) => {
                         if (codeChanged == 2 && codeChanged == dataDetail.license) {
                             self.officeWorker(dataDetail.officeWorker);
