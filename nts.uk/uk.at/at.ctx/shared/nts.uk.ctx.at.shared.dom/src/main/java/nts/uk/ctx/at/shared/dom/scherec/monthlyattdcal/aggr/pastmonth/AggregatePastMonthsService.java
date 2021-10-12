@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
@@ -53,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularL
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -60,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -498,6 +501,51 @@ public class AggregatePastMonthsService {
 			public ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId,
 					CalcFlexChangeDto calc) {
 				return require.flexConditionCalcResult(cacheCarrier, companyId, calc);
+			}
+
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return require.employmentClosureClones(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return require.closureClones(companyId, closureId);
+			}
+
+			@Override
+			public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+				return require.getWorkTime(workTimeCode);
+			}
+
+			@Override
+			public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+				return require.findCompensatoryLeaveComSet(companyId);
+			}
+
+			@Override
+			public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+				return require.getWorkSettingForFixedWork(code);
+			}
+
+			@Override
+			public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+				return require.getWorkSettingForFlowWork(code);
+			}
+
+			@Override
+			public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+				return require.getWorkSettingForFlexWork(code);
+			}
+
+			@Override
+			public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
+				return require.holidayAddtionSet(cid);
+			}
+
+			@Override
+			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode) {
+				return require.predetemineTimeSetByWorkTimeCode(cid, workTimeCode);
 			}
 		};
 	}
