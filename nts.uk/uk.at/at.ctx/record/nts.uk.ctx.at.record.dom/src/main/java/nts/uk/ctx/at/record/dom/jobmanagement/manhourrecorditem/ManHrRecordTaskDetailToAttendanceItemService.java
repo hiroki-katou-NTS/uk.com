@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+
 /**
  * DS: 工数実績作業詳細から勤怠項目に変換する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.工数実績項目.工数実績作業詳細から勤怠項目に変換する
@@ -22,7 +24,7 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 	 * @param taskDetails 作業リスト
 	 * @return List<ItemValue>
 	 */
-	public List<TaskItemValue> convert(Require require, List<TaskItemValue> attItems,
+	public List<ItemValue> convert(Require require, List<ItemValue> attItems,
 			List<ManHrTaskDetail> taskDetails) {
 		// $対象作業詳細 = 作業リスト：flatMap $.工数項目リスト
 		List<TaskItemValue> taskItemValues = taskDetails.stream().flatMap(m -> m.getTaskItemValues().stream())
@@ -35,7 +37,7 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 		List<ManHourRecordAndAttendanceItemLink> setting = require.get(itemLst);
 
 		// $更新後のItemValue = List.Empty
-		List<TaskItemValue> result = new ArrayList<>();
+		List<ItemValue> result = new ArrayList<>();
 
 		// $紐付け設定：
 		for (ManHourRecordAndAttendanceItemLink link : setting) {
@@ -52,12 +54,12 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 			// $対象勤怠項目 = 勤怠項目リスト：find $.itemId == $.勤怠項目ID
 			// $対象勤怠項目.value($値)
 
-			Optional<TaskItemValue> itemValueOpt = attItems.stream().filter(f -> f.getItemId() == link.getItemId())
+			Optional<ItemValue> itemValueOpt = attItems.stream().filter(f -> f.getItemId() == link.getItemId())
 					.findAny();
 
 			if (itemValueOpt.isPresent()) {
-				TaskItemValue itemValue = itemValueOpt.get();
-				itemValue.setValue(value);
+				ItemValue itemValue = itemValueOpt.get();
+				itemValue.value(value);
 
 				// $更新後のItemValue.Add($対象勤怠項目)
 				result.add(itemValue);

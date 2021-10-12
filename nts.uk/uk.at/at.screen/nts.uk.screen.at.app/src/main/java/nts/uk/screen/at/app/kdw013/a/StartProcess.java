@@ -1,13 +1,15 @@
 package nts.uk.screen.at.app.kdw013.a;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.ManHrInputDisplayFormat;
 import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.GetFavoriteTask;
 import nts.uk.screen.at.app.kdw013.query.GetFavoriteTaskDto;
@@ -21,8 +23,6 @@ import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
  */
 @Stateless
 public class StartProcess {
-	
-	
 	
 	@Inject
 	private StartManHourInputScreenQuery manHourQuery;
@@ -47,7 +47,7 @@ public class StartProcess {
 
 		// 2. call($勤怠項目リスト)
 		AttendanceItemMasterInformationDto itemMasterInfo = this.getWorkDataMasterInformation
-				.getAttendanceItemMasterInformation(collectItemList(manHourInput));
+				.getAttendanceItemMasterInformation(collectItemList(manHourInput.getManHrInputDisplayFormat()));
 
 		result.setItemMasterInfo(itemMasterInfo);
 
@@ -67,19 +67,10 @@ public class StartProcess {
 		return result;
 	}
 	
-	private List<Integer> collectItemList(StartManHourInput manHourInput) {
+	private List<Integer> collectItemList(Optional<ManHrInputDisplayFormat> ManHrOpt) {
 
-		List<Integer> result = new ArrayList<>();
-
-		manHourInput.getManHrInputDisplayFormat().ifPresent(x -> {
-			List<Integer> aItems = x.getRecordColumnDisplayItems().stream().map(di -> di.getAttendanceItemId())
-					.collect(Collectors.toList());
-
-			if (aItems.isEmpty()) {
-				result.addAll(aItems);
-			}
-		});
-		return result;
+		return ManHrOpt.map(manHr -> manHr.getRecordColumnDisplayItems().stream().map(di -> di.getAttendanceItemId())
+				.collect(Collectors.toList())).orElse(Collections.EMPTY_LIST);
 	}
 
 }

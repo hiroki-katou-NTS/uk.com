@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 /**
  * Temporary
@@ -25,5 +26,5 @@ public class ManHrRecordConvertResult {
 	private final List<ManHrTaskDetail> taskList;
 	
 	/** 実績内容 */
-	private final List<TaskItemValue> manHrContents;
+	private final List<ItemValue> manHrContents;
 }
