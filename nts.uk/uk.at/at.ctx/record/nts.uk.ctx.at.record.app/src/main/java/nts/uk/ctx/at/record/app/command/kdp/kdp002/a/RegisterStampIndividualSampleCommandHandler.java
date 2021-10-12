@@ -429,5 +429,6 @@ public class RegisterStampIndividualSampleCommandHandler
 		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
 			return closureRepo.findByListId(companyId, closureId);
 		}
+
 	}
 }

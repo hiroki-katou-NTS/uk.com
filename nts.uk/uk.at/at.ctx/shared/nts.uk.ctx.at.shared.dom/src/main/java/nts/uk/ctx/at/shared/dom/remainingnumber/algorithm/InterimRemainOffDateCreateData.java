@@ -756,11 +756,13 @@ public class InterimRemainOffDateCreateData {
 		// 所定時間を取得
 		Integer predTime = WorkTimeIsFluidWork.getTimeByWorkTimeTypeCode(require, workTimeCode, wkTypeCd);
 		// 取得した時間を設定
-		result.getOccurrenceDetailData().forEach(x -> {
+		List<OccurrenceUseDetail> occurrenceDetailData = result.getOccurrenceDetailData();
+		occurrenceDetailData.forEach(x -> {
 			if (x.getWorkTypeAtr().equals(WorkTypeClassification.SubstituteHoliday)) {
 				x.setSubstituteHolidayTime(Optional.ofNullable(new AttendanceTime(predTime)));
 			}
 		});
+		result.setOccurrenceDetailData(occurrenceDetailData);
 	}
 
 	/**
@@ -1514,6 +1516,7 @@ public class InterimRemainOffDateCreateData {
 			if (x.getWorkTypeAtr().equals(workTypeClass)) {
 				OccurrenceUseDetail useDetail = new OccurrenceUseDetail(days, true, x.getWorkTypeAtr());
 				useDetail.setVacationUsageTimeDetails(x.getVacationUsageTimeDetails());
+				useDetail.setSubstituteHolidayTime(x.getSubstituteHolidayTime());
 				return useDetail;
 			}
 			return x;

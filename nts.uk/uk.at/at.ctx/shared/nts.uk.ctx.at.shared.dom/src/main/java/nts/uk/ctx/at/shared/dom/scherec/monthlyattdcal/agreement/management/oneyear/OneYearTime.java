@@ -44,6 +44,11 @@ public class OneYearTime {
 		return new OneYearTime(erAlTime, new AgreementOneYearTime(0));
 	}
 	
+	public static OneYearTime of(OneYearErrorAlarmTime erAlTime) {
+
+		return new OneYearTime(erAlTime, new AgreementOneYearTime(0));
+	}
+	
 	/** エラーチェック */
 	public ExcessState check(AgreementOneYearTime target) {
 		

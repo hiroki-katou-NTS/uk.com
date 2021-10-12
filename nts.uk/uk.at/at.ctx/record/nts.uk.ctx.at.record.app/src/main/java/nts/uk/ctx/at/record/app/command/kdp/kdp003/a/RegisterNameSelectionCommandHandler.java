@@ -404,6 +404,7 @@ public class RegisterNameSelectionCommandHandler
 			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 
+
 		@Override
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
@@ -419,5 +420,6 @@ public class RegisterNameSelectionCommandHandler
 		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
 			return closureRepo.findByListId(companyId, closureId);
 		}
+
 	}
 }

@@ -345,6 +345,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             },
                             agentMode: vm.isAgentMode()
                         };
+                        params.applicationNew.employeeID = _.isEmpty(vm.application().employeeIDLst()) ? null : vm.application().employeeIDLst()[0];
+                        params.applicationNew.enteredPerson = vm.$user.employeeId;
                         params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
                         params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
                         return vm.$ajax(API.checkRegister, params);

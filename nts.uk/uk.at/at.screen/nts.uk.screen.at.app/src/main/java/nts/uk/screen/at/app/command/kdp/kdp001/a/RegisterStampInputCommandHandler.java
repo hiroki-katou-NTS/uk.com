@@ -435,7 +435,7 @@ public class RegisterStampInputCommandHandler
 				ChangeClockArt changeClockArt) {
 			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
-
+		
 		@Override
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
