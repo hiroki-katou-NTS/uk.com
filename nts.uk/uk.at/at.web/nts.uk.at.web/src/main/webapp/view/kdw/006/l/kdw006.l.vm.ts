@@ -132,7 +132,7 @@ module nts.uk.at.view.kmk006.l {
             }
             var hisLocal: HistoryItem[] = ko.unwrap(vm.lstWpkHistory);
 
-            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.ADD) {
+            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.ADD || ko.unwrap(vm.screenMode) === SCREEN_MODE.NEW) {
                 vm.$blockui('invisible')
                     .then(() => {
                         vm.$ajax('at', API.RESISTER, param)
