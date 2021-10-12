@@ -160,7 +160,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
 					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
 					{ headerText: "CSVヘッダ名", 	key: "selectedCsvItemNo",	dataType: 'number',	width: 220, ntsControl: 'Combobox' },
-					{ headerText: "データ", 				key: "csvData", 				dataType: 'string',		width: 120	}
+					{ headerText: "サンプルデータ", 				key: "csvData", 				dataType: 'string',		width: 120	}
 				],
 		        features: [
 		          {
@@ -191,8 +191,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		      });
 		}
 		
-		isDeletable() {
-			return true;
+		removeItem(target){
+			let self = this;
+			let index = self.layoutItemNoList().findIndex((item) => item.itemNo === target);
+			self.layoutItemNoList.splice(index, 1);
 		}
 
 		checkError(){
