@@ -84,10 +84,8 @@ public class EmployeeCodeCanonicalization {
 	}
 
 	private IntermediateResult canonicalize(RevisedDataRecord revisedData, String employeeId) {
-		
-		return IntermediateResult.create(
-				revisedData,
-				new CanonicalItem(itemNoEmployeeId, employeeId));
+		return IntermediateResult.create(revisedData)
+				.addCanonicalized(CanonicalItem.of(itemNoEmployeeId, employeeId));
 	}
 	
 	public static interface Require {

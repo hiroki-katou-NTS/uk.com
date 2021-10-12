@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 
 import static java.util.stream.Collectors.*;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import lombok.Value;
@@ -27,28 +26,6 @@ public class IntermediateResult {
 		return new IntermediateResult(
 				revisedData.getRowNo(),
 				CanonicalItemList.of(revisedData.getItems()));
-	}
-	
-	/**
-	 * 作る
-	 * @param source 全部入り
-	 * @param canonicalizedItems 正準化された項目のリスト
-	 * @param targetItemNos 正準化対象となる項目Noのリスト
-	 * @return
-	 */
-	public static IntermediateResult create(RevisedDataRecord source, CanonicalItem canonicalizedItem) {
-		return create(source, new CanonicalItemList(Arrays.asList(canonicalizedItem)));
-	}
-	
-	/**
-	 * 新しくインスタンスを生成する
-	 * @param source 全部入り
-	 * @param canonicalizedItems 正準化された項目のリスト
-	 * @param targetItemNos 正準化対象となる項目Noのリスト
-	 * @return
-	 */
-	public static IntermediateResult create(RevisedDataRecord source, CanonicalItemList canonicalizedItems) {
-		return create(source).addCanonicalized(canonicalizedItems);
 	}
 	
 	/**
