@@ -278,11 +278,13 @@ public class GetRemainNumberConfirmInfo {
 				((LeaveOccurrDetail) x).judgeDigestiveStatus(GeneralDate.today()) == DigestionAtr.UNUSED )&& 
 				!x.getDateOccur().isUnknownDate(); // 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
 			}).collect(Collectors.toList());
-			List<GeneralDate> listDateLine = undigestInfoFils.stream().map( x->((LeaveOccurrDetail) x).getDeadline() ).collect(Collectors.toList());
-			listDateLine = listDateLine.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
-			GeneralDate dateMin = listDateLine.get(0);
+			
 			
 			if (!undigestInfoFils.isEmpty()) {
+				List<GeneralDate> listDateLine = undigestInfoFils.stream().map( x->((LeaveOccurrDetail) x).getDeadline() ).collect(Collectors.toList());
+				listDateLine = listDateLine.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
+				GeneralDate dateMin = listDateLine.get(0);
+				
 				// 2.取得した逐次発生の休暇明細一覧　があるの場合
 				String text = "";
 				List<LeaveOccurrDetail> occurrDetailNews = undigestInfoFils.stream().map(c-> (LeaveOccurrDetail)c ).collect(Collectors.toList());
@@ -296,8 +298,7 @@ public class GetRemainNumberConfirmInfo {
 					// 探した逐次発生の休暇明細一覧．発生数．時間数 - 探した逐次発生の休暇明細一覧．未相殺数．時間数
 					for (LeaveOccurrDetail x : occurrDetailNews) {
 						if(x.getDeadline().equals(dateMin)) {
-							time = time + (x.getNumberOccurren().getTime().get().v()
-								- x.getUnbalanceNumber().getTime().get().v());
+							time = time + x.getUnbalanceNumber().getTime().get().v();
 						}
 					}
 
@@ -310,7 +311,7 @@ public class GetRemainNumberConfirmInfo {
 					double day = 0.0;
 					for (LeaveOccurrDetail x : occurrDetailNews) {
 						if(x.getDeadline().equals(dateMin)) {
-							day = day + x.getNumberOccurren().getDay().v();
+							day = day + x.getUnbalanceNumber().getDay().v();
 						}
 					}
 					dayCloseDeadline = text + " " + day + TextResource.localize("KDL005_47");
