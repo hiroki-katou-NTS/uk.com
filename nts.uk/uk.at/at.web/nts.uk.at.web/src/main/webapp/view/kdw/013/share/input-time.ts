@@ -135,7 +135,7 @@ module nts.uk.ui.at.kdw013.share {
             const $error = document.createElement('div');
             let update: KnockoutObservable<boolean> = allBindingsAccessor.get('update');
             const hasError: KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
-			const showRange: KnockoutObservable<boolean> = allBindingsAccessor.get('showRange');
+			const showInputTime: KnockoutObservable<boolean> = allBindingsAccessor.get('showInputTime');
 			const rangeParam: KnockoutObservable<number | null> = allBindingsAccessor.get('range');
             const excludeTimes: KnockoutObservableArray<BussinessTime> = allBindingsAccessor.get('exclude-times');
             const value = valueAccessor();
@@ -150,11 +150,9 @@ module nts.uk.ui.at.kdw013.share {
                     const start = ko.unwrap(startTime);
                     const end = ko.unwrap(endTime);
 
-                    if (_.isNil(start) || _.isNil(end) || start > end || showRange && !showRange()) {	
-						rangeParam(null);
+                    if (_.isNil(start) || _.isNil(end) || start > end || showInputTime()) {	
                         return '';
                     }
-					rangeParam(end - start); 
                     return $i18n('KDW013_25') + ' '+ number2String(end - start);
                 },
                 disposeWhenNodeIsRemoved: element
@@ -335,13 +333,17 @@ module nts.uk.ui.at.kdw013.share {
 
             startTime.subscribe((s: number | null) => {
                 const e: number | null = ko.unwrap(endTime);
-
+				if(s && endTime()){
+					rangeParam(endTime() - s);	
+				}
                 validateRange(s, e);
             });
 
             endTime.subscribe((e: number | null) => {
                 const s: number | null = ko.unwrap(startTime);
-
+				if(e && startTime()){
+					rangeParam(e - startTime());	
+				}
                 validateRange(s, e);
             });
 
