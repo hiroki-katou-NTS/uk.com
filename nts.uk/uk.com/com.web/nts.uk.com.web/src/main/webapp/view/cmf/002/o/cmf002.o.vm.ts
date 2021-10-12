@@ -315,23 +315,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         todoScreenQ() {
             let self = this;
             $('.content.clearfix .body').attr('style', '');
-            let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD")
-                .diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
-
-            if (isNextGetData) {
-                alertError({messageId: "Msg_662"});
-                return;
-            } else {
-                $('#P6_1').ntsError('clear');
-            }
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
             error.clearAll();
-            let catelogoryId: number = _.find(self.listCondition(), {'code': self.selectedConditionCd()}).catelogoryId;
-            let isNextGetData: boolean = moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").diff(moment.utc(self.periodDateValue().endDate, "YYYY/MM/DD")) > 0;
-            if (!isNextGetData) {
-                let data: ExOutCtgDto = self.exOutCtgDto();
+            let data: ExOutCtgDto = self.exOutCtgDto();
                 if (data.categorySet == model.CATEGORY_SETTING.DATA_TYPE) {
                     $('#ex_output_wizard').ntsWizard("goto", 1);
                     self.isPNextToR(false);
@@ -342,9 +330,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     self.isPNextToR(true);
                     self.initScreenR();
                 }
-            }
         }
-
         //find list id from list code
         findListId(dataListCode: Array<string>): Array<string> {
             return _.filter(this.dataCcg001, function (o) {
