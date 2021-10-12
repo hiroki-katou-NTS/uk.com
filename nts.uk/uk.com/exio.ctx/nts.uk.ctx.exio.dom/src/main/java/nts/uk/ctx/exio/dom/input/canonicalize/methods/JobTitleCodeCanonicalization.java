@@ -51,8 +51,7 @@ public class JobTitleCodeCanonicalization {
 
 	private IntermediateResult canonicalize(IntermediateResult canonicalizingData, String jobTitleId) {
 		return canonicalizingData.addCanonicalized(
-				CanonicalItem.of(itemNoJobTitleId, jobTitleId),
-				itemNoJobTitleCode);
+				CanonicalItem.of(itemNoJobTitleId, jobTitleId));
 	}
 
 	public static interface Require {

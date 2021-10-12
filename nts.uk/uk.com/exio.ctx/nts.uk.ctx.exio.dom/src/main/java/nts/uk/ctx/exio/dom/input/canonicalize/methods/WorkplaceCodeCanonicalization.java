@@ -56,8 +56,7 @@ public class WorkplaceCodeCanonicalization {
 
 	private IntermediateResult canonicalize(IntermediateResult canonicalizingData, String workplaceId) {
 		return canonicalizingData.addCanonicalized(
-				CanonicalItem.of(itemNoWorkplaceId, workplaceId),
-				itemNoWorkplaceCode);
+				CanonicalItem.of(itemNoWorkplaceId, workplaceId));
 	}
 
 	public static interface Require {

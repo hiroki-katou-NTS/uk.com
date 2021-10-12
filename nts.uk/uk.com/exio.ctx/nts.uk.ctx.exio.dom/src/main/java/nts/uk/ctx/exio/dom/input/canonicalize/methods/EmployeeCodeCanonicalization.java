@@ -87,8 +87,7 @@ public class EmployeeCodeCanonicalization {
 		
 		return IntermediateResult.create(
 				revisedData,
-				new CanonicalItem(itemNoEmployeeId, employeeId),
-				itemNoEmployeeCode);
+				new CanonicalItem(itemNoEmployeeId, employeeId));
 	}
 	
 	public static interface Require {

@@ -50,6 +50,6 @@ public class DateTimeCanonicalization {
 		val datetime = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), hour, minute, 0);
 		val item = CanonicalItem.of(itemNoDateTime, datetime);
 		
-		return IntermediateResult.create(revisedData, item, itemNoDate, itemNoTime);
+		return IntermediateResult.create(revisedData, item);
 	}
 }
