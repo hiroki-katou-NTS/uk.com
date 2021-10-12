@@ -88,7 +88,7 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 		}
 
 		// return 工数実績変換結果#工数実績変換結果(日別勤怠(Work).年月日,$工数実績リスト,$勤怠項目値)
-		List<TaskItemValue> manHrContents = itemValues.stream().map(m -> new TaskItemValue(m.getItemId(), m.getValue()))
+		List<ItemValue> manHrContents = itemValues.stream().map(m -> new ItemValue(null, null, m.getItemId(), m.getValue()))
 				.collect(Collectors.toList());
 
 		return new ManHrRecordConvertResult(inteDaiy.getYmd(), manHrRecords, manHrContents);
