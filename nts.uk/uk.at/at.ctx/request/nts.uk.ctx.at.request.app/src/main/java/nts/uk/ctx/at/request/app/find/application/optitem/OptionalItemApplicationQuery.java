@@ -187,13 +187,13 @@ public class OptionalItemApplicationQuery {
                         optionalItem.getCalcResultRange().getInputUnit().get().getNumberItemInputUnit().ifPresent(unit -> {
                             switch (unit) {
                                 case ONE_HUNDREDTH:
-                                    if (times.doubleValue() % 0.01 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (!times.remainder(new BigDecimal("0.01")).equals(BigDecimal.ZERO)) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
                                 case ONE_TENTH:
-                                    if (times.doubleValue() % 0.1 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (!times.remainder(new BigDecimal("0.1")).equals(BigDecimal.ZERO)) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
                                 case ONE_HALF:
-                                    if (times.doubleValue() % 0.5 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (!times.remainder(new BigDecimal("0.5")).equals(BigDecimal.ZERO)) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
 //                            case ONE:
 //                                if (times.doubleValue() % 1 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));

@@ -102,7 +102,7 @@
                   </span>
                   <span v-if="item.unit || item.optionalItemAtr == 0">
                     <span>
-                      {{item.inputUnitOfTimeItem}}
+                      {{item.inputUnitOfItem}}
                     </span>
                     <span v-if="item.optionalItemAtr == 0">
                       {{'KAF020_32' | i18n}}
@@ -133,10 +133,17 @@
             <nts-number-editor
               v-bind:class="'item-' + item.optionalItemNo"
               v-model="item.number"
-              v-if="item.optionalItemAtr == 1"
+              v-if="item.optionalItemAtr == 1 && !item.inputCheckbox"
               v-bind:show-title="false"
               v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
+            />
+            <nts-checkbox
+                    style="text-align: center;"
+                    v-bind:class="'item-' + item.optionalItemNo"
+                    v-model="item.number"
+                    v-bind:value="1"
+                    v-if="item.optionalItemAtr == 1 && item.inputCheckbox"
             />
             <nts-number-editor
               v-bind:class="'item-' + item.optionalItemNo"

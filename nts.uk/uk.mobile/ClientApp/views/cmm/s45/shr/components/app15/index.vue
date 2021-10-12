@@ -108,7 +108,17 @@
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
             <label class="pl-4" v-if="item.time != null">{{item.time | timewd}}{{item.unit}}</label>
-            <label class="pl-4" v-if="item.number != null">{{ item.number }}{{item.unit}}</label>
+            <label class="pl-4" v-if="item.number != null && item.inputCheckbox">
+              <nts-checkbox
+                      style="display: inline-block;"
+                      v-bind:class="'item-' + item.optionalItemNo"
+                      v-model="item.number"
+                      v-bind:value="1"
+                      v-bind:disable="true"
+              />
+              {{item.unit}}
+            </label>
+            <label class="pl-4" v-if="item.number != null && !item.inputCheckbox">{{ item.number }}{{item.unit}}</label>
             <label class="pl-4" v-if="item.amount != null">{{ item.amount }}{{item.unit}}</label>
           </div>
         </div>
