@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.methods;
+package nts.uk.ctx.exio.dom.input.canonicalize;
 
 import static java.util.stream.Collectors.*;
 
@@ -6,9 +6,6 @@ import java.util.Optional;
 
 import lombok.Value;
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**

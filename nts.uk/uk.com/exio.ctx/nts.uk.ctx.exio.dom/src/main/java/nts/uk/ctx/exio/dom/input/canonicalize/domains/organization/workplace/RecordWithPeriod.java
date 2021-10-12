@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization.Items;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
