@@ -5547,6 +5547,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         this.annualDay = getText("KDW003_132", [annualLeave.annualLeaveRemain, timeString]);
                         if (annualLeave.annualLeaveRemain < 0)
                             $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
+                        else if (annualLeave.annualLeaveRemain == 0 && annualLeave.timeRemain < 0) 
+                            $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
                         else
                             $("#fixed-table td.remain-annual-day").css("color", "#06c");
                     }
