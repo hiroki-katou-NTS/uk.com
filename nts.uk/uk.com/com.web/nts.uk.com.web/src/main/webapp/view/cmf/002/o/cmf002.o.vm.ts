@@ -10,6 +10,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import Moment = moment.Moment;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     const textLink = nts.uk.resource.getText("CMF002_235");
 
     export class ScreenModel {
@@ -143,6 +144,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                             self.closureLists(closureExports);
 
                             self.exOutCtgDto(ex);
+                            self.periodDateValue({
+                                startDate: moment.utc().format("YYYY/MM/DD"),
+                                endDate: moment.utc().format("YYYY/MM/DD")
+                            });
                             // show61DatePeriod
                             //外部出期間区分
                             let outingPeriodClassific = ex.outingPeriodClassific;
@@ -150,25 +155,58 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                             if (outingPeriodClassific == OUTPUTCLASSS.DATE) {
                                 if (classificationToUse === TOUSE.DO_NOT_USE) {
                                     self.show61DatePeriod(true);
+
+                                    self.show61YmPeriod(false);
+                                    self.show61Date(false);
+                                    self.show81DatePeriod(false);
+                                    self.show81YmPeriod(false);
+                                    self.show81Date(false);
                                 } else {
                                     self.show81DatePeriod(true);
+
+                                    self.show61DatePeriod(false);
+                                    self.show61YmPeriod(false);
+                                    self.show61Date(false);
+                                    self.show81YmPeriod(false);
+                                    self.show81Date(false);
                                 }
                             }
                             if (outingPeriodClassific == OUTPUTCLASSS.YEAR_MONTH) {
                                 if (classificationToUse === TOUSE.DO_NOT_USE) {
                                     self.show61YmPeriod(true);
+                                    self.show61DatePeriod(false);
+                                    self.show61Date(false);
+                                    self.show81DatePeriod(false);
+                                    self.show81YmPeriod(false);
+                                    self.show81Date(false);
                                 } else {
                                     self.show81YmPeriod(true);
+                                    self.show61DatePeriod(false);
+                                    self.show61YmPeriod(false);
+                                    self.show61Date(false);
+                                    self.show81DatePeriod(false);
+                                    self.show81Date(false);
                                 }
                             }
                             if (outingPeriodClassific == OUTPUTCLASSS.REFERENCE_DATE) {
                                 let date =  moment.utc().format("YYYY/MM/DD");
                                 self.date61(date);
                                 self.show61Date(true);
+                                self.show61DatePeriod(false);
+                                self.show61YmPeriod(false);
+                                self.show81DatePeriod(false);
+                                self.show81YmPeriod(false);
+                                self.show81Date(false);
 
                             }
                             if (outingPeriodClassific == OUTPUTCLASSS.NO_SETTING) {
                                 self.show81Date(true);
+                                self.show61DatePeriod(false);
+                                self.show61YmPeriod(false);
+                                self.show61Date(false);
+                                self.show81DatePeriod(false);
+                                self.show81YmPeriod(false);
+
                             }
                         }
                     });
@@ -189,8 +227,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
             self.closureId.subscribe((closureId) => {
                 let cl = _.find(self.closureLists(), {'closureId': closureId});
-                let startDate = cl.startDate;
-                let endDate = cl.endDate;
+                let startDate = null;
+                let endDate = null;
+                if(!isNullOrUndefined(cl)){
+                     startDate = cl.startDate;
+                     endDate = cl.endDate;
+                }
                 if (self.show81Date()) {
                     self.periodDateValue({
                         startDate :null,
