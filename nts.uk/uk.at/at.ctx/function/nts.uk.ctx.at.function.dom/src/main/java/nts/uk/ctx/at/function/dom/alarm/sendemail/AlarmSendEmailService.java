@@ -46,12 +46,6 @@ public class AlarmSendEmailService implements SendEmailService {
 	@Inject
 	private MailSender mailSender;
 	
-//	@Inject
-//	private EmployeeSprPubAlarmAdapter employeeSprPubAlarmAdapter;
-	
-	@Inject
-	private EmployeePubAlarmAdapter employeePubAlarmAdapter;
-	
 	@Inject
 	private AlarmListGenerator alarmListGenerator;
 	
@@ -117,26 +111,28 @@ public class AlarmSendEmailService implements SendEmailService {
 		Map<String, List<String>> mapWorkplaceAndListSid = new HashMap<>();
 
 		// ロールにより管理対象者を調整
-		Map<String, List<String>> managerTargetMap = this.adjustManagerByRole(companyId, managerTargetList, alarmExeMailSetting, executeDate);
 		// 取得したMap＜管理者ID、List＜対象者ID＞＞をチェック
-		if (managerTargetMap != null && managerTargetMap.size() > 0) {
-			// 管理者送信対象のアラーム抽出結果を抽出する
-			for (val entry : managerTargetMap.entrySet()) {
-				val targetPersonIds = entry.getValue().stream().filter(Objects::nonNull).collect(Collectors.toList()); //List＜対象者ID＞
-					// ＜抽出元＞: INPUT.アラーム抽出結果, ＜条件＞: 社員ID＝　ループ中のList＜対象者ID＞
-					List<ValueExtractAlarmDto> valueExtractAlarmManagers = valueExtractAlarmDtos.stream()
-							.filter(c -> targetPersonIds.contains(c.getEmployeeID())).collect(Collectors.toList());
-					try {
-						boolean isSuccess = sendMail(companyID, entry.getKey(), functionID,
-								valueExtractAlarmManagers, mailSettingsParamDto.getSubjectAdmin(),
-								mailSettingsParamDto.getTextAdmin(), currentAlarmCode,
-								useAuthentication, mailSettingAdmin, senderAddress);
-						if (!isSuccess) {
-							errors.add(entry.getKey());
-						}
-					} catch (SendMailFailedException e) {
-						throw e;
-					}
+		Map<String, List<String>> managerTargetMap = this.adjustManagerByRole(companyId, managerTargetList, alarmExeMailSetting, executeDate);
+		if (employeeTagetIds.isEmpty() && managerTargetMap.isEmpty()) {
+			throw new BusinessException("Msg_2295");
+		}
+
+		// 管理者送信対象のアラーム抽出結果を抽出する
+		for (val entry : managerTargetMap.entrySet()) {
+			val targetPersonIds = entry.getValue().stream().filter(Objects::nonNull).collect(Collectors.toList()); //List＜対象者ID＞
+			// ＜抽出元＞: INPUT.アラーム抽出結果, ＜条件＞: 社員ID＝　ループ中のList＜対象者ID＞
+			List<ValueExtractAlarmDto> valueExtractAlarmManagers = valueExtractAlarmDtos.stream()
+					.filter(c -> targetPersonIds.contains(c.getEmployeeID())).collect(Collectors.toList());
+			try {
+				boolean isSuccess = sendMail(companyID, entry.getKey(), functionID,
+						valueExtractAlarmManagers, mailSettingsParamDto.getSubjectAdmin(),
+						mailSettingsParamDto.getTextAdmin(), currentAlarmCode,
+						useAuthentication, mailSettingAdmin, senderAddress);
+				if (!isSuccess) {
+					errors.add(entry.getKey());
+				}
+			} catch (SendMailFailedException e) {
+				throw e;
 			}
 		}
 
