@@ -14,7 +14,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
  * 正準化の中間結果
- * 履歴の開始日のように、その値自体が正準化によって変更される場合もあり、その場合はbeforeとafterに同じ項目Noで変更前後の値が入る
+ * 正準化処理で使うメソッドがいくつか生えている
  */
 @Value
 public class IntermediateResult {
