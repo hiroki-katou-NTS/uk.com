@@ -3881,11 +3881,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 date.toString("yyyy/MM/dd")));
             }
             cells.merge(firstRow + 4, 0, 1, 2, true);
-            String yearHoliday = "";
-            AnnualLeaveUsedDayNumber yearHolidayDate = findAnnLeaUsedDaysAdapter.findUsedDays(employee.getEmployeeId(),criteriaDate);
-            if(yearHolidayDate!=null){
-                 yearHoliday = df.format(yearHolidayDate.v());
-            }
+            String yearHoliday = "0.0";
+           // AnnualLeaveUsedDayNumber yearHolidayDate = findAnnLeaUsedDaysAdapter.findUsedDays(employee.getEmployeeId(),criteriaDate);
+           // if(yearHolidayDate!=null){
+           //      yearHoliday = df.format(yearHolidayDate.v());
+           // }
              cells.get(firstRow + 4, 0).setValue(TextResource.localize("KDR001_72",yearHoliday));
         }
     }
