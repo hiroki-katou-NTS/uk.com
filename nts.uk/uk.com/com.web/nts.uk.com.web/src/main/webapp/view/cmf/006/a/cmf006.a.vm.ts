@@ -1,14 +1,13 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.cmf006.a {
-    import windows = nts.uk.ui.windows;
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import util = nts.uk.util;
     import getText = nts.uk.resource.getText;
 
     import ccg025 = nts.uk.com.view.ccg025.a;
     import ccg026 = nts.uk.com.view.ccg026;
     import ROLE_TYPE = ccg026.component.ROLE_TYPE;
+    import getShared = nts.uk.ui.windows.getShared;
 
     const fetch = {
         permissionInfos: "exio/exo/condset/getExOutCategory/",
@@ -29,7 +28,9 @@ module nts.uk.at.view.cmf006.a {
         //ccg026
         roleType: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.EMPLOYMENT);
         permissionList: KnockoutObservableArray<IPermission> = ko.observableArray([]);
-        isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
+        enableSave: KnockoutObservable<boolean> = ko.observable(true);
+        enableCopy: KnockoutObservable<boolean> = ko.observable(false);
         data: any;
 
         constructor(params: any) {
@@ -46,11 +47,6 @@ module nts.uk.at.view.cmf006.a {
                 tabindex: 1
             });
             vm.fetchPermissionSettingList();
-            // vm.componentCcg025.columns([
-            //     { headerText: getText("CCG025_3"), prop: 'roleId', width: 50, hidden: true },
-            //     { headerText: getText("CCG025_3"), prop: 'roleCode', width: 50 },
-            //     { headerText: getText("CCG025_4"), prop: 'name', width: 205 }
-            // ]);
             vm.fetchRoleList();
         }
 
@@ -65,10 +61,23 @@ module nts.uk.at.view.cmf006.a {
                 vm.roleId(roleId);
                 vm.findRoleById(roleId);
             });
+            vm.isUpdateMode.subscribe((newValue) => {
+                if (newValue) {
+                    vm.enableSave(true);
+                    vm.enableCopy(true);
+                }
+            });
+            vm.listRole.subscribe((newValue) => {
+                if (_.isEmpty(newValue)) {
+                    vm.enableSave(false);
+                    vm.enableCopy(false);
+                }
+            });
         }
 
         mounted() {
             let vm = this;
+            $("#multi-list_container").focus();
         }
 
         /**
@@ -109,11 +118,10 @@ module nts.uk.at.view.cmf006.a {
         fetchAvailabilityPermission(roleId: string): void {
             const vm = this;
             vm.$blockui("show");
-            console.log("RoleId: ", roleId);
             vm.$ajax(fetch.availabilityPermission + roleId).done((data) => {
-                if (data) {
+                if (!_.isEmpty(data)) {
                     vm.mappingAvailabilityPermission(data);
-                    vm.isNewMode(false);
+                    vm.enableCopy(true);
                 }
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -159,6 +167,13 @@ module nts.uk.at.view.cmf006.a {
         save(): void {
             const vm = this;
             vm.$blockui("invisible");
+
+            if (util.isNullOrEmpty(vm.roleId())) {
+                vm.$dialog.error({messageId: 'Msg_865'});
+                vm.$blockui("clear");
+                return;
+            }
+
             let command: IRegisterExOutCtgAuthSetCommand = {
                 roleId: vm.roleId(),
                 functionAuthSettings: ko.toJS(vm.permissionList()).map((i: any) => ({
@@ -167,6 +182,7 @@ module nts.uk.at.view.cmf006.a {
                 }))
             };
             vm.$ajax(fetch.register, command).then(data => {
+                vm.isUpdateMode(true);
                 vm.$dialog.info({messageId: 'Msg_15'});
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -185,12 +201,10 @@ module nts.uk.at.view.cmf006.a {
             };
             setShared('dataShareCMF006B', param);
             vm.$window.modal('com', '/view/cmf/006/b/index.xhtml').then((data: any) => {
-                // let result = nts.uk.ui.windows.getShared('dataShareCMF006A');
-                // if (result) {
-                //     if (result.isSuccess) {
-                //         vm.$dialog.info({messageId: 'Msg_15'});
-                //     }
-                // }
+                let result = getShared('dataShareCMF006A');
+                if (!_.isNil(result)) {
+                    vm.componentCcg025.currentCode(result.copyDestinationRoleId);
+                }
             });
         }
     }

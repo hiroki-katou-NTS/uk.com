@@ -1,8 +1,9 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.cmf006.b {
+    import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
     import ccg025 = nts.uk.com.view.ccg025.a;
-    import setShared = nts.uk.ui.windows.setShared;
+    import util = nts.uk.util;
 
     const fetch = {
         copy: "exio/exo/condset/exOutCtgAuthSet/copy"
@@ -12,7 +13,6 @@ module nts.uk.at.view.cmf006.b {
     class ViewModel extends ko.ViewModel {
         componentCcg025: ccg025.component.viewmodel.ComponentModel;
         listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
-        // roleName: KnockoutObservable<string> = ko.observable(null);
         roleType: KnockoutObservable<number> = ko.observable(3);
         sourceRoleId: KnockoutObservable<string> = ko.observable(null);
         sourceRoleCode: KnockoutObservable<string> = ko.observable(null);
@@ -85,21 +85,28 @@ module nts.uk.at.view.cmf006.b {
                 vm.$blockui("clear");
                 return;
             }
+            if (util.isNullOrEmpty(vm.destinationRoleId())) {
+                vm.$dialog.error({ messageId: 'Msg_865' });
+                vm.$blockui("clear");
+                return;
+            }
             let command: IDuplicateExOutCtgAuthCommand = {
                 sourceRoleId: vm.sourceRoleId(),
                 destinationRoleId: vm.destinationRoleId(),
                 overWrite: vm.overwrite()
             };
-            vm.$ajax(fetch.copy, command).then((data) => {
-                if (data.isSuccess) {
-                    vm.$dialog.info({messageId: 'Msg_15'});
+            vm.$ajax(fetch.copy, command).then((data: any) => {
+                if (data.success) {
+                    let result = {
+                        copyDestinationRoleId: data.copyDestinationRoleId,
+                        overwrite: data.overwrite,
+                        success: data.success
+                    };
+                    setShared('dataShareCMF006A', result);
+                    vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                        vm.cancel();
+                    });
                 }
-                // let result = {
-                //     isSuccess: data.isSuccess,
-                //     copyDestinationRoleId: data.copyDestinationRoleId,
-                //     isOverwrite: data.isOverwrite
-                // };
-                // setShared('dataShareCMF006A', result);
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {

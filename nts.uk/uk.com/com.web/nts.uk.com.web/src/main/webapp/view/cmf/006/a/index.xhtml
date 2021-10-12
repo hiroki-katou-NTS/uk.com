@@ -21,10 +21,10 @@
         <div id="functions-area">
             <div class="container">
                 <button id="registration"
-                        data-bind="click: $vm.save, enable : $root.errors.isEmpty"
+                        data-bind="click: $vm.save, enable : enableSave"
                         class="proceed" tabindex="1">#{i18n.getText('CMF006_3')}</button>
                 <button id="copy"
-                        data-bind="click: $vm.openScreenB"
+                        data-bind="click: $vm.openScreenB, enable : enableCopy"
                         class="normal" tabindex="2">#{i18n.getText('CMF006_4')}</button>
             </div>
         </div>
@@ -39,19 +39,21 @@
                 </div>
 
                 <div id="right-content" class="fixed-flex-layout-right">
-                    <div class='right-title'>#{i18n.getText('CMF006_6')}</div>
-                    <div class="tab-content-2">
-                        <div id="permission-setting" data-bind="component: {
+                    <!--<div class='right-title'>#{i18n.getText('CMF006_6')}</div>-->
+                    <div id="permission-setting" data-bind="component: {
 								    name: 'ccg026-component',
 								    params: {
-								        compId: 'permissionList',
+								        label: {
+											require: true,
+											text: 'CMF006_6'
+										},
+										tabindex: 4,
 									    roleId: roleId,
 									    roleType: roleType,
 									    changeData: permissionList,
 									    maxRow: 15
                                     }
-								}"> </div>
-                    </div>
+						}"></div>
                 </div>
             </div>
         </div>
