@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -265,6 +266,12 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	@Override
 	public void deleteByWorkplaceIdAndSid(String workplaceId, String sid) {
 		//TODO dev add method
+	}
+
+	@Override
+	public Optional<WorkplaceManager> getWorkplaceManagerByID(String id) {
+		// TODO dev add method
+		return Optional.empty();
 	}
 
 }
