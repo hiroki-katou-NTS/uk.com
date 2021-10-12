@@ -136,24 +136,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         List<String> empIdList = new ArrayList<>();
         //[ロール設定=true]
         if (sendingRole.isPresent() && sendingRole.get().isRoleSetting()) {
-           /* for (Map.Entry<String, List<String>> entry : employeeIdMap.entrySet()) {
-                if (!mailSendFlag) {
-                    break;
-                }
-                Map<String, String> roleMap = roleIdWorkDomService(entry.getValue());
-                //取得したMap＜社員ID、ロールID＞をループする
-                if (roleMap.size() <= 0) {
-                    mailSendFlag = false;
-                }
-                for (Map.Entry<String, String> role : roleMap.entrySet()) {
-                    OptionalInt range = roleAdaptor.findEmpRangeByRoleID(role.getValue());
-                    if (!range.isPresent() || range.getAsInt() == EmployeeReferenceRange.ONLY_MYSELF.value) {
-                        mailSendFlag = false;
-                        break;
-                    }
-
-                }
-            }*/
             //取得したアラームメール送信ロール．マスタチェック結果を就業担当へ送信をチェックする
             if (sendingRole.get().isSendResult()) {
                 //アラームリスト抽出結果にカテゴリ「マスタチェック（基本）のデータがあるかチェック
@@ -280,26 +262,16 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 // ドメインモデル「職場管理者」を取得
         List<WkpManagerImport> wkplManagerList = workplaceAdapter.findByWkpIdsAndDate(worplaceIdList, executeDate);
 
-        // Map＜管理者ID、List＜対象者ID＞＞にデータを追加
-        Map<String, List<String>> managerMap = wkplManagerList.stream()
-                .collect(Collectors.groupingBy(
-                        WkpManagerImport::getEmployeeId,
-                        Collectors.mapping(
-                                i -> wkplManagerList.stream()
-                                        .map(x -> x.getEmployeeId())
-                                        .findFirst()
-                                        .orElse(null),
-                                Collectors.toList()
-                        )
-                ));
+
         // ドメインモデル「アラームメール送信ロール」を取得する
         val mailSendingRole = alarmMailSendingRoleRepo.find(cid, IndividualWkpClassification.INDIVIDUAL.value);
 
         // ドメインモデル「ロール」を取得
         val roleList = mailAdapter.findByCompanyId(cid);
+        List<WkpManagerImport> removableList = new ArrayList<>();
 
         if (mailSendingRole.isPresent() && mailSendingRole.get().isRoleSetting()) {
-            for (val item : managerMap.entrySet()) {
+            for (val item : wkplManagerList) {
                 // 社員IDListから就業ロールIDを取得
 //				【Input】:List＜社員ID＞　＝　ループ中のList＜管理社ID＞ ,基準日　＝　システム日付
 //               OUTPUT: Map <EmployeeID, RoleID>
@@ -315,32 +287,37 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                                 return roleAdapter.getRoleSetFromUserId(userId, baseDate);
                             }
                         },
-                        Arrays.asList(item.getKey()),
+                        Arrays.asList(item.getEmployeeId()),
                         executeDate
                 );
                 if (empRoleMap.size() == 0) {
-                    managerMap.remove(item.getKey());
+                    removableList.add(item);
+                    //  managerMap.remove(item.getKey());
                 } else {
                     for (val entry : empRoleMap.entrySet()) {
                         val roleValue = entry.getValue();
                         val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
                         if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) { // case false
                             // Map＜管理者ID、List＜対象者ID＞＞にループ中管理者IDのRecordを除く
-                            managerMap.remove(item.getKey());
+                            // managerMap.remove(item.getKey());
+                            removableList.add(item);
                         }
                     }
                 }
             }
         }
-
-        return managerMap;
-        /*Map<String, List<String>> managerMap = new HashMap<>();
-        for (String worlPlaceId : worplaceIdList) {
-            List<WkpManagerImport> managerList = wkpManagerAdapter.findByPeriodAndBaseDate(worlPlaceId, GeneralDate.today());
-            if (!managerList.isEmpty()) {
-                managerMap.put(worlPlaceId, managerList.stream().map(x -> x.getEmployeeId()).collect(Collectors.toList()));
-            }
+        wkplManagerList.removeAll(removableList);
+        Map<String, List<String>> managerMap = new HashMap<>();
+        List<String> managerList = wkplManagerList.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
+        for (String item : managerList) {
+            managerMap.put(
+                    item,
+                    wkplManagerList
+                            .stream()
+                            .filter(x -> x.getEmployeeId().equals(item)).map(x -> x.getWorkplaceId())
+                            .collect(Collectors.toList())
+            );
         }
-        return managerMap;*/
+        return managerMap;
     }
 }

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.Subject;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.MailSettingsParamDto;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmDto;
+import nts.uk.ctx.at.function.dom.alarm.sendemail.ValueExtractAlarmManualDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
@@ -35,6 +36,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,55 +130,84 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
 
     @Override
     public Map<String, List<String>> alarmWorkplacesendEmail(Map<String, List<String>> administratorTarget,
-                                                             List<ValueExtractAlarmDto> listValueExtractAlarmDto,
+                                                             List<ValueExtractAlarmManualDto> listValueExtractAlarmDto,
                                                              AlarmListExecutionMailSetting mailSettingsNormal,
                                                              String currentAlarmCode, boolean useAuthentication) {
         val companyId = AppContexts.user().companyId();
         Integer functionID = 9; //function of Alarm list = 9
         Map<String, List<String>> errorTadmin = new HashMap<>();
         //Map＜アラーム抽出結果、List＜管理者ID＞＞
-        val mapAlarmExtractionResult = mapAlarmExtractionResult(administratorTarget, listValueExtractAlarmDto);
-        Optional<String> senderAddress = Optional.ofNullable(mailSettingsNormal.getSenderAddress().isPresent() ? mailSettingsNormal.getSenderAddress().get().v() : "");
-        for (Map.Entry<ValueExtractAlarmDto, List<String>> target : mapAlarmExtractionResult.entrySet()) {
+        //val mapAlarmExtractionResult = mapAlarmExtractionResult(administratorTarget, listValueExtractAlarmDto);
+
+        for (Map.Entry<String, List<String>> target : administratorTarget.entrySet()) {
+            String adminID = target.getKey();
+            List<ValueExtractAlarmManualDto> data = new ArrayList<>();
             // ループ中項目のList＜管理者ID＞をループする
 
             List<String> errorsAdmin = new ArrayList<>();
-            for (String adminID : target.getValue()) {
-
-                try {
-                    boolean isSucess = this.sendMail(companyId,
-                            adminID,
-                            functionID,
-                            listValueExtractAlarmDto,
-                            mailSettingsNormal.getContentMailSettings().get().getSubject().get().v(),
-                            mailSettingsNormal.getContentMailSettings().get().getText().get().v(),
-                            currentAlarmCode,
-                            useAuthentication,
-                            mailSettingsNormal.getContentMailSettings(),
-                            Optional.empty()
-                    );
-                    ;
-                    if (!isSucess) {
-                        errorsAdmin.add(adminID);
-                        System.out.println("send failed");
-                    } else {
-                        System.out.println("success send email");
-                    }
-                } catch (SendMailFailedException e) {
-                    throw e;
-                }
+            for (String workPlaceId : target.getValue()) {
+                List<ValueExtractAlarmManualDto> dataFilter = listValueExtractAlarmDto
+                        .stream()
+                        .filter(x -> x.getWorkplaceID().equals(workPlaceId))
+                        .collect(Collectors.toList());
+                data.addAll(dataFilter);
             }
-            if (!errorsAdmin.isEmpty()) {
-                errorTadmin.put(target.getKey().getWorkplaceID(), errorsAdmin);
-                errorsAdmin.clear();
+            data.sort(Comparator.comparing(ValueExtractAlarmManualDto::getWorkplaceCode));
+
+            List<ValueExtractAlarmDto> listDto = mapDataToExtract(data);
+            try {
+                boolean isSucess = this.sendMail(companyId,
+                        adminID,
+                        functionID,
+                        listDto,
+                        mailSettingsNormal.getContentMailSettings().get().getSubject().get().v(),
+                        mailSettingsNormal.getContentMailSettings().get().getText().get().v(),
+                        currentAlarmCode,
+                        useAuthentication,
+                        mailSettingsNormal.getContentMailSettings(),
+                        Optional.empty()
+                );
+                if (!isSucess) {
+                    errorsAdmin.add(adminID);
+                    for (String workPlaceId : target.getValue()) {
+                        errorTadmin.put(workPlaceId, errorsAdmin);
+                    }
+                    errorsAdmin.clear();
+                    System.out.println("send failed");
+                } else {
+                    System.out.println("success send email");
+                }
+            } catch (SendMailFailedException e) {
+                throw e;
             }
         }
         return errorTadmin;
     }
 
+    private List<ValueExtractAlarmDto> mapDataToExtract(List<ValueExtractAlarmManualDto> data) {
+        return data.stream().map(
+                x -> new ValueExtractAlarmDto(
+                        x.getGuid(),
+                        x.getWorkplaceID(),
+                        x.getHierarchyCd(),
+                        x.getWorkplaceName(),
+                        x.getEmployeeID(),
+                        x.getEmployeeCode(),
+                        x.getEmployeeName(),
+                        x.getAlarmValueDate(),
+                        x.getCategory(),
+                        x.getCategoryName(),
+                        x.getAlarmItem(),
+                        x.getAlarmValueMessage(),
+                        x.getComment(),
+                        x.getCheckedValue()
+                )
+        ).collect(Collectors.toList());
+    }
+
     @Override
     public List<String> alarmWorkplacesendEmail(List<String> empList,
-                                                List<ValueExtractAlarmDto> listValueExtractAlarmDto,
+                                                List<ValueExtractAlarmManualDto> listValueExtractAlarmDto,
                                                 AlarmListExecutionMailSetting mailSettingsNormal,
                                                 String currentAlarmCode,
                                                 boolean useAuthentication) {
@@ -184,12 +215,13 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
         List<String> errorsPerson = new ArrayList<>();
         empList = empList.stream().filter(x -> x != null).collect(Collectors.toList());
         val companyId = AppContexts.user().companyId();
+        List<ValueExtractAlarmDto> listDto = mapDataToExtract(listValueExtractAlarmDto);
         for (String emId : empList) {
             try {
                 boolean isSucess = this.sendMail(companyId,
                         emId,
                         9,
-                        listValueExtractAlarmDto,
+                        listDto,
                         mailSettingsNormal.getContentMailSettings().get().getSubject().get().v(),
                         mailSettingsNormal.getContentMailSettings().get().getText().get().v(),
                         currentAlarmCode,
