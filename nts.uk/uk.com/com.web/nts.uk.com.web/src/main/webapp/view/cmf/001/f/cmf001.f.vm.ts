@@ -4,7 +4,14 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	import info = nts.uk.ui.dialog.info;
 	import setShared = nts.uk.ui.windows.setShared;
 	import getShared = nts.uk.ui.windows.getShared;
-	
+
+	function deleteButton(required, data) {
+		if (required === false) {
+				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">削除</button>';
+		} else {
+				return '';
+		}
+	}
 
 	$(function() {
 		$("#layout-list").on("click",".delete-button",function(){
@@ -36,7 +43,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		selectedItem: KnockoutObservable<string> = ko.observable();
 		
 	    $grid!: JQuery;
-	    
+		
 		domainListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "ID", 					key: "domainId", 		width: 50 , 	hidden: true },
 			{ headerText: "受入ドメイン", 	key: "name", 			width: 280},
@@ -94,9 +101,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 
 		reloadPage(){
 			var self = this;
-			let dfd = $.Deferred();
 			self.getListData().done(function() {
-				dfd.resolve();
+				self.initGrid();
 			});
 		}
 		
@@ -147,7 +153,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		        virtualization: true,
 		        virtualizationMode: 'continuous',
 		        columns: [
-					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, ntsControl: 'DeleteButton'},
+					{ headerText: "削除", 				key: "required", 			dataType: 'boolean',	width: 50, formatter: deleteButton},
 					{ headerText: "NO", 					key: "itemNo", 				dataType: 'number',	width: 50, 	hidden: true },
 					{ headerText: "名称", 				key: "name", 				dataType: 'string',		width: 250},
 					{ headerText: "受入元", 				key: "isFixedValue",		dataType: 'number',	width: 130, ntsControl: 'SwitchButtons'},
@@ -159,12 +165,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		          },
 		        ],
 		        ntsControls: [
-		          {
-		            name: 'DeleteButton',
-		            text: '削除',
-		            controlType: 'DeleteButton',
-		            enable: true
-		          },
 		          {
 			            name: 'SwitchButtons',
 			            options: [{ value:0, text: 'CSV' },{ value:1, text: '固定値' }],
