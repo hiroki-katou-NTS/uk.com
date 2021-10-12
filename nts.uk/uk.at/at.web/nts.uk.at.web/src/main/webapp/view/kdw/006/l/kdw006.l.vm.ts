@@ -75,6 +75,8 @@ module nts.uk.at.view.kmk006.l {
 
         mounted() {
             const vm = this;
+
+            $('#single-list').focus();
         }
 
         addHistory() {
