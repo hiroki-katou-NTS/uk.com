@@ -75,7 +75,7 @@ public class WorkplaceCanonicalization implements DomainCanonicalization {
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		
 		List<IntermediateResult> revisedRecords = require.getAllRevisedDataRecords(context).stream()
-				.map(r -> IntermediateResult.noChange(r))
+				.map(r -> IntermediateResult.create(r))
 				.collect(toList());
 		
 		if (revisedRecords.isEmpty()) {

@@ -65,7 +65,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		val revised = revisedRecords.get(0);
 		
 		// 一旦中間オブジェクトに変換
-		IntermediateResult interm = IntermediateResult.noChange(revised);
+		IntermediateResult interm = IntermediateResult.create(revised);
 		
 		if (context.getMode() == ImportingMode.INSERT_ONLY) {
 			

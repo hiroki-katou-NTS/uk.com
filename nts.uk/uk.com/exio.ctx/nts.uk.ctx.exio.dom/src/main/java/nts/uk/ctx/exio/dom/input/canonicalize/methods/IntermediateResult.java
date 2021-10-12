@@ -23,8 +23,7 @@ public class IntermediateResult {
 	
 	CanonicalItemList items;
 	
-	public static IntermediateResult noChange(RevisedDataRecord revisedData) {
-		
+	public static IntermediateResult create(RevisedDataRecord revisedData) {
 		return new IntermediateResult(
 				revisedData.getRowNo(),
 				CanonicalItemList.of(revisedData.getItems()));
@@ -49,7 +48,7 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public static IntermediateResult create(RevisedDataRecord source, CanonicalItemList canonicalizedItems) {
-		return noChange(source).addCanonicalized(canonicalizedItems);
+		return create(source).addCanonicalized(canonicalizedItems);
 	}
 	
 	/**
