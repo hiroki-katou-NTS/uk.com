@@ -294,7 +294,7 @@ module nts.uk.ui.at.kdw013.c {
 											enable: true, 
 											required: false,
 											option: {
-												width: '80px',
+												width: '233px',
 												timeWithDay: true
 											}
 											 }" />
@@ -341,6 +341,24 @@ module nts.uk.ui.at.kdw013.c {
 						<!-- ko if: (itemId == 12) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											value: value,
+											option: {width: '233px'},
+											required: false,
+											enable: true,
+											}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: itemId == 13 || itemId == 14 || itemId == 15 || itemId == 16 || 
+						itemId == 17 || itemId == 18 || itemId == 19 || itemId == 20 || itemId == 21 || 
+						itemId == 22 || itemId == 23 || itemId == 24 || itemId == 25 || itemId == 26 || 
+						itemId == 27 || itemId == 28 || itemId == 29 -->
+							<tr>
+                                <td data-bind="text: itemId"></td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
@@ -486,7 +504,13 @@ module nts.uk.ui.at.kdw013.c {
                     if (settings) {
                         return settings.startManHourInputResultDto.taskFrameUsageSetting.frameSettingList;
                     }
-                    return [];
+                    //return [];
+					// fake data
+					return [{frameNo: 1, frameName: "物件名称", useAtr: 1},
+							{frameNo: 2, frameName: "プロジェクト", useAtr: 1},
+							{frameNo: 3, frameName: "設計フェーズ", useAtr: 1},
+							{frameNo: 4, frameName: "製造フェーズ", useAtr: 1},
+							{frameNo: 5, frameName: "ﾃｽﾄﾌｪｰｽﾞ", useAtr: 1}] 
                 }
             });
             this.taskFrameSettings.subscribe((t: a.TaskFrameSettingDto[]) => vm.taskBlocks.updateSetting(t));
@@ -550,7 +574,24 @@ module nts.uk.ui.at.kdw013.c {
 								{ itemId: 9, value: '', type: 0 },
 								{ itemId: 10, value: '', type: 0 },
 								{ itemId: 11, value: '', type: 0 },
-								{ itemId: 12, value: '', type: 0 }
+								{ itemId: 12, value: '', type: 0 },
+								{ itemId: 13, value: '', type: 0 },
+                                { itemId: 14, value: '', type: 0 },
+                                { itemId: 15, value: '', type: 0 },
+                                { itemId: 16, value: '', type: 0 },
+                                { itemId: 17, value: '', type: 0 },
+                                { itemId: 18, value: '', type: 0 },
+								{ itemId: 19, value: '', type: 0 },
+								{ itemId: 20, value: '', type: 0 },
+								{ itemId: 21, value: '', type: 0 },
+								{ itemId: 22, value: '', type: 0 },
+								{ itemId: 23, value: '', type: 0 },
+                                { itemId: 24, value: '', type: 0 },
+                                { itemId: 25, value: '', type: 0 },
+                                { itemId: 26, value: '', type: 0 },
+                                { itemId: 27, value: '', type: 0 },
+                                { itemId: 28, value: '', type: 0 },
+								{ itemId: 29, value: '', type: 0 }
                             ] 
                         }
                     ]
@@ -640,6 +681,7 @@ module nts.uk.ui.at.kdw013.c {
                             .confirm({ messageId: 'Msg_2094' })
                             .then((v: 'yes' | 'no') => {
                                 if (v === 'yes') {
+									$(vm.$el).find('.inputRange').ntsError("clear");
                                     vm.params.close("yes");
                                 }
                             });
@@ -649,10 +691,12 @@ module nts.uk.ui.at.kdw013.c {
                                 .confirm({ messageId: 'Msg_2094' })
                                 .then((v: 'yes' | 'no') => {
                                     if (v === 'yes') {
+										$(vm.$el).find('.inputRange').ntsError("clear");
                                          params.close();
                                     }
                                 });
                         } else {
+							$(vm.$el).find('.inputRange').ntsError("clear");	
                             params.close();
                         }
                     }
@@ -661,8 +705,8 @@ module nts.uk.ui.at.kdw013.c {
 
 		addTaskDetails(){
 			const vm = this;
-			if(vm.taskBlocks.taskDetailsView.length == 1){
-				_.find(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (i: TaskItemValue) => {i.itemId == 3}).value(vm.range().toString());	
+			if(vm.taskBlocks.taskDetailsView().length == 1){
+				_.find(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (i: TaskItemValue) => {return i.itemId == 3}).value(vm.range().toString());	
 			}
 			vm.taskBlocks.addTaskDetailsView();
 		}
@@ -675,7 +719,7 @@ module nts.uk.ui.at.kdw013.c {
             const { employeeId } = vm.$user;
             $.Deferred()
                 .resolve(true)
-                .then(() => $(vm.$el).find('input').trigger('blur'))
+                .then(() => {$(vm.$el).find('input').trigger('blur') && $(vm.$el).find('.inputRange').ntsError("hasError")})
                 .then(() => vm.errors() && vm.timeError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
