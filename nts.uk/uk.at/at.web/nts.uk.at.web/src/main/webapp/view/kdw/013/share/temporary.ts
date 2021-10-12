@@ -58,7 +58,7 @@ module nts.uk.ui.at.kdw013 {
 	export class TaskItemValue {
 		itemId: number;
 		lable: KnockoutObservable<string> = ko.observable('');
-		use: KnockoutObservable<boolean> = ko.observable(false);
+		use: KnockoutObservable<boolean> = ko.observable(true);
 		type: number;
 		value: KnockoutObservable<string>;
 		//options only use C screen

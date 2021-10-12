@@ -50,9 +50,11 @@ module nts.uk.ui.at.kdw013.c {
         box-sizing: border-box;
         margin-bottom: 10px;
     }
-	.edit-event table>tbody>tr>td>.ntsControl.inputTime input.nts-input{
-		width: 40px;
+	.edit-event table>tbody>tr>td>.ntsControl.fix input.nts-input{
 	    border: 1px solid #999;
+	}
+	.edit-event table>tbody>tr>td>.ntsControl.fix .error input.nts-input{
+		border-color: #ff6666;
 	}
     .edit-event table>tbody>tr>td>.ntsControl>input {
         width: 100%;
@@ -242,12 +244,13 @@ module nts.uk.ui.at.kdw013.c {
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
-									<div class="ntsControl inputTime">
+									<div class="ntsControl fix">
 										<input data-bind="ntsTimeEditor: {
 											value: value,
 											mode: 'time',
 											required: true,
 											enable: true,
+											option: {width: '40px'}
 											}" />
 									</div>
 								</td>
@@ -276,6 +279,41 @@ module nts.uk.ui.at.kdw013.c {
                                         items: options,
                                         visibleItemsCount:10
                                     "></div></td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: (itemId == 9) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTimeWithDayEditor: { 
+											name: 'Time With Day', 
+											constraint:'TimeWithDayAttr', 
+											value: value, 
+											enable: true, 
+											required: false,
+											option: {
+												width: '80px',
+												timeWithDay: true
+											}
+											 }" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: (itemId == 10) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTextEditor: {
+											value: value,
+											option: {width: '233px'},
+											required: false,
+											enable: true,
+											}" />
+									</div>
+								</td>
                             </tr>
                         <!-- /ko -->
 	                </tbody>
@@ -470,6 +508,8 @@ module nts.uk.ui.at.kdw013.c {
                                 { itemId: 6, value: '', type: 0 },
                                 { itemId: 7, value: '', type: 0 },
                                 { itemId: 8, value: '', type: 0 },
+								{ itemId: 9, value: '', type: 0 },
+								{ itemId: 10, value: '', type: 0 },
                             ] 
                         }
                     ]
@@ -591,7 +631,7 @@ module nts.uk.ui.at.kdw013.c {
             const { employeeId } = vm.$user;
             $.Deferred()
                 .resolve(true)
-                .then(() => $(vm.$el).find('input, textarea').trigger('blur'))
+                .then(() => $(vm.$el).find('input').trigger('blur'))
                 .then(() => vm.errors() && vm.timeError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
@@ -693,7 +733,7 @@ module nts.uk.ui.at.kdw013.c {
 			const vm = this;
 			let taskItemValues: ITaskItemValue[] = [];
 			_.forEach(vm.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
-				taskItemValues.push({ itemId: taskItemValue.itemId, value: taskItemValue.value(), type: taskItemValue.type });
+				taskItemValues.push({ itemId: taskItemValue.itemId, value: '', type: taskItemValue.type });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
 			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showRange, true, vm.setting));
@@ -776,7 +816,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD1 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(5, value);
+                            vm.setWorkList(2, value);
                         }
 						setTimeout(() => {
                         	vm.flag(!vm.flag());
@@ -789,7 +829,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD2 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(6, value);
+                            vm.setWorkList(3, value);
 	                    }
                 	});
 				}else if(item.itemId == 6){
@@ -799,7 +839,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD3 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(7, value);
+                            vm.setWorkList(4, value);
 	                    }
                 	});
 				}else if(item.itemId == 7){
@@ -809,7 +849,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD4 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(8, value);
+                            vm.setWorkList(5, value);
 	                    }
                 	});
 				}
