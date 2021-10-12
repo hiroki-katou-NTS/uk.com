@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -34,6 +35,7 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportDatasource;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportGenerator;
@@ -325,8 +327,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	
 	/** The report SEAL_RANGE_COPY_FS */
 	private static final String SEAL_RANGE_COPY_FS = "AT%d:BE%d";
-	
-	private static final int MONTHLY_ACTUAL_DEADLINE_START = 5;
 	
 	private static final int SIDE_HEADER_FONT_SIZE = 9;
 	
@@ -717,7 +717,23 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		this.setFontBold(employeeInfoL.get(0, EMPL_WORKPLACE_INDEX));
 		DateFormat df = new SimpleDateFormat("yyyy/MM"); 
 		Date startDate = df.parse(employeeData.getYearMonth());
-		String yearMonth = df.format(startDate);
+
+		// Build B8_12~B8_33
+		final String PERIOD_TEMPLATE = "%s　%s";
+		String yearMonth = TextResource.localize("KWR002_217") + df.format(startDate);
+		String deadlineDay = TextResource.localize("KWR002_235")
+				+ (employeeData.isLastDayOfMonth() ? TextResource.localize("KWR002_236")
+						: (employeeData.getClosureDay() + TextResource.localize("KWR002_237")).toString());
+
+		String periodInfoText = employeeData.getTempAbsenceDatas().stream()
+				.map(data -> data.getTempAbsenceFrameName() + TextResource.localize("KWR002_238")
+						+ data.getPeriodStart() + TextResource.localize("KWR002_239") + data.getPeriodEnd())
+				.collect(Collectors.joining("　"));
+		String periodText = String.format(PERIOD_TEMPLATE, yearMonth, deadlineDay);
+		if (!StringUtil.isNullOrEmpty(periodInfoText, true)) {
+			periodText = periodText.concat("　　" + periodInfoText);
+		}
+		
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
 				.setValue(TextResource.localize("KWR002_212") + employeeData.getInvidual());
 		employeeInfoL.get(0, EMPL_WORKPLACE_INDEX)
@@ -729,11 +745,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		employeeInfoR.get(0, EMPL_WORKTYPE_INDEX)
 				.setValue(TextResource.localize("KWR002_216") + employeeData.getWorkType());
 		employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX)
-				.setValue(TextResource.localize("KWR002_217") + yearMonth);
-		// ver8 report , print deadline B8_17 B8_18
-		String deadlineDay = employeeData.isLastDayOfMonth() ? TextResource.localize("KWR002_236") : (employeeData.getClosureDay() + TextResource.localize("KWR002_237")).toString();
-		employeeYearInfo.get(0, MONTHLY_ACTUAL_DEADLINE_START)
-				.setValue(TextResource.localize("KWR002_235") + deadlineDay);
+				.setValue(periodText);
 		// Create weekly data
 		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();
 		Map<String, Integer> dataRow = new HashMap<>();
