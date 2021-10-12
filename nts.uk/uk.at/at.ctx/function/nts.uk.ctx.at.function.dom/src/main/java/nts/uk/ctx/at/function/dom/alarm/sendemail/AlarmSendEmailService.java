@@ -221,7 +221,8 @@ public class AlarmSendEmailService implements SendEmailService {
                     for (val entry : empRoleMap.entrySet()) {
                         val roleValue = entry.getValue();
                         val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
-                        if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) { // case false
+                        if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) {
+                             // case false
                             // Map＜管理者ID、List＜対象者ID＞＞にループ中管理者IDのRecordを除く
                             managerMap.remove(item.getKey());
                         }
