@@ -42,7 +42,7 @@ public class ImportableItem implements DomainAggregate{
 
 	public Optional<ErrorMessage> validate(DataItem dataItem) {
 
-		if(required && dataItem.isEmpty()) {
+		if((required || isPrimaryKey) && dataItem.isEmpty()) {
 			return Optional.of(new ErrorMessage("必須項目ですが受入データがありません。"));
 		}
 
