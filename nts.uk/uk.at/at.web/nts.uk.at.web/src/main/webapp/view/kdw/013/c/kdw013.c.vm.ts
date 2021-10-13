@@ -906,7 +906,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD1 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(2, value);
+                            vm.setWorkList(5, 2, value);
                         }
 						setTimeout(() => {
                         	vm.flag(!vm.flag());
@@ -921,7 +921,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD2 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(3, value);
+                            vm.setWorkList(6, 3, value);
 	                    }
                 	});
 				}else if(item.itemId == 6){
@@ -933,7 +933,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD3 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(4, value);
+                            vm.setWorkList(7, 4, value);
 	                    }
                 	});
 				}else if(item.itemId == 7){
@@ -945,7 +945,7 @@ module nts.uk.ui.at.kdw013.c {
 					workCD4 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
-                            vm.setWorkList(5, value);
+                            vm.setWorkList(8, 5, value);
 	                    }
                 	});
 				}
@@ -1007,13 +1007,13 @@ module nts.uk.ui.at.kdw013.c {
             return result;
         }
 
-		setWorkList(nextItemId: number, value: string): void{
+		setWorkList(nextItemId: number, taskFrameNoSetOption: number, value: string): void{
 			const vm = this;
             const param: SelectWorkItemParam = {
                 refDate: moment(vm.start).format(DATE_TIME_FORMAT),
                 employeeId: vm.employeeId,
                 taskCode: value,
-                taskFrameNo: nextItemId
+                taskFrameNo: taskFrameNoSetOption
             };
 			const itemNext = _.find(vm.taskItemValues(), (i) => {return i.itemId == nextItemId});
 			if(itemNext){
