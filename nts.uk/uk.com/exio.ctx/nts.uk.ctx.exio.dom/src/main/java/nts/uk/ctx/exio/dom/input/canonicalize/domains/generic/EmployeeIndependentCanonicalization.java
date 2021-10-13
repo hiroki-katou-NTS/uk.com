@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -22,9 +23,8 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public EmployeeIndependentCanonicalization(DomainWorkspace workspace) {
-		super(workspace);
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+	public EmployeeIndependentCanonicalization() {
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(getItemNoMap());
 	}
 	
 	@Override
@@ -32,6 +32,8 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 		
 		// 受入データ内の重複チェック
 		Set<List<Object>> importingKeys = new HashSet<>();
+		
+		val workspace = require.getDomainWorkspace(context.getDomainId());
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
 			
@@ -47,6 +49,10 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 				super.canonicalize(require, context, interm, new KeyValues(key));
 			}
 		});
+	}
+	
+	public static interface RequireCanonicalize {
+		DomainWorkspace getDomainWorkspace(ImportingDomainId domainId);
 	}
 	
 	/**

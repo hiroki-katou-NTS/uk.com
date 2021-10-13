@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.breakdayoffmng.int
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +85,9 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String DELETE_DAYOFFMNG_BY_SID_AND_YMD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.breakMngId = :breakMngId";
 	private static final String DELETE_BREAKMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
+
+	
+	
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
 		return this.queryProxy().find(breakManaId, KrcdtInterimHdwkMng.class)
@@ -518,6 +522,8 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 
 	@Override
 	public void deleteBreakoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		if (lstDate.isEmpty())
+			return;
 		this.getEntityManager().createQuery(DELETE_KYUSYUTSU_DATE).setParameter("sid", sid)
 				.setParameter("lstDate", lstDate).executeUpdate();
 	}
@@ -525,8 +531,32 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String DELETE_DAIKYU_DATE = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
 	@Override
 	public void deleteDayoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		if (lstDate.isEmpty())
+			return;
 		this.getEntityManager().createQuery(DELETE_DAIKYU_DATE).setParameter("sid", sid)
 		.setParameter("lstDate", lstDate).executeUpdate();
 		
+	}
+	
+	@Override
+	public List<InterimBreakMng> getBreakBySidDateList(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query("SELECT a FROM KrcdtInterimHdwkMng a " +
+				" WHERE a.pk.sid = :sid " +
+				"AND a.pk.ymd IN :sid ", KrcdtInterimHdwkMng.class)
+				.setParameter("sid", sid)
+				.setParameter("ymd", lstDate)
+				.getList(i -> toDomainBreakMng(i));
+	}
+	
+	@Override
+	public List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query("SELECT a FROM KrcmtInterimDayOffMng a " +
+				" WHERE a.pk.sid = :sid " +
+				"AND a.pk.ymd IN :sid ", KrcmtInterimDayOffMng.class)
+				.setParameter("sid", sid)
+				.setParameter("ymd", lstDate)
+				.getList(i -> toDomainDayoffMng(i));
 	}
 }

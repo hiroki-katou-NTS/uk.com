@@ -12,6 +12,8 @@ public interface DailySnapshotWorkAdapter {
 	
 	List<DailySnapshotWorkImport> find(String sid, DatePeriod ymd);
 	
+	List<DailySnapshotWorkImport> find(List<String> sid, DatePeriod ymd);
+	
 	Optional<DailySnapshotWorkImport> createFromSchedule(String sid, GeneralDate ymd);
 	
 	void save(DailySnapshotWorkImport snapshot);

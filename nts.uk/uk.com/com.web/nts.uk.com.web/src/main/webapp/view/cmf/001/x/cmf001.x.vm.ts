@@ -130,18 +130,22 @@ module nts.uk.com.cmf001.x {
 						// 正常に完了していればエラーチェック
 						this.loadErrors();
 					} else {
-						this.errorMessage(info.error.message);
-						if (info.error.businessException) {
-							// 業務エラーの場合は画面に表示
-							this.messageBox(this.errorMessage());
-						} else {
-							// システムエラーの場合はエラーダイアログを表示
-							(<any>nts).uk.request.specials.errorPages.systemError();
-						}
+						this.handleAbort(info);
 					}
 					// 処理終了
 					this.processEnd();
 				});
+		}
+
+		handleAbort(info) {
+			this.errorMessage(info.error.message);
+			if (info.error.businessException) {
+				// 業務エラーの場合は画面に表示
+				this.messageBox(this.errorMessage());
+			} else {
+				// システムエラーの場合はエラーダイアログを表示
+				(<any>nts).uk.request.specials.errorPages.systemError();
+			}
 		}
 
 		// エラーメッセージを取得して表示する
@@ -193,7 +197,7 @@ module nts.uk.com.cmf001.x {
 					.done((info: any) => {
 						
 						let process = info.taskDatas.find(d => d.key === "process");
-						if (process.valueAsString === "failed") {
+						if (process && process.valueAsString === "failed") {
 							ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
 							this.processEnd();
 							return;
@@ -202,7 +206,7 @@ module nts.uk.com.cmf001.x {
 						if(info.status ==="COMPLETED"){
 							this.messageBox("受入処理が完了しました。");
 						}else{
-							this.messageBox("受入処理が失敗しました。");
+							this.handleAbort(info);
 						}
 						this.processEnd();
 					});

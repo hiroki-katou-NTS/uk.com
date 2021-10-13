@@ -218,6 +218,12 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
     	}
 		return Optional.of(data.get(0));
 	}
+    
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	@Override
+	public List<WorkingConditionItem> getByListSidAndStandardDate(List<String> employeeId, GeneralDate baseDate) {
+    	return getBySidsAndDatePeriodNew(employeeId, new DatePeriod(baseDate, baseDate));
+	}
 
 	@Override
 	public List<WorkingConditionItemCustom> getBySidsAndStandardDate(List<String> employeeIds, GeneralDate baseDate) {

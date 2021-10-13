@@ -18,6 +18,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
@@ -179,6 +181,12 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
     @Inject
     private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    
+    @Inject
+    private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
+    
+    @Inject
+    private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
 
     @Inject
     private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
@@ -419,17 +427,21 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
         if (timeLeaveManagement.getChildNursingManagement().isTimeChildManagementClass()) {
             // [NO.206]期間中の子の看護休暇残数を取得
-            ChildCareNursePeriodImport resultOfChildCareNurse = this.getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
-                    employeeId,
-                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
-                    InterimRemainMngMode.OTHER,
-                    baseDate,
-                    Optional.of(false),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty()
-            );
+//            ChildCareNursePeriodImport resultOfChildCareNurse = this.getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+//                    employeeId,
+//                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
+//                    InterimRemainMngMode.OTHER,
+//                    baseDate,
+//                    Optional.of(false),
+//                    Optional.empty(),
+//                    Optional.empty(),
+//                    Optional.empty(),
+//                    Optional.empty()
+//            );
+            // 基準日時点の子の看護残数を取得する
+            ChildCareNursePeriodImport resultOfChildCareNurse = getRemainingNumberChildCareAdapter
+                    .getRemainingNumberChildCare(companyId, employeeId, GeneralDate.today());
+            
             timeLeaveRemaining.setChildCareRemainingDays(resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays());
             resultOfChildCareNurse.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().ifPresent(i -> {
                 timeLeaveRemaining.setChildCareRemainingTime(i);
@@ -438,18 +450,22 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
         if (timeLeaveManagement.getChildNursingManagement().isTimeManagementClass()) {
             // [NO.207]期間中の介護休暇残数を取得
-            ChildCareNursePeriodImport childCareNursePeriodImport = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-            		companyId,
-            		employeeId,
-                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
-                    InterimRemainMngMode.OTHER,
-                    baseDate,
-                    Optional.of(false),
-                    new ArrayList<>(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.empty()
-            );
+//            ChildCareNursePeriodImport childCareNursePeriodImport = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+//            		companyId,
+//            		employeeId,
+//                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
+//                    InterimRemainMngMode.OTHER,
+//                    baseDate,
+//                    Optional.of(false),
+//                    new ArrayList<>(),
+//                    Optional.empty(),
+//                    Optional.empty(),
+//                    Optional.empty()
+//            );
+            // 基準日時点の介護残数を取得する
+            ChildCareNursePeriodImport childCareNursePeriodImport = getRemainingNumberNursingAdapter
+                    .getRemainingNumberNursing(companyId, employeeId, GeneralDate.today());
+            
             timeLeaveRemaining.setCareRemainingDays(childCareNursePeriodImport.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays());
             childCareNursePeriodImport.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().ifPresent(i -> {
                 timeLeaveRemaining.setCareRemainingTime(i);

@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.dom.workplace.master;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.export.WkpDto;
-import nts.uk.ctx.bs.employee.dom.workplace.export.WkpInfoDto;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -57,6 +55,8 @@ public interface WorkplaceInformationRepository {
 	public List<WorkplaceInformation> findByHistoryIdsAndWplIds(String companyId, List<String> historyIds, List<String> listWorkplaceId);
 
 	public List<WkpDto> findByBaseDateWkpIds(String companyId, List<String> listWorkplaceId, GeneralDate baseDate);
+
+	public List<WorkplaceInformation> findAll(String companyId);
 
 	public List<WorkplaceInfo> findAll(String companyId, GeneralDate baseDate);
 

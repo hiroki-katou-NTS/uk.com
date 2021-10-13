@@ -1,10 +1,12 @@
 package nts.uk.ctx.at.shared.dom.adapter.workplace;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface SharedAffWorkPlaceHisAdapter {
 	
@@ -15,4 +17,6 @@ public interface SharedAffWorkPlaceHisAdapter {
 	List<String> findAffiliatedWorkPlaceIdsToRoot(String companyId, String employeeId, GeneralDate baseDate);
 	
 	List<String> findAffiliatedWorkPlaceIdsToRootRequire(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
+	
+	Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> getAffWorkPlaceHisClones(String companyId, List<String> employeeId, DatePeriod baseDate);
 }

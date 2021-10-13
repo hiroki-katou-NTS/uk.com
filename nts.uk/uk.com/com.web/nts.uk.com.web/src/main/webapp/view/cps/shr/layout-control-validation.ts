@@ -536,7 +536,7 @@ module nts.layout {
                 comboboxs: Array<IGrandCombobox> = [{
                     ctgCode: 'CS00025',
                     comboboxCode: 'IS00297',
-                    relateCode: ['IS00296','IS00298', 'IS00299', 'IS00300', 'IS00301']
+                    relateCode: ['IS00296','IS00298', 'IS00299', 'IS00300']
                 }, {
                         ctgCode: 'CS00026',
                         comboboxCode: 'IS00304',
