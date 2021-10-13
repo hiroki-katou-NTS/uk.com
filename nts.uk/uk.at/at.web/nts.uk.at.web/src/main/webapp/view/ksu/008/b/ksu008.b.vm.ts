@@ -62,10 +62,12 @@ module nts.uk.at.ksu008.b {
 
         }
 
-
-
         mounted() {
             const vm = this;
+        }
+
+        closeDialog(): void {
+            nts.uk.ui.windows.close();
         }
 
     }
@@ -87,6 +89,7 @@ module nts.uk.at.ksu008.b {
         b54SelectedRuleCode:any;
         form9Code:any;
         form9Name:any;
+        cellOutPut:any;
         constructor() {
             var self = this
             self.selectedRuleCode = ko.observable(1);

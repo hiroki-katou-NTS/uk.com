@@ -114,6 +114,15 @@ module nts.uk.at.ksu008.a {
             const vm = this;
         }
 
+        openKsu008B() {
+            let vm = this;
+            vm.$blockui("invisible");
+            vm.$window.modal('/view/ksu/008/b/index.xhtml')
+                .then((result: any) => {
+                    vm.$blockui("clear");
+                });
+        }
+
         initKCP011() {
             const self = this;
             self.options = {
