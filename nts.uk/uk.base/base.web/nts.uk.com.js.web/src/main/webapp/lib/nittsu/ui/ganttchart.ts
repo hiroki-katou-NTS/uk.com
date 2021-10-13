@@ -424,10 +424,10 @@ module nts.uk.ui.chart {
                         zIndex: self.pasteBand.zIndex || 1000
                     });
                     
-                    if (self.mode === "paste") {
-                        self.metaholder.tempStart = self.metaholder.start;
-                        self.metaholder.tempEnd = self.metaholder.end;
-                    }
+//                    if (self.mode === "paste") {
+//                        self.metaholder.tempStart = self.metaholder.start;
+//                        self.metaholder.tempEnd = self.metaholder.end;
+//                    }
                     
                     document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                     document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
@@ -864,15 +864,12 @@ module nts.uk.ui.chart {
         
         private _tailor(posX: number, chart: GanttChart) {
             let self = this;
-			if (self.mode === "normal" || _.isNil(chart)) return;
-			
-			if (!chart.canPaste) {
+            if (self.mode === "normal" || _.isNil(self.pasteBand) || _.isNil(chart)) return;
+            if (!chart.canPaste) {
                 chart.html.style.cursor = "not-allowed";
                 self.metaholder = {};
                 return;
             }
-			
-			if (_.isNil(self.pasteBand)) return;			
             
             if (chart.canPasteResize) {
                 let holdPos = self.getHoldPos(chart);
@@ -909,10 +906,10 @@ module nts.uk.ui.chart {
                         zIndex: self.pasteBand.zIndex || 1000
                     });
                     
-                    if (self.mode === "paste" || self.mode === "pasteFlex") {
-                        self.metaholder.tempStart = self.metaholder.start;
-                        self.metaholder.tempEnd = self.metaholder.end;
-                    }
+//                    if (self.mode === "paste") {
+//                        self.metaholder.tempStart = self.metaholder.start;
+//                        self.metaholder.tempEnd = self.metaholder.end;
+//                    }
                     
                     document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                     document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
@@ -1408,7 +1405,7 @@ module nts.uk.ui.chart {
         
         export function pasteMove() {
             let self: Ruler = this;
-            if (!self.metaholder.isPressed || self.mode === "paste") return;
+            if (!self.metaholder.isPressed /*|| self.mode === "paste"*/) return;
             let chart = self.metaholder.ancestorChart;
             let startLine = chart.start, endLine = chart.end;
             if (chart.parent) {
