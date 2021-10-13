@@ -2,7 +2,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 
@@ -21,7 +20,7 @@ public class CanonicalizeRevisedData {
 	 */
 	public static void canonicalize(Require require, ExecutionContext context, ImportingDataMeta meta) {
 
-		val canonicalization = context.getDomainId().createCanonicalization(require);
+		val canonicalization = context.getDomainId().createCanonicalization();
 
 		canonicalization.canonicalize(require, context);
 		val metaCanonicalized = canonicalization.appendMeta(meta);
@@ -30,7 +29,6 @@ public class CanonicalizeRevisedData {
 	}
 
 	public static interface Require extends
-			ImportingDomainId.RequireCreateCanonicalization,
 			DomainCanonicalization.RequireCanonicalize {
 
 		void save(ExecutionContext context, ImportingDataMeta meta);

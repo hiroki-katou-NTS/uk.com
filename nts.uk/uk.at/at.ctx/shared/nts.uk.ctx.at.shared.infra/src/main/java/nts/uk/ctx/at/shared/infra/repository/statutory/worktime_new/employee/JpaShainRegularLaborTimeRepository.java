@@ -17,7 +17,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
@@ -147,5 +149,23 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 		List<KshmtLegaltimeDRegSya> resultList = em.createQuery(cq).getResultList();
 
 		return this.toDomain(resultList);
+	}
+
+	@Override
+	public List<RegularLaborTimeSha> findList(String cid, List<String> empId) {
+
+		if (empId.isEmpty())
+			return Collections.emptyList();
+		String query = "SELECT s FROM KshmtLegaltimeDRegSya s"
+				+ " where s.kshstShaRegLaborTimePK.cid = :cid"
+				+ " and s.kshstShaRegLaborTimePK.sid in :empId";
+		List<RegularLaborTimeSha> result = new ArrayList<>();
+		CollectionUtil.split(empId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+			result.addAll(this.queryProxy().query(query, KshmtLegaltimeDRegSya.class)
+					.setParameter("cid", cid)
+					.setParameter("empId", subIdList)
+					.getList(f -> toDomain(f)));
+		});
+		return result;
 	}
 }

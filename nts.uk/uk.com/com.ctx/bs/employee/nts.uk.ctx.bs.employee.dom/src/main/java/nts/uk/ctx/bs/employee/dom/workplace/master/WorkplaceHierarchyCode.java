@@ -25,4 +25,13 @@ public class WorkplaceHierarchyCode extends StringPrimitiveValue<WorkplaceHierar
 	public WorkplaceHierarchyCode(String rawValue) {
 		super(rawValue);
 	}
+	
+	@Override
+	public void validate() {
+		super.validate();
+		
+		if (this.v().length() % 3 != 0) {
+			throw new RuntimeException("3の倍数桁でなければなりません。");
+		}
+	}
 }

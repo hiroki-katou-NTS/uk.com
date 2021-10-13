@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -18,6 +20,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfiguration;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -125,14 +129,21 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ExternalImportErrorsRepository errorsRepo;
+	
+	@Inject
+	private WorkplaceConfigurationRepository wkpConfigRepo;
 
 	@Inject
-	private WorkplaceInformationRepository wkpinfoRepo;
+	private WorkplaceInformationRepository wkpInfoRepo;
 	
-	@Inject JobTitleInfoRepository jobTitleInfoRepo;
+	@Inject
+	private JobTitleInfoRepository jobTitleInfoRepo;
 	
 	@Inject
 	private UserRepository userRepo;
+	
+	@Inject
+	private StampCardRepository stampCardRepo;
 	
 	
 	
@@ -248,6 +259,11 @@ public class ExternalImportPrepareRequire {
 		public Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo) {
 			return revisedDataRecordRepo.findByRowNo(this, context, rowNo);
 		}
+
+		@Override
+		public List<RevisedDataRecord> getAllRevisedDataRecords(ExecutionContext context) {
+			return revisedDataRecordRepo.findAll(this, context);
+		}
 		
 		@Override
 		public List<RevisedDataRecord> getRevisedDataRecordWhere(
@@ -290,7 +306,7 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public Optional<WorkplaceInformation> getWorkplaceByCode(String workplaceCode, GeneralDate startdate) {
-			return wkpinfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
+			return wkpInfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
 		}
 
 
@@ -312,6 +328,20 @@ public class ExternalImportPrepareRequire {
 			return jobTitleInfoRepo.findAll(companyId, startdate).stream()
 					.filter(jobTitle -> jobTitle.getJobTitleCode().equals(jobTitleCode))
 					.findFirst();
+		}
+
+		@Override
+		public Optional<WorkplaceConfiguration> getWorkplaceConfiguration(String companyId) {
+			return wkpConfigRepo.getWkpConfig(companyId);
+		}
+
+		public Optional<StampCard> getStampCardByCardNumber(String cardNumber) {
+			return stampCardRepo.getByCardNoAndContractCode(cardNumber, contractCode);
+		}
+
+		@Override
+		public List<WorkplaceInformation> getAllWorkplaceInformations(String companyId) {
+			return wkpInfoRepo.findAll(companyId);
 		}
 
 	}
