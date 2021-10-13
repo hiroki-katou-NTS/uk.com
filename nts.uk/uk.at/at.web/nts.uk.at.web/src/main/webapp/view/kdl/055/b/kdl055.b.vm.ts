@@ -195,7 +195,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     } else {
                         vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
                             vm.$blockui("hide");
-                            vm.close();
+                            vm.close(true);
                         });                        
                     }
                 }
@@ -241,8 +241,16 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 vm.isOpenKDL053 = true;
             }
         }
+        
+        closeDialog() {
+            const vm = this;
+            
+            vm.close(false);
+        }
 
-        close() {
+        close(flag: boolean) {
+            // false: close button
+            // true: msg 15
             const vm = this;
             if (vm.windows_lst) {
                 let selfId = nts.uk.ui.windows.selfId;
@@ -266,11 +274,12 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     }
                     return false;
                 });
-                if (updateDates.length > 0) {
+                if (updateDates.length > 0 && flag) {
                     setShared('statusKDL055', 'UPDATE');
-                }
+                } else {
 
-                setShared('statusKDL055', 'CANCEL');
+                    setShared('statusKDL055', 'CANCEL');
+                }
             } else {
                 setShared('statusKDL055', 'CANCEL');
             }
