@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 
@@ -54,7 +55,7 @@ public class ErrorsTable {
 		
 		this.jdbcProxy.query(sql)
 			.paramInt("p1", error.getCsvRowNo())
-			.paramInt("p2", error.getDomainId())
+			.paramInt("p2", error.getDomainId().value)
 			.paramInt("p3", error.getItemNo())
 			.paramString("p4", error.getMessage())
 			.execute();
@@ -70,7 +71,7 @@ public class ErrorsTable {
 				.paramInt("p2", startErrorNo + size)
 				.getList(rec -> new ExternalImportError(
 						rec.getInt(ROW_NO),
-						rec.getInt(DOMAIN_ID),
+						rec.getEnum(DOMAIN_ID, ImportingDomainId.class),
 						rec.getInt(ITEM_NO),
 						rec.getString(MESSAGE)));
 	}
