@@ -5654,7 +5654,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.start = end;
 									
 									if (indNew != -1)
-									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = end;
+									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.start = end;
+									
+									let indexLstChart = _.findIndex(self.lstChartTask, (inlc : any) => {
+										return inlc.end == oldE && line == inlc.line;
+									})
+									
+									if (indexLstChart != -1)
+										self.lstChartTask[indexLstChart].start = end;
+									
 									continue;
 								}
 								
@@ -5664,6 +5672,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									
 									if (indNew != -1)
 									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.start = end;
+									
+									let indexLstChart = _.findIndex(self.lstChartTask, (inlc : any) => {
+										return inlc.end == oldE && line == inlc.line;
+									})
+									
+									if (indexLstChart != -1)
+										self.lstChartTask[indexLstChart].start = end;
 									
 									continue;
 								}
@@ -5675,6 +5690,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									if (indNew != -1)
 									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
 									
+									let indexLstChart = _.findIndex(self.lstChartTask, (inlc : any) => {
+										return inlc.start == oldS && line == inlc.line;
+									})
+									
+									if (indexLstChart != -1)
+										self.lstChartTask[indexLstChart].end = start;
+									
 									continue;
 								}
 								
@@ -5684,6 +5706,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									
 									if (indNew != -1)
 									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
+									
+									let indexLstChart = _.findIndex(self.lstChartTask, (inlc : any) => {
+										return inlc.end == oldS && line == inlc.line;
+									})
+									
+									if (indexLstChart != -1)
+										self.lstChartTask[indexLstChart].end = start;
+									
 									continue;
 								}
 								
@@ -5756,6 +5786,46 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							start : self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.start,
 							end : self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end
 						});
+					} else {
+						let checkExist = _.filter(newLstChartTsk, (inod : any) => {
+							return inod.start == start || inod.end == end;
+						})
+						
+						if (checkExist.length > 0){
+							if (oldS == checkExist[0].end){
+								if (indOld != -1)
+								self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.start = end;
+								
+								if (indNew != -1)
+								self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.start = end;
+								
+								let indexLstChart = _.findIndex(self.lstChartTask, (inlc : any) => {
+									return inlc.start == oldE && line == inlc.line;
+								})
+								
+								if (indexLstChart != -1)
+									self.lstChartTask[indexLstChart].start = end;
+								
+								continue;
+							}
+							
+							if (oldE == checkExist[0].start){
+								if (indOld != -1)
+								self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = start;
+								
+								if (indNew != -1)
+								self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
+								
+								let indexLstChart = _.findIndex(self.lstChartTask, (inlc : any) => {
+									return inlc.start == oldS && line == inlc.line;
+								})
+								
+								if (indexLstChart != -1)
+									self.lstChartTask[indexLstChart].end = start;
+								
+								continue;
+							}
+						}
 					} 
 				}
 				
