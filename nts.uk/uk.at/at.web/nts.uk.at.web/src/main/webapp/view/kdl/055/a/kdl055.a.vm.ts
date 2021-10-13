@@ -31,12 +31,17 @@ module nts.uk.at.view.kdl055.a.viewmodel {
                     vm.scheduleImport.bindingData(obj);
                 }
             });
-
-            if (params) {
+            
+            let dataShare = getShared('dataShareDialogKDL055A');
+            if(dataShare){
+                vm.sIDs  = dataShare.sIDs;
+                vm.startDate = dataShare.startDate;
+                vm.endDate   = dataShare.endDate;
+            } else if (params) {
                 // vm.targetInfo = params.targetInfo;
                 vm.sIDs = params.sIDs;
                 vm.startDate = params.startDate;
-                vm.endDate = params.endDate;
+                vm.endDate   = params.endDate;
             }
         }
 
@@ -85,6 +90,8 @@ module nts.uk.at.view.kdl055.a.viewmodel {
             }).done((res: any) => {
                 if (res) {
                     vm.paramB = res;
+                    vm.paramB.startDate = vm.startDate;
+                    vm.paramB.endDate = vm.endDate;
                     vm.close();
                 }
             }).fail((err: any) => {
@@ -119,6 +126,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
             const vm = this;
 
             setShared('paramB', vm.paramB);
+            setShared('statusKDL055', 'CANCEL')
             this.$window.close();
         }
     }
