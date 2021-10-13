@@ -288,6 +288,16 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                     }
                 }
 
+                // C3_2_8
+                if (!item.getChildCareShortTimeList().isEmpty()) {
+                    for (val time : item.getChildCareShortTimeList()) {
+                        val shape8 = calculateConvertToShape(pixelOfColumn, graphStartTime, time.getStartTime(), time.getEndTime());
+                        if (shape8.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape8.getColumn(), shape8.getWidth(), shape8.getLeft(), getBarColor(BarType.CHILDCARE_SHORT_TIME), false, null);
+                        }
+                    }
+                }
+
                 // C3_2_7
                 if (!item.getListTimeVacationAndType().isEmpty()) {
                     for (val timeVacation : item.getListTimeVacationAndType()) {
@@ -296,16 +306,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                             if (shape7.getColumn() != null) {
                                 drawRectangle(shapes, rowCount, shape7.getColumn(), shape7.getWidth(), shape7.getLeft(), getBarColor(BarType.TIME_VACATION), false, null);
                             }
-                        }
-                    }
-                }
-
-                // C3_2_8
-                if (!item.getChildCareShortTimeList().isEmpty()) {
-                    for (val time : item.getChildCareShortTimeList()) {
-                        val shape8 = calculateConvertToShape(pixelOfColumn, graphStartTime, time.getStartTime(), time.getEndTime());
-                        if (shape8.getColumn() != null) {
-                            drawRectangle(shapes, rowCount, shape8.getColumn(), shape8.getWidth(), shape8.getLeft(), getBarColor(BarType.CHILDCARE_SHORT_TIME), false, null);
                         }
                     }
                 }
@@ -327,16 +327,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                     }
                 }
 
-                // C3_2_15
-                if (!item.getActualBreakTimeList().isEmpty()) {
-                    for (val time : item.getActualBreakTimeList()) {     // max 10
-                        val shape15 = calculateConvertToShape(pixelOfColumn, graphStartTime, time.getStartTime().v(), time.getEndTime().v());
-                        if (shape15.getColumn() != null) {
-                            drawRectangle(shapes, rowCount, shape15.getColumn(), shape15.getWidth(), shape15.getLeft(), getBarColor(BarType.BREAK_TIME_ACTUAL), true, null);
-                        }
-                    }
-                }
-
                 // C3_2_16
                 if (!item.getOverTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
                     for (val time : item.getOverTimeList()) {
@@ -347,6 +337,20 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                         val shape16 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
                         if (shape16.getColumn() != null) {
                             drawRectangle(shapes, rowCount, shape16.getColumn(), shape16.getWidth(), shape16.getLeft(), getBarColor(BarType.OVERTIME_HOURS_ACTUAL), true, null);
+                        }
+                    }
+                }
+
+                // C3_2_15
+                if (!item.getActualBreakTimeList().isEmpty()) {
+                    for (val time : item.getActualBreakTimeList()) {     // max 10
+                        TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime().v(), time.getEndTime().v(), new TimeRangeLimitDto(item.getActualStartTime1(), item.getActualEndTime1()),
+                                (isDoubleWorkDisplay && item.getActualStartTime2() != null && item.getActualEndTime2() != null) ? new TimeRangeLimitDto(item.getActualStartTime2(), item.getActualEndTime2()) : null);
+                        if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
+
+                        val shape15 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
+                        if (shape15.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape15.getColumn(), shape15.getWidth(), shape15.getLeft(), getBarColor(BarType.BREAK_TIME_ACTUAL), true, null);
                         }
                     }
                 }
