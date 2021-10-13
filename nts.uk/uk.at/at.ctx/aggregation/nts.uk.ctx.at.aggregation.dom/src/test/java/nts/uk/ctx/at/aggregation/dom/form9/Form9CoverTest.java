@@ -11,6 +11,7 @@ import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.shr.com.primitive.OutputCell;
 
 @RunWith(JMockit.class)
 public class Form9CoverTest {

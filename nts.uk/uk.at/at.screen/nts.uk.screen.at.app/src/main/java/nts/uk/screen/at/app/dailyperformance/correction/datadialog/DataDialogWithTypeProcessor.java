@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
@@ -102,6 +103,11 @@ public class DataDialogWithTypeProcessor {
 	public CodeNameType getWorkPlace(String companyId, GeneralDate date) {
 		List<CodeName> codeNames = repo.findWorkplace(companyId, date);
 		return CodeNameType.create(TypeLink.WORKPLACE.value, codeNames);
+	}
+	
+	public CodeNameType getWorkPlaceGroup(String companyId) {
+		List<CodeName> codeNames = repo.findWorkplaceGroup(companyId);
+		return CodeNameType.create(TypeLink.WKP_GROUP.value, codeNames);
 	}
 
 	// 分類
@@ -298,6 +304,9 @@ public class DataDialogWithTypeProcessor {
 			case 14:
 				// CDL024
 				return toMap(this.getBussinessType(companyId).getCodeNames());
+			case 18:
+				// 
+				return toMapID(this.getWorkPlaceGroup(companyId).getCodeNames());
 			default:
 				return new HashMap<>();
 			}
