@@ -254,6 +254,27 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 }
             }
 
+            let paramB = getShared('paramB');
+            if (paramB) {
+                let startDate = new Date(paramB.startDate);
+                let endDate = new Date(paramB.endDate);
+
+                let importableDates = _.map(vm.data.importableDates, date => new Date(date));
+                let updateDates = _.filter(importableDates, (date) => {
+                    if (date >= startDate && date <= endDate) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (updateDates.length > 0) {
+                    setShared('statusKDL055', 'UPDATE');
+                }
+
+                setShared('statusKDL055', 'CANCEL');
+            } else {
+                setShared('statusKDL055', 'CANCEL');
+            }
+
             this.$window.close();
         }
 

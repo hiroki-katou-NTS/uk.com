@@ -90,6 +90,8 @@ module nts.uk.at.view.kdl055.a.viewmodel {
             }).done((res: any) => {
                 if (res) {
                     vm.paramB = res;
+                    vm.paramB.startDate = vm.startDate;
+                    vm.paramB.endDate = vm.endDate;
                     vm.close();
                 }
             }).fail((err: any) => {
@@ -124,6 +126,7 @@ module nts.uk.at.view.kdl055.a.viewmodel {
             const vm = this;
 
             setShared('paramB', vm.paramB);
+            setShared('statusKDL055', 'CANCEL')
             this.$window.close();
         }
     }
