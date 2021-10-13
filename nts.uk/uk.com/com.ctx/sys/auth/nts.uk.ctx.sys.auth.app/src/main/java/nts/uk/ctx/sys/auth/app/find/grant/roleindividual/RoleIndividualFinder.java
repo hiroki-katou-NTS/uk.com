@@ -197,13 +197,14 @@ public class RoleIndividualFinder {
             val uid = grant.getUserId();
             Optional<PersonalEmployeeInfoImport> optEmployeeInfoImport =
                     userIDQuery.getEmployeeIDFromUserID(uid);
-            CompanyImport companyInfo = companyAdapter.findCompanyByCid(grant.getCompanyId());
             if(optEmployeeInfoImport.isPresent()){
                 PersonalEmployeeInfoImport employeeInfoImport = optEmployeeInfoImport.get();
                 List<EmployeeInfoImport> employeeInfos = employeeInfoImport.getEmployeeInfos();
                 employeeInfos.forEach(e->{
+                    CompanyImport companyInfo = companyAdapter.findCompanyByCid(e.getCompanyId());
                     rGrants.add( Cas013aDto.fromDomain(
                             grant,
+                            e.getCompanyId(),
                             companyInfo.getCompanyCode(),
                             companyInfo.getCompanyName(),
                             e.getEmployeeId(),
