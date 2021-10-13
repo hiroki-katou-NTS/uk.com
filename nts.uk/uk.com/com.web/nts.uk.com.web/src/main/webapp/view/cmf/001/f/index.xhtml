@@ -53,8 +53,8 @@
 					</div>
 					<div class="fixed-flex-layout-right" style="padding-top: 20px;">									
 						<div class="layout">
-							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
-							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting" ></button>
+							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する', enable: canEditDetail" ></button>
+							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting, enable: canEditDetail" ></button>
 						<table id="grid"></table>
 						</div>
 					</div>

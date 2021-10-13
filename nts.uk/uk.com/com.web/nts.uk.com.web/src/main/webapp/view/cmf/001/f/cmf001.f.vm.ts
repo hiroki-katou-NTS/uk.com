@@ -27,6 +27,8 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
 		
+		canEditDetail: KnockoutObservable<boolean> = ko.observable(false);
+		
 		//domain
 		domainInfoList:KnockoutObservableArray<DomainInfo> = ko.observableArray([]);
 		domainList: KnockoutObservableArray<ImportDomain> = ko.observableArray([]);
@@ -59,6 +61,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			self.startPage();
 			
 			self.selectedDomainId.subscribe((value) => {
+				self.canEditDetail(self.selectedDomainId() !== null);
 				if (value) {
 					var info = $.grep(self.domainInfoList(), function (di) {
 						return di.domainId == self.selectedDomainId();
