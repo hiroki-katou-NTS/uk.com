@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -9,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -51,11 +54,12 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRema
 				command.getNumberDayUse().doubleValue(),
 				command.getTimeUse(),
 				null,
+				command.getNumberDaysOver().doubleValue(), 
+				command.getTimeOver(),
 				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain(),
 				0.0,
 				command.getSpecialLeaCode());
-
 		repo.add(AppContexts.user().companyId(), data);
 	}
 

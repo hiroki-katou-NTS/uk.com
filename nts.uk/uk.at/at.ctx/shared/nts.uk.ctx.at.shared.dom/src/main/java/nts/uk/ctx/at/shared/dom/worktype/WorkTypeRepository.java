@@ -229,6 +229,8 @@ public interface WorkTypeRepository {
 	
 
 	List<WorkType> findHolidayWorkType(String companyId, int abolishAtr, int worktypeAtr, int workTypeClf, int holiday);
+	
+	List<WorkType> findHolidayWorkTypeClo(String companyId, int abolishAtr, int worktypeAtr, int workTypeClf, int closeAtr);
 
 	List<WorkType> findWorkByDeprecate(String companyId, int deprecateAtr);
 	

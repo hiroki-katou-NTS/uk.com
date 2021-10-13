@@ -317,7 +317,6 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 			orderBy.append(" ORDER BY " + String.join(",", orders));
 		}
 		List<RegulationInfoEmployee> resultList = new ArrayList<>();
-		int countParameterFinal = countParameter; 
 		// Fix bug #100057
 		if (CollectionUtil.isEmpty(employmentCodes)) {
 			employmentCodes.add(EMPTY_LIST);
@@ -656,7 +655,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 	 * #findBySid(java.lang.String, java.lang.String, nts.arc.time.GeneralDateTime)
 	 */
 	@Override
-	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDateTime baseDate, int systemType) {
+	public RegulationInfoEmployee findBySid(String comId, String sid, GeneralDate baseDate, int systemType) {
 		
 		StringBuilder selectBuilder = new StringBuilder();
 		selectBuilder.append(SELECT_EMPLOYEE);
@@ -683,7 +682,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		String sql = selectBuilder.toString() + whereBuilder.toString();
 		
 		if(sql.contains("baseDate")) {
-			sql = sql.replaceAll("baseDate", "'" + baseDate.toString(DATE_TIME_FORMAT) + "'");
+			sql = sql.replaceAll("baseDate", "'" + baseDate.toString(DATE_FORMAT) + "'");
 		}
 		
 		Query query = this.getEntityManager()
@@ -872,96 +871,4 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				.departmentDeleteFlag(Optional.ofNullable(res[14] != null ? Boolean.valueOf(String.valueOf(res[14])) : null))
 				.build();
 	}
-	
-	/**
-	 * Sort by list conditions.
-	 *
-	 * @param resultList
-	 *            the result list
-	 * @param sortConditions
-	 *            the sort conditions
-	 * @return the list
-	 */
-	private List<String> sortByListConditions(List<EmployeeDataSort> resultList,
-			List<SortingConditionOrder> sortConditions) {
-		return resultList.stream().sorted((a, b) -> {
-			Iterator<SortingConditionOrder> iterator = sortConditions.iterator();
-			int comparator = 0;
-
-			while (iterator.hasNext()) {
-				if (comparator == 0) {
-					SortingConditionOrder cond = iterator.next();
-					switch (cond.getType()) {
-					case EMPLOYMENT: // EMPLOYMENT
-						String empCda = a.getEmploymentCd();
-						String empCdb = b.getEmploymentCd();
-						if (empCda != null && empCdb != null) {
-							comparator = empCda.compareTo(empCdb);
-						}
-						break;
-					case DEPARTMENT: // DEPARTMENT
-//						String depCda = a.getDepHierarchyCode();
-//						String depCdb = b.getDepHierarchyCode();
-//						if (depCda != null && depCdb != null) {
-//							comparator = depCda.compareTo(depCdb);
-//						}
-						break;
-					case WORKPLACE: // WORKPLACE
-						String wplCda = a.getWplHierarchyCd();
-						String wplCdb = b.getWplHierarchyCd();
-						if (wplCda != null && wplCdb != null) {
-							comparator = wplCda.compareTo(wplCdb);
-						}
-						break;
-					case CLASSIFICATION: // CLASSIFICATION
-						String clsCda = a.getClassificationCd();
-						String clsCdb = b.getClassificationCd();
-						if (clsCda != null && clsCdb != null) {
-							comparator = clsCda.compareTo(clsCdb);
-						}
-						break;
-					case POSITION: // POSITION
-						String seqCda = a.getJobSeqDisp();
-						String seqCdb = b.getJobSeqDisp();
-						if (seqCda != null && seqCdb != null) {
-							comparator = seqCda.compareTo(seqCdb);
-						}
-						if (comparator == 0) {
-							String jobCda = a.getJobCd();
-							String jobCdb = b.getJobCd();
-							if (jobCda != null && jobCdb != null) {
-								comparator = jobCda.compareTo(jobCdb);
-							}
-						}
-						break;
-					case HIRE_DATE: // HIRE_DATE
-						GeneralDateTime comStrDa = a.getComStrDate();
-						GeneralDateTime comStrDb = b.getComStrDate();
-						if (comStrDa != null && comStrDb != null) {
-							comparator = comStrDa.compareTo(comStrDb);
-						}
-						break;
-					case NAME: // NAME
-                        // 現在は、氏名の種類を選択する機能がないので、「ビジネスネーム日本語」固定で
-                        // => 「氏名カナ」 ＝ 「ビジネスネームカナ」
-						String businessNameA = a.getBusinessNameKana();
-						String businessNameB = b.getBusinessNameKana();
-						if (businessNameA != null && businessNameB != null) {
-							comparator = businessNameA.compareTo(businessNameB);
-						}
-						// TODO:
-						// orders.add(cb.asc(root.get(EmployeeDataView_.personNameKana)));
-						break;
-					}
-				} else {
-					break;
-				}
-			}
-			if (comparator == 0) {
-				comparator = a.getScd().compareTo(b.getScd());
-			}
-			return comparator;
-		}).map(EmployeeDataSort::getSid).distinct().collect(Collectors.toList());
-	}
-
 }

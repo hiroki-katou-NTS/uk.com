@@ -90,7 +90,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 		result.getAtomTask().run();
 		new Verifications() {
 			{
-				require.addAllDomain((IntegrationOfDaily) any, anyBoolean);
+				require.addAllDomain((IntegrationOfDaily) any);
 				times = 0;
 
 				require.updateAppReflectHist(anyString, anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
@@ -134,7 +134,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 		result.getAtomTask().run();
 		new Verifications() {
 			{
-				require.addAllDomain((IntegrationOfDaily) any, anyBoolean);
+				require.addAllDomain((IntegrationOfDaily) any);
 				times = 1;
 
 				require.updateAppReflectHist(anyString, anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,

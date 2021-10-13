@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+﻿/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmf001.b.viewmodel {
 	import ajax = nts.uk.request.ajax;
 	import info = nts.uk.ui.dialog.info;
@@ -137,7 +137,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
-				self.setLayout(infoData.domains[0].itemNoList);
+				self.layoutItemNoList(infoData.domains[0].itemNoList);
 				self.isNewMode(false);
 				self.checkError();
 			});

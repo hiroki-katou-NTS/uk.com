@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -24,6 +25,26 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
  * 社員の年休付与設定
  */
 public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanonicalization {
+	
+	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
+	
+	public EmployeeAnnualLeaveSettingCanonicalization() {
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(getItemNoMap());
+	}
+
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 導入前労働日数 = 2;
+		public static final int 年休付与基準日 = 3;
+		public static final int 年休付与テーブル = 4;
+		public static final int 年間所定労働日数 = 100;
+		public static final int SID = 101;
+	}
 
 	@Override
 	protected String getParentTableName() {
@@ -40,14 +61,6 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 		return Arrays.asList(DomainDataColumn.SID);
 	}
 	
-	
-	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
-	
-	public EmployeeAnnualLeaveSettingCanonicalization(DomainWorkspace workspace) {
-		super(workspace);
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
-	}
-	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require,ExecutionContext context) {
 		// 受入データ内の重複チェック
@@ -56,9 +69,9 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 		//社員コード⇒IDの正準化
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms ->{
 			for(val interm : interms) {
-				val keyValue = getPrimaryKeys(interm, workspace);
+				val keyValue = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValue)) {
-					require.add(ExternalImportError.record(interm.getRowNo(), "社員コードが重複しています。"));
+					require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "社員コードが重複しています。"));
 					return; // 次のレコードへ
 				}
 				importingKeys.add(keyValue);
@@ -68,14 +81,13 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 		});
 	}
 	
-	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
-		//このドメインのKeyはSIDなので、Stringで取り出す。
-		return new KeyValues(Arrays.asList(interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString()));
+	private KeyValues getPrimaryKeys(IntermediateResult interm) {
+		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
 	}
 
 	@Override
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(getItemNoOfEmployeeId());//SID
+		return Arrays.asList(Items.SID);
 	}
 	
 	/**

@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -119,11 +123,59 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		return AgreementTimeOfManagePeriod.of(sid, ym, monthlyAgreementTime, monthlyLegalLimitTime, breakdown, state);
 	}
 	
+	/**
+	 * clones from 管理期間の36協定時間の作成
+	 */
+	public static List<AgreementTimeOfManagePeriod> aggregateClones(RequireM2 require, List<String> sid,
+													GeneralDate criteriaDate, YearMonth ym,
+													List<MonthlyCalculation> monthlyCalculation) {
+		val cid = AppContexts.user().companyId();
+		/** ○パラメータ「cls<月別実績の月の計算>」を受け取る */
+		
+		/** 時間外超過設定を取得 */
+		val outsideOTSetting = require.outsideOTSetting(cid).orElse(null);
+		if (outsideOTSetting == null) {
+			return sid.stream().map(id -> new AgreementTimeOfManagePeriod(id, ym)).collect(Collectors.toList());
+		}
+		
+		/** 36協定限度時間の対象時間を取得 */
+		val breakdownMap = outsideOTSetting.getTargetTimeClones(require, cid, monthlyCalculation);
+		
+		List<AgreementTimeOfManagePeriod> result = new ArrayList<AgreementTimeOfManagePeriod>();
+		
+		val basicAgreementSettingMap = require.basicAgreementSettingClones(cid, sid, ym, criteriaDate);
+		
+		for (val breakdown : breakdownMap.entrySet()) {
+			/** 閾値の取得 */
+			val agreementSet = basicAgreementSettingMap.get(breakdown.getKey());
+			val monthAgreementSet = agreementSet.getBasicSetting().getOneMonth();
+			
+			/** 36協定対象時間を計算 */
+			val agreementTime = breakdown.getValue().calcAgreementTime();
+			/** 項目移送により、月別実績の36協定時間を作成する */
+			val monthlyAgreementTime = AgreementTimeOfMonthly.of(agreementTime, monthAgreementSet.getBasic());
+			
+			/** 法定上限時間を計算 */
+			val legalLimitTime = breakdown.getValue().calcLegalLimitTime();
+			/** 項目移送により、月別実績の36協定時間を作成する */
+			val monthlyLegalLimitTime = AgreementTimeOfMonthly.of(legalLimitTime, monthAgreementSet.getSpecConditionLimit());
+			
+			/** エラーチェック */
+			val state = agreementSet.checkForOneMonth(agreementTime, legalLimitTime);
+			
+			result.add(AgreementTimeOfManagePeriod.of(breakdown.getKey(), ym, monthlyAgreementTime, monthlyLegalLimitTime, breakdown.getValue(), state));
+		}
+		
+		return result;
+	}
+	
 	public static interface RequireM2 extends OutsideOTSetting.RequireM1 {
 
 		Optional<OutsideOTSetting> outsideOTSetting(String cid);
 		
 		BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate);
+		
+		Map<String, BasicAgreementSettingForCalc> basicAgreementSettingClones(String cid, List<String> sid, YearMonth ym, GeneralDate baseDate);
 	}
 	
 	public static interface RequireM1 {

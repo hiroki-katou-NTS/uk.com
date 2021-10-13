@@ -62,10 +62,10 @@ public class GetLatestExternalImportErrors {
 		int startErrorNo = MAX_PAGE_SIZE * (pageNo - 1);
 		val errors = errorsRepo.find(companyId, startErrorNo, MAX_PAGE_SIZE);
 		
-		return new ErrorsTextDto(errors.isExecution(), pageNo, errors.count(), errorsToText(context, errors));
+		return new ErrorsTextDto(errors.isExecution(), pageNo, errors.count(), errorsToText(errors));
 	}
 	
-	private String errorsToText(ExecutionContext context, ExternalImportErrors errors) {
+	private String errorsToText(ExternalImportErrors errors) {
 		
 		val require = new RequireToText() {
 			
@@ -91,6 +91,6 @@ public class GetLatestExternalImportErrors {
 			}
 		};
 		
-		return errors.toText(require, context);
+		return errors.toText(require);
 	}
 }

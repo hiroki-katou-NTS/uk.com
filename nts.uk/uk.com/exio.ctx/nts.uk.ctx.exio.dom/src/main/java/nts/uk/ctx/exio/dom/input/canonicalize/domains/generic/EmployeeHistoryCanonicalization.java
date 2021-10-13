@@ -43,7 +43,6 @@ import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.util.Either;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -70,12 +69,24 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	/** どんな履歴か*/
 	private final HistoryType historyType;
 
-	public EmployeeHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
-		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
-		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
-		itemNoHistoryId = workspace.getItemByName("HIST_ID").getItemNo();
+	public EmployeeHistoryCanonicalization(HistoryType historyType) {
+		
+		itemNoStartDate = this.getItemNoByName(Names.START);
+		itemNoEndDate = this.getItemNoByName(Names.END);
+		itemNoHistoryId = this.getItemNoByName(Names.HIST_ID);
+		
 		this.historyType = historyType;
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+		
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(this.getItemNoMap());
+	}
+	
+	protected static class Names {
+		protected static final String SCD = "社員コード";
+		protected static final String SID = "社員ID";
+		protected static final String HIST_ID = "HIST_ID";
+		protected static final String START = "開始日";
+		protected static final String END = "終了日";
+		
 	}
 	
 	protected abstract String getParentTableName();
@@ -118,10 +129,13 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.getItemByNo(this.getItemNoOfEmployeeId())
 				.get().getString();
 
-		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
+		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId)));
 		
-		//既存履歴
+		// 既存履歴
 		val existingHistory = require.getHistory(id, this.historyType, getKeyColumnNames());
+		
+		// 暫定仕様として、既存履歴は常に削除
+		deleteAllExistingHistory(require, context, employeeId, existingHistory);
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -138,8 +152,13 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.forEach(interm -> getPeriod(interm)
 						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
 						.ifRight(c -> containers.add(c))
-						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), e.getText()))));
+						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), e.getText()))));
 
+		// エラー行が除外された結果、空になったらここで終了
+		if (containers.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
 		
@@ -154,7 +173,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		} catch (BusinessException ex) {
 			// どのデータで失敗しようと１社員分すべて受け入れるか、全て受け入れないかのどちらかとする
 			containers.forEach(c -> require.add(
-					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
+					ExternalImportError.record(c.interm.getRowNo(), context.getDomainId(), ex.getMessage())));
 			
 			return Collections.emptyList();
 		}
@@ -164,6 +183,29 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		return newContainers.stream()
 				.map(c -> c.complete())
 				.collect(toList());
+	}
+
+	/**
+	 * 既存履歴をすべて削除する
+	 * @param require
+	 * @param context
+	 * @param employeeId
+	 * @param existingHistory
+	 */
+	private void deleteAllExistingHistory(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context,
+			String employeeId,
+			ExternalImportHistory existingHistory) {
+		
+		// 削除の補正データを作る
+		existingHistory.items().stream()
+			.map(e -> new EmployeeHistoryItem(employeeId, e))
+			.map(e -> e.toDelete(context))
+			.forEach(d -> require.save(context, d));
+		
+		// インスタンスからも除去
+		existingHistory.items().clear();
 	}
 	
 	/**
@@ -302,6 +344,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	@Override
 	public AtomTask adjust(
 			RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		

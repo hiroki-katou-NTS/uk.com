@@ -17,34 +17,17 @@ module nts.uk.com.view.cmf002.l.viewmodel {
             fixedLengthOutput: 0,
             fixedLongIntegerDigit: null,
             fixedLengthEditingMethod: 0,
-            delimiterSetting: 1,
+            delimiterSetting: 2,
             selectHourMinute: 0,
             minuteFractionDigit: null,
-            decimalSelection: 1,
+            decimalSelection: 0,
             fixedValueOperationSymbol: 0,
             fixedValueOperation: 0,
             fixedCalculationValue: null,
             valueOfNullValueSubs: "",
             minuteFractionDigitProcessCls: 1
         };
-        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting({
-            nullValueSubs: 0,
-            outputMinusAsZero: 0,
-            fixedValue: 0,
-            valueOfFixedValue: "",
-            fixedLengthOutput: null,
-            fixedLongIntegerDigit: null,
-            fixedLengthEditingMethod: 0,
-            delimiterSetting: 1,
-            selectHourMinute: 0,
-            minuteFractionDigit: null,
-            decimalSelection: 1,
-            fixedValueOperationSymbol: 0,
-            fixedValueOperation: 0,
-            fixedCalculationValue: null,
-            valueOfNullValueSubs: "",
-            minuteFractionDigitProcessCls: 1
-        }));
+        timeDataFormatSetting: KnockoutObservable<model.TimeDataFormatSetting> = ko.observable(new model.TimeDataFormatSetting(this.initTimeDataFormatSetting));
 
         //initComponent
         inputMode: boolean;

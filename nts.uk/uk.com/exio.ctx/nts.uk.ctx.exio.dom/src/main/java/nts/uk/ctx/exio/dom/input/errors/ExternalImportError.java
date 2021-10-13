@@ -16,7 +16,7 @@ public class ExternalImportError {
 	Integer csvRowNo;
 
 	/** ドメインID */
-	Integer domainId;
+	ImportingDomainId domainId;
 	
 	/** 項目NO */
 	Integer itemNo;
@@ -28,16 +28,16 @@ public class ExternalImportError {
 		return new ExternalImportError(null, null, null, message);
 	}
 	
-	public static ExternalImportError record(int csvRowNo, String message) {
-		return new ExternalImportError(csvRowNo, null, null, message);
+	public static ExternalImportError record(int csvRowNo, ImportingDomainId domainId, String message) {
+		return new ExternalImportError(csvRowNo, domainId, null, message);
 	}
 	
-	public static ExternalImportError of(int csvRowNo, int domainId, ItemError error) {
+	public static ExternalImportError of(int csvRowNo, ImportingDomainId domainId, ItemError error) {
 		return new ExternalImportError(csvRowNo, domainId, error.getItemNo(), error.getMessage());
 	}
 	
-	public static ExternalImportError of(RecordError error) {
-		return new ExternalImportError(error.getCsvRowNo(), null, null, error.getMessage());
+	public static ExternalImportError of(ImportingDomainId domainId, RecordError error) {
+		return new ExternalImportError(error.getCsvRowNo(), domainId, null, error.getMessage());
 	}
 	
 	public boolean isExecution() {
@@ -52,7 +52,7 @@ public class ExternalImportError {
 		return !isExecution() && itemNo != null;
 	}
 	
-	public void toText(RequireToText require, Integer domainId, StringBuilder sb) {
+	public void toText(RequireToText require, StringBuilder sb) {
 		
 		if (isExecution()) {
 			sb.append("実行エラー");
@@ -63,10 +63,10 @@ public class ExternalImportError {
 		sb.append("\t");
 		
 		if (isItem()) {
-			String domainName = require.getDomainName(ImportingDomainId.valueOf(domainId.intValue()));
+			String domainName = require.getDomainName(domainId);
 			sb.append(domainName);
 			sb.append("\t");
-			String itemName = require.getImportableItem(ImportingDomainId.valueOf(domainId.intValue()), itemNo).getItemName();
+			String itemName = require.getImportableItem(domainId, itemNo).getItemName();
 			sb.append(itemName);
 		}
 		

@@ -1,18 +1,12 @@
 package nts.uk.ctx.exio.dom.input.domain;
 
-import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.*;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffClassHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.CardNumberCanonicalaization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffJobTitleHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffWorkplaceHistoryCanonicalization;
@@ -20,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCano
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.ShortWorkTimeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.TempAbsenceHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.WorkConditionCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.AnnualLeaveRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.EmployeeAnnualLeaveSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.MaxAnnualLeaveCanonicalization;
@@ -30,8 +25,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.WorkplaceCanonicalization;
 
 /**
  * 受入グループID
@@ -40,8 +34,11 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 @RequiredArgsConstructor
 public enum ImportingDomainId {
 	
+	/** 職場マスタ */
+	WORKPLACE(13, WorkplaceCanonicalization::new),
+	
 	/** 個人基本情報 */
-	EMPLOYEE_BASIC(100, w -> new EmployeeBasicCanonicalization()),
+	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
 
 	/** 入社退職履歴 */
 	AFF_COMPANY_HISTORY(101, AffCompanyHistoryCanonicalization::new),
@@ -63,6 +60,12 @@ public enum ImportingDomainId {
 	
 	/** 短時間勤務 */
 	SHORT_WORK_TIME(108, ShortWorkTimeCanonicalization::new),
+	
+	/** 労働条件*/
+	WORKING_CONDITION(109, WorkConditionCanonicalization::new),	
+
+	/** カードNO */
+	CARD_NO(110, CardNumberCanonicalaization::new),
 	
 	/** 社員の年休付与設定*/
 	EMPLOYEE_ANNUAL_LEAVE_SETTING(111, EmployeeAnnualLeaveSettingCanonicalization::new),	
@@ -93,23 +96,18 @@ public enum ImportingDomainId {
 	
 	/** 休出管理データ */
 	HOLIDAY_WORK(121, HolidayWorkCanonicalization::new),
+	
 	;
 	
 	public final int value;
 	
-	private final Function<DomainWorkspace, DomainCanonicalization> createCanonicalization;
+	private final Supplier<DomainCanonicalization> createCanonicalization;
 	
 	public static ImportingDomainId valueOf(int value) {
 		return EnumAdaptor.valueOf(value, ImportingDomainId.class);
 	}
 	
-	public DomainCanonicalization createCanonicalization(RequireCreateCanonicalization require) {
-		val workspace = require.getDomainWorkspace(this);
-		return createCanonicalization.apply(workspace);
-	}
-	
-	public static interface RequireCreateCanonicalization {
-		
-		DomainWorkspace getDomainWorkspace(ImportingDomainId domainId);
+	public DomainCanonicalization createCanonicalization() {
+		return createCanonicalization.get();
 	}
 }

@@ -42,7 +42,7 @@ public class CanonicalizeUtil {
 				.map(stream -> stream.collect(toList()))
 				.ifRight(process)
 				.ifLeft(errors -> errors.forEach(error -> {
-					require.add(ExternalImportError.of(error));
+					require.add(ExternalImportError.of(context.getDomainId(), error));
 				}));
 		}
 	}

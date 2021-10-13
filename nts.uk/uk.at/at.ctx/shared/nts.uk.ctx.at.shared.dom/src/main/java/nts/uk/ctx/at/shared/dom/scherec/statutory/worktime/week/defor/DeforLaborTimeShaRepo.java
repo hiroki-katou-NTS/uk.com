@@ -48,4 +48,6 @@ public interface DeforLaborTimeShaRepo {
 	 * @param empSpeDeforLaborHour the emp spe defor labor hour
 	 */
 	void delete(String cid, String empId);
+	
+	List<DeforLaborTimeSha> findList(String cid, List<String> empId);
 }

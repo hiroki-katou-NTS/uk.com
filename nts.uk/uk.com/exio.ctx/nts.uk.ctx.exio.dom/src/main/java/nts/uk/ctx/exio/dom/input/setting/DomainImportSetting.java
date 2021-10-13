@@ -93,11 +93,8 @@ public class DomainImportSetting implements DomainAggregate {
 			require.save(context, revisedData);
 		}
 		else {
-			errors.forEach(error ->{
-				require.add(new ExternalImportError(revisedData.getRowNo(),
-																						   context.getDomainId().value,
-																						   error.getItemNo(),
-																						   error.getMessage()));
+			errors.forEach(e -> {
+				require.add(ExternalImportError.of(revisedData.getRowNo(), context.getDomainId(), e));
 			});
 		}
 	}

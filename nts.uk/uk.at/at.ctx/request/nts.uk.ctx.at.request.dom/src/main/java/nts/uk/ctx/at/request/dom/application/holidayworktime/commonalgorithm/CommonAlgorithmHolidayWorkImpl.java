@@ -638,7 +638,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        		switch(error.getTime36AgreementErrorAtr()) {
     	        	case MONTH_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1535", 
+    	        				"Msg_2012", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()), 
         						this.convertTime_Short_HM(error.getThreshold())
     	        				
@@ -646,28 +647,32 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
     	        		break;
     	        	case YEAR_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1536", 
+    	        				"Msg_2013", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()),
         						this.convertTime_Short_HM(error.getThreshold())
     	        		);
     	        		break;
     	        	case MAX_MONTH_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1537", 
+    	        				"Msg_2014", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()),
         						this.convertTime_Short_HM(error.getThreshold())
     	        		);
     	        		break;
     	        	case MAX_YEAR_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_2056", 
+    	        				"Msg_2057", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()),
         						this.convertTime_Short_HM(error.getThreshold())
     	        		);
     	        		break;
     	        	case MAX_MONTH_AVERAGE_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1538", 
+    	        				"Msg_2015", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
     	        				error.getOpYearMonthPeriod().map(x -> x.start().year() + "/" + x.start().month()).orElse(""),
     							error.getOpYearMonthPeriod().map(x -> x.end().year() + "/" + x.end().month()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()), 
@@ -1158,22 +1163,25 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	@Override
 	public void checkContentApp(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
 			AppHolidayWork appHolidayWork, Boolean mode) {
-	    int totalOverTime = 0;
-        totalOverTime = appHolidayWork.getApplicationTime().getApplicationTime().stream()
-                .map(x -> x.getApplicationTime().v())
-                .mapToInt(Integer::intValue)
-                .sum();
-        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
-                appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
-        totalOverTime += appHolidayWork.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
-        TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
-                0, 
-                0, 
-                0, 
-                0, 
-                0, 
-                totalOverTime, 
-                new ArrayList<TimeLeaveApplicationDetailShare>());
+		TimeDigestionParam timeDigestionParam = null;
+		if(appHolidayWork.getApplicationTime()!=null) {
+		    int totalOverTime = 0;
+	        totalOverTime = appHolidayWork.getApplicationTime().getApplicationTime().stream()
+	                .map(x -> x.getApplicationTime().v())
+	                .mapToInt(Integer::intValue)
+	                .sum();
+	        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
+	                appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
+	        totalOverTime += appHolidayWork.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
+	        timeDigestionParam = new TimeDigestionParam(
+	                0, 
+	                0, 
+	                0, 
+	                0, 
+	                0, 
+	                totalOverTime, 
+	                new ArrayList<TimeLeaveApplicationDetailShare>());
+		}
 		if (mode) { // 新規モード　の場合
 			//2-1.新規画面登録前の処理
 			processBeforeRegister.processBeforeRegister_New(
@@ -1186,7 +1194,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					Collections.emptyList(), 
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-					Optional.of(timeDigestionParam), 
+					Optional.ofNullable(timeDigestionParam), 
 					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
 					false);
 			
@@ -1204,7 +1212,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					appHolidayWork.getWorkInformation().getWorkTimeCode().v(),
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-                    Optional.of(timeDigestionParam), 
+                    Optional.ofNullable(timeDigestionParam), 
                     false);
 		}
 		//	遷移する前のエラーチェック
