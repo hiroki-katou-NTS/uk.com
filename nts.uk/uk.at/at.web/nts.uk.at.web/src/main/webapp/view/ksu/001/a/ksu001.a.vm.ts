@@ -4560,18 +4560,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared('dataShareDialogKDL055A', param);
             nts.uk.ui.windows.sub.modal("/view/kdl/055/a/index.xhtml").onClosed(() => {
                 let paramB = getShared('paramB');
-                console.log(paramB);
+                setShared('paramB', paramB);
                 if (paramB) {
                     setShared('dataShareDialogKDL055B', paramB);
                     nts.uk.ui.windows.sub.modal("/view/kdl/055/b/index.xhtml").onClosed(() => {
-                        let resultB = getShared('resultB');
+                        let resultB = getShared('statusKDL055');
                         console.log(resultB);
-                        if (resultB == 'Updated') {
+                        if (resultB == 'UPDATE') {
+                            nts.uk.ui.block.grayout();
                             self.getNewData(userInfor.disPlayFormat).done(() => {
                                 if (self.mode() == 'edit' && self.selectedModeDisplayInBody() == 'time') {
                                     self.diseableCellsTime();
+                                    nts.uk.ui.block.clear();
                                 }
                             });
+                        } else if (resultB == 'CANCEL') {
+                            self.openKDL055();
                         }
                     });
                 }
