@@ -1,7 +1,6 @@
 package nts.uk.screen.at.ws.kdw.kdw013;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -10,9 +9,6 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmCommand;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmationCommandHandler;
 import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
 import nts.uk.screen.at.app.kdw013.a.DeleteOneDayTaskSet;
@@ -23,9 +19,6 @@ import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentHandler;
 import nts.uk.screen.at.app.kdw013.a.StartProcess;
 import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
-import nts.uk.screen.at.app.kdw013.a.TaskDto;
-import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
-import nts.uk.screen.at.app.kdw013.c.StartWorkInputPanel;
 import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteCommand;
 import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteForOneDayCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteCommand;
@@ -55,12 +48,6 @@ public class KDW013WebService {
 
 	@Inject
 	private AddWorkRecordConfirmationCommandHandler addWorkRecordConfirmationHandler;
-
-	@Inject
-	private StartWorkInputPanel startWorkInputPanel;
-
-	@Inject
-	private SelectWorkItem selectWorkItem;
 
 	@Inject
 	private ChangeDate changeDate;
@@ -131,24 +118,6 @@ public class KDW013WebService {
 		return registerHandler.registerWorkContent(command);
 	}
 
-	// C:作業入力パネル.メニュー別OCD.作業入力パネルを起動する
-	@POST
-	@Path("c/start")
-	public StartWorkInputPanelDto startWorkInputPanel(StartWorkInputPanelParam param) {
-		WorkGroupDto workGrp = param.getWorkGroupDto();
-		return StartWorkInputPanelDto.toDto(startWorkInputPanel.startPanel(param.getEmployeeId(), param.getRefDate(),
-				WorkGroup.create(workGrp.getWorkCD1(), workGrp.getWorkCD2(), workGrp.getWorkCD3(), workGrp.getWorkCD4(),
-						workGrp.getWorkCD5())));
-	}
-
-	// C:作業入力パネル.メニュー別OCD.作業項目を選択する
-	@POST
-	@Path("c/select")
-	public List<TaskDto> selectWorkItem(SelectWorkItemParam param) {
-		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getEmployeeId(), param.getRefDate(),
-				new TaskFrameNo(param.getTaskFrameNo()), Optional.of(new TaskCode(param.getTaskCode()))));
-	}
-	
 	// A:1日作業セットを削除する
 	@POST
 	@Path("a/delete_oneday_task_set")
