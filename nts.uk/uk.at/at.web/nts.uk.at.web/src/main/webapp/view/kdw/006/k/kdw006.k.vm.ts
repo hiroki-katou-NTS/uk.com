@@ -39,6 +39,13 @@ module nts.uk.at.view.kmk006.k {
 
             vm.selectedItemWork.subscribe((itemId: string) => {
                 vm.historys([]);
+                vm.model.update({
+                    historyId: ko.unwrap(vm.modelHistory.historyId),
+                    itemId: '',
+                    code: '',
+                    name: '',
+                    externalCode: ''
+                });
                 vm.changeItemId(itemId);
             });
 
@@ -94,7 +101,35 @@ module nts.uk.at.view.kmk006.k {
                     if (itemId) {
                         const exist = _.find(history, ((value: IHistory) => { return value.itemId === itemId }));
                         if (exist) {
-                            vm.modelHistory.update(exist.dateHistoryItems[0]);
+                            if (exist.dateHistoryItems.length > 0) {
+                                vm.modelHistory.update(exist.dateHistoryItems[0]);
+                            } else {
+                                vm.model.update({
+                                    historyId: ko.unwrap(vm.modelHistory.historyId),
+                                    itemId: '',
+                                    code: '',
+                                    name: '',
+                                    externalCode: ''
+                                });
+                                vm.modelHistory.update({
+                                    historyId: ko.unwrap(vm.modelHistory.historyId),
+                                    startDate: null,
+                                    endDate: null,
+                                })
+                            }
+                        } else {
+                            vm.model.update({
+                                historyId: ko.unwrap(vm.modelHistory.historyId),
+                                itemId: '',
+                                code: '',
+                                name: '',
+                                externalCode: ''
+                            });
+                            vm.modelHistory.update({
+                                historyId: ko.unwrap(vm.modelHistory.historyId),
+                                startDate: null,
+                                endDate: null,
+                            });
                         }
                     } else {
                         vm.modelHistory.update(history[0].dateHistoryItems[0]);
@@ -172,7 +207,11 @@ module nts.uk.at.view.kmk006.k {
 
         reloadData() {
             const vm = this;
-            vm.model.update(_.find(ko.unwrap(vm.historys), ((value: IWorkDetail) => { return value.code === ko.unwrap(vm.currentCode) })));
+            const exist = _.find(ko.unwrap(vm.historys), ((value: IWorkDetail) => { return value.code === ko.unwrap(vm.currentCode) }));
+
+            if (exist) {
+                vm.model.update(exist);
+            }
         }
 
         openViewL() {
