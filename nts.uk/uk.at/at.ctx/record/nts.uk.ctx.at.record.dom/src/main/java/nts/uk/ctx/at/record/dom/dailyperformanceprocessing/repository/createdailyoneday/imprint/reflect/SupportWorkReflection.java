@@ -221,7 +221,7 @@ public class SupportWorkReflection {
 			timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0), Optional.empty(),
 					Optional.ofNullable(information));
 		}
-		sheetOfDaily = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet);
+		sheetOfDaily = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet, Optional.empty());
 
 		return sheetOfDaily;
 	}
@@ -266,12 +266,12 @@ public class SupportWorkReflection {
 				TimeSheetOfAttendanceEachOuenSheet eachOuenSheet = TimeSheetOfAttendanceEachOuenSheet
 						.create(ouen.getTimeSheet().getWorkNo(), Optional.empty(), ouen.getTimeSheet().getEnd());
 				OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance
-						.create(ouen.getWorkNo(), ouen.getWorkContent(), eachOuenSheet);
+						.create(ouen.getWorkNo(), ouen.getWorkContent(), eachOuenSheet, Optional.empty());
 
 				TimeSheetOfAttendanceEachOuenSheet eachOuenSheet2 = TimeSheetOfAttendanceEachOuenSheet
 						.create(ouen.getTimeSheet().getWorkNo(), ouen.getTimeSheet().getStart(), Optional.empty());
 				OuenWorkTimeSheetOfDailyAttendance dailyAttendance2 = OuenWorkTimeSheetOfDailyAttendance
-						.create(ouen.getWorkNo(), ouen.getWorkContent(), eachOuenSheet2);
+						.create(ouen.getWorkNo(), ouen.getWorkContent(), eachOuenSheet2, Optional.empty());
 
 				lstOuenWork.add(dailyAttendance2);
 				lstOuenWork.add(dailyAttendance);
@@ -1079,12 +1079,12 @@ public class SupportWorkReflection {
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());
-			attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet);
+			attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet, Optional.empty());
 			return attendance;
 		}
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 				Optional.empty(), Optional.ofNullable(timeDay));
-		attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet);
+		attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), workContent, timeSheet, Optional.empty());
 		return attendance;
 	}
 
@@ -1118,7 +1118,7 @@ public class SupportWorkReflection {
 					Optional.empty(), Optional.ofNullable(ouenSpNew));
 			// 取得した応援データをベースして終了の応援データ作る
 			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1),
-					workContent, timeSheet);
+					workContent, timeSheet, Optional.empty());
 			// 作成した応援データを応援データ一覧の先頭に入れる
 			departureTempo.setFirstAttendance(Optional.ofNullable(dailyAttendance));
 		}
@@ -1153,7 +1153,7 @@ public class SupportWorkReflection {
 					Optional.ofNullable(ouenSpNew), Optional.empty());
 			// 取得した応援データをベースして終了の応援データ作る
 			OuenWorkTimeSheetOfDailyAttendance dailyAttendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1),
-					workContent, timeSheet);
+					workContent, timeSheet, Optional.empty());
 			// 作成した応援データを応援データ一覧の先頭に入れる
 			departureTempo.setLastLeave(Optional.ofNullable(dailyAttendance));
 		}

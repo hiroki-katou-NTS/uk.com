@@ -38,6 +38,7 @@ module nts.uk.at.view.kmk006.k {
             }
 
             vm.selectedItemWork.subscribe((itemId: string) => {
+                vm.historys([]);
                 vm.changeItemId(itemId);
             });
 
@@ -161,7 +162,7 @@ module nts.uk.at.view.kmk006.k {
                             externalCode: ''
                         });
                         vm.screenMode(SCREEN_MODE.NEW);
-                        $('.inputCode').focus();
+                        // $('.inputCode').focus();
                     }
                 })
                 .then(() => {
@@ -225,7 +226,7 @@ module nts.uk.at.view.kmk006.k {
                 externalCode: ''
             });
             vm.screenMode(SCREEN_MODE.NEW);
-            $('.inputCode').focus();
+            // $('.inputCode').focus();
         }
 
         addOrUpdate() {
@@ -235,9 +236,11 @@ module nts.uk.at.view.kmk006.k {
                 choiceCode: ko.unwrap(vm.model.code),
                 optionName: ko.unwrap(vm.model.name),
                 eternalCodeOfChoice: ko.unwrap(vm.model.externalCode),
-                itemId: ko.unwrap(vm.model.itemId)
+                itemId: ko.unwrap(vm.selectedItemWork)
             }
             const index = _.map(ko.unwrap(vm.historys), m => m.code).indexOf(ko.unwrap(vm.model.code));
+
+            console.log(param);
 
             vm.validate()
                 .then((valid: boolean) => {
@@ -263,6 +266,7 @@ module nts.uk.at.view.kmk006.k {
                                 .then(() => {
                                     vm.$ajax('at', API.UPDATE, param)
                                         .done(() => {
+                                            debugger;
                                             vm.$dialog.info({ messageId: 'Msg_15' });
                                             vm.reloadList(index);
                                         })

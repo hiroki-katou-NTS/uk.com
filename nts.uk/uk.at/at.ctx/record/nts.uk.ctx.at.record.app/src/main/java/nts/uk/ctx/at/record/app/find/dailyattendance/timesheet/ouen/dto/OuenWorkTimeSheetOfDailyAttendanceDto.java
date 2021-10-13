@@ -228,7 +228,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		}
 		
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet == null ? 1 : this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
-		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(this.no), workContent, timeSheet);
+		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(this.no), workContent, timeSheet, Optional.empty());
 		return attendance;
 	}
 }

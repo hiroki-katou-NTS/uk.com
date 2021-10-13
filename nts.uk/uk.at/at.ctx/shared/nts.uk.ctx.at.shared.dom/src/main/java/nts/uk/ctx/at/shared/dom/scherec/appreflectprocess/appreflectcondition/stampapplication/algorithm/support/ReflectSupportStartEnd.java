@@ -89,7 +89,7 @@ public class ReflectSupportStartEnd {
 		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty(), Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
-						SupportFrameNo.of(data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE)), workContent, sheet),
+						SupportFrameNo.of(data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE)), workContent, sheet, Optional.empty()),
 				lstItemId);
 
 	}
@@ -127,7 +127,7 @@ public class ReflectSupportStartEnd {
 		}
 
 		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty(), Optional.empty());
-		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet), lstItemId);
+		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet, Optional.empty()), lstItemId);
 
 	}
 

@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetAllEmployeeWithWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.GetWorkplaceOfEmployeeAdapter;
-import nts.uk.ctx.at.record.dom.daily.ouen.GetTheWorkYouUseMostRecentlyService;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
@@ -75,11 +74,11 @@ public class GetEmployeeDisplayInfo {
 		EmployeeDisplayInfo employeeDisplayInfo = new EmployeeDisplayInfo();
 
 		// 1: 取得する(@Require, 社員ID, 年月日):List<作業グループ>
-		RequireImpl require = new RequireImpl(ouenRepo, taskRepo, taskFrameUsageSettingRepo);
+		//RequireImpl require = new RequireImpl(ouenRepo, taskRepo, taskFrameUsageSettingRepo);
 		RequireImpl1 require1 = new RequireImpl1(workChangeablePeriodSettingRepo, checkShortageFlex, getWorkplaceOfEmployeeAdapter,getAllEmployeeWithWorkplaceAdapter);
 
-		List<WorkGroup> workGroups = GetTheWorkYouUseMostRecentlyService.get(require, sid);
-		employeeDisplayInfo.setWorkGroups(workGroups);
+		//List<WorkGroup> workGroups = GetTheWorkYouUseMostRecentlyService.get(require, sid);
+		//employeeDisplayInfo.setWorkGroups(workGroups);
 
 		// 2: get(ログイン会社ID)
 		Optional<ManHourRecordReferenceSetting> OptWorkChangeablePeriodSetting = workChangeablePeriodSettingRepo
@@ -100,30 +99,30 @@ public class GetEmployeeDisplayInfo {
 		return employeeDisplayInfo;
 	}
 
-	@AllArgsConstructor
-	public class RequireImpl implements GetTheWorkYouUseMostRecentlyService.Require {
-
-		private OuenWorkTimeSheetOfDailyRepo ouenRepo;
-
-		private TaskingRepository taskRepo;
-
-		private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
-
-		@Override
-		public Optional<Task> getTask(TaskFrameNo taskFrameNo, WorkCode code) {
-			return taskRepo.getOptionalTask(AppContexts.user().companyId(), taskFrameNo, new TaskCode(code.v()));
-		}
-
-		@Override
-		public TaskFrameUsageSetting getTaskFrameUsageSetting() {
-			return taskFrameUsageSettingRepo.getWorkFrameUsageSetting(AppContexts.user().companyId());
-		}
-
-		@Override
-		public List<OuenWorkTimeSheetOfDaily> findOuenWorkTimeSheetOfDaily(String empId, DatePeriod targetPeriod) {
-			return ouenRepo.find(empId, targetPeriod);
-		}
-	}
+//	@AllArgsConstructor
+//	public class RequireImpl implements GetTheWorkYouUseMostRecentlyService.Require {
+//
+//		private OuenWorkTimeSheetOfDailyRepo ouenRepo;
+//
+//		private TaskingRepository taskRepo;
+//
+//		private TaskFrameUsageSettingRepository taskFrameUsageSettingRepo;
+//
+//		@Override
+//		public Optional<Task> getTask(TaskFrameNo taskFrameNo, WorkCode code) {
+//			return taskRepo.getOptionalTask(AppContexts.user().companyId(), taskFrameNo, new TaskCode(code.v()));
+//		}
+//
+//		@Override
+//		public TaskFrameUsageSetting getTaskFrameUsageSetting() {
+//			return taskFrameUsageSettingRepo.getWorkFrameUsageSetting(AppContexts.user().companyId());
+//		}
+//
+//		@Override
+//		public List<OuenWorkTimeSheetOfDaily> findOuenWorkTimeSheetOfDaily(String empId, DatePeriod targetPeriod) {
+//			return ouenRepo.find(empId, targetPeriod);
+//		}
+//	}
 
 	@AllArgsConstructor
 	public class RequireImpl1 implements ManHourRecordReferenceSetting.Require {

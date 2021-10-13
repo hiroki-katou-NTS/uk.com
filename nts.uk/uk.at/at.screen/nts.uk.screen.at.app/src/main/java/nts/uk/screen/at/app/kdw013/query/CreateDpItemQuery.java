@@ -42,9 +42,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class CreateDpItemQuery {
-
-	@Inject
-	private ManHrRecordTaskDetailToAttendanceItemService manHrService;
 	
 	@Inject
 	private ManHourRecordAndAttendanceItemLinkRepository  manHourRepo;
@@ -84,7 +81,7 @@ public class CreateDpItemQuery {
 					manHourRepo);
 
 			// 1. 変換する(@Require, ItemValue, 工数実績作業詳細) 勤怠項目リスト
-			List<ItemValue> taskItems =  this.manHrService.convert(require, collectManHrContents(manHrlst), collectTaskLists(manHrlst));
+			List<ItemValue> taskItems =  ManHrRecordTaskDetailToAttendanceItemService.convert(require, collectManHrContents(manHrlst), collectTaskLists(manHrlst));
 			
 			// 2 .休憩時間帯を勤怠項目に変換する
 			List<ItemValue> itemVals = ConvertBreakTimeToAttendanceTtems(manhr, integrationOfDailys);
@@ -97,16 +94,16 @@ public class CreateDpItemQuery {
 			dpitems.addAll(createDPItemValue(empTarget, itemChangeds, taskItems, manhr));
 		});
 		
-		//[No.585]日の実績の承認状況を取得する（NEW）
-		List<ApprovalStatusActualResult> lstApproval = approvalStatusActualDayChange.processApprovalStatus(
-				cId, sId, Arrays.asList(empTarget),
-				Optional.of(period), Optional.empty(), ModeData.NORMAL.value);
-		//[No.584]日の実績の確認状況を取得する（NEW）
+		// 5. [No.585]日の実績の承認状況を取得する（NEW）
+		List<ApprovalStatusActualResult> lstApproval = approvalStatusActualDayChange.processApprovalStatus(cId, sId,
+				Arrays.asList(empTarget), Optional.of(period), Optional.empty(), ModeData.NORMAL.value);
+		// 6. [No.584]日の実績の確認状況を取得する（NEW）
 		List<ConfirmStatusActualResult> lstConfirm = confirmStatusActualDayChange.processConfirmStatus(cId, sId,
 				Arrays.asList(empTarget), Optional.of(period), Optional.empty());
-		//approvalConfirmCacheを作成する
-		ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(sId, Arrays.asList(empTarget), period, 0, lstConfirm, lstApproval);
-		//DPItemParentを作成する
+		// 7. approvalConfirmCacheを作成する
+		ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(sId, Arrays.asList(empTarget), period, 0,
+				lstConfirm, lstApproval);
+		// 8. DPItemParentを作成する
 		List<DailyRecordDto> ids = integrationOfDailys.stream().map(x -> DailyRecordDto.from(x))
 				.collect(Collectors.toList());
 

@@ -7,6 +7,12 @@
     <ui:composition template="/master/base.xhtml">
         <ui:define name="htmlHead">
 
+            <com:ValidatorScript>
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode
+                nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ChoiceName
+                nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ExternalCode
+            </com:ValidatorScript>
+
             <com:scriptfile set="IGNITE" />
             <com:stylefile path="./kdw006.k.main.css" />
             <com:scriptfile path="./kdw006.k.vm.js" />
@@ -72,24 +78,30 @@
                             value: $vm.model.code,
                             name:'#[KDW006_44]',
                             enable: $vm.screenMode() == 1,
-                            required: true}" />
+                            required: true,
+                            constraint: 'ChoiceCode',
+                            width: 200}" />
                     </div>
                     <div class="column2" style="padding-top: 20px;">
                         <div style="width: 100px;" data-bind="ntsFormLabel: { required: true }, text: i18n='KDW006_45'">
                         </div>
-                        <input tabindex="9" data-bind="ntsTextEditor: {
+                        <input tabindex="9" class="inputName" data-bind="ntsTextEditor: {
                             value: $vm.model.name,
                             name:'#[KDW006_45]',
                             enable: $vm.screenMode() == 1 || $vm.screenMode() == 2,
-                            required: true}" />
+                            required: true,
+                            constraint: 'ChoiceName',
+                            width: 200}" />
                     </div>
                     <div class="column3" style="padding-top: 20px;">
                         <div style="width: 100px;"
                             data-bind="ntsFormLabel: { required: false }, text: i18n='KDW006_326'"></div>
-                        <input tabindex="10" data-bind="ntsTextEditor: {
+                        <input tabindex="10" class="inputMemo" data-bind="ntsTextEditor: {
                                 value: $vm.model.externalCode, 
                                 name:'#[KDW006_326]', 
-                                enable: $vm.screenMode() == 1 || $vm.screenMode() == 2}" />
+                                enable: $vm.screenMode() == 1 || $vm.screenMode() == 2,
+                                constraint: 'ExternalCode',
+                                width: 200}" />
                     </div>
                 </div>
             </div>
