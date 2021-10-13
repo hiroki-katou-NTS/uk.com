@@ -441,7 +441,10 @@ public class KrcmtDailyAttendanceItem extends ContractUkJpaEntity implements Ser
 			483, // 有償外出時間
 			490, // 組合外出時間
 			859, // 直行区分
-			860 // 直帰区分
+			860, // 直帰区分
+			2185, // 職場グループID
+			2186, // 看護免許区分
+			2187 // 看護管理者か
 			));
 
 	public static boolean FILTER_NOSAI_0624(DailyAttendanceItem item) {

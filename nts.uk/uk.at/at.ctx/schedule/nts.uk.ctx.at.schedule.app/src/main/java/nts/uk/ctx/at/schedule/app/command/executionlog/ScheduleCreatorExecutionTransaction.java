@@ -1713,7 +1713,10 @@ public class ScheduleCreatorExecutionTransaction {
 												x.getWorkplaceId()))
 										.collect(Collectors.toList())))
 						.collect(Collectors.toList()),
-				masterCache.getListBusTypeOfEmpHis());
+				masterCache.getListBusTypeOfEmpHis(),
+				masterCache.getEmpGeneralInfo().getEmpWorkplaceGroup(), 
+				masterCache.getEmpGeneralInfo().getEmpLicense());
+		
 		return generalInfoImport;
 
 	}

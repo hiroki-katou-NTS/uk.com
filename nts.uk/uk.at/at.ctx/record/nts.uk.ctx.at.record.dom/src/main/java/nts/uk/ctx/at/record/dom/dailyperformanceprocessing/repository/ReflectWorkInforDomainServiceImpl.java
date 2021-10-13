@@ -79,6 +79,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTy
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeOfEmployeeRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -1500,6 +1501,33 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// 「2020/02/12」 追加　Tin
 		if (employmentHistItemImport.isPresent() && workplaceHistItemImport.isPresent()
 				&& classificationHistItemImport.isPresent() && jobTitleHistItemImport.isPresent()) {
+			
+			// get workPlaceGroupId
+			// 特定期間の社員情報から該当の社員の職場グループIDを取得する
+			Optional<String> workplaceGroupId = Optional.empty();
+			if(generalInfoImport.getEmpWorkplaceGroup() != null &&  !generalInfoImport.getEmpWorkplaceGroup().get(day).isEmpty()){
+				workplaceGroupId = generalInfoImport.getEmpWorkplaceGroup().get(day).stream()
+						.filter(i -> i.getEmpId().toString().equals(employeeId)).findFirst().map(x -> x.getWorkplaceGroupId())
+						.orElse(Optional.empty());
+				
+			}
+			
+			// get Emp License Info
+			// 特定期間の社員情報から該当の社員の免許区分を取得する
+			 Optional<LicenseClassification> nursingLicenseClass = Optional.empty();	
+			 Optional<Boolean> isNursingManager = Optional.empty();
+			 if(generalInfoImport.getEmpLicense()!=null && !generalInfoImport.getEmpLicense().get(day).isEmpty()){
+				 nursingLicenseClass = generalInfoImport.getEmpLicense().get(day).stream()
+							.filter(i -> i.getEmpID().equals(employeeId)).findFirst().map(x -> x.getOptLicenseClassification())
+							.orElse(Optional.empty());
+				 
+				 isNursingManager = generalInfoImport.getEmpLicense().get(day).stream()
+							.filter(i -> i.getEmpID().equals(employeeId)).findFirst().map(x -> x.getIsNursingManager())
+							.orElse(Optional.empty());
+					
+				}
+			
+			
 			return new AffiliationInforState(Collections.emptyList(),
 					Optional.of(new AffiliationInforOfDailyAttd(
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
@@ -1507,10 +1535,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
 							worktypeHistItemImport.isPresent() ? worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()) : Optional.empty(),
-							Optional.empty(), // TODO team daily add
-							Optional.empty(), // TODO team daily add
-							Optional.empty(), // TODO team daily add
-							Optional.empty())),  // TODO team daily add
+							Optional.empty(), // bonusPaySettingCode - thuât toán lấy master bên ngoài không lấy thằng này nên set empty
+							workplaceGroupId,  
+							nursingLicenseClass, 
+							isNursingManager)),  
 					errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大

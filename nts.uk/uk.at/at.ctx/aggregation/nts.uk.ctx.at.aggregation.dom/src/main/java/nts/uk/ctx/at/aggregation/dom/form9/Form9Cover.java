@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.gul.util.OptionalUtil;
+import nts.uk.shr.com.primitive.OutputCell;
 
 /**
  * 様式９の表紙
