@@ -63,7 +63,7 @@ public class CardNumberCanonicalaization implements DomainCanonicalization{
 				// 重複チェック
 				val keyValues = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValues)) {
-					require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
+					require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
 					continue; // 次のレコードへ
 				}
 				importingKeys.add(keyValues);

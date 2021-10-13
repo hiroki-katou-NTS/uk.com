@@ -6,6 +6,7 @@ import java.util.Set;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
@@ -13,7 +14,7 @@ import nts.uk.ctx.exio.dom.input.util.Either;
  */
 public class CheckHistoryDuplications {
 
-	public static Either.Sequence<ExternalImportError, RecordWithPeriod> check(List<RecordWithPeriod> records) {
+	public static Either.Sequence<RecordError, RecordWithPeriod> check(List<RecordWithPeriod> records) {
 
 		if (records.isEmpty()) {
 			return Either.sequenceEmpty();
@@ -26,7 +27,7 @@ public class CheckHistoryDuplications {
 		
 		return Either.sequenceOf(records)
 				.separate(r -> !duplicatedPeriods.contains(r.period))
-				.mapLeft(r -> ExternalImportError.record(r.getRowNo(), "履歴の期間が重複しています。"));
+				.mapLeft(r -> RecordError.record(r.getRowNo(), "履歴の期間が重複しています。"));
 	}
 	
 	static Either.Sequence<RecordWithPeriod, RecordWithPeriod> checkDuplicates(List<RecordWithPeriod> records) {

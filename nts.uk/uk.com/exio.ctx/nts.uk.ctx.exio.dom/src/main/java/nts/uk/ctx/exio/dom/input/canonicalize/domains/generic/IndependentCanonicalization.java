@@ -52,7 +52,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			
 			KeyValues key = getPrimaryKeys(revisedData, workspace);
 			if (importingKeys.contains(key)) {
-				require.add(ExternalImportError.record(revisedData.getRowNo(), "受入データの中にキーの重複があります。"));
+				require.add(ExternalImportError.record(revisedData.getRowNo(), context.getDomainId(),"受入データの中にキーの重複があります。"));
 				return; // 次のレコードへ
 			}
 			
@@ -110,7 +110,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	
 	/**
 	 * 追加の正準化処理が必要ならoverrideすること
-	 * @param targetContainers
+	 * @param targertResult
 	 */
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return targertResult;

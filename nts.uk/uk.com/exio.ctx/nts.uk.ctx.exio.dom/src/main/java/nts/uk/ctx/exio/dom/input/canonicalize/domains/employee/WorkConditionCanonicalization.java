@@ -25,6 +25,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 
 /**
  * 労働条件の正準化 
@@ -145,10 +146,12 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 			List<ExternalImportError> employeeErrors = new ArrayList<>();
 			
 			for(val interm : interms) {
-				ErrorChecker.check(interm).ifPresent(error ->{
-					employeeErrors.add(error);
-					require.add(context, error);
-				});
+				ErrorChecker.check(interm)
+						.map(e -> ExternalImportError.of(context.getDomainId(), e))
+						.ifPresent(error -> {
+							employeeErrors.add(error);
+							require.add(error);
+						});
 			}
 			if(employeeErrors.isEmpty()) {
 				//既存データのチェックと保存は継承先に任せる
@@ -197,10 +200,10 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 		/**
 		 * チェック依頼窓口 
 		 */
-		public static Optional<ExternalImportError> check(IntermediateResult interm){
+		public static Optional<RecordError> check(IntermediateResult interm){
 			//休暇加算時間
 			if(!hasTimeAllItemNoOrAllNothing(interm, addingTime.keySet())) {
-				return  Optional.of(ExternalImportError.record(interm.getRowNo(),
+				return  Optional.of(RecordError.record(interm.getRowNo(),
 						addingTime.values().stream().collect(Collectors.joining("、")) 
 						+ "は同時に受入れなければなりません。"
 					));
@@ -217,7 +220,7 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 			|| items.stream().allMatch(t -> !interm.isImporting(t)));
 		}
 		
-		private static Optional<ExternalImportError> checkSchedule(IntermediateResult interm) {
+		private static Optional<RecordError> checkSchedule(IntermediateResult interm) {
 			if(useSchedule(interm)) {
 				if(interm.isImporting(Items.スケジュール作成方法)) {
 					val createMethod = EnumAdaptor.valueOf(interm.getItemByNo(Items.スケジュール作成方法).get().getJavaInt(),WorkScheduleBasicCreMethod.class);
@@ -233,16 +236,16 @@ public class WorkConditionCanonicalization extends EmployeeHistoryCanonicalizati
 							throw new RuntimeException("unknown value :" + createMethod);
 					}
 				}
-				return Optional.of(ExternalImportError.record(interm.getRowNo(), "スケジュール管理する場合はスケジュール作成方法 を受入れなければなりません。"));
+				return Optional.of(RecordError.record(interm.getRowNo(), "スケジュール管理する場合はスケジュール作成方法 を受入れなければなりません。"));
 			}
 			return Optional.empty();
 		}
 
-		private static Optional<ExternalImportError> lackScheduleItem(String createScheduleMethod, Map<Integer, String> itemsMap, IntermediateResult interm) {
+		private static Optional<RecordError> lackScheduleItem(String createScheduleMethod, Map<Integer, String> itemsMap, IntermediateResult interm) {
 			if(itemsMap.keySet().stream().allMatch(t -> interm.isImporting(t))) {
 				return Optional.empty();
 			}
-			return Optional.of(ExternalImportError.record(interm.getRowNo(),
+			return Optional.of(RecordError.record(interm.getRowNo(),
 					"スケジュール作成方法が" +createScheduleMethod +  "参照なので、"+ 
 					itemsMap.values().stream().collect(Collectors.joining("、"))
 					+" は必須です。"));

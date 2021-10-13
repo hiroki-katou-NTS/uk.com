@@ -84,7 +84,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 			for(val interm : interms) {
 				val keyValue = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValue)) {
-					require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
+					require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中にキーの重複があります。"));
 					return; // 次のレコードへ
 				}
 				importingKeys.add(keyValue);

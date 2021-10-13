@@ -20,6 +20,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
@@ -82,8 +83,8 @@ public class WorkplaceCanonicalization implements DomainCanonicalization {
 			return;
 		}
 		
-		Consumer<ExternalImportError> saveError = error -> {
-			require.add(context, error);
+		Consumer<RecordError> saveError = error -> {
+			require.add(ExternalImportError.of(context.getDomainId(), error));
 		};
 		
 		// 1. 期間の逆転をチェックし、エラー行を除外する

@@ -8,6 +8,7 @@ import java.util.Set;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
@@ -16,7 +17,7 @@ import nts.uk.ctx.exio.dom.input.util.Either;
  */
 public class CanonicalizeHistoryContinuity {
 
-	public static Either.Sequence<ExternalImportError, RecordWithPeriod> canonicalize(
+	public static Either.Sequence<RecordError, RecordWithPeriod> canonicalize(
 			List<RecordWithPeriod> records) {
 		
 		if (records.isEmpty()) {
@@ -51,7 +52,7 @@ public class CanonicalizeHistoryContinuity {
 		
 		return Either.sequenceOf(records)
 				.separate(r -> validPeriods.contains(r.period))
-				.mapLeft(r -> ExternalImportError.record(r.getRowNo(), "履歴の期間が直前の履歴と連続していません。"))
+				.mapLeft(r -> RecordError.record(r.getRowNo(), "履歴の期間が直前の履歴と連続していません。"))
 				.map(r -> {
 					// 最後の履歴は99991231に自動補正
 					if (r.period.equals(lastPeriod)) {

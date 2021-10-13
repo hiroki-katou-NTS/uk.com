@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +48,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 			
 			employeeCodeCanonicalization.canonicalize(require, context, employeeCode)
 				.ifLeft(errors -> {
-					errors.forEach(error -> require.add(ExternalImportError.of(error)));
+					errors.forEach(error -> require.add(ExternalImportError.of(context.getDomainId(), error)));
 				})
 				.ifRight(interms -> {
 					canonicalize(require, context, keys, interms.collect(Collectors.toList()));
@@ -70,7 +70,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 			if (interm.isImporting(Items.TARGET_DATE)) {
 				val key = RecordKey.of(interm);
 				if (keys.contains(key)) {
-					require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
+					require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
 					continue;
 				}
 				keys.add(key);

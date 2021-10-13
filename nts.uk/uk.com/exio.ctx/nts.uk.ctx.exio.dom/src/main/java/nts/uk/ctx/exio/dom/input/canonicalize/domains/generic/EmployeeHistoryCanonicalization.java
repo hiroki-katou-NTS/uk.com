@@ -152,7 +152,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 				.forEach(interm -> getPeriod(interm)
 						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
 						.ifRight(c -> containers.add(c))
-						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), e.getText()))));
+						.ifLeft(e -> require.add(ExternalImportError.record(interm.getRowNo(), context.getDomainId(), e.getText()))));
 
 		// エラー行が除外された結果、空になったらここで終了
 		if (containers.isEmpty()) {
@@ -173,7 +173,7 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		} catch (BusinessException ex) {
 			// どのデータで失敗しようと１社員分すべて受け入れるか、全て受け入れないかのどちらかとする
 			containers.forEach(c -> require.add(
-					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
+					ExternalImportError.record(c.interm.getRowNo(), context.getDomainId(), ex.getMessage())));
 			
 			return Collections.emptyList();
 		}

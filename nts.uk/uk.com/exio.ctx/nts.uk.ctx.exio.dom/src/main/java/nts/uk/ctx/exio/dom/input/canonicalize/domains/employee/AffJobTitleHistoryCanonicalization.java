@@ -57,7 +57,7 @@ public class AffJobTitleHistoryCanonicalization extends EmployeeHistoryCanonical
 			
 			jobTitleCodeCanonicalization.canonicalize(require, interm, interm.getRowNo())
 					.ifRight(canonicalized -> results.add(new Container(canonicalized, container.getAddingHistoryItem())))
-					.ifLeft(error -> require.add(ExternalImportError.of(error)));
+					.ifLeft(error -> require.add(ExternalImportError.of(context.getDomainId(), error)));
 		}
 		return results;
 	}
