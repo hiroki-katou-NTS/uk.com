@@ -14,7 +14,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	}
 
 	$(function() {
-		$("#layout-list").on("click",".delete-button",function(){
+		$(document).on("click",".delete-button",function(){
 			let vm = nts.uk.ui._viewModel.content;
 			vm.removeItem($(this).data("target"));
 		});
@@ -130,6 +130,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				let csvItem = $.map(res.csvItems, function(value, index) {
 					return new CsvItem(index + 1, value);
 				});
+				csvItem.unshift(new CsvItem(null, ''));
 				self.csvItemOption=ko.observableArray(csvItem);
 
 				dfd.resolve();
@@ -194,10 +195,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 		      });
 		}
 		
-		removeItem(target){
+		removeItem(target: number){
 			let self = this;
-			let index = self.layoutItemNoList().findIndex((item) => item.itemNo === target);
-			self.layoutItemNoList.splice(index, 1);
+			let index = self.layoutItemNoList().findIndex((item) => item === target);
+			self.layoutItemNoList().splice(index, 1);
+			self.setLayout(self.layoutItemNoList());
 		}
 
 		checkError(){
@@ -318,13 +320,6 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				domainId: self.selectedDomainId(),
 				screenId: 'cmf001f'
 			});
-		}
-	
-		removeItem(target){
-			let self = this;
-			self.layoutItemNoList(self.layoutItemNoList().filter(function(itemNo){
-				return itemNo !== target;
-			}));
 		}
 	}
 
