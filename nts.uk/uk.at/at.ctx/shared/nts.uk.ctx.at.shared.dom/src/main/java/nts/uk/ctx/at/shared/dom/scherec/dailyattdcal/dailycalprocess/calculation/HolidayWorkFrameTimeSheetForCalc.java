@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
@@ -208,11 +209,12 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	 * 計算処理
 	 * 休出時間の計算
 	 * @param autoCalcSet 自動計算設定
+	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 休出時間
 	 */
-	public TimeDivergenceWithCalculation correctCalculationTime(AutoCalSetting autoCalcSet) {
-		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.calcTotalTime() : AttendanceTime.ZERO;
-		AttendanceTime calcTime = this.calcTotalTime();
+	public TimeDivergenceWithCalculation correctCalculationTime(AutoCalSetting autoCalcSet, Optional<WorkTimezoneGoOutSet> goOutSet) {
+		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.calcTime(goOutSet) : AttendanceTime.ZERO;
+		AttendanceTime calcTime = this.calcTime(goOutSet);
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
 	}
 	

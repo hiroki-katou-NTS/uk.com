@@ -18,4 +18,12 @@ public enum ActualWorkTimeSheetAtr {
 	public boolean isWithinWorkTime() {
 		return this.equals(WithinWorkTime);
 	}
+
+	/**
+	 * 休出か
+	 * @return 休出である
+	 */
+	public boolean isHolidayWork() {
+		return this.equals(HolidayWork);
+	}
 }

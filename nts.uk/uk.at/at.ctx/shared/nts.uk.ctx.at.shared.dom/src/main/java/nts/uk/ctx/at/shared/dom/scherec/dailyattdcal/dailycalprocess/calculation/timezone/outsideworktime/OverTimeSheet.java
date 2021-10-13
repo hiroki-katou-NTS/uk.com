@@ -49,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -96,13 +97,14 @@ public class OverTimeSheet {
 	 * @param autoCalcSetting 自動計算設定：残業時間の自動計算設定
 	 *  @param statutoryFrameNoList 法定内残業の残業枠NO：List<残業枠NO>
 	 * @param overTimeOfDaily 日別勤怠の残業時間
+	 * @param goOutSet 就業時間帯の外出設定
 	 */
 	public void calculateOvertimeEachTimeZone(TransProcRequire require, String cid, String sid, GeneralDate date,
 			String workTypeCode, Optional<String> workTimeCode, AutoCalOvertimeSetting autoCalcSetting,
 			List<OverTimeFrameNo> statutoryFrameNoList, OverTimeOfDaily overTimeOfDaily, boolean upperControl,
-			List<OvertimeWorkFrame> overtimeFrameList) {
+			List<OvertimeWorkFrame> overtimeFrameList, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		//時間帯毎に残業時間を計算する
-		this.calculateProcess(autoCalcSetting);
+		this.calculateProcess(autoCalcSetting, goOutSet);
 		if(upperControl){
 			// 事前申請上限制御
 			this.advanceAppUpperLimitControl(overTimeOfDaily, autoCalcSetting, statutoryFrameNoList);
@@ -115,12 +117,13 @@ public class OverTimeSheet {
 	/**
 	 * 時間帯毎に残業時間を計算する
 	 * @param autoCalcSetting 自動計算設定：残業時間の自動計算設定
+	 * @param goOutSet 就業時間帯の外出設定
 	 */
-	public void calculateProcess(AutoCalOvertimeSetting autoCalcSetting) {
+	public void calculateProcess(AutoCalOvertimeSetting autoCalcSetting, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		//残業時間帯の時間枠を取得
 		this.frameTimeSheets.forEach(frameTime ->{
 			//残業時間帯の計算
-			frameTime.getFrameTime().setOverTimeWork(frameTime.correctCalculationTime(Optional.of(false), autoCalcSetting));
+			frameTime.getFrameTime().setOverTimeWork(frameTime.correctCalculationTime(Optional.of(false), autoCalcSetting, goOutSet));
 		});
 		return;
 	}
@@ -402,6 +405,7 @@ public class OverTimeSheet {
 	 * @param declareResult 申告時間帯作成結果
 	 * @param upperControl 事前申請上限制御
 	 * @param overtimeFrameList 残業枠リスト
+	 * @param goOutSet 就業時間帯の外出設定
 	 * @return 残業枠時間(List)
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(
@@ -414,7 +418,8 @@ public class OverTimeSheet {
 			List<OverTimeFrameNo> statutoryFrameNoList,
 			DeclareTimezoneResult declareResult,
 			boolean upperControl,
-			List<OvertimeWorkFrame> overtimeFrameList) {
+			List<OvertimeWorkFrame> overtimeFrameList,
+			Optional<WorkTimezoneGoOutSet> goOutSet) {
 
 		// 時間帯毎に残業時間を計算する(補正、制御含む)
 		OverTimeOfDaily overTimeWork = integrationOfDaily.getAttendanceTimeOfDailyPerformance()
@@ -425,7 +430,7 @@ public class OverTimeSheet {
 		List<OverTimeFrameTime> aftertransTimeList = new ArrayList<OverTimeFrameTime>();
 		calculateOvertimeEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
 				workType.getWorkTypeCode().v(), workTimeCode, autoCalcSet, statutoryFrameNoList, overTimeWork,
-				upperControl, overtimeFrameList);
+				upperControl, overtimeFrameList, goOutSet);
 		// 時間帯毎の時間から残業枠毎の時間を集計
 		aftertransTimeList.addAll(aggregateTimeForOvertime(overTimeWork));
 			
@@ -447,7 +452,8 @@ public class OverTimeSheet {
 						statutoryFrameNoList,
 						new DeclareTimezoneResult(),
 						false,
-						overtimeFrameList);
+						overtimeFrameList,
+						goOutSet);
 				//申告残業反映後リストの取得
 				OverTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
 			}
@@ -466,9 +472,9 @@ public class OverTimeSheet {
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
-		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, roundAtr,
+		return ActualWorkTimeSheetListService.calcDeductionTime(conditionAtr, dedAtr, goOutSet,
 				this.frameTimeSheets.stream().map(tc -> (ActualWorkingTimeSheet)tc).collect(Collectors.toList()));
 	}
 
@@ -497,7 +503,8 @@ public class OverTimeSheet {
 			IntegrationOfDaily integrationOfDaily,
 			List<OverTimeFrameNo> statutoryFrameNoList,
 			boolean upperControl,
-			List<OvertimeWorkFrame> overtimeFrameList){
+			List<OvertimeWorkFrame> overtimeFrameList,
+			Optional<WorkTimezoneGoOutSet> goOutSet){
 		
 		OverTimeOfDaily overTimeWork = integrationOfDaily.getAttendanceTimeOfDailyPerformance()
 				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
@@ -506,7 +513,7 @@ public class OverTimeSheet {
 		// 時間帯毎に残業時間を計算する(補正、制御含む)
 		calculateOvertimeEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
 				workType.getWorkTypeCode().v(), workTimeCode, autoCalcSet, statutoryFrameNoList, overTimeWork,
-				upperControl, overtimeFrameList);
+				upperControl, overtimeFrameList, goOutSet);
 	
 		return this.frameTimeSheets.stream().map(tc -> {
 			val mapData = tc.changeNotWorkFrameTimeSheet();
@@ -651,11 +658,14 @@ public class OverTimeSheet {
 	
 	/**
 	 * 変形法定内残業時間の計算
+	 * @param 
 	 * @return　変形法定内残業時間
 	 */
-	public AttendanceTime calcIrregularTime() {
+	public AttendanceTime calcIrregularTime(Optional<WorkTimezoneGoOutSet> goOutSet) {
 		val irregularTimeSheetList = this.frameTimeSheets.stream().filter(tc -> tc.getWithinStatutryAtr().isDeformationCriterion()).collect(Collectors.toList());
-		return new AttendanceTime(irregularTimeSheetList.stream().map(tc -> tc.overTimeCalculationByAdjustTime().valueAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+		return new AttendanceTime(irregularTimeSheetList.stream()
+				.map(tc -> tc.overTimeCalculationByAdjustTime(goOutSet).valueAsMinutes())
+				.collect(Collectors.summingInt(tc -> tc)));
 	}
 	
 	/**

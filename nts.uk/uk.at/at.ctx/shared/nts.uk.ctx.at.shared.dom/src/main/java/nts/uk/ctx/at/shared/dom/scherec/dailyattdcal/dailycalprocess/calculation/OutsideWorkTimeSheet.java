@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -145,10 +146,10 @@ public class OutsideWorkTimeSheet {
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTimeFromOverTime(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
 		if (this.overTimeWorkSheet.isPresent()){
-			return this.overTimeWorkSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr);
+			return this.overTimeWorkSheet.get().getDeductionTime(conditionAtr, dedAtr, goOutSet);
 		}
 		return new AttendanceTime(0);
 	}
@@ -161,10 +162,10 @@ public class OutsideWorkTimeSheet {
 	 * @return 控除時間
 	 */
 	public AttendanceTime getDeductionTimeFromHolidayWork(
-			ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeSheetRoundingAtr roundAtr) {
+			ConditionAtr conditionAtr, DeductionAtr dedAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
 		if(this.holidayWorkTimeSheet.isPresent()) {
-			return this.holidayWorkTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, roundAtr);
+			return this.holidayWorkTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, goOutSet);
 		}
 		return new AttendanceTime(0);
 	}
