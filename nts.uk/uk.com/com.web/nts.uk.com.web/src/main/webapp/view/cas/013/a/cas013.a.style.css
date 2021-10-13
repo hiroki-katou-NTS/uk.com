@@ -77,10 +77,10 @@ body{
 	display: inline-block;
 }
 
-label.ntsControl.limited-label {
-	width : 125px;
-    margin-left: 15px;
-}
+/*label.ntsControl.limited-label {*/
+	/*width : 125px;*/
+    /*margin-left: 15px;*/
+/*}*/
 
 .ui-widget-header {
 	background: #cff1a5;
@@ -103,4 +103,14 @@ div.ntsLabel, label.ntsLabel, div.form-label, label.form-label {
 }
 #kcp005{
 	margin-top: 10px;
+}
+
+.code{
+	width : 125px;
+	margin-left: 10px;
+
+}
+.name{
+	width : 320px;
+
 }

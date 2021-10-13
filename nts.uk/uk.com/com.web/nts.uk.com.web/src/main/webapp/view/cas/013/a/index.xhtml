@@ -31,7 +31,7 @@
             <!--<button tabindex="3" id="print-button" data-bind="click: exportExcel" style="width: 120px;">#{i18n.getText('CAS013_48')}</button>-->
         </div>
             <div id="contents-area">
-                <div class="container">
+                <div class="container" style="width: 1296px">
                         <div class="left-content">
                             <div class="valign-center control-group">
                                 <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_6')}</div>
@@ -95,10 +95,10 @@
                                     <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_10')}</div>
                                     <button tabindex="7" class="x-large"
                                             data-bind="click: openBModal, enable: isCreateMode">#{i18n.getText('CAS013_11')}</button>
-                                    <label class="ntsControl limited-label"
+                                    <label class="ntsControl limited-label code"
                                            data-bind="text: employyeCode()">
                                     </label>
-                                    <label class="ntsControl limited-label"
+                                    <label class="ntsControl limited-label name"
                                            data-bind="text: employyeName()">
                                     </label>
                                 </div>
@@ -108,8 +108,8 @@
                                             <table class="fixed-table full">
                                                 <colgroup>
                                                     <col width="125px" />
-                                                    <col width="85px" />
-                                                    <col width="290px" />
+                                                    <col width="90px" />
+                                                    <col width="330px" />
                                                 </colgroup>
                                                 <thead>
                                                 <tr>

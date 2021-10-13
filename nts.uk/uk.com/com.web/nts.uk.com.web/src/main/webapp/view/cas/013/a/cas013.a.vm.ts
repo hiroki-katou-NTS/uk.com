@@ -491,6 +491,8 @@ module nts.uk.com.view.cas013.a {
 
         save(): void {
             let vm = this;
+            $("#daterangepicker").find(".ntsStartDatePicker").trigger("validate");
+            $("#daterangepicker").find(".ntsEndDatePicker").trigger("validate");
             if (!nts.uk.util.isNullOrUndefined(vm.employyeCode())
                 && !nts.uk.util.isNullOrUndefined(vm.employyeName())
                 && !nts.uk.util.isNullOrUndefined(vm.companyCode())
@@ -510,9 +512,6 @@ module nts.uk.com.view.cas013.a {
                     messageParams: [nts.uk.resource.getText("CAS013_10")]
                 });
             }
-            else if (nts.uk.util.isNullOrUndefined(vm.dateValue().startDate) || nts.uk.util.isNullOrUndefined(vm.dateValue().endDate)) {
-                $(".nts-input").trigger("validate");
-            }
         }
 
         private insert(): void {
@@ -522,7 +521,7 @@ module nts.uk.com.view.cas013.a {
             let userId = vm.selectedUserID();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
-            let cid = vm.companyId();
+            let cid =__viewContext.user.companyId;
             block.invisible();
             let roleGrant = {
                 userID: userId,
@@ -556,7 +555,7 @@ module nts.uk.com.view.cas013.a {
             let userId = vm.selectedUserID();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
-            let cid = vm.companyId();
+            let cid =__viewContext.user.companyId;
             let roleGrant = {
                 userID: userId,
                 roleID: roleId,
