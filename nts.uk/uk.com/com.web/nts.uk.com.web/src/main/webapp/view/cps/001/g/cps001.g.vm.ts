@@ -192,11 +192,11 @@ module nts.uk.com.view.cps001.g.vm {
                             return item.itemCode == itemCode;
                         });
                         if (itemDef) {
-                            if (itemDef.display) {
-                                $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
-                            } else {
-                                $(this).parent().css("display", "none");
-                            }
+                            // if (itemDef.display) {
+                            //     $(this).children().first().html("<label>" + itemDef.itemName + "</label>");
+                            // } else {
+                            //     $(this).parent().css("display", "none");
+                            // }
                             let timeType = itemCodeArray[itemCodeArray.length - 1];
                             switch (timeType) {
                                 case "IS00385":

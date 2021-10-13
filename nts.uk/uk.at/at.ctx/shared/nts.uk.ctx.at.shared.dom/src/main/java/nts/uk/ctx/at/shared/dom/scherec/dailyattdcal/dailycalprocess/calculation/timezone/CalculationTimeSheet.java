@@ -370,7 +370,8 @@ public abstract class CalculationTimeSheet {
 							tc.getBreakAtr(), 
 							tc.getShortTimeSheetAtr(), 
 							tc.getDeductionAtr(),
-							tc.getChildCareAtr()))
+							tc.getChildCareAtr(),
+							tc.isRecordOutside()))
 					.collect(Collectors.toList());
 		}
 		

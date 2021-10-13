@@ -293,7 +293,12 @@ public class WorkspaceSql {
 		return jdbcProxy.query(sql).getSingle(rec -> toRevised(rec));
 	}
 	
-	public List<RevisedDataRecord> findRevisedWhere(Require require, int itemNoCondition, String conditionString) {
+	public List<RevisedDataRecord> findAllRevised() {
+		String sql = "select * from " + tableName().asRevised();
+		return jdbcProxy.query(sql).getList(rec -> toRevised(rec));
+	}
+	
+	public List<RevisedDataRecord> findRevisedWhere(int itemNoCondition, String conditionString) {
 		
 		String columnName = workspace.getItem(itemNoCondition)
 				.orElseThrow(() -> new RuntimeException("not found: " + itemNoCondition))

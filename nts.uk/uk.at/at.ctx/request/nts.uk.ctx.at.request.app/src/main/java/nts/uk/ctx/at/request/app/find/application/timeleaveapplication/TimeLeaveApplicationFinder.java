@@ -236,8 +236,8 @@ public class TimeLeaveApplicationFinder {
                 achievementDetailDto == null ? null : achievementDetailDto.getWorkTypeCD(),
                 achievementDetailDto == null ? null : achievementDetailDto.getWorkTimeCD(),
                 mapTimeZone,
-                Collections.emptyList(),
-                Collections.emptyList(),
+                achievementDetailDto != null ? achievementDetailDto.getBreakTimeSheets().stream().map(x -> x.getStartTime()).collect(Collectors.toList()) : new ArrayList<Integer>(),
+                achievementDetailDto != null ? achievementDetailDto.getBreakTimeSheets().stream().map(x -> x.getEndTime()).collect(Collectors.toList()) : new ArrayList<Integer>(),
                 lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
                         i.getOutingAtr() == 4 ? GoingOutReason.PRIVATE.value : GoingOutReason.UNION.value,
                         i.getStartTime(),

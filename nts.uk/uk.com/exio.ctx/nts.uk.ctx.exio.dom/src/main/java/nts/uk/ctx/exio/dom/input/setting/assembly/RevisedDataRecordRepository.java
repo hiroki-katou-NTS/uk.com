@@ -30,6 +30,14 @@ public interface RevisedDataRecordRepository {
 	Optional<RevisedDataRecord> findByRowNo(Require require, ExecutionContext context, int rowNo);
 	
 	/**
+	 * すべて取得する
+	 * @param require
+	 * @param context
+	 * @return
+	 */
+	List<RevisedDataRecord> findAll(Require require, ExecutionContext context);
+	
+	/**
 	 * 指定した項目NOの文字列値を条件として取得する
 	 * @param require
 	 * @param context

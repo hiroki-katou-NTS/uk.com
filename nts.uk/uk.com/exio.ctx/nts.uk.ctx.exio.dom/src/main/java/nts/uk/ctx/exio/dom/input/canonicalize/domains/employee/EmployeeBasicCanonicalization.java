@@ -17,6 +17,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
@@ -29,11 +30,16 @@ import nts.uk.ctx.sys.shared.dom.user.User;
  * 個人基本情報の正準化
  */
 public class EmployeeBasicCanonicalization implements DomainCanonicalization {
+
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
 	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		
-		List<String> employeeCodes = require.getStringsOfRevisedData(context, Items.SCD);
+		List<String> employeeCodes = require.getStringsOfRevisedData(context, Items.社員コード);
 		
 		for (String employeeCode : employeeCodes) {
 			
@@ -46,7 +52,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			ExecutionContext context,
 			String employeeCode) {
 		
-		val revisedRecords = require.getRevisedDataRecordWhere(context, Items.SCD, employeeCode);
+		val revisedRecords = require.getRevisedDataRecordWhere(context, Items.社員コード, employeeCode);
 		
 		// 個人基本情報は1社員につき1レコード
 		// 2レコード目以降はエラーとする
@@ -83,7 +89,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			interm = ids.fill(interm);
 
 			// パスワードは既存データを削除して受け入れる
-			if (interm.isImporting(Items.Password.PASSWORD)) {
+			if (interm.isImporting(Items.パスワード)) {
 				interm = Items.Password.fillNewData(context, interm);
 				require.save(context, ids.toDeletePassword(context));
 			}
@@ -157,7 +163,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			return source
 					.addCanonicalized(CanonicalItem.of(Items.SID, employeeId))
 					.addCanonicalized(CanonicalItem.of(Items.PID, personId))
-					.addCanonicalized(CanonicalItem.of(Items.USER_ID, userId));
+					.addCanonicalized(CanonicalItem.of(Items.ユーザID, userId));
 		}
 		
 		/**
@@ -187,29 +193,55 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		AnyRecordToDelete toDeleteUser(ExecutionContext context) {
 			return AnyRecordToDelete.create(context, Items.User.TARGET_NAME)
 					.addKey(Items.SID, StringifiedValue.of(employeeId))
-					.addKey(Items.USER_ID, StringifiedValue.of(userId));
+					.addKey(Items.ユーザID, StringifiedValue.of(userId));
 		}
 		
 		AnyRecordToDelete toDeletePassword(ExecutionContext context) {
 			return AnyRecordToDelete.create(context, Items.Password.TARGET_NAME)
 					.addKey(Items.SID, StringifiedValue.of(employeeId))
-					.addKey(Items.USER_ID, StringifiedValue.of(userId));
+					.addKey(Items.ユーザID, StringifiedValue.of(userId));
 		}
 	}
 
-	private static class Items {
-
-		/** 社員コード */
-		private static final int SCD = 1;
+	public static class Items {
 		
-		/** 社員ID */
-		private static final int SID = 101;
-		
-		/** 個人ID */
-		private static final int PID = 102;
-		
-		/** ユーザID */
-		private static final int USER_ID = 103;
+		public static final int 社員コード = 1;
+		public static final int 個人名 = 2;
+		public static final int 個人名カナ = 3;
+		public static final int ログインID = 4;
+		public static final int パスワード = 5;
+		public static final int 生年月日 = 6;
+		public static final int 性別 = 7;
+		public static final int 表示氏名 = 8;
+		public static final int 表示氏名カナ = 9;
+		public static final int 表示氏名英語 = 10;
+		public static final int 表示氏名その他 = 11;
+		public static final int 社員名ローマ字 = 12;
+		public static final int 社員名ローマ字カナ = 13;
+		public static final int 個人名他言語 = 14;
+		public static final int 個人名他言語カナ = 15;
+		public static final int 個人旧姓 = 16;
+		public static final int 個人旧姓カナ = 17;
+		public static final int 個人届出名 = 18;
+		public static final int 個人届出名カナ = 19;
+		public static final int 血液型 = 20;
+		public static final int 外部コード = 21;
+		public static final int SID = 101;
+		public static final int PID = 102;
+		public static final int ユーザID = 103;
+		public static final int 削除状況 = 110;
+		public static final int 削除理由 = 111;
+		public static final int 一時削除日時 = 112;
+		public static final int ユーザ名 = 120;
+		public static final int メールアドレス = 121;
+		public static final int 紐付け先個人ID = 123;
+		public static final int 有効期限 = 124;
+		public static final int 特別利用者 = 125;
+		public static final int 複数会社を兼務する = 126;
+		public static final int デフォルトユーザ = 127;
+		public static final int パスワード状態 = 130;
+		public static final int ハッシュ化パスワード = 131;
+		public static final int 変更日時 = 132;
 
 		/**
 		 * 新規作成として固定値データを埋める
@@ -267,24 +299,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			
 			private static final String TARGET_NAME = "User";
 			
-			/** ログインID */
-			private static final int LOGIN_ID = 4;
-			
-			/** 紐付け先個人ID */
-			private static final int ASSO_PID = 123;
-
-			/** 有効期限 */
-			private static final int EXPIRE_DATE = 124;
-
-			/** 特別利用者 */
-			private static final int SPECIAL_USER = 125;
-
-			/** 複数会社を兼務する */
-			private static final int MULTI_COMPANY = 126;
-
-			/** デフォルトユーザ */
-			private static final int DEFAULT_USER = 127;
-			
 			/**
 			 * 新規作成用に固定値を埋める
 			 * @param record
@@ -292,17 +306,17 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			 */
 			static IntermediateResult fillNewData(ExecutionContext context, IntermediateResult source) {
 				return source
-						.addCanonicalized(CanonicalItem.of(ASSO_PID, source.getItemByNo(PID).get().getString()))
-						.addCanonicalized(CanonicalItem.of(EXPIRE_DATE, GeneralDate.max()))
-						.addCanonicalized(CanonicalItem.of(SPECIAL_USER, 0))
-						.addCanonicalized(CanonicalItem.of(MULTI_COMPANY, 0))
-						.addCanonicalized(CanonicalItem.of(DEFAULT_USER, 0));
+						.addCanonicalized(CanonicalItem.of(紐付け先個人ID, source.getItemByNo(PID).get().getString()))
+						.addCanonicalized(CanonicalItem.of(有効期限, GeneralDate.max()))
+						.addCanonicalized(CanonicalItem.of(特別利用者, 0))
+						.addCanonicalized(CanonicalItem.of(複数会社を兼務する, 0))
+						.addCanonicalized(CanonicalItem.of(デフォルトユーザ, 0));
 			}
 			
 			static boolean isDuplicatedLoginId(RequireCanonicalize require, IntermediateResult interm) {
 				
-				String userId = interm.getItemByNo(USER_ID).get().getString();
-				String loginId = interm.getItemByNo(LOGIN_ID).get().getString();
+				String userId = interm.getItemByNo(ユーザID).get().getString();
+				String loginId = interm.getItemByNo(ログインID).get().getString();
 
 				// 異なるユーザIDであるにも関わらず同じログインIDの既存データがあるか
 				return require.getUserByLoginId(loginId)
@@ -317,22 +331,11 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			
 			private static final String TARGET_NAME = "Password";
 			
-			/** パスワード */
-			private static final int PASSWORD = 5;
-			
-			/** パスワード状態 */
-			private static final int STATE = 130;
-			
-			/** ハッシュ化パスワード */
-			private static final int HASHED = 131;
-			
-			/** 変更日時 */
-			private static final int CHANGED_AT = 132;
 
 			private static IntermediateResult fillNewData(ExecutionContext context, IntermediateResult source) {
 				return canonicalizePassword(source)
-						.addCanonicalized(CanonicalItem.of(STATE, 0))
-						.addCanonicalized(CanonicalItem.of(CHANGED_AT, GeneralDateTime.now()));
+						.addCanonicalized(CanonicalItem.of(パスワード状態, 0))
+						.addCanonicalized(CanonicalItem.of(変更日時, GeneralDateTime.now()));
 			}
 			
 			/**
@@ -343,15 +346,15 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			private static IntermediateResult canonicalizePassword(IntermediateResult source) {
 				
 				Function<String, String> hash = passwordPlainText -> {
-					String salt = source.getItemByNo(Items.USER_ID).get().getString();
+					String salt = source.getItemByNo(ユーザID).get().getString();
 					return PasswordHash.generate(passwordPlainText, salt);
 				};
 				
 				val list = new CanonicalItemList();
 				
-				source.getItemByNo(Items.Password.PASSWORD)
+				source.getItemByNo(パスワード)
 						.map(item -> hash.apply(item.getString()))
-						.map(hashed -> CanonicalItem.of(Items.Password.HASHED, hashed))
+						.map(hashed -> CanonicalItem.of(ハッシュ化パスワード, hashed))
 						.ifPresent(item -> list.addItem(item));
 				
 				return source.addCanonicalized(list);
@@ -380,6 +383,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 	@Override
 	public AtomTask adjust(
 			DomainCanonicalization.RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		
@@ -420,7 +424,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			return record.getKey(Items.PID).asString();
 		}
 		private String userId() {
-			return record.getKey(Items.USER_ID).asString();
+			return record.getKey(Items.ユーザID).asString();
 		}
 	}
 	

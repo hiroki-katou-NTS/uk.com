@@ -41,7 +41,7 @@ public class GetApplicationReflectionResult {
 
 		// 勤怠変更後の補正（日別実績の補正処理）
 		IntegrationOfDaily dailyCorrect = require.correction(dailyAppReflect.getDomainDaily(),
-				createChangeDailyAtt(dailyAppReflect.getLstItemId()));
+				ChangeDailyAttendance.createChangeDailyAtt(dailyAppReflect.getLstItemId(), ScheduleRecordClassifi.RECORD));
 
 		// 日別実績の修正からの計算
 		List<IntegrationOfDaily> lstDailyCalc = require.calculateForRecord(CalculateOption.asDefault(),
@@ -52,19 +52,6 @@ public class GetApplicationReflectionResult {
 
 	}
 
-	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
-
-		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
-				.isPresent();
-		boolean attendance = lstItemId.stream()
-				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
-				.findFirst().isPresent();
-		boolean directBounceClassifi = lstItemId.stream()
-				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
-				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, true, ScheduleRecordClassifi.RECORD, directBounceClassifi);
-	}
-	
 	public static interface Require extends RCCreateDailyAfterApplicationeReflect.Require{
 
 		// DailyRecordShareFinder

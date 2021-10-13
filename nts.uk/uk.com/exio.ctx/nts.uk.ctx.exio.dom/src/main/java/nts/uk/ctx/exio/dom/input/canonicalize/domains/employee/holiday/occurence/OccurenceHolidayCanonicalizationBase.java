@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
+﻿package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +24,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalizati
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 随時発生する休暇の残数データ（振休振出／代休休出）の正準化の基底クラス
@@ -33,8 +32,8 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public OccurenceHolidayCanonicalizationBase(DomainWorkspace workspace) {
-		employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+	public OccurenceHolidayCanonicalizationBase() {
+		employeeCodeCanonicalization = new EmployeeCodeCanonicalization(getItemNoMap());
 	}
 	
 	@Override
@@ -67,12 +66,15 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		
 		for (val interm : interms) {
 
-			val key = RecordKey.of(interm);
-			if (keys.contains(key)) {
-				require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
-				continue;
+			// 日付不明（受け入れない）ならば重複チェック不要
+			if (interm.isImporting(Items.TARGET_DATE)) {
+				val key = RecordKey.of(interm);
+				if (keys.contains(key)) {
+					require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中に重複レコード（社員と日付が同じ）があります。"));
+					continue;
+				}
+				keys.add(key);
 			}
-			keys.add(key);
 			
 			canonicalizeRecord(require, context, interm);
 		}
@@ -88,7 +90,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		
 		static RecordKey of(IntermediateResult interm) {
 			String employeeId = interm.getItemByNo(Items.SID).get().getString();
-			GeneralDate date = interm.getItemByNo(Items.TARGET_DATE).map(e -> e.getDate()).orElse(null);
+			GeneralDate date = interm.getItemByNo(Items.TARGET_DATE).get().getDate();
 			return new RecordKey(employeeId, date);
 		}
 	}
@@ -177,6 +179,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 	@Override
 	public AtomTask adjust(
 			DomainCanonicalization.RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 

@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -27,9 +28,25 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public SpecialHolidayGrantSettingCanonicalization(DomainWorkspace workspace) {
-		super(workspace);
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+	public SpecialHolidayGrantSettingCanonicalization() {
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(getItemNoMap());
+	}
+
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 特別休暇情報コード = 2;
+		public static final int 特別休暇管理 = 3;
+		public static final int 特別休暇付与基準日 = 4;
+		public static final int SID = 101;
+		public static final int 適用設定 = 102;
+		public static final int 付与日数 = 103;
+		public static final int 勤続年数付与テーブル = 104;
+		public static final int 付与日テーブル = 105;
 	}
 	
 	@Override
@@ -39,7 +56,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms ->{
 			for(val interm : interms) {
-				val keyValue = getPrimaryKeys(interm, workspace);
+				val keyValue = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValue)) {
 					require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
 					return; // 次のレコードへ
@@ -60,19 +77,18 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	
 	private static CanonicalItemList getFixedItems() {
 		return new CanonicalItemList()
-			// 適用設定
-			.add(102, 0);
+			.add(Items.適用設定, 0);
 	}
 	
-	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
+	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		return new KeyValues(Arrays.asList(
-				interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString(),
-				interm.getItemByNo(2).get()));
+				interm.getItemByNo(Items.SID).get().getString(),
+				interm.getItemByNo(Items.特別休暇情報コード).get()));
 	}
 	
 	@Override
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(101);
+		return Arrays.asList(Items.SID);
 	}
 	
 	@Override

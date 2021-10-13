@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
@@ -50,7 +49,8 @@ public class StampHelper {
 								new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty()
+				Optional.empty(),
+				"DUMMY"
 				);
 	}
 	
@@ -77,7 +77,8 @@ public class StampHelper {
 								new AttendanceTime(2))),
 				new ImprintReflectionState(true, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty());
+				Optional.empty(),
+				"DUMMY");
 	}
 	
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
@@ -103,7 +104,8 @@ public class StampHelper {
 								new AttendanceTime(2))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty()
+				Optional.empty(),
+				"DUMMY"
 				);
 	}
 	public static List<Stamp> getListStampDefault() {
@@ -120,7 +122,8 @@ public class StampHelper {
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty())
+				Optional.empty(),
+				"DUMMY")
 				);
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
@@ -133,7 +136,8 @@ public class StampHelper {
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty())
+				Optional.empty(),
+				"DUMMY")
 				);
 		return data;
 	}

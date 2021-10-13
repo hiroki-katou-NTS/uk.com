@@ -243,6 +243,7 @@ module nts.uk.at.view.ktg027.a {
         dataTable!: KnockoutComputed<any[]>;
         chartStyle!: KnockoutComputed<string>;
         legendOptions: any;
+		firstLoad: boolean = true; 
 
         constructor(private cache: { currentOrNextMonth: 1 | 2; }) {
             super();
@@ -348,7 +349,7 @@ module nts.uk.at.view.ktg027.a {
                 .$blockui('invisibleView')
                 .then(() => vm.$ajax('at', `${API.GET_DATA_INIT}/${cache.currentOrNextMonth}`))
                 .then((response: DataInit) => {
-                    const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth } = response;
+                    const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth, overtimeOfSubordinateEmployees } = response;
 
                     vm.employees(personalInformationOfSubordinateEmployees);
 
@@ -362,7 +363,12 @@ module nts.uk.at.view.ktg027.a {
                                         isRefresh: false,
                                         target: ym
                                     });
-                                    vm.loadData(ym, closureId);
+									if(vm.firstLoad){
+										vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees});
+										vm.firstLoad = false;										
+									}else{
+										vm.loadData(ym, closureId);	
+									}
                                 }
                             });
                         });
@@ -392,25 +398,33 @@ module nts.uk.at.view.ktg027.a {
         }
 
         // load data by change ym
-        private loadData(ym: string, closureId: number) {
+        private loadData(ym: string, closureId: number, overtimeParam?: OverTimeResponse) {
             const vm = this;
-            const { CHANGE_DATE: getDataWhenChangeDate } = API;
-
-            if (ym) {
-                vm.overtimeSubor([]);
-                vm.personalSubor([]);
-
-                vm
-                    .$blockui('invisibleView')
-                    .then(() => vm.$ajax('at', `${getDataWhenChangeDate}/${closureId}/${ym}`))
-                    .then((overtime: OverTimeResponse) => {
-                        const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees } = overtime;
-
-                        vm.overtimeSubor(overtimeOfSubordinateEmployees);
-                        vm.personalSubor(personalInformationOfSubordinateEmployees);
-                    })
-                    .always(() => vm.$blockui('clearView'));
-            }
+			if(overtimeParam) {
+				const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees } = overtimeParam;
+	
+                vm.overtimeSubor(overtimeOfSubordinateEmployees);
+                vm.personalSubor(personalInformationOfSubordinateEmployees);
+				vm.$blockui('clearView')
+			}else{
+	            const { CHANGE_DATE: getDataWhenChangeDate } = API;
+	
+	            if (ym) {
+	                vm.overtimeSubor([]);
+	                vm.personalSubor([]);
+	
+	                vm
+	                    .$blockui('invisibleView')
+	                    .then(() => vm.$ajax('at', `${getDataWhenChangeDate}/${closureId}/${ym}`))
+	                    .then((overtime: OverTimeResponse) => {
+	                        const { overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees } = overtime;
+	
+	                        vm.overtimeSubor(overtimeOfSubordinateEmployees);
+	                        vm.personalSubor(personalInformationOfSubordinateEmployees);
+	                    })
+	                    .always(() => vm.$blockui('clearView'));
+	            }
+			}
         }
 
         openKTG026(item: any) {
@@ -457,6 +471,7 @@ module nts.uk.at.view.ktg027.a {
         closingInformationForCurrentMonth: ClosingInfor | null;
         closingInformationForNextMonth: ClosingInfor | null;
         personalInformationOfSubordinateEmployees: PersonalInfo[];
+		overtimeOfSubordinateEmployees: OvertimeSubordinate[];
     }
 
     interface ClosingInfor {

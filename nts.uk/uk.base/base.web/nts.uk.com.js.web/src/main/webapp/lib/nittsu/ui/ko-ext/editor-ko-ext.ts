@@ -602,6 +602,11 @@ module nts.uk.ui.koExtentions {
                     ival: string = evt.target.value,
                     dval: string = $input.data(_val);
 
+                //Japanese input always return keyCode 229 -> skip constraining input, and validate after input is committed to editor's value
+                if (dorgi == null || dorgi == undefined || dorgi.keyCode == 229) {
+                    return;
+                }
+                
                 // ival = ival
                 //     .replace(/。/, '.')
                 //     .replace(/ー/, '-')

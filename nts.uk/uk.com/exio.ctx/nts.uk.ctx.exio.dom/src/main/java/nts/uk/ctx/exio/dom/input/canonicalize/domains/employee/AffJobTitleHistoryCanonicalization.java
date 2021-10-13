@@ -8,6 +8,7 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -15,19 +16,34 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.JobTitleCodeCanonicalizati
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 所属職位履歴グループの正準化用定義 
  */
-public class AffJobTitleHistoryCanonicalization extends EmployeeHistoryCanonicalization implements  DomainCanonicalization {
+public class AffJobTitleHistoryCanonicalization extends EmployeeHistoryCanonicalization {
+	
 	private final JobTitleCodeCanonicalization jobTitleCodeCanonicalization;
 
-	public AffJobTitleHistoryCanonicalization(DomainWorkspace workspace) {
-		super(workspace, HistoryType.PERSISTENERESIDENT);
-		jobTitleCodeCanonicalization = new JobTitleCodeCanonicalization(workspace);
+	public AffJobTitleHistoryCanonicalization() {
+		super(HistoryType.PERSISTENERESIDENT);
+		jobTitleCodeCanonicalization = new JobTitleCodeCanonicalization(this.getItemNoMap());
 	}
-
+	
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 開始日 = 2;
+		public static final int 終了日 = 3;
+		public static final int 職位コード = 4;
+		public static final int JOB_TITLE_ID = 5;
+		public static final int SID = 101;
+		public static final int HIST_ID = 102;
+	}
+	
 	@Override
 	protected List<Container> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
@@ -68,7 +84,7 @@ public class AffJobTitleHistoryCanonicalization extends EmployeeHistoryCanonical
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
 		return super.appendMeta(source)
-				.addItem("JOB_TITLE_ID");
+				.addItem(getItemNameByNo(Items.JOB_TITLE_ID));
 	}
 
 	public interface RequireCanonicalize extends JobTitleCodeCanonicalization.Require{

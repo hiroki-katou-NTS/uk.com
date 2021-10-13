@@ -16,6 +16,16 @@ public interface RemainCreateInforByApplicationData {
 	 * @return
 	 */
 	List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
+	
+	/**
+	 * 残数作成元の申請を取得する
+	 * @param cid
+	 * @param sid
+	 * @param dateData 期間
+	 * @return
+	 */
+	List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, GeneralDate baseDate);
+	
 	/**
 	 * 残数作成元の申請を取得する
 	 * @param cid

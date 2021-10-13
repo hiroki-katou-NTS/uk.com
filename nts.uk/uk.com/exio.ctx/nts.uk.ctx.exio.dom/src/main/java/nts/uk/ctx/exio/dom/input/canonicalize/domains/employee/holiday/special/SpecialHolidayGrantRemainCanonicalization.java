@@ -15,6 +15,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -29,9 +30,34 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public SpecialHolidayGrantRemainCanonicalization(DomainWorkspace workspace) {
-		super(workspace);
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+	public SpecialHolidayGrantRemainCanonicalization() {
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(getItemNoMap());
+	}
+
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 特別休暇コード = 2;
+		public static final int 特別休暇付与日 = 3;
+		public static final int 特別休暇期限日 = 4;
+		public static final int 特別休暇期限切れ状態 = 5;
+		public static final int 特別休暇付与日数 = 6;
+		public static final int 特別休暇付与時間 = 7;
+		public static final int 特別休暇使用数 = 8;
+		public static final int 特別休暇使用時間 = 9;
+		public static final int 特別休暇残数 = 10;
+		public static final int 特別休暇残時間 = 11;
+		public static final int ID = 101;
+		public static final int SID = 102;
+		public static final int 登録種別 = 103;
+		public static final int 積み崩し日数 = 104;
+		public static final int 上限超過消滅日数 = 105;
+		public static final int 上限超過消滅時間 = 106;
+		public static final int 使用率 = 107;
 	}
 	
 	@Override
@@ -41,7 +67,7 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms ->{
 			for(val interm : interms) {
-				val keyValue = getPrimaryKeys(interm, workspace);
+				val keyValue = getPrimaryKeys(interm);
 				if (importingKeys.contains(keyValue)) {
 					require.add(ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
 					return; // 次のレコードへ
@@ -62,28 +88,23 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	
 	private static CanonicalItemList getFixedItems() {
 		return new CanonicalItemList()
-			// ID
-			.add(101, IdentifierUtil.randomUniqueId().toString())
-			// 登録種別
-			.add(103, 0)
-			// 罪崩し日数
-			.add(104, new BigDecimal(0.0))
-			// 上限超過消滅日数
-			.add(105, new BigDecimal(0.0))
-			// 上限超過消滅時間
-			.add(106, 0);
+			.add(Items.SID, IdentifierUtil.randomUniqueId().toString())
+			.add(Items.登録種別, 0)
+			.add(Items.積み崩し日数, new BigDecimal(0.0))
+			.add(Items.上限超過消滅日数, new BigDecimal(0.0))
+			.add(Items.上限超過消滅時間, 0);
 	}
 	
-	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
+	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		return new KeyValues(Arrays.asList(
-				interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString(),
-				interm.getItemByNo(2).get(),
-				interm.getItemByNo(3).get()));
+				interm.getItemByNo(Items.SID).get().getString(),
+				interm.getItemByNo(Items.特別休暇コード).get(),
+				interm.getItemByNo(Items.特別休暇付与日).get()));
 	}
 	
 	@Override
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(102);// 社員ID
+		return Arrays.asList(Items.SID);
 	}
 	
 	@Override

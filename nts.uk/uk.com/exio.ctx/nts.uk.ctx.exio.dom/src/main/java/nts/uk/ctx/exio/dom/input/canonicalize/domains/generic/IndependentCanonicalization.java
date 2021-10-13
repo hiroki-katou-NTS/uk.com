@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -22,19 +21,16 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 
 /**
  * 1レコードずつ完全に独立しているドメインの正準化
  */
-@RequiredArgsConstructor
 public abstract class IndependentCanonicalization implements DomainCanonicalization {
-	
-	protected final DomainWorkspace workspace;
 	
 	protected abstract String getParentTableName();
 	
@@ -46,6 +42,8 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	public void canonicalize(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context) {
+
+		val workspace = require.getDomainWorkspace(context.getDomainId());
 		
 		// 受入データ内の重複チェック
 		Set<KeyValues> importingKeys = new HashSet<>();
@@ -103,6 +101,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		
 		if (context.getMode() == DELETE_RECORD_BEFOREHAND) {
 			// 既存データがあれば削除する（DELETE文になるので、実際にデータがあるかどうかのチェックは不要）
+			val workspace = require.getDomainWorkspace(context.getDomainId());
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
@@ -140,6 +139,8 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		
 		/** ドメイン側のテーブルに既存データがあるか */
 		boolean existsDomainData(DomainDataId id);
+		
+		DomainWorkspace getDomainWorkspace(ImportingDomainId domainId);
 	}
 
 	@Override
@@ -150,6 +151,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	@Override
 	public AtomTask adjust(
 			RequireAdjsut require,
+			ExecutionContext context,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 		
@@ -214,15 +216,5 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	public static interface RequireAdjust {
 		
 		void deleteDomainData(DomainDataId id);
-	}
-
-	@Override
-	public int getItemNoOfEmployeeId() {
-		WorkspaceItem wsItem = this.workspace.getAllItemsSortedByItemNo().stream()
-				.filter(item -> item.getName().equals("SID"))
-				.findFirst()
-				.orElseThrow(() -> new UnsupportedOperationException());
-
-		return wsItem.getItemNo();
 	}
 }

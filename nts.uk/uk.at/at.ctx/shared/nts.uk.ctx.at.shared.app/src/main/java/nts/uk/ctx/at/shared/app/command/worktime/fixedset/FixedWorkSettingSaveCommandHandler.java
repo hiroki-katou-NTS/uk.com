@@ -69,10 +69,10 @@ public class FixedWorkSettingSaveCommandHandler extends CommandHandler<FixedWork
 		}
 
 		// update mode
-		FixedWorkSetting oldDomain = this.fixedWorkSettingRepository
-				.findByKey(companyId, command.getWorktimeSetting().worktimeCode).get();
+//		FixedWorkSetting oldDomain = this.fixedWorkSettingRepository
+//				.findByKey(companyId, command.getWorktimeSetting().worktimeCode).get();
 		fixedWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+				command.getWorktimeSetting().getWorkTimeDivision(), fixedWorkSetting);
 		fixedWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 		// Validate + common handler
 		this.validate(command, fixedWorkSetting);

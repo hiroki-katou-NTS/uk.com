@@ -7,8 +7,11 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -18,9 +21,13 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
@@ -29,6 +36,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalcu
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
  * OT = Overtime
@@ -229,11 +239,150 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		/** 内訳項目に設定されている勤怠項目IDを全て取得 */
 		val breakdownItems = getBreakDownItemIds();
 		
+		/** 休出枠一覧を取得する */
+		val workDayOffFrames = getWorkDayOffFrame(monthlyCalculation);
+		
 		/** ○法定内休出の勤怠項目IDを全て取得 */
-		breakdownItems.addAll(getLegalHolidayWorkItems(require, cid));
-		if(breakdownItems.isEmpty()) {
+		val holiWorkItems = getLegalHolidayWorkItems(workDayOffFrames);
+		
+		if(breakdownItems.isEmpty() && holiWorkItems.isEmpty()) {
 			return breakdown;
 		}
+		
+		/** 対象項目の時間を求める */
+		getBreakDownTimes(require, monthlyCalculation, breakdown, roundSet, breakdownItems);
+		
+		/** 法定内休出時間を取得する */
+		getHolidayWorkTime(require, roundSet, getDailyRecords(monthlyCalculation), 
+				breakdown, holiWorkItems, workDayOffFrames);
+		
+		/** ○36協定上限時間内訳を返す */
+		return breakdown;
+	}
+
+	private List<IntegrationOfDaily> getDailyRecords(MonthlyCalculation monthlyCalculation) {
+		return monthlyCalculation.getMonthlyCalculatingDailys().getDailyWorks(monthlyCalculation.getEmployeeId())
+				.stream().filter(c -> monthlyCalculation.getProcPeriod().contains(c.getYmd()))
+				.collect(Collectors.toList());
+	}
+	
+	/** 休出枠一覧を取得する */
+	private Map<Integer, WorkdayoffFrame> getWorkDayOffFrame(MonthlyCalculation monthlyCalculation) {
+		
+		switch (monthlyCalculation.getWorkingSystem()) {
+		case FLEX_TIME_WORK:
+			return monthlyCalculation.getSettingsByFlex().getRoleHolidayWorkFrameMap();
+		case REGULAR_WORK:
+			return monthlyCalculation.getSettingsByReg().getRoleHolidayWorkFrameMap();
+		case VARIABLE_WORKING_TIME_WORK:
+			return monthlyCalculation.getSettingsByDefo().getRoleHolidayWorkFrameMap();
+		default:
+			return new HashMap<>();
+		}
+	}
+	
+	/** 法定内休出時間を取得する */
+	private void getHolidayWorkTime(Require require, Optional<RoundingSetOfMonthly> roundSet, 
+			List<IntegrationOfDaily> dailyRecords,
+			AgreementTimeBreakdown breakdown, List<Integer> holidayWorkItems,
+			Map<Integer, WorkdayoffFrame> roleHolidayWorkFrameMap) {
+		
+		/** 休出対象項目一覧のIDから休出枠Noでグループする */
+		val noGroup = mapHolidayWorkItemsByNo(holidayWorkItems);
+		
+		noGroup.entrySet().stream().forEach(no -> {
+			/** 該当の休出枠を取得する */
+			val workdayoffFrame = roleHolidayWorkFrameMap.get(no.getKey());
+			val holWorkTime = new AtomicInteger(0);
+			val holTransTime = new AtomicInteger(0);
+			dailyRecords.stream().forEach(d -> {
+				
+				/** 対象日の実績から休出時間を求める区分を確認する */
+				val holAtr = workdayoffFrame.getHolWorkAtrforDailyRecord(require, d.getWorkInformation().getRecordInfo());
+				if (holAtr == HolidayAtr.STATUTORY_HOLIDAYS) {
+					
+					/** 該当の法内休出時間を取得する */
+					getLegalHolTime(d.getAttendanceTimeOfDailyPerformance(), no.getValue(), no.getKey(), holWorkTime, holTransTime);
+				}
+			});
+			
+			/** 休出対象項目の丸め処理 */
+			roundAndSetHolWorkItem(roundSet, breakdown, no.getValue(), holWorkTime, holTransTime);
+		});
+	}
+	
+	/** 休出対象項目の丸め処理 */
+	private void roundAndSetHolWorkItem(Optional<RoundingSetOfMonthly> roundSet, AgreementTimeBreakdown breakdown, 
+			List<Integer> items, AtomicInteger holWorkTime, AtomicInteger holTransTime) {
+		
+		/** 休出枠Noごとに休出時間と休出振替時間は同じ丸め設定を使うためここで一回だけ取得する */
+		/** 該当の月別実績の項目丸め設定を取得する */
+		val hwRoundSet = roundSet.flatMap(r -> {
+			return items.stream().map(i -> r.getItemRoundingSet().get(i)).filter(i -> i != null).findFirst();
+		}).map(r -> r.getRoundingSet());
+		
+		items.stream().forEach(i -> {
+			
+			val targetItemTime = i >= 175 ? holTransTime.get() : holWorkTime.get();
+			
+			/** 丸め処理 */
+			val roundedTime = hwRoundSet.map(c -> c.round(targetItemTime)).orElse(targetItemTime);
+			
+			/** 該当の項目にセットする */
+			breakdown.addTimeByAttendanceItemId(i, new AttendanceTimeMonth(roundedTime));
+		});
+	}
+	
+	/** 該当の法内休出時間を取得する */
+	private void getLegalHolTime(Optional<AttendanceTimeOfDailyAttendance> attendanceTime, List<Integer> items,
+			int workDayOffNo, AtomicInteger holWorkTime, AtomicInteger holTransTime) {
+		
+		items.stream().forEach(i -> {
+			
+			attendanceTime.flatMap(at -> at.getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime())
+				.flatMap(hw -> hw.getHolidayWorkFrameTime().stream().filter(h -> h.getHolidayFrameNo().v() == workDayOffNo).findFirst())
+				.ifPresent(hw -> {
+
+					if (i >= 175) {
+						
+						/** 振替時間を取得する */
+						/** 取得できた法定内休出時間を時間外に加算する */
+						holTransTime.addAndGet(hw.getTransferTime().get().getTime().valueAsMinutes());
+					} else {
+
+						/** 休出時間を取得する */
+						/** 取得できた法定内休出時間を時間外に加算する */
+						holWorkTime.addAndGet(hw.getHolidayWorkTime().get().getTime().valueAsMinutes());
+					}
+				});
+		});
+	}
+
+	/** 休出対象項目一覧のIDから休出枠Noでグループする */
+	private Map<Integer, List<Integer>> mapHolidayWorkItemsByNo(List<Integer> holidayWorkItems) {
+		Map<Integer, List<Integer>> noGroup = new HashMap<>();
+		
+		holidayWorkItems.stream().forEach(id -> {
+			int no = 0;
+			if (id >= 175 && id <= 184) { /** 175 就内振替休出時間1*/
+				no = id - 175 + 1;
+			} else if (id >= 165 && id <= 174) { /** 165 就内休出時間1*/
+				no = id - 165 + 1;
+			}
+			
+			if (no > 0) {
+				noGroup.putIfAbsent(no, new ArrayList<>());
+				noGroup.get(no).add(id);
+			}
+		});
+		
+		return noGroup;
+	}
+
+	/** 対象項目の時間を求める*/
+	private void getBreakDownTimes(RequireM1 require, MonthlyCalculation monthlyCalculation,
+			AgreementTimeBreakdown breakdown, Optional<RoundingSetOfMonthly> roundSet, List<Integer> breakdownItems) {
 		
 		/** 取得した件数分ループ */
 		val converter = require.createMonthlyConverter();
@@ -252,8 +401,46 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});
+	}
+	
+	/** clones from 36協定対象時間を取得 */
+	public Map<String, AgreementTimeBreakdown> getTargetTimeClones(RequireM1 require, String cid, 
+			List<MonthlyCalculation> monthlyCalculations) {
 		
-		return breakdown;
+		val breakdownMap = new HashMap<String, AgreementTimeBreakdown>();
+		/** 月別実績の丸め設定を取得 */
+		val roundSet = require.monthRoundingSet(cid);
+		
+		/** 内訳項目に設定されている勤怠項目IDを全て取得 */
+		val breakdownItems = getBreakDownItemIds();
+		
+		for (MonthlyCalculation monthlyCalculation : monthlyCalculations) {
+			val breakdown = new AgreementTimeBreakdown();
+			
+			/** 休出枠一覧を取得する */
+			val workDayOffFrames = getWorkDayOffFrame(monthlyCalculation);
+			
+			/** ○法定内休出の勤怠項目IDを全て取得 */
+			val holiWorkItems = getLegalHolidayWorkItems(workDayOffFrames);
+			
+			if(breakdownItems.isEmpty() && holiWorkItems.isEmpty()) {
+				breakdownMap.put(monthlyCalculation.getEmployeeId(), breakdown);
+				continue;
+			}
+			
+			/** 対象項目の時間を求める */
+			getBreakDownTimes(require, monthlyCalculation, breakdown, roundSet, breakdownItems);
+			
+			/** 法定内休出時間を取得する */
+			getHolidayWorkTime(require, roundSet, getDailyRecords(monthlyCalculation), 
+					breakdown, holiWorkItems, workDayOffFrames);
+			
+			/** ○36協定上限時間内訳を返す */
+			breakdownMap.put(monthlyCalculation.getEmployeeId(), breakdown);
+		}
+		
+		return breakdownMap;
+		
 	}
 
 	/** 内訳項目に設定されている勤怠項目IDを全て取得 */
@@ -264,20 +451,32 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	}
 	
 	/** 法定内休出の勤怠項目IDを全て取得 */
-	public List<Integer> getLegalHolidayWorkItems(RequireM2 require, String cid) {
+	public List<Integer> getLegalHolidayWorkItems(Map<Integer, WorkdayoffFrame> workDayOffFrames) {
 		
 		/** ドメインモデル「休出枠の役割」を取得 */
-		val legalHolWork = require.roleOfOpenPeriod(cid).stream()
-				.filter(r -> r.getRoleOfOpenPeriodEnum() == RoleOfOpenPeriodEnum.STATUTORY_HOLIDAYS)
+		val legalHolWork = workDayOffFrames.entrySet().stream()
+				.filter(r -> r.getValue().getRole() == WorkdayoffFrameRole.STATUTORY_HOLIDAYS)
+				.map(c -> c.getValue())
 				.collect(Collectors.toList());
 		
 		/** 取得したNOに該当する勤怠項目IDを取得 */
 		val legalHolWorkItemIds = legalHolWork.stream()
-				.map(hw -> mapLegalHolidayWorkItemNoToId(hw.getBreakoutFrNo().v()))
+				.map(hw -> mapLegalHolidayWorkItemNoToId(hw.getWorkdayoffFrNo().v().intValue()))
 				.flatMap(List::stream).collect(Collectors.toList());
 		
 		/**内訳項目一覧に設定されていない法定内休出の勤怠項目IDを判断 */
 		legalHolWorkItemIds.removeAll(getBreakDownItemIds());
+		
+		/** ドメインモデル「休出枠の役割」を取得 */
+		val mixHolWork = workDayOffFrames.entrySet().stream()
+				.filter(r -> r.getValue().getRole() == WorkdayoffFrameRole.MIX_WITHIN_OUTSIDE_STATUTORY)
+				.map(c -> c.getValue())
+				.collect(Collectors.toList());
+		
+		/** 法定内・外混在を取得したNOに該当する勤怠項目IDを取得 */
+		legalHolWorkItemIds.addAll(mixHolWork.stream()
+				.map(hw -> mapLegalHolidayWorkItemNoToId(hw.getWorkdayoffFrNo().v().intValue()))
+				.flatMap(List::stream).collect(Collectors.toList()));
 		
 		/** 取得した勤怠項目ID（List）を返す */
 		return legalHolWorkItemIds;
@@ -334,15 +533,12 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		return new AttendanceTimeMonth(minutes);
 	}
 	
-	public static interface RequireM2 {
-		
-		List<RoleOfOpenPeriod> roleOfOpenPeriod(String cid);
-	}
-	
-	public static interface RequireM1 extends RequireM2 {
+	public static interface RequireM1 extends Require {
 		
 		Optional<RoundingSetOfMonthly> monthRoundingSet(String cid);
 		
 		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
 	}
+	
+	public static interface Require extends WorkdayoffFrame.Require {}
 }
