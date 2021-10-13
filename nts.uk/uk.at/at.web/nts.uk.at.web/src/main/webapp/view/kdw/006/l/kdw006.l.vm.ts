@@ -146,6 +146,7 @@ module nts.uk.at.view.kmk006.l {
                                         }));
                                         vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
                                         vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
+                                        vm.screenMode(SCREEN_MODE.SELECT);
                                     });
                             })
                     })
@@ -166,6 +167,7 @@ module nts.uk.at.view.kmk006.l {
                                             }));
                                             vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
                                             vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
+                                            vm.screenMode(SCREEN_MODE.SELECT);
                                         });
                                 })
                         })
