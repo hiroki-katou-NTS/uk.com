@@ -24,7 +24,7 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 	 * @param taskDetails 作業リスト
 	 * @return List<ItemValue>
 	 */
-	public List<ItemValue> convert(Require require, List<ItemValue> attItems,
+	public static List<ItemValue> convert(Require require, List<ItemValue> attItems,
 			List<ManHrTaskDetail> taskDetails) {
 		// $対象作業詳細 = 作業リスト：flatMap $.工数項目リスト
 		List<TaskItemValue> taskItemValues = taskDetails.stream().flatMap(m -> m.getTaskItemValues().stream())

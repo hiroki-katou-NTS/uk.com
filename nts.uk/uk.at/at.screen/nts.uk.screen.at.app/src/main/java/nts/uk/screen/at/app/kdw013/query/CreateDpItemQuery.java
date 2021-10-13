@@ -42,9 +42,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class CreateDpItemQuery {
-
-	@Inject
-	private ManHrRecordTaskDetailToAttendanceItemService manHrService;
 	
 	@Inject
 	private ManHourRecordAndAttendanceItemLinkRepository  manHourRepo;
@@ -84,7 +81,7 @@ public class CreateDpItemQuery {
 					manHourRepo);
 
 			// 1. 変換する(@Require, ItemValue, 工数実績作業詳細) 勤怠項目リスト
-			List<ItemValue> taskItems =  this.manHrService.convert(require, collectManHrContents(manHrlst), collectTaskLists(manHrlst));
+			List<ItemValue> taskItems =  ManHrRecordTaskDetailToAttendanceItemService.convert(require, collectManHrContents(manHrlst), collectTaskLists(manHrlst));
 			
 			// 2 .休憩時間帯を勤怠項目に変換する
 			List<ItemValue> itemVals = ConvertBreakTimeToAttendanceTtems(manhr, integrationOfDailys);
