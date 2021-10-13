@@ -396,8 +396,6 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					$("#tableButton1").ntsButtonTable("setSelectedCell",
 							value.data.page > 5 ? 1 : 0, value.column);
 				}
-				
-				
 				return;
 			}
 

@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksu003.a.model {
 	import duration = nts.uk.time.minutesBased.duration; // convert time 
 	import formatById = nts.uk.time.format.byId;
+	import getText = nts.uk.resource.getText;
 
 	export function convertTimeToChart(startTime: any, endTime: any) {
 		let convertTime = null;
@@ -417,6 +418,96 @@ module nts.uk.at.view.ksu003.a.model {
 		}
 		console.log(dataReg);
 		return dataReg;
+	}
+	
+	export function createColumnMid(){
+		let middleColumns : any = [];
+		if (__viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor == 1) {
+				middleColumns = [
+					{
+						headerText: getText('KSU003_23'), group: [
+							{ headerText: "", key: "worktypeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
+							{
+								headerText: "", key: "worktypeName", width: "38px", control: "link", primitiveValue: "WorkTypeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									__viewContext.viewModel.viewmodelA.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTypeName");
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_25'), group: [
+							{ headerText: "", key: "worktimeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTimeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
+							{
+								headerText: "", key: "worktimeName", width: "38px", control: "link", primitiveValue: "WorkTimeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									__viewContext.viewModel.viewmodelA.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTimeName");
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_27'), group: [
+							{ headerText: "", key: "startTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_28'), group: [
+							{ headerText: "", key: "endTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_29'), group: [
+							{ headerText: "", key: "startTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_30'), group: [
+							{ headerText: "", key: "endTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_31'), group: [
+							{ headerText: "", key: "totalTime", width: "40px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
+					},
+					{
+						headerText: getText('KSU003_32'), group: [
+							{ headerText: "", key: "breaktime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
+					}
+				];
+			} else {
+				middleColumns = [
+					{
+						headerText: getText('KSU003_23'), group: [
+							{ headerText: "", key: "worktypeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
+							{
+								headerText: "", key: "worktypeName", width: "38px", control: "link", primitiveValue: "WorkTypeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									__viewContext.viewModel.viewmodelA.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTypeName");
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_25'), group: [
+							{ headerText: "", key: "worktimeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTimeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
+							{
+								headerText: "", key: "worktimeName", width: "38px", control: "link", primitiveValue: "WorkTimeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									__viewContext.viewModel.viewmodelA.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTimeName");
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_27'), group: [
+							{ headerText: "", key: "startTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_28'), group: [
+							{ headerText: "", key: "endTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+
+					{
+						headerText: getText('KSU003_31'), group: [
+							{ headerText: "", key: "totalTime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
+					},
+					{
+						headerText: getText('KSU003_32'), group: [
+							{ headerText: "", key: "breaktime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
+					}
+				];
+			}
+			
+			return middleColumns;
 	}
 
 	export function addColumn(index: any, y: any, detailColumns: any, detailHeaderDs: any, detailHeaders: any, width: any) {

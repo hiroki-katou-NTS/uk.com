@@ -254,6 +254,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("scrollBack", 0, { h: (self.initDispStart * 42 - self.dispStartHours * 42) + 5 });
 				else
 					$("#extable-ksu003").exTable("scrollBack", 0, { h: 0 });
+					
+				let date = new Date(),
+				firstDay = moment(new Date(date.getFullYear(), date.getMonth(), 1)).format('YYYY/MM/DD'),
+				lastDay = moment(new Date(date.getFullYear(), date.getMonth() + 1, 0)).format('YYYY/MM/DD');
+				
+				if (firstDay == self.targetDate()) {
+					$("#prev-all").addClass("dis-pointer-none");
+					$("#prev-one").addClass("dis-pointer-none");
+					$("#next-all").removeClass("dis-pointer-none");
+					$("#next-one").removeClass("dis-pointer-none");
+				}
+				
+				if (lastDay == self.targetDate()) {
+					$("#next-one").addClass("dis-pointer-none");
+					$("#next-all").addClass("dis-pointer-none");
+					$("#prev-one").removeClass("dis-pointer-none");
+					$("#prev-all").removeClass("dis-pointer-none");
+				}
 			});
 			
 			return dfd.promise();
@@ -289,6 +307,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		// change color chart when change mode
 		public changeModeColor(value : any){
 			let self = this, mode = "normal";
+			let leftmostContent = {};
 			if(value == 1){
 				if(_.isNil(self.fixedType)) return;
 				self.fixedType.color("#ccccff")
@@ -308,14 +327,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.checkSaveDataMode = true;
 				$("#ab1-viewModel").hide();
 				$(".ab-view").addClass('hide-pallet');
-				$(".nts-ganttchart").removeClass("dis-pointer-none");
-				$(".ex-body-leftmost").removeClass("dis-pointer-none");
-				$(".ex-body-middle").removeClass("dis-pointer");
+				
 				$(".ex-body-detail").removeClass("disable-css");
-				$(".ex-body-detail").removeClass("dis-pointer");
-				$(".x-button").removeClass("dis-pointer-none");
-				$(".xcell").removeClass("bg-color");
+				$(".ex-body-middle").removeClass("dis-pointer");
+				$(".ex-body-detail").removeClass("dis-pointer-none");
 			} else {
+				// mode task
 				if(_.isNil(self.fixedType)) return;
 				self.fixedType.color("#fff")
 				self.changeableType.color("#fff")
@@ -335,26 +352,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$("#ab1-viewModel").show();
 				$(".ab-view").removeClass('hide-pallet');
 				
-				$(".ex-body-leftmost").addClass("dis-pointer-none");
-				$(".ex-body-middle").addClass("dis-pointer");
 				$(".ex-body-detail").addClass("disable-css");
-				$(".x-button").addClass("dis-pointer-none");
-				if (self.checkDisByDate != false){
-					$(".xcell").addClass("bg-color");
-					$(".extable-header-leftmost").addClass("header-color");
-					$(".extable-header-detail").addClass("header-color");
-				} else {
-					//$(".nts-ganttchart").addClass("dis-pointer-none");
-					$(".ex-body-detail").addClass("dis-pointer");
-				}
-				
-				_.forEach(self.disableDs, (x : any) => {
-					let ind = x.index + 2,
-					cssBgDis1 = "#extable-ksu003 > div.ex-body-leftmost.dis-pointer-none > table > tbody > tr:nth-child(" + ind + ") > td:nth-child(1)",
-					cssBgDis2 = "#extable-ksu003 > div.ex-body-leftmost.dis-pointer-none > table > tbody > tr:nth-child(" + ind + ") > td:nth-child(2)";
-					$(cssBgDis1).removeClass("bg-color");
-					$(cssBgDis2).removeClass("bg-color");
-				});
+				$(".ex-body-middle").addClass("dis-pointer");
+				$(".ex-body-detail").addClass("dis-pointer-none");
 				
 				if(!_.isNil(self.localStore.workSelection)){
 					if(self.localStore.workSelection == 0){
@@ -369,7 +369,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						
 				}
 			}
-			
+			self.createLeftAndMidExtable(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs, 1);
 			ruler.setMode(mode);
 		}
 
@@ -1033,7 +1033,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 
 		// 社員勤務予定と勤務固定情報を取得する
-		public getEmpWorkFixedWorkInfo(columnKey: string, empId?: string, index?: number, type?: string): JQueryPromise<any> {
+		getEmpWorkFixedWorkInfo(columnKey: string, empId?: string, index?: number, type?: string): JQueryPromise<any> {
 			let self = this,dfd = $.Deferred<any>(), indexEmp = 0;
 			let targetOrgDto = [{
 				workTypeCode: $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
@@ -1147,7 +1147,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 
 		// 勤務種類を変更する
-		public sortEmpByTime(employeeInfo: Array<model.DisplayWorkInfoByDateDto>) {
+		sortEmpByTime(employeeInfo: Array<model.DisplayWorkInfoByDateDto>) {
 			let self = this;
 			let dataSort = _.map(employeeInfo, (x: model.DisplayWorkInfoByDateDto) => ({
 				empId: x.empId,
@@ -1158,7 +1158,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 
 		// 社員を並び替える
-		public sortEmployee(value: any) {
+		sortEmployee(value: any) {
 			block.grayout();
 			let self = this;
 			let dataSort = self.sortEmpByTime(self.dataScreen003A().employeeInfo);
@@ -1473,8 +1473,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.midDataGC = middleDs;
 			startTimeArr = _.sortBy(startTimeArr, [function(o: any) { return o; }]);
 		}
-
-		public initExtableData(): JQueryPromise<any> {
+		
+		// Call to create extable
+		initExtableData(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred();
 			if (!_.isEmpty(self.leftDs))
 				self.initExtableChart(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs).done(() => {
@@ -1483,6 +1484,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return dfd.promise();
 		}
 
+		// Destroy and recreate extable
 		destroyAndCreateGrid(lstId: any, check: any) {
 			let self = this;
 			let leftDs: any = [];
@@ -1537,7 +1539,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 		}
 
-		setShowHideCell(dataMid: any, checkColor: any, middleContentDeco: any, i: any, disableDSFilter: any, leftContentDeco: any, leftDSFilter: any, detailContentDeco: any) {
+		setShowHideCell(dataMid: any, checkColor: any, middleContentDeco: any, i: any, disableDSFilter: any, detailContentDeco: any) {
 			let self = this, lstType = self.dataScreen003A().scheCorrection; // 確定済みか
 			let fix = _.filter(lstType, (x: any) => { return x === 0 }),
 				flex = _.filter(lstType, (x: any) => { return x === 1 }),
@@ -1627,8 +1629,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 
 			if (disableDSFilter.length > 0) {
-				leftContentDeco.push(new model.CellColor("empName", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color)); // set màu cho emp name khi bị dis
-				leftContentDeco.push(new model.CellColor("cert", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color));
+				//leftContentDeco.push(new model.CellColor("empName", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color)); // set màu cho emp name khi bị dis
+				//leftContentDeco.push(new model.CellColor("cert", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color));
 				middleContentDeco.push(new model.CellColor("worktypeCode", disableDSFilter[0].empId, "xseal"));
 				middleContentDeco.push(new model.CellColor("worktypeName", disableDSFilter[0].empId, "xseal"));
 				middleContentDeco.push(new model.CellColor("worktimeCode", disableDSFilter[0].empId, "xseal"));
@@ -1804,13 +1806,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}
 		}
-
-		// Create EXTABLE-GANTCHART
-		initExtableChart(timeGantChart: Array<model.ITimeGantChart>, leftDs: any, midData: any, disableDs: any, type?: any): JQueryPromise<any> {
-			let self = this, dfd = $.Deferred(), displayRange = self.timeRange, totalBreakTime = "0:00";
+		
+		createLeftAndMidExtable (timeGantChart: Array<model.ITimeGantChart>, leftDs: any, midData: any, disableDs: any, value : any) {
+			let self = this, dfd = $.Deferred(), totalBreakTime = "0:00";
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
 
-			// phần leftMost
+			// left grid area
 			let leftmostColumns = [], leftmostHeader = {}, leftmostContent = {}, disableDSFilter: any = [], leftmostDs = [], middleDs = [];
 
 			leftmostColumns = [{
@@ -1841,15 +1842,33 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				leftmostDs.push({ empId: self.lstEmpId[i].empId, empName: eName, cert: getText('KSU003_22') });
 				if (!_.isEmpty(leftDSFilter)) {
 					leftContentDeco.push(new model.CellColor("empName", leftDSFilter[0].empId, leftDSFilter[0].color)); // set màu cho emp name
-					leftContentDeco.push(new model.CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color));
+					self.selectedDisplayPeriod() == 1 ? leftContentDeco.push(new model.CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color)) : 
+					leftContentDeco.push(new model.CellColor("cert", leftDSFilter[0].empId,"xseal", "dis-color"));
 				};
 
 				let checkColor = ({
 					worktypeCode: 1, worktypeName: 1, worktimeCode: 1, worktimeName: 1, startTime1: 1,
 					endTime1: 1, startTime2: 1, endTime2: 1, totalTime: 1, breaktime: 1
 				});
-
-				self.setShowHideCell(dataMid, checkColor, middleContentDeco, i, disableDSFilter, leftContentDeco, leftDSFilter, detailContentDeco);
+				
+				if (disableDSFilter.length > 0) {
+				leftContentDeco.push(new model.CellColor("empName", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color)); // set màu cho emp name khi bị dis
+				leftContentDeco.push(new model.CellColor("cert", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color));
+				}
+				if (self.selectedDisplayPeriod() == 1)
+				self.setShowHideCell(dataMid, checkColor, middleContentDeco, i, disableDSFilter, detailContentDeco);
+				else {
+					middleContentDeco.push(new model.CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("worktypeName", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("worktimeName", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("startTime1", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("endTime1", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("totalTime", self.lstEmpId[i].empId, "xseal", 0));
+					middleContentDeco.push(new model.CellColor("breaktime", self.lstEmpId[i].empId, "xseal", 0));
+				}
 
 				middleDs.push({
 					empId: dataMid.empId, worktypeCode: dataMid.worktypeCode,
@@ -1870,103 +1889,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}]
 			};
 			// Phần middle
-			let middleColumns = [], middleHeader = {}, middleContent = {}, detailHeaders: any = {}, startHours = self.dispStartHours, range = displayRange + self.dispStartHours,
-				index = 1, width = "42px", detailColumns: any = [], detailHeaderDs: any = [], detailContent = {}, detailHeader = {};
-			// Phần detail
-			detailHeaderDs = [{ empId: "" }];
-			// A8_2 TQP
-			detailColumns = [{ key: "empId", width: "0px", headerText: "ABC", visible: false }];
+			let middleColumns = [], middleHeader = {}, middleContent = {};
+		
 			// Phần column middle
-			if (self.dataScreen003A().targetInfor == 1) {
-				middleColumns = [
-					{
-						headerText: getText('KSU003_23'), group: [
-							{ headerText: "", key: "worktypeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
-							{
-								headerText: "", key: "worktypeName", width: "38px", control: "link", primitiveValue: "WorkTypeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
-									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTypeName");
-								}
-							}]
-					},
-					{
-						headerText: getText('KSU003_25'), group: [
-							{ headerText: "", key: "worktimeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTimeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
-							{
-								headerText: "", key: "worktimeName", width: "38px", control: "link", primitiveValue: "WorkTimeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
-									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTimeName");
-								}
-							}]
-					},
-					{
-						headerText: getText('KSU003_27'), group: [
-							{ headerText: "", key: "startTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
-					},
-					{
-						headerText: getText('KSU003_28'), group: [
-							{ headerText: "", key: "endTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
-					},
-					{
-						headerText: getText('KSU003_29'), group: [
-							{ headerText: "", key: "startTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
-					},
-					{
-						headerText: getText('KSU003_30'), group: [
-							{ headerText: "", key: "endTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
-					},
-					{
-						headerText: getText('KSU003_31'), group: [
-							{ headerText: "", key: "totalTime", width: "40px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-					},
-					{
-						headerText: getText('KSU003_32'), group: [
-							{ headerText: "", key: "breaktime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-					}
-				];
-			} else {
-				middleColumns = [
-					{
-						headerText: getText('KSU003_23'), group: [
-							{ headerText: "", key: "worktypeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
-							{
-								headerText: "", key: "worktypeName", width: "38px", control: "link", primitiveValue: "WorkTypeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
-									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTypeName");
-								}
-							}]
-					},
-					{
-						headerText: getText('KSU003_25'), group: [
-							{ headerText: "", key: "worktimeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTimeCode", required: true, textFormat: { length: 3, padSide: "left", padChar: '0' } },
-							{
-								headerText: "", key: "worktimeName", width: "38px", control: "link", primitiveValue: "WorkTimeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
-									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId, "WorkTimeName");
-								}
-							}]
-					},
-					{
-						headerText: getText('KSU003_27'), group: [
-							{ headerText: "", key: "startTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
-					},
-					{
-						headerText: getText('KSU003_28'), group: [
-							{ headerText: "", key: "endTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
-					},
-
-					{
-						headerText: getText('KSU003_31'), group: [
-							{ headerText: "", key: "totalTime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-					},
-					{
-						headerText: getText('KSU003_32'), group: [
-							{ headerText: "", key: "breaktime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-					}
-				];
-			}
-
+			middleColumns = model.createColumnMid(); 
+			
+			// create header for mid extable
 			middleHeader = {
 				columns: middleColumns,
 				width: self.dataScreen003A().targetInfor == 1 ? "399px" : "316px",
 				rowHeight: "33px"
 			};
+			
+			// create data for mid extable
 			middleContent = {
 				columns: middleColumns,
 				dataSource: middleDs,
@@ -1984,6 +1919,36 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}]
 			};
+			if (value == 1) {
+				$("#extable-ksu003").exTable("updateTable", "leftmost", {}, leftmostContent);
+				$("#extable-ksu003").exTable("updateTable", "middle", {}, middleContent);
+			}
+			
+			let data : any = {
+				middleHeader : middleHeader,
+				middleContent : middleContent,
+				detailContentDeco : detailContentDeco,
+				leftmostHeader : leftmostHeader,
+				leftmostContent : leftmostContent,
+			}
+			
+			return data;
+		}
+
+		// Create EXTABLE-GANTCHART
+		initExtableChart(timeGantChart: Array<model.ITimeGantChart>, leftDs: any, midData: any, disableDs: any, type?: any): JQueryPromise<any> {
+			let self = this, dfd = $.Deferred(), displayRange = self.timeRange, startHours = self.dispStartHours, 
+				range = displayRange + self.dispStartHours, index = 1, width = "42px", detailColumns: any = [];
+			
+			let dataCre = self.createLeftAndMidExtable(timeGantChart, leftDs, midData, disableDs, 0);
+			
+			// detail extable
+			let detailHeaders: any = {}, detailHeaderDs: any = [], detailContent = {}, detailHeader = {}; 
+			
+			// Phần detail
+			detailHeaderDs = [{ empId: "" }];
+			// A8_2 TQP
+			detailColumns = [{ key: "empId", width: "0px", headerText: "ABC", visible: false }];
 
 			for (let y = startHours; y < range; y++) {
 				//detailColumns.push({ key: (y).toString() + "_", width: width });
@@ -2018,7 +1983,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				primaryKey: "empId",
 				features: [{
 					name: "BodyCellStyle",
-					decorator: detailContentDeco
+					decorator: dataCre.detailContentDeco
 				}, {
                         name: "RightClick",
                         chartFilter: function() {
@@ -2056,7 +2021,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					primaryKey: "empId",
 					features: [{
 						name: "BodyCellStyle",
-						decorator: detailContentDeco
+						decorator: dataCre.detailContentDeco
 					}]
 				};
 			}
@@ -2077,8 +2042,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				windowXOccupation: 40,
 				windowYOccupation: 200,
 				columnVirtualization: true
-			}).LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
-				.MiddleHeader(middleHeader).MiddleContent(middleContent)
+			}).LeftmostHeader(dataCre.leftmostHeader).LeftmostContent(dataCre.leftmostContent)
+				.MiddleHeader(dataCre.middleHeader).MiddleContent(dataCre.middleContent)
 				.DetailHeader(detailHeader).DetailContent(detailContent);
 
 			extable.create();
@@ -2460,7 +2425,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 		}
 
-		// đăng ký màn hình ksu003
+		// Save data ksu003
 		saveData(type: any): JQueryPromise<any> {
 			if (!_.isNil(window.parent) && window.parent.length > 1){
 				setTimeout(function() {
@@ -2549,7 +2514,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return dfd.promise();
 		}
 
-		/** ADD-CHART-ZONE */
+		// ADD CHART
 		addAllChart(datafilter: Array<model.ITimeGantChart>, i: number, lstBreakTime: any, screen: string, lstBrkNew?: any) {
 			let self = this, fixedGc: any = [], timeRangeLimit = ((self.timeRange * 60) / 5 + self.dispStart);
 			let timeChart: any = null, timeChart2: any = null, lgc = null, rgc = null, timeChartOver: any = null, timeChartCore: any = null,
@@ -3156,14 +3121,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let taskTime = datafilter[0].gcTaskTime;
 				if(taskTime != null && taskTime.length > 0){
 					for (let o = 0; o < taskTime.length; o++) {
-					/*let checkRuler = _.filter(ruler.definedType, (tsk : any) => {
-						return _.includes(tsk.name, taskTime[o].taskCode); 
-					})*/
-					
-					/*if (checkRuler.length == 0) {
-						self.taskTypeDel.add(taskTime[o].taskCode);
-						continue;
-					}*/
 					
 					if (taskTime[o].taskData == null) {
 						let taskInfo : any = {
@@ -4283,7 +4240,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.dataFromA().endDate <= self.targetDate()) {
 				self.targetDate(self.dataFromA().endDate);
 				self.checkNext(false);
+				$("#next-all").addClass("dis-pointer-none");
+				$("#next-one").addClass("dis-pointer-none");
 			}
+			$("#prev-all").removeClass("dis-pointer-none");
+			$("#prev-one").removeClass("dis-pointer-none");
 			self.hoverEvent();
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
 			self.enableSave(false);
@@ -4313,10 +4274,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.dataFromA().endDate <= nextDay._i) {
 				//let date: number = moment(self.dataFromA().endDate).date() - moment(self.targetDate()).date();
 				self.checkNext(false);
+				$("#next-all").addClass("dis-pointer-none");
+				$("#next-one").addClass("dis-pointer-none");
 				self.changeTargetDate(1, moment(self.dataFromA().endDate), 0);
 			} else {
 				self.changeTargetDate(1, i, 1);
 			}
+			
+			$("#prev-all").removeClass("dis-pointer-none");
+			$("#prev-one").removeClass("dis-pointer-none");
 			self.hoverEvent();
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
 			self.enableSave(false);
@@ -4343,8 +4309,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.checkNext(true);
 			if (self.dataFromA().startDate >= self.targetDate()) {
 				self.targetDate(self.dataFromA().startDate);
-				self.checkPrv(false);
+				$("#prev-all").addClass("dis-pointer-none");
+				$("#prev-one").addClass("dis-pointer-none");
 			}
+			$("#next-all").removeClass("dis-pointer-none");
+			$("#next-one").removeClass("dis-pointer-none");
 			self.hoverEvent();
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
 			self.enableSave(false);
@@ -4372,10 +4341,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.checkNext(true);
 			if (self.dataFromA().startDate >= prvDay._i) {
 				self.checkPrv(false);
+				$("#prev-all").addClass("dis-pointer-none");
+				$("#prev-one").addClass("dis-pointer-none");
 				self.changeTargetDate(0, moment(self.dataFromA().startDate), 0);
 			} else {
 				self.changeTargetDate(0, 7);
 			}
+			$("#next-all").removeClass("dis-pointer-none");
+			$("#next-one").removeClass("dis-pointer-none");
 			self.hoverEvent();
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
 			self.enableSave(false);
@@ -5477,16 +5450,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 	
 				if (_.isNil(start) || _.isNil(end)){
-					
-					
-					/*index = "";
-					if (lgcFil.length > 0 && (_.inRange(start, lgcFil[0].start, lgcFil[0].end) || _.inRange(end, lgcFil[0].start, lgcFil[0].end))){
-						index = "lgc" + line + "_" + (lgcFil.length - 1);
-					}
-					
-					if (rgcFil.length > 0 && (_.inRange(start, rgcFil[0].start, rgcFil[0].end) || _.inRange(end, rgcFil[0].start, rgcFil[0].end))){
-						index = "rgc" + line + "_" + (rgcFil.length - 1);
-					}*/
 					
 					if (_.isNil(start) || _.isNil(end)){
 						if (_.isNil(start))
