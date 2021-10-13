@@ -33,6 +33,7 @@ import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceA
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.screen.at.app.dailymodify.command.DailyCalculationRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
@@ -58,6 +59,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDOutput;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
@@ -167,6 +170,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 	
 	@POST
 	@Path("startScreen")
@@ -557,5 +563,14 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getPrimitiveAll")
 	public Map<Integer, String> getPrimitiveAll() {
 		return DPHeaderDto.getPrimitiveAll();
+	}
+	
+	@POST
+	@Path("findWplIDByCode")
+	public GetWkpIDOutput findWplIDByCode(GetWkpIDParam param) {
+	    return new GetWkpIDOutput(workplacePub.getWkpNewByCdDate(
+	            param.getCompanyId(), 
+	            param.getWkpCode(), 
+	            GeneralDate.fromString(param.baseDate, "yyyy/MM/dd")).orElse(null));
 	}
 }

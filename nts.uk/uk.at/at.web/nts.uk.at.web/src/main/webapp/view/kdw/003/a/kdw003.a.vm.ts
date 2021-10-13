@@ -5047,41 +5047,82 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             workplaceId: employee.workplaceId
                         }
                     }
-                    service.findAllCodeName(param2).done((data) => {
-						let dateParam2: any = null;
-						let currentRow: any = _.find(selfParent.dailyPerfomanceData(), item => item.id==self.rowId().substring(1));
-						let workplaceIDParam2: any = null;
-						if(currentRow){
-							dateParam2 = currentRow.date;
-							let workplaceIDObj = _.find(currentRow.cellDatas, (item: any) => item.columnKey=='Code623')
-							if(workplaceIDObj) {
-								workplaceIDParam2 = workplaceIDObj.value;	
-							}
-						};
-						
+                    let dateParam2: any = null;
+                    
+                    let row: any = _.find(selfParent.dailyPerfomanceData(), item => item.id==self.rowId().substring(1));
+                    let workplaceCode: any = null;
+                    let workplaceId: any = null;
+                    if(row){
+                        dateParam2 = row.date;
+                        let workplaceIDObj = _.find(row.cellDatas, (item: any) => item.columnKey=='Code623')
+                        if(workplaceIDObj) {
+                            workplaceCode = workplaceIDObj.value;	
+                        }
+                    };
+
+                    let findWkpParam = {
+                        companyId: __viewContext.user.companyId, 
+                        wkpCode: workplaceCode, 
+                        baseDate: dateParam2
+                    };
+
+                    $.when(service.findWplIDByCode(findWkpParam), service.findAllCodeName(param2)).done((res1, res2) => {
+                        if (res1) {
+                            workplaceId = res1.workplaceId;
+                        }
                         self.listCode([]);
-                        self.listCode(_.map(data, 'code'));
-                        setShared('kml001selectAbleCodeList', []);
-                        setShared('kml001selectedCodeList', [self.selectedCode()]);
-						setShared('kml001multiSelectMode', false);
-						setShared('kdl00showNoSelectionRow', true);
-						setShared('kml001WorkPlaceId', workplaceIDParam2);
-						setShared('kml001BaseDate', dateParam2);
-                        modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                            let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
-                            if (codes) {
-                                codeName = _.find(data, (item: any) => {
-                                    return item.code == codes[0];
-                                });
-                                if (codeName != undefined && codes[0] != "") {
-                                    self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
-                                } else {
-                                    self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                            self.listCode(_.map(res2, 'code'));
+                            setShared('kml001selectAbleCodeList', []);
+                            setShared('kml001selectedCodeList', [self.selectedCode()]);
+                            setShared('kml001multiSelectMode', false);
+                            setShared('kdl00showNoSelectionRow', true);
+                            setShared('kml001WorkPlaceId', workplaceId);
+                            setShared('kml001BaseDate', dateParam2);
+                            modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                                let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
+                                if (codes) {
+                                    codeName = _.find(res2, (item: any) => {
+                                        return item.code == codes[0];
+                                    });
+                                    if (codeName != undefined && codes[0] != "") {
+                                        self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
+                                    } else {
+                                        self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                                    }
                                 }
-                            }
-                        });
-                        dfd2.resolve();
-                    });
+                            });
+                            dfd2.resolve();
+                    })
+                    // service.findWplIDByCode(findWkpParam).then((data: any) => {
+                    //     if (data) {
+                    //         workplaceId = data;
+                    //     }
+                    // }).then(() => {
+                    //     service.findAllCodeName(param2).done((data: any) => {
+                    //         self.listCode([]);
+                    //         self.listCode(_.map(data, 'code'));
+                    //         setShared('kml001selectAbleCodeList', []);
+                    //         setShared('kml001selectedCodeList', [self.selectedCode()]);
+                    //         setShared('kml001multiSelectMode', false);
+                    //         setShared('kdl00showNoSelectionRow', true);
+                    //         setShared('kml001WorkPlaceId', workplaceId);
+                    //         setShared('kml001BaseDate', dateParam2);
+                    //         modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                    //             let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
+                    //             if (codes) {
+                    //                 codeName = _.find(data, (item: any) => {
+                    //                     return item.code == codes[0];
+                    //                 });
+                    //                 if (codeName != undefined && codes[0] != "") {
+                    //                     self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
+                    //                 } else {
+                    //                     self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                    //                 }
+                    //             }
+                    //         });
+                    //         dfd2.resolve();
+                    //     });
+                    // });
                     dfd2.promise()
                     break;
                 case 3:
