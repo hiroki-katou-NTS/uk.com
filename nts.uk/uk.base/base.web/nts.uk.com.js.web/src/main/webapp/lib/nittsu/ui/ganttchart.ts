@@ -424,10 +424,10 @@ module nts.uk.ui.chart {
                         zIndex: self.pasteBand.zIndex || 1000
                     });
                     
-                    if (self.mode === "paste") {
-                        self.metaholder.tempStart = self.metaholder.start;
-                        self.metaholder.tempEnd = self.metaholder.end;
-                    }
+//                    if (self.mode === "paste") {
+//                        self.metaholder.tempStart = self.metaholder.start;
+//                        self.metaholder.tempEnd = self.metaholder.end;
+//                    }
                     
                     document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                     document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
@@ -906,10 +906,10 @@ module nts.uk.ui.chart {
                         zIndex: self.pasteBand.zIndex || 1000
                     });
                     
-                    if (self.mode === "paste") {
-                        self.metaholder.tempStart = self.metaholder.start;
-                        self.metaholder.tempEnd = self.metaholder.end;
-                    }
+//                    if (self.mode === "paste") {
+//                        self.metaholder.tempStart = self.metaholder.start;
+//                        self.metaholder.tempEnd = self.metaholder.end;
+//                    }
                     
                     document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                     document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
@@ -1405,7 +1405,7 @@ module nts.uk.ui.chart {
         
         export function pasteMove() {
             let self: Ruler = this;
-            if (!self.metaholder.isPressed || self.mode === "paste") return;
+            if (!self.metaholder.isPressed /*|| self.mode === "paste"*/) return;
             let chart = self.metaholder.ancestorChart;
             let startLine = chart.start, endLine = chart.end;
             if (chart.parent) {
