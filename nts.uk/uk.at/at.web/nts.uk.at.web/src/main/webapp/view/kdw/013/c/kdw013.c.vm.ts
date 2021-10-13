@@ -611,11 +611,19 @@ module nts.uk.ui.at.kdw013.c {
 				if (event) {
                     const {extendedProps, employeeId, start, end } = event as any as calendar.EventRaw;
                     let {taskBlocks} = extendedProps;
-                    taskBlocks = vm.fakeData(start, end),
-                    vm.taskBlocks.update(taskBlocks, employeeId, true, this.taskFrameSettings());
-                    setTimeout(() => {
-						vm.updatePopupSize();
-					}, 150);
+                    //taskBlocks = vm.fakeData(start, end),
+					let param ={
+						refDate: start,
+						itemIds: [9, 10, 11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+					}
+
+					block.grayout();
+		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
+		            	vm.taskBlocks.update(taskBlocks, employeeId, data, this.taskFrameSettings());
+						setTimeout(() => {
+							vm.updatePopupSize();
+						}, 150);
+					}).always(() => block.clear());
 				}
 			});
 
@@ -768,12 +776,13 @@ module nts.uk.ui.at.kdw013.c {
         caltimeSpanView: KnockoutObservable<{start: number, end: number}> = ko.observable({start: null, end: null});
 		employeeId: string = '';
 		setting: a.TaskFrameSettingDto[] = [];
+		data: StartWorkInputPanelDto = null;
 		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, private showInputTime: KnockoutObservable<boolean>, loadData: boolean) {
 			super(taskBlocks);
 			const vm = this;
 			vm.employeeId = employeeId;
 			vm.taskDetailsView = ko.observableArray(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, showInputTime, loadData, []))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, flag, showInputTime, vm.data, []))
 			);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
@@ -795,13 +804,14 @@ module nts.uk.ui.at.kdw013.c {
             });
         }
         
-        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
+        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, setting: a.TaskFrameSettingDto[]) {
 			const vm = this;
 			vm.setting = setting;
+			vm.data = data;
 			vm.employeeId = employeeId;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, loadData, setting))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, vm.data, setting))
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
@@ -824,7 +834,7 @@ module nts.uk.ui.at.kdw013.c {
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: '', type: taskItemValue.type });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, true, vm.setting));
+			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, vm.data, vm.setting));
 		}
 
 		isChangedTime(): boolean{
@@ -881,18 +891,16 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
-		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, showInputTime: KnockoutObservable<boolean>, loadData: boolean, setting: a.TaskFrameSettingDto[]) {
+		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[]) {
 			super(manHrTaskDetail);
 			this.employeeId = employeeId;
 			this.itemBeforChange = manHrTaskDetail.taskItemValues;
             const vm = this;
             const [first, second, thirt, four, five] = setting;
 
-			let workCD1, workCD2, workCD3, workCD4, workCD5;
 			_.each(vm.taskItemValues(), (item: TaskItemValue) => {
                 if(item.itemId == 3) {
                     item.use = showInputTime;
-					workCD1 = item.value();
 					item.lable(getText("KDW013_25"));
 					item.value.subscribe(() => {
 	                    vm.flag(!vm.flag());
@@ -903,7 +911,6 @@ module nts.uk.ui.at.kdw013.c {
                     }else{
 						item.use(false);
 					}
-					workCD1 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
                             vm.setWorkList(5, 2, value);
@@ -918,7 +925,6 @@ module nts.uk.ui.at.kdw013.c {
                     }else{
 						item.use(false);
 					}
-					workCD2 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
                             vm.setWorkList(6, 3, value);
@@ -930,7 +936,6 @@ module nts.uk.ui.at.kdw013.c {
                     }else{
 						item.use(false);
 					}
-					workCD3 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
                             vm.setWorkList(7, 4, value);
@@ -942,7 +947,6 @@ module nts.uk.ui.at.kdw013.c {
                     }else{
 						item.use(false);
 					}
-					workCD4 = item.value();
 					item.value.subscribe((value: string) => {
 	                    if (value) {
                             vm.setWorkList(8, 5, value);
@@ -955,22 +959,50 @@ module nts.uk.ui.at.kdw013.c {
                     }else{
 						item.use(false);
 					}
-					workCD5 = item.value();
+				}else if(item.itemId >= 9 && data){
+					let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, { 'itemId': item.itemId});
+					if(infor){
+						item.lable(infor.name);
+						item.use(infor.useAtr == 1);	
+					}
+					if(item.itemId == 9 ){
+						item.options(
+							vm.convertWorkLocationList(
+								_.map(data.workLocation, (i: a.WorkLocationDto) => {
+									return {code: i.workLocationCD, name: i.workLocationName};
+								}), 
+								item.value
+							));	
+					}else{
+						let taskSupInfoChoicesDetail : TaskSupInfoChoicesDetailDto[] = _.filter(data.taskSupInfoChoicesDetails, { 'itemId': item.itemId});
+						if(taskSupInfoChoicesDetail && taskSupInfoChoicesDetail.length > 0){
+							item.options(vm.convertWorkLocationList(
+								_.map(taskSupInfoChoicesDetail, (i: TaskSupInfoChoicesDetailDto) => {
+									return {code: i.code, name: i.name};
+								}), 
+								item.value
+							));
+						}
+					}
 				}
             });
-			if(loadData){
-				const params: StartWorkInputPanelParam = {
-	                refDate: moment(start).toISOString(),
-	                employeeId: employeeId,
-	                workGroupDto: { workCD1, workCD2, workCD3, workCD4, workCD5 }
-            	};
-				ajax('at', API.START, params).done((response: StartWorkInputPanelDto | null)=>{
-					if (response) {
-						vm.setWorkLists(response);
-					}                       
-				});
+			if(data){
+				vm.setWorkLists(data);
 			}
-			
+        }
+		
+		convertWorkLocationList(option: {code: string, name: string}[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
+            const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_40'), $raw: null, selected: false }];
+            if (code) {
+                const taskSelected = _.find(option, { 'code': code() });
+                if (!taskSelected) {
+                    lst.push({ id: code(), code: code(), name: getText('KDW013_41'), selected: false, $raw: null });
+                }
+            }
+            _.each(option, (t: {code: string, name: string}) => {
+                lst.push({ id: t.code, code: t.code, name: t.name , selected: false, $raw: null });
+            });
+            return lst;
         }
 
 		setLableUse(item: TaskItemValue, settings: a.TaskFrameSettingDto){
@@ -1112,11 +1144,18 @@ module nts.uk.ui.at.kdw013.c {
         }
 
 		mapper($raw: TaskDto | null): DropdownItem {
+			let vm = this;
 			if($raw == null){
 				return { id: '', code: '', name: getText('KDW013_41'), $raw: null, selected: false };
 			}
-            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName, selected: false, $raw: $raw };
+            return { id: $raw.code, code: $raw.code, name: vm.getName($raw.displayInfo) , selected: false, $raw: $raw };
         }
+		getName(displayInfo: TaskDisplayInfoDto): string{
+			if(displayInfo.taskNote && displayInfo.taskNote!= ''){
+				return displayInfo.taskName + ' ' + displayInfo.taskNote;
+			}
+			return displayInfo.taskName;
+		}
 	}
 
     type Params = {

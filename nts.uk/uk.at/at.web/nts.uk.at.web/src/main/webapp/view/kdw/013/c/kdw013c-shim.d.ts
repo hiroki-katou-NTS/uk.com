@@ -109,8 +109,38 @@ module nts.uk.ui.at.kdw013 {
 
         /** 利用可能作業5リスト */
         taskListDto5: TaskDto[];
+
+		/** List<勤務場所> */
+        workLocation: a.WorkLocationDto[];
+
+		//List<作業補足情報の選択肢詳細>
+		taskSupInfoChoicesDetails: TaskSupInfoChoicesDetailDto[];
+		
+		//List<工数実績項目>
+		manHourRecordItems: ManHourRecordItemDto[];
     };
 
+	export type ManHourRecordItemDto = {
+		/** 項目ID*/
+        itemId: number;
+		/** 名称*/
+        name: string;
+		/** フォーマット設定に表示する*/
+        useAtr: number;
+    };
+
+	export type TaskSupInfoChoicesDetailDto = {
+		/** 履歴ID */
+		historyId: string;
+		/** 項目ID */
+		 itemId;
+		/** コード */
+		 code: string;
+		/** 名称 */
+		 name: string;
+		/** 外部コード */
+		 externalCode: string;
+    };
 
     export type EventModel = {
         timeRange: KnockoutObservable<ITimeSpanForCalc>;
