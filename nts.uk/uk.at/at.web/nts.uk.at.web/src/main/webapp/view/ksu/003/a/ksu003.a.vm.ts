@@ -354,7 +354,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				
 				$(".ex-body-detail").addClass("disable-css");
 				$(".ex-body-middle").addClass("dis-pointer");
-				$(".ex-body-detail").addClass("dis-pointer-none");
+				//$(".ex-body-detail").addClass("dis-pointer-none");
 				
 				if(!_.isNil(self.localStore.workSelection)){
 					if(self.localStore.workSelection == 0){
@@ -5689,6 +5689,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								
 								if (start > oldS && end < oldE) {
 									if (indOld != -1){
+										
 										let filTask = _.filter(self.lstChartTask, (tsk : any ) => {
 											return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
 										})
@@ -5703,6 +5704,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										indNew = _.findIndex(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail, (inw : any) => {
 											return inw.timeSpanForCalcDto.start == task.start && inw.timeSpanForCalcDto.end == task.end
 										})
+										
+										let indexLstChart = _.findIndex(self.lstChartTask, (inlc : any) => {
+											return inlc.start == filTask[0].start && line == inlc.line;
+										})
+										
+										if (indexLstChart != -1)
+										self.lstChartTask[indexLstChart].end = start;
 										
 										self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = start;
 										
@@ -5812,10 +5820,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 					});
 				};
-				let taskOld = _.filter(self.taskData, (x : any) => {
+				
+				// kiểm tra line hiện tại có data trong taskData chưa
+				let taskOld : any = _.filter(self.taskData, (x : any) => {
 						return self.dataScreen003A().employeeInfo[line].empId == x.empID && x.taskScheduleDetail.length > 0;
 				});
 				
+				// kiểm tra data mới có trong list trả ra để đăng ký chưa
 				let oldNewTask =  _.filter(self.lstTaskScheduleDetailEmp, (x : any) => {
 						return self.dataScreen003A().employeeInfo[line].empId == x.empId && x.taskScheduleDetail.length > 0;
 				});
@@ -5840,6 +5851,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 					 
 				} else {
+					/*if (oldNewTask.length == 0){
+						self.lstTaskScheduleDetailEmp.push({
+							empId : self.dataScreen003A().employeeInfo[line].empId,
+							taskScheduleDetail : taskScheduleDetail
+						});
+					}*/ 
 					taskOld = _.map(taskOld, (map : any) => {
 						let taskScheduleDetails : any = [];
 						map.taskScheduleDetail.forEach((tsd : any) => {
@@ -5870,9 +5887,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							timeSpanForCalcDto : {
 								start : start,
 								end : end
-							}
+								}
 						});
 					} 
+					
+					if (index == -1 && type == "add"){
+						taskOld[0].taskScheduleDetail.push(taskScheduleDetail[0]);
+						self.lstTaskScheduleDetailEmp.push(taskOld[0]);
+					}
 					
 				};
 				

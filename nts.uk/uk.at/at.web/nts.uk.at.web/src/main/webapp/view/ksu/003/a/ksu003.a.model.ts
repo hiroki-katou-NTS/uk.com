@@ -367,21 +367,25 @@ module nts.uk.at.view.ksu003.a.model {
 						}
 						if (colorBreak45 == true && index045 != -1) isBreakByHand = true;
 					}
-					let dataCell: any = {
-						sid: employeeInfo[cells[0].rowIndex].empId,
-						ymd: employeeInfo[cells[0].rowIndex].workInfoDto.date,
-						workTypeCd: employeeInfo[cells[0].rowIndex].workScheduleDto.workTypeCode,
-						workTimeCd: employeeInfo[cells[0].rowIndex].workScheduleDto.workTimeCode,
-						startTime: employeeInfo[cells[0].rowIndex].workScheduleDto.startTime1,
-						endTime: employeeInfo[cells[0].rowIndex].workScheduleDto.endTime1,
-						startTime2: employeeInfo[cells[0].rowIndex].workScheduleDto.startTime2,
-						endTime2: employeeInfo[cells[0].rowIndex].workScheduleDto.endTime2,
-						listBreakTime: employeeInfo[cells[0].rowIndex].workScheduleDto.listBreakTimeZoneDto,
-						directAtr: employeeInfo[cells[0].rowIndex].workInfoDto.directAtr,
-						bounceAtr: employeeInfo[cells[0].rowIndex].workInfoDto.bounceAtr,
-						isBreakByHand: isBreakByHand
+					
+					if (employeeInfo[cells[0].rowIndex].workScheduleDto != null){
+						let dataCell: any = {
+							sid: employeeInfo[cells[0].rowIndex].empId,
+							ymd: employeeInfo[cells[0].rowIndex].workInfoDto.date,
+							workTypeCd: employeeInfo[cells[0].rowIndex].workScheduleDto.workTypeCode,
+							workTimeCd: employeeInfo[cells[0].rowIndex].workScheduleDto.workTimeCode,
+							startTime: employeeInfo[cells[0].rowIndex].workScheduleDto.startTime1,
+							endTime: employeeInfo[cells[0].rowIndex].workScheduleDto.endTime1,
+							startTime2: employeeInfo[cells[0].rowIndex].workScheduleDto.startTime2,
+							endTime2: employeeInfo[cells[0].rowIndex].workScheduleDto.endTime2,
+							listBreakTime: employeeInfo[cells[0].rowIndex].workScheduleDto.listBreakTimeZoneDto,
+							directAtr: employeeInfo[cells[0].rowIndex].workInfoDto.directAtr,
+							bounceAtr: employeeInfo[cells[0].rowIndex].workInfoDto.bounceAtr,
+							isBreakByHand: isBreakByHand
+						}
+						dataReg.push(dataCell);
 					}
-					dataReg.push(dataCell);
+					
 				}
 			});
 		} else {
