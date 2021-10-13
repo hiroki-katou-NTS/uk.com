@@ -73,11 +73,11 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     </td>
                     <td style="text-align: center;">
                         <!--B4_3-->
-                        <span class="label" data-bind="text: unit"></span>
+                        <span class="label" data-bind="text: optionalItemAtr == 1 &amp;&amp; inputCheckbox ? null : unit"></span>
                     </td>
                     <td>
                         <div data-bind="text: description" style="white-space: normal; word-break: break-all;"></div>
-                        <div data-bind="if: lowerCheck &#124;&#124; upperCheck &#124;&#124; unit &#124;&#124; optionalItemAtr == 0">
+                        <div data-bind="if: (lowerCheck &#124;&#124; upperCheck &#124;&#124; unit &#124;&#124; optionalItemAtr == 0) &amp;&amp; !inputCheckbox">
                             <span class="label">
                                 <span data-bind="if:lowerCheck &#124;&#124; upperCheck &#124;&#124; unit &#124;&#124; optionalItemAtr == 0">
                                     <span data-bind="text: $vm.$i18n('KAF020_25')"></span>

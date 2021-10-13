@@ -117,7 +117,7 @@ module nts.uk.at.view.kdw002.a {
                 self.getAllItems(true);
             }
 
-            getAllItems(startUp?: boolean) {
+            getAllItems(startUp: boolean, displayNumber?: number) {
                 const self = this;
                 self.$blockui("show");
                 const getItemService = self.isDaily ? service.getDailyAttdItem : service.getMonthlyAttdItem;
@@ -141,8 +141,12 @@ module nts.uk.at.view.kdw002.a {
                         return 0;
                     });
                     // at start up, grid will not show selected if bind too much data immediately so bind 100 rows first, bind all later
-                    startUp ? self.attendanceItems(attendanceItems.slice(0, 100)) : self.attendanceItems(attendanceItems);
-                    if (attendanceItems.length > 0) self.aICurrentCode(attendanceItems[0].displayNumber);
+                    self.attendanceItems(startUp ? attendanceItems.slice(0, 100) : attendanceItems);
+                    if (attendanceItems.length > 0) {
+                        self.aICurrentCode(displayNumber || attendanceItems[0].displayNumber);
+                    } else {
+                        self.aICurrentCode(null);
+                    }
                     _.defer(() => {
                         $("#colorID").focus();
                         if (startUp) self.attendanceItems(attendanceItems);
@@ -188,7 +192,7 @@ module nts.uk.at.view.kdw002.a {
                         const updateService = self.isDaily ? service.updateDaily : service.updateMonthly;
                         updateService(AtItems).done(x => {
                             self.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-                                self.getAllItems();
+                                self.getAllItems(false, attendanceItem.displayNumber);
                             });
                         }).fail((error) => {
                             self.$dialog.alert(error)

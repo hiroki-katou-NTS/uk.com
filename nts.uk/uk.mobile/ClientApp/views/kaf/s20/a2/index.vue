@@ -153,7 +153,7 @@
               v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
             />
-            <span class="position-absolute">{{ item.unit }}</span>
+            <span class="position-absolute">{{ item.inputCheckbox ? '' : item.unit }}</span>
           </div>
         </div>
       </div>

@@ -167,8 +167,8 @@ module nts.uk.at.view.kmk002.a {
             selectedClac: KnockoutObservable<any> = ko.observable(0);
             note: KnockoutObservable<string>;
             description: KnockoutObservable<string>;
-            dailyUnit: KnockoutObservable<string>;
-            monthlyUnit: KnockoutObservable<string>;
+            // dailyUnit: KnockoutObservable<string>;
+            // monthlyUnit: KnockoutObservable<string>;
 
             // function
             getExcludedOptItems: () => Array<number>;
@@ -213,8 +213,8 @@ module nts.uk.at.view.kmk002.a {
                 this.unit = ko.observable('');
                 this.note = ko.observable('');
                 this.description = ko.observable('');
-                this.dailyUnit = ko.observable('');
-                this.monthlyUnit = ko.observable('');
+                // this.dailyUnit = ko.observable('');
+                // this.monthlyUnit = ko.observable('');
 
                 // flags
                 this.hasChanged = false;
@@ -480,10 +480,13 @@ module nts.uk.at.view.kmk002.a {
                         return;
                     }
 
-                    if (value != 1) self.enableUnit(false);
+                    self.enableUnit(false);
+                    self.calcResultRange.timeInputUnit(0);
+                    self.calcResultRange.amountInputUnit(0);
+                    self.calcResultRange.numberInputUnit(3);
 
-                    self.dailyUnit('1');
-                    self.monthlyUnit('1');
+                    // self.dailyUnit('1');
+                    // self.monthlyUnit('1');
 
                     // Check whether has formula or calculation result range is set.
                     if (self.isFormulaSet() || self.calcResultRange.isSet()) {
@@ -981,6 +984,7 @@ module nts.uk.at.view.kmk002.a {
                     dto.description = self.description();
                     dto.formulas = self.calcFormulas().map(item => item.toDto());
                     dto.inputCheck = false;
+                    dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange, self.optionalItemAtr());
 
                     // return dto
                     return dto;
@@ -1018,13 +1022,13 @@ module nts.uk.at.view.kmk002.a {
 
                 switch(self.optionalItemAtr()) {
                     case 0:
-                        if (self.performanceAtr() != 1) dto.calcResultRange.timeInputUnit = 0;
+                        if (self.selectedClac() == 1) dto.calcResultRange.timeInputUnit = 0;
                         break;
                     case 1:
-                        if (self.performanceAtr() != 1) dto.calcResultRange.numberInputUnit = 3;
+                        if (self.selectedClac() == 1) dto.calcResultRange.numberInputUnit = 3;
                         break;
                     case 2:
-                        if (self.performanceAtr() != 1) dto.calcResultRange.amountInputUnit = 0;
+                        if (self.selectedClac() == 1) dto.calcResultRange.amountInputUnit = 0;
                         break;
                     default:
                         break;
@@ -1551,32 +1555,32 @@ module nts.uk.at.view.kmk002.a {
                     lowerCheck: dto.lowerCheck,
                     numberRange: {
                         dailyNumberRange: {
-                            upperLimit: dto.numberUpperDay,
-                            lowerLimit: dto.numberLowerDay
+                            upperLimit: optionalItemAtr == 1 ? dto.numberUpperDay : null,
+                            lowerLimit: optionalItemAtr == 1 ? dto.numberLowerDay : null
                         },
                         monthlyNumberRange: {
-                            upperLimit: dto.numberUpperMonth,
-                            lowerLimit: dto.numberLowerMonth
+                            upperLimit: optionalItemAtr == 1 ? dto.numberUpperMonth : null,
+                            lowerLimit: optionalItemAtr == 1 ? dto.numberLowerMonth : null
                         }
                     },
                     timeRange: {
                         dailyTimeRange: {
-                            upperLimit: dto.timeUpperDay,
-                            lowerLimit: dto.timeLowerDay
+                            upperLimit: optionalItemAtr == 0 ? dto.timeUpperDay : null,
+                            lowerLimit: optionalItemAtr == 0 ? dto.timeLowerDay : null
                         },
                         monthlyTimeRange: {
-                            upperLimit: dto.timeUpperMonth,
-                            lowerLimit: dto.timeLowerMonth
+                            upperLimit: optionalItemAtr == 0 ? dto.timeUpperMonth : null,
+                            lowerLimit: optionalItemAtr == 0 ? dto.timeLowerMonth : null
                         }
                     },
                     amountRange: {
                         dailyAmountRange: {
-                            upperLimit: dto.amountUpperDay,
-                            lowerLimit: dto.amountLowerDay
+                            upperLimit: optionalItemAtr == 2 ? dto.amountUpperDay : null,
+                            lowerLimit: optionalItemAtr == 2 ? dto.amountLowerDay : null
                         },
                         monthlyAmountRange: {
-                            upperLimit: dto.amountUpperMonth,
-                            lowerLimit: dto.amountLowerMonth
+                            upperLimit: optionalItemAtr == 2 ? dto.amountUpperMonth : null,
+                            lowerLimit: optionalItemAtr == 2 ? dto.amountLowerMonth : null
                         }
                     },
                     timeInputUnit: optionalItemAtr == 0 ? self.timeInputUnit() : null,
@@ -1655,6 +1659,9 @@ module nts.uk.at.view.kmk002.a {
                                 self.optionalItem.isUsed(true);
                             } else {
                                 self.optionalItem.isUsed(false);
+                                self.optionalItem.calcResultRange.timeInputUnit(0);
+                                self.optionalItem.calcResultRange.numberInputUnit(3);
+                                self.optionalItem.calcResultRange.amountInputUnit(0);
                             }
                             if (!vl && !self.optionalItem.hasChanged && !self.isInit) {
                                 if (self.optionalItem.calcFormulas().length > 0) {
@@ -1771,8 +1778,8 @@ module nts.uk.at.view.kmk002.a {
                         self.selectedCode.subscribe(itemNo => {
                             if (itemNo && itemNo != 0) {
                                 self.hasSelected(true);
-                                self.optionalItem.dailyUnit();
-                                self.optionalItem.monthlyUnit();
+                                // self.optionalItem.dailyUnit();
+                                // self.optionalItem.monthlyUnit();
                                 self.optionalItem.calcResultRange.resetValue();
                                 self.loadOptionalItemDetail(itemNo);
                                 // clear error.
@@ -1972,19 +1979,19 @@ module nts.uk.at.view.kmk002.a {
                         // convert dto to view model.
                         self.optionalItem.fromDto(res.optionalItem);
 
-                        if (res.controlUnit) {
-                            if (res.optionalItem.performanceAtr === 0) {
-                                self.optionalItem.monthlyUnit(res.controlUnit.inputUnitOfTimeItem);
-                            } else {
-                                self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
-                            }
-                        } else {
-                            if (res.optionalItem.performanceAtr === 0) {
-                                self.optionalItem.monthlyUnit(null);
-                            } else {
-                                self.optionalItem.dailyUnit(null);
-                            }
-                        }
+                        // if (res.controlUnit) {
+                        //     if (res.optionalItem.performanceAtr === 0) {
+                        //         self.optionalItem.monthlyUnit(res.controlUnit.inputUnitOfTimeItem);
+                        //     } else {
+                        //         self.optionalItem.dailyUnit(res.controlUnit.inputUnitOfTimeItem);
+                        //     }
+                        // } else {
+                        //     if (res.optionalItem.performanceAtr === 0) {
+                        //         self.optionalItem.monthlyUnit(null);
+                        //     } else {
+                        //         self.optionalItem.dailyUnit(null);
+                        //     }
+                        // }
 
                         // focus optional item name input
                         $('#inpName').focus();

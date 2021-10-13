@@ -472,14 +472,14 @@
                                              optionsValue: 'code',
                                              optionsText: 'name',
                                              value: empConditionAtr,
-                                             enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP(); })
+                                             enable: ko.computed(function() { return usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; $parents[1].langJP(); })
                                  }"/>
-                        <button data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
+                        <button data-bind="click: openDialogB, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; empConditionAtr() == 1 &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_19')}</button>
                      </div>
                      <div class="control-group valign-center">
-                        <button data-bind="click: addFormulaAbove, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_28')}</button>
-                        <button data-bind="click: addFormulaBelow, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_29')}</button>
-                        <button data-bind="click: removeFormula, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; isUsed() &amp;&amp; hasSelectedFormula() &amp;&amp; $parents[1].langJP()" class="danger">#{i18n.getText('KMK002_30')}</button>
+                        <button data-bind="click: addFormulaAbove, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_28')}</button>
+                        <button data-bind="click: addFormulaBelow, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; $parents[1].langJP()">#{i18n.getText('KMK002_29')}</button>
+                        <button data-bind="click: removeFormula, enable: usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; hasSelectedFormula() &amp;&amp; $parents[1].langJP()" class="danger">#{i18n.getText('KMK002_30')}</button>
                      </div>
                      <div class="control-group valign-center">
                         <span>#{i18n.getText('KMK002_31')}</span>
@@ -487,7 +487,7 @@
                                id="inp-apply-formula"
                                data-bind="ntsTextEditor: {
                                              value: applyFormula,
-                                             enable: isUsed &amp;&amp; $parents[1].langJP(),
+                                             enable: isUsed() &amp;&amp; $parents[1].langJP(),
                                              readonly: true,
                                              required: false
                                           }" />
@@ -512,7 +512,7 @@
                               <th class="ui-widget-header p-5008">
                                  <div tabindex="-1" data-bind="ntsCheckBox: {
                                        checked: checkedAllFormula,
-                                       enable: isUsed &amp;&amp; usageAtr() === 1 &amp;&amp; selectedClac() === 1 &amp;&amp; calcFormulas().length > 0,
+                                       enable: isUsed() &amp;&amp; selectedClac() === 1 &amp;&amp; calcFormulas().length > 0,
                                        text: '' }"></div>
                               </th>
                               <th class="ui-widget-header">#{i18n.getText('KMK002_33')}</th>
@@ -531,7 +531,7 @@
                                  <td class="p-5008">
                                     <div tabindex="-1" data-bind="ntsCheckBox: {
                                           checked: selected,
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           text: '' }"></div>
                                  </td>
                                  <td style="text-align: right" data-bind="text: symbolValue"></td>
@@ -542,7 +542,7 @@
                                           optionsValue: 'value',
                                           value: formulaAtr,
                                           optionsText: 'localizedName',
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -552,7 +552,7 @@
                                     ntsTextEditor: {
                                        name: '#[KMK002_40]',
                                        value: formulaName,
-                                       enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed, 
+                                       enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                        constraint: 'FormulaName',
                                        option: {width: '130'},
                                        required: true}" />
@@ -571,11 +571,11 @@
                                  <td>
                                     <com:ko tag="if" bind="!isFormulaSettingSelected()">
                                        <button tabindex="2" class="btn-calc-set"
-                                          data-bind="click: openDialogC, enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed"></button>
+                                          data-bind="click: openDialogC, enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1"></button>
                                     </com:ko>
                                     <com:ko tag="if" bind="isFormulaSettingSelected()">
                                        <button tabindex="2" class="btn-calc-set"
-                                          data-bind="click: openDialogD, enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed"></button>
+                                          data-bind="click: openDialogD, enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1"></button>
                                     </com:ko>
                                  </td>
                                  <td>
@@ -677,7 +677,7 @@
                                           optionsValue: 'value',
                                           value: timeMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -690,7 +690,7 @@
                                           optionsValue: 'value',
                                           value: numberMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -703,7 +703,7 @@
                                           optionsValue: 'value',
                                           value: amountMonthlyUnit,
                                           optionsText: 'localizedName',
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           columns: [
                                           { prop: 'localizedName', length: 5 },
                                           ]}">
@@ -718,7 +718,7 @@
                                           optionsValue: 'value',
                                           value: timeMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -731,7 +731,7 @@
                                           optionsValue: 'value',
                                           value: numberMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">
@@ -744,7 +744,7 @@
                                           optionsValue: 'value',
                                           value: amountMonthlyRounding,
                                           optionsText: 'localizedName',
-                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1 &amp;&amp; $parent.isUsed,
+                                          enable: $parent.usageAtr() === 1 &amp;&amp; $parent.selectedClac() === 1,
                                           columns: [
                                           { prop: 'localizedName', length: 8 },
                                           ]}">

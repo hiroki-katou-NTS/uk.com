@@ -59,7 +59,7 @@ public class CalFormulasItemExportImpl implements MasterListData {
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_112, TextResource.localize("KMK002_112"),
 		        ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_170, TextResource.localize("KMK002_170"),
-				ColumnTextAlign.RIGHT, "", true));
+				ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_113, TextResource.localize("KMK002_113"),
 		        ColumnTextAlign.LEFT, "", true));
 		columns.add(new MasterHeaderColumn(CalFormulasItemColumn.KMK002_114, TextResource.localize("KMK002_114"),

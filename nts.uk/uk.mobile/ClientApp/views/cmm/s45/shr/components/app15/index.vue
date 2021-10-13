@@ -116,7 +116,6 @@
                       v-bind:value="1"
                       v-bind:disable="true"
               />
-              {{item.unit}}
             </label>
             <label class="pl-4" v-if="item.number != null && !item.inputCheckbox">{{ item.number }}{{item.unit}}</label>
             <label class="pl-4" v-if="item.amount != null">{{ item.amount }}{{item.unit}}</label>

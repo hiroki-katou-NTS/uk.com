@@ -56,7 +56,7 @@ public class AposeOptionalItem {
                 Cell cellD = cells.get("D" + (9 + count));
                 cellD.setValue(printContent.get(i).getOptionalItemName());
                 Cell cellI = cells.get("I" + (9 + count));
-                cellI.setValue(printContent.get(i).getUnit());
+                if (!printContent.get(i).isInputCheckbox()) cellI.setValue(printContent.get(i).getUnit());
                 count++;
             }
         }
