@@ -434,28 +434,30 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			vm.isChangeWorkHour.subscribe((value) => {
                 const vm = this;
                 vm.$blockui("show");
-				
-				vm.data.workTimeChange = value;
+                
+                vm.data.workTimeChange = value;
 
-                let command = {
-                    sId: vm.application().employeeIDLst()[0], 
-                    date: vm.application().opAppStartDate(), 
-                    workTypeCd: vm.selectedWorkTypeCD(), 
-                    workTimeCd: value ? vm.selectedWorkTimeCD() : null, 
-                    appAbsenceStartInfo: vm.data
-                };
-
-                vm.$ajax(API.changeUseingWorkTime, command).then((res) => {
-                    if (res) {
-                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", res.requiredVacationTime));
-                    }
-                }).fail((error) => {
-                    if (error) {
-                        vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
-                    }
-                }).always(() => {
-                    vm.$blockui("hide");
-                });
+                if (vm.application().opAppStartDate()) {
+                    let command = {
+                        sId: vm.application().employeeIDLst()[0], 
+                        date: vm.application().opAppStartDate(), 
+                        workTypeCd: vm.selectedWorkTypeCD(), 
+                        workTimeCd: value ? vm.selectedWorkTimeCD() : null, 
+                        appAbsenceStartInfo: vm.data
+                    };
+    
+                    vm.$ajax(API.changeUseingWorkTime, command).then((res) => {
+                        if (res) {
+                            vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", res.requiredVacationTime));
+                        }
+                    }).fail((error) => {
+                        if (error) {
+                            vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                        }
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+                }
             })
 
 			// Subscribe work time after change
