@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
@@ -30,7 +29,7 @@ public class Cmf001bSaveCommandHandler extends CommandHandler<Cmf001bSaveCommand
 		if(command.isNew()) {
 			//コードの重複チェック
 			if(externalImportSettingRepo.exist(companyId, command.getCode())) {
-				throw new BusinessException(new RawErrorMessage( "コードが存在しています。"));
+				throw new BusinessException("Msg_3");
 			}
 			val domain = command.toDomain();
 			externalImportSettingRepo.insert(domain);
