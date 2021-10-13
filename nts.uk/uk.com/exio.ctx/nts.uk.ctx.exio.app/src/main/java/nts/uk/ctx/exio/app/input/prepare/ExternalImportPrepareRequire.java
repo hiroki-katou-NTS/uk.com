@@ -26,8 +26,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -36,6 +34,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecordRepository;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;

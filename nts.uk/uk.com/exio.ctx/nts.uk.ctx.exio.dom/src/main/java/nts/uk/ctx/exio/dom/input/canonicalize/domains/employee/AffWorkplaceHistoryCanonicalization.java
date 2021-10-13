@@ -6,16 +6,14 @@ import java.util.List;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.WorkplaceCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 
 /**
  * 所属職場履歴の正準化
@@ -68,15 +66,6 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 	@Override
 	protected List<String> getChildTableNames() {
 		return Arrays.asList("BSYMT_AFF_WKP_HIST_ITEM");
-	}
-	
-	@Override
-	protected List<DomainDataColumn> getDomainDataKeys() {
-		// EmployeeHistoryCanonicalization.toDeleteのキーの順番と合わせる必要がある
-		return Arrays.asList(
-				new DomainDataColumn("HIST_ID", DataType.STRING),
-				new DomainDataColumn("SID", DataType.STRING)
-		);
 	}
 	
 	@Override

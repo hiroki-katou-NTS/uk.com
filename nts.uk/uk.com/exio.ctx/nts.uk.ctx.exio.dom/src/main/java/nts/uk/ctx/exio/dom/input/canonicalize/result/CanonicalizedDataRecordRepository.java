@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize;
+package nts.uk.ctx.exio.dom.input.canonicalize.result;
 
 import java.util.List;
 
