@@ -9,7 +9,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.organization.workplace.Wor
 import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
-import nts.uk.ctx.exio.dom.input.util.Either;
+import nts.gul.util.Either;
 
 @AllArgsConstructor()
 class RecordWithPeriod {
