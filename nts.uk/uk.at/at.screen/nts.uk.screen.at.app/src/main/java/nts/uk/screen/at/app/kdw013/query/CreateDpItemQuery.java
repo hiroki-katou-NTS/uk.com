@@ -97,16 +97,16 @@ public class CreateDpItemQuery {
 			dpitems.addAll(createDPItemValue(empTarget, itemChangeds, taskItems, manhr));
 		});
 		
-		//[No.585]日の実績の承認状況を取得する（NEW）
-		List<ApprovalStatusActualResult> lstApproval = approvalStatusActualDayChange.processApprovalStatus(
-				cId, sId, Arrays.asList(empTarget),
-				Optional.of(period), Optional.empty(), ModeData.NORMAL.value);
-		//[No.584]日の実績の確認状況を取得する（NEW）
+		// 5. [No.585]日の実績の承認状況を取得する（NEW）
+		List<ApprovalStatusActualResult> lstApproval = approvalStatusActualDayChange.processApprovalStatus(cId, sId,
+				Arrays.asList(empTarget), Optional.of(period), Optional.empty(), ModeData.NORMAL.value);
+		// 6. [No.584]日の実績の確認状況を取得する（NEW）
 		List<ConfirmStatusActualResult> lstConfirm = confirmStatusActualDayChange.processConfirmStatus(cId, sId,
 				Arrays.asList(empTarget), Optional.of(period), Optional.empty());
-		//approvalConfirmCacheを作成する
-		ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(sId, Arrays.asList(empTarget), period, 0, lstConfirm, lstApproval);
-		//DPItemParentを作成する
+		// 7. approvalConfirmCacheを作成する
+		ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(sId, Arrays.asList(empTarget), period, 0,
+				lstConfirm, lstApproval);
+		// 8. DPItemParentを作成する
 		List<DailyRecordDto> ids = integrationOfDailys.stream().map(x -> DailyRecordDto.from(x))
 				.collect(Collectors.toList());
 
