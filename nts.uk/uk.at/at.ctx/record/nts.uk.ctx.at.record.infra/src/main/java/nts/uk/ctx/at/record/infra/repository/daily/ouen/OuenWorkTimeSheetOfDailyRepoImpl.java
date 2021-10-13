@@ -219,7 +219,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 									new ReasonTimeChange(
 											ots.endTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class), 
 											ots.endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.endStampMethod, EngravingMethod.class))), 
-									ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))))).collect(Collectors.toList());
+									ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))), Optional.empty())).collect(Collectors.toList());
 		
 		return OuenWorkTimeSheetOfDaily.create(es.get(0).pk.sid, es.get(0).pk.ymd, ouenTimeSheet);
 	}
