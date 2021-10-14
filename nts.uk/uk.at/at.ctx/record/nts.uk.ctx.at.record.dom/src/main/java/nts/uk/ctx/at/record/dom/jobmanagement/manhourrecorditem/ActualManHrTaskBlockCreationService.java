@@ -28,7 +28,7 @@ public class ActualManHrTaskBlockCreationService {
 	 * @param taskDetails 工数実績項目リスト
 	 * @return 日別実績の工数実績作業
 	 */
-	public DailyActualManHrActualTask create(Require require, String sId, GeneralDate date,
+	public static DailyActualManHrActualTask create(Require require, String sId, GeneralDate date,
 			List<ManHrTaskDetail> taskDetails) {
 
 		// $作業ブロックリスト = List.Empty

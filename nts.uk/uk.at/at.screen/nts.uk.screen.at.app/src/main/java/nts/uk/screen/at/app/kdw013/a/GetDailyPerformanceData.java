@@ -41,9 +41,6 @@ public class GetDailyPerformanceData {
 	private ManHourRecordAndAttendanceItemLinkRepository manHourRecordAndAttendanceItemLinkRepository;
 	
 	@Inject
-	private ActualManHrTaskBlockCreationService actualManHrTaskBlockCreationService;
-	
-	@Inject
 	private TaskTimeGroupRepository  taskTimeGroupRepository;
 
 	/**
@@ -76,7 +73,7 @@ public class GetDailyPerformanceData {
 			result.getConvertRes().add(convertRes);
 			
 			// 3. 工数実績作業ブロックを作成する 社員ID,工数実績変換結果.年月日,工数実績変換結果.作業リスト 
-			DailyActualManHrActualTask dailyManHrTask =  this.actualManHrTaskBlockCreationService.create(
+			DailyActualManHrActualTask dailyManHrTask =  ActualManHrTaskBlockCreationService.create(
 					new ActualManHrTaskBlockCreationServiceImpl(taskTimeGroupRepository), sId, convertRes.getYmd(),
 					convertRes.getTaskList());
 			

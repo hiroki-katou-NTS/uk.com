@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.kdw013.a;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentServic
  * @author sonnlb
  * UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.日の実績のロック状況を取得する.日の実績のロック状況を取得する
  */
+@Stateless
 public class GetLockStatusOfDay {
 
 	@Inject

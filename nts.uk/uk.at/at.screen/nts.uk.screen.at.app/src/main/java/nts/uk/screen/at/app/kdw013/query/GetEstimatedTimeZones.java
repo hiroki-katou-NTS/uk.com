@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.kdw013.query;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.DefaultBasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
@@ -23,7 +23,7 @@ public class GetEstimatedTimeZones {
 	private GetLastOverTimeApplication getLastOverTimeApplication;
 	
 	@Inject
-	private DefaultBasicScheduleService defaultBasicScheduleService;
+	private BasicScheduleService basicScheduleService;
 	
 	@Inject
 	private PredetemineTimeSettingRepository predTimeSetRepo;
@@ -94,7 +94,7 @@ public class GetEstimatedTimeZones {
 				String workTypeCode = inteDaiy.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 				
 				// 3. call
-				WorkStyle wkStyle = this.defaultBasicScheduleService.checkWorkDay(workTypeCode);
+				WorkStyle wkStyle = this.basicScheduleService.checkWorkDay(workTypeCode);
 				
 				// 出勤休日区分 <> １日休日系 
 				if (!wkStyle.equals(WorkStyle.ONE_DAY_REST)) {
