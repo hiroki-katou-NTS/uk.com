@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.result;
 
 import static java.util.stream.Collectors.*;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.Value;
@@ -65,8 +66,9 @@ public class IntermediateResult {
 				.filter(item -> item.getItemNo() != canonicalizedItem.getItemNo())
 				.collect(toList());
 		
-		return addCanonicalized(new CanonicalItemList(newItems)
-				.addItem(canonicalizedItem));
+		val itemList = new ArrayList<CanonicalItem>(newItems);
+		itemList.add(canonicalizedItem);
+		return new IntermediateResult(this.rowNo, new CanonicalItemList(itemList));
 	}
 	
 	/**
