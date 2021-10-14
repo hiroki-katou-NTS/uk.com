@@ -64,7 +64,8 @@ public class RegisterNewFormatSettingsCommandHandler extends CommandHandler<Regi
 					&& displayFormat.getRecordColumnDisplayItems().isEmpty()) {
 				manHrInputDisplayFormatRepo.insert(domain);
 			} else {
-				manHrInputDisplayFormatRepo.update(domain);
+				manHrInputDisplayFormatRepo.delete(AppContexts.user().companyId());
+				manHrInputDisplayFormatRepo.insert(domain);
 			}
 		} else {
 			manHrInputDisplayFormatRepo.insert(domain);
