@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk006.l {
     const DATE_FORMAT = 'YYYY/MM/DD';
 
     const API = {
+        LIST_HISTORY: 'at/record/kdw006/view-k/get-list-history',
         RESISTER: 'at/record/kdw006/view-l/register-history',
         UPDATE: 'at/record/kdw006/view-l/update-history',
         REMOTE: 'at/record/kdw006/view-l/remote-history'
@@ -83,6 +84,7 @@ module nts.uk.at.view.kmk006.l {
             const vm = this;
             vm.screenMode(SCREEN_MODE.ADD);
             vm.selectedStartDateInput(null);
+            vm.setEndDate();
         }
 
         updateHistory() {
@@ -93,7 +95,7 @@ module nts.uk.at.view.kmk006.l {
 
         deleteHistory() {
             const vm = this;
-            const param = { historyId: ko.unwrap(vm.model.historyId) }
+            const param = { historyId: ko.unwrap(vm.model.historyId), itemId: vm.itemId }
             const oldIndex = _.map(ko.unwrap(vm.lstWpkHistory), m => m.historyId).indexOf(ko.unwrap(vm.model.historyId));
             const newIndex = oldIndex == ko.unwrap(vm.lstWpkHistory).length - 1 ? oldIndex - 1 : oldIndex;
 
@@ -105,16 +107,43 @@ module nts.uk.at.view.kmk006.l {
                             vm.$ajax('at', API.REMOTE, param)
                                 .done(() => vm.$dialog.info({ messageId: "Msg_16" }))
                                 .then(() => {
-                                    _.remove(ko.unwrap(vm.lstWpkHistory), ((item: HistoryItem) => { return item.historyId === ko.unwrap(vm.model.historyId) }));
-                                    if (ko.unwrap(vm.lstWpkHistory).length > 0) {
-                                        vm.model.update(ko.unwrap(vm.lstWpkHistory)[newIndex]);
-                                        vm.selectedHistoryId(ko.unwrap(vm.model.historyId));
-                                    }
+                                    console.log('chung dep trai');
+                                    
+                                   vm.reload();
                                 })
                                 .fail((fail: any) => vm.$dialog.info({ messageId: fail.messageId }))
                                 .always(() => vm.$blockui('clear'))
                         })
                 })
+        }
+
+        reload() {
+            const vm = this;
+            var hisLocal: HistoryItem[] = [];
+
+            vm.$blockui('invisible')
+                .then(() => {
+                    vm.$ajax(API.LIST_HISTORY)
+                        .done((data: IHistory[]) => {
+                            const exist = _.find(data, (item: IHistory) => { return item.itemId === vm.itemId });
+                            if (exist) {
+                                _.forEach(exist.dateHistoryItems, ((value: IHistoryInfo) => {
+                                    hisLocal.push(new HistoryItem({
+                                        historyId: value.historyId,
+                                        startDate: moment(value.startDate).format(DATE_FORMAT),
+                                        endDate: moment(value.endDate).format(DATE_FORMAT)
+                                    }));
+                                }));
+                                vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
+                            }
+                        })
+                        .then(() => {
+                            vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
+                            vm.selectedHistoryId.valueHasMutated();
+                            vm.screenMode(SCREEN_MODE.SELECT);
+                        })
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         cancel() {
@@ -136,7 +165,7 @@ module nts.uk.at.view.kmk006.l {
                 vm.$blockui('invisible')
                     .then(() => {
                         vm.$ajax('at', API.RESISTER, param)
-                            .then((hisId: any) => {
+                            .done((hisId: any) => {
                                 vm.$dialog.info({ messageId: 'Msg_15' })
                                     .then(() => {
                                         hisLocal.push(new HistoryItem({
@@ -144,10 +173,11 @@ module nts.uk.at.view.kmk006.l {
                                             startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
                                             endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
                                         }));
-                                        vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
-                                        vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
-                                        vm.screenMode(SCREEN_MODE.SELECT);
+                                        vm.reload();
                                     });
+                            })
+                            .fail((data: any) => {
+                                vm.$dialog.info({ messageId: data.messageId })
                             })
                     })
                     .always(() => vm.$blockui('clear'));
@@ -165,9 +195,7 @@ module nts.uk.at.view.kmk006.l {
                                                 startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
                                                 endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
                                             }));
-                                            vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
-                                            vm.selectedHistoryId(ko.unwrap(vm.lstWpkHistory)[0].historyId);
-                                            vm.screenMode(SCREEN_MODE.SELECT);
+                                            vm.reload();
                                         });
                                 })
                         })

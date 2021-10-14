@@ -51,7 +51,7 @@
                     <div class="column-2">
                         <span data-bind="text: $i18n('KDW006_324')"></span>
                         <samp data-bind="text: $vm.modelHistory.startDate"></samp>
-                        <samp> ~ </samp>
+                        <samp data-bind="if: disable"> ~ </samp>
                         <samp data-bind="text: $vm.modelHistory.endDate"></samp>
                         <button tabindex="6" data-bind="text: $i18n('履歴選択'), click: $vm.openViewL"></button>
                     </div>
