@@ -282,6 +282,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
             businessTripDto: paramsBusinessTrip,
             application: vm.application,
+            mode: vm.mode,
             screenDetails
         }).then((res: any) => {
             if (res) {

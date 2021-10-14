@@ -461,6 +461,35 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 });
             });
 
+            vm.isChangeWorkHour.subscribe((value) => {
+                const vm = this;
+                
+                vm.data.workTimeChange = value;
+                
+                if (vm.application().opAppStartDate()) {
+                    vm.$blockui("show");
+                    let command = {
+                        sId: vm.application().employeeIDLst()[0], 
+                        date: vm.application().opAppStartDate(), 
+                        workTypeCd: vm.selectedWorkTypeCD(), 
+                        workTimeCd: value ? vm.selectedWorkTimeCD() : null, 
+                        appAbsenceStartInfo: vm.data
+                    };
+    
+                    vm.$ajax(API.changeUseingWorkTime, command).then((res) => {
+                        if (res) {
+                            vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", res.requiredVacationTime));
+                        }
+                    }).fail((error) => {
+                        if (error) {
+                            vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                        }
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+                }
+            })
+
             // Subscribe work time after change
             vm.selectedWorkTimeCD.subscribe(() => {
                 if (_.isNil(vm.selectedWorkTimeCD())) {
@@ -1659,6 +1688,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         checkVacationTyingManage: 'at/request/application/appforleave/checkVacationTyingManage',
         changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
         changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
+        changeUseingWorkTime: 'at/request/application/appforleave/findChangeUsingWorkTime',
         changeRela: 'at/request/application/appforleave/changeRela',
 		reflectApp: "at/request/application/reflect-app"
     }

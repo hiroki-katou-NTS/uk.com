@@ -5381,6 +5381,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dispSysDate: string = getText("KDW003_121", [moment(new Date()).format("YYYY/MM/DD")]);
         dispNextGrantDate: string;
 
+		dispAnnualDayUI: KnockoutObservable<boolean> = ko.observable(false);
+		displayAllUI: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any, grantDays: any, childCareVacation: any, longTermCareVacation: any) {
             this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate, grantDays]) : getText("KDW003_123");
             this.dispCompensationDay = compensatoryLeave == null ? false : compensatoryLeave.manageCompenLeave;
@@ -5476,6 +5479,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-longTermCare-day").css("color", "#06c");
             } else
                 this.longTermCareValue = "";
+
+			this.dispAnnualDayUI(this.dispAnnualDay);
+			this.displayAllUI(this.dispCompensationDay || this.dispSubstitute || this.dispAnnualDay || (this.dispAnnualDay && this.dispReserve));
         }
 
         public remainCompensation(day: any, time: any, manage: any) {

@@ -48,6 +48,7 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripSe
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.DetailScreenB;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.ResultCheckInputCode;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.ScreenWorkInfoName;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -76,6 +77,9 @@ public class BusinessTripFinder {
 
     @Inject
     private NewBeforeRegister processBeforeRegister;
+    
+    @Inject
+    private DetailBeforeUpdate detailBeforeProcessRegisterService;
 
     @Inject
     private WorkTypeRepository wkTypeRepo;
@@ -486,25 +490,46 @@ public class BusinessTripFinder {
         BusinessTripInfoOutput output = param.getBusinessTripInfoOutputDto().toDomain();
         BusinessTrip businessTrip = param.getBusinessTripDto().toDomain(application);
 
-        // アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        Optional<WorkTimeCode> optWorkTimeCode = businessTrip.getInfos().stream()
-                .filter(x -> x.getWorkInformation().getWorkTimeCode() != null)
-                .map(x -> x.getWorkInformation().getWorkTimeCode())
-                .findFirst();
-        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
-                cid,
-                EmploymentRootAtr.APPLICATION,
-                true,
-                application,
-                null,
-                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
-                Collections.emptyList(),
-                output.getAppDispInfoStartup(), 
-                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
-                Optional.empty(), 
-                optWorkTimeCode.isPresent() ? optWorkTimeCode.map(WorkTimeCode::v) : Optional.empty(), 
-                false
-        );
+        if (param.isMode()) {
+            // アルゴリズム「2-1.新規画面登録前の処理」を実行する
+            Optional<WorkTimeCode> optWorkTimeCode = businessTrip.getInfos().stream()
+                    .filter(x -> x.getWorkInformation().getWorkTimeCode() != null)
+                    .map(x -> x.getWorkInformation().getWorkTimeCode())
+                    .findFirst();
+            confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+                    cid,
+                    EmploymentRootAtr.APPLICATION,
+                    true,
+                    application,
+                    null,
+                    output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
+                    Collections.emptyList(),
+                    output.getAppDispInfoStartup(), 
+                    businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
+                    Optional.empty(), 
+                    optWorkTimeCode.isPresent() ? optWorkTimeCode.map(WorkTimeCode::v) : Optional.empty(), 
+                            false
+                    );
+        } else {
+         // アルゴリズム「4-1.詳細画面登録前の処理」を実行する
+            businessTrip.getInfos().stream().forEach(i -> {
+                this.detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(
+                        cid,
+                        output.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication().getApplication().getEmployeeID(),
+                        i.getDate(),
+                        EmploymentRootAtr.APPLICATION.value,
+                        output.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication().getApplication().getAppID(),
+                        output.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication().getApplication().getPrePostAtr(),
+                        output.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication().getApplication().getVersion(),
+                        i.getWorkInformation().getWorkTypeCode().v(),
+                        i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v(),
+                        output.getAppDispInfoStartup(), 
+                        businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
+                        Optional.empty(), 
+                        false
+                );
+            });
+        }
 
 
         if (confirmMsgOutputs.isEmpty()) {

@@ -830,7 +830,8 @@ public class OvertimeServiceImpl implements OvertimeService {
                 .map(x -> x.getApplicationTime().v())
                 .mapToInt(Integer::intValue)
                 .sum();
-        totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
+        totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() 
+                && appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ? 
                 appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
         totalOverTime += appOverTime.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
         TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
@@ -1268,7 +1269,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	                .map(x -> x.getApplicationTime().v())
 	                .mapToInt(Integer::intValue)
 	                .sum();
-	        totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
+	        totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() 
+                    && appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ? 
 	                appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
 	                totalOverTime += appOverTime.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
 	    }
