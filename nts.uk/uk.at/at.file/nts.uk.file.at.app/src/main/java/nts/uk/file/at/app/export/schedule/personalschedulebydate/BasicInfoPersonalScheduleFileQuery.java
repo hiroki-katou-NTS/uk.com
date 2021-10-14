@@ -46,8 +46,6 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class BasicInfoPersonalScheduleFileQuery {
-    private final String companyId = AppContexts.user().companyId();
-
     @Inject
     private CompanyAdapter company;
 
@@ -82,6 +80,8 @@ public class BasicInfoPersonalScheduleFileQuery {
     private SpecificDateItemRepository specificDateItemRepo;
 
     public BasicInfoPersonalScheduleDto getInfo(int orgUnit, String orgId, GeneralDate baseDate, List<String> sortedEmployeeIds) {
+        String companyId = AppContexts.user().companyId();
+
         // 1. [RQ622]会社IDから会社情報を取得する
         CompanyInfor companyInfo = company.getCurrentCompany().orElseGet(() -> {
             throw new RuntimeException("System Error: Company Info");

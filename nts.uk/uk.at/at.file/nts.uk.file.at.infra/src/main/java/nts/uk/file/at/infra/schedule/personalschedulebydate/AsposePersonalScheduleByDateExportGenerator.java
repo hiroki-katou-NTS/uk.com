@@ -214,6 +214,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
             if (graphVacationDisplay) {
                 // C3_2_1
+                System.out.println("C3_2_1");
                 if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
                     val shape1a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape1a.getColumn() != null) {
@@ -229,6 +230,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_4
+                System.out.println("C3_2_4");
                 if (item.getWorkType().equals(WorkTimeForm.FLOW.value)) {
                     val shape4a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape4a.getColumn() != null) {
@@ -244,6 +246,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_5
+                System.out.println("C3_2_5");
                 if (item.getWorkType().equals(WorkTimeForm.FLEX.value)) {
                     val shape5 = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape5.getColumn() != null) {
@@ -260,6 +263,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_3
+                System.out.println("C3_2_3");
                 if (!item.getOverTimeList().isEmpty()) {
                     for (ChangeableWorkTimeDto overTime : item.getOverTimeList()) {
                         TimeCheckedDto timeChecked = validateTime(graphStartTime, overTime.getStartTime(), overTime.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
@@ -274,6 +278,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_2
+                System.out.println("C3_2_2");
                 if (!item.getBreakTimeList().isEmpty()) {
                     val breakTimeList = item.getBreakTimeList();
                     for (BreakTimeSheet breakTime : breakTimeList) {
@@ -289,6 +294,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_8
+                System.out.println("C3_2_8");
                 if (!item.getChildCareShortTimeList().isEmpty()) {
                     for (val time : item.getChildCareShortTimeList()) {
                         val shape8 = calculateConvertToShape(pixelOfColumn, graphStartTime, time.getStartTime(), time.getEndTime());
@@ -299,6 +305,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_7
+                System.out.println("C3_2_7");
                 if (!item.getListTimeVacationAndType().isEmpty()) {
                     for (val timeVacation : item.getListTimeVacationAndType()) {
                         for (val time : timeVacation.getTimeVacation().getTimeZone()) {
@@ -313,6 +320,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
             if (displayActual) {
                 // C3_2_14
+                System.out.println("C3_2_14");
                 if (item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
                     val shape14a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getActualStartTime1(), item.getActualEndTime1());
                     if (shape14a.getColumn() != null) {
@@ -328,6 +336,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_16
+                System.out.println("C3_2_16");
                 if (!item.getOverTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
                     for (val time : item.getOverTimeList()) {
                         TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime(), time.getEndTime(), new TimeRangeLimitDto(item.getActualStartTime1(), item.getActualEndTime1()),
@@ -342,6 +351,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_15
+                System.out.println("C3_2_15");
                 if (!item.getActualBreakTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
                     for (val time : item.getActualBreakTimeList()) {     // max 10
                         TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime().v(), time.getEndTime().v(), new TimeRangeLimitDto(item.getActualStartTime1(), item.getActualEndTime1()),
@@ -446,6 +456,9 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private TimeCheckedDto checkRangeLimit(int graphStartTime, Integer start, Integer end) {
         val timeLimit = getTimeLimit(graphStartTime, OutputType.TOTAL_MINUTE);
+        if (!isInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) && !isInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())){
+            return null;
+        }
         if (start > timeLimit.getMaxLimit()) return null;
         if (!isInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) || !isInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
             if (start < timeLimit.getMinLimit()) {
