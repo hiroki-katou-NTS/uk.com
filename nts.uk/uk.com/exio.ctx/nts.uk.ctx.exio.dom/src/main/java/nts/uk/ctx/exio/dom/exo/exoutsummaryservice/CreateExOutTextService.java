@@ -314,6 +314,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 		int opCond = ExIoOperationState.IN_PREPARATION.value;
 		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, proCnt, errCnt, totalProCnt, doNotInterrupt, proUnit,
 				opCond);
+		Optional<ExOutCtg> exOutCtgOpt = settingResult.getExOutCtg();
+		OutingPeriodClassific outingPeriodClassific = null;
+		ClassificationToUse classificationToUse =null;
+		if(exOutCtgOpt.isPresent()){
+			val exOutCtg = exOutCtgOpt.get();
+			outingPeriodClassific = exOutCtg.getOutingPeriodClassific();
+			classificationToUse = 	exOutCtg.getClassificationToUse();
+		}
 
 		String userId = null;
 		int totalErrorCount = 0;
@@ -333,6 +341,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		GeneralDate designatedReferenceDate = exOutSetting.getReferenceDate();
 		GeneralDate specifiedEndDate = exOutSetting.getEndDate();
 		GeneralDate specifiedStartDate = exOutSetting.getStartDate();
+		if( outingPeriodClassific == OutingPeriodClassific.YEAR_MONTH){
+			specifiedEndDate = specifiedEndDate.addDays(1);
+		}
 		String codeSettingCondition = exOutSetting.getConditionSetCd();
 		Integer resultStatus = null;
 		String nameSetting = settingResult.getStdOutputCondSet() == null ? 
@@ -354,6 +365,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		ExternalOutLog externalOutLog = new ExternalOutLog(companyId, processingId, errorContent, errorTargetValue,
 				errorDate, errorEmployee, errorItem, logRegisterDateTime, logSequenceNumber, processCount,
 				processContent);
+
 
 		exOutOpMngRepo.add(exOutOpMng);
 		exterOutExecLogRepo.add(exterOutExecLog);
