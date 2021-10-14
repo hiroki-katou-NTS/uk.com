@@ -595,7 +595,7 @@ module nts.uk.com.view.cas013.a {
                         roleType: roleTpye,
                         companyID: cid
                     };
-                    let id = cid+userId;
+                    let id = cid+"_"+userId+"_"+roleTpye;
                     vm.$ajax('com', API.deleteRoleGrant, roleGrant).done(function () {
                         nts.uk.ui.dialog.info({messageId: "Msg_16"});
                     }).always(() => {
