@@ -108,31 +108,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     @Inject
     private WorkTypeRepository workTypeRepo;
 
-    private List<ShiftMaster> shiftMasters = new ArrayList<>();
-    private List<WorkType> workTypes = new ArrayList<>();
-    private List<WorkTimeSetting> workTimeSettings = new ArrayList<>();
-    private List<TotalTimes> allTotalTimesList = new ArrayList<>();
-
-    private final OneDayEmployeeAttendanceInfo.Require require = new OneDayEmployeeAttendanceInfo.Require() {
-        @Override
-        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-        public Optional<ShiftMaster> getShiftMaster(String workTypeCode, Optional<String> workTimeCode) {
-            return shiftMasters.stream()
-                    .filter(i -> i.getWorkTypeCode().v().equals(workTypeCode) && ((!workTimeCode.isPresent() && i.getWorkTimeCode() == null) || (workTimeCode.isPresent() && workTimeCode.get().equals(i.getWorkTimeCode()))))
-                    .findFirst();
-        }
-        @Override
-        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-        public Optional<WorkType> getWorkType(String workTypeCode) {
-            return workTypes.stream().filter(w -> w.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
-        }
-        @Override
-        @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-        public Optional<WorkTimeSetting> getWorkTimeSetting(String workTimeCode) {
-            return workTimeSettings.stream().filter(w -> w.getWorktimeCode().v().equals(workTimeCode)).findFirst();
-        }
-    };
-
     @Inject
     private WorkplaceCounterLaborCostAndTimeRepo workplaceCounterLaborCostAndTimeRepo;
 
@@ -154,35 +129,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         startRow = START_DATA_ROW;
         indexes.clear();
 
-        // init data if necessary
-        String companyId = AppContexts.user().companyId();
-        if (dataSource.getOutputSetting().getOutputItem().getDisplayAttendanceItems().contains(ScheduleTableAttendanceItem.SHIFT)) {
-            shiftMasters = shiftMasterRepo.getAllByCid(companyId).stream().map(i -> new ShiftMaster(
-                    i.getCompanyId(),
-                    new ShiftMasterCode(i.getShiftMasterCode()),
-                    new ShiftMasterDisInfor(
-                            new ShiftMasterName(i.getShiftMasterName()),
-                            new ColorCodeChar6(i.getColor()),
-                            new ColorCodeChar6(i.getColorSmartphone()),
-                            i.getRemark() == null ? null : new Remarks(i.getRemark())
-                    ),
-                    i.getWorkTypeCd(),
-                    i.getWorkTimeCd()
-            )).collect(Collectors.toList());
-        } else if (dataSource.getOutputSetting().getOutputItem().getDisplayAttendanceItems().contains(ScheduleTableAttendanceItem.WORK_TIME)
-                || dataSource.getOutputSetting().getWorkplaceCounterCategories().contains(WorkplaceCounterCategory.WORKTIME_PEOPLE)) {
-            workTimeSettings = workTimeSettingRepo.findActiveItems(companyId);
-        }
-        if (dataSource.getOutputSetting().getOutputItem().getDisplayAttendanceItems().contains(ScheduleTableAttendanceItem.WORK_TYPE)) {
-            workTypes = workTypeRepo.getAllWorkTypeNotAbolished(companyId);
-        }
-        if (dataSource.getOutputSetting().getWorkplaceCounterCategories().contains(WorkplaceCounterCategory.TIMES_COUNTING)
-                || dataSource.getOutputSetting().getPersonalCounterCategories().contains(PersonalCounterCategory.TIMES_COUNTING_1)
-                || dataSource.getOutputSetting().getPersonalCounterCategories().contains(PersonalCounterCategory.TIMES_COUNTING_2)
-                || dataSource.getOutputSetting().getPersonalCounterCategories().contains(PersonalCounterCategory.TIMES_COUNTING_3)) {
-            allTotalTimesList = totalTimesRepo.getAllTotalTimes(companyId);
-        }
-
         // start exporting
         try {
             AsposeCellsReportContext reportContext = this.createEmptyContext("PersonalScheduleByWorkplace");
@@ -192,8 +138,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             worksheet.setName(dataSource.getOutputSetting().getName().v());
             this.printHeader(worksheet, dataSource, comment);
             this.printContent(worksheet, dataSource);
-            this.handlePageBreak(worksheet, dataSource);
-            worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
             reportContext.processDesigner();
             if (preview) {
                 worksheet.getCells().get(startRow, 0).setValue(" ");
@@ -209,7 +153,9 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 workbook.save(ServerSystemProperties.fileStoragePath() + "\\" + fileName, options);
             } else {
                 this.settingPage(worksheet, dataSource);
+                this.handlePageBreak(worksheet, dataSource);
                 if (excel) {
+                    worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
                     // save as excel file
                     reportContext.saveAsExcel(this.createNewFile(context, this.getReportName(dataSource.getOutputSetting().getName().v() + EXCEL_EXT)));
                 } else {
@@ -359,8 +305,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     Optional<TimesNumberCounterSelection> timesNumberCounterSelection = timesNumberCounterSelectionRepo.get(AppContexts.user().companyId(), counterType);
                     if (timesNumberCounterSelection.isPresent()) {
                         cells.get(START_HEADER_ROW, startCol).setValue(getText(personalCounterCategory.nameId));
-                        List<TotalTimes> totalTimes = allTotalTimesList.stream()
-                                .filter(t -> timesNumberCounterSelection.get().getSelectedNoList().contains(t.getTotalCountNo()) && t.getUseAtr() == UseAtr.Use)
+                        List<TotalTimes> totalTimes = totalTimesRepo.getTotalTimesDetailByListNo(AppContexts.user().companyId(), timesNumberCounterSelection.get().getSelectedNoList()).stream()
+                                .filter(t -> t.getUseAtr() == UseAtr.Use)
                                 .collect(Collectors.toList());
                         for (int j = 0; j < totalTimes.size(); j++) {
                             TotalTimes totalTime = totalTimes.get(j);
@@ -455,6 +401,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     }
 
     private void printContent(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource) {
+        String companyId = AppContexts.user().companyId();
         Cells cells = worksheet.getCells();
         // E part
         List<ScheduleTablePersonalInfo> personalInfoScheduleTableList = dataSource.getPersonalInfoScheduleTableList();
@@ -464,15 +411,59 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         boolean hasPersonalTotal = !dataSource.getOutputSetting().getPersonalCounterCategories().isEmpty();
         boolean hasWorkplaceTotal = !dataSource.getOutputSetting().getWorkplaceCounterCategories().isEmpty();
         long additionCount = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count();
+        List<OneRowOutputItem> personalItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getPersonalInfo().isPresent()).collect(Collectors.toList());
+        List<OneRowOutputItem> additionalItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).collect(Collectors.toList());
+        List<OneRowOutputItem> attendanceItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAttendanceItem().isPresent()).collect(Collectors.toList());
+
+        List<ShiftMaster> shiftMasters = new ArrayList<>();
+        List<WorkType> workTypes = workTypeRepo.findByCompanyId(companyId);
+        List<WorkTimeSetting> workTimeSettings = new ArrayList<>();
+        if (attendanceItems.stream().anyMatch(i -> i.getAttendanceItem().get() == ScheduleTableAttendanceItem.SHIFT)) {
+            shiftMasters.addAll(shiftMasterRepo.getAllByCid(companyId).stream().map(i -> new ShiftMaster(
+                    i.getCompanyId(),
+                    new ShiftMasterCode(i.getShiftMasterCode()),
+                    new ShiftMasterDisInfor(
+                            new ShiftMasterName(i.getShiftMasterName()),
+                            new ColorCodeChar6(i.getColor()),
+                            new ColorCodeChar6(i.getColorSmartphone()),
+                            new Remarks(i.getRemark())
+                    ),
+                    i.getWorkTypeCd(),
+                    i.getWorkTimeCd()
+            )).collect(Collectors.toList()));
+        }
+        if (attendanceItems.stream().anyMatch(i -> i.getAttendanceItem().get() == ScheduleTableAttendanceItem.WORK_TIME)) {
+            workTimeSettings.addAll(workTimeSettingRepo.findByCompanyId(companyId));
+        }
+        OneDayEmployeeAttendanceInfo.Require require = new OneDayEmployeeAttendanceInfo.Require() {
+            @Override
+            @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+            public Optional<ShiftMaster> getShiftMaster(String workTypeCode, Optional<String> workTimeCode) {
+                return shiftMasters.stream()
+                        .filter(i -> i.getWorkTypeCode().v().equals(workTypeCode)
+                                && ((i.getWorkTimeCodeNotNull().isPresent() && workTimeCode.isPresent() && i.getWorkTimeCodeNotNull().get().v().equals(workTimeCode.get()))
+                                || (!i.getWorkTimeCodeNotNull().isPresent() && !workTimeCode.isPresent())))
+                        .findFirst();
+            }
+            @Override
+            @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+            public Optional<WorkType> getWorkType(String workTypeCode) {
+                return workTypes.stream().filter(i -> i.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
+            }
+            @Override
+            @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+            public Optional<WorkTimeSetting> getWorkTimeSetting(String workTimeCode) {
+                return workTimeSettings.stream().filter(i -> i.getWorktimeCode().v().equals(workTimeCode)).findFirst();
+            }
+        };
+
         // loop employee
         for (int i1 = 0; i1 < personalInfoScheduleTableList.size(); i1++) {
             ScheduleTablePersonalInfo emp = personalInfoScheduleTableList.get(i1);
             indexes.add(startRow);
-            List<OneRowOutputItem> personalItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getPersonalInfo().isPresent()).collect(Collectors.toList());
-            List<OneRowOutputItem> additionalItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).collect(Collectors.toList());
-            List<OneRowOutputItem> attendanceItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAttendanceItem().isPresent()).collect(Collectors.toList());
             List<OneDayEmployeeAttendanceInfo> attendanceInfos = (List<OneDayEmployeeAttendanceInfo>) dataSource.getListEmpOneDayAttendanceInfo()
-                    .stream().filter(i -> ((OneDayEmployeeAttendanceInfo) i).getEmployeeId().equals(emp.getEmployeeId())).collect(Collectors.toList());
+                    .stream().filter(i -> ((OneDayEmployeeAttendanceInfo) i).getEmployeeId().equals(emp.getEmployeeId()))
+                    .collect(Collectors.toList());
             int startCol = START_DATE_COL;
             for (int i = 0; i < rows; i++) {
                 // E1 part
@@ -498,6 +489,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     this.setAttendanceValue(
                             cells,
                             attendanceInfo,
+                            require,
                             attendanceItems.size() > i ? attendanceItems.get(i).getAttendanceItem().get() : null,
                             startRow + i,
                             startCol + j,
@@ -568,8 +560,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         else counterType = TimesNumberCounterType.PERSON_3;
                         Optional<TimesNumberCounterSelection> timesNumberCounterSelection = timesNumberCounterSelectionRepo.get(AppContexts.user().companyId(), counterType);
                         if (timesNumberCounterSelection.isPresent()) {
-                            List<TotalTimes> totalTimes = allTotalTimesList.stream()
-                                    .filter(t -> timesNumberCounterSelection.get().getSelectedNoList().contains(t.getTotalCountNo()) && t.getUseAtr() == UseAtr.Use)
+                            List<TotalTimes> totalTimes = totalTimesRepo.getTotalTimesDetailByListNo(AppContexts.user().companyId(), timesNumberCounterSelection.get().getSelectedNoList()).stream()
+                                    .filter(t -> t.getUseAtr() == UseAtr.Use)
                                     .collect(Collectors.toList());
                             for (int jj = 0; jj < totalTimes.size(); jj++) {
                                 TotalTimes totalTime = totalTimes.get(jj);
@@ -670,10 +662,20 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         cells.get(row, column).setStyle(style);
     }
 
-    private void setAttendanceValue(Cells cells, Optional<OneDayEmployeeAttendanceInfo> attendanceInfo, ScheduleTableAttendanceItem attendanceItem, int row, int column, boolean isFirstRow, boolean isLastRow, boolean doubleBorderBottom, boolean doubleBorderRight, boolean displayShiftBackground) {
+    private void setAttendanceValue(Cells cells, Optional<OneDayEmployeeAttendanceInfo> attendanceInfo, OneDayEmployeeAttendanceInfo.Require require, ScheduleTableAttendanceItem attendanceItem, int row, int column, boolean isFirstRow, boolean isLastRow, boolean doubleBorderBottom, boolean doubleBorderRight, boolean displayShiftBackground) {
         String value = "";
         Style style = commonStyle();
         if (attendanceItem != null && attendanceInfo.isPresent()) {
+            Optional<WorkType> workType = attendanceInfo.get().getWorkType(require);
+            if (workType.isPresent()) {
+                if (workType.get().chechAttendanceDay() == AttendanceDayAttr.FULL_TIME) {
+                    style.getFont().setColor(Color.getBlue());
+                } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HOLIDAY) {
+                    style.getFont().setColor(Color.getRed());
+                } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_AM || workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_PM) {
+                    style.getFont().setColor(Color.fromArgb(255, 127, 39));
+                }
+            }
             switch (attendanceItem) {
                 case SHIFT:
                     Optional<ShiftMaster> shiftMaster = attendanceInfo.get().getShiftMaster(require);
@@ -685,16 +687,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     }
                     break;
                 case WORK_TYPE:
-                    Optional<WorkType> workType = attendanceInfo.get().getWorkType(require);
                     if (workType.isPresent()) {
                         value = workType.get().getAbbreviationName().v();
-                        if (workType.get().chechAttendanceDay() == AttendanceDayAttr.FULL_TIME) {
-                            style.getFont().setColor(Color.getBlue());
-                        } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HOLIDAY) {
-                            style.getFont().setColor(Color.getRed());
-                        } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_AM || workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_PM) {
-                            style.getFont().setColor(Color.fromArgb(255, 127, 39));
-                        }
                     } else if (attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) != null)
                         value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) + getText("KSU001_4135");
                     break;
@@ -847,8 +841,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     if (timesNumberCounterSelection.isPresent()) {
                         Map<GeneralDate, Map<Integer, BigDecimal>> timeCountMap = (Map<GeneralDate, Map<Integer, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
                         List<Integer> selectedNoList = timesNumberCounterSelection.get().getSelectedNoList();
-                        List<TotalTimes> totalTimes = allTotalTimesList.stream()
-                                .filter(t -> selectedNoList.contains(t.getTotalCountNo()) && t.getUseAtr() == UseAtr.Use)
+                        List<TotalTimes> totalTimes = totalTimesRepo.getTotalTimesDetailByListNo(companyId, selectedNoList).stream()
+                                .filter(t -> t.getUseAtr() == UseAtr.Use)
                                 .collect(Collectors.toList());
                         for (int i = 0; i < totalTimes.size(); i++) {
                             TotalTimes totalTime = totalTimes.get(i);
@@ -916,9 +910,13 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<CodeNameValue>>> shiftTimeMap = (Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<CodeNameValue>>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
                     List<CodeNameValue> masters;
                     if (dataSource.getOutputSetting().getOutputItem().getDisplayAttendanceItems().contains(ScheduleTableAttendanceItem.SHIFT)) {
-                        masters = shiftMasters.stream().map(s -> new CodeNameValue(s.getShiftMasterCode().v(), s.getDisplayInfor().getName().v())).collect(Collectors.toList());
+                        masters = shiftMasterRepo.getAllByCid(companyId).stream()
+                                .map(s -> new CodeNameValue(s.getShiftMasterCode(), s.getShiftMasterName()))
+                                .collect(Collectors.toList());
                     } else {
-                        masters = workTimeSettings.stream().map(w -> new CodeNameValue(w.getWorktimeCode().v(), w.getWorkTimeDisplayName().getWorkTimeAbName().v())).collect(Collectors.toList());
+                        masters = workTimeSettingRepo.findByCompanyId(companyId).stream()
+                                .map(w -> new CodeNameValue(w.getWorktimeCode().v(), w.getWorkTimeDisplayName().getWorkTimeAbName().v()))
+                                .collect(Collectors.toList());
                     }
                     for (int i = 0; i < masters.size(); i++) {
                         CodeNameValue master = masters.get(i);
@@ -1141,8 +1139,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     else counterType = TimesNumberCounterType.PERSON_3;
                     Optional<TimesNumberCounterSelection> timesNumberCounterSelection = timesNumberCounterSelectionRepo.get(AppContexts.user().companyId(), counterType);
                     if (timesNumberCounterSelection.isPresent()) {
-                        List<TotalTimes> totalTimes = allTotalTimesList.stream()
-                                .filter(t -> timesNumberCounterSelection.get().getSelectedNoList().contains(t.getTotalCountNo()) && t.getUseAtr() == UseAtr.Use)
+                        List<TotalTimes> totalTimes = totalTimesRepo.getTotalTimesDetailByListNo(AppContexts.user().companyId(), timesNumberCounterSelection.get().getSelectedNoList()).stream()
+                                .filter(t -> t.getUseAtr() == UseAtr.Use)
                                 .collect(Collectors.toList());
                         totalColWidth += totalTimes.size() * COLUMN_WIDTH;
                     } else {

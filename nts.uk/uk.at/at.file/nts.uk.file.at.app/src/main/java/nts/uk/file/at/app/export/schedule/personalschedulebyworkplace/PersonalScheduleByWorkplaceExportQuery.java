@@ -28,6 +28,7 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepo
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDateDto;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
@@ -122,7 +123,7 @@ public class PersonalScheduleByWorkplaceExportQuery {
      * @param closureDate
      * @return
      */
-    public <T> PersonalScheduleByWkpDataSource<T> get(int orgUnit, String orgId, DatePeriod period, String outputSettingCode, List<String> employeeIds, GeneralDate closureDate) {
+    public <T> PersonalScheduleByWkpDataSource<T> get(int orgUnit, String orgId, DatePeriod period, String outputSettingCode, List<String> employeeIds, ClosureDateDto closureDate) {
         String companyId = AppContexts.user().companyId();
         // 共通情報を取得する
         // [RQ622]会社IDから会社情報を取得する

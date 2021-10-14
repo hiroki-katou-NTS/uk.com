@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDateDto;
 
 import java.util.List;
 
@@ -34,5 +35,5 @@ public class PersonalScheduleByWkpQuery {
     private boolean preview;
 
     // 締め日
-    private GeneralDate closureDate;
+    private ClosureDateDto closureDate;
 }

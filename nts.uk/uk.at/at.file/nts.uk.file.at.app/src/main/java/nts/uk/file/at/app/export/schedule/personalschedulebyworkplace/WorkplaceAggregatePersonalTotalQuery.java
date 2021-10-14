@@ -10,6 +10,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.*;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.*;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDateDto;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -67,7 +68,7 @@ public class WorkplaceAggregatePersonalTotalQuery {
      * @param integrationOfDailyList List<日別勤怠>
      * @return 個人計集計結果
      */
-    public <T> Map<PersonalCounterCategory, Map<String, T>> get(List<String> employeeIds, DatePeriod period, GeneralDate closureDate, List<PersonalCounterCategory> personalCounterCategories, List<IntegrationOfDaily> integrationOfDailyList) {
+    public <T> Map<PersonalCounterCategory, Map<String, T>> get(List<String> employeeIds, DatePeriod period, ClosureDateDto closureDate, List<PersonalCounterCategory> personalCounterCategories, List<IntegrationOfDaily> integrationOfDailyList) {
         String companyId = AppContexts.user().companyId();
         Map<PersonalCounterCategory, Map<String, T>> result = Collections.synchronizedMap(new HashMap<>());
 
@@ -122,7 +123,7 @@ public class WorkplaceAggregatePersonalTotalQuery {
                         Map<EmployeeId, EstimatedSalary> monthlyEstimatedSalaryMap = EstimatedSalaryAggregationService.aggregateByMonthly(
                                 require,
                                 period.end().yearMonth(),
-                                new DateInMonth(closureDate.day(), closureDate.equals(GeneralDate.ymd(closureDate.year(), closureDate.month(), closureDate.lastDateInMonth()))),
+                                new DateInMonth(closureDate.getClosureDay(), closureDate.getLastDayOfMonth()),
                                 integrationOfDailyList
                         );
                         result.put(PersonalCounterCategory.MONTHLY_EXPECTED_SALARY, (Map<String, T>) monthlyEstimatedSalaryMap.entrySet().stream().collect(Collectors.toMap((e) -> e.getKey().v(), (e) -> e.getValue())));

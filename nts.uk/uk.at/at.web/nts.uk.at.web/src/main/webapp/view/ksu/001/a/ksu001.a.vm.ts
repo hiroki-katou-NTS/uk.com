@@ -5299,6 +5299,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     startDate: moment(self.dtPrev()).toISOString(),
                     endDate: moment(self.dtAft()).toISOString(),
                     employeeIds : self.sids(),
+                    closeDate: self.closeDate
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksu/001/ka/index.xhtml");
             });

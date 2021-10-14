@@ -10,7 +10,6 @@ module nts.uk.at.view.ksu001.k.a {
     };
     @bean()
     class Ksu005aViewModel extends ko.ViewModel {
-        currentScreen: any = null;
         itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable('');
         enableSetting: KnockoutObservable<boolean> = ko.observable(true);
@@ -19,7 +18,7 @@ module nts.uk.at.view.ksu001.k.a {
         characteristics: Characteristics = {code: null, name: null, comments: null};
         params: any;
 
-        created(params?: any) {
+        created() {
             const self = this;
             self.$window.shared("dataShareDialogK").done(data => {
                 self.params = data;
@@ -89,7 +88,7 @@ module nts.uk.at.view.ksu001.k.a {
             let self = this;
             let code = self.selectedCode();
             setShare('dataShareKSU005a', code);
-            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/001/kb/index.xhtml').onClosed(() => {
+            nts.uk.ui.windows.sub.modal('/view/ksu/001/kb/index.xhtml').onClosed(() => {
                 let dataList: Array<ItemModel> = [];
                 let res = getShared('dataShareCloseKSU005b');
                 self.$blockui("invisible");
@@ -135,7 +134,10 @@ module nts.uk.at.view.ksu001.k.a {
                 outputSettingCode: vm.selectedCode(),
                 comment: vm.comments(),
                 excel: true,
-                closureDate: vm.params.endDate
+                closureDate: {
+                    closureDay: vm.params.closeDate.day,
+                    lastDayOfMonth: vm.params.closeDate.lastDay
+                }
             };
             vm.$blockui("grayout");
             nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
@@ -156,7 +158,10 @@ module nts.uk.at.view.ksu001.k.a {
                 outputSettingCode: vm.selectedCode(),
                 comment: vm.comments(),
                 excel: false,
-                closureDate: vm.params.endDate
+                closureDate: {
+                    closureDay: vm.params.closeDate.day,
+                    lastDayOfMonth: vm.params.closeDate.lastDay
+                }
             };
             vm.$blockui("grayout");
             nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
@@ -177,7 +182,10 @@ module nts.uk.at.view.ksu001.k.a {
                 outputSettingCode: vm.selectedCode(),
                 comment: vm.comments(),
                 preview: true,
-                closureDate: vm.params.endDate
+                closureDate: {
+                    closureDay: vm.params.closeDate.day,
+                    lastDayOfMonth: vm.params.closeDate.lastDay
+                }
             };
             vm.$blockui("grayout");
             $("#preview-frame")[0].innerHTML = "";
@@ -224,57 +232,6 @@ module nts.uk.at.view.ksu001.k.a {
         isAttendance: boolean;
         hasAttendance: boolean;
  
-    }
-    class ScheduleTableOutputSetting {
-        /** コード */
-        code: KnockoutObservable<string> = ko.observable('');
-
-        /** 名称ド */
-        name: KnockoutObservable<string> = ko.observable('');
-
-        /** 追加列情報 */
-        additionalColumn: KnockoutObservable<number> = ko.observable();        
-
-        /** シフト表利用 */
-        shiftBackgroundColor: KnockoutObservable<number> = ko.observable();
-
-        /** 勤務情報 */
-        dailyDataDisplay: KnockoutObservable<number> = ko.observable();
-
-        /** 個人情報 */
-        personalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
-
-        /** 追加列情報_1 */
-        additionalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
-
-        /** 表示項目_1 */
-        attendanceItem: KnockoutObservableArray<number> = ko.observableArray([]);
-
-        /** 職場計出力設定名称 */
-        workplaceCounterCategories: KnockoutObservableArray<number> = ko.observableArray([]);
-        
-        /** 個人計出力設定名称 */
-        personalCounterCtegories: KnockoutObservableArray<number> = ko.observableArray([]);
-
-        isAttendance: KnockoutObservable<boolean> = ko.observable(true);
-        hasAttendance: KnockoutObservable<boolean> = ko.observable(true);
-        constructor(params?: IScheduleTableOutputSetting) {
-            const self = this;
-            if(params){
-                self.code(params.code);
-                self.name(params.name);
-                self.additionalColumn(params.additionalColumn);
-                self.shiftBackgroundColor(params.shiftBackgroundColor);
-                self.dailyDataDisplay(params.dailyDataDisplay);
-                self.personalInfo(params.personalInfo);
-                self.additionalInfo(params.additionalInfo);
-                self.attendanceItem(params.attendanceItem);
-                self.workplaceCounterCategories(params.workplaceCounterCategories);
-                self.personalCounterCtegories(params.personalInfo);
-                self.isAttendance(params.isAttendance);
-                self.hasAttendance(params.hasAttendance);
-            }
-        } 
     }
 
     class ItemModel {
