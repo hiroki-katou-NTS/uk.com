@@ -39,7 +39,7 @@ public class KrcmtManHrFormatDialogTask extends ContractUkJpaEntity implements S
 
 	public KrcmtManHrFormatDialogTask toEntity(DisplayManHrRecordItem domain) {
 		return new KrcmtManHrFormatDialogTask(
-				new KrcmtManHrFormatDialogTaskPk(domain.getAttendanceItemId(), AppContexts.user().companyId()),
+				new KrcmtManHrFormatDialogTaskPk(domain.getItemId(), AppContexts.user().companyId()),
 				domain.getOrder());
 	}
 
