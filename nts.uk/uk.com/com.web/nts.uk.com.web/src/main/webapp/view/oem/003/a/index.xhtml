@@ -143,11 +143,11 @@
                         <tr style="position: relative;" data-bind="css: css()">
                           <td>
                             <!-- A4_D1 -->
-                            <div tabindex="5" data-bind="ntsCheckBox: {checked: checked}"></div>
+                            <div data-bind="ntsCheckBox: {checked: checked}"></div>
                           </td>
                           <td>
                             <!-- A4_D2 -->
-                            <input tabindex="6" data-bind="ntsTextEditor: {
+                            <input data-bind="ntsTextEditor: {
                               name: '#[OEM003_8]',
                               constraint: 'UsageItemName',
                               value: itemName,
@@ -160,7 +160,7 @@
                           </td>
                           <td>
                             <!-- A4_D3 -->
-                            <input tabindex="7" data-bind="ntsNumberEditor: {
+                            <input data-bind="ntsNumberEditor: {
                               name: '#[OEM003_9]',
                               constraint: 'DisplayWidth',
                               value: displayWidth,
@@ -172,7 +172,7 @@
                             'error-item-type': itemTypeError
                           }">
                             <!-- A4_D4 -->
-                            <div tabindex="8" class="item-type"
+                            <div class="item-type"
                               style="text-align: left; position: absolute; top: 1px; left: 1px;"
                               data-bind="ntsComboBox: {
                                 name: $vm.$i18n('OEM003_10'),
@@ -195,7 +195,7 @@
                           <td>
                             <!-- A4_D5 -->
                             <com:ko-if bind="isCharOrNumber()	|| isItemTypeNull()">
-                              <input tabindex="9" data-bind="ntsNumberEditor: {
+                              <input data-bind="ntsNumberEditor: {
                                 name: '#[OEM003_11]',
                                 constraint: 'MinimumUsageRecord',
                                 value: min,
@@ -206,7 +206,7 @@
                             </com:ko-if>
                             <!-- A4_D5_1 -->
                             <com:ko-if bind="isTime()">
-                              <input tabindex="11" data-bind="ntsTimeEditor: {
+                              <input data-bind="ntsTimeEditor: {
                                 name: '#[OEM003_11]',
                                 value: min,
                                 constraint: 'UsageItemtime',
@@ -220,7 +220,7 @@
                           <td>
                             <com:ko-if bind="ko.computed(() => isNumeric() || isItemTypeNull())">
                               <!-- A4_D6 -->
-                              <input tabindex="10" data-bind="ntsNumberEditor: {
+                              <input data-bind="ntsNumberEditor: {
                                 name: '#[OEM003_12]',
                                 constraint: 'MaximumUsageRecord',
                                 value: max,
@@ -231,7 +231,7 @@
                             </com:ko-if>
                             <com:ko-if bind="isTime()">
                               <!-- A4_D6_1 -->
-                              <input tabindex="12" data-bind="ntsTimeEditor: {
+                              <input data-bind="ntsTimeEditor: {
                                 name: '#[OEM003_12]',
                                 value: max,
                                 constraint: 'UsageItemtime',
@@ -243,7 +243,7 @@
                             </com:ko-if>
                             <com:ko-if bind="isCharacter()">
                               <!-- A4_D6_2 -->
-                              <input tabindex="13" data-bind="ntsNumberEditor: {
+                              <input data-bind="ntsNumberEditor: {
                                 name: '#[OEM003_12]',
                                 constraint: 'DigitsNumber',
                                 value: digitsNo,
@@ -254,7 +254,7 @@
                           </td>
                           <td>
                             <!-- A4_D7 -->
-                            <input tabindex="14" data-bind="ntsTextEditor: {
+                            <input data-bind="ntsTextEditor: {
                               name: '#[OEM003_13]',
                               constraint: 'UsageRecordUnit',
                               value: unit,
@@ -264,11 +264,11 @@
                           </td>
                           <td>
                             <!-- A4_D8 -->
-                            <div tabindex="15" data-bind="ntsCheckBox: { name: '#[OEM003_14]', checked: require } "></div>
+                            <div data-bind="ntsCheckBox: { name: '#[OEM003_14]', checked: require } "></div>
                           </td>
                           <td class="text-area">
                             <!-- A4_D9 -->
-                            <textarea tabindex="16"
+                            <textarea
                               style="overflow-y: scroll; padding-top: 0px; padding-bottom: 0px; height: 100% !important;"
                               data-bind="ntsMultilineEditor: {
                                 name: '#[OEM003_15]',
