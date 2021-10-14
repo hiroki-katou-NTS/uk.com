@@ -5776,7 +5776,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							index : i,
 							line : indexTask,
 							start : self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.start,
-							end : self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end
+							end : self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end,
+							empId : self.taskData[indexTask].empID
 						});
 						
 						if (start != oldE && end != oldS && indexTaskNew != -1 && indNew != -1 && !_.isNil(self.lstTaskScheduleDetailEmp[indexTaskNew]) && !_.isNil(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew]))	
@@ -5784,7 +5785,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							index : i,
 							line : indexTaskNew,
 							start : self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.start,
-							end : self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end
+							end : self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end,
+							empId : self.lstTaskScheduleDetailEmp[indexTaskNew].empId
 						});
 					} else {
 						let checkExist = _.filter(newLstChartTsk, (inod : any) => {
@@ -5830,15 +5832,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				
 				}
+				
 				_.forEach(arrRemoveTask, x => {
 					_.remove(self.taskData[x.line].taskScheduleDetail, (y : any, index) => {
 						return y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
 					});
+					
+					_.remove(self.lstChartTask, (y : any, index) => {
+						return y.start == x.start && y.end == x.end  && x.line == y.line;
+					});
 				})
 				
 				_.forEach(arrRemoveTaskNew, x => {
-					_.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
-						return y.taskScheduleDetail[0].timeSpanForCalcDto.start == x.start && y.taskScheduleDetail[0].timeSpanForCalcDto.end == x.end;
+					let indexLstChart = _.findIndex(self.lstTaskScheduleDetailEmp, (inlc : any) => {
+						return inlc.empId == x.empId;
+					})
+					_.remove(self.lstTaskScheduleDetailEmp[indexLstChart].taskScheduleDetail, (y : any, index) => {
+						return y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
+					});
+					
+					_.remove(self.lstChartTask, (y : any, index) => {
+						return y.start == x.start && y.end == x.end  && x.line == y.line;
 					});
 				})
 				
