@@ -8,7 +8,6 @@ import java.util.Set;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
@@ -16,7 +15,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -102,8 +102,9 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 	 *  受入時に固定の値を入れる物たち
 	 */
 	private IntermediateResult addFixedItems(IntermediateResult interm) {
-	    return interm.addCanonicalized(CanonicalItem.nullValue(100), 100)
-	    		    		   .optionalItem(CanonicalItem.of(2, 0));
+	    return interm
+	    		.addCanonicalized(CanonicalItem.nullValue(100))
+	    		.optionalItem(CanonicalItem.of(2, 0));
 	}
 	
 	@Override

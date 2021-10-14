@@ -10,7 +10,7 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
-import nts.uk.ctx.exio.dom.input.util.Either;
+import nts.gul.util.Either;
 
 /**
  * 同一履歴内でのコードの重複をチェックし、正常レコードとエラーレコードに仕分ける

@@ -20,7 +20,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -59,7 +59,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			importingKeys.add(key);
 			
 			// データ自体を正準化する必要は無い
-			val intermResult = IntermediateResult.noChange(revisedData);
+			val intermResult = IntermediateResult.create(revisedData);
 			canonicalize(require, context, intermResult, key);
 		});
 	}
