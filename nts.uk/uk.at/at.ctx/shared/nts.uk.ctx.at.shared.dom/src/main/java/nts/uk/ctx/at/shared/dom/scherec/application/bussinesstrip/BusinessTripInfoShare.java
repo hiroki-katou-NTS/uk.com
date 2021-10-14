@@ -19,10 +19,10 @@ public class BusinessTripInfoShare extends ApplicationShare {
 	private WorkInformation workInformation;
 
 	// 勤務時間帯
-	private List<TimeZoneWithWorkNo> workingHours;
+	private List<BusinessTripWorkTime> workingHours;
 
 	public BusinessTripInfoShare(ApplicationShare appShare, WorkInformation workInformation,
-			List<TimeZoneWithWorkNo> workingHours) {
+			List<BusinessTripWorkTime> workingHours) {
 		super(appShare);
 		this.workInformation = workInformation;
 		this.workingHours = workingHours;

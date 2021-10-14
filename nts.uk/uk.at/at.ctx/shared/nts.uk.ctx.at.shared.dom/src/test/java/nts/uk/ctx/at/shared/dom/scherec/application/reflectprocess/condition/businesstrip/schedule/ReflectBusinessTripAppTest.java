@@ -15,18 +15,20 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author thanh_nx
@@ -130,14 +132,14 @@ public class ReflectBusinessTripAppTest {
 
 	private BusinessTripInfoShare createTripInfoWorkHour() {
 
-		List<TimeZoneWithWorkNo> workingHours = new ArrayList<>();
-		workingHours.add(new TimeZoneWithWorkNo(1, 1, 1));
-		workingHours.add(new TimeZoneWithWorkNo(2, 2, 2));
+		List<BusinessTripWorkTime> workingHours = new ArrayList<>();
+		workingHours.add(new BusinessTripWorkTime(new WorkNo(1), Optional.of(new TimeWithDayAttr(1)), Optional.of(new TimeWithDayAttr(1))));
+		workingHours.add(new BusinessTripWorkTime(new WorkNo(1), Optional.of(new TimeWithDayAttr(2)), Optional.of(new TimeWithDayAttr(2))));
 
 		return createTripInfo(workingHours);
 	}
 
-	private BusinessTripInfoShare createTripInfo(List<TimeZoneWithWorkNo> workingHours) {
+	private BusinessTripInfoShare createTripInfo(List<BusinessTripWorkTime> workingHours) {
 		BusinessTripInfoShare info = new BusinessTripInfoShare(
 				ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT), new WorkInformation("1", "2"),
 				workingHours);
@@ -145,7 +147,7 @@ public class ReflectBusinessTripAppTest {
 		return info;
 	}
 	
-	private BusinessTripInfoShare createTripInfoSameWork(List<TimeZoneWithWorkNo> workingHours) {
+	private BusinessTripInfoShare createTripInfoSameWork(List<BusinessTripWorkTime> workingHours) {
 		BusinessTripInfoShare info = new BusinessTripInfoShare(
 				ReflectApplicationHelper.createAppShare(PrePostAtrShare.PREDICT), new WorkInformation("001", "001"),
 				workingHours);

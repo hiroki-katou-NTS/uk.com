@@ -50,10 +50,10 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 
 		bussinessTrip.getWorkingHours().forEach(workHour -> {
 			// 出退勤の反映
-			lstItemId.addAll(ReflectAttendance.reflect(require, companyId, Arrays.asList(workHour),
-					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(workHour.getTimeZone().getStartTime() != null),
-					Optional.of(workHour.getTimeZone().getEndTime() != null),
-					Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
+//			lstItemId.addAll(ReflectAttendance.reflect(require, companyId, Arrays.asList(workHour),
+//					ScheduleRecordClassifi.RECORD, dailyApp, workHour.getStartDate().isPresent(),
+//					workHour.getEndDate().isPresent(),
+//					Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
 		});
 		
 		return lstItemId;
@@ -103,11 +103,11 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 			return itemIds;
 		// 出退勤の反映
 		bussinessTrip.getWorkingHours().forEach(workHour -> {
-			itemIds.addAll(ReflectAttendance.reflect(require, companyId, Arrays.asList(workHour),
-					EnumAdaptor.valueOf(destination.value, ScheduleRecordClassifi.class), dailyApp,
-					Optional.of(workHour.getTimeZone().getStartTime() != null),
-					Optional.of(workHour.getTimeZone().getEndTime() != null),
-					Optional.of(TimeChangeMeans.APPLICATION)));
+//			itemIds.addAll(ReflectAttendance.reflect(require, companyId, Arrays.asList(workHour),
+//					EnumAdaptor.valueOf(destination.value, ScheduleRecordClassifi.class), dailyApp,
+//					workHour.getStartDate().isPresent(),
+//					workHour.getEndDate().isPresent(),
+//					Optional.of(TimeChangeMeans.APPLICATION)));
 		});
 
 		return itemIds;

@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ReflectFreeTimeAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
@@ -133,7 +134,7 @@ public class ConvertApplicationToShare {
 			BusinessTripInfo info = bussinessTrip.getInfos().stream().filter(x -> x.getDate().equals(dateTarget))
 					.findFirst().orElse(null);
 			return new BusinessTripInfoShare(appShare, info.getWorkInformation(),
-					info.getWorkingHours().orElse(new ArrayList<>()));
+					info.getWorkingHours().stream().map(x -> new BusinessTripWorkTime(x.getWorkNo(), x.getStartDate(), x.getEndDate())).collect(Collectors.toList()));
 
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GoBackDirectly goBack = (GoBackDirectly) application;
