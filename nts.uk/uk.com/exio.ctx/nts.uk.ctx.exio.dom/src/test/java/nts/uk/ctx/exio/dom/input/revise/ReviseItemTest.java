@@ -7,6 +7,7 @@ import org.junit.Test;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Mocked;
+import nts.gul.util.Either;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
@@ -14,7 +15,6 @@ import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.util.Either;
 
 public class ReviseItemTest {
 	@Mocked ReviseValue reviseValue;
