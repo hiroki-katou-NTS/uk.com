@@ -70,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShar
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class ConvertApplicationToShare {
 
@@ -133,13 +134,11 @@ public class ConvertApplicationToShare {
 			BusinessTrip bussinessTrip = (BusinessTrip) application;
 			BusinessTripInfo info = bussinessTrip.getInfos().stream().filter(x -> x.getDate().equals(dateTarget))
 					.findFirst().orElse(null);
-			return new BusinessTripInfoShare(appShare, info.getWorkInformation(), info.getWorkingHours()
-					.map(x -> x.stream()
+			return new BusinessTripInfoShare(appShare, info.getWorkInformation(), info.getWorkingHours().stream()
 							.map(y -> new BusinessTripWorkTime(y.getWorkNo(),
-									Optional.ofNullable(y.getTimeZone().getStartTime()),
-									Optional.ofNullable(y.getTimeZone().getEndTime())))
-							.collect(Collectors.toList()))
-					.orElse(new ArrayList<>()));
+									y.getStartDate(),
+									y.getEndDate()))
+							.collect(Collectors.toList()));
 
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GoBackDirectly goBack = (GoBackDirectly) application;
