@@ -433,11 +433,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			vm.isChangeWorkHour.subscribe((value) => {
                 const vm = this;
-                vm.$blockui("show");
                 
                 vm.data.workTimeChange = value;
-
+				
                 if (vm.application().opAppStartDate()) {
+					vm.$blockui("show");
                     let command = {
                         sId: vm.application().employeeIDLst()[0], 
                         date: vm.application().opAppStartDate(), 
