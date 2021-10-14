@@ -33,8 +33,8 @@ public class ExternalImportCsvFileInfo {
 	/** CSVの取込開始行 */
 	private final ExternalImportRowNumber importStartRowNumber;
 	
-	/** ベースのCSV情報 */
-	private final Optional<BaseCsvInfo> baseCsvInfo;
+	/** ベースのCSVファイルID */
+	private final Optional<String> baseCsvFileId;
 	
 	public void parse(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
 

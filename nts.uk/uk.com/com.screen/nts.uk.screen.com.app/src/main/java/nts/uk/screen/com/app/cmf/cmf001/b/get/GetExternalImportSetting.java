@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.file.storage.FileStorage;
+import nts.uk.ctx.exio.app.input.setting.FromCsvBaseSettingToDomainRequireImpl;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,6 +18,9 @@ public class GetExternalImportSetting {
 
 	@Inject
 	private GetExternalImportSettingRequire require;
+
+	@Inject
+	private FileStorage fileStorage;
 
 	public List<ExternalImportSettingListItemDto> getAll() {
 		val require = this.require.create();
@@ -37,8 +42,10 @@ public class GetExternalImportSetting {
 
 	public ExternalImportSettingDto get(String settingCode) {
 		val require = this.require.create();
-		val settingOpt = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode));
-		return ExternalImportSettingDto.fromDomain(settingOpt.get());
+		val setting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode)).get();
+		
+		val toDomainRequire = new FromCsvBaseSettingToDomainRequireImpl(fileStorage);
+		return ExternalImportSettingDto.fromDomain(toDomainRequire, setting);
 	}
 
 	public static interface Require extends ExternalImportLayoutDto.Require {

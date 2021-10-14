@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.csvimport.BaseCsvInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
@@ -16,6 +15,7 @@ import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.FromCsvBaseSettingToDomainRequire;
 import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,15 +48,15 @@ public class ExternalImportSettingDto {
 		ExternalImportSetting.RequireMerge{
 	}
 
-	public static ExternalImportSettingDto fromDomain(ExternalImportSetting setting) {
+	public static ExternalImportSettingDto fromDomain(FromCsvBaseSettingToDomainRequire toDomainRequire, ExternalImportSetting setting) {
 
 		List<ImportDomainDto> domains = setting.getDomainSettings().stream()
 			.map(ds -> new ImportDomainDto(ds.getDomainId().value, ds.getAssembly().getAllItemNo()))
 			.collect(Collectors.toList());
-		
-		List<String> items = (setting.getBaseType() != ImportSettingBaseType.CSV_BASE || !setting.getCsvFileInfo().getBaseCsvInfo().isPresent())
+
+		List<String> items = (setting.getBaseType() != ImportSettingBaseType.CSV_BASE || !setting.getCsvFileInfo().getBaseCsvFileId().isPresent())
 				? new ArrayList<String>()
-				: setting.getCsvFileInfo().getBaseCsvInfo().get().getColumns();
+				:  toDomainRequire.createBaseCsvInfo(setting.getCsvFileInfo()).orElse(new ArrayList<String>());
 		
 		return new ExternalImportSettingDto(
 				setting.getCompanyId(),
@@ -64,7 +64,7 @@ public class ExternalImportSettingDto {
 				setting.getName().toString(),
 				setting.getCsvFileInfo().getItemNameRowNumber().hashCode(),
 				setting.getCsvFileInfo().getImportStartRowNumber().hashCode(),
-				setting.getCsvFileInfo().getBaseCsvInfo().map(csvinfo -> csvinfo.getCsvFileId()).orElse(""),
+				setting.getCsvFileInfo().getBaseCsvFileId().orElse(""),
 				domains,
 				items);
 	}
@@ -87,12 +87,10 @@ public class ExternalImportSettingDto {
 	}
 
 	private ExternalImportCsvFileInfo toCsvFileInfo() {
-		Optional<BaseCsvInfo> baseCsvInfo = Optional.of(new BaseCsvInfo(this.csvFileId, new ArrayList<>()));
-		
 		return new ExternalImportCsvFileInfo(
 				new ExternalImportRowNumber(itemNameRow),
 				new ExternalImportRowNumber(importStartRow),
-				baseCsvInfo);
+				 Optional.of(this.csvFileId));
 	}
 
 }

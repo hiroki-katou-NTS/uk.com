@@ -61,7 +61,7 @@ public class ExternalImportSettingDto {
 				domainSetting.getImportingMode().value, 
 				domain.getCsvFileInfo().getItemNameRowNumber().hashCode(), 
 				domain.getCsvFileInfo().getImportStartRowNumber().hashCode(),
-				domain.getCsvFileInfo().getBaseCsvInfo().map(csv -> csv.getCsvFileId()).orElse(""),
+				domain.getCsvFileInfo().getBaseCsvFileId().orElse(""),
 				domainSetting.getAssembly().getMapping().getMappings().stream()
 					.map(m -> ExternalImportLayoutDto.fromDomain(require, domainSetting.getDomainId(), m))
 					.collect(Collectors.toList()));

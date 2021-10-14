@@ -154,7 +154,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 				domain.getName().toString(),
 				domain.getCsvFileInfo().getItemNameRowNumber().v(),
 				domain.getCsvFileInfo().getImportStartRowNumber().v(),
-				domain.getCsvFileInfo().getBaseCsvInfo().get().getCsvFileId());
+				domain.getCsvFileInfo().getBaseCsvFileId().orElse(null));
 	}
 
 	private XimmtDomainImportSetting toEntitiy(String cid, String settingCode, DomainImportSetting domain) {

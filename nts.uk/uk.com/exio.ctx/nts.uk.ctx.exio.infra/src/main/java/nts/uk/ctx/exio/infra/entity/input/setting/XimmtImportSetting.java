@@ -12,8 +12,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
-import nts.uk.ctx.exio.dom.input.csvimport.BaseCsvInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -70,13 +68,6 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	public ExternalImportSetting toDomain(Optional<FromCsvBaseSettingToDomainRequire> require) {
 		ImportSettingBaseType type = ImportSettingBaseType.valueOf(this.baseType);
 
-		val fileInfo = new ExternalImportCsvFileInfo(
-				new ExternalImportRowNumber(this.itemNameRowNumber),
-				new ExternalImportRowNumber(this.importStartRowNumber),
-				Optional.empty());
-		Optional<BaseCsvInfo> baseCsv = (type == ImportSettingBaseType.CSV_BASE && require.isPresent())
-					? require.get().createBaseCsvInfo(this.baseCsvFileId, fileInfo)
-					: Optional.of(new BaseCsvInfo(this.baseCsvFileId, null));
 		return new ExternalImportSetting(
 				type,
 				this.pk.getCompanyId(), 
@@ -84,8 +75,8 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 				new ExternalImportName(this.name),
 				new ExternalImportCsvFileInfo(
 						new ExternalImportRowNumber(this.itemNameRowNumber),
-						new ExternalImportRowNumber(importStartRowNumber),
-						baseCsv),
+						new ExternalImportRowNumber(this.importStartRowNumber),
+						Optional.ofNullable(this.baseCsvFileId)),
 				new HashMap<>());
 	}
 	
