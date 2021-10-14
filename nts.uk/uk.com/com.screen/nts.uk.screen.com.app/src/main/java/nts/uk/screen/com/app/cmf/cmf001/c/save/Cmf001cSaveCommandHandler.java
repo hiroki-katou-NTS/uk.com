@@ -17,6 +17,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
+import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -55,12 +56,13 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 		val mapping = setting.getAssembly(ImportingDomainId.valueOf(command.getDomainId())).getMapping();
 		int itemNo = command.getItemNo();
 		
+		boolean withReset = (setting.getBaseType() != ImportSettingBaseType.CSV_BASE);
 		if (command.isFixedValue()) {
-			mapping.setFixedValue(itemNo, StringifiedValue.of(command.getFixedValue()));
+			mapping.setFixedValue(itemNo, StringifiedValue.of(command.getFixedValue()), withReset);
 		} else if (command.isCsvMapping()) {
-			mapping.setCsvMapping(itemNo);
+			mapping.setCsvMapping(itemNo, withReset);
 		} else {
-			mapping.setNoSetting(itemNo);
+			mapping.setNoSetting(itemNo, withReset);
 		}
 		
 		settingRepo.update(setting);
