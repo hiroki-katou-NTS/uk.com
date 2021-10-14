@@ -1183,7 +1183,7 @@ module nts.uk.ui.at.kdw013.a {
                 $('.fc-events .edit-popup').removeClass('show');
             }
             
-            openFdialog() {
+            openFdialog(data) {
                 const vm = this;
                 $('.fc-events .edit-popup').removeClass('show');
                 console.log('open F');

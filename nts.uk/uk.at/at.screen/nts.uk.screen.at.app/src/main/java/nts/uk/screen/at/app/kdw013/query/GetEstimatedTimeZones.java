@@ -88,21 +88,21 @@ public class GetEstimatedTimeZones {
 		
 		//(求めた「開始時刻」.isEmpty OR 求めた「終了時刻」.isEmpty) AND 「日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード」.isPresent
 		
-		if(result.getStartTime() == null || result.getEndTime() == null ){
+		if (result.getStartTime() == null || result.getEndTime() == null) {
 			inteDaiy.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().ifPresent(wtCd -> {
-				//・勤務種類コード = INPUT「日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード」
+				// ・勤務種類コード = INPUT「日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード」
 				String workTypeCode = inteDaiy.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
-				
+
 				// 3. call
 				WorkStyle wkStyle = this.basicScheduleService.checkWorkDay(workTypeCode);
-				
-				// 出勤休日区分 <> １日休日系 
+
+				// 出勤休日区分 <> １日休日系
 				if (!wkStyle.equals(WorkStyle.ONE_DAY_REST)) {
-					//4. 取得する(就業時間帯コード)
-					this.predTimeSetRepo
-							.findByWorkTimeCode(AppContexts.user().companyId(), wtCd.v()).ifPresent(predSet->{
-								//5. 所定時間設定.isPresent
-								//午前午後区分に応じた所定時間帯(午前午後区分) List<計算用時間帯>
+					// 4. 取得する(就業時間帯コード)
+					this.predTimeSetRepo.findByWorkTimeCode(AppContexts.user().companyId(), wtCd.v())
+							.ifPresent(predSet -> {
+								// 5. 所定時間設定.isPresent
+								// 午前午後区分に応じた所定時間帯(午前午後区分) List<計算用時間帯>
 								/**
 								 * ※取得した「出勤休日区分」に応じて「午前午後区分」を渡す
 								 * 「出勤休日区分」= 午前出勤系 ⇒ 「午前午後区分」= 午前
@@ -126,7 +126,7 @@ public class GetEstimatedTimeZones {
 							});
 				}
 			});
-			
+
 		}
 		
 		return result;
