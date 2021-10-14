@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.require;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,11 +25,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
-
 import nts.arc.time.calendar.period.YearMonthPeriod;
-
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
@@ -2972,10 +2970,6 @@ public class RecordDomRequireService {
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
-		}
-
-		public void transaction(AtomTask task) {
-			this.transaction.execute(task);
 		}
 	}
 }
