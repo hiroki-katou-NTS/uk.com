@@ -22,13 +22,16 @@ public class DetailScreenDto {
     
  // 申請
     private ApplicationDto application;
+    
+    private boolean mode;
 
     public static DetailScreenDto fromDomain(DetailScreenB domain) {
         return new DetailScreenDto(
                 BusinessTripInfoOutputDto.convertToDto(domain.getBusinessTripInfoOutput()),
                 BusinessTripDto.fromDomain(domain.getBusinessTrip()),
                 Collections.emptyList(), 
-                ApplicationDto.fromDomain(domain.getBusinessTrip().getApplication())
+                ApplicationDto.fromDomain(domain.getBusinessTrip().getApplication()), 
+                false
         );
     }
 }

@@ -111,8 +111,19 @@ export class KdwS03GComponent extends Vue {
     get nextGrantDateStr() {
         const vm = this;
 
-        return (_.isNull(vm.remainNumber.nextGrantDate) ? '' : vm.$dt(vm.remainNumber.nextGrantDate, 'YYYY/MM/DD')) + 
+        return (_.isNull(vm.remainNumber.nextGrantDate) ? '' : vm.$dt(vm.remainNumber.nextGrantDate, 'YYYY/MM/DD')) + '　' +
                 (_.isNull(vm.remainNumber.grantDays) ? 0 : vm.remainNumber.grantDays) + '日';
+    }
+
+    public formathmm(value) {
+        let absValue = Math.abs(value),
+            hour = Math.floor(absValue / 60),
+            minute = Math.floor(absValue % 60);
+        if (value < 0) {
+            return '-' + (hour.toString() + ':' + _.padStart(minute.toString(), 2, '0'));
+        } else {
+            return hour.toString() + ':' + _.padStart(minute.toString(), 2, '0');
+        }
     }
 }
 const servicePath = {

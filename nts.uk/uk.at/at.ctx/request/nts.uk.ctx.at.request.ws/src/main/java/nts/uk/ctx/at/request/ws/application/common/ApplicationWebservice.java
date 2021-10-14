@@ -56,7 +56,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.application.output.A
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
@@ -131,7 +130,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("remandapp")
-	public MailSenderResult remandApp(RemandCommand command){
+	public ProcessResult remandApp(RemandCommand command){
 		return remandApplicationHandler.handle(command);
 	}
 	
