@@ -27,7 +27,7 @@ module nts.uk.at.view.kmk006.k {
         public historyLocals: IHistory[] = [];
         public model: WorkDetail = new WorkDetail();
         public modelHistory: HistoryInfo = new HistoryInfo();
-
+        public disable: KnockoutObservable<boolean> = ko.observable(false);
 
         created() {
             const vm = this;
@@ -37,10 +37,19 @@ module nts.uk.at.view.kmk006.k {
                 items: [25, 26, 27, 28, 29]
             }
 
+            vm.modelHistory.startDate.subscribe(() => {
+                if (ko.unwrap(ko.unwrap(vm.modelHistory).startDate) === null) {
+                    vm.disable(false);
+                    vm.screenMode(SCREEN_MODE.NOT_HISTORY);
+                } else {
+                    vm.disable(true);
+                }
+            });
+
             vm.selectedItemWork.subscribe((itemId: string) => {
                 vm.historys([]);
                 vm.model.update({
-                    historyId: ko.unwrap(vm.modelHistory.historyId),
+                    historyId: '',
                     itemId: '',
                     code: '',
                     name: '',
@@ -81,6 +90,7 @@ module nts.uk.at.view.kmk006.k {
 
             vm.isEnable = ko.observable(true);
             vm.isEditable = ko.observable(true);
+            vm.modelHistory.startDate.valueHasMutated();
         }
 
         mounted() {
@@ -104,32 +114,12 @@ module nts.uk.at.view.kmk006.k {
                             if (exist.dateHistoryItems.length > 0) {
                                 vm.modelHistory.update(exist.dateHistoryItems[0]);
                             } else {
-                                vm.model.update({
-                                    historyId: ko.unwrap(vm.modelHistory.historyId),
-                                    itemId: '',
-                                    code: '',
-                                    name: '',
-                                    externalCode: ''
-                                });
-                                vm.modelHistory.update({
-                                    historyId: ko.unwrap(vm.modelHistory.historyId),
-                                    startDate: null,
-                                    endDate: null,
-                                })
+                                vm.model.delete();
+                                vm.modelHistory.delete();
                             }
                         } else {
-                            vm.model.update({
-                                historyId: ko.unwrap(vm.modelHistory.historyId),
-                                itemId: '',
-                                code: '',
-                                name: '',
-                                externalCode: ''
-                            });
-                            vm.modelHistory.update({
-                                historyId: ko.unwrap(vm.modelHistory.historyId),
-                                startDate: null,
-                                endDate: null,
-                            });
+                            vm.model.delete();
+                            vm.modelHistory.delete();
                         }
                     } else {
                         vm.modelHistory.update(history[0].dateHistoryItems[0]);
@@ -189,13 +179,7 @@ module nts.uk.at.view.kmk006.k {
                         }
                     } else {
                         vm.currentCode('');
-                        vm.model.update({
-                            historyId: ko.unwrap(vm.modelHistory.historyId),
-                            itemId: ko.unwrap(vm.model.itemId),
-                            code: '',
-                            name: '',
-                            externalCode: ''
-                        });
+                        vm.model.delete()
                         vm.screenMode(SCREEN_MODE.NEW);
                         // $('.inputCode').focus();
                     }
@@ -237,19 +221,34 @@ module nts.uk.at.view.kmk006.k {
                                         const exist = _.find(vm.historyLocals, ((item: IHistory) => {
                                             return item.itemId === ko.unwrap(vm.selectedItemWork);
                                         }));
-
                                         if (exist) {
                                             const history = _.find(exist.dateHistoryItems, ((value: IHistoryInfo) => {
-
                                                 return value.historyId === hisId;
                                             }));
-
                                             if (history) {
                                                 vm.modelHistory.update(history);
                                             }
                                         }
                                     })
                             })
+                    } else {
+                        if (ko.unwrap(ko.unwrap(vm.modelHistory).historyId) === '') {
+                            vm.$ajax(API.LIST_HISTORY)
+                                .done((history: IHistory[]) => {
+                                    _.forEach(history, ((item: IHistory) => {
+                                        item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
+                                    }))
+                                    vm.historyLocals = history;
+                                })
+                                .then(() => {
+                                    const exist = _.find(vm.historyLocals, ((item: IHistory) => {
+                                        return item.itemId === ko.unwrap(vm.selectedItemWork);
+                                    }));
+                                    if (exist) {
+                                        vm.modelHistory.update(exist.dateHistoryItems[0]);
+                                    }
+                                })
+                        }
                     }
                 })
                 .always(() => vm.$blockui('clear'));
@@ -278,8 +277,6 @@ module nts.uk.at.view.kmk006.k {
                 itemId: ko.unwrap(vm.selectedItemWork)
             }
             const index = _.map(ko.unwrap(vm.historys), m => m.code).indexOf(ko.unwrap(vm.model.code));
-
-            console.log(param);
 
             vm.validate()
                 .then((valid: boolean) => {
@@ -404,6 +401,13 @@ module nts.uk.at.view.kmk006.k {
                 this.endDate(param.endDate);
                 this.period(param.startDate.toString() + ' ~ ' + param.endDate.toString());
             }
+        }
+
+        public delete() {
+            this.historyId('');
+            this.startDate(null);
+            this.endDate(null);
+            this.period('');
         }
     }
 
