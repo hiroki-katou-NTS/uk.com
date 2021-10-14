@@ -31,10 +31,12 @@ public class FindExternalImportSetting {
 		return ExternalImportSettingListItemDto.fromDomain(settings);
 	}
 	
-	public List<ExternalImportSettingDto> find(String settingCode) {
+	public ExternalImportSettingDto find(String settingCode, int domainId) {
 		val require = this.createRequire();
 		val setting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode)).get();
-		return ExternalImportSettingDto.fromDomain(require, setting, setting.getDomainSettings());
+		val domainSetting = setting.getDomainSetting(ImportingDomainId.valueOf(domainId))
+				.orElseThrow(() -> new RuntimeException("selected domain setting is not found."));
+		return ExternalImportSettingDto.fromDomain(require, setting, domainSetting);
 	}
 	
 	public Require createRequire() {

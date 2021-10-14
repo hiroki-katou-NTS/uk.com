@@ -123,10 +123,10 @@ module nts.uk.com.cmf001.c {
         loadSetting() {
             let dfd = $.Deferred();
 
-            let path = "exio/input/setting/find/" + this.settingCode;
+            let path = "exio/input/setting/find/" + this.settingCode + "/" + this.domainId;
             this.$ajax(path).done(res => {
                 this.items.removeAll();
-                res[0].layouts.forEach(layout => {
+                res.layouts.forEach(layout => {
                     this.items.push(layout);
                 });
 

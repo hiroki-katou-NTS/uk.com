@@ -33,9 +33,11 @@ public class ExternalImportSettingWebService extends WebService {
 	}
 	
 	@POST
-	@Path("find/{settingCode}")
-	public List<ExternalImportSettingDto> find(@PathParam("settingCode") String settingCode) {
-		return finder.find(settingCode);
+	@Path("find/{settingCode}/{domainId}")
+	public ExternalImportSettingDto find(
+			@PathParam("settingCode") String settingCode,
+			@PathParam("domainId") int domainId) {
+		return finder.find(settingCode, domainId);
 	}
 	
 	@POST
