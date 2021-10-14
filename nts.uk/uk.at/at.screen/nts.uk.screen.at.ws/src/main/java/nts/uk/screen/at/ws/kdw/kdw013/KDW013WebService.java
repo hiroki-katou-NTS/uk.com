@@ -115,7 +115,7 @@ public class KDW013WebService {
 	@POST
 	@Path("a/register_work_content")
 	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentCommand command) {
-		return registerHandler.registerWorkContent(command);
+		return registerHandler.handle(command);
 	}
 
 	// A:1日作業セットを削除する
