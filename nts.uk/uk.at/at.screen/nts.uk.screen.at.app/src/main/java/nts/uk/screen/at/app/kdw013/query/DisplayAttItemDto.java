@@ -27,7 +27,7 @@ public class DisplayAttItemDto {
 
 	public DisplayAttItemDto(DisplayManHrRecordItem domain) {
 		super();
-		this.attendanceItemId = domain.getAttendanceItemId();
+		this.attendanceItemId = domain.getItemId();
 		this.order = domain.getOrder();
 	}
 	
