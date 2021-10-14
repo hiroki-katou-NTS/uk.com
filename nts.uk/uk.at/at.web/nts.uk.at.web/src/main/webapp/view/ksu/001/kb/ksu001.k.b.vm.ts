@@ -262,26 +262,26 @@ module nts.uk.at.view.ksu001.k.b {
             }            
         }
 
-        loadDetail(code?: string, checkAddInfo?: boolean, checkShiftBgColor?: boolean): void {
-            const self = this;
-            self.checkAll(false);
-            self.countNumberRow = 1;
-            self.clearError();
-            let datas: Array<any> = [];
-          
-            // if(checkShiftBgColor) {
-            //     self.isEnableDelBtn(false);
-            // }
-            checkAddInfo ? self.isEnableAdditionInfo(true) : self.isEnableAdditionInfo(false);
-            
-            datas.push(new ScreenItem(true, self.countNumberRow,
-                                __viewContext.enums.ScheduleTablePersonalInfoItem[0].value,
-                                self.itemList()[0].additionInfo(),
-                                self.attendanceItems()[0].value));
-
-            self.itemList(datas);  
-            $('#outputSettingName').focus();
-        }
+        // loadDetail(code?: string, checkAddInfo?: boolean, checkShiftBgColor?: boolean): void {
+        //     const self = this;
+        //     self.checkAll(false);
+        //     self.countNumberRow = 1;
+        //     self.clearError();
+        //     let datas: Array<any> = [];
+        //
+        //     // if(checkShiftBgColor) {
+        //     //     self.isEnableDelBtn(false);
+        //     // }
+        //     checkAddInfo ? self.isEnableAdditionInfo(true) : self.isEnableAdditionInfo(false);
+        //
+        //     datas.push(new ScreenItem(true, self.countNumberRow,
+        //                         __viewContext.enums.ScheduleTablePersonalInfoItem[0].value,
+        //                         self.itemList()[0].additionInfo(),
+        //                         self.attendanceItems()[0].value));
+        //
+        //     self.itemList(datas);
+        //     $('#outputSettingName').focus();
+        // }
        
         initialData(): void {
             const self = this;
@@ -378,16 +378,21 @@ module nts.uk.at.view.ksu001.k.b {
                 });
             } else {              
                 self.$ajax(Paths.UPDATE_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
-                    self.selectedCode(command.code);
-                    if(!command.shiftBackgroundColor || command.shiftBackgroundColor == self.scheduleTableOutputSetting().shiftBackgroundColor()){
+                    // self.selectedCode(command.code);
+                    // if(!command.shiftBackgroundColor || command.shiftBackgroundColor == self.scheduleTableOutputSetting().shiftBackgroundColor()){
+                    //     self.reloadData(command.code);
+                    // } else {
+                    //     self.loadDetail(command.code, command.additionalColumn == 1, self.displayShiftBackgroundColor() == 1);
+                    // }
+                    // self.$dialog.info({messageId: "Msg_15"}).then(function() {
+                    //     $('#outputSettingName').focus();
+                    // });
+                    // self.exitStatus('Update');
+                    self.$dialog.info({messageId: 'Msg_15'}).then(() => {
+                        self.selectedCode(command.code);
                         self.reloadData(command.code);
-                    } else {
-                        self.loadDetail(command.code, command.additionalColumn == 1, self.displayShiftBackgroundColor() == 1);
-                    } 
-                    self.$dialog.info({messageId: "Msg_15"}).then(function() {
-                        $('#outputSettingName').focus();
-                    }); 
-                    self.exitStatus('Update');  
+                        self.exitStatus('Update');
+                    });
                 }).fail((res) => {
                     self.$dialog.alert({messageId: res.messageId});
                 }).always(() =>{

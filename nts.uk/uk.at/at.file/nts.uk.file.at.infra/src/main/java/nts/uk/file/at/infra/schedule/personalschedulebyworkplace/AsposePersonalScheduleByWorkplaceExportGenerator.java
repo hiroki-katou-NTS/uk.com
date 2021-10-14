@@ -2,7 +2,6 @@ package nts.uk.file.at.infra.schedule.personalschedulebyworkplace;
 
 import com.aspose.cells.*;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.system.ServerSystemProperties;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
@@ -92,7 +91,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     private final int ADDITIONAL_PERSONAL_INFO_COLUMN = 2;
 
     private int startRow = START_DATA_ROW;
-    private final List<Integer> indexes = new ArrayList<>();
+    private final List<Integer> empIndexes = new ArrayList<>();
+    private final Map<Integer, WorkplaceCounterCategory> wkpTotalIndexes = new HashMap<>();
 
     private final DecimalFormat df = new DecimalFormat("###,###,###");
 
@@ -127,7 +127,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     public void generate(FileGeneratorContext context, PersonalScheduleByWkpDataSource dataSource, String comment, boolean excel, boolean preview) {
         // reset global variables
         startRow = START_DATA_ROW;
-        indexes.clear();
+        empIndexes.clear();
+        wkpTotalIndexes.clear();
 
         // start exporting
         try {
@@ -460,7 +461,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         // loop employee
         for (int i1 = 0; i1 < personalInfoScheduleTableList.size(); i1++) {
             ScheduleTablePersonalInfo emp = personalInfoScheduleTableList.get(i1);
-            indexes.add(startRow);
+            empIndexes.add(startRow);
             List<OneDayEmployeeAttendanceInfo> attendanceInfos = (List<OneDayEmployeeAttendanceInfo>) dataSource.getListEmpOneDayAttendanceInfo()
                     .stream().filter(i -> ((OneDayEmployeeAttendanceInfo) i).getEmployeeId().equals(emp.getEmployeeId()))
                     .collect(Collectors.toList());
@@ -762,8 +763,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         boolean hasPersonalTotal = !dataSource.getOutputSetting().getPersonalCounterCategories().isEmpty();
         for (WorkplaceCounterCategory category : dataSource.getOutputSetting().getWorkplaceCounterCategories()) {
             // header
-            this.printHeaderF(cells, category, dataSource.getDateInfos(), hasPersonalTotal);
-            indexes.add(startRow);
+            this.printHeaderF(cells, startRow, category, dataSource.getDateInfos(), hasPersonalTotal, false);
+            empIndexes.add(startRow);
             startRow += 2;
 
             // content
@@ -778,7 +779,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             AggregationUnitOfLaborCosts unit = units.get(i);
                             LaborCostAndTime laborCostAndTime = workplaceCounterLaborCostAndTime.get().getLaborCostAndTimeList().get(unit);
                             if (laborCostAndTime.getUseClassification() == NotUseAtr.USE) {
-                                indexes.add(startRow);
+                                empIndexes.add(startRow);
+                                wkpTotalIndexes.put(startRow, category);
                                 int count = 0, copyStartRow = startRow;
                                 if (laborCostAndTime.isTargetAggregation(LaborCostItemType.TIME)) {
                                     this.setWorkplaceLaborCostTimeTotalValue(
@@ -845,6 +847,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                                 .filter(t -> t.getUseAtr() == UseAtr.Use)
                                 .collect(Collectors.toList());
                         for (int i = 0; i < totalTimes.size(); i++) {
+                            empIndexes.add(startRow);
+                            wkpTotalIndexes.put(startRow, category);
                             TotalTimes totalTime = totalTimes.get(i);
                             cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(totalTime.getTotalTimesName().v());
                             Style itemStyle = commonStyle();
@@ -875,6 +879,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     Map<GeneralDate, Map<ExternalBudgetCd, ExternalBudgetValues>> externalBudgetMap = (Map<GeneralDate, Map<ExternalBudgetCd, ExternalBudgetValues>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
                     List<ExternalBudget> externalBudgets = externalBudgetRepo.findAll(companyId);
                     for (int i = 0; i < externalBudgets.size(); i++) {
+                        empIndexes.add(startRow);
+                        wkpTotalIndexes.put(startRow, category);
                         ExternalBudget externalBudget = externalBudgets.get(i);
                         cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(externalBudget.getExternalBudgetName().v());
                         Style itemStyle = commonStyle();
@@ -919,6 +925,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                                 .collect(Collectors.toList());
                     }
                     for (int i = 0; i < masters.size(); i++) {
+                        empIndexes.add(startRow);
+                        wkpTotalIndexes.put(startRow, category);
                         CodeNameValue master = masters.get(i);
                         cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(master.getName());
                         cells.get(startRow, PERSONAL_INFO_COLUMN + 1).setValue(getText("KSU001_70"));
@@ -951,7 +959,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         BigDecimal total2 = BigDecimal.ZERO;
                         BigDecimal total3 = BigDecimal.ZERO;
                         for (int j = 0; j < dataSource.getDateInfos().size(); j++) {
-                            indexes.add(startRow);
                             DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(j);
                             List<NumberOfPeopleByEachWorkMethod<CodeNameValue>> values = shiftTimeMap.get(dateInfo.getYmd());
                             Optional<NumberOfPeopleByEachWorkMethod<CodeNameValue>> value = values.stream().filter(s -> s.getWorkMethod().getCode().equals(master.getCode())).findFirst();
@@ -993,7 +1000,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             ))
                     ));
                     List<CodeNameValue> employments = employmentRepo.findAll(companyId).stream().map(e -> new CodeNameValue(e.getEmploymentCode().v(), e.getEmploymentName().v())).collect(Collectors.toList());
-                    this.printEmpClsJobContent(cells, empMap, employments, dataSource.getDateInfos(), hasPersonalTotal);
+                    this.printEmpClsJobContent(cells, category, empMap, employments, dataSource.getDateInfos(), hasPersonalTotal);
                     break;
                 case POSITION_PEOPLE:
                     Map<GeneralDate, Map<JobTitleInfo, BigDecimal>> jobTitleMap = (Map<GeneralDate, Map<JobTitleInfo, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
@@ -1005,7 +1012,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             ))
                     ));
                     List<CodeNameValue> jobTitles = jobTitleInfoRepo.findAll(companyId, dataSource.getPeriod().end()).stream().map(j -> new CodeNameValue(j.getJobTitleCode().v(), j.getJobTitleName().v())).collect(Collectors.toList());
-                    this.printEmpClsJobContent(cells, jobMap, jobTitles, dataSource.getDateInfos(), hasPersonalTotal);
+                    this.printEmpClsJobContent(cells, category, jobMap, jobTitles, dataSource.getDateInfos(), hasPersonalTotal);
                     break;
                 case CLASSIFICATION_PEOPLE:
                     Map<GeneralDate, Map<Classification, BigDecimal>> classificationMap = (Map<GeneralDate, Map<Classification, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
@@ -1017,7 +1024,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             ))
                     ));
                     List<CodeNameValue> classifications = classificationRepo.getAllManagementCategory(companyId).stream().map(c -> new CodeNameValue(c.getClassificationCode().v(), c.getClassificationName().v())).collect(Collectors.toList());
-                    this.printEmpClsJobContent(cells, classMap, classifications, dataSource.getDateInfos(), hasPersonalTotal);
+                    this.printEmpClsJobContent(cells, category, classMap, classifications, dataSource.getDateInfos(), hasPersonalTotal);
                     break;
                 default:
                     break;
@@ -1025,29 +1032,33 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         }
     }
 
-    private void printHeaderF(Cells cells, WorkplaceCounterCategory category, List<DateInformation> dateInformations, boolean hasPersonalTotal) {
+    private void printHeaderF(Cells cells, int row, WorkplaceCounterCategory category, List<DateInformation> dateInformations, boolean hasPersonalTotal, boolean insertRow) {
+        if (insertRow) {
+            cells.insertRow(row);
+            cells.insertRow(row);
+        }
         // F1 part
-        cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(getText(category.nameId));
-        this.setHeaderStyle(cells.get(startRow, PERSONAL_INFO_COLUMN), null, false, true, false, false, true);
-        this.setHeaderStyle(cells.get(startRow + 1, PERSONAL_INFO_COLUMN), null, false, false, true, false, true);
-        this.setHeaderStyle(cells.get(startRow, PERSONAL_INFO_COLUMN + 1), null, false, true, false, false, true);
-        this.setHeaderStyle(cells.get(startRow + 1, PERSONAL_INFO_COLUMN + 1), null, false, false, true, false, true);
-        cells.merge(startRow, PERSONAL_INFO_COLUMN, 2, 2, true);
+        cells.get(row, PERSONAL_INFO_COLUMN).setValue(getText(category.nameId));
+        this.setHeaderStyle(cells.get(row, PERSONAL_INFO_COLUMN), null, false, true, false, false, true);
+        this.setHeaderStyle(cells.get(row + 1, PERSONAL_INFO_COLUMN), null, false, false, true, false, true);
+        this.setHeaderStyle(cells.get(row, PERSONAL_INFO_COLUMN + 1), null, false, true, false, false, true);
+        this.setHeaderStyle(cells.get(row + 1, PERSONAL_INFO_COLUMN + 1), null, false, false, true, false, true);
+        cells.merge(row, PERSONAL_INFO_COLUMN, 2, 2, true);
 
         // F2 part
-        cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(getText("KSU001_4134"));
-        this.setHeaderStyle(cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, true, false, false, true);
-        this.setHeaderStyle(cells.get(startRow + 1, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, false, true, false, true);
-        cells.merge(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN, 2, 1, true);
+        cells.get(row, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(getText("KSU001_4134"));
+        this.setHeaderStyle(cells.get(row, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, true, false, false, true);
+        this.setHeaderStyle(cells.get(row + 1, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, false, true, false, true);
+        cells.merge(row, ADDITIONAL_PERSONAL_INFO_COLUMN, 2, 1, true);
 
         // F3 part
         int startCol = START_DATE_COL;
         for (int i = 0; i < dateInformations.size(); i++) {
             DateInformation dateInfo = dateInformations.get(i);
-            cells.get(startRow, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d") + "\n" + this.getDayOfWeek(dateInfo.getDayOfWeek()));
-            this.setHeaderStyle(cells.get(startRow, startCol + i), dateInfo, true, true, false, i == dateInformations.size() - 1 && hasPersonalTotal, true);
-            this.setHeaderStyle(cells.get(startRow + 1, startCol + i), dateInfo, true, false, true, i == dateInformations.size() - 1 && hasPersonalTotal, true);
-            cells.merge(startRow, startCol + i, 2, 1, true);
+            cells.get(row, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d") + "\n" + this.getDayOfWeek(dateInfo.getDayOfWeek()));
+            this.setHeaderStyle(cells.get(row, startCol + i), dateInfo, true, true, false, i == dateInformations.size() - 1 && hasPersonalTotal, true);
+            this.setHeaderStyle(cells.get(row + 1, startCol + i), dateInfo, true, false, true, i == dateInformations.size() - 1 && hasPersonalTotal, true);
+            cells.merge(row, startCol + i, 2, 1, true);
         }
     }
 
@@ -1082,8 +1093,10 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setStyle(itemStyle);
     }
 
-    private int printEmpClsJobContent(Cells cells, Map<GeneralDate, Map<CodeNameValue, BigDecimal>> dataMap, List<CodeNameValue> targets, List<DateInformation> dateInfos, boolean hasPersonalTotal) {
+    private int printEmpClsJobContent(Cells cells, WorkplaceCounterCategory category, Map<GeneralDate, Map<CodeNameValue, BigDecimal>> dataMap, List<CodeNameValue> targets, List<DateInformation> dateInfos, boolean hasPersonalTotal) {
         for (int i = 0; i < targets.size(); i++) {
+            empIndexes.add(startRow);
+            wkpTotalIndexes.put(startRow, category);
             CodeNameValue master = targets.get(i);
             cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(master.getName());
             Style itemStyle = commonStyle();
@@ -1113,6 +1126,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     }
 
     private void handlePageBreak(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource) {
+        Cells cells = worksheet.getCells();
+        boolean hasPersonalTotal = !dataSource.getOutputSetting().getPersonalCounterCategories().isEmpty();
         int start = START_DATA_ROW, totalColWidth = 17, maxRowPerPage;
         if (dataSource.getOutputSetting().getOutputItem().getAdditionalColumnUseAtr() == NotUseAtr.USE
                 && dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count() > 0) {
@@ -1155,10 +1170,19 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             }
         }
         maxRowPerPage = (int) Math.floor(totalColWidth / 3.8) + 1;
-        for (int i = 0; i < indexes.size(); i++) {
-            if (indexes.get(i) - start > maxRowPerPage) {
-                worksheet.getHorizontalPageBreaks().add(indexes.get(i - 1).intValue());
-                start = indexes.get(i - 1);
+        int addedHeaderRows = 0;
+        for (int i = 0; i < empIndexes.size(); i++) {
+            if (empIndexes.get(i) + addedHeaderRows - start > maxRowPerPage) {
+                if (wkpTotalIndexes.containsKey(empIndexes.get(i - 1))) {
+                    this.printHeaderF(cells, empIndexes.get(i - 1)  + addedHeaderRows, wkpTotalIndexes.get(empIndexes.get(i - 1)), dataSource.getDateInfos(), hasPersonalTotal, true);
+                }
+                start = empIndexes.get(i - 1) + addedHeaderRows;
+                // adding page break must be after inserting rows
+                worksheet.getHorizontalPageBreaks().add(empIndexes.get(i - 1).intValue() + addedHeaderRows);
+                // increasing addedHeaderRows must be last step
+                if (wkpTotalIndexes.containsKey(empIndexes.get(i - 1))) {
+                    addedHeaderRows += 2;
+                }
             }
         }
     }
