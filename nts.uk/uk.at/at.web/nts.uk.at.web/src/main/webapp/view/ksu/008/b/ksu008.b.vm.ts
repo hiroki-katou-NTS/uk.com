@@ -70,6 +70,15 @@ module nts.uk.at.ksu008.b {
             nts.uk.ui.windows.close();
         }
 
+        openKsu008C() {
+            let vm = this;
+            vm.$blockui("invisible");
+            vm.$window.modal('/view/ksu/008/c/index.xhtml')
+                .then((result: any) => {
+                    vm.$blockui("clear");
+                });
+        }
+
     }
 
     class ItemModel {

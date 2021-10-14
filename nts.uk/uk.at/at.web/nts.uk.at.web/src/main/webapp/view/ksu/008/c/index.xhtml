@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width : 800,
+                width : 900,
                 height :300
             };
         </script>
@@ -25,8 +25,63 @@
 
     <ui:define name="content">
 
-        <div tabindex="-1" id="contents-area">
+        <div tabindex="-1" id="contents-area" style="padding: 0px 0px 0px 50px;">
+            <div class="table custom-table">
+                <!--C1_1-->
+                <div class="cell valign-top first-col">
+                    <div class="label">#{i18n.getText('KSU008_146')}</div>
+                </div>
+                <!--C1_2-->
+                <div class="cell valign-top second-col">
+                    <div class="top" data-bind="ntsFormLabel: {  }">#{i18n.getText('KSU008_147')}</div>
+                </div>
+                <!--C1_3-->
+                <div class="cell valign-top third-col">
+                    <div class="label" data-bind="text:model.sourceCode"></div>
+                </div>
+                <!--C1_4-->
+                <div class="cell valign-top">
+                    <div class="label" data-bind="text:model.sourceName"></div>
+                </div>
+            </div>
 
+            <div class="table custom-table">
+                <!--C2_1-->
+                <div class="cell valign-top first-col">
+                    <div class="label">#{i18n.getText('KSU008_148')}</div>
+                </div>
+                <!--C2_2-->
+                <div class="cell valign-top second-col">
+                    <div class="top" data-bind="ntsFormLabel: { constraint: ['Form9Code','Form9Name'], enable: false,required:true }">#{i18n.getText('KSU008_149')}</div>
+                </div>
+                <!--C2_3-->
+                <div class="cell valign-top third-col">
+                    <input tabindex="1" data-bind="ntsTextEditor: {
+                                value: model.destinationCode,
+                                constraint: 'Form9Code',
+                                name:'#[KSU008_150]'} "/>
+                </div>
+                <!--C1_4-->
+                <div class="cell valign-top">
+                    <input id="C1_4" tabindex="2" data-bind="ntsTextEditor: {
+                                value: model.destinationName,
+                                constraint: 'Form9Name',
+                                name:'#[KSU008_151]'} "/>
+                </div>
+            </div>
+
+        </div>
+        <div id="functions-area-bottom" tabindex="-1">
+            <!--C3_1-->
+            <div class="table" style="width: 100%;margin-bottom: 20px">
+                <div class="cell valign-center">
+                    <div tabindex="3" data-bind="ntsCheckBox: { checked: model.isOverRight, style: 'warnpanel'}">#{i18n.getText('KSU008_152')}</div>
+                </div>
+            </div>
+            <!--C3_2-->
+            <button tabindex="4" style="width: 150px" class="proceed x-large" data-bind="">#{i18n.getText('KSU008_153')}</button>
+            <!--C3_3-->
+            <button tabindex="5"  data-bind="click:closeDialog">#{i18n.getText('KSU008_154')}</button>
         </div>
     </ui:define>
 </ui:composition>

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+>
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 900,
+                height :350
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="ksu008.d.main.css"/>
+        <com:scriptfile path="ksu008.d.vm.js"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.aggregation.dom.form9.Form9Code
+            nts.uk.ctx.at.aggregation.dom.form9.Form9Name
+        </com:ValidatorScript>
+    </ui:define>
+
+
+    <ui:define name="content">
+
+        <div tabindex="-1" id="contents-area" >
+            <!--D1_0-->
+            <div class="panel panel-frame">
+            <!--D1_1-->
+            <div class="top" data-bind="ntsFormLabel: {required:true }">#{i18n.getText('KSU008_155')}</div>
+
+            <div class="table custom-table">
+                <!--D1_2-->
+                <div class="cell valign-top first-col">
+                    <div class="label" data-bind="text:model.d12"></div>
+                </div>
+                <!--D1_3-->
+                <div class="cell valign-top first-col">
+                    <div style="top: 4px;height: 36px" tabindex="8" id="combo-box" data-bind="ntsComboBox: {
+                                            name: '#[KSU008_156]',
+                                            options: comBOItemList,
+                                            optionsValue: 'code',
+                                            visibleItemsCount: 2,
+                                            value: model.selectedCode,
+                                            optionsText: 'name',
+                                            editable: true,
+                                            enable: true,
+                                            required: true,
+                                            selectFirstIfNull: true,
+                                            columns: [
+                                                { prop: 'code'},
+                                                { prop: 'name'},
+	                                       ]}"></div>
+                </div>
+                <!--D1_3-->
+                <div class="cell valign-top third-col">
+                    <div data-bind="ntsRadioBoxGroup: {
+                            name: '#[KSU008_157]',
+                            options: itemList,
+                            optionsValue: 'id',
+                            optionsText: 'name',
+                            value: model.selectedId,
+                            enable: true}"></div>
+                </div>
+            </div>
+        </div>
+            <div class="panel panel-frame" style="margin-top: 15px">
+                <!--D2_1-->
+                <div class="top" data-bind="ntsFormLabel: {required:true }">#{i18n.getText('KSU008_158')}</div>
+
+                <div class="table custom-table">
+                    <!--D2_2-->
+                    <div class="cell valign-top first-col">
+                        <div tabindex="3" data-bind="ntsCheckBox: { checked: model.d22Checked }">#{i18n.getText('KSU008_159')}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom" tabindex="-1">
+            <!--D3_1-->
+            <button tabindex="4" style="width: 150px" class="proceed x-large" data-bind="">#{i18n.getText('KSU008_160')}</button>
+            <!--D3_2-->
+            <button tabindex="5"  data-bind="click:closeDialog">#{i18n.getText('KSU008_161')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

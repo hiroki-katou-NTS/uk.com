@@ -123,6 +123,15 @@ module nts.uk.at.ksu008.a {
                 });
         }
 
+        openKsu008D() {
+            let vm = this;
+            vm.$blockui("invisible");
+            vm.$window.modal('/view/ksu/008/d/index.xhtml')
+                .then((result: any) => {
+                    vm.$blockui("clear");
+                });
+        }
+
         initKCP011() {
             const self = this;
             self.options = {

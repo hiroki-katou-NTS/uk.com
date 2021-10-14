@@ -2,7 +2,6 @@ package nts.uk.ctx.at.aggregation.infra.entity.form9;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.experimental.var;
 import nts.uk.ctx.at.aggregation.dom.form9.DetailSettingOfForm9;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Cover;
@@ -11,9 +10,9 @@ import nts.uk.ctx.at.aggregation.dom.form9.Form9Name;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9NursingAideTable;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9NursingTable;
 import nts.uk.ctx.at.aggregation.dom.form9.OnePageDisplayNumerOfPeople;
-import nts.uk.ctx.at.aggregation.dom.form9.OutputCell;
 import nts.uk.ctx.at.aggregation.dom.form9.OutputColumn;
 import nts.uk.ctx.at.aggregation.dom.form9.OutputRow;
+import nts.uk.shr.com.primitive.OutputCell;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -257,7 +256,7 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
     }
 
     public static KagmtForm9OutputLayout toEntity(String companyId, Form9Layout layout) {
-        KagmtForm9OutputLayoutPk pk = new KagmtForm9OutputLayoutPk(companyId,layout.getCode().v());
+        KagmtForm9OutputLayoutPk pk = new KagmtForm9OutputLayoutPk(companyId, layout.getCode().v());
         Form9Cover cover = layout.getCover();
         Form9NursingTable nursingTable = layout.getNursingTable();
         DetailSettingOfForm9 nurseDetailSetting = nursingTable.getDetailSetting();
