@@ -51,6 +51,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -398,6 +399,13 @@ public class RegisterNameSelectionCommandHandler
 		}
 
 		@Override
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
+				ChangeClockArt changeClockArt) {
+			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
+		}
+
+
+		@Override
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
@@ -412,5 +420,6 @@ public class RegisterNameSelectionCommandHandler
 		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
 			return closureRepo.findByListId(companyId, closureId);
 		}
+
 	}
 }

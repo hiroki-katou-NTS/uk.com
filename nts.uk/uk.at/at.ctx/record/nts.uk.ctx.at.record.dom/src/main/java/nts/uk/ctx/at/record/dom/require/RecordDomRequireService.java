@@ -2900,6 +2900,10 @@ public class RecordDomRequireService {
 		}
 
 		@Override
+		public void transaction(AtomTask task) {
+			this.transaction.execute(task);
+		}
+
 		public List<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String cId, List<String> employeeId) {
 			return annLeaEmpBasicInfoRepo.getAll(cId, employeeId);
 		}

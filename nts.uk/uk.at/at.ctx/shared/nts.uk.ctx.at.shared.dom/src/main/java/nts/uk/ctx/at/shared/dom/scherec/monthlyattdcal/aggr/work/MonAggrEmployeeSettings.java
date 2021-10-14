@@ -465,6 +465,8 @@ public class MonAggrEmployeeSettings {
 		
 		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
 		
+		List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod);
+		
 		//clones
 		List<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String cId, List<String> employeeId);
 		
@@ -486,7 +488,6 @@ public class MonAggrEmployeeSettings {
 		
 		Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> affWorkPlace(String companyId, List<String> employeeId, DatePeriod baseDate);
 
-		List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod);
 	}
 	
 	public static interface RequireM1 {

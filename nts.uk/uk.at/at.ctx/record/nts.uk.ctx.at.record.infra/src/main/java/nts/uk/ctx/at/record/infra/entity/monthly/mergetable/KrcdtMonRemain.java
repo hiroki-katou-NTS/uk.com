@@ -4487,8 +4487,8 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							),
 					/** 本年残数 */
 					ChildCareNurseRemainingNumber.of(
-							new DayNumberOfRemain(this.careRemainDaysBefore),
-							this.careRemainMinutesBefore==null? Optional.empty(): Optional.of(new TimeOfRemain(this.careRemainMinutesBefore))
+							new DayNumberOfRemain(this.childRemainDaysBefore),
+							this.childRemainMinutesBefore==null? Optional.empty(): Optional.of(new TimeOfRemain(this.childRemainMinutesBefore))
 							),
 					/** 翌年使用数 */
 					Optional.of(ChildCareNurseUsedInfo.of(
@@ -4505,8 +4505,8 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							)),
 					/** 翌年残数 */
 					Optional.of(ChildCareNurseRemainingNumber.of(
-							new DayNumberOfRemain(this.careRemainDaysAfter),
-							this.careRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.careRemainMinutesAfter))
+							new DayNumberOfRemain(this.childRemainDaysAfter),
+							this.childRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.childRemainMinutesAfter))
 							))
 				);
 		return new ChildcareRemNumEachMonth(
@@ -4561,8 +4561,8 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							),
 					/** 本年残数 */
 					ChildCareNurseRemainingNumber.of(
-							new DayNumberOfRemain(this.childRemainDaysBefore),
-							this.childRemainMinutesBefore == null?Optional.empty() : Optional.of(new TimeOfRemain(this.childRemainMinutesBefore))
+							new DayNumberOfRemain(this.careRemainDaysBefore),
+							this.careRemainMinutesBefore == null?Optional.empty() : Optional.of(new TimeOfRemain(this.careRemainMinutesBefore))
 							),
 					/** 翌年使用数 */
 					Optional.of(ChildCareNurseUsedInfo.of(
@@ -4579,8 +4579,8 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 							)),
 					/** 翌年残数 */
 					Optional.of(ChildCareNurseRemainingNumber.of(
-							new DayNumberOfRemain(this.childRemainDaysAfter),
-							this.childRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.childRemainMinutesAfter))
+							new DayNumberOfRemain(this.careRemainDaysAfter),
+							this.careRemainMinutesAfter == null? Optional.empty(): Optional.of(new TimeOfRemain(this.careRemainMinutesAfter))
 							))
 				);
 		return new CareRemNumEachMonth(

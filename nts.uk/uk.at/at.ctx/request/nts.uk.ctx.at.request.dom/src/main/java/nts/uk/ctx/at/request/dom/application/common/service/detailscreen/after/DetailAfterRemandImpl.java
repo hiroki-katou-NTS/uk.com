@@ -127,6 +127,8 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 				for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
 					reflectionStatusOfDay.setScheReflectStatus(ReflectedState.REMAND);
 				}
+				//UPDATE ドメインモデル「申請」
+				applicationRepository.update(application);
 				// 暫定データの登録
 				List<GeneralDate> dateLst = new ArrayList<>();
 				GeneralDate startDate = application.getOpAppStartDate().map(x -> x.getApplicationDate()).orElse(application.getAppDate().getApplicationDate());
@@ -141,8 +143,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			}
 			successList.addAll(mailResult.getSuccessList());
 			errorList.addAll(mailResult.getErrorList());
-			//UPDATE ドメインモデル「申請」
-			applicationRepository.update(application);
+			
 			isSendMail = false;
 		}
 		return new MailSenderResult(successList, errorList);

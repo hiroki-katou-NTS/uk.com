@@ -151,9 +151,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					$('.pg-name > span').text(appNameInfo.appName);
+					$('#pg-disp-name').text(appNameInfo.appName);
+					$('#pg-id').text(appNameInfo.opProgramID + opString);
+					if($('#pg-id').length == 0) {
+						let $el = $("#pg-disp-name");
+			            let pgid = "<span id='pg-id'>" + appNameInfo.opProgramID + opString + "</span>";
+			            let pgidcaret = "<div id='pg-id-caret'></div>"
+			            $("body").append(pgid);
+			            $("body").append(pgidcaret);
+			
+			            $el.mouseenter((e) => {
+			                let top = $el.offset().top + 23;
+			                let left = $el.offset().left + 5;
+			                $("#pg-id").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+			                $("#pg-id-caret").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+			            });
+			            $el.mouseleave((e) => {
+			                $("#pg-id").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+			                $("#pg-id-caret").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+			            });
+					}
 				} else {
-					$('.pg-name > span').text("");
+					$('#pg-disp-name').text("");
 				}
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
@@ -594,9 +613,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
 			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
 			if(appNameInfo) {
-				$('.pg-name > span').text(appNameInfo.appName);
+				$('#pg-disp-name').text(appNameInfo.appName);
+				$('#pg-id').text(appNameInfo.opProgramID + "B");
+				if($('#pg-id').length == 0) {
+					let $el = $("#pg-disp-name");
+		            let pgid = "<span id='pg-id'>" + appNameInfo.opProgramID + "B" + "</span>";
+		            let pgidcaret = "<div id='pg-id-caret'></div>"
+		            $("body").append(pgid);
+		            $("body").append(pgidcaret);
+		
+		            $el.mouseenter((e) => {
+		                let top = $el.offset().top + 23;
+		                let left = $el.offset().left + 5;
+		                $("#pg-id").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+		                $("#pg-id-caret").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+		            });
+		            $el.mouseleave((e) => {
+		                $("#pg-id").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+		                $("#pg-id-caret").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+		            });
+				}
 			} else {
-				$('.pg-name > span').text("");
+				$('#pg-disp-name').text("");
 			}
 		}
     }

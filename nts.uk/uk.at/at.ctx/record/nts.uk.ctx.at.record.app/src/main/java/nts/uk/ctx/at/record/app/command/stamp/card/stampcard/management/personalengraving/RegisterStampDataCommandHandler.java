@@ -48,6 +48,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
@@ -386,6 +387,12 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		@Override
 		public void addAllDomain(IntegrationOfDaily domain) {
 			dailyRecordAdUpService.addAllDomain(domain);
+		}
+		
+		@Override
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
+				ChangeClockArt changeClockArt) {
+			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 
 		@Override

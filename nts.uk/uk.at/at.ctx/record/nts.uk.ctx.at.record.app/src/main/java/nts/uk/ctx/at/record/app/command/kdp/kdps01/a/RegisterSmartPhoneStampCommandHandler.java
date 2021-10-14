@@ -50,6 +50,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromSmartPhoneService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -429,6 +430,12 @@ public class RegisterSmartPhoneStampCommandHandler
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
+		}
+		
+		@Override
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
+				ChangeClockArt changeClockArt) {
+			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
 		}
 
 		@Override

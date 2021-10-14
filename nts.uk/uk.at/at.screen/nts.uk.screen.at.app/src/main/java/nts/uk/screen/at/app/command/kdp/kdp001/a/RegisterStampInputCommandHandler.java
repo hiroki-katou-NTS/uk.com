@@ -50,6 +50,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromPortalService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -428,7 +429,13 @@ public class RegisterStampInputCommandHandler
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
 		}
-
+		
+		@Override
+		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
+				ChangeClockArt changeClockArt) {
+			return stampDakokuRepo.existsStamp(contractCode, stampNumber, dateTime, changeClockArt);
+		}
+		
 		@Override
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
