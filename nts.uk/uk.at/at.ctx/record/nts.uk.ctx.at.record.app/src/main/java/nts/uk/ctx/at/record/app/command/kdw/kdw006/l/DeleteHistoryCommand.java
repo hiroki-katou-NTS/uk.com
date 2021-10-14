@@ -16,5 +16,7 @@ import lombok.NoArgsConstructor;
 public class DeleteHistoryCommand {
 
 	private String historyId;
+	
+	private String itemId;
 
 }
