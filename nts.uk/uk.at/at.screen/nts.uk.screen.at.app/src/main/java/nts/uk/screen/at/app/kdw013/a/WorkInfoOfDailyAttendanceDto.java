@@ -1,14 +1,14 @@
-package nts.uk.screen.at.ws.kdw.kdw013;
+package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.NumberOfDaySuspensionDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.WorkInformationDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.ScheduleTimeSheetDto;
 
 /**
  * 
@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  *
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class WorkInfoOfDailyAttendanceDto {
 

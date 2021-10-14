@@ -33,16 +33,16 @@ public class ChangeDate {
 	public ChangeDateDto changeDate(String sid, GeneralDate refDate, DatePeriod period) {
 		ChangeDateDto changeDateDto = new ChangeDateDto();
 
-		EmployeeDisplayInfo employeeDisplayInfo = empDisplayInfo.getInfo(sid, refDate, period);
-
-		List<WorkGroupDto> workGroupDtos = employeeDisplayInfo.getWorkGroups().stream().map(m -> WorkGroupDto.toDto(m))
-				.collect(Collectors.toList());
-
-		changeDateDto.setLstComfirmerDto(employeeDisplayInfo.getLstComfirmerDto());
-		changeDateDto.setWorkGroupDtos(workGroupDtos);
-		changeDateDto.setWorkCorrectionStartDate(employeeDisplayInfo.getDate());
-		changeDateDto.setLstWorkRecordDetailDto(employeeDisplayInfo.getWorkRecordDetails().stream()
-				.map(m -> WorkRecordDetailDto.toDto(m)).collect(Collectors.toList()));
+//		EmployeeDisplayInfo employeeDisplayInfo = empDisplayInfo.getInfo(sid, refDate, period);
+//
+//		List<WorkGroupDto> workGroupDtos = employeeDisplayInfo.getWorkGroups().stream().map(m -> WorkGroupDto.toDto(m))
+//				.collect(Collectors.toList());
+//
+//		changeDateDto.setLstComfirmerDto(employeeDisplayInfo.getLstComfirmerDto());
+//		changeDateDto.setWorkGroupDtos(workGroupDtos);
+//		changeDateDto.setWorkCorrectionStartDate(employeeDisplayInfo.getDate());
+//		changeDateDto.setLstWorkRecordDetailDto(employeeDisplayInfo.getWorkRecordDetails().stream()
+//				.map(m -> WorkRecordDetailDto.toDto(m)).collect(Collectors.toList()));
 
 		return changeDateDto;
 	}
