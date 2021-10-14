@@ -277,7 +277,7 @@ module nts.uk.com.view.oew001.a {
       vm.optionalItems(_.clone(optionalItems));
       // Create column info
       vm.columns(_.clone(vm.staticColumns));
-      _.each(optionalItems, data => vm.columns().push(vm.getColumnHeader(data.displayOrder, data.itemName, data.width)));
+      _.each(optionalItems, data => vm.columns().push(vm.getColumnHeader(data)));
     }
     
     private saveCharacteristic() {
@@ -300,12 +300,13 @@ module nts.uk.com.view.oew001.a {
       });
     }
 
-    private getColumnHeader(index: number, headerText: string, width: string): any {
-      const key = `value${index}`;
+    private getColumnHeader(data: model.OptionalItem): any {
+      const key = `value${data.displayOrder}`;
+      const headerText = nts.uk.text.isNullOrEmpty(data.unit) ? data.itemName : `${data.itemName}(${data.unit})`;
       const columnHeader = { 
         headerText: headerText, 
         template: '<div class="limited-label">${' + key + '}</div>', 
-        dataType: "String", key: `${key}`, width: width
+        dataType: "String", key: `${key}`, width: data.width
       };
       return columnHeader;
     }
