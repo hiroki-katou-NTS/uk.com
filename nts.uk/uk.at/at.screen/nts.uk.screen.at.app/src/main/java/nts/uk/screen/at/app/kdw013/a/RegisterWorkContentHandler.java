@@ -5,6 +5,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommand;
@@ -18,7 +20,7 @@ import nts.uk.screen.at.app.kdw013.query.CreateDpItemQuery;
  *
  */
 @Stateless
-public class RegisterWorkContentHandler {
+public class RegisterWorkContentHandler extends CommandHandlerWithResult<RegisterWorkContentCommand, RegisterWorkContentDto> {
 
 	@Inject
 	private CheckAlarmTargetDate checkAlarmTargetDate;
@@ -34,9 +36,12 @@ public class RegisterWorkContentHandler {
 	
 	@Inject
 	private GetTargetTime getTargetTime;
-
-	public RegisterWorkContentDto registerWorkContent(RegisterWorkContentCommand command) {
-
+	
+	@Override
+	protected RegisterWorkContentDto handle(CommandHandlerContext<RegisterWorkContentCommand> context) {
+		
+		RegisterWorkContentCommand command = context.getCommand();
+		
 		RegisterWorkContentDto result = new RegisterWorkContentDto();
 		// 1. 実績登録パラメータを作成する
 
@@ -48,10 +53,13 @@ public class RegisterWorkContentHandler {
 		
 		// 6. 作業時間帯グループを登録する
 		
-		RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand();
+		command.getWorkDetails().forEach(wd -> {
 
-		this.handler.handle(cmd);
-		
+			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(),
+					wd.toTimeZones());
+
+			this.handler.handle(cmd);
+		});
 
 		// 3. アラーム発生対象日を確認する
 
@@ -73,4 +81,6 @@ public class RegisterWorkContentHandler {
 
 		return result;
 	}
+
+	
 }
