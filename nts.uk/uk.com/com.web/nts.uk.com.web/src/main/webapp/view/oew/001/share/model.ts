@@ -234,6 +234,7 @@ module nts.uk.com.view.oew001.share.model.constants {
   export const FIXED_VALUE_A = 9;
   export const MAXIMUM_COL_WIDTH = 450;
   export const MAXIMUM_GRID_WIDTH = 1200;
+  export const NTS_GRID_CACHE_KEY = "http://127.0.0.1:8090/nts.uk.com.web/view/oew/001/a/index.xhtml/A6";
 }
 
 module nts.uk.com.view.oew001.share.model.enums {

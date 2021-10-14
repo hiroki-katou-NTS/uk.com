@@ -133,14 +133,21 @@ module nts.uk.com.view.oew001.a {
 
     private initGrid() {
       const vm = this;
+      // Reset grid
       if ($("#A6").data("igGrid")) {
         $("#A6").ntsGrid("destroy");
       }
-      const cellStates = _.chain(vm.dataSource()).map(data => {
-        if (!data.editRecord) {
-          return new CellState(data.id, "editRecord", ['disabled']);
-        }
-      }).filter(data => !!data).value();
+      // Reset cache
+      localStorage.removeItem(model.constants.NTS_GRID_CACHE_KEY);
+      // const cellStates = _.chain(vm.dataSource()).map(data => {
+      //   if (!data.editRecord) {
+      //     return new CellState(data.id, "editRecord", ['disabled']);
+      //   }
+      // }).filter(data => !!data).value();
+      let cellStates: CellState[] = [];
+      if (!__viewContext.user.role.isInCharge.attendance) {
+        cellStates = _.map(vm.dataSource(), data => new CellState(data.id, "editRecord", ['disabled']));
+      }
       const maxWidth = _.chain(vm.columns()).map(data => Number(data.width?.substring(0, data.width.length - 2) | 0)).sum().value();
       let param: any = {
         height: '319px',
