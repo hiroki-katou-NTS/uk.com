@@ -134,7 +134,7 @@ public class ReflectBusinessTripAppTest {
 
 		List<BusinessTripWorkTime> workingHours = new ArrayList<>();
 		workingHours.add(new BusinessTripWorkTime(new WorkNo(1), Optional.of(new TimeWithDayAttr(1)), Optional.of(new TimeWithDayAttr(1))));
-		workingHours.add(new BusinessTripWorkTime(new WorkNo(1), Optional.of(new TimeWithDayAttr(2)), Optional.of(new TimeWithDayAttr(2))));
+		workingHours.add(new BusinessTripWorkTime(new WorkNo(2), Optional.of(new TimeWithDayAttr(2)), Optional.of(new TimeWithDayAttr(2))));
 
 		return createTripInfo(workingHours);
 	}

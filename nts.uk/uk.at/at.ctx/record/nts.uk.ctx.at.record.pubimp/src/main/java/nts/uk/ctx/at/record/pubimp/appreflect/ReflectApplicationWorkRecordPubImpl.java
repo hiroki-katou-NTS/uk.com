@@ -216,7 +216,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
 				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
 				applicationReflectHistoryRepo);
-		val result = ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime);
+		val result = ReflectApplicationWorkRecord.process(impl ,AppContexts.user().companyId(), (ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
@@ -492,11 +492,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
 			return workTypeRepo.findByPK(companyId, workTypeCd);
-		}
-
-		@Override
-		public String getCId() {
-			return companyId;
 		}
 
 		@Override

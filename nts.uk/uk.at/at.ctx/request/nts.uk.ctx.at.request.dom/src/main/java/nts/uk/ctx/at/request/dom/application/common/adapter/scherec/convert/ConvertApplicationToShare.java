@@ -133,8 +133,13 @@ public class ConvertApplicationToShare {
 			BusinessTrip bussinessTrip = (BusinessTrip) application;
 			BusinessTripInfo info = bussinessTrip.getInfos().stream().filter(x -> x.getDate().equals(dateTarget))
 					.findFirst().orElse(null);
-			return new BusinessTripInfoShare(appShare, info.getWorkInformation(),
-					info.getWorkingHours().stream().map(x -> new BusinessTripWorkTime(x.getWorkNo(), x.getStartDate(), x.getEndDate())).collect(Collectors.toList()));
+			return new BusinessTripInfoShare(appShare, info.getWorkInformation(), info.getWorkingHours()
+					.map(x -> x.stream()
+							.map(y -> new BusinessTripWorkTime(y.getWorkNo(),
+									Optional.ofNullable(y.getTimeZone().getStartTime()),
+									Optional.ofNullable(y.getTimeZone().getEndTime())))
+							.collect(Collectors.toList()))
+					.orElse(new ArrayList<>()));
 
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GoBackDirectly goBack = (GoBackDirectly) application;

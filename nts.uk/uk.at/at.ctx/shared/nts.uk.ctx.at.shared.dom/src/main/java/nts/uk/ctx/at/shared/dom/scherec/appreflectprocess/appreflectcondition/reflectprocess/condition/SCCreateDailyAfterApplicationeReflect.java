@@ -80,7 +80,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 			break;
 		case STAMP_APPLICATION:
 			// 7：打刻申請を反映する（勤務予定）
-			itemIds.addAll(((StampAppReflect) domainSetReflect).reflectSchedule((AppStampShare) application, dailyApp
+			itemIds.addAll(((StampAppReflect) domainSetReflect).reflectSchedule(require, (AppStampShare) application, dailyApp
 					));
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
@@ -119,7 +119,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 	public static interface Require extends GetDomainReflectModelApp.Require, ReflectWorkChangeApp.Require,
 			GoBackReflect.Require, ReflectBusinessTripApp.Require,
 			VacationApplicationReflect.RequireSC, AppReflectOtHdWork.RequireHolSC, SubstituteLeaveAppReflect.RequireSC,
-			SubstituteWorkAppReflect.RequireSC{
+			SubstituteWorkAppReflect.RequireSC, StampAppReflect.Require{
 
 	}
 }

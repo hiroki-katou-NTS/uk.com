@@ -43,9 +43,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
  */
 public class RCCreateDailyAfterApplicationeReflect {
 
-	public static DailyAfterAppReflectResult process(Require require, ApplicationShare application,
+	public static DailyAfterAppReflectResult process(Require require, String companyId, ApplicationShare application,
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
-		String companyId = require.getCId();
 		//各申請反映条件のドメインモデルを取得する
 		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
 				application.getAppType() != ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION ? Optional.empty()
