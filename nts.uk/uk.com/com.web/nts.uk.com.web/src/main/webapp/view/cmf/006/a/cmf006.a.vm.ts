@@ -56,7 +56,7 @@ module nts.uk.at.view.cmf006.a {
             vm.roleId.subscribe((newValue) => {
                 if (!_.isEmpty(newValue)) vm.fetchAvailabilityPermission(newValue);
             });
-            vm.componentCcg025.currentRoleId.subscribe((roleId: any) => {
+            vm.componentCcg025.currentCode.subscribe((roleId: any) => {
                 if (vm.listRole().length <= 0) vm.listRole(vm.componentCcg025.listRole());
                 vm.roleId(roleId);
                 vm.findRoleById(roleId);
