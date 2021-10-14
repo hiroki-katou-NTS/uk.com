@@ -38,7 +38,7 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	@EmbeddedId
 	private XimmtImportSettingPK pk;
 
-	/* 受入設定名称 */
+	/* 受入設定のベースタイプ */
 	@Column(name = "BASE_TYPE")
 	private int baseType;
 	

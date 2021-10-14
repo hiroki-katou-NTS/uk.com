@@ -45,44 +45,48 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 			return Optional.empty();
 		}
 		
-		val codeConvert = getCodeConvert(companyId, settingCode, importItemNumber);
+		val codeConvert = getCodeConvert(companyId, settingCode, domainId, importItemNumber);
 		
 		return Optional.of(entitiesOpt.get().toDomain(codeConvert));
 	}
 	
 	// コード変換のDomainId追加は要否を検討中
-	private Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, ExternalImportCode settingCode, int importItemNumber){
+	private Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, int importItemNumber){
 		
 		String sql = " select f "
 				+ " from XimmtCodeConvert f"
 				+ " where f.pk.companyId =:companyId "
 				+ " and f.pk.settingCode =:settingCode "
+				+ " and f.pk.domainId =:domainId "
 				+ " and f.pk.itemNo =:itemNo ";
 		
 		val entities = this.queryProxy().query(sql, XimmtCodeConvert.class)
 				.setParameter("companyId", companyId)
 				.setParameter("settingCode", settingCode)
+				.setParameter("domainId", domainId.value)
 				.setParameter("itemNo", importItemNumber)
 				.getSingle();
 		if(!entities.isPresent()) {
 			return Optional.empty();
 		}
-		val details = getCodeConvertDetails(companyId, settingCode, importItemNumber);
+		val details = getCodeConvertDetails(companyId, settingCode, domainId, importItemNumber);
 		return Optional.of(entities.get().toDomain(details));
 		
 	}
 	
-	private List<CodeConvertDetail> getCodeConvertDetails(String companyId, ExternalImportCode settingCode, int importItemNumber){
+	private List<CodeConvertDetail> getCodeConvertDetails(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, int importItemNumber){
 		
 		String sql = " select f "
 				+ " from XimmtCodeConvertDetail f"
 				+ " where f.pk.companyId =:companyId "
 				+ " and f.pk.settingCode =:settingCode "
+				+ " and f.pk.domainId =:domainId "
 				+ " and f.pk.itemNo =:itemNo ";
 		
 		return this.queryProxy().query(sql, XimmtCodeConvertDetail.class)
 				.setParameter("companyId", companyId)
 				.setParameter("settingCode", settingCode)
+				.setParameter("domainId", domainId.value)
 				.setParameter("itemNo", importItemNumber)
 				.getList(rec -> rec.toDomain());
 	}
@@ -136,11 +140,13 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 		String jpql = " delete from " + entityName + " f"
 				+ " where f.pk.companyId = :companyId "
 				+ " and f.pk.settingCode = :settingCode "
+				+ " and f.pk.domainId = :domainId "
 				+ " and f.pk.itemNo = :itemNo ";
 		
 		this.getEntityManager().createQuery(jpql)
 				.setParameter("companyId", reviseItem.getCompanyId())
 				.setParameter("settingCode", reviseItem.getSettingCode())
+				.setParameter("domainId", reviseItem.getDomainId())
 				.setParameter("itemNo", reviseItem.getItemNo())
 				.executeUpdate();
 	}
