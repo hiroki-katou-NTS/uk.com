@@ -34,8 +34,12 @@
     padding-left: 18px;
 }
 
-.btn-function button {
-    /*width: 85px;*/
-    height: 37px;
-    /*font-weight: 500px;*/
+#multi-list_container {
+    height: 144px !important;
 }
+
+/*#copy.btn-function button {*/
+    /*width: 85px;*/
+    /*!*height: 37px;*!*/
+    /*!*font-weight: 500px;*!*/
+/*}*/

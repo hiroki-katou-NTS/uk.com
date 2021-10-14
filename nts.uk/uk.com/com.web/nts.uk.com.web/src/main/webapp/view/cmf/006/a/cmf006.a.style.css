@@ -39,5 +39,10 @@ div#contents-area {
 }
 
 #permission-setting {
-    margin-top: -17px;
+    margin-top: -21px;
+}
+
+#multi-list_container {
+    width: 310px !important;
+    height: 350px !important;
 }
