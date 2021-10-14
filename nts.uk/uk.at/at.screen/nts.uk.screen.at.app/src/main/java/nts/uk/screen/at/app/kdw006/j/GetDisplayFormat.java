@@ -42,7 +42,7 @@ public class GetDisplayFormat {
 			}).collect(Collectors.toList());
 			
 			List<DisplayManHrRecordItemDto> listDisplayManHrRecordItem = domain.getDisplayManHrRecordItems().stream().map(r -> {
-				return new DisplayManHrRecordItemDto(r.getAttendanceItemId(), r.getOrder());
+				return new DisplayManHrRecordItemDto(r.getItemId(), r.getOrder());
 			}).collect(Collectors.toList());
 			
 			result.setDisplayAttItems(listDisplayAttItem);
