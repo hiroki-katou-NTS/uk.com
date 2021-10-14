@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
@@ -15,18 +14,16 @@ public class GetUsageDetailChildCareService {
 	 * @param companyId　会社ID
 	 * @param employeeId　社員ID
 	 * @param period　期間
-	 * @param criteriaDate 基準日
 	 * @param referenceAtr　参照先区分
 	 * @param require
 	 * @return
 	 */
-	public static List<TempChildCareManagement> getUsageDetailCareService(
-			String companyId, String employeeId,DatePeriod period, GeneralDate criteriaDate,
-			ReferenceAtr referenceAtr, Require require){
+	public static List<TempChildCareManagement> getUsageDetailCareService(String companyId, String employeeId,
+			DatePeriod period, ReferenceAtr referenceAtr, Require require) {
 		
 		
 		List<DailyInterimRemainMngData> interimRemainMng = require.getHolidayDetailByPeriod(
-				companyId, employeeId, period, criteriaDate, referenceAtr, require);
+				companyId, employeeId, period, referenceAtr, require);
 		
 		return interimRemainMng.stream()
 				.filter(c -> !c.getRecAbsData().isEmpty() && !c.getChildCareData().isEmpty())
@@ -37,7 +34,7 @@ public class GetUsageDetailChildCareService {
 
 	public static interface Require{
 		List<DailyInterimRemainMngData> getHolidayDetailByPeriod(String companyId, String employeeId, 
-				DatePeriod period, GeneralDate criteriaDate, ReferenceAtr referenceAtr,Require require);
+				DatePeriod period, ReferenceAtr referenceAtr,Require require);
 	}
 	
 }
