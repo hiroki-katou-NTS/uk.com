@@ -44,7 +44,7 @@ module nts.uk.at.view.cmf006.a {
                 multiple: false,
                 isResize: false,
                 rows: 15,
-                tabindex: 1
+                tabindex: 3
             });
             vm.fetchPermissionSettingList();
             vm.fetchRoleList();
@@ -122,6 +122,9 @@ module nts.uk.at.view.cmf006.a {
                 if (!_.isEmpty(data)) {
                     vm.mappingAvailabilityPermission(data);
                     vm.enableCopy(true);
+                } else {
+                    vm.resetPermission();
+                    vm.enableCopy(false);
                 }
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -157,6 +160,17 @@ module nts.uk.at.view.cmf006.a {
             const availableAuths = authSet.filter((i: any) => i.available).map((i: any) => i.functionNo);
             vm.permissionList(vm.permissionList().map((i: any) => ({
                 available: availableAuths.indexOf(i.functionNo) >= 0,
+                description: i.description,
+                functionName: i.functionName,
+                functionNo: i.functionNo,
+                orderNumber: i.orderNumber
+            })));
+        }
+
+        private resetPermission(): void {
+            const vm = this;
+            vm.permissionList(vm.permissionList().map((i: any) => ({
+                available: false,
                 description: i.description,
                 functionName: i.functionName,
                 functionNo: i.functionNo,
@@ -205,6 +219,7 @@ module nts.uk.at.view.cmf006.a {
                 if (!_.isNil(result)) {
                     vm.componentCcg025.currentCode(result.copyDestinationRoleId);
                 }
+                $("#multi-list_container").focus();
             });
         }
     }
