@@ -744,7 +744,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
 				}else if(outingPeriodClassific == OutingPeriodClassific.REFERENCE_DATE){
-					createWhereCondition(sql, startDateItemName, " == ", BASE_DATE_PARAM);
+					createWhereCondition(sql, startDateItemName, " = ", BASE_DATE_PARAM);
 				}
 			}
 
