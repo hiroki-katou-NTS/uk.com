@@ -14,8 +14,8 @@ import nts.arc.layer.dom.objecttype.DomainObject;
 @AllArgsConstructor
 public class DisplayManHrRecordItem implements DomainObject {
 
-	// 項目ID: 勤怠項目ID
-	private int attendanceItemId;
+	// 項目ID: 工数実績項目ID
+	private int itemId;
 
 	// 表示順
 	private int order;
