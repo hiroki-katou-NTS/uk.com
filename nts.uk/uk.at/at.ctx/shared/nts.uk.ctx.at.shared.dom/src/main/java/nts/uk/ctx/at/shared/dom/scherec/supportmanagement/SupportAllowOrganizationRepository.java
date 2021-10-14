@@ -7,21 +7,21 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 public interface SupportAllowOrganizationRepository {
 
 	/**
-	 * insert(会社ID, 応援許可する組織)
+	 * insert
 	 * @param cid 会社ID
 	 * @param supportAllowOrg 応援許可する組織
 	 */
 	void insert( String cid, SupportAllowOrganization supportAllowOrg );
 	
 	/**
-	 * update(会社ID, 応援許可する組織)
+	 * update
 	 * @param cid 会社ID
 	 * @param supportAllowOrg 応援許可する組織
 	 */
 	void update( String cid, SupportAllowOrganization supportAllowOrg );
 	
 	/**
-	 * delete(会社ID, 対象組織情報)
+	 * delete
 	 * @param cid 会社ID
 	 * @param targetOrg 対象組織情報
 	 */
@@ -44,12 +44,10 @@ public interface SupportAllowOrganizationRepository {
 	boolean exists( String cid, TargetOrgIdenInfor targetOrg );
 	
 	/**
-	 * 
+	 * insertAll
 	 * @param cid 会社ID
 	 * @param supportAllowOrgs 応援許可する組織リスト
 	 */
 	void insertAll( String cid, List<SupportAllowOrganization> supportAllowOrgs);
-
-
 
 }

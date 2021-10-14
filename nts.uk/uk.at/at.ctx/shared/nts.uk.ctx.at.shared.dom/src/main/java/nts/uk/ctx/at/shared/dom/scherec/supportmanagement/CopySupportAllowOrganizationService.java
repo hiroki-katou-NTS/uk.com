@@ -29,16 +29,18 @@ public class CopySupportAllowOrganizationService {
 			,	List<SupportAllowOrganization> copySources
 			,	TargetOrgIdenInfor destinationOrg
 			,	boolean isOverwrite ) {
+		
 		val isExist = require.existsSupportAllowOrganization( destinationOrg );
 		
 		if( isExist && !isOverwrite ) return Optional.empty();
 		
 		val copyResults = copySources.stream()
-				.filter( source -> source.getTargetOrg().getTargetId() != destinationOrg.getTargetId())
-				.map( source -> source.copy(destinationOrg) )
+				.filter(source ->	source.getTargetOrg().getTargetId() != destinationOrg.getTargetId() 
+								&&	source.getSupportableOrganization().getTargetId() != destinationOrg.getTargetId())
+				.map( source -> source.copy( destinationOrg ) )
 				.collect( Collectors.toList() );
 		
-		if(copyResults.isEmpty()) return Optional.empty();
+		if( copyResults.isEmpty() ) return Optional.empty();
 		
 		return Optional.of( AtomTask.of(() ->{
 			if( isOverwrite ) 
