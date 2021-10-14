@@ -35,13 +35,14 @@ public class GetScreenUsageDetails {
 	public GetScreenUsageDetailsDto get() {
 		GetScreenUsageDetailsDto result = new GetScreenUsageDetailsDto();
 		List<DailyAttendanceItemDto> dailyItem = new ArrayList<>();
-		
-		//Get Data
+
+		// Get Data
 		GetDisplayFormatDto getDisplayFormatDto = this.getDisplayFormat.get();
 		List<DailyAttendanceItem> attendents = this.dailyAttendanceItemRepository
 				.getListById(AppContexts.user().companyId(), getAttendanceId());
 		List<AcquireManHourRecordItemsDto> hourRecordItemsDtos = this.acquireManHourRecordItems.get();
-		
+		List<AcquireManHourRecordItemsDto> hourRecordItemsDtoOuts = new ArrayList<>();
+
 		// Mapping Dto
 		result.setManHourInputDisplayFormat(getDisplayFormatDto);
 		dailyItem = attendents.stream().map(m -> {
@@ -51,9 +52,15 @@ public class GetScreenUsageDetails {
 					m.getPrimitiveValue().map(p -> p.value).orElse(null),
 					m.getDisplayName().map(n -> n.v()).orElse(""));
 		}).collect(Collectors.toList());
-		
+
+		hourRecordItemsDtos.forEach(f -> {
+			if (f.getUseAtr() == 1) {
+				hourRecordItemsDtoOuts.add(f);
+			}
+		});
+
 		result.setDailyAttendanceItem(dailyItem);
-		result.setManHourRecordItem(hourRecordItemsDtos);
+		result.setManHourRecordItem(hourRecordItemsDtoOuts);
 
 		return result;
 	}
