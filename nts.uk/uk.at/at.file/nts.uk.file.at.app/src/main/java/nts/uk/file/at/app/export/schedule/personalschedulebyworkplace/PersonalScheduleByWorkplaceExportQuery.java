@@ -244,6 +244,7 @@ public class PersonalScheduleByWorkplaceExportQuery {
         );
 
         // 6.
+        ScheRecGettingAtr scheRecGettingAtr = outputSetting.get().getOutputItem().getDailyDataDisplayAtr() == NotUseAtr.USE ? ScheRecGettingAtr.SCHEDULE_WITH_RECORD : ScheRecGettingAtr.ONLY_SCHEDULE;
         Map<ScheRecGettingAtr, List<IntegrationOfDaily>> integrationOfDailyMap = DailyAttendanceGettingService.get(
             new DailyAttendanceGettingService.Require() {
                 @Override
@@ -259,26 +260,35 @@ public class PersonalScheduleByWorkplaceExportQuery {
             },
             employeeIds.stream().map(EmployeeId::new).collect(Collectors.toList()),
             period,
-            outputSetting.get().getOutputItem().getDailyDataDisplayAtr() == NotUseAtr.USE ? ScheRecGettingAtr.SCHEDULE_WITH_RECORD : ScheRecGettingAtr.ONLY_SCHEDULE
+            scheRecGettingAtr
         );
-        List<IntegrationOfDaily> integrationOfDailyList = new ArrayList<>();
-        integrationOfDailyMap.forEach((scheRecAtr, dailyIntegrations) -> {
-            integrationOfDailyList.addAll(dailyIntegrations);
-        });
 
         // 7. 一日分の社員の表示情報を取得す
-        List<OneDayEmployeeAttendanceInfo> listEmpOneDayAttendanceInfo = employeeOneDayAttendanceInfoQuery.get(integrationOfDailyList);
+        List<OneDayEmployeeAttendanceInfo> listEmpOneDayAttendanceInfo = employeeOneDayAttendanceInfoQuery.get(integrationOfDailyMap.get(scheRecGettingAtr));
 
         // 8. 個人計を集計する
         Map<PersonalCounterCategory, Map<String, T>> personalTotalResult = new HashMap<>();
         if (!outputSetting.get().getPersonalCounterCategories().isEmpty()) {
-            personalTotalResult = aggregatePersonalTotalQuery.get(employeeIds, period, closureDate, outputSetting.get().getPersonalCounterCategories(), integrationOfDailyList);
+            personalTotalResult = aggregatePersonalTotalQuery.get(
+                    employeeIds,
+                    period,
+                    closureDate,
+                    outputSetting.get().getPersonalCounterCategories(),
+                    integrationOfDailyMap.get(scheRecGettingAtr)
+            );
         }
 
         // 9.
         Map<WorkplaceCounterCategory, Map<GeneralDate, T>> workplaceTotalResult = new HashMap<>();
         if (!outputSetting.get().getWorkplaceCounterCategories().isEmpty()) {
-            workplaceTotalResult = workplaceTotalAggregatedInfoQuery.get(attendanceItems, outputSetting.get().getWorkplaceCounterCategories(), integrationOfDailyMap, period, targetOrgIdenInfor);
+            workplaceTotalResult = workplaceTotalAggregatedInfoQuery.get(
+                    attendanceItems,
+                    outputSetting.get().getWorkplaceCounterCategories(),
+                    integrationOfDailyMap,
+                    period,
+                    targetOrgIdenInfor,
+                    scheRecGettingAtr
+            );
         }
 
         return new PersonalScheduleByWkpDataSource(

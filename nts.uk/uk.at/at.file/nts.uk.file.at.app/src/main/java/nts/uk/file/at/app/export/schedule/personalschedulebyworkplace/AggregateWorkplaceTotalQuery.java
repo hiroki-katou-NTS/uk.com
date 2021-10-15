@@ -136,6 +136,7 @@ public class AggregateWorkplaceTotalQuery {
      * @param targetOrg 対象組織
      * @param workplaceCounterCategories 職場計カテゴリ一覧
      * @param integrationOfDailyMap 日別勤怠リスト
+     * @param scheRecGettingAtr
      * @param period 期間
      * @param shiftDisplay
      * @return 職場計集計結果
@@ -144,14 +145,11 @@ public class AggregateWorkplaceTotalQuery {
             TargetOrgIdenInfor targetOrg,
             List<WorkplaceCounterCategory> workplaceCounterCategories,
             Map<ScheRecGettingAtr, List<IntegrationOfDaily>> integrationOfDailyMap,
+            ScheRecGettingAtr scheRecGettingAtr,
             DatePeriod period,
             boolean shiftDisplay
     ) {
         String companyId = AppContexts.user().companyId();
-        List<IntegrationOfDaily> integrationOfDailyList = new ArrayList<>();
-        integrationOfDailyMap.forEach((scheRecAtr, dailyIntegrations) -> {
-            integrationOfDailyList.addAll(dailyIntegrations);
-        });
         Map<WorkplaceCounterCategory, Map<GeneralDate, T>> result = Collections.synchronizedMap(new HashMap<>());
 
         this.parallel.forEach(workplaceCounterCategories, counter -> {
@@ -171,7 +169,7 @@ public class AggregateWorkplaceTotalQuery {
                                 targetOrg,
                                 period,
                                 targetLaborCost,
-                                integrationOfDailyList
+                                integrationOfDailyMap.get(scheRecGettingAtr)
                         );
                         result.put(WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, (Map<GeneralDate, T>) laborCostTimeMap);
                     }
@@ -200,7 +198,7 @@ public class AggregateWorkplaceTotalQuery {
                                     }
                                 },
                                 totalTimes,
-                                integrationOfDailyList
+                                integrationOfDailyMap.get(scheRecGettingAtr)
                         );
                         result.put(WorkplaceCounterCategory.TIMES_COUNTING, (Map<GeneralDate, T>) timeCountMap);
                     }
@@ -247,7 +245,7 @@ public class AggregateWorkplaceTotalQuery {
                         }
                     };
                     if (counter == WorkplaceCounterCategory.EMPLOYMENT_PEOPLE) {
-                        Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countEmploymentMap = CountNumberOfPeopleByAttributeService.countingEachEmployments(require, integrationOfDailyList);
+                        Map<GeneralDate, Map<EmploymentCode, BigDecimal>> countEmploymentMap = CountNumberOfPeopleByAttributeService.countingEachEmployments(require, integrationOfDailyMap.get(scheRecGettingAtr));
                         // 雇用コード（List）から雇用を取得する
                         Set<String> employmentCodes = new HashSet<>();
                         countEmploymentMap.forEach((key, value) -> {
@@ -265,7 +263,7 @@ public class AggregateWorkplaceTotalQuery {
                         });
                         result.put(WorkplaceCounterCategory.EMPLOYMENT_PEOPLE, (Map<GeneralDate, T>) resultMap);
                     } else if (counter == WorkplaceCounterCategory.CLASSIFICATION_PEOPLE) {
-                        Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countClassificationMap = CountNumberOfPeopleByAttributeService.countingEachClassification(require, integrationOfDailyList);
+                        Map<GeneralDate, Map<ClassificationCode, BigDecimal>> countClassificationMap = CountNumberOfPeopleByAttributeService.countingEachClassification(require, integrationOfDailyMap.get(scheRecGettingAtr));
                         // 分類コード（List）から分類を取得する
                         Set<String> classificationCodes = new HashSet<>();
                         countClassificationMap.forEach((key, value) -> {
@@ -283,7 +281,7 @@ public class AggregateWorkplaceTotalQuery {
                         });
                         result.put(WorkplaceCounterCategory.CLASSIFICATION_PEOPLE, (Map<GeneralDate, T>) resultMap);
                     } else {
-                        Map<GeneralDate, Map<String, BigDecimal>> countJobMap = CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, integrationOfDailyList);
+                        Map<GeneralDate, Map<String, BigDecimal>> countJobMap = CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, integrationOfDailyMap.get(scheRecGettingAtr));
                         // 職位IDから職位を取得する
                         Set<String> jobIds = new HashSet<>();
                         countJobMap.forEach((key, value) -> {

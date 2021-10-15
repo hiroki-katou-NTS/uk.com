@@ -34,17 +34,25 @@ public class WorkplaceTotalAggregatedInfoQuery {
      * @param integrationOfDailyMap
      * @param period
      * @param targetOrg
-     * @param <T>
-     * @return
+     * @param scheRecGettingAtr
+     * @return <T>
      */
     public <T> Map<WorkplaceCounterCategory, Map<GeneralDate, T>> get(
             List<ScheduleTableAttendanceItem> scheduleTableAttendanceItems,
             List<WorkplaceCounterCategory> workplaceCounterCategories,
             Map<ScheRecGettingAtr, List<IntegrationOfDaily>> integrationOfDailyMap,
             DatePeriod period,
-            TargetOrgIdenInfor targetOrg
+            TargetOrgIdenInfor targetOrg,
+            ScheRecGettingAtr scheRecGettingAtr
     ) {
-        Map<WorkplaceCounterCategory, Map<GeneralDate, T>> result = totalQuery.get(targetOrg, workplaceCounterCategories, integrationOfDailyMap, period, scheduleTableAttendanceItems.contains(ScheduleTableAttendanceItem.SHIFT));
+        Map<WorkplaceCounterCategory, Map<GeneralDate, T>> result = totalQuery.get(
+                targetOrg,
+                workplaceCounterCategories,
+                integrationOfDailyMap,
+                scheRecGettingAtr,
+                period,
+                scheduleTableAttendanceItems.contains(ScheduleTableAttendanceItem.SHIFT)
+        );
         return result;
     }
 }
