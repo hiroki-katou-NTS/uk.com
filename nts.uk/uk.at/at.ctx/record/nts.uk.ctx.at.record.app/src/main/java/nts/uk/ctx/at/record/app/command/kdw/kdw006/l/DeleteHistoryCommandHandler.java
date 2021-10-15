@@ -48,16 +48,14 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 		});
 		List<TaskSupInfoChoicesDetail> details = this.taskSupInfoChoicesHistoryRepo.get(command.getHistoryId());
 
+		if (!details.isEmpty()) {
+			throw new BusinessException("Msg_2306");
+		}
+
 		if (!dateHistoryItems.isEmpty()) {
 			if (dateHistoryItems.size() <= 1) {
-				throw new BusinessException("Msg_57");
+				this.taskSupInfoChoicesHistoryRepo.delete(command.getHistoryId());
 			} else {
-				dateHistoryItems.stream().filter(i -> i.identifier().equals(command.getHistoryId())).findFirst()
-						.ifPresent(itemToBeRemoved -> {
-							if (!itemToBeRemoved.contains(GeneralDate.ymd(9999, 12, 31))) {
-								throw new BusinessException("Msg_55");
-							}
-						});
 				List<DateHistoryItem> historysUpdate = new ArrayList<>();
 				historysUpdate.add(new DateHistoryItem(dateHistoryItems.get(1).identifier(),
 						new DatePeriod(dateHistoryItems.get(1).start(), GeneralDate.ymd(9999, 12, 31))));
