@@ -107,7 +107,7 @@ module nts.uk.com.view.oem003.a {
       });
 
       vm.dataTables(filterArr);
-      _.forEach(vm.dataTables(), data => data.itemNo.valueHasMutated());
+      _.forEach(vm.dataTables(), data => vm.validateItem(data, data.itemNo()));
 
       if (deleteOrder > 0 && deleteOrder <= vm.dataTables().length) {
         $(`.data-${deleteOrder} input[tabindex="6"]`).focus();
@@ -316,8 +316,12 @@ module nts.uk.com.view.oem003.a {
         data.$errors('clear');
       }, 'beforeChange');
 
-      data.itemNo.subscribe(value => {
-        _.forEach(vm.dataTables(), i => i.itemTypeError(false));
+      data.itemNo.subscribe(value => vm.validateItem(data, value));
+    }
+
+    validateItem(data: DataTable, value: number) {
+      const vm = this;
+      _.forEach(vm.dataTables(), i => i.itemTypeError(false));
         vm
           .$errors('clear', [
             '.data-1', '.data-2', '.data-3',
@@ -337,7 +341,6 @@ module nts.uk.com.view.oem003.a {
             const msg = { messageId: 'Msg_2218', messageParams }
             vm.$errors(selector, msg);
           });
-      });
     }
 
     checkItemNo(value: number): number[] {
