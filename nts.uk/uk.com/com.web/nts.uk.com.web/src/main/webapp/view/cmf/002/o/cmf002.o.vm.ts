@@ -79,7 +79,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         baseDate: KnockoutObservable<any>;
         valueItemFixedForm: KnockoutObservable<any>;
         date61:  KnockoutObservable<any> = ko.observable('');
-
+        isNoData : KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             var self = this;
             //起動する
@@ -136,9 +136,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     let conditionName = _.find(self.listCondition(), {'code': self.selectedConditionCd()}).name;
                     self.selectedConditionName(conditionName);
                     let catelogoryId: number = _.find(self.listCondition(), {'code': self.selectedConditionCd()}).catelogoryId;
-
+                    block.invisible();
                     service.getExOutCtgDto(catelogoryId).done(data => {
                         if (data) {
+                            self.isNoData(false);
                             let ex: ExOutCtgDto = data.exOutCtgDto;
                             let closureExports: [any] = data.closureExports;
                             self.closureLists(closureExports);
@@ -208,7 +209,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                                 self.show81YmPeriod(false);
 
                             }
+                        }else {
                         }
+                    }).always(()=>{
+                        block.clear();
                     });
                 }
             });
