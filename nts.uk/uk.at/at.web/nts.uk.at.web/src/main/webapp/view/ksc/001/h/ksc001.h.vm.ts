@@ -149,30 +149,30 @@ module nts.uk.at.view.ksc001.h {
                 } else {//実施区分= 再作成
                     str.push(getText("KSC001_75"));
                 }
-                if (data.reTargetAtr) {
+                if (!data.reTargetAtr) {
                     str.push(getText("KSC001_37") + getText("KSC001_89"));
                 } else {
                     str.push(getText("KSC001_37") + getText("KSC001_90"));
                 }
                 if (data.transfer) {
-                    str.push("▲" + getText("KSC001_38") + getText("KSC001_91"));
+                    str.push("　" + getText("KSC001_38") + getText("KSC001_91"));
                 }
                 if (data.leaveOfAbsence) {
-                    str.push("▲" + getText("KSC001_38") + getText("KSC001_92"));
+                    str.push("　" + getText("KSC001_38") + getText("KSC001_92"));
                 }
                 if (data.shortWorkingHours) {
-                    str.push("▲" + getText("KSC001_38") + getText("KSC001_93"));
+                    str.push("　" + getText("KSC001_38") + getText("KSC001_93"));
                 }
                 if (data.changedWorkingConditions) {
-                    str.push("▲" + getText("KSC001_38") + getText("KSC001_94"));
+                    str.push("　" + getText("KSC001_38") + getText("KSC001_94"));
                 }
                 if (data.reOverwriteConfirmed || data.reOverwriteRevised) {
                     str.push(getText("KSC001_37") + getText("KSC001_104"));
                     if (data.reOverwriteConfirmed) {
-                        str.push("▲" + getText("KSC001_38") + getText("KSC001_105"));
+                        str.push("　" + getText("KSC001_38") + getText("KSC001_105"));
                     }
                     if (data.reOverwriteRevised) {
-                        str.push("▲" + getText("KSC001_38") + getText("KSC001_106"));
+                        str.push("　" + getText("KSC001_38") + getText("KSC001_106"));
                     }
                 }
                 return str;
@@ -196,10 +196,11 @@ module nts.uk.at.view.ksc001.h {
                         str.push(getText("KSC001_37") + getText("KSC001_113") + getText("KSC001_114") + getText("KSC001_110"));
                     } else if (data.referenceMaster == 3) {
                         str.push(getText("KSC001_37") + getText("KSC001_113") + getText("KSC001_114") + getText("KSC001_111"));
-                        str.push(getText("KSC001_37") + getText("KSC001_111") + data.monthlyPatternCode + "▲");
+                        str.push(getText("KSC001_37") + getText("KSC001_111") + data.monthlyPatternCode + "　" + data.monthlyPatternName);
                     }
                 } else if (data.createMethodAtr == 2) {
                     str.push(getText("KSC001_24"));
+                    str.push(getText("KSC001_37") + getText("KSC001_26") + getText("KSC001_114") + data.copyStartDate);
                 }
                 if (data.confirm) {
                     str.push(getText("KSC001_17"));
