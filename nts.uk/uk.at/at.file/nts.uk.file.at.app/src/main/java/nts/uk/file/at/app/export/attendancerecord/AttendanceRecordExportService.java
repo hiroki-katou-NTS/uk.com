@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -64,6 +65,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.DateHistoryItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceFrameImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHisItemImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -172,6 +179,9 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	
 	@Inject
 	private SharedAffJobtitleHisAdapter affJobTitleAdapter;
+	
+	@Inject
+	private SharedTempAbsenceAdapter sharedTempAbsenceAdapter;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -1022,6 +1032,44 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							attendanceRecRepEmpData.setLastDayOfMonth(closureDate.getLastDayOfMonth());
 							attendanceRecRepEmpData.setClosureDay(closureDate.getClosureDay().v());
 							
+							// 社員（List）と期間から休職休業を取得する
+							String cid = AppContexts.user().companyId();
+							TempAbsenceImport tempAbsence = this.sharedTempAbsenceAdapter
+									.getTempAbsence(cid, monthPeriod, empIDs);
+							// アルゴリズム「会社IDとNOから休職休業枠を取得する」を実行する
+							tempAbsence.getHistories().forEach(hist -> hist.getDateHistoryItems()
+									.sort(Comparator.comparing(DateHistoryItemImport::getStartDate)));
+							List<DateHistoryItemImport> dateHistoryItems = tempAbsence.getHistories().stream()
+									.map(TempAbsenceHistoryImport::getDateHistoryItems).flatMap(List::stream)
+									.collect(Collectors.toList());
+							List<Integer> tempAbsenceFrameNos = dateHistoryItems.stream()
+									.map(DateHistoryItemImport::getHistoryId).distinct()
+									.map(histId -> this.findHisItemByHistId(tempAbsence.getHistoryItem(), histId)
+											.orElse(null))
+									.filter(Objects::nonNull)
+									.map(TempAbsenceHisItemImport::getTempAbsenceFrNo).collect(Collectors.toList());
+							List<TempAbsenceFrameImport> tempAbsenceFrames = this.sharedTempAbsenceAdapter
+									.getTempAbsenceFrameByListNo(cid, tempAbsenceFrameNos);
+							List<TempAbsenceData> tempAbsenceDatas = dateHistoryItems.stream().map(data -> {
+								Optional<TempAbsenceHisItemImport> optHisItem = this
+										.findHisItemByHistId(tempAbsence.getHistoryItem(), data.getHistoryId());
+								if (optHisItem.isPresent()) {
+									Optional<TempAbsenceFrameImport> optFrame = tempAbsenceFrames.stream()
+											.filter(frame -> frame.getTempAbsenceFrNo() == optHisItem.get()
+													.getTempAbsenceFrNo())
+											.findFirst();
+									if (optFrame.isPresent()) {
+										boolean isUndefinedEndDate = data.getEndDate()
+												.equals(GeneralDate.ymd(9999, 12, 31));
+										return new TempAbsenceData(optFrame.get().getTempAbsenceFrName(),
+												data.getStartDate().toString("yyyy/MM/dd"),
+												isUndefinedEndDate ? "" 
+														: data.getEndDate().toString("yyyy/MM/dd"));
+									}
+								}
+								return null;
+							}).filter(Objects::nonNull).collect(Collectors.toList());
+							attendanceRecRepEmpData.setTempAbsenceDatas(tempAbsenceDatas);
 							attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
 							realDataOfEmployee++;
 						}
@@ -1737,5 +1785,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			}
 		}
 		return false;
+	}
+	
+	private Optional<TempAbsenceHisItemImport> findHisItemByHistId(List<TempAbsenceHisItemImport> hisItems,
+			String histId) {
+		return hisItems.stream().filter(data -> data.getHistoryId().equals(histId)).findFirst();
 	}
 }
