@@ -72,7 +72,7 @@ module nts.uk.at.view.kml002.c {
     openDialogScreenH() {
       const vm = this;     
       // vm.$window.modeless('/view/kml/002/h/index.xhtml');     
-      nts.uk.ui.windows.sub.modeless('/view/kml/002/h/index.xhtml');
+      vm.$window.modal('/view/kml/002/h/index.xhtml');
     }
 
     //スケジュール職場計情報を登録する時
