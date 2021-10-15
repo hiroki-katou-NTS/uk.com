@@ -51,9 +51,9 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
             setShared("KDL005_DATA", param.employeeIds);
 
 			if (param.employeeIds.length > 1) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1140, height: 640 });
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1160, height: 640 });
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 850, height: 640 });
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 860, height: 640 });
             }
         }
 
