@@ -260,8 +260,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				this.businessTripRepo.findByAppId(cid, appData.getAppID()).ifPresent(x -> {
 					if (!x.getInfos().isEmpty()) {
 						WorkInformation wrkInfo =  x.getInfos().get(0).getWorkInformation();
-						outData.setWorkTimeCode(Optional.of(getWTimeCode(wrkInfo.getWorkTimeCode())));
-						outData.setWorkTypeCode(Optional.of(getWTypeCode(wrkInfo.getWorkTypeCode())));
+						outData.setWorkTimeCode(Optional.ofNullable(getWTimeCode(wrkInfo.getWorkTimeCode())));
+						outData.setWorkTypeCode(Optional.ofNullable(getWTypeCode(wrkInfo.getWorkTypeCode())));
 					}
 				});
 				break;
