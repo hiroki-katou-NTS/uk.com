@@ -46,15 +46,15 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		checkSolid: number = 0;
 
 		// A2_5 
-		currentRemainNum: KnockoutObservable<string> = ko.observable('6日 と6:00');
+		currentRemainNum: KnockoutObservable<string> = ko.observable('');
 		// A2_8 
-		nextScheDate: KnockoutObservable<string> = ko.observable('2020/09/10 (木)');
+		nextScheDate: KnockoutObservable<string> = ko.observable('');
 		// A2_11
-		annMaxTime: KnockoutObservable<string> = ko.observable('16:00');
+		annMaxTime: KnockoutObservable<string> = ko.observable('');
 		// A2_9
-		annLimitStart: KnockoutObservable<string> = ko.observable('2020/08/10');
+		annLimitStart: KnockoutObservable<string> = ko.observable('');
 		// A2_12
-		annLimitEnd: KnockoutObservable<string> = ko.observable('2021/09/10');
+		annLimitEnd: KnockoutObservable<string> = ko.observable('');
 
 		//
 		checkEnable: KnockoutObservable<boolean> = ko.observable(false);
@@ -153,7 +153,17 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 		getData(value : any): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			nts.uk.ui.block.grayout();
-			service.findAnnualHolidays(self.paramData).done((data: any) => {
+			let param = self.paramData;
+			if (value != ""){
+				let idParam = _.filter(self.paramData, (x : any) => {
+					return _.includes(x, value)
+				})
+				
+				if(idParam.length > 0) {
+					param = idParam;
+				} 
+			}
+			service.findAnnualHolidays(param).done((data: any) => {
 
 				if (data.accHolidayDto != null) {
 					self.dataHoliday(data.accHolidayDto);
@@ -184,7 +194,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 				}
 
 				self.bindDataToGrid();
-				if (!self.checkSub)
+				if (!self.checkSub())
 					self.listComponentOption.selectedCode(self.employeeList()[0].code);
 					
 				let name = null;

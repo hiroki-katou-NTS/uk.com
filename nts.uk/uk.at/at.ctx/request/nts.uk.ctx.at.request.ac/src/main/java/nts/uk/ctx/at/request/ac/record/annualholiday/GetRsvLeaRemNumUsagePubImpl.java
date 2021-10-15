@@ -22,7 +22,7 @@ public class GetRsvLeaRemNumUsagePubImpl implements GetRsvLeaRemNumUsageDetailAd
 	@Override
 	public List<TmpReserveLeaveMngExport> getRsvLeaRemNumUsageDetail(String employeeId, DatePeriod period) {
 		List<TmpReserveLeaveMngExport> result = pub.getRsvLeaRemNumUsageDetail(employeeId, period).stream().map(x -> {
-			return new TmpReserveLeaveMngExport(x.getYmd(), CreateAtr.valueOf(x.getCreatorAtr().name), new UseDay(x.getUseDays().v()));
+			return new TmpReserveLeaveMngExport(x.getYmd(), x.getCreatorAtr(), new UseDay(x.getUseDays().v()));
 		}).collect(Collectors.toList());
 		
 		return result;
