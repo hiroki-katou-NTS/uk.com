@@ -84,12 +84,12 @@ public class GetAggregatedInfoFinder {
 						planAndActual.getDailySchedule(), param.getActualData);
 			} else {
 
-				workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(new ArrayList<>(),
+				workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(param.getListShiftMasterNotNeedGetNew(),
 						planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.getActualData);
 				
 				if(!workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.isEmpty()){
 					workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.forEach((key, value) -> {
-						shiftMasterWithWorkStyleLst.add(new ShiftMasterMapWithWorkStyle(key, value == null ? null : String.valueOf(value)));
+						shiftMasterWithWorkStyleLst.add(new ShiftMasterMapWithWorkStyle(key, value == null || !value.isPresent() ? null : String.valueOf(value.get().value)));
 					});
 				}
 			}

@@ -5906,6 +5906,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 unit: self.userInfor.unit,
                 isShiftMode: self.selectedModeDisplayInBody() == ViewMode.SHIFT ? true : false, // time | shortName | shift
+                listShiftMasterNotNeedGetNew: !_.isNil(self.userInfor) ? self.userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 getWorkschedule: _.isNil(getWorkschedule) ? false : getWorkschedule,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
                 workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
