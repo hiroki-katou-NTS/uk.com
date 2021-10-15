@@ -159,7 +159,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
 			DatePeriod appDatePeriod) {
 		
-		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(AppContexts.user().companyId(), sid, GeneralDate.today());
+		List<SEmpHistImport> sEmpHistImport = employeeAdapter.getEmpHist(AppContexts.user().companyId(), sid);
 		
 		List<Application> lstApp = this.getApps(sid, appDatePeriod, refAppResult);
 		

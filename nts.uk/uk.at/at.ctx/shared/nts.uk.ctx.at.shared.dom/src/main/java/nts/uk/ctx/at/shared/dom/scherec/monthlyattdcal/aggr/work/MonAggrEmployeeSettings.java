@@ -118,7 +118,7 @@ public class MonAggrEmployeeSettings {
 			return domain;
 		}
 		
-		// 取得用期間の確認　（過去1ヶ月、未来1ヶ月を配慮）
+		// 取得用期間の確認　（過去1ヶ月、未来1ヶ月を配慮）　→　過去一ヶ月：前月の最終週、未来一ヶ月：フレックスの翌月繰越 
 		GeneralDate findStart = GeneralDate.min();
 		if (period.start().after(GeneralDate.min().addMonths(1))) findStart = period.start().addMonths(-1);
 		GeneralDate findEnd = GeneralDate.max();

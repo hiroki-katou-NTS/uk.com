@@ -77,7 +77,7 @@ public class ClearReflectStatusPeriod {
 
 			// 打刻の反映状態をクリアする
 			for (Stamp s : listStamp) {
-				s.getImprintReflectionStatus().setReflectedDate(Optional.empty());
+				s.getImprintReflectionStatus().clearReflect();
 				stampDakokuRepository.update(s);
 			}
 		}
