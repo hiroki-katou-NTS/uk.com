@@ -39,6 +39,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportDatasource;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportGenerator;
+import nts.uk.file.at.app.export.attendancerecord.TempAbsenceData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDailyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportData;
@@ -333,6 +334,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int SIDE_HEADER_FONT_SIZE_FM = 8;
 	
 	private static final int SIDE_HEADER_FONT_SIZE_FS = 7;
+	
+	private static final int MAXIMUM_ABSENCE_PERIOD = 3;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -725,7 +728,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				+ (employeeData.isLastDayOfMonth() ? TextResource.localize("KWR002_236")
 						: (employeeData.getClosureDay() + TextResource.localize("KWR002_237")).toString());
 
-		String periodInfoText = employeeData.getTempAbsenceDatas().stream()
+		// Only print the first 3 periods
+		List<TempAbsenceData> tempAbsenceDatas = employeeData.getTempAbsenceDatas().subList(0, MAXIMUM_ABSENCE_PERIOD);
+		String periodInfoText = tempAbsenceDatas.stream()
 				.map(data -> data.getTempAbsenceFrameName() + TextResource.localize("KWR002_238")
 						+ data.getPeriodStart() + TextResource.localize("KWR002_239") + data.getPeriodEnd())
 				.collect(Collectors.joining("　"));
