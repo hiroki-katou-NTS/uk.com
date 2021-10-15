@@ -73,7 +73,7 @@ public class RegisterFavoriteTaskService {
 
 		} else {
 			// $新規表示順 = お気に入り作業の表示順#新規追加(社員ID, $追加お気に入り.お気に入りID)
-			favOrder = new FavoriteTaskDisplayOrder(employeeId, newFavId);
+			favOrder = FavoriteTaskDisplayOrder.addNewFavTaskDisporder(employeeId, newFavId);
 		}
 
 		// $登録対象.add(require.お気に入りを追加する($追加お気に入り)
@@ -82,7 +82,7 @@ public class RegisterFavoriteTaskService {
 		// if $新規表示順.isPresent
 		if (favOrder != null) {
 			// $登録対象.add(require.表示順を追加する($新規表示順)
-			atomTasks.add(AtomTask.of(() -> require.insert(new FavoriteTaskDisplayOrder(employeeId, newFavId))));
+			atomTasks.add(AtomTask.of(() -> require.insert(FavoriteTaskDisplayOrder.addNewFavTaskDisporder(employeeId, newFavId))));
 
 		} else {
 			// $登録対象.add(require.表示順を更新する($表示順)

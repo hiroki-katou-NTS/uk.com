@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -39,10 +40,13 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 	}
 
 	/** [C-1] 新規追加 */
-	public OneDayFavoriteTaskDisplayOrder(String sId, String favId) {
-		super();
-		this.sId = sId;
-		this.add(favId);
+	/**
+	 * 
+	 * @param sId 社員ID
+	 * @param favId お気に入りID
+	 */
+	public static OneDayFavoriteTaskDisplayOrder addOneDayFavTaskDisorder(String sId, String favId) {
+		return new OneDayFavoriteTaskDisplayOrder(sId, Collections.singletonList(FavoriteDisplayOrder.addFirstDisorder(favId)));
 	}
 
 	/**
@@ -58,7 +62,7 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 		}
 
 		// 表示順.追加する($新しいお気に入り)
-		this.displayOrders.add(new FavoriteDisplayOrder(favId));
+		this.displayOrders.add(FavoriteDisplayOrder.addFirstDisorder(favId));
 
 		// 表示順：sort $.表示順 ASC
 		this.displayOrders.stream().sorted(Comparator.comparingInt(FavoriteDisplayOrder::getOrder))

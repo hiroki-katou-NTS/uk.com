@@ -45,7 +45,7 @@ public class RegisterOneDayFavoriteTaskService {
 			orderOpt.get().add(newFavId);
 		} else {
 			// $新規表示順 = 1日お気に入り作業の表示順#新規追加(社員ID, $追加お気に入り.お気に入りID)
-			newOrder = new OneDayFavoriteTaskDisplayOrder(employeeId, newFavId);
+			newOrder = OneDayFavoriteTaskDisplayOrder.addOneDayFavTaskDisorder(employeeId, newFavId);
 		}
 		// $登録対象.add(require.お気に入りを追加する($追加お気に入り)
 		atomTasks.add(AtomTask.of(() -> require.insert(favSet)));
@@ -53,7 +53,7 @@ public class RegisterOneDayFavoriteTaskService {
 		// if $新規表示順.isPresent
 		if (newOrder != null) {
 			// $登録対象.add(require.表示順を追加する($新規表示順)
-			atomTasks.add(AtomTask.of(() -> require.insert(new OneDayFavoriteTaskDisplayOrder(employeeId, newFavId))));
+			atomTasks.add(AtomTask.of(() -> require.insert(OneDayFavoriteTaskDisplayOrder.addOneDayFavTaskDisorder(employeeId, newFavId))));
 		} else {
 			// $登録対象.add(require.表示順を更新する($表示順)
 			atomTasks.add(AtomTask.of(() -> require.update(orderOpt.get())));

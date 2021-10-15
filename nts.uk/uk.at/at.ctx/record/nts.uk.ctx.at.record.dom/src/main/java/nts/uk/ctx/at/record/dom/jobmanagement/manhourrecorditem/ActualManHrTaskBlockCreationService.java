@@ -60,10 +60,10 @@ public class ActualManHrTaskBlockCreationService {
 
 				// $作業ブロックリスト.追加する($作業ブロック)
 				taskBlocks.add(taskBlock);
+				
+				// 工数実績項目リスト = 工数実績項目リスト：except $作業詳細
+				taskDetails.removeAll(lstTaskDetail);
 			}
-
-			// 工数実績項目リスト = 工数実績項目リスト：except $作業詳細
-			taskDetails.removeAll(lstTaskDetail);
 
 			// 工数実績項目リスト：
 			// $開始時刻

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -39,12 +40,12 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	 * [C-1] 新規追加
 	 * 
 	 * @param employeeId 社員ID
+	 * @param favoriteId お気に入りID
 	 * 
 	 */
-	public FavoriteTaskDisplayOrder(String employeeId, String favId) {
-		super();
-		this.employeeId = employeeId;
-		this.add(favId);
+	public static FavoriteTaskDisplayOrder addNewFavTaskDisporder(String employeeId, String favId) {
+		
+		return new FavoriteTaskDisplayOrder(employeeId, Collections.singletonList(FavoriteDisplayOrder.addFirstDisorder(favId)));
 	}
 
 	/**
@@ -62,7 +63,7 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 		}
 
 		// 表示順.追加する($新しいお気に入り)
-		this.displayOrders.add(new FavoriteDisplayOrder(favId));
+		this.displayOrders.add(FavoriteDisplayOrder.addFirstDisorder(favId));
 
 		// 表示順：sort $.表示順 ASC
 		this.displayOrders.stream().sorted(Comparator.comparingInt(FavoriteDisplayOrder::getOrder))

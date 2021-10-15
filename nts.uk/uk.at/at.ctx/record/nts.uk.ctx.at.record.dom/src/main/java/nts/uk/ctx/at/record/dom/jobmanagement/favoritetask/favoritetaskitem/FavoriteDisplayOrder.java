@@ -26,10 +26,8 @@ public class FavoriteDisplayOrder implements DomainValue {
 	 * @param favId
 	 * @return お気に入りの表示順
 	 */
-	public FavoriteDisplayOrder(String favId) {
-		super();
-		this.favId = favId;
-		this.order = 1;
+	public static FavoriteDisplayOrder addFirstDisorder(String favId) {
+		return new FavoriteDisplayOrder(favId, 1);
 	}
 
 	/**

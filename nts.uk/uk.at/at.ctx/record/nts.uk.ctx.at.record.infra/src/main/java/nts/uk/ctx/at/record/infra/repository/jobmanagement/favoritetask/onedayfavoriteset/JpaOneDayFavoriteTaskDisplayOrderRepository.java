@@ -8,10 +8,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskDisplayOrder;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteTaskDisplayOrder;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteTaskDisplayOrderRepository;
-import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetaskitem.KrcdtTaskFavFrameSetDisporder;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDayDispOrder;
 
 /**
@@ -53,10 +51,10 @@ public class JpaOneDayFavoriteTaskDisplayOrderRepository extends JpaRepository i
 	public Optional<OneDayFavoriteTaskDisplayOrder> get(String employeeId) {
 		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
 
-		List<KrcdtTaskFavFrameSetDisporder> entities = this.queryProxy()
-				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", employeeId).getList();
+		List<KrcdtTaskFavDayDispOrder> entities = this.queryProxy()
+				.query(SELECT_BY_SID, KrcdtTaskFavDayDispOrder.class).setParameter("sId", employeeId).getList();
 
-		for (KrcdtTaskFavFrameSetDisporder e : entities) {
+		for (KrcdtTaskFavDayDispOrder e : entities) {
 			displayOrders.add(new FavoriteDisplayOrder(e.favId, e.disporder));
 		}
 
