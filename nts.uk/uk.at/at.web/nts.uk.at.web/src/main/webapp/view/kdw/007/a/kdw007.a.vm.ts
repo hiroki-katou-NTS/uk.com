@@ -972,17 +972,18 @@ module nts.uk.at.view.kdw007.a.viewmodel {
                 if (lstJobTitle && lstJobTitle.length > 0) {
                     service.findAllJobTitle().done((data) => {
                         if (data && data.length > 0) {
-                            allJobTitle = data;
+                            allJobTitle = _.sortBy(data, 'code');
                         }
                     }).then(() => {
-                        for (let i = 0; i < lstJobTitle.length; i++) {
-                            for (let jobTitle of allJobTitle) {
-                                if (lstJobTitle[i] === jobTitle.id) {
-                                    if (displayText !== "") {
-                                        displayText = displayText + " + " + jobTitle.name;
-                                    } else {
-                                        displayText = displayText + jobTitle.name;
-                                    }
+                        for (let jobTitle of allJobTitle) {
+                            let result = _.find(lstJobTitle, (el) => {
+                                return el === jobTitle.id;
+                            })
+                            if(result) {
+                                if (displayText !== "") {
+                                    displayText = displayText + " + " + jobTitle.name;
+                                } else {
+                                    displayText = displayText + jobTitle.name;
                                 }
                             }
                         }

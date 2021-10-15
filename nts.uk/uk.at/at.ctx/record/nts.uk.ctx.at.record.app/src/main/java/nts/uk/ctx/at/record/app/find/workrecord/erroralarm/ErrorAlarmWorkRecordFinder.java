@@ -45,6 +45,10 @@ public class ErrorAlarmWorkRecordFinder {
 		ErrorAlarmDto errorAlarmDto = new ErrorAlarmDto();
 		List<ErrorAlarmWorkRecord> lstErrorAlarm = repository
 				.getListErrorAlarmWorkRecord(AppContexts.user().companyId(), type);
+		if (type == 0) {
+			lstErrorAlarm = lstErrorAlarm.stream().filter(eral -> eral.getCode().v().startsWith("U"))
+					.collect(Collectors.toList());
+		}
 		if (type == 1) {
 			lstErrorAlarm = lstErrorAlarm.stream().filter(eral -> eral.getCode().v().startsWith("S"))
 					.collect(Collectors.toList());

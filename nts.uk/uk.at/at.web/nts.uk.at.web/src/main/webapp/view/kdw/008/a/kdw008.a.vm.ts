@@ -174,19 +174,19 @@ module nts.uk.at.view.kdw008.a {
 	                    if (self.isDaily()) {
 	                        nts.uk.ui.errors.clearAll();
 							const code = self.currentDailyFormatCode();
-							if (code != '' && code != null && code != undefined ) {
-		                        self.getDailyDetail(code, value).done(() => {
-		                            block.clear();
-		                        })
-								
-							} else {
-								block.clear();
-							}
+	                        self.getDailyDetail(code, value).done(() => {
+	                            block.clear();
+	                        })
 	                    } else {
 	                        self.getMonthCorrectionDetail(value);
 	                        block.clear();
 	                    }
 	                } else {
+						if (self.isDaily()) {
+							self.clearDataSwapList();	
+						} else {
+							self.clearSwapListByMonth();
+						}
 	                	block.clear();
 	                }
                 });
@@ -353,25 +353,38 @@ module nts.uk.at.view.kdw008.a {
                 return dfd.promise();
             }
 
+			clearDataSwapList(): void {
+				const self = this;
+				$("#swap-list2-grid2").igGridSelection("clearSelection");
+                $("#swap-list2-grid1").igGridSelection("clearSelection");
+                self.authorityFormatDailyValue.removeAll();
+                self.dailyDataSource.removeAll();
+                self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
+			}
             getDailyDetail(code: string, sheetNo: string): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                service.getDailyDetail(code, self.selectedSheetNo(), self.isMobile).done(data => {
-                    $("#swap-list2-grid2").igGridSelection("clearSelection");
-                    $("#swap-list2-grid1").igGridSelection("clearSelection");
-                    self.authorityFormatDailyValue.removeAll();
-                    self.dailyDataSource.removeAll();
-                    self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
 
-                    if (data) {
-                        self.selectedSheetName(data.sheetName);
-                        self.authorityFormatDailyValue(self.mapAttItemFormatDetail(self.dailyAttItems(), data.dailyAttendanceAuthorityDetailDtos));
-                        
-                    }
-                    dfd.resolve();
-                }).fail(err => {
-                    dfd.reject(err);
-                })
+				if (code != '' && code != null && code != undefined ) {
+	                service.getDailyDetail(code, self.selectedSheetNo(), self.isMobile).done(data => {
+	                    self.clearDataSwapList();
+	
+	                    if (data) {
+	                        self.selectedSheetName(data.sheetName);
+	                        self.authorityFormatDailyValue(self.mapAttItemFormatDetail(self.dailyAttItems(), data.dailyAttendanceAuthorityDetailDtos));
+	                        
+	                    }
+	                    dfd.resolve();
+	                }).fail(err => {
+	                    dfd.reject(err);
+	                })
+					
+				} else {
+					self.clearDataSwapList();
+					dfd.resolve();
+				}
+				
+
                 return dfd.promise();
             }
 
@@ -437,14 +450,19 @@ module nts.uk.at.view.kdw008.a {
                 })
                 self.monthCorrectionFormat(monthItem);
             }
-
-            getMonthCorrectionDetail(sheetNo: string) {
-                let self = this;
-                $("#swap-list3-grid2").igGridSelection("clearSelection") ;
+			clearSwapListByMonth(): void {
+				const self = this;
+				
+				$("#swap-list3-grid2").igGridSelection("clearSelection") ;
                 self.selectedSheetName(null);
                 self.monthCorrectionValue.removeAll();
                 self.monthCorrectionDataSource.removeAll();
                 self.monthCorrectionDataSource(_.cloneDeep(self.monthlyAttItems()));
+			}
+            getMonthCorrectionDetail(sheetNo: string) {
+                const self = this;
+
+                self.clearSwapListByMonth();
                 if(self.monthCorrectionFormat() == null) {
                     return;    
                 }

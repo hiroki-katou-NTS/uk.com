@@ -2119,12 +2119,13 @@ module nts.uk.ui.at.kdw013.calendar {
                     $caches.drag(null);
                 },
                 eventDrop: (arg: EventDropArg) => {
-                    const { event, relatedEvents } = arg;
+                    let { event, relatedEvents } = arg;
                     const { start, end, id, title, extendedProps, borderColor, groupId } = event;
                     const rels = relatedEvents.map(({ start, end }) => ({ start, end }));
 
                     vm.selectedEvents = [{ start, end }, ...rels];
 
+                    event.setExtendedProp('isChanged', true);
                     // update data sources
                     mutatedEvents();
 
@@ -2137,7 +2138,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                 end,
                                 borderColor,
                                 groupId,
-                                extendedProps
+                                extendedProps: {
+                                    ...extendedProps,
+                            isChanged:true
+                                }
                             });
 
                         $caches.new(event);
@@ -2169,26 +2173,33 @@ module nts.uk.ui.at.kdw013.calendar {
                     popupPosition.event(null);
                 },
                 eventResize: (arg: EventResizeDoneArg) => {
-                    const { event } = arg;
-                    const { start, end, title, extendedProps, id, borderColor, groupId } = event;
+                                let { event } = arg;
+                                const { start, end, title, extendedProps, id, borderColor, groupId } = event;
 
-                    vm.selectedEvents = [{ start, end }];
-
-                    // update data sources
-                    mutatedEvents();
-
-                    // add new event (no save) if new event is dragging
-                    if (!title && extendedProps.status === 'new') {
-                        $caches.new(vm.calendar
-                            .addEvent({
-                                id,
-                                start,
-                                end,
-                                borderColor,
-                                groupId,
-                                extendedProps
+                                vm.selectedEvents = [{ start, end }];
+                                event.setExtendedProp('isChanged', true);
+                                // update data sources
+                                mutatedEvents();
+                                // add new event (no save) if new event is dragging
+                                if (!title && extendedProps.status === 'new') {
+                                    $caches.new(vm.calendar
+                                        .addEvent({
+                                            id,
+                                            start,
+                                            end,
+                                            borderColor,
+                                            groupId,
+                                            extendedProps: {
+                                ...extendedProps,
+                                        isChanged:true
+                                }
                             }));
                     }
+
+                        const sEvent = _.find(vm.calendar.getEvents(), e => { return e.extendedProps.id == extendedProps.id });
+
+                        sEvent.setExtendedProp('isChanged', true);
+                        updateEvents();
                 },
                 eventResizeStop: ({ el, event }) => {
                     console.log('stop', event.extendedProps);
@@ -2219,7 +2230,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             [GROUP_ID]: SELECTED,
                             extendedProps: {
                                 status: 'new',
-                                employeeId: vm.params.employee() || vm.$user.employeeId
+                                employeeId: vm.params.employee() || vm.$user.employeeId,
+                                isChanged:true
                             }
                         });
 
@@ -2286,10 +2298,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         backgroundColor,
                         extendedProps: {
                             ...extendedProps,
-                            id: randomId(),
-                            status: 'update'
+                        id: randomId(),
+                        status: 'update',
+                        isChanged: true
                         } as any
-                    });
+            });
                 },
                 datesSet: ({ start, end }) => {
                     const current = moment().startOf('day');
