@@ -69,8 +69,8 @@
                       <col style="width: 155px;"/>
                       <col style="width: 80px;"/>
                       <col style="width: 145px;"/>
-                      <col style="width: 92px;"/>
-                      <col style="width: 92px;"/>
+                      <col style="width: 112px;"/>
+                      <col style="width: 112px;"/>
                       <col style="width: 92px;"/>
                       <col style="width: 50px;"/>
                       <col style="width: 300px;"/>
@@ -132,8 +132,8 @@
                         <col style="width: 155px;"/>
                         <col style="width: 80px;"/>
                         <col style="width: 150px;"/>
-                        <col style="width: 94px;"/>
-                        <col style="width: 94px;"/>
+                        <col style="width: 114px;"/>
+                        <col style="width: 114px;"/>
                         <col style="width: 62px;"/>
                         <col style="width: 50px;"/>
                         <col style="width: 300px;"/>
@@ -147,7 +147,7 @@
                           </td>
                           <td>
                             <!-- A4_D2 -->
-                            <input data-bind="ntsTextEditor: {
+                            <input class="A4_D2" data-bind="ntsTextEditor: {
                               name: '#[OEM003_8]',
                               constraint: 'UsageItemName',
                               value: itemName,
@@ -201,7 +201,7 @@
                                 value: min,
                                 required: ko.computed(() => isNumeric() &amp;&amp; !isItemTypeNull()),
                                 enable: ko.computed(() => isNumeric() &amp;&amp; !isItemTypeNull()),
-                                option: { textalign: 'center', width: '70px' }
+                                option: { textalign: 'center', width: '90px', numberGroup: true, grouplength: 3 }
                               }"/>
                             </com:ko-if>
                             <!-- A4_D5_1 -->
@@ -213,7 +213,7 @@
                                 inputFormat: 'time',
                                 mode: 'time',
                                 required: isTime(),
-                                option: { textalign: 'center', width: '70px' }
+                                option: { textalign: 'center', width: '90px' }
                               }"/>
                             </com:ko-if>
                           </td>
@@ -226,7 +226,7 @@
                                 value: max,
                                 required: ko.computed(() => isNumeric() || isItemTypeNull()),
                                 enable: !isItemTypeNull(),
-                                option: { textalign: 'center', width: '70px' }
+                                option: { textalign: 'center', width: '90px', numberGroup: true, grouplength: 3 }
                               }"/>
                             </com:ko-if>
                             <com:ko-if bind="isTime()">
@@ -238,7 +238,7 @@
                                 inputFormat: 'time',
                                 mode: 'time',
                                 required: isTime(),
-                                option: { textalign: 'center', width: '70px' }
+                                option: { textalign: 'center', width: '90px' }
                               }"/>
                             </com:ko-if>
                             <com:ko-if bind="isCharacter()">

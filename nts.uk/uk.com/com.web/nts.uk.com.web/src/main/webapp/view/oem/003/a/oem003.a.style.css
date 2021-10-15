@@ -1,5 +1,5 @@
 .fixed-flex-layout-left {
-  width: 1090px;
+  width: 1130px;
   padding: 5px;
 }
 .fixed-flex-layout-right {
@@ -18,7 +18,7 @@ table.data-table tr td.text-area span {
   display: flex !important;
 }
 table.data-table {
-  width: 1090px;
+  width: 1130px;
 }
 table.data-table tr:not(.data-table-header) {
   height: 47px;
