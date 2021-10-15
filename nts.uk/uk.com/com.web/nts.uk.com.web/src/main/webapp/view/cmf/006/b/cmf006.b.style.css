@@ -3,13 +3,13 @@
 }
 
 .col {
-    width: 57px;
+    width: 65px;
 }
 
 .set-row {
     margin-left: -20px;
     margin-top: -8px;
-    width: 456px;
+    /*width: 475px;*/
 }
 
 #B1 {
@@ -26,7 +26,7 @@
 }
 
 .btn-function {
-    margin-left: 152px;
+    margin-left: 221px;
     margin-top: 16px;
 }
 
