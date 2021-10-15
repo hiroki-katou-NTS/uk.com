@@ -743,7 +743,7 @@ public class DailyPerformanceCorrectionProcessor {
 											}
 										}
 									}
-									if(opOuenWorkTimeSheetOfDailyAttendanceDto.isPresent() &&
+									if(opOuenWorkTimeSheetOfDailyAttendanceDto.isPresent() && opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent() != null &&
 											opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().isPresent()) {
 										switch (workFrameNo) {
 											case 1:
