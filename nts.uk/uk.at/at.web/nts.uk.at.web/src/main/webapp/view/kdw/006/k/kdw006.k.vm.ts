@@ -27,7 +27,7 @@ module nts.uk.at.view.kmk006.k {
         public historyLocals: IHistory[] = [];
         public model: WorkDetail = new WorkDetail();
         public modelHistory: HistoryInfo = new HistoryInfo();
-
+        public disable: KnockoutObservable<boolean> = ko.observable(true);
 
         created() {
             const vm = this;
@@ -37,6 +37,14 @@ module nts.uk.at.view.kmk006.k {
                 items: [25, 26, 27, 28, 29]
             }
 
+            vm.modelHistory.startDate.subscribe(() => {
+                if (ko.unwrap(ko.unwrap(vm.modelHistory).startDate) === null) {
+                    vm.disable(false);
+                    vm.screenMode(SCREEN_MODE.NOT_HISTORY);
+                } else {
+                    vm.disable(true);
+                }
+            });
             vm.selectedItemWork.subscribe((itemId: string) => {
                 vm.historys([]);
                 vm.model.update({
@@ -81,6 +89,7 @@ module nts.uk.at.view.kmk006.k {
 
             vm.isEnable = ko.observable(true);
             vm.isEditable = ko.observable(true);
+            vm.modelHistory.startDate.valueHasMutated();
         }
 
         mounted() {
@@ -237,18 +246,38 @@ module nts.uk.at.view.kmk006.k {
                                         const exist = _.find(vm.historyLocals, ((item: IHistory) => {
                                             return item.itemId === ko.unwrap(vm.selectedItemWork);
                                         }));
-
                                         if (exist) {
                                             const history = _.find(exist.dateHistoryItems, ((value: IHistoryInfo) => {
-
                                                 return value.historyId === hisId;
                                             }));
-
                                             if (history) {
                                                 vm.modelHistory.update(history);
                                             }
                                         }
                                     })
+                            })
+                    } else {
+                        vm.$ajax(API.LIST_HISTORY)
+                            .done((history: IHistory[]) => {
+                                _.forEach(history, ((item: IHistory) => {
+                                    item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
+                                }))
+                                vm.historyLocals = history;
+                            })
+                            .then(() => {
+                                const exist = _.find(vm.historyLocals, ((item: IHistory) => {
+                                    return item.itemId === ko.unwrap(vm.selectedItemWork);
+                                }));
+                                if (exist) {
+                                    const history = _.find(exist.dateHistoryItems, ((value: IHistoryInfo) => {
+                                        return value.historyId === ko.unwrap(ko.unwrap(vm.modelHistory).historyId);
+                                    }));
+                                    if (history) {
+                                        vm.modelHistory.update(history);
+                                    } else {
+                                        vm.modelHistory.update(exist.dateHistoryItems[0]);
+                                    }
+                                }
                             })
                     }
                 })
@@ -278,8 +307,6 @@ module nts.uk.at.view.kmk006.k {
                 itemId: ko.unwrap(vm.selectedItemWork)
             }
             const index = _.map(ko.unwrap(vm.historys), m => m.code).indexOf(ko.unwrap(vm.model.code));
-
-            console.log(param);
 
             vm.validate()
                 .then((valid: boolean) => {
@@ -445,14 +472,6 @@ module nts.uk.at.view.kmk006.k {
                 this.name(param.name);
                 this.externalCode(param.externalCode);
             }
-        }
-
-        public delete() {
-            this.historyId("");
-            this.itemId("");
-            this.code("");
-            this.name("");
-            this.externalCode("");
         }
     }
 }

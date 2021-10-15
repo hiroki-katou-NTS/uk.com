@@ -31,17 +31,19 @@
 							data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory, text: $i18n('KDW006_329')"></button>
 					</div>
 
-					<table tabindex="4" id="single-list" data-bind="ntsGridList: {
-						options: $vm.lstWpkHistory,
-						optionsValue: 'historyId',
-						columns: [
-							{ headerText: $i18n('KDW006_330'), prop: 'historyId', width: 0 },
-							{ headerText: $i18n('KDW006_330'), prop: 'displayText', length: 15 }
-						],
-						rows: 5,
-						value: selectedHistoryId
-					}">
-					</table>
+					<div id="single-list">
+						<table tabindex="4" data-bind="ntsGridList: {
+							options: $vm.lstWpkHistory,
+							optionsValue: 'historyId',
+							columns: [
+								{ headerText: $i18n('KDW006_330'), prop: 'historyId', width: 0 },
+								{ headerText: $i18n('KDW006_330'), prop: 'displayText', length: 15 }
+							],
+							rows: 5,
+							value: selectedHistoryId
+						}">
+						</table>
+					</div>
 				</div>
 
 				<div class="fixed-flex-layout-right">

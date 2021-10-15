@@ -109,7 +109,7 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 	public List<TaskSupInfoChoicesHistory> getAll(String companyId) {
 
 		return this.queryProxy()
-				.query("SELECT h FROM KrcmtTaskSupInfoChoicesHist h WHERE h.companyId = :companyId",
+				.query("SELECT h FROM KrcmtTaskSupInfoChoicesHist h WHERE h.companyId = :companyId ORDER BY h.startDate DESC",
 						KrcmtTaskSupInfoChoicesHist.class)
 				.setParameter("companyId", companyId).getList(m -> m.toDomain());
 	}
