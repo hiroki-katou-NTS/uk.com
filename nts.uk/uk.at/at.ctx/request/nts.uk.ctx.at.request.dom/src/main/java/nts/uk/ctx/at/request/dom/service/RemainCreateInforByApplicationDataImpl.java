@@ -171,7 +171,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case COMPLEMENT_LEAVE_APPLICATION:
 				Optional<AbsenceLeaveApp> optAbsApp = absAppRepo.findByAppId(appData.getAppID());
 				optAbsApp.ifPresent(x -> {
-					outData.setWorkTypeCode(Optional.of(getWTypeCode(x.getWorkInformation().getWorkTypeCode())));
+					outData.setWorkTypeCode(Optional.ofNullable(getWTypeCode(x.getWorkInformation().getWorkTypeCode())));
 					if(x.getWorkChangeUse().equals(NotUseAtr.USE)) {
 						outData.setWorkTimeCode(Optional.ofNullable(x.getWorkInformation().getWorkTimeCodeNotNull()
 								.map(wt ->  getWTimeCode(wt)).orElse(null)));
@@ -181,8 +181,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 
 				Optional<RecruitmentApp> recApp = recAppRepo.findByID(appData.getAppID());
 				recApp.ifPresent(y -> {
-					outData.setWorkTimeCode(Optional.of(getWTimeCode(y.getWorkInformation().getWorkTimeCode())));
-					outData.setWorkTypeCode(Optional.of(getWTypeCode(y.getWorkInformation().getWorkTypeCode())));
+					outData.setWorkTimeCode(Optional.ofNullable(getWTimeCode(y.getWorkInformation().getWorkTimeCode())));
+					outData.setWorkTypeCode(Optional.ofNullable(getWTypeCode(y.getWorkInformation().getWorkTypeCode())));
 
 				});
 
