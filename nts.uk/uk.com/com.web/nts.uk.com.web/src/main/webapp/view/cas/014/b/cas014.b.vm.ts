@@ -35,6 +35,7 @@ module nts.uk.com.view.cas014.b {
             self.selectedEmployeeCode.subscribe(function(data: any) {
                 let item = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.code == data);
                 if (item) {
+                    self.backFromCDL009 = false;
                     self.getEmployeeInfo(item.id);
                     self.selectedEmployeeName(item.name);
                     self.screenMode(ScreenMode.UPDATE);
@@ -106,10 +107,9 @@ module nts.uk.com.view.cas014.b {
                             content: tmp ? tmp.name : ""
                         }
                     }));
-
                     _.defer(() => {
                         if (_.isEmpty(self.roleSetPersonList())) {
-                            self.selectedEmployeeCode() == null ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(null);
+                        //    self.selectedEmployeeCode() == null ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(null);
                         } else {
                             if (employeeId) {
                                 const emp = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.id == employeeId);
@@ -160,7 +160,7 @@ module nts.uk.com.view.cas014.b {
         createNewRoleSetPerson() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            self.backFromCDL009 = false;
+          //  self.backFromCDL009 = false;
             self.selectedEmployeeCode(null);
         }
 
