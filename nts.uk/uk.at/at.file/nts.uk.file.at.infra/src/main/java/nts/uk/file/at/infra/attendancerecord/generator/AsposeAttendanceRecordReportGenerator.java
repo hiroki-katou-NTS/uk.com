@@ -729,7 +729,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 						: (employeeData.getClosureDay() + TextResource.localize("KWR002_237")).toString());
 
 		// Only print the first 3 periods
-		List<TempAbsenceData> tempAbsenceDatas = employeeData.getTempAbsenceDatas().subList(0, MAXIMUM_ABSENCE_PERIOD);
+		List<TempAbsenceData> tempAbsenceDatas = employeeData.getTempAbsenceDatas()
+				.subList(0, Math.min(employeeData.getTempAbsenceDatas().size(), MAXIMUM_ABSENCE_PERIOD));
 		String periodInfoText = tempAbsenceDatas.stream()
 				.map(data -> data.getTempAbsenceFrameName() + TextResource.localize("KWR002_238")
 						+ data.getPeriodStart() + TextResource.localize("KWR002_239") + data.getPeriodEnd())
