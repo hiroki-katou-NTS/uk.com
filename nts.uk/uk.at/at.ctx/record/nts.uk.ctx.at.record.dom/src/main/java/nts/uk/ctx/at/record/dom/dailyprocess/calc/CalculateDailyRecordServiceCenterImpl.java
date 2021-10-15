@@ -308,7 +308,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 
 			val itemId = attendanceItemService.getTimeAndCountItem(AttendanceItemType.DAILY_ITEM);//.stream().map(tc -> tc.getItemId()).collect(Collectors.toList());
 			val beforeChangeItemId = new ArrayList<ItemValue>(itemId);
-			List<EditStateOfDailyAttd> notReCalcItems = new ArrayList<>();
 			
 			val setting = Optional.of(commonCompanySettingForCalc.getCompanySetting());
 			
@@ -317,7 +316,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			val formula = getFormula(setting);
 			
 			integrationOfDailys.forEach(integrationOfDaily -> {
-				notReCalcItems.clear();
+				List<EditStateOfDailyAttd> notReCalcItems = new ArrayList<>();
 				itemId.clear();
 				itemId.addAll(beforeChangeItemId);
 				
