@@ -62,7 +62,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		GeneralDate endDate = application.getOpAppEndDate().isPresent() ? application.getOpAppEndDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
 		List<GeneralDate> lstDate = new DatePeriod(startDate, endDate).datesBetween();
 		if (hdSubRecLink.isPresent()) {
-		    lstDate = Arrays.asList(application.getAppDate().getApplicationDate(), hdSubRecLink.get().linkApp.getAppDate().getApplicationDate());
+//		    lstDate = Arrays.asList(application.getAppDate().getApplicationDate(), hdSubRecLink.get().linkApp.getAppDate().getApplicationDate());
+		    interimRemainDataMngRegisterDateChange.registerDateChange(
+	                companyID, 
+	                application.getEmployeeID(), 
+	                Arrays.asList(hdSubRecLink.get().linkApp.getAppDate().getApplicationDate()));
 		}
 		
 		// refactor 4
