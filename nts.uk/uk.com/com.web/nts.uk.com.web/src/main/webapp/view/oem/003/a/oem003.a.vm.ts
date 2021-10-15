@@ -55,7 +55,7 @@ module nts.uk.com.view.oem003.a {
       const data = vm.dataTables();
       data.push(vm.defaultDataTable(order));
       vm.dataTables(data);
-      $(`.data-${order} input[tabindex="6"]`).focus();
+      $(`.data-${order} .A4_D2`).focus();
     }
 
     clickExport() {
