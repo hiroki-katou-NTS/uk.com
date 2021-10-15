@@ -47,7 +47,11 @@ module nts.uk.com.view.oew001.b {
         vm.data.valueHasMutated();
       })
       .always(() => {
-        $("#B2_2").focus();
+        if (vm.data().isNewMode) {
+          $("#B2_2").focus();
+        } else {
+          $(".B2_2_1")[0].focus();
+        }
         vm.$nextTick(() => model.setReadOnly("#B2_2"));
         vm.$blockui("clear");
       });

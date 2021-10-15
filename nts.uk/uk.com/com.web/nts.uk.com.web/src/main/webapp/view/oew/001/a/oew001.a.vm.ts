@@ -133,14 +133,21 @@ module nts.uk.com.view.oew001.a {
 
     private initGrid() {
       const vm = this;
+      // Reset grid
       if ($("#A6").data("igGrid")) {
         $("#A6").ntsGrid("destroy");
       }
-      const cellStates = _.chain(vm.dataSource()).map(data => {
-        if (!data.editRecord) {
-          return new CellState(data.id, "editRecord", ['disabled']);
-        }
-      }).filter(data => !!data).value();
+      // Reset cache
+      localStorage.removeItem(model.constants.NTS_GRID_CACHE_KEY);
+      // const cellStates = _.chain(vm.dataSource()).map(data => {
+      //   if (!data.editRecord) {
+      //     return new CellState(data.id, "editRecord", ['disabled']);
+      //   }
+      // }).filter(data => !!data).value();
+      let cellStates: CellState[] = [];
+      if (!__viewContext.user.role.isInCharge.attendance) {
+        cellStates = _.map(vm.dataSource(), data => new CellState(data.id, "editRecord", ['disabled']));
+      }
       const maxWidth = _.chain(vm.columns()).map(data => Number(data.width?.substring(0, data.width.length - 2) | 0)).sum().value();
       let param: any = {
         height: '319px',
@@ -270,7 +277,7 @@ module nts.uk.com.view.oew001.a {
       vm.optionalItems(_.clone(optionalItems));
       // Create column info
       vm.columns(_.clone(vm.staticColumns));
-      _.each(optionalItems, data => vm.columns().push(vm.getColumnHeader(data.displayOrder, data.itemName, data.width)));
+      _.each(optionalItems, data => vm.columns().push(vm.getColumnHeader(data)));
     }
     
     private saveCharacteristic() {
@@ -293,12 +300,13 @@ module nts.uk.com.view.oew001.a {
       });
     }
 
-    private getColumnHeader(index: number, headerText: string, width: string): any {
-      const key = `value${index}`;
+    private getColumnHeader(data: model.OptionalItem): any {
+      const key = `value${data.displayOrder}`;
+      const headerText = nts.uk.text.isNullOrEmpty(data.unit) ? data.itemName : `${data.itemName}(${data.unit})`;
       const columnHeader = { 
         headerText: headerText, 
         template: '<div class="limited-label">${' + key + '}</div>', 
-        dataType: "String", key: `${key}`, width: width
+        dataType: "String", key: `${key}`, width: data.width
       };
       return columnHeader;
     }
