@@ -157,7 +157,7 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 			let param = self.paramData;
 			if (value != ""){
 				let idParam = _.filter(self.paramData, (x : any) => {
-					return _.includes(x, value)
+					return _.includes(x.slice(-12), value)
 				})
 				
 				if(idParam.length > 0) {
@@ -176,12 +176,18 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 					self.annLimitEnd(data.accHolidayDto.annLimitEnd);
 					
 					// ※2 , ※1
-					if (!data.accHolidayDto.annAccManaAtr)
+					if (!data.accHolidayDto.annAccManaAtr){
 						self.changeMode(true);
-					else 
+						self.showGrid(false);
+					}
+					else {
 						self.showGrid(true);
+						self.changeMode(false);
+					}
+						
 				} else {
 					self.changeMode(true);
+					self.showGrid(false);
 				}
 				if (!self.checkSub()) {
 					_.forEach(data.employeeImports, (a: any, ind) => {
@@ -200,6 +206,8 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 				
 				if (name.length > 0)
 				self.employeeCodeName(name[0].code + " " + name[0].name);
+				
+				$("#cancel-btn").focus();
 
 				nts.uk.ui.block.clear();
 				dfd.resolve();

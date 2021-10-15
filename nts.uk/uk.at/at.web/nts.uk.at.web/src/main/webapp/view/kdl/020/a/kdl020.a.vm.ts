@@ -156,7 +156,7 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 			let param = self.paramData;
 			if (value != ""){
 				let idParam = _.filter(self.paramData, (x : any) => {
-					return _.includes(x, value)
+					return _.includes(x.slice(-12), value)
 				})
 				
 				if(idParam.length > 0) {
@@ -175,17 +175,30 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 					self.annLimitEnd(data.accHolidayDto.annLimitEnd);
 					
 					// ※2 , ※1
-					if (!data.accHolidayDto.annAccManaAtr)
+					if (!data.accHolidayDto.annAccManaAtr){
 						self.changeMode(true);
-					else 
+						self.showGrid(false);
+					}
+					else {
 						self.showGrid(true);
+						self.changeMode(false);
+					}
+					
+					if (data.accHolidayDto.annLimitStart == "" && data.accHolidayDto.annLimitEnd == ""){
+						self.checkEnable(false);
+					} else {
+						self.checkEnable(true);
+					}
 					
 					// ※3	
 					if (data.accHolidayDto.annManaAtr) {
-						self.checkEnable(true);
+						$("#annual-area").show();
+					} else {
+						$("#annual-area").hide();
 					}
 				} else {
 					self.changeMode(true);
+					self.checkEnable(false);
 				}
 				if (!self.checkSub()) {
 					_.forEach(data.employeeImports, (a: any, ind) => {
@@ -204,6 +217,8 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 				
 				if (name.length > 0)
 				self.employeeCodeName(name[0].code + " " + name[0].name);
+				
+				$("#cancel-btn").focus();
 
 				nts.uk.ui.block.clear();
 				dfd.resolve();

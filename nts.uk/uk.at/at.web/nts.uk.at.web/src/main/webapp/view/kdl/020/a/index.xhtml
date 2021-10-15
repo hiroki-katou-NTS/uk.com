@@ -82,11 +82,11 @@
 								<!-- A2_15 -->
 								<label id="A2_15" data-bind="visible: checkEnable ">#{i18n.getText('KDL020_61')}</label>
 								<!-- A2_9 -->
-								<label id="start-annual" data-bind="text : annLimitStart"></label>
+								<label id="start-annual" data-bind="text : annLimitStart, visible: checkEnable"></label>
 								<!-- A2_13 -->
 								<label id="A2_13" data-bind="visible: checkEnable ">#{i18n.getText('KDL020_49')}</label>
 								<!-- A2_12 -->
-								<label id="end-annual" data-bind="text : annLimitEnd"></label>
+								<label id="end-annual" data-bind="text : annLimitEnd, visible: checkEnable"></label>
 								<!-- A2_16 -->
 								<label id="A2_16" data-bind="visible: checkEnable ">#{i18n.getText('KDL020_62')}</label>
 								</div>
@@ -117,7 +117,7 @@
 							columns: columns2,
 							multiple: false,
 							value: currentCode2,
-							rows : 5}">
+							rows : 6}">
 								</table>
 							</div>
 						</div>
