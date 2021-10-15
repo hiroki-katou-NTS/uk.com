@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -42,7 +42,7 @@ public class StampHelper {
 						false,
 						GoingOutReason.valueOf(0), 
 						SetPreClockArt.valueOf(0), 
-						ChangeClockArt.valueOf(0),
+						ChangeClockAtr.valueOf(0),
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(new WorkInformationStamp(Optional.empty(), 
 																Optional.empty(),
@@ -70,7 +70,7 @@ public class StampHelper {
 						false,
 						GoingOutReason.valueOf(0), 
 						SetPreClockArt.valueOf(0), 
-						ChangeClockArt.valueOf(0),
+						ChangeClockAtr.valueOf(0),
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(
 						new WorkInformationStamp(Optional.empty(), Optional.empty(),
@@ -88,7 +88,7 @@ public class StampHelper {
 
 	}
 	
-	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
+	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockAtr changeClockArt,GeneralDateTime dateTime) {
 		return new Stamp(new ContractCode("DUMMY"),
 				new StampNumber(stampNumber),
 				dateTime, 
@@ -120,7 +120,7 @@ public class StampHelper {
 		data.add(getStampDefault());
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
-				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
+				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockAtr.valueOf(0),
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 						Optional.of(new WorkLocationCD("workLocationCD")), 
@@ -135,7 +135,7 @@ public class StampHelper {
 				);
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
-				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
+				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockAtr.valueOf(0),
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
 						Optional.of(new WorkLocationCD("workLocationCD")), 
@@ -156,11 +156,11 @@ public class StampHelper {
 				false,
 				GoingOutReason.valueOf(0), 
 				SetPreClockArt.valueOf(0), 
-				ChangeClockArt.valueOf(0),
+				ChangeClockAtr.valueOf(0),
 				ChangeCalArt.valueOf(0));
 	}
 	public static StampType getStampTypeHaveInput(boolean changeHalfDay, GoingOutReason goOutArt, SetPreClockArt setPreClockArt,
-			ChangeClockArt changeClockArt, ChangeCalArt changeCalArt) {
+			ChangeClockAtr changeClockArt, ChangeCalArt changeCalArt) {
 		return new StampType(
 				changeHalfDay, goOutArt, setPreClockArt, changeClockArt, changeCalArt);
 	}
