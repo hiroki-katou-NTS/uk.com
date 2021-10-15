@@ -435,7 +435,9 @@ public class TimeLeaveApplicationFinder {
                     output.getAppDispInfoStartup(), 
                     new ArrayList<String>(), 
                     Optional.of(new TimeDigestionParam(over60h, nursingTime, childCareTime, subHolidayTime, annualTime, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
-                    false
+                    false, 
+                    Optional.empty(), 
+                    Optional.empty()
             );
             confirmMsgOutputs = new ArrayList<>();
         }

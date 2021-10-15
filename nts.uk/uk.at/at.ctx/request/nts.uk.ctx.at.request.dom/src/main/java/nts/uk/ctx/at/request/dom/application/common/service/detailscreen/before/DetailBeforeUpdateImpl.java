@@ -54,7 +54,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate,
 			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version, String wkTypeCode,
 			String wkTimeCode, AppDispInfoStartupOutput appDispInfoStartupOutput, List<String> workTypeCds, 
-            Optional<TimeDigestionParam> timeDigestionUsageInfor, boolean flag) {
+            Optional<TimeDigestionParam> timeDigestionUsageInfor, boolean flag, Optional<String> workTypeRemainChk, Optional<String> workTimeRemainChk) {
 		//勤務種類、就業時間帯チェックのメッセージを表示
 		displayWorkingHourCheck(companyID, wkTypeCode, wkTimeCode);
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
@@ -106,8 +106,8 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
                     application.getAppDate().getApplicationDate(), 
                     EnumAdaptor.valueOf(application.getPrePostAtr().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class), 
                     EnumAdaptor.valueOf(application.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class), 
-                    Optional.ofNullable(wkTypeCode),
-                    Optional.ofNullable(wkTimeCode), 
+                    workTypeRemainChk,
+                    workTimeRemainChk, 
                     vacationTimeInforNews, 
                     Optional.of(application.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION) && timeDigestionUsageInfor.isPresent() 
                             ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 

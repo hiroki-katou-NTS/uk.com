@@ -2182,7 +2182,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput(), 
                 Arrays.asList(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
                 Optional.of(timeDigestionParam), 
-                false);
+                false, 
+                Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
+                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 
         // 休暇申請登録時チェック処理
         List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates);

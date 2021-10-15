@@ -1213,7 +1213,9 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
                     Optional.ofNullable(timeDigestionParam), 
-                    false);
+                    false, 
+                    Optional.of(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
+                    appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 		}
 		//	遷移する前のエラーチェック
 		this.checkBeforeMoveToAppTime(companyId, appHdWorkDispInfo, appHolidayWork);
