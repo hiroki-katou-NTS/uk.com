@@ -514,22 +514,7 @@ module nts.uk.at.view.kdp005.a {
 				let vm = new ko.ViewModel();
 				var showViewL = false;
 				block.invisible();
-				let registerdata = {
-					stampedCardNumber: stampedCardNumber,
-					datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-					stampButton: {
-						pageNo: layout.pageNo,
-						buttonPositionNo: button.btnPositionNo
-					},
-					refActualResult: {
-						cardNumberSupport: null,
-						workLocationCD: self.worklocationCode,
-						workTimeCode: null,
-						overtimeDeclaration: null
-					}
-				};
-				const mode: number = 1;
-				const { employeeId, employeeCode } = employeeIdRegister;
+				const employeeId = employeeIdRegister;
 
 				let source = self.playAudio(button.audioType);
 
@@ -557,7 +542,6 @@ module nts.uk.at.view.kdp005.a {
 
 									if (result) {
 										if (result.notification !== null) {
-
 											self.workPlaceId = result;
 
 											service.getEmployeeWorkByStamping({ sid: employeeId, workFrameNo: 1, upperFrameWorkCode: '' })
@@ -639,7 +623,6 @@ module nts.uk.at.view.kdp005.a {
 														}).fail((res) => {
 															dialog.alertError({ messageId: res.messageId });
 														}).always(() => {
-															//					self.getStampToSuppress();
 															block.clear();
 														});
 													}
@@ -649,7 +632,6 @@ module nts.uk.at.view.kdp005.a {
 
 								});
 						} else {
-
 							if (dataStorage.selectedWP.length = 1) {
 								if (self.workPlaceId !== '') {
 									self.workPlaceId = dataStorage.selectedWP[0];
@@ -699,7 +681,6 @@ module nts.uk.at.view.kdp005.a {
 												}).fail((res) => {
 													dialog.alertError({ messageId: res.messageId });
 												}).always(() => {
-													//					self.getStampToSuppress();
 													block.clear();
 												});
 											})
@@ -736,7 +717,6 @@ module nts.uk.at.view.kdp005.a {
 										}).fail((res) => {
 											dialog.alertError({ messageId: res.messageId });
 										}).always(() => {
-											//					self.getStampToSuppress();
 											block.clear();
 										});
 									}
