@@ -2844,6 +2844,15 @@ public class ProgramsManager {
     public static final Program CMF005I = new Program(WebAppId.COM, ProgramIdConsts.CMF005I, "CMF005_9",
             "/view/cmf/005/i/index.xhtml");
 
+
+    /**
+     * CMF006
+     */
+    public static final Program CMF006A = new Program(WebAppId.COM, ProgramIdConsts.CMF006A, "CMF006_1",
+            "/view/cmf/006/a/index.xhtml");
+    public static final Program CMF006B = new Program(WebAppId.COM, ProgramIdConsts.CMF006B, "CMF006_2",
+            "/view/cmf/006/b/index.xhtml");
+
     /**
      * KFP001
      */

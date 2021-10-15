@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.uk.ctx.exio.dom.exo.category.*;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -33,13 +35,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringLength;
 import nts.uk.ctx.exio.dom.exo.adapter.bs.employee.PersonInfoAdapter;
 import nts.uk.ctx.exio.dom.exo.base.ItemType;
-import nts.uk.ctx.exio.dom.exo.category.Association;
-import nts.uk.ctx.exio.dom.exo.category.CategorySetting;
-import nts.uk.ctx.exio.dom.exo.category.ExOutCtg;
-import nts.uk.ctx.exio.dom.exo.category.ExOutCtgRepository;
-import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTable;
-import nts.uk.ctx.exio.dom.exo.category.ExOutLinkTableRepository;
-import nts.uk.ctx.exio.dom.exo.category.PhysicalProjectName;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemData;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.CtgItemDataRepository;
 import nts.uk.ctx.exio.dom.exo.cdconvert.CdConvertDetail;
@@ -199,6 +194,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 	private final static String END_DATE = "ENDDATE";
 	private final static String END_DATE_PARAM = "?ENDDATE";
 	private final static String BASE_DATE = "BASEDATE";
+	private final static String BASE_DATE_PARAM = "?BASEDATE";
 	private final static String SYSTEM_DATE = "SYSDATE";
 	private final static String SQL = "sql";
 	private final static String CSV = ".csv";
@@ -318,6 +314,14 @@ public class CreateExOutTextService extends ExportService<Object> {
 		int opCond = ExIoOperationState.IN_PREPARATION.value;
 		ExOutOpMng exOutOpMng = new ExOutOpMng(processingId, proCnt, errCnt, totalProCnt, doNotInterrupt, proUnit,
 				opCond);
+		Optional<ExOutCtg> exOutCtgOpt = settingResult.getExOutCtg();
+		OutingPeriodClassific outingPeriodClassific = null;
+		ClassificationToUse classificationToUse =null;
+		if(exOutCtgOpt.isPresent()){
+			val exOutCtg = exOutCtgOpt.get();
+			outingPeriodClassific = exOutCtg.getOutingPeriodClassific();
+			classificationToUse = 	exOutCtg.getClassificationToUse();
+		}
 
 		String userId = null;
 		int totalErrorCount = 0;
@@ -337,6 +341,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		GeneralDate designatedReferenceDate = exOutSetting.getReferenceDate();
 		GeneralDate specifiedEndDate = exOutSetting.getEndDate();
 		GeneralDate specifiedStartDate = exOutSetting.getStartDate();
+		if( outingPeriodClassific == OutingPeriodClassific.YEAR_MONTH){
+			specifiedEndDate = specifiedEndDate.addDays(1);
+		}
 		String codeSettingCondition = exOutSetting.getConditionSetCd();
 		Integer resultStatus = null;
 		String nameSetting = settingResult.getStdOutputCondSet() == null ? 
@@ -358,6 +365,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		ExternalOutLog externalOutLog = new ExternalOutLog(companyId, processingId, errorContent, errorTargetValue,
 				errorDate, errorEmployee, errorItem, logRegisterDateTime, logSequenceNumber, processCount,
 				processContent);
+
 
 		exOutOpMngRepo.add(exOutOpMng);
 		exterOutExecLogRepo.add(exterOutExecLog);
@@ -612,7 +620,15 @@ public class CreateExOutTextService extends ExportService<Object> {
 		StringBuilder sql = new StringBuilder();
 		String sidAlias = null;
 		List<String> keyOrderList = new ArrayList<String>();
-		
+		Optional<ExOutCtg> exOutCtgOpt = settingResult.getExOutCtg();
+		OutingPeriodClassific outingPeriodClassific = null;
+		ClassificationToUse classificationToUse =null;
+		if(exOutCtgOpt.isPresent()){
+			val exOutCtg = exOutCtgOpt.get();
+			 outingPeriodClassific = exOutCtg.getOutingPeriodClassific();
+			 classificationToUse = 	exOutCtg.getClassificationToUse();
+		}
+
 		Map<String, String> sqlAndParams = new HashMap<String, String>();
 		sqlAndParams.put(START_DATE, exOutSetting.getStartDate().toString(yyyy_MM_dd));
 		sqlAndParams.put(END_DATE, exOutSetting.getEndDate().toString(yyyy_MM_dd));
@@ -634,8 +650,9 @@ public class CreateExOutTextService extends ExportService<Object> {
 		// delete a comma after for
 		if(!ctgItemDataList.isEmpty()) {
 			sql.setLength(sql.length() - COMMA.length());
+		}else {
+			sql.append(" * ");
 		}
-		
 		sql.append(FROM_COND);
 
 		Optional<ExOutLinkTable> exOutLinkTable = settingResult.getExCndOutput();
@@ -681,9 +698,11 @@ public class CreateExOutTextService extends ExportService<Object> {
 					createWhereCondition(sql, itemName.get().v(), "=", SID_PARAM);
 				} else if (asssociation.get() == Association.DATE) {
 					if (!isDate) {
+						// 出力条件関連付　＝　7（日付(年月日)）の場合
 						isDate = true;
 						startDateItemName = itemName.get().v();
 					} else {
+						//出力条件関連付　＝　7（日付(年月日)）が２つ存在する場合
 						isOutDate = true;
 						endDateItemName = itemName.get().v();
 					}
@@ -691,11 +710,54 @@ public class CreateExOutTextService extends ExportService<Object> {
 			}
 
 			if (isOutDate) {
-				createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
-				createWhereCondition(sql, endDateItemName, " >= ", START_DATE_PARAM);
+				StringBuilder subSqlStart = new StringBuilder();
+				StringBuilder subSqlEtart = new StringBuilder();
+				//4-1．「外部出力カテゴリ．外部出期間区分」=【年月】の場合
+				//　「出力条件項目名3（開始）　≧　処理期間.開始年月（yyyyMM）
+				//　　出力条件項目名4（終了）　≦　処理期間.終了年月（yyyyMM）」
+				//　4-2．「外部出力カテゴリ．外部出期間区分」=【年月日】の場合
+				//　「出力条件項目名3（開始）　≧　処理期間.開始日付（yyyy/MM/dd）
+				//　　出力条件項目名4（終了）　≦　処理期間.終了日付（yyyy/MM/dd）」
+				//　4-3．「外部出力カテゴリ．外部出期間区分」=【基準日】の場合
+				//　「出力条件項目名3（開始）　≧　基準日（yyyy/MM/dd）
+				//　　出力条件項目名4（終了）　≦　基準日（yyyy/MM/dd）」
+				if(outingPeriodClassific == OutingPeriodClassific.YEAR_MONTH){
+					subSqlStart.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
+					subSqlEtart.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
+					subSqlStart.append(startDateItemName);
+					subSqlEtart.append(endDateItemName);
+					subSqlStart.append(" ), 0) ");
+					subSqlEtart.append(" ), 0) ");
+					createWhereCondition(sql, subSqlStart.toString(), " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, subSqlEtart.toString(), " <= ", END_DATE_PARAM);
+
+				} else if(outingPeriodClassific == OutingPeriodClassific.DATE){
+					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, endDateItemName, " <= ", END_DATE_PARAM);
+			    }else if(outingPeriodClassific == OutingPeriodClassific.REFERENCE_DATE){
+					createWhereCondition(sql, startDateItemName, " >= ", BASE_DATE_PARAM);
+					createWhereCondition(sql, endDateItemName, " <= ", BASE_DATE_PARAM);
+				}
 			} else if (isDate) {
-				createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
-				createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+				StringBuilder subSql = new StringBuilder();
+				if(outingPeriodClassific == OutingPeriodClassific.YEAR_MONTH){
+					//3-1．「外部出力カテゴリ．外部出期間区分」=【年月】の場合
+					//　「出力条件項目名　≧　処理期間.開始年月（yyyyMM）
+					//　　出力条件項目名　≦　処理期間.終了年月（yyyyMM）」
+					//    Convert to YM
+					//	  DATEADD(MONTH, DATEDIFF(MONTH, 0, <dateField>), 0)
+					subSql.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
+					subSql.append(startDateItemName);
+					subSql.append(" ), 0) ");
+					createWhereCondition(sql, subSql.toString(), " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, subSql.toString(), " <= ", END_DATE_PARAM);
+
+				}else if(outingPeriodClassific == OutingPeriodClassific.DATE){
+					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
+					createWhereCondition(sql, startDateItemName, " <= ", END_DATE_PARAM);
+				}else if(outingPeriodClassific == OutingPeriodClassific.REFERENCE_DATE){
+					createWhereCondition(sql, startDateItemName, " = ", BASE_DATE_PARAM);
+				}
 			}
 
 			if (exOutLinkTable.get().getConditions().isPresent()
