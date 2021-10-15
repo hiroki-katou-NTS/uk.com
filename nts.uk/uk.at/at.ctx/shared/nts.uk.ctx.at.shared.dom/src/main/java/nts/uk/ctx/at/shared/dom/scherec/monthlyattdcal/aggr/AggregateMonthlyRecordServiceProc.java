@@ -1125,7 +1125,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param attendanceTime 月別実績の勤怠時間
 	 * @return 月別実績の勤怠時間
 	 */
-	private AttendanceTimeOfMonthly recalcAttendanceTime(AttendanceTimeOfMonthly attendanceTime) {
+	public static AttendanceTimeOfMonthly recalcAttendanceTime(AttendanceTimeOfMonthly attendanceTime) {
 
 		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
 

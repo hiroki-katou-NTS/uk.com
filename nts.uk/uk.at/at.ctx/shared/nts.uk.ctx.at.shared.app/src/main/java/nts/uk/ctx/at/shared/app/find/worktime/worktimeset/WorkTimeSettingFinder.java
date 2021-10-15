@@ -426,4 +426,66 @@ public class WorkTimeSettingFinder {
 
     }
 
+	/**
+	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDLS01_就業時間帯選択（スマホ）.A：就業時間帯選択.アルゴリズム.起動時処理.起動時処理
+     * @param workTimeCodes : 選択可能な就業時間帯
+     * @param workTimeSelected : 選択状態の就業時間帯
+     * @param workplaceID : 対象の勤務種類
+     * @param referenceDate : 基準日
+     * @param display : なしを表示するか
+     * @return
+     */
+	public List<WorkTimeDto> findByCodeKDLS01(List<String> workTimeCodes, String workTimeSelected, String workplaceID, String referenceDate, boolean display) {
+		
+		String companyID = AppContexts.user().companyId();
+		List<WorkTimeDto> result = new ArrayList<>();
+
+		// 起動時のParameter．なしを表示するかをチェックする (Check なしを表示するか/hiển thị なし của Parameter khi khởi động )
+		if(display){
+			// 先頭に「選択なし」を追加する / Add 「選択なし/không chọn」 vào đầu
+			result.add(new WorkTimeDto("", "選択なし", "", "", "", "", 0, 0, 0, 0));
+		}
+		
+		// ver3対応 : 会社で使用できる就業時間帯を全件を取得する
+        List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(AppContexts.user().companyId()).stream()
+                .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
+                .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
+		
+        List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository
+                .findByCompanyID(companyID);
+        // 全件の就業時間帯: AllWorkHours
+        List<WorkTimeDto> allWorkTime = new ArrayList<>(getWorkTimeDtos(listWorkTime, workTimeSetItems));
+        result.addAll(allWorkTime);
+		//起動時のParameter．選択可能な就業時間帯をチェックする
+        // 就業時間帯の指定が0件の場合
+		if (workTimeCodes.isEmpty() || workTimeCodes == null ) { 
+			if (referenceDate != null) {
+				
+				// 「職場IDから職場別就業時間帯を取得」
+				List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, workplaceID);
+
+				if (listWorkTimeItem.isEmpty())
+					throw new BusinessException("Msg_1525");
+
+				List<PredetemineTimeSetting> predetemineTimeSettingList = this.predetemineTimeSettingRepository
+						.findByCompanyID(companyID);
+				result = new ArrayList<>();
+				if(display){
+					// 先頭に「選択なし」を追加する / Add 「選択なし/không chọn」 vào đầu
+					result.add(new WorkTimeDto("", "選択なし", "", "", "", "", 0, 0, 0, 0));
+				}
+				result = getWorkTimeDtos(listWorkTimeItem, predetemineTimeSettingList);
+			} else {
+				throw new BusinessException("Msg_1525");
+				
+			}
+		} else {
+			
+			result = result.stream().filter(i -> workTimeCodes.contains(i.code)  ||  i.code == "").collect(Collectors.toList());
+			
+		}
+		
+		return result; 
+	}
+
 }

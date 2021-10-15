@@ -58,6 +58,7 @@ module nts.uk.com.view.cdl027.a.viewmodel {
             block.grayout();
             service.getLogInfor(self.formatParams()).done((result: Array<any>) => {
                 if (result && result.length) {
+					result = _.sortBy(result, [function(o) { return o.modifiedDateTime; }]).reverse();
                     for (var i = 0; i < result.length; i++) {
                         let r = result[i];
                         self.items.push(new DataCorrectionLog(

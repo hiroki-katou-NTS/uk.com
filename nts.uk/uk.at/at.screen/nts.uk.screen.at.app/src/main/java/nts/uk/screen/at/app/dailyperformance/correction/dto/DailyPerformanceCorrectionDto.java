@@ -19,6 +19,7 @@ import org.apache.xml.security.utils.I18n;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyPerformanceCodeDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -69,6 +70,8 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	private List<DPDataDto> lstData;
 
 	private List<DailyPerformanceAuthorityDto> authorityDto;
+	
+	private DailyPerformanceCodeDto dailyPerformanceCodeDto;
 
 	private String employmentCode;
 	
