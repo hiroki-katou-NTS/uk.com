@@ -86,9 +86,9 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 
 			//Number of grants Heda
 			self.columns = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL020_52'), key: 'grandDate', width: 115 },
-				{ headerText: nts.uk.resource.getText('KDL020_53'), key: 'numbergrants', width: 115 },
-				{ headerText: nts.uk.resource.getText('KDL020_54'), key: 'numberuses', width: 115 },
+				{ headerText: nts.uk.resource.getText('KDL020_52'), key: 'granddate', width: 125 },
+				{ headerText: nts.uk.resource.getText('KDL020_53'), key: 'numbergrants', width: 110 },
+				{ headerText: nts.uk.resource.getText('KDL020_54'), key: 'numberuses', width: 110 },
 				{ headerText: nts.uk.resource.getText('KDL020_55'), key: 'remaining', width: 115 },
 				{ headerText: nts.uk.resource.getText('KDL020_56'), key: 'expirationdate', width: 135 }
 			]);
@@ -409,13 +409,13 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 	}
 	
 	class HolidayInfo {
-		grantdate: string;
+		granddate: string;
 		numbergrants: string;
 		numberuses: string;
 		remaining: string;
 		expirationdate: string;
-		constructor(grantdate: string, numbergrants: string, numberuses: string, remaining: string, expirationdate: string) {
-			this.grantdate = grantdate;
+		constructor(granddate: string, numbergrants: string, numberuses: string, remaining: string, expirationdate: string) {
+			this.granddate = granddate;
 			this.numbergrants = numbergrants;
 			this.numberuses = numberuses;
 			this.remaining = remaining;
