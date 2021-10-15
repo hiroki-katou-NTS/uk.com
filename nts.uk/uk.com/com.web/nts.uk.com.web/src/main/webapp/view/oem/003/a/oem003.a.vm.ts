@@ -107,6 +107,7 @@ module nts.uk.com.view.oem003.a {
       });
 
       vm.dataTables(filterArr);
+      _.forEach(vm.dataTables(), data => data.itemNo.valueHasMutated());
 
       if (deleteOrder > 0 && deleteOrder <= vm.dataTables().length) {
         $(`.data-${deleteOrder} input[tabindex="6"]`).focus();
