@@ -362,12 +362,7 @@ module nts.uk.at.view.kdp005.a {
 					if (ICCard && ICCard != '') {
 						block.grayout();
 						vm.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-							vm.authentic(employeeId).done(() => {
-								vm.registerData(btn, layout, ICCard, employeeId);
-							}).fail((errorMessage: string) => {
-								setShared("errorMessage", errorMessage);
-								vm.openIDialog();
-							});
+							vm.registerData(btn, layout, ICCard, employeeId);
 						}).fail(() => {
 							vm.openIDialog();
 						}).always(() => {
@@ -397,32 +392,6 @@ module nts.uk.at.view.kdp005.a {
 				return dfd.promise();
 			}
 
-			//<<ScreenQuery>> 打刻入力社員の認証のみを行う
-			public authentic(employeeId: string): JQueryPromise<any> {
-				let self = this;
-				let dfd = $.Deferred<any>();
-				let param = {
-					companyId: self.loginInfo.companyId,
-					employeeCode: null,
-					employeeId: employeeId,
-					password: null,
-					passwordInvalid: true,
-					isAdminMode: false,
-					runtimeEnvironmentCreat: false
-				};
-				service.authenticateOnlyStamped(param).done((res) => {
-					if (res.result) {
-						dfd.resolve();
-					} else {
-						dfd.reject(res.errorMessage);
-					}
-				}).fail((res) => {
-					setShared("errorMessage", getMessage(res.messageId));
-					self.openIDialog();
-				});
-				return dfd.promise();
-			}
-
 			playAudio(audioType: number) {
 				const url = {
 					oha: '../../share/voice/0_oha.mp3',
@@ -448,12 +417,7 @@ module nts.uk.at.view.kdp005.a {
 					if (ICCard && ICCard != '') {
 						block.grayout();
 						self.getEmployeeIdByICCard(ICCard).done((employeeId: string) => {
-							self.authentic(employeeId).done(() => {
-								vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId });
-							}).fail((errorMessage: string) => {
-								setShared("errorMessage", errorMessage);
-								self.openIDialog();
-							});
+							vm.$window.modal('at', '/view/kdp/003/s/index.xhtml', { employeeId: employeeId });
 						}).fail(() => {
 							self.openIDialog();
 						}).always(() => {
