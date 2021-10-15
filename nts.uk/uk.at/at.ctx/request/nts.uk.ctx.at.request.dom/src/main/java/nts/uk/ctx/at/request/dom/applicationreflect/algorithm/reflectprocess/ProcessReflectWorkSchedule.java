@@ -55,7 +55,7 @@ public class ProcessReflectWorkSchedule {
 		}
 
 		// 勤務予定に反映
-		Pair<ReflectStatusResult, AtomTask> result = require.process(ConvertApplicationToShare.toAppliction(application), targetDate,
+		Pair<ReflectStatusResult, AtomTask> result = require.process(ConvertApplicationToShare.toAppliction(application, targetDate), targetDate,
 				statusWorkSchedule,
 				appReFlectExec.get().getApplyBeforeWorkSchedule().value);
 		return Pair.of(statusResult(result.getLeft(), statusWorkSchedule), Optional.of(result.getRight()));

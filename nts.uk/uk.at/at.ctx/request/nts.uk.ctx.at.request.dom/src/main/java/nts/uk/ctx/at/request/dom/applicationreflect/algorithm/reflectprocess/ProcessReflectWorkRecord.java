@@ -46,7 +46,7 @@ public class ProcessReflectWorkRecord {
 		GeneralDateTime reflectTime = GeneralDateTime.now();
 		// 勤務実績に反映 -- in process
 		Pair<ReflectStatusResult, Optional<AtomTask>> result = require
-				.processWork(ConvertApplicationToShare.toAppliction(application), targetDate, statusWorkRecord, reflectTime);
+				.processWork(ConvertApplicationToShare.toAppliction(application, targetDate), targetDate, statusWorkRecord, reflectTime);
 		result.getRight().ifPresent(x -> tasks.add(x));
 		// 申請理由の反映-- in process chua co don xin lam them
 		Optional<AtomTask> task = ReflectApplicationReason.reflectReason(require, application, targetDate, reflectTime);
