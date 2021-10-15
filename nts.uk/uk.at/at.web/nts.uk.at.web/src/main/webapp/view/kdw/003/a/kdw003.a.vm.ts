@@ -5063,7 +5063,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let findWkpParam = {
                         companyId: __viewContext.user.companyId, 
                         wkpCode: workplaceCode, 
-                        baseDate: dateParam2
+                        baseDate: moment(dateParam2).format("YYYY/MM/DD")
                     };
 
                     $.when(service.findWplIDByCode(findWkpParam), service.findAllCodeName(param2)).done((res1, res2) => {
