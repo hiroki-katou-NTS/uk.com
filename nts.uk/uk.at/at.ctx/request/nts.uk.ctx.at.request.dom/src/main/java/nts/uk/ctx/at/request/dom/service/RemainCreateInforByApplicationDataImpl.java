@@ -46,6 +46,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -145,15 +147,15 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case WORK_CHANGE_APPLICATION:
 				Optional<AppWorkChange> workChange = workChangeService.findbyID(cid, appData.getAppID());
 				workChange.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getOpWorkTimeCD().map(time -> time.v()));
-					outData.setWorkTypeCode(x.getOpWorkTypeCD().map(type -> type.v()));
+					outData.setWorkTimeCode(x.getOpWorkTimeCD().map(time -> getWTimeCode(time)));
+					outData.setWorkTypeCode(x.getOpWorkTypeCD().map(type -> getWTypeCode(type)));
 				});
 				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				Optional<GoBackDirectly> goBack = goBackRepo.find(cid, appData.getAppID());
 				goBack.ifPresent(x -> {
-					outData.setWorkTimeCode(x.getDataWork().map(dw -> dw.getWorkTimeCode().v()));
-					outData.setWorkTypeCode(x.getDataWork().map(dw-> dw.getWorkTypeCode().v()));
+					outData.setWorkTimeCode(x.getDataWork().map(dw -> getWTimeCode(dw.getWorkTimeCode())));
+					outData.setWorkTypeCode(x.getDataWork().map(dw-> getWTypeCode(dw.getWorkTypeCode())));
 				});
 				break;
 			case ABSENCE_APPLICATION:
@@ -169,18 +171,18 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case COMPLEMENT_LEAVE_APPLICATION:
 				Optional<AbsenceLeaveApp> optAbsApp = absAppRepo.findByAppId(appData.getAppID());
 				optAbsApp.ifPresent(x -> {
-					outData.setWorkTypeCode(Optional.of(x.getWorkInformation().getWorkTypeCode().v()));
+					outData.setWorkTypeCode(Optional.of(getWTypeCode(x.getWorkInformation().getWorkTypeCode())));
 					if(x.getWorkChangeUse().equals(NotUseAtr.USE)) {
 						outData.setWorkTimeCode(Optional.ofNullable(x.getWorkInformation().getWorkTimeCodeNotNull()
-								.map(wt -> wt == null ? null : wt.v()).orElse(null)));
+								.map(wt ->  getWTimeCode(wt)).orElse(null)));
 					}
 
 				});
 
 				Optional<RecruitmentApp> recApp = recAppRepo.findByID(appData.getAppID());
 				recApp.ifPresent(y -> {
-					outData.setWorkTimeCode(Optional.of(y.getWorkInformation().getWorkTimeCode().v()));
-					outData.setWorkTypeCode(Optional.of(y.getWorkInformation().getWorkTypeCode().v()));
+					outData.setWorkTimeCode(Optional.of(getWTimeCode(y.getWorkInformation().getWorkTimeCode())));
+					outData.setWorkTypeCode(Optional.of(getWTypeCode(y.getWorkInformation().getWorkTypeCode())));
 
 				});
 
@@ -191,8 +193,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				Integer appOvertimeTimeTotal = 0;
 				if(overTimeData.isPresent()){
 					AppOverTime x = overTimeData.get();
-					outData.setWorkTimeCode(x.getWorkInfoOp().map(wrk -> wrk.getWorkTimeCode().v()));
-					outData.setWorkTypeCode(x.getWorkInfoOp().map(wrk -> wrk.getWorkTypeCode().v()));
+					outData.setWorkTimeCode(x.getWorkInfoOp().map(wrk -> getWTimeCode(wrk.getWorkTimeCode())));
+					outData.setWorkTypeCode(x.getWorkInfoOp().map(wrk -> getWTypeCode(wrk.getWorkTypeCode())));
 					//申請休出時間合計を設定する
 					appBreakTimeTotal = x.getApplicationTime()
 								.getApplicationTime()
@@ -221,8 +223,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				Integer overtimeTimeTotal = 0;
 				if(holidayWork.isPresent()) {
 					AppHolidayWork x = holidayWork.get();
-					outData.setWorkTimeCode(Optional.ofNullable(x.getWorkInformation().getWorkTimeCode().v()));
-					outData.setWorkTypeCode(Optional.ofNullable(x.getWorkInformation().getWorkTypeCode().v()));
+					outData.setWorkTimeCode(Optional.ofNullable(getWTimeCode(x.getWorkInformation().getWorkTimeCode())));
+					outData.setWorkTypeCode(Optional.ofNullable(getWTypeCode(x.getWorkInformation().getWorkTypeCode())));
 					//申請休出時間合計を設定する
 					breakTimeTotal = x.getApplicationTime()
 							.getApplicationTime()
@@ -258,10 +260,8 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				this.businessTripRepo.findByAppId(cid, appData.getAppID()).ifPresent(x -> {
 					if (!x.getInfos().isEmpty()) {
 						WorkInformation wrkInfo =  x.getInfos().get(0).getWorkInformation();
-						outData.setWorkTimeCode(
-								wrkInfo.getWorkTimeCode() == null ? Optional.empty() : Optional.of(wrkInfo.getWorkTimeCode().v()));
-						outData.setWorkTypeCode(
-								wrkInfo.getWorkTypeCode() == null ? Optional.empty() : Optional.of(wrkInfo.getWorkTypeCode().v()));
+						outData.setWorkTimeCode(Optional.of(getWTimeCode(wrkInfo.getWorkTimeCode())));
+						outData.setWorkTypeCode(Optional.of(getWTypeCode(wrkInfo.getWorkTypeCode())));
 					}
 				});
 				break;
@@ -273,6 +273,12 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		return lstOutputData;
 	}
 
+	private String getWTypeCode(WorkTypeCode workTypeCode) {
+		return workTypeCode == null ? null : workTypeCode.v();
+	}
+	private String getWTimeCode(WorkTimeCode workTimeCode) {
+		return workTimeCode == null ? null : workTimeCode.v();
+	}
 	private Optional<TimeDigestionUsageInfor> fromTimeDegest(TimeDigestApplication time) {
 		return Optional.ofNullable(new TimeDigestionUsageInfor(
 				time.getTimeAnnualLeave() == null ? null : time.getTimeAnnualLeave().v(),
