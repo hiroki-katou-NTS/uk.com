@@ -499,37 +499,11 @@ module nts.uk.ui.at.kdw013.a {
             vm
                 .$blockui('grayout')
                 .then(() => vm.$ajax('at', API.START))
+                .fail(function(error) {
+                    vm.$dialog.error({ messageId: error.messageId });
+                })
                 .then((response: StartProcessDto) => {
-                    // 作業利用設定チェック
-                    if (!response) {
-                        return vm.$dialog.error({ messageId: 'Msg_1960' });
-                    }
 
-                    const { startManHourInputResultDto } = response;
-
-                    if (!startManHourInputResultDto) {
-                        return vm.$dialog.error({ messageId: 'Msg_1960' });
-                    }
-
-                    const { taskFrameUsageSetting, tasks } = startManHourInputResultDto;
-
-                    if (!taskFrameUsageSetting) {
-                        return vm.$dialog.error({ messageId: 'Msg_1960' });
-                    }
-
-                    const { frameSettingList } = taskFrameUsageSetting;
-                    
-                    frameSettingList  = _.filter(frameSettingList, ['useAtr', 1]);
-
-                    if (!frameSettingList || frameSettingList.length === 0) {
-                        return vm.$dialog.error({ messageId: 'Msg_1960' });
-                    }
-
-                    // 作業マスタチェック
-                    if (!tasks || tasks.length === 0) {
-                        return vm.$dialog.error({ messageId: 'Msg_1961' });
-                    }
-                    
                     vm.$window
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
@@ -540,7 +514,7 @@ module nts.uk.ui.at.kdw013.a {
                                 vm.slotDuration(value.slotDuration || 30);
                             }
                         });
-                
+
 
                     vm.$settings(response);
                 })

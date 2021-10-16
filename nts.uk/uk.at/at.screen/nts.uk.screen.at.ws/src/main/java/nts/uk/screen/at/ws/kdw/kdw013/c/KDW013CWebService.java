@@ -22,7 +22,7 @@ import nts.uk.screen.at.ws.kdw.kdw013.StartWorkInputPanelDto;
  * @author thanhpv
  *
  */
-@Path("screen/at/kdw013/c")
+@Path("screen/at/kdw013")
 @Produces(MediaType.APPLICATION_JSON)
 public class KDW013CWebService {
 
@@ -40,7 +40,7 @@ public class KDW013CWebService {
 	 * @<ScreenQuery>作業データマスタ情報を取得する
 	 */
 	@POST
-	@Path("start")
+	@Path("common/start")
 	public WorkDataMasterInformationDto start(StartParamDto param) {
 		return getWorkDataMasterInformation.get(param.refDate, param.itemIds);
 	}
