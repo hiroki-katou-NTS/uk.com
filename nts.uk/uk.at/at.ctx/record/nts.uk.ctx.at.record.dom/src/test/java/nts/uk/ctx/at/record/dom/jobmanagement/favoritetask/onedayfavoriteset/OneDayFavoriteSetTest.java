@@ -32,5 +32,19 @@ public class OneDayFavoriteSetTest {
 		
 		NtsAssert.invokeGetters(set);
 	}
+	
+	@Test
+	public void testAddOneDayFavSet() {
+		List<TaskContentForEachSupportFrame> taskContents = new ArrayList<>();
+		taskContents.add(new TaskContentForEachSupportFrame(new SupportFrameNo(1), new TaskContent(1, new WorkCode("123"))));
+		
+		List<TaskBlockDetailContent> taskBlockDetailContents = new ArrayList<>();
+		TaskBlockDetailContent content = new TaskBlockDetailContent(new TimeWithDayAttr(1), new TimeWithDayAttr(2), taskContents);
+		
+		taskBlockDetailContents.add(content);
+		OneDayFavoriteSet set = OneDayFavoriteSet.addOneDayFavSet("sId", new FavoriteTaskName("name"), taskBlockDetailContents);
+		set.setTaskName(new FavoriteTaskName("name1"));
+		NtsAssert.invokeGetters(set);
+	}
 
 }

@@ -118,7 +118,46 @@ module nts.uk.ui.at.kdw013 {
 		
 		//List<工数実績項目>
 		manHourRecordItems: ManHourRecordItemDto[];
+		
+		//List<日次の勤怠項目>
+		attendanceItems: DailyAttendanceItemDto[];
+	
+		//List<工数実績項目と勤怠項目の紐付け>
+		manHourRecordAndAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto[];
+		
     };
+
+	export type DailyAttendanceItemDto = {
+		/* 勤怠項目ID */
+		 attendanceItemId: number;
+	
+		/* 勤怠項目名称 */
+		 attendanceName: string;
+	
+		/* 表示番号 */
+		 displayNumber: number;
+	
+		/* ユーザーが値を変更できる */
+		 userCanUpdateAtr: number;
+	
+		/* 勤怠項目属性 */
+		 dailyAttendanceAtr: number;
+	
+		/* 名称の改行位置*/
+		 nameLineFeedPosition: number;
+	}
+	
+	export type ManHourRecordAndAttendanceItemLinkDto = {
+		/** 応援勤務枠No*/
+		frameNo: number;
+		
+		/** 工数実績項目ID*/
+		itemId: number;
+		
+		/** 勤怠項目ID*/
+		attendanceItemId: number;
+	}
+
 
 	export type ManHourRecordItemDto = {
 		/** 項目ID*/

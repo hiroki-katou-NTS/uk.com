@@ -28,7 +28,7 @@ public class RegisterOneDayFavoriteTaskService {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
 		// $追加お気に入り = 1日お気に入り作業セット#新規追加(社員ID, 名称, お気に入り内容)
-		OneDayFavoriteSet favSet = new OneDayFavoriteSet(employeeId, taskName, contents);
+		OneDayFavoriteSet favSet = OneDayFavoriteSet.addOneDayFavSet(employeeId, taskName, contents);
 
 		// $追加お気に入り.お気に入りID
 		String newFavId = favSet.getFavId();

@@ -30,19 +30,39 @@ public class FavoriteTaskDisplayOrderTest {
 	@Test
 	public void testAdd() {
 		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
-		displayOrders.add(new FavoriteDisplayOrder("favId", 1));
+		displayOrders.add(new FavoriteDisplayOrder("favId1", 1));
+		displayOrders.add(new FavoriteDisplayOrder("favId2", 2));
+		displayOrders.add(new FavoriteDisplayOrder("favId3", 3));
 
 		FavoriteTaskDisplayOrder order = new FavoriteTaskDisplayOrder(employeeId, displayOrders);
 
-		order.add("favId1");
+		order.add("favId");
 
-		assertThat(order.getDisplayOrders().size()).isEqualTo(2);
+		assertThat(order.getDisplayOrders().size()).isEqualTo(4);
+		
+		for (FavoriteDisplayOrder o : displayOrders) {
+			if (o.getFavId() == "favId") {
+				assertThat(o.getOrder()).isEqualTo(1);
+			}
+			
+			if (o.getFavId() == "favId1") {
+				assertThat(o.getOrder()).isEqualTo(2);
+			}
+			
+			if (o.getFavId() == "favId2") {
+				assertThat(o.getOrder()).isEqualTo(3);
+			}
+			
+			if (o.getFavId() == "favId3") {
+				assertThat(o.getOrder()).isEqualTo(4);
+			}
+		}
 	}
 
 	@Test
 	public void test02() {
 
-		FavoriteTaskDisplayOrder addOrder = new FavoriteTaskDisplayOrder(employeeId, "favId1");
+		FavoriteTaskDisplayOrder addOrder = FavoriteTaskDisplayOrder.addNewFavTaskDisporder(employeeId, "favId1");
 
 		assertThat(addOrder.getDisplayOrders().size()).isEqualTo(1);
 	}
@@ -71,6 +91,17 @@ public class FavoriteTaskDisplayOrderTest {
 		order.delete("favId2");
 		
 		assertThat(order.getDisplayOrders().size()).isEqualTo(2);
+		
+		for (FavoriteDisplayOrder o : displayOrders) {
+			if (o.getFavId() == "favId3") {
+				assertThat(o.getOrder()).isEqualTo(2);
+			}
+			
+			if (o.getFavId() == "favId1") {
+				assertThat(o.getOrder()).isEqualTo(1);
+			}
+			
+		}
 	}
 	
 	@Test
@@ -97,9 +128,26 @@ public class FavoriteTaskDisplayOrderTest {
 		displayOrders.add(new FavoriteDisplayOrder("favId4", 4));
 		
 		FavoriteTaskDisplayOrder order = new FavoriteTaskDisplayOrder("employeeId3", displayOrders);
-		order.changeOrder("favId4", 1, 3);
+		order.changeOrder("favId4", 4, 2);
 		
-		assertThat(order.getDisplayOrders().stream().filter(f -> f.getFavId() == "favId4").findAny().get().getOrder()).isEqualTo(3);
+		for (FavoriteDisplayOrder o : displayOrders) {
+			if (o.getFavId() == "favId4") {
+				assertThat(o.getOrder()).isEqualTo(2);
+			}
+			
+			if (o.getFavId() == "favId1") {
+				assertThat(o.getOrder()).isEqualTo(1);
+			}
+			
+			if (o.getFavId() == "favId2") {
+				assertThat(o.getOrder()).isEqualTo(3);
+			}
+			
+			if (o.getFavId() == "favId3") {
+				assertThat(o.getOrder()).isEqualTo(4);
+			}
+		}
+	
 	}
 	
 	@Test
@@ -112,9 +160,25 @@ public class FavoriteTaskDisplayOrderTest {
 		displayOrders.add(new FavoriteDisplayOrder("favId4", 4));
 		
 		FavoriteTaskDisplayOrder order = new FavoriteTaskDisplayOrder("employeeId4", displayOrders);
-		order.changeOrder("favId4", 1, 1);
+		order.changeOrder("favId4", 4, 4);
 		
-		assertThat(order.getDisplayOrders().stream().filter(f -> f.getFavId() == "favId4").findAny().get().getOrder()).isEqualTo(4);
+		for (FavoriteDisplayOrder o : displayOrders) {
+			if (o.getFavId() == "favId4") {
+				assertThat(o.getOrder()).isEqualTo(4);
+			}
+			
+			if (o.getFavId() == "favId1") {
+				assertThat(o.getOrder()).isEqualTo(1);
+			}
+			
+			if (o.getFavId() == "favId2") {
+				assertThat(o.getOrder()).isEqualTo(2);
+			}
+			
+			if (o.getFavId() == "favId3") {
+				assertThat(o.getOrder()).isEqualTo(3);
+			}
+		}
 	}
 	
 	@Test
@@ -127,9 +191,61 @@ public class FavoriteTaskDisplayOrderTest {
 		displayOrders.add(new FavoriteDisplayOrder("favId4", 4));
 		
 		FavoriteTaskDisplayOrder order = new FavoriteTaskDisplayOrder("employeeId5", displayOrders);
-		order.changeOrder("favId4", 3, 2);
+		order.changeOrder("favId3", 3, 4);
 		
-		assertThat(order.getDisplayOrders().stream().filter(f -> f.getFavId() == "favId4").findAny().get().getOrder()).isEqualTo(2);
+		for (FavoriteDisplayOrder o : displayOrders) {
+			if (o.getFavId() == "favId4") {
+				assertThat(o.getOrder()).isEqualTo(3);
+			}
+			
+			if (o.getFavId() == "favId1") {
+				assertThat(o.getOrder()).isEqualTo(1);
+			}
+			
+			if (o.getFavId() == "favId2") {
+				assertThat(o.getOrder()).isEqualTo(2);
+			}
+			
+			if (o.getFavId() == "favId3") {
+				assertThat(o.getOrder()).isEqualTo(4);
+			}
+		}
+	}
+	
+	@Test
+	public void testChangeOrder4() {
+
+		List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
+		displayOrders.add(new FavoriteDisplayOrder("favId1", 1));
+		displayOrders.add(new FavoriteDisplayOrder("favId2", 2));
+		displayOrders.add(new FavoriteDisplayOrder("favId3", 3));
+		displayOrders.add(new FavoriteDisplayOrder("favId4", 4));
+		displayOrders.add(new FavoriteDisplayOrder("favId5", 5));
+		
+		FavoriteTaskDisplayOrder order = new FavoriteTaskDisplayOrder("employeeId5", displayOrders);
+		order.changeOrder("favId1", 1, 4);
+		
+		for (FavoriteDisplayOrder o : displayOrders) {
+			if (o.getFavId() == "favId4") {
+				assertThat(o.getOrder()).isEqualTo(3);
+			}
+			
+			if (o.getFavId() == "favId1") {
+				assertThat(o.getOrder()).isEqualTo(4);
+			}
+			
+			if (o.getFavId() == "favId2") {
+				assertThat(o.getOrder()).isEqualTo(1);
+			}
+			
+			if (o.getFavId() == "favId3") {
+				assertThat(o.getOrder()).isEqualTo(2);
+			}
+			
+			if (o.getFavId() == "favId5") {
+				assertThat(o.getOrder()).isEqualTo(5);
+			}
+		}
 	}
 
 }

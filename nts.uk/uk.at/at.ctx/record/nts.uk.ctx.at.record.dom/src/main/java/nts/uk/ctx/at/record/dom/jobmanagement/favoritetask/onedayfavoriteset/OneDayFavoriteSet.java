@@ -53,13 +53,9 @@ public class OneDayFavoriteSet extends AggregateRoot {
 	 * @param taskName
 	 * @param taskBlockDetailContents
 	 */
-	public OneDayFavoriteSet(String sId, FavoriteTaskName taskName,
+	public static OneDayFavoriteSet addOneDayFavSet(String sId, FavoriteTaskName taskName,
 			List<TaskBlockDetailContent> taskBlockDetailContents) {
-		super();
-		this.sId = sId;
-		this.taskName = taskName;
-		this.taskBlockDetailContents = taskBlockDetailContents;
-		this.favId = IdentifierUtil.randomUniqueId();
+		return new OneDayFavoriteSet(sId, IdentifierUtil.randomUniqueId(), taskName, taskBlockDetailContents);
 	}
 	
 }
