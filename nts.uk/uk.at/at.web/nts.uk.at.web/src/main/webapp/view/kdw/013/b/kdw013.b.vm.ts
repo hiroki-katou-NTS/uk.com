@@ -12,23 +12,6 @@ module nts.uk.ui.at.kdw013.b {
     const { getTimeOfDate, number2String } = share;
 
     @handler({
-        bindingName: 'content',
-        validatable: true,
-        virtual: false
-    })
-    export class ContentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLElement, valueAccessor: () => KeyValue) {
-            const { key, value } = valueAccessor();
-
-            if (key !== 'KDW013_29') {
-                $(element).text(value);
-            } else {
-                $(element).append($('<div>', { text: value }));
-            }
-        }
-    }
-
-    @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,
         virtual: false
