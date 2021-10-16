@@ -217,7 +217,7 @@ module nts.uk.ui.at.kdw013.b {
 			taskDetail.taskItemValues = _.filter(taskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId > 9);
 			
 			// cho vao day de sap xep
-			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data.attendanceItems, data.manHourRecordAndAttendanceItemLink);
+			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data);
 			
 			_.forEach(manHrTaskDetail.taskItemValues(), (item: TaskItemValue) => {
 				
@@ -231,7 +231,7 @@ module nts.uk.ui.at.kdw013.b {
 						}else{
 							items.push({key: infor.name, value: item.value() + ' ' + getText('KDW013_40')});
 						}
-					}else{
+					}else if(item.itemId >= 25 && item.itemId >= 29){
 						let taskSupInfoChoicesDetail : TaskSupInfoChoicesDetailDto[] = _.filter(data.taskSupInfoChoicesDetails, i => i.itemId == item.itemId);
 						if(taskSupInfoChoicesDetail && taskSupInfoChoicesDetail.length > 0){
 							let selected = _.find(taskSupInfoChoicesDetail, w => w.code == item.value());
@@ -241,7 +241,9 @@ module nts.uk.ui.at.kdw013.b {
 								items.push({key: infor.name, value:  item.value() + ' ' + getText('KDW013_40')});
 							}
 						}
-					}	
+					}else{
+						items.push({key: infor.name, value:  item.value() });	
+					}
 				}
 			});
 			

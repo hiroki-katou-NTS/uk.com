@@ -905,7 +905,7 @@ module nts.uk.ui.at.kdw013.c {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
 		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[]) {
-			super(manHrTaskDetail);
+			super(manHrTaskDetail, data);
 			const vm = this;
 			vm.itemBeforChange = manHrTaskDetail.taskItemValues;
 			vm.employeeId = employeeId;
@@ -987,7 +987,7 @@ module nts.uk.ui.at.kdw013.c {
 								}), 
 								item.value
 							));	
-					}else{
+					}else if(item.itemId >= 25 && item.itemId <= 29){
 						let taskSupInfoChoicesDetail : TaskSupInfoChoicesDetailDto[] = _.filter(data.taskSupInfoChoicesDetails, { 'itemId': item.itemId});
 						if(taskSupInfoChoicesDetail && taskSupInfoChoicesDetail.length > 0){
 							item.options(vm.convertWorkLocationList(

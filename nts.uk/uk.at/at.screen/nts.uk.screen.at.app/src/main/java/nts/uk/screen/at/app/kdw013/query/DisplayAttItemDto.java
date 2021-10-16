@@ -3,7 +3,6 @@ package nts.uk.screen.at.app.kdw013.query;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.DisplayAttItem;
-import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.DisplayManHrRecordItem;
 
 /**
  * @author thanhpv
@@ -25,10 +24,4 @@ public class DisplayAttItemDto {
 		this.order = domain.getOrder();
 	}
 
-	public DisplayAttItemDto(DisplayManHrRecordItem domain) {
-		super();
-		this.attendanceItemId = domain.getItemId();
-		this.order = domain.getOrder();
-	}
-	
 }
