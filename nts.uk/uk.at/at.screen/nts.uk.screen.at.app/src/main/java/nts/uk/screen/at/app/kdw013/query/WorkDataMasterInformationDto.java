@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
+import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 
 /**
@@ -38,11 +39,18 @@ public class WorkDataMasterInformationDto {
 	
 	//List<工数実績項目>
 	public List<ManHourRecordItemDto> manHourRecordItems;
-
+	
+	//List<日次の勤怠項目>
+	public List<DailyAttendanceItemDto> attendanceItems;
+	
+	//List<工数実績項目と勤怠項目の紐付け>
+	public List<ManHourRecordAndAttendanceItemLinkDto> manHourRecordAndAttendanceItemLink; 
+	
 	public WorkDataMasterInformationDto(List<TaskDto> taskFrameNo1, List<TaskDto> taskFrameNo2,
 			List<TaskDto> taskFrameNo3, List<TaskDto> taskFrameNo4, List<TaskDto> taskFrameNo5,
 			List<WorkLocationDto> workLocation, List<TaskSupInfoChoicesDetailDto> taskSupInfoChoicesDetails,
-			List<ManHourRecordItemDto> manHourRecordItems) {
+			List<ManHourRecordItemDto> manHourRecordItems, List<DailyAttendanceItemDto> attendanceItems,
+			List<ManHourRecordAndAttendanceItemLinkDto> manHourRecordAndAttendanceItemLink) {
 		super();
 		this.taskFrameNo1 = taskFrameNo1;
 		this.taskFrameNo2 = taskFrameNo2;

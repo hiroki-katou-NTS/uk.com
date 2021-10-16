@@ -1,6 +1,6 @@
 module nts.uk.ui.at.kdw013 {
-	
-	export type ITaskItemValue 					= { itemId: number; value: any; type: number; }
+	export type DisplayManHrRecordItem 			= { itemId: number; order: any; }
+	export type ITaskItemValue 					= { itemId: number; value: any; }
 	export type IManHrTaskDetail 				= { supNo: number; taskItemValues: ITaskItemValue[]; }
 	export type ITimeSpanForCalc 				= { start: Date; end: Date; }
 	export type IManHrPerformanceTaskBlock 		= { caltimeSpan: ITimeSpanForCalc; taskDetails: IManHrTaskDetail[]; }
@@ -48,9 +48,29 @@ module nts.uk.ui.at.kdw013 {
 	export class ManHrTaskDetail {
 		supNo: number;
 		taskItemValues: KnockoutObservableArray<TaskItemValue>;
-		constructor(manHrTaskDetail: IManHrTaskDetail) {
-			this.supNo = manHrTaskDetail.supNo;
-			this.taskItemValues = ko.observableArray(_.map(_.sortBy(manHrTaskDetail.taskItemValues, ['itemId']), (t: ITaskItemValue) => new TaskItemValue(t)));
+		constructor(manHrTaskDetail: IManHrTaskDetail, attendanceItems?: DailyAttendanceItemDto[], manHourRecordAndAttendanceItemLinks?: ManHourRecordAndAttendanceItemLinkDto[]) {
+			let vm = this;
+			vm.supNo = manHrTaskDetail.supNo;
+			//order
+			if(attendanceItems && manHourRecordAndAttendanceItemLinks) {				
+				// sap xep item co dinh
+				let taskItemValues: ITaskItemValue[] = _.sortBy(_.filter(manHrTaskDetail.taskItemValues,(i: ITaskItemValue)=>{return i.itemId <= 8}),  ['itemId']);
+				
+				// sap xep item tuy y
+				let manHourRecordAndAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto[] = _.filter(manHourRecordAndAttendanceItemLinks, (l : ManHourRecordAndAttendanceItemLinkDto) => l.frameNo == vm.supNo);
+				_.forEach(_.sortBy(attendanceItems, ['displayNumber']), (attendanceItem: DailyAttendanceItemDto) => {
+					let itemAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto = _.find(manHourRecordAndAttendanceItemLink, (link: ManHourRecordAndAttendanceItemLinkDto) => {
+						return link.attendanceItemId == attendanceItem.attendanceItemId;
+					});
+					if(itemAttendanceItemLink){
+						let item: ITaskItemValue = _.find(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId = itemAttendanceItemLink.itemId);
+						taskItemValues.push(item);	
+					}
+				});
+			}else{
+				this.taskItemValues = ko.observableArray(
+				_.map(manHrTaskDetail.taskItemValues,(t: ITaskItemValue) => new TaskItemValue(t)));	
+			}
 		}
 	}
 	
@@ -65,7 +85,6 @@ module nts.uk.ui.at.kdw013 {
 		options: KnockoutObservableArray<c.DropdownItem | any> = ko.observableArray([]);
 		constructor(taskItemValues: ITaskItemValue) {
 			this.itemId = taskItemValues.itemId;
-			this.type = taskItemValues.type;
 			this.value = ko.observable(taskItemValues.value);
 		}
 	}

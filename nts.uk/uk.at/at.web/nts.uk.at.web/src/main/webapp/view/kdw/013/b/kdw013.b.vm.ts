@@ -38,9 +38,7 @@ module nts.uk.ui.at.kdw013.b {
         }
     }
 
-    @component({
-        name: COMPONENT_NAME,
-        template: `
+	let template = `
         <div class="detail-event">
             <div class="header">
                 <div data-bind="i18n: 'KDW013_26'"></div>
@@ -112,7 +110,11 @@ module nts.uk.ui.at.kdw013.b {
                 word-break: break-all;
             }
         </style>
-        `
+        `;
+
+    @component({
+        name: COMPONENT_NAME,
+        template: template
     })
     export class ViewModel extends ko.ViewModel {
         dataSources: KnockoutObservableArray<KeyValue> = ko.observableArray([]);

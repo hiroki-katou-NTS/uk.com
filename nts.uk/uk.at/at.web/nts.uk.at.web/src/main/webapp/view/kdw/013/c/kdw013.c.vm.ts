@@ -2,6 +2,7 @@ module nts.uk.ui.at.kdw013.c {
 	import getText = nts.uk.resource.getText;
 	import ajax = nts.uk.request.ajax;
 	import block = nts.uk.ui.block;
+	import error = nts.uk.ui.dialog.error;
 	
     const COMPONENT_NAME = 'kdp013c';
 
@@ -108,7 +109,7 @@ module nts.uk.ui.at.kdw013.c {
     const { getTimeOfDate, setTimeOfDate } = share;
 
     const API: API = {
-        START: '/screen/at/kdw013/c/start',
+        START: '/screen/at/kdw013/common/start',
         SELECT: '/screen/at/kdw013/c/select'
     };
 
@@ -489,7 +490,6 @@ module nts.uk.ui.at.kdw013.c {
                 __viewContext.user.employeeId,
                 this.flag,
 				this.showInputTime,
-                false
 			);
 		
         constructor(public params: Params) {
@@ -540,7 +540,7 @@ module nts.uk.ui.at.kdw013.c {
 				resetHeight();
 			});
         }
-		
+
 		// update popup size
         updatePopupSize(){
 			const vm = this;
@@ -565,33 +565,33 @@ module nts.uk.ui.at.kdw013.c {
                         { 
                             supNo: 0, 
                             taskItemValues: [
-                                { itemId: 3, value: '', type: 0 },
-                                { itemId: 4, value: '', type: 0 },
-                                { itemId: 5, value: '', type: 0 },
-                                { itemId: 6, value: '', type: 0 },
-                                { itemId: 7, value: '', type: 0 },
-                                { itemId: 8, value: '', type: 0 },
-								{ itemId: 9, value: '', type: 0 },
-								{ itemId: 10, value: '', type: 0 },
-								{ itemId: 11, value: '', type: 0 },
-								{ itemId: 12, value: '', type: 0 },
-								{ itemId: 13, value: '', type: 0 },
-                                { itemId: 14, value: '', type: 0 },
-                                { itemId: 15, value: '', type: 0 },
-                                { itemId: 16, value: '', type: 0 },
-                                { itemId: 17, value: '', type: 0 },
-                                { itemId: 18, value: '', type: 0 },
-								{ itemId: 19, value: '', type: 0 },
-								{ itemId: 20, value: '', type: 0 },
-								{ itemId: 21, value: '', type: 0 },
-								{ itemId: 22, value: '', type: 0 },
-								{ itemId: 23, value: '', type: 0 },
-                                { itemId: 24, value: '', type: 0 },
-                                { itemId: 25, value: '', type: 0 },
-                                { itemId: 26, value: '', type: 0 },
-                                { itemId: 27, value: '', type: 0 },
-                                { itemId: 28, value: '', type: 0 },
-								{ itemId: 29, value: '', type: 0 }
+                                { itemId: 3, value: '' },
+                                { itemId: 4, value: '' },
+                                { itemId: 5, value: '' },
+                                { itemId: 6, value: '' },
+                                { itemId: 7, value: '' },
+                                { itemId: 8, value: '' },
+								{ itemId: 9, value: '' },
+								{ itemId: 10, value: '' },
+								{ itemId: 11, value: '' },
+								{ itemId: 12, value: '' },
+								{ itemId: 13, value: '' },
+                                { itemId: 14, value: '' },
+                                { itemId: 15, value: '' },
+                                { itemId: 16, value: '' },
+                                { itemId: 17, value: '' },
+                                { itemId: 18, value: '' },
+								{ itemId: 19, value: '' },
+								{ itemId: 20, value: '' },
+								{ itemId: 21, value: '' },
+								{ itemId: 22, value: '' },
+								{ itemId: 23, value: '' },
+                                { itemId: 24, value: '' },
+                                { itemId: 25, value: '' },
+                                { itemId: 26, value: '' },
+                                { itemId: 27, value: '' },
+                                { itemId: 28, value: '' },
+								{ itemId: 29, value: '' }
                             ] 
                         }
                     ]
@@ -718,6 +718,15 @@ module nts.uk.ui.at.kdw013.c {
 			}
 			vm.taskBlocks.addTaskDetailsView();
 		}
+		
+		sumTotalTime():number{
+			let vm = this;
+			let totalTime = 0; 
+			_.forEach(vm.taskBlocks.taskDetailsView(), (taskdetail: ManHrTaskDetailView) => {
+				totalTime = totalTime + taskdetail.getTime();	
+			});
+			return totalTime;
+		}
     
         save() {
             const vm = this;
@@ -731,6 +740,10 @@ module nts.uk.ui.at.kdw013.c {
                 .then(() => vm.errors() && vm.timeError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
+						if(vm.sumTotalTime() > vm.range()){
+							error({ messageId: "Msg_2217"});
+							return;
+						}
                         if (event) {
                             const { start } = event;
                             const tr = vm.taskBlocks.caltimeSpanView();
@@ -777,7 +790,7 @@ module nts.uk.ui.at.kdw013.c {
 		employeeId: string = '';
 		setting: a.TaskFrameSettingDto[] = [];
 		data: StartWorkInputPanelDto = null;
-		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, private showInputTime: KnockoutObservable<boolean>, loadData: boolean) {
+		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private flag: KnockoutObservable<boolean>, private showInputTime: KnockoutObservable<boolean>) {
 			super(taskBlocks);
 			const vm = this;
 			vm.employeeId = employeeId;
@@ -831,7 +844,7 @@ module nts.uk.ui.at.kdw013.c {
 			const vm = this;
 			let taskItemValues: ITaskItemValue[] = [];
 			_.forEach(vm.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
-				taskItemValues.push({ itemId: taskItemValue.itemId, value: '', type: taskItemValue.type });
+				taskItemValues.push({ itemId: taskItemValue.itemId, value: '' });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
 			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, vm.data, vm.setting));
@@ -893,9 +906,10 @@ module nts.uk.ui.at.kdw013.c {
         itemBeforChange: ITaskItemValue[];
 		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, private flag: KnockoutObservable<boolean>, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[]) {
 			super(manHrTaskDetail);
-			this.employeeId = employeeId;
-			this.itemBeforChange = manHrTaskDetail.taskItemValues;
-            const vm = this;
+			const vm = this;
+			vm.itemBeforChange = manHrTaskDetail.taskItemValues;
+			vm.employeeId = employeeId;
+			
             const [first, second, thirt, four, five] = setting;
 
 			_.each(vm.taskItemValues(), (item: TaskItemValue) => {
@@ -990,6 +1004,16 @@ module nts.uk.ui.at.kdw013.c {
 				vm.setWorkLists(data);
 			}
         }
+
+		getTime(): number{
+			let vm =this;
+			let item = _.find(vm.taskItemValues(), (i: TaskItemValue) => i.itemId == 3);
+			if(item){
+				return parseInt(item.value());
+			}else{
+				return 0;
+			}
+		}
 		
 		convertWorkLocationList(option: {code: string, name: string}[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
             const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_40'), $raw: null, selected: false }];
@@ -1033,7 +1057,7 @@ module nts.uk.ui.at.kdw013.c {
             const result :ITaskItemValue[] = [];
             _.each((vm.taskItemValues), (item: TaskItemValue) => {
                 if(item.value() != null && item.value() != undefined && item.value() != ''){
-                    result.push({itemId : item.itemId, value: item.value(), type: item.type});
+                    result.push({itemId : item.itemId, value: item.value()});
                 }
             });
             return result;
