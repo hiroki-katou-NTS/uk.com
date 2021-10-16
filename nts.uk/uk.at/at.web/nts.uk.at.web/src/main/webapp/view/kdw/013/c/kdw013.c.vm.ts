@@ -974,7 +974,7 @@ module nts.uk.ui.at.kdw013.c {
 						item.use(false);
 					}
 				}else if(item.itemId >= 9 && data){
-					let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, { 'itemId': item.itemId});
+					let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, i => i.itemId == item.itemId);
 					if(infor){
 						item.lable(infor.name);
 						item.use(infor.useAtr == 1);	

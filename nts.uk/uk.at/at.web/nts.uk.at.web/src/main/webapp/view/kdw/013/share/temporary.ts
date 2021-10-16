@@ -51,12 +51,12 @@ module nts.uk.ui.at.kdw013 {
 		constructor(manHrTaskDetail: IManHrTaskDetail, attendanceItems?: DailyAttendanceItemDto[], manHourRecordAndAttendanceItemLinks?: ManHourRecordAndAttendanceItemLinkDto[]) {
 			let vm = this;
 			vm.supNo = manHrTaskDetail.supNo;
-			//order
+			//sap xep
 			if(attendanceItems && manHourRecordAndAttendanceItemLinks) {				
 				// sap xep item co dinh
 				let taskItemValues: ITaskItemValue[] = _.sortBy(_.filter(manHrTaskDetail.taskItemValues,(i: ITaskItemValue)=>{return i.itemId <= 8}),  ['itemId']);
 				
-				// sap xep item tuy y
+				// sap xep thu tu item tuy y
 				let manHourRecordAndAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto[] = _.filter(manHourRecordAndAttendanceItemLinks, (l : ManHourRecordAndAttendanceItemLinkDto) => l.frameNo == vm.supNo);
 				_.forEach(_.sortBy(attendanceItems, ['displayNumber']), (attendanceItem: DailyAttendanceItemDto) => {
 					let itemAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto = _.find(manHourRecordAndAttendanceItemLink, (link: ManHourRecordAndAttendanceItemLinkDto) => {
