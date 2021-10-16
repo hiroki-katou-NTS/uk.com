@@ -75,8 +75,7 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 			if (!optManHrTaskDetail.isPresent()) {
 
 				// $工数実績作業詳細 = 工数実績作業詳細#工数実績作業詳細($.応援勤務枠No, $作業項目値)
-				ManHrTaskDetail detail = new ManHrTaskDetail(Collections.singletonList(itemValue),
-						optManHrTaskDetail.get().getSupNo());
+				ManHrTaskDetail detail = new ManHrTaskDetail(Collections.singletonList(itemValue), l.getFrameNo());
 
 				// $工数実績リスト.追加する($工数実績作業詳細)
 				manHrRecords.add(detail);
