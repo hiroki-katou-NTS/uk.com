@@ -30,9 +30,8 @@
 						<button tabindex="3" class="danger"
 							data-bind="enable: (screenMode() == 0 &amp;&amp; isLatestHistory()) || screenMode() == 3, click: deleteHistory, text: $i18n('KDW006_329')"></button>
 					</div>
-
-					<div id="single-list">
-						<table tabindex="4" data-bind="ntsGridList: {
+					<div class="list-history">
+						<table tabindex="4" id="single-list" data-bind="ntsGridList: {
 							options: $vm.lstWpkHistory,
 							optionsValue: 'historyId',
 							columns: [

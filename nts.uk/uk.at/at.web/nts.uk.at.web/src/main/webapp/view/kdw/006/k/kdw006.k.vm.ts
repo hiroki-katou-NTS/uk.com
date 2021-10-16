@@ -55,6 +55,7 @@ module nts.uk.at.view.kmk006.k {
                     externalCode: ''
                 });
                 vm.changeItemId(itemId);
+                vm.$errors('clear');
             });
 
             vm.currentCode.subscribe(() => {
@@ -65,6 +66,7 @@ module nts.uk.at.view.kmk006.k {
 
             vm.modelHistory.historyId.subscribe(() => {
                 vm.reloadList();
+                vm.$errors('clear');
             });
 
             vm.$blockui('invisible')
@@ -94,9 +96,9 @@ module nts.uk.at.view.kmk006.k {
 
         mounted() {
             const vm = this;
-
             vm.selectedItemWork.valueHasMutated();
             $('#combo-box').focus();
+            vm.$errors('clear');
         }
 
         changeItemId(itemId?: string) {
@@ -172,12 +174,8 @@ module nts.uk.at.view.kmk006.k {
                                 _.forEach(data, ((value: IWorkDetail) => {
                                     historyDateils.push(value);
                                 }));
+                                dfdGetAllData.resolve();
                             })
-                            .then(() => {
-                                if (item.historyId === listHistorys[listHistorys.length - 1].historyId) {
-                                    dfdGetAllData.resolve();
-                                }
-                            });
                     }));
                 })
                 .always(() => vm.$blockui('clear'));
@@ -185,16 +183,21 @@ module nts.uk.at.view.kmk006.k {
                 .done(() => {
                     vm.historys(_.orderBy(historyDateils, ['code'], ['asc']));
                     if (ko.unwrap(vm.historys).length > 0) {
-                        if (ko.unwrap(vm.screenMode) == SCREEN_MODE.UPDATE) {
-                            if (index) {
-                                vm.currentCode(ko.unwrap(vm.historys)[index].code);
-                            } else {
-                                vm.currentCode(historyDateils[0].code);
-                            }
-                        }
-                        if (ko.unwrap(vm.screenMode) == SCREEN_MODE.NEW) {
-                            vm.currentCode(ko.unwrap(vm.model.code));
-                            vm.screenMode(SCREEN_MODE.UPDATE);
+                        // if (ko.unwrap(vm.screenMode) == SCREEN_MODE.UPDATE) {
+                        //     if (index) {
+                        //         vm.currentCode(ko.unwrap(vm.historys)[index].code);
+                        //     } else {
+                        //         vm.currentCode(historyDateils[0].code);
+                        //     }
+                        // }
+                        // if (ko.unwrap(vm.screenMode) == SCREEN_MODE.NEW) {
+                        //     vm.currentCode(ko.unwrap(vm.model.code));
+                        //     vm.screenMode(SCREEN_MODE.UPDATE);
+                        // }
+                        if (index) {
+                            vm.currentCode(ko.unwrap(vm.historys)[index].code);
+                        } else {
+                            vm.currentCode(historyDateils[0].code);
                         }
                     } else {
                         vm.currentCode('');
@@ -220,6 +223,7 @@ module nts.uk.at.view.kmk006.k {
 
             if (exist) {
                 vm.model.update(exist);
+                vm.screenMode(SCREEN_MODE.UPDATE);
             }
         }
 
@@ -318,6 +322,7 @@ module nts.uk.at.view.kmk006.k {
                                         .done(() => {
                                             vm.$dialog.info({ messageId: 'Msg_15' });
                                             vm.reloadList();
+                                            vm.screenMode(SCREEN_MODE.UPDATE);
                                         })
                                         .fail((data: any) => {
                                             vm.$dialog.info({ messageId: data.messageId });
@@ -332,7 +337,6 @@ module nts.uk.at.view.kmk006.k {
                                 .then(() => {
                                     vm.$ajax('at', API.UPDATE, param)
                                         .done(() => {
-                                            debugger;
                                             vm.$dialog.info({ messageId: 'Msg_15' });
                                             vm.reloadList(index);
                                         })

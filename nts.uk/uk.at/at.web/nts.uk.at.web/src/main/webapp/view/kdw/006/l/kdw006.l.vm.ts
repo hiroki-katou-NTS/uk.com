@@ -76,8 +76,8 @@ module nts.uk.at.view.kmk006.l {
 
         mounted() {
             const vm = this;
-
-            $('#single-list').focus();
+            $('.list-history').focus();
+            vm.$errors('clear');
         }
 
         addHistory() {
@@ -96,8 +96,8 @@ module nts.uk.at.view.kmk006.l {
         deleteHistory() {
             const vm = this;
             const param = { historyId: ko.unwrap(vm.model.historyId), itemId: vm.itemId }
-            const oldIndex = _.map(ko.unwrap(vm.lstWpkHistory), m => m.historyId).indexOf(ko.unwrap(vm.model.historyId));
-            const newIndex = oldIndex == ko.unwrap(vm.lstWpkHistory).length - 1 ? oldIndex - 1 : oldIndex;
+            // const oldIndex = _.map(ko.unwrap(vm.lstWpkHistory), m => m.historyId).indexOf(ko.unwrap(vm.model.historyId));
+            // const newIndex = oldIndex == ko.unwrap(vm.lstWpkHistory).length - 1 ? oldIndex - 1 : oldIndex;
 
             nts.uk.ui.dialog
                 .confirm({ messageId: "Msg_18" })
@@ -107,9 +107,7 @@ module nts.uk.at.view.kmk006.l {
                             vm.$ajax('at', API.REMOTE, param)
                                 .done(() => vm.$dialog.info({ messageId: "Msg_16" }))
                                 .then(() => {
-                                    console.log('chung dep trai');
-                                    
-                                   vm.reload();
+                                    vm.reload();
                                 })
                                 .fail((fail: any) => vm.$dialog.info({ messageId: fail.messageId }))
                                 .always(() => vm.$blockui('clear'))
@@ -166,6 +164,7 @@ module nts.uk.at.view.kmk006.l {
                     .then(() => {
                         vm.$ajax('at', API.RESISTER, param)
                             .done((hisId: any) => {
+                                vm.$errors('clear');
                                 vm.$dialog.info({ messageId: 'Msg_15' })
                                     .then(() => {
                                         hisLocal.push(new HistoryItem({
@@ -187,6 +186,7 @@ module nts.uk.at.view.kmk006.l {
                         .then(() => {
                             vm.$ajax('at', API.UPDATE, param)
                                 .then(() => {
+                                    vm.$errors('clear');
                                     vm.$dialog.info({ messageId: 'Msg_15' })
                                         .then(() => {
                                             _.remove(hisLocal, (item: HistoryItem) => { return item.historyId === ko.unwrap(vm.model.historyId) })
