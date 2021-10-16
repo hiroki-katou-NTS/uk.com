@@ -7,6 +7,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.record.app.command.kdw.kdw013.a.ChangeDisplayOrderCommand;
+import nts.uk.ctx.at.record.app.command.kdw.kdw013.a.ChangeDisplayOrderCommandHandler;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmCommand;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmationCommandHandler;
@@ -54,34 +56,37 @@ public class KDW013WebService {
 
 	@Inject
 	private StartProcess startProcess;
-	
+
 	@Inject
 	private RegisterWorkContentHandler registerHandler;
-	
+
 	@Inject
 	private DeleteOneDayTaskSet deleteOneDayTaskSet;
-	
+
 	@Inject
 	private UpdateFavName updateFavName;
-	
+
 	@Inject
 	private DeleteTaskSet deleteTaskSet;
-	
+
 	@Inject
 	private StartTaskFavoriteRegister startTaskFavoriteRegister;
-	
+
 	@Inject
 	private AddNewFavoriteTask addNewFavoriteTask;
-	
+
 	@Inject
 	private AddOneDayNewFavoriteTaskSet addOneDayNewFavoriteTaskSet;
-	
+
 	@Inject
 	private StartOneDayTaskSetRegister startOneDayTaskSetRegister;
-	
+
 	@Inject
 	private UpdateOneDayTaskSetName updateOneDayTaskSetName;
-	
+
+	@Inject
+	private ChangeDisplayOrderCommandHandler changeDisplayOrderCommandHandler;
+
 	// 初期起動処理
 	@POST
 	@Path("a/start")
@@ -124,57 +129,57 @@ public class KDW013WebService {
 	public void deleteOneDayTaskSet(DeleteFavoriteForOneDayCommand command) {
 		deleteOneDayTaskSet.deleteOneDayTaskSet(command);
 	}
-	
+
 	// A:お気に入り作業の順番を変更する
 	@POST
 	@Path("a/update_task_dis_order")
 	public void updateTaskDisplayOrder(UpdateFavNameCommand command) {
 		updateFavName.updateFavName(command);
-		
+
 	}
-	
+
 	// A: お気に入り作業を削除する
 	@POST
 	@Path("a/delete_task_set")
 	public void deleteTaskSet(DeleteFavoriteCommand command) {
 		deleteTaskSet.deleteTaskSet(command);
 	}
-	
+
 	// F: 作業お気に入り登録を起動する
 	@POST
 	@Path("f/start_task_fav_register")
 	public FavoriteTaskItemDto startTaskFavRegister(StartTaskFavoriteRegisterParam param) {
 		return startTaskFavoriteRegister.startTaskFavRegister(param.getFavId());
 	}
-	
+
 	// F: 作業お気に入り名称を変更する
 	@POST
 	@Path("f/update_task_name")
 	public void updateTaskName(UpdateFavNameCommand command) {
 		updateFavName.updateFavName(command);
 	}
-	
+
 	// F: 作業お気に入りを新規追加する
 	@POST
 	@Path("f/create_task_fav")
 	public void createTaskFav(RegisterFavoriteCommand command) {
 		addNewFavoriteTask.addNewFavoriteTask(command);
 	}
-	
+
 	// G: 1日作業セットを新規追加する
 	@POST
 	@Path("g/create_task_fav")
 	public void createTaskFav(RegisterFavoriteForOneDayCommand command) {
 		addOneDayNewFavoriteTaskSet.addOneDayNewFavoriteTaskSet(command);
 	}
-	
+
 	// G: 1日作業お気に入り名称を変更する
 	@POST
 	@Path("g/update_task_name")
 	public void updateTaskName(UpdateOneDayFavNameCommand command) {
 		updateOneDayTaskSetName.updateOneDayTaskSetName(command);
 	}
-		
+
 	// G: 1日作業お気に入り登録を起動する
 	@POST
 	@Path("g/start_task_fav_register")
@@ -182,4 +187,11 @@ public class KDW013WebService {
 		return startOneDayTaskSetRegister.startOneDayTaskSetRegister(param.getFavId());
 	}
 
+	// A: 1日作業セットの順番を変更する
+	// 表示順を入れ替える
+	@POST
+	@Path("a/change-display-order")
+	public void updateDisplay(ChangeDisplayOrderCommand command) {
+		changeDisplayOrderCommandHandler.handle(command);
+	}
 }
