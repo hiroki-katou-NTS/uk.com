@@ -51,7 +51,7 @@ public class StartProcess {
 
 		result.setItemMasterInfo(itemMasterInfo);
 
-		// 3. 画面モード = 確認モード <call>(システム日付)
+		// 3. 画面モード = 確認モード <call>(システム日付) 参照可能職場・社員を取得する
 		GetRefWorkplaceAndEmployeeDto refWork = this.GetRefWorkplaceAndEmployee.get(GeneralDate.today());
 
 		result.setRefWork(refWork);

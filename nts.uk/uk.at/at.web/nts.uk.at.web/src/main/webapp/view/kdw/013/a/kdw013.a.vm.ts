@@ -165,10 +165,9 @@ module nts.uk.ui.at.kdw013.a {
 
                 if (data && settings) {
                     const { lstWorkRecordDetailDto } = data;
-                    const { startManHourInputResultDto } = settings;
+                    const { tasks } = settings;
 
-                    if (lstWorkRecordDetailDto && startManHourInputResultDto) {
-                        const { tasks } = startManHourInputResultDto;
+                    if (lstWorkRecordDetailDto && tasks) {
                         const events = _
                             .chain(lstWorkRecordDetailDto)
                             .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
@@ -323,10 +322,13 @@ module nts.uk.ui.at.kdw013.a {
                     const date = ko.unwrap(vm.initialDate);
                     const dateRange = ko.unwrap(vm.dateRange);
                     const { start, end } = dateRange;
+                    const setting = ko.unwrap(vm.$settings);
 
-                    if (!employeeId) {
+                    if (!employeeId || !setting) {
                         return;
                     }
+                    
+                    let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.attendanceItemId });
 
                     if (!!start && !!end && moment(date).isBetween(start, end)) {
                         const params: ChangeDateParam = {
@@ -335,7 +337,8 @@ module nts.uk.ui.at.kdw013.a {
                             displayPeriod: {
                                 start: moment(start).startOf('day').format(DATE_TIME_FORMAT),
                                 end: moment(end).subtract(1, 'day').startOf('day').format(DATE_TIME_FORMAT)
-                            }
+                            },
+                            itemIds
                         };
                         cache.pair = sameCache(params);
 

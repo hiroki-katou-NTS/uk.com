@@ -17,6 +17,7 @@ import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.FavoriteTaskDisplayOrderDto;
 import nts.uk.screen.at.app.kdw013.query.FavoriteTaskItemDto;
 import nts.uk.screen.at.app.kdw013.query.GetFavoriteTaskDto;
+import nts.uk.screen.at.app.kdw013.query.ManHrInputDisplayFormatDto;
 import nts.uk.screen.at.app.kdw013.query.OneDayFavoriteSetDto;
 import nts.uk.screen.at.app.kdw013.query.OneDayFavoriteTaskDisplayOrderDto;
 
@@ -28,11 +29,15 @@ import nts.uk.screen.at.app.kdw013.query.OneDayFavoriteTaskDisplayOrderDto;
 @Setter
 @Getter
 public class StartProcessDto {
+	
 	/** 作業枠利用設定 */
 	private TaskFrameUsageSettingDto taskFrameUsageSetting;
 
 	/** List<作業> */
 	private List<TaskDto> tasks;
+	
+	/** 工数入力表示フォーマット */
+	private ManHrInputDisplayFormatDto  manHrInputDisplayFormat;
 
 	// 勤怠項目リスト：List<勤怠項目>
 	public List<AttItemNameDto> attItemName;
@@ -52,23 +57,22 @@ public class StartProcessDto {
 	// 乖離理由リスト：List<乖離理由の入力方法>
 	public List<DivergenceReasonInputMethodDto> divergenceReasonInputMethods;
 
-	/** 社員の所属情報(Map<社員ID,職場ID>) */
+	/** List<社員の所属職場> */
 	private Map<String, String> employeeInfos;
 
 	/** List＜社員ID（List）から社員コードと表示名を取得＞ */
 	private List<EmployeeBasicInfoDto> lstEmployeeInfo;
 
-	/** List＜職場情報一覧＞ */
+	/** List＜職場情報一覧＞*/
 	private List<WorkplaceInfo> workplaceInfos;
 
-	// Get*(ログイン社員ID)
-	// 1日お気に入り作業セット
+	//List<1日お気に入り作業セット>
 	public List<OneDayFavoriteSetDto> oneDayFavSets;
 
-	// 1日お気に入り作業の表示順
+	//1日お気に入り作業の表示順
 	public OneDayFavoriteTaskDisplayOrderDto oneDayFavTaskDisplayOrders;
 
-	// お気に入り作業項目
+	// List<お気に入り作業項目>
 	public List<FavoriteTaskItemDto> favTaskItems;
 
 	// お気に入り作業の表示順
@@ -80,6 +84,8 @@ public class StartProcessDto {
 				.getFrameSettingList().stream().map(x -> TaskFrameSettingDto.toDto(x)).collect(Collectors.toList()));
 		
 		this.tasks = domain.getTasks().stream().map(x -> TaskDto.toDto(x)).collect(Collectors.toList());
+		
+		this.manHrInputDisplayFormat = domain.getManHrInputDisplayFormat().map(df -> new ManHrInputDisplayFormatDto(df)).orElse(null);
 		
 	}
 

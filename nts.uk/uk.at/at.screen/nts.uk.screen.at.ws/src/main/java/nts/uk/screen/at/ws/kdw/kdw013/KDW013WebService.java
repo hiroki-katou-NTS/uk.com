@@ -14,6 +14,7 @@ import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
 import nts.uk.screen.at.app.kdw013.a.DeleteOneDayTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteWorkRecordConfirmationCommandHandler;
+import nts.uk.screen.at.app.kdw013.a.EmployeeDisplayInfo;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentHandler;
@@ -92,8 +93,9 @@ public class KDW013WebService {
 	// 日付を変更する
 	@POST
 	@Path("a/changeDate")
-	public ChangeDateDto changeDate(ChangeDateParam param) {
-		return changeDate.changeDate(param.getEmployeeId(), param.getRefDate(), param.getDisplayPeriod().toDomain());
+	public EmployeeDisplayInfo changeDate(ChangeDateParam param) {
+		return changeDate.changeDate(param.getEmployeeId(), param.getRefDate(), param.getDisplayPeriod().toDomain(),
+				param.getItemIds());
 	}
 
 	// 作業実績を確認する

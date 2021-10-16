@@ -1544,7 +1544,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 const sltds = vm.selectedEvents;
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
                 const data = ko.unwrap(params.$datas);
-                const startDate =  moment(_.get(data,'workCorrectionStartDate'));
+                const startDate =  moment(_.get(data,'workStartDate'));
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
                 const isDuplicated = _.uniqBy(events, 'extendedProps.supportFrameNo').length < events.length;
@@ -1694,7 +1694,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 dateClick: (info) => {
                     const events = vm.calendar.getEvents();
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workStartDate'));
 
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
                     
@@ -1733,10 +1733,11 @@ module nts.uk.ui.at.kdw013.calendar {
                         return;
                     }
 
+                             
+                
+                    let taskItemValues = _.map(_.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return { itemId: item.itemId, value: null } });
 
-
-                    const event = vm.calendar
-                        .addEvent({
+                    let newEvent = {
                             id: randomId(),
                             start: formatDate(info.date),
                             end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()),
@@ -1744,9 +1745,28 @@ module nts.uk.ui.at.kdw013.calendar {
                             [GROUP_ID]: SELECTED,
                             extendedProps: {
                                 status: 'new',
-                                employeeId: vm.params.employee() || vm.$user.employeeId
+                                //作業枠利用設定
+                                taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
+                                //社員ID
+                                employeeId: vm.params.employee() || vm.$user.employeeId,
+                                //年月日
+                                period: { start: formatDate(info.date), end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()) },
+                                //現在の応援勤務枠
+                                frameNos:[],                                
+                                //工数実績作業ブロック
+                                taskBlock: {
+                                    caltimeSpan: { start: formatDate(info.date), end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()) },
+
+                                    taskDetails: [{ supNo: null, taskItemValues }]
+                                },
+                                //作業内容入力ダイアログ表示項目一覧
+                                displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
+                                
                             }
-                        });
+                        };
+                    
+                    const event = vm.calendar
+                        .addEvent(newEvent);
 
                     $caches.new(event);
                     const el: HTMLElement = vm.$el.querySelector(`[event-id="${event.id}"]`);
@@ -1986,7 +2006,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
                     
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workStartDate'));
                     
                     if (vm.$view() == "edit" && vm.params.$settings().isChange) {
                         vm.$dialog
@@ -2470,7 +2490,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 select: ({ start, end }) => {
                     
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workStartDate'));
                     
                     if (startDate.isAfter(formatDate(start))) {
                         vm.calendar.unselect();
@@ -2532,7 +2552,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         extendedProps
                     } = event;
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workStartDate'));
                     
                     if (startDate.isAfter(formatDate(start))) {
                         event.remove();
