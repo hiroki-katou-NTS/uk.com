@@ -62,8 +62,7 @@ public class ActualManHrTaskBlockCreationServiceTest {
 
 			}
 		};
-		ActualManHrTaskBlockCreationService service = new ActualManHrTaskBlockCreationService();
-		DailyActualManHrActualTask actualResult = service.create(require, sId, date,
+		DailyActualManHrActualTask actualResult = ActualManHrTaskBlockCreationService.create(require, sId, date,
 				taskDetails);
 
 		assertThat(expectedResult.getDate()).isEqualTo(actualResult.getDate());
@@ -99,8 +98,7 @@ public class ActualManHrTaskBlockCreationServiceTest {
 
 			}
 		};
-		ActualManHrTaskBlockCreationService service = new ActualManHrTaskBlockCreationService();
-		DailyActualManHrActualTask actualResult = service.create(require, sId, date,
+		DailyActualManHrActualTask actualResult = ActualManHrTaskBlockCreationService.create(require, sId, date,
 				taskDetails);
 
 		assertThat(expectedResult.getDate()).isEqualTo(actualResult.getDate());
@@ -117,9 +115,8 @@ public class ActualManHrTaskBlockCreationServiceTest {
 
 			}
 		};
-		ActualManHrTaskBlockCreationService service = new ActualManHrTaskBlockCreationService();
 		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
-		DailyActualManHrActualTask actualResult = service.create(require, sId, date,
+		DailyActualManHrActualTask actualResult = ActualManHrTaskBlockCreationService.create(require, sId, date,
 				new ArrayList<>());
 		assertThat(expectedResult.getDate()).isEqualTo(actualResult.getDate());
 	}

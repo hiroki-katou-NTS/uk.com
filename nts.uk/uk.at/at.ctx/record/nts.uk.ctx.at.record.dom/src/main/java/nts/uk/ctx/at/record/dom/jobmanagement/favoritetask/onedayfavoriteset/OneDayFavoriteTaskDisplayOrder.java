@@ -54,12 +54,12 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 	 * 
 	 */
 	public void add(String favId) {
-		if (!this.displayOrders.isEmpty()) {
+		//if (!this.displayOrders.isEmpty()) {
 			for (FavoriteDisplayOrder o : this.displayOrders) {
 				// 表示順を後ろにずらす
 				o.shiftBackOrder();
 			}
-		}
+		//}
 
 		// 表示順.追加する($新しいお気に入り)
 		this.displayOrders.add(FavoriteDisplayOrder.addFirstDisorder(favId));
