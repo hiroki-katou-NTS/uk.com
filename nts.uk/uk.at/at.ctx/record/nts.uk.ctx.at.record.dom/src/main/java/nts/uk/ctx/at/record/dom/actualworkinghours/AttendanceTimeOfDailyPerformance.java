@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
@@ -41,27 +40,21 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.To
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareEditState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 
  * @author nampt
  * 日別実績の勤怠時間 - root
  */
@@ -116,36 +109,34 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	/**
 	 * 日別実績の勤怠時間の計算
-	 * @param oneDay 1日の範囲クラス
-	 * @param schePreTimeSet 
-	 * @param ootsukaFixCalsSet 
-	 * @param workTimeDailyAtr2 
-	 * @param scheduleReGetClass 
-	 * @param schePred 
-	 * @param converter 
-	 * @param companyCommonSetting 
-	 * @param personalSetting 
-	 * @param recordWorkTimeCode 
-	 * @param integrationOfDaily2 
+	 * @param scheduleReGetClass 予定
+	 * @param recordReGetClass 実績
+	 * @param flexCalcMethod フレックス勤務の設定
+	 * @param bonusPayAutoCalcSet 加給時間計算設定
+	 * @param eachCompanyTimeSet 会社別代休時間設定
+	 * @param converter 日別実績コンバータ
+	 * @param personalCostSetting 割増計算設定
 	 * @param declareResult 申告時間帯作成結果
-	 * @return 日別実績(Work)クラス
+	 * @return 日別実績(Work)
 	 */
 	public static IntegrationOfDaily calcTimeResult(
-			VacationClass vacation, WorkType workType,
-			Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			ManageReGetClass scheduleReGetClass,
+			ManageReGetClass recordReGetClass,
+			Optional<SettingOfFlexWork> flexCalcMethod,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			List<DivergenceTimeRoot> divergenceTimeList,
-			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
-			ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			DailyRecordToAttendanceItemConverter converter, ManagePerCompanySet companyCommonSetting, List<PersonnelCostSettingImport> personalSetting, Optional<WorkTimeCode> recordWorkTimeCode,
+			DailyRecordToAttendanceItemConverter converter,
+			List<PersonnelCostSettingImport> personalCostSetting,
 			DeclareTimezoneResult declareResult) {
 
 		Optional<AttendanceTimeOfDailyPerformance> calcResult = Optional.empty();
 		
 		IntegrationOfDaily result = converter.setData(recordReGetClass.getIntegrationOfDaily()).toDomain();;
 
-		/* 日別実績(Work)の退避 */
+		// 会社設定管理
+		ManagePerCompanySet companyCommonSetting = recordReGetClass.getCompanyCommonSetting();
+	
+		// 日別実績(Work)の退避
 		IntegrationOfDaily copyIntegrationOfDaily = converter.setData(recordReGetClass.getIntegrationOfDaily()).toDomain();
 		
 		// 乖離時間計算用 勤怠項目ID紐づけDto作成
@@ -154,16 +145,11 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		//連続勤務の時は予定は計算を行い、実績は計算不要なため
 		//2019.3.11時点
 		if(scheduleReGetClass.getIntegrationOfWorkTime().isPresent() && !recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
-			calcResult = Optional.of(calcTimeResultForContinusWork(recordReGetClass, 
-																   workType, 
-																   vacation, 
-																   flexCalcMethod, 
-																   bonusPayAutoCalcSet, 
-																   eachCompanyTimeSet, 
-																   scheduleReGetClass,
-																   conditionItem, 
-																   predetermineTimeSetByPersonInfo, 
-																   recordWorkTimeCode));
+			calcResult = Optional.of(calcTimeResultForContinusWork(
+					recordReGetClass,
+					flexCalcMethod,
+					bonusPayAutoCalcSet,
+					scheduleReGetClass));
 			// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 			List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
@@ -184,20 +170,12 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			}
 		}
 		else {
-			calcResult = Optional.of(collectCalculationResult(vacation,
-															  workType,
-															  flexCalcMethod,
-															  bonusPayAutoCalcSet,
-															  eachCompanyTimeSet,
-															  forCalcDivergenceDto,
-															  divergenceTimeList,
-															  calculateOfTotalConstraintTime,
-															  scheduleReGetClass,
-															  recordReGetClass,
-															  conditionItem,
-															  predetermineTimeSetByPersonInfo,
-															  recordWorkTimeCode,
-															  declareResult));
+			calcResult = Optional.of(collectCalculationResult(
+					scheduleReGetClass,
+					recordReGetClass,
+					flexCalcMethod,
+					bonusPayAutoCalcSet,
+					declareResult));
 			// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 			List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
@@ -224,7 +202,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			result = reCalc(copyIntegrationOfDaily,
 					recordReGetClass.getCalculationRangeOfOneDay(), recordReGetClass.getIntegrationOfDaily().getEmployeeId(), companyCommonSetting , forCalcDivergenceDto,
 					attendanceItemIdList, recordReGetClass.getIntegrationOfDaily().getYmd(), PremiumAtr.RegularWork, recordReGetClass.getHolidayCalcMethodSet(),
-					recordReGetClass.getWorkTimezoneCommonSet(), recordReGetClass,personalSetting);
+					recordReGetClass.getWorkTimezoneCommonSet(), recordReGetClass,personalCostSetting);
 
 			if (!attendanceItemIdList.isEmpty()) {
 
@@ -427,24 +405,24 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	}
 	
 	/**
-	 * 
-	 * @param recordReGetClass 実績のデータ管理クラス
-	 * @param workType 実績側の勤務種類
-	 * @param scheduleReGetClass 予定のデータ管理クラス
-	 * @param recordWorkTimeCode 
-	 * @return　計算結果
+	 * 時間計算（連続勤務）
+	 * @param recordReGetClass 実績再取得クラス
+	 * @param settingOfFlex フレックス勤務の設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param scheduleReGetClass 予定再取得クラス
+	 * @return 日別勤怠の勤怠時間
 	 */
-	public static AttendanceTimeOfDailyPerformance calcTimeResultForContinusWork(ManageReGetClass recordReGetClass, WorkType workType, 
-			VacationClass vacation, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, 
-			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, ManageReGetClass scheduleReGetClass, WorkingConditionItem conditionItem, 
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, 
-			Optional<WorkTimeCode> recordWorkTimeCode){
+	public static AttendanceTimeOfDailyPerformance calcTimeResultForContinusWork(
+			ManageReGetClass recordReGetClass,
+			Optional<SettingOfFlexWork> settingOfFlex,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet, 
+			ManageReGetClass scheduleReGetClass){
 		
-		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
-												   vacation, 
-												   flexCalcMethod, bonusPayAutoCalcSet, 
-												   eachCompanyTimeSet, scheduleReGetClass,conditionItem,
-												   predetermineTimeSetByPersonInfo,recordWorkTimeCode);
+		val workScheduleTime = calcWorkSheduleTime(
+				recordReGetClass,
+				settingOfFlex,
+				bonusPayAutoCalcSet,
+				scheduleReGetClass);
 		
 		return new AttendanceTimeOfDailyPerformance(recordReGetClass.getIntegrationOfDaily().getEmployeeId(),
 													recordReGetClass.getIntegrationOfDaily().getYmd(),
@@ -460,52 +438,37 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	/**
 	 * 時間の計算結果をまとめて扱う
-	 * @param schePred 
-	 * @param recordWorkTimeCode 
-	 * @param schePreTimeSet 
-	 * @param breakTimeCount 
-	 * @param ootsukaFixCalsSet 
-	 * @param integrationOfDaily 
-	 * @param flexSetting 
+	 * @param scheduleReGetClass 予定
+	 * @param recordReGetClass 実績
+	 * @param settingOfFlex フレックス勤務の設定
+	 * @param bonusPayAutoCalcSet 加給時間計算設定
 	 * @param declareResult 申告時間帯作成結果
 	 * @return 計算結果
 	 */
 	private static AttendanceTimeOfDailyPerformance collectCalculationResult(
-				VacationClass vacation, WorkType workType,
-				Optional<SettingOfFlexWork> flexCalcMethod,BonusPayAutoCalcSet bonusPayAutoCalcSet,
-				List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-				DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTimeRoot> divergenceTimeList,
-				CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
-				ManageReGetClass recordReGetClass,WorkingConditionItem conditionItem,
-				Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-//				Optional<PredetermineTimeSetForCalc> schePred,
-				Optional<WorkTimeCode> recordWorkTimeCode,
-				DeclareTimezoneResult declareResult) {
+			ManageReGetClass scheduleReGetClass,
+			ManageReGetClass recordReGetClass,
+			Optional<SettingOfFlexWork> settingOfFlex,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			DeclareTimezoneResult declareResult) {
+
+		// 総拘束時間
+		CalculateOfTotalConstraintTime calculateOfTotalConstraintTime =
+				recordReGetClass.getCompanyCommonSetting().getCalculateOfTotalCons().get();
 		
 		/*日別実績の勤務予定時間の計算*/
-		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
-													vacation, 
-												   flexCalcMethod, bonusPayAutoCalcSet, 
-												    eachCompanyTimeSet, scheduleReGetClass,conditionItem,
-												    predetermineTimeSetByPersonInfo,
-												    recordWorkTimeCode);
-		
-			/*日別実績の実績時間の計算*/
-		Optional<WorkTimeDailyAtr> workDailyAtr = recordReGetClass.getWorkTimeSetting() != null && recordReGetClass.getWorkTimeSetting().isPresent()?
-													Optional.of(recordReGetClass.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()):
-													Optional.empty();
-		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(recordReGetClass,
-			    vacation,
-			    workType,
-			    workDailyAtr,
-			    flexCalcMethod,
+		val workScheduleTime = calcWorkSheduleTime(
+				recordReGetClass,
+				settingOfFlex,
 				bonusPayAutoCalcSet,
-				eachCompanyTimeSet,
-				forCalcDivergenceDto,
-				divergenceTimeList,
-				conditionItem,
-				predetermineTimeSetByPersonInfo,
-				workScheduleTime, recordWorkTimeCode,
+				scheduleReGetClass);
+		
+		// 日別実績の実績時間の計算
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = ActualWorkingTimeOfDaily.calcRecordTime(
+				recordReGetClass,
+				settingOfFlex,
+				bonusPayAutoCalcSet,
+				workScheduleTime,
 				declareResult);
 
 		/* 滞在時間の計算 */
@@ -560,80 +523,33 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	
 	/**
 	 * 計画所定の算出
-	 * @param recordOneDay　実績の1日の範囲クラス
-	 * @param scheduleOneDay　予定の1日の範囲クラス
-	 * @param schePreTime　労働条件の個人勤務区分別の就時コードから取得した所定時間クラス
-	 * @param workType
-	 * @param scheWorkType 
-	 * @param overTimeAutoCalcSet 
-	 * @param holidayAutoCalcSetting 
-	 * @param personalCondition 
-	 * @param vacationClass 
-	 * @param late 
-	 * @param leaveEarly 
-	 * @param workingSystem 
-	 * @param illegularAddSetting 
-	 * @param flexAddSetting 
-	 * @param regularAddSetting 
-	 * @param holidayAddtionSet 
-	 * @param overTimeAutoCalcAtr 
-	 * @param scheWorkTimeDailyAtr 
-	 * @param flexCalcMethod 
-	 * @param holidayCalcMethodSet 
-	 * @param raisingAutoCalcSet 
-	 * @param bonusPayAutoCalcSet 
-	 * @param calcAtrOfDaily 
-	 * @param eachWorkTimeSet 
-	 * @param eachCompanyTimeSet 
-	 * @param schePred 
-	 * @param recordWorkTimeCode 
-	 * @param breakTimeCount 
-	 * @param integrationOfDaily 
-	 * @param flexAutoCalSet 
-	 * @param coreTimeSetting 
-	 * @param statutoryFrameNoList 
-	 * @return
+	 * @param recordReGetClass 実績再取得クラス
+	 * @param flexCalcMethod フレックス勤務の設定
+	 * @param bonusPayAutoCalcSet 加給自動計算設定
+	 * @param scheRegetManage 予定再取得クラス
+	 * @return 日別実績の勤務予定時間
 	 */
-	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(ManageReGetClass recordReGetClass,
-															   WorkType workType, 
-															   VacationClass vacationClass, 
-															   Optional<SettingOfFlexWork> flexCalcMethod,
-															   BonusPayAutoCalcSet bonusPayAutoCalcSet, 
-															   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-															   ManageReGetClass scheRegetManage
-															   ,WorkingConditionItem conditionItem,
-															   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-															   Optional<WorkTimeCode> recordWorkTimeCode) {
+	private static WorkScheduleTimeOfDaily calcWorkSheduleTime(
+			ManageReGetClass recordReGetClass,
+			Optional<SettingOfFlexWork> flexCalcMethod,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet, 
+			ManageReGetClass scheRegetManage) {
+		
 		//勤務予定時間を計算
-		//val schedulePredWorkTime = (scheduleOneDay.getWorkInformastionOfDaily().getRecordInfo().getWorkTimeCode() == null)?new AttendanceTime(0):recordOneDay.getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());
 		AttendanceTime scheTotalTime = new AttendanceTime(0);
 		AttendanceTime scheExcessTotalTime = new AttendanceTime(0);
 		AttendanceTime scheWithinTotalTime = new AttendanceTime(0);
 		//実績所定労働時間の計算
-		val actualPredWorkTime = ( recordReGetClass.getCalculationRangeOfOneDay() == null
-									|| !recordWorkTimeCode.isPresent()
-									|| workType.getDailyWork().isHolidayWork()
-									|| recordReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc() == null)
-									?new AttendanceTime(0)
-//									:recordOneDay.getPredetermineTimeSetForCalc().getPredetermineTimeByAttendanceAtr(workType.getDailyWork().decisionNeedPredTime());
-									:recordReGetClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc().getpredetermineTime(workType.getDailyWork());	
+		AttendanceTime actualPredWorkTime = recordReGetClass.getPredWorkTime();	
 		//予定勤務種類が設定されてなかったら、実績の所定労働のみ埋めて返す
 		if(!scheRegetManage.getWorkType().isPresent()) return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime), actualPredWorkTime);
 		
-		Optional<WorkTimeDailyAtr> workDailyAtr = (scheRegetManage.getWorkTimeSetting() != null && scheRegetManage.getWorkTimeSetting().isPresent()) ? Optional.of(scheRegetManage.getWorkTimeSetting().get().getWorkTimeDivision().getWorkTimeDailyAtr()) : Optional.empty();
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.createAllZEROInstance();
-		Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
+		//Optional<PredetermineTimeSetForCalc> schePreTimeSet = Optional.empty();
 		if(!scheRegetManage.getIntegrationOfWorkTime().isPresent() && recordReGetClass.getIntegrationOfWorkTime().isPresent()) {
 			totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(scheRegetManage,
-																   vacationClass, 
-																   scheRegetManage.getWorkType().get(), 
-																   workDailyAtr, //就業時間帯依存
-																   flexCalcMethod, //詳細が決まってなさそう(2018.6.21)
+																   flexCalcMethod,
 																   bonusPayAutoCalcSet, //会社共通
-																   eachCompanyTimeSet, //会社共通 
-																   conditionItem,
-																   predetermineTimeSetByPersonInfo,
-																   recordWorkTimeCode,
 																   new DeclareTimezoneResult());
 			scheTotalTime = totalWorkingTime.getTotalTime();
 			if(totalWorkingTime.getWithinStatutoryTimeOfDaily() != null)
@@ -644,7 +560,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			holidayWorkTime += totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()?totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().calcTransTotalFrameTime():0;
 			scheExcessTotalTime = new AttendanceTime(overWorkTime + holidayWorkTime);
 			//計画所定時間の計算
-			schePreTimeSet = Optional.of(scheRegetManage.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
+			//schePreTimeSet = Optional.of(scheRegetManage.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc());
 		}
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(scheTotalTime,scheExcessTotalTime,scheWithinTotalTime), actualPredWorkTime);
 	}

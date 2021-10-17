@@ -138,7 +138,7 @@ public class AggregateMonthlyRecordService {
 		proc.setCompanyId(cid);
 		proc.setEmployeeId(sid);
 		Optional<ComSubstVacation> absSettingOpt = require.comSubstVacation(cid);
-		CompensatoryLeaveComSetting dayOffSetting = require.compensatoryLeaveComSetting(cid);
+		CompensatoryLeaveComSetting dayOffSetting = require.compensatoryLeaveComSetting(cid).get();
 		MonAggrCompanySettings comSetting = new MonAggrCompanySettings();
 		comSetting.setAbsSettingOpt(absSettingOpt);
 		comSetting.setDayOffSetting(dayOffSetting);
@@ -154,10 +154,8 @@ public class AggregateMonthlyRecordService {
 	}
 
 	public static interface RequireM1 extends MonthlyCalculatingDailys.RequireM4, AggregateMonthlyRecordServiceProc.RequireM7,
-		MonAggrEmployeeSettings.RequireM2 {
+		MonAggrEmployeeSettings.RequireM2, CompensatoryLeaveComSetting.Require {
 
 		Optional<ComSubstVacation> comSubstVacation(String companyId);
-
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
 	}
 }

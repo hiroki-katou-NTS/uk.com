@@ -211,13 +211,33 @@ public class TimeVacationWork implements Cloneable {
 		totalMinutes += this.privateOuting.totalVacationAddTime();
 		// 組合外出
 		totalMinutes += this.unionOuting.totalVacationAddTime();
-		// 勤務NO毎の時間
-		for (TimeVacationWorkEachNo item : this.eachNo){
-			// 遅刻
-			totalMinutes += item.getLate().totalVacationAddTime();
-			// 早退
-			totalMinutes += item.getLeaveEarly().totalVacationAddTime();
-		}
+		// 遅刻
+		totalMinutes += this.eachNo.stream()
+				.map(c -> c.getLate().totalVacationAddTime()).mapToInt(Integer::intValue).sum();
+		// 早退
+		totalMinutes += this.eachNo.stream()
+				.map(c -> c.getLeaveEarly().totalVacationAddTime()).mapToInt(Integer::intValue).sum();
+		// 合計
+		return new AttendanceTime(totalMinutes);
+	}
+	
+	/**
+	 * 代休時間の合計
+	 * @return 代休時間合計
+	 */
+	public AttendanceTime totalCompLeaveTime(){
+		int totalMinutes = 0;
+		// 私用外出
+		totalMinutes += this.privateOuting.getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+		// 組合外出
+		totalMinutes += this.unionOuting.getTimeCompensatoryLeaveUseTime().valueAsMinutes();
+		// 遅刻
+		totalMinutes += this.eachNo.stream().map(c -> c.getLate().getTimeCompensatoryLeaveUseTime())
+				.mapToInt(AttendanceTime::valueAsMinutes).sum();
+		// 早退
+		totalMinutes += this.eachNo.stream().map(c -> c.getLeaveEarly().getTimeCompensatoryLeaveUseTime())
+				.mapToInt(AttendanceTime::valueAsMinutes).sum();
+		// 代休時間合計
 		return new AttendanceTime(totalMinutes);
 	}
 }

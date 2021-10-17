@@ -10,6 +10,7 @@ import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -26,6 +27,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 public class PredetermineTimeSetForCalc implements Cloneable{
+	
+	//就業時間帯コード
+	private final WorkTimeCode workTimeCode;
 	
 	//時間帯(使用区分付き)
 	private final List<TimezoneUse> timeSheets;
@@ -60,12 +64,14 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	 * @param timeSheets
 	 */
 	public PredetermineTimeSetForCalc(
+			WorkTimeCode workTimecode,
 			List<TimezoneUse> timeSheets,
 			TimeWithDayAttr AMEndTime,
 			TimeWithDayAttr PMStartTime,
 			PredetermineTime addtionSet,
             AttendanceTime oneDayRange,
 			TimeWithDayAttr startOneDayTime) {
+		this.workTimeCode = workTimecode;
 		this.timeSheets = timeSheets.stream().sorted((c1, c2) -> Integer.compare(c1.getWorkNo(), c2.getWorkNo())).collect(Collectors.toList());
 		this.AMEndTime = AMEndTime;
 		this.PMStartTime = PMStartTime;
@@ -97,12 +103,14 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 		
 		
 		/** TODO: 三浦さんの処理待ち*/
-		return new PredetermineTimeSetForCalc(timeZones
-											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()
-											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()
-											  ,predetermineTimeSet.getPredTime()
-											  ,predetermineTimeSet.getRangeTimeDay()
-											  ,predetermineTimeSet.getStartDateClock());
+		return new PredetermineTimeSetForCalc(
+				predetermineTimeSet.getWorkTimeCode()
+				,timeZones
+				,predetermineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()
+				,predetermineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()
+				,predetermineTimeSet.getPredTime()
+				,predetermineTimeSet.getRangeTimeDay()
+				,predetermineTimeSet.getStartDateClock());
 	}
 	
 	/**
@@ -197,12 +205,14 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	 * @param master 所定時間設定
 	 */
 	public static PredetermineTimeSetForCalc convertMastarToCalc(PredetemineTimeSetting master) {
-		return new PredetermineTimeSetForCalc(master.getPrescribedTimezoneSetting().getLstTimezone(),
-											  master.getPrescribedTimezoneSetting().getMorningEndTime(),
-											  master.getPrescribedTimezoneSetting().getAfternoonStartTime(),
-											  master.getPredTime(),
-											  master.getRangeTimeDay(),
-											  master.getStartDateClock());
+		return new PredetermineTimeSetForCalc(
+				master.getWorkTimeCode(),
+				master.getPrescribedTimezoneSetting().getLstTimezone(),
+				master.getPrescribedTimezoneSetting().getMorningEndTime(),
+				master.getPrescribedTimezoneSetting().getAfternoonStartTime(),
+				master.getPredTime(),
+				master.getRangeTimeDay(),
+				master.getStartDateClock());
 	}
 	
 	/**
@@ -299,6 +309,7 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 		PredetermineTimeSetForCalc cloned;
 		try {
 			cloned = new PredetermineTimeSetForCalc(
+				this.workTimeCode,
 				this.timeSheets.stream().map(t -> t.clone()).collect(Collectors.toList()),
 				new TimeWithDayAttr(this.AMEndTime.getDayTime()),
 				new TimeWithDayAttr(this.PMStartTime.getDayTime()),

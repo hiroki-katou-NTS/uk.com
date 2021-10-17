@@ -262,7 +262,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock =
 				parentSheet.getLeaveEarlyDecisionClock(this.workingHoursTimeNo.v());
 		// 就業時間の計算
-		AttendanceTime actualTime = calcActualTime(holidayCalcMethodSet,premiumAtr);
+		AttendanceTime actualTime = calcActualTime(holidayCalcMethodSet, premiumAtr);
 		// 実働時間を就業時間に入れる
 		AttendanceTime workTime = new AttendanceTime(actualTime.valueAsMinutes());
 		// 遅刻、早退時間を就業時間から控除

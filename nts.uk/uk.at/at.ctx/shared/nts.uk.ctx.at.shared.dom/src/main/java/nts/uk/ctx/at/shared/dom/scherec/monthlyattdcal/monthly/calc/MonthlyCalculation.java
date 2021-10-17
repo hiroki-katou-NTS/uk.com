@@ -334,11 +334,12 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 			// フレックス勤務の月別集計設定
 			this.settingsByFlex.setMonthlyAggrSetOfFlexOpt(Optional.of(companySets.getAggrSetOfFlex()));
-
+			// フレックス勤務の日別計算設定
+			this.settingsByFlex.setDailyCalcSetOfFlex(companySets.getDailyCalcSetOfFlex());
+			// 会社別フレックス勤務集計方法
 			this.settingsByFlex.setComFlexSetOpt(companySets.getComFlexSetOpt());
 			// フレックス不足の年休補填管理
 			this.settingsByFlex.setInsufficientFlexOpt(companySets.getInsufficientFlexOpt());
-
 			// フレックス不足の繰越上限管理
 			this.settingsByFlex.setFlexShortageLimitOpt(companySets.getFlexShortageLimitOpt());
 		}
@@ -825,9 +826,9 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		} else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) { // フレックス時間勤務 の時
 			
 			/** 月の法定労働時間を取得する。*/
-			this.statutoryWorkingTime = this.settingsByFlex.getStatutoryWorkingTimeMonth(require, yearMonth, procPeriod, closureId,
-					Optional.of(this.aggregateTime.getVacationUseTime().getCompensatoryLeave()), 
-					this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
+			this.statutoryWorkingTime = this.settingsByFlex.getStatutoryWorkingTimeMonth(
+					require, this.companySets, this.employeeSets,
+					this.yearMonth, this.procPeriod, this.closureId,this.monthlyCalculatingDailys);
 
 			// フレックス集計方法を取得する
 			val flexAggrMethod = this.settingsByFlex.getFlexAggrSet().getAggrMethod();
@@ -846,10 +847,11 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			ConcurrentStopwatches.start("12223:フレックスの月単位：");
 
 			// フレックス勤務の月単位の時間を集計する
-			this.flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, 
-					this.closureId, aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem, this.workplaceId, 
-					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime,
-					this.closureDate, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
+			this.flexTime.aggregateMonthlyHours(require, cacheCarrier,
+					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
+					aggrPeriod, aggrAtr, flexAggrMethod, this.workingConditionItem, this.employmentCd,
+					this.companySets, this.employeeSets, this.settingsByFlex, this.aggregateTime,
+					this.monthlyCalculatingDailys);
 
 			ConcurrentStopwatches.stop("12223:フレックスの月単位：");
 		}
@@ -873,9 +875,10 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			}
 
 			// フレックス勤務の就業時間を求める （Redmine#106235）
-			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(require, this.companyId, this.employeeId, this.closureId, this.yearMonth,
-					aggrPeriod, this.settingsByFlex.getFlexAggrSet().getAggrMethod(), settingsByFlex,
-					this.aggregateTime, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
+			val workTimeOpt = this.flexTime.askWorkTimeOfFlex(require, cacheCarrier,
+					this.companyId, this.employeeId, this.yearMonth, aggrPeriod, this.closureId, this.closureDate,
+					this.employmentCd, this.companySets, this.employeeSets, this.settingsByFlex,
+					this.aggregateTime, monthlyCalculatingDailys);
 			if (workTimeOpt.isPresent()) {
 				this.aggregateTime.getWorkTime().setWorkTime(workTimeOpt.get());
 			}
@@ -1605,23 +1608,17 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	public static interface RequireM5 extends GetRegularAggrSet.RequireM1, RequireM0, 
 		GetDeforAggrSet.RequireM1, GetFlexAggrSet.RequireM1, MonthlyStatutoryWorkingHours.RequireM4,
 		MonthlyStatutoryWorkingHours.RequireM1, DefoAggregateMethodOfMonthly.Require,
-		FlexAggregateMethodOfMonthly.Require {
-		
-		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
-		
-//		YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth);
+		FlexAggregateMethodOfMonthly.Require, UsageUnitSetting.Require {
 		
 		ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId, CalcFlexChangeDto calc);
 	}
 	
 	public static interface RequireM4 extends AggregateTotalWorkingTime.RequireM3,
 		RegularAndIrregularTimeOfMonthly.RequireM3, RegularAndIrregularTimeOfMonthly.RequireM1,
-		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5 {
-	}
+		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5, SettingRequiredByFlex.RequireM1 {}
 	
 	public static interface RequireM2 extends RequireM5, RequireM4, RequireM1, 
-		AgreementTimeOfManagePeriod.RequireM2 {
-	}
+		AgreementTimeOfManagePeriod.RequireM2 {}
 	
 	public static interface RequireM1 {
 

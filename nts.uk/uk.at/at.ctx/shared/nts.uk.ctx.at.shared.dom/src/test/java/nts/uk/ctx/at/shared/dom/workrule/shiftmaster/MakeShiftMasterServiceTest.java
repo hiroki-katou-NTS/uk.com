@@ -12,7 +12,9 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.MakeShiftMasterService.Require;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @RunWith(JMockit.class)
 public class MakeShiftMasterServiceTest {
@@ -32,7 +34,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				requireWorkinfo.workType(companyId, new WorkTypeCode(workTypeCode));
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -64,7 +66,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(anyString);
+				requireWorkinfo.workType(companyId, new WorkTypeCode(anyString));
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> {
@@ -87,13 +89,13 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				requireWorkinfo.workType(companyId, new WorkTypeCode(workTypeCode));
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 				
-				requireWorkinfo.getWorkTime(workTimeCode.get());
+				requireWorkinfo.workTimeSetting(companyId, new WorkTimeCode(workTimeCode.get()));
 			}
 		};
 		NtsAssert.businessException("Msg_1609", () -> {
@@ -116,7 +118,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMasterDisInfor shiftMasterDisInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				requireWorkinfo.workType(companyId, new WorkTypeCode(workTypeCode));
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -145,7 +147,7 @@ public class MakeShiftMasterServiceTest {
 
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(workTypeCode);
+				requireWorkinfo.workType(companyId, new WorkTypeCode(workTypeCode));
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -200,7 +202,7 @@ public class MakeShiftMasterServiceTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null);
 		new Expectations() {
 			{
-				requireWorkinfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				requireWorkinfo.workType(shiftMater.getCompanyId(), shiftMater.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 				
 				requireWorkinfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());

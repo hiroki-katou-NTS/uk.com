@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.UpdateShiftMasterService.Require;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @RunWith(JMockit.class)
 public class UpdateShiftMasterServiceTest {
@@ -34,7 +35,7 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
-				requireWorkInfo.getWorkType(anyString);
+				requireWorkInfo.workType(anyString, new WorkTypeCode(anyString));
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(anyString);
@@ -64,7 +65,7 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
-				requireWorkInfo.getWorkType(workTypeCode);
+				requireWorkInfo.workType("companyId", new WorkTypeCode(workTypeCode));
 			}
 		};
 
@@ -87,13 +88,13 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(workTypeCode);
+				requireWorkInfo.workType("companyId", new WorkTypeCode(workTypeCode));
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 				
-				requireWorkInfo.getWorkTime(workInformation.getWorkTimeCode().v());
+				requireWorkInfo.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 			}
 		};
 
@@ -115,7 +116,7 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(workTypeCode);
+				requireWorkInfo.workType("companyId", new WorkTypeCode(workTypeCode));
 				result = Optional.of(new WorkType());
 
 				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -142,7 +143,7 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(workTypeCode);
+				requireWorkInfo.workType("companyId", new WorkTypeCode(workTypeCode));
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -170,7 +171,7 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.getWorkType(anyString);
+				requireWorkInfo.workType(shiftMaster.getCompanyId(), new WorkTypeCode(anyString));
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(anyString);

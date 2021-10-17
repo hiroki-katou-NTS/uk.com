@@ -24,9 +24,6 @@ import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -50,14 +47,14 @@ public class BreakTimeSheetGetter {
 		
 		val cid = AppContexts.user().companyId();
 		
-		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
+		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode()).orElse(null);
 		if (workType == null) {
 			return new ArrayList<>();
 		}
 		/** 出勤系か判定する */
 		if (workType.getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
 			
-			/** 休憩をクレアする */
+			/** 休憩をクリアする */
 			return new ArrayList<>();
 		}
 		
@@ -70,7 +67,7 @@ public class BreakTimeSheetGetter {
 		}
 		
 		/** 「１日の計算範囲」クラスを作成 */
-		val oneDayCalcRange = require.createOneDayRange(require.predetemineTimeSetting(cid, workTimeSet.getCode().v()), 
+		CalculationRangeOfOneDay oneDayCalcRange = require.createOneDayRange( 
 				domainDaily, Optional.of(workTimeSet.getCommonSetting()), 
 				workType, JustCorrectionAtr.USE, Optional.of(workTimeSet.getCode()));
 		
@@ -180,7 +177,7 @@ public class BreakTimeSheetGetter {
 		/** require.就業時間帯を取得 */
 		val workTimeSet = domainDaily.getWorkInformation().getRecordInfo()
 				.getWorkTimeCodeNotNull()
-				.flatMap(c -> require.workTimeSetting(cid, c.v()))
+				.flatMap(c -> require.workTimeSetting(cid, c))
 				.orElse(null);
 		
 		/** 就業時間帯=NULLチェック */
@@ -191,13 +188,13 @@ public class BreakTimeSheetGetter {
 		switch(workTimeSet.getWorkTimeDivision().getWorkTimeForm()) {
 			case FIXED:				
 				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-						                         require.fixedWorkSetting(cid, workTimeSet.getWorktimeCode().v()).get());
+						                         require.fixedWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
 			case FLEX:				
 				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-												 require.flexWorkSetting(cid, workTimeSet.getWorktimeCode().v()).get());
+												 require.flexWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
 			case FLOW:				
 				return new IntegrationOfWorkTime(workTimeSet.getWorktimeCode(), workTimeSet, 
-						                         require.flowWorkSetting(cid, workTimeSet.getWorktimeCode().v()).get());
+						                         require.flowWorkSetting(cid, workTimeSet.getWorktimeCode()).get());
 			case TIMEDIFFERENCE:	
 				throw new RuntimeException("Unimplemented");/*時差勤務はまだ実装しない。2020/5/19 渡邉*/
 			default:				
@@ -205,27 +202,17 @@ public class BreakTimeSheetGetter {
 		}
 	}
 
-	public static interface RequireM3 {
+	public static interface RequireM3 extends PredetemineTimeSetting.Require{
 
-		Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode);
 	}
 
-	public static interface RequireM2 {
+	public static interface RequireM2 extends WorkTimeSetting.Require {
 		
-		Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode);
-		
-		Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode);
-		
-		Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode);
-		
-		Optional<FlexWorkSetting> flexWorkSetting(String companyId,String workTimeCode);
 	}
 
-	public static interface RequireM1 extends RequireM2, RequireM3 {
+	public static interface RequireM1 extends RequireM2, RequireM3, WorkType.Require {
 		
-		Optional<WorkType> workType(String companyId, String workTypeCd);
-		
-		CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
+		CalculationRangeOfOneDay createOneDayRange(
 				IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet,
 				WorkType workType, JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode);
 	}

@@ -54,10 +54,10 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType("Dummy", new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 
-				require.getWorkType("002");
+				require.workType("Dummy", new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 			}
 		};
@@ -92,11 +92,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType("Dummy", new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Shooting));// 振出
 
-				require.getWorkType("002");
+				require.workType("Dummy", new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Attendance));
 			}
 		};
@@ -133,11 +133,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType("Dummy", new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Shooting));// 振出
 
-				require.getWorkType("002");
+				require.workType("Dummy", new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Holiday));
 			}
 		};
@@ -172,11 +172,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType("Dummy", new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Pause));// 振休
 
-				require.getWorkType("002");
+				require.workType("Dummy", new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Absence));
 			}
 		};
@@ -212,11 +212,11 @@ public class CorrectDailyAttendanceServiceTest {
 		new Expectations() {
 			{
 
-				require.getWorkType("001");
+				require.workType("Dummy", new WorkTypeCode("001"));
 				result = Optional.of(createWorkType("001", WorkTypeUnit.OneDay, //勤務の単位
 						WorkTypeClassification.Pause));// 振休
 
-				require.getWorkType("002");
+				require.workType("Dummy", new WorkTypeCode("002"));
 				result = Optional.of(createWorkType("002", WorkTypeUnit.OneDay, WorkTypeClassification.Attendance));
 			}
 		};

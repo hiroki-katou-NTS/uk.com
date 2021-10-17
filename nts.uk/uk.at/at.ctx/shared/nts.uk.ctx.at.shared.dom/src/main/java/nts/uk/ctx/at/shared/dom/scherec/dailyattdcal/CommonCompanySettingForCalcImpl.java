@@ -72,6 +72,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 	//労働時間と日数の設定の利用単位の設定
 	private UsageUnitSettingRepository usageUnitSettingRepository;
 	
+	/** フレックス勤務の日別計算設定 */
 	@Inject
 	private FlexSetRepository flexSetRepository;
 	
@@ -106,25 +107,25 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 		val optionalItems = optionalItemRepository.findAll(companyId);
 		val usageSetting = usageUnitSettingRepository.findByCompany(companyId);
 		return new ManagePerCompanySet(
-									  holidayAddtionRepository.findByCId(companyId),
-									  specificWorkRuleRepository.findCalcMethodByCid(companyId),
-									  compensLeaveComSetRepository.find(companyId),
-									  divergenceTimeRepository.getAllDivTime(companyId),
-//									  errorAlerms,
-									  bPUnitUseSettingRepository.getSetting(companyId),
-									  optionalItems,
-									  formulaRepository.find(companyId),
-									  formulaOrderRepository.findAll(companyId),
-									  empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
-									  zeroTimeRepository.findByCId(companyId),
-									  specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),
-									  usageSetting,
-									// 深夜時間帯(2019.3.31時点ではNotマスタ参照で動作している)
-									new MidNightTimeSheet(companyId, new TimeWithDayAttr(1320),new TimeWithDayAttr(1740)),
-									flexSetRepository.findByCId(companyId).get(),
-									deformLaborOTRepository.findByCId(companyId).get(),
-									this.declareSetRepository.find(companyId),
-									this.calcShortTimeWorkRepository.find(companyId),
-									this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
+			holidayAddtionRepository.findByCId(companyId),
+			specificWorkRuleRepository.findCalcMethodByCid(companyId),
+			compensLeaveComSetRepository.find(companyId),
+			divergenceTimeRepository.getAllDivTime(companyId),
+//		  errorAlerms,
+			bPUnitUseSettingRepository.getSetting(companyId),
+			optionalItems,
+			formulaRepository.find(companyId),
+			formulaOrderRepository.findAll(companyId),
+			empConditionRepository.findAll(companyId, optionalItems.stream().map(oi -> oi.getOptionalItemNo().v()).collect(Collectors.toList())),
+			zeroTimeRepository.findByCId(companyId),
+			specificWorkRuleRepository.findUpperLimitWkHourByCid(companyId),
+			usageSetting,
+			// 深夜時間帯(2019.3.31時点ではNotマスタ参照で動作している)
+			new MidNightTimeSheet(companyId, new TimeWithDayAttr(1320),new TimeWithDayAttr(1740)),
+			flexSetRepository.findByCId(companyId).get(),
+			deformLaborOTRepository.findByCId(companyId).get(),
+			this.declareSetRepository.find(companyId),
+			this.calcShortTimeWorkRepository.find(companyId),
+			this.overtimeFrameRepository.getOvertimeWorkFrameByFrameByCom(companyId, NotUseAtr.USE.value));
 	}
 }

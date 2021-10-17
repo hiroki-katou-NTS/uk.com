@@ -95,13 +95,13 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.NOT_ABOLISH);
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 				result = Optional.empty();
 				result = Optional.of(workTimeSetting);
 			}
@@ -115,7 +115,7 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 			}
 		};
 		assertThat(workInformation.checkNormalCondition(require)).isFalse();
@@ -127,7 +127,7 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 			}
 		};
 		assertThat(workInformation.checkErrorCondition(require)).isEqualTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
@@ -144,7 +144,7 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -167,13 +167,13 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 			}
 		};
 
@@ -198,14 +198,13 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
@@ -231,13 +230,13 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
@@ -257,13 +256,13 @@ public class WorkInformationTest {
 		new Expectations() {
 			{
 
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 			}
 		};
 
@@ -284,8 +283,7 @@ public class WorkInformationTest {
 		workType.setDeprecate(DeprecateClassification.Deprecated);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 			}
 		};
@@ -310,14 +308,13 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
@@ -342,14 +339,13 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.NOT_ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
 				result = SetupType.OPTIONAL;
 
-				require.getWorkTime(workInformation.getWorkTimeCode().v());
+				require.workTimeSetting("companyId", workInformation.getWorkTimeCode());
 				result = Optional.of(workTimeSetting);
 			}
 		};
@@ -370,8 +366,7 @@ public class WorkInformationTest {
 		WorkType workType = new WorkType();
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -402,8 +397,7 @@ public class WorkInformationTest {
 		workTimeSetting.setAbolishAtr(AbolishAtr.NOT_ABOLISH);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -424,8 +418,7 @@ public class WorkInformationTest {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 		new Expectations() {
 			{
-
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
 				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
@@ -451,7 +444,7 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 
 		}};
 
@@ -479,7 +472,7 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of( workType );
 
 		}};
@@ -512,7 +505,7 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of( workType );
 
 		}};
@@ -545,7 +538,7 @@ public class WorkInformationTest {
 		new Expectations() {{
 
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of( workType );
 
 		}};
@@ -569,8 +562,7 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
-
+				require.workType("companyId", workInformation.getWorkTypeCode());
 			}
 		};
 
@@ -587,9 +579,8 @@ public class WorkInformationTest {
 		workType.setWorkTypeCode(workInformation.getWorkTypeCode());
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(workType);
-
 			}
 		};
 		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
@@ -607,11 +598,10 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
+				require.workType("companyId", workInformation.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 
-				require.getWorkTime(anyString);
-
+				require.workTimeSetting(anyString, (WorkTimeCode)any);
 			}
 		};
 
@@ -634,10 +624,10 @@ public class WorkInformationTest {
 
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(workType);
 				
-				require.getWorkTime( anyString );
+				require.workTimeSetting(anyString, (WorkTimeCode)any);
 				result = Optional.of(workTimeSetting);
 				
 				workTimeSetting.getWorkSetting(require);
@@ -675,13 +665,13 @@ public class WorkInformationTest {
 		
 		new Expectations() {
 			{
-				require.getWorkType(anyString);
+				require.workType(anyString, (WorkTypeCode)any);
 				result = Optional.of(workType);
 				
 				workType.chechAttendanceDay();
 				result = AttendanceDayAttr.HALF_TIME_AM;
 
-				require.getWorkTime(anyString);
+				require.workTimeSetting(anyString, (WorkTimeCode)any);
 				result = Optional.of(workTimeSetting);
 				
 				workTimeSetting.getWorkSetting(require);
@@ -723,7 +713,7 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 		}};
 
 		// Execute
@@ -747,11 +737,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 		}};
 
 		// Execute
@@ -778,11 +768,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -825,11 +815,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -887,11 +877,11 @@ public class WorkInformationTest {
 		new Expectations() {{
 			// 変更可能な勤務時間帯を取得する
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -941,7 +931,7 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 		}};
 
 		// Execute
@@ -965,11 +955,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 		}};
 
 		// Execute
@@ -997,11 +987,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -1042,11 +1032,11 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 勤務種類を取得する
-			require.getWorkType( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workType);
 
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workTimeSetting(anyString, (WorkTimeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );
@@ -1108,7 +1098,7 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 		}};
 
 		// Execute
@@ -1137,7 +1127,7 @@ public class WorkInformationTest {
 
 		new Expectations() {{
 			// 就業時間帯を取得する
-			require.getWorkTime( anyString );
+			require.workType(anyString, (WorkTypeCode)any);
 			result = Optional.of(workTime);
 			// 勤務設定を取得する
 			workTime.getWorkSetting( require );

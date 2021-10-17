@@ -183,7 +183,7 @@ public class FlowWorkSettingTest {
 		
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode) any);
+				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
 				result = predTimeStg;
 			}
 		};
@@ -280,7 +280,7 @@ public class FlowWorkSettingTest {
 		
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode) any);
+				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
 				result = predTimeStg;
 			}
 		};

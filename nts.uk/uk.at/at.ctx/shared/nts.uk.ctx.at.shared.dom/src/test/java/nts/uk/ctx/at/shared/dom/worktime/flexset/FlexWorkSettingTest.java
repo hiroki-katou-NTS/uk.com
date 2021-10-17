@@ -287,7 +287,7 @@ public class FlexWorkSettingTest {
 
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode) any);
+				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
 				result = predTimeStg;
 			}
 		};
@@ -348,7 +348,7 @@ public class FlexWorkSettingTest {
 
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode) any);
+				require.predetemineTimeSetting(anyString, (WorkTimeCode) any);
 				result = predTimeStg;
 			}
 		};
@@ -403,7 +403,7 @@ public class FlexWorkSettingTest {
 
 		new Expectations() {
 			{
-				require.getPredetermineTimeSetting((WorkTimeCode)any);
+				require.predetemineTimeSetting(anyString, (WorkTimeCode)any);
 				result = instance;
 			}
 		};

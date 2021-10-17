@@ -203,13 +203,13 @@ public class GetInforOnTargetPeriod {
 		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 		
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override
@@ -218,47 +218,23 @@ public class GetInforOnTargetPeriod {
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, code.v());
-			
-			if (fixedWorkSetting.isPresent()) {
-				return fixedWorkSetting.get();
-			}
-			
-			return new FixedWorkSetting();
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> flowWorkSetting = flowWorkSettingRepository.find(companyId, code.v());
-			
-			if (flowWorkSetting.isPresent()) {
-				return flowWorkSetting.get();
-			}
-			
-			return new FlowWorkSetting();
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> flexWorkSetting = flexWorkSettingRepository.find(companyId, code.v());
-			
-			if (flexWorkSetting.isPresent()) {
-				return flexWorkSetting.get();
-			}
-			
-			return new FlexWorkSetting();
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v());
-			
-			if (predetemineTimeSetting.isPresent()) {
-				return predetemineTimeSetting.get();
-			}
-			
-			return new PredetemineTimeSetting();
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 		@Override
@@ -288,13 +264,13 @@ public class GetInforOnTargetPeriod {
 		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 		
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode) {
+			return workTypeRepo.findByPK(companyId, workTypeCode.v());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode.v());
 		}
 
 		@Override
@@ -303,47 +279,23 @@ public class GetInforOnTargetPeriod {
 		}
 
 		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			Optional<FixedWorkSetting> fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, code.v());
-			
-			if (fixedWorkSetting.isPresent()) {
-				return fixedWorkSetting.get();
-			}
-			
-			return new FixedWorkSetting();
+		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return fixedWorkSettingRepository.findByKey(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			Optional<FlowWorkSetting> flowWorkSetting = flowWorkSettingRepository.find(companyId, code.v());
-			
-			if (flowWorkSetting.isPresent()) {
-				return flowWorkSetting.get();
-			}
-			
-			return new FlowWorkSetting();
+		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flowWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			Optional<FlexWorkSetting> flexWorkSetting = flexWorkSettingRepository.find(companyId, code.v());
-			
-			if (flexWorkSetting.isPresent()) {
-				return flexWorkSetting.get();
-			}
-			
-			return new FlexWorkSetting();
+		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
+			return flexWorkSettingRepository.find(companyId, workTimeCode.v());
 		}
 
 		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v());
-			
-			if (predetemineTimeSetting.isPresent()) {
-				return predetemineTimeSetting.get();
-			}
-			
-			return new PredetemineTimeSetting();
+		public Optional<PredetemineTimeSetting> predetemineTimeSetting(String companyId, WorkTimeCode workTimeCode) {
+			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode.v());
 		}
 
 		@Override

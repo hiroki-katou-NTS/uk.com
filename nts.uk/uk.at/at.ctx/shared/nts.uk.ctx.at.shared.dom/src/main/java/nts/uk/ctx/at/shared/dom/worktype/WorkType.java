@@ -88,6 +88,10 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 	}
 	
+	public static interface Require {
+		Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCode);
+	}
+	
 	/**
 	 * 出勤系かどうか判断
 	 * @return true:出勤系,false:出勤系でない
@@ -110,6 +114,10 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 				|| wt == WorkTypeClassification.HolidayWork;
 	}
 	
+	/**
+	 * 計算時に就業時間帯が不要かどうか判断する
+	 * @return true:不要,false:不要でない
+	 */
 	public boolean isNoneWorkTimeType(){
 		if (dailyWork != null && dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
 			return isNoneWorkTimeType(dailyWork.getOneDay());
@@ -118,8 +126,9 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	}
 	
 	private boolean isNoneWorkTimeType(WorkTypeClassification wt) {
-		return wt == WorkTypeClassification.Holiday || wt == WorkTypeClassification.Pause
-				|| wt == WorkTypeClassification.LeaveOfAbsence || wt == WorkTypeClassification.Closure
+		return wt == WorkTypeClassification.Holiday
+				|| wt == WorkTypeClassification.LeaveOfAbsence
+				|| wt == WorkTypeClassification.Closure
 				|| wt == WorkTypeClassification.ContinuousWork;
 	}
 
@@ -635,6 +644,30 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 			return Optional.of(WorkAtr.Afternoon);
 		}
 		
+		return Optional.empty();
+	}
+
+	/**
+	 * 指定の分類の1日午前午後区分を取得
+	 * @param workTypeClass 勤務種類の分類
+	 * @return 1日午前午後区分
+	 */
+	public Optional<WorkAtr> getWorkAtr(WorkTypeClassification workTypeClass) {
+		
+		if (this.dailyWork.isOneDay() && this.dailyWork.getOneDay() == workTypeClass) {
+			return Optional.of(WorkAtr.OneDay);
+		}
+		else {
+			if (this.dailyWork.getMorning() == workTypeClass && this.dailyWork.getAfternoon() == workTypeClass) {
+				return Optional.of(WorkAtr.OneDay);
+			}
+			if (this.dailyWork.getMorning() == workTypeClass) {
+				return Optional.of(WorkAtr.Monring);
+			}
+			if (this.dailyWork.getAfternoon() == workTypeClass) {
+				return Optional.of(WorkAtr.Afternoon);
+			}
+		}
 		return Optional.empty();
 	}
 }

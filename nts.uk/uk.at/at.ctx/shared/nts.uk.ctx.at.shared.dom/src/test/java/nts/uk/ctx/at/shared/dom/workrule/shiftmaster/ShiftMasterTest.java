@@ -14,6 +14,7 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.WorkInformation.Require;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 @RunWith(JMockit.class)
@@ -40,7 +41,7 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.workType(shiftMater.getCompanyId(), shiftMater.getWorkTypeCode());
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> shiftMater.checkError(requireWorkInfo));
@@ -55,13 +56,13 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.workType(shiftMater.getCompanyId(), shiftMater.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 				
-				requireWorkInfo.getWorkTime(workTimeCode);
+				requireWorkInfo.workTimeSetting(shiftMater.getCompanyId(), new WorkTimeCode(workTimeCode));
 				
 			}
 		};
@@ -79,7 +80,7 @@ public class ShiftMasterTest {
 		shiftMater.removeWorkTimeInHolydayWorkType();
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.workType(shiftMater.getCompanyId(), shiftMater.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
@@ -98,7 +99,7 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.workType(shiftMater.getCompanyId(), shiftMater.getWorkTypeCode());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());

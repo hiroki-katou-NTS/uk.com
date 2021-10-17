@@ -18,20 +18,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.shr.com.context.AppContexts;
@@ -89,75 +83,58 @@ public class ActualWorkingTimeOfDaily {
 				new PremiumTimeOfDailyPerformance());
 	}
 
-    public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
-            int diffTimeWork, DivergenceTimeOfDaily divTime) {
-        return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
-                new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
-                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, new PremiumTimeOfDailyPerformance());
-    }
-
-    public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
-            int diffTimeWork, DivergenceTimeOfDaily divTime, PremiumTimeOfDailyPerformance premiumTime) {
-        return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
-                new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
-                new AttendanceTime(diffTimeWork), totalWorkTime, divTime, premiumTime);
-    }
-    
-    public static ActualWorkingTimeOfDaily of(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
+	public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
+	        int diffTimeWork, DivergenceTimeOfDaily divTime) {
+	    return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
+	            new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
+	            new AttendanceTime(diffTimeWork), totalWorkTime, divTime, new PremiumTimeOfDailyPerformance());
+	}
+	
+	public static ActualWorkingTimeOfDaily of(TotalWorkingTime totalWorkTime, int midBind, int totalBind, int bindDiff,
+	        int diffTimeWork, DivergenceTimeOfDaily divTime, PremiumTimeOfDailyPerformance premiumTime) {
+	    return new ActualWorkingTimeOfDaily(new AttendanceTime(bindDiff),
+	            new ConstraintTime(new AttendanceTime(midBind), new AttendanceTime(totalBind)),
+	            new AttendanceTime(diffTimeWork), totalWorkTime, divTime, premiumTime);
+	}
+	
+	public static ActualWorkingTimeOfDaily of(AttendanceTime constraintDiffTime, ConstraintTime constraintTime,
 			AttendanceTime timeDiff, TotalWorkingTime totalWorkingTime, DivergenceTimeOfDaily divTime,
 			PremiumTimeOfDailyPerformance premiumTime) {
-    	return new ActualWorkingTimeOfDaily(constraintDiffTime,constraintTime,
-    										timeDiff,totalWorkingTime,divTime,premiumTime);
-    }
-    
-    public ActualWorkingTimeOfDaily inssertTotalWorkingTime(TotalWorkingTime time) {
-    	return new ActualWorkingTimeOfDaily(this.constraintDifferenceTime,this.constraintTime,this.timeDifferenceWorkingHours,time,this.divTime,this.premiumTimeOfDailyPerformance);
-    }
-    
+		return new ActualWorkingTimeOfDaily(constraintDiffTime,constraintTime,
+											timeDiff,totalWorkingTime,divTime,premiumTime);
+	}
+	
+	public ActualWorkingTimeOfDaily inssertTotalWorkingTime(TotalWorkingTime time) {
+		return new ActualWorkingTimeOfDaily(this.constraintDifferenceTime,this.constraintTime,this.timeDifferenceWorkingHours,time,this.divTime,this.premiumTimeOfDailyPerformance);
+	}
+
 	/**
 	 * 日別実績の実働時間の計算
-	 * @param recordClass 
-	 * @param vacationClass 
-	 * @param workType 
-	 * @param workTimeDailyAtr 
-	 * @param flexCalcMethod 
-	 * @param bonusPayAutoCalcSet 
-	 * @param eachCompanyTimeSet 
-	 * @param forCalcDivergenceDto 
-	 * @param divergenceTimeList 
-	 * @param conditionItem 
-	 * @param predetermineTimeSetByPersonInfo 
-	 * @param workScheduleTime 
-	 * @param recordWorkTimeCode 
+	 * @param recordClass 実績
+	 * @param settingOfFlex フレックス勤務の設定
+	 * @param bonusPayAutoCalcSet 加給時間計算設定
+	 * @param workScheduleTime 日別実績の勤務予定時間
 	 * @param declareResult 申告時間帯作成結果
+	 * @return 日別勤怠の勤務時間
 	 */
-	public static ActualWorkingTimeOfDaily calcRecordTime(ManageReGetClass recordClass,
-			   VacationClass vacationClass,
-			   WorkType workType,
-		       Optional<WorkTimeDailyAtr> workTimeDailyAtr,
-			   Optional<SettingOfFlexWork> flexCalcMethod,
-			   BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
-			   DailyRecordToAttendanceItemConverter forCalcDivergenceDto,
-			   List<DivergenceTimeRoot> divergenceTimeList, 
-			   WorkingConditionItem conditionItem,
-			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   WorkScheduleTimeOfDaily workScheduleTime,
-			   Optional<WorkTimeCode> recordWorkTimeCode,
-			   DeclareTimezoneResult declareResult) {
+	public static ActualWorkingTimeOfDaily calcRecordTime(
+			ManageReGetClass recordClass,
+			Optional<SettingOfFlexWork> settingOfFlex,
+			BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			WorkScheduleTimeOfDaily workScheduleTime,
+			DeclareTimezoneResult declareResult) {
+
+		// 労働条件項目
+		WorkingConditionItem conditionItem = recordClass.getPersonDailySetting().getPersonInfo();
+		// 勤務種類
+		WorkType workType = recordClass.getWorkType().get();
 		
 		/* 総労働時間の計算 */
-		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(recordClass,
-				    vacationClass,
-				    workType,
-				    workTimeDailyAtr,
-				    flexCalcMethod,
-					bonusPayAutoCalcSet,
-					eachCompanyTimeSet,
-					conditionItem,
-					predetermineTimeSetByPersonInfo,
-					recordWorkTimeCode,
-					declareResult);
+		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
+				recordClass,
+				settingOfFlex,
+				bonusPayAutoCalcSet,
+				declareResult);
 		
 		TotalWorkingTime calcResultOotsuka = totalWorkingTime;
 		// 大塚モードの確認
@@ -165,16 +142,7 @@ public class ActualWorkingTimeOfDaily {
 			// 勤務種類が1日特休かどうか確認する
 			if (workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()){
 				// 大塚モード(特休時計算)
-				calcResultOotsuka = totalWorkingTime.SpecialHolidayCalculationForOotsuka(
-						recordClass,
-						vacationClass,
-						workType,
-						workTimeDailyAtr,
-						flexCalcMethod,
-						bonusPayAutoCalcSet,
-						eachCompanyTimeSet,
-						conditionItem,
-						predetermineTimeSetByPersonInfo);
+				calcResultOotsuka = totalWorkingTime.SpecialHolidayCalculationForOotsuka(recordClass);
 			}
 			else{
 				// 大塚残業

@@ -473,8 +473,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
-		return compensLeaveComSetRepo.find(companyId);
+	public Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSetting(String companyId) {
+		return Optional.ofNullable(compensLeaveComSetRepo.find(companyId));
 	}
 
 	@Override
@@ -522,9 +522,9 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId,
+	public Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSetting(String companyId,
 			String employmentCode) {
-		return compensLeaveEmSetRepo.find(companyId, employmentCode);
+		return Optional.ofNullable(compensLeaveEmSetRepo.find(companyId, employmentCode));
 	}
 
 	@Override

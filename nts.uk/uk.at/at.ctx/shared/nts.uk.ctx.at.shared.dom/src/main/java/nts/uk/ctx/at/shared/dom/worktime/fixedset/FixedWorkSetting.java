@@ -193,6 +193,10 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		return true;
 	}
 
+	public static interface Require {
+		Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode);
+	}
+	
 	/**
 	 * Correct data.
 	 *
@@ -388,7 +392,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	private List<ChangeableWorkingTimeZonePerNo> getListOfChangeableWorkingTimeZonePerNoByAmPmAtr(WorkSetting.Require require, AmPmAtr atr) {
 
 		// 勤務時間帯
-		val workings = this.getPredetermineTimeSetting(require).getTimezoneByAmPmAtrForCalc(atr);
+		val workings = this.getPredetermineTimeSetting(require).get().getTimezoneByAmPmAtrForCalc(atr);
 		// 残業時間帯
 		val overtimes = this.getTimeZoneOfOvertimeWorkByAmPmAtr(atr);
 
@@ -487,7 +491,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	private List<ChangeableWorkingTimeZonePerNo> getListOfChangeableWorkingTimeZoneOfWorkOnDayOff(WorkSetting.Require require) {
 
 		// 所定時間設定を取得する
-		val predTimeStg = this.getPredetermineTimeSetting(require);
+		val predTimeStg = this.getPredetermineTimeSetting(require).get();
 
 		// 休日出勤の時間帯を取得する
 		val workOnDayOff = this.offdayWorkTimezone.getFirstAndLastTimeOfOffdayWorkTimezone();
@@ -551,9 +555,5 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 				.filter(tz -> tz.getDayAtr() == AmPmAtr.PM)
 				.count() == 1;
 		return onlyOneAllDay && onlyOneAM && onlyOnePM;
-	}
-
-
-	public static interface Require {
 	}
 }

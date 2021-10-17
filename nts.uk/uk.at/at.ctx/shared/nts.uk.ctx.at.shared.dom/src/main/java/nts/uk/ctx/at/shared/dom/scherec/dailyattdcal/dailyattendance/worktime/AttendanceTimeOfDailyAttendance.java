@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
@@ -139,5 +140,115 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				ActualWorkingTimeOfDaily.defaultValue(), StayingTimeOfDaily.defaultValue(),
 				AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO,
 				MedicalCareTimeOfDaily.defaultValue());
+	}
+	
+	/**
+	 * 合計相殺代休時間の取得
+	 * @return 合計相殺代休時間
+	 */
+	public AttendanceTime getTotalOffsetCompLeaveTime() {
+		
+		// 遅刻相殺時間を取得する
+		int lateOffsetMinutes = this.getLateTimeOfDaily().stream()
+				.mapToInt(l -> l.getOffsetCompensatoryTime().valueAsMinutes())
+				.sum(); 
+		// 早退相殺時間を取得する
+		int earlyOffsetMinutes = this.getLeaveEarlyTimeOfDaily().stream()
+				.mapToInt(l -> l.getOffsetCompensatoryTime().valueAsMinutes())
+				.sum(); 
+		// 外出相殺時間を取得する
+		int outingOffsetMinutes = this.getOutingTimeOfDaily().stream()
+				.mapToInt(l -> l.getOffsetCompensatoryTime().valueAsMinutes())
+				.sum(); 
+		// 合計相殺代休時間
+		return new AttendanceTime(lateOffsetMinutes + earlyOffsetMinutes + outingOffsetMinutes);
+	}
+	
+	/**
+	 * 合計時間代休使用時間の取得
+	 * @return 合計時間代休使用時間
+	 */
+	public AttendanceTime getTotalTimeCompLeaveUseTime() {
+		
+		// 遅刻.時間代休使用時間を取得する
+		int lateUseMinutes = this.getLateTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes())
+				.sum(); 
+		// 早退.時間代休使用時間を取得する
+		int earlyUseMinutes = this.getLeaveEarlyTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().valueAsMinutes())
+				.sum(); 
+		// 外出.時間代休使用時間を取得する
+		int outingUseMinutes = this.getOutingTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().valueAsMinutes())
+				.sum(); 
+		// 合計時間代休使用時間
+		return new AttendanceTime(lateUseMinutes + earlyUseMinutes + outingUseMinutes);
+	}
+	
+	/**
+	 * 合計超過有給使用時間の取得
+	 * @return 合計超過有給使用時間
+	 */
+	public AttendanceTime getTotalExcessHolidayUseTime() {
+		
+		// 遅刻.超過有給使用時間を取得する
+		int lateUseMinutes = this.getLateTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes())
+				.sum(); 
+		// 早退.超過有給使用時間を取得する
+		int earlyUseMinutes = this.getLeaveEarlyTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().valueAsMinutes())
+				.sum(); 
+		// 外出.超過有給使用時間を取得する
+		int outingUseMinutes = this.getOutingTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().valueAsMinutes())
+				.sum(); 
+		// 合計超過有給使用時間
+		return new AttendanceTime(lateUseMinutes + earlyUseMinutes + outingUseMinutes);
+	}
+	
+	/**
+	 * 合計特別休暇使用時間の取得
+	 * @return 合計特別休暇使用時間
+	 */
+	public AttendanceTime getTotalSpecialHolidayUseTime() {
+		
+		// 遅刻.特別休暇使用時間を取得する
+		int lateUseMinutes = this.getLateTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes())
+				.sum(); 
+		// 早退.特別休暇使用時間を取得する
+		int earlyUseMinutes = this.getLeaveEarlyTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes())
+				.sum(); 
+		// 外出.特別休暇使用時間を取得する
+		int outingUseMinutes = this.getOutingTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes())
+				.sum(); 
+		// 合計特別休暇使用時間
+		return new AttendanceTime(lateUseMinutes + earlyUseMinutes + outingUseMinutes);
+	}
+	
+	/**
+	 * 合計時間年休使用時間の取得
+	 * @return 合計時間年休使用時間
+	 */
+	public AttendanceTime getTotalTimeAnnualUseTime() {
+		
+		// 遅刻.時間年休使用時間を取得する
+		int lateUseMinutes = this.getLateTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes())
+				.sum(); 
+		// 早退.時間年休使用時間を取得する
+		int earlyUseMinutes = this.getLeaveEarlyTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimePaidUseTime().getTimeAnnualLeaveUseTime().valueAsMinutes())
+				.sum(); 
+		// 外出.時間年休使用時間を取得する
+		int outingUseMinutes = this.getOutingTimeOfDaily().stream()
+				.mapToInt(l -> l.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().valueAsMinutes())
+				.sum(); 
+		// 合計時間年休使用時間
+		return new AttendanceTime(lateUseMinutes + earlyUseMinutes + outingUseMinutes);
 	}
 }

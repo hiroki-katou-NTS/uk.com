@@ -180,9 +180,8 @@ public class DailyStatutoryLaborTime {
 		return Optional.empty();
 	}
 	
-	public static interface RequireM1 extends RequireM6 {
+	public static interface RequireM1 extends RequireM6, UsageUnitSetting.Require {
 		
-		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
 	}
 	
 	public static interface RequireM2 {

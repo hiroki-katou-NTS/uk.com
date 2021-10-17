@@ -51,7 +51,7 @@ public class GetDesignatedTime {
 	 */
 	private static SubHolTransferSet getCompanySet(RequireM1 requirey, String companyId){
 		
-		val cmpLeaComSet = requirey.compensatoryLeaveComSetting(companyId);
+		val cmpLeaComSet = requirey.compensatoryLeaveComSetting(companyId).get();
 		if (cmpLeaComSet == null) return null;
 		for (val cmpOccSet : cmpLeaComSet.getCompensatoryOccurrenceSetting()){
 			
@@ -69,13 +69,7 @@ public class GetDesignatedTime {
 		return null;
 	}
 
-	public static interface RequireM2 extends GetCommonSet.RequireM3, RequireM1 {
-		
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
-	}
+	public static interface RequireM2 extends GetCommonSet.RequireM3, RequireM1 {}
 	
-	public static interface RequireM1 {
-		
-		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
-	}
+	public static interface RequireM1 extends CompensatoryLeaveComSetting.Require {}
 }

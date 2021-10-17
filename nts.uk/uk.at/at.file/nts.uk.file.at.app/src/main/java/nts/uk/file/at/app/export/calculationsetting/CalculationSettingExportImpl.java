@@ -1209,52 +1209,52 @@ public class CalculationSettingExportImpl implements MasterListData {
             Map<String, MasterCellData> rowData = new HashMap<>();
 			for (int col = 0; col < 3; col++) {
 				String value = "";
-				if (row == 0){
-					if (col == 0) value = TextResource.localize("KMK013_267");
-					else if (col == 2 && flexSet.isPresent())
-					    value = flexSet.get().getFlexNonworkingDayCalc().value == 1
-                            ? TextResource.localize("KMK013_269")
-                            : TextResource.localize("KMK013_268");
-				} else if (row == 1){
-					if (col == 0) value = TextResource.localize("KMK013_178");
-					else if (col == 1) value = TextResource.localize("KMK013_184");
-					else if (flexSet.isPresent())
-                        value = flexSet.get().getMissCalcHd().value == 1
-                                ? TextResource.localize("KMK013_187")
-                                : TextResource.localize("KMK013_186");
-				} else if (row == 2){
-					if (col == 1) value = TextResource.localize("KMK013_179");
-					else if (col == 2 && flexSet.isPresent())
-                        value = (flexSet.get().getPremiumCalcHd().value == 1
-                                ? TextResource.localize("KMK013_182")
-                                : TextResource.localize("KMK013_181")) + TextResource.localize("KMK013_183");
-				} else if (row == 3){
-					if (col == 0) value = TextResource.localize("KMK013_188");
-					else if (col == 1) value = TextResource.localize("KMK013_194");
-					else if (flexSet.isPresent())
-                        value = flexSet.get().getMissCalcSubhd().value == 1
-                                ? TextResource.localize("KMK013_197")
-                                : TextResource.localize("KMK013_196");
-				} else if (row == 4){
-					if (col == 1) value = TextResource.localize("KMK013_189");
-					else if (col == 2 && flexSet.isPresent())
-					    value = (flexSet.get().getPremiumCalcSubhd().value == 1
-                            ? TextResource.localize("KMK013_192")
-                            : TextResource.localize("KMK013_191")) + TextResource.localize("KMK013_193");
-				} else if (row == 5){
-					if (col == 0) value = TextResource.localize("KMK013_262");
-					else if (col == 2 && flexSet.isPresent())
-                        value = flexSet.get().getFlexDeductTimeCalc().value == 0
-                                ? TextResource.localize("KMK013_264")
-                                : (flexSet.get().getFlexDeductTimeCalc().value == 1
-                                ? TextResource.localize("KMK013_265")
-                                : TextResource.localize("KMK013_266"));
-				} else {
-					if (col == 0) value = TextResource.localize("KMK013_270");
-					else if (col == 1) value = TextResource.localize("KMK013_271");
-					else if (insufficientFlexHolidayMnt.isPresent())
-					    value = insufficientFlexHolidayMnt.get().getSupplementableDays().v() + TextResource.localize("KMK013_472");
-				}
+//				if (row == 0){
+//					if (col == 0) value = TextResource.localize("KMK013_267");
+//					else if (col == 2 && flexSet.isPresent())
+//					    value = flexSet.get().getFlexNonworkingDayCalc().value == 1
+//                            ? TextResource.localize("KMK013_269")
+//                            : TextResource.localize("KMK013_268");
+//				} else if (row == 1){
+//					if (col == 0) value = TextResource.localize("KMK013_178");
+//					else if (col == 1) value = TextResource.localize("KMK013_184");
+//					else if (flexSet.isPresent())
+//                        value = flexSet.get().getMissCalcHd().value == 1
+//                                ? TextResource.localize("KMK013_187")
+//                                : TextResource.localize("KMK013_186");
+//				} else if (row == 2){
+//					if (col == 1) value = TextResource.localize("KMK013_179");
+//					else if (col == 2 && flexSet.isPresent())
+//                        value = (flexSet.get().getPremiumCalcHd().value == 1
+//                                ? TextResource.localize("KMK013_182")
+//                                : TextResource.localize("KMK013_181")) + TextResource.localize("KMK013_183");
+//				} else if (row == 3){
+//					if (col == 0) value = TextResource.localize("KMK013_188");
+//					else if (col == 1) value = TextResource.localize("KMK013_194");
+//					else if (flexSet.isPresent())
+//                        value = flexSet.get().getMissCalcSubhd().value == 1
+//                                ? TextResource.localize("KMK013_197")
+//                                : TextResource.localize("KMK013_196");
+//				} else if (row == 4){
+//					if (col == 1) value = TextResource.localize("KMK013_189");
+//					else if (col == 2 && flexSet.isPresent())
+//					    value = (flexSet.get().getPremiumCalcSubhd().value == 1
+//                            ? TextResource.localize("KMK013_192")
+//                            : TextResource.localize("KMK013_191")) + TextResource.localize("KMK013_193");
+//				} else if (row == 5){
+//					if (col == 0) value = TextResource.localize("KMK013_262");
+//					else if (col == 2 && flexSet.isPresent())
+//                        value = flexSet.get().getFlexDeductTimeCalc().value == 0
+//                                ? TextResource.localize("KMK013_264")
+//                                : (flexSet.get().getFlexDeductTimeCalc().value == 1
+//                                ? TextResource.localize("KMK013_265")
+//                                : TextResource.localize("KMK013_266"));
+//				} else {
+//					if (col == 0) value = TextResource.localize("KMK013_270");
+//					else if (col == 1) value = TextResource.localize("KMK013_271");
+//					else if (insufficientFlexHolidayMnt.isPresent())
+//					    value = insufficientFlexHolidayMnt.get().getSupplementableDays().v() + TextResource.localize("KMK013_472");
+//				}
 				rowData.put(
 						col + "",
 						MasterCellData.builder()

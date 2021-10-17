@@ -7,14 +7,16 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum FlexCalcAtr.
+ * フレックス計算方法
+ * @author shuichi_ishida
  */
 @AllArgsConstructor
-public enum FlexCalcAtr {
+public enum FlexCalcMethod {
 
 	/** 所定時間を半日分とする */
 	PREDETERMINED_TIME_HALF_DAY(0),
 	/** 所定時間を1日分とする */
 	PREDETERMINED_TIME_ONE_DAY(1);
+	
 	public final int value;
 }

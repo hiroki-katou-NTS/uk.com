@@ -2,8 +2,10 @@ package nts.uk.ctx.at.shared.dom.worktype;
 
 import lombok.AllArgsConstructor;
 
+/**
+ * 1日午前午後区分
+ */
 @AllArgsConstructor
-/** 1日午前午後区分 */
 public enum WorkAtr {	
 	// 1日
 	OneDay(0),

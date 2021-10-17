@@ -19,22 +19,18 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
@@ -70,7 +66,7 @@ public class LateTimeOfDaily {
 		this.timePaidUseTime = timePaidUseTime;
 		this.exemptionTime = exemptionTime;
 		this.doNotSetAlarm = false;
-	}	
+	}
 	
 	/** 相殺代休時間を求める */
 	public AttendanceTime getOffsetCompensatoryTime() {
@@ -96,36 +92,19 @@ public class LateTimeOfDaily {
 
 	/**
 	 * 日別実績の遅刻時間
-	 * @param recordClass 実績クラス
-	 * @param vacationClass 休暇クラス
-	 * @param workType 勤務種類
-	 * @param conditionItem 労働条件項目
-	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定
-	 * @param recordWorkTimeCode 就業時間帯コード
-	 * @param flexCalcMethod フレックス勤務の設定
+	 * @param recordClass 再取得クラス
+	 * @param settingOfFlex フレックス勤務の設定
 	 * @return 日別実績の遅刻時間(List)
 	 */
 	public static List<LateTimeOfDaily> calcList(
 			ManageReGetClass recordClass,
-			VacationClass vacationClass,
-			WorkType workType,
-			WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<WorkTimeCode> recordWorkTimeCode,
-			Optional<SettingOfFlexWork> flexCalcMethod) {
+			Optional<SettingOfFlexWork> settingOfFlex) {
 		
 		//日別実績の遅刻時間
 		List<LateTimeOfDaily> lateTime = new ArrayList<>();
 		if(recordClass.getCoreTimeSetting().isPresent() && recordClass.getCoreTimeSetting().get().getTimesheet().isNOT_USE()) {
 			//コア無しフレックス遅刻時間の計算
-			lateTime.add(LateTimeOfDaily.calcNoCoreLateTime(
-					recordClass,
-					vacationClass,
-					workType,
-					conditionItem,
-					predetermineTimeSetByPersonInfo,
-					recordWorkTimeCode,
-					flexCalcMethod));
+			lateTime.add(LateTimeOfDaily.calcNoCoreLateTime(recordClass, settingOfFlex));
 		}else {
 			//遅刻時間の計算（時間帯から計算）
 			for(TimeLeavingWork work : recordClass.getCalculationRangeOfOneDay().getAttendanceLeavingWork().getTimeLeavingWorks()) {
@@ -227,62 +206,52 @@ public class LateTimeOfDaily {
 	
 	/**
 	 * コア無しフレックス遅刻時間の計算
-	 * @param recordClass 実績クラス
-	 * @param vacationClass 休暇クラス
-	 * @param workType 勤務種類
-	 * @param conditionItem 労働条件項目
-	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
-	 * @param recordWorkTimeCode 就業時間帯コード
-	 * @param flexCalcMethod フレックス勤務の設定
+	 * @param recordClass 再取得クラス
+	 * @param settingOfFlex フレックス勤務の設定
 	 * @return 日別実績の遅刻時間
 	 */
 	public static LateTimeOfDaily calcNoCoreLateTime(
 			ManageReGetClass recordClass,
-			VacationClass vacationClass,
-			WorkType workType,
-			WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<WorkTimeCode> recordWorkTimeCode,
-			Optional<SettingOfFlexWork> flexCalcMethod) {
+			Optional<SettingOfFlexWork> settingOfFlex) {
+
+		// 勤務種類
+		if (!recordClass.getWorkType().isPresent()) return LateTimeOfDaily.createDefaultWithNo(1);
+		WorkType workType = recordClass.getWorkType().get();
 		
 		//コアタイム無し（時間帯を使わずに計算）
 		FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)recordClass.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get();
 
 		//計上用のコアタイム無しの遅刻時間計算
 		TimeWithCalculation calcedLateTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(
+				recordClass.getPersonDailySetting(),
 				recordClass.getIntegrationOfDaily(),
 				recordClass.getIntegrationOfWorkTime(),
 				DeductionAtr.Appropriate, 
 				PremiumAtr.RegularWork,
-				vacationClass,
 				workType,
 				recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 				recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 				recordClass.getAddSetting(),
 				recordClass.getHolidayAddtionSet().get(),
 				recordClass.getDailyUnit(),
-				conditionItem,
-				predetermineTimeSetByPersonInfo,
 				NotUseAtr.NOT_USE,
-				flexCalcMethod);
+				settingOfFlex);
 		
 		//控除用コアタイム無しの遅刻時間計算
 		TimeWithCalculation calcedLateDeductionTime = changedFlexTimeSheet.calcNoCoreCalcLateTime(
+				recordClass.getPersonDailySetting(),
 				recordClass.getIntegrationOfDaily(),
 				recordClass.getIntegrationOfWorkTime(),
 				DeductionAtr.Deduction,
 				PremiumAtr.RegularWork,
-				vacationClass,
 				workType,
 				recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 				recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 				recordClass.getAddSetting(),
 				recordClass.getHolidayAddtionSet().get(),
 				recordClass.getDailyUnit(),
-				conditionItem,
-				predetermineTimeSetByPersonInfo,
 				NotUseAtr.NOT_USE,
-				flexCalcMethod);
+				settingOfFlex);
 		
 		List<LateTimeOfDaily> lateDailies = recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().isPresent()
 				? recordClass.getIntegrationOfDaily().getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily()

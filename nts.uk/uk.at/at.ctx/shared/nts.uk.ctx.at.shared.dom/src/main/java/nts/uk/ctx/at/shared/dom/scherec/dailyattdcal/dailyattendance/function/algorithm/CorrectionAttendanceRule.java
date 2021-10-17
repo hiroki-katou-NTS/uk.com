@@ -48,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -193,35 +194,35 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		return new BreakTimeSheetCorrector.RequireM1() {
 			
 			@Override
-			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
+			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 
-				return fixWorkSetRepo.findByKey(companyId, workTimeCode);
+				return fixWorkSetRepo.findByKey(companyId, workTimeCode.v());
 			}
 			
 			@Override
-			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode) {
+			public Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, WorkTimeCode workTimeCode) {
 				
-				return predetemineTimeSetRepo.findByWorkTimeCode(cid, workTimeCode);
+				return predetemineTimeSetRepo.findByWorkTimeCode(cid, workTimeCode.v());
 			}
 			
 			@Override
-			public CalculationRangeOfOneDay createOneDayRange(Optional<PredetemineTimeSetting> predetemineTimeSet,
+			public CalculationRangeOfOneDay createOneDayRange(
 					IntegrationOfDaily integrationOfDaily, Optional<WorkTimezoneCommonSet> commonSet, WorkType workType,
 					JustCorrectionAtr justCorrectionAtr, Optional<WorkTimeCode> workTimeCode) {
 				
-				return createOneDayRangeCalc.createOneDayRange(predetemineTimeSet, integrationOfDaily, commonSet, workType, justCorrectionAtr, workTimeCode);
+				return createOneDayRangeCalc.createOneDayRange(integrationOfDaily, commonSet, workType, justCorrectionAtr, workTimeCode);
 			}
 			
 			@Override
-			public Optional<WorkType> workType(String companyId, String workTypeCd) {
+			public Optional<WorkType> workType(String companyId, WorkTypeCode workTypeCd) {
 
-				return workTypeRepo.findByDeprecated(companyId, workTypeCd);
+				return workTypeRepo.findByDeprecated(companyId, workTypeCd.v());
 			}
 			
 			@Override
-			public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
+			public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 
-				return workTimeSettingRepo.findByCode(companyId, workTimeCode);
+				return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());
 			}
 			
 			@Override
@@ -237,15 +238,15 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 			}
 			
 			@Override
-			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
+			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 
-				return flowWorkSettingRepo.find(companyId, workTimeCode);
+				return flowWorkSettingRepo.find(companyId, workTimeCode.v());
 			}
 			
 			@Override
-			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
+			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, WorkTimeCode workTimeCode) {
 
-				return flexWorkSettingRepo.find(companyId, workTimeCode);
+				return flexWorkSettingRepo.find(companyId, workTimeCode.v());
 			}
 			
 			@Override

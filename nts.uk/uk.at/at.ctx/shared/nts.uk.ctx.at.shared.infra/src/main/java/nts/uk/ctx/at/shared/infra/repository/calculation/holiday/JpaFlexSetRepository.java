@@ -32,9 +32,14 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 * @return
 	 */
 	private FlexSet convertToDomain(KshmtCalcCFlex kshstFlexSet) {
-		FlexSet flexSet = FlexSet.createFromJavaType(kshstFlexSet.kshstFlexSetPK.companyId, kshstFlexSet.missCalcHd,
-				kshstFlexSet.premiumCalcHd, kshstFlexSet.missCalcSubhd, kshstFlexSet.premiumCalcSubhd, kshstFlexSet.flexDeductCalc, kshstFlexSet.flexNonwkingCalc);
-		
+		FlexSet flexSet = FlexSet.createFromJavaType(
+				kshstFlexSet.kshstFlexSetPK.companyId,
+				kshstFlexSet.missCalcHd,
+				kshstFlexSet.premiumCalcHd,
+				kshstFlexSet.isDeductPred,
+				kshstFlexSet.premiumCalcSubhd,
+				kshstFlexSet.calcSetTimeSubhd,
+				kshstFlexSet.flexNoworkingCalc);
 		return flexSet;
 	}
 	
@@ -44,14 +49,16 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 * @return
 	 */
 	private KshmtCalcCFlex convertToDbType(FlexSet flexSet) {
-		KshmtCalcCFlex kshstFlexSet = new KshmtCalcCFlex();
+		KshmtCalcCFlex entity = new KshmtCalcCFlex();
 		KshstFlexSetPK kshstFlexSetPK = new KshstFlexSetPK(flexSet.getCompanyId());
-				kshstFlexSet.missCalcHd = flexSet.getMissCalcHd().value;
-				kshstFlexSet.premiumCalcHd = flexSet.getPremiumCalcHd().value;
-				kshstFlexSet.missCalcSubhd = flexSet.getMissCalcSubhd().value;
-				kshstFlexSet.premiumCalcSubhd = flexSet.getPremiumCalcSubhd().value;
-				kshstFlexSet.kshstFlexSetPK = kshstFlexSetPK;
-		return kshstFlexSet;
+		entity.kshstFlexSetPK = kshstFlexSetPK;
+		entity.missCalcHd = flexSet.getHalfHoliday().getCalcLack().value;
+		entity.premiumCalcHd = flexSet.getHalfHoliday().getCalcPremium().value;
+		entity.isDeductPred = (flexSet.getCompLeave().isDeductFromPred() ? 1 : 0);
+		entity.premiumCalcSubhd = flexSet.getCompLeave().getCalcPremium().value;
+		entity.calcSetTimeSubhd = flexSet.getCompLeave().getCalcSetOfTimeCompLeave().value;
+		entity.flexNoworkingCalc = flexSet.getCalcNoWorkingDay().getSetting().value;
+		return entity;
 	}
 	
 	/**
@@ -78,14 +85,12 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	public void update(FlexSet flexSet) {
 		KshstFlexSetPK primaryKey = new KshstFlexSetPK(flexSet.getCompanyId());
 		KshmtCalcCFlex entity = this.queryProxy().find(primaryKey, KshmtCalcCFlex.class).get();
-				entity.missCalcHd = flexSet.getMissCalcHd().value;
-				entity.premiumCalcHd = flexSet.getPremiumCalcHd().value;
-				entity.missCalcSubhd = flexSet.getMissCalcSubhd().value;
-				entity.premiumCalcSubhd = flexSet.getPremiumCalcSubhd().value;
-				entity.flexDeductCalc = flexSet.getFlexDeductTimeCalc().value;
-				entity.flexNonwkingCalc = flexSet.getFlexNonworkingDayCalc().value;
-				
-				entity.kshstFlexSetPK = primaryKey;
+		entity.missCalcHd = flexSet.getHalfHoliday().getCalcLack().value;
+		entity.premiumCalcHd = flexSet.getHalfHoliday().getCalcPremium().value;
+		entity.isDeductPred = (flexSet.getCompLeave().isDeductFromPred() ? 1 : 0);
+		entity.premiumCalcSubhd = flexSet.getCompLeave().getCalcPremium().value;
+		entity.calcSetTimeSubhd = flexSet.getCompLeave().getCalcSetOfTimeCompLeave().value;
+		entity.flexNoworkingCalc = flexSet.getCalcNoWorkingDay().getSetting().value;
 		this.commandProxy().update(entity);
 	}
 	

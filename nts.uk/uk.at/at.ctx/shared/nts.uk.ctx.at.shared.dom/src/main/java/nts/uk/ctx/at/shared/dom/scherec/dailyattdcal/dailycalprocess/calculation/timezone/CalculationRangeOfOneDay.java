@@ -77,9 +77,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 1日の計算範囲
- * 
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class CalculationRangeOfOneDay {

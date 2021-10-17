@@ -172,10 +172,7 @@ public class MonthlyStatutoryWorkingHours {
 												RequireM0 {
 	}
 	
-	public static interface RequireM0 {
-		
-		Optional<UsageUnitSetting> usageUnitSetting(String companyId);
-	}
+	public static interface RequireM0 extends UsageUnitSetting.Require {}
 	
 	public static interface RequireM3 extends DailyStatutoryLaborTime.RequireM1 {} 
 	

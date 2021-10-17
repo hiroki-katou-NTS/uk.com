@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -144,7 +146,7 @@ public class WorkInformation implements Serializable{
 	public ErrorStatusWorkInfo checkErrorCondition(Require require) {
 
 		// 勤務種類を取得する
-		val workType = require.getWorkType( this.workTypeCode.v() );
+		val workType = require.workType(AppContexts.user().companyId(), this.workTypeCode);
 		if ( !workType.isPresent() ) {
 			// 勤務種類が取得できない⇒勤務種類が削除された
 			return ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE;
@@ -180,7 +182,7 @@ public class WorkInformation implements Serializable{
 		}
 
 		// 就業時間帯を取得する
-		val workTimeSetting = require.getWorkTime( this.workTimeCode.get().v() );
+		val workTimeSetting = require.workTimeSetting(AppContexts.user().companyId(), this.workTimeCode.get());
 		if ( !workTimeSetting.isPresent() ) {
 			// 就業時間帯が取得できない→就業時間帯が削除された
 			return ErrorStatusWorkInfo.WORKTIME_WAS_DELETE;
@@ -203,7 +205,7 @@ public class WorkInformation implements Serializable{
 
 		// 勤務種類を取得する
 		if (this.workTypeCode == null) return Optional.empty();
-		val workType = require.getWorkType( this.workTypeCode.v() );
+		val workType = require.workType(AppContexts.user().companyId(), this.workTypeCode);
 		if ( !workType.isPresent() ) {
 			// 勤務種類が取得できない
 			return Optional.empty();
@@ -220,7 +222,7 @@ public class WorkInformation implements Serializable{
 	public Optional<WorkInfoAndTimeZone> getWorkInfoAndTimeZone(Require require) {
 
 		// 勤務種類を取得する
-		Optional<WorkType> workType = require.getWorkType(this.workTypeCode.v());
+		Optional<WorkType> workType = require.workType(AppContexts.user().companyId(), this.workTypeCode);
 		if ( !workType.isPresent() ) {
 			// 勤務種類が取得できない
 			return Optional.empty();
@@ -233,14 +235,14 @@ public class WorkInformation implements Serializable{
 		}
 
 		// 就業時間帯を取得する
-		val workTimeSetting = require.getWorkTime( this.workTimeCode.get().v() );
+		val workTimeSetting = require.workTimeSetting(AppContexts.user().companyId(), this.workTimeCode.get());
 		if ( !workTimeSetting.isPresent() ) {
 			// 就業時間帯が取得できない
 			return Optional.empty();
 		}
 
 		val workSetting = workTimeSetting.get().getWorkSetting(require);
-		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require);
+		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require).get();
 		val attendanceDayAttr = workType.get().chechAttendanceDay();
 		if ( attendanceDayAttr.isHoliday() ) {
 			return Optional.of(WorkInfoAndTimeZone.createWithoutPredetermineTimeZone( workType.get(), workTimeSetting.get() ));
@@ -264,7 +266,7 @@ public class WorkInformation implements Serializable{
 	public List<ChangeableWorkingTimeZonePerNo> getChangeableWorkingTimezones(Require require) {
 
 		// 勤務種類を取得する
-		val workType = require.getWorkType( this.workTypeCode.v() );
+		val workType = require.workType(AppContexts.user().companyId(), this.workTypeCode);
 		if ( !workType.isPresent() ) {
 			// 勤務種類が取得できない
 			return Collections.emptyList();
@@ -321,7 +323,7 @@ public class WorkInformation implements Serializable{
 	public Optional<BreakTimeZone> getBreakTimeZone(Require require) {
 
 		// 勤務種類を取得する
-		val workType = require.getWorkType( this.workTypeCode.v() );
+		val workType = require.workType(AppContexts.user().companyId(), this.workTypeCode);
 		if ( !workType.isPresent() ) {
 			// 勤務種類が取得できない
 			return Optional.empty();
@@ -360,7 +362,7 @@ public class WorkInformation implements Serializable{
 		}
 
 		// 就業時間帯を取得する
-		val workTimeSetting = require.getWorkTime( this.workTimeCode.get().v() );
+		val workTimeSetting = require.workTimeSetting(AppContexts.user().companyId(), this.workTimeCode.get());
 		if ( !workTimeSetting.isPresent() ) {
 			// 就業時間帯が取得できない
 			return Optional.empty();
@@ -394,25 +396,25 @@ public class WorkInformation implements Serializable{
 		return workStyle.isPresent() && !(workStyle.get() == WorkStyle.ONE_DAY_REST);
 	}
 
-	public static interface Require
-		extends	WorkTimeSetting.Require
-			,	WorkSetting.Require
+	/**
+	 * 所定用就業時間帯コードを取得する
+	 * @param require Require
+	 * @param workConditionItem 労働条件項目
+	 * @return 就業時間帯コード
+	 */
+	public Optional<WorkTimeCode> getWorkTimeCodeForPred(
+			RequireM1 require,
+			WorkingConditionItem workConditionItem){
+		
+		Optional<WorkType> workType = require.workType(AppContexts.user().companyId(), this.workTypeCode);
+		// 計算時に就業時間帯が不要かどうか判断する
+		if (workType.get().isNoneWorkTimeType()) return Optional.empty();
+		if (this.workTimeCode.isPresent()) return this.workTimeCode;
+		return workConditionItem.getWorkCategory().getWorkInformationWorkDay().getWorkTimeCodeNotNull();
+	}
+	
+	public static interface Require extends WorkTimeSetting.Require, WorkSetting.Require, WorkType.Require
 	{
-
-		/**
-		 * 勤務種類を取得する
-		 * @param workTypeCd 就業時間帯コード
-		 * @return
-		 */
-		Optional<WorkType> getWorkType(String workTypeCd);
-
-		/**
-		 * 就業時間帯を取得する
-		 * @param workTimeCode 就業時間帯コード
-		 * @return 就業時間帯の設定
-		 */
-		Optional<WorkTimeSetting> getWorkTime(String workTimeCode);
-
 		/**
 		 * 就業時間帯が必須か
 		 * @param workTypeCode 勤務種類コード
@@ -421,4 +423,5 @@ public class WorkInformation implements Serializable{
 		SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
 	}
 
+	public static interface RequireM1 extends WorkType.Require {}
 }

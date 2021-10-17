@@ -18,30 +18,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CheckDateForManageCmpLeaveService {
 
-	public static interface Require{
+	public static interface Require extends
+		CompensatoryLeaveComSetting.Require, CompensatoryLeaveEmSetting.Require,
+		SEmpHistoryImport.Require {
 		
-		/**
-		 * 社員の雇用履歴を取得
-		 * @param employeeId 社員ID
-		 * @param baseDate 年月日
-		 * @return 社員雇用履歴
-		 */
-		Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate);
-		
-		/**
-		 * 代休管理設定を取得する
-		 * @param companyId 会社ID
-		 * @return 代休管理設定
-		 */
-		Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId);
-		
-		/**
-		 * 雇用の代休管理設定を取得する
-		 * @param companyId 会社ID
-		 * @param employmentCode 雇用コード
-		 * @return 雇用の代休管理設定
-		 */
-		Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode);
 	}
 
 	/**
@@ -52,7 +32,7 @@ public class CheckDateForManageCmpLeaveService {
 	 * @param ymd 年月日
 	 * @return 代休管理するかどうか
 	 */
-	public boolean check(Require require, String companyId, String employeeId, GeneralDate ymd){
+	public static boolean check(Require require, String companyId, String employeeId, GeneralDate ymd){
 		boolean cmpStatus = checkCompanyStatus(require, companyId);
 		if (!cmpStatus) return false;
 		return checkEmployeeStatus(require, companyId, employeeId, ymd);
@@ -64,8 +44,8 @@ public class CheckDateForManageCmpLeaveService {
 	 * @param companyId 会社ID
 	 * @return 代休管理するかどうか
 	 */
-	private boolean checkCompanyStatus(Require require, String companyId){
-		Optional<CompensatoryLeaveComSetting> setting = require.getCmpLeaveComSet(companyId);
+	private static boolean checkCompanyStatus(Require require, String companyId){
+		Optional<CompensatoryLeaveComSetting> setting = require.compensatoryLeaveComSetting(companyId);
 		if (!setting.isPresent()) return false;
 		if (setting.get().getIsManaged() == ManageDistinct.NO) return false;
 		return true;
@@ -79,10 +59,10 @@ public class CheckDateForManageCmpLeaveService {
 	 * @param ymd 年月日
 	 * @return 代休管理するかどうか
 	 */
-	private boolean checkEmployeeStatus(Require require, String companyId, String employeeId, GeneralDate ymd){
-		Optional<SEmpHistoryImport> empHist = require.getEmploymentHis(employeeId, ymd);
+	private static boolean checkEmployeeStatus(Require require, String companyId, String employeeId, GeneralDate ymd){
+		Optional<SEmpHistoryImport> empHist = require.getSEmpHistoryImport(employeeId, ymd);
 		if (!empHist.isPresent()) return false;
-		Optional<CompensatoryLeaveEmSetting> setting = require.getCmpLeaveEmpSet(companyId, empHist.get().getEmploymentCode());
+		Optional<CompensatoryLeaveEmSetting> setting = require.compensatoryLeaveEmSetting(companyId, empHist.get().getEmploymentCode());
 		if (!setting.isPresent()) return true;
 		if (setting.get().getIsManaged() == ManageDistinct.YES) return true;
 		return false;

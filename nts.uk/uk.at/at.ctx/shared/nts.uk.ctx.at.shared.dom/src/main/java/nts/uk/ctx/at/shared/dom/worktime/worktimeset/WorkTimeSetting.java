@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -192,11 +192,11 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		val atr = this.getWorkTimeDivision().getWorkTimeForm();
 		switch ( atr ) {
 			case FIXED:	// 就業時間帯の勤務形態 -> 固定勤務
-				return require.getWorkSettingForFixedWork( this.getWorktimeCode() );
+				return require.fixedWorkSetting(this.companyId, this.worktimeCode).get();
 			case FLOW:	// 就業時間帯の勤務形態 -> 流動勤務
-				return require.getWorkSettingForFlowWork( this.getWorktimeCode() );
+				return require.flowWorkSetting(this.companyId, this.worktimeCode).get();
 			case FLEX:	// 就業時間帯の勤務形態 -> フレックス勤務
-				return require.getWorkSettingForFlexWork( this.getWorktimeCode() );
+				return require.flexWorkSetting(this.companyId, this.worktimeCode).get();
 			default:
 				break;
 		}
@@ -204,28 +204,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		throw new RuntimeException("WorkingTimeForm is failure:" + atr.toString());
 	}
 
-	public static interface Require {
-
-		/**
-		 * 固定勤務設定を取得する
-		 * @param code
-		 * @return 固定勤務設定
-		 */
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code);
-
-		/**
-		 * 流動勤務設定を取得する
-		 * @param code 就業時間帯コード
-		 * @return 流動勤務設定
-		 */
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code);
-
-		/**
-		 * フレックス勤務設定を取得する
-		 * @param code 就業時間帯コード
-		 * @return フレックス勤務設定
-		 */
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code);
+	public static interface Require extends FixedWorkSetting.Require, FlowWorkSetting.Require, FlexWorkSetting.Require {
+		Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode);
 	}
-
 }

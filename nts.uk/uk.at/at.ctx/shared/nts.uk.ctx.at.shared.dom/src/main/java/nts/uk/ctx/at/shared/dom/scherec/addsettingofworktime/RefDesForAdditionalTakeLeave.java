@@ -112,7 +112,7 @@ public class RefDesForAdditionalTakeLeave {
 	private BreakDownTimeDay getVacationAddTimeFromWorkTime(RequireM1 require, String cid,
 			Optional<WorkTimeCode> workTimeCode) {
 		/** 所定時間を取得 */
-		val preSet = require.predetemineTimeSetting(cid, workTimeCode.get().v());
+		val preSet = require.predetemineTimeSetting(cid, workTimeCode.get());
 		if (preSet.isPresent()) {
 			
 			/** 所定時間．就業加算時間を取得 */
@@ -135,16 +135,13 @@ public class RefDesForAdditionalTakeLeave {
 
     }
     
-    public static interface RequireM1 {
+    public static interface RequireM1 extends PredetemineTimeSetting.Require {
     	
-    	Optional<PredetemineTimeSetting> predetemineTimeSetting(String cid, String workTimeCode);
     }
     
-    public static interface Require0 {
-
-    	Optional<WorkingConditionItem> workingConditionItem(String sid, GeneralDate baseDate);
+    public static interface Require0 extends WorkingConditionItem.Require {
+    	
     }
-	
 	
     public static interface Require extends RequireM2, RequireM3 {
 

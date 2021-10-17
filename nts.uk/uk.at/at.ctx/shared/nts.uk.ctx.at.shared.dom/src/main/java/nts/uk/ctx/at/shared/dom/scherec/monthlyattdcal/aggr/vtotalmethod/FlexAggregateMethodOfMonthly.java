@@ -18,12 +18,8 @@ public class FlexAggregateMethodOfMonthly extends DomainObject {
 	/** 途中入社、途中退職時に按分するか */
 	private boolean divisionOnEntryRetire;
 	
-	/** 月別実績集計のフレックスの代休扱い方法 */
-	private FlexAggregateCompensatoryTimeSet compensatoryTimeSet;
-	
 	public FlexAggregateMethodOfMonthly() {
 		this.divisionOnEntryRetire = false;
-		this.compensatoryTimeSet = new FlexAggregateCompensatoryTimeSet();
 	}
 	
 	/** 在籍日数で按分した時間を取得する */
