@@ -444,6 +444,10 @@ public final class AttendanceItemUtilRes {
 			prop = getAfter(prop, ItemConst.DEFAULT_IDX_SEPERATOR, 0);
 		}
 		
+		if (prop.contains(ItemConst.DEFAULT_IDX_SEPERATOR)) {
+			prop = prop.split(ItemConst.DEFAULT_IDX_SEPERATOR)[0];
+		}
+		
 		int idx = getIdx(prop, 0);
 		if (idx > 0) {
 			return getEnum(prop);
