@@ -27,7 +27,7 @@ public class KshmtWtComStmpPK implements Serializable{
 
 	/** The work form atr. */
 	@Column(name = "WORK_FORM_ATR")
-	private boolean workFormAtr;
+	private int workFormAtr;
 
 	/** The work time set method. */
 	@Column(name = "WORKTIME_SET_METHOD")

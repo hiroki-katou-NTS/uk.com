@@ -127,7 +127,7 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 			KshmtWtComStmpPK pk = new KshmtWtComStmpPK();
 			pk.setCid(parentEntity.getKshmtWorktimeCommonSetPK().getCid());
 			pk.setWorktimeCd(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeCd());
-			pk.setWorkFormAtr(BooleanUtils.toBoolean(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr()));
+			pk.setWorkFormAtr(parentEntity.getKshmtWorktimeCommonSetPK().getWorkFormAtr());
 			pk.setWorkTimeSetMethod(parentEntity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
 			parentEntity.getKshmtWtComStmp().setKshmtWtComStmpPK(pk);
 		}
