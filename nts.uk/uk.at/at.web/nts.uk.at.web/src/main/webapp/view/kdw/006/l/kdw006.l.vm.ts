@@ -185,7 +185,7 @@ module nts.uk.at.view.kmk006.l {
                     vm.$blockui('invisible')
                         .then(() => {
                             vm.$ajax('at', API.UPDATE, param)
-                                .then(() => {
+                                .done(() => {
                                     vm.$errors('clear');
                                     vm.$dialog.info({ messageId: 'Msg_15' })
                                         .then(() => {
@@ -197,6 +197,9 @@ module nts.uk.at.view.kmk006.l {
                                             }));
                                             vm.reload();
                                         });
+                                })
+                                .fail((data: any) => {
+                                    vm.$dialog.info({ messageId: data.messageId })
                                 })
                         })
                         .always(() => vm.$blockui('clear'));
