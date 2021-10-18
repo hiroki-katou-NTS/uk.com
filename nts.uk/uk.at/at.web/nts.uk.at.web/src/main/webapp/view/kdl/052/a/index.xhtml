@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 920, height: 580 };</script>
+			<script>var dialogSize = { width: 580, height: 560 };</script>
 			<com:scriptfile set="IGNITE" />
 			<!-- KCP005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
@@ -50,7 +50,7 @@
                             <!-- A2_3 -->
                             <span>#{i18n.getText('KDL052_18')}</span>
                             <!-- A2_4 -->
-                            <span style="margin-left: 50px;" data-bind="text: textA24" ></span>  
+                            <span style="margin-left: 50px;" data-bind="text: maxNumberOfYear" ></span>  
                         </div>
                         <!-- A2_14 -->
                         <div class="container-custom" style="margin-left: 251px;">#{i18n.getText('KDL052_28')}</div>
@@ -59,16 +59,16 @@
                             <!-- A2_5 -->
                             <span>#{i18n.getText('KDL052_19')}</span>
                             <!-- A2_6 A2_7 A2_8 -->                          
-                            <span style="margin-left: 30px;" data-bind="text: textA26">A2_6 </span> 
+                            <span style="margin-left: 30px;" data-bind="text: upperLimitStartDate"></span> 
                             <span>#{i18n.getText('KDL052_20')}</span> 
-                            <span data-bind="text: textA28"></span>                            
+                            <span data-bind="text: upperLimitEndDate"></span>                            
                         </div>
 
                         <div class="container-custom">
                            <!-- A2_9 -->
                             <span>#{i18n.getText('KDL052_21')}</span>
                             <!-- A2_10 -->                             
-                            <span style="margin-left: 58px;" data-bind="text: textA10"></span>
+                            <span style="margin-left: 58px;" data-bind="text: maxNumberOfDays"></span>
                                             
                         </div>
 
@@ -76,14 +76,15 @@
                             <!-- A2_11 -->
                             <span>#{i18n.getText('KDL052_22')}</span>
                             <!-- A2_12 -->
-                            <span style="margin-left: 70px;" data-bind="text: textA12"></span>                 
+                            <span style="margin-left: 70px;" data-bind="text: numberOfUse"></span>                 
                         </div>
                         <!-- A2_13 -->
                         <div style="margin: 30px 20px"> #{i18n.getText('KDL052_23')}</div>
 
-                        <!--SINGLE SELECTION EXAMPLE-->
+                        <!--A3_1-->
                         <div style="margin-left: 20px;">
-                            <table id="single-list" data-bind="ntsGridList: {								
+                            <table id="single-list" data-bind="ntsGridList: {			
+                                name: '#[KDL052_24]',					
                                 height: 150,
                                 dataSource: itemLts,
                                 primaryKey: 'code',

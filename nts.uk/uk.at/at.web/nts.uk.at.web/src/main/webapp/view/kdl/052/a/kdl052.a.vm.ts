@@ -4,22 +4,21 @@ module nts.uk.at.view.kdl052.a {
 
     const Paths = {
         GET_CHILD_NURSING_LEAVE: "at/record/monthly/nursingleave/getChildNursingLeave",
-        GET_ATENDANCENAME_BY_IDS:"at/record/attendanceitem/daily/getattendnamebyids",
-        EXPORT_CSV:"screen/at/kdl053/exportCsv"
+        GET_CHILD_NURSING_LEAVE_BY_EMPID:"at/record/monthly/nursingleave/getDeitalInfoNursingByEmp"
     };
 
     @bean()
     class Kdl052ViewModel extends ko.ViewModel {
         listEmpId : any;
         dataOneEmp : KnockoutObservable<any> = ko.observable(null);
-        employeeNameSelect ='社員000000000001';
-        employeeCodeSelect= '000000000001';
-        textA24 = '16日と2:00';
-        textA26 = '2021/09/28';
-        textA28 = '2021/12/31';
-        textA10 = '10日';
-        textA12 = '3日と2:00';
-
+        employeeNameSelect: KnockoutObservable<string> = ko.observable('');
+        employeeCodeSelect: KnockoutObservable<string> = ko.observable('');
+        maxNumberOfYear: KnockoutObservable<string> = ko.observable('');
+        upperLimitStartDate: KnockoutObservable<string> = ko.observable('');
+        upperLimitEndDate: KnockoutObservable<string> = ko.observable('');
+        maxNumberOfDays: KnockoutObservable<string> = ko.observable('');
+        numberOfUse: KnockoutObservable<string> = ko.observable('');
+        
         // search
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         searchText: KnockoutObservable<string> = ko.observable('');        
@@ -63,7 +62,7 @@ module nts.uk.at.view.kdl052.a {
                 isMultiSelect: false,
                 listType: 4,
                 employeeInputList: self.employeeList,
-                selectType: 3,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
                 selectedCode: self.selectedCode,
                 isDialog: self.isDialog(),
                 isShowNoSelectRow: self.isShowNoSelectRow(),
@@ -80,50 +79,64 @@ module nts.uk.at.view.kdl052.a {
                 { headerText: getText('KDL052_26'), key: 'name', width: 100 }
             ]); 
 
-            for(let i = 1; i < 8; i++) {
-                self.itemLts.push(new ItemModel('2021/05/12', '10日'));
-            }
+            // for(let i = 1; i < 8; i++) {
+            //     self.itemLts.push(new ItemModel('2021/05/12', '10日'));
+            // }
 
-            self.getChildNursingLeave(self.listEmpId);
-            self.loadData();
+            self.selectedCode.subscribe((code: string) => {
+                let emp: any = _.find(self.dataOneEmp().lstEmployee, x => x.employeeCode == code);
+                self.employeeCodeSelect(emp.employeeCode);
+                self.employeeNameSelect(emp.employeeName);
+                self.findDetail(emp.employeeId);
+            });
+
+            self.loadData(self.listEmpId);
         }
 
         mounted(){
             const self = this;
             if (self.listEmpId.length > 1) {
-                self.$window.size(580, 920);
+                self.$window.size(580, 900);
                 $("#left-content").show();
             } else {
-                self.$window.size(580, 660);
+                self.$window.size(580, 560);
                 $("#left-content").hide();
             }           
         }
 
 
-        loadData(): void {
+        loadData(listEmp: any): void {
             let self = this;     
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
-        }
-
-        public getChildNursingLeave(listEmp: any): any {
-            let self = this;
-            let request: any;
             self.$ajax(Paths.GET_CHILD_NURSING_LEAVE, listEmp).done((data: any) => {
                 self.dataOneEmp(data);
                 self.listEmployeeImport = data.lstEmployee;
                 _.forEach(data.lstEmployee, (a: any, ind) => {
-                    self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName })
-                });
+                    self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName });
+                });                
+                self.selectedCode(data.lstEmployee[0].employeeCode);
+                $('#component-items-list').ntsListComponent(self.listComponentOption);
                 
-            }).fail(function (res: any) {
+            }).fail((res) => {
                 self.$dialog.alert({ messageId: "" });
-            });
-           
+            }); 
+        }
+
+        findDetail(employeeId: string): void {
+            let self = this;     
+            self.$ajax(Paths.GET_CHILD_NURSING_LEAVE_BY_EMPID + '/' + employeeId).done((data: any) => {
+               self.maxNumberOfYear(data.maxNumberOfYear);
+               self.upperLimitEndDate(data.upperLimitEndDate);
+               self.upperLimitStartDate(data.upperLimitStartDate);
+               self.maxNumberOfDays(data.maxNumberOfDays);
+               self.numberOfUse(data.numberOfUse);
+               self.itemLts(data.listDigestionDetails);
+            }).fail((res) => {
+                self.$dialog.alert({ messageId: "" });
+            }); 
         }
 
         findData(data: any): void {
-            let self = this;
-            
+            let self = this;            
             let text = $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").val()
             if (text == "") {
                 nts.uk.ui.dialog.info({ messageId: "MsgB_24" });
@@ -152,7 +165,8 @@ module nts.uk.at.view.kdl052.a {
 
         closeDialog(): void {
             let self = this;
-            nts.uk.ui.windows.close();
+            self.$window.close();
+            // nts.uk.ui.windows.close();
         }
     }
 
@@ -166,11 +180,20 @@ module nts.uk.at.view.kdl052.a {
 	}
 
     class ItemModel {
-        code: string;
-        name: string;       
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;            
+        date: string;
+        numberOfUes: string;      
+        status: string;   
+        constructor(date: string, numberOfUes: string, status?: string) {
+            this.date = date;
+            this.numberOfUes = numberOfUes; 
+            this.status = status;           
         }
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
     }
 }
