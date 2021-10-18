@@ -2982,9 +2982,9 @@ module nts.uk.ui.at.kdw013.calendar {
                  let vm = this;
                  let items = _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []);
 
-                   _.forEach([1,2,3,4,5,6,7,8], function(id) {
+                   /*_.forEach([1,2,3,4,5,6,7,8], function(id) {
                        items.push({ itemId: id, value: null });
-                   });
+                   });*/
     
                 return _.map(items, item => { return { itemId: item.itemId, value: null } });
             }

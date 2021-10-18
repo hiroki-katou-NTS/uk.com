@@ -359,7 +359,7 @@ module nts.uk.ui.at.kdw013.c {
 						itemId == 22 || itemId == 23 || itemId == 24 || itemId == 25 || itemId == 26 || 
 						itemId == 27 || itemId == 28 || itemId == 29 -->
 							<tr>
-                                <td data-bind="text: itemId"></td>
+                                <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
@@ -610,11 +610,11 @@ module nts.uk.ui.at.kdw013.c {
 			data.subscribe((event: FullCalendar.EventApi| null) => {
 				if (event) {
                     const {extendedProps, start, end } = event as any as calendar.EventRaw;
-                    let {taskBlock, employeeId} = extendedProps;
+                    let {displayManHrRecordItems, taskBlock, employeeId} = extendedProps;
                     //taskBlocks = vm.fakeData(start, end),
 					let param ={
 						refDate: start,
-						itemIds: [9, 10, 11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
 					}
 
 					block.grayout();
@@ -1017,7 +1017,7 @@ module nts.uk.ui.at.kdw013.c {
 		
 		convertWorkLocationList(option: {code: string, name: string}[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
             const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_40'), $raw: null, selected: false }];
-            if (code) {
+            if (code && code()) {
                 const taskSelected = _.find(option, { 'code': code() });
                 if (!taskSelected) {
                     lst.push({ id: code(), code: code(), name: getText('KDW013_41'), selected: false, $raw: null });
@@ -1134,28 +1134,28 @@ module nts.uk.ui.at.kdw013.c {
 		}
 		setWorkLists(taskList: StartWorkInputPanelDto): void{
 			const vm = this;
-			const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = taskList;
+			const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = taskList;
 			_.each(vm.taskItemValues(), (i: TaskItemValue) => {
         		if(i.itemId == 4){
-					i.options(vm.getMapperList(taskListDto1, i.value));
+					i.options(vm.getMapperList(taskFrameNo1, i.value));
 				}else if(i.itemId == 5){
-					i.options(vm.getMapperList(taskListDto2, i.value));
+					i.options(vm.getMapperList(taskFrameNo2, i.value));
 				}
 				else if(i.itemId == 6){
-					i.options(vm.getMapperList(taskListDto3, i.value));
+					i.options(vm.getMapperList(taskFrameNo3, i.value));
 				}
 				else if(i.itemId == 7){
-					i.options(vm.getMapperList(taskListDto4, i.value));
+					i.options(vm.getMapperList(taskFrameNo4, i.value));
 				}
 				else if(i.itemId == 8){
-					i.options(vm.getMapperList(taskListDto5, i.value));
+					i.options(vm.getMapperList(taskFrameNo5, i.value));
 				}
             });
 		}
 		getMapperList(tasks: TaskDto[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
 			const vm = this;
             const lst: DropdownItem[] = [vm.mapper(null)];
-            if (code) {
+            if (code && code()) {
                 const taskSelected = _.find(tasks, { 'code': code() });
                 if (!taskSelected) {
                     lst.push({ id: code(), code: code(), name: getText('KDW013_40'), selected: false, $raw: null });
