@@ -609,8 +609,8 @@ module nts.uk.ui.at.kdw013.c {
             };
 			data.subscribe((event: FullCalendar.EventApi| null) => {
 				if (event) {
-                    const {extendedProps, employeeId, start, end } = event as any as calendar.EventRaw;
-                    let {taskBlocks} = extendedProps;
+                    const {extendedProps, start, end } = event as any as calendar.EventRaw;
+                    let {taskBlock, employeeId} = extendedProps;
                     //taskBlocks = vm.fakeData(start, end),
 					let param ={
 						refDate: start,
@@ -619,7 +619,7 @@ module nts.uk.ui.at.kdw013.c {
 
 					block.grayout();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
-		            	vm.taskBlocks.update(taskBlocks, employeeId, data, this.taskFrameSettings());
+		            	vm.taskBlocks.update(taskBlock, employeeId, data, this.taskFrameSettings());
 						setTimeout(() => {
 							vm.updatePopupSize();
 						}, 150);

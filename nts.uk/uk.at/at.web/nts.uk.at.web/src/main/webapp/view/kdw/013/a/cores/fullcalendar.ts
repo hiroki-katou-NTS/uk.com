@@ -48,8 +48,23 @@ module nts.uk.ui.at.kdw013.calendar {
 		extendedProps: {
 			id: string;
 			status: EventStatus;
-			taskBlocks: IManHrPerformanceTaskBlock;
-		};
+			////作業枠利用設定
+			taskFrameUsageSetting: a.TaskFrameUsageSettingDto,
+	            //社員ID
+	        employeeId: string,
+	        //年月日
+	        period: { start: Date; end: Date; },
+	        //現在の応援勤務枠
+	        frameNos:number[],                                
+	        //工数実績作業ブロック
+	        taskBlock: {
+	            caltimeSpan: { start: Date, end: Date; },
+	
+	            taskDetails: [{ supNo: number, taskItemValues: ITaskItemValue[] }]
+	        },
+	        //作業内容入力ダイアログ表示項目一覧
+	        displayManHrRecordItems: { itemId: number; order: any; }[]
+		}
 	};
 
     const CM2KBC = /([a-z0-9]|(?=[A-Z]))([A-Z])/g;
