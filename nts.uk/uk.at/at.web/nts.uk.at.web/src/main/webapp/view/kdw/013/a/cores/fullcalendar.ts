@@ -1752,8 +1752,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 
                     let newEvent = {
                             id: randomId(),
-                            start: formatDate(info.date),
-                            end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()),
+                            start: info.date,
+                            end: moment(info.date).add(vm.params.slotDuration(), 'm').toDate(),
                             [BORDER_COLOR]: BLACK,
                             [GROUP_ID]: SELECTED,
                             extendedProps: {
@@ -1763,12 +1763,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //社員ID
                                 employeeId: vm.params.employee() || vm.$user.employeeId,
                                 //年月日
-                                period: { start: formatDate(info.date), end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()) },
+                                period: { start: info.date, end: moment(info.date.add(vm.params.slotDuration(), 'm').toDate()) },
                                 //現在の応援勤務枠
                                 frameNos:[],                                
                                 //工数実績作業ブロック
                                 taskBlock: {
-                                    caltimeSpan: { start: formatDate(info.date), end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()) },
+                                    caltimeSpan: { start: info.date, end: moment(info.date).add(vm.params.slotDuration(), 'm').toDate() },
 
                                     taskDetails: [{ supNo: null, taskItemValues : vm.getTaskValues() }]
                                 },
@@ -2519,8 +2519,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     let newEvent = {
                         id: randomId(),
-                        start: formatDate(start),
-                        end: formatDate(end),
+                        start: start,
+                        end: end,
                         [BORDER_COLOR]: BLACK,
                         [GROUP_ID]: SELECTED,
                         extendedProps: {
@@ -2530,12 +2530,12 @@ module nts.uk.ui.at.kdw013.calendar {
                             //社員ID
                             employeeId: vm.params.employee() || vm.$user.employeeId,
                             //年月日
-                            period: { start:  formatDate(start), end: formatDate(end) },
+                            period: { start:  start, end: end },
                             //現在の応援勤務枠
                             frameNos: [],
                             //工数実績作業ブロック
                             taskBlock: {
-                                caltimeSpan: { start: formatDate(start), end: formatDate(end) },
+                                caltimeSpan: { start: start, end: end },
 
                                 taskDetails: [{ supNo: null, taskItemValues: vm.getTaskValues() }]
                             },
