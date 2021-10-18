@@ -139,7 +139,7 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
     public List<String> findEmploymentSetting(String companyId, LaborSystemtAtr laborSystemAtr) {
 
         return this.queryProxy().query(FIND_EMPLOYMENT_SETTING, Ksrmt36AgrMgtEmp.class)
-                .setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value)
+                .setParameter("companyId", companyId).setParameter("laborSystemAtr", laborSystemAtr.value == 1)
                 .getList(f -> f.ksrmt36AgrMgtEmpPk.employmentCode);
     }
 
@@ -149,7 +149,7 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
         return this.queryProxy().query(FIND_BY_CID_AND_CD_LABOR, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
                 .setParameter("cd", employCode)
-                .setParameter("laborSystemAtr", laborSystemAtr.value)
+                .setParameter("laborSystemAtr", laborSystemAtr.value == 1)
                 .getSingle(Ksrmt36AgrMgtEmp::toDomain);
     }
 

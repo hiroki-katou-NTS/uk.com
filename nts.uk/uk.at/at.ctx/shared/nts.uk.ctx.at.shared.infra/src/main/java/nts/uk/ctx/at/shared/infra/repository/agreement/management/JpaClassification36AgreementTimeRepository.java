@@ -95,7 +95,7 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         return this.queryProxy().query(FIND_BY_CID_AND_CLS_CD,Ksrmt36AgrMgtCls.class)
                 .setParameter("cid",cid)
                 .setParameter("classificationCode",classificationCode)
-                .setParameter("laborSystemAtr",laborSystemAtr.value)
+                .setParameter("laborSystemAtr",laborSystemAtr.value == 1)
                 .getSingle(Ksrmt36AgrMgtCls::toDomain);
 
     }
@@ -104,7 +104,7 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
     public List<String> findClassificationCodes(String cid,LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_BY_LABORSYSTEM, Ksrmt36AgrMgtCls.class)
                 .setParameter("cid",cid)
-                .setParameter("laborSystemAtr", laborSystemAtr.value)
+                .setParameter("laborSystemAtr", laborSystemAtr.value == 1)
                 .getList(f -> f.ksrmt36AgrMgtClsPk.classificationCode);
     }
 

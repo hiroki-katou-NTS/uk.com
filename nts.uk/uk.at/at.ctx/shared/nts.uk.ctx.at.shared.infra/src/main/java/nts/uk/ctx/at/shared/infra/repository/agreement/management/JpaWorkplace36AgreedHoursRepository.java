@@ -99,7 +99,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
     @Override
     public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
         return this.queryProxy().query(FIND_WORKPLACE_SETTING, Ksrmt36AgrMgtWkp.class)
-                .setParameter("laborSystemAtr", laborSystemAtr.value)
+                .setParameter("laborSystemAtr", laborSystemAtr.value == 1)
 				.setParameter("companyID", AppContexts.user().companyId())
                 .getList(f -> f.ksrmt36AgrMgtWkpPk.workplaceId);
     }
@@ -109,7 +109,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
 
         return this.queryProxy().query(FIND_BY_WKP_AND_LABOR, Ksrmt36AgrMgtWkp.class)
                 .setParameter("workplaceId", workplaceId)
-                .setParameter("laborSystemAtr", laborSystemAtr.value)
+                .setParameter("laborSystemAtr", laborSystemAtr.value == 1)
                 .getSingle(Ksrmt36AgrMgtWkp::toDomain);
     }
 }
