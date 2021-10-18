@@ -585,11 +585,11 @@ module nts.uk.com.view.cas013.a {
             let vm = this;
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
+                    block.invisible();
                     let vm = this;
                     let roleTpye = vm.selectedRoleType();
                     let userId = vm.selectedUserID();
-                    block.invisible();
-                    let cid = vm.companyId();
+                    let cid =__viewContext.user.companyId;
                     let roleGrant = {
                         userID: userId,
                         roleType: roleTpye,
