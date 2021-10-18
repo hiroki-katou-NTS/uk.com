@@ -1735,8 +1735,6 @@ module nts.uk.ui.at.kdw013.calendar {
 
                              
                 
-                    let taskItemValues = _.map(_.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return { itemId: item.itemId, value: null } });
-
                     let newEvent = {
                             id: randomId(),
                             start: formatDate(info.date),
@@ -1757,7 +1755,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 taskBlock: {
                                     caltimeSpan: { start: formatDate(info.date), end: formatDate(moment(info.date).add(vm.params.slotDuration(), 'm').toDate()) },
 
-                                    taskDetails: [{ supNo: null, taskItemValues }]
+                                    taskDetails: [{ supNo: null, taskItemValues : vm.getTaskValues() }]
                                 },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
@@ -2502,29 +2500,47 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // rerender event (deep clean selection)
                     updateEvents();
+                    
+                    
+                    let newEvent = {
+                        id: randomId(),
+                        start: formatDate(start),
+                        end: formatDate(end),
+                        [BORDER_COLOR]: BLACK,
+                        [GROUP_ID]: SELECTED,
+                        extendedProps: {
+                            status: 'new',
+                            //作業枠利用設定
+                            taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
+                            //社員ID
+                            employeeId: vm.params.employee() || vm.$user.employeeId,
+                            //年月日
+                            period: { start:  formatDate(start), end: formatDate(end) },
+                            //現在の応援勤務枠
+                            frameNos: [],
+                            //工数実績作業ブロック
+                            taskBlock: {
+                                caltimeSpan: { start: formatDate(start), end: formatDate(end) },
+
+                                taskDetails: [{ supNo: null, taskItemValues: vm.getTaskValues() }]
+                            },
+                            //作業内容入力ダイアログ表示項目一覧
+                            displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
+
+                        }
+                    };
 
                     // add new event from selected data
                     const event = vm.calendar
-                        .addEvent({
-                            id: randomId(),
-                            start: formatDate(start),
-                            end: formatDate(end),
-                            [BORDER_COLOR]: BLACK,
-                            [GROUP_ID]: SELECTED,
-                            extendedProps: {
-                                status: 'new',
-                                employeeId: vm.params.employee() || vm.$user.employeeId,
-                                isChanged:true
-                            }
-                        });
+                        .addEvent(newEvent);
 
-                    $caches.new(event);
-                    const el: HTMLElement = vm.$el.querySelector(`[event-id="${event.id}"]`);
+                    $caches.new(newEvent);
+                    const el: HTMLElement = vm.$el.querySelector(`[event-id="${newEvent.id}"]`);
 
                     if (el) {
                         const { view } = vm.calendar;
 
-                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view , noCheckSave: true});
+                        vm.calendar.trigger('eventClick', { el, newEvent, jsEvent: new MouseEvent('click'), view , noCheckSave: true});
                     }
                 },
                 eventRemove: ({ event }) => {
@@ -2945,7 +2961,18 @@ module nts.uk.ui.at.kdw013.calendar {
             _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });
         }
 
+        
 
+          public  getTaskValues(){
+                 let vm = this;
+                 let items = _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []);
+
+                   _.forEach([1,2,3,4,5,6,7,8], function(id) {
+                       items.push({ itemId: id, value: null });
+                   });
+    
+                return _.map(items, item => { return { itemId: item.itemId, value: null } });
+            }
 
            public revertEvent(oldEvent, caches){
                 let vm = this;
