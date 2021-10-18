@@ -42,19 +42,19 @@ public class JpaForm9LayoutRepository extends JpaRepository implements Form9Layo
         FIND_BY_CID = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" AND a.pk.CODE = :code ");
+        builderString.append(" AND a.pk.code = :code ");
         FIND_BY_CID_CD = FIND_BY_CID + builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" AND a.IS_FIXED = :isFixed ");
+        builderString.append(" AND a.isFixed = :isFixed ");
         FIND_BY_CID_FIXED = FIND_BY_CID + builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" AND a.IS_USE = :isUse ");
+        builderString.append(" AND a.isUse = :isUse ");
         FIND_BY_CID_IS_USE = FIND_BY_CID + builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" AND a.IS_FIXED = :isFixed ");
+        builderString.append(" AND a.isFixed = :isFixed ");
         FIND_BY_CID_CD_FIXED = FIND_BY_CID_CD + builderString.toString();
     }
 
