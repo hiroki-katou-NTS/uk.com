@@ -1748,7 +1748,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //社員ID
                                 employeeId: vm.params.employee() || vm.$user.employeeId,
                                 //年月日
-                                period: { start: info.date, end: moment(info.date.add(vm.params.slotDuration(), 'm').toDate()) },
+                                period: { start: info.date, end: moment(info.date).add(vm.params.slotDuration(), 'm').toDate() },
                                 //現在の応援勤務枠
                                 frameNos:[],                                
                                 //工数実績作業ブロック
