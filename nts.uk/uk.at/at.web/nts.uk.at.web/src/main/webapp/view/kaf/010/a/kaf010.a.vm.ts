@@ -1495,9 +1495,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			nts.uk.ui.windows.setShared( 'KDL005_DATA', employeeIdList);
 
 			if (employeeIdList.length > 1) {
-				nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1140, height: 640 });
+				nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1160, height: 640 });
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 850, height: 640 });
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 860, height: 640 });
             }
 		}
 
