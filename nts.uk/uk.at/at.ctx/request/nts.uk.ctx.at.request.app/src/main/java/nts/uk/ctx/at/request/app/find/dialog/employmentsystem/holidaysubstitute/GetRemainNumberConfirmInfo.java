@@ -92,19 +92,34 @@ public class GetRemainNumberConfirmInfo {
 								detail.getDateOccur().getDayoffDate().get().toString(), // ループ中の逐次発生の休暇明細一覧．年月日．年月日
 								textDayoff)); // ループ中の逐次発生の休暇明細一覧．年月日．年月日の曜日
 					}
-
-					// ループ中の逐次発生の休暇明細一覧．発生数．時間 ！＝ Empty
-					if (unit) {
-						// 残数詳細情報．消化数をセットする
-						String minu = String.valueOf(detail.getNumberOccurren().getTime().get().minute()).length() > 1
-								? String.valueOf(detail.getNumberOccurren().getTime().get().minute())
-								: 0 + String.valueOf(detail.getNumberOccurren().getTime().get().minute());
-						String hoursMinu = String.valueOf(detail.getNumberOccurren().getTime().get().hour()) + ":"
-								+ minu;
-						detailedInfo.setDigestionCount(hoursMinu);
-					} else {
-						detailedInfo.setDigestionCount(
-								TextResource.localize("KDL005_27", detail.getNumberOccurren().getDay().toString())); // ループ中の逐次発生の休暇明細一覧．発生数．日数
+					
+					//120400
+					//逐次休暇の紐付け情報を絞り込む
+					boolean checkExist = false;
+					for(SeqVacationAssociationInfo svai :lstSeqVacation) {
+						if(detail.getDateOccur().getDayoffDate().isPresent() && svai.getDateOfUse().equals(detail.getDateOccur().getDayoffDate().get())) {
+							checkExist = true;
+							//データをセットする
+							detailedInfo.setDigestionCount(TextResource.localize("KDL005_27", svai.getDayNumberUsed().v().toString()));
+							detailedInfo.setDigestionDateStatus(TextResource.localize("KDL005_49"));
+							break;
+						}
+					}
+					
+					if(!checkExist) {
+						// ループ中の逐次発生の休暇明細一覧．発生数．時間 ！＝ Empty
+						if (unit) {
+							// 残数詳細情報．消化数をセットする
+							String minu = String.valueOf(detail.getNumberOccurren().getTime().get().minute()).length() > 1
+									? String.valueOf(detail.getNumberOccurren().getTime().get().minute())
+									: 0 + String.valueOf(detail.getNumberOccurren().getTime().get().minute());
+							String hoursMinu = String.valueOf(detail.getNumberOccurren().getTime().get().hour()) + ":"
+									+ minu;
+							detailedInfo.setDigestionCount(hoursMinu);
+						} else {
+							detailedInfo.setDigestionCount(
+									TextResource.localize("KDL005_27", detail.getNumberOccurren().getDay().toString())); // ループ中の逐次発生の休暇明細一覧．発生数．日数
+						}
 					}
 				} else {// 発生の場合
 

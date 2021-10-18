@@ -205,6 +205,9 @@ module nts.uk.at.view.kdl009.a {
 						//lấy dữ liệu quá khứ cuối cùng để bôi đen border
 						if(self.listDataInfo().length>2){
 							for(let i = 1;i<self.listDataInfo().length;i++){
+								if(self.listDataInfo()[i-1].isFuture){
+									break;
+								}
 								if(self.listDataInfo()[i].isFuture && !self.listDataInfo()[i-1].isFuture ){
 									self.listDataInfo()[i].isLastPast(true);
 									break;
