@@ -56,8 +56,6 @@ module nts.uk.ui.at.kdw013 {
 				// sap xep item co dinh
 				let taskItemValues: ITaskItemValue[] = _.sortBy(_.filter(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => { return i.itemId <= 8 }), ['itemId']);
 				
-				let taskItemValuesTotal: {taskItemValues: ITaskItemValue, name: string, type: number} = _.map(taskItemValues, t => return ({taskItemValues: t, name: '', type: null}));
-				
 				// sap xep thu tu item tuy y
 				let manHourRecordAndAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto[] = _.filter(data.manHourRecordAndAttendanceItemLink, (l: ManHourRecordAndAttendanceItemLinkDto) => l.frameNo == vm.supNo);
 				_.forEach(_.sortBy(data.attendanceItems, ['displayNumber']), (attendanceItem: DailyAttendanceItemDto) => {
