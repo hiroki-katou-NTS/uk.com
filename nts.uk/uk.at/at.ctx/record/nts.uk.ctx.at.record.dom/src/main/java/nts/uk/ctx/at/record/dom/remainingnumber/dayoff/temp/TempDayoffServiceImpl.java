@@ -38,7 +38,7 @@ public class TempDayoffServiceImpl implements TempDayoffService {
 			DatePeriod period, ClosureId closureId, ClosureDate closureDate) {
 		
 		// 月初の代休残数を取得　→　繰越数
-		Double carryforwardDays = this.breakDayoffMngQuery.getDayOffRemainOfBeginMonth(companyId, employeeId);
+		Double carryforwardDays = this.breakDayoffMngQuery.getDayOffRemainOfBeginMonth(companyId, employeeId).v();
 //		if (carryforwardDays == null) carryforwardDays = 0.0;
 		
 		// 暫定データの作成
