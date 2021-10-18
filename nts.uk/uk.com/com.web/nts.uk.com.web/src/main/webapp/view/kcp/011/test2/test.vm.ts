@@ -34,7 +34,8 @@ module test2.viewmodel {
                 reloadComponent: ko.observable({}),
                 height: 370,
                 // NONE = 0, FIRST = 1, ALL = 2
-                selectedMode: dataShare.selectedMode
+                selectedMode: dataShare.selectedMode,
+                workplaceGroupTypes: dataShare.selectedWkpGroupTypes
             };
         }
 
