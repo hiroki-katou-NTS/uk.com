@@ -2,19 +2,31 @@ package nts.uk.ctx.at.record.app.find.monthly.nursingandchildnursing.getdeitalin
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.monthly.nursingandchildnursing.acquirenursingandchildnursing.AcquireNursingAndChildNursing;
 import nts.uk.ctx.at.record.app.find.monthly.nursingandchildnursing.acquirenursingandchildnursing.AcquireNursingAndChildNursingDto;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetHolidayDetailByPeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberChildCare;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetRemainingNumberNursing;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.care.GetUsageDetailCareService;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImpl;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.ChildCareNurseRequireImplFactory;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.ChildTempCareData;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.GetUsageDetailChildCareService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.shr.com.i18n.TextResource;
@@ -38,13 +50,19 @@ public class GetDeitalInfoNursingByEmp {
 	@Inject
 	private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
+	@Inject
+	private GetRemainingNumberNursing getRemainingNumberNursing; // 726
+	
+	@Inject
+	private RecordDomRequireService requireService;
+
 	/**
 	 * @param companyId       会社ID
 	 * @param employeeId      社員ID
 	 * @param nursingCategory 介護看護区分
 	 */
 	public NursingAndChildNursingRemainDto get(String companyId, String employeeId, NursingCategory nursingCategory) {
-		
+
 		String KDL051_33 = TextResource.localize("KDL051_33");
 		String KDL051_31 = TextResource.localize("KDL051_31");
 		String KDL051_32 = TextResource.localize("KDL051_32");
@@ -57,63 +75,91 @@ public class GetDeitalInfoNursingByEmp {
 
 		// 取得した管理区分をチェック
 		if (acquireNursingAndChildNursingDto.isManagementSection()) {
-			// DomainService「基準日時点の子の看護残数を取得する」を実行する
-			AggrResultOfChildCareNurse aggrResultOfChildCareNurse = getRemainingNumberChildCare
-					.getRemainingNumberChildCare(companyId, employeeId, GeneralDate.today());
 
-			// TODO: 管理期間を計算する redmind 120041
-			DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-
+			// 管理期間を計算する
+			DatePeriod period = acquireNursingAndChildNursingDto.getNursingLeaveSetting().get()
+					.calcManagementPeriod(GeneralDate.today());
 			ChildCareNurseRequireImpl require = childCareNurseRequireImplFactory.createRequireImpl();
 			// 期間の上限日数を取得する
 			ChildCareNurseUpperLimitPeriod childCareNurseUpperLimitPeriod = acquireNursingAndChildNursingDto
 					.getNursingCareLeaveRemainingInfo().get()
 					.childCareNurseUpperLimitPeriod(companyId, employeeId, period, GeneralDate.today(), require).get(0);
 
-			List<ChildTempCareData> listChildTempCareData = new ArrayList<>();
+			List<TempChildCareNurseManagement> listTempChildCareNurseManagement = new ArrayList<>();
+
+			AggrResultOfChildCareNurse aggrResultOfChildCareNurse = null;
 			if (nursingCategory == NursingCategory.ChildNursing) {// 子の看護
-				// TODO : DomainService「期間中の子の看護休暇残数を取得」を実行する   redmind 120052 
+
+				// DomainService「基準日時点の子の看護残数を取得する」を実行する
+				aggrResultOfChildCareNurse = getRemainingNumberChildCare.getRemainingNumberChildCare(companyId,
+						employeeId, GeneralDate.today());
+
+				GetUsageDetailCareService.Require requireGetUsageDetailCareService = new GetUsageDetailCareServiceImpl(requireService);
+				// DomainService「DS_期間内の介護使用明細を取得する」
+				List<TempCareManagement> listTempCareManagement = GetUsageDetailCareService.getUsageDetailCareService(
+						companyId, employeeId, period, ReferenceAtr.APP_AND_SCHE, requireGetUsageDetailCareService);
+				listTempChildCareNurseManagement = listTempCareManagement.stream().map(c-> (TempChildCareNurseManagement) c).collect(Collectors.toList());
 			} else if (nursingCategory == NursingCategory.Nursing) {// 介護
-				// TODO : DomainService「期間中の介護休暇残数を取得」 redmind 120052 
+
+				// DomainService「基準日時点の介護残数を取得する」を実行する
+				aggrResultOfChildCareNurse = getRemainingNumberNursing.getRemainingNumberNursing(companyId, employeeId,
+						GeneralDate.today());
+
+				GetUsageDetailChildCareService.Require reuqireGetUsageDetailChildCareService = new GetUsageDetailChildCareServiceImpl(requireService);
+				// 「DS_期間内の子の看護使用明細を取得する」を実行する
+				List<TempChildCareManagement> listTempChildCareManagement = GetUsageDetailChildCareService
+						.getUsageDetailCareService(companyId, employeeId, period, ReferenceAtr.APP_AND_SCHE,
+								reuqireGetUsageDetailChildCareService);
+				listTempChildCareNurseManagement = listTempChildCareManagement.stream().map(c-> (TempChildCareNurseManagement) c).collect(Collectors.toList());
 			}
+			
 
 			// List＜消化詳細＞を作成
 			List<DigestionDetails> listDigestionDetails = new ArrayList<>();
-			for (ChildTempCareData childTempCareData : listChildTempCareData) {
-				// 使用日数 ＞ ０ の場合
-				if (childTempCareData.getUsedDays().v() > 0) {
+			for (TempChildCareNurseManagement tempChildCareNurseManagement : listTempChildCareNurseManagement) {
+				
+				
+				// ・管理データ．使用数．日数　＞　０　の場合
+				if (tempChildCareNurseManagement.getUsedNumber().getUsedDay().v() > 0.0) {
 					DigestionDetails usedDay = new DigestionDetails();
-					if (childTempCareData.getYmd().after(GeneralDate.today())) {
+					//管理データ．暫定残数管理データ．年月日　＞　システム日付
+					if(tempChildCareNurseManagement.getYmd().after(GeneralDate.today())) {
 						usedDay.setDigestionStatus(KDL051_33);
 					}
-					usedDay.setDigestionDate(childTempCareData.getYmd().toString());
-					usedDay.setNumberOfUse(
-							TextResource.localize("KDL051_34", childTempCareData.getUsedDays().v().toString()));
+					usedDay.setDigestionDate(
+							TextResource.localize("KDL051_36", tempChildCareNurseManagement.getYmd().toString(),
+									this.getDayOfJapan(tempChildCareNurseManagement.getYmd().dayOfWeek())));
+					usedDay.setNumberOfUse(TextResource.localize("KDL051_34",
+							tempChildCareNurseManagement.getUsedNumber().getUsedDay().v().toString()));
 					listDigestionDetails.add(usedDay);
 				}
-				// 使用時間 ＞ ０ の場合
-				if (childTempCareData.getUsedTime().v() > 0) {
+				// ・管理データ．使用数．時間　＞　０　の場合
+				if (tempChildCareNurseManagement.getUsedNumber().getUsedTimes().isPresent() && tempChildCareNurseManagement.getUsedNumber().getUsedTimes().get().v() > 0) {
 					DigestionDetails usedTime = new DigestionDetails();
-					if (childTempCareData.getYmd().after(GeneralDate.today())) {
+					//管理データ．暫定残数管理データ．年月日　＞　システム日付
+					if(tempChildCareNurseManagement.getYmd().after(GeneralDate.today())) {
 						usedTime.setDigestionStatus(KDL051_33);
 					}
-					usedTime.setDigestionDate(childTempCareData.getYmd().toString());
-					usedTime.setNumberOfUse(convertTime(childTempCareData.getUsedTime().v()));
+					usedTime.setDigestionDate(
+							TextResource.localize("KDL051_36", tempChildCareNurseManagement.getYmd().toString(),
+									this.getDayOfJapan(tempChildCareNurseManagement.getYmd().dayOfWeek())));
+					usedTime.setNumberOfUse(convertTime(tempChildCareNurseManagement.getUsedNumber().getUsedTimes().get().v()));
 					listDigestionDetails.add(usedTime);
 				}
+				
 			}
 			// 看護・介護残数DTOを作成
 			// set 年間上限数
-			String limitDays = aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getLimitDays().v()
-					.toString();
-			String KDL051_30 = TextResource.localize("KDL051_30", limitDays, "", "", "");
+			Double limitDays = (double) aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getLimitDays().v()
+					- aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay().v();
+			String KDL051_30 = TextResource.localize("KDL051_30", limitDays.toString(), "", "", "");
 			dataResult.setMaxNumberOfYear(KDL051_30);
 			// set 上限制限開始日
 			dataResult.setUpperLimitStartDate(childCareNurseUpperLimitPeriod.getPeriod().start().toString());
 			// set 上限制限終了日
 			dataResult.setUpperLimitEndDate(childCareNurseUpperLimitPeriod.getPeriod().end().toString());
 			// set 上限日数
-			String KDL051_34 = TextResource.localize("KDL051_34", limitDays);
+			String KDL051_34 = TextResource.localize("KDL051_34", limitDays.toString());
 			dataResult.setMaxNumberOfDays(KDL051_34);
 			// set 使用数
 			String value0 = aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay()
@@ -133,7 +179,7 @@ public class GetDeitalInfoNursingByEmp {
 			// set 消化詳細一覧
 			dataResult.setListDigestionDetails(listDigestionDetails);
 		}
-		
+
 		// 看護・介護残数DTO．管理区分 に 取得した介護看護休暇設定．管理区分をセット
 		// set 上限日数
 		dataResult.setManagementSection(acquireNursingAndChildNursingDto.isManagementSection());
@@ -149,5 +195,55 @@ public class GetDeitalInfoNursingByEmp {
 		String timeString = String.valueOf(time / 60) + ":" + m;
 		return timeString;
 	}
+
+	public String getDayOfJapan(int day) {
+		switch (day) {
+		case 1:
+			return "月";
+		case 2:
+			return "火";
+		case 3:
+			return "水";
+		case 4:
+			return "木";
+		case 5:
+			return "金";
+		case 6:
+			return "土";
+		default:
+			return "日";
+		}
+	}
+
+	@AllArgsConstructor
+	private class GetUsageDetailChildCareServiceImpl implements GetUsageDetailChildCareService.Require {
+		
+		@Inject
+		private RecordDomRequireService requireService;
+
+		@Override
+		public List<DailyInterimRemainMngData> getHolidayDetailByPeriod(String companyId, String employeeId,
+				DatePeriod period, ReferenceAtr referenceAtr) {
+			val requireA = requireService.createRequire();
+			List<DailyInterimRemainMngData> data = GetHolidayDetailByPeriod.getHolidayDetailByPeriod(requireA, companyId, employeeId, period, referenceAtr);
+			return data;
+		}
+	}
+	
+	@AllArgsConstructor
+	private class GetUsageDetailCareServiceImpl implements GetUsageDetailCareService.Require {
+		
+		@Inject
+		private RecordDomRequireService requireService;
+
+		@Override
+		public List<DailyInterimRemainMngData> getHolidayDetailByPeriod(String companyId, String employeeId,
+				DatePeriod period, ReferenceAtr referenceAtr) {
+			val requireA = requireService.createRequire();
+			List<DailyInterimRemainMngData> data = GetHolidayDetailByPeriod.getHolidayDetailByPeriod(requireA, companyId, employeeId, period, referenceAtr);
+			return data;
+		}
+	}
+	
 
 }

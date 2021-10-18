@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetHolidayDetailByPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
@@ -23,7 +24,7 @@ public class GetUsageDetailCareService {
 			DatePeriod period, ReferenceAtr referenceAtr, Require require) {
 		
 		List<DailyInterimRemainMngData> interimRemainMng = require.getHolidayDetailByPeriod(
-				companyId, employeeId, period, referenceAtr, require);
+				companyId, employeeId, period, referenceAtr);
 		
 		return interimRemainMng.stream()
 				.filter(c -> !c.getRecAbsData().isEmpty() && !c.getCareData().isEmpty())
@@ -32,9 +33,9 @@ public class GetUsageDetailCareService {
 				}).flatMap(List::stream).collect(Collectors.toList());
 	}
 
-	public static interface Require{
+	public static interface Require {
 		List<DailyInterimRemainMngData> getHolidayDetailByPeriod(String companyId, String employeeId, 
-				DatePeriod period, ReferenceAtr referenceAtr,Require require);
+				DatePeriod period, ReferenceAtr referenceAtr);
 	}
 	
 }
