@@ -112,6 +112,7 @@ module nts.uk.at.view.kmk006.k {
                     if (itemId) {
                         const exist = _.find(history, ((value: IHistory) => { return value.itemId === itemId }));
                         if (exist) {
+                            console.log(exist);
                             if (exist.dateHistoryItems.length > 0) {
                                 vm.modelHistory.update(exist.dateHistoryItems[0]);
                             } else {
@@ -144,7 +145,10 @@ module nts.uk.at.view.kmk006.k {
                         }
                     } else {
                         vm.modelHistory.update(history[0].dateHistoryItems[0]);
+                        vm.modelHistory.historyId.valueHasMutated();
                     }
+                })
+                .then(() => {
                     vm.modelHistory.historyId.valueHasMutated();
                 });
         }
@@ -183,17 +187,6 @@ module nts.uk.at.view.kmk006.k {
                 .done(() => {
                     vm.historys(_.orderBy(historyDateils, ['code'], ['asc']));
                     if (ko.unwrap(vm.historys).length > 0) {
-                        // if (ko.unwrap(vm.screenMode) == SCREEN_MODE.UPDATE) {
-                        //     if (index) {
-                        //         vm.currentCode(ko.unwrap(vm.historys)[index].code);
-                        //     } else {
-                        //         vm.currentCode(historyDateils[0].code);
-                        //     }
-                        // }
-                        // if (ko.unwrap(vm.screenMode) == SCREEN_MODE.NEW) {
-                        //     vm.currentCode(ko.unwrap(vm.model.code));
-                        //     vm.screenMode(SCREEN_MODE.UPDATE);
-                        // }
                         if (index) {
                             vm.currentCode(ko.unwrap(vm.historys)[index].code);
                         } else {
@@ -211,6 +204,7 @@ module nts.uk.at.view.kmk006.k {
                         vm.screenMode(SCREEN_MODE.NEW);
                         // $('.inputCode').focus();
                     }
+                    vm.currentCode.valueHasMutated();
                 })
                 .then(() => {
                     vm.$blockui('clear');
