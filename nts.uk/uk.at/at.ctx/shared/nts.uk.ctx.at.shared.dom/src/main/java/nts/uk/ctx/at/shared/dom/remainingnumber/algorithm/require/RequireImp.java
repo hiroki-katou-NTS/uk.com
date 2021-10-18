@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -749,4 +750,20 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
 	}
 
+	@Override
+	public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+		return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+	}
+
+	@Override
+	public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+		return closureRepo.findByListId(companyId, closureId);
+	}
+
+	@Override
+	public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+			GeneralDate baseDate) {
+		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+	}
+	
 }

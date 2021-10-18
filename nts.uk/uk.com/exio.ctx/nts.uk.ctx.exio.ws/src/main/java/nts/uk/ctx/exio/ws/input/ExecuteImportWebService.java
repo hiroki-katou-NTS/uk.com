@@ -1,15 +1,12 @@
 package nts.uk.ctx.exio.ws.input;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.task.AsyncTaskInfo;
-import nts.uk.ctx.exio.app.input.develop.diagnose.DiagnoseExternalImportConstants;
-import nts.uk.ctx.exio.app.input.develop.diagnose.DiagnoseResult;
 import nts.uk.ctx.exio.app.input.errors.ErrorsTextDto;
 import nts.uk.ctx.exio.app.input.errors.GetLatestExternalImportErrors;
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommand;
@@ -50,14 +47,5 @@ public class ExecuteImportWebService {
 			@PathParam("pageNo") int pageNo) {
 		
 		return errors.getTextPage(new ExternalImportCode(settingCode), pageNo);
-	}
-	
-	@Inject
-	DiagnoseExternalImportConstants diagnose;
-	
-	@GET
-	@Path("diagnose")
-	public DiagnoseResult diagnose() {
-		return diagnose.diagnose();
 	}
 }

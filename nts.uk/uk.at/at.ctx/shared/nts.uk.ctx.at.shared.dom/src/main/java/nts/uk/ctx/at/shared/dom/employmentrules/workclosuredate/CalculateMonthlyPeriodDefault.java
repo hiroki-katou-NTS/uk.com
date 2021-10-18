@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.employmentrules.workclosuredate;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -70,6 +71,16 @@ public class CalculateMonthlyPeriodDefault implements CalculateMonthlyPeriodServ
 			@Override
 			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
 				return closureEmpRepo.findByEmploymentCD(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return closureRepository.findByListId(companyId, closureId);
+			}
+
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return closureEmpRepo.findListEmployment(companyID, employmentCD);
 			}
 		};
 	}
