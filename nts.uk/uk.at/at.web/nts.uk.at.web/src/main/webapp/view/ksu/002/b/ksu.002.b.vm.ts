@@ -34,6 +34,11 @@ module nts.uk.ui.at.ksu002.b {
                 vm.model.startDay(data.startDay);
                 vm.datePeriod(vm.getDatePeriod());
             });
+            $(document).ready(function(){
+                setTimeout(function() {
+                    $('#B4_2').children(":first").children(":first").focus();
+                }, 500);
+            });
         }
 
         getDatePeriod(): string {
