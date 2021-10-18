@@ -38,7 +38,7 @@ public class TempAbsenceLeaveServiceImpl implements TempAbsenceLeaveService {
 		
 		
 		// 月初の振休残数を取得　→　繰越数
-		Double carryforwardDays = this.absRecMngQuery.useDays(employeeId);
+		Double carryforwardDays = this.absRecMngQuery.useDays(employeeId).v();
 //		if (carryforwardDays == null) carryforwardDays = 0.0;
 		
 		// 暫定データの作成
