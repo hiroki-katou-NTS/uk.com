@@ -153,4 +153,11 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository
 		return this.queryProxy().find(new KrcmtTaskSupInfoChoicesHistPK(itemId, historyId), KrcmtTaskSupInfoChoicesHist.class).map(m -> m.toDomain());
 	}
 
+	@Override
+	public List<TaskSupInfoChoicesDetail> getListForCid(String cid) {
+		return this.queryProxy().query(
+				"SELECT d FROM KrcmtTaskSupInfoChoicesDetail d WHERE d.companyId = :cid",
+				KrcmtTaskSupInfoChoicesDetail.class).setParameter("cid", cid).getList(a -> a.toDomain());
+	}
+
 }

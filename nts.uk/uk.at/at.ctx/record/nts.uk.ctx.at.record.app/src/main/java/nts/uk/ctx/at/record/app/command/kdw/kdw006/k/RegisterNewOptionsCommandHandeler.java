@@ -16,39 +16,39 @@ import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistoryRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * Command: 選択肢を新規登録する
+ * 
  * @author chungnt
  *
  */
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class RegisterNewOptionsCommandHandeler  extends CommandHandler<RegisterNewOptionsCommand> {
+public class RegisterNewOptionsCommandHandeler extends CommandHandler<RegisterNewOptionsCommand> {
 
 	@Inject
 	private TaskSupInfoChoicesHistoryRepository taskRepo;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<RegisterNewOptionsCommand> context) {
 		RegisterNewOptionsCommand command = context.getCommand();
-		
-		
-		List<TaskSupInfoChoicesDetail> choicesDetails = this.taskRepo.get(command.getHistoryId());
-		
+
+		List<TaskSupInfoChoicesDetail> choicesDetails = this.taskRepo.getListForCid(AppContexts.user().companyId());
+
 		choicesDetails.stream().forEach(f -> {
 			if (f.getCode().v().equals(command.getChoiceCode())) {
 				throw new BusinessException("Msg_3");
 			}
 		});
-		
-		TaskSupInfoChoicesDetail domain = new TaskSupInfoChoicesDetail(command.getHistoryId(),
-				command.getItemId(), 
-				new ChoiceCode(command.getChoiceCode()), 
-				new ChoiceName(command.getOptionName()), 
-				command.getEternalCodeOfChoice() == null ? Optional.empty() : Optional.of(new ExternalCode(String.valueOf(command.getEternalCodeOfChoice()))));
-		
+
+		TaskSupInfoChoicesDetail domain = new TaskSupInfoChoicesDetail(command.getHistoryId(), command.getItemId(),
+				new ChoiceCode(command.getChoiceCode()), new ChoiceName(command.getOptionName()),
+				command.getEternalCodeOfChoice() == null ? Optional.empty()
+						: Optional.of(new ExternalCode(String.valueOf(command.getEternalCodeOfChoice()))));
+
 		this.taskRepo.insert(domain);
 	}
 

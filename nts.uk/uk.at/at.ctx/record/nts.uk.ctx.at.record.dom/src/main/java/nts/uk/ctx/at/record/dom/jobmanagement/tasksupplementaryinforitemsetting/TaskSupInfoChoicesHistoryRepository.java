@@ -73,4 +73,6 @@ public interface TaskSupInfoChoicesHistoryRepository {
 	List<TaskSupInfoChoicesDetail> get(List<String> historyIds);
 	
 	Optional<TaskSupInfoChoicesHistory> get(String historyId, int itemId);
+	
+	List<TaskSupInfoChoicesDetail> getListForCid(String cid);
 }
