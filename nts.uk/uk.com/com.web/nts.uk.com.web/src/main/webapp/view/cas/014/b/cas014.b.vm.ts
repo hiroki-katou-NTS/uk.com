@@ -110,6 +110,7 @@ module nts.uk.com.view.cas014.b {
                     _.defer(() => {
                         if (_.isEmpty(self.roleSetPersonList())) {
                         //    self.selectedEmployeeCode() == null ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(null);
+                            $("#B3_2").focus();
                         } else {
                             if (employeeId) {
                                 const emp = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.id == employeeId);
