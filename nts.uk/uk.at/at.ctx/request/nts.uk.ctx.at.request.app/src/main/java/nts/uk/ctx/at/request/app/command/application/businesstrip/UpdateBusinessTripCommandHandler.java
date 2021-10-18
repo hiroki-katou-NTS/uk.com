@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -94,7 +95,9 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
                     infoOutput.getAppDispInfoStartup(), 
                     businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
                     Optional.empty(), 
-                    false
+                    false, 
+                    Optional.of(i.getWorkInformation().getWorkTypeCode().v()), 
+                    i.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v)
             );
         });
 

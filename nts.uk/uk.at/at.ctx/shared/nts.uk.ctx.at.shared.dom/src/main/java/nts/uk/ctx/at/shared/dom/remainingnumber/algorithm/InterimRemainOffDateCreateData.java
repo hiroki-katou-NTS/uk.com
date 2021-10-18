@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationUsageTimeDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
+import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -784,7 +785,7 @@ public class InterimRemainOffDateCreateData {
 		}
 		// 出勤時の勤務情報を取得する
 
-		return require.getHolidayWorkSchedule(cid, sid, ymd, wkTypeCd)
+		return require.getHolidayWorkScheduleNew(cid, sid, ymd, wkTypeCd,WorkingDayCategory.workingDay)
 				.map(x -> x.getWorkTimeCodeNotNull().map(y->y.v()).orElse(null)).orElse(null);
 
 	}
@@ -1627,6 +1628,9 @@ public class InterimRemainOffDateCreateData {
 		CheckCareResult checkCare(WorkTypeSet wkSet, String cid);
 
 		Optional<WorkInformation> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
+		
+		Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode, WorkingDayCategory workingDayCategory);
+		
 	}
 
 	public static interface RequireM7 extends RequireM1, RequireM3 {

@@ -526,7 +526,9 @@ public class BusinessTripFinder {
                         output.getAppDispInfoStartup(), 
                         businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
                         Optional.empty(), 
-                        false
+                        false, 
+                        Optional.of(i.getWorkInformation().getWorkTypeCode().v()), 
+                        i.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v)
                 );
             });
         }
