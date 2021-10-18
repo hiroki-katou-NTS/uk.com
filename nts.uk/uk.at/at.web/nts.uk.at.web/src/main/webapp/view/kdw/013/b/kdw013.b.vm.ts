@@ -42,7 +42,7 @@ module nts.uk.ui.at.kdw013.b {
                 <colgroup>
                     <col width="90px" />
                 </colgroup>
-                <tbody data-bind="with: time">
+                <tbody>
                     <tr>
                         <td data-bind="i18n: 'KDW013_27'"></td>
                         <td data-bind="text: time"></td>
