@@ -1081,15 +1081,15 @@ module nts.uk.ui.at.kdw013.a {
             template: `
             <div class='edit-popup'>
                     <ul>
-                        <li data-bind="i18n: 'KDW013_65' ,click:$component.openFdialog"></li>
-                        <li data-bind="i18n: 'KDW013_66' ,click:$component.removeFav"></li>
+                        <li data-bind="i18n: 'KDW013_77' ,click:$component.openFdialog"></li>
+                        <li data-bind="i18n: 'KDW013_78' ,click:$component.removeFav"></li>
                     </ul>
             </div>
             <div data-bind="ntsAccordion: { active: 0}">
                 <h3>
-                    <label data-bind="i18n: 'KDW013_63'"></label>
+                    <label data-bind="i18n: 'KDW013_76'"></label>
                 </h3>
-                <div class='fc-events'>
+                <div class='fc-oneday-events'>
                     <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
                         <li class="title" data-bind="attr: {
                             'data-id': _.get(item.extendedProps, 'relateId', ''),
@@ -1101,7 +1101,7 @@ module nts.uk.ui.at.kdw013.a {
                             <div style="display: flex;">
                                 <label  class='limited-label' style='width:90%;cursor: pointer;'  data-bind='text: item.title'>
                                 </label>
-                                <i data-bind="ntsIcon: { no: 2, width: 20, height: 25  },click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'relateId', '')) }">
+                                <i data-bind="ntsIcon: { no: 2, width: 20, height: 25  },click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'favId', '')) }">
                                 </i>
                             </div>
                         </li>
@@ -1109,7 +1109,7 @@ module nts.uk.ui.at.kdw013.a {
                 </div>
             </div>
             <style rel="stylesheet">
-                .fc-container .fc-events .edit-popup{
+                .fc-container .fc-oneday-events .edit-popup{
                     visibility: hidden;
                     position: fixed;
                     z-index: 99;
@@ -1117,15 +1117,15 @@ module nts.uk.ui.at.kdw013.a {
                     background-color: #fff;
                     padding: 0 10px;
                 }
-                .fc-container .fc-events .edit-popup ul li{
+                .fc-container .fc-oneday-events .edit-popup ul li{
                     cursor: pointer;
                     padding: 5px 5px;
                 }
-                .fc-container .fc-events .edit-popup ul li:hover{
+                .fc-container .fc-oneday-events .edit-popup ul li:hover{
                     background: #CDE2CD;
                     color: #0086EA ;
                 }
-                .fc-container .fc-events .show {
+                .fc-container .fc-oneday-events .show {
                     visibility: visible;
                 }
             </style>
@@ -1137,7 +1137,7 @@ module nts.uk.ui.at.kdw013.a {
             }
             
             editFav(e,id) {
-                let editPopup = $('.fc-events .edit-popup');
+                let editPopup = $('.fc-oneday-events .edit-popup');
                 let pst = e.target;
                 if(!pst){
                    editPopup.removeClass('show'); 
@@ -1145,25 +1145,28 @@ module nts.uk.ui.at.kdw013.a {
                 const { top, left, height, width } = pst.getBoundingClientRect();
                 editPopup.addClass('show');
                 editPopup.css({ "top": top, "left": left+width });
-                editPopup.data('relateId', id);
+                editPopup.data('favId', id);
             }
             
             removeFav(data) {
                 const vm = this;
-                let id = $('.fc-events .edit-popup').data('relateId');
+                let id = $('.fc-oneday-events .edit-popup').data('favId');
 
                 let newArrays = _.filter(vm.params.items(), item => {
-                    return _.get(item, 'extendedProps.relateId') != $('.fc-events .edit-popup').data('relateId');
+                    return _.get(item, 'extendedProps.favId') != id;
                 });
-
+            
                 vm.params.items(newArrays);
-                $('.fc-events .edit-popup').removeClass('show');
+                $('.fc-oneday-events .edit-popup').removeClass('show');
             }
             
             openFdialog(data) {
                 const vm = this;
-                $('.fc-events .edit-popup').removeClass('show');
-                console.log('open F');
+                $('.fc-oneday-events .edit-popup').removeClass('show');
+                let id = $('.fc-oneday-events .edit-popup').data('favId');
+                vm.$window.shared('KDW013_A_TO_F_PARAMS', id);
+                //gọi màn F
+                console.log(id);
             }
         }
 

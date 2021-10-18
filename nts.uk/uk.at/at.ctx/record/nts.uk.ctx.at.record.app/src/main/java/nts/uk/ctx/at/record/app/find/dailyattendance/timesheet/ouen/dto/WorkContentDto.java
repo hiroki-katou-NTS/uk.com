@@ -9,10 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 
 /**
  * @author laitv
@@ -31,18 +32,33 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	/** 作業: 作業グループ */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = WORKGROUP)
 	private WorkGroupDto work;
+
+	/** 作業補足情報 */
+	private WorkSuppInfoDto workSuppInfo;
 	
-	/** 備考: 作業入力備考 */
-	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = WORKREMARKS)
-	private String workRemarks;
+	public static WorkContentDto from(WorkContent domain) {
+		if (domain == null) return null;
 	
+		return new WorkContentDto(
+					WorkplaceOfWorkEachOuenDto.from(domain.getWorkplace()),
+					WorkGroupDto.from(domain.getWork().orElse(null)),
+					WorkSuppInfoDto.from(domain.getWorkSuppInfo().orElse(null)));
+	}
+	
+	public WorkContent domain() {
+		return WorkContent.create(
+				workplace == null ? WorkplaceOfWorkEachOuen.create(new WorkplaceId(""), null) : workplace.domain(), 
+				Optional.ofNullable(work == null ? null : work.domain()),
+				Optional.empty(),
+				Optional.ofNullable(workSuppInfo == null ? null : workSuppInfo.domain())); 
+	} 
 	
 	@Override
 	public WorkContentDto clone() {
 		WorkContentDto result = new WorkContentDto();
 		result.setWorkplace(workplace == null ? null : workplace.clone());
 		result.setWork(work == null ? null : work.clone());
-		result.setWorkRemarks(workRemarks);
+		result.setWorkSuppInfo(workSuppInfo == null ? null : workSuppInfo.clone());
 		return result;
 	}
 	
@@ -53,18 +69,10 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 			return new WorkplaceOfWorkEachOuenDto();
 		case WORKGROUP:
 			return new WorkGroupDto();
+		case SUPP:
+			return new WorkSuppInfoDto();
 		default:
 			return null;
-		}
-	}
-	
-	@Override
-	public Optional<ItemValue> valueOf(String path) {
-		switch (path) {
-		case WORKREMARKS :
-			return Optional.of(ItemValue.builder().value(workRemarks).valueType(ValueType.CODE));
-		default:
-			return Optional.empty();
 		}
 	}
 	
@@ -77,16 +85,8 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 		case WORKGROUP:
 			work = (WorkGroupDto) value;
 			break;
-		default:
-			break;
-		}
-	}
-	
-	@Override
-	public void set(String path, ItemValue value) {
-		switch (path) {
-		case WORKREMARKS:
-			this.workRemarks = value.valueOrDefault(null);
+		case SUPP:
+			workSuppInfo = (WorkSuppInfoDto) value;
 			break;
 		default:
 			break;
@@ -100,23 +100,10 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 			return Optional.ofNullable(workplace);
 		case WORKGROUP:
 			return Optional.ofNullable(work);
+		case SUPP:
+			return Optional.ofNullable(workSuppInfo);
 		default:
 			return Optional.empty();
 		}
 	}
-	
-	@Override
-	public PropType typeOf(String path) {
-		switch (path) {
-		case WORKPLACE_BYSUPPORT:
-		case WORKGROUP:
-			return PropType.OBJECT;
-		case WORKREMARKS:
-			return PropType.VALUE;
-		default:
-			break;
-		}
-		return AttendanceItemDataGate.super.typeOf(path);
-	}
-
 }

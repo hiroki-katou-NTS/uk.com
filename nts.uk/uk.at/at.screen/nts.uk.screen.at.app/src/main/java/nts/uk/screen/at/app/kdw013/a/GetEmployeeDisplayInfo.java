@@ -84,7 +84,7 @@ public class GetEmployeeDisplayInfo {
 
 		// 4: <call>(社員ID,表示期間,対象項目リスト)
 		GetDailyPerformanceDataResult dailyPerformanceData = getDailyPerformanceData.get(sid, period,
-				itemIds.stream().map(x -> Integer.valueOf(x)).collect(Collectors.toList()));
+				itemIds.stream().filter(x -> x != null).map(x -> Integer.valueOf(x)).collect(Collectors.toList()));
 
 		result.setDailyPerformanceData(dailyPerformanceData);
 

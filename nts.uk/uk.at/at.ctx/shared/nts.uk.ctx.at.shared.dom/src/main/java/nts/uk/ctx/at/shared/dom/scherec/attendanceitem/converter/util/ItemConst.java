@@ -344,4 +344,6 @@ public interface ItemConst extends Cloneable {
 	public final String WORKCODE = "作業CD";
 	public final String WORKREMARKS = "作業入力備考";
 	public final String WEEKLY_ATTENDANCE_TIME_EXESS = "週別実績の勤怠時間．時間外超過";
+	public final String SELECTION = "選択";
+	public final String SUPP = "補足";
 }
