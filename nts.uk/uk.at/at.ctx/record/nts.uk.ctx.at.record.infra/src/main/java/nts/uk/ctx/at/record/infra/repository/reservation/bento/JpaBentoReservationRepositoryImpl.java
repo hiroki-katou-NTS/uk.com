@@ -250,8 +250,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
             }
         }
         String orderedParam;
-        if(ordered) orderedParam = "1";
-        else orderedParam = "0,1";
+        if(ordered) orderedParam = "true";
+        else orderedParam = "false,true";
         query = query.replaceFirst("cardLst", cardLstStr);
         query = query.replaceFirst("startDate", period.start().toString());
         query = query.replaceFirst("endDate", period.end().toString());
