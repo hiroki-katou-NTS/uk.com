@@ -25,8 +25,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a id="I1_1" class="goback" tabindex="1"
-					data-bind="ntsLinkButton: { action: jumpTo }">#{i18n.getText('KDW006_25')}</a>
-				<button id="I1_2" class="proceed" tabindex="2" data-bind="click: register, enable: $root.errors.isEmpty"
+					data-bind="ntsLinkButton: { action: jumpTo}, css: { 'has-info': useAtrTask() == 0}">#{i18n.getText('KDW006_25')}</a>
+				<button id="I1_2" class="proceed" tabindex="2" data-bind="click: register, enable: useAtrTask() == 1"
 					style="margin-left: 40px;">#{i18n.getText('KDW006_26')}</button>
 			</div>
 			<div id="contents-area">
@@ -57,7 +57,7 @@
 							value: referenceRangeValue,
 							optionsText: 'name',
 							editable: false,
-							enable: true,
+							enable: useAtrTask() == 1,
 							required: false,
 							selectFirstIfNull: true,
 							columns: [
@@ -67,6 +67,7 @@
 						<button id="I2_3" tabindex="4" data-bind="ntsHelpButton: {
                             textId: 'KDW006_245',
                             textParams:[], 
+							enable: useAtrTask() == 1,
                             position: 'right top' }">？</button>
 					</div>
 
@@ -81,7 +82,7 @@
                                 value: elapsedMonthsValue,
                                 optionsText: 'name',
                                 editable: false,
-                                enable: true,
+                                enable: useAtrTask() == 1,
                                 required: false,
                                 selectFirstIfNull: true,
                                 columns: [
@@ -94,6 +95,7 @@
 						<button id="I3_5" tabindex="6" data-bind="ntsHelpButton: {
                                 textId: 'KDW006_246',
                                 textParams:[], 
+								enable: useAtrTask() == 1,
                                 position: 'right top' }">？</button>
 					</div>
 
@@ -111,11 +113,12 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: useAtr,
-									enable: true,
+									enable: enableSwich,
 									required: false }"></div>
 								<button id="I4_5" tabindex="8" data-bind="ntsHelpButton: {
 									textId: 'KDW006_238',
 									textParams:[], 
+									enable: useAtrTask() == 1,
 									position: 'right top' }">？</button>
 							</div>
 							<div class="I4-spacing">
@@ -131,7 +134,7 @@
 										mode: 'time',
 										option: {width: '50'},
 										required: useAtr() == 1,
-										enable: useAtr() == 1}" />
+										enable: useAtr() == 1 &amp;&amp; useAtrTask() == 1}" />
 								</div>
 								<div class="d-flex">
 									<span id="I4_8" class="label">#{i18n.getText('KDW006_247')}</span>
@@ -151,17 +154,17 @@
 											width: '500px'
 										})),
 										required: false,
-										enable: useAtr() == 1,
+										enable: useAtr() == 1 &amp;&amp; useAtrTask() == 1,
 										readonly: false
 									}" />
 								</div>
 								<div id="I4_11" tabindex="11" class="d-flex mid-line-spacing" data-bind="ntsColorPicker: {
 									name: $i18n('KDW006_243'),
 									value: messageColor,
-									enable: useAtr() == 1, 
+									enable: useAtr() == 1 &amp;&amp; useAtrTask() == 1, 
 									width: 50}"></div>
 								<div id="I4_12" tabindex="12" class="d-flex" data-bind="ntsCheckBox: { 
-									checked: boldAtr, enable: useAtr() == 1 }">#{i18n.getText('KDW006_241')}</div>
+									checked: boldAtr, enable: useAtr() == 1 &amp;&amp; useAtrTask() == 1 }">#{i18n.getText('KDW006_241')}</div>
 							</div>
 						</div>
 					</div>
