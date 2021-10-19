@@ -81,7 +81,7 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 		int optionalItemNo = command.getOptionalItemNo().v();
 		
 		// Get calc result range
-		CalcResultRange calResult = command.getCalculationResultRange();
+		CalcResultRange calResult = command.getInputControlSetting().getCalcResultRange();
 
 		// Map to list domain Formula
 		List<Formula> formulas = command.getFormulas().stream().map(item -> {
@@ -116,7 +116,7 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 			this.optItemRepo.update(dom);
 			
 			// update result range
-			this.calcRepo.update(companyId, optionalItemNo, calResult);
+//			this.calcRepo.update(companyId, optionalItemNo, calResult);
 
 			// Remove all existing formulas
 			this.formulaRepo.remove(companyId, optionalItemNo);
@@ -134,7 +134,7 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 					dom.getOptionalItemNo().v(),
 					dom.getUsageAtr() == OptionalItemUsageAtr.USE,
 					dom.getCalcAtr() == CalculationClassification.CALC,
-					dom.isInputCheck()
+					dom.getInputControlSetting().isInputWithCheckbox()
 			));
 		}
 	}

@@ -61,12 +61,8 @@ public class OptionalItem extends AggregateRoot {
 	// 属性
 	private OptionalItemAtr optionalItemAtr;
 
-	// チェックボックスで入力する
-	private boolean inputCheck;
-
-	/** The calculation result range. */
-	// 計算結果の範囲
-	private CalcResultRange calcResultRange;
+	// 入力制御設定
+	private InputControlSetting inputControlSetting;
 
 	/** The unit. */
 	// 単位
@@ -90,23 +86,23 @@ public class OptionalItem extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.calcResultRange.hasBothLimit()) {
+		if (this.inputControlSetting.getCalcResultRange().hasBothLimit()) {
 			BundledBusinessException be = BundledBusinessException.newInstance();
 			be.addMessage("Msg_574");
 			if (this.performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
 			    switch (this.optionalItemAtr) {
 			    case NUMBER:
-			        if (this.calcResultRange.getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
+			        if (this.inputControlSetting.getCalcResultRange().getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
 			            be.throwExceptions();
 			        }
 			        break;
 			    case AMOUNT:
-			        if (this.calcResultRange.getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
+			        if (this.inputControlSetting.getCalcResultRange().getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
 			            be.throwExceptions();
 			        }
 			        break;
 			    case TIME:
-			        if (this.calcResultRange.getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
+			        if (this.inputControlSetting.getCalcResultRange().getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
 			            be.throwExceptions();
 			        }
 			        break;
@@ -116,17 +112,17 @@ public class OptionalItem extends AggregateRoot {
 			} else {
 			    switch (this.optionalItemAtr) {
                 case NUMBER:
-                    if (this.calcResultRange.getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
+                    if (this.inputControlSetting.getCalcResultRange().getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
                         be.throwExceptions();
                     }
                     break;
                 case AMOUNT:
-                    if (this.calcResultRange.getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
+                    if (this.inputControlSetting.getCalcResultRange().getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
                         be.throwExceptions();
                     }
                     break;
                 case TIME:
-                    if (this.calcResultRange.getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
+                    if (this.inputControlSetting.getCalcResultRange().getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
                         be.throwExceptions();
                     }
                     break;
@@ -159,12 +155,11 @@ public class OptionalItem extends AggregateRoot {
 		this.usageAtr = memento.getOptionalItemUsageAtr();
 		this.empConditionAtr = memento.getEmpConditionAtr();
 		this.performanceAtr = memento.getPerformanceAtr();
-		this.calcResultRange = memento.getCalculationResultRange();
+		this.inputControlSetting = memento.getInputControlSetting();
 		this.unit = memento.getUnit();
 		this.calcAtr = memento.getCalcAtr();
 		this.note = memento.getNote();
 		this.description = memento.getDescription();
-		this.inputCheck = memento.isInputCheck();
 	}
 
 	/**
@@ -180,12 +175,11 @@ public class OptionalItem extends AggregateRoot {
 		memento.setOptionalItemUsageAtr(this.usageAtr);
 		memento.setEmpConditionAtr(this.empConditionAtr);
 		memento.setPerformanceAtr(this.performanceAtr);
-		memento.setCalculationResultRange(this.calcResultRange);
+		memento.setInputControlSetting(this.inputControlSetting);
 		memento.setUnit(this.unit);
 		memento.setCalAtr(this.calcAtr);
 		memento.setNote(this.note);
 		memento.setDescription(this.description);
-		memento.setInputCheck(this.inputCheck);
 	}
 
 	/* (non-Javadoc)
@@ -358,7 +352,7 @@ public class OptionalItem extends AggregateRoot {
 //        }
         
         //上限下限チェック
-        result = this.calcResultRange.checkRange(result, this);
+        result = this.inputControlSetting.getCalcResultRange().checkRange(result, this);
         
         return result;
     }

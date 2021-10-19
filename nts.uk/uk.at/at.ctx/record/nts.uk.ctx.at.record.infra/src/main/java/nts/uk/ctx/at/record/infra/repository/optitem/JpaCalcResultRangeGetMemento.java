@@ -101,15 +101,4 @@ public class JpaCalcResultRangeGetMemento implements CalcResultRangeGetMemento {
 	            Optional.of(new MonthlyAmountRange(this.typeValue.getUpperMonAmountRange(), this.typeValue.getLowerMonAmountRange()))));
 	}
 
-	@Override
-	public Optional<DailyResultInputUnit> getInputUnit() {
-		if (this.typeValue.getTimeItemInputUnit() == null && this.typeValue.getNumberItemInputUnit() == null && this.typeValue.getAmountItemInputUnit() == null)
-			return Optional.empty();
-		return Optional.of(new DailyResultInputUnit(
-				Optional.ofNullable(this.typeValue.getTimeItemInputUnit() == null ? null : EnumAdaptor.valueOf(this.typeValue.getTimeItemInputUnit(), TimeItemInputUnit.class)),
-				Optional.ofNullable(this.typeValue.getNumberItemInputUnit() == null ? null : EnumAdaptor.valueOf(this.typeValue.getNumberItemInputUnit(), NumberItemInputUnit.class)),
-				Optional.ofNullable(this.typeValue.getAmountItemInputUnit() == null ? null : EnumAdaptor.valueOf(this.typeValue.getAmountItemInputUnit(), AmountItemInputUnit.class))
-		));
-	}
-
 }

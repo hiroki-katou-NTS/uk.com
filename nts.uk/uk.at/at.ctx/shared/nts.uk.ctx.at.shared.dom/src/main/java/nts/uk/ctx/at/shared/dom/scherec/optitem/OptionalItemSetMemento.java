@@ -63,11 +63,11 @@ public interface OptionalItemSetMemento {
 	void setPerformanceAtr(PerformanceAtr performanceAtr);
 
 	/**
-	 * Sets the calculation result range.
+	 * Sets the inputControlSetting.
 	 *
-	 * @param calculationResultRange the new calculation result range
+	 * @param inputControlSetting
 	 */
-	void setCalculationResultRange(CalcResultRange calculationResultRange);
+	void setInputControlSetting(InputControlSetting inputControlSetting);
 
 	/**
 	 * Sets the unit.
@@ -96,6 +96,4 @@ public interface OptionalItemSetMemento {
 	 * @param description
 	 */
 	void setDescription(Optional<DescritionOptionalItem> description);
-
-	void setInputCheck(boolean inputCheck);
 }

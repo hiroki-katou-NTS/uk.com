@@ -45,10 +45,4 @@ public interface CalcResultRangeGetMemento {
 	 * @return the amount range
 	 */
 	Optional<AmountRange> getAmountRange();
-
-	/**
-	 * Get daily input unit
-	 * @return input unit
-	 */
-	Optional<DailyResultInputUnit> getInputUnit();
 }

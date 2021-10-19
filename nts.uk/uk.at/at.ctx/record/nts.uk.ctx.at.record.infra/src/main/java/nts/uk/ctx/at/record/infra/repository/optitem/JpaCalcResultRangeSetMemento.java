@@ -127,18 +127,11 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
             Optional<AnyAmountMonth> lowerMonAmountOpt = range.get().getMonthlyAmountRange().get().getLowerLimit();
             Optional<AnyAmountMonth> upperMonAmountOpt = range.get().getMonthlyAmountRange().get().getUpperLimit();
             
-            typeValue.setLowerDayTimeRange(lowerDailyAmountOpt.isPresent() ? lowerDailyAmountOpt.get().v() : null);
-            typeValue.setUpperDayTimeRange(upperDailyAmountOpt.isPresent() ? upperDailyAmountOpt.get().v() : null);
-            typeValue.setLowerMonTimeRange(lowerMonAmountOpt.isPresent() ? lowerMonAmountOpt.get().v() : null);
-            typeValue.setUpperMonTimeRange(upperMonAmountOpt.isPresent() ? upperMonAmountOpt.get().v() : null);
+            typeValue.setLowerDayAmountRange(lowerDailyAmountOpt.isPresent() ? lowerDailyAmountOpt.get().v() : null);
+            typeValue.setUpperdayAmountRange(upperDailyAmountOpt.isPresent() ? upperDailyAmountOpt.get().v() : null);
+            typeValue.setLowerMonAmountRange(lowerMonAmountOpt.isPresent() ? lowerMonAmountOpt.get().v() : null);
+            typeValue.setUpperMonAmountRange(upperMonAmountOpt.isPresent() ? upperMonAmountOpt.get().v() : null);
         }
-	}
-
-	@Override
-	public void setInputUnit(Optional<DailyResultInputUnit> inputUnit) {
-		typeValue.setTimeItemInputUnit(inputUnit.isPresent() ? inputUnit.get().getTimeItemInputUnit().map(i -> i.value).orElse(null) : null);
-		typeValue.setNumberItemInputUnit(inputUnit.isPresent() ? inputUnit.get().getNumberItemInputUnit().map(i -> i.value).orElse(null) : null);
-		typeValue.setAmountItemInputUnit(inputUnit.isPresent() ? inputUnit.get().getAmountItemInputUnit().map(i -> i.value).orElse(null) : null);
 	}
 
 }

@@ -119,13 +119,4 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 	    this.amountRange = range.isPresent() ? AmountRangeDto.fromDomain(range.get()) : null;
 	}
 
-	@Override
-	public void setInputUnit(Optional<DailyResultInputUnit> inputUnit) {
-		inputUnit.ifPresent(value -> {
-			this.timeInputUnit = value.getTimeItemInputUnit().map(i -> i.value).orElse(null);
-			this.numberInputUnit = value.getNumberItemInputUnit().map(i -> i.value).orElse(null);
-			this.amountInputUnit = value.getAmountItemInputUnit().map(i -> i.value).orElse(null);
-		});
-	}
-
 }

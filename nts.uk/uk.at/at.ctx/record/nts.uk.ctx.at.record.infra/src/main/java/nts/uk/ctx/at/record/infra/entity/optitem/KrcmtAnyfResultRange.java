@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.infra.entity.optitem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -14,8 +15,9 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.infra.repository.optitem.JpaCalcResultRangeGetMemento;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.*;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -146,5 +148,15 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	
 	public CalcResultRange toDomain() {
 	    return new CalcResultRange(new JpaCalcResultRangeGetMemento(this));
+	}
+
+	public Optional<DailyResultInputUnit> getDailyInputUnit() {
+		if (this.timeItemInputUnit == null && this.numberItemInputUnit == null && this.amountItemInputUnit == null)
+			return Optional.empty();
+		return Optional.of(new DailyResultInputUnit(
+				Optional.ofNullable(timeItemInputUnit == null ? null : EnumAdaptor.valueOf(timeItemInputUnit, TimeItemInputUnit.class)),
+				Optional.ofNullable(numberItemInputUnit == null ? null : EnumAdaptor.valueOf(numberItemInputUnit, NumberItemInputUnit.class)),
+				Optional.ofNullable(amountItemInputUnit == null ? null : EnumAdaptor.valueOf(amountItemInputUnit, AmountItemInputUnit.class))
+		));
 	}
 }

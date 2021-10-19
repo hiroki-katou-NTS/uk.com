@@ -106,7 +106,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 						+ "where KOI.CID = ? ORDER BY KOI.OPTIONAL_ITEM_NO ASC")) {
 			stmt.setString(1, companyId);
 
-			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+            List<OptionalItem> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 				KrcmtAnyv item = new KrcmtAnyv();
 				item.setKrcmtAnyvPK(new KrcmtAnyvPK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				item.setOptionalItemName(rec.getString("OPTIONAL_ITEM_NAME"));
@@ -154,8 +154,10 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
+            return result;
 		}catch (Exception e){
 			System.out.println("Check error mes KWR :-----------------" + e.getMessage());
+			e.printStackTrace();
 			return Collections.emptyList();
 		}
 	}

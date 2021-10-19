@@ -117,7 +117,7 @@ public class OptionalItemApplicationQuery {
             /* Kiểm tra giá trị nằm trong giới hạn, vượt ra ngoài khoảng giới hạn thì thông báo lỗi Msg_1692 */
 //            ControlOfAttendanceItems controlOfAttendanceItems = controlOfAttendanceItemsMap.get(DailyItemList.getOption(inputOptionalItem.getItemNo()).map(i -> i.itemId).orElse(0));
             OptionalItem optionalItem = optionalItemMap.get(inputOptionalItem.getItemNo());
-            CalcResultRange range = optionalItem.getCalcResultRange();
+            CalcResultRange range = optionalItem.getInputControlSetting().getCalcResultRange();
             String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
             String itemNo = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemNo().v().toString() : "";
             if (inputOptionalItem.getAmount() != null) {
@@ -138,8 +138,8 @@ public class OptionalItemApplicationQuery {
                         || (range.getUpperLimit().isSET() && amountUpper != null && amountUpper.compareTo(amount) < 0)) {
                     exceptions.addMessage(new BusinessException("Msg_1692", itemName, itemNo));
                 }
-                if (optionalItem.getCalcResultRange().getInputUnit().isPresent()) {
-                    optionalItem.getCalcResultRange().getInputUnit().get().getAmountItemInputUnit().ifPresent(unit -> {
+                if (optionalItem.getInputControlSetting().getDailyInputUnit().isPresent()) {
+                    optionalItem.getInputControlSetting().getDailyInputUnit().get().getAmountItemInputUnit().ifPresent(unit -> {
                         switch (unit) {
 //                            case ONE:
 //                                if (amount % 1 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
@@ -165,7 +165,7 @@ public class OptionalItemApplicationQuery {
             }
             if (inputOptionalItem.getTimes() != null) {
                 register = true;
-                if (!optionalItem.isInputCheck()) {
+                if (!optionalItem.getInputControlSetting().isInputWithCheckbox()) {
                     BigDecimal numberLower = null;
                     BigDecimal numberUpper = null;
                     BigDecimal times = inputOptionalItem.getTimes();
@@ -183,17 +183,17 @@ public class OptionalItemApplicationQuery {
                             || (range.getUpperLimit().isSET() && numberUpper != null && numberUpper.compareTo(times) < 0)) {
                         exceptions.addMessage(new BusinessException("Msg_1692", itemName, itemNo));
                     }
-                    if (optionalItem.getCalcResultRange().getInputUnit().isPresent()) {
-                        optionalItem.getCalcResultRange().getInputUnit().get().getNumberItemInputUnit().ifPresent(unit -> {
+                    if (optionalItem.getInputControlSetting().getDailyInputUnit().isPresent()) {
+                        optionalItem.getInputControlSetting().getDailyInputUnit().get().getNumberItemInputUnit().ifPresent(unit -> {
                             switch (unit) {
                                 case ONE_HUNDREDTH:
-                                    if (!times.remainder(new BigDecimal("0.01")).equals(BigDecimal.ZERO)) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (!times.remainder(new BigDecimal("0.01")).equals(new BigDecimal("0.0"))) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
                                 case ONE_TENTH:
-                                    if (!times.remainder(new BigDecimal("0.1")).equals(BigDecimal.ZERO)) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (!times.remainder(new BigDecimal("0.1")).equals(new BigDecimal("0.0"))) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
                                 case ONE_HALF:
-                                    if (!times.remainder(new BigDecimal("0.5")).equals(BigDecimal.ZERO)) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (!times.remainder(new BigDecimal("0.5")).equals(new BigDecimal("0.0"))) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
 //                            case ONE:
 //                                if (times.doubleValue() % 1 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
@@ -223,8 +223,8 @@ public class OptionalItemApplicationQuery {
                         || (range.getUpperLimit().isSET() && timeUpper != null && timeUpper.compareTo(time) < 0)) {
                     exceptions.addMessage(new BusinessException("Msg_1692", itemName, itemNo));
                 }
-                if (optionalItem.getCalcResultRange().getInputUnit().isPresent()) {
-                    optionalItem.getCalcResultRange().getInputUnit().get().getTimeItemInputUnit().ifPresent(unit -> {
+                if (optionalItem.getInputControlSetting().getDailyInputUnit().isPresent()) {
+                    optionalItem.getInputControlSetting().getDailyInputUnit().get().getTimeItemInputUnit().ifPresent(unit -> {
                         switch (unit) {
 //                            case ONE_MINUTE:
 //                                if (time % 1 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));

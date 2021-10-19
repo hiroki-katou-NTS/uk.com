@@ -25,10 +25,10 @@ public class OptionalItemAppPubImp implements OptionalItemAppPub {
                         .optionalItemName(optItem.getOptionalItemName().v())
                         .optionalItemNo(optItem.getOptionalItemNo().v())
                         .optionalItemUnit(optItem.getUnit().isPresent() ? optItem.getUnit().get().v() : null)
-                        .calcResultRange(optItem.getCalcResultRange())
+                        .calcResultRange(optItem.getInputControlSetting().getCalcResultRange())
                         .optionalItemAtr(optItem.getOptionalItemAtr())
                         .description(optItem.getDescription().isPresent() ? optItem.getDescription().get().v() : null)
-                        .inputCheck(optItem.isInputCheck())
+                        .inputCheck(optItem.getInputControlSetting().isInputWithCheckbox())
                         .build())
                 .collect(Collectors.toList());
     }

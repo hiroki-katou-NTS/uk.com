@@ -1646,7 +1646,7 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
 
                 // Select first item
-                // if (self.optionalItemHeaders().length > 0) {
+                if (self.optionalItemHeaders().length > 0) {
                     let itemNo = self.optionalItemHeaders()[0].itemNo;
                     self.isInit = true;
                     self.selectedCode(itemNo);
@@ -1794,7 +1794,7 @@ module nts.uk.at.view.kmk002.a {
     
                         dfd.resolve();
                     });
-                // }
+                } else dfd.resolve();
                 // resolve
 
                 return dfd.promise();

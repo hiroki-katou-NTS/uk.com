@@ -96,15 +96,4 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 		return Optional.of(this.amountRange.todomain());
 	}
 
-	@Override
-	public Optional<DailyResultInputUnit> getInputUnit() {
-		if (this.timeInputUnit == null && this.numberInputUnit == null && this.amountInputUnit == null)
-			return Optional.empty();
-		return Optional.of(new DailyResultInputUnit(
-				Optional.ofNullable(this.timeInputUnit == null ? null : EnumAdaptor.valueOf(this.timeInputUnit, TimeItemInputUnit.class)),
-				Optional.ofNullable(this.numberInputUnit == null ? null : EnumAdaptor.valueOf(this.numberInputUnit, NumberItemInputUnit.class)),
-				Optional.ofNullable(this.amountInputUnit == null ? null : EnumAdaptor.valueOf(this.amountInputUnit, AmountItemInputUnit.class))
-		));
-	}
-
 }

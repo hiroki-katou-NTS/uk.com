@@ -115,11 +115,4 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento {
             this.amountUpper = range.get().getDailyAmountRange().get().getUpperLimit().get().v();
         }
     }
-
-    @Override
-    public void setInputUnit(Optional<DailyResultInputUnit> inputUnit) {
-        this.timeInputUnit = inputUnit.isPresent() ? inputUnit.get().getTimeItemInputUnit().map(i -> i.value).orElse(null) : null;
-        this.numberInputUnit = inputUnit.isPresent() ? inputUnit.get().getNumberItemInputUnit().map(i -> i.value).orElse(null) : null;
-        this.amountInputUnit = inputUnit.isPresent() ? inputUnit.get().getAmountItemInputUnit().map(i -> i.value).orElse(null) : null;
-    }
 }
