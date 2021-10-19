@@ -145,8 +145,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         if (l2P2 == null) l2P2 = "";
         if (l3P1 == null) l3P1 = 0;
         if (!holidayMap.containsKey(colNO)) {
-            cells.get(rowCount, col).setValue(l1P1 + "   " + l1P2);
-            cells.get(secondLieOfCalender, col).setValue(l2P1 + "  " + l2P2);
+            cells.get(rowCount, col).setValue(l1P1 + " " + l1P2);
+            cells.get(secondLieOfCalender, col).setValue(l2P1 + " " + l2P2);
             if (l3P1 != null && l3P2 != null) {
                 cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
             }
@@ -154,11 +154,11 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             cells.get(rowCount, col).setValue(l1P1);
             cells.get(secondLieOfCalender, col).setValue(holidayMap.get(col));
             Cell cell = cells.get(secondLieOfCalender, col);
-            setTextColor(cell);
+            setTextColorRed(cell);
         }
     }
 
-    private void setTextColor(Cell cell) {
+    private void setTextColorRed(Cell cell) {
         Style style = cell.getStyle();
         style.getFont().setColor(Color.getRed());
         cell.setStyle(style);
@@ -178,12 +178,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         pasteOptions.setPasteType(PasteType.ALL);
         pasteOptions.setOnlyVisibleCells(true);
 
-        int rowCount = 6; // start from row index 9
+        int rowCount = 4; // start from row index 9
         int pageIndex = 0;
-        String divider = getText("KSU002_67");
         for (PersonalScheduleByIndividualFormat item : dataBuildList) {
-            int secondLieOfCalender = rowCount + 2;
-            int thirdLieOfCalender = rowCount + 4;
             int weekNO = item.getWeekNo();
             Map<Integer, String> holiday = item.getHoliday().get(weekNO);
 
@@ -277,7 +274,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             );
             if (query.isTotalDisplay()) {
                 //calender item seven for each row
-                cells.get(rowCount, 36).setValue(item.getD21());
+                cells.get(rowCount, 3).setValue(item.getD21());
                 cells.get(rowCount + 1, 36).setValue(item.getD22());
                 cells.get(rowCount + 1, 39).setValue(item.getD23());
                 cells.get(rowCount + 2, 36).setValue(item.getD24());
