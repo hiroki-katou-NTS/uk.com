@@ -123,7 +123,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				KrcmtAnyfResultRange range = new KrcmtAnyfResultRange();
 				range.setKrcstCalcResultRangePK(new KrcmtCalcResultRangePK(companyId, rec.getInt("OPTIONAL_ITEM_NO")));
 				
-				if (rec.getInt("UPPER_LIMIT_ATR") != null) {
+				if (rec.getBoolean("UPPER_LIMIT_ATR") != null) {
 				    range.setUpperLimitAtr(rec.getBoolean("UPPER_LIMIT_ATR"));
 				    
 				    range.setUpperDayTimeRange(rec.getInt("UPPER_DAY_TIME_RANGE"));
@@ -136,7 +136,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				    range.setUpperLimitAtr(false);
 				}
 				
-				if (rec.getInt("LOWER_LIMIT_ATR") != null) {
+				if (rec.getBoolean("LOWER_LIMIT_ATR") != null) {
 				    range.setLowerLimitAtr(rec.getBoolean("LOWER_LIMIT_ATR"));
 				    
 				    range.setLowerDayTimeRange(rec.getInt("LOWER_DAY_TIME_RANGE"));
