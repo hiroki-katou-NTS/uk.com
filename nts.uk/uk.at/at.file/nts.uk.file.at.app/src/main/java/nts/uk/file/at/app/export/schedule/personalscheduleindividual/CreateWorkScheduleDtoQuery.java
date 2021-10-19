@@ -132,7 +132,7 @@ public class CreateWorkScheduleDtoQuery {
             String workTypeCode = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
             val workTYpeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
             String workTypeName = workTYpeOpt.isPresent() ? workTYpeOpt.get().getAbbreviationName().v() : "";
-            String workingHoursCode = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
+            String workingHoursCode = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ?ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(): "";
             val workingHourOpt = workTimeSettingRepository.findByCode(companyId, workingHoursCode);
             String workingHoursName = workingHourOpt.isPresent() ? workingHourOpt.get().getWorkTimeDisplayName().getWorkTimeAbName().v() : "";
             Integer startTime = null;
