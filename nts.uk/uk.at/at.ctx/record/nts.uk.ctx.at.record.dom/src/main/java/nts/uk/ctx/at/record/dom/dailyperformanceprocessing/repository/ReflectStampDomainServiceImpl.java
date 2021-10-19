@@ -105,37 +105,38 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		//打刻を取得する
 		List<Stamp> lstStamp = this.stampDomainService.handleDataNew(outputTimeReflectForWorkinfo.getStampReflectRangeOutput(),
                 processingDate, employeeID, companyID,flag, carrier);
-		if(lstStamp.isEmpty()) {
-			//取得した打刻の件数　＜＝　0
-			return new OutputAcquireReflectEmbossingNew(listErrorMessageInfo, new ArrayList<>(), integrationOfDaily, changeDailyAtt);
-		}
-		
-		//日別実績のコンバーターを作成する
-		//日別実績のデータをコンバーターに入れる
-		DailyRecordToAttendanceItemConverter converter = dailyRecordConverter.createDailyConverter().setData(integrationOfDaily).completed();
-		
-		//「打刻反映管理」を取得する
-		for(Stamp stamp:lstStamp) {
-			//対象日に反映できるか
-			if(stamp.getImprintReflectionStatus().canReflectedOnTargetDate(processingDate)) {
-				//打刻を反映する
-				List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(companyID,stamp,
-						outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt);
-				//do thuật toán スケジュール管理しない場合勤務情報を更新 có thể tạo ra nhiều lỗi giống nhau, nên cần bỏ những lỗi giống nhau trong 1 ngày.
-				listE = listE.stream().distinct().collect(Collectors.toList());
-				listErrorMessageInfo.addAll(listE);
-				//反映された年月日を更新する
-				stamp.getImprintReflectionStatus().setReflectedDate(Optional.of(GeneralDate.today()));
+		if (!lstStamp.isEmpty()) {
+
+			// 日別実績のコンバーターを作成する
+			// 日別実績のデータをコンバーターに入れる
+			DailyRecordToAttendanceItemConverter converter = dailyRecordConverter.createDailyConverter()
+					.setData(integrationOfDaily).completed();
+
+			// 「打刻反映管理」を取得する
+			for (Stamp stamp : lstStamp) {
+				// 対象日に反映できるか
+				if (stamp.getImprintReflectionStatus().canReflectedOnTargetDate(processingDate)) {
+					// 打刻を反映する
+					List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(companyID, stamp,
+							outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily,
+							changeDailyAtt);
+					// do thuật toán スケジュール管理しない場合勤務情報を更新 có thể tạo ra nhiều lỗi giống nhau, nên
+					// cần bỏ những lỗi giống nhau trong 1 ngày.
+					listE = listE.stream().distinct().collect(Collectors.toList());
+					listErrorMessageInfo.addAll(listE);
+					// 反映された年月日を更新する
+					stamp.getImprintReflectionStatus().setReflectedDate(Optional.of(GeneralDate.today()));
+				}
 			}
-		}
-		//手修正がある勤怠項目ID一覧を取得する
-		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
-				.filter(c -> c.getEditStateSetting() != EditStateSetting.REFLECT_APPLICATION)
-				.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
-		List<ItemValue> listItemValue = converter.convert(attendanceItemIdList);
-		// 手修正項目のデータを元に戻す
-		if(!attendanceItemIdList.isEmpty()) {
-			integrationOfDaily = createDailyResults.restoreData(converter, integrationOfDaily, listItemValue);
+			// 手修正がある勤怠項目ID一覧を取得する
+			List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
+					.filter(c -> c.getEditStateSetting() != EditStateSetting.REFLECT_APPLICATION)
+					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
+			List<ItemValue> listItemValue = converter.convert(attendanceItemIdList);
+			// 手修正項目のデータを元に戻す
+			if (!attendanceItemIdList.isEmpty()) {
+				integrationOfDaily = createDailyResults.restoreData(converter, integrationOfDaily, listItemValue);
+			}
 		}
 		//勤怠ルールの補正処理
 		integrationOfDaily = iCorrectionAttendanceRule.process(integrationOfDaily, changeDailyAtt);

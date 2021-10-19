@@ -79,7 +79,7 @@ public class ReflectApplicationWorkRecord {
 			/// 申請の反映（勤務実績） in process
 			val affterReflect = RCCreateDailyAfterApplicationeReflect.process(require, application, dailyRecordApp, dateTarget);
 
-			changeAtt = createChangeDailyAtt(affterReflect.getLstItemId());
+			changeAtt = ChangeDailyAttendance.createChangeDailyAtt(affterReflect.getLstItemId(), ScheduleRecordClassifi.RECORD);
 		}
 
 		// 日別実績の補正処理 --- create default ???? sau xu ly phan anh check lai
@@ -117,19 +117,6 @@ public class ReflectApplicationWorkRecord {
 		return Pair.of(reflectStatus, Optional.of(task));
 	}
 	
-	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
-
-		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
-				.isPresent();
-		boolean attendance = lstItemId.stream()
-				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
-				.findFirst().isPresent();
-		boolean directBounceClassifi = lstItemId.stream()
-				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
-				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD, directBounceClassifi);
-	}
-
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 		converter.setData(domainDaily).employeeId(domainDaily.getEmployeeId()).workingDate(domainDaily.getYmd());
