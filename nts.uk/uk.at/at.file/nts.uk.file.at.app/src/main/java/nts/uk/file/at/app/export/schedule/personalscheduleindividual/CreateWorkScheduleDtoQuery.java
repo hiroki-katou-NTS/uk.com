@@ -140,10 +140,12 @@ public class CreateWorkScheduleDtoQuery {
             if (ntegrationOfDaily.getAttendanceLeave().isPresent()) {
                 val startTimeOpt2 = ntegrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
                 if (startTimeOpt2.isPresent()) {
-                    if (startTimeOpt2.get().getAttendanceStamp().isPresent()) {
+                    if (startTimeOpt2.get().getAttendanceStamp().isPresent() &&
+                            startTimeOpt2.get().getAttendanceStamp().get().getTimeVacation().isPresent()) {
                         startTime = startTimeOpt2.get().getAttendanceStamp().get().getTimeVacation().get().getStart().hour();
                     }
-                    if (startTimeOpt2.get().getLeaveStamp().isPresent()) {
+                    if (startTimeOpt2.get().getLeaveStamp().isPresent() &&
+                            startTimeOpt2.get().getLeaveStamp().get().getTimeVacation().isPresent()) {
                         endTime = startTimeOpt2.get().getLeaveStamp().get().getTimeVacation().get().getStart().hour();
                     }
                 }
