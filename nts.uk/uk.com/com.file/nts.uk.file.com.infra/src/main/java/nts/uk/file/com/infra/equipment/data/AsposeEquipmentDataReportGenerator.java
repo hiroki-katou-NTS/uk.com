@@ -120,6 +120,8 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	// Excel Number format: Text
 	// https://docs.aspose.com/cells/net/data-formatting/
 	private static final int TEXT_FORMAT = 49;
+	// マスタ未登録
+	private static final String MASTER_NOT_REGISTERED = "マスタ未登録";
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EquipmentDataExportDataSource dataSource) {
@@ -242,7 +244,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 							isBlueBackground.get());
 					break;
 				case EQUIPMENT_CLS_NAME_INDEX:
-					this.printDataCell(cell, optEquipmentCls.map(data -> data.getName().v()).orElse(null),
+					this.printDataCell(cell, optEquipmentCls.map(data -> data.getName().v()).orElse(MASTER_NOT_REGISTERED),
 							TextAlignmentType.LEFT, isBlueBackground.get());
 					break;
 				case EQUIPMENT_CODE_INDEX:
@@ -250,7 +252,8 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 							isBlueBackground.get());
 					break;
 				case EQUIPMENT_NAME_INDEX:
-					this.printDataCell(cell, optEquipmentInfo.map(data -> data.getEquipmentName().v()).orElse(null),
+					// #120573
+					this.printDataCell(cell, optEquipmentInfo.map(data -> data.getEquipmentName().v()).orElse(MASTER_NOT_REGISTERED),
 							TextAlignmentType.LEFT, isBlueBackground.get());
 					break;
 				case USE_DATE_INDEX:
@@ -263,7 +266,8 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 								TextAlignmentType.LEFT, isBlueBackground.get());
 					} else {
 						// case CSV_SCD_INDEX
-						this.printDataCell(cell, optEmployee.map(EmployeeInformation::getEmployeeCode).orElse(null),
+						// #120570
+						this.printDataCell(cell, optEmployee.map(EmployeeInformation::getEmployeeCode).map(String::trim).orElse(null),
 								TextAlignmentType.LEFT, isBlueBackground.get());
 					}
 					break;
