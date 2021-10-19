@@ -242,7 +242,7 @@ public class ReviseItemDto {
 		
 		private Optional<ExternalImportCodeConvert> toDomainCodeConvert() {
 			
-			if (BooleanUtils.isNotTrue(useCodeConvert)) {
+			if (BooleanUtils.isNotTrue(useCodeConvert) || codeConvert.getDetails().size() == 0) {
 				return Optional.empty();
 			}
 			

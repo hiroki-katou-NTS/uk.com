@@ -15,6 +15,7 @@ import nts.uk.ctx.exio.app.input.setting.FromCsvBaseSettingToDomainRequireImpl;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
@@ -70,12 +71,16 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 
 	private void updateReviseItem(String companyId, Cmf001cSaveCommand command, ExternalImportSetting setting) {
 
-		val importableItem = importableItemRepo.get(ImportingDomainId.valueOf(command.getDomainId()), command.getItemNo())
+		val domainId = ImportingDomainId.valueOf(command.getDomainId());
+		val importableItem = importableItemRepo.get(domainId, command.getItemNo())
 				.orElseThrow(() -> new RuntimeException("not found: " + command.getSettingCode() + ", " + command.getItemNo()));
 
-		command.toDomainReviseItem(companyId, importableItem.getItemType())
-			.ifPresent(reviseItem -> {
-				reviseItemRepo.persist(reviseItem);
-			});
+		val reviseItem = command.toDomainReviseItem(companyId, importableItem.getItemType());
+		if (reviseItem.isPresent()) {
+			reviseItemRepo.persist(reviseItem.get());
+		}
+		else {
+			reviseItemRepo.delete(companyId,  new ExternalImportCode(command.getSettingCode()), domainId, command.getItemNo());
+		}
 	}
 }
