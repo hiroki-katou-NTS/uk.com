@@ -4261,7 +4261,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
-            if (self. selectedDisplayPeriod() == 2) return;
             nts.uk.ui.block.grayout();
             
             let param = {
@@ -4290,8 +4289,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
-                self.startDateInitStart = data.dataBasicDto.startDate;
-                self.endDateInitStart = data.dataBasicDto.endDate;
                 
                 let dataGrid: any = {
                     listDateInfo: data.listDateInfo,
@@ -4328,7 +4325,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            if (self. selectedDisplayPeriod() == 2) return;
             nts.uk.ui.block.grayout();
 
             let param = {
@@ -4358,8 +4354,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
-                self.startDateInitStart = data.dataBasicDto.startDate;
-                self.endDateInitStart = data.dataBasicDto.endDate;
 
                 let dataGrid: any = {
                     listDateInfo: data.listDateInfo,
@@ -5981,7 +5975,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             nts.uk.ui.block.grayout();
             // call <<ScreenQuery>> 28日の期間を取得する
-            service.get28DayPeriod({ endDate: self.endDateInitStart }).done((data: any) => {
+            service.get28DayPeriod({ endDate: self.dateTimeAfter(), toAdvancePeriod : true }).done((data: any) => {
                 let startDateOnScreen = self.dateTimePrev(); // start Hiển thị trên màn hình
                 let endDateOnScreen = self.dateTimeAfter(); //end Hiển thị trên màn hình
                 // A3_2_② 表示切替の期間のチェック②
@@ -6058,7 +6052,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     aggrerateWorkplace: data.aggrerateWorkplace
                 }
                 let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
-
+                
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
                 
