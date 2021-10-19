@@ -249,10 +249,13 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		
 		val setting = Optional.of(commonCompanySettingForCalc.getCompanySetting());
 		
-		return calculateForManageStateInternal(setting, CalculateOption.asDefault(), 
-				integrationOfDailys, closureList, reCalcAtr, Optional.of(executeLogId), 
-				//時間・回数の勤怠項目だけ　編集状態テーブルから削除
-				(iod, clearedItems) -> dailyEditStateRepo.deleteByListItemId(iod.getEmployeeId(), iod.getYmd(), clearedItems));
+		//時間・回数の勤怠項目だけ　編集状態テーブルから削除
+		BiConsumer<IntegrationOfDaily, List<Integer>> actionOnClearedItemIds = (iod, clearedItems) -> {
+			dailyEditStateRepo.deleteByListItemId(iod.getEmployeeId(), iod.getYmd(), clearedItems);
+		};
+		
+		return calculateForManageStateInternal(setting, CalculateOption.asDefault(), integrationOfDailys, 
+				closureList, reCalcAtr, Optional.of(executeLogId), actionOnClearedItemIds);
 	}
 	
 	private ManageProcessAndCalcStateResult calculateForManageStateInternal(Optional<ManagePerCompanySet> companySet,
