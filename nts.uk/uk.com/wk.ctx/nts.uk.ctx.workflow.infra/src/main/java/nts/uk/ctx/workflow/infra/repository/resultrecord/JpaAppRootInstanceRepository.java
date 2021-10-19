@@ -363,8 +363,8 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 		
 			Query pstatement = this.getEntityManager().createNativeQuery(query);
 			pstatement.setParameter(1, approverID);
-			pstatement.setParameter(2, period.end().toString("yyyy-MM-dd"));
-			pstatement.setParameter(3, period.start().toString("yyyy-MM-dd"));
+			pstatement.setParameter(2, Date.valueOf(period.end().localDate()));
+			pstatement.setParameter(3, Date.valueOf(period.start().localDate()));
 			pstatement.setParameter(4, companyID);
 			pstatement.setParameter(5, rootType.value);
 			
