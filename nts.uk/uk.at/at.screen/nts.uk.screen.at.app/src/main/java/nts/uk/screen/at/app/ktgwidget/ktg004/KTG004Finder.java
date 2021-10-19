@@ -28,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -79,6 +81,9 @@ public class KTG004Finder {
 	
 	@Inject
 	private AbsenceServiceProcess absenceServiceProcess;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	/** 起動する */
 	public WorkStatusSettingDto getApprovedDataWidgetStart() {
@@ -333,6 +338,13 @@ public class KTG004Finder {
 			// 付与日数
 			result.setGrantDays(numberOfRemain.getGrantDays());
 			
+		}
+		
+		if (subHdManage) {
+		    CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
+		    if (compensatoryLeaveComSetting != null) {
+		        result.setSubHolidayTimeManage(compensatoryLeaveComSetting.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
+		    }
 		}
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])

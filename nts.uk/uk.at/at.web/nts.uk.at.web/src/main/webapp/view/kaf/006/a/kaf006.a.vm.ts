@@ -1129,7 +1129,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             vm.over60HHourRemain(vm.formatRemainNumber(0, remainVacationInfo.over60HHourRemain));
 
             // set subVacaHourRemain
-            vm.subVacaHourRemain(vm.formatRemainNumber(remainVacationInfo.subHdRemain, remainVacationInfo.subVacaHourRemain));
+            vm.subVacaHourRemain(vm.formatRemainNumberSubVaca(remainVacationInfo.subHdRemain, remainVacationInfo.subVacaHourRemain, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
 
             // set subVacaRemain
             vm.subVacaRemain(vm.formatRemainNumber(remainVacationInfo.subVacaRemain, 0));
@@ -1153,7 +1153,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             vm.subHdRemain(vm.formatSubHdRemain(remainVacationInfo.subHdRemain, 0, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
         }
 
-        formatRemainNumber(day: any, time: any): string {
+        formatRemainNumberSubVaca(day: any, time: any, manage: any): string {
             const vm = this;
             if (time) {
                 let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
@@ -1161,6 +1161,16 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     return vm.$i18n('KAF006_100', [day.toString(), timeString]);
                 }
                 return timeString;
+            }
+
+            return manage ? nts.uk.time.format.byId("Clock_Short_HM", time) : vm.$i18n('KAF006_46', [day.toString()]);
+        }
+
+        formatRemainNumber(day: any, time: any): string {
+            const vm = this;
+            if (time) {
+                let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
+                return vm.$i18n('KAF006_100', [day.toString(), timeString]);
             }
 
             return vm.$i18n('KAF006_46', [day.toString()]);
@@ -1230,7 +1240,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         checkCondition19(data: any) {
             const vm = this;
-            if (vm.selectedType() === 6 && vm.data && vm.data.vacationApplicationReflect) {
+            if (vm.data && vm.data.vacationApplicationReflect) {
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.superHoliday60H === 1
                     && vm.data.remainVacationInfo.overtime60hManagement.overrest60HManagement === 1) {
                     vm.condition19Over60(true);
@@ -1250,15 +1260,13 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     vm.condition19Annual(false);
                 }
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement === 1) {
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
                     vm.condition19ChildNursing(true);
                 } else {
                     vm.condition19ChildNursing(false);
                 }
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement === 1) {
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
                     vm.condition19Nursing(true);
                 } else {
                     vm.condition19Nursing(false);
@@ -1569,7 +1577,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             employeeIds.push(__viewContext.user.employeeId);
             nts.uk.ui.windows.setShared('KDL020A_PARAM', {
                 baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate), 
-                employeeIds: employeeIds});
+                employeeIds: vm.application().employeeIDLst()});
             if (employeeIds.length > 1) {
                 nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
             } else {

@@ -156,4 +156,12 @@ public class Company extends AggregateRoot {
 		
 		return result;
 	}
+	
+	//[3]暦の年月から年月期間を取得する
+	
+	public YearMonthPeriod getYearMonthPeriodByCalendarYearmonth(YearMonth yearMonth){
+		return  getPeriodTheYear(getYearBySpecifying(yearMonth).v());
+		
+
+	}
 }

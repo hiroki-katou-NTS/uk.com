@@ -69,6 +69,8 @@ public class NumberRemainVacationLeaveRangeQuery {
 		RemainUnDigestedDayTimes remainUnDigDayTime = CalcNumberOccurUses.process(lstAccTemp, inputParam.getDateData());
 		result.setCalcNumberOccurUses(remainUnDigDayTime);
 
+		//時間管理の設定に従って、outputの値を補正する
+		CorrectOutputAccordTimeMagSetting.correct(require, inputParam.getCid(), result);
 		// エラーチェック
 		CheckErrorDuringHoliday.check(result);
 		lstSeqVacation.getLeft().ifPresent(x -> result.getDayOffErrors().add(x));
@@ -80,7 +82,7 @@ public class NumberRemainVacationLeaveRangeQuery {
 	}
 
 	public static interface Require extends GetSequentialVacationDetailDaikyu.Require,
-			CalcNumCarryAtBeginMonthFromDaikyu.Require, OffsetProcessing.Require {
+			CalcNumCarryAtBeginMonthFromDaikyu.Require, OffsetProcessing.Require, CorrectOutputAccordTimeMagSetting.Require {
 
 	}
 

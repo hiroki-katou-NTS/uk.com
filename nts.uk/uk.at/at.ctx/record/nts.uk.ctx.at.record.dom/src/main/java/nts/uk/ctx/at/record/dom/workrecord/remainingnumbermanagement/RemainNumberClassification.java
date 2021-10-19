@@ -33,15 +33,17 @@ public class RemainNumberClassification {
     /** 介護チェック区分 */
     private boolean chkLongTermCare;
     
-    public RemainNumberClassification(boolean chkChildNursing, boolean chkLongTermCare) {
-    	this.chkSubHoliday = true;
-    	this.chkPause = true;
-    	this.chkAnnual = true;
-    	this.chkFundingAnnual = true;
-    	this.chkSpecial = true;
-    	this.chkPublicHoliday = true;
-    	this.chkSuperBreak = true;
-    	this.chkChildNursing = chkChildNursing;
-    	this.chkLongTermCare = chkLongTermCare;
+    public static RemainNumberClassification createTrue() {
+        RemainNumberClassification remaimClassification = new RemainNumberClassification();
+        remaimClassification.chkSubHoliday = true;
+        remaimClassification.chkPause = true;
+        remaimClassification.chkAnnual = true;
+        remaimClassification.chkFundingAnnual = true;
+        remaimClassification.chkSpecial = true;
+        remaimClassification.chkPublicHoliday = true;
+        remaimClassification.chkSuperBreak = true;
+        remaimClassification.chkChildNursing = true;
+        remaimClassification.chkLongTermCare = true;
+    	return remaimClassification;
     }
 }

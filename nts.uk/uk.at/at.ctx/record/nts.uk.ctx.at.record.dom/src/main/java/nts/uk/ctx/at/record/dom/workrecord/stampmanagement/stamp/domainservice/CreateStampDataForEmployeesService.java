@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.error.BusinessException;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordStampService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -32,6 +34,8 @@ public class CreateStampDataForEmployeesService {
 	 * @param require
 	 * @param contractCode
 	 *            契約コード
+	 * @param companyID
+	 *            会社ID
 	 * @param employeeId
 	 *            社員ID
 	 *@param stampNumber
@@ -60,29 +64,31 @@ public class CreateStampDataForEmployeesService {
 		//	$表示する打刻区分 = ボタン種類.表示する打刻区分を取得する()
 		String stampTypeDisplay = buttonType.getStampTypeDisplay();
 		
-		//$打刻記録 = 打刻記録#打刻記録(契約コード, $打刻カード作成結果.打刻カード番号, 打刻日時, $表示する打刻区分, empty)
+		//$打刻記録 = 打刻記録#新規作成(契約コード, $打刻カード作成結果.打刻カード番号, 打刻日時, $表示する打刻区分)
 		StampRecord stampRecord = new StampRecord(contractCode, new StampNumber(stampResult.getCardNumber()) , stampDateTime, new StampTypeDisplay(stampTypeDisplay));
 		//	if not $打刻作成するか
 		if(!stampAtr) {
-			//$予約処理結果 = 打刻データ反映処理#反映する(require, 社員ID, $打刻記録, empty)
-			StampDataReflectResult reflectResult = StampDataReflectProcessService.reflect(require, cid, 
-					Optional.of(employeeId), stampRecord, Optional.empty());
-			//	return 打刻入力結果#打刻入力結果($予約処理結果, $打刻カード作成結果.永続化処理)		
-			return new TimeStampInputResult(reflectResult, stampResult.getAtomTask());
+			// $永続化処理 = 打刻データ反映処理#打刻を登録する(require, $打刻記録, $打刻データ)
+			AtomTask reflectResult = StampDataReflectProcessService.registerStamp(require, stampRecord, Optional.empty());
+			// $処理結果 = 打刻データ反映処理結果#打刻データ反映処理結果(Optional.Empty,$永続化処理)
+			StampDataReflectResult stampDataReflectResult = new StampDataReflectResult(Optional.empty(), reflectResult);
+			//	return 打刻入力結果#打刻入力結果($処理結果, $打刻カード作成結果.永続化処理)	
+			return new TimeStampInputResult(stampDataReflectResult, stampResult.getAtomTask());
 			
 		}
-		//	$打刻データ = 打刻#初回打刻データを作成する(契約コード, $打刻カード作成結果.打刻カード番号, 打刻日時, 打刻する方法,ボタン種類.打刻種類, 実績への反映内容, 打刻場所情報)	
-		Stamp stamp = new Stamp(contractCode, new StampNumber(stampResult.getCardNumber()), stampDateTime, relieve,
-				buttonType.getStampType().get(), refActualResults, stampLocationInfor);
+		//	$打刻データ = 打刻#打刻記録から打刻作成する($打刻記録,打刻する方法,ボタン種類.打刻種類, 実績への反映内容, 打刻場所情報)	
+		Stamp stamp = new Stamp(stampRecord, relieve, buttonType.getStampType().get(), refActualResults, stampLocationInfor);
 		
-		//	$打刻反映結果 = 打刻データ反映処理#反映する(require, 社員ID, $打刻記録, $打刻データ)			
+		// $永続化処理 = 打刻データ反映処理#打刻を登録する(require, $打刻記録, $打刻データ)
+		AtomTask atom = StampDataReflectProcessService.registerStamp(require, stampRecord, Optional.of(stamp));
 		
-		StampDataReflectResult reflectResult = StampDataReflectProcessService.reflect(require, cid, 
-				Optional.of(employeeId), stampRecord, Optional.of(stamp));
+		// $打刻反映結果 = データタイムレコードを打刻に変換する#日別実績を処理する(require, 会社ID, 社員ID, $永続化処理)
+		Optional<StampDataReflectResult> reflectResult = ConvertTimeRecordStampService.createDailyData(require,
+				Optional.of(cid), Optional.of(employeeId), Optional.of(stamp), atom);
 		
 		//return 打刻入力結果#打刻入力結果($打刻反映結果, $打刻カード作成結果.永続化処理)
 		
-		return new TimeStampInputResult(reflectResult, stampResult.getAtomTask());
+		return new TimeStampInputResult(reflectResult.map(m -> m).orElse(null), stampResult.getAtomTask());
 	}
 
 	/**
@@ -125,7 +131,7 @@ public class CreateStampDataForEmployeesService {
 		return stampCardCreateResultOpt.get();
 	}
 
-	public static interface Require extends AutoCreateStampCardNumberService.Require {
+	public static interface Require extends AutoCreateStampCardNumberService.Require, ConvertTimeRecordStampService.Require {
 		/**
 		 * [R-1] 打刻カード番号を取得する - StampCardRepository
 		 * 

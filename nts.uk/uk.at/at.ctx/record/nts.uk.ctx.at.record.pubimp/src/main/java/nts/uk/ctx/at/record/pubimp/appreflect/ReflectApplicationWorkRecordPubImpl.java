@@ -396,7 +396,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public void addAllDomain(IntegrationOfDaily domain) {
+		public void addAllDomain(IntegrationOfDaily domain, boolean removeError) {
 			dailyRecordAdUpService.addAllDomain(domain);
 		}
 

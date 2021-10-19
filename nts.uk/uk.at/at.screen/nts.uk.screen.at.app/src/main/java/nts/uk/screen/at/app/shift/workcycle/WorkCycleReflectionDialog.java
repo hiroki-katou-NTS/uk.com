@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRe
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.CreateWorkCycleAppImage;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
@@ -106,17 +107,17 @@ public class WorkCycleReflectionDialog {
 		dto.setSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.STATUTORY_HOLIDAYS))));
 		dto.setNonSatHoliday(convertToDomain(map.get(Optional.of(HolidayAtr.NON_STATUTORY_HOLIDAYS))));
 
-		String satHoliday = CollectionUtil.isEmpty(dto.getSatHoliday()) ? null : dto.getSatHoliday().get(0).getWorkTypeCode();
-		String nonSatHoliday = CollectionUtil.isEmpty(dto.getNonSatHoliday()) ? null : dto.getNonSatHoliday().get(0).getWorkTypeCode();
-		String pubHoliday = CollectionUtil.isEmpty(dto.getPubHoliday()) ? null : dto.getPubHoliday().get(0).getWorkTypeCode();
+		WorkTypeCode satHoliday = CollectionUtil.isEmpty(dto.getSatHoliday()) ? null : new WorkTypeCode(dto.getSatHoliday().get(0).getWorkTypeCode());
+		WorkTypeCode nonSatHoliday = CollectionUtil.isEmpty(dto.getNonSatHoliday()) ? null : new WorkTypeCode(dto.getNonSatHoliday().get(0).getWorkTypeCode());
+		WorkTypeCode pubHoliday = CollectionUtil.isEmpty(dto.getPubHoliday()) ? null : new WorkTypeCode(dto.getPubHoliday().get(0).getWorkTypeCode());
 
-		val config = new WorkCycleRefSetting(
-				workCycleCode,
+		WorkCycleRefSetting config = WorkCycleRefSetting.create(
+				new WorkCycleCode(workCycleCode),
 				refOrder,
 				numOfSlideDays,
-				satHoliday,
-				nonSatHoliday,
-				pubHoliday
+				Optional.ofNullable(satHoliday),
+				Optional.ofNullable(nonSatHoliday),
+				Optional.ofNullable(pubHoliday)
 		);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = getWorkCycleAppImage(creationPeriod, config);
 		dto.setReflectionImage(refImageEachDayDtos); // 反映イメージ

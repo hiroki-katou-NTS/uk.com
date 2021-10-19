@@ -37,22 +37,10 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
  */
 public class StampDataReflectProcessService {
 
-	// [1] 反映する
-	public static StampDataReflectResult reflect(Require require, String cid, Optional<String> employeeId,
-			StampRecord stampRecord, Optional<Stamp> stamp) {
-		return new StampDataReflectResult(reflectDailyResult(require, cid, employeeId, stamp),
-				registerStamp(require, stampRecord, stamp));
-	}
 	
 	// [2] 打刻を登録する
 	public static AtomTask registerStamp(Require require, StampRecord stampRecord,
 			Optional<Stamp> stamp) {
-		
-		//	$打刻記録
-		if (require.getStampRecord(stampRecord.getContractCode(), stampRecord.getStampNumber(),
-				stampRecord.getStampDateTime()).isPresent()) {
-			return AtomTask.none();
-		}
 		
 		//if (employeeId.isPresent()) {
 			// $AtomTask = AtomTask:

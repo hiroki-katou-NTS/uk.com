@@ -32,7 +32,8 @@ public class AgreementDomainServiceTest {
 	private YearMonth ym = ymd.yearMonth();
 	private String cid = "cid";
 	
-	WorkingConditionItem workCondition = new WorkingConditionItem(null, null, null, null, null, null, null, null, 
+	WorkingConditionItem workCondition = new WorkingConditionItem(
+			null, null, null, null, null, null, null, null, 
 			WorkingSystem.REGULAR_WORK, null, null, null, null, null);
 	
 	BasicAgreementSetting setting = new BasicAgreementSetting(new AgreementOneMonth(

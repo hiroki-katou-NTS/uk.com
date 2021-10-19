@@ -151,7 +151,9 @@ public class DailyCorrectCalcTimeService {
 
 		DailyRecordDto dailyBeforeEdit =  DailyRecordDto.from(dtoEdit.toDomain(dtoEdit.getEmployeeId(), dtoEdit.getDate()), optionalMaster);
 		
-		val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
+		val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(
+				itemEdits.stream().map(x -> x.getItemId()).collect(Collectors.toList()),
+				ScheduleRecordClassifi.RECORD);
 		if(itemEdits.stream().filter(x -> DPText.ITEM_WORKINFO_CHANGE.contains(x.getItemId())).findFirst().isPresent()) {
 			changeSetting.setWorkInfo(true);
 		}

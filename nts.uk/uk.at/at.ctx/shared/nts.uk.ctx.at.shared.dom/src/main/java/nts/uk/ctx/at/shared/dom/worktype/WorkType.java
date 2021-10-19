@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -63,8 +64,10 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	// 出勤率の計算
 	private CalculateMethod calculateMethod;
 
+	/**	勤務種類設定 */
 	private List<WorkTypeSet> workTypeSetList;
 
+	/** 表示順 */
 	private Integer dispOrder;
 
 	@Override
@@ -564,5 +567,68 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 			return true;
 			
 		return false;
+	}
+	
+	/** 特別休暇の1日午前午後区分を取得 */
+	public Optional<WorkAtr> getWorkAtrForSpecialHoliday(int spcNo) {
+		
+		/** if @1日の勤務.勤務区分 = １日 and @1日の勤務.1日 = 特別休暇	*/
+		if (this.dailyWork.isOneDay() && this.dailyWork.getOneDay() == WorkTypeClassification.SpecialHoliday) {
+			
+			/** $1日 = @勤務種類設定 filter ($.1日午前午後区分 = 1日 and $.特別休暇枠 = 特別休暇枠NO) */		
+			val oneDay = this.workTypeSetList.stream().filter(c -> c.getWorkAtr().isOneDay() 
+					&& c.getSumSpHodidayNo() == spcNo).findFirst();
+			
+			/** return $1日.isPresent() ? 1日午前午後区分.１日 : Optional.empty */
+			return oneDay.isPresent() ? Optional.of(WorkAtr.OneDay) : Optional.empty();
+		}
+		
+		/** if @1日の勤務.午前 = 特別休暇 */				
+		if (this.dailyWork.getMorning() == WorkTypeClassification.SpecialHoliday) {
+			/** $午前 = @勤務種類設定 filter ($.1日午前午後区分 = 午前 and $.特別休暇枠 = 特別休暇枠NO) */	
+			val morning = this.workTypeSetList.stream().filter(c -> c.getWorkAtr().isMorning() 
+					&& c.getSumSpHodidayNo() == spcNo).findFirst();
+			
+			/** return $午前.isPresent() ? 1日午前午後区分.午前 : Optional.empty */
+			return morning.isPresent() ? Optional.of(WorkAtr.Monring) : Optional.empty();
+		}
+		
+		/** if @1日の勤務.午後 = 特別休暇 */
+		if (this.dailyWork.getAfternoon() == WorkTypeClassification.SpecialHoliday) {
+			/** $午後 = @勤務種類設定 filter ($.1日午前午後区分 = 午後 and $.特別休暇枠 = 特別休暇枠NO) */
+			val afternoon = this.workTypeSetList.stream().filter(c -> c.getWorkAtr().isAfterNoon() 
+					&& c.getSumSpHodidayNo() == spcNo).findFirst();
+			
+			/** return $午後.isPresent() ? 1日午前午後区分.午後 : Optional.empty */
+			return afternoon.isPresent() ? Optional.of(WorkAtr.Afternoon) : Optional.empty();
+		}
+		return Optional.empty();
+	}
+	
+	/** 欠勤の1日午前午後区分を取得 */
+	public Optional<WorkAtr> getWorkAtrForAbsenceDay() {
+		
+		/** if @1日の勤務.勤務区分 = １日 and @1日の勤務.1日 = 欠勤	*/
+		if (this.dailyWork.isOneDay() && this.dailyWork.getOneDay() == WorkTypeClassification.Absence) {
+			
+			/** return 1日午前午後区分.1日 */
+			return Optional.of(WorkAtr.OneDay);
+		}
+		
+		/** if @1日の勤務.勤務区分 = 午前と午後 and @1日の勤務.午前 = 欠勤 */				
+		if (this.dailyWork.getMorning() == WorkTypeClassification.Absence) {
+
+			/** return 1日午前午後区分.午前 */
+			return Optional.of(WorkAtr.Monring);
+		}
+		
+		/** if @1日の勤務.勤務区分 = 午前と午後 and @1日の勤務.午後 = 欠勤 */
+		if (this.dailyWork.getAfternoon() == WorkTypeClassification.Absence) {
+			
+			/** 1日午前午後区分.午後 */
+			return Optional.of(WorkAtr.Afternoon);
+		}
+		
+		return Optional.empty();
 	}
 }

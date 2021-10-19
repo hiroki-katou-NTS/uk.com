@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfo
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 @Stateless
 public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 
@@ -85,6 +87,18 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
         
         if (!flag) {
             // 登録時の残数チェック
+            List<VacationTimeInforNew> vacationTimeInforNews = timeDigestionUsageInfor.isPresent() ? 
+                    timeDigestionUsageInfor.get().getTimeLeaveApplicationDetails().stream().map(x -> 
+                    new VacationTimeInforNew(
+                            x.getAppTimeType(), 
+                            x.getTimeDigestApplication().getTimeAnnualLeave(), 
+                            x.getTimeDigestApplication().getTimeOff(), 
+                            x.getTimeDigestApplication().getOvertime60H(), 
+                            x.getTimeDigestApplication().getTimeSpecialVacation(), 
+                            x.getTimeDigestApplication().getChildTime(), 
+                            x.getTimeDigestApplication().getNursingTime(), 
+                            x.getTimeDigestApplication().getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y))))
+                    .collect(Collectors.toList()) : new ArrayList<VacationTimeInforNew>();
             AppRemainCreateInfor appRemainCreateInfor = new AppRemainCreateInfor(
                     application.getEmployeeID(), 
                     application.getAppID(), 
@@ -94,7 +108,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
                     EnumAdaptor.valueOf(application.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class), 
                     Optional.ofNullable(wkTypeCode),
                     Optional.ofNullable(wkTimeCode), 
-                    new ArrayList<VacationTimeInforNew>(), 
+                    vacationTimeInforNews, 
                     Optional.of(application.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION) && timeDigestionUsageInfor.isPresent() 
                             ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 
                     Optional.of(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION) && timeDigestionUsageInfor.isPresent()

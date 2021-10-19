@@ -1,126 +1,139 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="cmf001.b.style.css" />
-			<com:scriptfile path="cmf001.b.service.js" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="cmf001.b.vm.js" />
-			<com:ValidatorScript>
-		        nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode
-		        nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionName
-		    </com:ValidatorScript>
-			<com:scriptfile path="cmf001.b.start.js" />
-		</ui:define>
-		
-		<ui:define name="content">
-			<div id="functions-area">
-				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('CMF001_37')}</a>
-				<button tabindex="2" data-bind="click: createNewCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_29')}</button>
-				<button tabindex="3" data-bind="click: registerCondition" class="proceed" >#{i18n.getText('CMF001_30')}</button>
-	<!-- 					<button tabindex="3" >#{i18n.getText('CMF001_31')}</button> -->
-				<button tabindex="5" data-bind="click: openCMF001m, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_33')}</button>
-				<button tabindex="6" data-bind="click: deleteCondition, enable: screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE" class="danger" >#{i18n.getText('CMF001_34')}</button>
-			</div>
-			<div id="contents-area" class="fixed-flex-layout">
-				<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
-					<div data-bind="ntsPanel:{width: '340px', height: '430px', showIcon: true, visible: true, direction: 'none'}">
-						<div class="valign-center control-group cf">
-							<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_38')}</div>
-							<div class="pull-left" tabindex="8" style="width: 240px" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'dispConditionSettingCode', comId: 'B3_4', 
-								items: listStandardImportSetting, selected: selectedStandardImportSettingCode, selectedKey: 'dispConditionSettingCode', fields: ['dispConditionSettingCode', 'dispConditionSettingName'], mode: 'igGrid'}" />		
-						</div>
-						<table id="B3_4" data-bind="ntsGridList: {
-								rows: 15,
-								name: '#[CMF001_39]', 
-								dataSource: listStandardImportSetting,
-								primaryKey: 'dispConditionSettingCode', 
-								columns: [
-					                { headerText: '#{i18n.getText('CMF001_41')}', key: 'dispConditionSettingCode', width: 60, formatter: _.escape },
-					                { headerText: '#{i18n.getText('CMF001_42')}', key: 'dispConditionSettingName', width: 260, formatter: _.escape }
-					            ], 
-								multiple: false,
-								value: selectedStandardImportSettingCode
-							}"></table>
-					</div>
+<html	xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:com="http://xmlns.jcp.org/jsf/component"
+			xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="cmf001.b.css" />
+				<com:scriptfile path="cmf001.b.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.exio.dom.input.setting.ExternalImportCode
+					nts.uk.ctx.exio.dom.input.setting.ExternalImportName
+					nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber
+				</com:ValidatorScript>
+				<com:EnumScript>
+					nts.uk.ctx.exio.dom.input.domain.ImportingDomainId
+					nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode 
+				</com:EnumScript>
+			</ui:define>
+
+			<ui:define name="content">
+				<div id="functions-area">
+					<a
+						class="goback"
+						tabindex="1"
+						data-bind="ntsLinkButton: { jump: '/view/cmf/001/a/index.xhtml' }, text: '戻る'"
+					></a>
+					<button  
+						class="normal"
+						tabindex="2"
+						data-bind="click: newMode, text: '新規'"
+					></button>
+					<button
+						class="proceed"
+						tabindex="3"
+						data-bind="enable: canSave, click: save, text: '登録'"
+					></button>
+					<button
+						class="danger"
+						tabindex="4"
+						data-bind="enable: canRemove, click: remove, text: '削除'"
+					></button>
 				</div>
-				<div class="fixed-flex-layout-right" style="padding-top: 20px;">
-					<div class="valign-center control-group" style = "width:450px;">
-						<span class="label" style="padding: 0px 5px">#{i18n.getText('CMF001_35')}</span> 
-						<div tabindex="7" data-bind="ntsComboBox: {
-							options: systemTypes,
-							optionsValue: 'code',
-							visibleItemsCount: 5,
-							name: '#[CMF001_36]',
-							value: systemType,
-							optionsText: 'name',
-							editable: false,
-							enable: true,
-							required: true,
-							columns: [
-								{ prop: 'name', length: 8 }
-							]}"></div>
-					</div>
-					<div class="selected-model" data-bind="with: selectedStandardImportSetting">
-						<div class="label warning">#{i18n.getText('CMF001_50')}</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: { required: true, constraint: ['AcceptanceConditionCode', 'AcceptanceConditionName'] }">#{i18n.getText('CMF001_51')}</div>
-							<input tabindex="9" id="B4_3" data-bind="ntsTextEditor: {name: '#[CMF001_52]', value: conditionSetCode, required: true, constraint: 'AcceptanceConditionCode', option: {width: '40px'}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.NEW}" />
-							<input tabindex="10" id="B4_4" data-bind="ntsTextEditor: {name: '#[CMF001_53]', value: conditionSetName, required: true, constraint: 'AcceptanceConditionName', option: {width: '345px'}}" />
+
+				<div id="contents-area" class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
+						<div class="settings">
+							<table id="setting-list" data-bind="ntsGridList: {
+								height: '400px',
+								dataSource: settingList,
+								primaryKey: 'code',
+								columns: settingListColumns,
+								value: selectedCode}">
+							</table>
 						</div>
-						<div class="valign-center control-group" style="display:inline-flex;">
-							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_54')}</div>
-							<div class="valign-center"  style="width: 110px; margin-right:10px;">
-								<div tabindex="11" data-bind="ntsRadioBoxGroup: {
-									name: '#[CMF001_55]',
-									options: $parent.radioItemList(),
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: deleteExistData}"></div>
+					</div>
+					
+					<div class="fixed-flex-layout-right" style="padding-top: 20px;">
+						<div class="domain">
+							<div class="code">
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportCode'] }">コード</div>
+								<input class="check-target" id="settingCode" data-bind="ntsTextEditor: { 
+									name: 'コード',
+									value: settingCode,
+									enable: isNewMode,
+									required: true, 
+									constraint: ['ExternalImportCode']}" />
 							</div>
-							<div id="deleteExistDataMethod" tabindex="12" data-bind="ntsComboBox: {
-								options: $parent.deleteExistDataMethod,
-								optionsValue: 'code',
-								name: '#[CMF001_58]',
-								value: deleteExistDataMethod,
-								optionsText: 'name',
-								editable: false,
-								enable:  deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
-								required: deleteExistData() == nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.USE,
-								width: 320,
-								columns: [
-									{ prop: 'name', lengthDropDown: 20 }
-								]}"></div>
+							<div class="name">
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportName'] }">名称</div>
+								<input class="check-target" id="settingName" data-bind="ntsTextEditor: { 
+									name: '名称',
+									value: settingName,  
+									required: true, 
+									constraint: ['ExternalImportName']}" />
+							</div>
+							<div class="import-domain">
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入ドメイン</div>
+								<div class="check-target" id="importDomain" data-bind="ntsComboBox: {
+									name: '受入ドメイン', 
+									options: $root.content.importDomainOption,
+									optionsValue: 'value',
+									visibleItemsCount: 10,
+									optionsText: 'name',
+									selectFirstIfNull: false,
+									value: importDomain,
+									enable: isNewMode,
+									required: true}"></div>
+							</div>
+							<div class="import-mode">
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入モード</div>
+								<div class="check-target" id="importMode" data-bind="ntsComboBox: {
+									name: '受入モード', 
+									options: $root.content.importModeOption,
+									optionsValue: 'value',
+									optionsText: 'name',
+									selectFirstIfNull: false,
+									value: importMode,  
+									required: false}"></div>
+							</div>
+							<div class="item-name-row">
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの項目名の行</div>
+								<input class="check-target" id="itemNameRow" data-bind="ntsNumberEditor: {
+									name: '項目名の行', 
+									value: itemNameRow,  
+									required: true, 
+									constraint: ['ExternalImportRowNumber']}" />
+							</div>
+							<div class="import-start-row">
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの受入開始行</div>
+								<input class="check-target" id="importStartRow" data-bind="ntsNumberEditor: {
+									name: '受入開始行', 
+									value: importStartRow,  
+									required: true, 
+									constraint: ['ExternalImportRowNumber']}" />
+							</div>
 						</div>
 						
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_59')}</div>
-							<div tabindex="13" class="cf" data-bind="ntsSwitchButton: {
-								options: $parent.acceptModes,
-								name: '#[CMF001_65]',
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: acceptMode,
-								enable: deleteExistData()==nts.uk.com.view.cmf001.share.model.NOT_USE_ATR.NOT_USE }"></div>
+						<div class="domain">
+							<div class="divi">受入レイアウト</div><hr />
+							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
+							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting, enable: canEditDetail" ></button>
+							<table class="check-target" id="layout-list" data-bind="ntsGridList: {
+								height: '300px',
+								dataSource: layout,
+								primaryKey: 'itemNo',
+								columns: layoutListColumns,
+								value: selectedItem}">
+							</table>
 						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_69')}</div>
-							<button tabindex="14" id="B4_21"  data-bind="click: function() {$parent.openCMF001d()}, enable: $parent.screenMode() == nts.uk.com.view.cmf001.share.model.SCREEN_MODE.UPDATE">#{i18n.getText('CMF001_70')}</button>
-							<span style="padding-left: 10px" class="label">#{i18n.getText('CMF001_71')}</span>
-							<span style="padding-left: 10px" class="label" data-bind="visible: alreadySetting()">#{i18n.getText('CMF001_77')}</span>
-							<span style="padding-left: 10px" class="label" data-bind="visible: !alreadySetting()">#{i18n.getText('CMF001_78')}</span>
-						</div>
-						
 					</div>
 				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+			</ui:define>
+		</ui:composition>
+	</body>
 </html>

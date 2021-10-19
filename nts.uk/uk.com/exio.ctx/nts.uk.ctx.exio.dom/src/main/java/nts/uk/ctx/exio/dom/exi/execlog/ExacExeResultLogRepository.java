@@ -1,6 +1,10 @@
 package nts.uk.ctx.exio.dom.exi.execlog;
 
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+
 import java.util.List;
 
 /**
@@ -9,7 +13,7 @@ import java.util.List;
 public interface ExacExeResultLogRepository
 {
 
-    List<ExacExeResultLog> getAllExacExeResultLog();
+    List<ExacExeResultLog> getAllExacExeResultLog(String cid, List<Integer> listSystem, GeneralDateTime startDate, GeneralDateTime endDate);
 
     Optional<ExacExeResultLog> getExacExeResultLogById(String cid, String conditionSetCd, String externalProcessId);
 
