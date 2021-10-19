@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -87,24 +88,31 @@ public class OptionalItem extends AggregateRoot {
 	public void validate() {
 		super.validate();
 		if (this.inputControlSetting.getCalcResultRange().hasBothLimit()) {
-			BundledBusinessException be = BundledBusinessException.newInstance();
-			be.addMessage("Msg_574");
 			if (this.performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
 			    switch (this.optionalItemAtr) {
 			    case NUMBER:
 			        if (this.inputControlSetting.getCalcResultRange().getNumberRange().get().getDailyTimesRange().get().isInvalidRange()) {
-			            be.throwExceptions();
+			            throw new BusinessException("Msg_574");
 			        }
+			        if (!this.inputControlSetting.getDailyInputUnit().isPresent() || !this.inputControlSetting.getDailyInputUnit().get().getNumberItemInputUnit().isPresent()) {
+                        throw new BusinessException("Msg_2307");
+                    }
 			        break;
 			    case AMOUNT:
 			        if (this.inputControlSetting.getCalcResultRange().getAmountRange().get().getDailyAmountRange().get().isInvalidRange()) {
-			            be.throwExceptions();
+                        throw new BusinessException("Msg_574");
 			        }
+                    if (!this.inputControlSetting.getDailyInputUnit().isPresent() || !this.inputControlSetting.getDailyInputUnit().get().getAmountItemInputUnit().isPresent()) {
+                        throw new BusinessException("Msg_2307");
+                    }
 			        break;
 			    case TIME:
 			        if (this.inputControlSetting.getCalcResultRange().getTimeRange().get().getDailyTimeRange().get().isInvalidRange()) {
-			            be.throwExceptions();
+                        throw new BusinessException("Msg_574");
 			        }
+                    if (!this.inputControlSetting.getDailyInputUnit().isPresent() || !this.inputControlSetting.getDailyInputUnit().get().getTimeItemInputUnit().isPresent()) {
+                        throw new BusinessException("Msg_2307");
+                    }
 			        break;
 			    default:
 			        throw new RuntimeException("unknown value of enum OptionalItemAtr");
@@ -113,17 +121,17 @@ public class OptionalItem extends AggregateRoot {
 			    switch (this.optionalItemAtr) {
                 case NUMBER:
                     if (this.inputControlSetting.getCalcResultRange().getNumberRange().get().getMonthlyTimesRange().get().isInvalidRange()) {
-                        be.throwExceptions();
+                        throw new BusinessException("Msg_574");
                     }
                     break;
                 case AMOUNT:
                     if (this.inputControlSetting.getCalcResultRange().getAmountRange().get().getMonthlyAmountRange().get().isInvalidRange()) {
-                        be.throwExceptions();
+                        throw new BusinessException("Msg_574");
                     }
                     break;
                 case TIME:
                     if (this.inputControlSetting.getCalcResultRange().getTimeRange().get().getMonthlyTimeRange().get().isInvalidRange()) {
-                        be.throwExceptions();
+                        throw new BusinessException("Msg_574");
                     }
                     break;
                 default:

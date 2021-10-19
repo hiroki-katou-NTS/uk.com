@@ -187,13 +187,13 @@ public class OptionalItemApplicationQuery {
                         optionalItem.getInputControlSetting().getDailyInputUnit().get().getNumberItemInputUnit().ifPresent(unit -> {
                             switch (unit) {
                                 case ONE_HUNDREDTH:
-                                    if (!times.remainder(new BigDecimal("0.01")).equals(new BigDecimal("0.0"))) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (times.remainder(new BigDecimal("0.01")).compareTo(BigDecimal.ZERO) != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
                                 case ONE_TENTH:
-                                    if (!times.remainder(new BigDecimal("0.1")).equals(new BigDecimal("0.0"))) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (times.remainder(new BigDecimal("0.1")).compareTo(BigDecimal.ZERO) != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
                                 case ONE_HALF:
-                                    if (!times.remainder(new BigDecimal("0.5")).equals(new BigDecimal("0.0"))) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
+                                    if (times.remainder(new BigDecimal("0.5")).compareTo(BigDecimal.ZERO) != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
                                     break;
 //                            case ONE:
 //                                if (times.doubleValue() % 1 != 0) exceptions.addMessage(new BusinessException("Msg_1693", itemName, itemNo));
