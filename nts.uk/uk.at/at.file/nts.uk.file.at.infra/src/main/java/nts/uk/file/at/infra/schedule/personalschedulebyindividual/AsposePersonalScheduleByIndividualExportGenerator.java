@@ -126,8 +126,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         cells.get(2, 3).setValue(query.getEmployeeCode());
         // B2_3
         cells.get(2, 7).setValue(query.getEmployeeName());
+        GeneralDate date = GeneralDate.fromString(query.getDate(), "yyyy/MM/dd");
         // B3_1
-        cells.get(2, 18).setValue(GeneralDate.fromString(query.getDate(), "yyyy/MM/dd").yearMonth());
+        cells.get(2, 18).setValue(date.year() + "年 " + date.month() + "月");
         if (query.isTotalDisplay()) {
             cells.get("AG6").setValue(getText("KSU002_68"));
         }
@@ -152,9 +153,15 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         } else {
             cells.get(rowCount, col).setValue(l1P1);
             cells.get(secondLieOfCalender, col).setValue(holidayMap.get(col));
-            Style style = cells.get(secondLieOfCalender, col).getStyle();
-            style.setForegroundColor(Color.getRed());
+            Cell cell = cells.get(secondLieOfCalender, col);
+            setTextColor(cell);
         }
+    }
+
+    private void setTextColor(Cell cell) {
+        Style style = cell.getStyle();
+        style.getFont().setColor(Color.getRed());
+        cell.setStyle(style);
     }
 
     private void printContent(Worksheet wsSource, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) throws Exception {
@@ -182,7 +189,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
             printCalender(cells,
                     rowCount,
-                    0,
+                    1,
                     item.getColn1C21(),
                     item.getColn1C22(),
                     item.getColn1C231(),
@@ -194,7 +201,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             );
             printCalender(cells,
                     rowCount,
-                    5,
+                    6,
                     item.getColn2C21(),
                     item.getColn2C22(),
                     item.getColn2C231(),
