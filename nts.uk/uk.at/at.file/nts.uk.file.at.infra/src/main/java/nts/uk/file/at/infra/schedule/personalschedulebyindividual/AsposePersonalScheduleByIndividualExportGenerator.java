@@ -114,21 +114,23 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     private void printHeader(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) {
         String b11 = TextResource.localize("KSU002_57");
         Cells cells = worksheet.getCells();
+        int firstRow = 0;
+        int secondRow = 1;
         // B1_1
-        cells.get(0, 0).setValue(getText("KSU002_57"));
+        cells.get(firstRow, 0).setValue(getText("KSU002_57"));
         // B1_2
-        cells.get(0, 3).setValue(dataSource.getWorkplaceInfo().getWorkplaceCode());
+        cells.get(firstRow, 3).setValue(dataSource.getWorkplaceInfo().getWorkplaceCode());
         // B1_3
-        cells.get(0, 7).setValue(dataSource.getWorkplaceInfo().getWorkplaceName());
+        cells.get(firstRow, 7).setValue(dataSource.getWorkplaceInfo().getWorkplaceName());
         // B2_1
-        cells.get(2, 0).setValue(getText("KSU002_59"));
+        cells.get(secondRow, 0).setValue(getText("KSU002_59"));
         // B2_2
-        cells.get(2, 3).setValue(query.getEmployeeCode());
+        cells.get(secondRow, 3).setValue(query.getEmployeeCode());
         // B2_3
-        cells.get(2, 7).setValue(query.getEmployeeName());
+        cells.get(secondRow, 7).setValue(query.getEmployeeName());
         GeneralDate date = GeneralDate.fromString(query.getDate(), "yyyy/MM/dd");
         // B3_1
-        cells.get(2, 18).setValue(date.year() + "年 " + date.month() + "月");
+        cells.get(secondRow, 18).setValue(date.year() + "年 " + date.month() + "月");
         if (query.isTotalDisplay()) {
             cells.get("AG6").setValue(getText("KSU002_68"));
         }
@@ -178,7 +180,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         pasteOptions.setPasteType(PasteType.ALL);
         pasteOptions.setOnlyVisibleCells(true);
 
-        int rowCount = 4; // start from row index 9
+        int rowCount = 3; // start from row index 3
         int pageIndex = 0;
         for (PersonalScheduleByIndividualFormat item : dataBuildList) {
             int weekNO = item.getWeekNo();
@@ -186,7 +188,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
             printCalender(cells,
                     rowCount,
-                    1,
+                    0,
                     item.getColn1C21(),
                     item.getColn1C22(),
                     item.getColn1C231(),
@@ -198,7 +200,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             );
             printCalender(cells,
                     rowCount,
-                    6,
+                    5,
                     item.getColn2C21(),
                     item.getColn2C22(),
                     item.getColn2C231(),
@@ -211,7 +213,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
             printCalender(cells,
                     rowCount,
-                    11,
+                    10,
                     item.getColn3C21(),
                     item.getColn3C22(),
                     item.getColn3C231(),
@@ -223,7 +225,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             );
             printCalender(cells,
                     rowCount,
-                    16,
+                    15,
                     item.getColn4C21(),
                     item.getColn4C22(),
                     item.getColn4C231(),
@@ -236,7 +238,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
             printCalender(cells,
                     rowCount,
-                    21,
+                    20,
                     item.getColn5C21(),
                     item.getColn5C22(),
                     item.getColn5C231(),
@@ -248,7 +250,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             );
             printCalender(cells,
                     rowCount,
-                    26,
+                    25,
                     item.getColn6C21(),
                     item.getColn6C22(),
                     item.getColn6C231(),
@@ -262,7 +264,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             //calender item seven for each row
             printCalender(cells,
                     rowCount,
-                    31,
+                    30,
                     item.getColn7C21(),
                     item.getColn7C22(),
                     item.getColn7C231(),
@@ -274,13 +276,15 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             );
             if (query.isTotalDisplay()) {
                 //calender item seven for each row
+                int firstCol = 35;
+                int secondCol = 39;
                 cells.get(rowCount, 3).setValue(item.getD21());
-                cells.get(rowCount + 1, 36).setValue(item.getD22());
-                cells.get(rowCount + 1, 39).setValue(item.getD23());
-                cells.get(rowCount + 2, 36).setValue(item.getD24());
-                cells.get(rowCount + 2, 39).setValue(item.getD25());
-                cells.get(rowCount + 3, 36).setValue(item.getD26());
-                cells.get(rowCount + 3, 39).setValue(item.getD27());
+                cells.get(rowCount + 1, firstCol).setValue(item.getD22());
+                cells.get(rowCount + 1, secondCol).setValue(item.getD23());
+                cells.get(rowCount + 2, firstCol).setValue(item.getD24());
+                cells.get(rowCount + 2, secondCol).setValue(item.getD25());
+                cells.get(rowCount + 3, firstCol).setValue(item.getD26());
+                cells.get(rowCount + 3, secondCol).setValue(item.getD27());
             }
             rowCount += 5;
             // Check paging
