@@ -127,9 +127,8 @@ module nts.uk.ui.at.kdw013.share {
         return '';
     };
     
-    export const getBackgroundColor = (taskContents, tasks) => {
-        let [first] = taskContents;
-        let task = _.find(tasks, x=> x.taskFrameNo == first.frameNo && x.code == first.taskContent.taskCode);
+    export const getBackgroundColor = (code, tasks) => {
+        let task = _.find(tasks, x=> x.taskFrameNo == 1 && x.code == code);
         
         return _.get(task, 'displayInfo.color') || '';
     }

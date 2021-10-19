@@ -142,16 +142,16 @@ module nts.uk.ui.at.kdw013.calendar {
             top: calc(50% - 16px);
             height: 32px;
         }
-        .fc-container .fc-sidebar .fc-oneday-events,
+        .fc-container .fc-sidebar .fc-events,
         .fc-container .fc-sidebar.view-mode .fc-employees:not(:first-child) {
             margin-top: 5px;
             border-top: 1px solid #ddd;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul,
+        .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
             overflow-x: hidden;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul,
+        .fc-container .fc-sidebar .fc-events>ul,
         .fc-container .fc-sidebar .fc-employees>ul {
             border: 1px solid #ccc;
             border-radius: 3px;
@@ -160,13 +160,13 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-sidebar .fc-employees>ul.list-employee {
             height: 224px;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul {
+        .fc-container .fc-sidebar .fc-events>ul {
             height: 140px;
         }
         .fc-container .fc-sidebar .fc-employees>.ui-igcombo-wrapper {
             width: 100%;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul>li,
+        .fc-container .fc-sidebar .fc-events>ul>li,
         .fc-container .fc-sidebar .fc-employees>ul>li {
             padding: 3px;
             cursor: pointer;
@@ -174,17 +174,17 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-sidebar .fc-employees>ul>li.selected {
             background-color: #ccc;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul>li>div,
+        .fc-container .fc-sidebar .fc-events>ul>li>div,
         .fc-container .fc-sidebar .fc-employees>ul>li>div {
             overflow: hidden;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul>li>div {
+        .fc-container .fc-sidebar .fc-events>ul>li>div {
             line-height: 22px;
         }
         .fc-container .fc-sidebar .fc-employees>ul>li>div {
             line-height: 16px;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul>li>div:first-child {
+        .fc-container .fc-sidebar .fc-events>ul>li>div:first-child {
             float: left;
             width: 22px;
             height: 22px;
@@ -196,7 +196,7 @@ module nts.uk.ui.at.kdw013.calendar {
             min-width: 70px;
             padding-right: 7px;
         }
-        .fc-container .fc-sidebar .fc-oneday-events>ul>li>div:not(:first-child),
+        .fc-container .fc-sidebar .fc-events>ul>li>div:not(:first-child),
         .fc-container .fc-sidebar .fc-employees>ul>li>div:not(:first-child) {
             overflow: hidden;
             text-overflow: ellipsis;
@@ -351,7 +351,7 @@ module nts.uk.ui.at.kdw013.calendar {
             color: #fff;
             background-color: #00B050;
         }
-        .fc-container .fc-oneday-events.tree-list {
+        .fc-container .fc-events.tree-list {
             cursor: pointer;
             height: 240px;
             margin-top: 10px;
@@ -642,17 +642,19 @@ module nts.uk.ui.at.kdw013.calendar {
                     $settings: $component.params.$settings
                 "></div>
             <div class="fc-oneday-events" data-bind="
-                    kdw013-events: 'kdw013-events',
+                    kdw013-oneday-events: 'kdw013-oneday-events',
                     mode: $component.params.editable,
                     items: $component.onedayDragItems,
                     $settings: $component.params.$settings
                 "></div>
             <div class="fc-task-events" data-bind="
-                    kdw013-events: 'kdw013-events',
+                    kdw013-task-events: 'kdw013-task-events',
                     mode: $component.params.editable,
                     items: $component.taskDragItems,
                     $settings: $component.params.$settings
                 "></div>
+
+
         </div>
         <div class="fc-calendar"></div>
         <style>${DEFAULT_STYLES}</style>
@@ -899,7 +901,8 @@ module nts.uk.ui.at.kdw013.calendar {
             };
 
             const $el = $(vm.$el);
-            const $dg = $el.find('div.fc-oneday-events').get(0);
+            const $dgOne = $el.find('div.fc-oneday-events').get(0);
+            const $dgTask = $el.find('div.fc-task-events').get(0);
             const $fc = $el.find('div.fc-calendar').get(0);
             const FC: FullCalendar.FullCalendar | null = _.get(window, 'FullCalendar', null);
             const updateActive = () => {
@@ -1069,31 +1072,31 @@ module nts.uk.ui.at.kdw013.calendar {
             const computedTaskDragItems = (datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null) => {
                 if (datas && settings) {
                     const { workGroupDtos } = datas;
-                    const { tasks ,oneDayFavSets} = settings;
+                    const { tasks ,favTaskItems ,favTaskDisplayOrder } = settings;
 
-                    if (oneDayFavSets && tasks) {
+                    if (favTaskItems && tasks && favTaskDisplayOrder) {
                         
                         if (tasks && tasks.length) {
+                            let taskOrders = _.get(favTaskDisplayOrder, 'displayOrders', []);
                             const draggers: EventRaw[] = 
-                            _.chain(oneDayFavSets)
-                                .map((oneDay) => {
-    
+                                _.chain(taskOrders)
+                                .map((taskOrder) => {
+                                    const task = _.find(favTaskItems, ft => ft.favoriteId == taskOrder.favId);
                                     const relateId = randomId();
-                                    const  [first] = oneDay.taskBlockDetailContents;
+                                    const  [first] = task.favoriteContents;
                                     return {
                                         start: new Date(),
                                         end: new Date(),
-                                        title: oneDay.taskName,
-                                        backgroundColor: getBackgroundColor(first.taskContents, tasks),
+                                        title: task.taskName,
+                                        backgroundColor: getBackgroundColor(first.taskCode, tasks),
                                         textColor: '',
                                         extendedProps: {
-                                            favId: oneDay.favId,
+                                            favId: task.favoriteId,
                                             relateId,
                                             status: 'new',
                                             remarks: '',
                                             dropInfo: {
-                                                dropType: 'day',
-                                                taskBlockDetailContents: oneDay.taskBlockDetailContents
+                                                favoriteContents: task.favoriteContents
                                             }
                                             
                                         } as any
@@ -1116,22 +1119,24 @@ module nts.uk.ui.at.kdw013.calendar {
             const computedOnedayDragItems = (datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null) => {
                 if (datas && settings) {
                     const { workGroupDtos } = datas;
-                    const { tasks ,oneDayFavSets} = settings;
+                    const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrder} = settings;
 
-                    if (oneDayFavSets && tasks) {
+                    if (oneDayFavSets && tasks && oneDayFavTaskDisplayOrder) {
                         
                         if (tasks && tasks.length) {
+                            let dos = _.get(oneDayFavTaskDisplayOrder, 'displayOrders', []);
                             const draggers: EventRaw[] = 
-                            _.chain(oneDayFavSets)
-                                .map((oneDay) => {
-    
+                                _.chain(dos)
+                                .sortBy([(o) => { return o.order; }])
+                                .map((o) => {
+                                    const oneDay = _.find(oneDayFavSets, ['favId', o.favId]);
                                     const relateId = randomId();
                                     const  [first] = oneDay.taskBlockDetailContents;
                                     return {
                                         start: new Date(),
                                         end: new Date(),
                                         title: oneDay.taskName,
-                                        backgroundColor: getBackgroundColor(first.taskContents, tasks),
+                                        backgroundColor: getBackgroundColor(first.taskContents[0].taskContent.taskCode, tasks),
                                         textColor: '',
                                         extendedProps: {
                                             favId: oneDay.favId,
@@ -1139,7 +1144,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                             status: 'new',
                                             remarks: '',
                                             dropInfo: {
-                                                dropType: 'day',
                                                 taskBlockDetailContents: oneDay.taskBlockDetailContents
                                             }
                                             
@@ -1205,7 +1209,7 @@ module nts.uk.ui.at.kdw013.calendar {
             $settings
                 .subscribe((settings: a.StartProcessDto | null) => {
                     computedOnedayDragItems(ko.unwrap($datas), settings);
-                    computedTaskDragItems(data, ko.unwrap($settings));
+                    computedTaskDragItems(ko.unwrap($datas), settings);
                 });
             //update initialView to storage
             initialView.subscribe(view => {
@@ -1703,7 +1707,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 });
             }
 
-            const dragger = new FC.Draggable($dg, {
+            const draggerOne = new FC.Draggable($dgOne, {
                 itemSelector: '.title',
                 eventData: (el) => {
                     const id = el.getAttribute('data-id');
@@ -1740,6 +1744,46 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
 
                     return null;
+                }
+            });
+
+            const draggerTask = new FC.Draggable($dgTask, {
+                itemSelector: '.title',
+                eventData: (el) => {
+                    const id = el.getAttribute('data-id');
+                    const unwraped = ko.unwrap<EventRaw[]>(taskDragItems);
+
+                    _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                        if (e.extendedProps.status === 'new' && !e.extendedProps.id) {
+                            e.remove();
+                        } else if (e.groupId === SELECTED) {
+                            e.setProp(GROUP_ID, '');
+
+                            e.setProp(BORDER_COLOR, TRANSPARENT);
+                        }
+                    });
+
+                    if (id) {
+                        const exist = _.find(unwraped, (e: EventRaw) => e.extendedProps.relateId === id);
+
+                        if (exist) {
+                            const { title, backgroundColor, extendedProps } = exist;
+
+                            return {
+                                title,
+                                backgroundColor,
+                                borderColor: 'transparent',
+                                extendedProps: {
+                                    ...extendedProps,
+                                    id: randomId(),
+                                    status: 'new',
+                                    employeeId: vm.$user.employeeId
+                                }
+                            };
+                        }
+                    }
+
+            return null;
                 }
             });
 
@@ -1780,9 +1824,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                         removeNotSaveEvents();
                                     }
                                 }
-
                                 dataEvent.delete(false);
-
                             });
                         return;
                     }
@@ -2399,9 +2441,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     });
                                 $caches.new(newEvent);
 
-                            }
-                            
-                            
+                            }                            
                         }
                     }
                     
@@ -2651,18 +2691,21 @@ module nts.uk.ui.at.kdw013.calendar {
                     event.remove();
 
                     vm.selectedEvents = [{ start, end }];
-                    const wg = {
-                        workCD1,
-                        workCD2,
-                        workCD3,
-                        workCD4,
-                        workCD5
-                    } = extendedProps;
+                  
                     // add cloned event to datasources
                     
-                    if (extendedProps.dropInfo.dropType == 'task') {
+                    let isTaskDrop = _.find(vm.taskDragItems(), task => task.extendedProps.favId == extendedProps.favId);
+                    
+                    if (isTaskDrop) {
+                        let workCDs = _.map(_.get(extendedProps, 'dropInfo.favoriteContents', []), item => item.taskCode);
+                        let eventInDay = _.chain(events())
+                            .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                        
                             events.push({
-                                title: getTitles(wg, vm.params.$settings().startManHourInputResultDto.tasks),
+                                title: getTitles(workCDs, vm.params.$settings().tasks),
                                 start,
                                 end,
                                 textColor,
@@ -2670,16 +2713,41 @@ module nts.uk.ui.at.kdw013.calendar {
                                 extendedProps: {
                                 ...extendedProps,
                                 id: randomId(),
-                                status: 'update'
+                                status: 'update',
+                                //作業枠利用設定
+                                taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
+                                //社員ID
+                                employeeId: vm.params.employee() || vm.$user.employeeId,
+                                //年月日
+                                period: { start: start, end: end },
+                                //現在の応援勤務枠
+                                frameNos:[],                                
+                                //工数実績作業ブロック
+                                taskBlock: {
+                                    caltimeSpan: { start: start, end: end },
+
+                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 0 : vm.getFrameNo(eventInDay), taskItemValues : vm.getTaskValues() }]
+                                },
+                                //作業内容入力ダイアログ表示項目一覧
+                                displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
                             } as any
                         });
                     }else {
                         //drop by day
-                        _.each(extendedProps.dropInfo.taskBlockDetailContents, task => {
+                        //remove event in day
+                        let eventInDay = _.chain(vm.calendar.getEvents())
+                            .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                        _.forEach(eventInDay, e => e.remove());
+                        // add event   
+                        _.each( _.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
                             let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60);
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60);
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
                             let [first] = task.taskContents;
+                            
                             events.push({
                                 title: getTitles(workCDs, vm.params.$settings().tasks),
                                 start : timeStart,
@@ -2687,11 +2755,26 @@ module nts.uk.ui.at.kdw013.calendar {
                                 textColor,
                                 backgroundColor,
                                 extendedProps: {
-                                    frameNo: first.frameNo,
                                 ...extendedProps,
                                 id: randomId(),
                                 status: 'update',
-                        isChanged: true
+                                isChanged: true,
+                                //作業枠利用設定
+                                taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
+                                //社員ID
+                                employeeId: vm.params.employee() || vm.$user.employeeId,
+                                //年月日
+                                period: { start: timeStart, end: timeEnd },
+                                //現在の応援勤務枠
+                                frameNos:[],
+                                //工数実績作業ブロック
+                                taskBlock: {
+                                    caltimeSpan: { start: timeStart, end: timeEnd },
+
+                                    taskDetails: [{ supNo: first.frameNo, taskItemValues: vm.getTaskValues() }]
+                                },
+                                //作業内容入力ダイアログ表示項目一覧
+                                displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
                             } as any
                         });
                         });
@@ -3029,8 +3112,23 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             // test item
-            _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });
+            _.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
         }
+
+
+        public getFrameNo(events){
+                let maxNo = 20;
+                let resultNo;
+                for (let i = 0; i < maxNo; i++) {
+                    let event = _.find(events, e => _.get(e, 'extendedProps.frameNo', 0) == i);
+
+                    if (!event) {
+                        resultNo = i;
+                        break;
+                    }
+                }
+                return resultNo;
+            }
 
         
 
@@ -3171,11 +3269,16 @@ module nts.uk.ui.at.kdw013.calendar {
                             const cv = $tg.hasClass('fc-one-day-button') || $tg.hasClass('fc-full-week-button') ;
                             const ts = $tg.hasClass('fc-timegrid-slot');
                             const ovl = $tg.hasClass('ui-widget-overlay');
-                            const edp = $tg.closest('.fc-oneday-events li').length > 0;
+                            const ede = $tg.closest('.fc-oneday-events li').length > 0;
+                            const tde = $tg.closest('.fc-task-events li').length > 0;
                             
 
-                            if (!edp) {
+                            if (!ede) {
                                 $('.fc-oneday-events .edit-popup').removeClass('show');
+                            }
+
+                            if (!tde) {
+                                $('.fc-task-events .edit-popup').removeClass('show');
                             }
                             
                     
@@ -3639,432 +3742,6 @@ module nts.uk.ui.at.kdw013.calendar {
             }
         }
 
-        @handler({
-            bindingName: 'sb-resizer',
-            validatable: true,
-            virtual: false
-        })
-        export class SidebarResizerHandler implements KnockoutBindingHandler {
-            init = (element: HTMLElement, valueAccessor: () => FullCalendar.Calendar, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
-                const calendar = valueAccessor();
-                const cache = { md: -1, cw: 0 };
-                const ctn = $('.fc-container.cf').get(0);
-
-                $(element)
-                    .on('mousemove', (e: JQueryEvent) => {
-                        const oe = e.originalEvent as MouseEvent;
-                        const bound = element.getBoundingClientRect();
-
-                        if (bound.right - 7 <= oe.clientX && bound.right >= oe.clientX) {
-                            ctn.classList.add('resizer');
-                        } else {
-                            ctn.classList.remove('resizer');
-                        }
-                    })
-                    .on('mouseout', () => {
-                        if (cache.md === -1) {
-                            ctn.classList.remove('resizer');
-                        }
-                    })
-                    .on('mousedown', (evt: JQueryEvent) => {
-                        const oe = evt.originalEvent as MouseEvent;
-
-                        if (ctn.classList.contains('resizer')) {
-                            cache.md = oe.clientX;
-                            cache.cw = element.offsetWidth;
-                        }
-                    })
-                    .on('mouseup', () => {
-                        cache.md = -1;
-                        cache.cw = 0;
-                    });
-
-                $(window)
-                    .on('mousemove', (evt: JQueryEvent) => {
-                        const { cw, md } = cache;
-                        const oe = evt.originalEvent as MouseEvent;
-
-                        if (md !== -1) {
-                            element.style.width = `${cw + oe.clientX - md}px`;
-
-                            calendar.updateSize();
-                        }
-                    })
-                    .on('mouseup', () => {
-                        cache.md = -1;
-                        cache.cw = 0;
-
-                        ctn.classList.remove('resizer');
-                    });
-
-                return { controlsDescendantBindings: true };
-            }
-
-        }
-
-        @component({
-            name: 'fc-oneday-events',
-            template:
-                `<td data-bind="i18n: 'KDW013_20'"></td>
-                <!-- ko foreach: { data: $component.data, as: 'day' } -->
-                <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
-                    <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
-                        <div class="text-note limited-label" data-bind="text: note"></div>
-                    </div>
-                    <i class='openHIcon' data-bind="ntsIcon: { no: 2, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
-                </td>
-                <!-- /ko -->
-                <style rel="stylesheet">
-                    .openHIcon{
-                        cursor: pointer;
-                        }
-                </style>
-                `
-        })
-        export class FullCalendarEventHeaderComponent extends ko.ViewModel {
-            today: string = moment().format(DATE_FORMAT);
-
-            constructor(private data: KnockoutComputed<string[][]>) {
-                super();
-
-                if (!this.data) {
-                    this.data = ko.computed(() => []);
-                }
-            }
-
-            mounted() {
-                const vm = this;
-                const { $el, data } = vm;
-
-                ko.computed({
-                    read: () => {
-                        const ds = ko.unwrap(data);
-
-                        if (ds.length) {
-                            $el.style.display = null;
-                        } else {
-                            $el.style.display = 'none';
-                        }
-
-                        $($el).find('[data-bind]').removeAttr('data-bind');
-                    },
-                    disposeWhenNodeIsRemoved: $el
-                });
-
-                // fix display on ie
-                vm.$el.removeAttribute('style');
-            }
-            openHDialog(){
-                const vm = this;  
-                console.log('open H');  
-            }
-        }
-
-        @component({
-            name: 'fc-times',
-            template:
-                `<td data-bind="i18n: 'KDW013_25'"></td>
-                <!-- ko foreach: { data: $component.data, as: 'time' } -->
-                    <td class="fc-day" data-bind="html: $component.formatTime(time.value,time), attr: { 'data-date': time.date }"></td>
-                <!-- /ko -->
-                <style rel="stylesheet">
-                    .warningIcon{
-                         float: right;
-                        }
-                </style>
-                `
-        })
-        export class FullCalendarTimesHeaderComponent extends ko.ViewModel {
-            today: string = moment().format(DATE_FORMAT);
-
-            constructor(private data: KnockoutComputed<{ date: string; value: number | null; }[]>) {
-                super();
-
-                if (!this.data) {
-                    this.data = ko.computed(() => []);
-                }
-            }
-
-            mounted() {
-                const vm = this;
-                const { $el, data } = vm;
-
-                ko.computed({
-                    read: () => {
-                        const ds = ko.unwrap(data);
-
-                        if (ds.length) {
-                            $el.style.display = null;
-                        } else {
-                            $el.style.display = 'none';
-                        }
-
-                        $($el).find('[data-bind]').removeAttr('data-bind');
-                    },
-                    disposeWhenNodeIsRemoved: $el
-                });
-
-                // fix display on ie
-                vm.$el.removeAttribute('style');
-            }
-
-            formatTime(value: number | null, time) {
-                    let icon =  `<i class='warningIcon'> </i>`;
-                    setTimeout(function() { ko.applyBindingsToNode($('.warningIcon'), { ntsIcon: { no: 2, size: '20px', width: 20, height: 20 } }); }, 300);
-                if (!value) {
-                    return '&nbsp;'+icon;
-                }
-
-                const hour = Math.floor(value / 60);
-                const minute = Math.floor(value % 60);
-                let timeString = `${hour}:${_.padStart(`${minute}`, 2, '0')}`
-                
-                
-                return timeString ;
-            }
-        }
-
-        @component({
-            name: 'fc-setting-panel',
-            template: `
-                <div id='fc'>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td style='width:' data-bind="i18n: 'KDW013_13'"></td>
-                                <td>
-                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
-                                        width:'85px',
-                                        options: $component.firstDays,
-                                        optionsValue: 'id',
-                                        visibleItemsCount: 20,
-                                        value: $component.params.firstDay,
-                                        optionsText: 'title',
-                                        editable: false,
-                                        required: false,
-                                        selectFirstIfNull: false,
-                                        dropDownAttachedToBody: false,
-                                        columns: [{ prop: 'title', length: 2 }]}" >
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td data-bind="i18n: 'KDW013_14'"></td>
-                                <td>
-                                <div style="margin-left: 15px;" data-bind="ntsComboBox: {
-                                        width:'85px',
-                                        options: $component.timeList,
-                                        optionsValue: 'value',
-                                        visibleItemsCount: 7,
-                                        value: $component.params.scrollTime,
-                                        optionsText: 'text',
-                                        editable: false,
-                                        required: false,
-                                        selectFirstIfNull: false,
-                                        dropDownAttachedToBody: false,
-                                        columns: [{ prop: 'text', length: 2 }]}" >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td data-bind="i18n: 'KDW013_15'"></td>
-                                <td>
-                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
-                                        width:'85px',
-                                        options: $component.slotDurations,
-                                        optionsValue: 'id',
-                                        visibleItemsCount: 20,
-                                        value: $component.params.slotDuration,
-                                        optionsText: 'title',
-                                        editable: false,
-                                        required: false,
-                                        selectFirstIfNull: false,
-                                        dropDownAttachedToBody: false,
-                                        columns: [{ prop: 'title', length: 2 }]}" >
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <style rel="stylesheet">
-                    .fc-popup-setting tr {
-                        height: 34px;
-                    }
-                    .fc-popup-setting tr:not(:first-child) td {
-                        padding-top: 5px;
-                    }
-                    .fc-popup-setting tr input,
-                    .fc-popup-setting tr select {
-                        width: 85px;
-                        height: 34px;
-                        margin-left: 15px;
-                        box-sizing: border-box;
-                    }
-                    .fc-popup-setting tr input {
-                        text-align: right;
-                    }
-                </style>
-            `
-        })
-        export class FullCalendarSettingViewmodel extends ko.ViewModel {
-            firstDays: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
-            slotDurations: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
-            timeList: KnockoutObservableArray<{ value: number; text: string; }> = ko.observableArray([]);
-
-            constructor(private params: SettingApi & { position: KnockoutObservable<any | null> }) {
-                super();
-    
-                
-                const vm = this;
-    
-                let times = [];
-                for (let i = 0; i < 49; i++) {
-                    var value = i * 30;
-                    times.push({ value: value, text: nts.uk.time.format.byId("Clock_Short_HM", value) });
-                }
-
-                vm.timeList(times);
-                // resource for slotDuration
-                const resource = [
-                    'KDW013_16',
-                    'KDW013_17',
-                    'KDW013_18',
-                    'KDW013_19'
-                ];
-
-                const startDate = moment().isoWeekday(1);
-                const listDates = _.range(0, 7)
-                    .map(m => startDate.clone().add(m, 'day'))
-                    .map(d => ({
-                        id: d.get('day'),
-                        title: d.format('dddd')
-                    }));
-
-                vm.firstDays(listDates);
-
-                vm.slotDurations(durations.map((id: number, index: number) => ({ id, title: vm.$i18n(resource[index]) })));
-            }
-
-            mounted() {
-                const vm = this;
-                const { params } = vm;
-                const state = { open: false };
-                const { firstDay, scrollTime, slotDuration, position, initialView} = params;
-
-                // store all value to charactorgistic domain
-                ko.computed({
-                    read: () => {
-                        const ps = ko.unwrap(position);
-                        const fd = ko.unwrap(firstDay);
-                        const sc = ko.unwrap(scrollTime);
-                        const sd = ko.unwrap(slotDuration);
-                        const iv = ko.unwrap(initialView);
-                        // store when popup opened
-                        if (state.open) {
-                            storeSetting().then((value) => {
-                                value = value ? value :{
-                                firstDay: fd,
-                                scrollTime: sc,
-                                slotDuration: sd,
-                                initialView: iv
-                            };
-                                value.firstDay = fd;
-                                value.scrollTime = sc;
-                                value.slotDuration = sd;
-                                value.initialView = value.initialView;
-                                
-                                storeSetting(value);
-                            });
-                        } else if (ps) {
-                            state.open = true;
-                        }
-                    },
-                    disposeWhenNodeIsRemoved: vm.$el
-                });
-
-                $(vm.$el)
-                    .removeAttr('data-bind')
-                    .find('[data-bind]')
-                    .removeAttr('data-bind');
-            }
-        }
-    }
-
-
-    export module datePicker {
-        @handler({
-            bindingName: 'kdw013-date-picker'
-        })
-        export class Kdw013DatePickerBindingHandler implements KnockoutBindingHandler {
-            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
-                const name = componentName();
-                const params = { ...allBindingsAccessor() };
-                ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
-
-                return { controlsDescendantBindings: true };
-            }
-        }
-    }
-
-    export module department {
-        @handler({
-            bindingName: 'kdw013-department'
-        })
-        export class Kdw013DepartmentBindingHandler implements KnockoutBindingHandler {
-            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
-                const name = componentName();
-                const mode: KnockoutObservable<boolean> = allBindingsAccessor.get('mode');
-                const params = { ...allBindingsAccessor() };
-                const subscribe = (mode: boolean) => {
-
-                    if (mode) {
-                        ko.cleanNode(element);
-
-                        element.innerHTML = '';
-                    } else {
-                        ko.applyBindingsToNode(element, { component: { name, params } }, bindingContext);
-                    }
-                };
-
-                mode.subscribe(subscribe);
-
-                subscribe(mode());
-
-                return { controlsDescendantBindings: true };
-            }
-        }
-    }
-
-    export module approved {
-        @handler({
-            bindingName: 'kdw013-approveds'
-        })
-        export class Kdw013ApprovedBindingHandler implements KnockoutBindingHandler {
-            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
-                const name = componentName();
-                const params = { ...allBindingsAccessor() };
-
-                ko.applyBindingsToNode(element, { component: { name, params } });
-
-                return { controlsDescendantBindings: true };
-            }
-        }
-    }
-
-    export module events {
-        @handler({
-            bindingName: 'kdw013-events'
-        })
-        export class Kdw013EventBindingHandler implements KnockoutBindingHandler {
-            init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
-                const name = componentName();
-                const mode = allBindingsAccessor.get('mode');
-                const items = allBindingsAccessor.get('items');
-                const params = { mode, items };
-
-                ko.applyBindingsToNode(element, { component: { name, params } });
-
-                return { controlsDescendantBindings: true };
-            }
-        }
+       
     }
 }

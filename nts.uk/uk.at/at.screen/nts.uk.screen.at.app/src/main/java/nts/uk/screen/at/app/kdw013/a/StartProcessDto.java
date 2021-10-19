@@ -70,13 +70,13 @@ public class StartProcessDto {
 	public List<OneDayFavoriteSetDto> oneDayFavSets;
 
 	//1日お気に入り作業の表示順
-	public OneDayFavoriteTaskDisplayOrderDto oneDayFavTaskDisplayOrders;
+	public OneDayFavoriteTaskDisplayOrderDto oneDayFavTaskDisplayOrder;
 
 	// List<お気に入り作業項目>
 	public List<FavoriteTaskItemDto> favTaskItems;
 
 	// お気に入り作業の表示順
-	public FavoriteTaskDisplayOrderDto favTaskDisplayOrders;
+	public FavoriteTaskDisplayOrderDto favTaskDisplayOrder;
 
 	public void setManHourInput(StartManHourInput domain) {
 		
@@ -110,8 +110,8 @@ public class StartProcessDto {
 
 	public void setFavTask(GetFavoriteTaskDto favTask) {
 		this.oneDayFavSets = favTask.getOneDayFavSets();
-		this.oneDayFavTaskDisplayOrders = favTask.getOneDayFavTaskDisplayOrders();
+		this.oneDayFavTaskDisplayOrder = favTask.getOneDayFavTaskDisplayOrders();
 		this.favTaskItems = favTask.getFavTaskItems();
-		this.favTaskDisplayOrders = favTask.getFavTaskDisplayOrders();
+		this.favTaskDisplayOrder = favTask.getFavTaskDisplayOrders();
 	}
 }
