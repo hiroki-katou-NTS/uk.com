@@ -162,8 +162,6 @@ module nts.uk.ui.at.kdw013.share {
 
                 ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { selected, items, required, visibleItemsCount } } }, bindingContext);
 
-                element.removeAttribute('data-bind');
-
                 element.setAttribute('role', randomId());
 
                 $(element)
@@ -345,7 +343,7 @@ module nts.uk.ui.at.kdw013.share {
                         const exist = _.find(items, ({ id }, index) => highlight === index || id === selected);
 
 
-                        if (exist) {
+                        if (exist && exist.code()) {
                             const { id, code, name } = exist;
 
                             return { id, code, name };

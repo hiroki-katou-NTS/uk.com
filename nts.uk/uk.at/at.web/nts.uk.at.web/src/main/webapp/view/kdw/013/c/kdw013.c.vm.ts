@@ -283,42 +283,33 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 9) && use -->
-							<tr>
+						<!-- ko if:  (type == 0 && itemId > 8) && use -->
+                            <tr>
                                 <td data-bind="text: lable"></td>
-                                <td>
-									<div class="ntsControl fix">
-										<input data-bind="ntsTimeWithDayEditor: { 
-											name: 'Time With Day', 
-											constraint:'TimeWithDayAttr', 
-											value: value, 
-											enable: true, 
-											required: false,
-											option: {
-												width: '233px',
-												timeWithDay: true
-											}
-											 }" />
-									</div>
-								</td>
+                                <td><div data-bind="
+                                        dropdown: value,
+                                        name: lable,
+                                        items: options,
+                                        visibleItemsCount:5
+                                    "></div></td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 10) && use -->
+						<!-- ko if: (type == 2 && itemId > 8) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
-										<input data-bind="ntsTextEditor: {
+										<input data-bind="ntsNumberEditor: {
 											value: value,
 											option: {width: '233px'},
 											required: false,
 											enable: true,
-											}" />
+										}" />
 									</div>
 								</td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 11) && use -->
+						<!-- ko if: (type == 3 && itemId > 8) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
@@ -334,40 +325,59 @@ module nts.uk.ui.at.kdw013.c {
 											},
 											required: false,
 											enable: true,
+										}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: (type == 5 && itemId > 8) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTimeEditor: {
+											value: value,
+											mode: 'time',
+											inputFormat: 'time',
+											required: false,
+											enable: true,
+											option: {width: '223px'}
 											}" />
 									</div>
 								</td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 12) && use -->
+						<!-- ko if: (type == 6 && itemId > 8) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
-										<input data-bind="ntsNumberEditor: {
-											value: value,
-											option: {width: '233px'},
+										<input data-bind="ntsTimeWithDayEditor: { 
+											name: 'Time With Day', 
+											constraint:'TimeWithDayAttr', 
+											value: value, 
+											enable: true, 
 											required: false,
-											enable: true,
-											}" />
+											option: {
+												width: '233px',
+												timeWithDay: true
+											}
+										}" />
 									</div>
 								</td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: itemId == 13 || itemId == 14 || itemId == 15 || itemId == 16 || 
-						itemId == 17 || itemId == 18 || itemId == 19 || itemId == 20 || itemId == 21 || 
-						itemId == 22 || itemId == 23 || itemId == 24 || itemId == 25 || itemId == 26 || 
-						itemId == 27 || itemId == 28 || itemId == 29 -->
+						<!-- ko if: (type == 7 && itemId > 8) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
-										<input data-bind="ntsNumberEditor: {
+										<input data-bind="ntsTextEditor: {
 											value: value,
 											option: {width: '233px'},
 											required: false,
 											enable: true,
-											}" />
+										}" />
 									</div>
 								</td>
                             </tr>

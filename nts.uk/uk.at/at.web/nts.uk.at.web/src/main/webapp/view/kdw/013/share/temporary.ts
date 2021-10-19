@@ -51,10 +51,20 @@ module nts.uk.ui.at.kdw013 {
 		constructor(manHrTaskDetail: IManHrTaskDetail, data?: StartWorkInputPanelDto) {
 			let vm = this;
 			vm.supNo = manHrTaskDetail.supNo;
+			if(!vm.supNo){
+				vm.supNo = 1;
+			}
 			//sap xep
 			if (data) {
 				// sap xep item co dinh
-				let taskItemValues: ITaskItemValue[] = _.sortBy(_.filter(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => { return i.itemId <= 8 }), ['itemId']);
+				let taskItemValues: TaskItemValue[] = 
+				_.map(
+					_.sortBy(
+						_.filter(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => { 
+							return i.itemId <= 8 
+						}),
+					['itemId']), 
+				(t: ITaskItemValue) => new TaskItemValue(t));
 				
 				// sap xep thu tu item tuy y
 				let manHourRecordAndAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto[] = _.filter(data.manHourRecordAndAttendanceItemLink, (l: ManHourRecordAndAttendanceItemLinkDto) => l.frameNo == vm.supNo);
@@ -64,10 +74,11 @@ module nts.uk.ui.at.kdw013 {
 					});
 					if (itemAttendanceItemLink) {
 						let item: ITaskItemValue = _.find(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId = itemAttendanceItemLink.itemId);
-						taskItemValues.push(item);
+						let t: TaskItemValue = new TaskItemValue(item, '', attendanceItem.dailyAttendanceAtr);
+						taskItemValues.push(t);
 					}
 				});
-				vm.taskItemValues = ko.observableArray(_.map(manHrTaskDetail.taskItemValues, (t: ITaskItemValue) => new TaskItemValue(t)));
+				vm.taskItemValues = ko.observableArray(taskItemValues);
 			} else {
 				vm.taskItemValues = ko.observableArray(
 					_.map(manHrTaskDetail.taskItemValues, (t: ITaskItemValue) => new TaskItemValue(t)));

@@ -60,7 +60,7 @@ public class KDW013CWebService {
 
 	// C:作業入力パネル.メニュー別OCD.作業項目を選択する
 	@POST
-	@Path("select")
+	@Path("c/select")
 	public List<TaskDto> selectWorkItem(SelectWorkItemParam param) {
 		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getEmployeeId(), param.getRefDate(),
 				new TaskFrameNo(param.getTaskFrameNo()), Optional.of(new TaskCode(param.getTaskCode()))));
