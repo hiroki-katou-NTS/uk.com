@@ -1514,7 +1514,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				
 				if (self.selectedDisplayPeriod() != 1){
 					self.subFormatDate(2);
-					self.getTask();
+					self.getTask().done(() => {
+						if (self.selectedDisplayPeriod() == 2 && self.disableDs.length > 0){
+							for(let i = 0; i < self.disableDs.length; i++){
+								$("#extable-ksu003 > .ex-body-detail > table > tbody tr:nth-child" + "(" + (self.disableDs[i].index + 2).toString() + ")").css("background-color",self.disableDs[i].color);
+							}
+						}
+					});
 					__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
 					__viewContext.viewModel.viewmodelAb.taskChecked.valueHasMutated();
 				}
@@ -1529,7 +1535,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					if (self.selectedDisplayPeriod() != 1){
 						self.subFormatDate(2);
-						self.getTask();
+						self.getTask().done(() => {
+						if (self.selectedDisplayPeriod() == 2 && self.disableDs.length > 0){
+							for(let i = 0; i < self.disableDs.length; i++){
+								$("#extable-ksu003 > .ex-body-detail > table > tbody tr:nth-child" + "(" + (self.disableDs[i].index + 2).toString() + ")").css("background-color",self.disableDs[i].color);
+							}
+						}
+					});
 						__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
 						__viewContext.viewModel.viewmodelAb.taskChecked.valueHasMutated();
 					} 
@@ -2444,10 +2456,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (rs.hasError == false) {
 					if (type != 1) {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+							block.grayout();
 							self.enableSave(false);
 							let $grid = $('div.ex-body-detail');
 							self.updateAfterSaveData($grid[0]).done(() => {
 								self.destroyAndCreateGrid(self.lstEmpId, 0);
+								block.clear();
 							});
 						});
 					} else {
@@ -2478,8 +2492,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
 					if (type != 1) {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+						block.grayout();
 						self.destroyAndCreateGrid(self.lstEmpId, 0);
-						self.getTask();
+						//self.getTask();
+						
+						block.clear();
 					}
 					self.taskSaveData = [];
 					self.taskPasteData = [];
@@ -5863,7 +5880,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				filShowChart = _.uniqWith(filShowChart, function(arrVal: any, othVal: any) {
 					return (arrVal.startTime == othVal.startTime);
 				});
-				
+				let endAfterFilShowChart = -1;
 				if (filShowChart.length > 0){
 					for (let i = 0; i < filShowChart.length; i++){
 						let sTime = filShowChart[i].startTime * 5,
@@ -5879,7 +5896,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							if (sTime > start && eTime < end){
 								sTimeNew = eTime;
 								eTimeNew = end;
-								end = sTime;
+								if (endAfterFilShowChart == -1){
+									endAfterFilShowChart = sTime;
+								}
+								
+								if (!_.isNil(filShowChart[i + 1])){
+									eTimeNew = filShowChart[i + 1].startTime * 5;
+								}
+								
+								if (i + 1 == filShowChart.length) {
+									end = endAfterFilShowChart;
+								}
 								
 								self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null , sTimeNew , eTimeNew , line, `pgc${util.randomId().split("-").join("")}`, "add");
 							}	
