@@ -96,19 +96,19 @@ module nts.uk.ui.at.kdw013 {
 
     export type StartWorkInputPanelDto = {
         /** 利用可能作業1リスト */
-        taskListDto1: TaskDto[];
+        taskFrameNo1: TaskDto[];
 
         /** 利用可能作業2リスト */
-        taskListDto2: TaskDto[];
+        taskFrameNo2: TaskDto[];
 
         /** 利用可能作業3リスト */
-        taskListDto3: TaskDto[];
+        taskFrameNo3: TaskDto[];
 
         /** 利用可能作業4リスト */
-        taskListDto4: TaskDto[];
+        taskFrameNo4: TaskDto[];
 
         /** 利用可能作業5リスト */
-        taskListDto5: TaskDto[];
+        taskFrameNo5: TaskDto[];
 
 		/** List<勤務場所> */
         workLocation: a.WorkLocationDto[];

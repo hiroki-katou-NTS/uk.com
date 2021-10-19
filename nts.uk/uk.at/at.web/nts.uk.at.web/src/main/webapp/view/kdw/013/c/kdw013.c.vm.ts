@@ -51,8 +51,11 @@ module nts.uk.ui.at.kdw013.c {
         box-sizing: border-box;
         margin-bottom: 10px;
     }
-	.edit-event table>tbody>tr>td>.ntsControl.fix input.nts-input{
+	.edit-event table>tbody>tr>td>.ntsControl.fix input.nts-input, .edit-event table>tbody>tr>td>.ntsControl.fix textarea.nts-input{
 	    border: 1px solid #999;
+	}
+	.edit-event table>tbody>tr>td>.ntsControl.fix textarea.nts-input{
+		height: 54px;
 	}
 	.edit-event table>tbody>tr>td>.ntsControl.fix .error input.nts-input{
 		border-color: #ff6666;
@@ -283,42 +286,33 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 9) && use -->
-							<tr>
+						<!-- ko if:  (type == 0 && itemId > 8) && use -->
+                            <tr>
                                 <td data-bind="text: lable"></td>
-                                <td>
-									<div class="ntsControl fix">
-										<input data-bind="ntsTimeWithDayEditor: { 
-											name: 'Time With Day', 
-											constraint:'TimeWithDayAttr', 
-											value: value, 
-											enable: true, 
-											required: false,
-											option: {
-												width: '233px',
-												timeWithDay: true
-											}
-											 }" />
-									</div>
-								</td>
+                                <td><div data-bind="
+                                        dropdown: value,
+                                        name: lable,
+                                        items: options,
+                                        visibleItemsCount:5
+                                    "></div></td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 10) && use -->
+						<!-- ko if: (type == 2 && itemId > 8) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
-										<input data-bind="ntsTextEditor: {
+										<input data-bind="ntsNumberEditor: {
 											value: value,
 											option: {width: '233px'},
 											required: false,
 											enable: true,
-											}" />
+										}" />
 									</div>
 								</td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 11) && use -->
+						<!-- ko if: (type == 3 && itemId > 8) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
@@ -334,40 +328,57 @@ module nts.uk.ui.at.kdw013.c {
 											},
 											required: false,
 											enable: true,
-											}" />
+										}" />
 									</div>
 								</td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (itemId == 12) && use -->
+						<!-- ko if: (type == 5 && itemId > 8) && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
-										<input data-bind="ntsNumberEditor: {
+										<input data-bind="ntsTimeEditor: {
 											value: value,
-											option: {width: '233px'},
+											mode: 'time',
+											inputFormat: 'time',
 											required: false,
 											enable: true,
+											option: {width: '233px'}
 											}" />
 									</div>
 								</td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: itemId == 13 || itemId == 14 || itemId == 15 || itemId == 16 || 
-						itemId == 17 || itemId == 18 || itemId == 19 || itemId == 20 || itemId == 21 || 
-						itemId == 22 || itemId == 23 || itemId == 24 || itemId == 25 || itemId == 26 || 
-						itemId == 27 || itemId == 28 || itemId == 29 -->
+						<!-- ko if: (type == 6 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: itemId"></td>
+                                <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
-										<input data-bind="ntsNumberEditor: {
+										<input data-bind="ntsTimeWithDayEditor: { 
+											name: 'Time With Day', 
+											constraint:'TimeWithDayAttr', 
+											value: value, 
+											enable: true, 
+											required: false,
+											option: {
+												width: '233px',
+												timeWithDay: true
+											}
+										}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: (type == 7 && itemId > 8) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<textarea data-bind="ntsMultilineEditor: {
 											value: value,
 											option: {width: '233px'},
-											required: false,
-											enable: true,
-											}" />
+											enable: true}" />
 									</div>
 								</td>
                             </tr>
@@ -610,11 +621,11 @@ module nts.uk.ui.at.kdw013.c {
 			data.subscribe((event: FullCalendar.EventApi| null) => {
 				if (event) {
                     const {extendedProps, start, end } = event as any as calendar.EventRaw;
-                    let {taskBlock, employeeId} = extendedProps;
+                    let {displayManHrRecordItems, taskBlock, employeeId} = extendedProps;
                     //taskBlocks = vm.fakeData(start, end),
 					let param ={
 						refDate: start,
-						itemIds: [9, 10, 11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
 					}
 
 					block.grayout();
@@ -1017,7 +1028,7 @@ module nts.uk.ui.at.kdw013.c {
 		
 		convertWorkLocationList(option: {code: string, name: string}[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
             const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_40'), $raw: null, selected: false }];
-            if (code) {
+            if (code && code()) {
                 const taskSelected = _.find(option, { 'code': code() });
                 if (!taskSelected) {
                     lst.push({ id: code(), code: code(), name: getText('KDW013_41'), selected: false, $raw: null });
@@ -1076,6 +1087,7 @@ module nts.uk.ui.at.kdw013.c {
 				block.grayout();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
 					itemNext.options(vm.getMapperList(data, itemNext.value));
+					block.clear();
 	            }).always(() => block.clear());
 			}
         }
@@ -1134,28 +1146,28 @@ module nts.uk.ui.at.kdw013.c {
 		}
 		setWorkLists(taskList: StartWorkInputPanelDto): void{
 			const vm = this;
-			const { taskListDto1, taskListDto2, taskListDto3, taskListDto4, taskListDto5 } = taskList;
+			const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = taskList;
 			_.each(vm.taskItemValues(), (i: TaskItemValue) => {
         		if(i.itemId == 4){
-					i.options(vm.getMapperList(taskListDto1, i.value));
+					i.options(vm.getMapperList(taskFrameNo1, i.value));
 				}else if(i.itemId == 5){
-					i.options(vm.getMapperList(taskListDto2, i.value));
+					i.options(vm.getMapperList(taskFrameNo2, i.value));
 				}
 				else if(i.itemId == 6){
-					i.options(vm.getMapperList(taskListDto3, i.value));
+					i.options(vm.getMapperList(taskFrameNo3, i.value));
 				}
 				else if(i.itemId == 7){
-					i.options(vm.getMapperList(taskListDto4, i.value));
+					i.options(vm.getMapperList(taskFrameNo4, i.value));
 				}
 				else if(i.itemId == 8){
-					i.options(vm.getMapperList(taskListDto5, i.value));
+					i.options(vm.getMapperList(taskFrameNo5, i.value));
 				}
             });
 		}
 		getMapperList(tasks: TaskDto[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
 			const vm = this;
             const lst: DropdownItem[] = [vm.mapper(null)];
-            if (code) {
+            if (code && code()) {
                 const taskSelected = _.find(tasks, { 'code': code() });
                 if (!taskSelected) {
                     lst.push({ id: code(), code: code(), name: getText('KDW013_40'), selected: false, $raw: null });

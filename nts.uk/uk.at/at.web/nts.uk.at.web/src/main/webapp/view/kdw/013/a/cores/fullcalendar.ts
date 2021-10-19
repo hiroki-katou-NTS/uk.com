@@ -3136,10 +3136,6 @@ module nts.uk.ui.at.kdw013.calendar {
                  let vm = this;
                  let items = [];
 
-                 _.forEach([1, 2, 3, 4, 5, 6, 7, 8], function(id) {
-                     items.push({ itemId: id, value: null });
-                 });
-    
                  _.forEach(_.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []), function(item) {
                      items.push({ itemId: item.itemId, value: null });
                  });

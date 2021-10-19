@@ -60,6 +60,8 @@ public class WorkDataMasterInformationDto {
 		this.workLocation = workLocation;
 		this.taskSupInfoChoicesDetails = taskSupInfoChoicesDetails;
 		this.manHourRecordItems = manHourRecordItems;
+		this.attendanceItems = attendanceItems;
+		this.manHourRecordAndAttendanceItemLink = manHourRecordAndAttendanceItemLink;
 	}
 
 }

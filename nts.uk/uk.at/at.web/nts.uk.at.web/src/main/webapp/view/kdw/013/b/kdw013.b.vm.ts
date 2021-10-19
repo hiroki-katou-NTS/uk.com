@@ -49,7 +49,7 @@ module nts.uk.ui.at.kdw013.b {
                     </tr>
 				</tbody>
 			</table>
-			<div class="taskDetails" data-bind="foreach: dataSources">
+			<div class="taskDetailsB" data-bind="foreach: dataSources">
 	            <table>
 	                <colgroup>
 	                    <col width="90px" />
@@ -149,13 +149,13 @@ module nts.uk.ui.at.kdw013.b {
                     const taskDetails: TaskDetailB[] = [];
                     const event = ko.unwrap(data);
 
-                    if (event) {
+                    if (event && event.extendedProps.status == "update") {
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
 						const startTime = getTimeOfDate(start);
                         const endTime = getTimeOfDate(end);
 						vm.time(`${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}`);
 
-                        let {taskBlocks} = extendedProps;
+                        let {taskBlock} = extendedProps;
                     	//taskBlocks = vm.fakeData(start, end),
 						let param ={
 							refDate: start,
@@ -163,7 +163,7 @@ module nts.uk.ui.at.kdw013.b {
 						}
 						block.grayout();
 			            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
-							_.forEach(taskBlocks.taskDetails, taskDetail =>{
+							_.forEach(taskBlock.taskDetails, taskDetail =>{
 								taskDetails.push(vm.setlableValueItems(taskDetail,data));
 							});
 							vm.dataSources(taskDetails);
