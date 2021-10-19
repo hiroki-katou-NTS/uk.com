@@ -390,7 +390,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             // columns
             let importableDates: string[] = data.importableDates;
 
-            vm.gridOptions.columns.push({ headerText: vm.$i18n('KDL055_26') , itemId: 'nameHeader', key: 'nameHeader', dataType: 'string', width: '150px', columnCssClass: 'halign-left limited-label', headerCssClass: 'halign-center valign-center', ntsControl: 'Label' });
+            vm.gridOptions.columns.push({ headerText: vm.$i18n('KDL055_26') , itemId: 'nameHeader', key: 'nameHeader', dataType: 'string', width: '187px', columnCssClass: 'halign-left limited-label', headerCssClass: 'halign-center valign-center', ntsControl: 'Label' });
 
             _.forEach(importableDates, (dateString: string) => {
                 let item = { headerText: vm.convertDateHeader(dateString), itemId: dateString, key: dateString, dataType: 'string', width: '75px', columnCssClass: 'center-align', headerCssClass: 'center-align', constraint: {primitiveValue: 'ShiftMasterImportCode'} };
