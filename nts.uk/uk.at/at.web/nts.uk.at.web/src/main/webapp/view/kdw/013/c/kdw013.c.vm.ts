@@ -1086,6 +1086,7 @@ module nts.uk.ui.at.kdw013.c {
 				block.grayout();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
 					itemNext.options(vm.getMapperList(data, itemNext.value));
+					block.clear();
 	            }).always(() => block.clear());
 			}
         }

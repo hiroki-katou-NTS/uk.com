@@ -343,7 +343,7 @@ module nts.uk.ui.at.kdw013.share {
                         const exist = _.find(items, ({ id }, index) => highlight === index || id === selected);
 
 
-                        if (exist && exist.code()) {
+                        if (exist) {
                             const { id, code, name } = exist;
 
                             return { id, code, name };
