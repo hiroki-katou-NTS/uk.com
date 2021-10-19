@@ -76,7 +76,7 @@ module nts.uk.at.view.kmk006.l {
 
         mounted() {
             const vm = this;
-            $('.list-history').focus();
+            $('.list-history #single-list_container').focus();
             vm.$errors('clear');
         }
 
