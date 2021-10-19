@@ -251,7 +251,7 @@ public class ScreenQueryWorkPlaceCheckFile {
         //　　　　　return 取り込みエラーDto ($対象社員.社員コード, $対象社員.ビジネスネーム, $.年月日, $.状態.エラーメッセージ) }
         long startMapDetailErr2 = System.currentTimeMillis();
         List<ImportResultDetail> resultDetails2 = importResult.getResults().stream().filter(x -> {
-            return x.getStatus().equals(ImportStatus.SCHEDULE_IS_EXISTS) && overwrite;
+            return x.getStatus().equals(ImportStatus.SCHEDULE_IS_EXISTS) && !overwrite;
         }).collect(Collectors.toList());
         resultDetails2.forEach(x -> {
             Optional<PersonEmpBasicInfoImport> personEmpOptional = listPersonEmp.stream()
