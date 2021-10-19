@@ -51,8 +51,11 @@ module nts.uk.ui.at.kdw013.c {
         box-sizing: border-box;
         margin-bottom: 10px;
     }
-	.edit-event table>tbody>tr>td>.ntsControl.fix input.nts-input{
+	.edit-event table>tbody>tr>td>.ntsControl.fix input.nts-input, .edit-event table>tbody>tr>td>.ntsControl.fix textarea.nts-input{
 	    border: 1px solid #999;
+	}
+	.edit-event table>tbody>tr>td>.ntsControl.fix textarea.nts-input{
+		height: 54px;
 	}
 	.edit-event table>tbody>tr>td>.ntsControl.fix .error input.nts-input{
 		border-color: #ff6666;
@@ -341,7 +344,7 @@ module nts.uk.ui.at.kdw013.c {
 											inputFormat: 'time',
 											required: false,
 											enable: true,
-											option: {width: '223px'}
+											option: {width: '233px'}
 											}" />
 									</div>
 								</td>
@@ -372,12 +375,10 @@ module nts.uk.ui.at.kdw013.c {
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
-										<input data-bind="ntsTextEditor: {
+										<textarea data-bind="ntsMultilineEditor: {
 											value: value,
 											option: {width: '233px'},
-											required: false,
-											enable: true,
-										}" />
+											enable: true}" />
 									</div>
 								</td>
                             </tr>
