@@ -24,7 +24,7 @@ module nts.uk.at.view.kmk006.l {
         selectedStartDateText: KnockoutObservable<string | null> = ko.observable('');
         selectedEndDate: KnockoutObservable<string> = ko.observable('');
         copyPreviousConfig: KnockoutObservable<boolean> = ko.observable(true);
-        isLatestHistory: KnockoutObservable<boolean> = ko.observable(true);
+        isLatestHistory: KnockoutObservable<boolean> = ko.observable(false);
         textTitle: KnockoutObservable<string> = ko.observable('');
         public model: HistoryItem = new HistoryItem();
         public itemId: String = '';
@@ -133,6 +133,9 @@ module nts.uk.at.view.kmk006.l {
                                     }));
                                 }));
                                 vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
+                            } else {
+                                hisLocal = [];
+                                vm.lstWpkHistory([]);
                             }
                         })
                         .then(() => {
