@@ -103,7 +103,7 @@ public class OiomtExAcCond extends ContractUkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "DELETE_EXT_DATA_METHOD")
-	private boolean deleteExtDataMethod;
+	private Boolean deleteExtDataMethod;
 
 	/**
 	 * Gets primary key of entity.
