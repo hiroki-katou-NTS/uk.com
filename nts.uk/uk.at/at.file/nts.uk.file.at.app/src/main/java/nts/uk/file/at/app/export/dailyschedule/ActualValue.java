@@ -42,13 +42,6 @@ public class ActualValue {
 			return null;
 		}
 		ValueType valueType = EnumAdaptor.valueOf(this.valueType, ValueType.class);
-		// #120624
-		if (valueType == ValueType.AMOUNT || valueType == ValueType.AMOUNT_NUM) {
-			this.unit = "円";
-		}
-		if (valueType == ValueType.COUNT || valueType == ValueType.COUNT_WITH_DECIMAL) {
-			this.unit = "回";
-		}
 		if (valueType == ValueType.ATTR)
 			return (T) this.value;
 		if (valueType.isInteger()) {
@@ -89,6 +82,8 @@ public class ActualValue {
 		case COUNT:
 		case COUNT_WITH_DECIMAL:
 			this.unit = "回"; break;
+		case DAYS:
+			this.unit = "日"; break;
 		default: break;
 		}
 	}
