@@ -1035,7 +1035,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							// 社員（List）と期間から休職休業を取得する
 							String cid = AppContexts.user().companyId();
 							TempAbsenceImport tempAbsence = this.sharedTempAbsenceAdapter
-									.getTempAbsence(cid, monthPeriod, empIDs);
+									.getTempAbsence(cid, monthPeriod, Arrays.asList(employee.employeeId));
 							// アルゴリズム「会社IDとNOから休職休業枠を取得する」を実行する
 							tempAbsence.getHistories().forEach(hist -> hist.getDateHistoryItems()
 									.sort(Comparator.comparing(DateHistoryItemImport::getStartDate)));
