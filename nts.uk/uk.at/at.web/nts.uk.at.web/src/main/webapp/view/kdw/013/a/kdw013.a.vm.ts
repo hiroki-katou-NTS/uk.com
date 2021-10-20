@@ -927,9 +927,7 @@ module nts.uk.ui.at.kdw013.a {
         // Popup F:
         registerFavTask() {
             const vm = this;
-            let favId = '';
-            // truyền favId trong TH update
-            //let favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c'
+            let favId = vm.favoriteTaskItem().favoriteId;
 
             if (favId =='') {
                 vm.addFavTask();
@@ -1002,9 +1000,7 @@ module nts.uk.ui.at.kdw013.a {
         // Popup G:
         registerOneDayFavTask() {
             const vm = this;
-            let favId = '';
-            // truyền favId trong TH update
-            //let favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c'
+            let favId = vm.oneDayFavoriteSet().favId;
 
             if (favId =='') {
                 vm.addOneDayFavTask();
