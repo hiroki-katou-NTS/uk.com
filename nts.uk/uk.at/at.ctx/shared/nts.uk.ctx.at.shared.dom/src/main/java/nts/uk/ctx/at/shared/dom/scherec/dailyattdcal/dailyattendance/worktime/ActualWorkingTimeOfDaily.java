@@ -228,7 +228,7 @@ public class ActualWorkingTimeOfDaily {
 		val timeDifferenceWorkingHours = new AttendanceTime(0);
 		
 		/* 割増時間の計算 */
-		val premiumTime = new PremiumTimeOfDailyPerformance(Collections.emptyList());
+		val premiumTime = PremiumTimeOfDailyPerformance.createEmpty();
 		/* 乖離時間の計算 */
 //		val divergenceTimeOfDaily = createDivergenceTimeOfDaily(
 //													   forCalcDivergenceDto,
@@ -768,6 +768,6 @@ public class ActualWorkingTimeOfDaily {
 		return new ActualWorkingTimeOfDaily(AttendanceTime.ZERO, ConstraintTime.defaultValue(), AttendanceTime.ZERO, 
 											TotalWorkingTime.createAllZEROInstance(), 
 											new DivergenceTimeOfDaily(new ArrayList<>()), 
-											new PremiumTimeOfDailyPerformance(new ArrayList<>()));
+											PremiumTimeOfDailyPerformance.createEmpty());
 	}
 }

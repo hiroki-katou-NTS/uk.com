@@ -25,7 +25,24 @@ public enum UnitPrice {
 	
 	public final int value;
 	
+	private final static UnitPrice[] values = UnitPrice.values();
+	
 	UnitPrice(int value){
 		this.value = value;
+	}
+	
+	public static UnitPrice valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+		// Find value.
+		for (UnitPrice val : UnitPrice.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+		// Not found.
+		return null;
 	}
 }

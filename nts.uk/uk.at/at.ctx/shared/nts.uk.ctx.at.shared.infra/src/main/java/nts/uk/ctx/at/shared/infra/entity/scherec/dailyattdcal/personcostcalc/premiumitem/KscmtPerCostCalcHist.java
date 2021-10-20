@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_PER_COST_CALC_HIST")
+@Table(name = "KSRMT_PER_COST_CALC_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KscmtPerCostCalcHist extends UkJpaEntity implements Serializable {

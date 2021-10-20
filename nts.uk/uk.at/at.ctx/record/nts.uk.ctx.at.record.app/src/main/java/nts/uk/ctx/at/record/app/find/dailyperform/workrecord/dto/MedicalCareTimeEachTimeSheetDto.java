@@ -51,7 +51,7 @@ public class MedicalCareTimeEachTimeSheetDto implements ItemConst, AttendanceIte
 				this.deductionTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.deductionTime));
 	}
 	
-	public static MedicalCareTimeEachTimeSheetDto valueOf(MedicalCareTimeEachTimeSheet domain) {
+	public static MedicalCareTimeEachTimeSheetDto toDto(MedicalCareTimeEachTimeSheet domain) {
 		return new MedicalCareTimeEachTimeSheetDto(
 				domain.getAttr().value,
 				domain.getWorkTime().valueAsMinutes(),

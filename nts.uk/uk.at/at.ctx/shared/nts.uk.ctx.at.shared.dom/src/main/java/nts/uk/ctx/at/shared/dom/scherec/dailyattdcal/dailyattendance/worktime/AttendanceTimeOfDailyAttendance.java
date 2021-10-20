@@ -23,12 +23,15 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportWorkTimeOfDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareEditState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
@@ -257,7 +260,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
 
 			copyIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(calcResult.isPresent()?Optional.of(calcResult.get()):Optional.empty());
-			
 			List<ItemValue> itemValueList = Collections.emptyList();
 			if (!attendanceItemIdList.isEmpty()) {
 				DailyRecordToAttendanceItemConverter beforDailyRecordDto = forCalcDivergenceDto.setData(recordReGetClass.getIntegrationOfDaily());
@@ -287,18 +289,21 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 					predetermineTimeSetByPersonInfo,
 					bonusPayAutoCalcSet,
 					calculateOfTotalConstraintTime,
-					converter));
+					converter,
+					result));
+			
+			DailyRecordToAttendanceItemConverter afterReCalcDto = forCalcDivergenceDto.setData(result);
 			
 			if (!attendanceItemIdList.isEmpty()) {
 
 				// 手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
-				DailyRecordToAttendanceItemConverter afterReCalcDto = forCalcDivergenceDto.setData(result);
 				afterReCalcDto.merge(itemValueList);
 				result = afterReCalcDto.toDomain();
 				// マイナスの乖離時間を0にする
 				AttendanceTimeOfDailyAttendance.divergenceMinusValueToZero(result);
 			}
-
+			// 手修正後の再計算(2回目)
+			result = secondReCalc(companyCommonSetting, recordReGetClass.getPersonDailySetting(), result);
 		}
 		// 申告結果に応じて編集状態を更新する
 		AttendanceTimeOfDailyAttendance.updateEditStateForDeclare(result, declareResult);
@@ -310,7 +315,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 * マイナスの乖離時間を0にする
 	 * @param itgOfDaily 日別実績(Work)
 	 */
-	private static void divergenceMinusValueToZero(IntegrationOfDaily itgOfDaily){
+	public static void divergenceMinusValueToZero(IntegrationOfDaily itgOfDaily){
 		
 		if (!itgOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) return;
 		AttendanceTimeOfDailyAttendance attendanceTime = itgOfDaily.getAttendanceTimeOfDailyPerformance().get();
@@ -383,6 +388,9 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().calcTotalWorkingTimeForReCalc();
 			}
+			// 就業時間金額
+			calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+					.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().reCalcWithinWorkTimeAmount(companyCommonSetting.getPersonnelCostSetting().get(targetDate));
 		}
 
 		// 予実差異時間
@@ -489,14 +497,12 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 * 手修正後の再計算（応援用）
 	 * @param calcResultIntegrationOfDaily 日別勤怠(WORK)
 	 * @param converter コンバーター
-	 * @param attendanceItemIdList 勤怠項目ID(List)
 	 * @param recordReGetClass
 	 * @return 日別勤怠(WORK)
 	 */
 	public static IntegrationOfDaily reCalcForSupport(
 			IntegrationOfDaily calcResultIntegrationOfDaily,
 			DailyRecordToAttendanceItemConverter converter,
-			List<Integer> attendanceItemIdList,
 			ManageReGetClass recordReGetClass) {
 		
 		if (!calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent())
@@ -521,6 +527,10 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		if (calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null) {
 			calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 					.getTotalWorkingTime().calcTotalWorkingTimeForReCalc();
+			// 就業時間金額
+			calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+					.getTotalWorkingTime().getWithinStatutoryTimeOfDaily().reCalcWithinWorkTimeAmount(
+							recordReGetClass.getCompanyCommonSetting().getPersonnelCostSetting().get(recordReGetClass.getIntegrationOfDaily().getYmd()));
 		}
 		
 		// 乖離時間計算用 勤怠項目ID紐づけDto作成
@@ -558,6 +568,67 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		});
 
 		return calcResultIntegrationOfDaily;
+	}
+	
+	public static IntegrationOfDaily secondReCalc(ManagePerCompanySet companyCommonSet, ManagePerPersonDailySet personDailySet, IntegrationOfDaily calcResult) {
+		Optional<AttendanceTimeOfDailyAttendance> attendanceTime = calcResult.getAttendanceTimeOfDailyPerformance();
+		if(!attendanceTime.isPresent()) {
+			return calcResult;
+		}
+		// 割増時間
+		PremiumTimeOfDailyPerformance old = attendanceTime.get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance();
+		PremiumTimeOfDailyPerformance reCalc = old.secondReCalc(personDailySet.getUnitPrice(), companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
+		
+		ActualWorkingTimeOfDaily reCreateActual = ActualWorkingTimeOfDaily.of(
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
+				new DivergenceTimeOfDaily(new ArrayList<>()),
+				reCalc);
+
+		AttendanceTimeOfDailyAttendance reCreateAttendanceTime = new AttendanceTimeOfDailyAttendance(
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
+				reCreateActual,
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
+				AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO,
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
+		
+		calcResult.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
+		
+		return calcResult;
+	}
+
+	public static IntegrationOfDaily secondReCalcForSuport(ManagePerCompanySet companyCommonSet, ManagePerPersonDailySet personDailySet, IntegrationOfDaily calcResult,
+			SupportFrameNo supportNo) {
+		Optional<OuenWorkTimeOfDailyAttendance> support = calcResult.getOuenTime().stream()
+				.filter(o -> o.getWorkNo().equals(supportNo))
+				.findFirst();
+		if(!support.isPresent()) {
+			return calcResult;
+		}
+		// 割増時間
+		PremiumTimeOfDailyPerformance old = support.get().getWorkTime().getPremiumTime();
+		PremiumTimeOfDailyPerformance reCalc = old.secondReCalc(personDailySet.getUnitPrice(), companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
+		
+		ActualWorkingTimeOfDaily reCreateActual = ActualWorkingTimeOfDaily.of(
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
+				new DivergenceTimeOfDaily(new ArrayList<>()),
+				reCalc);
+
+		AttendanceTimeOfDailyAttendance reCreateAttendanceTime = new AttendanceTimeOfDailyAttendance(
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
+				reCreateActual,
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
+				AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO,
+				calcResult.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
+		
+		calcResult.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
+		
+		return calcResult;
 	}
 
 	/**

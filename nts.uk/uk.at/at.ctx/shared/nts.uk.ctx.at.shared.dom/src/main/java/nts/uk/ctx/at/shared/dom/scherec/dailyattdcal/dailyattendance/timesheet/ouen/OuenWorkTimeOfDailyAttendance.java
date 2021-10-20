@@ -6,12 +6,11 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -31,25 +30,21 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	
 	/** 金額: 勤怠日別金額 */
 	private AttendanceAmountDaily amount;
-	
-	/** 単価: 単価 */
-	private WorkingHoursUnitPrice priceUnit;
 
 	private OuenWorkTimeOfDailyAttendance(SupportFrameNo workNo, OuenAttendanceTimeEachTimeSheet workTime,
-			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, WorkingHoursUnitPrice priceUnit) {
+			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount) {
 		super();
 		this.workNo = workNo;
 		this.workTime = workTime;
 		this.moveTime = moveTime;
 		this.amount = amount;
-		this.priceUnit = priceUnit;
 	}
 	
 	public static OuenWorkTimeOfDailyAttendance create(SupportFrameNo workNo,
 			OuenAttendanceTimeEachTimeSheet workTime,
-			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, WorkingHoursUnitPrice priceUnit) {
+			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount) {
 		
-		return new OuenWorkTimeOfDailyAttendance(workNo, workTime, moveTime, amount, priceUnit);
+		return new OuenWorkTimeOfDailyAttendance(workNo, workTime, moveTime, amount);
 	}
 	
 	/**
@@ -76,7 +71,8 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime,
 			DailyRecordToAttendanceItemConverter converter,
 			List<OuenWorkTimeSheetOfDailyAttendance> allTimeSheets,
-			OuenWorkTimeSheetOfDailyAttendance processingTimeSheet) {
+			OuenWorkTimeSheetOfDailyAttendance processingTimeSheet,
+			IntegrationOfDaily integrationOfDaily) {
 		
 		//勤務時間を計算する
 		OuenAttendanceTimeEachTimeSheet attendanceTime = OuenAttendanceTimeEachTimeSheet.create(
@@ -88,7 +84,11 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 				bonusPayAutoCalcSet,
 				calculateOfTotalConstraintTime,
 				converter,
-				processingTimeSheet);
+				processingTimeSheet,
+				integrationOfDaily);
+		
+		//金額を計算する
+		AttendanceAmountDaily amount = attendanceTime.calcTotalAmount();
 		
 		//移動時間を計算する
 		OuenMovementTimeEachTimeSheet movementTime = OuenMovementTimeEachTimeSheet.create(
@@ -103,26 +103,6 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 				allTimeSheets,
 				processingTimeSheet);
 		
-		//単価を取得する
-		WorkingHoursUnitPrice priceUnit = WorkingHoursUnitPrice.ZERO;
-		
-		//金額を計算する
-		AttendanceAmountDaily amount = calcIncentiveAmount(
-				priceUnit,
-				attendanceTime.getTotalTime().minusMinutes(attendanceTime.getTotalPremiumTime().valueAsMinutes()),
-				attendanceTime.getTotalPremiumTime());
-		
-		return new OuenWorkTimeOfDailyAttendance(processingTimeSheet.getWorkNo(), attendanceTime, movementTime, amount, priceUnit);
-	}
-	
-	/**
-	 * 金額を計算する
-	 * @param priceUnit 作業単価
-	 * @param within 所定内時間
-	 * @param outside 所定外時間
-	 * @return 金額
-	 */
-	private static AttendanceAmountDaily calcIncentiveAmount(WorkingHoursUnitPrice priceUnit, AttendanceTime within, AttendanceTime outside) {
-		return new AttendanceAmountDaily(priceUnit.v() * (within.valueAsMinutes() + outside.valueAsMinutes()));
+		return new OuenWorkTimeOfDailyAttendance(processingTimeSheet.getWorkNo(), attendanceTime, movementTime, amount);
 	}
 }

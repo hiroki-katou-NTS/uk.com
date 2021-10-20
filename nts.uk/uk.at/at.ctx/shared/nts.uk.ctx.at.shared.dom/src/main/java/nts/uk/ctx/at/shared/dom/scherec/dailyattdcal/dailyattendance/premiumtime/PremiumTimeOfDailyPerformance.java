@@ -66,11 +66,23 @@ public class PremiumTimeOfDailyPerformance {
 			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
 			PersonCostCalculation personCostCalculation) {
 
+		//割増時間
 		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
 				.map(pcc -> PremiumTime.create(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
 				.collect(Collectors.toList());
 		
-		return new PremiumTimeOfDailyPerformance(times);
+		//割増労働時間合計
+		AttendanceTime totalTime = new AttendanceTime(times.stream()
+				.filter(t -> personCostCalculation.isIncludeTotalTime(t.getPremiumTimeNo()))
+				.map(t -> t.getPremitumTime().valueAsMinutes())
+				.collect(Collectors.summingInt(v -> v)));
+		
+		//割増金額合計
+		AttendanceAmountDaily totalAmount = new AttendanceAmountDaily(times.stream()
+				.map(t -> t.getPremiumAmount().v())
+				.collect(Collectors.summingInt(v -> v)));
+		
+		return new PremiumTimeOfDailyPerformance(times, totalAmount, totalTime);
 	}
 	
 	/**
@@ -90,7 +102,18 @@ public class PremiumTimeOfDailyPerformance {
 			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
 			.collect(Collectors.toList());
 
-		return new PremiumTimeOfDailyPerformance(times);
+		//割増労働時間合計
+		AttendanceTime totalTime = new AttendanceTime(times.stream()
+				.filter(t -> personCostCalculation.isIncludeTotalTime(t.getPremiumTimeNo()))
+				.map(t -> t.getPremitumTime().valueAsMinutes())
+				.collect(Collectors.summingInt(v -> v)));
+		
+		//割増金額合計
+		AttendanceAmountDaily totalAmount = new AttendanceAmountDaily(times.stream()
+				.map(t -> t.getPremiumAmount().v())
+				.collect(Collectors.summingInt(v -> v)));
+
+		return new PremiumTimeOfDailyPerformance(times, totalAmount, totalTime);
 	}
 
 	//指定されたNoに一致する割増時間を取得する
@@ -98,4 +121,29 @@ public class PremiumTimeOfDailyPerformance {
 		return this.premiumTimes.stream().filter(tc -> tc.getPremiumTimeNo().equals(number)).findFirst();
 	}
 
+	public PremiumTimeOfDailyPerformance secondReCalc(
+			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
+			Optional<PersonCostCalculation> personCostCalculation) {
+		if(!personCostCalculation.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
+		
+		//割増時間
+		List<PremiumTime> times = this.premiumTimes.stream()
+			.map(p -> p.secondReCalc(unitPriceHistory, personCostCalculation.get()))
+			.collect(Collectors.toList());
+
+		//割増労働時間合計
+		AttendanceTime totalTime = new AttendanceTime(times.stream()
+				.filter(t -> personCostCalculation.get().isIncludeTotalTime(t.getPremiumTimeNo()))
+				.map(t -> t.getPremitumTime().valueAsMinutes())
+				.collect(Collectors.summingInt(v -> v)));
+		
+		//割増金額合計
+		AttendanceAmountDaily totalAmount = new AttendanceAmountDaily(times.stream()
+				.map(t -> t.getPremiumAmount().v())
+				.collect(Collectors.summingInt(v -> v)));
+
+		return new PremiumTimeOfDailyPerformance(times, totalAmount, totalTime);
+	}
 }

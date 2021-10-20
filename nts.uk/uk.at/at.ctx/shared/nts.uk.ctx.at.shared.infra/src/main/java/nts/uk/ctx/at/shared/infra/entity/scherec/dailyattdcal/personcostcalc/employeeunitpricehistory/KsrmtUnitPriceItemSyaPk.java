@@ -21,5 +21,5 @@ public class KsrmtUnitPriceItemSyaPk implements Serializable {
 	
 	/** 社員時間単価NO */
 	@Column(name = "UNIT_PRICE_NO")
-	public String unitPriceNo;
+	public int unitPriceNo;
 }

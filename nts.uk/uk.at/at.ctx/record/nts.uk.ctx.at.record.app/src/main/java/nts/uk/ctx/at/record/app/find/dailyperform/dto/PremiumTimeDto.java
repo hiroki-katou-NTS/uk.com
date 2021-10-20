@@ -84,7 +84,7 @@ public class PremiumTimeDto implements ItemConst, AttendanceItemDataGate {
 				this.premiumAmount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.premiumAmount));
 	}
 	
-	public static PremiumTimeDto valueOf(PremiumTime domain) {
+	public static PremiumTimeDto toDto(PremiumTime domain) {
 		return new PremiumTimeDto(
 				domain.getPremitumTime().valueAsMinutes(),
 				domain.getPremiumAmount().v(),

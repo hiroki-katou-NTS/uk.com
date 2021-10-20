@@ -54,7 +54,7 @@ public class OuenWorkTimeOfDailyDto extends AttendanceItemCommon {
 			dto.setEmployeeId(employeeId);
 			dto.setDate(date);
 			dto.setWorkTimes(domain.stream()
-					.map(d -> OuenWorkTimeOfDailyAttendanceDto.valueOf(d))
+					.map(d -> OuenWorkTimeOfDailyAttendanceDto.toDto(d))
 					.collect(Collectors.toList()));
 		}
 		dto.exsistData();
@@ -67,7 +67,7 @@ public class OuenWorkTimeOfDailyDto extends AttendanceItemCommon {
 			dto.setEmployeeId(domain.getEmpId());
 			dto.setDate(domain.getYmd());
 			dto.setWorkTimes(domain.getOuenTimes().stream()
-					.map(d -> OuenWorkTimeOfDailyAttendanceDto.valueOf(d))
+					.map(d -> OuenWorkTimeOfDailyAttendanceDto.toDto(d))
 					.collect(Collectors.toList()));
 		}
 		dto.exsistData();

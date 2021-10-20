@@ -31,7 +31,7 @@ public class RegisterOuenWorkTimeOfDailyServiceTest {
 	private GeneralDate ymd = GeneralDate.today();
 	private List<OuenWorkTimeOfDailyAttendance> ouenTimes = new ArrayList<>();
 
-	OuenWorkTimeOfDailyAttendance quen = OuenWorkTimeOfDailyAttendance.create(SupportFrameNo.of(1), null, null, null, null);
+	OuenWorkTimeOfDailyAttendance quen = OuenWorkTimeOfDailyAttendance.create(SupportFrameNo.of(1), null, null, null);
 
 	// $実績の作業時間 notIsPresent
 	@Test

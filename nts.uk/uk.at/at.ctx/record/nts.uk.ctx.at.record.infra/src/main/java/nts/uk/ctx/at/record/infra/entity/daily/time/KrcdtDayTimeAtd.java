@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.leaveearlytime.KrcdtDayLeaveEarly
 import nts.uk.ctx.at.record.infra.entity.daily.premiumtime.KrcdtDayTimePremium;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -1295,6 +1296,10 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	@Column(name = "CALC_DIFF_TIME")
 	public int calcDiffTime;
 	
+	/** 就業時間金額 */
+	@Column(name = "WORK_TIME_AMOUNT")
+	public int workTimeAmount;
+	
 	/*----------------------日別実績の加給時間------------------------------*/
 	
 	@Override
@@ -1783,6 +1788,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 							this.divPrsIncldMidnTime = winthinTime == null || winthinTime.getDivergenceTime() == null ? 0
 									: withinDomain.getWithinStatutoryMidNightTime().getTime().getDivergenceTime().valueAsMinutes();
 						}
+						/*就業時間金額*/
+						this.workTimeAmount = withinDomain.getWithinWorkTimeAmount() == null ? 0 : withinDomain.getWithinWorkTimeAmount().v();
 //						/*休暇加算時間*/
 //						this.vactnAddTime = withinDomain.getVacationAddTime() == null ? 0 : withinDomain.getVacationAddTime().valueAsMinutes();
 					}
@@ -2797,7 +2804,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 				   																  new AttendanceTime(entity.pefomWorkTime),
 				   																  new AttendanceTime(entity.prsIncldPrmimTime),
 				   																  new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.prsIncldMidnTime),
-				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))));
+				   																		  																				  new AttendanceTime(entity.calcPrsIncldMidnTime))),
+				   																  new AttendanceAmountDaily(entity.workTimeAmount));
 	}
 
 	private static WorkScheduleTimeOfDaily createScheduleWorkTime(KrcdtDayTimeAtd entity) {
