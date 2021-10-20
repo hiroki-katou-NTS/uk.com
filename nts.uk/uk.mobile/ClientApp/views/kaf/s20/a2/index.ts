@@ -7,6 +7,7 @@ import { KafS00CComponent, KAFS00CParams } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/define';
 import { CmmS45CComponent } from '../../../cmm/s45/c/index';
+import {KafS20AmountInputComponent, KafS20NumberInputComponent, KafS20TimeInputComponent} from '../components';
 
 @component({
     name: 'kafs20a2',
@@ -17,30 +18,12 @@ import { CmmS45CComponent } from '../../../cmm/s45/c/index';
         'KafS00AComponent': KafS00AComponent,
         'KafS00BComponent': KafS00BComponent,
         'KafS00CComponent': KafS00CComponent,
-        'cmms45c': CmmS45CComponent
+        'cmms45c': CmmS45CComponent,
+        'kafs20-amount-input': KafS20AmountInputComponent,
+        'kafs20-number-input': KafS20NumberInputComponent,
+        'kafs20-time-input': KafS20TimeInputComponent
     },
-    resource: require('./resources.json'),
-    validations: {
-        optionalItemApplication: {
-            amount: {
-                loop: true,
-                constraint: 'AnyItemAmount'
-            },
-            number: {
-                loop: true,
-                constraint: 'AnyItemTimes'
-            },
-            time: {
-                loop: true,
-                constraint: 'AnyItemTime'
-            }
-        }
-    },
-    constraints: [
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount',
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes',
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime'
-    ]
+    resource: require('./resources.json')
 })
 export class KafS20A2Component extends KafS00ShrComponent {
     public title: string = 'KafS20A2';
@@ -463,7 +446,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         if (_.isArray(res.errors)) {
             res.errors.forEach((error) => {
                 document.querySelector('.item-' + error.parameterIds[1] + ' input').classList.add('is-invalid');
-                document.querySelector('.item-' + error.parameterIds[1] + ' .invalid-feedback').innerHTML = '<span>' + error.errorMessage + '</span>';
+                document.querySelector('.item-' + error.parameterIds[1] + ' .invalid-feedback').innerHTML += '<span>' + error.errorMessage + '</span>';
             });
         } else {
             return vm.$modal.error(res);
