@@ -1,11 +1,122 @@
 module nts.uk.ui.at.kdw013 {
-	export type DisplayManHrRecordItem = { itemId: number; order: any; }
-	export type ITaskItemValue = { itemId: number; value: any; }
-	export type IManHrTaskDetail = { supNo: number; taskItemValues: ITaskItemValue[]; }
-	export type ITimeSpanForCalc = { start: Date; end: Date; }
-	export type IManHrPerformanceTaskBlock = { caltimeSpan: ITimeSpanForCalc; taskDetails: IManHrTaskDetail[]; }
-	export type IDailyActualManHoursActualWork = { date: string; taskBlocks: IManHrPerformanceTaskBlock[]; }
+	export type DisplayManHrRecordItem 			= { itemId: number; order: any; }
+	export type ITaskItemValue 					= { itemId: number; value: any; }
+	export type IManHrTaskDetail 				= { supNo: number; taskItemValues: ITaskItemValue[]; }
+	export type ITimeSpanForCalc 				= { start: Date; end: Date; }
+	export type IManHrPerformanceTaskBlock 		= { caltimeSpan: ITimeSpanForCalc; taskDetails: IManHrTaskDetail[]; }
+	export type IDailyActualManHoursActualWork 	= { date: string; taskBlocks: IManHrPerformanceTaskBlock[]; }
 
+	export type TaskBlockDetailContentDto = {
+        // 開始時刻
+        startTime: number;
+        // 終了時刻
+        endTime: number;
+        //作業詳細
+        taskContents: TaskContentForEachSupportFrameDto[];
+    }
+
+	export type TaskContentDto = {
+        // 項目ID: 工数実績項目ID
+        itemId: number;
+
+        // 作業コード
+        taskCode: string;
+    };
+
+    export type FavoriteTaskItemDto = {
+        // 社員ID
+        employeeId: string;
+        // お気に入りID
+        favoriteId: string;
+        // お気に入り作業名称
+        taskName: string;
+        // お気に入り内容
+        favoriteContents: TaskContentDto[]; 
+    }
+
+    export type StartTaskFavoriteRegisterParam = {
+        // お気に入りID
+        favId: string | null;
+    }
+
+    export type RegisterFavoriteCommand = {
+        taskName: string;
+	    contents: TaskContentDto[];
+    }
+
+    export type UpdateFavNameCommand = {
+        favId: string;
+        favName: string;
+    }
+    export type TaskContentForEachSupportFrameDto = {
+        // 応援勤務枠No
+        frameNo: number;
+        // 作業内容
+        taskContent: TaskContentDto;
+    }
+
+    export type OneDayFavoriteSetDto = {
+        // 社員ID
+        sId: string;
+        // お気に入りID
+        favId: string;
+        // お気に入り作業名称
+        taskName: string;
+        // お気に入り内容
+        taskBlockDetailContents: TaskBlockDetailContentDto[];
+    }
+	export type RegisterFavoriteForOneDayCommand = {
+        employeeId: string;
+        taskName: string;
+        contents: TaskBlockDetailContentDto[];
+    }
+
+    export type TaskInfo = {
+        // 作業枠NO 
+        workNo: number;
+        // 作業名
+        name: string;
+        // 作業時間
+        time: number;
+    }
+    
+    // 日別勤怠の応援作業時間
+    export type OuenWorkTimeOfDailyAttendance = {
+        // 応援勤務枠No
+        workNo: number;
+        // 勤務時間
+        workTime: OuenAttendanceTimeEachTimeSheet ;
+    }
+
+    export type OuenAttendanceTimeEachTimeSheet = {
+        // 総労働時間: 勤怠時間
+        totalTime: number;
+    }
+
+    // 日別勤怠の応援作業時間帯
+    export type OuenWorkTimeSheetOfDailyAttendance = {
+        // 応援勤務枠No
+        workNo: number;
+        // 作業内容
+        workContent: WorkContent;
+		//時間帯
+		timeSheet: TimeSheetOfAttendanceEachOuenSheet;
+    }
+
+	export type TimeSheetOfAttendanceEachOuenSheet = {
+		// 応援勤務枠No
+        workNo: number;
+		// 開始
+		start: number;
+		// 終了
+		end: number;
+	}
+
+    export type WorkContent = {
+        // 作業
+        workGroup: WorkGroupDto;
+    }
+	
 	//日別実績の工数実績作業
 	export class DailyActualManHoursActualWork {
 		date: KnockoutObservable<string>;
