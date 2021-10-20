@@ -131,8 +131,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         GeneralDate date = GeneralDate.fromString(query.getDate(), "yyyy/MM/dd");
         // B3_1
         cells.get(secondRow, 18).setValue(date.year() + "年 " + date.month() + "月");
-        if (query.isTotalDisplay()) {
-            cells.get("AG6").setValue(getText("KSU002_68"));
+        if (!query.isTotalDisplay()) {
+            cells.get(2, 35).setValue(getText("KSU002_68"));
+        } else {
+            cells.get(2, 35).setValue(getText("KSU002_69"));
         }
     }
 
@@ -277,8 +279,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             if (query.isTotalDisplay()) {
                 //calender item seven for each row
                 int firstCol = 35;
-                int secondCol = 39;
-                cells.get(rowCount, 3).setValue(item.getD21());
+                int secondCol = 38;
+                cells.get(rowCount, firstCol).setValue(item.getD21());
                 cells.get(rowCount + 1, firstCol).setValue(item.getD22());
                 cells.get(rowCount + 1, secondCol).setValue(item.getD23());
                 cells.get(rowCount + 2, firstCol).setValue(item.getD24());
@@ -473,11 +475,14 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 weekCount++;
                 Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
                 if (weekTotal.isPresent()) {
-                    format.setD27(weekTotal.get().getHolidays());
-                    format.setD23(weekTotal.get().getWorkingHours());
+                    format.setD27(String.valueOf(weekTotal.get().getHolidays()));
+                    format.setD23(String.valueOf(weekTotal.get().getWorkingHours()));
+                } else {
+                    format.setD27("0");
+                    format.setD23("0:00");
                 }
                 if (!legalWorktime.isPresent()) {
-                    format.setD25("0");
+                    format.setD25("0:00");
                 }
                 if (legalWorktime.isPresent()) {
                     if (legalWorktime.get().getWeeklyEstimateTime().isPresent()) {
@@ -488,8 +493,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setD12(d12);
                 format.setD21(d21);
                 format.setD22(d22);
-                format.setD22(d26);
-                format.setD24(d26);
+                format.setD26(d26);
+                format.setD24(d24);
                 format.setFromTo(divider);
                 Map<Integer, Map<Integer, String>> holidayd = new HashMap<>();
                 holidayd.put(Integer.valueOf(weekCount), holiday);
@@ -502,11 +507,14 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (iteration == size) {
                     Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
                     if (weekTotal.isPresent()) {
-                        format.setD27(weekTotal.get().getHolidays());
-                        format.setD23(weekTotal.get().getWorkingHours());
+                        format.setD27(String.valueOf(weekTotal.get().getHolidays()));
+                        format.setD23(String.valueOf(weekTotal.get().getWorkingHours()));
+                    } else {
+                        format.setD27("0");
+                        format.setD23("0:00");
                     }
                     if (!legalWorktime.isPresent()) {
-                        format.setD25("0");
+                        format.setD25("0:00");
                     }
                     if (legalWorktime.isPresent()) {
                         if (legalWorktime.get().getWeeklyEstimateTime().isPresent()) {
@@ -517,8 +525,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     format.setD12(d12);
                     format.setD21(d21);
                     format.setD22(d22);
-                    format.setD22(d26);
-                    format.setD24(d26);
+                    format.setD26(d26);
+                    format.setD24(d24);
                     format.setFromTo(divider);
                     Map<Integer, Map<Integer, String>> holidayd = new HashMap<>();
                     holidayd.put(Integer.valueOf(weekCount), holiday);

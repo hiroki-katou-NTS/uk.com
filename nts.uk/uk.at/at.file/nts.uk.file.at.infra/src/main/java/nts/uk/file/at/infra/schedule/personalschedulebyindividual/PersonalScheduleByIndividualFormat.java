@@ -66,8 +66,8 @@ public class PersonalScheduleByIndividualFormat {
     private String D21;
     private String D22;
     private String D26;
-    private BigDecimal D27;
-    private BigDecimal D23;
+    private String D27;
+    private String D23;
     private String D24;
     private String D25;
     private Map<Integer, Map<Integer, String>> holiday;
