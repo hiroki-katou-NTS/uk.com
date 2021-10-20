@@ -26,6 +26,8 @@ import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteForOneDayCommand;
 import nts.uk.screen.at.app.kdw013.command.UpdateFavNameCommand;
 import nts.uk.screen.at.app.kdw013.command.UpdateOneDayFavNameCommand;
+import nts.uk.screen.at.app.kdw013.e.UpdateAttendanceTimeZoneBySupportWork;
+import nts.uk.screen.at.app.kdw013.e.UpdateAttendanceTimeZoneBySupportWorkCommand;
 import nts.uk.screen.at.app.kdw013.f.AddNewFavoriteTask;
 import nts.uk.screen.at.app.kdw013.f.StartTaskFavoriteRegister;
 import nts.uk.screen.at.app.kdw013.f.UpdateFavName;
@@ -82,6 +84,9 @@ public class KDW013WebService {
 	
 	@Inject
 	private UpdateOneDayTaskSetName updateOneDayTaskSetName;
+	
+	@Inject
+	private UpdateAttendanceTimeZoneBySupportWork updateAttendanceTimeZoneBySupportWork;
 	
 	// 初期起動処理
 	@POST
@@ -182,6 +187,13 @@ public class KDW013WebService {
 	@Path("g/start_task_fav_register")
 	public OneDayFavoriteSetDto startOneDayTaskFavRegister(StartTaskFavoriteRegisterParam param) {
 		return startOneDayTaskSetRegister.startOneDayTaskSetRegister(param.getFavId());
+	}
+	
+	// E: 応援時間帯を更新する
+	@POST
+	@Path("e/update_timezone")
+	public void updateSupportTimezone(UpdateAttendanceTimeZoneBySupportWorkCommand command) {
+		updateAttendanceTimeZoneBySupportWork.update(command);
 	}
 
 }

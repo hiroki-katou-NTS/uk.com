@@ -70,7 +70,12 @@ public enum PrimitiveValueOfAttendanceItem {
 	RESERVATION_AMOUNT(67, "注文金額"),
 	ADDITION_SETTING_CODE(68, "加給設定コード"),
 	ATTENDANCE_AMOUNT_DAILY(69, "勤怠日別金額"),
-	PRICE_UNIT(70, "単価");
+	PRICE_UNIT(70, "単価"),
+	
+	WORK_SUPPLEMENT_NUMBERICVALUE(73, "作業補足数値"),
+	WORK_SUPPLEMENT_COMMENTS(74, "作業補足コメント"),
+	CODE_WORK_SUPPLEMENT_INFO(75, "作業補足情報の選択肢コード");
+	
 	
 
 	public final int value;

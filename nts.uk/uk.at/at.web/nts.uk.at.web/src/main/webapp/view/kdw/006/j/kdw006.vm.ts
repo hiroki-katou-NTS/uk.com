@@ -103,25 +103,27 @@ module nts.uk.at.view.kmk006.j {
                 let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
                 const exist = _.find(vm.data.dailyAttendanceItem, ((item: IDailyAttendanceItem) => { return item.attendanceItemId == output }));
 
-                switch (param) {
-                    case 1:
-                        vm.value1(output)
-                        if (exist) {
-                            vm.nameAttendent1(exist.attendanceName);
-                        }
-                        break;
-                    case 2:
-                        vm.value2(output)
-                        if (exist) {
-                            vm.nameAttendent2(exist.attendanceName);
-                        }
-                        break;
-                    case 3:
-                        vm.value3(output)
-                        if (exist) {
-                            vm.nameAttendent3(exist.attendanceName);
-                        }
-                        break;
+                if (output) {
+                    switch (param) {
+                        case 1:
+                            vm.value1(output)
+                            if (exist) {
+                                vm.nameAttendent1(exist.attendanceName);
+                            }
+                            break;
+                        case 2:
+                            vm.value2(output)
+                            if (exist) {
+                                vm.nameAttendent2(exist.attendanceName);
+                            }
+                            break;
+                        case 3:
+                            vm.value3(output)
+                            if (exist) {
+                                vm.nameAttendent3(exist.attendanceName);
+                            }
+                            break;
+                    }
                 }
             });
         }
@@ -133,8 +135,8 @@ module nts.uk.at.view.kmk006.j {
                 const exist = _.find(param.dailyAttendanceItem, ((item: IDailyAttendanceItem) => {
                     return item.attendanceItemId === data[i].attendanceItemId
                 }));
-                switch (i) {
-                    case 0: {
+                switch (data[i].order) {
+                    case 1: {
                         vm.value1(data[i].attendanceItemId);
                         vm.textInput1(data[i].displayName);
                         if (exist) {
@@ -142,7 +144,7 @@ module nts.uk.at.view.kmk006.j {
                         }
                         break;
                     }
-                    case 1: {
+                    case 2: {
                         vm.value2(data[i].attendanceItemId);
                         vm.textInput2(data[i].displayName);
                         if (exist) {
@@ -150,7 +152,7 @@ module nts.uk.at.view.kmk006.j {
                         }
                         break;
                     }
-                    case 2: {
+                    case 3: {
                         vm.value3(data[i].attendanceItemId);
                         vm.textInput3(data[i].displayName);
                         if (exist) {
@@ -213,19 +215,40 @@ module nts.uk.at.view.kmk006.j {
             const vm = this;
             var order = 1;
 
+            var isUpdate: boolean = true;
+
             const recordColumnDisplayItems = [];
 
             if (ko.unwrap(vm.value1)) {
-                recordColumnDisplayItems.push({ order: order, attendanceItemId: ko.unwrap(vm.value1), displayName: ko.unwrap(vm.textInput1) });
-                order++;
+                recordColumnDisplayItems.push({ order: 1, attendanceItemId: ko.unwrap(vm.value1).toString(), displayName: ko.unwrap(vm.textInput1) });
             }
             if (ko.unwrap(vm.value2)) {
-                recordColumnDisplayItems.push({ order: order, attendanceItemId: ko.unwrap(vm.value2), displayName: ko.unwrap(vm.textInput2) });
-                order++;
+                recordColumnDisplayItems.push({ order: 2, attendanceItemId: ko.unwrap(vm.value2).toString(), displayName: ko.unwrap(vm.textInput2) });
             }
             if (ko.unwrap(vm.value3)) {
-                recordColumnDisplayItems.push({ order: order, attendanceItemId: ko.unwrap(vm.value3), displayName: ko.unwrap(vm.textInput3) });
-                order++;
+                recordColumnDisplayItems.push({ order: 3, attendanceItemId: ko.unwrap(vm.value3).toString(), displayName: ko.unwrap(vm.textInput3) });
+            }
+
+            if (recordColumnDisplayItems.length == 2) {
+                if (recordColumnDisplayItems[0].attendanceItemId === recordColumnDisplayItems[1].attendanceItemId) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    isUpdate = false;
+                }
+            }
+
+            if (recordColumnDisplayItems.length == 3) {
+                if (recordColumnDisplayItems[0].attendanceItemId === recordColumnDisplayItems[1].attendanceItemId) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    isUpdate = false;
+                }
+                if (recordColumnDisplayItems[0].attendanceItemId === recordColumnDisplayItems[2].attendanceItemId && isUpdate) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    isUpdate = false;
+                }
+                if (recordColumnDisplayItems[1].attendanceItemId === recordColumnDisplayItems[2].attendanceItemId && isUpdate) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    isUpdate = false;
+                }
             }
 
             order = 1;
@@ -253,28 +276,7 @@ module nts.uk.at.view.kmk006.j {
                 displayManHrRecordItems: displayManHrRecordItems
             }
 
-            var update: boolean = true;
-
-            if (param.recordColumnDisplayItems.length == 2) {
-                if (param.recordColumnDisplayItems[0].attendanceItemId == param.recordColumnDisplayItems[1].attendanceItemId) {
-                    vm.$dialog.info({ messageId: 'Msg_2312' });
-                    update = false;
-                }
-            }
-
-            if (param.recordColumnDisplayItems.length == 3) {
-                if (param.recordColumnDisplayItems[0].attendanceItemId == param.recordColumnDisplayItems[1].attendanceItemId) {
-                    vm.$dialog.info({ messageId: 'Msg_2312' });
-                    update = false;
-                }
-
-                if (param.recordColumnDisplayItems[0].attendanceItemId == param.recordColumnDisplayItems[2].attendanceItemId && update) {
-                    vm.$dialog.info({ messageId: 'Msg_2312' });
-                    update = false;
-                }
-            }
-
-            if (update) {
+            if (isUpdate) {
                 vm.validate()
                     .then((valid: boolean) => {
                         if (valid) {
