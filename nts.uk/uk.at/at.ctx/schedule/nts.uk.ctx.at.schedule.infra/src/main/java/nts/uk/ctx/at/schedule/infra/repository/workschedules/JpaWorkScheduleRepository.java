@@ -138,6 +138,9 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			.collect(Collectors.toMap(
 					key -> key
 				,	key -> ws.stream().anyMatch(x -> x.getEmployeeID().equals(key.getEmployeeId()) && x.getYmd().equals(key.getYmd()))
+				,   (value1, value2) -> {
+				    return value1 ? value1 : value2;
+				}
 			));
 
 	}

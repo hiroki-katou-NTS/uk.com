@@ -153,16 +153,25 @@ public class ScheduleRegisterCommandHandler {
         });
         List<EmployeeImport> employeeImports = empEmployeeAdapter.findByEmpId(employeeIds);
         employeeImports.stream().forEach(x -> {
-            ResultOfRegisteringWorkSchedule result = resultOfRegisteringWorkSchedule.stream()
-                    .filter(y -> y.isHasError() ? y.getErrorInformation().get(0).getEmployeeId().equals(x.getEmployeeId()) : y.isHasError()).findFirst().get();
-            RegisterWorkScheduleOutput output = new RegisterWorkScheduleOutput(
-                    x.getEmployeeCode(),
-                    x.getEmployeeName(),
-                    result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
-                    result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
-                    result.getErrorInformation().get(0).getErrorMessage());
-
-            outputs.add(output);
+            List<ResultOfRegisteringWorkSchedule> results = resultOfRegisteringWorkSchedule.stream()
+                    .filter(y -> y.isHasError() ? y.getErrorInformation().get(0).getEmployeeId().equals(x.getEmployeeId()) : y.isHasError()).collect(Collectors.toList());
+            results.forEach(result -> {
+               outputs.add(new RegisterWorkScheduleOutput(
+                       x.getEmployeeCode(),
+                       x.getEmployeeName(), 
+                       result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
+                       result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
+                       result.getErrorInformation().get(0).getErrorMessage()));
+            });
+            
+//            RegisterWorkScheduleOutput output = new RegisterWorkScheduleOutput(
+//                    x.getEmployeeCode(),
+//                    x.getEmployeeName(),
+//                    result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
+//                    result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
+//                    result.getErrorInformation().get(0).getErrorMessage());
+//
+//            outputs.add(output);
         });
 
         if (outputs.size() > 0) {
