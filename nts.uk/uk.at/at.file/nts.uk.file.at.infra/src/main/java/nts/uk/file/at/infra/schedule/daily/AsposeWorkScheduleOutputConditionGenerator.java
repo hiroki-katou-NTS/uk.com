@@ -1535,6 +1535,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
 					totalVal.addValue(val.value(), totalValueTypeEnum);
 					totalVal.setValueType(val.getValueType());
+					totalVal.setUnit(val.getUnit());
 				}
 			});
 		});
@@ -1547,7 +1548,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				lstAttendanceId.stream().forEach(attendanceId -> {
 					int attendanceDisplay = attendanceId.getAttendanceDisplay();
 					if (!employeeData.mapPersonalTotal.containsKey(attendanceDisplay)) {
-						employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "", TotalValue.STRING));
+						employeeData.mapPersonalTotal.put(attendanceDisplay, new TotalValue(attendanceDisplay, "", TotalValue.STRING, ""));
 						TotalValue totalVal = new TotalValue();
 						totalVal.setAttendanceId(attendanceDisplay);
 						totalVal.setValue("");
@@ -1573,8 +1574,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	                    
 	                    // Change value type
 	                    personalTotal.setValueType(valueType);
+	                    personalTotal.setUnit(aVal.getUnit());
 	                    totalVal.setValueType(valueType);
+	                    totalVal.setUnit(aVal.getUnit());
 	                    totalGrossVal.setValueType(valueType);
+	                    totalGrossVal.setUnit(aVal.getUnit());
 	                    
 	                    if (aVal.value() == null) return;
 
@@ -1612,11 +1616,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						} else {
 							totalVal.setValue("");
 						}
+						totalVal.setUnit(item.getUnit());
 					} else {
 						TotalValue totalVal = new TotalValue();
 						totalVal.setAttendanceId(item.getAttendanceId());
 						totalVal.setValue(item.getValue());
 						totalVal.setValueType(item.getValueType());
+						totalVal.setUnit(item.getUnit());
 						lstTotalVal.add(totalVal);
 					}
 				});
@@ -1663,6 +1669,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
 							totalValue.addValue(actualValue.value(), valueTypeEnum);
 						}
+						totalValue.setUnit(actualValue.getUnit());
 					}
 					else {
 						totalValue = new TotalValue();
@@ -1675,6 +1682,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								totalValue.setValue("0");
 							}
 						}
+						totalValue.setUnit(actualValue.getUnit());
 						totalValue.setValueType(valueType);
 						lstTotalValue.add(totalValue);
 					}
@@ -1703,6 +1711,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						totalWorkplaceValue.setValueType(valueType);
 						lstTotalHierarchyValue.add(totalWorkplaceValue);
 					}
+					totalWorkplaceValue.setUnit(actualValue.getUnit());
 				});
 			}
 		}
@@ -1738,6 +1747,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					totalValue.setValueType(valueType);
 					lstTotalValue.add(totalValue);
 				}
+				totalValue.setUnit(actualValue.getUnit());
 			});
 		});
 	}
@@ -1775,6 +1785,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					totalValue.setValueType(totalVal.getValueType());
 					lstGrossTotal.add(totalValue);
 				}
+				totalValue.setUnit(totalVal.getUnit());
 			});
 		});
 	}
@@ -2859,6 +2870,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			cell.setValue(actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.LEFT);
 		}
+		if (!StringUtil.isNullOrEmpty(Objects.toString(cell.getValue(), null), true)) {
+			cell.setValue(String.valueOf(cell.getValue()).concat(actualValue.getUnit()));
+		}
 		setFontStyle(style, fontSize);
 		cell.setStyle(style);
 	}
@@ -3381,7 +3395,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		} else {
 			cell.setValue((value != null && zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value);
     	}
-    	
+    	if (!StringUtil.isNullOrEmpty(Objects.toString(cell.getValue(), null), true)) {
+			cell.setValue((String.valueOf(cell.getValue()).concat(totalValue.getUnit()))); 
+		}
     	setFontStyle(style, fontSize);
     	cell.setStyle(style);
 	}

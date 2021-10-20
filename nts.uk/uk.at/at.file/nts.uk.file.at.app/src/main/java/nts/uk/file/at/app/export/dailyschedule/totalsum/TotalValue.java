@@ -30,6 +30,8 @@ public class TotalValue {
 	
 	private int valueType;
 	
+	private String unit = "";
+	
 	/**
 	 * Value.
 	 *
