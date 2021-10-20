@@ -464,6 +464,16 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
 
 		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.dom', version: version)
+		
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.pub', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.pubimp', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.ac', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.app', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.dom', version: version)
+		runtime(group: 'com.health', name: 'nts.uk.ctx.health.infra', version: version)
+
+		runtime(group: 'uk.cnv.core', name: 'nts.uk.cnv.core', version: version)
+		runtime(group: 'nemunoki', name: 'nemunoki.oruta.shr', version: version)
 
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.ac')
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.app')
