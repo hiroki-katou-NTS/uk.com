@@ -191,9 +191,11 @@ module nts.uk.ui.at.kdw013 {
 						return link.attendanceItemId == attendanceItem.attendanceItemId;
 					});
 					if (itemAttendanceItemLink) {
-						let item: ITaskItemValue = _.find(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId = itemAttendanceItemLink.itemId);
-						let t: TaskItemValue = new TaskItemValue(item, '', attendanceItem.dailyAttendanceAtr);
-						taskItemValues.push(t);
+						let item: ITaskItemValue = _.find(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId == itemAttendanceItemLink.itemId);
+						if(item){
+							let t: TaskItemValue = new TaskItemValue(item, '', attendanceItem.dailyAttendanceAtr);
+							taskItemValues.push(t);
+						}
 					}
 				});
 				vm.taskItemValues = ko.observableArray(taskItemValues);
