@@ -353,13 +353,14 @@ module nts.uk.at.view.kdw008.a {
                 return dfd.promise();
             }
 
-			clearDataSwapList(): void {
+			clearDataSwapListAndSheetName(): void {
 				const self = this;
 				$("#swap-list2-grid2").igGridSelection("clearSelection");
                 $("#swap-list2-grid1").igGridSelection("clearSelection");
                 self.authorityFormatDailyValue.removeAll();
                 self.dailyDataSource.removeAll();
                 self.dailyDataSource(_.cloneDeep(self.dailyAttItems()));
+                self.selectedSheetName(null);
 			}
             getDailyDetail(code: string, sheetNo: string): JQueryPromise<any> {
                 let self = this,
@@ -367,7 +368,7 @@ module nts.uk.at.view.kdw008.a {
 
 				if (code != '' && code != null && code != undefined ) {
 	                service.getDailyDetail(code, self.selectedSheetNo(), self.isMobile).done(data => {
-	                    self.clearDataSwapList();
+	                    self.clearDataSwapListAndSheetName();
 	
 	                    if (data) {
 	                        self.selectedSheetName(data.sheetName);
@@ -380,7 +381,7 @@ module nts.uk.at.view.kdw008.a {
 	                })
 					
 				} else {
-					self.clearDataSwapList();
+					self.clearDataSwapListAndSheetName();
 					dfd.resolve();
 				}
 				
