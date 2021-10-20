@@ -190,7 +190,7 @@ module nts.uk.at.view.kaf020.b {
             vm.dataFetch().applicationContents().forEach((item: OptionalItemApplicationContent) => {
                 optionalItems.push({
                     itemNo: item.optionalItemNo,
-                    times: item.inputCheckbox ? (item.timesChecked () ? 1 : null) : item.times(),
+                    times: item.inputCheckbox ? (item.timesChecked () ? 1 : 0) : item.times(),
                     amount: item.amount(),
                     time: item.time()
                 });

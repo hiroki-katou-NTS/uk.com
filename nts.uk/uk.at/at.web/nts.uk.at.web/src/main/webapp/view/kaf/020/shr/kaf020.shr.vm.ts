@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                                         <span data-bind="text: amountUpper"></span>
                                     </span>
                                 </span>
-                                <span data-bind="if: lowerCheck &amp;&amp; upperCheck">
+                                <span data-bind="if: (lowerCheck &#124;&#124; upperCheck) &amp;&amp; (unit &#124;&#124; optionalItemAtr == 0)">
                                     <span data-bind="text: '、'"></span>
                                 </span>
                                 <span data-bind="if: unit &#124;&#124; optionalItemAtr == 0">

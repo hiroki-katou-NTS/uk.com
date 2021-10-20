@@ -280,6 +280,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 			});
 		} catch (Exception e){
 			System.out.println("Check error mes KWR:-----------------------" + e.getMessage());
+			e.printStackTrace();
 			return Collections.emptyList();
 		}
 	}

@@ -2,19 +2,17 @@ package nts.uk.ctx.at.request.app.find.application.optitem;
 
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.request.app.command.application.optionalitem.OptionalItemApplicationCommand;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.*;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptItemSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetFinder;
-import nts.uk.ctx.at.request.dom.adapter.OptionalItemAdapter;
-import nts.uk.ctx.at.request.dom.adapter.OptionalItemImport;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeCode;
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.ControlOfAttendanceItemsDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TimeInputUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -44,7 +42,7 @@ public class OptionalItemApplicationQuery {
 
 
     @Inject
-    private OptionalItemAdapter optionalItemAdapter;
+    private OptionalItemRepository optionalItemRepo;
 
 
     @Inject
@@ -75,7 +73,7 @@ public class OptionalItemApplicationQuery {
         String settingCode = domain.getCode().v();
         OptionalItemAppSetDto setting = optionalItemAppSetFinder.findByCode(new OptionalItemApplicationTypeCode(settingCode).v());
         List<Integer> optionalItemNos = setting.getSettingItems().stream().map(i -> i.getNo()).collect(Collectors.toList());
-        List<OptionalItemImport> optionalItems = optionalItemAdapter.findOptionalItem(cid, optionalItemNos);
+        List<OptionalItem> optionalItems = optionalItemRepo.findByListNos(cid, optionalItemNos);
 //        List<ControlOfAttendanceItems> controlOfAttendanceItems = controlOfAttendanceItemsRepository.getByItemDailyList(cid,
 //                optionalItemNos.stream().map(no -> DailyItemList.getOption(no).map(i -> i.itemId).orElse(0)).collect(Collectors.toList())
 //        );
@@ -86,16 +84,21 @@ public class OptionalItemApplicationQuery {
         detail.setOptionalItems(optionalItems.stream().map(item ->
                 {
                     CalcResultRangeDto calcResultRangeDto = new CalcResultRangeDto();
-                    item.getCalcResultRange().saveToMemento(calcResultRangeDto);
+                    item.getInputControlSetting().getCalcResultRange().saveToMemento(calcResultRangeDto);
+                    if (item.getInputControlSetting().getDailyInputUnit().isPresent()) {
+                        calcResultRangeDto.setTimeInputUnit(item.getInputControlSetting().getDailyInputUnit().get().getTimeItemInputUnit().map(i -> i.value).orElse(null));
+                        calcResultRangeDto.setNumberInputUnit(item.getInputControlSetting().getDailyInputUnit().get().getNumberItemInputUnit().map(i -> i.value).orElse(null));
+                        calcResultRangeDto.setAmountInputUnit(item.getInputControlSetting().getDailyInputUnit().get().getAmountItemInputUnit().map(i -> i.value).orElse(null));
+                    }
                     OptionalItemDto optionalItemDto = new OptionalItemDto();
-                    optionalItemDto.setOptionalItemNo(item.getOptionalItemNo());
-                    optionalItemDto.setOptionalItemName(item.getOptionalItemName());
-                    optionalItemDto.setUnit(item.getOptionalItemUnit());
-                    optionalItemDto.setInputCheck(item.isInputCheck());
+                    optionalItemDto.setOptionalItemNo(item.getOptionalItemNo().v());
+                    optionalItemDto.setOptionalItemName(item.getOptionalItemName().v());
+                    optionalItemDto.setUnit(item.getUnit().map(PrimitiveValueBase::v).orElse(null));
+                    optionalItemDto.setInputCheck(item.getInputControlSetting().isInputWithCheckbox());
                     optionalItemDto.setCalcResultRange(calcResultRangeDto);
                     optionalItemDto.setOptionalItemAtr(item.getOptionalItemAtr().value);
-                    optionalItemDto.setDescription(item.getDescription());
-                    optionalItemDto.setDispOrder(setting.getSettingItems().stream().filter(i -> i.getNo() == item.getOptionalItemNo()).findFirst().map(OptItemSetDto::getDispOrder).orElse(1));
+                    optionalItemDto.setDescription(item.getDescription().map(PrimitiveValueBase::v).orElse(null));
+                    optionalItemDto.setDispOrder(setting.getSettingItems().stream().filter(i -> i.getNo() == item.getOptionalItemNo().v()).findFirst().map(OptItemSetDto::getDispOrder).orElse(1));
                     return optionalItemDto;
                 }
         ).collect(Collectors.toList()));
