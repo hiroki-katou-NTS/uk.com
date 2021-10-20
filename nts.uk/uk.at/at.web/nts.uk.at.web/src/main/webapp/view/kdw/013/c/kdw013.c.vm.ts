@@ -545,6 +545,7 @@ module nts.uk.ui.at.kdw013.c {
 
 		checkError(){
             const vm = this;
+			vm.errors(false);
 			_.each(vm.taskBlocks.taskDetailsView(), (task: ManHrTaskDetailView)=>{
 				if(task.isErorr()){
 					vm.errors(true);
@@ -552,7 +553,7 @@ module nts.uk.ui.at.kdw013.c {
 				}
             });
 			resetHeight();
-            vm.updatePopupSize();
+    		vm.updatePopupSize();
 		}
         
         mounted() {
