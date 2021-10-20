@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -11,7 +10,6 @@ import nts.uk.ctx.at.request.app.find.application.overtime.DivergenceTimeRootDto
 import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.screen.at.app.kdw013.query.AttItemNameDto;
 import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.FavoriteTaskDisplayOrderDto;
@@ -58,13 +56,13 @@ public class StartProcessDto {
 	public List<DivergenceReasonInputMethodDto> divergenceReasonInputMethods;
 
 	/** List<社員の所属職場> */
-	private Map<String, String> employeeInfos;
+	private List<EmployeeInfoDto> employeeInfos;
 
 	/** List＜社員ID（List）から社員コードと表示名を取得＞ */
 	private List<EmployeeBasicInfoDto> lstEmployeeInfo;
 
 	/** List＜職場情報一覧＞*/
-	private List<WorkplaceInfo> workplaceInfos;
+	private List<WorkplaceInfoDto> workplaceInfos;
 
 	//List<1日お気に入り作業セット>
 	public List<OneDayFavoriteSetDto> oneDayFavSets;
@@ -102,9 +100,11 @@ public class StartProcessDto {
 
 	public void setRefWork(GetRefWorkplaceAndEmployeeDto refWork) {
 		
-		this.employeeInfos = refWork.getEmployeeInfos();
+		this.employeeInfos = refWork.getEmployeeInfos().entrySet().stream()
+				.map(x -> new EmployeeInfoDto(x.getKey(), x.getValue())).collect(Collectors.toList());
 		this.lstEmployeeInfo = refWork.getLstEmployeeInfo();
-		this.workplaceInfos = refWork.getWorkplaceInfos();
+		this.workplaceInfos = refWork.getWorkplaceInfos().stream().map(x -> WorkplaceInfoDto.fromDomain(x))
+				.collect(Collectors.toList());
 		
 	}
 
