@@ -207,7 +207,8 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)), 
 						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
 						StringUtil.isNullOrEmpty(ots.workRemarks, true) ? Optional.empty() : Optional.of(new WorkinputRemarks(ots.workRemarks)),
-						Optional.of(toWorkSuppInfo(ots.krcdtDayTsSupSupplInfo))), 
+						ots.krcdtDayTsSupSupplInfo == null ? Optional.empty() : Optional.of(toWorkSuppInfo(ots.krcdtDayTsSupSupplInfo))
+						), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(ots.workNo), 
 						Optional.of(new WorkTimeInformation(

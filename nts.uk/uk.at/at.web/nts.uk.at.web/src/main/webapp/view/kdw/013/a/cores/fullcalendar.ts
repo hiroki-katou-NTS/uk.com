@@ -494,6 +494,8 @@ module nts.uk.ui.at.kdw013.calendar {
         breakTime: BreakTime | KnockoutObservable<undefined | BreakTime>;
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
         validRange: Partial<DatesSet> | KnockoutObservable<Partial<DatesSet>>;
+        favoriteTaskItem: KnockoutObservable<OneDayFavoriteSetDto>;
+        oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto>
         event: {
             datesSet: (start: Date, end: Date) => void;
         };
@@ -645,13 +647,15 @@ module nts.uk.ui.at.kdw013.calendar {
                     kdw013-oneday-events: 'kdw013-oneday-events',
                     mode: $component.params.editable,
                     items: $component.onedayDragItems,
-                    $settings: $component.params.$settings
+                    $settings: $component.params.$settings,
+                    oneDayFavoriteSet:$component.params.oneDayFavoriteSet
                 "></div>
             <div class="fc-task-events" data-bind="
                     kdw013-task-events: 'kdw013-task-events',
                     mode: $component.params.editable,
                     items: $component.taskDragItems,
-                    $settings: $component.params.$settings
+                    $settings: $component.params.$settings,
+                    favoriteTaskItem:$component.params.favoriteTaskItem
                 "></div>
 
 
@@ -723,7 +727,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         editor: 'kdp013c'
                     },
                     $datas: ko.observable(null),
-                    $settings: ko.observable(null)
+                    $settings: ko.observable(null),
+                    favoriteTaskItem: null,
+                    oneDayFavoriteSet: null,
                 };
             }
 
@@ -747,8 +753,18 @@ module nts.uk.ui.at.kdw013.calendar {
                 breakTime,
                 businessHours,
                 $datas,
-                $settings
+                $settings,
+                favoriteTaskItem,
+                oneDayFavoriteSet
             } = this.params;
+    
+            if (favoriteTaskItem === undefined) {
+                this.params.favoriteTaskItem = null;
+            }
+    
+            if (oneDayFavoriteSet === undefined) {
+                this.params.oneDayFavoriteSet = null;
+            }
 
             if (locale === undefined) {
                 this.params.locale = ko.observable('ja');
@@ -1205,6 +1221,55 @@ module nts.uk.ui.at.kdw013.calendar {
                     computedTaskDragItems(data, ko.unwrap($settings));
                 });
 
+            isShowBreakTime.subscribe(value => {
+                    let currentDate = vm.params.initialDate();
+                
+                    if(!value){
+                         let breakEventInDay = _.chain(vm.calendar.getEvents())
+                            .filter((evn) => { return moment(evn.start).isSame(moment(currentDate), 'days'); })
+                            .filter((evn) => { return evn.extendedProps.isTimeBreak == true })
+                            .value();
+                        
+                       _.forEach(breakEventInDay, e => e.remove());
+                        mutatedEvents();
+                        return;
+                    }
+                    //đoạn này cần lấy dữ liệu thực tế
+                    let start = moment(currentDate).set('hour', 11).set('minute', 30).toDate();
+                    let end = moment(currentDate).set('hour', 12).set('minute', 30).toDate();
+                    events.push({
+                            id: randomId(),
+                            title: '',
+                            start,
+                            end,
+                            textColor: '',
+                            backgroundColor: '#fbb3fb',
+                            extendedProps: {
+                                id: randomId(),
+                                status: 'normal',
+                                isTimeBreak: true
+                            } as any
+                        });
+
+                    let start = moment(currentDate).set('hour', 16).set('minute', 30).toDate();
+                    let end = moment(currentDate).set('hour', 17).set('minute', 30).toDate();
+                    events.push({
+                            id: randomId(),
+                            title: '',
+                            start,
+                            end,
+                            textColor: '',
+                            backgroundColor: '#fbb3fb',
+                            extendedProps: {
+                                id: randomId(),
+                                status: 'normal',
+                                isTimeBreak: true
+                            } as any
+                        });
+                
+                updateEvents();
+            });
+
             // update drag item
             $settings
                 .subscribe((settings: a.StartProcessDto | null) => {
@@ -1636,7 +1701,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD4,
                         workCD5,
                         workLocationCD,
-                        workingHours
+                        workingHours,
+                        isTimeBreak
                         } = extendedProps;
                     selectedEvent.extendedProps = {
                         employeeId,
@@ -1650,7 +1716,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD4,
                         workCD5,
                         workLocationCD,
-                        workingHours
+                        workingHours,
+                        isTimeBreak
                     };
 
                 }
@@ -1997,7 +2064,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     // binding sum of work time within same day
                                     ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: timesSet } }, vm);
                                     // binding note for same day
-                                    ko.applyBindingsToNode(_events, { component: { name: 'fc-oneday-events', params: attendancesSet } }, vm);
+                                    ko.applyBindingsToNode(_events, { component: { name: 'fc-event-header', params: { data: attendancesSet, setting: $settings } } }, vm);
                                 })
                                 .then(() => vm.calendar.setOption('height', '100px'))
                                 .then(() => {
@@ -2020,12 +2087,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                     //add check button 
                                     const checkBtn =  $('<div class="fc-ckb-break-time">').insertBefore('.fc-settings-button').get(0);
                                     if (checkBtn) {
-                                        const value = ko.observable(ko.unwrap(isShowBreakTime) || false);
-                                        value.subscribe((v: boolean) => {
-                                            console.log('isShowBreakTime: ' + v);
-                                        });
+                                       
                                         
-                                        ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: value, enable:ko.observable(true) , text: vm.$i18n('KDW013_54'), readonly:ko.observable(false)} });
+                                        ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: isShowBreakTime, enable:ko.observable(true) , text: vm.$i18n('KDW013_54'), readonly:ko.observable(false)} });
                                         
                                     }
 

@@ -8,11 +8,14 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             const name = componentName();
             const mode = allBindingsAccessor.get('mode');
             const items = allBindingsAccessor.get('items');
-            const params = { mode, items };
+            const setting = allBindingsAccessor.get('$settings');
+            const oneDayFavoriteSet = allBindingsAccessor.get('oneDayFavoriteSet');            
+            const params = { mode, items, oneDayFavoriteSet };
 
             ko.applyBindingsToNode(element, { component: { name, params } });
 
             return { controlsDescendantBindings: true };
+            
         }
     }
 
@@ -23,7 +26,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
         template: `
             <div class='edit-popup'>
                     <ul>
-                        <li data-bind="i18n: 'KDW013_77' ,click:$component.openFdialog"></li>
+                        <li class='popupButton-g' data-bind="i18n: 'KDW013_77' ,click:$component.openGdialog"></li>
                         <li data-bind="i18n: 'KDW013_78' ,click:$component.removeFav"></li>
                     </ul>
             </div>
@@ -102,19 +105,29 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             $('.fc-oneday-events .edit-popup').removeClass('show');
         }
 
-        openFdialog(data) {
+        openGdialog(data) {
             const vm = this;
             $('.fc-oneday-events .edit-popup').removeClass('show');
             let id = $('.fc-oneday-events .edit-popup').data('favId');
-            vm.$window.shared('KDW013_A_TO_F_PARAMS', id);
-            //gọi màn F
-            console.log(id);
+            let item = _.find(vm.params.items(), item => _.get(item, 'extendedProps.favId') == id);
+            //gọi màn G
+            vm.params.oneDayFavoriteSet({
+                // 社員ID
+                sId: vm.$user.employeeId,
+                // お気に入りID
+                favId: id,
+                // お気に入り作業名称
+                taskName: item.title,
+                // お気に入り内容
+                taskBlockDetailContents: item.extendedProps.dropInfo.taskBlockDetailContents
+            });
         }
     }
 
     type EventParams = {
         items: KnockoutObservableArray<any>;
         mode: KnockoutComputed<boolean>;
+        oneDayFavoriteSet: any;
     }; 
 
 }

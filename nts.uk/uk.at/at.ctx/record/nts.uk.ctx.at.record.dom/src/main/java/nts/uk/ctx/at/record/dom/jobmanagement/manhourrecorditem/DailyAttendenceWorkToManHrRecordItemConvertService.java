@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -75,7 +77,7 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 			if (!optManHrTaskDetail.isPresent()) {
 
 				// $工数実績作業詳細 = 工数実績作業詳細#工数実績作業詳細($.応援勤務枠No, $作業項目値)
-				ManHrTaskDetail detail = new ManHrTaskDetail(Collections.singletonList(itemValue), l.getFrameNo());
+				ManHrTaskDetail detail = new ManHrTaskDetail(new ArrayList(Arrays.asList(itemValue)), l.getFrameNo());
 
 				// $工数実績リスト.追加する($工数実績作業詳細)
 				manHrRecords.add(detail);
