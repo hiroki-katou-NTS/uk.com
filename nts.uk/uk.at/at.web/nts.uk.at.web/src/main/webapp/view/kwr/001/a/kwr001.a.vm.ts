@@ -215,6 +215,7 @@ module nts.uk.at.view.kwr001.a {
                     showWorktype: true,
                     isMutipleCheck: true,
                     
+                    tabindex: -1,
                     /**
                     * Self-defined function: Return data from CCG001
                     * @param: data: the data return from CCG001

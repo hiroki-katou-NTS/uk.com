@@ -96,7 +96,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }, this)
                 },
                 {
-                    id: 'tab-15', title: '固有のチェック条件', content: '.tab-content-15', enable: ko.computed(() => {
+                    id: 'tab-15', title: getText('KAL003_67'), content: '.tab-content-15', enable: ko.computed(() => {
                         return self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY 
                             || self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
                     }, this), visible: ko.computed(() => {

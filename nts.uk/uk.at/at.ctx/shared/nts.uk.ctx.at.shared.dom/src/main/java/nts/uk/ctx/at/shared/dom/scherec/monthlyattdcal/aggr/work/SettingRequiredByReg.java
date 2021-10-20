@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.RegularWorkTimeAggrSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
 /**
  * 通常勤務が必要とする設定
@@ -30,7 +30,7 @@ public class SettingRequiredByReg {
 	/** 残業枠の役割 */
 	private Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap;
 	/** 休出枠の役割 */
-	private Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap;
+	private Map<Integer, WorkdayoffFrame> roleHolidayWorkFrameMap;
 	/** 自動的に除く残業枠 */
 	private List<OvertimeWorkFrame> autoExceptOverTimeFrames;
 	/** 自動的に除く休出枠 */

@@ -36,7 +36,7 @@ public class ReflectDataStampDailyService {
 	 */
 	private static boolean reflectTemporarily(Require require, String cid, String employeeId, GeneralDate date, Stamp stamp) {
 		Optional<IntegrationOfDaily> dom = StampDataReflectProcessService.updateStampToDaily(require, cid, employeeId, date, stamp);
-		return dom.map(x -> stamp.isReflectedCategory()).orElse(false);
+		return dom.map(x -> stamp.getImprintReflectionStatus().isReflectedCategory()).orElse(false);
 	}
 
 	public static interface Require extends StampDataReflectProcessService.Require2 {

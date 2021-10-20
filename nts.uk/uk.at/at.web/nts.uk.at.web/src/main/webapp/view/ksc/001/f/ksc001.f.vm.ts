@@ -126,6 +126,8 @@ import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
                                 width: 750,
                                 height: 630
                             });
+                            (window.parent as any).$("iframe").closest(".ui-dialog-content.ui-widget-content").addClass("fix-dialog-content");
+                            (window.parent as any).$("iframe").closest(".ui-dialog").addClass("fix-dialog");
                             $("#exportButton").focus();
 //                            windowSize.$dialog.resize();
                             // update error to view
@@ -228,8 +230,6 @@ import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
                         width: 750,
                         height: 630
                     });
-                    (window.parent as any).$("iframe").closest(".ui-dialog-content.ui-widget-content").addClass("fix-dialog-content");
-                    (window.parent as any).$("iframe").closest(".ui-dialog").addClass("fix-dialog");
                   // }, 500);
                 });    
             }

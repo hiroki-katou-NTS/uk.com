@@ -70,6 +70,9 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 			ReflectApplicationTime.process(holidayApp.getApplicationTime().getApplicationTime(), dailyApp,
 					Optional.of(ReflectAppDestination.RECORD));
 		}
+		//ドメイン「休憩の申請反映」を作成する
+		//休憩の申請反映
+		new BreakApplication(NotUseAtr.USE).process(holidayApp.getBreakTimeList(), dailyApp);
 		return new DailyAfterAppReflectResult(dailyApp, lstId);
 	}
 

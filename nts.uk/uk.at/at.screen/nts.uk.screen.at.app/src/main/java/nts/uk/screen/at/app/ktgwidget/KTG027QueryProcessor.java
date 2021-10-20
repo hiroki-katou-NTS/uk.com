@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ktgwidget;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -95,6 +97,9 @@ public class KTG027QueryProcessor {
 	
 	@Inject
 	private SyEmployeeFnAdapter syEmployeeFnAdapter;
+	
+	 @Inject
+	private ManagedParallelWithContext parallel;
 
 	public GeneralDate checkSysDateOrCloseEndDate() {
 		// EA luôn trả v�Systemdate
@@ -416,7 +421,7 @@ public class KTG027QueryProcessor {
 		List<PersonEmpBasicInfoImport> listPersonEmp = this.empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
 
 		// 指定する年月と指定する社員の時間外時間の取得
-		List<AgreementTimeOfManagePeriodDto> listAgreementTimeDetail = this.getOvertimeByEmployee(
+		List<AgreementTimeOfManagePeriodDto> listAgreementTimeDetail = this.getOvertimeByEmployeeClones(
 				lstEmployeeId
 				, targetDate
 				, referencePeriod);
@@ -445,7 +450,8 @@ public class KTG027QueryProcessor {
 		val cacheCarrier = new CacheCarrier();
 		GeneralDate baseDate = GeneralDate.today();
 		List<AgreementTimeOfManagePeriod> listAgreementTimeDetail = new ArrayList<AgreementTimeOfManagePeriod>();
-		for (String empCode : lstEmployeeId) {
+		
+		this.parallel.forEach(lstEmployeeId, empCode -> {
 			// 社員に対応する処理締めを取得する
 			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, empCode, baseDate);
 			// [取得したドメインモデル「締め」．当月<=INPUT．対象年月]がtrue
@@ -461,20 +467,55 @@ public class KTG027QueryProcessor {
 							, ScheRecAtr.SCHEDULE);
 					listAgreementTimeDetail.add(AgreementTimeDetail);
 				} else {
-					listAgreementTimeDetail = GetAgreementTimeOfMngPeriod.get(
-							require
-							, lstEmployeeId
-							, new YearMonthPeriod(
-								datePeriod.get().start().yearMonth(),
-								datePeriod.get().end().yearMonth()
-							)
-					);
+					listAgreementTimeDetail.clear();
+					listAgreementTimeDetail
+							.addAll(GetAgreementTimeOfMngPeriod.get(require, lstEmployeeId, new YearMonthPeriod(
+									datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth())));
 				}
 			}
-		}
+			
+		});
 
 		return listAgreementTimeDetail.stream()
 				.map(item -> AgreementTimeOfManagePeriodDto.from(item))
 				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * clones from UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).アルゴリズム.対象年月を指定するログイン者の配下社員の時間外時間の取得.指定する年月と指定する社員の時間外時間の取得
+	 * for fix performance
+	 * @param lstEmployeeId
+	 * @param targetDate
+	 * @param endDate
+	 * @return
+	 */ 
+	public List<AgreementTimeOfManagePeriodDto> getOvertimeByEmployeeClones(List<String> lstEmployeeId, YearMonth targetDate, Optional<DatePeriod> datePeriod) {
+		val require = this.requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		GeneralDate baseDate = GeneralDate.today();
+		List<AgreementTimeOfManagePeriod> listAgreementTimeDetail = new ArrayList<AgreementTimeOfManagePeriod>();
+
+		Map<String, Closure> closureByEmployees = ClosureService.getClosureByEmployees(
+				ClosureService.createRequireM7(closureRepository, closureEmploymentRepo, shareEmploymentAdapter),
+				cacheCarrier, lstEmployeeId, baseDate);
+		List<String> employeeIdLessThanOrEqualTargetDate = new ArrayList<String>();
+		List<String> employeeId2 = new ArrayList<String>();
+		for (Map.Entry<String, Closure> entry : closureByEmployees.entrySet()) {
+			if(entry.getValue() != null) {
+				if(entry.getValue().getClosureMonth().getProcessingYm().lessThanOrEqualTo(targetDate)) {
+					employeeIdLessThanOrEqualTargetDate.add(entry.getKey());
+				}else {
+					employeeId2.add(entry.getKey());
+				}
+			}	
+		}
+
+		List<AgreementTimeOfManagePeriod> AgreementTimeDetail = GetAgreementTime.getClones(require, employeeIdLessThanOrEqualTargetDate, targetDate, new ArrayList<>(), targetDate.lastGeneralDate(), ScheRecAtr.SCHEDULE);
+		listAgreementTimeDetail.addAll(AgreementTimeDetail);
+		
+		listAgreementTimeDetail.addAll(GetAgreementTimeOfMngPeriod.get(require, employeeId2, new YearMonthPeriod(
+				datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth())));
+
+		return listAgreementTimeDetail.stream().map(item -> AgreementTimeOfManagePeriodDto.from(item)).collect(Collectors.toList());
 	}
 }

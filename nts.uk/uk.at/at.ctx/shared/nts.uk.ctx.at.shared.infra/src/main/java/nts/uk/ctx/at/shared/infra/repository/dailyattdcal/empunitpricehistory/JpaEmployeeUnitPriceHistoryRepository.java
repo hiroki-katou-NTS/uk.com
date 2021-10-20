@@ -53,7 +53,6 @@ public class JpaEmployeeUnitPriceHistoryRepository extends JpaRepository impleme
 	
 	private static final String SELECT_BY_SID = "SELECT up FROM KrcmtUnitPrice up WHERE up.cid = :cid AND up.pk.sid = :sid ORDER BY up.startDate";
 	
-
 	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT upi FROM KrcmtUnitPriceItem upi"
 			+ " INNER JOIN  KrcmtUnitPrice up ON up.pk.histId = upi.pk.histId"
 			+ " WHERE up.pk.sid = :sid AND up.startDate <= :baseDate AND :baseDate <= up.endDate";

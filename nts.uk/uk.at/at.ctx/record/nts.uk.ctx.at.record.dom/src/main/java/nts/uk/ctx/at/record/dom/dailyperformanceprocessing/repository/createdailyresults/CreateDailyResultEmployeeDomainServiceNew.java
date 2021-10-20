@@ -40,7 +40,7 @@ public interface CreateDailyResultEmployeeDomainServiceNew {
 	 * @param mapDateHistoryItem
 	 * @param periodInMasterList  期間内マスタ一覧
 	 * @param executionType  実行タイプ（作成する、打刻反映する、実績削除する）
-	 * @param checkLock  ロック中の計算/集計できるか
+	 * @param checkLock  ロック中の計算/集計できるか (true/false,checkLock == null)
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")

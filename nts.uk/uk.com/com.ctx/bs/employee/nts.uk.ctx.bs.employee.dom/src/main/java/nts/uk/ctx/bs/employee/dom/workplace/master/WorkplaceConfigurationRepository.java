@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * 
@@ -18,6 +19,8 @@ public interface WorkplaceConfigurationRepository {
 	public void addWorkplaceConfig(WorkplaceConfiguration workplaceConfig); 
 	
 	public void updateWorkplaceConfig(WorkplaceConfiguration workplaceConfig); 
+	
+	void updateHistoryItem(String companyId, DateHistoryItem historyItem);
 	
 	public void deleteWorkplaceConfig(String companyId, String workplaceHistoryId);
 	

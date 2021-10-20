@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.scherec.dailyattendanceitem;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -234,5 +237,4 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		}
 		return result;
 	}
-
 }

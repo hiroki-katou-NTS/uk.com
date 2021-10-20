@@ -86,3 +86,7 @@
 .div-inline {
 	display: inline;
 }
+
+.switchbox-wrappers {
+	display: inline-flex !important;
+}

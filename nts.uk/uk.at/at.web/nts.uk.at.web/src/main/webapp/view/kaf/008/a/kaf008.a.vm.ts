@@ -136,6 +136,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             };
 
             // vm.$errors("clear");
+            if ($('#A10_D4 input').ntsError('hasError')) {
+                $('#A10_D4 input').ntsError('clear');
+            }
 
             vm.$validate([
                 '#kaf000-a-component4 .nts-input'

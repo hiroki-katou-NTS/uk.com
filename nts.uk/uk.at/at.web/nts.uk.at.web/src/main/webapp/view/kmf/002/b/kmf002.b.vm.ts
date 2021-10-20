@@ -180,7 +180,7 @@ module nts.uk.at.view.kmf002.b {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     service.remove(self.commonTableMonthDaySet().fiscalYear(), 
-                                        self.multiSelectedWorkplaceId()[0]).done(() => {
+                                        self.multiSelectedWorkplaceId()).done(() => {
                         self.getDataFromService();     
                         self.alreadySettingList.remove(function(s) { return s.workplaceId == self.multiSelectedWorkplaceId() });           
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
@@ -202,7 +202,7 @@ module nts.uk.at.view.kmf002.b {
                     if (_.isEmpty(self.commonTableMonthDaySet().fiscalYear())) {
                         self.commonTableMonthDaySet().fiscalYear(moment().format('YYYY'));
                     }
-                    $.when(service.find(self.commonTableMonthDaySet().fiscalYear(),self.multiSelectedWorkplaceId()[0]), 
+                    $.when(service.find(self.commonTableMonthDaySet().fiscalYear(),self.multiSelectedWorkplaceId()), 
                             service.findFirstMonth()).done(function(data: any, data2: any) {
                         if (typeof data === "undefined") {
                             /** 

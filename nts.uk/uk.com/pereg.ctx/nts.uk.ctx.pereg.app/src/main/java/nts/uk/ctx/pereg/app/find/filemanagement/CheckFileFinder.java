@@ -122,6 +122,10 @@ public class CheckFileFinder {
 	
 	private final static List<String> endDateLst = Arrays.asList("IS00021","IS00027","IS00067","IS00078","IS00083","IS00120","IS00782","IS00256", "IS00789", "IS00842", "IS01017");
 	
+	//CS00036 special  (#119681)
+	private String currentIS00375 = "1";
+	private String currentIS00380 = "1";
+	
 	@SuppressWarnings("unused")
 	private static GeneralDate valueStartCode;
 	
@@ -863,6 +867,14 @@ public class CheckFileFinder {
 						}).findFirst();
 
 						empBody.setValue(combo.isPresent() == true ? combo.get().getOptionValue() : "");
+						
+						//CS00036 special  (#119681)
+						if (headerGrid.getItemCode().equals("IS00375")) {
+							currentIS00375 = combo.isPresent() ? combo.get().getOptionValue() : "";
+						}
+						if (headerGrid.getItemCode().equals("IS00380")) {
+							currentIS00380 = combo.isPresent() ? combo.get().getOptionValue() : "";
+						}
 
 						empBody.setLstComboBoxValue(comboxLst);
 
@@ -1149,6 +1161,13 @@ public class CheckFileFinder {
 				NumericConstraint numberContraint = (NumericConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (itemDto.getValue() == null) {
+						//CS00036 special  (#119681)
+						if (currentIS00375.equals("0") && itemDto.getItemCode().equals("IS00379")) {
+							break;
+						}
+						if (currentIS00380.equals("0") && itemDto.getItemCode().equals("IS00384")) {
+							break;
+						}
 						itemDto.setError(true);
 						ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemErrors.add(error);
@@ -1339,6 +1358,13 @@ public class CheckFileFinder {
 				TimeConstraint timeContraint = (TimeConstraint) contraint;
 				if (gridHead.isRequired()) {
 					if (value == null || value =="") {
+						//CS00036 special  (#119681)
+						if (currentIS00375.equals("0") && itemDto.getItemCode().equals("IS01101")) {
+							break;
+						}
+						if (currentIS00380.equals("0") && itemDto.getItemCode().equals("IS01102")) {
+							break;
+						}
 						itemDto.setError(true);
 						ItemError error = new ItemError(sid, "", index, itemDto.getItemCode(), "FND_E_REQ_INPUT");
 						itemErrors.add(error);

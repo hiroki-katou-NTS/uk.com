@@ -11,16 +11,13 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.workschedule.WorkScheWorkInforSharedAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workschedule.WorkScheduleWorkSharedImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
-import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
@@ -60,9 +57,6 @@ public class TimeReflectFromWorkinfo {
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
-	
-	@Inject
-	private WorkingConditionItemService workingConditionItemService;
 	
 	@Inject
 	private WorkingConditionRepository workingConditionRepo;
@@ -122,25 +116,15 @@ public class TimeReflectFromWorkinfo {
 			// ⇒勤務種類．１日の勤務．1日 = 休日、振休、休日出勤
 			// ・勤務種類．１日の勤務．勤務区分 = 午前と午後
 			// ⇒勤務種類．１日の勤務．午前 = 休日、振休、休日出勤 OR 勤務種類．１日の勤務．午後 = 休日、振休、休日出勤
-			Optional<WorkInformation> optWorkInfo = Optional.empty();
 			if (typeOneDay.checkHolidayNew() && (typeMorning.checkHolidayNew() || typeAfternoon.checkHolidayNew())) {
-				// 出勤時の勤務情報を取得する - 稼働日区分＝非稼働
-				optWorkInfo = workingConditionItemService.getHolidayWorkScheduleNew(
-						companyId, employeeId, ymd, workInformation.getRecordInfo().getWorkTypeCode().v(),WorkingDayCategory.nonWorkingDay_inlaw);
-				if(!optWorkInfo.isPresent()) {
-					outputTimeReflectForWorkinfo.setEndStatus(EndStatus.NO_HOLIDAY_SETTING);
-					return outputTimeReflectForWorkinfo;
-				}
+				// 出勤時の就業時間帯コードを取得する
+				//Tin bảo méo thể null dc
+				workTimeCode = workingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get();
 			}else {
-				//出勤時の勤務情報を取得する - 稼働日区分＝稼働
-				optWorkInfo = workingConditionItemService.getHolidayWorkScheduleNew(
-						companyId, employeeId, ymd, workInformation.getRecordInfo().getWorkTypeCode().v(),WorkingDayCategory.workingDay);
-				if(!optWorkInfo.isPresent()) {
-					outputTimeReflectForWorkinfo.setEndStatus(EndStatus.NO_WORK_TYPE);
-					return outputTimeReflectForWorkinfo;
-				}
+				//休日出勤時の就業時間帯コードを取得する
+				//Tin bảo méo thể null dc
+				workTimeCode = workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode().get();
 			}
-			workTimeCode = optWorkInfo.get().getWorkTimeCode();
 		}
 		// ドメインモデル「就業時間帯の設定」を取得する
 		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyId,
@@ -249,6 +233,9 @@ public class TimeReflectFromWorkinfo {
 		return outPut;
 	}
 	
+	@Inject
+	private WorkingConditionItemService WorkingConditionItemService;
+	
 	/*
 	 * 休日系の打刻範囲を取得する
 	 */
@@ -261,17 +248,10 @@ public class TimeReflectFromWorkinfo {
 		WorkTimeCode workTimeCode = workInfoOfDaily.getRecordInfo().getWorkTimeCode();
 
 		// 当日の打刻反映範囲を取得 - 当日の就業時間帯コードを取得
-		// start get data of this day
-		// use workTypeCode
-		WorkTypeCode workTypeCode = workInfoOfDaily.getRecordInfo().getWorkTypeCode();
 		// 休日出勤時の勤務情報を取得する - new wave
-		Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
-				.getHolidayWorkSchedule(companyID, employeeId, processingDate, workTypeCode.v());
-		if (!singleDaySchedule.isPresent()
-				|| (singleDaySchedule.isPresent() && !singleDaySchedule.get().getWorkTimeCode().isPresent())) {
-			workTimeCode = null;
-		} else {
-			workTimeCode = new WorkTimeCode(singleDaySchedule.get().getWorkTimeCode().get().v());
+		if (workTimeCode == null) {
+			//休日出勤時の就業時間帯コードを取得する
+			workTimeCode = new WorkTimeCode( WorkingConditionItemService.getWorkTimeWorkHoliday(employeeId, processingDate));
 		}
 
 		// 当日の打刻反映範囲を取得 - end get data of this day

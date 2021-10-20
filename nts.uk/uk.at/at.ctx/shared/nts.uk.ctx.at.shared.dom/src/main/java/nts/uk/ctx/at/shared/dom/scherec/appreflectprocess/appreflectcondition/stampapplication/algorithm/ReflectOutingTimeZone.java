@@ -72,7 +72,7 @@ public class ReflectOutingTimeZone {
 			return Pair.of(
 					new OutingTimeSheet(new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()),
 							Optional.of(new WorkStamp(
-									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
+									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()),
 											data.getTimeOfDay()),
 									data.getWorkLocationCd())),
 							data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),

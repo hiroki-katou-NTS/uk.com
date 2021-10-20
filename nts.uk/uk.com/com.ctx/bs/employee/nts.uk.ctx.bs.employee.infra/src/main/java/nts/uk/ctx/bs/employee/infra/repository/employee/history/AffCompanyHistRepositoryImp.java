@@ -696,12 +696,13 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 	public void addAll(List<AffCompanyHistCustom> domains) {
 		String INS_SQL = "INSERT INTO BSYMT_AFF_COM_HIST (INS_DATE, INS_CCD, INS_SCD, INS_PG, "
 				+ " UPD_DATE, UPD_CCD, UPD_SCD, UPD_PG,"
-				+ " PID, SID, HIST_ID, CID, "
+				+ " CONTRACT_CD, PID, SID, HIST_ID, CID, "
 				+ " DESTINATION_DATA, START_DATE , END_DATE) "
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, PID_VAL, SID_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, CONTRACT_CD_VAL, PID_VAL, SID_VAL,"
 				+ " HIST_ID_VAL, CID_VAL, DESTINATION_DATA_VAL, START_DATE_VAL, END_DATE_VAL); ";
 
+		String contractCode = AppContexts.user().contractCode();
 		String cid = AppContexts.user().companyId();
 		GeneralDateTime insertTime = GeneralDateTime.now();
 		String insCcd = AppContexts.user().companyCode();
@@ -723,6 +724,7 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("PID_VAL", "'" + c.getPid() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getSid() + "'");
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistItem().getHistoryId() + "'");

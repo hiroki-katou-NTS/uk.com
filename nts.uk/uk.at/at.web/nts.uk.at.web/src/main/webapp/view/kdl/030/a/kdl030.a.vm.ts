@@ -58,7 +58,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                         _.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, phase => {
                             _.forEach(phase.listApprovalFrame, frame => {
                                 _.forEach(frame.listApprover, approver => {
-                                    if (_.isNil(approver.approverMail)) {
+                                    if (_.isEmpty(approver.approverMail)) {
                                         approver.handleSendMail = 0;
                                     } else {
                                         approver.handleSendMail = approver.approverID != __viewContext.user.employeeId ? 1 : 0;

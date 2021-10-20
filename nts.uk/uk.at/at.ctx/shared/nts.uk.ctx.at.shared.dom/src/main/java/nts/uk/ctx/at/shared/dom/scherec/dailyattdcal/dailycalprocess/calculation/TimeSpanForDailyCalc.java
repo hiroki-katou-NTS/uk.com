@@ -218,6 +218,14 @@ public class TimeSpanForDailyCalc implements Cloneable {
 		return this.timeSpan.isReverse();
 	}
 	
+	/**
+	 * 開始と終了が同じ
+	 * start == end
+	 */
+	public boolean isEqual() {
+		return this.timeSpan.isEqual();
+	}
+	
 	public TimeSpanForDailyCalc clone() {
 		TimeSpanForDailyCalc clone =  new TimeSpanForDailyCalc();
 		try {

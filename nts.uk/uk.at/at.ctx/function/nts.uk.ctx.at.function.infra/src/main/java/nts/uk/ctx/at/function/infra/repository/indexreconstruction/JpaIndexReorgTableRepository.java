@@ -113,7 +113,7 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 	public List<CalculateFragRate> calculateFragRate(String tablePhysName) {
 		String databaseName = "UK4";
 		String QUERY_CACULATE_FRAG_RATE_TEST = "SELECT a.object_id, object_name(a.object_id) AS TableName,"
-				+ " a.index_id, name AS IndedxName, avg_fragmentation_in_percent"
+				+ " a.index_id, name AS IndexName, avg_fragmentation_in_percent"
 				+ " FROM sys.dm_db_index_physical_stats" + " (DB_ID (?)" + " , OBJECT_ID(?)" + " , NULL" + " , NULL"
 				+ " , NULL) AS a" + " INNER JOIN sys.indexes AS b" + " ON a.object_id = b.object_id"
 				+ " AND a.index_id = b.index_id;";
@@ -135,12 +135,13 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 
 			stmt.setString(1, databaseName);
 			stmt.setString(2, tablePhysName);
-			return new NtsResultSet(stmt.executeQuery()).getList(rs -> {
+			List<CalculateFragRate> res = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				return CalculateFragRate.builder().tablePhysicalName(rs.getString("TableName"))
 						.fragmentationRate(
 								rs.getBigDecimal("avg_fragmentation_in_percent").setScale(2, RoundingMode.HALF_EVEN))
-						.indexId(rs.getInt("index_id")).indexName(rs.getString("IndedxName")).build();
+						.indexId(rs.getInt("index_id")).indexName(rs.getString("IndexName")).build();
 			});
+			return res;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

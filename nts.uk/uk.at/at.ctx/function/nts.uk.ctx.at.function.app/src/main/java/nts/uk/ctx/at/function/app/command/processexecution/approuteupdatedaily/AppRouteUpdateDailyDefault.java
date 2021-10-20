@@ -159,16 +159,7 @@ public class AppRouteUpdateDailyDefault implements AppRouteUpdateDailyService {
 //							listEmp, 
 //							maxPeriodBetweenCalAndCreate, procExec);
 					//Input = output
-					// ・社員ID（異動者、勤務種別変更者、休職者・休業者）（List）
-					List<String> reEmployeeList = new ArrayList<>();
-					// 社員ID（新入社員）（List）
-					List<String> newEmployeeList = new ArrayList<>();
-					// 社員ID（休職者・休業者）（List）
-					List<String> temporaryEmployeeList = new ArrayList<>();
-					changePersionListForSche.filterEmployeeList(procExec, listEmp, reEmployeeList, newEmployeeList, temporaryEmployeeList);
-//					listEmp.addAll(listLeaderOrNotEmpOutput.getLeaderEmpIdList());
-//					listEmp.addAll(listLeaderOrNotEmpOutput.getNoLeaderEmpIdList());
-					listEmp = reEmployeeList;
+					listEmp = changePersionListForSche.filterEmployeeList(procExec, listEmp).getEmployeeIds();
 				}
 			}
 			

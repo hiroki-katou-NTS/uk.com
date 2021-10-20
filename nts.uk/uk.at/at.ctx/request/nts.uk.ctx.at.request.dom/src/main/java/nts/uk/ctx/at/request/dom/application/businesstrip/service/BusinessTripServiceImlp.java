@@ -23,15 +23,16 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
-import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
-import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -45,13 +46,16 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -109,6 +113,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private ApplyForLeaveRepository applyForLeaveRepository;
+    
+    @Inject
+    private PredetemineTimeSettingRepository predetemineRepo;
 
     private static final String NO_INPUT_NAME = "なし";
 
@@ -642,8 +649,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     if (info.isPresent()) {
                         wkTimeCd = info.get().getWorkInformation().getWorkTimeCode() == null ? null : info.get().getWorkInformation().getWorkTimeCode().v();
                         wkTypeCd = info.get().getWorkInformation().getWorkTypeCode().v();
-                        opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime().v()) : Optional.empty();
-                        opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime().v()) : Optional.empty();
+                        opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime() != null ? info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime().v() : null) : Optional.empty();
+                        opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime() != null ? info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime().v() : null) : Optional.empty();
                     }
                 }
                 break;
@@ -693,6 +700,173 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         content.getOpAchievementDetail().get().setOpWorkTime(opWorkTime);
         content.getOpAchievementDetail().get().setOpLeaveTime(opLeaveTime);
 
+    }
+
+    @Override
+    public BusinessTripInfoOutput setInitValueAppWorkTime(BusinessTripInfoOutput input) {
+        val result = input;
+        
+        Optional<List<ActualContentDisplay>> opActualContentDisplayLst = result.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
+        // 申請表示情報.申請設定(基準日関連なし）.表示する実績内容.実績詳細
+        if (opActualContentDisplayLst.isPresent()) {
+//            List<BusinessTripWorkingHours> workingHours = opActualContentDisplayLst.get().stream()
+//                    .filter(x -> x.getOpAchievementDetail().isPresent())
+//                    .map(x -> BusinessTripWorkingHours.fromAchievementDetail(x.getOpAchievementDetail().get()))
+//                    .collect(Collectors.toList());
+            List<BusinessTripWorkingHours> workingHours = new ArrayList<BusinessTripWorkingHours>();
+            for (int i = 0; i < opActualContentDisplayLst.get().size(); i++) {
+                final int index = i;
+                
+                Optional<AchievementDetail> optAchievementDetail = opActualContentDisplayLst.get().get(index).getOpAchievementDetail();
+                if (optAchievementDetail.isPresent()) {
+                    // 対象項目いずれかが未登録の場合
+                    Optional<Integer> opWorkTime = optAchievementDetail.get().getOpWorkTime();
+                    Optional<Integer> opLeaveTime = optAchievementDetail.get().getOpLeaveTime();
+                    String workTimeCd = optAchievementDetail.get().getWorkTimeCD();
+                    if (!opWorkTime.isPresent() || !opLeaveTime.isPresent()) {
+                        // アルゴリズム「出張申請就業時刻を取得する」を実行する
+                        WorkType workType = result.getWorkTypeBeforeChange().isPresent() ? 
+                                result.getWorkTypeBeforeChange().get().stream()
+                                .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
+                                .map(x -> x.getWorkType())
+                                .findFirst().orElse(null) : null;
+                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, workTimeCd, workingHours);
+                        if (!workTimeGetOutput.getWorkingHours().isEmpty()) {
+                            workingHours = workTimeGetOutput.getWorkingHours();
+                        }
+                        // 未登録の対象項目に値をセットする
+                        if (!opWorkTime.isPresent()) {
+                            optAchievementDetail.get().setOpWorkTime(workTimeGetOutput.getStartTime1());
+                        }
+                        if (!opLeaveTime.isPresent()) {
+                            optAchievementDetail.get().setOpLeaveTime(workTimeGetOutput.getEndTime1());
+                        }
+                        if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
+                            optAchievementDetail.get().setOpWorkTime2(workTimeGetOutput.getStartTime2());
+                        }
+                        if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
+                            optAchievementDetail.get().setOpDepartureTime2(workTimeGetOutput.getEndTime2());
+                        }
+                    }
+                    
+                    if (workTimeCd == null) {
+                        optAchievementDetail.get().setOpWorkTime(Optional.empty());
+                        optAchievementDetail.get().setOpLeaveTime(Optional.empty());
+                        optAchievementDetail.get().setOpWorkTime2(Optional.empty());
+                        optAchievementDetail.get().setOpDepartureTime2(Optional.empty());
+                    }
+                }
+            }
+        }
+        
+        result.setActualContentDisplay(opActualContentDisplayLst);
+        
+        return result;
+    }
+
+    @Override
+    public WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTimeCd, List<BusinessTripWorkingHours> workingHours) {
+        WorkTimeGetOuput output = new WorkTimeGetOuput();
+        output.setWorkingHours(workingHours);
+        
+        // 就業時間帯コードが存在するか
+        if (workTimeCd == null) {
+            return output;
+        }
+        
+        // List＜出張申請就業時間帯時刻＞の内容をチェックする
+        if (workingHours.stream().filter(x -> x.getWorkTypeCd().equals(workType.getWorkTypeCode().v()) && x.getWorkTimeCd().equals(workTimeCd)).findFirst().isPresent()) {
+            BusinessTripWorkingHours workingHour = workingHours.stream().findFirst().get();
+            output.setStartTime1(Optional.of(workingHour.getStartTime1()));
+            output.setEndTime1(Optional.of(workingHour.getEndTime1()));
+            output.setStartTime2(Optional.of(workingHour.getStartTime2()));
+            output.setEndTime2(Optional.of(workingHour.getEndTime2()));
+            return output;
+        }
+        
+        // ドメインモデル「所定時間設定」を取得する
+        Optional<PredetemineTimeSetting> predetemineTimeSetting = this.predetemineRepo.
+                findByWorkTimeCode(AppContexts.user().companyId(), workTimeCd);
+        if (!predetemineTimeSetting.isPresent()) {
+            return output;
+        }
+        
+        // 勤務種類.１日の勤務.勤務区分
+        WorkTypeUnit workTypeUnit = workType.getDailyWork().getWorkTypeUnit();
+        
+        if (workTypeUnit.equals(WorkTypeUnit.OneDay)) {
+            // 勤務種類.1日の勤務.1日をチェック（※勤務種類の判断条件参照）
+            if (isWorkTypeWork(workType.getDailyWork().getOneDay())) {
+                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
+                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                }
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                }
+            }
+        } else if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
+            // 勤務種類.1日の勤務.午前をチェック
+            // 勤務種類.1日の勤務.午後をチェック
+            if ((isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) || 
+                    (isWorkTypeWork(workType.getDailyWork().getMorning()))) {
+                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
+                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                }
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                }
+            }
+        }
+        
+        // キャッシュに結果を保存する
+        output.getWorkingHours().addAll(Arrays.asList(new BusinessTripWorkingHours(
+                workType.getWorkTypeCode().v(), 
+                workTimeCd, 
+                output.getStartTime1().orElse(0), 
+                output.getEndTime1().orElse(0), 
+                output.getStartTime2().orElse(0), 
+                output.getEndTime2().orElse(0))));
+        System.out.println(output.getWorkingHours().size());
+        return output;
+    }
+    
+    public boolean isWorkTypeWork(WorkTypeClassification workTypeAtr) {
+        switch (workTypeAtr) {
+        case Attendance:
+        case Shooting: 
+        case HolidayWork:
+            return true;
+
+        default:
+            return false;
+        }
+    }
+    
+    public boolean isWorkTypeHoliday(WorkTypeClassification workTypeAtr) {
+        switch (workTypeAtr) {
+        case Holiday:
+        case AnnualHoliday: 
+        case YearlyReserved: 
+        case SpecialHoliday: 
+        case Absence: 
+        case SubstituteHoliday: 
+        case Pause: 
+        case TimeDigestVacation: 
+        case LeaveOfAbsence: 
+        case Closure:
+            return true;
+
+        default:
+            return false;
+        }
     }
 
 }

@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -14,17 +12,13 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.RogerFlag;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlEmpInfoTerDetail;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmManagerTr;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 
 /**
  * @author ThanhNX
@@ -42,9 +36,7 @@ public class ConvertTimeRecordReservationService {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
-
-		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
+		if (!empInfoTerOpt.isPresent())
 			return Optional.empty();
 
 		try {
@@ -63,21 +55,22 @@ public class ConvertTimeRecordReservationService {
 
 			 return Optional.of(atomTask);
 		} catch (BusinessException bEx) {
+			bEx.printStackTrace();
 			// BusinessException bEx = (BusinessException) ex;
 			// 処理にエラーがある場合、別の申請受信データの処理を続行
-			Optional<StampCard> stampCardOpt = require.getByCardNoAndContractCode(contractCode,
-					new StampNumber(reservReceptData.getIdNumber()));
-			if (!stampCardOpt.isPresent())
-				return Optional.empty();
-			AtomTask atomTaskEx = AtomTask.of(() -> {
-
-				Optional<TopPageAlarmEmpInfoTer> alEmpTer = createLogEmpTer(require, stampCardOpt.get().getEmployeeId(),
-						requestSetting.get().getCompanyId().v(), empInfoTerCode.v(), reservReceptData.getIdNumber(),
-						bEx.getMessage());
-				if (alEmpTer.isPresent())
-					require.insertLogAll(alEmpTer.get());
-			});
-			return Optional.of(atomTaskEx);
+//			Optional<StampCard> stampCardOpt = require.getByCardNoAndContractCode(contractCode,
+//					new StampNumber(reservReceptData.getIdNumber()));
+//			if (!stampCardOpt.isPresent())
+//				return Optional.empty();
+//			AtomTask atomTaskEx = AtomTask.of(() -> {
+//
+//				Optional<TopPageAlarmEmpInfoTer> alEmpTer = createLogEmpTer(require, stampCardOpt.get().getEmployeeId(),
+//						requestSetting.get().getCompanyId().v(), empInfoTerCode.v(), reservReceptData.getIdNumber(),
+//						bEx.getMessage());
+//				if (alEmpTer.isPresent())
+//					require.insertLogAll(alEmpTer.get());
+//			});
+		return Optional.empty();
 		}
 	}
 
@@ -90,23 +83,23 @@ public class ConvertTimeRecordReservationService {
 		return !stampRecord.isPresent();
 	}
 
-	// [pvt-2] 就業情報端末通信用トップページアラームを作る
-	private static Optional<TopPageAlarmEmpInfoTer> createLogEmpTer(Require require, String sid, String companyId,
-			String terCode, String cardNumber, String message) {
-		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
-
-		if (lstSidApproval.isEmpty())
-			return Optional.empty();
-
-		List<TopPageAlarmManagerTr> lstManagerTr = lstSidApproval.stream()
-				.map(x -> new TopPageAlarmManagerTr(x, RogerFlag.ALREADY_READ)).collect(Collectors.toList());
-		TopPageAlEmpInfoTerDetail detail = new TopPageAlEmpInfoTerDetail(0, message, new EmployeeId(sid),
-				new StampNumber(cardNumber));
-
-		return Optional.of(new TopPageAlarmEmpInfoTer(companyId, lstManagerTr, new EmpInfoTerminalCode(terCode),
-				Arrays.asList(detail)));
-
-	}
+//	// [pvt-2] 就業情報端末通信用トップページアラームを作る
+//	private static Optional<TopPageAlarmEmpInfoTer> createLogEmpTer(Require require, String sid, String companyId,
+//			String terCode, String cardNumber, String message) {
+//		List<String> lstSidApproval = require.getListEmpID(companyId, GeneralDate.today());
+//
+//		if (lstSidApproval.isEmpty())
+//			return Optional.empty();
+//
+//		List<TopPageAlarmManagerTr> lstManagerTr = lstSidApproval.stream()
+//				.map(x -> new TopPageAlarmManagerTr(x, RogerFlag.ALREADY_READ)).collect(Collectors.toList());
+//		TopPageAlEmpInfoTerDetail detail = new TopPageAlEmpInfoTerDetail(0, message, new EmployeeId(sid),
+//				new StampNumber(cardNumber));
+//
+//		return Optional.of(new TopPageAlarmEmpInfoTer(companyId, lstManagerTr, new EmpInfoTerminalCode(terCode),
+//				Arrays.asList(detail)));
+//
+//	}
 
 	public static interface Require extends BentoReserveService.Require {
 

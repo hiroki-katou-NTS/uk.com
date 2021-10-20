@@ -62,7 +62,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
         builderString.append("FROM KfnmtRptWkAnpOutAtd a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.layOutId  =:settingId ");
-        builderString.append(" ORDER BY  a.atdItemId");
+        //builderString.append(" ORDER BY  a.atdItemId");
         FIND_ANP_OUT_ITEMS = builderString.toString();
 
 

@@ -380,13 +380,14 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 	@Override
 	public void addAll(Map<String, DateHistoryItem> histItem) {
 		String cid = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
 		String INS_SQL = "INSERT INTO KSHMT_SHORTTIME_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " HIST_ID, SID, CID,"
+				+ " HIST_ID, SID, CID, CONTRACT_CD,"
 				+ " STR_YMD, END_YMD)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, SID_VAL, CID_VAL, STR_YMD_VAL, END_YMD_VAL); ";
+				+ " HIST_ID_VAL, SID_VAL, CID_VAL, CONTRACT_CD_VAL, STR_YMD_VAL, END_YMD_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -410,6 +411,7 @@ public class JpaSWorkTimeHistoryRepository extends JpaRepository
 			
 			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
 			sql = sql.replace("CID_VAL", "'" + cid + "'");
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getKey() + "'");
 			sql = sql.replace("STR_YMD_VAL", "'" + dateHistItem.start() + "'");
 			sql = sql.replace("END_YMD_VAL","'" +  dateHistItem.end() + "'");

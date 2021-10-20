@@ -605,7 +605,7 @@ module cmm045.a.viewmodel {
             let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ?
                     null : __viewContext.transferred.value.PARAM_SPR_CMM045;
             //spr call
-            if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
+            if(paramSprCmm045 !== undefined && paramSprCmm045 !== null && !nts.uk.request.location.current.isFromMenu){
                 // character.save('AppListExtractCondition', null);
                 let date: vmbase.Date = { startDate: paramSprCmm045.startDate, endDate: paramSprCmm045.endDate }
                 self.dateValue(date);
@@ -615,7 +615,7 @@ module cmm045.a.viewmodel {
             }
             return character.restore("AppListExtractCondition").then((obj) => {
 				// characterData = obj;
-                if (obj !== undefined && obj !== null && !self.isSpr()) {
+                if (obj !== undefined && obj !== null && !self.isSpr() && !nts.uk.request.location.current.isFromMenu) {
 					self.appListExtractConditionDto = obj;
 					self.updateFromAppListExtractCondition();
                     /*let date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
@@ -662,6 +662,9 @@ module cmm045.a.viewmodel {
                 if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
                 }
+				if(nts.uk.request.location.current.isFromMenu) {
+					self.mode(urlParam);	
+				}
                 //write log
                 let paramLog = {programId: 'CMM045',
                                 screenId: 'A',
@@ -2426,6 +2429,7 @@ module cmm045.a.viewmodel {
 			}
 			if(item.opBackgroundColor=='bg-pre-application-excess') {
 				if(confirmAllPreApp) {
+					itemConfirmLst.push(item);
 					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
 						return dfd.resolve(result);
 					});
@@ -2437,6 +2441,7 @@ module cmm045.a.viewmodel {
 				}
 			} else {
 				if(confirmAllActual) {
+					itemConfirmLst.push(item);
 					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
 						return dfd.resolve(result);
 					});

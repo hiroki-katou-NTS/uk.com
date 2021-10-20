@@ -6,13 +6,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSettingRepository;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import nts.uk.ctx.at.function.infra.entity.outputitemsofannualworkledger.*;
 
@@ -293,13 +291,13 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         );
     }
 
-    private static AnnualWorkLedgerOutputSetting toDomain(KfnmtRptYrRecSetting entity, List<OutputItem> itemList) {
+    private static AnnualWorkLedgerOutputSetting toDomain(KfnmtRptYrRecSetting entity, List<OutputItemWorkLedger> itemList) {
         val monthlys = itemList.stream().filter(e -> e.getDailyMonthlyClassification()
                 .equals(DailyMonthlyClassification.MONTHLY)).collect(Collectors.toList());
         val dailys = itemList.stream().filter(e -> e.getDailyMonthlyClassification()
                 .equals(DailyMonthlyClassification.DAILY)).map(i -> new DailyOutputItemsAnnualWorkLedger(
                 i.getRank(),
-                new OutputItemNameOfAnnualWorkLedger(i.getName().v()),
+                new OutputItemNameOfAnnualWorkLedgerDaily(i.getName().v()),
                 i.isPrintTargetFlag(),
                 i.getIndependentCalcClassic(),
                 i.getDailyMonthlyClassification(),
@@ -318,10 +316,10 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
         );
     }
 
-    private static OutputItem toDomain(KfnmtRptYrRecItem entity) {
-        return new OutputItem(
+    private static OutputItemWorkLedger toDomain(KfnmtRptYrRecItem entity) {
+        return new OutputItemWorkLedger(
                 entity.pk.itemPos,
-                new FormOutputItemName(entity.itemName),
+                new OutputItemNameOfAnnualWorkLedger(entity.itemName),
                 entity.itemIsPrintEd,
                 EnumAdaptor.valueOf(entity.itemCalculatorType, IndependentCalcClassic.class),
                 EnumAdaptor.valueOf(entity.itemAttendanceType, DailyMonthlyClassification.class),

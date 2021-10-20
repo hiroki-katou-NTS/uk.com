@@ -54,45 +54,6 @@ public class KfnctAtdIdRptMon extends UkJpaEntity implements MonthlyAttendanceIt
 
 	@Column(name = "WORK_YEARLY_36")
 	private BigDecimal workYearly36;
-
-	@Column(name = "Reserve01")
-	private BigDecimal reserve01;
-	
-	@Column(name = "Reserve02")
-	private BigDecimal reserve02;
-	
-	@Column(name = "Reserve03")
-	private BigDecimal reserve03;
-	
-	@Column(name = "Reserve04")
-	private BigDecimal reserve04;
-	
-	@Column(name = "Reserve05")
-	private BigDecimal reserve05;
-	
-	@Column(name = "Reserve06")
-	private BigDecimal reserve06;
-	
-	@Column(name = "Reserve07")
-	private BigDecimal reserve07;
-	
-	@Column(name = "Reserve08")
-	private BigDecimal reserve08;
-	
-	@Column(name = "Reserve09")
-	private BigDecimal reserve09;
-	
-	@Column(name = "Reserve10")
-	private BigDecimal reserve10;
-	
-	@Column(name = "Reserve11")
-	private BigDecimal reserve11;
-	
-	@Column(name = "Reserve12")
-	private BigDecimal reserve12;
-	
-	@Column(name = "Reserve13")
-	private BigDecimal reserve13;
 	
 	
 	@Override

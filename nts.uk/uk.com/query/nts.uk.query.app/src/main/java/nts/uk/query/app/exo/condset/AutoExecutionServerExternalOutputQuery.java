@@ -16,6 +16,8 @@ import nts.arc.task.AsyncTaskInfoRepository;
 import nts.arc.task.AsyncTaskStatus;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSetRepository;
 import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
@@ -42,6 +44,9 @@ public class AutoExecutionServerExternalOutputQuery {
 	private ExternalOutLogRepository externalOutLogRepository;
 
 	@Inject
+	private StdOutputCondSetRepository stdOutputCondSetRepository;
+	
+	@Inject
 	private CreateExOutTextService createExOutTextService;
 
 	@Inject
@@ -49,11 +54,15 @@ public class AutoExecutionServerExternalOutputQuery {
 
 	public Optional<String> processAutoExecution(String cid, String conditionCd, DatePeriod period,
 			GeneralDate baseDate, Integer categoryId, String execId) {
+		Optional<StdOutputCondSet> optStdOutputCondSet = this.stdOutputCondSetRepository
+				.getStdOutputCondSetById(cid, conditionCd);
 		// 外部出力処理IDを採番する
 		String processingId = execId;
 		ExOutSetting exOutSetting = new ExOutSetting(conditionCd, null, categoryId, period.start(), period.end(),
 				baseDate, processingId, true, Collections.emptyList());
 		exOutSetting.setExecuteForm(ExecutionForm.AUTOMATIC_EXECUTION);
+		exOutSetting.setCid(cid);
+		optStdOutputCondSet.ifPresent(data -> exOutSetting.setConditionSetName(data.getConditionSetName().v()));
 		String taskId = createExOutTextService.start(exOutSetting).getTaskId();
 		// Wait until export service is done
 		AsyncTaskStatus taskStatus;

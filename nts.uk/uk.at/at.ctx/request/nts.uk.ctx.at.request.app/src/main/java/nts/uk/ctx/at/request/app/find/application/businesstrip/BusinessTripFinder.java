@@ -60,6 +60,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.busi
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -201,8 +202,13 @@ public class BusinessTripFinder {
                 ));
 
         BusinessTripInfoOutput output = param.getBusinessTripInfoOutput().toDomain();
+        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
+        Optional<WorkTimeCode> optWorkTimeCode = businessTrip.getInfos().stream()
+                .filter(x -> x.getWorkInformation().getWorkTimeCode() != null)
+                .map(x -> x.getWorkInformation().getWorkTimeCode())
+                .findFirst();
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
                 AppContexts.user().companyId(),
                 EmploymentRootAtr.APPLICATION,
@@ -211,10 +217,13 @@ public class BusinessTripFinder {
                 null,
                 output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                 Collections.emptyList(),
-                output.getAppDispInfoStartup()
+                output.getAppDispInfoStartup(), 
+                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
+                Optional.empty(), 
+                optWorkTimeCode.isPresent() ? optWorkTimeCode.map(WorkTimeCode::v) : Optional.empty(), 
+                false
         );
 
-        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
@@ -287,7 +296,9 @@ public class BusinessTripFinder {
         tripRequestInfoOutput.setActualContentDisplay(opActualContentDisplayLst);
         tripRequestInfoOutput.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         result.setResult(true);
-        result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(tripRequestInfoOutput));
+//        result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(tripRequestInfoOutput));
+        // アルゴリズム「出張申請就業時刻の初期値をセットする」を実行する
+        result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripService.setInitValueAppWorkTime(tripRequestInfoOutput)));
 
         return result;
     }
@@ -518,7 +529,15 @@ public class BusinessTripFinder {
                     null,
                     businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
-                    businessTripInfoOutput.getAppDispInfoStartup()
+                    businessTripInfoOutput.getAppDispInfoStartup(),
+                    param.getBusinessTrip() != null ? 
+                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()) : 
+                            new ArrayList<String>(),
+                    Optional.empty(), 
+                    param.getBusinessTrip() != null ? 
+                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst() : 
+                            Optional.empty(), 
+                    false
             );
 
             // アルゴリズム「申請日を変更する処理」を実行する
@@ -560,7 +579,7 @@ public class BusinessTripFinder {
 
                 result.setResult(true);
                 result.setConfirmMsgOutputs(confirmMsgOutputs);
-                result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput));
+                result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripService.setInitValueAppWorkTime(businessTripInfoOutput)));
             }
         }
         return result;

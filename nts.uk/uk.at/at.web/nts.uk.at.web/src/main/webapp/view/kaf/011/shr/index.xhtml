@@ -93,7 +93,7 @@
 			        							<tbody data-bind="foreach: leaveComDayOffMana">
 													<tr>
 														<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-														<td data-bind="text: dayNumberUsed"></td>
+														<td data-bind="text: dayNumberUsed + '日'"></td>
 													</tr>
 												</tbody>
 											</table>
@@ -210,7 +210,7 @@
 				        							<tbody data-bind="foreach: leaveComDayOffMana">
 														<tr>
 															<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-															<td data-bind="text: dayNumberUsed"></td>
+															<td data-bind="text: dayNumberUsed + '日'"></td>
 														</tr>
 													</tbody>
 												</table>
@@ -219,7 +219,7 @@
 									</div>
 								</div>
 							</com:ko-if>
-							<com:ko-if bind="$parent.appCombinaSelected() == 2 &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().holidayManage == 1)">
+							<com:ko-if bind="$parent.appCombinaSelected() == 2">
 								<div class="row tableRelase" style="margin-top: -1px !important">
 									<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
 									<div class="ntsControl marginNag">
@@ -239,7 +239,7 @@
 				        							<tbody data-bind="foreach: payoutSubofHDManagements">
 														<tr>
 															<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-															<td data-bind="text: dayNumberUsed"></td>
+															<td data-bind="text: dayNumberUsed + '日'"></td>
 														</tr>
 													</tbody>
 												</table>

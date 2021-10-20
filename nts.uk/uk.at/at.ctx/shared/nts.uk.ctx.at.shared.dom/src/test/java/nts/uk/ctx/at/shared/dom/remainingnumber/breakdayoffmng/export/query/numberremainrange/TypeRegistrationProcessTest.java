@@ -37,11 +37,13 @@ public class TypeRegistrationProcessTest {
 	@Test
 	public void testDaikyuManagerTime() {
 		TimeLapseVacationSetting setting = create(true, TypeOffsetJudgment.REAMAIN);//時間管理区分,代休
-		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
+		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.REAMAIN);
-		assertThat(actualResult).isEqualTo(Optional.empty());
-
+		assertThat(actualResult.get().getOutbreakDay()).isEqualTo(GeneralDate.ymd(2019, 4, 2));// 発生日
+		assertThat(actualResult.get().getDateOfUse()).isEqualTo(GeneralDate.ymd(2019, 5, 30));// 使用日
+		assertThat(actualResult.get().getDayNumberUsed()).isEqualTo(new ReserveLeaveRemainingDayNumber(1.0));// 使用日数
+		assertThat(actualResult.get().getTargetSelectionAtr()).isEqualTo(TargetSelectionAtr.AUTOMATIC);// 対象選択区分
 	}
 
 	/*
@@ -54,8 +56,7 @@ public class TypeRegistrationProcessTest {
 	 * */
 	@Test
 	public void testDaikyuNoManagerTime() {
-		TimeLapseVacationSetting setting = create(false, TypeOffsetJudgment.REAMAIN);//時間管理区分,代休
-		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
+		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.REAMAIN);
 		assertThat(actualResult.get().getOutbreakDay()).isEqualTo(GeneralDate.ymd(2019, 4, 2));// 発生日
@@ -74,8 +75,7 @@ public class TypeRegistrationProcessTest {
 	 * */
 	@Test
 	public void testFurikyu() {
-		TimeLapseVacationSetting setting = create(false, TypeOffsetJudgment.REAMAIN);//時間管理区分,振休
-		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(setting,
+		Optional<SeqVacationAssociationInfo> actualResult = TypeRegistrationProcess.process(
 				GeneralDate.ymd(2019, 4, 2), GeneralDate.ymd(2019, 5, 30), new ManagementDataRemainUnit(1.0),
 				TypeOffsetJudgment.ABSENCE);
 		assertThat(actualResult.get().getOutbreakDay()).isEqualTo(GeneralDate.ymd(2019, 4, 2));// 発生日

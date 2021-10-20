@@ -85,18 +85,6 @@ public class OtWorkAppReflect {
 
 	}
 
-	/**
-	 * @author thanh_nx
-	 *
-	 *         残業申請の反映（勤務予定）
-	 */
-
-	public List<Integer> process(RequireSC require, String cid, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
-
-		return this.getBefore().processSC(require, cid, overTimeApp, dailyApp);
-
-	}
-
 	public static interface RequireSC extends BeforeOtWorkAppReflect.Require {
 
 	}

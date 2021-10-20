@@ -150,8 +150,8 @@ public class ApplicationCancellationProcessTest {
 
 		assertThat(application.getReflectionStatus().getListReflectionStatusOfDay())
 				.extracting(x -> x.getTargetDate(), x -> x.getActualReflectStatus(), x -> x.getScheReflectStatus(),
-						x -> x.getOpUpdateStatusAppCancel().map(y -> y.getOpReasonScheCantReflect().get()).orElse(null),
-						x -> x.getOpUpdateStatusAppCancel().map(y -> y.getOpReasonActualCantReflect().get())
+						x -> x.getOpUpdateStatusAppCancel().flatMap(y -> y.getOpReasonScheCantReflect()).orElse(null),
+						x -> x.getOpUpdateStatusAppCancel().flatMap(y -> y.getOpReasonActualCantReflect())
 								.orElse(null))
 				.containsExactly(
 						Tuple.tuple(GeneralDate.ymd(2021, 4, 20), ReflectedState.REFLECTED, ReflectedState.REFLECTED,

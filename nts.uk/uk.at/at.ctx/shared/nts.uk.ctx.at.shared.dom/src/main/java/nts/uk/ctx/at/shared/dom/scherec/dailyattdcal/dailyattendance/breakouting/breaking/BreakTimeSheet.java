@@ -89,7 +89,8 @@ public class BreakTimeSheet extends DomainObject {
 																			  Finally.of(BreakClassification.BREAK),
 																			  Optional.empty(),
 																			  DeductionClassification.BREAK,
-																			  Optional.empty());
+																			  Optional.empty(),
+																			  false);
 	}
 	
 	/**
