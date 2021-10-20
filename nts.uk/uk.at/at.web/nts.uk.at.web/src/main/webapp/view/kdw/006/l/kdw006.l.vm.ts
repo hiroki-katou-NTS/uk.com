@@ -176,12 +176,12 @@ module nts.uk.at.view.kmk006.l {
             }
             var hisLocal: HistoryItem[] = ko.unwrap(vm.lstWpkHistory);
 
-            vm.validate()
-                .then((valid: boolean) => {
-                    if (valid) {
-                        if (ko.unwrap(vm.screenMode) === SCREEN_MODE.ADD || ko.unwrap(vm.screenMode) === SCREEN_MODE.NEW) {
-                            vm.$blockui('invisible')
-                                .then(() => {
+            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.ADD || ko.unwrap(vm.screenMode) === SCREEN_MODE.NEW) {
+                vm.$blockui('invisible')
+                    .then(() => {
+                        vm.validate()
+                            .then((valid: boolean) => {
+                                if (valid) {
                                     vm.$ajax('at', API.RESISTER, param)
                                         .done((hisId: any) => {
                                             vm.$errors('clear');
@@ -198,36 +198,36 @@ module nts.uk.at.view.kmk006.l {
                                         .fail((data: any) => {
                                             vm.$dialog.info({ messageId: data.messageId })
                                         })
+                                }
+                            })
+                    })
+                    .always(() => vm.$blockui('clear'));
+            } else
+                if (ko.unwrap(vm.screenMode) === SCREEN_MODE.UPDATE) {
+                    vm.$blockui('invisible')
+                        .then(() => {
+                            vm.$ajax('at', API.UPDATE, param)
+                                .done(() => {
+                                    vm.$errors('clear');
+                                    vm.$dialog.info({ messageId: 'Msg_15' })
+                                        .then(() => {
+                                            _.remove(hisLocal, (item: HistoryItem) => { return item.historyId === ko.unwrap(vm.model.historyId) })
+                                            hisLocal.push(new HistoryItem({
+                                                historyId: ko.unwrap(vm.model.historyId),
+                                                startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
+                                                endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
+                                            }));
+                                            vm.reload();
+                                        });
                                 })
-                                .always(() => vm.$blockui('clear'));
-                        } else
-                            if (ko.unwrap(vm.screenMode) === SCREEN_MODE.UPDATE) {
-                                vm.$blockui('invisible')
-                                    .then(() => {
-                                        vm.$ajax('at', API.UPDATE, param)
-                                            .done(() => {
-                                                vm.$errors('clear');
-                                                vm.$dialog.info({ messageId: 'Msg_15' })
-                                                    .then(() => {
-                                                        _.remove(hisLocal, (item: HistoryItem) => { return item.historyId === ko.unwrap(vm.model.historyId) })
-                                                        hisLocal.push(new HistoryItem({
-                                                            historyId: ko.unwrap(vm.model.historyId),
-                                                            startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
-                                                            endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
-                                                        }));
-                                                        vm.reload();
-                                                    });
-                                            })
-                                            .fail((data: any) => {
-                                                vm.$dialog.info({ messageId: data.messageId })
-                                            })
-                                    })
-                                    .always(() => vm.$blockui('clear'));
-                            } else {
-                                vm.$window.close(ko.unwrap(vm.model.historyId));
-                            }
-                    }
-                })
+                                .fail((data: any) => {
+                                    vm.$dialog.info({ messageId: data.messageId })
+                                })
+                        })
+                        .always(() => vm.$blockui('clear'));
+                } else {
+                    vm.$window.close(ko.unwrap(vm.model.historyId));
+                }
         }
 
         setEndDate(param?: string) {
