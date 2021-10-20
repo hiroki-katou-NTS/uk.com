@@ -488,7 +488,7 @@ module nts.uk.ui.at.kdw013.c {
 		
         errors: KnockoutObservable<boolean> = ko.observable(false);
         timeError: KnockoutObservable<boolean> = ko.observable(false);
-        taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
+        taskFrameSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray([]);
         flag: KnockoutObservable<boolean> = ko.observable(false);
 		showInputTime: KnockoutObservable<boolean> = ko.observable(false);
 		range: KnockoutObservable<number | null> = ko.observable(null);
@@ -502,29 +502,14 @@ module nts.uk.ui.at.kdw013.c {
                 this.flag,
 				this.showInputTime,
 			);
+		frameNos:KnockoutObservableArray<number> = ko.observableArray([]);
 		
         constructor(public params: Params) {
             super();
 
             const vm = this;
-            const { $settings } = params;
         
-            vm.taskFrameSettings = ko.computed({
-                read: () => {
-                    const settings = ko.unwrap($settings);
-                    if (settings) {
-                        return settings.startManHourInputResultDto.taskFrameUsageSetting.frameSettingList;
-                    }
-                    //return [];
-					// fake data
-					return [{frameNo: 1, frameName: "物件名称", useAtr: 1},
-							{frameNo: 2, frameName: "プロジェクト", useAtr: 1},
-							{frameNo: 3, frameName: "設計フェーズ", useAtr: 1},
-							{frameNo: 4, frameName: "製造フェーズ", useAtr: 1},
-							{frameNo: 5, frameName: "ﾃｽﾄﾌｪｰｽﾞ", useAtr: 1}] 
-                }
-            });
-            this.taskFrameSettings.subscribe((t: a.TaskFrameSettingDto[]) => vm.taskBlocks.updateSetting(t));
+            vm.taskFrameSettings.subscribe((t: a.TaskFrameSettingDto[]) => vm.taskBlocks.updateSetting(t));
 
             this.timeError.subscribe(() => {
                 vm.updatePopupSize();
@@ -569,46 +554,7 @@ module nts.uk.ui.at.kdw013.c {
 			resetHeight();
             vm.updatePopupSize();
 		}
-
-        fakeData(start: Date, end: Date):IManHrPerformanceTaskBlock{
-            return { caltimeSpan: { start, end }, 
-                    taskDetails: [
-                        { 
-                            supNo: 0, 
-                            taskItemValues: [
-                                { itemId: 3, value: '' },
-                                { itemId: 4, value: '' },
-                                { itemId: 5, value: '' },
-                                { itemId: 6, value: '' },
-                                { itemId: 7, value: '' },
-                                { itemId: 8, value: '' },
-								{ itemId: 9, value: '' },
-								{ itemId: 10, value: '' },
-								{ itemId: 11, value: '' },
-								{ itemId: 12, value: '' },
-								{ itemId: 13, value: '' },
-                                { itemId: 14, value: '' },
-                                { itemId: 15, value: '' },
-                                { itemId: 16, value: '' },
-                                { itemId: 17, value: '' },
-                                { itemId: 18, value: '' },
-								{ itemId: 19, value: '' },
-								{ itemId: 20, value: '' },
-								{ itemId: 21, value: '' },
-								{ itemId: 22, value: '' },
-								{ itemId: 23, value: '' },
-                                { itemId: 24, value: '' },
-                                { itemId: 25, value: '' },
-                                { itemId: 26, value: '' },
-                                { itemId: 27, value: '' },
-                                { itemId: 28, value: '' },
-								{ itemId: 29, value: '' }
-                            ] 
-                        }
-                    ]
-                };
-        }
-
+        
         mounted() {
             const vm = this;
             const { $el, params} = vm;
@@ -620,17 +566,21 @@ module nts.uk.ui.at.kdw013.c {
             };
 			data.subscribe((event: FullCalendar.EventApi| null) => {
 				if (event) {
-                    const {extendedProps, start, end } = event as any as calendar.EventRaw;
+                    const {extendedProps, start} = event as any as calendar.EventRaw;
                     let {displayManHrRecordItems, taskBlock, employeeId} = extendedProps;
-                    //taskBlocks = vm.fakeData(start, end),
-					let param ={
+					vm.frameNos(extendedProps.frameNos);
+					if(taskBlock.taskDetails[0].supNo == null){
+						taskBlock.taskDetails[0].supNo == vm.generateFrameNo();
+					}
+                    vm.taskFrameSettings(extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList);
+					let param = {
 						refDate: start,
 						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
 					}
 
 					block.grayout();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
-		            	vm.taskBlocks.update(taskBlock, employeeId, data, this.taskFrameSettings());
+		            	vm.taskBlocks.update(taskBlock, employeeId, data, vm.taskFrameSettings());
 						setTimeout(() => {
 							vm.updatePopupSize();
 						}, 150);
@@ -683,6 +633,20 @@ module nts.uk.ui.at.kdw013.c {
             }
             _.extend(window, { pp: vm });
         }
+	
+		generateFrameNo(): number{
+			let vm = this
+			let frameNo;
+			for(var i = 1; i < 21; i++){
+				var no = _.find(vm.frameNos(), n => n == i);
+				if(!no){
+					frameNo = i;
+					vm.frameNos.push(i);
+					break;
+				}
+			}
+			return frameNo;
+		};
 
         close() {
             const vm = this;
@@ -725,9 +689,12 @@ module nts.uk.ui.at.kdw013.c {
 		addTaskDetails(){
 			const vm = this;
 			if(vm.taskBlocks.taskDetailsView().length == 1){
-				_.find(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (i: TaskItemValue) => {return i.itemId == 3}).value(vm.range().toString());	
+				var i = _.find(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (i: TaskItemValue) => {return i.itemId == 3});
+				if(i){
+					i.value(vm.range().toString());	
+				}
 			}
-			vm.taskBlocks.addTaskDetailsView();
+			vm.taskBlocks.addTaskDetailsView(vm.generateFrameNo());
 		}
 		
 		sumTotalTime():number{
@@ -851,13 +818,13 @@ module nts.uk.ui.at.kdw013.c {
             });
         }
 
-		addTaskDetailsView():void {
+		addTaskDetailsView(supNo: number):void {
 			const vm = this;
 			let taskItemValues: ITaskItemValue[] = [];
 			_.forEach(vm.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: '' });
 			});
-			let newTaskDetails: IManHrTaskDetail = { supNo: 0, taskItemValues: taskItemValues }
+			let newTaskDetails: IManHrTaskDetail = { supNo: supNo, taskItemValues: taskItemValues }
 			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.flag, vm.showInputTime, vm.data, vm.setting));
 		}
 
@@ -1066,8 +1033,8 @@ module nts.uk.ui.at.kdw013.c {
         getTaskItemValue():ITaskItemValue[]{
             const vm = this;
             const result :ITaskItemValue[] = [];
-            _.each((vm.taskItemValues), (item: TaskItemValue) => {
-                if(item.value() != null && item.value() != undefined && item.value() != ''){
+            _.each(vm.taskItemValues(), (item: TaskItemValue) => {
+                if(item.value() != null && item.value() != undefined && item.value() != '' && item.use()){
                     result.push({itemId : item.itemId, value: item.value()});
                 }
             });
@@ -1139,7 +1106,7 @@ module nts.uk.ui.at.kdw013.c {
 		isErorr(): boolean{
 			const vm = this;
 			const item1 = _.find(vm.taskItemValues(), (i) => {return i.itemId == 4});
-			if(item1.value() == '' || item1.value() == null){
+			if(item1 && (item1.value() == '' || item1.value() == null)){
 				return true;
 			}	
 			return false;

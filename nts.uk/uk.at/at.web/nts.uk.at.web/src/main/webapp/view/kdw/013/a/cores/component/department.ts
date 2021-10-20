@@ -89,10 +89,9 @@ constructor(private params: EmployeeDepartmentParams) {
             const $dept = ko.unwrap(vm.department);
 
             if ($sets) {
-                const { refWorkplaceAndEmployeeDto } = $sets;
+                const { employeeInfos ,lstEmployeeInfo } = $sets;
 
-                if (refWorkplaceAndEmployeeDto) {
-                    const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
+                if (employeeInfos && lstEmployeeInfo) {
                     let emps = _.filter(employeeInfos, { 'workplaceId': $dept });
                     // updating
                     return loaded ? [] : _.filter(lstEmployeeInfo, (o) => {
@@ -126,10 +125,9 @@ constructor(private params: EmployeeDepartmentParams) {
             const $sets = ko.unwrap($settings);
 
             if ($sets) {
-                const { refWorkplaceAndEmployeeDto } = $sets;
+                const { workplaceInfos } = $sets;
 
-                if (refWorkplaceAndEmployeeDto) {
-                    const { workplaceInfos } = refWorkplaceAndEmployeeDto;
+                if (workplaceInfos) {
 
                     return loaded ? [] : workplaceInfos;
                 }
@@ -146,7 +144,7 @@ constructor(private params: EmployeeDepartmentParams) {
         .subscribe((deps) => {
             if (!_.isEmpty(deps)) {
 
-                let empInfo = _.find(vm.params.$settings().refWorkplaceAndEmployeeDto.employeeInfos, { 'employeeId': vm.$user.employeeId });
+                let empInfo = _.find(vm.params.$settings().employeeInfos, { 'employeeId': vm.$user.employeeId });
 
                 if (empInfo) {
 
