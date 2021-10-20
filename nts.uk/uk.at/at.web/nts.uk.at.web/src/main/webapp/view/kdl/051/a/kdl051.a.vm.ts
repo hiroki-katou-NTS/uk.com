@@ -11,7 +11,6 @@ module nts.uk.at.view.kdl051.a {
         export class ScreenModel {
             listEmpId : any;
 			dataOneEmp : any;
-			listDataInfo : KnockoutObservableArray<RemainNumberDetailedInfoDto>;
 			employeeNameSelect : KnockoutObservable<string>;
 			
 			// search
@@ -52,7 +51,6 @@ module nts.uk.at.view.kdl051.a {
 				
 				
 				self.dataOneEmp = ko.observable(null);
-				self.listDataInfo = ko.observableArray([]);
 				self.listDataFull = ko.observableArray([]);
 				self.employeeNameSelect = ko.observable("");
 				
@@ -108,11 +106,11 @@ module nts.uk.at.view.kdl051.a {
 				//table bottom
 				self.items = ko.observableArray([]);
             	self.currentCode = ko.observable();
-                self.items.push(new DigestionDetailsDtoTest("0.5日","2021/09/23（木）　" ,'')); 
-				self.items.push(new DigestionDetailsDtoTest("1.0日","2021/09/24（金）　" ,''));
-				self.items.push(new DigestionDetailsDtoTest("1.0日","2021/09/26（日）　" ,''));
-	            self.items.push(new DigestionDetailsDtoTest("0.5日","2021/10/05（火）　" ,'予'));
-				self.items.push(new DigestionDetailsDtoTest("1.0日","2021/10/20（水）　" ,'予'));
+                // self.items.push(new DigestionDetailsDtoTest("0.5日","2021/09/23（木）　" ,'')); 
+				// self.items.push(new DigestionDetailsDtoTest("1.0日","2021/09/24（金）　" ,''));
+				// self.items.push(new DigestionDetailsDtoTest("1.0日","2021/09/26（日）　" ,''));
+	            // self.items.push(new DigestionDetailsDtoTest("0.5日","2021/10/05（火）　" ,'予'));
+				// self.items.push(new DigestionDetailsDtoTest("1.0日","2021/10/20（水）　" ,'予'));
 	            
 	            self.columns = ko.observableArray([
 					{ headerText: '', key: 'digestionStatus', width: 200,hidden: true } ,
@@ -182,6 +180,7 @@ module nts.uk.at.view.kdl051.a {
 					_.forEach(data.lstEmployee, (a: any, ind) => {
 						self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName })
 					});
+					
 					dfd.resolve();
                 }).fail(function (res: any) {
                     alertError({ messageId: "" });
@@ -194,8 +193,12 @@ module nts.uk.at.view.kdl051.a {
                 let dfd = $.Deferred();
 				service.getDeitalInfoNursingByEmp(emp).done((data: any) => {
 					self.dataOneEmp(data);
-					self.listDataInfo([]);
+					self.items([]);
 					self.managementCheck(data.managementSection?1:0);
+
+					_.forEach(data.listDigestionDetails, (a: any) => {
+						self.items.push(new DigestionDetailsDto(a));
+					});
 					
 	                //xóa index kcp005
 	               	let id = _.filter($("#kcp005 > div > div  "), (x) => {
