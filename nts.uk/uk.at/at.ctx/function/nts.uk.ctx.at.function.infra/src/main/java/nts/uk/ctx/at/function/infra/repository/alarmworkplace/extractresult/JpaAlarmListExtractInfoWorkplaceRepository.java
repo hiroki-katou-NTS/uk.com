@@ -7,6 +7,7 @@ import nts.uk.ctx.at.function.infra.entity.alarmworkplace.extractresult.KfndtAla
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,7 @@ public class JpaAlarmListExtractInfoWorkplaceRepository extends JpaRepository im
         List<KfndtAlarmExtractWpl> result = this.queryProxy().query(FIND_BY_ID, KfndtAlarmExtractWpl.class)
                 .setParameter("processId", processId)
                 .getList();
+        result.sort(Comparator.comparing(i -> i.workplaceCode));
         return KfndtAlarmExtractWpl.toDomain(result);
     }
 }

@@ -23,6 +23,9 @@ public class AccessRestrictionsDto {
 	
 	/** 許可IPアドレス  */
 	public List<AllowedIPAddressDto> whiteList;
+	
+	/** 利用PCのIPアドレス */
+	public String userIpAddress;
 
 	public AccessRestrictionsDto(AccessRestrictions domain) {
 		super();

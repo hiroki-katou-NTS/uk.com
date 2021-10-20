@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 
@@ -28,6 +29,7 @@ public class RemainMerge {
 	AbsenceLeaveRemainData absenceLeaveRemainData;
 	ChildcareRemNumEachMonth monChildHdRemain;
 	CareRemNumEachMonth monCareHdRemain;
+	PublicHolidayRemNumEachMonth monPublicHoliday;
 	
 	public RemainMerge(){
 	}
@@ -41,6 +43,7 @@ public class RemainMerge {
 		if (this.absenceLeaveRemainData != null) return false;
 		if (this.monChildHdRemain != null) return false;
 		if (this.monCareHdRemain != null) return false;
+		if (this.monPublicHoliday != null) return false;
 		return true;
 	}
 }

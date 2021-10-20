@@ -10,7 +10,6 @@ body {
 }
 .label:FIRST-CHILD{
 	font-size: large;
-	margin-bottom: 5px;
 	margin-left: 20px;
 }
 #search-div {
@@ -63,8 +62,8 @@ div.nts-column{
 
 
 #premium-set-tbl-b {
-	margin-top: 10px;
-	margin-left: 15px;
+	
+	margin-left: 20px;
 }
 #premium-set-tbl-b tr, th, td{ 
 	border: 1px solid #999999
@@ -91,7 +90,20 @@ div.nts-column{
 	padding: 0px;
 }
 #premium-set-tbl-b tr { line-height: 14px; }
-
+.tabs-list.radio-wrappers.nts-input{
+	padding : 0 !important;
+	margin-left: 16px;
+	margin-right: 15px;
+}
+.tabs-content{
+	padding : 0px;
+	margin-top: 3px;
+	width: 493px;
+	margin-left: 16px;
+}
+.tabs-panel.vertical>.tabs-content, .tabs-panel.vertical-link>.tabs-content, .tabs-panel.horizontal>.tabs-content {
+padding: 0px;
+	}
 
 
 

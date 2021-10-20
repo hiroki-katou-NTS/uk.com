@@ -31,6 +31,8 @@ public class EnterStampFromPortalService {
 	 * @param require
 	 * @param 契約コード
 	 *            contractCode
+	 * @param 会社ID
+	 *            cid
 	 * @param 社員ID
 	 *            employeeID
 	 * @param 打刻日時
@@ -43,7 +45,7 @@ public class EnterStampFromPortalService {
 	 * 
 	 *         ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
-	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
+	public static TimeStampInputResult create(Require require, String cid, ContractCode contractCode, String employeeID,
 			GeneralDateTime stampDatetime, ButtonPositionNo buttonPositionNo, RefectActualResult refActualResults) {
 
 		// $ポータルの打刻設定 = require.ポータルの打刻設定を取得する()
@@ -65,7 +67,7 @@ public class EnterStampFromPortalService {
 
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, NULLL, 打刻日時, $打刻する方法,
 		// $ボタン詳細設定.ボタン種類, 実績への反映内容, NULL)
-		return CreateStampDataForEmployeesService.create(require, contractCode, employeeID, Optional.ofNullable(null),
+		return CreateStampDataForEmployeesService.create(require, cid, contractCode, employeeID, Optional.ofNullable(null),
 				stampDatetime, relieve, settingButton.get().getButtonType(), refActualResults,
 				Optional.ofNullable(null));
 	}

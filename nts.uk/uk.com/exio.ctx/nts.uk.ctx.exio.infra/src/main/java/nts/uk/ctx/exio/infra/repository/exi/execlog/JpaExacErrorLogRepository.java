@@ -1,14 +1,19 @@
 package nts.uk.ctx.exio.infra.repository.exi.execlog;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcErrLog;
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacErrorLogPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
+import nts.uk.ctx.exio.dom.exi.execlog.ErrorOccurrenceIndicator;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 
 @Stateless
@@ -63,14 +68,23 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
     }
 
 	private static ExacErrorLog toDomain(OiodtExAcErrLog entity) {
-		return new ExacErrorLog(entity.exacErrorLogPk.logSeqNumber, entity.exacErrorLogPk.cid,
-				entity.exacErrorLogPk.externalProcessId, entity.csvErrorItemName, entity.csvAcceptedValue,
-				entity.errorContents, entity.recordNumber, entity.logRegDateTime, entity.itemName, entity.errorAtr);
+		ExacErrorLog domain = new ExacErrorLog(entity.exacErrorLogPk.logSeqNumber,
+				entity.exacErrorLogPk.cid,
+				entity.exacErrorLogPk.externalProcessId,
+				Optional.ofNullable(entity.csvErrorItemName),
+				Optional.ofNullable(entity.csvAcceptedValue),
+				Optional.ofNullable(entity.errorContents), 
+				new AcceptanceLineNumber(entity.recordNumber),
+				entity.logRegDateTime,
+				Optional.ofNullable(entity.itemName),
+				EnumAdaptor.valueOf(entity.errorAtr, ErrorOccurrenceIndicator.class));
+		return domain;
 	}
 
 	private OiodtExAcErrLog toEntity(ExacErrorLog domain) {
 		return new OiodtExAcErrLog(domain.getVersion(),
 				new OiomtExacErrorLogPk(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId()),
+				AppContexts.user().contractCode(),
 				domain.getCsvErrorItemName().get(), domain.getCsvAcceptedValue().get(), domain.getErrorContents().get(),
 				domain.getRecordNumber().v(), domain.getLogRegDateTime(), domain.getItemName().get(), domain.getErrorAtr().value);
 	}
@@ -83,6 +97,13 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 		return  this.queryProxy().query(SELECT_BY_PROCESS_ID, OiodtExAcErrLog.class)
 		.setParameter("externalProcessId", externalProcessId)
         .getList(item -> toDomain(item));
+	}
+
+	@Override
+	public void addList(List<ExacErrorLog> domain) {
+		if(domain.isEmpty()) return;
+		this.commandProxy().insertAll(domain.stream().map(x -> toEntity(x)).collect(Collectors.toList())); 
+		this.getEntityManager().flush();
 	}
 
 }

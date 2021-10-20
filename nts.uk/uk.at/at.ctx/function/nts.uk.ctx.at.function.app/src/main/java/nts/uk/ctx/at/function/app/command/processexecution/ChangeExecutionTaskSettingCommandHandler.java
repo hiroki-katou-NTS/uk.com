@@ -12,13 +12,11 @@ import javax.transaction.Transactional.TxType;
 
 import org.quartz.CronExpression;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
@@ -26,7 +24,6 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecution
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
-import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.CronType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.UkJobScheduleOptions;
@@ -80,6 +77,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 				ScheduledJobUserData scheduletimeData = new ScheduledJobUserData();
 				scheduletimeData.put("companyId", AppContexts.user().companyId());
 				scheduletimeData.put("execItemCd", command.getExecItemCd());
+				scheduletimeData.put("companyCd", AppContexts.user().companyCode());
 
 				Map<CronType, UkJobScheduleOptions> optionsList = cronList.entrySet().stream()
 						.filter(e -> CronExpression.isValidExpression(e.getValue().getCronExpressions().get(0)))
@@ -107,7 +105,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 						executionTaskSetting.setNextExecDateTime(Optional.empty());
 					}
 					// 登録処理
-					this.performRegister(executionTaskSetting, saveCommand);
+					this.performRegister(saveCommand);
 				} catch (Exception e) {
 					throw new BusinessException("Msg_1110");
 				}
@@ -127,12 +125,8 @@ public class ChangeExecutionTaskSettingCommandHandler
 		this.scheduler.unscheduleOnCurrentCompany(scheduleId);
 	}
 
-	private void performRegister(ExecutionTaskSetting domain, SaveExecutionTaskSettingCommand command)
+	private void performRegister(SaveExecutionTaskSettingCommand command)
 			throws Exception {
-		this.saveExecutionTaskSettingCommandHandler.saveTaskSetting(command, domain, AppContexts.user().companyId(),
-				command.getRepeatMonthDateList().stream().map(x -> EnumAdaptor.valueOf(x, RepeatMonthDaysSelect.class))
-						.collect(Collectors.toList()),
-				domain.getScheduleId(), domain.getEndScheduleId().orElse(null),
-				domain.getRepeatScheduleId().orElse(null));
+		this.saveExecutionTaskSettingCommandHandler.handle(command);
 	}
 }

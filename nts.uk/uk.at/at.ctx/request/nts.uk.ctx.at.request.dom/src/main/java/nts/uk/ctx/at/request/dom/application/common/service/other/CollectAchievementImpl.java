@@ -335,13 +335,17 @@ public class CollectAchievementImpl implements CollectAchievement {
 		if (!(recordWorkInfoImport.getOverTimeLst() == null && recordWorkInfoImport.getCalculateHolidayLst() == null)) {
 			if (recordWorkInfoImport.getOverTimeLst() != null) {
 				recordWorkInfoImport.getOverTimeLst().entrySet().forEach(x -> {
-					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v(), 0));
+				    int overTimeTransfer = recordWorkInfoImport.getCalculateTransferOverTimeLst().containsKey(x.getKey()) ? 
+				            recordWorkInfoImport.getCalculateTransferOverTimeLst().get(x.getKey()).v() : 0;
+					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v()  + overTimeTransfer, 0));
 				});
 			}
 			
 			if (recordWorkInfoImport.getCalculateHolidayLst() != null) {
 				recordWorkInfoImport.getCalculateHolidayLst().entrySet().forEach(x -> {
-					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v(), 1));
+				    int holidayTransfer = recordWorkInfoImport.getCalculateTransferLst().containsKey(x.getKey()) ? 
+				            recordWorkInfoImport.getCalculateTransferLst().get(x.getKey()).v() : 0;
+					overtimeLeaveTimes.add(new OvertimeLeaveTime(x.getKey(), 0, x.getValue().v() + holidayTransfer, 1));
 				});
 			}
 			opOvertimeLeaveTimeLst = Optional.of(overtimeLeaveTimes);

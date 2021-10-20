@@ -87,13 +87,13 @@ public class RecordWorkInfoPubExport_New {
 	private Map<Integer, AttendanceTime> overTimeLst;
 	
 //	計算振替残業
-	private List<AttendanceTime> calculateTransferOverTimeLst;
+	private Map<Integer, AttendanceTime> calculateTransferOverTimeLst;
 	
 //	計算休日出勤
 	private Map<Integer, AttendanceTime> calculateHolidayLst;
 	
 //	計算振替
-	private List<AttendanceTime> calculateTransferLst;
+	private Map<Integer, AttendanceTime> calculateTransferLst;
 	
 	
 	

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 
 /**
@@ -42,7 +43,7 @@ public interface WorkingConditionItemGetMemento {
 	 *
 	 * @return the work category
 	 */
-	PersonalWorkCategory getWorkCategory();
+	WorkByIndividualWorkDay getWorkCategory();
 	
 	/**
 	 * Gets the contract time.
@@ -70,7 +71,6 @@ public interface WorkingConditionItemGetMemento {
 	 *
 	 * @return the work day of week
 	 */
-	PersonalDayOfWeek getWorkDayOfWeek();
 	
 	/**
 	 * Gets the employee id.
@@ -98,7 +98,7 @@ public interface WorkingConditionItemGetMemento {
 	 *
 	 * @return the holiday add time set
 	 */
-	Optional<BreakdownTimeDay> getHolidayAddTimeSet();
+	Optional<BreakDownTimeDay> getHolidayAddTimeSet();
 	
 	/**
 	 * Gets the time apply.

@@ -1,17 +1,3 @@
-
-div.form-label {
-    display: inline-block;
-    box-sizing: border-box;
-    height: 30px;
-    width: 90px;
-    border-style: solid;
-    border-color: #97D155;
-    border-width: 0 0 0 5px;
-    padding: 0 10px 0 8px;
-    margin:10px 5px 20px 20px;
-}
-
-
 div.label {
     width: 100%;
 }
@@ -23,7 +9,7 @@ div.label {
 
 .label_top {
 	text-align: center;
-	padding-bottom: 12px;
+  width: 120px;
 }
 
 .form-label lable {
@@ -54,7 +40,6 @@ td{
 
 .td_center {
 	width: 50px;
-	text-align: center;
 }
 
 .td_center_sp {
@@ -63,11 +48,11 @@ td{
 }
 
 .td_right {
-	padding-left: 5px;	
+	padding-left: 20px;	
 }
 
 .td_left {
-	width: 40px;	
+	width: 120px;	
 }
 
 tr{
@@ -77,21 +62,13 @@ tr{
 
 .checkbox_bottom {
 	margin-left: 136px;
+  margin-top: 20px;
 }
 
-button.x-large {
-    font-size: 22px;
-    padding: 6px 35px;
-    background-color: #A4EEB0;
-    margin-bottom: 5px;
-    height: 45px;
-    box-shadow: 0 5px #999;
+.flex.valign-center {
+  margin-top: 10px;
 }
 
-button.large {
-    font-size: 15px;
-    padding: 4px 10px;
-    margin-bottom: 4px;
-    height: 34px;
-    box-shadow: 0 4px rgba(0, 0, 0, 0.4);
+.flex.valign-center > .ntsControl {
+  margin-right: 5px;
 }

@@ -40,13 +40,10 @@ public class SecuritypolicyExcelImpl implements MasterListData{
 	////pass 
 	public PasswordPolicyDtoExcel getPasswordPolicy() {
 		String contractCode = AppContexts.user().contractCode();
-		Optional<PasswordPolicy> passwordPolicyOptional = this.passwordPolicyRepository
+		PasswordPolicy passwordPolicy = this.passwordPolicyRepository
 				.getPasswordPolicy(new ContractCode(contractCode));
-		if (passwordPolicyOptional.isPresent()) {
-			return this.toDtoPass(passwordPolicyOptional.get());
-		} else {
-			return null;
-		}
+		
+		return this.toDtoPass(passwordPolicy);
 	}
 	private PasswordPolicyDtoExcel toDtoPass(PasswordPolicy passwordPolicy) {
 		return new PasswordPolicyDtoExcel(

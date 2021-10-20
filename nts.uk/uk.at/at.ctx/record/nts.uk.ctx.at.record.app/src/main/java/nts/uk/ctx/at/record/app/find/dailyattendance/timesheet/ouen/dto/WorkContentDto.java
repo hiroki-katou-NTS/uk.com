@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
  * @author laitv
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 /** 作業内容 */
 public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
@@ -35,6 +34,10 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	/** 備考: 作業入力備考 */
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = WORKREMARKS)
 	private String workRemarks;
+	
+	/** 作業: 作業グループ */
+	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = WORKGROUP)
+	private Optional<WorkGroupDto> workOpt;
 	
 	
 	@Override
@@ -117,6 +120,20 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 			break;
 		}
 		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	public WorkContentDto(WorkplaceOfWorkEachOuenDto workplace, WorkGroupDto work, String workRemarks) {
+		super();
+		this.workplace = workplace;
+		this.work = work;
+		this.workRemarks = workRemarks;
+	}
+
+	public WorkContentDto(WorkplaceOfWorkEachOuenDto workplace, Optional<WorkGroupDto> workOpt, String workRemarks) {
+		super();
+		this.workplace = workplace;
+		this.workOpt = workOpt;
+		this.workRemarks = workRemarks;
 	}
 
 }

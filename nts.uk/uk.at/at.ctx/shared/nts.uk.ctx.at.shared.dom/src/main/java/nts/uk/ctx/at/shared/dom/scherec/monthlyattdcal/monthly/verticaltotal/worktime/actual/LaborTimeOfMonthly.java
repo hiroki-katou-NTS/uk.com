@@ -47,13 +47,13 @@ public class LaborTimeOfMonthly implements Serializable {
 			return;
 		}
 		
-		this.actualWorkTime = this.actualWorkTime.addHours(attendanceTime.getActualWorkingTimeOfDaily()
+		this.actualWorkTime = this.actualWorkTime.addMinutes(attendanceTime.getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getActualTime().valueAsMinutes());
 		
-		this.totalCalcTime = this.totalCalcTime.addHours(attendanceTime.getActualWorkingTimeOfDaily()
+		this.totalCalcTime = this.totalCalcTime.addMinutes(attendanceTime.getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getTotalCalcTime().valueAsMinutes());
 		
-		this.calcDiffTime = this.calcDiffTime.addHours(attendanceTime.getActualWorkingTimeOfDaily()
+		this.calcDiffTime = this.calcDiffTime.addMinutes(attendanceTime.getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getCalcDiffTime().valueAsMinutes());
 	}
 	

@@ -396,6 +396,7 @@ module nts.uk.com.view.cmf003.b {
         };
 
         self.selectedTitleAtr.subscribe(function (value) {
+          self.buton_E_enable(true);
           self.lstPersonComponentOption.disableSelection = value == 0 ? true : false;
           $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
           self.nextButtonText(value === 0 ? getText('CMF003_171') : getText('CMF003_53'));
@@ -404,6 +405,7 @@ module nts.uk.com.view.cmf003.b {
         self.selectedTitleAtr.valueHasMutated();
 
         self.selectedPatternId.subscribe(value => {
+          self.buton_E_enable(true);
           self.selectPattern(value);
         });
 
@@ -803,7 +805,7 @@ module nts.uk.com.view.cmf003.b {
           patternCode: pattern.code,
           systemType: self.systemTypes()
         };
-        service.patternSettingSelect(param).done((res) => {
+        service.patternSettingSelect(param).then((res) => {
           self.savedName(res.patternName);
           self.dataSaveSetName(res.patternName);
           self.isCompressPass(res.withoutPassword === 1);
@@ -831,30 +833,29 @@ module nts.uk.com.view.cmf003.b {
           } else {
             self.categorys([]);
           }
-
-          if (res.dailyReferMonth && res.dailyReferYear) {
-            self.dayValue().startDate = moment.utc().subtract(res.dailyReferYear - 1, 'year').subtract(res.dailyReferMonth - 1, 'month').format('YYYY/MM/DD');
-          } else {
-            self.dayValue().startDate = moment.utc().subtract(1, 'month').add(1, 'day').format('YYYY/MM/DD');
-          }
-          self.dayValue.valueHasMutated();
-          if (res.monthlyReferMonth && res.monthlyReferYear) {
-            self.monthValue().startDate = moment.utc().subtract(res.monthlyReferYear - 1, 'year').subtract(res.monthlyReferMonth - 1, 'month').format('YYYY/MM');
-          } else {
-            self.monthValue().startDate = moment.utc().format('YYYY/MM');
-          }
-          self.monthValue.valueHasMutated();
-          if (res.annualReferYear) {
-            self.yearValue().startDate = moment.utc().subtract(res.annualReferYear - 1, 'year').format('YYYY');
-          } else {
-            self.yearValue().startDate = moment.utc().format('YYYY');
-          }
-          self.yearValue.valueHasMutated();
-          self.setRangePickerRequire();
           nts.uk.ui.errors.clearAll();
+        }).then(() => {
+          return service.getClosurePeriod().then(result => {
+            const startDate = moment.utc(result.startDate, "YYYY/MM/DD");
+            const endDate = moment.utc(result.endDate, "YYYY/MM/DD");
+            
+            self.dayValue({
+              startDate: startDate.format("YYYY/MM/DD"),
+              endDate: endDate.format("YYYY/MM/DD")
+            });
+            self.monthValue({
+              startDate: startDate.format("YYYY/MM"),
+              endDate: endDate.format("YYYY/MM")
+            });
+            self.yearValue({
+              startDate: startDate.format("YYYY"),
+              endDate: endDate.format("YYYY")
+            });
+            self.setRangePickerRequire();
+          })
         }).always(() => {
           block.clear();
-        })
+        });
       }
     }//end screemodule
 

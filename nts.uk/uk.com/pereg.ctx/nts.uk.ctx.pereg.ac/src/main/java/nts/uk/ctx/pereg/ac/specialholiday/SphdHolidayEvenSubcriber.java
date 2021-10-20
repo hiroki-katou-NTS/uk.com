@@ -201,10 +201,10 @@ public class SphdHolidayEvenSubcriber implements DomainEventSubscriber<SpecialHo
 			switch (key) {
 				case 4:
 					//return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION;
-					return typeTime == TypeTime.REFER_GRANT_DATE_TBL ? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION;
+					return typeTime == TypeTime.REFER_GRANT_DATE_TBL ? IsAbolition.ABOLITION : IsAbolition.NOT_ABOLITION;
 				case 5:
 					//return typeTime == TypeTime.GRANT_START_DATE_SPECIFY ? IsAbolition.ABOLITION : IsAbolition.NOT_ABOLITION;
-					return typeTime == TypeTime.REFER_GRANT_DATE_TBL ? IsAbolition.ABOLITION : IsAbolition.NOT_ABOLITION;
+					return typeTime == TypeTime.REFER_GRANT_DATE_TBL ? IsAbolition.NOT_ABOLITION : IsAbolition.ABOLITION;
 				default:
 					return IsAbolition.NOT_ABOLITION;
 			}

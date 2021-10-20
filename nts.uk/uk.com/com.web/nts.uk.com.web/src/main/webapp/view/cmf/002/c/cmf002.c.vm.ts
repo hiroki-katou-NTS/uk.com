@@ -328,7 +328,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
             block.invisible();
             self.listStandardOutputItem.removeAll();
             service.getOutItems(self.conditionCode()).done((outputItems: Array<any>) => {
-                 time = performance.now();
+                //  time = performance.now();
                 if (outputItems && outputItems.length) {
                     let rsOutputItems: Array<model.StandardOutputItem> = _.map(outputItems, x => {
                         let listCategoryItem: Array<model.CategoryItem> = _.map(x.categoryItems, (y : model.ICategoryItem) => {

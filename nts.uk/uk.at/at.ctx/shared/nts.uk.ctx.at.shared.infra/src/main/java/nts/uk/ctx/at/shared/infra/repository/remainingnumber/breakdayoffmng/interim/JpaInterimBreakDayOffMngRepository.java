@@ -2,9 +2,11 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.breakdayoffmng.int
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -83,6 +85,9 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String DELETE_DAYOFFMNG_BY_SID_AND_YMD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.breakMngId = :breakMngId";
 	private static final String DELETE_BREAKMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
+
+	
+	
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
 		return this.queryProxy().find(breakManaId, KrcdtInterimHdwkMng.class)
@@ -452,5 +457,106 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		.setParameter("sid", sid)
 		.setParameter("ymd", ymd)
 		.executeUpdate();
+	}
+	
+	private static final String DELETE_KYUSYUTSU_PERIOD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
+
+	@Override
+	public void deleteBreakoffWithPeriod(String sid, DatePeriod period) {
+		this.getEntityManager().createQuery(DELETE_KYUSYUTSU_PERIOD).setParameter("sid", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).executeUpdate();
+	}
+	
+	@Override
+	public void insertBreakoffList(List<InterimBreakMng> lstDomain) {
+		this.commandProxy().insertAll(lstDomain.stream().map(x -> toEntityBreakoff(x)).collect(Collectors.toList()));
+	}
+	
+	private KrcdtInterimHdwkMng toEntityBreakoff(InterimBreakMng domain) {
+		KrcdtInterimHdwkMng entity = new KrcdtInterimHdwkMng();
+		KrcdtInterimHdwkMngPk pk = new KrcdtInterimHdwkMngPk(AppContexts.user().companyId(), domain.getSID(),
+				domain.getYmd());
+		entity.pk = pk;
+		entity.createAtr = domain.getCreatorAtr().value;
+		entity.remainMngId = domain.getRemainManaID();
+		entity.oneDayEquivalentTime = domain.getOnedayTime().v();
+		entity.expirationDate = domain.getExpirationDate();
+		entity.occurrenceTimes = domain.getOccurrenceTimes().v();
+		entity.occurrenceDays = domain.getOccurrenceDays().v();
+		entity.haftDayEquiTime = domain.getHaftDayTime().v();
+		entity.unUsedTimes = domain.getUnUsedTimes().v();
+		entity.unUsedDays = domain.getUnUsedDays().v();
+		return entity;
+	}
+	
+	private static final String DELETE_DAIKYU_PERIOD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
+	@Override
+	public void deleteDayoffWithPeriod(String sid, DatePeriod period) {
+		this.getEntityManager().createQuery(DELETE_DAIKYU_PERIOD).setParameter("sid", sid)
+		.setParameter("startDate", period.start()).setParameter("endDate", period.end()).executeUpdate();
+	}
+	
+	@Override
+	public void insertDayoffList(List<InterimDayOffMng> lstDomain) {
+		this.commandProxy().insertAll(lstDomain.stream().map(x -> toEntityDayoff(x)).collect(Collectors.toList()));
+	}
+	
+	private KrcmtInterimDayOffMng toEntityDayoff(InterimDayOffMng domain) {
+		KrcmtInterimDayOffMngPK pk = new KrcmtInterimDayOffMngPK(AppContexts.user().companyId(), domain.getSID(),
+				domain.getYmd(), domain.getAppTimeType().map(x -> x.isHourlyTimeType() ? 1 : 0).orElse(0),
+				domain.getAppTimeType().map(x -> x.getAppTimeType().map(appTime -> appTime.value + 1).orElse(0))
+						.orElse(0));
+
+		KrcmtInterimDayOffMng entity = new KrcmtInterimDayOffMng();
+		entity.pk = pk;
+		entity.createAtr = domain.getCreatorAtr().value;
+		entity.remainMngId = domain.getRemainManaID();
+		entity.requiredTimes = domain.getRequiredTime().v();
+		entity.requiredDays = domain.getRequiredDay().v();
+		entity.unOffSetTimes = domain.getUnOffsetTimes().v();
+		entity.unOffsetDays = domain.getUnOffsetDay().v();
+		return entity;
+	}
+	
+	private static final String DELETE_KYUSYUTSU_DATE = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+
+	@Override
+	public void deleteBreakoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		if (lstDate.isEmpty())
+			return;
+		this.getEntityManager().createQuery(DELETE_KYUSYUTSU_DATE).setParameter("sid", sid)
+				.setParameter("lstDate", lstDate).executeUpdate();
+	}
+	
+	private static final String DELETE_DAIKYU_DATE = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+	@Override
+	public void deleteDayoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		if (lstDate.isEmpty())
+			return;
+		this.getEntityManager().createQuery(DELETE_DAIKYU_DATE).setParameter("sid", sid)
+		.setParameter("lstDate", lstDate).executeUpdate();
+		
+	}
+	
+	@Override
+	public List<InterimBreakMng> getBreakBySidDateList(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query("SELECT a FROM KrcdtInterimHdwkMng a " +
+				" WHERE a.pk.sid = :sid " +
+				"AND a.pk.ymd IN :sid ", KrcdtInterimHdwkMng.class)
+				.setParameter("sid", sid)
+				.setParameter("ymd", lstDate)
+				.getList(i -> toDomainBreakMng(i));
+	}
+	
+	@Override
+	public List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query("SELECT a FROM KrcmtInterimDayOffMng a " +
+				" WHERE a.pk.sid = :sid " +
+				"AND a.pk.ymd IN :sid ", KrcmtInterimDayOffMng.class)
+				.setParameter("sid", sid)
+				.setParameter("ymd", lstDate)
+				.getList(i -> toDomainDayoffMng(i));
 	}
 }

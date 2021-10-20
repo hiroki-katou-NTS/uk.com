@@ -5,7 +5,7 @@ body {
 	overflow-x: hidden;
 }
 .control-group { 
-	margin: 0 0 5px 15px;
+	margin: 0 0 -5px 15px;
 	overflow: hidden;
   /* height: inherit; */
 }
@@ -83,4 +83,8 @@ div.nts-column{
 
 .table .cell {
   height: 50px;
+}
+
+#A2_6 {
+  width: 135px !important;
 }

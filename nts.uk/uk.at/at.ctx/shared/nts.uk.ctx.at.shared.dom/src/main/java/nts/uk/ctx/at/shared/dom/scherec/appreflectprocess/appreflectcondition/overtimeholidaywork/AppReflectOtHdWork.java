@@ -83,21 +83,6 @@ public class AppReflectOtHdWork extends AggregateRoot {
 	/**
 	 * @author thanh_nx
 	 *
-	 *         残業申請を反映する（勤務予定）
-	 */
-
-	public List<Integer> processRC(RequireSC require, AppOverTimeShare overTimeApp, DailyRecordOfApplication dailyApp) {
-
-		return this.getOvertimeWorkAppReflect().process(require, companyId, overTimeApp, dailyApp);
-	}
-
-	public static interface RequireSC extends OtWorkAppReflect.RequireSC {
-
-	}
-	
-	/**
-	 * @author thanh_nx
-	 *
 	 *         休日出勤申請を反映する（勤務予定）
 	 */
 

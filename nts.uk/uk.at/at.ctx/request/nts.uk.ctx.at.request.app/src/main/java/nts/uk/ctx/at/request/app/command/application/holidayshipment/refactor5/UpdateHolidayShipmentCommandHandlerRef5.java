@@ -84,7 +84,13 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			}
 		}
 		//振休振出申請（詳細）登録前のチェック(PreUpdateErrorCheck.errorCheck())
-		this.preUpdateErrorCheck.errorCheck(companyId, abs, rec, command.displayInforWhenStarting);
+		this.preUpdateErrorCheck.errorCheck(
+		        companyId, 
+		        abs, 
+		        rec, 
+		        command.displayInforWhenStarting, 
+		        command.existAbs() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
+		        command.isCheckFlag());
 		
 		//アルゴリズム「振休振出申請の更新登録」を実行する
 		return this.updateApplicationProcess(

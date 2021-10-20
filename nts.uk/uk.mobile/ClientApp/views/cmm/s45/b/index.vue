@@ -38,7 +38,7 @@
       v-if="!modeAppr"
       v-model="selectedValue"
       name="CMMS45_5"
-      v-bind:columns="{title: 'col-3 col-md-3 pr-0', input: 'col-5 col-md-5 pl-2'}">
+      v-bind:columns="{title: 'col-3 col-md-3 pr-0', input: 'col-9 col-md-5 pl-2 p_dropdown'}">
       <option v-for="item in lstAppType" v-bind:key="item.code" :value="item.code">{{item.appName}}</option>
     </nts-dropdown>
     <!-- Button Change Mode B2_2-->
@@ -66,7 +66,7 @@
                 :value="item.id"
                 v-on:click="() => goToDetail(item)"
               >
-                <div class="row">
+                <div v-if="!isLinkApp(item.opComplementLeaveApp) && (item.opAppStartDate == item.opAppEndDate)" class="row">
                   <!-- Check box -->
                   <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
                     <div v-if="item.appStatusNo == 5">
@@ -78,16 +78,92 @@
                     <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
                   </div>
                   <!-- App content -->
+
+
                   <div class="p-0" v-bind:class="{ 'col-9': !modeAppr, 'col-8': modeAppr }">
                     <div
                       v-bind:class="item.appDateCss"
                       class="pl-2 pt-2 pb-2 d-inline-block pr-2"
                     >{{ item.appDate | date('MM/DD (ddd)')}}</div>
-                    <div
-                      class="pt-2 pb-2 d-inline-block"
-                    >{{appContent(item.appName, item.prePostAtr)}}</div>
+                    <div class="pt-2 pb-2 d-inline-block">{{appContent(item.appName, item.prePostAtr)}}</div>
                   </div>
                 </div>
+
+
+                <div v-if="isLinkApp(item.opComplementLeaveApp)" class="row">
+                  <!-- Check box -->
+                  <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
+                    <div v-if="item.appStatusNo == 5">
+                    <input v-model="lstAppr" type="checkbox" v-bind:value="item.id" class="input-control" />
+                    </div>
+                  </div>
+                  <!-- Reflect status -->
+                  <div class="col-3 pl-2 pr-0 pt-3">
+                    <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
+                  </div>
+                  <!-- App content -->
+
+
+                  <div class="p-0 d-flex" v-bind:class="{ 'col-9': !modeAppr, 'col-8': modeAppr }">
+                    <div v-if="item.opComplementLeaveApp.complementLeaveFlg == 0" class="d-inline-block">
+                      <div
+                        v-bind:class="item.linkAppDateCss"
+                        class="pl-2 pt-2 pb-2 d-block pr-2"
+                      >{{ item.opComplementLeaveApp.linkAppDate | date('MM/DD (ddd)')}}</div>
+                      <div
+                        v-bind:class="item.appDateCss"
+                        class="pl-2 pt-2 pb-2 d-block pr-2"
+                      >{{ item.appDate | date('MM/DD (ddd)')}}</div>   
+                    </div>
+
+
+                    <div v-if="item.opComplementLeaveApp.complementLeaveFlg == 1" class="d-inline-block">
+                      <div
+                        v-bind:class="item.appDateCss"
+                        class="pl-2 pt-2 pb-2 d-block pr-2"
+                      >{{ item.appDate | date('MM/DD (ddd)')}}</div>
+                      <div
+                        v-bind:class="item.linkAppDateCss"
+                        class="pl-2 pt-2 pb-2 d-block pr-2"
+                      >{{ item.opComplementLeaveApp.linkAppDate | date('MM/DD (ddd)')}}</div>   
+                    </div>
+
+                    <div class="pt-4 pb-2 d-inline-block">{{appContent(item.appName, item.prePostAtr)}}</div>
+                  </div>
+                </div>
+
+
+                <div v-if="!isLinkApp(item.opComplementLeaveApp) && (item.opAppStartDate != item.opAppEndDate)" class="row">
+                  <!-- Check box -->
+                  <div v-if="modeAppr" class="col-1 p-0 align-middle text-center pt-2">
+                    <div v-if="item.appStatusNo == 5">
+                    <input v-model="lstAppr" type="checkbox" v-bind:value="item.id" class="input-control" />
+                    </div>
+                  </div>
+                  <!-- Reflect status -->
+                  <div class="col-3 pl-2 pr-0">
+                    <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
+                  </div>
+                  <!-- App content -->
+
+
+                  <div class="p-0" v-bind:class="{ 'col-9': !modeAppr, 'col-8': modeAppr }">
+                    <div
+                      v-bind:class="item.opAppStartDateCss"
+                      class="pl-2 pt-2 pb-2 d-inline-block pr-2"
+                    >{{ item.opAppStartDate | date('MM/DD (ddd)')}}</div>
+                    <div class="pt-2 pb-2 d-inline-block">{{appContent(item.appName, item.prePostAtr)}}</div>
+                    <div
+                      v-bind:class="item.opAppEndDateCss"
+                      class="pl-2 pt-2 pb-2 d-block pr-2"
+                    >～{{ item.opAppEndDate | date('MM/DD (ddd)')}}</div>
+                  </div>
+                </div>
+
+
+
+
+
               </li>
                 <div v-if="emp.displayB52" v-html="getHtmlPer()" class="uk-text-red p-3" >
                 </div>

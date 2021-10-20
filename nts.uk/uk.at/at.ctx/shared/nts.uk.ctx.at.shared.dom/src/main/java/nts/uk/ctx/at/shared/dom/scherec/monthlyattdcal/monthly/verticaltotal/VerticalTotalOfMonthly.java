@@ -167,7 +167,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 			if (workConditionItemOpt.isPresent()) {
 				val workCategory = workConditionItemOpt.get().getWorkCategory();
 				if (workCategory != null) {
-					val weekdayTime = workCategory.getWeekdayTime();
+					val weekdayTime = workCategory.getWorkTime().getWeekdayTime();
 					if (weekdayTime != null) {
 						if (weekdayTime.getWorkTimeCode().isPresent()) {
 							predTimeSetOnWeekday = companySets.getPredetemineTimeSetMap(
@@ -205,9 +205,9 @@ public class VerticalTotalOfMonthly implements Serializable{
 			Optional<AnyItemValueOfDailyAttd> anyItemValueOpt = Optional.ofNullable(anyItemValueOfDailyMap.get(procYmd));
 		
 			// 勤務日数集計
-			this.workDays.aggregate(require, workingSystem, workType, attendanceTimeOfDaily,
+			this.workDays.aggregate(require, employeeId, companyId, procYmd, workingSystem, workType, attendanceTimeOfDaily,
 					specificDateAttrOfDaily, workTypeDaysCountTable, workInfoOfDaily, 
-					predetermineTimeSet, isAttendanceDay, isTwoTimesStampExists, predTimeSetOnWeekday);
+					predetermineTimeSet, isAttendanceDay, isTwoTimesStampExists);
 			
 			// 勤務時間集計
 			this.workTime.aggregate(require, employeeId, procYmd, workType, attendanceTimeOfDaily, companyId);

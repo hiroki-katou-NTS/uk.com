@@ -23,9 +23,7 @@ public class SendTimeRecordSettingService {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
-		if (!requestSetting.isPresent())
-			return Optional.empty();
-		return Optional.of(convert(requestSetting.get()));
+		return Optional.of(requestSetting.map(x -> convert(x)).orElse(SendTimeRecordSetting.createDefault()));
 	}
 
 	// [pvt-1] 変換
@@ -35,7 +33,14 @@ public class SendTimeRecordSettingService {
 				setting.isReservationReceive(), setting.isApplicationReceive(), setting.isSendEmployeeId())
 						.createReq7(setting.isSendWorkType()).createReq8(setting.isSendWorkTime())
 						.createReq9(setting.isOverTimeHoliday()).createReq10(setting.isSendBentoMenu())
-						.createReq11(setting.isApplicationReason()).build();
+						.createReq11(setting.isApplicationReason())
+						.createReq12(setting.isRemoteSetting())
+						.createReq13(setting.isSendTimeSwitchUKMode())
+						.createReq14(false)
+						.createReq15(false)
+						.createReq16(false)
+						.createReq17(setting.isReboot())
+						.build();
 	}
 
 	public static interface Require {

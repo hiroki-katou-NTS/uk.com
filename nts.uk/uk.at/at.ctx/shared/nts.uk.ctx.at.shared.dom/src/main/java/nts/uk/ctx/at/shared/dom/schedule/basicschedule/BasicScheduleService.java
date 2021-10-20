@@ -77,6 +77,8 @@ public interface BasicScheduleService {
 	 * @param workTypeCode
 	 * @return WorkStyle
 	 */
+	WorkStyle checkWorkDay(String cid, String workTypeCode);
+	
 	WorkStyle checkWorkDay(String workTypeCode);
 	
 	WorkStyle checkWorkDay(Optional<WorkType> workTypeOpt);

@@ -31,7 +31,4 @@ public class UserDto {
 	/** The mail address. */
 	private String mailAddress;
 
-	/** The password. */
-	private String password;
-
 }

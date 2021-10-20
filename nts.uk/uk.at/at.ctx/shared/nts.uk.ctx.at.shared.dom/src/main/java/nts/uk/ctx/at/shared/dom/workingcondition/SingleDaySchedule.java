@@ -7,23 +7,17 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * The Class SingleDaySchedule.
+ * xóa workTypeCode đi
  */
 // 単一日勤務予定
 @Getter
 public class SingleDaySchedule extends DomainObject {
-
-	/** The work type code. */
-	// 勤務種類コード
-	private Optional<WorkTypeCode> workTypeCode;
 
 	/** The working hours. */
 	// 勤務時間帯
@@ -40,7 +34,6 @@ public class SingleDaySchedule extends DomainObject {
 	 *            the memento
 	 */
 	public SingleDaySchedule(SingleDayScheduleGetMemento memento) {
-		this.workTypeCode = memento.getWorkTypeCode();
 		this.workingHours = memento.getWorkingHours();
 		this.workTimeCode = memento.getWorkTimeCode();
 	}
@@ -52,15 +45,13 @@ public class SingleDaySchedule extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(SingleDayScheduleSetMemento memento) {
-		memento.setWorkTypeCode(this.workTypeCode);
 		memento.setWorkTimeCode(this.workTimeCode);
 		memento.setWorkingHours(this.workingHours);
 	}
 
-	public SingleDaySchedule(String workTypeCode, List<TimeZone> workingHours,
+	public SingleDaySchedule( List<TimeZone> workingHours,
 			Optional<String> workTimeCode) {
 		super();
-		this.workTypeCode = Optional.ofNullable(StringUtils.isEmpty(workTypeCode) ? null : new WorkTypeCode(workTypeCode));
 		this.workingHours = workingHours;
 		this.workTimeCode = Optional.empty();
 		if (workTimeCode.isPresent()){

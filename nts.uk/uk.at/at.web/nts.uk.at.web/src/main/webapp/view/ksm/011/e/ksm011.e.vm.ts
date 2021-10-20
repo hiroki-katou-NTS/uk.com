@@ -37,6 +37,7 @@ module nts.uk.at.view.ksm011.e {
     permissionCommon : KnockoutObservableArray<IPermision> = ko.observableArray([]);
     permissionByWorkplace : KnockoutObservableArray<IPermision> = ko.observableArray([]);
     permissionByIndividual : KnockoutObservableArray<IPermision> = ko.observableArray([]);
+    data: any;
 
     constructor(params: any) {
       super();
@@ -62,11 +63,35 @@ module nts.uk.at.view.ksm011.e {
 
     created(params: any) {
       const vm = this;
+      vm.selectedTab.subscribe((value) => {
+        switch(value) {
+          case "tab-1": 
+            vm.rebindCcg026("permissionCommon")
+              .$nextTick(() => vm.permissionCommon.valueHasMutated());
+            break;
+          case "tab-2": 
+            vm.rebindCcg026("permissionByWorkplace")
+              .$nextTick(() => vm.permissionByWorkplace.valueHasMutated());
+            break;
+          case "tab-3": 
+            vm.rebindCcg026("permissionByIndividual")
+              .$nextTick(() => vm.permissionByIndividual.valueHasMutated());
+            break;
+        }
+      });
     }
 
     mounted() {
       const vm = this;
         $("#tab-panel li")[0].focus();
+    }
+
+    private rebindCcg026(id: string): this {
+      const vm = this;
+      let element = $(`#${id}`)[0];
+      ko.cleanNode(element);
+      ko.applyBindings(vm, element);
+      return vm;
     }
 
     saveData() {
@@ -156,47 +181,52 @@ module nts.uk.at.view.ksm011.e {
       vm.$blockui("show");
       vm.$ajax(fetch.getRoleInfor + roleId).done((data) => {
           if (data) {
+            vm.data = data;
             vm.basicFunctionControl(data.useAtr || 0);
             vm.dateSelected(data.deadLineDay || 0);
-
-            const checkedCommon = data.scheModifyCommon.scheModifyAuthCtrlCommons
-                .filter((i: any) => i.available)
-                .map((i: any) => i.functionNo);
-            vm.permissionCommon(data.scheModifyCommon.scheModifyFuncCommons.map((i: any) => ({
-                available: checkedCommon.indexOf(i.functionNo) >= 0,
-                description: i.explanation,
-                functionName: i.name,
-                functionNo: i.functionNo,
-                orderNumber: i.displayOrder
-            })));
-
-              const checkedWorkplace = data.scheModifyByWorkplace.scheModifyAuthCtrlByWkp
-                  .filter((i: any) => i.available)
-                  .map((i: any) => i.functionNo);
-            vm.permissionByWorkplace(data.scheModifyByWorkplace.scheModifyFuncByWorkplaces.map((i: any) => ({
-                available: checkedWorkplace.indexOf(i.functionNo) >= 0,
-                description: i.explanation,
-                functionName: i.name,
-                functionNo: i.functionNo,
-                orderNumber: i.displayOrder
-            })));
-
-              const checkedPerson = data.scheduleModifyByPerson.scheModifyAuthCtrlByPersons
-                  .filter((i: any) => i.available)
-                  .map((i: any) => i.functionNo);
-            vm.permissionByIndividual(data.scheduleModifyByPerson.scheModifyFuncByPersons.map((i: any) => ({
-                available: checkedPerson.indexOf(i.functionNo) >= 0,
-                description: i.explanation,
-                functionName: i.name,
-                functionNo: i.functionNo,
-                orderNumber: i.displayOrder
-            })));
+            vm.convertToPermissionList(data);
           }
       }).fail(error => {
         vm.$dialog.error(error);
       }).always(() => {
         vm.$blockui("hide");
       });
+    }
+
+    private convertToPermissionList(data: any): void {
+      const vm = this;
+      const checkedCommon = data.scheModifyCommon.scheModifyAuthCtrlCommons
+        .filter((i: any) => i.available)
+        .map((i: any) => i.functionNo);
+      vm.permissionCommon(data.scheModifyCommon.scheModifyFuncCommons.map((i: any) => ({
+        available: checkedCommon.indexOf(i.functionNo) >= 0,
+        description: i.explanation,
+        functionName: i.name,
+        functionNo: i.functionNo,
+        orderNumber: i.displayOrder
+      })));
+
+      const checkedWorkplace = data.scheModifyByWorkplace.scheModifyAuthCtrlByWkp
+        .filter((i: any) => i.available)
+        .map((i: any) => i.functionNo);
+      vm.permissionByWorkplace(data.scheModifyByWorkplace.scheModifyFuncByWorkplaces.map((i: any) => ({
+        available: checkedWorkplace.indexOf(i.functionNo) >= 0,
+        description: i.explanation,
+        functionName: i.name,
+        functionNo: i.functionNo,
+        orderNumber: i.displayOrder
+      })));
+
+      const checkedPerson = data.scheduleModifyByPerson.scheModifyAuthCtrlByPersons
+        .filter((i: any) => i.available)
+        .map((i: any) => i.functionNo);
+      vm.permissionByIndividual(data.scheduleModifyByPerson.scheModifyFuncByPersons.map((i: any) => ({
+        available: checkedPerson.indexOf(i.functionNo) >= 0,
+        description: i.explanation,
+        functionName: i.name,
+        functionNo: i.functionNo,
+        orderNumber: i.displayOrder
+      })));
     }
   }
 }

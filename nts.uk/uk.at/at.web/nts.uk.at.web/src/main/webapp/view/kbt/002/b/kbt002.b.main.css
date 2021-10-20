@@ -78,6 +78,10 @@
     width: 1250px !important;
 }
 
+#right-content > table td {
+  padding-bottom: 5px;
+}
+
 .middle .ntsMonthDays_Container{
 	top:0px;
 }
@@ -234,8 +238,21 @@ html {
 
 #B4_2 {
   margin-right: 15px;
+  width: 120px;
 }
 
 #start-month-day {
   margin-left: 5px;
+}
+
+.common-control .form-label {
+  width: 150px;
+}
+
+.common-control > .flex.valign-center {
+  margin-bottom: 5px;
+}
+
+.common-control .ntsControl {
+  white-space: nowrap;
 }

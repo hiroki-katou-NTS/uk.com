@@ -54,6 +54,7 @@ public class AppDetailScreenInfo {
 	/**
 	 * 承認できるフラグ
 	 */
+	
 	@Setter
 	private Optional<Boolean> authorizableFlags;
 	
@@ -68,6 +69,12 @@ public class AppDetailScreenInfo {
 	 */
 	@Setter
 	private Optional<Boolean> alternateExpiration;
+	
+	/**
+	 * 過去申請か（boolean)
+	 */
+	@Setter
+	private boolean isPastApp = false;
 	
 	public AppDetailScreenInfo(Application application, List<ApprovalPhaseStateImport_New> approvalLst,
 			String authorComment, User user, ReflectPlanPerState reflectPlanState, OutputMode outputMode) {

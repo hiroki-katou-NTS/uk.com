@@ -35,6 +35,8 @@ public enum ApplicationType {
 	/**	振休振出申請 */
 	COMPLEMENT_LEAVE_APPLICATION(12),
 	/**	任意申請 */
-	OPTIONAL_APPLICATION(13);
+	OPTIONAL_APPLICATION(13),
+	/** 申請一覧 */
+	APPLICATION_LIST(14);
 	public final int value;
 }

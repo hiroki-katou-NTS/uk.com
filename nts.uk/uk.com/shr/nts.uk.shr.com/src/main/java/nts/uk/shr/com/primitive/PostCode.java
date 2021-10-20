@@ -5,17 +5,14 @@
 package nts.uk.shr.com.primitive;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.arc.primitive.constraint.StringRegEx;
 
 /**
  * The Class PostCode.
  */
-@StringRegEx("^\\d{7}$|(^\\d{3}[-]\\d{4}?$)")
+@StringRegEx("^\\d{7}$|(^\\d{3}[-]\\d{4}?$)|(^$)")
 @StringMaxLength(8)
-@StringCharType(CharType.ANY_HALF_WIDTH)
 public class PostCode extends StringPrimitiveValue<PostCode> {
 
 	/** The Constant serialVersionUID. */

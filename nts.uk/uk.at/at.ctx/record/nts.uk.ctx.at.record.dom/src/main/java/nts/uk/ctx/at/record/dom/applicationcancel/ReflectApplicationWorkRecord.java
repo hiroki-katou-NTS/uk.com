@@ -47,7 +47,7 @@ public class ReflectApplicationWorkRecord {
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			// レコーダイメージ申請の対象日を取得する
-			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require,
+			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require, require.getCId(), 
 					(AppRecordImageShare) application);
 			if (dateOpt.getLeft().isPresent()) {
 				dateTarget = dateOpt.getLeft().get();
@@ -73,13 +73,13 @@ public class ReflectApplicationWorkRecord {
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD, true);
 			/// 打刻申請（NRモード）を反映する -- itemId
-			TimeStampApplicationNRMode.process(require, dateTarget,
+			TimeStampApplicationNRMode.process(require, require.getCId(), dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
 		} else {
 			/// 申請の反映（勤務実績） in process
 			val affterReflect = RCCreateDailyAfterApplicationeReflect.process(require, application, dailyRecordApp, dateTarget);
 
-			changeAtt = createChangeDailyAtt(affterReflect.getLstItemId());
+			changeAtt = ChangeDailyAttendance.createChangeDailyAtt(affterReflect.getLstItemId(), ScheduleRecordClassifi.RECORD);
 		}
 
 		// 日別実績の補正処理 --- create default ???? sau xu ly phan anh check lai
@@ -104,7 +104,7 @@ public class ReflectApplicationWorkRecord {
 			require.removeConfirmApproval(Arrays.asList(dailyRecordApp.getDomain().getDomain()));
 			
 			// 勤務実績の更新
-			require.addAllDomain(dailyRecordApp.getDomain());
+			require.addAllDomain(dailyRecordApp.getDomain(), true);
 
 			// 申請反映履歴を作成する
 			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.RECORD,
@@ -117,19 +117,6 @@ public class ReflectApplicationWorkRecord {
 		return Pair.of(reflectStatus, Optional.of(task));
 	}
 	
-	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
-
-		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
-				.isPresent();
-		boolean attendance = lstItemId.stream()
-				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
-				.findFirst().isPresent();
-		boolean directBounceClassifi = lstItemId.stream()
-				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
-				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD, directBounceClassifi);
-	}
-
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 		converter.setData(domainDaily).employeeId(domainDaily.getEmployeeId()).workingDate(domainDaily.getYmd());
@@ -157,7 +144,7 @@ public class ReflectApplicationWorkRecord {
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr);
 
 		// DailyRecordAdUpService
-		public void addAllDomain(IntegrationOfDaily domain);
+		public void addAllDomain(IntegrationOfDaily domain, boolean removeError);
 		
 		//DailyRecordAdUpService
 		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily);

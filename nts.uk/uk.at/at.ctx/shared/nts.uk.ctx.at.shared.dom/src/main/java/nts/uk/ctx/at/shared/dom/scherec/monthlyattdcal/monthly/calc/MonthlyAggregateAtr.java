@@ -5,7 +5,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc;
  * @author shuichu_ishida
  */
 public enum MonthlyAggregateAtr {
-	/** 月の計算 */
+	/** 月の計算*/
 	MONTHLY(0),
 	/** 時間外超過 */
 	EXCESS_OUTSIDE_WORK(1);

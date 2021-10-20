@@ -6,17 +6,18 @@
 	
 	<com:ValidatorScript>
 		nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime
-   	</com:ValidatorScript>	
-	
-	<!-- DETAIL MODE -->
-	<com:ko tag="if" bind="isDetailMode">
+   	</com:ValidatorScript>
+
 	<div class="tab-rows">
-		<div style="width: 300px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
+		<div style="width: 300px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>
 	</div>
-	
-	<div style="width: 330px;">		
+
+	<div style="width: 330px;">
 		<hr/>
 	</div>
+
+	<!-- DETAIL MODE -->
+	<com:ko tag="if" bind="isDetailMode">
 	
 	<div class="tab-rows">
 		<table style="margin-left: 20px;">
@@ -139,7 +140,7 @@
 							<label data-bind="ntsRadioButton: {
 									checkedValue: 1,
 									checked: fromOverTimeSubHolTransferSetAtr,
-									optionText: 'KMK003_106',
+									optionText: 'KMK003_108',
 									enable: fromOverTimeUseDivision}"></label>
 							<div class="padding-time">
 								<div class="tab-inline-item" style="width: 60px; text-align: center;">
@@ -163,19 +164,14 @@
 	
 	<!-- SIMPLE MODE -->
 	<com:ko tag="if" bind="isSimpleMode">
-	<div class="tab-rows">
-		<div style="width: 300px;" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_104')}</div>		
-	</div>
-	
-	<div style="width: 330px;">		
-		<hr/>
-	</div>
 	
 	<div class="tab-block">		
 		<div class="tab-rows">
-			<label>#{i18n.getText('KMK003_105')}</label>
+			<div tabindex="139" data-bind="ntsCheckBox: {
+							name: '#[KMK003_105]',
+							checked: workdayOffTimeUseDivision }">#{i18n.getText('KMK003_105')}</div>
 		</div>
-		<div style="margin-top: 10px;">
+		<div style="margin-top: 10px; margin-left: 20px">
 			<div style="padding: 5px 0px;">
 				<div class="tab-inline-item" style="width: 50px;">
 					<label>#{i18n.getText('KMK003_42')}</label>
@@ -186,7 +182,8 @@
 						constraint:'OneDayTime',
 						mode: 'time',
 						inputFormat: 'time',
-						required: false}" />
+						required: false,
+						enable: workdayOffTimeUseDivision}" />
 			</div>
 			<div style="padding: 5px 0px;">
 				<div class="tab-inline-item" style="width: 50px;">
@@ -198,7 +195,8 @@
 						constraint:'OneDayTime',
 						mode: 'time',
 						inputFormat: 'time',
-						required: false}" />
+						required: false,
+						enable: workdayOffTimeUseDivision}" />
 			</div>
 		</div>
 	</div>

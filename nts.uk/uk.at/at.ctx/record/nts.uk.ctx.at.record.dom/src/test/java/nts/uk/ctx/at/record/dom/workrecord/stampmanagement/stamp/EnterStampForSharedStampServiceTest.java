@@ -60,7 +60,7 @@ public class EnterStampForSharedStampServiceTest {
 		};
 		
 		NtsAssert.businessException("Msg_1632", 
-				() -> EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
+				() -> EnterStampForSharedStampService.create(require ,"", contractCode, employeeId, Optional.of(stampNumber),
 				relieve, dateTime, stampButton , null));
 		
 	}
@@ -87,7 +87,7 @@ public class EnterStampForSharedStampServiceTest {
 			}
 		};
 		
-		NtsAssert.businessException("Msg_1632", () -> EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
+		NtsAssert.businessException("Msg_1632", () -> EnterStampForSharedStampService.create(require ,"", contractCode, employeeId, Optional.of(stampNumber),
 				relieve, dateTime, stampButton , null));
 		
 	}
@@ -125,7 +125,7 @@ public class EnterStampForSharedStampServiceTest {
 			}
 		}; 
 		
-		TimeStampInputResult timeStampInputResult = EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
+		TimeStampInputResult timeStampInputResult = EnterStampForSharedStampService.create(require ,"", contractCode, employeeId, Optional.of(stampNumber),
 				relieve, dateTime, stampButton , null);
 		
 		assertThat(timeStampInputResult.at).isNotEmpty();

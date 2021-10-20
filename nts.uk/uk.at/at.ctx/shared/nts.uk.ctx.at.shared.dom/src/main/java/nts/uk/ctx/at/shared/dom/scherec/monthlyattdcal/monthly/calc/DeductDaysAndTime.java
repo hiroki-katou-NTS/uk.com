@@ -76,7 +76,7 @@ public class DeductDaysAndTime implements SerializableWithOptional{
 		AttendanceTimeMonth convertTime = new AttendanceTimeMonth(0);
 		
 		// 平日時就業時間帯コードを取得する
-		val weekdayTime = workingConditionItem.getWorkCategory().getWeekdayTime();
+		val weekdayTime = workingConditionItem.getWorkCategory().getWorkTime().getWeekdayTime();
 		if (weekdayTime == null){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"015", new ErrMessageContent(TextResource.localize("Msg_1142"))));

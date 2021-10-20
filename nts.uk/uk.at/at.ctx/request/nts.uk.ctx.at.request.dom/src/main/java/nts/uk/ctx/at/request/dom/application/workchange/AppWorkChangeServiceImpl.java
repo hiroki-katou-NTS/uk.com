@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
@@ -41,6 +42,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.work
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.setting.request.application.workchange.AppWorkChangeSettingOutput;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -151,16 +153,23 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public WorkTypeWorkTimeSelect initWorkTypeWorkTime(String companyID, String employeeID, GeneralDate date,
-			List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst) {
+	public WorkTypeWorkTimeSelect initWorkTypeWorkTime(
+			String companyID,
+			String employeeID,
+			GeneralDate date,
+			List<WorkType> workTypeLst,
+			List<WorkTimeSetting> workTimeLst) {
 		// INPUT．「勤務種類リスト」をチェックする
 		if (CollectionUtil.isEmpty(workTypeLst)) {
 			throw new BusinessException("Msg_43");
 		}
 		WorkTypeWorkTimeSelect result = new WorkTypeWorkTimeSelect();
-		// ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
+		// 社員の労働条件を取得する
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository
 				.getBySidAndStandardDate(employeeID, date);
+		
+		
+		
 		if(!personalLablorCodition.isPresent()) {
 			// OUTPUT「選択する勤務種類」と「選択する就業時間帯」をセットする
 			result.setWorkType(workTypeLst.get(0));
@@ -168,51 +177,82 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
 			return result;
 		}
-		// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードがINPUT．「勤務種類リスト」にあるかをチェックする
+		
 		WorkingConditionItem workingConditionItem = personalLablorCodition.get();
-		Optional<WorkTypeCode> opConditionWktypeCD = workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTypeCode();
-		List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-		if(opConditionWktypeCD.isPresent() && workTypeCDLst.contains(opConditionWktypeCD.get().v())) {
-			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
-			String conditionWktypeCD = opConditionWktypeCD.get().v();
-			WorkType selectedWorkType = workTypeLst.stream().filter(x -> x.getWorkTypeCode().v().equals(conditionWktypeCD))
-					.findFirst().orElse(null);
+		
+		// $勤務情報　＝　労働条件項目.区分別勤務.出勤日の勤務情報を取得する()
+		WorkInformation workInfo = workingConditionItem.getWorkCategory().getWorkInformationWorkDay();
+		
+		// $勤務情報.勤務種類コードがINPUT．「勤務種類リスト」にあるかをチェックする
+		String workType = workInfo.getWorkTypeCode().v();
+		if (workTypeLst.stream().anyMatch(x -> x.getWorkTypeCode().v().equals(workType))) {
+			
+			// $勤務情報.勤務種類コードを選択する
+			WorkType selectedWorkType = 
+					workTypeLst.stream()
+							   .filter(
+								   x -> x.getWorkTypeCode().v().equals(workType))
+						  	   .findFirst().orElse(null);
+			
 			result.setWorkType(selectedWorkType);
 			// 12.マスタ勤務種類、就業時間帯データをチェック
-			CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm
-					.checkWorkingInfo(companyID, conditionWktypeCD, null);
-			if(checkWorkingInfoResult.isWkTypeError()) {
+			CheckWorkingInfoResult checkWorkingInfoResult = 
+					otherCommonAlgorithm.checkWorkingInfo(
+							companyID,
+							workingConditionItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v(),
+							null);
+			if (checkWorkingInfoResult.isWkTypeError()) {
+				
 				// OUTPUT「選択する勤務種類」と「選択する就業時間帯」をセットする
 				result.setWorkType(workTypeLst.get(0));
 				result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
-				// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
-				return result;
+				
 			}
+			
 		} else {
 			// OUTPUT「選択する勤務種類」をセットする
 			result.setWorkType(workTypeLst.get(0));
 		}
-		// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードがINPUT．「就業時間帯リスト」にあるかをチェックする
-		Optional<WorkTimeCode> opConditionWktimeCD = workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode();
-		List<String> workTimeCDLst = workTimeLst.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-		if(!opConditionWktimeCD.isPresent() && !workTimeCDLst.contains(opConditionWktimeCD.get().v())) {
+		
+		// $勤務情報.就業時間帯コードがINPUT．「就業時間帯リスト」にあるかをチェックする
+		String workTime = workInfo.getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null);
+		
+		if (workTime != null && workTimeLst.stream().anyMatch(x -> x.getWorktimeCode().v().equals(workTime))) {
+			// $勤務情報.就業時間帯コードを選択する
+			WorkTimeSetting selectedWorkTime = 
+					workTimeLst.stream()
+					.filter(x -> x.getWorktimeCode().v().equals(workTime))
+					.findFirst()
+					.orElse(null);
+			result.setWorkTime(Optional.ofNullable(selectedWorkTime));
+			// 12.マスタ勤務種類、就業時間帯データをチェック
+			CheckWorkingInfoResult checkWorkingInfoResult = 
+					otherCommonAlgorithm.checkWorkingInfo(
+							companyID,
+							null,
+							workingConditionItem.getWorkCategory()
+												.getWorkTime()
+												.getWeekdayTime()
+												.getWorkTimeCode()
+												.map(x -> x.v())
+												.orElse(null)
+												);
+			
+			if (checkWorkingInfoResult.isWkTimeError()) {
+				// OUTPUT「選択する就業時間帯」をセットする
+				result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
+			
+			}
+			
+			
+		} else {
 			// OUTPUT「選択する就業時間帯」をセットする
 			result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
 			// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
 			return result;
 		}
-		// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する(chon cai mui gio lam trong domain trên)
-		String conditionWktimeCD = opConditionWktimeCD.get().v();
-		WorkTimeSetting selectedWorkTime = workTimeLst.stream().filter(x -> x.getWorktimeCode().v().equals(conditionWktimeCD))
-				.findFirst().orElse(null);
-		result.setWorkTime(Optional.ofNullable(selectedWorkTime));
-		// 12.マスタ勤務種類、就業時間帯データをチェック
-		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm
-				.checkWorkingInfo(companyID, null, conditionWktimeCD);
-		if(checkWorkingInfoResult.isWkTimeError()) {
-			// OUTPUT「選択する就業時間帯」をセットする
-			result.setWorkTime(CollectionUtil.isEmpty(workTimeLst) ? Optional.empty() : Optional.of(workTimeLst.get(0)));
-		}
+		
+		
 		// OUTPUT「選択する勤務種類」と「選択する就業時間帯」を返す
 		return result;
 	}
@@ -252,7 +292,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	}
 
 	@Override
-	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application,
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, List<MsgErrorOutput> msgErrorLst, Application application,
 			AppWorkChange appWorkChange, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		WorkChangeCheckRegOutput output = new WorkChangeCheckRegOutput();
 		// 登録時チェック処理（勤務変更申請）
@@ -277,9 +317,13 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				false, 
 				application, 
 				null, 
-				errorFlag, 
+				msgErrorLst, 
 				lstDateHd,
-				appDispInfoStartupOutput);
+				appDispInfoStartupOutput, 
+				appWorkChange.getOpWorkTypeCD().isPresent() ? Arrays.asList(appWorkChange.getOpWorkTypeCD().get().v()) : new ArrayList<String>(), 
+		        Optional.empty(), 
+		        appWorkChange.getOpWorkTimeCD().map(WorkTimeCode::v), 
+		        false);
 		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
 		output.setConfirmMsgLst(confirmMsgLst);
 		output.setHolidayDateLst(lstDateHd);
@@ -474,7 +518,10 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application.getVersion(), 
 				workTypeCD , 
 				workTimeCD,
-				appDispInfoStartupOutput);
+				appDispInfoStartupOutput, 
+				appWorkChange.getOpWorkTypeCD().isPresent() ? Arrays.asList(appWorkChange.getOpWorkTypeCD().get().v()) : new ArrayList<String>(), 
+				Optional.empty(), 
+				false);
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;
@@ -609,12 +656,12 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Override
 	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application,
-			AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
+			AppWorkChange appWorkChange, List<MsgErrorOutput> msgErrorLst, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo) {
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = new WorkChangeCheckRegOutput();
 //		INPUT．「画面モード」をチェックする
 		if (mode ) {
 //			登録前のエラーチェック処理
-			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, opErrorFlag, application, appWorkChange, appDispInfoStartupOutput);
+			workChangeCheckRegOutput = this.checkBeforeRegister(companyId, msgErrorLst, application, appWorkChange, appDispInfoStartupOutput);
 		}else {
 //			更新前のエラーチェック処理
 			workChangeCheckRegOutput.setConfirmMsgLst(this.checkBeforeUpdate(companyId, application, appWorkChange, false, appDispInfoStartupOutput, appWorkChangeDispInfo));

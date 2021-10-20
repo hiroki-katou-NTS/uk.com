@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
 /**
+ * 勤務予定の時間帯マスタ参照区分
  * The Enum TimeZoneScheduledMasterAtr.
  */
 public enum TimeZoneScheduledMasterAtr {
@@ -10,8 +11,8 @@ public enum TimeZoneScheduledMasterAtr {
 	FOLLOW_MASTER_REFERENCE(0, "Enum_TimeZoneScheduledMasterAtr_FollowMasterReference"),
 
 	/** The personal work daily. */
-	/** 個人勤務日別 */
-	PERSONAL_WORK_DAILY(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily"),
+	/** 平日時 */
+	WEEKDAYS(1, "Enum_TimeZoneScheduledMasterAtr_Weekdays"),
 
 	/** The personal day of week. */
 	/** 個人曜日別 */

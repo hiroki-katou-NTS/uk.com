@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
@@ -32,7 +33,10 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 	 */
 	@EmbeddedId
 	public OiomtDateDataFormSetPk dateDataFormSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 固定値
 	 */
@@ -45,7 +49,7 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 	 */
 	@Basic(optional = true)
 	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
+	public GeneralDate valueOfFixedValue;
 
 	/**
 	 * 形式選択
@@ -56,7 +60,6 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtExAcItem acceptItem;
@@ -66,19 +69,19 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 		return dateDataFormSetPk;
 	}
 
-	public OiomtExAcFmDate(String cid, int sysType, String conditionCode, int acceptItemNum, int fixedValue,
-			int formatSelection, String valueOfFixedValue) {
+	public OiomtExAcFmDate(String cid,String conditionCode, int acceptItemNum, int fixedValue,
+			int formatSelection, GeneralDate valueOfFixedValue) {
 		super();
-		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
 		this.valueOfFixedValue = valueOfFixedValue;
 		this.formatSelection = formatSelection;
 	}
 
 	public static OiomtExAcFmDate fromDomain(StdAcceptItem item, DateDataFormSet domain) {
-		return new OiomtExAcFmDate(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtExAcFmDate(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getFormatSelection().value,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get() : null);
 	}
 
 	public DateDataFormSet toDomain() {

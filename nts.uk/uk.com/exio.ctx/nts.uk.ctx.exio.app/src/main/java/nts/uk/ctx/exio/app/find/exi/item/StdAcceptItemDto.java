@@ -22,7 +22,6 @@ import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 @Value
 public class StdAcceptItemDto {
 
-	private int systemType;
 	/**
 	 * 条件設定コード
 	 */
@@ -63,7 +62,7 @@ public class StdAcceptItemDto {
 	private AcScreenCondSetDto screenConditionSetting;
 
 	public static StdAcceptItemDto fromDomain(StdAcceptItem domain) {
-		return new StdAcceptItemDto(domain.getSystemType().value, domain.getConditionSetCd().v(),
+		return new StdAcceptItemDto(domain.getConditionSetCd().v(),
 				domain.getAcceptItemNumber(),
 				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
 				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null, domain.getItemType().value,

@@ -10,8 +10,8 @@ module nts.uk.at.view.kdp002.c.service {
         GET_SETTING: 'at/record/stamp/settingNoti'
     }
 
-    export function registerDailyIdentify(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.registerDailyIdentify);
+    export function registerDailyIdentify(command: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.registerDailyIdentify, command);
     }
 
     export function startScreen(data: any): JQueryPromise<any> {
@@ -27,7 +27,7 @@ module nts.uk.at.view.kdp002.c.service {
     }
 
     export function getStampPage(pageNo : number): JQueryPromise<any> {
-        return nts.uk.request.ajx("at", paths.getStampPage + "/" + pageNo);
+        return nts.uk.request.ajax("at", paths.getStampPage + "/" + pageNo);
     }
 
     export function getEmpInfo(id: string) {

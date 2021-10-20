@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectpclogoninfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,10 +22,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -44,9 +41,8 @@ public class ReflectPcLogonInfo {
 	@Inject
 	private ReflectAttendanceClock reflectAttendanceClock;
 	
-	public void reflect(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+	public void reflect(String cid, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 			IntegrationOfDaily integrationOfDaily) {
-		String cid = AppContexts.user().companyId();
 		// 日別実績のPCログオン情報のログオン情報を・反映情報（Temporary）に変換する
 		// 日別実績の入退門の入退門を・反映情報（Temporary）に変換する
 		List<ReflectionInformation> listReflectionInformation = new ArrayList<>();

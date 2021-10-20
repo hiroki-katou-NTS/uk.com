@@ -37,7 +37,7 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 	public List<AnnualLeaveErrorSharedImport> annualLeaveErrors(String companyId, String employeeId,
 			DatePeriod aggrPeriod, boolean mode, GeneralDate criteriaDate, boolean isGetNextMonthData,
 			boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
-			Optional<List<TempAnnualLeaveMngs>> forOverWriteList, Optional<Boolean> noCheckStartDate) {
+			Optional<List<TempAnnualLeaveMngs>> forOverWriteList, Optional<Boolean> noCheckStartDate, DatePeriod overWriteDatePeriod) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
@@ -54,7 +54,7 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 						Optional.empty(),
 						noCheckStartDate,
 						Optional.empty(),
-						Optional.of(aggrPeriod));
+						Optional.of(overWriteDatePeriod));
 
 
 		if(!outResult.isPresent()) {
@@ -73,7 +73,7 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 			boolean mode, GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
 			Optional<Boolean> isOverWrite, Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
 			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList, Optional<Boolean> isOutputForShortage,
-			Optional<Boolean> noCheckStartDate) {
+			Optional<Boolean> noCheckStartDate, DatePeriod overWriteDatePeriod) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
@@ -91,7 +91,7 @@ public class GetAnnLeaRemNumPeriodSharedImportImpl implements GetAnnLeaRemNumWit
 				isOutputForShortage,
 				noCheckStartDate,
 				Optional.empty(), Optional.empty(),
-				Optional.of(aggrPeriod));
+				Optional.of(overWriteDatePeriod));
 		Optional<AggrResultOfReserveLeave> optResult = algorithm.getReserveLeave();
 		if(!optResult.isPresent()) {
 			return Collections.emptyList();

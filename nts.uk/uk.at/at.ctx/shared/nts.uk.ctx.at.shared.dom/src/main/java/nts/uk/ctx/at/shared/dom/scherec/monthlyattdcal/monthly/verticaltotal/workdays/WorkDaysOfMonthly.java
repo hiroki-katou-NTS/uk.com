@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
@@ -155,23 +156,22 @@ public class WorkDaysOfMonthly implements Serializable{
 	 * @param predetermineTimeSet 所定時間設定
 	 * @param isAttendanceDay 出勤しているかどうか
 	 * @param isTwoTimesStampExists 2回目の打刻が存在するかどうか
-	 * @param predTimeSetOnWeekday 所定時間設定（平日時）
 	 */
 	public void aggregate(
-			RequireM1 require, WorkingSystem workingSystem, WorkType workType,
+			RequireM1 require, String sid, String cid, GeneralDate ymd, 
+			WorkingSystem workingSystem, WorkType workType,
 			AttendanceTimeOfDailyAttendance attendanceTimeOfDaily,
 			SpecificDateAttrOfDailyAttd specificDateAttrOfDaily,
 			WorkTypeDaysCountTable workTypeDaysCountTable,
 			WorkInfoOfDailyAttendance workInfo, PredetemineTimeSetting predetermineTimeSet,
-			boolean isAttendanceDay, boolean isTwoTimesStampExists,
-			PredetemineTimeSetting predTimeSetOnWeekday){
+			boolean isAttendanceDay, boolean isTwoTimesStampExists){
 		
 		// 出勤日数の集計
 		this.attendanceDays.aggregate(workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 欠勤日数の集計
-		this.absenceDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay,
-				predetermineTimeSet, predTimeSetOnWeekday);
+		this.absenceDays.aggregate(require, cid, sid, ymd, workInfo.getRecordInfo(),
+				workingSystem, workType, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 所定日数の集計
 		this.predetermineDays.aggregate(workTypeDaysCountTable);
@@ -208,8 +208,8 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.recruitmentDays.aggregate(require, workingSystem, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 特別休暇日数の集計
-		this.specialVacationDays.aggregate(workingSystem, workType, workTypeDaysCountTable, isAttendanceDay,
-				predetermineTimeSet, predTimeSetOnWeekday);
+		this.specialVacationDays.aggregate(require, cid, sid, ymd, workingSystem, workType, 
+				workInfo.getRecordInfo(), attendanceTimeOfDaily, workTypeDaysCountTable, isAttendanceDay);
 		
 		// 時間消化休暇の集計
 		this.timeConsumpDays.aggregate(workType, attendanceTimeOfDaily);
@@ -238,7 +238,8 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.timeConsumpDays.sum(target.timeConsumpDays);
 	}
 	
-	public static interface RequireM1 extends SpecificDaysOfMonthly.RequireM1, RecruitmentDaysOfMonthly.RequireM1 {
+	public static interface RequireM1 extends SpecificDaysOfMonthly.RequireM1, RecruitmentDaysOfMonthly.RequireM1,
+		SpcVacationDaysOfMonthly.Require, AbsenceDaysOfMonthly.Require {
 
 	}
 }

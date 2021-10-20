@@ -39,9 +39,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcar
 public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumberChildCareNursePub {
 
 	@Inject
-	private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
-
-	@Inject
 	private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
 	/**
@@ -79,7 +76,7 @@ public class GetRemainingNumberChildCareNursePubImpl implements GetRemainingNumb
 
 
 		AggrResultOfChildCareNurse result =
-				getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+				GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
 						companyId, employeeId, period, performReferenceAtr, criteriaDate,
 						isOverWrite, domChildCareNurseManagemenList, domPrevCareLeave, createAtr, periodOverWrite,
 						cacheCarrier, require);

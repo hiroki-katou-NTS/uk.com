@@ -25,7 +25,7 @@ public interface GetAnnLeaRemNumWithinPeriodSharedImport {
 	 */
 	List<AnnualLeaveErrorSharedImport> annualLeaveErrors(String companyId, String employeeId, DatePeriod aggrPeriod, 
 			boolean mode,GeneralDate criteriaDate, boolean isGetNextMonthData, boolean isCalcAttendanceRate,
-			Optional<Boolean> isOverWrite, Optional<List<TempAnnualLeaveMngs>> forOverWriteList, Optional<Boolean> noCheckStartDate);
+			Optional<Boolean> isOverWrite, Optional<List<TempAnnualLeaveMngs>> forOverWriteList, Optional<Boolean> noCheckStartDate, DatePeriod overWriteDatePeriod);
 	/**
 	 * 年休積休
 	 * @param companyId
@@ -48,5 +48,5 @@ public interface GetAnnLeaRemNumWithinPeriodSharedImport {
 			Optional<List<TempAnnualLeaveMngs>> tempAnnDataforOverWriteList,
 			Optional<List<TmpResereLeaveMng>> tempRsvDataforOverWriteList,
 			Optional<Boolean> isOutputForShortage,
-			Optional<Boolean> noCheckStartDate);
+			Optional<Boolean> noCheckStartDate, DatePeriod overWriteDatePeriod);
 }
