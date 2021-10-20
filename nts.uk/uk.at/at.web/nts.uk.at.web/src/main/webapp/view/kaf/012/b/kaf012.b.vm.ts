@@ -342,6 +342,13 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     }
                 }
             });
+            
+            let dfd = $.Deferred();
+            if (errors.length > 0) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errors });
+                dfd.reject(false);
+                return dfd.promise();
+            }
 
             vm.$blockui("show");
             return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component5-comboReason')
@@ -378,12 +385,23 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 							CommonProcess.handleMailResult(result, vm);
 						});
                     }
+                }).then((result: any) => {
+                    if (result) {
+                        return dfd.resolve(true);
+                    }
                 }).fail(err => {
                     // vm.handleError(err);
                     if (err.messageId == "Msg_1687") {
                         $(vm.$el).find('leave-type-switch').focus();
                     }
-                }).always(() => vm.$blockui("hide"));
+                    if (err) {
+                        return dfd.reject(false);
+                    }
+                }).always(() => {
+                    vm.$blockui("hide");
+                    return dfd.promise();
+                });
+                
         }
 
         handleConfirmMessage(listMes: any, res: any): any {
