@@ -6092,7 +6092,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						})
 
 						if (fillAdd == null) {
-							self.lstTaskScheduleDetailEmp[indexT].taskScheduleDetail.push(lst);
+							if ((!_.inRange(lst.timeSpanForCalcDto.start, start, end) &&  !_.inRange(lst.timeSpanForCalcDto.end, start, end)) &&
+							(!_.inRange(start, lst.timeSpanForCalcDto.start, lst.timeSpanForCalcDto.end) &&  !_.inRange(end, lst.timeSpanForCalcDto.start, lst.timeSpanForCalcDto.end))){
+								if (lst.timeSpanForCalcDto.start != start && lst.timeSpanForCalcDto.start != end && 
+								lst.timeSpanForCalcDto.end != start && lst.timeSpanForCalcDto.end != end ){
+									self.lstTaskScheduleDetailEmp[indexT].taskScheduleDetail.push(lst);
+								}
+							} 
 						}
 					})
 				}
