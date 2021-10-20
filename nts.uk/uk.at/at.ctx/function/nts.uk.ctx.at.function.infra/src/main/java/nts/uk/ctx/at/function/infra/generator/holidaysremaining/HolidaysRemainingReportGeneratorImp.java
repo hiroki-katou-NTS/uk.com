@@ -1439,7 +1439,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (checkShow.isSubstituteHolidaySetting() && monRemainingDate != null && monRemainingDate < 0) {
             setForegroundRed(cells.get(firstRow, 5));
         }
-        if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting() && monRemainingTime != null &&
+        if (checkShow.isSubstituteHolidaySetting()  && monRemainingTime != null &&
                 monRemainingTime < 0) {
             setForegroundRed(cells.get(firstRow, 5));
         }
@@ -1468,7 +1468,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             String i14 = "";
             if (checkShow.isSubstituteHolidaySetting() && remainDay != null && !isTime) {
                 i14 = remainDay == 0 ? "0.0" : df.format(remainDay);
-            } else if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting()
+            } else if (checkShow.isSubstituteHolidaySetting()
                     && (remainTime != null) && isTime) {
                 i14 = remainTime == 0 ? "0:00" : convertToTime(remainTime);
             }
@@ -1476,7 +1476,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if (checkShow.isSubstituteHolidaySetting() && remainDay != null && remainDay != 0 && remainDay < 0) {
                 setForegroundRed(cells.get(firstRow, 7));
             }
-            if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting() && (remainTime != null)
+            if (checkShow.isSubstituteHolidaySetting()&& (remainTime != null)
                     && remainTime < 0) {
                 setForegroundRed(cells.get(firstRow, 7));
             }
@@ -1496,7 +1496,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             String i15 = "";
             if (checkShow.isSubstituteHolidaySetting() && (unusedDay != null) && !isTime) {
                 i15 = unusedDay == 0 ? "0.0" : df.format(unusedDay);
-            } else if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting()
+            } else if (checkShow.isSubstituteHolidaySetting()
                     && (unusedTime != null) && isTime) {
                 i15 = unusedTime == 0 ? "0:00" : convertToTime(unusedTime);
             }
@@ -1505,7 +1505,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if (checkShow.isSubstituteHolidaySetting() && unusedDay != null && unusedDay > 0) {
                 setForegroundRed(cells.get(firstRow, 8));
             }
-            if (checkShow.isSubstituteHolidaySetting() && checkShow.isHourlyLeaveSetting() && (unusedTime != null)
+            if (checkShow.isSubstituteHolidaySetting()  && (unusedTime != null)
                     && unusedTime > 0) {
                 setForegroundRed(cells.get(firstRow, 8));
             }
