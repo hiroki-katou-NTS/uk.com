@@ -137,10 +137,15 @@ module nts.uk.ui.at.kdw013.a {
 
         // F画面を起動する
         favoriteTaskItem: KnockoutObservable<FavoriteTaskItemDto | null> = ko.observable(null);
+
+        // F画面: add new 
         taskContents: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
 
         // G画面を起動する
         oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto | null> = ko.observable(null);
+
+        // G画面: add new 
+        taskBlocks: KnockoutObservableArray<TaskBlockDetailContentDto> = ko.observableArray();
 
         // 作業枠利用設定
         taskSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray();
@@ -1026,22 +1031,24 @@ module nts.uk.ui.at.kdw013.a {
         addOneDayFavTask(){
             const vm = this;
 
+            vm.taskBlocks([
+                {
+                    startTime: 1,
+                    endTime: 2,
+                    taskContents: [{
+                        frameNo: 1,
+                        taskContent:{
+                            itemId: 1,
+                            taskCode: "1"
+                        }
+                    }
+                ]
+            }]);
+
             const registerFavoriteForOneDayCommand : RegisterFavoriteForOneDayCommand = {
                 employeeId: vm.$user.employeeId,
                 taskName: vm.oneDayFavTaskName(),
-                contents: [
-                    {
-                        startTime: 1,
-                        endTime: 2,
-                        taskContents: [{
-                            frameNo: 1,
-                            taskContent:{
-                                itemId: 1,
-                                taskCode: "1"
-                            }
-                        }
-                    ]
-                }]
+                contents: ko.unwrap(vm.taskBlocks)
 
             }
 
