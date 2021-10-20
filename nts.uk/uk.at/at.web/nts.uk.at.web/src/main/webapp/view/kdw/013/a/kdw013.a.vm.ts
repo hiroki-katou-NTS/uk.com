@@ -136,22 +136,25 @@ module nts.uk.ui.at.kdw013.a {
         oneDayFavTaskName: KnockoutObservable<string> = ko.observable('');
 
         // F画面を起動する
-        //favoriteTaskItem: KnockoutObservable<FavoriteTaskItemDto | null> = ko.observable(null);
-
-        //paramF: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
-
-        // G画面を起動する
-        //oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto | null> = ko.observable(null);
-
-        //paramG: KnockoutObservableArray<TaskBlockDetailContentDto> = ko.observableArray();
-
-        taskSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray();
-
-        taskInfos: KnockoutObservableArray<TaskInfo> = ko.observableArray();
+        favoriteTaskItem: KnockoutObservable<FavoriteTaskItemDto | null> = ko.observable(null);
         taskContents: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
 
+        // G画面を起動する
+        oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto | null> = ko.observable(null);
+
+        // 作業枠利用設定
+        taskSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray();
+
+        // I画面
+        taskInfos: KnockoutObservableArray<TaskInfo> = ko.observableArray();
+        
+        // 作業リスト
         taskDtos: KnockoutObservableArray<TaskDto> =  ko.observableArray();
+
+        // 日別勤怠の応援作業時間
         ouenWorkTimes: KnockoutObservableArray<OuenWorkTimeOfDailyAttendance> =  ko.observableArray();
+
+        // 日別勤怠の応援作業時間帯
         ouenWorkTimeSheets: KnockoutObservableArray<OuenWorkTimeSheetOfDailyAttendance> =  ko.observableArray();
         
         constructor() {
@@ -600,11 +603,11 @@ module nts.uk.ui.at.kdw013.a {
             }
             
             // favId sẽ truyền param vào popup F -> sẽ update sau
-            //command.favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c';
+            fcommand.favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c';
             vm.$blockui('grayout').then(() => vm.$ajax('at', API.START_F, fcommand))
             .then((response: FavoriteTaskItemDto) => {
                 if (response) {
-                    //vm.favoriteTaskItem(response);
+                    vm.favoriteTaskItem(response);
                     vm.favTaskName(response.taskName);
                 }
 
@@ -616,11 +619,11 @@ module nts.uk.ui.at.kdw013.a {
             }
             
             // favId sẽ truyền param vào popup G -> sẽ update sau
-            // gCommand.favId = '5671a985-39c7-4552-a426-884066437429';
+            gCommand.favId = '5671a985-39c7-4552-a426-884066437429';
             vm.$blockui('grayout').then(() => vm.$ajax('at', API.START_G, gCommand))
             .then((response: OneDayFavoriteSetDto) => {
                 if (response) {
-                    //vm.oneDayFavoriteSet(response);
+                    vm.oneDayFavoriteSet(response);
                     vm.oneDayFavTaskName(response.taskName);
                 }
 
@@ -920,6 +923,7 @@ module nts.uk.ui.at.kdw013.a {
         registerFavTask() {
             const vm = this;
             let favId = '';
+            // truyền favId trong TH update
             //let favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c'
 
             if (favId =='') {
@@ -994,6 +998,7 @@ module nts.uk.ui.at.kdw013.a {
         registerOneDayFavTask() {
             const vm = this;
             let favId = '';
+            // truyền favId trong TH update
             //let favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c'
 
             if (favId =='') {
@@ -1321,7 +1326,7 @@ module nts.uk.ui.at.kdw013.a {
                 taskDtos: ko.unwrap(vm.taskDtos),
                 ouenWorkTimes: ko.unwrap(vm.ouenWorkTimes),
                 ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
-                settings: ko.unwrap(vm.settings)
+                taskSettings: ko.unwrap(vm.taskSettings)
             }
 		
             vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
