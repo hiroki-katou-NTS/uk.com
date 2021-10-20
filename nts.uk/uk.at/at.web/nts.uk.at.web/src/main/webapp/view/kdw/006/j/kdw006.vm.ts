@@ -253,19 +253,41 @@ module nts.uk.at.view.kmk006.j {
                 displayManHrRecordItems: displayManHrRecordItems
             }
 
+            var update: boolean = true;
 
-            vm.validate()
-                .then((valid: boolean) => {
-                    if (valid) {
-                        vm.$blockui('invisible')
-                            .then(() => {
-                                vm.$ajax('at', API.ADD_OR_UPDATE, param)
-                                    .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                                    .then(() => vm.reloadData())
-                            })
-                            .always(() => vm.$blockui('clear'));
-                    }
-                });
+            if (param.recordColumnDisplayItems.length == 2) {
+                if (param.recordColumnDisplayItems[0].attendanceItemId == param.recordColumnDisplayItems[1].attendanceItemId) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    update = false;
+                }
+            }
+
+            if (param.recordColumnDisplayItems.length == 3) {
+                if (param.recordColumnDisplayItems[0].attendanceItemId == param.recordColumnDisplayItems[1].attendanceItemId) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    update = false;
+                }
+
+                if (param.recordColumnDisplayItems[0].attendanceItemId == param.recordColumnDisplayItems[2].attendanceItemId && update) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    update = false;
+                }
+            }
+
+            if (update) {
+                vm.validate()
+                    .then((valid: boolean) => {
+                        if (valid) {
+                            vm.$blockui('invisible')
+                                .then(() => {
+                                    vm.$ajax('at', API.ADD_OR_UPDATE, param)
+                                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                                        .then(() => vm.reloadData())
+                                })
+                                .always(() => vm.$blockui('clear'));
+                        }
+                    });
+            }
         }
 
         validate(action: 'clear' | undefined = undefined) {
