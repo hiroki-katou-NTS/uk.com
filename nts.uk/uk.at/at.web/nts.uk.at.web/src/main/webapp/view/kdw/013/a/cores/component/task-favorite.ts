@@ -7,7 +7,8 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 const name = componentName();
                 const mode = allBindingsAccessor.get('mode');
                 const items = allBindingsAccessor.get('items');
-                const params = { mode, items };
+                const favoriteTaskItem = allBindingsAccessor.get('favoriteTaskItem');
+                const params = { mode, items, favoriteTaskItem} ;
 
                 ko.applyBindingsToNode(element, { component: { name, params } });
 
@@ -23,7 +24,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
             template: `
             <div class='edit-popup'>
                     <ul>
-                        <li data-bind="i18n: 'KDW013_77' ,click:$component.openFdialog"></li>
+                        <li class='popupButton-f' data-bind="i18n: 'KDW013_77' ,click:$component.openFdialog"></li>
                         <li data-bind="i18n: 'KDW013_78' ,click:$component.removeFav"></li>
                     </ul>
             </div>
@@ -106,11 +107,26 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 const vm = this;
                 $('.fc-task-events .edit-popup').removeClass('show');
                 let id = $('.fc-task-events .edit-popup').data('favId');
-                vm.$window.shared('KDW013_A_TO_F_PARAMS', id);
+                let item = _.find(vm.params.items(), item => _.get(item, 'extendedProps.favId') == id);
                 //gọi màn F
-                console.log(id);
+                vm.params.favoriteTaskItem({
+                    // 社員ID
+                    employeeId: vm.$user.employeeId,
+                    // お気に入りID
+                    favoriteId: id,
+                    // お気に入り作業名称
+                    taskName: item.title,
+                    // お気に入り内容
+                    favoriteContents: item.extendedProps.dropInfo.favoriteContents
+                });
             }
         }
+        
+         type EventParams = {
+            items: KnockoutObservableArray<any>;
+            mode: KnockoutComputed<boolean>;
+            favoriteTaskItem: any;
+        };
     
     
       

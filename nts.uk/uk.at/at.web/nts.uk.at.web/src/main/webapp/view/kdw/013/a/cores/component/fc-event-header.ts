@@ -1,9 +1,9 @@
 module nts.uk.ui.at.kdw013.eventheadear {
     @component({
-        name: 'fc-oneday-events',
+        name: 'fc-event-header',
         template:
         `<td data-bind="i18n: 'KDW013_20'"></td>
-                <!-- ko foreach: { data: $component.data, as: 'day' } -->
+                <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
                         <div class="text-note limited-label" data-bind="text: note"></div>
@@ -21,7 +21,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
     export class FullCalendarEventHeaderComponent extends ko.ViewModel {
         today: string = moment().format('YYYY-MM-DD');
 
-        constructor(private data: KnockoutComputed<string[][]>) {
+        constructor(private params: any) {
             super();
 
             if (!this.data) {
@@ -51,8 +51,22 @@ module nts.uk.ui.at.kdw013.eventheadear {
             // fix display on ie
             vm.$el.removeAttribute('style');
         }
-        openHDialog() {
+        openHDialog(day) {
             const vm = this;
+            vm.params.setting();
+            let param = {
+                //対象社員
+                sid: vm.$user.employeeId,
+                //対象日 
+                date: day
+                
+                      
+                //日別実績(Work) 
+                //実績入力ダイアログ表示項目一覧
+                //実績内容
+                //日別実績のロック状態 
+            }
+            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml', param).then(() => { });
             console.log('open H');
         }
     }

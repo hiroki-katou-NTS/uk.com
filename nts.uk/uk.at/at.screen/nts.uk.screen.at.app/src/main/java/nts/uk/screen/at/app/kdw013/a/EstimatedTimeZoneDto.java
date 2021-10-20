@@ -25,10 +25,10 @@ public class EstimatedTimeZoneDto {
 	private GeneralDate ymd;
 
 	// 開始時刻
-	private int startTime;
+	private Integer startTime;
 
 	// 終了時刻
-	private int endTime;
+	private Integer endTime;
 
 	// 休憩時間帯
 
@@ -46,8 +46,8 @@ public class EstimatedTimeZoneDto {
 
 		return new EstimatedTimeZoneDto(
 						et.getYmd(), 
-						et.getStartTime().v(), 
-						et.getEndTime().v(),
+						et.getStartTime() == null ? null : et.getStartTime().v(), 
+						et.getEndTime()	== null ? null : et.getEndTime().v(),
 						et.getBreakTimeSheets().stream().map(bt -> new BreakTimeSheetDto(bt.getStartTime().v(), bt.getEndTime().v(),bt.getBreakTime().v(), bt.getBreakFrameNo().v())).collect(Collectors.toList()),
 						et.getTimezones().stream().map(tz -> TimezoneUseDto.fromDomain(tz)).collect(Collectors.toList()),
 						et.getItemSpans().stream().map(ip-> new TimeSpanForCalcDto(ip.getStart().v(), ip.getEnd().v())).collect(Collectors.toList())
