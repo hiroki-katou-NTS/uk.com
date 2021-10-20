@@ -262,13 +262,11 @@ module nts.uk.at.view.kmk006.k {
                                     item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
                                 }))
                                 vm.historyLocals = history;
-                                console.log(vm.historyLocals);
                             })
                             .then(() => {
                                 const exist = _.find(vm.historyLocals, ((item: IHistory) => {
                                     return item.itemId === ko.unwrap(vm.selectedItemWork);
                                 }));
-                                console.log(exist);
                                 if (exist) {
                                     const history = _.find(exist.dateHistoryItems, ((value: IHistoryInfo) => {
                                         return value.historyId === ko.unwrap(ko.unwrap(vm.modelHistory).historyId);

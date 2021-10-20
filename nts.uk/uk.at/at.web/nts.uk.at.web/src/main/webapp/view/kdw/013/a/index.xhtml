@@ -10,6 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
+				nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName
 			</com:ValidatorScript>
 			
 			<com:stylefile set="FULLCALENDAR" />
@@ -47,6 +48,93 @@
 				<button data-bind="i18n: 'KDW013_2', click: $vm.confirm, kdw-toggle: $vm.$toggle.confirm"></button>
 				<button data-bind="i18n: 'KDW013_3', click: $vm.removeConfirm, kdw-toggle: $vm.$toggle.remove"></button>
 				<button data-bind="i18n: 'KDW013_62', click: $vm.equipmentInput"></button>
+				<button class="popupButton-f">OpenF</button>
+				<div class="popup-area-f">
+					<!-- F2_1 -->
+					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_58'"></div>
+
+					<!-- F3_2 -->
+					<div class="textEditor pb10">
+						<!-- F3_1 -->
+						<label class="pr10" data-bind="i18n: 'KDW013_59'"></label>
+						<input
+						  class="nameInput"
+						  tabindex="1"
+						  id="KDW013_59"
+						  data-bind="ntsTextEditor: {
+							value: favTaskName, 
+							required: true,
+							constraint: 'FavoriteTaskName',
+							name: '#[KDW013_59]',
+							enable: true
+							}"
+						/>
+					</div>
+
+					<!-- F4_1 -->
+					<button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_1', click: $vm.registerFavTask"></button>
+				</div>
+				<button class="popupButton-g">OpenG</button>
+				<div class="popup-area-g">
+					<!-- G2_1 -->
+					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_60'"></div>
+
+					<!-- G3_2 -->
+					<div class="textEditor pb10">
+						<!-- G3_1 -->
+						<label class="pr10" data-bind="i18n: 'KDW013_59'"></label>
+						<input
+						  class="nameInput"
+						  tabindex="1"
+						  id="KDW013_59"
+						  data-bind="ntsTextEditor: {
+							value: oneDayFavTaskName, 
+							required: true,
+							constraint: 'FavoriteTaskName',
+							name: '#[KDW013_59]',
+							enable: true
+							}"
+						/>
+					</div>
+
+					<!-- G4_1 -->
+					<button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_1', click: $vm.registerOneDayFavTask"></button>
+				</div>
+				<button class="popupButton-i">OpenI</button>
+				<div class="popup-area-i">
+					<!-- I1_2 -->
+					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_90'"></div>
+
+					<!--I2_1 -->
+					<!--I2_2 -->
+					
+					<div id="taskInfo" data-bind = "foreach: $vm.taskInfos">
+						<div class="panel panel-frame panel-width">
+							
+							<table id="tbl-task">
+								<tr>
+									<td>
+										<label class="" data-bind="text: name"></label>
+									</td>
+									<td class="pl15 icon-edit">
+										<button class="go-button edit-button" tabindex="1" data-bind = "click: function(data){ $vm.openEDialog(data, $vm);}">
+											<i data-bind="ntsIcon: { no: 204, width: 15, height: 20}"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+							
+							<div>
+								<!--I2_3 -->
+								<label class="" data-bind="i18n: 'KDW013_25'"></label>
+	
+								<!--I2_4 -->
+								<label data-bind="text: time"></label>
+							</div>
+						</div>
+					</div>
+						
+				</div>
 			</div>
 			<div id="contents-area">
 				<div data-bind="

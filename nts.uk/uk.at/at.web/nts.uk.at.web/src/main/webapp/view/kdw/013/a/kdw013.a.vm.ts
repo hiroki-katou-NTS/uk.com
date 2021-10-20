@@ -34,7 +34,23 @@ module nts.uk.ui.at.kdw013.a {
         // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
         // RegisterWorkContentCommand
-        REGISTER: '/screen/at/kdw013/a/register_work_content'
+        REGISTER: '/screen/at/kdw013/a/register_work_content',
+
+        // POPUP F
+        // 作業お気に入り登録を起動する
+        START_F: '/screen/at/kdw013/f/start_task_fav_register',
+        // 作業お気に入りを新規追加する
+        ADD_FAV_TASK_F: '/screen/at/kdw013/f/create_task_fav',
+        // 作業お気に入り名称を変更する
+        UPDATE_TASK_NAME_F: '/screen/at/kdw013/f/update_task_name',
+
+        // POPUP G
+        // 1日作業お気に入り登録を起動する
+        START_G: '/screen/at/kdw013/g/start_task_fav_register',
+        // 1日作業お気に入りを新規追加する
+        ADD_FAV_TASK_G: '/screen/at/kdw013/g/create_task_fav',
+        // 1日作業お気に入り名称を変更する
+        UPDATE_TASK_NAME_G: '/screen/at/kdw013/g/update_task_name'
     };
 
     const initialCache = (): ChangeDateParam => ({
@@ -116,11 +132,32 @@ module nts.uk.ui.at.kdw013.a {
         $settings: KnockoutObservable<StartProcessDto | null> = ko.observable(null);
     
         dataChanged: KnockoutObservable<boolean> = ko.observable(false);
+        favTaskName: KnockoutObservable<string> = ko.observable('');
+        oneDayFavTaskName: KnockoutObservable<string> = ko.observable('');
 
+        // F画面を起動する
+        //favoriteTaskItem: KnockoutObservable<FavoriteTaskItemDto | null> = ko.observable(null);
+
+        //paramF: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
+
+        // G画面を起動する
+        //oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto | null> = ko.observable(null);
+
+        //paramG: KnockoutObservableArray<TaskBlockDetailContentDto> = ko.observableArray();
+
+        taskSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray();
+
+        taskInfos: KnockoutObservableArray<TaskInfo> = ko.observableArray();
+        taskContents: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
+
+        taskDtos: KnockoutObservableArray<TaskDto> =  ko.observableArray();
+        ouenWorkTimes: KnockoutObservableArray<OuenWorkTimeOfDailyAttendance> =  ko.observableArray();
+        ouenWorkTimeSheets: KnockoutObservableArray<OuenWorkTimeSheetOfDailyAttendance> =  ko.observableArray();
+        
         constructor() {
             super();
-
             const vm = this;
+            vm.createWarning();
             let $query = vm.getQuery();
             const { employee } = vm;
             const { mode } = $query;
@@ -522,6 +559,73 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$settings(response);
                 })
                 .always(() => vm.$blockui('clear'));
+
+            // Init popup
+            $(".popup-area-f").ntsPopup({
+                trigger: ".popupButton-f",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-f"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $(".popup-area-g").ntsPopup({
+                trigger: ".popupButton-g",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-g"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $(".popup-area-i").ntsPopup({
+                trigger: ".popupButton-i",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-i"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            //F: 起動する
+            const fcommand : StartTaskFavoriteRegisterParam = {
+                favId: '' //giá trị default
+            }
+            
+            // favId sẽ truyền param vào popup F -> sẽ update sau
+            //command.favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c';
+            vm.$blockui('grayout').then(() => vm.$ajax('at', API.START_F, fcommand))
+            .then((response: FavoriteTaskItemDto) => {
+                if (response) {
+                    //vm.favoriteTaskItem(response);
+                    vm.favTaskName(response.taskName);
+                }
+
+            }).always(() => vm.$blockui('clear'));
+
+             // G: 起動する
+             const gCommand : StartTaskFavoriteRegisterParam = {
+                favId: '' //giá trị default
+            }
+            
+            // favId sẽ truyền param vào popup G -> sẽ update sau
+            // gCommand.favId = '5671a985-39c7-4552-a426-884066437429';
+            vm.$blockui('grayout').then(() => vm.$ajax('at', API.START_G, gCommand))
+            .then((response: OneDayFavoriteSetDto) => {
+                if (response) {
+                    //vm.oneDayFavoriteSet(response);
+                    vm.oneDayFavTaskName(response.taskName);
+                }
+
+            }).always(() => vm.$blockui('clear'));
+        
         }
 
         getDOW(date){
@@ -810,6 +914,417 @@ module nts.uk.ui.at.kdw013.a {
             vm.$window
                 .modal('at', '/view/kdw/013/d/index.xhtml', data)
                 .then(() => { });
+        }
+
+        // Popup F:
+        registerFavTask() {
+            const vm = this;
+            let favId = '';
+            //let favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c'
+
+            if (favId =='') {
+                vm.addFavTask();
+            } else {
+                vm.updateFavName(favId);
+            }
+
+        }
+
+        updateFavName(favTaskId: string) {
+            const vm = this;
+
+            const updateFavNameCommand: UpdateFavNameCommand = {
+                favId: favTaskId,
+                favName: vm.favTaskName()
+            }
+
+            vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand))
+            .done(() => {
+                vm.$dialog.info({ messageId: 'Msg_15' });
+            }).always(() => vm.$blockui('clear'));
+
+        }
+
+        addFavTask() {
+            const vm = this;
+
+            //_.forEach(vm.itemValues(), v => {
+
+                // vm.taskContents().push({
+                //     itemId: v.itemId,
+                //     taskCode: v.value.toString()
+                // })
+
+            //});
+
+            vm.taskContents([{
+                itemId: 4,
+                taskCode: "1"
+            },
+            {
+                itemId: 5,
+                taskCode: "2"
+            },
+            {
+                itemId: 6,
+                taskCode: "3"
+            },
+            {
+                itemId: 7,
+                taskCode: "4"
+            },
+            {
+                itemId: 8,
+                taskCode: "5"
+            }]);
+
+            const registerFavoriteCommand : RegisterFavoriteCommand = {
+                taskName: vm.favTaskName(),
+                contents: vm.taskContents()
+            }
+
+            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand))
+            .done(() => {
+                vm.$dialog.info({ messageId: 'Msg_15' });
+            }).always(() => vm.$blockui('clear'));
+               
+        }
+
+        // Popup G:
+        registerOneDayFavTask() {
+            const vm = this;
+            let favId = '';
+            //let favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c'
+
+            if (favId =='') {
+                vm.addOneDayFavTask();
+            } else {
+                vm.updateOneDayFavName(favId);
+            }
+        }
+
+        updateOneDayFavName(favTaskId: string) {
+            const vm = this;
+
+            const updateFavNameCommand: UpdateFavNameCommand = {
+                favId: favTaskId,
+                favName: vm.oneDayFavTaskName()
+            }
+
+            vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand))
+            .done(() => {
+                vm.$dialog.info({ messageId: 'Msg_15' });
+            }).always(() => vm.$blockui('clear'));
+
+        }
+
+        addOneDayFavTask(){
+            const vm = this;
+
+            const registerFavoriteForOneDayCommand : RegisterFavoriteForOneDayCommand = {
+                employeeId: vm.$user.employeeId,
+                taskName: vm.oneDayFavTaskName(),
+                contents: [
+                    {
+                        startTime: 1,
+                        endTime: 2,
+                        taskContents: [{
+                            frameNo: 1,
+                            taskContent:{
+                                itemId: 1,
+                                taskCode: "1"
+                            }
+                        }
+                    ]
+                }]
+
+            }
+
+            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand))
+            .done(() => {
+                vm.$dialog.info({ messageId: 'Msg_15' });
+            }).always(() => vm.$blockui('clear'));
+        }
+
+        createWarning() {
+            const vm = this;
+
+            vm.taskDtos([
+                {
+                    code : "1",
+                    taskFrameNo: 1,
+                    displayInfo: {
+                        taskName: "taskName1",
+                        taskAbName: "taskAbName1",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "11",
+                    taskFrameNo: 1,
+                    displayInfo: {
+                        taskName: "taskName11",
+                        taskAbName: "taskAbName11",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "111",
+                    taskFrameNo: 1,
+                    displayInfo: {
+                        taskName: "taskName111",
+                        taskAbName: "taskAbName111",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "2",
+                    taskFrameNo: 2,
+                    displayInfo: {
+                        taskName: "taskName2",
+                        taskAbName: "taskAbName2",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "3",
+                    taskFrameNo: 3,
+                    displayInfo: {
+                        taskName: "taskName3",
+                        taskAbName: "taskAbName3",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "4",
+                    taskFrameNo: 4,
+                    displayInfo: {
+                        taskName: "taskName4",
+                        taskAbName: "taskAbName4",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "5",
+                    taskFrameNo: 5,
+                    displayInfo: {
+                        taskName: "taskName5",
+                        taskAbName: "taskAbName5",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                }
+
+            ]);
+
+            vm.ouenWorkTimes([
+                {
+                    workNo: 1,
+                    workTime: {
+                        totalTime: 11
+                    }
+                },
+                {
+                    workNo: 2,
+                    workTime: {
+                        totalTime: 22
+                    }
+                },
+                {
+                    workNo: 3,
+                    workTime: {
+                        totalTime: 33
+                    }
+                }
+                
+            ]);
+
+            vm.ouenWorkTimeSheets([
+                {
+                    workNo: 1,
+                    workContent: {
+                        workGroup: {
+                            workCD1: "1",
+                            workCD2: "2",
+                            workCD3: "3",
+                            workCD4: "4",
+                            workCD5: "5",
+                        }
+                    },
+                    timeSheet: {
+                        workNo: 1,
+                        start: 1,
+                        end: 2
+                    }
+                },
+                {
+                    workNo: 2,
+                    workContent: {
+                        workGroup: {
+                            workCD1: "1",
+                            workCD2: "2",
+                            workCD3: "3",
+                            workCD4: "4",
+                            workCD5: "5",
+                        }
+                    },
+                        timeSheet: {
+                            workNo: 1,
+                            start: 1,
+                            end: 2
+                        }
+                   
+                },
+                {
+                    workNo: 3,
+                    workContent: {
+                        workGroup: {
+                            workCD1: "1",
+                            workCD2: "2",
+                            workCD3: "3",
+                            workCD4: "4",
+                            workCD5: "5",
+                        }
+                    },
+                    timeSheet: {
+                        workNo: 1,
+                        start: 1,
+                        end: 2
+                    }
+                }
+
+            ]);
+
+            vm.taskSettings([
+                {
+                    frameNo: 1,
+                    frameName: 'name1',
+                    useAtr: 1
+                },
+                {
+                    frameNo: 2,
+                    frameName: 'name2',
+                    useAtr: 1
+                },
+                {
+                    frameNo: 3,
+                    frameName: 'name3',
+                    useAtr: 1
+                },
+                {
+                    frameNo: 4,
+                    frameName: 'name4',
+                    useAtr: 1
+                },
+                {
+                    frameNo: 5,
+                    frameName: 'name5',
+                    useAtr: 1
+                }
+            ]);
+
+
+            var warnings: TaskInfo[] = [ ];
+
+            _.forEach(vm.ouenWorkTimes(), wt => {
+
+                let ouenWorkTimeSheet: OuenWorkTimeSheetOfDailyAttendance  = ko.utils.arrayFirst(vm.ouenWorkTimeSheets(), function (e) {return e.workNo == wt.workNo});
+                let workCD1 = ouenWorkTimeSheet.workContent.workGroup.workCD1;
+                let workCD2 = ouenWorkTimeSheet.workContent.workGroup.workCD2;
+                let workCD3 = ouenWorkTimeSheet.workContent.workGroup.workCD3;
+                let workCD4 = ouenWorkTimeSheet.workContent.workGroup.workCD4;
+                let workCD5 = ouenWorkTimeSheet.workContent.workGroup.workCD5;
+                let taskName1 = '';
+                let taskName2 = '';
+                let taskName3 = '';
+                let taskName4 = '';
+                let taskName5 = '';
+
+                _.forEach(vm.taskDtos(), task => {
+                    if (task.taskFrameNo == 1 && task.code == workCD1) {
+                        taskName1 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 2 && task.code == workCD2) {
+                        taskName2 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 3 && task.code == workCD3) {
+                        taskName3 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 4 && task.code == workCD4) {
+                        taskName4 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 5 && task.code == workCD5) {
+                        taskName5 = task.displayInfo.taskName;
+                    }
+                });
+                
+                let taskNames =
+                    (taskName1 != '' ? taskName1 + ' ' : '') +
+                    (taskName2 != '' ? taskName2 + ' ' : '') + 
+                    (taskName3 != '' ? taskName3 + ' ' : '') +
+                    (taskName4 != '' ? taskName4 + ' ' : '') +
+                    taskName5;
+                
+                    warnings.push({
+                        workNo: wt.workNo,
+                        name: taskNames,
+                        time: wt.workTime.totalTime
+                });
+               
+            });
+
+            vm.taskInfos(warnings);
+        }
+
+        openEDialog(data: any, vm: any) {
+            
+            let param = {
+                workNo: data.workNo,
+                taskDtos: ko.unwrap(vm.taskDtos),
+                ouenWorkTimes: ko.unwrap(vm.ouenWorkTimes),
+                ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
+                settings: ko.unwrap(vm.settings)
+            }
+		
+            vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
         }
     }
 

@@ -1,3 +1,68 @@
 .ui-accordion .ui-accordion-content{
 	    padding: 0px !important;
 }
+
+.popup-area-f {
+	padding: 20px !important;
+	text-align: right;
+}
+
+.popup-area-g  {
+	padding: 20px !important;
+	text-align: right;
+}
+
+.popup-area-i{
+	padding: 10px !important;
+}
+
+.pb10 {
+	padding-bottom: 10px !important;
+}
+
+.pb20 {
+	padding-bottom: 20px !important;
+}
+
+.align-left {
+	text-align: left;
+}
+
+.pr10 {
+	padding-right: 10px;
+}
+
+.panel-width {
+	width: 276px;
+	border-radius: 0 !important;
+}
+
+#taskInfo div:not(:last-child) {
+	border-bottom: none;
+}
+
+.pl15 {
+	padding-left: 15px;
+}
+
+.go-button {
+	border: 0; 
+	box-shadow: none;
+}
+
+.icon-edit {
+	vertical-align: top;
+}
+
+#tbl-task tr td:nth-child(2) {
+    text-align: right !important;
+}
+
+#tbl-task {
+	width: 100%;
+}
+
+.edit-button {
+	margin-left: unset !important;
+	min-width: unset !important;
+}
