@@ -1205,6 +1205,55 @@ module nts.uk.ui.at.kdw013.calendar {
                     computedTaskDragItems(data, ko.unwrap($settings));
                 });
 
+            isShowBreakTime.subscribe(value => {
+                    let currentDate = vm.params.initialDate();
+                
+                    if(!value){
+                         let breakEventInDay = _.chain(vm.calendar.getEvents())
+                            .filter((evn) => { return moment(evn.start).isSame(moment(currentDate), 'days'); })
+                            .filter((evn) => { return evn.extendedProps.isTimeBreak == true })
+                            .value();
+                        
+                       _.forEach(breakEventInDay, e => e.remove());
+                        mutatedEvents();
+                        return;
+                    }
+                    //đoạn này cần lấy dữ liệu thực tế
+                    let start = moment(currentDate).set('hour', 11).set('minute', 30).toDate();
+                    let end = moment(currentDate).set('hour', 12).set('minute', 30).toDate();
+                    events.push({
+                            id: randomId(),
+                            title: '',
+                            start,
+                            end,
+                            textColor: '',
+                            backgroundColor: '#fbb3fb',
+                            extendedProps: {
+                                id: randomId(),
+                                status: 'normal',
+                                isTimeBreak: true
+                            } as any
+                        });
+
+                    let start = moment(currentDate).set('hour', 16).set('minute', 30).toDate();
+                    let end = moment(currentDate).set('hour', 17).set('minute', 30).toDate();
+                    events.push({
+                            id: randomId(),
+                            title: '',
+                            start,
+                            end,
+                            textColor: '',
+                            backgroundColor: '#fbb3fb',
+                            extendedProps: {
+                                id: randomId(),
+                                status: 'normal',
+                                isTimeBreak: true
+                            } as any
+                        });
+                
+                updateEvents();
+            });
+
             // update drag item
             $settings
                 .subscribe((settings: a.StartProcessDto | null) => {
@@ -1636,7 +1685,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD4,
                         workCD5,
                         workLocationCD,
-                        workingHours
+                        workingHours,
+                        isTimeBreak
                         } = extendedProps;
                     selectedEvent.extendedProps = {
                         employeeId,
@@ -1650,7 +1700,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD4,
                         workCD5,
                         workLocationCD,
-                        workingHours
+                        workingHours,
+                        isTimeBreak
                     };
 
                 }
@@ -2020,12 +2071,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                     //add check button 
                                     const checkBtn =  $('<div class="fc-ckb-break-time">').insertBefore('.fc-settings-button').get(0);
                                     if (checkBtn) {
-                                        const value = ko.observable(ko.unwrap(isShowBreakTime) || false);
-                                        value.subscribe((v: boolean) => {
-                                            console.log('isShowBreakTime: ' + v);
-                                        });
+                                       
                                         
-                                        ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: value, enable:ko.observable(true) , text: vm.$i18n('KDW013_54'), readonly:ko.observable(false)} });
+                                        ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: isShowBreakTime, enable:ko.observable(true) , text: vm.$i18n('KDW013_54'), readonly:ko.observable(false)} });
                                         
                                     }
 
