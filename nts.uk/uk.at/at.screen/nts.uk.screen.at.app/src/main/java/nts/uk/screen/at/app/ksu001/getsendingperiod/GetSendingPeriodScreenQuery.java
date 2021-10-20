@@ -25,7 +25,7 @@ public class GetSendingPeriodScreenQuery {
 			if (isNextMonth) {
 				 result = scQuery28DayPeriod.get(currentPeriod.end().addDays(1), isNextMonth).toDomain();	
 			} else {
-				 result = scQuery28DayPeriod.get(currentPeriod.end().addDays(-1), isNextMonth).toDomain();	
+				 result = scQuery28DayPeriod.get(currentPeriod.start().addDays(-1), isNextMonth).toDomain();	
 			}
 			
 		} else {

@@ -74,11 +74,11 @@ public class ScreenQuery28DayPeriod {
 			
 			if (toAdvancePeriod) {
 				
-				return DatePeriodDto.from(period.newSpan(period.start().addDays(-21), period.end().addDays(-21)));
+				return DatePeriodDto.from(period.newSpan(period.start().addDays(21), period.end().addDays(21)));
 				
 			} else {
 				
-				return DatePeriodDto.from(period.newSpan(period.start().addDays(21), period.end().addDays(21)));
+				return DatePeriodDto.from(period.newSpan(period.start().addDays(-21), period.end().addDays(-21)));
 			}
 		}
 		
