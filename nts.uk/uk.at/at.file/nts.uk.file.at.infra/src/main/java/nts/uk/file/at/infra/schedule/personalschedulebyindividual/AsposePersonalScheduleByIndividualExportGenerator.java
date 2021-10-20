@@ -36,6 +36,7 @@ import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -58,7 +59,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     private final int BG_COLOR_SPECIFIC_DAY = Integer.parseInt("ffc0cb", 16);
     private final int TEXT_COLOR_SUNDAY = Integer.parseInt("ff0000", 16);
     private static final String PRINT_AREA = "A1:AN";
-    private static final int MAX_ROW_IN_PAGE = 37;
+    private static final int MAX_ROW_IN_PAGE = 32;
 
 
     @Override
@@ -116,6 +117,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         Cells cells = worksheet.getCells();
         int firstRow = 0;
         int secondRow = 1;
+        int tableHeaderRow = 2;
         // B1_1
         cells.get(firstRow, 0).setValue(getText("KSU002_57"));
         // B1_2
@@ -132,10 +134,109 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         // B3_1
         cells.get(secondRow, 18).setValue(date.year() + "年 " + date.month() + "月");
         if (!query.isTotalDisplay()) {
-            cells.get(2, 35).setValue(getText("KSU002_68"));
+            cells.get(tableHeaderRow, 35).setValue(getText("KSU002_68"));
         } else {
-            cells.get(2, 35).setValue(getText("KSU002_69"));
+            cells.get(tableHeaderRow, 35).setValue(getText("KSU002_69"));
         }
+        val headerList = generateTableHeader(query.getStartDate());
+        int index = 0;
+        for (String header : headerList) {
+            cells.get(tableHeaderRow, index).setValue(header);
+            index += 5;
+        }
+    }
+
+    private List<String> generateTableHeader(int startDate) {
+        DayOfWeek dateInfo = DayOfWeek.valueOf(startDate);
+        List<String> headerList1 = Arrays.asList(
+                getText("KSU002_60"),
+                getText("KSU002_61"),
+                getText("KSU002_62"),
+                getText("KSU002_63"),
+                getText("KSU002_64"),
+                getText("KSU002_65"),
+                getText("KSU002_66")
+        );
+        List<String> headerList2 = Arrays.asList(
+                getText("KSU002_66"),
+                getText("KSU002_60"),
+                getText("KSU002_61"),
+                getText("KSU002_62"),
+                getText("KSU002_63"),
+                getText("KSU002_64"),
+                getText("KSU002_65")
+        );
+        List<String> headerList3 = Arrays.asList(
+                getText("KSU002_65"),
+                getText("KSU002_66"),
+                getText("KSU002_60"),
+                getText("KSU002_61"),
+                getText("KSU002_62"),
+                getText("KSU002_63"),
+                getText("KSU002_64")
+        );
+        List<String> headerList4 = Arrays.asList(
+                getText("KSU002_64"),
+                getText("KSU002_65"),
+                getText("KSU002_66"),
+                getText("KSU002_60"),
+                getText("KSU002_61"),
+                getText("KSU002_62"),
+                getText("KSU002_63")
+        );
+        List<String> headerList5 = Arrays.asList(
+                getText("KSU002_63"),
+                getText("KSU002_64"),
+                getText("KSU002_65"),
+                getText("KSU002_66"),
+                getText("KSU002_60"),
+                getText("KSU002_61"),
+                getText("KSU002_62")
+        );
+        List<String> headerList6 = Arrays.asList(
+                getText("KSU002_62"),
+                getText("KSU002_63"),
+                getText("KSU002_64"),
+                getText("KSU002_65"),
+                getText("KSU002_66"),
+                getText("KSU002_60"),
+                getText("KSU002_61")
+        );
+        List<String> headerList7 = Arrays.asList(
+                getText("KSU002_61"),
+                getText("KSU002_62"),
+                getText("KSU002_63"),
+                getText("KSU002_64"),
+                getText("KSU002_65"),
+                getText("KSU002_66"),
+                getText("KSU002_60")
+        );
+        List<String> list = new ArrayList<>();
+        switch (dateInfo) {
+            case SUNDAY:
+                list = headerList1;
+                break;
+            case MONDAY:
+                list = headerList2;
+                break;
+            case TUESDAY:
+                list = headerList3;
+                break;
+            case WEDNESDAY:
+                list = headerList4;
+                break;
+            case THURSDAY:
+                list = headerList5;
+                break;
+            case FRIDAY:
+                list = headerList6;
+                break;
+
+            case SATURDAY:
+                list = headerList7;
+                break;
+        }
+        return list;
     }
 
     private void printCalender(Cells cells, int rowCount, int col,
@@ -170,7 +271,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     private void printContent(Worksheet wsSource, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) throws Exception {
         Cells cells = wsSource.getCells();
-        //Cells cellsTemplate = wsSource.getCells();
+        Cells cellsTemplate = wsSource.getCells();
         ShapeCollection shapes = wsSource.getShapes();
         HorizontalPageBreakCollection hPageBreaks = wsSource.getHorizontalPageBreaks();
         List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource);
@@ -293,8 +394,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             if (isNextPage(rowCount, pageIndex)) {
                 PasteOptions opts = new PasteOptions();
                 opts.setPasteType(PasteType.FORMATS);
-                // cells.copyRows(cellsTemplate, 36, rowCount, 1, options);  // copy close ruler
-                // removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
+                cells.copyRows(cellsTemplate, 32, rowCount, 1, options);  // copy close ruler
+                removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
                 rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
@@ -360,14 +461,17 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         String divider = getText("KSU002_67");
         String d11 = getText("KSU002_68");
         String d12 = getText("KSU002_69");
-        String d21 = getText("KSU002_70") + divider + getText("KSU002_75");
+
         String d22 = getText("KSU002_76");
         String d26 = getText("KSU002_78");
         String d24 = getText("KSU002_77");
         int size = dateInfolist.size();
         int weekCount = 0;
         int iteration = 0;
+        int d21ResourceStart = 70;
+        int d21Count = 0;
         for (DateInformation dateInfo : dateInfolist) {
+            String d21 = getText("KSU002_" + d21ResourceStart);
             if (count == 0) {
                 format.setColn1C21(getDate(dateInfo.getYmd(), isFirst));
                 format.setColn1C22(getEvenCompany(dateInfo));
@@ -503,6 +607,11 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 dataList.add(format);
                 format = new PersonalScheduleByIndividualFormat();
                 holiday = new HashMap<>();
+                d21ResourceStart++;
+                d21Count++;
+                if (d21Count > 6) {
+                    d21ResourceStart = 70;
+                }
             } else {
                 if (iteration == size) {
                     Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
@@ -533,6 +642,11 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     format.setHoliday(holidayd);
                     format.setWeekNo(weekCount);
                     dataList.add(format);
+                    d21ResourceStart++;
+                    d21Count++;
+                    if (d21Count > 6) {
+                        d21ResourceStart = 70;
+                    }
                     break;
                 }
             }
