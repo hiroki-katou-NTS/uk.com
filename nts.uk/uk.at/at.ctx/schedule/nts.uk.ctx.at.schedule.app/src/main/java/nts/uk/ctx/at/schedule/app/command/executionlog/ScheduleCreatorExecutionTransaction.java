@@ -1087,12 +1087,12 @@ public class ScheduleCreatorExecutionTransaction {
 						DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
 						optEmploymentInfo.get().getWorkingStatus().value);
 				
-				if ((optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE || optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) 
+				if ((optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) 
 						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
 					lstWorkType = workTypeRepository.findHolidayWorkTypeClo(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
 							//ScheManaStatus.ON_LEAVE = WorkTypeClassification.LeaveOfAbsence, ScheManaStatus.CLOSED = WorkTypeClassification.Closure
-							optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE ? 12 : 13, 
+							optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13, 
 							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2); // CloseAtr
 				}
 				

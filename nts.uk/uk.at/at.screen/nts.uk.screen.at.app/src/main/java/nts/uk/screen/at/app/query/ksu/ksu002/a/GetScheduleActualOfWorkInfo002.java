@@ -19,8 +19,6 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepos
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
@@ -75,9 +73,6 @@ public class GetScheduleActualOfWorkInfo002 {
 	
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSet;
-	
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
