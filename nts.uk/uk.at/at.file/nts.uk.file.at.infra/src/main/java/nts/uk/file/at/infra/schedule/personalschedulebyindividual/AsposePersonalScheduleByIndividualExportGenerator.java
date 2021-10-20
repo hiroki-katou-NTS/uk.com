@@ -36,7 +36,6 @@ import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -140,103 +139,117 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         }
         val headerList = generateTableHeader(query.getStartDate());
         int index = 0;
-        for (String header : headerList) {
-            cells.get(tableHeaderRow, index).setValue(header);
+        Color colorSaturday = Color.fromArgb(0, 0, 255);
+        Color colorSunday = Color.fromArgb(255, 0, 0);
+        for (Map.Entry<Integer, String> entry : headerList.entrySet()) {
+            DayOfWeek dateInfo = DayOfWeek.valueOf(entry.getKey());
+            Cell cell = cells.get(tableHeaderRow, index);
+            cell.setValue(entry.getValue());
+            Style style = cell.getStyle();
+            if (dateInfo == DayOfWeek.SUNDAY) {
+                style.getFont().setColor(colorSunday);
+            }
+            if (dateInfo == DayOfWeek.SATURDAY) {
+                style.getFont().setColor(colorSaturday);
+            }
+            cell.setStyle(style);
             index += 5;
         }
     }
 
-    private List<String> generateTableHeader(int startDate) {
+    private Map<Integer, String> generateTableHeader(int startDate) {
         DayOfWeek dateInfo = DayOfWeek.valueOf(startDate);
-        List<String> headerList1 = Arrays.asList(
-                getText("KSU002_60"),
-                getText("KSU002_61"),
-                getText("KSU002_62"),
-                getText("KSU002_63"),
-                getText("KSU002_64"),
-                getText("KSU002_65"),
-                getText("KSU002_66")
-        );
-        List<String> headerList2 = Arrays.asList(
-                getText("KSU002_66"),
-                getText("KSU002_60"),
-                getText("KSU002_61"),
-                getText("KSU002_62"),
-                getText("KSU002_63"),
-                getText("KSU002_64"),
-                getText("KSU002_65")
-        );
-        List<String> headerList3 = Arrays.asList(
-                getText("KSU002_65"),
-                getText("KSU002_66"),
-                getText("KSU002_60"),
-                getText("KSU002_61"),
-                getText("KSU002_62"),
-                getText("KSU002_63"),
-                getText("KSU002_64")
-        );
-        List<String> headerList4 = Arrays.asList(
-                getText("KSU002_64"),
-                getText("KSU002_65"),
-                getText("KSU002_66"),
-                getText("KSU002_60"),
-                getText("KSU002_61"),
-                getText("KSU002_62"),
-                getText("KSU002_63")
-        );
-        List<String> headerList5 = Arrays.asList(
-                getText("KSU002_63"),
-                getText("KSU002_64"),
-                getText("KSU002_65"),
-                getText("KSU002_66"),
-                getText("KSU002_60"),
-                getText("KSU002_61"),
-                getText("KSU002_62")
-        );
-        List<String> headerList6 = Arrays.asList(
-                getText("KSU002_62"),
-                getText("KSU002_63"),
-                getText("KSU002_64"),
-                getText("KSU002_65"),
-                getText("KSU002_66"),
-                getText("KSU002_60"),
-                getText("KSU002_61")
-        );
-        List<String> headerList7 = Arrays.asList(
-                getText("KSU002_61"),
-                getText("KSU002_62"),
-                getText("KSU002_63"),
-                getText("KSU002_64"),
-                getText("KSU002_65"),
-                getText("KSU002_66"),
-                getText("KSU002_60")
-        );
-        List<String> list = new ArrayList<>();
+
+        Map<Integer, String> hashMap1 = new HashMap<Integer, String>() {{
+            put(7, getText("KSU002_60"));
+            put(1, getText("KSU002_61"));
+            put(2, getText("KSU002_62"));
+            put(3, getText("KSU002_63"));
+            put(4, getText("KSU002_64"));
+            put(5, getText("KSU002_65"));
+            put(6, getText("KSU002_66"));
+        }};
+        Map<Integer, String> hashMap2 = new HashMap<Integer, String>() {{
+            put(6, getText("KSU002_66"));
+            put(7, getText("KSU002_60"));
+            put(1, getText("KSU002_61"));
+            put(2, getText("KSU002_62"));
+            put(3, getText("KSU002_63"));
+            put(4, getText("KSU002_64"));
+            put(5, getText("KSU002_65"));
+        }};
+        Map<Integer, String> hashMap3 = new HashMap<Integer, String>() {{
+            put(5, getText("KSU002_65"));
+            put(6, getText("KSU002_66"));
+            put(7, getText("KSU002_60"));
+            put(1, getText("KSU002_61"));
+            put(2, getText("KSU002_62"));
+            put(3, getText("KSU002_63"));
+            put(4, getText("KSU002_64"));
+        }};
+        Map<Integer, String> hashMap4 = new HashMap<Integer, String>() {{
+            put(4, getText("KSU002_64"));
+            put(5, getText("KSU002_65"));
+            put(6, getText("KSU002_66"));
+            put(7, getText("KSU002_60"));
+            put(1, getText("KSU002_61"));
+            put(2, getText("KSU002_62"));
+            put(3, getText("KSU002_63"));
+        }};
+        Map<Integer, String> hashMap5 = new HashMap<Integer, String>() {{
+            put(3, getText("KSU002_63"));
+            put(4, getText("KSU002_64"));
+            put(5, getText("KSU002_65"));
+            put(6, getText("KSU002_66"));
+            put(7, getText("KSU002_60"));
+            put(1, getText("KSU002_61"));
+            put(2, getText("KSU002_62"));
+        }};
+        Map<Integer, String> hashMap6 = new HashMap<Integer, String>() {{
+            put(2, getText("KSU002_62"));
+            put(3, getText("KSU002_63"));
+            put(4, getText("KSU002_64"));
+            put(5, getText("KSU002_65"));
+            put(6, getText("KSU002_66"));
+            put(7, getText("KSU002_60"));
+            put(1, getText("KSU002_61"));
+        }};
+
+        Map<Integer, String> hashMap7 = new HashMap<Integer, String>() {{
+            put(1, getText("KSU002_61"));
+            put(2, getText("KSU002_62"));
+            put(3, getText("KSU002_63"));
+            put(4, getText("KSU002_64"));
+            put(5, getText("KSU002_65"));
+            put(6, getText("KSU002_66"));
+            put(7, getText("KSU002_60"));
+        }};
+        Map<Integer, String> hashMap = new HashMap<>();
         switch (dateInfo) {
             case SUNDAY:
-                list = headerList1;
+                hashMap = hashMap1;
                 break;
             case MONDAY:
-                list = headerList2;
+                hashMap = hashMap2;
                 break;
             case TUESDAY:
-                list = headerList3;
+                hashMap = hashMap3;
                 break;
             case WEDNESDAY:
-                list = headerList4;
+                hashMap = hashMap4;
                 break;
             case THURSDAY:
-                list = headerList5;
+                hashMap = hashMap5;
                 break;
             case FRIDAY:
-                list = headerList6;
+                hashMap = hashMap7;
                 break;
 
             case SATURDAY:
-                list = headerList7;
+                hashMap = hashMap7;
                 break;
         }
-        return list;
+        return hashMap;
     }
 
     private void printCalender(Cells cells, int rowCount, int col,
