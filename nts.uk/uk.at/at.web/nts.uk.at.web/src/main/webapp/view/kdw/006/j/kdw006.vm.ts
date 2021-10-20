@@ -272,6 +272,11 @@ module nts.uk.at.view.kmk006.j {
                     vm.$dialog.info({ messageId: 'Msg_2312' });
                     update = false;
                 }
+
+                if (param.recordColumnDisplayItems[1].attendanceItemId == param.recordColumnDisplayItems[2].attendanceItemId && update) {
+                    vm.$dialog.info({ messageId: 'Msg_2312' });
+                    update = false;
+                }
             }
 
             if (update) {
