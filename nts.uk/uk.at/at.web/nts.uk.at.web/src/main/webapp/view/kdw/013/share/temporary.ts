@@ -165,6 +165,13 @@ module nts.uk.ui.at.kdw013 {
 			if(!vm.supNo){
 				vm.supNo = 1;
 			}
+			_.forEach([1,2,3,4,5,6,7,8], (i:number) => {
+				let item = _.find(manHrTaskDetail.taskItemValues, e => e.itemId == i);
+				if(!item){
+					manHrTaskDetail.taskItemValues.push({itemId: i, value: null});
+				}
+			});
+			
 			//sap xep
 			if (data) {
 				// sap xep item co dinh

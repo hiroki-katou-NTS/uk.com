@@ -49,7 +49,7 @@ module nts.uk.ui.at.kdw013.calendar {
 			id: string;
 			status: EventStatus;
 			////作業枠利用設定
-			taskFrameUsageSetting: a.TaskFrameUsageSettingDto,
+			taskFrameUsageSetting: any,
 	            //社員ID
 	        employeeId: string,
 	        //年月日
