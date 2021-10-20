@@ -16,8 +16,8 @@ module nts.uk.ui.at.ksu002.b {
             super();
             const vm = this;
             vm.roundingRules = ko.observableArray([
-                {code: true, name: vm.$i18n('KSU002_54')},
-                {code: false, name: vm.$i18n('KSU002_55')}
+                {code: false, name: vm.$i18n('KSU002_54')},
+                {code: true, name: vm.$i18n('KSU002_55')}
             ]);
             vm.datePeriod = ko.observable("");
         }
@@ -113,7 +113,7 @@ module nts.uk.ui.at.ksu002.b {
             this.periodEnd = ko.observable("");
             this.targetDate = ko.observable("");
             this.startDay = ko.observable("");
-            this.isTotalDisplay = ko.observable(true);
+            this.isTotalDisplay = ko.observable(false);
         }
     }
 }
