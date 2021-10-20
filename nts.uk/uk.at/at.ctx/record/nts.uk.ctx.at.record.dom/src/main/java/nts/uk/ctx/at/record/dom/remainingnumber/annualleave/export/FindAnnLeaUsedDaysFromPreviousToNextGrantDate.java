@@ -69,7 +69,7 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 		DatePeriod closurePeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, criteriaDate);
 		
 		return new PeriodAfterDivision(
-				new DatePeriod(GrantPeriod.start(), closurePeriod.end().addDays(-1)),
+				new DatePeriod(GrantPeriod.start(), closurePeriod.start().addDays(-1)),
 				new DatePeriod(closurePeriod.start(),GrantPeriod.end())
 				);
 		

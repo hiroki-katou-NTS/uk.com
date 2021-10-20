@@ -540,7 +540,7 @@ public class ClosureService {
 			}
 			
 			
-			if(!startday.after(closureday) && period.end().beforeOrEquals(closureday)){
+			if(closureday.beforeOrEquals(startday) || closureday.after(period.end())){
 				closureday = period.end();
 			}
 			
@@ -548,7 +548,7 @@ public class ClosureService {
 			
 			
 			startday = closurePeriod.get(closurePeriod.size()-1).end().addDays(1);
-		} while (period.end().afterOrEquals(closurePeriod.get(closurePeriod.size()-1).end()));
+		} while (period.end().before(closurePeriod.get(closurePeriod.size()-1).end()));
 		
 		return closurePeriod;
 	}
