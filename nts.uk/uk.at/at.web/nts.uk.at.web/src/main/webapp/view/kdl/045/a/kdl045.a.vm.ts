@@ -29,6 +29,8 @@ module nts.uk.at.view.kdl045.a {
             workTimeName: KnockoutObservable<string>;
 			workTypeAbName: KnockoutObservable<string>;
             workTimeAbName: KnockoutObservable<string>;
+
+            coreTimeFlexSetting: any;
             //A1_5
             basedate: KnockoutObservable<string> = ko.observable("");
 
@@ -249,6 +251,7 @@ module nts.uk.at.view.kdl045.a {
                 self.workTimeName = ko.observable();
 				self.workTypeAbName = ko.observable();
 				self.workTimeAbName = ko.observable();
+                self.coreTimeFlexSetting = null;
 
 				if(self.employee().employeeInfo.workScheduleDto != null){
 					self.workType = ko.observable(self.employee().employeeInfo.workScheduleDto.workTypeCode);
@@ -790,9 +793,11 @@ module nts.uk.at.view.kdl045.a {
                         self.moreInformation = new shareModelData.GetMoreInformationOutput(
                             result.workTimezoneCommonSet,
                             result.breakTime,
-                            result.workTimeForm
+                            result.workTimeForm,
+                            result.coreTimeFlexSetting
                         );
                     }
+                    self.coreTimeFlexSetting = result.coreTimeFlexSetting;
                     dfd.resolve();
                 }).fail(function (res: any) {
                     alertError({ messageId: "" });
@@ -1063,8 +1068,8 @@ module nts.uk.at.view.kdl045.a {
                                 workTimeName : self.workTimeAbName(), //就業時間帯名称
                                 workType : self.workTimeForm(),//勤務タイプ
                                 fixBreakTime : self.fixBreakTime(),
-								isHoliday : self.workStyle() == 0 ? true : false
-                                
+								isHoliday : self.workStyle() == 0 ? true : false,
+                                coreTimeFlexSetting : self.coreTimeFlexSetting 
                             };
                         
                         let resultKdl045 = {
