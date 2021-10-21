@@ -3568,10 +3568,11 @@ module nts.uk.ui.at.kdw013.calendar {
                     const update = () => {
                         if (view() !== 'edit') {
                             view('edit');
+							data.valueHasMutated();
                         } else {
                             view.valueHasMutated();
                         }
-
+						
                         // rebind size of popup
                         position.valueHasMutated();
                     };

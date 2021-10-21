@@ -297,7 +297,7 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (type == 2 && itemId > 8) && use -->
+						<!-- ko if: (type == 2 || type == 9) && itemId > 8 && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
@@ -545,6 +545,7 @@ module nts.uk.ui.at.kdw013.c {
 
 		checkError(){
             const vm = this;
+			vm.errors(false);
 			_.each(vm.taskBlocks.taskDetailsView(), (task: ManHrTaskDetailView)=>{
 				if(task.isErorr()){
 					vm.errors(true);
@@ -552,7 +553,7 @@ module nts.uk.ui.at.kdw013.c {
 				}
             });
 			resetHeight();
-            vm.updatePopupSize();
+    		vm.updatePopupSize();
 		}
         
         mounted() {
@@ -688,6 +689,9 @@ module nts.uk.ui.at.kdw013.c {
 
 		addTaskDetails(){
 			const vm = this;
+			if(vm.frameNos().length >= 20) {
+				return;
+			}
 			if(vm.taskBlocks.taskDetailsView().length == 1){
 				var i = _.find(vm.taskBlocks.taskDetailsView()[0].taskItemValues(), (i: TaskItemValue) => {return i.itemId == 3});
 				if(i){
@@ -714,8 +718,8 @@ module nts.uk.ui.at.kdw013.c {
             const { employeeId } = vm.$user;
             $.Deferred()
                 .resolve(true)
-                .then(() => {$(vm.$el).find('input').trigger('blur') && $(vm.$el).find('.inputRange').ntsError("hasError")})
-                .then(() => vm.errors() && vm.timeError())
+                .then(() => {vm.checkError(); $(vm.$el).find('input').trigger('blur'); $(vm.$el).find('.inputRange').ntsError("hasError");})
+                .then(() => vm.errors() || vm.timeError())
                 .then((invalid: boolean) => {
                     if (!invalid) {
 						if(vm.sumTotalTime() > vm.range()){
@@ -728,15 +732,10 @@ module nts.uk.ui.at.kdw013.c {
                             const task = vm.taskBlocks.getTaskInfo();
                             event.setStart(setTimeOfDate(start, tr.start as number));
                             event.setEnd(setTimeOfDate(start, tr.end as number));
-                            const { status } = event.extendedProps;
                             if (!event.extendedProps.id) {
                                 event.setExtendedProp('id', randomId());
                             }
-                            if (['new', 'add'].indexOf(status) === -1) {
-                                event.setExtendedProp('status', 'add');
-                            } else {
-                                event.setExtendedProp('status', 'update');
-                            }
+                            event.setExtendedProp('status', 'update');
 
                             if (task) {
                                 const { displayInfo } = task;
@@ -748,7 +747,7 @@ module nts.uk.ui.at.kdw013.c {
                             event.setProp('title', vm.taskBlocks.getTitles());
                             event.setExtendedProp('sId', employeeId);
                             event.setExtendedProp('workingHours', (tr.start) - (tr.start));
-                            event.setExtendedProp('taskBlocks', vm.taskBlocks.getTaskDetails());
+                            event.setExtendedProp('taskBlock', vm.taskBlocks.getTaskDetails());
                         }
 
                         // close popup
@@ -867,7 +866,16 @@ module nts.uk.ui.at.kdw013.c {
             const vm = this;
             const taskDetails :IManHrTaskDetail[] = [];
             _.each((vm.taskDetailsView()), (task: ManHrTaskDetailView) => {
-                taskDetails.push({supNo: task.supNo, taskItemValues: task.getTaskItemValue()});
+				let taskItemValues = task.getTaskItemValue();
+				let start = _.find(taskItemValues, i => i.itemId == 1);
+				let end = _.find(taskItemValues, i => i.itemId == 2);
+				let range = _.find(taskItemValues, i => i.itemId == 3);
+				start.value = vm.caltimeSpanView().start ;
+				end.value = vm.caltimeSpanView().end;
+				if(range.value == null){
+					range.value = vm.caltimeSpanView().end - vm.caltimeSpanView().start;
+				}
+                taskDetails.push({supNo: task.supNo, taskItemValues: taskItemValues});
             });
             return {
                 caltimeSpan: { 
@@ -1034,9 +1042,7 @@ module nts.uk.ui.at.kdw013.c {
             const vm = this;
             const result :ITaskItemValue[] = [];
             _.each(vm.taskItemValues(), (item: TaskItemValue) => {
-                if(item.value() != null && item.value() != undefined && item.value() != '' && item.use()){
-                    result.push({itemId : item.itemId, value: item.value()});
-                }
+                result.push({itemId : item.itemId, value: item.value()});
             });
             return result;
         }

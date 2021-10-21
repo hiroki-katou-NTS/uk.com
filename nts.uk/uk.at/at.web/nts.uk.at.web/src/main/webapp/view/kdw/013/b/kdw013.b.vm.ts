@@ -40,7 +40,7 @@ module nts.uk.ui.at.kdw013.b {
             </div>
 			<table class="timePeriod">
                 <colgroup>
-                    <col width="90px" />
+                    <col width="105px" />
                 </colgroup>
                 <tbody>
                     <tr>
@@ -52,9 +52,9 @@ module nts.uk.ui.at.kdw013.b {
 			<div class="taskDetailsB" data-bind="foreach: dataSources">
 	            <table>
 	                <colgroup>
-	                    <col width="90px" />
+	                    <col width="105px" />
 	                </colgroup>
-	                <tbody data-bind="foreach: items }">
+	                <tbody data-bind="foreach: items">
 	                    <tr>
 	                        <td ><div data-bind="i18n: key"> </div></td>
 	                        <td ><div data-bind="text: value"> </div></td>
@@ -105,12 +105,17 @@ module nts.uk.ui.at.kdw013.b {
             .detail-event table tr>td:first-child {
                 vertical-align: top;
                 padding-top: 6px;
+				padding-left: 5px;
             }
             .detail-event table tr>td>div {
                 max-height: 120px;
                 overflow-y: auto;
                 word-break: break-all;
             }
+			.taskDetailsB table{
+				border: 1px solid #999;
+				margin-bottom: 5px;
+			}
         </style>
         `;
 
@@ -120,30 +125,20 @@ module nts.uk.ui.at.kdw013.b {
     })
     export class ViewModel extends ko.ViewModel {
         dataSources: KnockoutObservableArray<TaskDetailB> = ko.observableArray([]);
-        taskFrameSettings!: KnockoutComputed<a.TaskFrameSettingDto[]>;
+        taskFrameSettings: a.TaskFrameSettingDto[] = [];
 		time: KnockoutObservable<string> = ko.observable('');
 
+		position: any;
         constructor(public params: Params) {
             super();
-            const vm = this;
-            const { $settings } = params;
 
-            vm.taskFrameSettings = ko.computed({
-                read: () => {
-                    const settings = ko.unwrap($settings);
-                    if (settings) {
-                        return settings.startManHourInputResultDto.taskFrameUsageSetting.frameSettingList;
-                    }
-                    return [];
-                }
-            });
         }
 
         mounted() {
             const vm = this;
             const { params } = vm;
-            const { data } = params;
-
+            const { data, position } = params;
+			vm.position = position;
             ko.computed({
                 read: () => {
                     const taskDetails: TaskDetailB[] = [];
@@ -156,10 +151,10 @@ module nts.uk.ui.at.kdw013.b {
 						vm.time(`${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}`);
 
                         let {taskBlock} = extendedProps;
-                    	//taskBlocks = vm.fakeData(start, end),
+                    	vm.taskFrameSettings = extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList;
 						let param ={
 							refDate: start,
-							itemIds: [9, 10, 11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+							itemIds: _.filter(_.map(extendedProps.displayManHrRecordItems, i => i.itemId), t => t > 8)
 						}
 						block.grayout();
 			            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
@@ -181,7 +176,7 @@ module nts.uk.ui.at.kdw013.b {
 		// update popup size
         updatePopupSize(){
 			const vm = this;
-            vm.params.position.valueHasMutated();
+//            vm.position.valueHasMutated();
         }
     
 		setlableValueItems(taskDetail: IManHrTaskDetail, data: StartWorkInputPanelDto): TaskDetailB {
@@ -191,38 +186,47 @@ module nts.uk.ui.at.kdw013.b {
 			let range = _.find(taskDetail.taskItemValues, i => i.itemId == 3).value;
 			items.push({ key: 'KDW013_25', value: number2String(parseInt(range)) });			
 			
-			const [first, second, thirt, four, five] = vm.taskFrameSettings();
+			const [first, second, thirt, four, five] = vm.taskFrameSettings;
 			
 			if (first && first.useAtr === 1) {
-				let value = _.find(taskDetail.taskItemValues, i => i.itemId == 4).value;
-                items.push(vm.setTaskData(first, value, data.taskListDto1));
+				let item = _.find(taskDetail.taskItemValues, i => i.itemId == 4);
+				if(item && item.value){
+					items.push(vm.setTaskData(first, item.value, data.taskFrameNo1));					
+				}
             }
             if (second && second.useAtr === 1) {
-                let value = _.find(taskDetail.taskItemValues, i => i.itemId == 5).value;
-                items.push(vm.setTaskData(second, value, data.taskListDto2));
-            }
+                let item = _.find(taskDetail.taskItemValues, i => i.itemId == 5);
+				if(item && item.value){
+					items.push(vm.setTaskData(second, item.value, data.taskFrameNo2));					
+				}            }
             if (thirt && thirt.useAtr === 1) {
-                let value = _.find(taskDetail.taskItemValues, i => i.itemId == 6).value;
-                items.push(vm.setTaskData(thirt, value, data.taskListDto3));
+                let item = _.find(taskDetail.taskItemValues, i => i.itemId == 6);
+				if(item && item.value){
+					items.push(vm.setTaskData(thirt, item.value, data.taskFrameNo3));					
+				}
             }
             if (four && four.useAtr === 1) {
-                let value = _.find(taskDetail.taskItemValues, i => i.itemId == 7).value;
-                items.push(vm.setTaskData(four, value, data.taskListDto4));
+                let item = _.find(taskDetail.taskItemValues, i => i.itemId == 7);
+				if(item && item.value){
+					items.push(vm.setTaskData(four, item.value, data.taskFrameNo4));					
+				}
             }
             if (five && five.useAtr === 1) {
-                let value = _.find(taskDetail.taskItemValues, i => i.itemId == 8).value;
-                items.push(vm.setTaskData(five, value, data.taskListDto5));
+              let item = _.find(taskDetail.taskItemValues, i => i.itemId == 8);
+				if(item && item.value){
+					items.push(vm.setTaskData(five, item.value, data.taskFrameNo5));					
+				}
             }
-			//loai bo item co dinh
-			taskDetail.taskItemValues = _.filter(taskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId > 9);
-			
 			// cho vao day de sap xep
 			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data);
+			
+			//loai bo item co dinh
+			_.remove(manHrTaskDetail.taskItemValues(), (i: ITaskItemValue) => i.itemId < 9);			
 			
 			_.forEach(manHrTaskDetail.taskItemValues(), (item: TaskItemValue) => {
 				
 				let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, i => i.itemId == item.itemId);
-				if(infor && infor.useAtr == 1){
+				if(infor && infor.useAtr == 1 && item.value() != null && item.value() != ''){
 					if(item.itemId == 9){
 						// work plate
 						let workLocation = _.find(data.workLocation, w => w.workLocationCD == item.value());
