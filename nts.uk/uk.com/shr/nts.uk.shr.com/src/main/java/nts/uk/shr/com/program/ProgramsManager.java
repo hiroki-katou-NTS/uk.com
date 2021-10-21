@@ -1002,6 +1002,11 @@ public class ProgramsManager {
      */
     public static final Program KSU002A = new Program(WebAppId.AT, ProgramIdConsts.KSU002A, "KSU002_32",
             "/view/ksu/002/a/index.xhtml");
+    /**
+     * KSU002B
+     */
+    public static final Program KSU002B = new Program(WebAppId.AT, ProgramIdConsts.KSU002B, "KSU002_46",
+            "/view/ksu/002/b/index.xhtml");
     /**   
      * KSU001SA
      */
