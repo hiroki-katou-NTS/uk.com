@@ -32,7 +32,7 @@ public class DigestionDetails {
 	public DigestionDetails() {
 		this.numberOfUse = "";
 		this.digestionDate = "";
-		this.digestionDate = "";
+		this.digestionStatus = "";
 	}
 
 }

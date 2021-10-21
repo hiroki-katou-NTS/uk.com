@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 580, height: 560 };</script>
+			<script>var dialogSize = { width: 900, height: 580 };</script>
 			<com:scriptfile set="IGNITE" />
 			<!-- KCP005 -->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
@@ -87,7 +87,7 @@
                                 name: '#[KDL052_24]',					
                                 height: 150,
                                 dataSource: itemLts,
-                                primaryKey: 'code',
+                                primaryKey: 'date',
                                 columns: columns,                            
                                 multiple: false,
                                 rows: 5,

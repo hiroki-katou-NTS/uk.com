@@ -55,7 +55,7 @@ module nts.uk.at.view.kdl052.a {
             super();
             let self = this;        
             self.listEmpId = params.empIds;  
-            self.managementCheck(params.managementCheck);
+            // self.managementCheck(params.managementCheck);
           
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
@@ -75,13 +75,9 @@ module nts.uk.at.view.kdl052.a {
             };            
 
             self.columns = ko.observableArray([
-                { headerText: getText('KDL052_25'), key: 'code', width: 180 },                
-                { headerText: getText('KDL052_26'), key: 'name', width: 100 }
+                { headerText: getText('KDL052_25'), key: 'digestionDate', width: 160 },                
+                { headerText: getText('KDL052_26'), key: 'numberOfUse', width: 80 }
             ]); 
-
-            // for(let i = 1; i < 8; i++) {
-            //     self.itemLts.push(new ItemModel('2021/05/12', '10日'));
-            // }
 
             self.selectedCode.subscribe((code: string) => {
                 let emp: any = _.find(self.dataOneEmp().lstEmployee, x => x.employeeCode == code);
@@ -89,7 +85,6 @@ module nts.uk.at.view.kdl052.a {
                 self.employeeNameSelect(emp.employeeName);
                 self.findDetail(emp.employeeId);
             });
-
             self.loadData(self.listEmpId);
         }
 
@@ -117,21 +112,31 @@ module nts.uk.at.view.kdl052.a {
                 $('#component-items-list').ntsListComponent(self.listComponentOption);
                 
             }).fail((res) => {
-                self.$dialog.alert({ messageId: "" });
+                self.$dialog.alert({ messageId: res.messageId });
             }); 
         }
 
         findDetail(employeeId: string): void {
             let self = this;     
+            let listDigestionDetails : Array<ItemModel> = [];
             self.$ajax(Paths.GET_CHILD_NURSING_LEAVE_BY_EMPID + '/' + employeeId).done((data: any) => {
+               self.managementCheck(data.managementSection ? 1 : 0);
                self.maxNumberOfYear(data.maxNumberOfYear);
                self.upperLimitEndDate(data.upperLimitEndDate);
                self.upperLimitStartDate(data.upperLimitStartDate);
                self.maxNumberOfDays(data.maxNumberOfDays);
                self.numberOfUse(data.numberOfUse);
-               self.itemLts(data.listDigestionDetails);
+               
+               _.forEach(data.listDigestionDetails, item => {
+                    if(item.digestionStatus == ''){
+                        listDigestionDetails.push(new ItemModel('   ' + item.digestionDate, item.numberOfUse));
+                    } else {
+                        listDigestionDetails.push(new ItemModel(item.digestionStatus + item.digestionDate, item.numberOfUse));
+                    }                    
+               })
+               self.itemLts(listDigestionDetails);
             }).fail((res) => {
-                self.$dialog.alert({ messageId: "" });
+                self.$dialog.alert({ messageId: res.messageId });
             }); 
         }
 
@@ -166,7 +171,6 @@ module nts.uk.at.view.kdl052.a {
         closeDialog(): void {
             let self = this;
             self.$window.close();
-            // nts.uk.ui.windows.close();
         }
     }
 
@@ -180,13 +184,13 @@ module nts.uk.at.view.kdl052.a {
 	}
 
     class ItemModel {
-        date: string;
-        numberOfUes: string;      
-        status: string;   
+        digestionDate: string;
+        numberOfUse: string;      
+        digestionStatus: string;   
         constructor(date: string, numberOfUes: string, status?: string) {
-            this.date = date;
-            this.numberOfUes = numberOfUes; 
-            this.status = status;           
+            this.digestionDate = date;
+            this.numberOfUse = numberOfUes; 
+            this.digestionStatus = status;           
         }
     }
 

@@ -91,8 +91,7 @@ module nts.uk.at.view.kdl052.test {
                 return;
 			}
             
-            self.$window.modal('at', '/view/kdl/052/a/index.xhtml', data);
-            
+            self.$window.modal('at', '/view/kdl/052/a/index.xhtml', data);            
         }
     }
 
