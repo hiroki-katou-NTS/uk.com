@@ -7,9 +7,8 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 const name = componentName();
                 const mode = allBindingsAccessor.get('mode');
                 const items = allBindingsAccessor.get('items');
-                const favoriteTaskItem = allBindingsAccessor.get('favoriteTaskItem');
-                const favTaskName = allBindingsAccessor.get('favTaskName');
-                const params = { mode, items, favoriteTaskItem, favTaskName };
+                const screenA = allBindingsAccessor.get('screenA');
+                const params = { mode, items ,screenA};
 
                 ko.applyBindingsToNode(element, { component: { name, params } });
 
@@ -29,7 +28,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                         <li data-bind="i18n: 'KDW013_78' ,click:$component.removeFav"></li>
                     </ul>
             </div>
-            <div data-bind="ntsAccordion: { active: 0}">
+            <div data-bind="ntsAccordion: {}">
                 <h3>
                     <label data-bind="i18n: 'KDW013_75'"></label>
                 </h3>
@@ -105,12 +104,14 @@ module nts.uk.ui.at.kdw013.taskfavorite {
             removeFav(data) {
                 const vm = this;
                 let id = $('.fc-task-events .edit-popup').data('favId');
-
-                let newArrays = _.filter(vm.params.items(), item => {
-                    return _.get(item, 'extendedProps.favId') != id;
-                });
-            
-                vm.params.items(newArrays);
+                //A: お気に入り作業を削除する
+                vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/delete_task_set', {favId:id}))
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+                            vm.params.screenA.reLoad();
+                        });
+                    }).always(() => vm.$blockui('clear'));
+                
                 $('.fc-task-events .edit-popup').removeClass('show');
             }
             
@@ -120,8 +121,8 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 let id = $('.fc-task-events .edit-popup').data('favId');
                 let item = _.find(vm.params.items(), item => _.get(item, 'extendedProps.favId') == id);
                 //gọi màn F
-                vm.params.favTaskName(item.title);
-                vm.params.favoriteTaskItem({
+                vm.params.screenA.favTaskName(item.title);
+                vm.params.screenA.favoriteTaskItem({
                     // 社員ID
                     employeeId: vm.$user.employeeId,
                     // お気に入りID
@@ -137,8 +138,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
          type EventParams = {
             items: KnockoutObservableArray<any>;
             mode: KnockoutComputed<boolean>;
-            favoriteTaskItem: any;
-            favTaskName: KnockoutObservable<String>;
+            screenA: nts.uk.ui.at.kdw013.a.ViewModel;
         };
     
     

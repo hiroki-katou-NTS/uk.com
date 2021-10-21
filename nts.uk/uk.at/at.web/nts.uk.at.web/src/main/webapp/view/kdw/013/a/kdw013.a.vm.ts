@@ -43,7 +43,6 @@ module nts.uk.ui.at.kdw013.a {
         ADD_FAV_TASK_F: '/screen/at/kdw013/f/create_task_fav',
         // 作業お気に入り名称を変更する
         UPDATE_TASK_NAME_F: '/screen/at/kdw013/f/update_task_name',
-
         // POPUP G
         // 1日作業お気に入り登録を起動する
         START_G: '/screen/at/kdw013/g/start_task_fav_register',
