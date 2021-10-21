@@ -10,10 +10,14 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
+import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.PersonalScheduleByDateDataSource;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.PersonalScheduleByDateExportGenerator;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.dto.EmployeeWorkScheduleResultDto;
 import nts.uk.screen.at.app.ksu003.start.dto.ChangeableWorkTimeDto;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -21,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -39,6 +44,9 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private static int MINUTES_IN_AN_HOUR = 60;
     private static int ROUNDING_INCREMENTS = 5;
     private static final int MAX_ROW_B5 = 4;
+
+    @Inject
+    private StandardMenuRepository standardMenuRepo;
 
     @Override
     public void generate(FileGeneratorContext context, PersonalScheduleByDateDataSource dataSource) {
@@ -62,7 +70,10 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             reportContext.processDesigner();
 
             // Save as excel file
-            reportContext.saveAsExcel(createNewFile(context, getReportName(companyName + EXCEL_EXT)));
+            List<StandardMenu> menus = standardMenuRepo.findAll(AppContexts.user().companyId());
+            String menuName = menus.stream().filter(i -> i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KSU003"))
+                    .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU003_138"));
+            reportContext.saveAsExcel(createNewFile(context, getReportName(menuName + EXCEL_EXT)));
             System.out.println("Thoi gian export excel: " + (System.nanoTime() - startTime) / 1000000000 + " seconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
