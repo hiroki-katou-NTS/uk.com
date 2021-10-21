@@ -63,7 +63,7 @@ public class KDL051ChangeId {
 	@POST
 	public NursingAndChildNursingRemainDto getDeitalInfoNursingByEmployee(@PathParam("employeeId") String employeeId) {
 		NursingAndChildNursingRemainDto data = getDeitalInfoNursingByEmp.get(COMPANYID, employeeId,
-				NursingCategory.ChildNursing);
+				NursingCategory.Nursing);
 		return data;
 	}
 }

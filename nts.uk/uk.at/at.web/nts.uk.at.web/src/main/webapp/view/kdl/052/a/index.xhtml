@@ -45,7 +45,7 @@
                              
                             
 			 		</div>
-				 	<com:ko-if bind="managementCheck() == 0">
+				 	<com:ko-if bind="managementCheck() == 1">
                         <div class="container-custom">
                             <!-- A2_3 -->
                             <span>#{i18n.getText('KDL052_18')}</span>
@@ -96,7 +96,7 @@
                         </div>
                         					 	
 					</com:ko-if>
-					<com:ko-if bind="managementCheck() == 1">
+					<com:ko-if bind="managementCheck() == 0">
                         <!--A7-->
 						<div style="margin-left: 5vw;font-size: 23px">#{i18n.getText('KDL052_27')}</div>
 					</com:ko-if>
