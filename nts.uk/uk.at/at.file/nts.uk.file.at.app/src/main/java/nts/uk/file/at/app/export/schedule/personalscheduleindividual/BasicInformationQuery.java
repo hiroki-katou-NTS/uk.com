@@ -33,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepos
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
@@ -133,8 +132,6 @@ public class BasicInformationQuery {
     @Inject
     private MonthlyWorkTimeSetRepo monthlyWorkTimeSet;
 
-    @Inject
-    private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
     @Inject
     private RegularLaborTimeComRepo regularLaborTimeComRepo;
 
