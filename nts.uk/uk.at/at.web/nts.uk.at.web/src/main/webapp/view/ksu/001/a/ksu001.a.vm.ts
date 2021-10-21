@@ -181,6 +181,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showA12_2: KnockoutObservable<boolean>   = ko.observable(false);
         funcNo15_WorkPlace: boolean = false;
         changeableWorks = [];
+        callAlgSumA12 = true;
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -255,6 +256,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let newLst = _.filter(self.useCategoriesWorkplace(), (item: any) => !_.includes(
                         [WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
                     if (!_.isEmpty(newLst)) {
+                        
+                        self.callAlgSumA12 = false;
                         self.useCategoriesWorkplace(newLst);
                         self.showA12(true);
                         $('#horzDiv').css('display', '');
@@ -267,6 +270,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         WorkplaceCounterCategory.LABOR_COSTS_AND_TIME,
                         WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
                     if (!_.isEmpty(addLst)) {
+                        self.callAlgSumA12 = false;
                         self.useCategoriesWorkplace(_.sortBy(_.union(self.useCategoriesWorkplace(), addLst), ['value']));
                     }
                     if (_.isEmpty(self.useCategoriesWorkplace())) {
@@ -277,6 +281,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $('#horzDiv').css('display', '');
                     }
                 }
+                self.callAlgSumA12 = true;
 
                 self.getNewData(viewMode).done(() => {
                     nts.uk.ui.block.clear();
@@ -410,9 +415,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
                 self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
 
-				//self.useCategoriesPersonal([]);
-                //self.useCategoriesWorkplace([]);
-                
                 _.isEmpty(self.useCategoriesPersonal()) ? self.showA11(false) : self.showA11(true);
                 _.isEmpty(self.useCategoriesWorkplace()) ? self.showA12(false) : self.showA12(true);
                 
@@ -437,11 +439,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable('saveScroll');
                     self.userInfor.useCategoriesPersonalValue = value;
                     characteristics.save(self.KEY, self.userInfor);
-//                  let newVertSumHeader = self.createVertSumHeader();
-//                  let newVertSumContent = self.createVertSumContent(detailContent);
-//                  $("#cacheDiv").append($('#vertDiv'));
-//                  $("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
-//                  $("#vertDropDown").html(function() { return $('#vertDiv'); });
                     self.getAggregatedInfo(true, false);
                 });
                 
@@ -451,13 +448,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     characteristics.save(self.KEY, self.userInfor);
                     self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
                             (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], value) && self.funcNo15_WorkPlace));
-                    // $("#cacheDiv").append($('#horzDiv'));
-                    self.getAggregatedInfo(false, true);
+                    if(self.callAlgSumA12){
+                        self.getAggregatedInfo(false, true);
+                    }
                 });
-
-				self.selectedModeDisplayInBody.subscribe((value: any) => {
-
-				});
 
                 // ngày có thể chỉnh sửa schedule
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
@@ -657,6 +651,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listCellUpdatedWhenChangeModeBg = [];
                 self.hasChangeModeBg = false;
                 
+                // update A12
+                if (data.aggrerateWorkplace) {
+                    self.dataAggrerateWorkplace = data.aggrerateWorkplace;
+                }
+
+                self.createHorzSumData();
+                self.updateHorzSumGrid();
+
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -700,6 +702,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dataBindGrid = self.convertDataToGrid(data, ViewMode.SHORTNAME);
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, ViewMode.SHORTNAME);
+                
+                // update A12
+                if (data.aggrerateWorkplace) {
+                    self.dataAggrerateWorkplace = data.aggrerateWorkplace;
+                }
+                self.createHorzSumData();
+                self.updateHorzSumGrid();
                 
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
@@ -751,6 +760,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dataBindGrid = self.convertDataToGrid(data, ViewMode.TIME);
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, ViewMode.TIME);
+                
+                // update A12
+                if (data.aggrerateWorkplace) {
+                    self.dataAggrerateWorkplace = data.aggrerateWorkplace;
+                }
+                self.createHorzSumData();
+                self.updateHorzSumGrid();
 
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
@@ -5908,9 +5924,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getAggregatedInfo(param).done((data: any) => {
                 let start = Date.now();
-                let aggreratePersonal = data.aggreratePersonal; // Data A11
-                let aggrerateWorkplace = data.aggrerateWorkplace; // Data A12
-                let externalBudget = data.externalBudget;
 
                 if (data.aggreratePersonal) {
                     self.dataAggreratePersonal = data.aggreratePersonal;
