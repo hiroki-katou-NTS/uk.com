@@ -609,7 +609,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.getSettingDisplayWhenStart(ViewMode.SHIFT, false);
                 //WORKPLACE(0), //WORKPLACE_GROUP(1);
                 __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
-                $($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+                $('#Aa1_2 > label:nth-child(2) > span').html(data.dataBasicDto.designation);
 
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 // set data shiftPallet
@@ -5378,7 +5378,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData: userInfor.achievementDisplaySelected,
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 unit: input.unit,
-                wkpId: input.unit == 0 ? input.workplaceId : input.workplaceGroupID,
+                wkpId: input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceId : input.workplaceGroupID,
                 day: self.closeDate.day,
                 isLastDay: self.closeDate.lastDay,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
@@ -5387,24 +5387,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             service.changeWokPlace(param).done((data: IDataStartScreen) => {
                 
-                self.targetOrganizationName(input.unit == 0 ? input.workplaceName : input.workplaceGroupName);
+                self.targetOrganizationName(input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceName : input.workplaceGroupName);
                 
                 self.userInfor.unit             = input.unit;
-                self.userInfor.workplaceId      = input.unit == 0 ? input.workplaceId : '';
-                self.userInfor.workplaceGroupId = input.unit == 0 ? '' : input.workplaceGroupID;
-                self.userInfor.workPlaceName    = input.unit == 0 ? input.workplaceName : input.workplaceGroupName;
+                self.userInfor.workplaceId      = input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceId : '';
+                self.userInfor.workplaceGroupId = input.unit == WorkPlaceUnit.WORKPLACE ? '' : input.workplaceGroupID;
+                self.userInfor.workPlaceName    = input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceName : input.workplaceGroupName;
                 self.userInfor.code             = input.workplaceGroupCode;
                 characteristics.save(self.KEY, self.userInfor);
                 
                 if (self.userInfor.disPlayFormat === ViewMode.TIME || self.userInfor.disPlayFormat === ViewMode.SHORTNAME) {
                     __viewContext.viewModel.viewAB.check(false);
-                    __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
+                    __viewContext.viewModel.viewAB.filter(input.unit == WorkPlaceUnit.WORKPLACE ? true : false);
                     __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
                 } else {
-                    if (input.unit == 0) {
-                        $($("#Aa1_2 > button")[1]).html(getText('Com_Workplace'));
+                    if (input.unit == WorkPlaceUnit.WORKPLACE) {
+                        $('#Aa1_2 > label:nth-child(2) > span').html(getText('Com_Workplace'));
                     } else {
-                        $($("#Aa1_2 > button")[1]).html(getText('Com_WorkplaceGroup'));
+                        $('#Aa1_2 > label:nth-child(2) > span').html(getText('Com_WorkplaceGroup'));
                     }
 
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
@@ -6148,7 +6148,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         NORMAL = 0,
         SHIFT = 1
     }
-
+    
+    export enum WorkPlaceUnit {
+        WORKPLACE = 0,
+        WORKPLACE_GROUP = 1
+    }
+    
     class ExItem {
         sid: string;
         empName: string;
