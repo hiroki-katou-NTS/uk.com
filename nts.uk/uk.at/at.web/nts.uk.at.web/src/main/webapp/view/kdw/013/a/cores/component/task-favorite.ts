@@ -90,6 +90,16 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 editPopup.addClass('show');
                 editPopup.css({ "top": top, "left": left+width });
                 editPopup.data('favId', id);
+                $(".popup-area-f").ntsPopup({
+                    trigger: ".popupButton-f",
+                    position: {
+                        my: "left top",
+                        at: "left bottom",
+                        of: ".popupButton-f"
+                    },
+                    showOnStart: false,
+                    dismissible: true
+                });
             }
             
             removeFav(data) {

@@ -636,6 +636,33 @@ module nts.uk.ui.at.kdw013.a {
         
         }
 
+        reLoad(){
+            const vm = this;
+            vm
+                .$blockui('grayout')
+                .then(() => vm.$ajax('at', API.START))
+                .fail(function(error) {
+                    vm.$dialog.error({ messageId: error.messageId });
+                })
+                .then((response: StartProcessDto) => {
+        
+                    vm.$window
+                        .storage('KDW013_SETTING')
+                        .then((value: any) => {
+                            if (value) {
+                                vm.initialView(value.initialView || 'oneDay');
+                                vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
+                                vm.scrollTime(value.scrollTime || 420);
+                                vm.slotDuration(value.slotDuration || 30);
+                            }
+                        });
+        
+        
+                    vm.$settings(response);
+                })
+                .always(() => vm.$blockui('clear'));
+        }
+
         getDOW(date){
             const vm = this;
             const dateRange = ko.unwrap(vm.dateRange);
@@ -947,7 +974,9 @@ module nts.uk.ui.at.kdw013.a {
 
             vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand))
             .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
+                vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                    vm.reLoad();    
+                });
             }).always(() => vm.$blockui('clear'));
 
         }
@@ -1019,7 +1048,9 @@ module nts.uk.ui.at.kdw013.a {
 
             vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand))
             .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
+                vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+                    vm.reLoad();
+                });
             }).always(() => vm.$blockui('clear'));
 
         }

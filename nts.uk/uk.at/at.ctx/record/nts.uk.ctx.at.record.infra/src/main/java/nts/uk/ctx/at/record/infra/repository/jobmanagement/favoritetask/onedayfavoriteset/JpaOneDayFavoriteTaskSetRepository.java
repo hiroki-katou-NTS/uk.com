@@ -41,8 +41,10 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 
 	@Override
 	public void update(OneDayFavoriteSet set) {
-		this.commandProxy().update(new KrcdtTaskFavDaySet(set));
-
+		this.queryProxy().find(set.getFavId(), KrcdtTaskFavDaySet.class).ifPresent(entity -> {
+			entity.favName = set.getTaskName().v();
+			this.commandProxy().update(entity);
+		});
 	}
 
 	@Override
