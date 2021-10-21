@@ -348,7 +348,7 @@ public class PeregProcessor {
 	/*
 	 * Tính xem đang xem tương lai hay quá khứ
 	 */
-	private static Boolean getFuture(String itemCode, Object dateValue) {
+	private static Boolean getFuture(LayoutPersonInfoClsDto param) {
 		Boolean historyReatime = null;
 		// Item code của start date lịch sử liên tục
 		List<String> start_hist_list = Arrays.asList("IS00026", "IS00066", "IS00071", "IS00077", "IS00082", "IS00119",
@@ -365,57 +365,63 @@ public class PeregProcessor {
 		// Item code của end date lịch sử không liên tục
 		List<String> end_hist_not_reatime_list = Arrays.asList("IS00088", "IS00103", "IS01017");
 
-		GeneralDate startdate = GeneralDate.today();
-		GeneralDate enddate = GeneralDate.today();
+		GeneralDate startdate = null;
+		GeneralDate enddate = null;
 		GeneralDate today = GeneralDate.today();
 		Boolean isFuture = null;// null là xem hiện tại
-
-		if (start_hist_list.contains(itemCode)) {
-			startdate = (GeneralDate) dateValue;
-			historyReatime = true;
-		}
-
-		if (end_hist_list.contains(itemCode)) {
-			enddate = (GeneralDate) dateValue;
-			historyReatime = true;
-		}
 		
-		if (start_hist_not_reatime_list.contains(itemCode)) {
-			startdate = (GeneralDate) dateValue;
-			historyReatime = false;
-		}
-
-		if (end_hist_not_reatime_list.contains(itemCode)) {
-			enddate = (GeneralDate) dateValue;
-			historyReatime = false;
-		}
-
-		if (historyReatime != null) {
-			if (dateValue == null){
-				return isFuture;
+		for(int i = 0 ; i <= param.getItems().size() - 1; i++) {
+			LayoutPersonInfoValueDto item = param.getItems().get(i);
+			
+			if (start_hist_list.contains(item.getItemCode())) {
+				startdate = (GeneralDate) item.getValue();
+				enddate = (GeneralDate) param.getItems().get(i+1).getValue();
+				historyReatime = true;
 			}
+			
+			if (end_hist_list.contains(item.getItemCode())) {
+				enddate = (GeneralDate) item.getValue();
+				historyReatime = true;
+			}
+			
+			if (start_hist_not_reatime_list.contains(item.getItemCode())) {
+				startdate = (GeneralDate) item.getValue();
+				historyReatime = false;
+			}
+			
+			if (end_hist_not_reatime_list.contains(item.getItemCode())) {
+				enddate = (GeneralDate) item.getValue();
+				historyReatime = false;
+			}
+		}
+		if (startdate != null && enddate != null) {
 			if (historyReatime) {
-				// endDate < today => đang xem record quá khứ
-				// today < startDate => đang xem record tương lai
 				if (today.before(startdate)) {
-					isFuture = true;
+					return true;
 				}
 				if (today.after(enddate)) {
-					isFuture = false;
+					return false;
 				}
-			}else {
-				if (today.after(startdate)) {
-					isFuture = true;
+			} else {
+				// startDate < today < endDate => hiện tại
+				if (today.before(startdate) && today.after(enddate)) {
+					return null;
 				}
-				if (today.before(enddate)) {
-					isFuture = false;
+
+				// startDate < endDate < today => đang xem record quá khứ
+				// today < startDate < endDate => đang xem record tương lai
+				if (today.before(enddate) && today.before(startdate)) {
+					return true;
+				}
+				if (today.after(startdate) && today.after(enddate)) {
+					return false;
 				}
 			}
 		}
 
 		return isFuture;
 	}
-	
+
 	/*
 	 * Tính xem đang xem tương lai hay quá khứ của lịch sử không liên tục
 	 */
@@ -424,14 +430,14 @@ public class PeregProcessor {
 		GeneralDate enddate = GeneralDate.today();
 		GeneralDate today = GeneralDate.today();
 		Boolean isFutureNotReatime = null;// null là xem hiện tại
-		
+
 		if (dateValueStart != null) {
 			startdate = (GeneralDate) dateValueStart;
 		}
 		if (dateValueEnd != null) {
 			enddate = (GeneralDate) dateValueEnd;
 		}
-		
+
 		// startDate < today < endDate => hiện tại
 		if (today.before(startdate) && today.after(enddate)) {
 			return isFutureNotReatime;
@@ -994,38 +1000,22 @@ public class PeregProcessor {
 			return;
 		}
 		
-		// Item code của start date lịch sử không liên tục
-		List<String> start_hist_not_reatime_list = Arrays.asList("IS00087", "IS00102", "IS01016");
-
-		// Item code của end date lịch sử không liên tục
-		List<String> end_hist_not_reatime_list = Arrays.asList("IS00088", "IS00103", "IS01017");
-
+		Boolean isFuture = null;
+		
+		for (LayoutPersonInfoClsDto layout : classItemList) {
+			isFuture = getFuture(layout);
+			if (isFuture != null) {
+				break;
+			}
+		}
 
 		// đi từng layout
 		for (LayoutPersonInfoClsDto layout : classItemList) {
 			// for items của classItemList
-			for (int i = 0; i < layout.getItems().size(); i++) {
-				LayoutPersonInfoValueDto item = layout.getItems().get(i);
+			for (LayoutPersonInfoValueDto item : layout.getItems()) {
 				// kiểm tra actionRole của item nếu thằng nào là EDIT thì mới
 				// thực hiện step dưới
-				if (item.getActionRole() == ActionRole.EDIT) {
-					Boolean isFuture = null;
-					getFuture(item.getItemCode(), item.getValue());
-
-					if (start_hist_not_reatime_list.contains(item.getItemCode())) {
-						isFuture = getFutureisHistoryNotReatime(item.getValue(),
-								layout.getItems().get(i + 1).getValue());
-					} else if (end_hist_not_reatime_list.contains(item.getItemCode())) {
-						isFuture = getFutureisHistoryNotReatime(layout.getItems().get(i - 1).getValue(),
-								item.getValue());
-					} else {
-						isFuture = getFuture(item.getItemCode(), item.getValue());
-					}
-					if (isFuture == null) {
-						continue;
-					}
-					;
-
+				if (isFuture != null) {
 					switch (category.getCategoryType()) {
 					case CONTINUOUSHISTORY:
 					case NODUPLICATEHISTORY:
