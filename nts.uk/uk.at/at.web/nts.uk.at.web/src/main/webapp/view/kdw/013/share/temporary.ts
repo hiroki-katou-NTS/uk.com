@@ -107,14 +107,19 @@ module nts.uk.ui.at.kdw013 {
 		// 応援勤務枠No
         workNo: number;
 		// 開始
-		start: number;
+		start: WorkTimeInformationCommand;
 		// 終了
-		end: number;
+		end: WorkTimeInformationCommand;
+	}
+
+	export type WorkTimeInformationCommand = {
+		// 時刻
+		timeWithDay: number;
 	}
 
     export type WorkContent = {
         // 作業
-        workGroup: WorkGroupDto;
+        work: WorkGroupDto;
     }
 	
 	//日別実績の工数実績作業

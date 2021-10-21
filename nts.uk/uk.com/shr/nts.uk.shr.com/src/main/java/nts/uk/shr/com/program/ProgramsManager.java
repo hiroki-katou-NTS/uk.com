@@ -840,6 +840,12 @@ public class ProgramsManager {
      */
     public static final Program KDW013D = new Program(WebAppId.AT, ProgramIdConsts.KDW013D, "KDW013_42",
             "/view/kdw/013/d/index.xhtml");
+    
+    /**
+     * KDW013E
+     */
+    public static final Program KDW013E = new Program(WebAppId.AT, ProgramIdConsts.KDW013E, "KDW013_79",
+            "/view/kdw/013/e/index.xhtml");
 
     /**
      * KSM002A
