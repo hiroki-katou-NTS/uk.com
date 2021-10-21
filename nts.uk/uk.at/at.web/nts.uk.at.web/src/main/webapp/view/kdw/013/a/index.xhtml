@@ -137,7 +137,8 @@
 				</div>
 			</div>
 			<div id="contents-area">
-				<div data-bind="
+				<div
+					data-bind="
 					fullcalendar: $vm.events,
 					employee: $vm.employee,
 					confirmers: $vm.confirmers,
@@ -153,10 +154,6 @@
 					businessHours: $vm.businessHours,
 					attendanceTimes: $vm.attendanceTimes,
 					validRange: $vm.validRange,
-					favoriteTaskItem: $vm.favoriteTaskItem,
-					favTaskName: $vm.favTaskName,
-					oneDayFavoriteSet: $vm.oneDayFavoriteSet,
-					oneDayFavTaskName: $vm.oneDayFavTaskName,
 					event: {
 						datesSet: $vm.datesSet
 					},
@@ -165,7 +162,8 @@
 						editor: 'kdp013c'
 					},
 					$datas: $vm.$datas,
-					$settings: $vm.$settings
+					$settings: $vm.$settings,
+					screenA: $vm
 				"></div>
 			</div>
         </ui:define>
