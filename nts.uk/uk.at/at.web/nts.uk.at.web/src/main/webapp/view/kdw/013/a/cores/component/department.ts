@@ -35,11 +35,12 @@ module nts.uk.ui.at.kdw013.department {
 @component({
     name: 'kdw013-department',
     template: `
-            <div data-bind="ntsAccordion: { active: 0}">
+            <div id='department-acc' data-bind="ntsAccordion: { active: 0}">
                 <h3>
                     <label data-bind="i18n: 'KDW013_4'"></label>
+                    <i style='float:right;' data-bind="ntsIcon: { no: 2, width: 20, height: 20 }" ></i>
                 </h3>
-
+        
                 <div class='fc-employees'>
                         <div data-bind="ntsComboBox: {
                         name: $component.$i18n('KDW013_5'),
@@ -67,7 +68,12 @@ module nts.uk.ui.at.kdw013.department {
                     </li>
                 </ul>
                 </div>
-            </div> 
+            </div>
+<style>
+.fc-employees .ui-accordion-header{
+        padding: 0.4rem 0rem 0.4rem 0.4rem !important;
+}
+</style>
             `
 })
 export class EmployeeDepartmentComponent extends ko.ViewModel {
@@ -175,6 +181,11 @@ constructor(private params: EmployeeDepartmentParams) {
         });
 }
 
+OpenKDialog(){
+    const vm = this;
+    console.log('pika');
+}
+
 mounted() {
     const vm = this;
     const { $el } = vm;
@@ -183,9 +194,22 @@ mounted() {
         .removeAttr('data-bind')
         .find('[data-bind]')
         .removeAttr('data-bind');
+    
+    vm.event = (evt, vm) => {
+        const vm = this;
+        const tg = evt.target as HTMLElement;
+         evt.preventDefault();
+        if ($(tg).closest('.department h3').length > 0 && $(tg).is('i')) {
+            vm.OpenKDialog();
+            evt.preventDefault();
+        }
+        
+    };
+    
+    $(document).on('click', vm.event);
 }
 
-            public selectEmployee(id: string) {
+public selectEmployee(id: string) {
     const vm = this;
     const { department } = vm;
     const { employee } = vm.params;

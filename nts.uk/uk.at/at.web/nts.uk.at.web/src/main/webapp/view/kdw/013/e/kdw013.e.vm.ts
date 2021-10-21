@@ -196,6 +196,8 @@ module nts.uk.ui.at.kdw013.e {
             vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param))
             .done(() => {
                 vm.$dialog.info({ messageId: 'Msg_15' });
+            }).then (() => {
+                vm.close();
             }).always(() => vm.$blockui('clear'));
             
         }

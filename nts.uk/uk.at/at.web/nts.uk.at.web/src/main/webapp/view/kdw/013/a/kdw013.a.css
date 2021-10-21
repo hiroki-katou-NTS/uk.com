@@ -59,7 +59,8 @@
 }
 
 #tbl-task {
-	width: 100%;
+	max-width: 282px;
+	word-break: break-all;
 }
 
 .edit-button {
