@@ -195,8 +195,8 @@ module nts.uk.at.view.kdl051.a {
 					self.dataOneEmp(data);
 					self.items([]);
 					self.managementCheck(data.managementSection?1:0);
-
-					_.forEach(data.listDigestionDetails, (a: any) => {
+					let temp = _.sortBy(data.listDigestionDetails, [function(o) { return o.digestionDate; }]);
+					_.forEach(temp, (a: any) => {
 						self.items.push(new DigestionDetailsDto(a));
 					});
 					

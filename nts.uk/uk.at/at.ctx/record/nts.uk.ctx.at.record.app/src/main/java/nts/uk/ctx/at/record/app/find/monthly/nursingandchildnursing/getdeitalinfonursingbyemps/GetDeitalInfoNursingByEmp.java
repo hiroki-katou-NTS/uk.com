@@ -161,7 +161,7 @@ public class GetDeitalInfoNursingByEmp {
 			// set 上限制限終了日
 			dataResult.setUpperLimitEndDate(childCareNurseUpperLimitPeriod.getPeriod().end().toString());
 			// set 上限日数
-			String KDL051_34 = TextResource.localize("KDL051_34", limitDays.toString());
+			String KDL051_34 = TextResource.localize("KDL051_34", aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getLimitDays().v().toString());
 			dataResult.setMaxNumberOfDays(KDL051_34);
 			// set 使用数
 			String value0 = aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay()
