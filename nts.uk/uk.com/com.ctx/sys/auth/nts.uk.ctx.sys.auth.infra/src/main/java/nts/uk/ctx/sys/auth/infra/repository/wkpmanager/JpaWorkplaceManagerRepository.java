@@ -98,8 +98,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	
 	@Override
 	public Optional<WorkplaceManager> getWorkplaceManagerByID(String id) {
-		// TODO dev add method
-		return Optional.empty();
+		return this.queryProxy().find(id,SacmtWkpManager.class).map(SacmtWkpManager::toDomain);
 	}
 
 	/**
@@ -259,19 +258,37 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 
 	@Override
 	public List<WorkplaceManager> getWkpManagerByWorkplaceIdAndSid(String workplaceId, String sid) {
-		//TODO dev add method
-		return null;
+		String FIND_BY_WKP_WPL_ID_AND_SID = " SELECT wm FROM SacmtWkpManager wm "
+				+ " WHERE wm.workplaceId = :workplaceId "
+				+ " AND wm.employeeId = :sid "
+				+ " ORDER BY wm.startDate ASC ";
+
+		return this.queryProxy().query(FIND_BY_WKP_WPL_ID_AND_SID,SacmtWkpManager.class)
+				.setParameter("workplaceId", workplaceId)
+				.setParameter("sid", sid)
+				.getList(SacmtWkpManager::toDomain);
 	}
 
 	@Override
 	public List<WorkplaceManager> getWkpManagerListBySid(String sid) {
-		//TODO dev add method
-		return null;
+		String FIND_BY_SID = " SELECT wm FROM SacmtWkpManager wm "
+				+ " AND wm.employeeId = :sid ";
+		return this.queryProxy().query(FIND_BY_SID,SacmtWkpManager.class)
+				.setParameter("sid",sid)
+				.getList(SacmtWkpManager::toDomain);
 	}
 
 	@Override
 	public void deleteByWorkplaceIdAndSid(String workplaceId, String sid) {
-		//TODO dev add method
+		String DEL_BY_WKP_WPL_ID_AND_SID =
+				 " DELETE  FROM SacmtWkpManager wm "
+				+" WHERE wm.workplaceId = :workplaceId  "
+				+" AND wm.employeeId = :sid ";
+		this.getEntityManager().createQuery(DEL_BY_WKP_WPL_ID_AND_SID)
+				.setParameter("workplaceId", workplaceId)
+				.setParameter("sid", sid)
+				.executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 }
