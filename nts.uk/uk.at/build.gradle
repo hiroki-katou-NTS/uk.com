@@ -348,11 +348,13 @@ project (':at.ctx:schedule:nts.uk.ctx.at.schedule.ac') {
 
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.pub') {
 	dependencies {
+		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	}
 }
 
 project (':at.ctx:schedule:nts.uk.ctx.at.schedule.pubimp') {
 	dependencies {
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.pub')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.app')

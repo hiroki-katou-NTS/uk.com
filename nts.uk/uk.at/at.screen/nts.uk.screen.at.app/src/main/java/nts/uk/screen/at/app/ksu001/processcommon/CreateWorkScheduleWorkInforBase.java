@@ -13,8 +13,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -55,7 +55,7 @@ public class CreateWorkScheduleWorkInforBase {
 	private WorkTimeSettingRepository workTimeSettingRepo;
 	
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map) {		
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map) {		
 		
 		String companyId = AppContexts.user().companyId();
 		List<WorkInfoOfDailyAttendance> listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
@@ -85,11 +85,11 @@ public class CreateWorkScheduleWorkInforBase {
 		// step 4
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
 		map.forEach((k, v) -> {
-			ScheManaStatuTempo key = k;
+			EmployeeWorkingStatus key = k;
 			Optional<IntegrationOfDaily> value = v;
 
 			// step 4.1
-			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
+			boolean needToWork = key.getWorkingStatus().needCreateWorkSchedule();
 			if (value.isPresent()) {
 				// step 4.2
 				IntegrationOfDaily daily = value.get();
