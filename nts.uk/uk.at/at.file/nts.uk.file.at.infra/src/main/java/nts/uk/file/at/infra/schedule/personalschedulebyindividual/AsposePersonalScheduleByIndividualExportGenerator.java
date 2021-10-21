@@ -109,10 +109,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         // A1_3, A1_4
         pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
+        pageSetup.setPrintTitleRows("$1:$3");
     }
 
     private void printHeader(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) {
-        String b11 = TextResource.localize("KSU002_57");
         Cells cells = worksheet.getCells();
         int firstRow = 0;
         int secondRow = 1;
@@ -131,7 +131,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         cells.get(secondRow, 7).setValue(query.getEmployeeName());
         GeneralDate date = GeneralDate.fromString(query.getDate(), "yyyy/MM/dd");
         // B3_1
-        cells.get(secondRow, 18).setValue(date.year() + "年 " + date.month() + "月");
+        cells.get(firstRow, 18).setValue(date.year() + "年 " + date.month() + "月");
         if (!query.isTotalDisplay()) {
             cells.get(tableHeaderRow, 35).setValue(getText("KSU002_68"));
         } else {
