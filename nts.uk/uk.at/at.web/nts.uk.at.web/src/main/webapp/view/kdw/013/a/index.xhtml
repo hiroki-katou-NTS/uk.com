@@ -74,7 +74,7 @@
 					<!-- F4_1 -->
 					<button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_1', click: $vm.registerFavTask"></button>
 				</div>
-				<button class="popupButton-g">OpenG</button>
+				
 				<div class="popup-area-g">
 					<!-- G2_1 -->
 					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_60'"></div>
@@ -153,8 +153,10 @@
 					businessHours: $vm.businessHours,
 					attendanceTimes: $vm.attendanceTimes,
 					validRange: $vm.validRange,
-					favoriteTaskItem:$vm.favoriteTaskItem,
-					oneDayFavoriteSet:$vm.oneDayFavoriteSet,
+					favoriteTaskItem: $vm.favoriteTaskItem,
+					favTaskName: $vm.favTaskName,
+					oneDayFavoriteSet: $vm.oneDayFavoriteSet,
+					oneDayFavTaskName: $vm.oneDayFavTaskName,
 					event: {
 						datesSet: $vm.datesSet
 					},

@@ -495,7 +495,9 @@ module nts.uk.ui.at.kdw013.calendar {
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
         validRange: Partial<DatesSet> | KnockoutObservable<Partial<DatesSet>>;
         favoriteTaskItem: KnockoutObservable<OneDayFavoriteSetDto>;
-        oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto>
+        favTaskName: KnockoutObservable<String>;
+        oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto>;
+        oneDayFavTaskName: KnockoutObservable<String>;
         event: {
             datesSet: (start: Date, end: Date) => void;
         };
@@ -648,14 +650,16 @@ module nts.uk.ui.at.kdw013.calendar {
                     mode: $component.params.editable,
                     items: $component.onedayDragItems,
                     $settings: $component.params.$settings,
-                    oneDayFavoriteSet:$component.params.oneDayFavoriteSet
+                    oneDayFavoriteSet:$component.params.oneDayFavoriteSet,
+                    oneDayFavTaskName:$component.params.oneDayFavTaskName
                 "></div>
             <div class="fc-task-events" data-bind="
                     kdw013-task-events: 'kdw013-task-events',
                     mode: $component.params.editable,
                     items: $component.taskDragItems,
                     $settings: $component.params.$settings,
-                    favoriteTaskItem:$component.params.favoriteTaskItem
+                    favoriteTaskItem:$component.params.favoriteTaskItem,
+                    favTaskName:$component.params.favTaskName
                 "></div>
 
 
@@ -730,6 +734,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     $settings: ko.observable(null),
                     favoriteTaskItem: null,
                     oneDayFavoriteSet: null,
+                    oneDayFavTaskName:null,
+                    favTaskName:null
                 };
             }
 
@@ -755,8 +761,18 @@ module nts.uk.ui.at.kdw013.calendar {
                 $datas,
                 $settings,
                 favoriteTaskItem,
-                oneDayFavoriteSet
+                favTaskName,
+                oneDayFavoriteSet,
+                oneDayFavTaskName
             } = this.params;
+    
+            if (favTaskName === undefined) {
+                this.params.favTaskName = null;
+            }
+    
+            if (oneDayFavTaskName === undefined) {
+                this.params.oneDayFavTaskName = null;
+            }
     
             if (favoriteTaskItem === undefined) {
                 this.params.favoriteTaskItem = null;
@@ -1144,6 +1160,10 @@ module nts.uk.ui.at.kdw013.calendar {
                             const draggers: EventRaw[] = 
                                 _.chain(dos)
                                 .sortBy([(o) => { return o.order; }])
+                                    .filter((o) => {
+                                        const oneDay = _.find(oneDayFavSets, ['favId', o.favId]);
+                                        return !_.isEmpty(oneDay.taskBlockDetailContents);
+                                    })
                                 .map((o) => {
                                     const oneDay = _.find(oneDayFavSets, ['favId', o.favId]);
                                     const relateId = randomId();

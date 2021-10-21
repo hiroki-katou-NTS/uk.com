@@ -8,7 +8,8 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 const mode = allBindingsAccessor.get('mode');
                 const items = allBindingsAccessor.get('items');
                 const favoriteTaskItem = allBindingsAccessor.get('favoriteTaskItem');
-                const params = { mode, items, favoriteTaskItem} ;
+                const favTaskName = allBindingsAccessor.get('favTaskName');
+                const params = { mode, items, favoriteTaskItem, favTaskName };
 
                 ko.applyBindingsToNode(element, { component: { name, params } });
 
@@ -109,6 +110,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 let id = $('.fc-task-events .edit-popup').data('favId');
                 let item = _.find(vm.params.items(), item => _.get(item, 'extendedProps.favId') == id);
                 //gọi màn F
+                vm.params.favTaskName(item.title);
                 vm.params.favoriteTaskItem({
                     // 社員ID
                     employeeId: vm.$user.employeeId,
@@ -126,6 +128,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
             items: KnockoutObservableArray<any>;
             mode: KnockoutComputed<boolean>;
             favoriteTaskItem: any;
+            favTaskName: KnockoutObservable<String>;
         };
     
     

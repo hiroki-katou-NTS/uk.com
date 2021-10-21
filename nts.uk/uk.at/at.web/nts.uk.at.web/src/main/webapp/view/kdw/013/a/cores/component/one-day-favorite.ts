@@ -9,8 +9,9 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             const mode = allBindingsAccessor.get('mode');
             const items = allBindingsAccessor.get('items');
             const setting = allBindingsAccessor.get('$settings');
-            const oneDayFavoriteSet = allBindingsAccessor.get('oneDayFavoriteSet');            
-            const params = { mode, items, oneDayFavoriteSet };
+            const oneDayFavoriteSet = allBindingsAccessor.get('oneDayFavoriteSet');
+            const oneDayFavTaskName = allBindingsAccessor.get('oneDayFavTaskName');       
+            const params = { mode, items, oneDayFavoriteSet , oneDayFavTaskName };
 
             ko.applyBindingsToNode(element, { component: { name, params } });
 
@@ -26,7 +27,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
         template: `
             <div class='edit-popup'>
                     <ul>
-                        <li class='popupButton-g' data-bind="i18n: 'KDW013_77' ,click:$component.openGdialog"></li>
+                        <li class='popupButton-g' data-bind="i18n: 'KDW013_77' ,click:$component.openGdialog"> </li>
                         <li data-bind="i18n: 'KDW013_78' ,click:$component.removeFav"></li>
                     </ul>
             </div>
@@ -91,6 +92,16 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             editPopup.addClass('show');
             editPopup.css({ "top": top, "left": left + width });
             editPopup.data('favId', id);
+            $(".popup-area-g").ntsPopup({
+                trigger: ".popupButton-g",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-g"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
         }
 
         removeFav(data) {
@@ -106,11 +117,15 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
         }
 
         openGdialog(data) {
+            
+            
             const vm = this;
-            $('.fc-oneday-events .edit-popup').removeClass('show');
+            //$('.fc-oneday-events .edit-popup').removeClass('show');
             let id = $('.fc-oneday-events .edit-popup').data('favId');
             let item = _.find(vm.params.items(), item => _.get(item, 'extendedProps.favId') == id);
             //gọi màn G
+
+            vm.params.oneDayFavTaskName(item.title);
             vm.params.oneDayFavoriteSet({
                 // 社員ID
                 sId: vm.$user.employeeId,
@@ -128,6 +143,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
         items: KnockoutObservableArray<any>;
         mode: KnockoutComputed<boolean>;
         oneDayFavoriteSet: any;
+        oneDayFavTaskName: KnockoutObservable<String>;
     }; 
 
 }
