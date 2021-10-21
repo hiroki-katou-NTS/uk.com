@@ -34,8 +34,13 @@ module nts.uk.ui.at.ksu002.b {
                 vm.model.startDay(data.startDay);
                 vm.datePeriod(vm.getDatePeriod());
             });
-            $(document).ready(function(){
-                setTimeout(function() {
+            vm.$window.storage("ksu002B_old").done((data) => {
+                if (_.has(data, 'isTotalDisplay')) {
+                    vm.model.isTotalDisplay(data.isTotalDisplay);
+                }
+            });
+            $(document).ready(function () {
+                setTimeout(function () {
                     $('#B4_2').children(":first").children(":first").focus();
                 }, 500);
             });
@@ -56,7 +61,12 @@ module nts.uk.ui.at.ksu002.b {
 
         close() {
             let vm = this;
-            vm.$window.close();
+            let shareData = {
+                isTotalDisplay: vm.model.isTotalDisplay()
+            }
+            vm.$window.storage("ksu002B_old", shareData).then(() => {
+                vm.$window.close();
+            })
         }
 
         public exportFile(): void {
@@ -75,7 +85,7 @@ module nts.uk.ui.at.ksu002.b {
             };
             vm.$blockui("invisible");
             nts.uk.request.exportFile(API.export, query).done((success: any) => {
-                vm.$window.close();
+                vm.close();
             }).fail((error: any) => {
                 vm.$dialog.error(error);
             }).always(() => {
