@@ -2,11 +2,9 @@ package nts.uk.ctx.at.record.infra.entity.daily.timezone;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
@@ -33,34 +31,34 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 	public KrcdtDayTsSupSupplInfoPk pk;
 
 	@Column(name = "SUPPL_INFO_TIME1")
-	public int supplInfoTime1;
+	public Integer supplInfoTime1;
 	
 	@Column(name = "SUPPL_INFO_TIME2")
-	public int supplInfoTime2;
+	public Integer supplInfoTime2;
 	
 	@Column(name = "SUPPL_INFO_TIME3")
-	public int supplInfoTime3;
+	public Integer supplInfoTime3;
 	
 	@Column(name = "SUPPL_INFO_TIME4")
-	public int supplInfoTime4;
+	public Integer supplInfoTime4;
 	
 	@Column(name = "SUPPL_INFO_TIME5")
-	public int supplInfoTime5;
+	public Integer supplInfoTime5;
 	
 	@Column(name = "SUPPL_INFO_NUMBER1")
-	public int supplInfoNumber1;
+	public Integer supplInfoNumber1;
 	
 	@Column(name = "SUPPL_INFO_NUMBER2")
-	public int supplInfoNumber2;
+	public Integer supplInfoNumber2;
 	
 	@Column(name = "SUPPL_INFO_NUMBER3")
-	public int supplInfoNumber3;
+	public Integer supplInfoNumber3;
 	
 	@Column(name = "SUPPL_INFO_NUMBER4")
-	public int supplInfoNumber4;
+	public Integer supplInfoNumber4;
 	
 	@Column(name = "SUPPL_INFO_NUMBER5")
-	public int supplInfoNumber5;
+	public Integer supplInfoNumber5;
 	
 	@Column(name = "SUPPL_INFO_COMMENT1")
 	public String supplInfoComment1;
