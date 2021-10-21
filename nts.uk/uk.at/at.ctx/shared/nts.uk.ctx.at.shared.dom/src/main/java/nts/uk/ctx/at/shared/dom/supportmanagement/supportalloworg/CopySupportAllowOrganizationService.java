@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.supportmanagement;
+package nts.uk.ctx.at.shared.dom.supportmanagement.supportalloworg;
 
 import java.util.List;
 import java.util.Optional;

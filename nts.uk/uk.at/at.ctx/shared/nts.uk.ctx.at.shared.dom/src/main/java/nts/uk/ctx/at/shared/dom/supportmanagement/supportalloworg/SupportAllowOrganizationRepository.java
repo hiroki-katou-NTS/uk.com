@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.supportmanagement;
+package nts.uk.ctx.at.shared.dom.supportmanagement.supportalloworg;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 public interface SupportAllowOrganizationRepository {
 
 	/**
-	 * insert
+	 * insertAll
 	 * @param cid 会社ID
-	 * @param supportAllowOrg 応援許可する組織
+	 * @param supportAllowOrgs 応援許可する組織リスト
 	 */
-	void insert( String cid, SupportAllowOrganization supportAllowOrg );
+	void insertAll( String cid, List<SupportAllowOrganization> supportAllowOrgs);
 	
 	/**
 	 * update
@@ -28,12 +28,20 @@ public interface SupportAllowOrganizationRepository {
 	void delete( String cid, TargetOrgIdenInfor targetOrg );
 	
 	/**
-	 * *get
+	 * 対象組織を指定して応援許可する組織を取得する
 	 * @param cid 会社ID
 	 * @param targetOrg 対象組織情報
 	 * @return
 	 */
-	List<SupportAllowOrganization> getSupportAllowOrganizationByTargetOrg( String cid, TargetOrgIdenInfor targetOrg );
+	List<SupportAllowOrganization> getListByTargetOrg( String cid, TargetOrgIdenInfor targetOrg );
+	
+	/**
+	 * 応援可能組織を指定して応援許可する組織を取得する
+	 * @param cid 会社ID
+	 * @param supportableOrg 応援可能組織
+	 * @return
+	 */
+	List<SupportAllowOrganization> getListBySupportableOrg( String cid, TargetOrgIdenInfor supportableOrg );
 
 	/**
 	 * exists
@@ -43,11 +51,4 @@ public interface SupportAllowOrganizationRepository {
 	 */
 	boolean exists( String cid, TargetOrgIdenInfor targetOrg );
 	
-	/**
-	 * insertAll
-	 * @param cid 会社ID
-	 * @param supportAllowOrgs 応援許可する組織リスト
-	 */
-	void insertAll( String cid, List<SupportAllowOrganization> supportAllowOrgs);
-
 }
