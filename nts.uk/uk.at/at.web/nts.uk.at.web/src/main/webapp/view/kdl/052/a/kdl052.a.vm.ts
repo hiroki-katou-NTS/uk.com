@@ -131,10 +131,10 @@ module nts.uk.at.view.kdl052.a {
                     if(item.digestionStatus == ''){
                         listDigestionDetails.push(new ItemModel('   ' + item.digestionDate, item.numberOfUse));
                     } else {
-                        listDigestionDetails.push(new ItemModel(item.digestionStatus + item.digestionDate, item.numberOfUse));
+                        listDigestionDetails.push(new ItemModel(item.digestionStatus + ' ' + item.digestionDate, item.numberOfUse));
                     }                    
-               })
-               self.itemLts(listDigestionDetails);
+               });
+               self.itemLts(_.sortBy(listDigestionDetails, ['digestionDate']));
             }).fail((res) => {
                 self.$dialog.alert({ messageId: res.messageId });
             }); 
