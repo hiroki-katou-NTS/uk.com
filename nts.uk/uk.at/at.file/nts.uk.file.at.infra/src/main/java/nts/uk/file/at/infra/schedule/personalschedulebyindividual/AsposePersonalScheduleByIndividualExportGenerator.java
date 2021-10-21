@@ -36,6 +36,7 @@ import javax.ejb.Stateless;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -138,13 +139,22 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             cells.get(tableHeaderRow, 35).setValue(getText("KSU002_69"));
         }
         val headerList = generateTableHeader(query.getStartDate());
-        int index = 0;
         Color colorSaturday = Color.fromArgb(0, 0, 255);
         Color colorSunday = Color.fromArgb(255, 0, 0);
-        for (Map.Entry<Integer, String> entry : headerList.entrySet()) {
-            DayOfWeek dateInfo = DayOfWeek.valueOf(entry.getKey());
+        Map<Integer, String> dayOfWeekMap = new HashMap<Integer, String>() {{
+            put(7, getText("KSU002_60"));
+            put(1, getText("KSU002_61"));
+            put(2, getText("KSU002_62"));
+            put(3, getText("KSU002_63"));
+            put(4, getText("KSU002_64"));
+            put(5, getText("KSU002_65"));
+            put(6, getText("KSU002_66"));
+        }};
+        int index = 0;
+        for (Integer dayOfWeek : headerList) {
+            DayOfWeek dateInfo = DayOfWeek.valueOf(dayOfWeek);
             Cell cell = cells.get(tableHeaderRow, index);
-            cell.setValue(entry.getValue());
+            cell.setValue(dayOfWeekMap.get(dayOfWeek));
             Style style = cell.getStyle();
             if (dateInfo == DayOfWeek.SUNDAY) {
                 style.getFont().setColor(colorSunday);
@@ -157,99 +167,41 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         }
     }
 
-    private Map<Integer, String> generateTableHeader(int startDate) {
+    private List<Integer> generateTableHeader(int startDate) {
         DayOfWeek dateInfo = DayOfWeek.valueOf(startDate);
-
-        Map<Integer, String> hashMap1 = new HashMap<Integer, String>() {{
-            put(7, getText("KSU002_60"));
-            put(1, getText("KSU002_61"));
-            put(2, getText("KSU002_62"));
-            put(3, getText("KSU002_63"));
-            put(4, getText("KSU002_64"));
-            put(5, getText("KSU002_65"));
-            put(6, getText("KSU002_66"));
-        }};
-        Map<Integer, String> hashMap2 = new HashMap<Integer, String>() {{
-            put(6, getText("KSU002_66"));
-            put(7, getText("KSU002_60"));
-            put(1, getText("KSU002_61"));
-            put(2, getText("KSU002_62"));
-            put(3, getText("KSU002_63"));
-            put(4, getText("KSU002_64"));
-            put(5, getText("KSU002_65"));
-        }};
-        Map<Integer, String> hashMap3 = new HashMap<Integer, String>() {{
-            put(5, getText("KSU002_65"));
-            put(6, getText("KSU002_66"));
-            put(7, getText("KSU002_60"));
-            put(1, getText("KSU002_61"));
-            put(2, getText("KSU002_62"));
-            put(3, getText("KSU002_63"));
-            put(4, getText("KSU002_64"));
-        }};
-        Map<Integer, String> hashMap4 = new HashMap<Integer, String>() {{
-            put(4, getText("KSU002_64"));
-            put(5, getText("KSU002_65"));
-            put(6, getText("KSU002_66"));
-            put(7, getText("KSU002_60"));
-            put(1, getText("KSU002_61"));
-            put(2, getText("KSU002_62"));
-            put(3, getText("KSU002_63"));
-        }};
-        Map<Integer, String> hashMap5 = new HashMap<Integer, String>() {{
-            put(3, getText("KSU002_63"));
-            put(4, getText("KSU002_64"));
-            put(5, getText("KSU002_65"));
-            put(6, getText("KSU002_66"));
-            put(7, getText("KSU002_60"));
-            put(1, getText("KSU002_61"));
-            put(2, getText("KSU002_62"));
-        }};
-        Map<Integer, String> hashMap6 = new HashMap<Integer, String>() {{
-            put(2, getText("KSU002_62"));
-            put(3, getText("KSU002_63"));
-            put(4, getText("KSU002_64"));
-            put(5, getText("KSU002_65"));
-            put(6, getText("KSU002_66"));
-            put(7, getText("KSU002_60"));
-            put(1, getText("KSU002_61"));
-        }};
-
-        Map<Integer, String> hashMap7 = new HashMap<Integer, String>() {{
-            put(1, getText("KSU002_61"));
-            put(2, getText("KSU002_62"));
-            put(3, getText("KSU002_63"));
-            put(4, getText("KSU002_64"));
-            put(5, getText("KSU002_65"));
-            put(6, getText("KSU002_66"));
-            put(7, getText("KSU002_60"));
-        }};
-        Map<Integer, String> hashMap = new HashMap<>();
+        List<Integer> list1 = Arrays.asList(7, 1, 2, 3, 4, 5, 6);
+        List<Integer> list2 = Arrays.asList(6, 7, 1, 2, 3, 4, 5);
+        List<Integer> list3 = Arrays.asList(5, 6, 7, 1, 2, 3, 4);
+        List<Integer> list4 = Arrays.asList(4, 5, 6, 7, 1, 2, 3);
+        List<Integer> list5 = Arrays.asList(3, 4, 5, 6, 7, 1, 2);
+        List<Integer> list6 = Arrays.asList(2, 3, 4, 5, 6, 7, 1);
+        List<Integer> list7 = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
+        List<Integer> list = new ArrayList<>();
         switch (dateInfo) {
-            case SUNDAY:
-                hashMap = hashMap1;
-                break;
             case MONDAY:
-                hashMap = hashMap2;
+                list = list1;
                 break;
             case TUESDAY:
-                hashMap = hashMap3;
+                list = list2;
                 break;
             case WEDNESDAY:
-                hashMap = hashMap4;
+                list = list3;
                 break;
             case THURSDAY:
-                hashMap = hashMap5;
+                list = list4;
                 break;
             case FRIDAY:
-                hashMap = hashMap7;
+                list = list5;
                 break;
 
             case SATURDAY:
-                hashMap = hashMap7;
+                list = list6;
+                break;
+            case SUNDAY:
+                list = list7;
                 break;
         }
-        return hashMap;
+        return list;
     }
 
     private void printCalender(Cells cells, int rowCount, int col,
@@ -287,7 +239,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         Cells cellsTemplate = wsSource.getCells();
         ShapeCollection shapes = wsSource.getShapes();
         HorizontalPageBreakCollection hPageBreaks = wsSource.getHorizontalPageBreaks();
-        List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource);
+        List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource, query.getStartDate());
         // Set CopyOptions.ReferToDestinationSheet to true
         CopyOptions options = new CopyOptions();
         options.setReferToDestinationSheet(true);
@@ -461,12 +413,12 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         return count;
     }
 
-    private List<PersonalScheduleByIndividualFormat> buildData(PersonalScheduleIndividualDataSource dataSource) {
+    private List<PersonalScheduleByIndividualFormat> buildData(PersonalScheduleIndividualDataSource dataSource, int startDayOfWeek) {
         List<DateInformation> dateInfolist = dataSource.getDateInformationList();
         List<WorkScheduleWorkInforDto> workInforDtoList = dataSource.getWorkInforDtoList();
         List<WeeklyAgreegateResult> weeklyAgreegateResults = dataSource.getAgreegateResults();
         Optional<LegalWorkTimeOfEmployee> legalWorktime = dataSource.getLegalWorkTimeOfEmployee();
-        int count = getInit(dateInfolist);
+        int count = startDayOfWeek - 1;
         boolean isFirst = true;
         List<PersonalScheduleByIndividualFormat> dataList = new ArrayList<>();
         PersonalScheduleByIndividualFormat format = new PersonalScheduleByIndividualFormat();
