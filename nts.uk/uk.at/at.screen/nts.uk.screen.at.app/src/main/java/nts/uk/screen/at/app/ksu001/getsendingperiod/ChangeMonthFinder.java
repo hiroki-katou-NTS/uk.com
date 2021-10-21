@@ -49,8 +49,8 @@ public class ChangeMonthFinder {
 		// call <<ScreenQuery>> 送る期間を取得する
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(param.startDate, DATE_FORMAT),
 				GeneralDate.fromString(param.endDate, DATE_FORMAT));
-		if (param.modePeriod == ModePeriod.extractionPeriod.value) {
-			datePeriod = getSendingPeriodScreenQuery.getSendingPeriod(datePeriod, param.isNextMonth, false);
+		if (param.modePeriod == ModePeriod.extractionPeriod.value || param.modePeriod == ModePeriod.mode28Days.value) {
+			datePeriod = getSendingPeriodScreenQuery.getSendingPeriod(datePeriod, param.isNextMonth, param.cycle28Day);
 
 		} else if (param.modePeriod == ModePeriod.from1stToLastDay.value) {
 			GeneralDate startDate = GeneralDate.fromString(param.startDate, DATE_FORMAT);

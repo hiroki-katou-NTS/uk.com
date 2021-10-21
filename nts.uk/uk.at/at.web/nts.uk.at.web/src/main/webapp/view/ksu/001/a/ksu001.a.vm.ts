@@ -500,6 +500,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.diseableCellsTime();
                 }
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 self.flag = false;
                 dfd.resolve();
             }).fail(function(error) {
@@ -646,6 +650,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setPositionButonA13A14A15();
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 self.listCellUpdatedWhenChangeModeBg = [];
                 self.hasChangeModeBg = false;
                 
@@ -697,6 +705,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setPositionButonA13A14A15();
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -743,6 +755,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
                 self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
 
                 dfd.resolve();
             }).fail(function(error) {
@@ -4245,7 +4261,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
-            if (self. selectedDisplayPeriod() == 2) return;
             nts.uk.ui.block.grayout();
             
             let param = {
@@ -4274,8 +4289,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
-                self.startDateInitStart = data.dataBasicDto.startDate;
-                self.endDateInitStart = data.dataBasicDto.endDate;
                 
                 let dataGrid: any = {
                     listDateInfo: data.listDateInfo,
@@ -4295,6 +4308,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
                 self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -4307,7 +4325,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            if (self. selectedDisplayPeriod() == 2) return;
             nts.uk.ui.block.grayout();
 
             let param = {
@@ -4337,8 +4354,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
-                self.startDateInitStart = data.dataBasicDto.startDate;
-                self.endDateInitStart = data.dataBasicDto.endDate;
 
                 let dataGrid: any = {
                     listDateInfo: data.listDateInfo,
@@ -4356,6 +4371,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
 
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
+                
+                self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
                 
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
@@ -5404,6 +5425,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.setPositionButonA13A14A15();
                 
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
+                
                 nts.uk.ui.block.clear();
                 
             }).fail(function(error) {
@@ -5875,6 +5900,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 workplaceGroupId: self.userInfor.workplaceGroupId,
                 unit: self.userInfor.unit,
                 isShiftMode: self.selectedModeDisplayInBody() == ViewMode.SHIFT ? true : false, // time | shortName | shift
+                listShiftMasterNotNeedGetNew: !_.isNil(self.userInfor) ? self.userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
                 getWorkschedule: _.isNil(getWorkschedule) ? false : getWorkschedule,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
                 workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
@@ -5949,7 +5975,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             nts.uk.ui.block.grayout();
             // call <<ScreenQuery>> 28日の期間を取得する
-            service.get28DayPeriod({ endDate: self.endDateInitStart }).done((data: any) => {
+            service.get28DayPeriod({ endDate: self.dateTimeAfter(), toAdvancePeriod : true }).done((data: any) => {
                 let startDateOnScreen = self.dateTimePrev(); // start Hiển thị trên màn hình
                 let endDateOnScreen = self.dateTimeAfter(); //end Hiển thị trên màn hình
                 // A3_2_② 表示切替の期間のチェック②
@@ -6026,13 +6052,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     aggrerateWorkplace: data.aggrerateWorkplace
                 }
                 let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
-
+                
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
                 
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
                 self.setPositionButonA13A14A15();
+                
+                if(!self.canOpenKsu003){
+                    self.disableLinkDetailHeader();
+                }
 
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
@@ -6062,6 +6092,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let widthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
                 $(document.getElementsByClassName('ex-area-line')[1]).css('left', widthA8 + widthA10 - 1 + 'px');
             }
+        }
+
+        disableLinkDetailHeader() {
+            let self = this;
+            setTimeout(() => {
+                $('.extable-header-detail a').css("pointer-events", "none");
+            }, 500);
         }
     }
 
