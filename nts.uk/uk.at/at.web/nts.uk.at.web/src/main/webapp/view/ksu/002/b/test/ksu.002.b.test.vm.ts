@@ -11,6 +11,7 @@ module nts.uk.ui.at.ksu002.b.test {
         empName: KnockoutObservable<string>;
         targetDate: KnockoutObservable<string>;
         startDay: KnockoutObservable<any>;
+        dayOfWeekList: KnockoutObservableArray<DayOfWeekModel>;
 
         constructor() {
             super();
@@ -31,6 +32,15 @@ module nts.uk.ui.at.ksu002.b.test {
 
             vm.empCode = ko.observable("000000000001");
             vm.empName = ko.observable("会社名0001");
+            vm.dayOfWeekList = ko.observableArray([
+                new DayOfWeekModel(7, '日曜日'),  // Sunday
+                new DayOfWeekModel(1, '月曜日'),  // Monday
+                new DayOfWeekModel(2, '火曜日'),
+                new DayOfWeekModel(3, '水曜日'),
+                new DayOfWeekModel(4, '木曜日'),
+                new DayOfWeekModel(5, '金曜日'),
+                new DayOfWeekModel(6, '土曜日')   // Saturday
+            ]);
         }
 
         created() {
@@ -58,5 +68,15 @@ module nts.uk.ui.at.ksu002.b.test {
                 });
             });
         }
+    }
+}
+
+class DayOfWeekModel {
+    dayOfWeekCode: number;
+    dayOfWeekName: string;
+
+    constructor(dayOfWeekCode: number, dayOfWeekName: string) {
+        this.dayOfWeekCode = dayOfWeekCode;
+        this.dayOfWeekName = dayOfWeekName;
     }
 }

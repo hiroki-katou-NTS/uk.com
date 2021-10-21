@@ -24,7 +24,16 @@
                 </div>
                 <div class="valign-center control-group" >
                     <div data-bind="ntsFormLabel: { required: true }">Start Day:</div>
-                    <input data-bind="ntsNumberEditor: {value: startDay, required: true}"/>
+                    <!--<input data-bind="ntsNumberEditor: {value: startDay, required: true}"/>-->
+                    <div id="combo-box"
+                         data-bind="ntsComboBox: {
+										options: dayOfWeekList,
+										optionsValue: 'dayOfWeekCode',
+										optionsText: 'dayOfWeekName',
+										value: startDay,
+										visibleItemsCount: 10,
+										selectFirstIfNull: true,
+										required: true}"></div>
                 </div>
                 <div data-bind="ntsFormLabel: {required: true, text: 'Date period'}"/>
                 <div data-bind="ntsDateRangePicker: {
