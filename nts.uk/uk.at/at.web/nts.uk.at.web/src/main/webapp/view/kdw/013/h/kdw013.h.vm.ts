@@ -36,7 +36,7 @@ module nts.uk.at.view.kdw013.h {
 
 			isShowBreakTimeOptions: KnockoutObservable<boolean> = ko.observable(false);
 
-			itemOptions: KnockoutObservableArray<ItemValue> = ko.observableArray([]);
+			itemOptions: KnockoutObservableArray<ItemValueOption> = ko.observableArray([]);
 
 			params: any;
 
@@ -64,9 +64,10 @@ module nts.uk.at.view.kdw013.h {
 				dfd.resolve();
 				return dfd.promise();
 			}
+			
 			fakeData(): void {
 				let self = this;
-				let tg: ItemValue[] = [];
+				let tg: ItemValueOption[] = [];
 				let attendentItems = [
 					216, 221, 226, 231, 236, 241, 246, 251, 
 					256, 261, 266, 271, 276, 281, 286, 291, 
@@ -86,13 +87,15 @@ module nts.uk.at.view.kdw013.h {
 					729, 730, 731, 732, 733, 734, 735, 736, 
 					737, 738, 739, 740, 802, 807, 812, 817, 822];
 				_.forEach(attendentItems, (id)=>{
-					tg.push(new ItemValue({itemId: id, value: '', valueType: 0, layoutCode: ''}, 'Item ' + id, 7));	
+					tg.push(new ItemValueOption({itemId: id, value: '', valueType: 0, layoutCode: ''}, 'Item ' + id, 7));	
 				});
 				self.itemOptions(tg);
 			}
 
 			registration() {
 				let self = this;
+				let data: IItemValue[] = [];
+				data.push({ite})
 			}
 
             /**
@@ -117,6 +120,32 @@ module nts.uk.at.view.kdw013.h {
 	}
 	class ItemValue {
 		itemId: number;
+		use: KnockoutObservable<boolean> = ko.observable(true);
+		value: KnockoutObservable<string> = ko.observable(null);
+		valueBeforeChange: any;
+		valueType: number;
+		layoutCode: string;
+		constructor(itemValue: IItemValue) {
+			this.itemId = itemValue.itemId;
+			this.value(itemValue.value);
+			this.valueBeforeChange = itemValue.value;
+			this.valueType = itemValue.valueType;
+			this.layoutCode = itemValue.layoutCode;
+		}
+		toDataSave(): IItemValue{
+			return {
+				itemId: this.itemId,
+				value: this.value(),
+				valueType: this.valueType,
+				layoutCode: this.layoutCode
+			};
+		}
+		isChange(): boolean{
+			return this.value() == this.valueBeforeChange;
+		}
+	}
+	
+	class ItemValueOption extends ItemValue{
 		lable: KnockoutObservable<string> = ko.observable('');
 		use: KnockoutObservable<boolean> = ko.observable(true);
 		type: number;
@@ -133,17 +162,6 @@ module nts.uk.at.view.kdw013.h {
 			this.layoutCode = itemValue.layoutCode;
 			this.lable(name);
 			this.type = type;
-		}
-		toDataSave(): IItemValue{
-			return {
-				itemId: this.itemId,
-				value: this.value(),
-				valueType: this.valueType,
-				layoutCode: this.layoutCode
-			};
-		}
-		isChange(): boolean{
-			return this.value() == this.valueBeforeChange;
 		}
 	}
 	type IItemValue = {
