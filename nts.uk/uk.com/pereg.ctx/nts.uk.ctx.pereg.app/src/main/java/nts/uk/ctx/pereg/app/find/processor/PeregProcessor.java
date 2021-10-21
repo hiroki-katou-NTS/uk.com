@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pereg.app.find.common.InitDefaultValue;
 import nts.uk.ctx.pereg.app.find.common.LayoutControlComBoBox;
@@ -54,7 +55,6 @@ import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuth;
 import nts.uk.ctx.pereg.dom.roles.auth.item.PersonInfoItemAuthRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.pereg.app.find.PeregEmpInfoQuery;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
@@ -414,6 +414,39 @@ public class PeregProcessor {
 		}
 
 		return isFuture;
+	}
+	
+	/*
+	 * Tính xem đang xem tương lai hay quá khứ của lịch sử không liên tục
+	 */
+	private static Boolean getFutureisHistoryNotReatime(Object dateValueStart, Object dateValueEnd) {
+		GeneralDate startdate = GeneralDate.today();
+		GeneralDate enddate = GeneralDate.today();
+		GeneralDate today = GeneralDate.today();
+		Boolean isFutureNotReatime = null;// null là xem hiện tại
+		
+		if (dateValueStart != null) {
+			startdate = (GeneralDate) dateValueStart;
+		}
+		if (dateValueEnd != null) {
+			enddate = (GeneralDate) dateValueEnd;
+		}
+		
+		// startDate < today < endDate => hiện tại
+		if (today.before(startdate) && today.after(enddate)) {
+			return isFutureNotReatime;
+		}
+
+		// startDate < endDate < today => đang xem record quá khứ
+		// today < startDate < endDate => đang xem record tương lai
+		if (today.before(enddate) && today.before(startdate)) {
+			return true;
+		}
+		if (today.after(startdate) && today.after(enddate)) {
+			return false;
+		}
+
+		return isFutureNotReatime;
 	}
 
 	// key categoryCodem, List<GridLayoutPersonInfoClsDto> -> list này bao gồm
@@ -960,15 +993,34 @@ public class PeregProcessor {
 		if (!perInfoCtgAuth.isPresent()) {
 			return;
 		}
+		
+		// Item code của start date lịch sử không liên tục
+		List<String> start_hist_not_reatime_list = Arrays.asList("IS00087", "IS00102", "IS01016");
+
+		// Item code của end date lịch sử không liên tục
+		List<String> end_hist_not_reatime_list = Arrays.asList("IS00088", "IS00103", "IS01017");
+
 
 		// đi từng layout
 		for (LayoutPersonInfoClsDto layout : classItemList) {
 			// for items của classItemList
-			for (LayoutPersonInfoValueDto item : layout.getItems()) {
+			for (int i = 0; i < layout.getItems().size(); i++) {
+				LayoutPersonInfoValueDto item = layout.getItems().get(i);
 				// kiểm tra actionRole của item nếu thằng nào là EDIT thì mới
 				// thực hiện step dưới
 				if (item.getActionRole() == ActionRole.EDIT) {
-					Boolean isFuture = getFuture(item.getItemCode(), item.getValue());
+					Boolean isFuture = null;
+					getFuture(item.getItemCode(), item.getValue());
+
+					if (start_hist_not_reatime_list.contains(item.getItemCode())) {
+						isFuture = getFutureisHistoryNotReatime(item.getValue(),
+								layout.getItems().get(i + 1).getValue());
+					} else if (end_hist_not_reatime_list.contains(item.getItemCode())) {
+						isFuture = getFutureisHistoryNotReatime(layout.getItems().get(i - 1).getValue(),
+								item.getValue());
+					} else {
+						isFuture = getFuture(item.getItemCode(), item.getValue());
+					}
 					if (isFuture == null) {
 						continue;
 					}
