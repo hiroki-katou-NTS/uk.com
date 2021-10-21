@@ -3052,7 +3052,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                         cells = sheetInfo.getSheet().getCells();
                         currentRow = sheetInfo.getStartDataIndex();
                     }
-                    currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate, contentPosition1);
+				}
+				
+				if (rowPageTracker.isNewPage()) {
+					currentRow = this.printDateBracket(currentRow, templateSheetCollection, sheetInfo, titleDate, contentPosition1);
                     currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle, contentPosition);
                     rowPageTracker.useRemainingRow(2);
 				}
