@@ -161,7 +161,10 @@ module nts.uk.ui.at.kdw013.a {
 
         // 日別勤怠の応援作業時間帯
         ouenWorkTimeSheets: KnockoutObservableArray<OuenWorkTimeSheetOfDailyAttendance> =  ko.observableArray();
-        
+
+        //対象日
+        targetDate: KnockoutObservable<Date> =  ko.observable();
+
         constructor() {
             super();
             const vm = this;
@@ -1216,7 +1219,7 @@ module nts.uk.ui.at.kdw013.a {
                 {
                     workNo: 1,
                     workContent: {
-                        workGroup: {
+                        work: {
                             workCD1: "1",
                             workCD2: "2",
                             workCD3: "3",
@@ -1226,14 +1229,18 @@ module nts.uk.ui.at.kdw013.a {
                     },
                     timeSheet: {
                         workNo: 1,
-                        start: 1,
-                        end: 2
+                        start: {
+                            timeWithDay: 100
+                        },
+                        end: {
+                            timeWithDay: 300
+                        }
                     }
                 },
                 {
                     workNo: 2,
                     workContent: {
-                        workGroup: {
+                        work: {
                             workCD1: "1",
                             workCD2: "2",
                             workCD3: "3",
@@ -1242,16 +1249,20 @@ module nts.uk.ui.at.kdw013.a {
                         }
                     },
                         timeSheet: {
-                            workNo: 1,
-                            start: 1,
-                            end: 2
+                            workNo: 2,
+                            start: {
+                                timeWithDay: 100
+                            },
+                            end: {
+                                timeWithDay: 300
+                            }
                         }
                    
                 },
                 {
                     workNo: 3,
                     workContent: {
-                        workGroup: {
+                        work: {
                             workCD1: "1",
                             workCD2: "2",
                             workCD3: "3",
@@ -1260,9 +1271,13 @@ module nts.uk.ui.at.kdw013.a {
                         }
                     },
                     timeSheet: {
-                        workNo: 1,
-                        start: 1,
-                        end: 2
+                        workNo:3,
+                        start: {
+                            timeWithDay: 100
+                        },
+                        end: {
+                            timeWithDay: 300
+                        }
                     }
                 }
 
@@ -1302,11 +1317,11 @@ module nts.uk.ui.at.kdw013.a {
             _.forEach(vm.ouenWorkTimes(), wt => {
 
                 let ouenWorkTimeSheet: OuenWorkTimeSheetOfDailyAttendance  = ko.utils.arrayFirst(vm.ouenWorkTimeSheets(), function (e) {return e.workNo == wt.workNo});
-                let workCD1 = ouenWorkTimeSheet.workContent.workGroup.workCD1;
-                let workCD2 = ouenWorkTimeSheet.workContent.workGroup.workCD2;
-                let workCD3 = ouenWorkTimeSheet.workContent.workGroup.workCD3;
-                let workCD4 = ouenWorkTimeSheet.workContent.workGroup.workCD4;
-                let workCD5 = ouenWorkTimeSheet.workContent.workGroup.workCD5;
+                let workCD1 = ouenWorkTimeSheet.workContent.work.workCD1;
+                let workCD2 = ouenWorkTimeSheet.workContent.work.workCD2;
+                let workCD3 = ouenWorkTimeSheet.workContent.work.workCD3;
+                let workCD4 = ouenWorkTimeSheet.workContent.work.workCD4;
+                let workCD5 = ouenWorkTimeSheet.workContent.work.workCD5;
                 let taskName1 = '';
                 let taskName2 = '';
                 let taskName3 = '';
@@ -1360,7 +1375,9 @@ module nts.uk.ui.at.kdw013.a {
                 taskDtos: ko.unwrap(vm.taskDtos),
                 ouenWorkTimes: ko.unwrap(vm.ouenWorkTimes),
                 ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
-                taskSettings: ko.unwrap(vm.taskSettings)
+                taskSettings: ko.unwrap(vm.taskSettings),
+                //対象日
+                date: vm.targetDate()
             }
 		
             vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});

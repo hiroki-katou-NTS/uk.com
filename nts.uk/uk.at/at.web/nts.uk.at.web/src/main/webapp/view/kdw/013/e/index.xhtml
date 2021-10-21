@@ -17,7 +17,7 @@
 			<div id="contents-area" class="kdw-013-e">
 				<!--E1_1-->
 				<div class="panel panel-frame panel-width">
-					<table>
+					<table class="table-screen-e">
 						<colgroup>
 							<col width="123px" />
 						</colgroup>
@@ -27,20 +27,20 @@
 								<td data-bind="i18n: 'KDW013_27'"></td>
 								<td>
 									<!-- E2_2 開始時刻 -->
-									<input tabindex="1" 
+									<input tabindex="1"  id="editor-start"
 									data-bind="ntsTimeEditor: { 
 											mode: 'time',  
-											value: $vm.ouenWorkTimeSheet().timeSheet.start, 
+											value:  startTime,
 											inputFormat: 'time', 
 											name: '#[KDW013_14]',
 											option: { width: '50px' }
 										}" />
 									<!-- E2_3 終了時刻-->
 									<span data-bind="i18n: 'KDW013_30'"></span>
-									<input tabindex="2" 
+									<input tabindex="2"
 									data-bind="ntsTimeEditor: { 
 											mode: 'time',  
-											value: $vm.ouenWorkTimeSheet().timeSheet.end, 
+											value:  endTime, 
 											inputFormat: 'time', 
 											name: '#[KDW013_31]',
 											option: { width: '50px' }
@@ -54,7 +54,7 @@
 									<input tabindex="3" 
 									data-bind="ntsTimeEditor: { 
 											mode: 'time',  
-											value: $vm.ouenWorkTime().workTime.totalTime, 
+											value: totalTime, 
 											inputFormat: 'time', 
 											name: '#[KDW013_25]',
 											option: { width: '50px' }
@@ -164,7 +164,7 @@
 				</div>
 			</div>
 
-			<div id="functions-area-bottom" class="kdw-013-e">
+			<div id="functions-area-bottom" class="kdw013-function">
 				<button tabindex = "9" class="proceed normal" data-bind="i18n: 'KDW013_43', click: $vm.decide"></button>
 				<button tabindex = "10" class="normal" data-bind="i18n: 'KDW013_37', click: $vm.close"></button>
 			</div>

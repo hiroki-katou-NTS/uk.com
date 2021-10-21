@@ -1,3 +1,16 @@
 #task-combobox {
     width: 333px;
 }
+
+.kdw-013-e table tr{
+    height: 50px;
+}
+
+.kdw-013-e span {
+    width: unset !important;
+}
+
+.kdw013-function {
+    text-align: right !important;
+    padding-right: 10px !important;
+}

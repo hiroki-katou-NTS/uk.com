@@ -6,6 +6,7 @@ module nts.uk.ui.at.kdw013.e {
         ouenWorkTimes: OuenWorkTimeOfDailyAttendance[];
         ouenWorkTimeSheets: OuenWorkTimeSheetOfDailyAttendance[];
         taskSettings: a.TaskFrameSettingDto[];
+        date: Date
     }
 
     type TaskCbb = {
@@ -20,6 +21,7 @@ module nts.uk.ui.at.kdw013.e {
         ouenWorkTime: KnockoutObservable<OuenWorkTimeOfDailyAttendance> = ko.observable();
         ouenWorkTimeSheet: KnockoutObservable<OuenWorkTimeSheetOfDailyAttendance> = ko.observable();
 		taskSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray();
+        date: KnockoutObservable<Date> = ko.observable();
 
         useTask1: KnockoutObservable<boolean> = ko.observable(false);
         useTask2: KnockoutObservable<boolean> = ko.observable(false);
@@ -45,6 +47,10 @@ module nts.uk.ui.at.kdw013.e {
         selectedTaskCD4: KnockoutObservable<string> = ko.observable();
         selectedTaskCD5: KnockoutObservable<string> = ko.observable();
 
+        startTime: KnockoutObservable<number> =  ko.observable();
+        endTime: KnockoutObservable<number> =  ko.observable();
+        totalTime: KnockoutObservable<number> =  ko.observable();
+
         created(param: IParams){
             const vm = this;
 
@@ -53,11 +59,14 @@ module nts.uk.ui.at.kdw013.e {
                 vm.ouenWorkTime(_.filter(param.ouenWorkTimes, (t : OuenWorkTimeOfDailyAttendance) => { return t.workNo == param.workNo })[0]);
                 vm.ouenWorkTimeSheet(_.filter(param.ouenWorkTimeSheets, (ts : OuenWorkTimeSheetOfDailyAttendance) => { return ts.workNo == param.workNo })[0]);
                 vm.taskSettings(param.taskSettings);
+                vm.date(param.date);
             }
 
             vm.getSetting();
             vm.getCbbList();
-
+            vm.startTime(vm.ouenWorkTimeSheet().timeSheet.start.timeWithDay);
+            vm.endTime(vm.ouenWorkTimeSheet().timeSheet.end.timeWithDay);
+            vm.totalTime(vm.ouenWorkTime().workTime.totalTime);
         }
 
         getSetting() {
@@ -137,10 +146,57 @@ module nts.uk.ui.at.kdw013.e {
         }
        
         mounted() {
+            const vm = this;
+            $('#editor-start').focus();
 
+            vm.selectedTaskCD1.subscribe((value) => {
+                vm.ouenWorkTimeSheet().workContent.work.workCD1 = value;
+            });
+
+            vm.selectedTaskCD2.subscribe((value) => {
+                vm.ouenWorkTimeSheet().workContent.work.workCD2 = value;
+            });
+
+            vm.selectedTaskCD3.subscribe((value) => {
+                vm.ouenWorkTimeSheet().workContent.work.workCD3 = value;
+            });
+
+            vm.selectedTaskCD4.subscribe((value) => {
+                vm.ouenWorkTimeSheet().workContent.work.workCD4 = value;
+            });
+
+            vm.selectedTaskCD5.subscribe((value) => {
+                vm.ouenWorkTimeSheet().workContent.work.workCD5 = value;
+            });
+
+            vm.startTime.subscribe((value)=> {
+                vm.ouenWorkTimeSheet().timeSheet.start.timeWithDay = value;
+            })
+
+            vm.endTime.subscribe((value)=> {
+                vm.ouenWorkTimeSheet().timeSheet.end.timeWithDay = value;
+            })
+
+            vm.totalTime.subscribe((value)=> {
+                vm.ouenWorkTime().workTime.totalTime = value;
+            })
+            
         }
 
         decide() {
+            const vm = this;
+
+            let param = {
+                empId: vm.$user.employeeId,
+                date: vm.date(),
+                ouenTimeSheet: ko.unwrap(vm.ouenWorkTimeSheet),
+                ouenTime: ko.unwrap(vm.ouenWorkTime)
+            };
+
+            vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param))
+            .done(() => {
+                vm.$dialog.info({ messageId: 'Msg_15' });
+            }).always(() => vm.$blockui('clear'));
             
         }
         
