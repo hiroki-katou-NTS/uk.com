@@ -124,8 +124,8 @@ public class ScheduleRegisterCommandHandler {
 
     public List<RegisterWorkScheduleOutput> register(ScheduleRegisterCommand command) {
         List<RegisterWorkScheduleOutput> outputs = new ArrayList<RegisterWorkScheduleOutput>();
-        List<String> importCodes = command.getTargets().stream().map(x -> x.getImportCode()).collect(Collectors.toList());
-        List<String> employeeList = command.getTargets().stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
+        List<String> importCodes = command.getTargets().stream().map(x -> x.getImportCode()).distinct().collect(Collectors.toList());
+        List<String> employeeList = command.getTargets().stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
         List<GeneralDate> dates = command.getTargets().stream()
                 .map(x -> GeneralDate.fromString(x.getDate(), "yyyy/MM/dd"))
                 .distinct().sorted().collect(Collectors.toList());

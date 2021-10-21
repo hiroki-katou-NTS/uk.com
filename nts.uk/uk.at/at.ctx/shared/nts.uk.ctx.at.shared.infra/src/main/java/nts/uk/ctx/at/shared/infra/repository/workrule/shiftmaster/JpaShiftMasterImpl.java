@@ -102,7 +102,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
         CollectionUtil.split(importCodes, 1000, subIdList -> {
             datas.addAll(this.queryProxy().query(SELECT_BY_LISTIMPORT_AND_CID, KshmtShiftMater.class)
             .setParameter("companyId", companyId)
-            .setParameter("importCodes", importCodes)
+            .setParameter("importCodes", subIdList)
             .getList(c -> c.toDomain()));
         });
                 
