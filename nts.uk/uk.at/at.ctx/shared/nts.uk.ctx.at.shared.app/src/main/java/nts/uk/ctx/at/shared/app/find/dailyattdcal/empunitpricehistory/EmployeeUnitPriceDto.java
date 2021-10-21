@@ -112,16 +112,16 @@ public class EmployeeUnitPriceDto extends PeregDomainDto {
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
 		
-		dto.setUnitPrice1(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_1.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice2(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_2.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice3(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_3.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice4(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_4.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice5(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_5.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice6(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_6.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice7(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_7.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice8(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_8.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice9(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_9.value).orElse(new WorkingHoursUnitPrice(0)).v());
-		dto.setUnitPrice10(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_10.value).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice1(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_1).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice2(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_2).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice3(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_3).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice4(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_4).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice5(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_5).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice6(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_6).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice7(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_7).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice8(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_8).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice9(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_9).orElse(new WorkingHoursUnitPrice(0)).v());
+		dto.setUnitPrice10(employeeUnitPriceItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_10).orElse(new WorkingHoursUnitPrice(0)).v());
 		return dto;
 	}
 	
