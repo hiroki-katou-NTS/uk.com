@@ -71,7 +71,21 @@ module nts.uk.ui.at.kdw013.timeheader {
             let icon = `<i class='warningIcon ` + className + `'> </i>`;
             
             vm.OpenIDialog = () => {
-                vm.params.screenA.
+                let screenA = vm.params.screenA;
+                screenA.taskInfos();
+
+                // 作業リスト
+                screenA.taskDtos();
+
+                // 日別勤怠の応援作業時間
+                screenA.ouenWorkTimes();
+
+                // 日別勤怠の応援作業時間帯
+                screenA.ouenWorkTimeSheets();
+
+                //対象日
+                screenA.targetDate();
+
             }
             
             
