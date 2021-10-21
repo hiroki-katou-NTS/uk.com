@@ -93,24 +93,26 @@ public class GetDeitalInfoNursingByEmp {
 				// DomainService「基準日時点の子の看護残数を取得する」を実行する
 				aggrResultOfChildCareNurse = getRemainingNumberChildCare.getRemainingNumberChildCare(companyId,
 						employeeId, GeneralDate.today());
-
-				GetUsageDetailCareService.Require requireGetUsageDetailCareService = new GetUsageDetailCareServiceImpl(requireService);
-				// DomainService「DS_期間内の介護使用明細を取得する」
-				List<TempCareManagement> listTempCareManagement = GetUsageDetailCareService.getUsageDetailCareService(
-						companyId, employeeId, period, ReferenceAtr.APP_AND_SCHE, requireGetUsageDetailCareService);
-				listTempChildCareNurseManagement = listTempCareManagement.stream().map(c-> (TempChildCareNurseManagement) c).collect(Collectors.toList());
-			} else if (nursingCategory == NursingCategory.Nursing) {// 介護
-
-				// DomainService「基準日時点の介護残数を取得する」を実行する
-				aggrResultOfChildCareNurse = getRemainingNumberNursing.getRemainingNumberNursing(companyId, employeeId,
-						GeneralDate.today());
-
+				
 				GetUsageDetailChildCareService.Require reuqireGetUsageDetailChildCareService = new GetUsageDetailChildCareServiceImpl(requireService);
 				// 「DS_期間内の子の看護使用明細を取得する」を実行する
 				List<TempChildCareManagement> listTempChildCareManagement = GetUsageDetailChildCareService
 						.getUsageDetailCareService(companyId, employeeId, period, ReferenceAtr.APP_AND_SCHE,
 								reuqireGetUsageDetailChildCareService);
 				listTempChildCareNurseManagement = listTempChildCareManagement.stream().map(c-> (TempChildCareNurseManagement) c).collect(Collectors.toList());
+
+			} else if (nursingCategory == NursingCategory.Nursing) {// 介護
+
+				// DomainService「基準日時点の介護残数を取得する」を実行する
+				aggrResultOfChildCareNurse = getRemainingNumberNursing.getRemainingNumberNursing(companyId, employeeId,
+						GeneralDate.today());
+
+				GetUsageDetailCareService.Require requireGetUsageDetailCareService = new GetUsageDetailCareServiceImpl(requireService);
+				// DomainService「DS_期間内の介護使用明細を取得する」
+				List<TempCareManagement> listTempCareManagement = GetUsageDetailCareService.getUsageDetailCareService(
+						companyId, employeeId, period, ReferenceAtr.APP_AND_SCHE, requireGetUsageDetailCareService);
+				listTempChildCareNurseManagement = listTempCareManagement.stream().map(c-> (TempChildCareNurseManagement) c).collect(Collectors.toList());
+				
 			}
 			
 
@@ -170,9 +172,9 @@ public class GetDeitalInfoNursingByEmp {
 			if (aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedTimes()
 					.isPresent()) {
 				value1 = KDL051_31;
-				value1 = convertTime(aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber()
+				value2 = convertTime(aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber()
 						.getUsedTimes().get().v());
-				value2 = KDL051_32;
+				value3 = KDL051_32;
 			}
 			String KDL051_35 = TextResource.localize("KDL051_35", value0, value1, value2, value3);
 			dataResult.setNumberOfUse(KDL051_35);

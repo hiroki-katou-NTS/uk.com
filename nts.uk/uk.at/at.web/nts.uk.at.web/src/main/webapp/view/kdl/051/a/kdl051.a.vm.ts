@@ -96,7 +96,7 @@ module nts.uk.at.view.kdl051.a {
 					let name: any = _.filter(self.employeeList(), (x: any) => {
 						return _.isEqual(x.code, value);
 					});
-					self.employeeNameSelect(name[0].code + "  " + name[0].name);
+					self.employeeNameSelect(name[0].code + "　" + name[0].name);
 					let empId = _.filter(self.listEmployeeImport, (x) => {
 						return _.isEqual(x.employeeCode, value)})[0].employeeId;
 					self.getDeitalInfoNursingByEmp(empId);
