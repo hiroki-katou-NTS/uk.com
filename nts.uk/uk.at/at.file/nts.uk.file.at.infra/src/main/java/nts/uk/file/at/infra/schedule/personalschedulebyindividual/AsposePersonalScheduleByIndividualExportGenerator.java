@@ -1,22 +1,6 @@
 package nts.uk.file.at.infra.schedule.personalschedulebyindividual;
 
-import com.aspose.cells.BackgroundType;
-import com.aspose.cells.BorderType;
-import com.aspose.cells.Cell;
-import com.aspose.cells.CellBorderType;
-import com.aspose.cells.Cells;
-import com.aspose.cells.Color;
-import com.aspose.cells.CopyOptions;
-import com.aspose.cells.HorizontalPageBreakCollection;
-import com.aspose.cells.PageSetup;
-import com.aspose.cells.PasteOptions;
-import com.aspose.cells.PasteType;
-import com.aspose.cells.ShapeCollection;
-import com.aspose.cells.Style;
-import com.aspose.cells.TextAlignmentType;
-import com.aspose.cells.Workbook;
-import com.aspose.cells.Worksheet;
-import com.aspose.cells.WorksheetCollection;
+import com.aspose.cells.*;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
@@ -59,7 +43,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     private final int BG_COLOR_SPECIFIC_DAY = Integer.parseInt("ffc0cb", 16);
     private final int TEXT_COLOR_SUNDAY = Integer.parseInt("ff0000", 16);
     private static final String PRINT_AREA = "A1:AN";
-    private static final int MAX_ROW_IN_PAGE = 32;
+    private static final int MAX_ROW_IN_PAGE = 33;
 
 
     @Override
@@ -236,24 +220,16 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     private void printContent(Worksheet wsSource, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) throws Exception {
         Cells cells = wsSource.getCells();
-        Cells cellsTemplate = wsSource.getCells();
-        ShapeCollection shapes = wsSource.getShapes();
         HorizontalPageBreakCollection hPageBreaks = wsSource.getHorizontalPageBreaks();
         List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource, query.getStartDate());
-        // Set CopyOptions.ReferToDestinationSheet to true
-        CopyOptions options = new CopyOptions();
-        options.setReferToDestinationSheet(true);
-//        // Set PasteOptions
-        PasteOptions pasteOptions = new PasteOptions();
-        pasteOptions.setPasteType(PasteType.ALL);
-        pasteOptions.setOnlyVisibleCells(true);
 
-        int rowCount = 3; // start from row index 3
+        int rowCount = 3;
         int pageIndex = 0;
         for (PersonalScheduleByIndividualFormat item : dataBuildList) {
             int weekNO = item.getWeekNo();
             Map<Integer, String> holiday = item.getHoliday().get(weekNO);
-
+            cells.copyRows(cells, 3, rowCount, 5);
+            cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
             printCalender(cells,
                     rowCount,
                     0,
@@ -357,17 +333,12 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             rowCount += 5;
             // Check paging
             if (isNextPage(rowCount, pageIndex)) {
-                PasteOptions opts = new PasteOptions();
-                opts.setPasteType(PasteType.FORMATS);
-                cells.copyRows(cellsTemplate, 32, rowCount, 1, options);  // copy close ruler
-                removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
-                rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
             }
         }
-//        PageSetup pageSetup = wsSource.getPageSetup();
-//        pageSetup.setPrintArea(PRINT_AREA + rowCount);
+        PageSetup pageSetup = wsSource.getPageSetup();
+        pageSetup.setPrintArea(PRINT_AREA + rowCount);
     }
 
     private void removeTopBorder(Cell cell) {
@@ -378,7 +349,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private boolean isNextPage(int rowCount, int pageIndex) {
-        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - 8 > MAX_ROW_IN_PAGE;
+        return (rowCount - (33 * pageIndex)) >= 33;
     }
 
     int getInit(List<DateInformation> dateInfolist) {
