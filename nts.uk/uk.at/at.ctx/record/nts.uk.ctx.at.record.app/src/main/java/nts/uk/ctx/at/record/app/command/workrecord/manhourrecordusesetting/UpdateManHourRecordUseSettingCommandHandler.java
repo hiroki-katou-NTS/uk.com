@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.workrecord.manhourrecordusesetting;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,6 +15,8 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.Elap
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ReferenceRange;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
@@ -21,6 +24,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 @Transactional
@@ -34,11 +39,15 @@ public class UpdateManHourRecordUseSettingCommandHandler extends CommandHandler<
 	
 	@Inject
 	ManHourRecordReferenceSettingRepository manHourRecordReferenceSettingRepository;
+	
+	@Inject
+	ManHrInputUsageSettingRepository manHrInputUsageSettingRepository;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void handle(CommandHandlerContext<ManHourRecordUseSettingCommand> context) {
 		ManHourRecordUseSettingCommand command = context.getCommand();
+		String cId = AppContexts.user().companyId();
 		
 		ManHourRecordReferenceSetting manHourRecordReferenceSetting = new ManHourRecordReferenceSetting(
 				EnumAdaptor.valueOf(command.getManHourRecordReferenceSetting().getElapsedMonths(), ElapsedMonths.class),
@@ -74,7 +83,13 @@ public class UpdateManHourRecordUseSettingCommandHandler extends CommandHandler<
 		//	ドメインモデル「勤怠項目のエラーアラーム条件」を更新する
 		errorAlarmWorkRecordRepository.updateErrorAlarmWorkRecord(errorAlarmWorkRecord, errorAlarmCondition);
 		
+		Optional<ManHrInputUsageSetting> manHrInput = manHrInputUsageSettingRepository.get(cId);
 		
+		if(manHrInput.isPresent()) {
+			manHrInputUsageSettingRepository.update(new ManHrInputUsageSetting(NotUseAtr.valueOf(command.usrAtr)));
+		} else {
+			manHrInputUsageSettingRepository.insert(new ManHrInputUsageSetting(NotUseAtr.valueOf(command.usrAtr)));
+		}
 
 	}
 

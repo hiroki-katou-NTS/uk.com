@@ -53,7 +53,6 @@ public class CalcResultRange extends DomainObject {
 		this.numberRange = memento.getNumberRange();
 		this.timeRange = memento.getTimeRange();
 		this.amountRange = memento.getAmountRange();
-
 	}
 
 	/**
@@ -97,7 +96,8 @@ public class CalcResultRange extends DomainObject {
 		
 	/**
 	 * 上限値の制御
-	 * @param optionalItemAtr
+	 * @param calcResultOfAnyItem
+	 * @param optionalItem
 	 * @return
 	 */
 	public BigDecimal getUpperLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {
@@ -130,7 +130,8 @@ public class CalcResultRange extends DomainObject {
 	
 	/**
 	 * 下限値の制御
-	 * @param optionalItemAtr
+	 * @param calcResultOfAnyItem
+	 * @param optionalItem
 	 * @return
 	 */
 	public BigDecimal getLowerLimitValue(CalcResultOfAnyItem calcResultOfAnyItem, OptionalItem optionalItem) {

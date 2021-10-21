@@ -810,6 +810,12 @@ public class ProgramsManager {
             "/view/kdw/006/i/index.xhtml");
     public static final Program KDW006H = new Program(WebAppId.AT, ProgramIdConsts.KDW006H, "KDW006_305",
             "/view/kdw/006/h/index.xhtml");
+    public static final Program KDW006J = new Program(WebAppId.AT, ProgramIdConsts.KDW006J, "KDW006_340",
+            "/view/kdw/006/j/index.xhtml");
+    public static final Program KDW006K = new Program(WebAppId.AT, ProgramIdConsts.KDW006K, "KDW006_341",
+            "/view/kdw/006/k/index.xhtml");
+    public static final Program KDW006L = new Program(WebAppId.AT, ProgramIdConsts.KDW006L, "KDW006_342",
+            "/view/kdw/006/l/index.xhtml");
 
     /**
      * KDW009A

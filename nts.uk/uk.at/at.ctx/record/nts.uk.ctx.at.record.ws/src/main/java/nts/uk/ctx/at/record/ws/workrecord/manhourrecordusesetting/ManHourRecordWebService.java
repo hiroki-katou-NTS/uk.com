@@ -36,7 +36,7 @@ public class ManHourRecordWebService extends WebService {
 		//	工数実績参照設定を取得する
 		ManHourRecordReferenceSettingDto manHourRecordReferenceSetting = finder.getManHourRecordReferenceSetting();
 		
-		return new ManHourRecordUseSettingDto(errorAlarmWorkRecord, manHourRecordReferenceSetting);
+		return new ManHourRecordUseSettingDto(errorAlarmWorkRecord, manHourRecordReferenceSetting, finder.getArt());
 	}
 	
 	@POST
