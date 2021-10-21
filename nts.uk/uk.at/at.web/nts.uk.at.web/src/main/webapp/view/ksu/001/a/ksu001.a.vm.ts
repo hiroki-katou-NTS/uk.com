@@ -702,7 +702,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.getSettingDisplayWhenStart('shift', false);
                 //WORKPLACE(0), //WORKPLACE_GROUP(1);
                 __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
-                $($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+                 $('#Aa1_2 > label:nth-child(2) > span').html(data.dataBasicDto.designation);
 
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 // set data shiftPallet
@@ -4339,9 +4339,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
                 } else {
                     if (input.unit == 0) {
-                        $($("#Aa1_2 > button")[1]).html(getText('Com_Workplace'));
+                        $('#Aa1_2 > label:nth-child(2) > span').html(getText('Com_Workplace'));
                     } else {
-                        $($("#Aa1_2 > button")[1]).html(getText('Com_WorkplaceGroup'));
+                        $('#Aa1_2 > label:nth-child(2) > span').html(getText('Com_WorkplaceGroup'));
                     }
 
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
