@@ -123,7 +123,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 }
             }
 
-            vm.$blockui('show');
+            vm.$blockui('grayout');
             vm.$ajax(paths.register, command).done((res) => {
                 if (res) {
                     // reset list data fail

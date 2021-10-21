@@ -218,7 +218,12 @@ public class ScheduleRegisterCommandHandler {
         public RequireImp(List<String> importCodes, List<String> employeeIds, DatePeriod period) {
             List<ShiftMaster> shiftMasters = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
             shiftMasterCache = shiftMasters.stream()
-                    .collect(Collectors.toMap(shiftMaster -> shiftMaster.getImportCode().get().v(), shiftMaster -> shiftMaster));
+                    .collect(Collectors.toMap(
+                            shiftMaster -> shiftMaster.getImportCode().get().v(), 
+                            shiftMaster -> shiftMaster, 
+                            (value1, value2) -> {
+                                return value1;
+                            }));
             
             workTypeCache = MapCache.incremental(workTypeCd -> workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCd));
             
