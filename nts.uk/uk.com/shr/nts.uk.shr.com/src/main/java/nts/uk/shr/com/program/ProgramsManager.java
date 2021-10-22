@@ -1368,6 +1368,9 @@ public class ProgramsManager {
      */
     public static final Program KMF001M = new Program(WebAppId.AT, ProgramIdConsts.KMF001M, "KMF001_335",
             "/view/kmf/001/m/index.xhtml");
+    
+    public static final Program KMF001N = new Program(WebAppId.AT, ProgramIdConsts.KMF001N, "KMF001_349",
+            "/view/kmf/001/n/index.xhtml");
 
     /**
      * KMF003A
