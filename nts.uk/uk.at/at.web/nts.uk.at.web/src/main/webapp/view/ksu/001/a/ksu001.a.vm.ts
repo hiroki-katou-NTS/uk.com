@@ -181,6 +181,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showA12_2: KnockoutObservable<boolean>   = ko.observable(false);
         funcNo15_WorkPlace: boolean = false;
         changeableWorks = [];
+        callAlgSumA12 = true;
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -255,6 +256,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let newLst = _.filter(self.useCategoriesWorkplace(), (item: any) => !_.includes(
                         [WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
                     if (!_.isEmpty(newLst)) {
+                        
+                        self.callAlgSumA12 = false;
                         self.useCategoriesWorkplace(newLst);
                         self.showA12(true);
                         $('#horzDiv').css('display', '');
@@ -267,6 +270,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         WorkplaceCounterCategory.LABOR_COSTS_AND_TIME,
                         WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
                     if (!_.isEmpty(addLst)) {
+                        self.callAlgSumA12 = false;
                         self.useCategoriesWorkplace(_.sortBy(_.union(self.useCategoriesWorkplace(), addLst), ['value']));
                     }
                     if (_.isEmpty(self.useCategoriesWorkplace())) {
@@ -277,6 +281,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         $('#horzDiv').css('display', '');
                     }
                 }
+                self.callAlgSumA12 = true;
 
                 self.getNewData(viewMode).done(() => {
                     nts.uk.ui.block.clear();
@@ -410,9 +415,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.useCategoriesPersonal(data.dataBasicDto.useCategoriesPersonal);
                 self.useCategoriesWorkplace(data.dataBasicDto.useCategoriesWorkplace);
 
-				//self.useCategoriesPersonal([]);
-                //self.useCategoriesWorkplace([]);
-                
                 _.isEmpty(self.useCategoriesPersonal()) ? self.showA11(false) : self.showA11(true);
                 _.isEmpty(self.useCategoriesWorkplace()) ? self.showA12(false) : self.showA12(true);
                 
@@ -437,11 +439,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable('saveScroll');
                     self.userInfor.useCategoriesPersonalValue = value;
                     characteristics.save(self.KEY, self.userInfor);
-//                  let newVertSumHeader = self.createVertSumHeader();
-//                  let newVertSumContent = self.createVertSumContent(detailContent);
-//                  $("#cacheDiv").append($('#vertDiv'));
-//                  $("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
-//                  $("#vertDropDown").html(function() { return $('#vertDiv'); });
                     self.getAggregatedInfo(true, false);
                 });
                 
@@ -451,13 +448,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     characteristics.save(self.KEY, self.userInfor);
                     self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
                             (_.includes([WorkplaceCounterCategory.EXTERNAL_BUDGET], value) && self.funcNo15_WorkPlace));
-                    // $("#cacheDiv").append($('#horzDiv'));
-                    self.getAggregatedInfo(false, true);
+                    if(self.callAlgSumA12){
+                        self.getAggregatedInfo(false, true);
+                    }
                 });
-
-				self.selectedModeDisplayInBody.subscribe((value: any) => {
-
-				});
 
                 // ngày có thể chỉnh sửa schedule
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
@@ -615,7 +609,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.getSettingDisplayWhenStart(ViewMode.SHIFT, false);
                 //WORKPLACE(0), //WORKPLACE_GROUP(1);
                 __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.designation);
-                $($("#Aa1_2 > button")[1]).html(data.dataBasicDto.designation);
+                $('#Aa1_2 > label:nth-child(2) > span').html(data.dataBasicDto.designation);
 
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 // set data shiftPallet
@@ -657,6 +651,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listCellUpdatedWhenChangeModeBg = [];
                 self.hasChangeModeBg = false;
                 
+                // update A12
+                if (data.aggrerateWorkplace) {
+                    self.dataAggrerateWorkplace = data.aggrerateWorkplace;
+                }
+
+                self.createHorzSumData();
+                self.updateHorzSumGrid();
+
                 dfd.resolve();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -700,6 +702,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dataBindGrid = self.convertDataToGrid(data, ViewMode.SHORTNAME);
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, ViewMode.SHORTNAME);
+                
+                // update A12
+                if (data.aggrerateWorkplace) {
+                    self.dataAggrerateWorkplace = data.aggrerateWorkplace;
+                }
+                self.createHorzSumData();
+                self.updateHorzSumGrid();
                 
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
@@ -751,6 +760,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let dataBindGrid = self.convertDataToGrid(data, ViewMode.TIME);
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, ViewMode.TIME);
+                
+                // update A12
+                if (data.aggrerateWorkplace) {
+                    self.dataAggrerateWorkplace = data.aggrerateWorkplace;
+                }
+                self.createHorzSumData();
+                self.updateHorzSumGrid();
 
                 self.mode() == UpdateMode.DETERMINE ? self.confirmModeAct(false) : self.editModeAct(false);
                 
@@ -5362,7 +5378,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData: userInfor.achievementDisplaySelected,
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
                 unit: input.unit,
-                wkpId: input.unit == 0 ? input.workplaceId : input.workplaceGroupID,
+                wkpId: input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceId : input.workplaceGroupID,
                 day: self.closeDate.day,
                 isLastDay: self.closeDate.lastDay,
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
@@ -5371,24 +5387,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             service.changeWokPlace(param).done((data: IDataStartScreen) => {
                 
-                self.targetOrganizationName(input.unit == 0 ? input.workplaceName : input.workplaceGroupName);
+                self.targetOrganizationName(input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceName : input.workplaceGroupName);
                 
                 self.userInfor.unit             = input.unit;
-                self.userInfor.workplaceId      = input.unit == 0 ? input.workplaceId : '';
-                self.userInfor.workplaceGroupId = input.unit == 0 ? '' : input.workplaceGroupID;
-                self.userInfor.workPlaceName    = input.unit == 0 ? input.workplaceName : input.workplaceGroupName;
+                self.userInfor.workplaceId      = input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceId : '';
+                self.userInfor.workplaceGroupId = input.unit == WorkPlaceUnit.WORKPLACE ? '' : input.workplaceGroupID;
+                self.userInfor.workPlaceName    = input.unit == WorkPlaceUnit.WORKPLACE ? input.workplaceName : input.workplaceGroupName;
                 self.userInfor.code             = input.workplaceGroupCode;
                 characteristics.save(self.KEY, self.userInfor);
                 
                 if (self.userInfor.disPlayFormat === ViewMode.TIME || self.userInfor.disPlayFormat === ViewMode.SHORTNAME) {
                     __viewContext.viewModel.viewAB.check(false);
-                    __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
+                    __viewContext.viewModel.viewAB.filter(input.unit == WorkPlaceUnit.WORKPLACE ? true : false);
                     __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
                 } else {
-                    if (input.unit == 0) {
-                        $($("#Aa1_2 > button")[1]).html(getText('Com_Workplace'));
+                    if (input.unit == WorkPlaceUnit.WORKPLACE) {
+                        $('#Aa1_2 > label:nth-child(2) > span').html(getText('Com_Workplace'));
                     } else {
-                        $($("#Aa1_2 > button")[1]).html(getText('Com_WorkplaceGroup'));
+                        $('#Aa1_2 > label:nth-child(2) > span').html(getText('Com_WorkplaceGroup'));
                     }
 
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
@@ -5908,9 +5924,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getAggregatedInfo(param).done((data: any) => {
                 let start = Date.now();
-                let aggreratePersonal = data.aggreratePersonal; // Data A11
-                let aggrerateWorkplace = data.aggrerateWorkplace; // Data A12
-                let externalBudget = data.externalBudget;
 
                 if (data.aggreratePersonal) {
                     self.dataAggreratePersonal = data.aggreratePersonal;
@@ -6135,7 +6148,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         NORMAL = 0,
         SHIFT = 1
     }
-
+    
+    export enum WorkPlaceUnit {
+        WORKPLACE = 0,
+        WORKPLACE_GROUP = 1
+    }
+    
     class ExItem {
         sid: string;
         empName: string;
