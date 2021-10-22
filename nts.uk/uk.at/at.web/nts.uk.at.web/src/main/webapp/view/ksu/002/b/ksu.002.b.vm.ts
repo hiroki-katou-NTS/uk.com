@@ -37,13 +37,21 @@ module nts.uk.ui.at.ksu002.b {
             vm.$window.storage("ksu002B_old").done((data) => {
                 if (_.has(data, 'isTotalDisplay')) {
                     vm.model.isTotalDisplay(data.isTotalDisplay);
+                    setTimeout(function () {
+                        $('#B4_2 input:radio:checked').focus();
+                    }, 500);
                 }
             });
-            $(document).ready(function () {
-                setTimeout(function () {
-                    $('#B4_2').children(":first").children(":first").focus();
-                }, 500);
-            });
+            /*  $(document).ready(function () {
+                  setTimeout(function () {
+                     // $('#B4_2').children(":first").children(":first").focus();
+                      if (vm.model.isTotalDisplay()) {
+                          $($('#B4_2').children()[1]).first().focus();
+                      } else {
+                          $('#B4_2').first().first().focus();
+                      }
+                  }, 500);
+              });*/
         }
 
         getDatePeriod(): string {
