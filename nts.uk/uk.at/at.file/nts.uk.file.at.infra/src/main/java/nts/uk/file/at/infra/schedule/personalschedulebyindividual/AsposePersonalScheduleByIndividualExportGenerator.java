@@ -58,6 +58,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
         try {
             long startTime = System.nanoTime();
+            List<StandardMenu> menus = standardMenuRepo.findAll(AppContexts.user().companyId());
+            String menuName = menus.stream().filter(i -> i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KSU002"))
+                    .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU002_56"));
+
             AsposeCellsReportContext reportContext = createContext(TEMPLATE_FILE);
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
@@ -68,6 +72,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             } else {
                 worksheets.removeAt(1);
             }
+            wsSource.setName(menuName);
 
             //  Worksheet wsDestination = worksheets.get(1);
             pageSetting(wsSource, dataSource);
@@ -78,11 +83,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
 
             // Save as excel file
-            List<StandardMenu> menus = standardMenuRepo.findAll(AppContexts.user().companyId());
-            String menuName = menus.stream().filter(i -> i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KSU002"))
-                    .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU002_56"));
             reportContext.saveAsExcel(createNewFile(context, getReportName(menuName + EXCEL_EXT)));
-
             long estimatedTime = (System.nanoTime() - startTime) / 1000000000;
             System.out.println("Thoi gian export excel la: " + estimatedTime + " seconds");
 

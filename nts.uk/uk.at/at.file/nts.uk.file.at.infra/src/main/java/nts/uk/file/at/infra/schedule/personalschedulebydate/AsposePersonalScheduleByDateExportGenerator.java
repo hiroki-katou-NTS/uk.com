@@ -52,14 +52,17 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     public void generate(FileGeneratorContext context, PersonalScheduleByDateDataSource dataSource) {
         try {
             long startTime = System.nanoTime();
+            List<StandardMenu> menus = standardMenuRepo.findAll(AppContexts.user().companyId());
+            String menuName = menus.stream().filter(i -> i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KSU003"))
+                    .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU003_138"));
+
             AsposeCellsReportContext reportContext = createContext(TEMPLATE_FILE);
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            String companyName = dataSource.getCompanyInfo().getCompanyName();
 
             Worksheet wsSource = worksheets.get(2);
             Worksheet wsDestination = worksheets.get(1);
-            wsDestination.setName(companyName);
+            wsDestination.setName(menuName);
 
             pageSetting(wsDestination, dataSource);
             printHeader(wsDestination, dataSource);
@@ -70,9 +73,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             reportContext.processDesigner();
 
             // Save as excel file
-            List<StandardMenu> menus = standardMenuRepo.findAll(AppContexts.user().companyId());
-            String menuName = menus.stream().filter(i -> i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KSU003"))
-                    .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU003_138"));
             reportContext.saveAsExcel(createNewFile(context, getReportName(menuName + EXCEL_EXT)));
             System.out.println("Thoi gian export excel: " + (System.nanoTime() - startTime) / 1000000000 + " seconds");
         } catch (Exception e) {
