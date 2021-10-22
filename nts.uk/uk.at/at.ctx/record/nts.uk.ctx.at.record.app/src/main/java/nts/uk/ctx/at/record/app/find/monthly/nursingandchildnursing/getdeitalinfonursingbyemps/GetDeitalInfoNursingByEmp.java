@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.shr.com.i18n.TextResource;
@@ -169,8 +170,7 @@ public class GetDeitalInfoNursingByEmp {
 			String value1 = "";
 			String value2 = "";
 			String value3 = "";
-			if (aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedTimes()
-					.isPresent()) {
+			if ( acquireNursingAndChildNursingDto.getNursingLeaveSetting().get().getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES) { //120688
 				value1 = KDL051_31;
 				value2 = convertTime(aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber()
 						.getUsedTimes().get().v());
