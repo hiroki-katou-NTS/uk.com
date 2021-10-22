@@ -101,8 +101,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		// No268特別休暇の利用制御
 		AnnualPaidLeaveSetting annualPaidLeaveSet = annualPaidLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
 
-		if (annualPaidLeaveSet.getTimeSetting().getTimeManageType() == ManageDistinct.NO
-				|| annualPaidLeaveSet.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.YES) {
+		if (annualPaidLeaveSet.getTimeSetting().getTimeManageType() == ManageDistinct.NO) {
 			return annLeaveRemainNumber.getDays() + "日";
 		}	
 
