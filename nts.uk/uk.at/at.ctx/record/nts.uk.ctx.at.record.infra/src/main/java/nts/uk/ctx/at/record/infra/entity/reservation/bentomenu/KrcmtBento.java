@@ -10,11 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoAmount;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -41,14 +43,11 @@ public class KrcmtBento extends ContractUkJpaEntity {
     @Column(name = "PRICE2")
     public int price2;
 
-    @Column(name = "RESERVATION1_ATR")
-    public boolean reservationAtr1;
-
-    @Column(name = "RESERVATION2_ATR")
-    public boolean reservationAtr2;
-
     @Column(name = "WORK_LOCATION_CD")
     public String workLocationCode;
+    
+    @Column(name = "FRAME_NO")
+    public int receptionTimezoneNo;
 
     @ManyToOne
     @PrimaryKeyJoinColumns({
@@ -69,8 +68,7 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 new BentoAmount(price1),
                 new BentoAmount(price2),
                 new BentoReservationUnitName(unitName),
-                reservationAtr1,
-                reservationAtr2,
+                EnumAdaptor.valueOf(receptionTimezoneNo, ReservationClosingTimeFrame.class),
                 Optional.of(new WorkLocationCode(workLocationCode)));
     }
 
@@ -85,10 +83,8 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 bento.getUnit().v(),
                 bento.getAmount1().v(),
                 bento.getAmount2().v(),
-                bento.isReservationTime1Atr(),
-                bento.isReservationTime2Atr(),
-                bento.getWorkLocationCode().isPresent() ?
-                        bento.getWorkLocationCode().get().v() : null,
+                bento.getWorkLocationCode().isPresent() ? bento.getWorkLocationCode().get().v() : null,
+        		bento.getReceptionTimezoneNo().value,
                 krcmtBentoMenu
         );
     }

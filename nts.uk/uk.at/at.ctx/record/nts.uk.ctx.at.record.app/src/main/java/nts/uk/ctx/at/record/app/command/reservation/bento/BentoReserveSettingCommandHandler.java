@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -29,7 +30,7 @@ import java.util.*;
 public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReserveSettingCommand> {
 
     @Inject
-    private BentoReservationSettingRepository reservationSettingRepository;
+    private ReservationSettingRepository reservationSettingRepository;
 
     @Inject
     private BentoMenuRepository bentoMenuRepository;
@@ -51,15 +52,13 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
         RequireImpl require = new RequireImpl(reservationSettingRepository,bentoMenuRepository,bentoMenuHistoryRepository);
 
         Achievements achievements =  new Achievements(
-                new ReferenceTime(command.getReferenceTime()),
-                EnumAdaptor.valueOf(command.getDailyResults(), AchievementMethod.class),
                 EnumAdaptor.valueOf(command.getMonthlyResults(), AchievementMethod.class)
         );
         CorrectionContent correctionContent = new CorrectionContent(
                 EnumAdaptor.valueOf(command.getContentChangeDeadline(), ContentChangeDeadline.class),
                 EnumAdaptor.valueOf(command.getContentChangeDeadlineDay(), ContentChangeDeadlineDay.class),
-                EnumAdaptor.valueOf(command.getOrderedData(), OrderedData.class),
-                EnumAdaptor.valueOf(command.getOrderDeadline(), OrderDeadline.class)
+                EnumAdaptor.valueOf(command.getOrderedData(), ReservationOrderMngAtr.class),
+                new ArrayList<>()
         );
         ReservationClosingTime closingTime1 = new ReservationClosingTime(new BentoReservationTimeName(command.getName1()),
                 new BentoReservationTime(command.getEnd1()),
@@ -83,13 +82,13 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
     @AllArgsConstructor
     private class RequireImpl implements RegisterReservationLunchService.Require{
 
-        private BentoReservationSettingRepository reservationSettingRepository;
+        private ReservationSettingRepository reservationSettingRepository;
         private BentoMenuRepository bentoMenuRepository;
         private IBentoMenuHistoryRepository bentoMenuHistoryRepository;
 
         @Override
-        public BentoReservationSetting getReservationSettings(String cid) {
-            Optional<BentoReservationSetting> opt = reservationSettingRepository.findByCId(cid);
+        public ReservationSetting getReservationSettings(String cid) {
+            Optional<ReservationSetting> opt = reservationSettingRepository.findByCId(cid);
             return opt.orElse(null);
         }
 
@@ -114,28 +113,27 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
                 }
                 Optional<WorkLocationCode> workLocationCode = workLocation == null ? Optional.empty() : Optional.of(new WorkLocationCode(workLocation));
                 Bento bento = new Bento(1,new BentoName(bentoName),new BentoAmount(1000),
-                        new BentoAmount(0),new BentoReservationUnitName(unit),
-                        true,false,workLocationCode);
+                        new BentoAmount(0),new BentoReservationUnitName(unit), ReservationClosingTimeFrame.FRAME1, workLocationCode);
 
-                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));
+                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento)));
             }else {
                 //get bentomenu
                 BentoMenu bentoMenu = bentoMenuRepository.getBentoMenuByHistId(companyId,historyID);
 
                 //update
-                bentoMenu.setClosingTime(bentoReservationClosingTime);
+                // bentoMenu.setClosingTime(bentoReservationClosingTime);
 
                 bentoMenuRepository.update(bentoMenu);
             }
         }
 
         @Override
-        public void inSert(BentoReservationSetting bentoReservationSetting) {
+        public void inSert(ReservationSetting bentoReservationSetting) {
             reservationSettingRepository.add(bentoReservationSetting);
         }
 
         @Override
-        public void update(BentoReservationSetting bentoReservationSetting) {
+        public void update(ReservationSetting bentoReservationSetting) {
             reservationSettingRepository.update(bentoReservationSetting);
         }
     }

@@ -20,6 +20,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
@@ -37,6 +39,9 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 	
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
+	
+	@Inject
+	private ReservationSettingRepository reservationSettingRepository;
 
 	@Inject
 	private GetStampCardQuery getStampCardQuery;
@@ -57,28 +62,28 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		StampNumber stampNumber = stampCards.get(employeeId);
 		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampNumber.toString());
 		
-		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
+		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository, reservationSettingRepository);
 		
 		GeneralDateTime datetime = GeneralDateTime.now();
-        AtomTask persist1 = BentoReserveModifyService.reserve(
-                require, 
-                reservationRegisterInfo, 
-                new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
-                datetime,
-                command.getFrame1Bentos(),
-				workLocationCode);
-        
-        AtomTask persist2 = BentoReserveModifyService.reserve(
-                require, 
-                reservationRegisterInfo, 
-                new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2),
-                datetime,
-                command.getFrame2Bentos(),
-				workLocationCode);
+//        AtomTask persist1 = BentoReserveModifyService.reserve(
+//                require, 
+//                reservationRegisterInfo, 
+//                new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
+//                datetime,
+//                command.getFrame1Bentos(),
+//				workLocationCode);
+//        
+//        AtomTask persist2 = BentoReserveModifyService.reserve(
+//                require, 
+//                reservationRegisterInfo, 
+//                new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2),
+//                datetime,
+//                command.getFrame2Bentos(),
+//				workLocationCode);
 		
 		transaction.execute(() -> {
-            persist1.run();
-            persist2.run();
+//            persist1.run();
+//            persist2.run();
 		});
 	}
 	
@@ -88,6 +93,8 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		private final BentoMenuRepository bentoMenuRepository;
 		
 		private final BentoReservationRepository bentoReservationRepository;
+		
+		private final ReservationSettingRepository reservationSettingRepository;
 
 		@Override
 		public BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
@@ -109,6 +116,12 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 		@Override
 		public void delete(BentoReservation bentoReservation) {
 			bentoReservationRepository.delete(bentoReservation);
+		}
+
+		@Override
+		public ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo,
+				int operationDistinction) {
+			return reservationSettingRepository.getReservationSetByOpDistAndFrameNo(companyID, frameNo, operationDistinction);
 		}
 		
 	}

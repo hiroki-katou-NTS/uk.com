@@ -45,9 +45,9 @@ public class BentoMenuHistService {
             // Get item last.
             BentoMenu bentomenu = require.getBentoMenu(companyId, GeneralDate.max());
             if (bentomenu != null){
-                require.addBentomenu(itemToBeAdded,bentomenu.getClosingTime(),bentomenu.getMenu());
+                require.addBentomenu(itemToBeAdded, bentomenu.getMenu());
             }else {
-                require.addBentomenu(itemToBeAdded,bentoReservationClosingTime,new ArrayList<>());
+                require.addBentomenu(itemToBeAdded, new ArrayList<>());
             }
         });
     }
@@ -61,7 +61,7 @@ public class BentoMenuHistService {
         //【R-3】弁当メニュー履歴を追加
         void add(DateHistoryItem item);
         // Add new Bentomenu.
-        void addBentomenu(DateHistoryItem item,BentoReservationClosingTime bentoReservationClosingTime, List<Bento> bentos);
+        void addBentomenu(DateHistoryItem item, List<Bento> bentos);
 
     }
 }

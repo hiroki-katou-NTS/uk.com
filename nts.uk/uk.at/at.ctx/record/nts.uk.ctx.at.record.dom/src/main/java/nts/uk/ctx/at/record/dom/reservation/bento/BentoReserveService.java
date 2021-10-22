@@ -3,9 +3,12 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 弁当を予約する
@@ -14,14 +17,32 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
  */
 public class BentoReserveService {
 	
-	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate,
-								   GeneralDateTime dateTime, Map<Integer, BentoReservationCount> bentoDetails, Optional<WorkLocationCode> workLocationCode) {
+	/**
+	 * 	[1] 予約する
+	 * @param require
+	 * @param registerInfor 登録情報
+	 * @param reservationDate 対象日
+	 * @param dateTime 予約登録日時
+	 * @param bentoDetails 明細
+	 * @param frameNo 枠No
+	 * @param workLocationCode 勤務場所コード
+	 * @return
+	 */
+	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, 
+			Map<Integer, BentoReservationCount> bentoDetails, int frameNo, Optional<WorkLocationCode> workLocationCode) {
+		
+		String companyID = AppContexts.user().companyId();
+		ReservationRecTimeZone reservationRecTimeZone = require.getReservationSetByOpDistAndFrameNo(companyID, frameNo, 0);
+		
+		if(reservationRecTimeZone==null) {
+			throw new BusinessException("Msg_2285");
+		}
 		
 		// 1: get(予約対象日,勤務場所コード)
 		BentoMenu bentoMenu = require.getBentoMenu(reservationDate,workLocationCode);
 		
 		// 2: 予約する(予約登録情報, 予約対象日, Map<弁当メニュー枠番, 弁当予約個数>)
-		BentoReservation bentoReservation = bentoMenu.reserve(registerInfor, reservationDate, dateTime,workLocationCode, bentoDetails);
+		BentoReservation bentoReservation = bentoMenu.reserve(registerInfor, reservationDate, dateTime,workLocationCode, bentoDetails, reservationRecTimeZone);
 		
 		return AtomTask.of(() -> {
 			// 3: persist
@@ -34,5 +55,7 @@ public class BentoReserveService {
 		BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode);
 		
 		void reserve(BentoReservation bentoReservation);
+		
+		ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo, int operationDistinction);
 	}
 }

@@ -13,8 +13,8 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
@@ -46,7 +46,7 @@ public class ReservationQuery {
 	private BentomenuAdapter bentomenuAdapter;
 
 	@Inject
-	private BentoReservationSettingRepository bentoReservationSettingRepository;
+	private ReservationSettingRepository bentoReservationSettingRepository;
 
 	@Inject
 	private GetStampCardQuery getStampCardQuery;
@@ -59,7 +59,7 @@ public class ReservationQuery {
 		Optional<WorkLocationCode> workLocationCode = Optional.empty();
 
 		//運用区分を取得(会社ID)
-		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
+		Optional<ReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
 
 		// 勤務場所を取得 (社員ID,　基準日)
 		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter.findBySid(employeeId,date);
@@ -85,8 +85,8 @@ public class ReservationQuery {
 		//2 get(会社ID, 予約日)
 		val bento = bentoMenuRepo.getBentoMenu(companyId, date,workLocationCode);
 		//3 締め時刻別のメニュー
-		BentoMenuByClosingTime bentoMenuClosingTime = bento.getByClosingTime(workLocationCode);
-		return new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()), BentoMenuByClosingTimeDto.fromDomain(bentoMenuClosingTime),
+		// BentoMenuByClosingTime bentoMenuClosingTime = bento.getByClosingTime(workLocationCode);
+		return new ReservationDto(listBento.stream().map(x -> BentoReservationDto.fromDomain(x)).collect(Collectors.toList()),
 				workLocationCode.isPresent()? workLocationCode.get().v() : null );
 	}
 	

@@ -27,6 +27,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -62,6 +64,9 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 	@Inject
 	private TopPgAlTrRepository executionLog;
+	
+	@Inject
+	private ReservationSettingRepository reservationSettingRepository;
 
 	@Override
 	public Optional<AtomTask> convertData(String empInfoTerCode, String contractCode,
@@ -69,7 +74,7 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 
 		RequireImpl requireImpl = new RequireImpl("", empInfoTerminalRepository, timeRecordReqSettingRepository,
 				employeeManageRCAdapter, bentoMenuRepository, bentoReservationRepository, stampRecordRepository,
-				stampCardRepository, executionLog);
+				stampCardRepository, executionLog, reservationSettingRepository);
 		return ConvertTimeRecordReservationService.convertData(requireImpl, new EmpInfoTerminalCode(empInfoTerCode),
 				new ContractCode(contractCode),
 				new ReservationReceptionData(reservReceptData.getIdNumber(), reservReceptData.getMenu(),
@@ -97,6 +102,8 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		private final StampCardRepository stampCardRepository;
 
 		private final TopPgAlTrRepository executionLog;
+		
+		private final ReservationSettingRepository reservationSettingRepository;
 
 		@Override
 		public void reserve(BentoReservation bentoReservation) {
@@ -155,6 +162,12 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		public BentoMenu getBentoMenu(ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
 			return bentoMenuRepository.getBentoMenu(companyId, reservationDate.getDate(), workLocationCode);
 
+		}
+
+		@Override
+		public ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo,
+				int operationDistinction) {
+			return reservationSettingRepository.getReservationSetByOpDistAndFrameNo(companyID, frameNo, operationDistinction);
 		}
 	}
 

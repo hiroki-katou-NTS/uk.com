@@ -6,6 +6,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.*;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -31,8 +32,7 @@ public class UpdateReseItemSettingCommandHandler extends CommandHandler<UpdateRe
                 new BentoAmount(command.getAmount1()),
                 command.getAmount2() == null ? new BentoAmount(0) : new BentoAmount(command.getAmount2()),
                 new BentoReservationUnitName(command.getUnit()),
-                command.isCanBookClosesingTime1(),
-                command.isCanBookClosesingTime2(),
+                command.isCanBookClosesingTime1()?ReservationClosingTimeFrame.FRAME1:ReservationClosingTimeFrame.FRAME2,
                 command.getWorkLocationCode() != null?
                         Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty()
         );

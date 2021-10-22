@@ -1,22 +1,21 @@
 package nts.uk.screen.at.app.reservation;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 
 /**
  * 予約確認一覧
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 public class ReservationConfirmationListScreenQuery {
 
     @Inject
-    private BentoReservationSettingRepository bentoReservationSettingRepository;
+    private ReservationSettingRepository bentoReservationSettingRepository;
 
     @Inject
     private BentoMenuRepository bentoMenuRepo;
@@ -41,11 +40,11 @@ public class ReservationConfirmationListScreenQuery {
         ReservationConfirmationListDto dto = new ReservationConfirmationListDto();
 
         // 取得する(会社ID)
-        Optional<BentoReservationSetting> optBentoReservationSetting = bentoReservationSettingRepository.findByCId(companyId);
+        Optional<ReservationSetting> optBentoReservationSetting = bentoReservationSettingRepository.findByCId(companyId);
         //    取得したドメインモデル「弁当予約設定」がないの場合
         //　　エラーメッセージ「Msg_1847」を表示、A画面へ戻る
         if (optBentoReservationSetting.isPresent()) {
-            BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
+            ReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
         } else {
             throw new BusinessException("Msg_1847");
@@ -77,34 +76,34 @@ public class ReservationConfirmationListScreenQuery {
         List<BentoItemDto> bentoItemList = copyBentoItemList(menuByOperationType);
         dto.setMenu(bentoItemList);
 
-        BentoReservationClosingTime closingTime = bentoMenu.getClosingTime();
-        String reservationFrameName1 = closingTime.getClosingTime1().getReservationTimeName().v();
-        int reservationStartTime1 = closingTime.getClosingTime1().getStart().get().v();
-        int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
-        Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
-
-        String reservationFrameName2 = "";
-        Integer reservationStartTime2 = null;
-        Integer reservationEndTime2 = null;
-        if (closingTime2.isPresent()){
-            ReservationClosingTime ct2 = closingTime2.get();
-            reservationFrameName2 = ct2.getReservationTimeName().v();
-            if (ct2.getStart().isPresent()){
-                reservationStartTime2 = ct2.getStart().get().v();
-            }
-            reservationEndTime2 = ct2.getFinish().v();
-        }
-
-
-		ReservationClosingTimeDto timeFrame = new ReservationClosingTimeDto(
-                reservationFrameName1,
-                reservationStartTime1,
-                reservationEndTime1,
-                reservationFrameName2,
-                reservationStartTime2,
-                reservationEndTime2
-        );
-        dto.setClosingTime(timeFrame);
+//        BentoReservationClosingTime closingTime = bentoMenu.getClosingTime();
+//        String reservationFrameName1 = closingTime.getClosingTime1().getReservationTimeName().v();
+//        int reservationStartTime1 = closingTime.getClosingTime1().getStart().get().v();
+//        int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
+//        Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
+//
+//        String reservationFrameName2 = "";
+//        Integer reservationStartTime2 = null;
+//        Integer reservationEndTime2 = null;
+//        if (closingTime2.isPresent()){
+//            ReservationClosingTime ct2 = closingTime2.get();
+//            reservationFrameName2 = ct2.getReservationTimeName().v();
+//            if (ct2.getStart().isPresent()){
+//                reservationStartTime2 = ct2.getStart().get().v();
+//            }
+//            reservationEndTime2 = ct2.getFinish().v();
+//        }
+//
+//
+//		ReservationClosingTimeDto timeFrame = new ReservationClosingTimeDto(
+//                reservationFrameName1,
+//                reservationStartTime1,
+//                reservationEndTime1,
+//                reservationFrameName2,
+//                reservationStartTime2,
+//                reservationEndTime2
+//        );
+//        dto.setClosingTime(timeFrame);
 
         return dto;
     }

@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.Helper;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.Achievements;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.CorrectionContent;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.shr.com.context.AppContexts;
@@ -86,8 +86,8 @@ public class RegisterReservationLunchServiceTest {
         GeneralDate date = GeneralDate.max();
         CorrectionContent correctionContent = Helper.Reservation.correctionContent.DUMMY;
 
-        BentoReservationSetting reservationSetting =
-                new BentoReservationSetting("CID",operationDistinction,correctionContent,achievements);
+        ReservationSetting reservationSetting =
+                new ReservationSetting("CID",operationDistinction,correctionContent,achievements);
 
         new Expectations() {{
             require.getReservationSettings("CID");
@@ -118,8 +118,8 @@ public class RegisterReservationLunchServiceTest {
         GeneralDate date = GeneralDate.max();
         CorrectionContent correctionContent = Helper.Reservation.correctionContent.DUMMY;
 
-        BentoReservationSetting reservationSetting =
-                new BentoReservationSetting("CID",operationDistinction,correctionContent,achievements);
+        ReservationSetting reservationSetting =
+                new ReservationSetting("CID",operationDistinction,correctionContent,achievements);
 
         BentoMenu menu = new BentoMenu(
                 "historyId",

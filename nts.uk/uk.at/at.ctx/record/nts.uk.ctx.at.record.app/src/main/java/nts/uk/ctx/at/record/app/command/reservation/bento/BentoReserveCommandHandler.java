@@ -12,13 +12,17 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.reservation.bento.*;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.service.GetStampCardQuery;
@@ -39,6 +43,9 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 
 	@Inject
 	private GetStampCardQuery getStampCardQuery;
+	
+	@Inject
+	private ReservationSettingRepository reservationSettingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
@@ -54,32 +61,32 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		StampNumber stampNumber = stampCards.get(employeeId);
 		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampNumber.toString());
 		
-		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
+		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository, reservationSettingRepository);
 		
 		GeneralDateTime datetime = GeneralDateTime.now();
 		
 		transaction.execute(() -> {
-			if(!CollectionUtil.isEmpty(command.getFrame1Bentos().values())) {
-				AtomTask persist1 = BentoReserveService.reserve(
-						require, 
-						reservationRegisterInfo, 
-						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
-						datetime,
-						command.getFrame1Bentos(),
-						workLocationCode);
-				persist1.run();
-			}
-			
-			if(!CollectionUtil.isEmpty(command.getFrame2Bentos().values())) {
-				AtomTask persist2 = BentoReserveService.reserve(
-						require, 
-						reservationRegisterInfo, 
-						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
-						datetime,
-						command.getFrame2Bentos(),
-						workLocationCode);
-				persist2.run();
-			}
+//			if(!CollectionUtil.isEmpty(command.getFrame1Bentos().values())) {
+//				AtomTask persist1 = BentoReserveService.reserve(
+//						require, 
+//						reservationRegisterInfo, 
+//						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
+//						datetime,
+//						command.getFrame1Bentos(),
+//						workLocationCode);
+//				persist1.run();
+//			}
+//			
+//			if(!CollectionUtil.isEmpty(command.getFrame2Bentos().values())) {
+//				AtomTask persist2 = BentoReserveService.reserve(
+//						require, 
+//						reservationRegisterInfo, 
+//						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
+//						datetime,
+//						command.getFrame2Bentos(),
+//						workLocationCode);
+//				persist2.run();
+//			}
 		});
 		
 	}
@@ -91,6 +98,8 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		
 		private final BentoReservationRepository bentoReservationRepository;
 		
+		private final ReservationSettingRepository reservationSettingRepository;
+		
 		@Override
 		public BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
 			String companyID = AppContexts.user().companyId();
@@ -100,6 +109,12 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		@Override
 		public void reserve(BentoReservation bentoReservation) {
 			bentoReservationRepository.add(bentoReservation);
+		}
+
+		@Override
+		public ReservationRecTimeZone getReservationSetByOpDistAndFrameNo(String companyID, int frameNo,
+				int operationDistinction) {
+			return reservationSettingRepository.getReservationSetByOpDistAndFrameNo(companyID, frameNo, operationDistinction);
 		}
 		
 	}

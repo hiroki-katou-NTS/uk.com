@@ -10,16 +10,16 @@ public class ReservationDto {
 
 	private List<BentoReservationDto> listOrder;	
 	
-	private BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto;
+	// private BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto;
 
 	public ReservationDto() {
 		super();
 	}
 
-	public ReservationDto(List<BentoReservationDto> listOrder, BentoMenuByClosingTimeDto bentoMenuByClosingTimeDto, String workLocationCode) {
+	public ReservationDto(List<BentoReservationDto> listOrder, String workLocationCode) {
 		super();
 		this.listOrder = listOrder;
-		this.bentoMenuByClosingTimeDto = bentoMenuByClosingTimeDto;
+		// this.bentoMenuByClosingTimeDto = bentoMenuByClosingTimeDto;
 		this.workLocationCode = workLocationCode;
 	}
 	

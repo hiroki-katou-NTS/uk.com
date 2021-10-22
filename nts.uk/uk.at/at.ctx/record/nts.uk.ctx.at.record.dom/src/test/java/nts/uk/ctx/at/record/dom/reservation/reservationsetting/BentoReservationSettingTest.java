@@ -19,7 +19,7 @@ public class BentoReservationSettingTest {
 	@Test
 	public void getters() {
 
-		BentoReservationSetting target = new BentoReservationSetting(
+		ReservationSetting target = new ReservationSetting(
 				null, null, null,null);
 		NtsAssert.invokeGetters(target);
 	}

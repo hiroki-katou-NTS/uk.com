@@ -6,19 +6,24 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.*;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoAmountTotal;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 
 /**
- * 弁当メニュー
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務実績.支給賞与額履歴.予約.弁当メニュー.弁当メニュー
  * @author Doan Duy Hung
  *
  */
@@ -36,64 +41,68 @@ public class BentoMenu extends AggregateRoot {
 	@Getter
 	private final List<Bento> menu;
 	
-	/**
-	 * 締め時刻
-	 */
-	@Getter
-	@Setter
-	private BentoReservationClosingTime closingTime;
-	
-	public BentoMenu(String historyID, List<Bento> menu, BentoReservationClosingTime closingTime) {
+	public BentoMenu(String historyID, List<Bento> menu) {
 		// inv-1	1 <= ＠メニュー.size <= 40
 		if(menu.size() <= 0 || menu.size() > 40) {
 			throw new RuntimeException("System error");
 		}
+		// 	inv-2	@メニュー.枠番が重複しないこと	
+		if(CollectionUtil.isEmpty(menu)) {
+			throw new RuntimeException("System error");
+		}
+		List<Integer> frameNoLst = menu.stream().map(x -> x.getFrameNo()).collect(Collectors.toList());
+		List<Integer> frameNoDistinctLst = frameNoLst.stream().distinct().collect(Collectors.toList());
+		if(frameNoLst.size()!=frameNoDistinctLst.size()) {
+			throw new RuntimeException("System error");
+		}
 		this.historyID = historyID;
 		this.menu = menu;
-		this.closingTime = closingTime;
 	}
 	
 	/**
-	 * 予約する
-	 * @param registerInfor
-	 * @param reservationDate
-	 * @param bentoDetails
+	 * [1] 予約する
+	 * @param registerInfor 登録情報
+	 * @param reservationDate 対象日
+	 * @param dateTime 予約登録日時
+	 * @param workLocationCode 勤務場所コード
+	 * @param bentoDetails 明細
+	 * @param reservationRecTimeZone 予約受付時間帯
 	 * @return
 	 */
-	public BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime,
-									Optional<WorkLocationCode> workLocationCode,Map<Integer, BentoReservationCount> bentoDetails) {
-		receptionCheck(dateTime, reservationDate);
+	public BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, Optional<WorkLocationCode> workLocationCode, 
+			Map<Integer, BentoReservationCount> bentoDetails, ReservationRecTimeZone reservationRecTimeZone) {
+		receptionCheck(dateTime, reservationRecTimeZone, reservationDate);
 		List<BentoReservationDetail> bentoReservationDetails = bentoDetails.entrySet().stream()
 				.map(x -> createBentoReservationDetail(reservationDate, x.getKey(), x.getValue(), dateTime)).collect(Collectors.toList());
 		return BentoReservation.reserve(registerInfor, reservationDate,workLocationCode, bentoReservationDetails);
 	}
 	
-	/**
-	 * 締め時刻別のメニュー
-	 * @return
-	 */
-	public BentoMenuByClosingTime getByClosingTime(Optional<WorkLocationCode> workLocationCode) {
-		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr() && x.getWorkLocationCode().equals(workLocationCode))
-				.map(x -> x.itemByClosingTime())
-				.collect(Collectors.toList());
-		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr() && x.getWorkLocationCode().equals(workLocationCode))
-				.map(x -> x.itemByClosingTime())
-				.collect(Collectors.toList());
-		return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
-	}
+//	/**
+//	 * 締め時刻別のメニュー
+//	 * @return
+//	 */
+//	public BentoMenuByClosingTime getByClosingTime(Optional<WorkLocationCode> workLocationCode) {
+//		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr() && x.getWorkLocationCode().equals(workLocationCode))
+//				.map(x -> x.itemByClosingTime())
+//				.collect(Collectors.toList());
+//		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr() && x.getWorkLocationCode().equals(workLocationCode))
+//				.map(x -> x.itemByClosingTime())
+//				.collect(Collectors.toList());
+//		return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
+//	}
 	
 	/**
 	 * 予約受付チェック
-	 * @param dateTime
-	 * @param reservationDate
+	 * @param dateTime 予約登録日時
+	 * @param reservationRecTimeZone 予約受付時間帯
+	 * @param reservationDate 対象日
 	 */
-	public void receptionCheck(GeneralDateTime dateTime, ReservationDate reservationDate) {
-		if(reservationDate.isPastDay()) {
-			throw new BusinessException("Msg_1584");
-		}
-		
-		if(reservationDate.isToday() && !closingTime.canReserve(reservationDate.getClosingTimeFrame(), dateTime.clockHourMinute())) {
-			throw new BusinessException("Msg_1585");
+	public void receptionCheck(GeneralDateTime dateTime, ReservationRecTimeZone reservationRecTimeZone, ReservationDate reservationDate) {
+		if(!reservationRecTimeZone.canMakeReservation(
+				EnumAdaptor.valueOf(reservationDate.getClosingTimeFrame().value, ReservationClosingTimeFrame.class), 
+				reservationDate.getDate(), 
+				dateTime.clockHourMinute())) {
+			throw new BusinessException("Msg_2287");
 		}
 	}
 	

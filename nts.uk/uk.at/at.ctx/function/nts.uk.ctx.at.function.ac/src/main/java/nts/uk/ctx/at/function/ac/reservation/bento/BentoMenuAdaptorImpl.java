@@ -25,9 +25,9 @@ public class BentoMenuAdaptorImpl implements BentoMenuAdaptor {
 										.amount2(b.getAmount2())
 										.frameNo(b.getFrameNo())
 										.name(b.getName())
-										.reservationTime1Atr(b.isReservationTime1Atr())
-										.reservationTime2Atr(b.isReservationTime2Atr())
 										.unit(b.getUnit())
+										.receptionTimezoneNo(b.getReceptionTimezoneNo())
+										.workLocationCode(b.getWorkLocationCode())
 										.build())
 				.collect(Collectors.toList());
 	}

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.reservation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +41,6 @@ public class Helper {
 
 		public static class achievements {
 			public static Achievements DUMMY = new Achievements(
-					new ReferenceTime(1),
-					AchievementMethod.valueOf(1),
 					AchievementMethod.valueOf(1)
 			);
 		}
@@ -50,8 +49,8 @@ public class Helper {
 			public static CorrectionContent DUMMY = new CorrectionContent(
 					ContentChangeDeadline.valueOf(1),
 					ContentChangeDeadlineDay.valueOf(1),
-					OrderedData.valueOf(1),
-					OrderDeadline.valueOf(1)
+					ReservationOrderMngAtr.CAN_MANAGE,
+					new ArrayList<>()
 			);
 		}
 
@@ -127,8 +126,7 @@ public class Helper {
 	public static class Menu {
 		public static final BentoMenu DUMMY = new BentoMenu(
 				"historyId",
-				Arrays.asList(Item.DUMMY),
-				ClosingTime.UNLIMITED);
+				Arrays.asList(Item.DUMMY));
 		
 		public static class Item {
 			public static final Bento DUMMY = bentoReserveFrame(1, true, true);

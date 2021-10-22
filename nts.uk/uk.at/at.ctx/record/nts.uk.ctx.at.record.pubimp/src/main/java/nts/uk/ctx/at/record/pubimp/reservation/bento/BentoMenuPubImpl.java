@@ -28,9 +28,9 @@ public class BentoMenuPubImpl implements BentoMenuPub {
 										.amount2(b.getAmount2().v())
 										.frameNo(b.getFrameNo())
 										.name(b.getName().v())
-										.reservationTime1Atr(b.isReservationTime1Atr())
-										.reservationTime2Atr(b.isReservationTime2Atr())
 										.unit(b.getUnit().v())
+										.receptionTimezoneNo(b.getReceptionTimezoneNo().value)
+										.workLocationCode(b.getWorkLocationCode().map(x -> x.v()).orElse(null))
 										.build())
 				.collect(Collectors.toList());
 	}
