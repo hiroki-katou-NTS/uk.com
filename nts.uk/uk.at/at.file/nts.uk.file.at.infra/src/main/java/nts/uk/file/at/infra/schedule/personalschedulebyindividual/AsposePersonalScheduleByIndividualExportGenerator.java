@@ -1,6 +1,19 @@
 package nts.uk.file.at.infra.schedule.personalschedulebyindividual;
 
-import com.aspose.cells.*;
+import com.aspose.cells.BackgroundType;
+import com.aspose.cells.BorderType;
+import com.aspose.cells.Cell;
+import com.aspose.cells.CellArea;
+import com.aspose.cells.CellBorderType;
+import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
+import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.Style;
+import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
@@ -333,17 +346,25 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 int secondCol = 38;
                 cells.get(rowCount, firstCol).setValue(item.getD21());
                 Cell cellD22 = cells.get(rowCount + 1, firstCol);
-                cellD22.setValue(item.getD22());
-                cells.get(rowCount + 1, secondCol).setValue(item.getD23());
-                cells.get(rowCount + 2, firstCol).setValue(item.getD24());
-                cells.get(rowCount + 2, secondCol).setValue(item.getD25());
-                cells.get(rowCount + 3, firstCol).setValue(item.getD26());
+                Cell cellD23 =cells.get(rowCount + 1, secondCol);
+                Cell cellD24 =cells.get(rowCount + 2, firstCol);
+                Cell cellD25 = cells.get(rowCount + 2, secondCol);
+                Cell cellD26 =cells.get(rowCount + 3, firstCol);
                 Cell cellD27 = cells.get(rowCount + 3, secondCol);
+                cellD22.setValue(item.getD22());
+                cellD23.setValue(item.getD23());
+                cellD24.setValue(item.getD24());
+                cellD25.setValue(item.getD25());
+                cellD26.setValue(item.getD26());
                 cellD27.setValue(item.getD27());
-                if (item.getD21().isEmpty() || item == null) {
-                    setBgColor(cellD22);
-                    setBgColor(cellD27);
-                }
+                setBgWhile(cellD22);
+                setBgWhile(cellD23);
+                setBgWhile(cellD24);
+                setBgWhile(cellD25);
+                setBgWhile(cellD26);
+                setBgWhile(cellD27);
+                setBgWhile(cells.get(rowCount+4,firstCol));
+
             }
             rowCount += 5;
             
@@ -360,11 +381,11 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     /*
-    * #ddddd2
-    * */
-    private void setBgColor(Cell cell) {
+     * #ddddd2
+     * */
+    private void setBgWhile(Cell cell) {
         Style style = cell.getStyle();
-        style.setForegroundColor(Color.fromArgb(221, 221, 210));
+        style.setForegroundColor(Color.getWhite());
         cell.setStyle(style);
     }
 
