@@ -155,7 +155,15 @@ public class GetDeitalInfoNursingByEmp {
 			// set 年間上限数
 			Double limitDays = (double) aggrResultOfChildCareNurse.getStartdateDays().getThisYear().getLimitDays().v()
 					- aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedDay().v();
-			String KDL051_30 = TextResource.localize("KDL051_30", limitDays.toString(), "", "", "");
+			
+			String timeRemain = "0:00";
+			if (aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedTimes()
+					.isPresent() && aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedTimes().get().v() != 0) {
+				limitDays = limitDays -1;			
+				timeRemain = convertTime(480 - aggrResultOfChildCareNurse.getAggrperiodinfo().getThisYear().getUsedNumber().getUsedTimes().get().v());
+			}
+			
+			String KDL051_30 = TextResource.localize("KDL051_30", limitDays.toString(), timeRemain, "", "");
 			dataResult.setMaxNumberOfYear(KDL051_30);
 			// set 上限制限開始日
 			dataResult.setUpperLimitStartDate(childCareNurseUpperLimitPeriod.getPeriod().start().toString());
