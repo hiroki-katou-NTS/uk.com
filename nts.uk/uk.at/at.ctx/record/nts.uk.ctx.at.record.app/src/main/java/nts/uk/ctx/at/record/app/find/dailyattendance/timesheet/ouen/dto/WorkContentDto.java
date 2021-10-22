@@ -24,17 +24,17 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 /** 作業内容 */
 public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	
-	
-	/** 勤務先: 応援別勤務の勤務先 */
+		/** 勤務先: 応援別勤務の勤務先 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = WORKPLACE_BYSUPPORT)
 	private WorkplaceOfWorkEachOuenDto workplace;
 	
+	
 	/** 作業: 作業グループ */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = WORKGROUP)
-	private WorkGroupDto work;
+	private Optional<WorkGroupDto> workOpt;
 
 	/** 作業補足情報 */
-	private WorkSuppInfoDto workSuppInfo;
+	private Optional<WorkSuppInfoDto> workSuppInfo;
 	
 	public static WorkContentDto from(WorkContent domain) {
 		if (domain == null) return null;
@@ -48,17 +48,17 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	public WorkContent domain() {
 		return WorkContent.create(
 				workplace == null ? WorkplaceOfWorkEachOuen.create(new WorkplaceId(""), null) : workplace.domain(), 
-				Optional.ofNullable(work == null ? null : work.domain()),
+				workOpt,
 				Optional.empty(),
-				Optional.ofNullable(workSuppInfo == null ? null : workSuppInfo.domain())); 
+				workSuppInfo); 
 	} 
 	
 	@Override
 	public WorkContentDto clone() {
 		WorkContentDto result = new WorkContentDto();
 		result.setWorkplace(workplace == null ? null : workplace.clone());
-		result.setWork(work == null ? null : work.clone());
-		result.setWorkSuppInfo(workSuppInfo == null ? null : workSuppInfo.clone());
+		result.setWork(!workOpt.isPresent() ? null : workOpt.get().clone());
+		result.setWorkSuppInfo(!workSuppInfo.isPresent() ? null : workSuppInfo.get().clone());
 		return result;
 	}
 	
@@ -83,10 +83,10 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 			workplace = (WorkplaceOfWorkEachOuenDto) value;
 			break;
 		case WORKGROUP:
-			work = (WorkGroupDto) value;
+			workOpt = Optional.ofNullable((WorkGroupDto) value);
 			break;
 		case SUPP:
-			workSuppInfo = (WorkSuppInfoDto) value;
+			workSuppInfo = Optional.ofNullable((WorkSuppInfoDto) value);
 			break;
 		default:
 			break;
@@ -99,11 +99,24 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 		case WORKPLACE_BYSUPPORT:
 			return Optional.ofNullable(workplace);
 		case WORKGROUP:
-			return Optional.ofNullable(work);
+			return workOpt;
 		case SUPP:
-			return Optional.ofNullable(workSuppInfo);
+			return workSuppInfo;
 		default:
 			return Optional.empty();
 		}
 	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case WORKPLACE_BYSUPPORT:
+		case WORKGROUP:
+			return PropType.OBJECT;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
 }

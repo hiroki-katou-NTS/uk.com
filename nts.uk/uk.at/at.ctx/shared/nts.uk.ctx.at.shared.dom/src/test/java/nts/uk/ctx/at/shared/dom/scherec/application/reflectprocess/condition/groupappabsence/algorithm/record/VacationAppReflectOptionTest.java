@@ -56,7 +56,8 @@ public class VacationAppReflectOptionTest {
 				"004");// 就業時間帯コード **/
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
 				1);// no = 1, 就業時間帯コード = 001
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, 
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 出退勤を反映する=反映する
 
 		option.process(require, "", workInfo, new ArrayList<>(), PrePostAtrShare.POSTERIOR,
@@ -90,7 +91,8 @@ public class VacationAppReflectOptionTest {
 				1);// no = 1, 就業時間帯コード = 001
 		String workTimeBefore = dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v();// 前就業時間帯コード
 
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, 
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映しない
 
 		val resultActual = option.process(require, "", workInfo, new ArrayList<>(),
@@ -102,82 +104,6 @@ public class VacationAppReflectOptionTest {
 				.isEqualTo("003");// 勤務種類コード
 	}
 
-	/*
-	 * テストしたい内容
-	 * 
-	 * →出退勤を反映する
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →休暇系申請の反映.出退勤を反映する = する;
-	 * 
-	 */
-	@Test
-	public void test3() {
-		WorkInformation workInfo = new WorkInformation("003", // 勤務種類コード
-				"004");// 就業時間帯コード **/
-
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1);// no = 1, 就業時間帯コード = 001
-
-		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
-
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.USE, // 出退勤を反映する=する
-				ReflectWorkHourCondition.REFLECT);
-
-		DailyAfterAppReflectResult resultActual = option.process(require, "", workInfo,
-				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
-
-		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
-				.extracting(x -> x.getWorkNo().v(), // No
-						x -> x.getStampOfAttendance().get().getTimeDay().getTimeWithDay().get().v(), // 出勤 .時刻
-						x -> x.getStampOfAttendance().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(), // 出勤.時刻変更手段
-						x -> x.getStampOfLeave().get().getTimeDay().getTimeWithDay().get().v(), // 退勤 .時刻
-						x -> x.getStampOfLeave().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans())// 退勤.時刻変更手段
-				.contains(Tuple.tuple(1, 488, TimeChangeMeans.APPLICATION, 1028, TimeChangeMeans.APPLICATION));
-	}
-
-	/*
-	 * テストしたい内容
-	 * 
-	 * →出退勤を反映しない
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →休暇系申請の反映.出退勤を反映する = しない;
-	 * 
-	 */
-	@Test
-	public void test4() {
-		WorkInformation workInfo = new WorkInformation("003", // 勤務種類コード
-				"004");// 就業時間帯コード **/
-
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// no = 1, 就業時間帯コード = 001
-		int startBefore = dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getStampOfAttendance().get()
-				.getTimeDay().getTimeWithDay().get().v();
-
-		int endBefore = dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getStampOfLeave().get()
-				.getTimeDay().getTimeWithDay().get().v();
-
-		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
-
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, // 出退勤を反映する=しない
-				ReflectWorkHourCondition.REFLECT);
-
-		DailyAfterAppReflectResult resultActual = option.process(require, "", workInfo,
-				workingHours, PrePostAtrShare.POSTERIOR, NotUseAtr.USE, dailyApp);
-
-		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
-				.extracting(x -> x.getWorkNo().v(), // No
-						x -> x.getStampOfAttendance().get().getTimeDay().getTimeWithDay().get().v(), // 出勤 .時刻
-						x -> x.getStampOfAttendance().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(), // 出勤.時刻変更手段
-						x -> x.getStampOfLeave().get().getTimeDay().getTimeWithDay().get().v(), // 退勤 .時刻
-						x -> x.getStampOfLeave().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans())// 退勤.時刻変更手段
-				.contains(Tuple.tuple(1, startBefore, TimeChangeMeans.AUTOMATIC_SET, endBefore,
-						TimeChangeMeans.AUTOMATIC_SET));
-
-	}
 
 	/*
 	 * テストしたい内容
@@ -200,7 +126,8 @@ public class VacationAppReflectOptionTest {
 
 		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
 
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE, NotUseAtr.NOT_USE, // 1日休暇の場合は出退勤を削除=する
+		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE, // 1日休暇の場合は出退勤を削除=する
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);
 
 		new Expectations() {
@@ -249,7 +176,8 @@ public class VacationAppReflectOptionTest {
 
 		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
 
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE, NotUseAtr.NOT_USE, // 1日休暇の場合は出退勤を削除=する
+		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.USE,  // 1日休暇の場合は出退勤を削除=する
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);
 		new Expectations() {
 			{

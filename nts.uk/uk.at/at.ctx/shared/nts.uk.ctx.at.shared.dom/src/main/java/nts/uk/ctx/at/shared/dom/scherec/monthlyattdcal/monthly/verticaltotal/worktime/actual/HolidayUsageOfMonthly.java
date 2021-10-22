@@ -40,10 +40,10 @@ public class HolidayUsageOfMonthly implements Serializable {
 			return;
 		}
 		
-		this.absence = this.absence.addHours(attendanceTime.getActualWorkingTimeOfDaily()
+		this.absence = this.absence.addMinutes(attendanceTime.getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getHolidayOfDaily().getAbsence().getUseTime().valueAsMinutes());
 		
-		this.transferHoliday = this.transferHoliday.addHours(attendanceTime.getActualWorkingTimeOfDaily()
+		this.transferHoliday = this.transferHoliday.addMinutes(attendanceTime.getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getHolidayOfDaily().getTransferHoliday().getUseTime().valueAsMinutes());
 	}
 	

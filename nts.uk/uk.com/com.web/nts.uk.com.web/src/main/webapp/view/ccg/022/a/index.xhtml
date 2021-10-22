@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+﻿<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -64,12 +64,12 @@
 						<!-- A3_3 -->
 						<div class="div_line">
 							<textarea id="in_progress_message_txt" style="height: 76px"
-								data-bind="ntsMultilineEditor: { value: usageStopMessage , 
+								data-bind="ntsMultilineEditor: { value: stopMessage, 
 																name: '#[CCG022_20]', 
 																constraint: 'StopMessage', 
 																option: { width: '500px'},
-																enable:selectedSystemMode()==1,
-																required:selectedSystemMode()==1,
+																enable:selectedSystemMode()==2,
+																required:selectedSystemMode()==2,
 																immediateValidate :true
 																}"></textarea>
 						</div>
@@ -81,8 +81,8 @@
 											options: stopMode ,
 											optionsValue: 'id',
 											optionsText: 'name',
-											value: selectedStopMode ,
-											enable:selectedSystemMode()==2
+											value: selectedStopMode,
+											enable:isSelectedStop
 											 }"></div>
 
 						</div>
@@ -95,12 +95,12 @@
 						<!-- A4_5 -->
 						<div class="div_line">
 							<textarea id="stop_message_txt" style="height: 76px"
-								data-bind="ntsMultilineEditor: { value: stopMessage , 
+								data-bind="ntsMultilineEditor: { value: usageStopMessage, 
 																name: '#[CCG022_25]', 
 																constraint: 'StopMessage', 
 																option: { width: '500px'},
-																enable:selectedSystemMode()==2,
-																required:selectedSystemMode()==2,
+																enable:selectedSystemMode()==3,
+																required:selectedSystemMode()==3,
 																immediateValidate :true
 																}"></textarea>
 						</div>

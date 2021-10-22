@@ -8,6 +8,8 @@ module nts.uk.at.view.kdw006.c.service {
         getDaily: 'at/record/workrecord/operationsetting/getDaily',
         // C3_2
         getMonthly: 'at/record/workrecord/operationsetting/getMonthy',
+        //C2_7 C2_8
+        licenseCheck:'at/record/workrecord/operationsetting/licenseCheck',
 
         getAppType: 'at/function/dailyfix/find',
 
@@ -66,6 +68,9 @@ module nts.uk.at.view.kdw006.c.service {
         
     export function getApplicationType(): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.getApplicationType);
+    }
+    export function licenseCheck(): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.licenseCheck);
     } 
 
 }

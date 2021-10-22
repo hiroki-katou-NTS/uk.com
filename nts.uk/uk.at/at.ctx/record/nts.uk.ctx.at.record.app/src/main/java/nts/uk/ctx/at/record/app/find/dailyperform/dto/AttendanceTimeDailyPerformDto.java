@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -245,5 +247,11 @@ public class AttendanceTimeDailyPerformDto extends AttendanceItemCommon {
 				budgetTimeVariance == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(budgetTimeVariance),
 				unemployedTime == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(unemployedTime)));
 		return domain.getTime();
+	}
+	
+	public void correctWithEditState(List<EditStateOfDailyPerformanceDto> editStates) {
+
+		if (this.actualWorkTime != null) 
+			this.actualWorkTime.correct(editStates);
 	}
 }

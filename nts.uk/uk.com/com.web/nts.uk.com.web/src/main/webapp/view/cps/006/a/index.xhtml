@@ -110,10 +110,12 @@
 								<com:ko-if bind="categoryType() === 2 ">
 									<label id="continue">#{i18n.getText('CPS006_48')}</label>
 								</com:ko-if>
+								<div class="custom-img-1">
 								<button tabindex="9"
 									data-bind="ntsHelpButton: {image: '/view/cps/005/image/singe_multi.png', 
 									position: 'right+100 top',
 									enable: true }">?</button>
+								</div>
 							</com:ko-if>
 
 							<com:ko-if
@@ -141,9 +143,10 @@
 								<com:ko-if bind="categoryType() === 5 ">
 									<label id="continue">#{i18n.getText('Enum_HistoryTypes_DUPLICATE')}</label>
 								</com:ko-if>
-
+								<div class="custom-img-2">
 								<button tabindex="10"
-									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history_type.png', position: 'right+100 top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: '/view/cps/005/image/history_type.png', position: 'right+100 top-115', enable: true }">?</button>
+								</div>
 							</com:ko-if>
 						</div>
 					</div>

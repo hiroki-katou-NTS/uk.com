@@ -46,7 +46,7 @@ public class AddInfor extends DomainObject{
 							!StringUtil.isNullOrEmpty(add_2, true) ? new Add_2(add_2) : new Add_2(""), 
 							!StringUtil.isNullOrEmpty(addKana_1, true) ? new Add_Kana_1(addKana_1) : new Add_Kana_1(""),
 							!StringUtil.isNullOrEmpty(addKana_2, true) ? new Add_Kana_2(addKana_2) : new Add_Kana_2(""), 
-							!StringUtil.isNullOrEmpty(postCd, true) ? new PostCode(postCd) : new PostCode(""),
+							!StringUtil.isNullOrEmpty(postCd, true) ? new PostCode(postCd) : null,
 							!StringUtil.isNullOrEmpty(phoneNum, true) ? new PhoneNum(phoneNum) : new PhoneNum(""));
 	}
 }

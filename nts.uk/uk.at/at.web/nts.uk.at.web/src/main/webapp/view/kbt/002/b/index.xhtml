@@ -29,7 +29,7 @@
           data-bind="click: saveProcExec">#{i18n.getText('KBT002_3')}</button>
         <!-- B1_5 削除 -->
         <button id="B1_5" tabindex="4" class="danger"
-          data-bind="click: delProcExec">#{i18n.getText('KBT002_4')}</button>
+          data-bind="click: delProcExec, enable: !isNewMode()">#{i18n.getText('KBT002_4')}</button>
         <!-- <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogC">openDialogC</button>
         <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogK">OpenDialogK</button>
         <button id="B1_5" tabindex="4" class="danger" data-bind="click: openDialogL">OpenDialogL</button> -->
@@ -56,103 +56,75 @@
             </div>
           </div>
           <div id="right-content" data-bind="with: currentExecItem">
-            <table>
-              <colgroup>
-                <col width="150px" />
-                <col width="*" />
-              </colgroup>
-              <tr>
-                <td class="pb-5">
-                  <!-- B3_1 -->
-                  <div id="B3_1"
-                    data-bind="ntsFormLabel: { required: true, constraint: ['ExecutionCode', 'ExecutionName'] }">
-                    #{i18n.getText('KBT002_9')}</div>
-                </td>
-                <td>
-                  <!-- B3_2 -->
-                  <input id="B3_2" tabindex="6" title="#{i18n.getText('KBT002_10')}" class="nts-input" data-bind="ntsTextEditor: {
-                      name: '#[KBT002_10]',
-                      value: execItemCode,
-                      required: true,
-                      constraint: 'ExecutionCode',
-                      enable: $parent.isNewMode()
-                    }" />
-                  <!-- B3_3 -->
-                  <input id="B3_3" tabindex="7" title="#{i18n.getText('KBT002_11')}" class="nts-input fix-width-b3_3"
-                    data-bind="ntsTextEditor: {
-                      name: '#[KBT002_11]',
-                      value: execItemName,
-                      required: true,
-                      constraint: 'ExecutionName'
-                    }" />
-                </td>
-              </tr>
-              <tr>
-                <td class="pb-10">
+            <div class="common-control">
+              <div class="flex valign-center">
+                <!-- B3_1 -->
+                <div id="B3_1"
+                  data-bind="ntsFormLabel: { required: true, constraint: ['ExecutionCode', 'ExecutionName'] }">
+                  #{i18n.getText('KBT002_9')}
+                </div>
+                <!-- B3_2 -->
+                <input id="B3_2" tabindex="6" title="#{i18n.getText('KBT002_10')}" class="nts-input" data-bind="ntsTextEditor: {
+                  name: '#[KBT002_10]',
+                  value: execItemCode,
+                  required: true,
+                  constraint: 'ExecutionCode',
+                  enable: $parent.isNewMode()
+                  }" />
+                <!-- B3_3 -->
+                <input id="B3_3" tabindex="7" title="#{i18n.getText('KBT002_11')}" class="nts-input fix-width-b3_3"
+                  data-bind="ntsTextEditor: {
+                    name: '#[KBT002_11]',
+                    value: execItemName,
+                    required: true,
+                    constraint: 'ExecutionName'
+                  }" />
+              </div>
+              <div class="flex valign-center">
+                <div>
                   <!-- B4_1 -->
                   <div id="B4_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_12')}</div>
-                </td>
-                <td>
-                  <div class="flex">
-                    <!-- <div id="B4_2" tabindex="8" title="#{i18n.getText('KBT002_13')}" class="ntsControl">
-                      <label class="ntsRadioBox">
-                        <input id="B4_3" type="radio" name="execScopeRadio"
-                          data-bind="checkedValue: 0, checked: execScopeCls" />
-                        <span tabindex="8" class="box"></span>
-                        <span class="ml-10 mr-10">#{i18n.getText('Com_Company')}</span>
-                      </label>
-                      <label class="ntsRadioBox">
-                        <input id="B4_4" type="radio" name="execScopeRadio"
-                          data-bind="checkedValue: 1, checked: execScopeCls" />
-                        <span tabindex="8" class="box"></span>
-                        <span class="ml-10 mr-10">#{i18n.getText('Com_Workplace')}</span>
-                      </label>
-                    </div> -->
-                    <div id="B4_2" tabindex="8" class="cf switch-btn-fix-width" data-bind="ntsSwitchButton: {
-                        name: '#[KBT002_13]',
-                        value: execScopeCls,
-                        options: $parent.execRangeList,
-                        optionsValue: 'code',
-                        optionsText: 'name'
-                      }">
-                    </div>
-                    <div class="ntsControl">
-                      <span id="B4_11" class="middle">#{i18n.getText('KBT002_119')}</span>
-                      <!-- B4_12 基準日入力欄 -->
-                      <div id="B4_12" tabindex="9" title="#{i18n.getText('KBT002_17')}" class="fix-width-b4_12"
-                        data-bind="ntsDatePicker: { name: '#[KBT002_17]', value: refDate, dateFormat: 'YYYY/MM/DD', required: (execScopeCls() === 1) }">
-                      </div>
-                      <button id="B4_5" tabindex="10"
-                        data-bind="click: function() { $parent.openDialogCDL008() }">#{i18n.getText('KBT002_15')}</button>
-                      <!-- B4_6 B4_7 B4_8 B4_9 B4_10 -->
-                      <span class="ml-10" data-bind="text: $parent.workplaceListText"></span>
-                    </div>
+                </div>
+                <div>
+                  <div id="B4_2" tabindex="8" class="cf switch-btn-fix-width" data-bind="ntsSwitchButton: {
+                    name: '#[KBT002_13]',
+                    value: execScopeCls,
+                    options: $parent.execRangeList,
+                    optionsValue: 'code',
+                    optionsText: 'name'
+                  }">
                   </div>
-                </td>
-              </tr>
-              <tr>
-                <td class="pb-5">
-                  <!-- B5_1 -->
-                  <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_51')}</div>
-                </td>
-                <td class="flex valign-center">
-                  <div id="B5_2" tabindex="11" class="cf switch-btn-fix-width" data-bind="ntsSwitchButton: {
-                      name: '#[KBT002_51]',
-                      value: $parent.selectedTaskEnableSetting,
-                      options: $parent.taskEnableSettingList,
-                      optionsValue: 'code',
-                      optionsText: 'name',
-                      required: true,
-                      enable: ko.computed(function() { return !$parent.isNewMode() &amp;&amp; $parent.hasExecTaskSetting(); })
-                    }">
+                </div>
+                <div class="ntsControl">
+                  <span id="B4_11" class="middle">#{i18n.getText('KBT002_119')}</span>
+                  <!-- B4_12 基準日入力欄 -->
+                  <div id="B4_12" tabindex="9" title="#{i18n.getText('KBT002_17')}" class="fix-width-b4_12"
+                    data-bind="ntsDatePicker: { name: '#[KBT002_17]', value: refDate, dateFormat: 'YYYY/MM/DD', required: (execScopeCls() === 1) }">
                   </div>
-                  <button id="B5_5" tabindex="12" class="add ml-25"
-                    data-bind="click: function() { $parent.openDialogC() }, disable: $parent.isNewMode()">#{i18n.getText('KBT002_51')}</button>
-                  <label id="B5_6" class="limited-label"
-                    data-bind="text: $parent.executionTaskWarning"></label>
-                </td>
-              </tr>
-            </table>
+                  <button id="B4_5" tabindex="10"
+                    data-bind="click: function() { $parent.openDialogCDL008() }">#{i18n.getText('KBT002_15')}</button>
+                  <!-- B4_6 B4_7 B4_8 B4_9 B4_10 -->
+                  <span class="ml-10" data-bind="text: $parent.workplaceListText"></span>
+                </div>
+              </div>
+              <div class="flex valign-center">
+                <!-- B5_1 -->
+                <div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KBT002_51')}</div>
+                <div id="B5_2" tabindex="11" class="cf switch-btn-fix-width" data-bind="ntsSwitchButton: {
+                  name: '#[KBT002_51]',
+                  value: $parent.selectedTaskEnableSetting,
+                  options: $parent.taskEnableSettingList,
+                  optionsValue: 'code',
+                  optionsText: 'name',
+                  required: true,
+                  enable: ko.computed(function() { return !$parent.isNewMode() &amp;&amp; $parent.hasExecTaskSetting(); })
+                  }">
+                </div>
+                <button id="B5_5" tabindex="12" class="add ml-25"
+                  data-bind="click: function() { $parent.openDialogC() }, disable: $parent.isNewMode()">#{i18n.getText('KBT002_51')}</button>
+                <label id="B5_6" data-bind="text: $parent.executionTaskWarning"></label>
+              </div>
+            </div>
             <!-- Tab panel -->
             <div id="tab-panel" tabindex="13"
               data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: $parent.selectedTab }">

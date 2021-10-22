@@ -54,10 +54,18 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 			+ "AND a.recordPK.closureId = :closureId "
 			+ "AND a.recordPK.closureDay = :closureDay "
 			+ "AND a.recordPK.isLastDay = :isLastDay ";
-
+	
 	private static final String REMOVE_BY_EMPLOYEE = "DELETE FROM KrcdtRemarksMonthlyRecord a "
 			+ "WHERE a.recordPK.employeeId = :employeeId "
 			+ "AND a.recordPK.yearMonth = :yearMonth "
+			+ "AND a.recordPK.closureId = :closureId "
+			+ "AND a.recordPK.closureDay = :closureDay "
+			+ "AND a.recordPK.isLastDay = :isLastDay ";
+	
+	private static final String REMOVE_BY_REMARK = "DELETE FROM KrcdtRemarksMonthlyRecord a "
+			+ "WHERE a.recordPK.employeeId = :employeeId "
+			+ "AND a.recordPK.yearMonth = :yearMonth "
+			+ "AND a.recordPK.remarksNo = :remarksNo "
 			+ "AND a.recordPK.closureId = :closureId "
 			+ "AND a.recordPK.closureDay = :closureDay "
 			+ "AND a.recordPK.isLastDay = :isLastDay ";
@@ -179,17 +187,21 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 						remarksMonthlyRecord.getRemarksYM().v(),
 						remarksMonthlyRecord.getClosureDate().getClosureDay().v(),
 						remarksMonthlyRecord.getClosureDate().getLastDayOfMonth() ? 1 : 0);
-				
-				// 登録・更新
-				KrcdtRemarksMonthlyRecord entity = this.getEntityManager().find(KrcdtRemarksMonthlyRecord.class, key);
-				if (entity == null){
-					entity = new KrcdtRemarksMonthlyRecord();
-					entity.setRecordPK(key);
-					entity.toEntityCareRemainData(remarksMonthlyRecord);
-					this.getEntityManager().persist(entity);
-				}
-				else {
-					entity.toEntityCareRemainData(remarksMonthlyRecord);
+				if(remarksMonthlyRecord.getRecordRemarks() == null) {
+					this.removeRemark(remarksMonthlyRecord.getEmployeeId(), remarksMonthlyRecord.getRemarksYM(), 
+							new RemarksNo(remarksMonthlyRecord.getRemarksNo()), remarksMonthlyRecord.getClosureId(), remarksMonthlyRecord.getClosureDate());
+				} else {
+					// 登録・更新
+					KrcdtRemarksMonthlyRecord entity = this.getEntityManager().find(KrcdtRemarksMonthlyRecord.class, key);
+					if (entity == null){
+						entity = new KrcdtRemarksMonthlyRecord();
+						entity.setRecordPK(key);
+						entity.toEntityCareRemainData(remarksMonthlyRecord);
+						this.getEntityManager().persist(entity);
+					}
+					else {
+						entity.toEntityCareRemainData(remarksMonthlyRecord);
+					}
 				}
 	}
 
@@ -233,6 +245,19 @@ public class JpaRemarksMonthlyRecordRepository extends JpaRepository implements 
 		this.getEntityManager().createQuery(REMOVE_BY_EMPLOYEE, KrcdtRemarksMonthlyRecord.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("closureId", closureId.value)
+				.setParameter("closureDay", closureDate.getClosureDay().v())
+				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))
+				.executeUpdate();
+	}
+	
+	@Override
+	public void removeRemark(String employeeId, YearMonth yearMonth,RemarksNo remarksNo, ClosureId closureId, ClosureDate closureDate) {
+		
+		this.getEntityManager().createQuery(REMOVE_BY_REMARK, KrcdtRemarksMonthlyRecord.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearMonth", yearMonth.v())
+				.setParameter("remarksNo", remarksNo.v())
 				.setParameter("closureId", closureId.value)
 				.setParameter("closureDay", closureDate.getClosureDay().v())
 				.setParameter("isLastDay", (closureDate.getLastDayOfMonth() ? 1 : 0))

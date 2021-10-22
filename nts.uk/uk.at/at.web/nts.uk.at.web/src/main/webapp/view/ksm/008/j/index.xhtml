@@ -25,7 +25,7 @@
         <div class="table custom_table_j1_x" >
             <!-- j1_1-->
             <div class="cell valign-center">
-                <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}, style:{marginBottom: '5px'}">#{i18n.getText('KSM008_203')}</div>
+                <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}, style:{marginBottom: '5px', marginRight: '10px'}">#{i18n.getText('KSM008_203')}</div>
             </div>
             <!-- j1_2-->
             <div class="cell valign-center">
@@ -49,9 +49,9 @@
                     <table tabindex="2" id="single-list" data-bind="ntsGridList: {
                             dataSource: jItems,
                             primaryKey: 'code',
-                            columns: [ { headerText: '#{i18n.getText('KSM008_206')}', key: 'code', width: 80, formatter: _.escape },
+                            columns: [ { headerText: '#{i18n.getText('KSM008_206')}', key: 'code', width: 45, formatter: _.escape },
                                        { headerText: '#{i18n.getText('KSM008_207')}', key: 'name', width: 180, formatter: _.escape },
-                                       { headerText: '#{i18n.getText('KSM008_208')}', key: 'maxNumberOfDay', width: 80, formatter: _.escape }
+                                       { headerText: '#{i18n.getText('KSM008_208')}', key: 'maxNumberOfDay', width: 60, formatter: _.escape }
                                       ],
                             deleteOptions : {visible : false},
                             multiple: false,
@@ -60,10 +60,10 @@
                         },name:#{i18n.getText('KSM008_205')}"></table>
                 </div>
             </div>
-            <div class="cell valign-top">
+            <div class="cell valign-top" style="padding-left: 20px;">
                 <div class="table">
                     <!-- J3_1 -->
-                    <div class="cell valign-center" style="width: 155px">
+                    <div class="cell valign-center" style="width: 120px">
                         <div data-bind="ntsFormLabel: { constraint: ['ConsecutiveWorkTimeCode','ConsecutiveWorkTimeName'], enable: true, required:true }">#{i18n.getText('KSM008_209')}</div>
                     </div>
                     <div class="cell valign-center">
@@ -79,12 +79,12 @@
                 </div>
                 <div class="table" style="margin-top: 7px;">
                     <!-- J4_1 -->
-                    <div class="cell valign-center" style="width: 155px">
+                    <div class="cell valign-center" style="width: 120px">
                         <div data-bind="ntsFormLabel: {enable: true, required:true}">#{i18n.getText('KSM008_212')}</div>
                     </div>
                     <!-- J4_2 -->
                     <div class="cell valign-center">
-                        <button  id="J4_2" tabindex="5" data-bind="click: openKdl001ModalJScreen" style="margin-right: 5px;margin-left: 28px;width: 48px">#{i18n.getText('KSM008_213')}</button>
+                        <button  id="J4_2" tabindex="5" data-bind="click: openKdl001ModalJScreen" style="margin-right: 5px;width: 48px">#{i18n.getText('KSM008_213')}</button>
                     </div>
                     <!-- J4_3-->
                     <div class="cell valign-center">
@@ -93,13 +93,13 @@
                 </div>
                 <div class="table" style="margin-top: 7px">
                     <!-- J5_1 -->
-                    <div class="cell valign-center" style="width: 155px">
+                    <div class="cell valign-center" style="width: 120px">
                         <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', enable: true, required:true}">#{i18n.getText('KSM008_215')}</div>
                     </div>
                     <!-- J5_2 -->
                     <div class="cell valign-center">
                         <input tabindex="6" id="J5_2"
-                               data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: jScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_216]'}, style: { width: '27px', marginRight: '5px',marginLeft: '28px'}"/>
+                               data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: jScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_216]'}, style: { width: '27px', marginRight: '5px'}"/>
                     </div>
                     <!-- J5_3 -->
                     <div class="cell valign-center">

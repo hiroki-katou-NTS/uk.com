@@ -33,6 +33,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.DateProcessedRecord;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.InitSwitchSetAdapter;
@@ -713,7 +714,7 @@ public class DPCorrectionProcessorMob {
 				if (correct == null) {
 					if (formatCodeSelects.isEmpty()) {
 						List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
-								.findAuthorityFormatInitialDisplay(companyId);
+								.findAuthorityFormatInitialDisplay(companyId).stream().filter(item -> item.getPcSpAtr() == 1).collect(Collectors.toList());
 						if (!initialDisplayDtos.isEmpty()) {
 							List<String> formatCodes = initialDisplayDtos.stream()
 									.map(x -> x.getDailyPerformanceFormatCode()).collect(Collectors.toList());
@@ -1361,8 +1362,8 @@ public class DPCorrectionProcessorMob {
 					.filter(x -> x.getCode().equals(employeeDailyPerError.getErrorAlarmWorkRecordCode())).findAny()
 					.ifPresent((item) -> {
 						result.add(new ErAlWorkRecordShortDto(employeeDailyPerError.getDate().toString("yyyy/MM/dd"),
-								employeeDailyPerError.getEmployeeID(), item.getCode().v(), item.getName().v(),
-								employeeDailyPerError.getAttendanceItemList()));
+								employeeDailyPerError.getEmployeeID(), item.getCode().v(), item.getName().v(), 
+								item.getTypeAtr().nameId, employeeDailyPerError.getAttendanceItemList()));
 					});
 		}
 		return result;

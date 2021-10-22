@@ -38,6 +38,7 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
     active: KnockoutObservable<boolean> = ko.observable(false);
     enableDeleteButton: KnockoutComputed<boolean>;
     enableWorkRequestInput: KnockoutComputed<boolean>;
+    enableRegButton: KnockoutComputed<boolean>;
 
     constructor(params: any) {
       super();
@@ -105,6 +106,10 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
       });
       vm.enableWorkRequestInput = ko.computed(() => {
           return vm.workRequest() == 1;
+      });
+      vm.enableRegButton = ko.computed(() => {
+          if (vm.replaceThisVar() == 0) return vm.selectedWkpId() != null;
+          else return vm.selectedWkpGroupId() != null;
       });
     }
 

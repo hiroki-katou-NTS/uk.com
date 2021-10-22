@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 400, height: 350 };</script>
+			<script>var dialogSize = { width: 400, height: 270 };</script>
 			<com:ValidatorScript>
                     nts.uk.ctx.sys.assist.dom.storage.FileCompressionPassword
             </com:ValidatorScript>
@@ -18,7 +18,7 @@
 			<com:stylefile path="cmf004.c.style.css" />
 		</ui:define>
 		<ui:define name="content">
-			<div class="contents-area dialog-content">
+			<div id="contents-area" class="dialog-content">
 				<div class="div-table">
 					<div class="div-table-row-1"></div>
 					<div class="div-table-row">
@@ -55,13 +55,13 @@
 						</div>
 					</div>
 				</div>
-				<div id="functions-area-bottom">
-					<button tabindex="2" id="C1_6" class="small"
-						data-bind="click: cancelProcessing">#{i18n.getText('CMF004_54')}</button>
-					<button tabindex="3" id="C1_5" class="large proceed"
-						data-bind="click: processing, enable: $root.errors.isEmpty">#{i18n.getText('CMF004_53')}</button>
-				</div>
 			</div>
+      <div id="functions-area-bottom">
+        <button tabindex="2" id="C1_6" class="small"
+          data-bind="click: cancelProcessing">#{i18n.getText('CMF004_54')}</button>
+        <button tabindex="3" id="C1_5" class="large proceed"
+          data-bind="click: processing, enable: $root.errors.isEmpty">#{i18n.getText('CMF004_53')}</button>
+      </div>
 		</ui:define>
 	</ui:composition>
 </body>

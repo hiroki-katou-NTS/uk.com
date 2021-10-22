@@ -47,6 +47,8 @@ public class DisplayInforWhenStarting {
 	//振出申請
 	public RecruitmentAppCmd rec;
 	
+	public boolean checkFlag;
+	
 	/** 代行申請か có phải người đại diện không*/
 	public boolean represent;
 	

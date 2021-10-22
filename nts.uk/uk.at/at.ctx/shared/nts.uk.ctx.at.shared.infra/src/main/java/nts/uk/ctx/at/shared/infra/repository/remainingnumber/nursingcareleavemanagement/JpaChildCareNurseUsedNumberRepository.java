@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdnursingUse;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.nursingcareleave.KrcdtHdnursingUsePK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * リポジトリ実装：子の看護介護(共通)休暇使用数データ
@@ -45,7 +46,7 @@ public class JpaChildCareNurseUsedNumberRepository extends JpaRepository {
 		CollectionUtil.split(emplyeeIdsIn, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			resultList.addAll(this.queryProxy().query(SEL_USED_NUMBER, KrcdtHdnursingUse.class)
 				.setParameter("emplyeeIds", subList)
-				.setParameter("nursingType", nursingTypeIn)
+				.setParameter("nursingType", nursingTypeIn.value)
 				.getList(entity -> entity.toDomain()));
 		});
 		return resultList;
@@ -63,7 +64,7 @@ public class JpaChildCareNurseUsedNumberRepository extends JpaRepository {
 		if (entity == null){
 			entity = new KrcdtHdnursingUse();
 		}
-		entity.fromDomain(domain);
+		entity.fromDomain(AppContexts.user().companyId(), domain);
 		entity.pk = key;
 		this.getEntityManager().persist(entity);
 

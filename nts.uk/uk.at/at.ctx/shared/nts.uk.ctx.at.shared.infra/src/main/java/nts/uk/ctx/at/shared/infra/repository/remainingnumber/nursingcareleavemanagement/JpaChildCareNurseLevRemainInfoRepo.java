@@ -56,13 +56,14 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 		List<NursingCareLeaveRemainingInfo> result = new ArrayList<>();
 		CollectionUtil.split(empIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String sql = "SELECT * FROM KRCDT_HDNURSING_INFO WHERE  CID = ?  AND SID IN ("
-					+ NtsStatement.In.createParamsString(subList) + " AND NURSING_TYPE = ?)";
+					+ NtsStatement.In.createParamsString(subList) + ") AND NURSING_TYPE = ?";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(2 + i, subList.get(i));
 				}
+				stmt.setInt(1 + subList.size() + 1, nursingType.value);
 
 				List<NursingCareLeaveRemainingInfo> data = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
 					if ( nursingType.equals(NursingCategory.ChildNursing)) {
@@ -87,10 +88,10 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 
 	public void addAllList(String cid, List<NursingCareLeaveRemainingInfo> domains) {
 		String INS_SQL = "INSERT INTO KRCDT_HDNURSING_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG, EXCLUS_VER, CONTRACT_CD,"
 				+ " SID, CID, NURSING_TYPE, USE_ATR, UPPER_LIM_SET_ART, MAX_DAY_THIS_FISCAL_YEAR, MAX_DAY_NEXT_FISCAL_YEAR)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
-				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
+				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL, EXCLUS_VER_VAL, CONTRACT_CD_VAL,"
 				+ " SID_VAL, CID_VAL, NURSING_TYPE_VAL, USE_ATR_VAL, UPPER_LIM_SET_ART_VAL, MAX_DAY_THIS_FISCAL_YEAR_VAL, MAX_DAY_NEXT_FISCAL_YEAR_VAL);";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
@@ -99,6 +100,8 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 		String updCcd = insCcd;
 		String updScd = insScd;
 		String updPg = insPg;
+		
+		String contractCd = AppContexts.user().contractCode();
 		StringBuilder sb = new StringBuilder();
 		domains.stream().forEach(c -> {
 			String sql = INS_SQL;
@@ -111,6 +114,9 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 			sql = sql.replace("UPD_CCD_VAL", "'" + updCcd + "'");
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
+			
+			sql = sql.replace("EXCLUS_VER_VAL", "0");
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCd + "'");
 
 			sql = sql.replace("SID_VAL", "'" +  c.getSId() + "'");
 			sql = sql.replace("CID_VAL", "'" + cid + "'");
@@ -129,8 +135,8 @@ public class JpaChildCareNurseLevRemainInfoRepo extends JpaRepository {
 
 	public void updateAllList(String cid, List<NursingCareLeaveRemainingInfo> domains) {
 		String UP_SQL = "UPDATE KRCDT_HDNURSING_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
-				+ " NURSING_TYPE = NURSING_TYPE_VAL, USE_ATR = USE_ATR_VAL, UPPER_LIM_SET_ART = UPPER_LIM_SET_ART_VAL, MAX_DAY_THIS_FISCAL_YEAR = MAX_DAY_THIS_FISCAL_YEAR_VAL, MAX_DAY_NEXT_FISCAL_YEAR = MAX_DAY_NEXT_FISCAL_YEAR_VAL"
-				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
+				+ " USE_ATR = USE_ATR_VAL, UPPER_LIM_SET_ART = UPPER_LIM_SET_ART_VAL, MAX_DAY_THIS_FISCAL_YEAR = MAX_DAY_THIS_FISCAL_YEAR_VAL, MAX_DAY_NEXT_FISCAL_YEAR = MAX_DAY_NEXT_FISCAL_YEAR_VAL"
+				+ " WHERE SID = SID_VAL AND CID = CID_VAL AND NURSING_TYPE = NURSING_TYPE_VAL;";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
 		String updPg = AppContexts.programId();

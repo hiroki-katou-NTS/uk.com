@@ -33,9 +33,9 @@ public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 	
 	public String changeSourceHoliday;
 	
-	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
+	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements = new ArrayList<PayoutSubofHDManagementDto>();
 	
-	public List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld;
+	public List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld = new ArrayList<PayoutSubofHDManagementDto>();
 	
 	/** Use for Insert KAF011A */
 	public AbsenceLeaveApp toDomainInsertAbs() {

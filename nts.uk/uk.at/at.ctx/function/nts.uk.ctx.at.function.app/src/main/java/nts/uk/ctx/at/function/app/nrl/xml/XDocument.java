@@ -80,7 +80,8 @@ public abstract class XDocument<T> {
 			return dunmarshal(tmpFile).orElseThrow(InvalidFrameException::new);
 		} finally {
 			if (Objects.nonNull(tmpFile)) {
-				tmpFile.dispose();
+				tmpFile.closeInputStream();
+				tmpFile.closeOutputStream();;
 			}
 		}
 	}
@@ -120,6 +121,7 @@ public abstract class XDocument<T> {
 			int start, length;
 			switch (cmd) {
 				case ALL_IO_TIME:
+				case ALL_RESERVATION:
 					start = DefaultValue.ALL_IO_PLS;
 					length = DefaultValue.ALL_IO_PKT_LEN_XPL;
 					break;

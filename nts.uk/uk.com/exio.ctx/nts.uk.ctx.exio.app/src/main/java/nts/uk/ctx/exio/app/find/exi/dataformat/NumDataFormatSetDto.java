@@ -33,7 +33,7 @@ public class NumDataFormatSetDto {
 	/**
 	 * 固定値の値
 	 */
-	private String valueOfFixedValue;
+	private Double valueOfFixedValue;
 
 	/**
 	 * 少数桁数
@@ -64,7 +64,7 @@ public class NumDataFormatSetDto {
 		return new NumDataFormatSetDto(domain.getFixedValue().value, domain.getDecimalDivision().value,
 				domain.getEffectiveDigitLength().value,
 				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v().doubleValue() : null,
 				domain.getDecimalDigitNum().isPresent() ? domain.getDecimalDigitNum().get().v() : null,
 				domain.getStartDigit().isPresent() ? domain.getStartDigit().get().v() : null,
 				domain.getEndDigit().isPresent() ? domain.getEndDigit().get().v() : null,

@@ -5,7 +5,6 @@ import lombok.Setter;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
-import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
 
 /**
  * @author LamDT
@@ -55,20 +54,11 @@ public class PlacementPartDto {
 		return new PlacementPartDto(externalUrl.getWidth().v(), externalUrl.getHeight().v(), null, null, null, TopPagePartType.ExternalUrl.value, externalUrl.getUrl().v(), null, null);
 	}
 	
-	public static PlacementPartDto createFromTopPagePart(TopPagePart topPagePart) {
-		if (topPagePart.isFlowMenu()) {
-			FlowMenu flowMenu = (FlowMenu) topPagePart;
-			return new PlacementPartDto(flowMenu.getWidth().v(), flowMenu.getHeight().v(),
-					flowMenu.getToppagePartID(), flowMenu.getCode().v(), flowMenu.getName().v(),
-					TopPagePartType.FlowMenu.value, null,
+	public static PlacementPartDto createFromTopPagePart(FlowMenu flowMenu) {
+		return new PlacementPartDto(0, 0,
+				"", flowMenu.getCode().v(), flowMenu.getName().v(),
+				TopPagePartType.FlowMenu.value, null,
 					flowMenu.getFileID(), flowMenu.getDefClassAtr().value);
-		}else if(topPagePart.isOptionalWidget()||topPagePart.isStandardWidget()) {
-			return new PlacementPartDto(topPagePart.getWidth().v(), 
-					topPagePart.getHeight().v(), topPagePart.getToppagePartID(), 
-					topPagePart.getCode().v(), topPagePart.getName().v(), topPagePart.getType().value, 
-					null, null, null);
-		}
-		return null;
 	}
 	
 }

@@ -37,7 +37,7 @@
 						<td class="td-left">
 							<!-- A1_6 -->
 							<div class="row panel panel-frame">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_7')}</div>
+								<div id="A1_5" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR001_7')}</div>
 								<div
 									tabindex="3"
 									class="A1_6"
@@ -98,6 +98,7 @@
 													<span class="ntsControl">
 														<label class="with-text radio-wrapper nts-input">
 															<input
+                                tabindex="7"
 																type="radio"
 																name="textRadioA7_18"
 																data-bind="checkedValue: 0,
@@ -147,8 +148,7 @@
 																name="textRadioA7_18"
 																data-bind="checkedValue: 1,
 																					 checked: selectionType,
-																					 enable: freeSettingEnabled,
-																					 attr: {tabindex:43}" />
+																					 enable: freeSettingEnabled" />
 															<span class="box"></span>
 															<span class="label">#{i18n.getText('KWR001_124')}</span>
 														</label>

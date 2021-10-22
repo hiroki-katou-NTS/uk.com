@@ -6,7 +6,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 650, height: 640 };</script>
+			<script>var dialogSize = { width: 650, height: 700 };</script>
 			<com:ValidatorScript>
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatDecimalDigit
 			   nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatFixedValueOperation
@@ -23,7 +23,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents"
+			<div id="contents-area" class="dialog-contents"
 				data-bind="with: timeDataFormatSetting">
 				<!-- L1 - タイトル -->
 				<div id="L1" class="label dialog-title">#{i18n.getText('CMF002_192')}</div>

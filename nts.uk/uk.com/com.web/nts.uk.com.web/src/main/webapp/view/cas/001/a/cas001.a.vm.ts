@@ -168,6 +168,15 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         }
 
+        switchModeAllowOtherRef = ko.computed(()=>{
+            let vm =this;
+            return vm.allowOtherRef()===1;
+        });
+
+        switchModeAllowPersonRef = ko.computed(()=>{
+            let vm =this;
+            return vm.allowPersonRef()===1;
+        });
 
         changeAll(parrentId, changeValue) {
             let self = this,

@@ -289,7 +289,7 @@ public class ReserveLeaveInfo implements Cloneable {
 			}
 
 			// 積立年休不足ダミーフラグがtrueなら、消滅処理しない
-			if (grantRemainingNumber.isShortageRemain() == true) continue;
+			if (grantRemainingNumber.isDummyData() == true) continue;
 
 			// 処理中の付与残数データを期限切れにする
 			grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
@@ -630,7 +630,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 残数不足（ダミー）として作成した「年休付与残数(List)」を取得
 		List<ReserveLeaveGrantRemainingData> dummyRemainingList
 			= this.getGrantRemainingList().stream()
-			.filter(c -> c.isShortageRemain())
+			.filter(c -> c.isDummyData())
 			.collect(Collectors.toList());
 
 		if ( dummyRemainingList.size()==0 ) {
@@ -677,7 +677,7 @@ public class ReserveLeaveInfo implements Cloneable {
 		//　年休付与残数が残数不足の年休付与残数をListから削除
 		List<ReserveLeaveGrantRemainingData> noDummyList
 			= this.getGrantRemainingList().stream()
-				.filter(c->!c.isShortageRemain())
+				.filter(c->!c.isDummyData())
 				.collect(Collectors.toList());
 		this.setGrantRemainingList(noDummyList);
 	}

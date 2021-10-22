@@ -20,6 +20,7 @@ public class GetSettingCompensaLeave {
 	public static LeaveSetOutput process(Require require, String companyID, String employeeID, GeneralDate baseDate) {
 
 		boolean subManageFlag = false;
+		boolean canNextStep = true;
 		int expirationOfLeave = 0;
 		ApplyPermission applyPermission = null;
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
@@ -32,24 +33,31 @@ public class GetSettingCompensaLeave {
 			if (optEmpSubData.isPresent()) {// １件以上取得できた(1data trở lên)
 				// ドメインモデル「雇用振休管理設定」．管理区分をチェックする(kiểm tra domain 「雇用振休管理設定」．管理区分)
 				EmpSubstVacation empSubData = optEmpSubData.get();
-			/*	if (empSubData.getSetting().getIsManage().equals(ManageDistinct.YES)) {
-					subManageFlag = true;
-					// 振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
-					expirationOfLeave = empSubData.getSetting().getExpirationDate().value;
-					// refactor RQ204
-					applyPermission = empSubData.getSetting().getAllowPrepaidLeave();
-				}*/
-			} else {// ０件(0 data)
-					// ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
+				// ドメインモデル「雇用振休管理設定」．管理区分 = 管理しない(ko quản lý)
+				if (empSubData.getManageDistinct().equals(ManageDistinct.NO)) {
+					// 振休管理区分=false(phân khu quản lý nghỉ bù =flase)
+					subManageFlag = false;
+					canNextStep = false;
+				} 
+				// ドメインモデル「雇用振休管理設定」．管理区分 = 管理する(quản lý)
+			}
+			// ０件(0 data)
+			if (canNextStep) {
+				// ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
 				Optional<ComSubstVacation> comSub = require.findComById(companyID);
 				if (comSub.isPresent()) {
 					ComSubstVacation comSubSet = comSub.get();
+					// ドメインモデル「振休管理設定」．管理区分 = 管理する(quản lý)
 					if (comSubSet.isManaged()) {
 						subManageFlag = true;
 						// 振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
 						expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
 						// refactor RQ204
 						applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
+					} else {
+						// ドメインモデル「振休管理設定」．管理区分 = 管理しない(ko quản lý)
+						// 振休管理区分=false(phân khu quản lý nghỉ bù = false)
+						subManageFlag = false;
 					}
 				}
 			}

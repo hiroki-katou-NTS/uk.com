@@ -170,7 +170,13 @@ module nts.uk.at.view.ksu003.a.model {
 		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
 		return time;
 	}
-
+	
+	export function checkTimeChartChang(time: any, timeRangeLimit: any, dispStartHours: any) {
+		// check start time
+		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
+		return time;
+	}
+	
 	export function checkRangeBreakTime(lstHoliday: any[], breakTime: any, index: any) {
 		let rangeBreak: any = { start: 0, end: 9999 };
 		lstHoliday = _.filter(lstHoliday, x => { return x.index === index });
@@ -231,11 +237,13 @@ module nts.uk.at.view.ksu003.a.model {
 
 	export function calcAllTime(schedule: any, lstTime: any, timeRangeLimit: any, dispStart: any, dispStartHours: any) {
 		// Tính tổng thời gian làm việc
+		timeRangeLimit = timeRangeLimit;
+		let targetInfor = nts.uk.ui.windows.getShared("targetInforKsu003"); // thay tạm cho __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor
 		let totalTimeAll = 0, totalTimeWork = 0,
-			start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5, dispStartHours)) : 0,
-			end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5, dispStartHours)) : 0,
-			start2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime2 != null && schedule.workScheduleDto.startTime2 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.startTime2, timeRangeLimit * 5, dispStartHours)) : 0,
-			end2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime2 != null && schedule.workScheduleDto.endTime2 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.endTime2, timeRangeLimit * 5, dispStartHours)) : 0;
+			start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5 + dispStart * 5, dispStartHours)) : 0,
+			end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5 + dispStart * 5, dispStartHours)) : 0,
+			start2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime2 != null && schedule.workScheduleDto.startTime2 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.startTime2, timeRangeLimit * 5 + dispStart * 5, dispStartHours)) : 0,
+			end2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime2 != null && schedule.workScheduleDto.endTime2 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.endTime2, timeRangeLimit * 5 + dispStart * 5, dispStartHours)) : 0;
 
 		lstTime = _.sortBy(lstTime, [function(o: any) { return o.end; }]).reverse();
 		lstTime = _.uniqWith(lstTime, function(arrVal: any, othVal: any) {
@@ -255,9 +263,9 @@ module nts.uk.at.view.ksu003.a.model {
 		if (start2 != null && start2 != 0)
 			start2 = start2 <= dispStart * 5 ? dispStart * 5 : start2;
 
-		if (start2 != 0 && end2 != 0)
+		if (start2 != 0 && end2 != 0 && targetInfor == 1)
 			totalTimeWork = ((end2) - (start2)) + ((end1) - (start1));
-		else if (end1 != 0 && (start2 == 0 || end2 == 0))
+		else if (end1 != 0)
 			totalTimeWork = ((end1) - (start1));
 		totalTimeWork = totalTimeWork - totalTimeAll;
 

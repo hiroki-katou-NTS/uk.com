@@ -23,17 +23,25 @@ public class ApprovalRootStateImportDto {
 	
 	private GeneralDate date;
 	
+	private int rootType;
+	
+	private String employeeID;
+	
 	public static ApprovalRootStateImportDto fromDomain(ApprovalRootStateImport_New approvalRootStateImport) {
 		return new ApprovalRootStateImportDto(
 				approvalRootStateImport.getRootStateID(), 
 				approvalRootStateImport.getListApprovalPhaseState().stream().map(x -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList()), 
-				approvalRootStateImport.getDate());
+				approvalRootStateImport.getDate(),
+				approvalRootStateImport.getRootType(),
+				approvalRootStateImport.getEmployeeID());
 	}
 	
 	public ApprovalRootStateImport_New toDomain() {
 		return new ApprovalRootStateImport_New(
 				rootStateID, 
 				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-				date);
+				date,
+				rootType,
+				employeeID);
 	}
 }

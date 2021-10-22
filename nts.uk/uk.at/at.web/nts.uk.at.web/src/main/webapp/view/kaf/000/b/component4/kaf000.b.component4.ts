@@ -11,7 +11,9 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
 					<div class="valign-center">
 						<div style="">
 							<div class='applicant limited-label' data-bind="text: applicant"></div>
-							<div class='inputPerson limited-label' data-bind="text: inputPerson"></div>
+							<div data-bind="if: inputPerson">
+								<div class='inputPerson limited-label' data-bind="text: inputPerson"></div>
+							</div>
 						</div>	
 					</div>
 				</div>
@@ -39,6 +41,7 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
 			if (_.isNil(inputPerson)) {
 	            // vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);	
 				vm.applicant(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+				vm.inputPerson(inputPerson);
 			} else {
 				// vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName + inputPerson);
 				vm.applicant(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
@@ -48,15 +51,16 @@ module nts.uk.at.view.kaf000.b.component4.viewmodel {
 
 			vm.appDispInfoStartupOutput.subscribe((value: any) => {
 				let inputPerson = 
-				_.isNil(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo) ? 
+				_.isNil(value.appDispInfoNoDateOutput.opEmployeeInfo) ? 
 				null : 
-				(startFormInputPerson + vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.opEmployeeInfo.bussinessName + endFormInputPerson);
+				(startFormInputPerson + value.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName + endFormInputPerson);
 				if (_.isNil(inputPerson)) {
 		            // vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);		
-					vm.applicant(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);		
+					vm.applicant(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);		
+					vm.inputPerson(inputPerson);
 				} else {
 					// vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName + inputPerson);
-					vm.applicant(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
+					vm.applicant(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
 					vm.inputPerson(inputPerson);
 				}
             	params.application().employeeIDLst(_.map(value.appDispInfoNoDateOutput.employeeInfoLst, (o: any) => o.sid));

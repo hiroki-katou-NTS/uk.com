@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.app.service.worktype.WorkTypeService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -22,6 +23,9 @@ public class InsertWorkTypeCommandHandler extends CommandHandler<WorkTypeCommand
 
 	@Inject
 	public WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private WorkTypeService workTypeService;
 
 	@Override
 	protected void handle(CommandHandlerContext<WorkTypeCommandBase> context) {
@@ -35,6 +39,10 @@ public class InsertWorkTypeCommandHandler extends CommandHandler<WorkTypeCommand
 
 		WorkType workType = workTypeCommandBase.toDomain(companyId);
 		workType.validate();
+		if (workTypeService.isExistingCloseAtr(workType, workTypeCommandBase)) {
+			// エラーメッセージ(#Msg_2207)を表示する
+			throw new BusinessException("Msg_2207");
+		}
 		workTypeRepo.add(workType);
 		//Add data WorkTypeSet in OneDay or Morning and Afternoon
 		if (workType.isOneDay()) {
@@ -56,4 +64,6 @@ public class InsertWorkTypeCommandHandler extends CommandHandler<WorkTypeCommand
 			workTypeRepo.addWorkTypeSet(afternoon);
 		}
 	}
+	
+	
 }

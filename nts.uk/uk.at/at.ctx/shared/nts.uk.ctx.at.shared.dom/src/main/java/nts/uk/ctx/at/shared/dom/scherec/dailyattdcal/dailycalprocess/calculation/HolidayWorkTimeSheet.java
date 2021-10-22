@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
@@ -45,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -92,6 +94,15 @@ public class HolidayWorkTimeSheet{
 				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 						.getWorkHolidayTime()).orElse(HolidayWorkTimeOfDaily.createDefaultBeforeApp(
 					workHolidayTime.stream().map(x -> x.getFrameTime().getHolidayFrameNo().v()).collect(Collectors.toList())));
+		if(holidayWorkTime.getHolidayWorkFrameTime().isEmpty()) {
+			List<HolidayWorkFrameTime> workFrameTime = workHolidayTime.stream().map(x -> {
+				return new HolidayWorkFrameTime(new HolidayWorkFrameNo(x.getFrameTime().getHolidayFrameNo().v()),
+						Finally.of(TimeDivergenceWithCalculation.emptyTime()),
+						Finally.of(TimeDivergenceWithCalculation.emptyTime()), Finally.of(new AttendanceTime(0)));
+			}).collect(Collectors.toList());
+			holidayWorkTime.setHolidayWorkFrameTime(workFrameTime);
+		}
+		
 		List<HolidayWorkFrameTime> aftertransTimeList  = new ArrayList<HolidayWorkFrameTime>();
 		// 時間帯毎に休出時間を計算する(補正、制御含む)
 		calculateHolidayEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
@@ -224,6 +235,11 @@ public class HolidayWorkTimeSheet{
 			return;
 		}
 
+		//代休を発生させるをチェック
+		if (workTypeOpt.get().getWorkTypeSetAvailable().getGenSubHodiday() == WorkTypeSetCheck.NO_CHECK) {
+			return;
+		}
+		
 		// ○当日が代休管理する日かどうかを判断する
 		boolean checkDateForMag = require.checkDateForManageCmpLeave(require, cid, sid, date);
 		if (!checkDateForMag) {
@@ -380,7 +396,9 @@ public class HolidayWorkTimeSheet{
 			val beforeApp = holidayOfDaily.getHolidayWorkFrameTime().stream()
 					.filter(x -> x.getHolidayFrameNo().v().intValue() == holTime.getHolidayFrameNo().v().intValue()).findFirst()
 					.map(x -> x.getBeforeApplicationTime()).orElse(Finally.of(new AttendanceTime(0)));
-			holTime.addBeforeTime(beforeApp.isPresent() ? beforeApp.get() : new AttendanceTime(0));
+			if(holTime.getBeforeApplicationTime().isPresent()){
+				holTime.setBeforeApplicationTime(Finally.of(beforeApp.isPresent() ? beforeApp.get() : new AttendanceTime(0)));
+			}; 
 		});
 		
 		//補正処理を実行する為に、日別勤怠の休出時間のインスタンスを作成
@@ -494,12 +512,12 @@ public class HolidayWorkTimeSheet{
 		return this.workHolidayTime.stream()
 											.map(tc -> {
 												val mapData = tc.changeNotWorkFrameTimeSheet();
-												//B.計算休出時間←A.枠時間.休出時間.時間
+												//B.計算休出時間←A.枠時間.休出時間.計算時間
 												if(tc.getFrameTime().getHolidayWorkTime().isPresent())
-													mapData.setHdTimeCalc(tc.getFrameTime().getHolidayWorkTime().get().getTime());
-												//B.計算振替時間←A.枠時間.振替時間.時間
+													mapData.setHdTimeCalc(tc.getFrameTime().getHolidayWorkTime().get().getCalcTime());
+												//B.計算振替時間←A.枠時間.振替時間.計算時間
 												if(tc.getFrameTime().getTransferTime().isPresent())
-													mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().get().getTime());
+													mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().get().getCalcTime());
 												//休出枠時間帯を作成
 												return mapData;
 											})

@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -72,7 +73,7 @@ public class ManHourRecordUseSettingFinder {
 					companyId, "T001", 1, 1, true, 0);
 			erAlAttendanceItemCondition.setCountableTarget(Arrays.asList(559), 
 					Arrays.asList(1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701));
-			erAlAttendanceItemCondition.setCompareRange(6, new CheckedTimeDuration(0), new CheckedTimeDuration(0));
+			erAlAttendanceItemCondition.setCompareRange(RangeCompareType.BETWEEN_RANGE_CLOSED.value, new CheckedTimeDuration(-1), new CheckedTimeDuration(1));
 			
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Arrays.asList(erAlAttendanceItemCondition);
 			

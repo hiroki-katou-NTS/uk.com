@@ -84,6 +84,7 @@ import nts.uk.ctx.exio.dom.exo.dataformat.init.NumberDataFmSet;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.PreviousDayOutputMethod;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.Rounding;
 import nts.uk.ctx.exio.dom.exo.dataformat.init.TimeDataFmSet;
+import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLogRepository;
 import nts.uk.ctx.exio.dom.exo.execlog.ExternalOutLog;
@@ -210,43 +211,61 @@ public class CreateExOutTextService extends ExportService<Object> {
 	}
 
 	public void executeServerExOutManual(ExOutSetting exOutSetting, FileGeneratorContext generatorContext,GeneralDate baseDate) {
-		ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
-		if (settingResult == null) {
-			finishFaultWhenStart(exOutSetting.getProcessingId());
-			return;
-		}
-		initExOutLogInformation(exOutSetting, settingResult);
-		// 外部出力設定のカテゴリがデータ系
-		settingResult.getExOutCtg().ifPresent(exOutCtg -> {
-			if (exOutCtg.getCategorySet().equals(CategorySetting.DATA_TYPE)) {
-				RegulationInfoEmployeeQueryImport queryDto = RegulationInfoEmployeeQueryImport.builder()
-						.baseDate(this.toDateTime(exOutSetting.getReferenceDate()))
-						.filterByClassification(false)
-						.filterByClosure(false)
-						.filterByDepartment(false)
-						.filterByEmployment(false)
-						.filterByJobTitle(false)
-						.filterByWorkplace(false)
-						.filterByWorktype(false)
-						.includeIncumbents(true)
-						.includeRetirees(false)
-						.includeWorkersOnLeave(false)
-						.includeOccupancy(false)
-						.periodStart(this.toDateTime(exOutSetting.getStartDate()))
-						.periodEnd(this.toDateTime(exOutSetting.getEndDate()))
-						.referenceRange(SearchReferenceRange.ALL_REFERENCE_RANGE.value)
-						.systemType(CCG001SystemType.EMPLOYMENT.value)
-						.build();
-				// アルゴリズム「管理者条件で社員を検索して並び替える」を実行する
-				List<String> empIds = this.regulationInfoEmployeeAdapter
-						.findEmployees(queryDto)
-						.stream()
-						.map(RegulationInfoEmployeeImport::getEmployeeId)
-						.collect(Collectors.toList());
-				exOutSetting.setSidList(empIds);
+		// サーバ外部出力手動実行
+		if (exOutSetting.getExecuteForm().equals(ExecutionForm.MANUAL_EXECUTION)) {
+			ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
+			if (settingResult == null) {
+				finishFaultWhenStart(exOutSetting.getProcessingId());
+				return;
 			}
-		});
-		serverExOutExecution(generatorContext, exOutSetting, settingResult, baseDate);
+			initExOutLogInformation(exOutSetting, settingResult);
+			serverExOutExecution(generatorContext, exOutSetting, settingResult, baseDate);
+		}
+		// サーバ外部出力自動実行
+		else {
+			// アルゴリズム「サーバ外部出力設定取得」を実行する
+			ExOutSettingResult settingResult = getServerExOutSetting(exOutSetting);
+			if (settingResult == null) {
+				this.saveAutoExecutionLog(exOutSetting);
+				return;
+			}
+			// アルゴリズム「サーバ外部出力ログ情報初期値」を実行する
+			this.initExOutLogInformation(exOutSetting, settingResult);
+			// 外部出力設定のカテゴリがデータ系
+			settingResult.getExOutCtg().ifPresent(exOutCtg -> {
+				if (exOutCtg.getCategorySet().equals(CategorySetting.DATA_TYPE)) {
+					RegulationInfoEmployeeQueryImport queryDto = RegulationInfoEmployeeQueryImport.builder()
+							.baseDate(this.toDateTime(exOutSetting.getReferenceDate()))
+							.filterByClassification(false)
+							.filterByClosure(false)
+							.filterByDepartment(false)
+							.filterByEmployment(false)
+							.filterByJobTitle(false)
+							.filterByWorkplace(false)
+							.filterByWorktype(false)
+							.includeIncumbents(true)
+							.includeRetirees(false)
+							.includeWorkersOnLeave(false)
+							.includeOccupancy(false)
+							.periodStart(this.toDateTime(exOutSetting.getStartDate()))
+							.periodEnd(this.toDateTime(exOutSetting.getEndDate()))
+							.referenceRange(SearchReferenceRange.ALL_REFERENCE_RANGE.value)
+							.systemType(CCG001SystemType.EMPLOYMENT.value)
+							.build();
+					// アルゴリズム「管理者条件で社員を検索して並び替える」を実行する
+					List<String> empIds = this.regulationInfoEmployeeAdapter
+							.findEmployees(queryDto)
+							.stream()
+							.map(RegulationInfoEmployeeImport::getEmployeeId)
+							.collect(Collectors.toList());
+					exOutSetting.setSidList(empIds);
+				}
+			});
+			// アルゴリズム「サーバ外部出力実行」を実行する
+			this.serverExOutExecution(generatorContext, exOutSetting, settingResult, baseDate);
+			// ドメインモデル「外部出力動作管理」を削除する
+			this.exOutOpMngRepo.remove(exOutSetting.getProcessingId());
+		}
 	}
 
 	// サーバ外部出力設定取得
@@ -1753,5 +1772,24 @@ public class CreateExOutTextService extends ExportService<Object> {
 	
 	private GeneralDateTime toDateTime(GeneralDate date) {
 		return GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0);
+	}
+	
+	private void saveAutoExecutionLog(ExOutSetting exOutSetting) {
+		GeneralDateTime now = GeneralDateTime.now();
+		Optional<ExOutOpMng> optExOutOpMng = this.exOutOpMngRepo
+				.getExOutOpMngById(exOutSetting.getProcessingId());
+		// ドメインモデル「外部出力実行結果ログ」へ追加する
+		ExterOutExecLog exterOutExecLog = new ExterOutExecLog(exOutSetting.getCid(), 
+				exOutSetting.getProcessingId(), exOutSetting.getUserId(), 1, 1, null, null, NotUseAtr.USE.value, null, null, null, 
+				now, now, StandardClassification.STANDARD.value, ExecutionForm.AUTOMATIC_EXECUTION.value, null,
+				exOutSetting.getReferenceDate(), exOutSetting.getEndDate(), exOutSetting.getStartDate(), 
+				exOutSetting.getConditionSetCd(), ResultStatus.FAILURE.value, exOutSetting.getConditionSetName());
+		this.exterOutExecLogRepo.add(exterOutExecLog);
+		
+		// ドメインモデル「外部出力結果ログ」へ追加する
+		ExternalOutLog externalOutLog = new ExternalOutLog(exOutSetting.getCid(), 
+				exOutSetting.getProcessingId(), TextResource.localize("CMF002_501"), null, null, null, null, 
+				now, 1, optExOutOpMng.map(ExOutOpMng::getProCnt).orElse(null), ProcessingClassification.ERROR.value);
+		this.externalOutLogRepo.add(externalOutLog);
 	}
 }

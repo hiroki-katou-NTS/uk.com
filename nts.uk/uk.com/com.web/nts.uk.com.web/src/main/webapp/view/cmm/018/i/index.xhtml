@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 480, height: 320 };</script>
+			<script>var dialogSize = { width: 480, height: 330 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../shr/cmm018.shr.servicebase.js" />
 			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
@@ -34,7 +34,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="table">
+				<div class="table" style="margin-top: -5px">
 					<div class="cell column1">
 						<!-- I1_4: Label -->
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM018_48')}</div>
@@ -58,7 +58,7 @@
 						<label>#{i18n.getText('CMM018_93')}</label>
 					</div>
 				</div>
-				<div class="table">
+				<div class="table" style="margin-top: 10px">
 					<div class="cell column1">
 						<!-- I1_7: Label -->
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM018_49')}</div>

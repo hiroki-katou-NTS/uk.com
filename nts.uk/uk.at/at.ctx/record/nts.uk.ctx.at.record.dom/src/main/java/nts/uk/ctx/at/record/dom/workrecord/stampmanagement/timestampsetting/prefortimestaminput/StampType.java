@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -16,7 +19,7 @@ import nts.uk.shr.com.i18n.TextResource;
  *
  */
 @AllArgsConstructor
-public class StampType implements DomainValue {
+public class StampType implements DomainValue, Cloneable{
 	
 	/** 勤務種類を半休に変更する */
 	//勤務種類を半休に変更する 1 old
@@ -152,6 +155,44 @@ public class StampType implements DomainValue {
 		return false;
 	}
 	
-	
+	/**
+	 * 休日出勤に変更するか
+	 * @param require
+	 * @param holidayTimeSetting 休出時間の自動計算設定
+	 * @param workTypeCode 勤務種類コード
+	 * @return
+	 */
+	public boolean changeWorkOnHolidays(Require require, AutoCalRestTimeSetting holidayTimeSetting,
+			String workTypeCode) {
+		// 勤務種類を取得する
+		Optional<WorkType> workType = require.findByPK(workTypeCode);
+		if (!workType.isPresent())
+			return false;
+		//一日休日かを確認する
+		if(!workType.get().isHoliday()) {
+			return false;
+		}
+		//日別勤怠の計算区分の休出時間の計算区分を確認する
+		if(holidayTimeSetting.getRestTime().getCalAtr() == AutoCalAtrOvertime.CALCULATEMBOSS) {
+			return true;
+		}else if(holidayTimeSetting.getRestTime().getCalAtr() == AutoCalAtrOvertime.APPLYMANUALLYENTER) {
+			return false;
+		}
+		//打刻の計算区分変更対象を確認する
+		if(this.changeCalArt == ChangeCalArt.BRARK) {
+			return true;
+		}
+		return false;
+	}
 
+	public static interface Require {
+		Optional<WorkType> findByPK(String workTypeCd);
+	}
+
+	@Override
+	public StampType clone() {
+		return new StampType(changeHalfDay, goOutArt.map(x -> GoingOutReason.valueOf(x.value)),
+				SetPreClockArt.valueOf(setPreClockArt.value), ChangeClockArt.valueOf(changeClockArt.value),
+				ChangeCalArt.valueOf(changeCalArt.value));
+	}
 }

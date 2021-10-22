@@ -16,6 +16,7 @@ import lombok.val;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -52,7 +53,7 @@ public class KfnmtRptYrRecDispCont extends UkJpaEntity implements Serializable {
     public static List<KfnmtRptYrRecDispCont> fromDomain(AnnualWorkLedgerOutputSetting outputSetting){
 
         val rs = new ArrayList<KfnmtRptYrRecDispCont>();
-        for (OutputItem i:outputSetting.getMonthlyOutputItemList() ) {
+        for (OutputItemWorkLedger i:outputSetting.getMonthlyOutputItemList() ) {
             rs.addAll(i.getSelectedAttendanceItemList().stream().map(e->new KfnmtRptYrRecDispCont(
                     new KfnmtRptYrRecDispContPk((outputSetting.getID()),i.getRank(),e.getAttendanceItemId()),
                     AppContexts.user().contractCode(),

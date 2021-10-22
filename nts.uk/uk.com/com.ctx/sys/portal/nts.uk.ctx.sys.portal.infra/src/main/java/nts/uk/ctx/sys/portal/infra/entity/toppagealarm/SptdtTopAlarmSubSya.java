@@ -10,6 +10,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,8 +47,9 @@ public class SptdtTopAlarmSubSya extends ContractUkJpaEntity implements Serializ
 	@ManyToOne
 	@PrimaryKeyJoinColumns({ 
 		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-		@PrimaryKeyJoinColumn(name = "DISP_SID", referencedColumnName = "DISP_SID")
-		})
+		@PrimaryKeyJoinColumn(name = "DISP_SID", referencedColumnName = "DISP_SID"),
+		@PrimaryKeyJoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD")
+	})
 	public SptdtToppageAlarm sptdtToppageAlarm;
 
 	@Override
@@ -55,10 +57,11 @@ public class SptdtTopAlarmSubSya extends ContractUkJpaEntity implements Serializ
 		return this.pk;
 	}
 	
-	public void toEntity(String cid, String dispSid, String subSid) {
+	public void toEntity(String cid, String dispSid, String subSid, String patternCode) {
 		this.pk = new SptdtTopAlarmSubSyaPK();
 		this.pk.setCId(cid);
 		this.pk.setDispSid(dispSid);
 		this.pk.setSubSid(subSid);
+		this.pk.setPatternCode(patternCode);
 	}
 }

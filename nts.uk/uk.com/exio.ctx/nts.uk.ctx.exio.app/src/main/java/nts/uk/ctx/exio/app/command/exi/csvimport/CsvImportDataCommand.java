@@ -10,4 +10,16 @@ public class CsvImportDataCommand {
 	private int errorCount;
 	private String stopMode;
 	private String stateBehavior;
+	/**
+	 * 条件設定コード
+	 */
+	private String conditionSetCode;
+	/**
+	 * ファイルID
+	 */
+	private String csvFileId;
+	/**
+	 * 文字コード
+	 */
+	private int endcoding;
 }

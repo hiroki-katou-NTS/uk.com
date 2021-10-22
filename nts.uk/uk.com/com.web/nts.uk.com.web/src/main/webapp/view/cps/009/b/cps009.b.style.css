@@ -1,6 +1,5 @@
 .distane {
 	margin-left: 10px;
-	margin-top: 10px;
 }
 
 #itemLst {
@@ -19,10 +18,10 @@
 	background-color: #C7F391;
 }
 
-#registration {
-	margin-top: 10px !important;
-}
-
 #grid0 td[role="gridcell"] {
 	white-space: nowrap;
+}
+
+#grid0_virtualContainer {
+	margin-top: -9px !important;
 }

@@ -26,6 +26,7 @@ module nts.uk.at.kha003.d {
         maxDateRange: any = 0;
         level: number = 1;
         girdWidth: KnockoutObservable<any>;
+        girdHeight: KnockoutObservable<any>;
 
         constructor() {
             super();
@@ -46,6 +47,12 @@ module nts.uk.at.kha003.d {
             vm.preriod = ko.observable();
             vm.contents = ko.observableArray([]);
             vm.girdWidth = ko.observable("100%")
+            vm.girdHeight = ko.observable()
+
+
+            window.onresize = function (evt) {
+                $("#grid1").igGrid("option", "height", window.innerHeight - 200);
+            }
         }
 
         created() {
@@ -90,16 +97,6 @@ module nts.uk.at.kha003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
-                /* if (data.summaryTableFormat.totalUnit == 1) {
-                     let dateHeaders: Array<DateHeader> = [];
-                     for (let contentItem of data.outputContent.verticalTotalValues) {
-                         let date = contentItem.yearMonth.toString();
-                         vm.dateHeaders.push(
-                             new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
-                         );
-                     }
-                     // vm.dateHeaders(dateHeaders);
-                 }*/
                 if (!data) {
                     vm.$dialog.error({messageId: 'Msg_2171'}).then(() => {
                         vm.displayKha003CScreen();
@@ -160,13 +157,14 @@ module nts.uk.at.kha003.d {
                 // width = width - 15;
                 widthInPX = '100%';
             }
+            vm.girdHeight(height);
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
                 width: widthInPX,
-                height: height + 'px',
+                height: vm.girdHeight() + 'px',
                 //height: '95%',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
@@ -184,8 +182,8 @@ module nts.uk.at.kha003.d {
                                 return false;
                             }
 
-                            if (idx ===3) {
-                                let condition=!_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey] && prevRec["c" + (idx-1)] === curRec["c" + (idx-1)] && prevRec["c" + (idx-2)] === curRec["c" + (idx-2)];
+                            if (idx === 3) {
+                                let condition = !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey] && prevRec["c" + (idx - 1)] === curRec["c" + (idx - 1)] && prevRec["c" + (idx - 2)] === curRec["c" + (idx - 2)];
                                 return condition;
                             }
                             if (idx <= vm.level) {

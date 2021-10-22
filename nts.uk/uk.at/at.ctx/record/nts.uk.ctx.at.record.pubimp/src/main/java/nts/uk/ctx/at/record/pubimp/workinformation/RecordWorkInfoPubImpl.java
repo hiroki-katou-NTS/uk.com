@@ -498,8 +498,9 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	    		Map<Integer, AttendanceTime> overTimeLstSet = overTimeWorkFrameTime.stream()
 	    															.collect(Collectors.toMap(x -> x.getOverWorkFrameNo().v(), x -> x.getOverTimeWork().getCalcTime()));
 	    		record.setOverTimeLst(overTimeLstSet);
-	    		List<AttendanceTime> calculateTransferOverTimeLstSet = 
-	    				overTimeWorkFrameTime.stream().map(x -> x.getTransferTime().getCalcTime()).collect(Collectors.toList());
+	    		Map<Integer, AttendanceTime> calculateTransferOverTimeLstSet = 
+	    				overTimeWorkFrameTime.stream().
+	    				collect(Collectors.toMap(x -> x.getOverWorkFrameNo().v(), x -> x.getTransferTime().getCalcTime()));
 	    		record.setCalculateTransferOverTimeLst(calculateTransferOverTimeLstSet);
 //	    		日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．休出時間
 	    		Optional<HolidayWorkTimeOfDaily> workHolidayTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
@@ -511,8 +512,11 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	    																			y -> y.getHolidayWorkTime().get().getCalcTime()));
 	    			 record.setCalculateHolidayLst(calculateHolidayLst);
 	    			
-	    			List<AttendanceTime> calculateTransferLstSet = 
-	    					holidayWorkFrameTime.stream().map(x -> x.getTransferTime().get().getCalcTime()).collect(Collectors.toList());
+	    			 Map<Integer, AttendanceTime> calculateTransferLstSet = 
+	    					holidayWorkFrameTime.stream().
+	    					        collect(Collectors.toMap(
+                                    x -> x.getHolidayFrameNo().v(),
+                                    y -> y.getTransferTime().get().getCalcTime()));
 	    			record.setCalculateTransferLst(calculateTransferLstSet);
 	    			
 	    		}

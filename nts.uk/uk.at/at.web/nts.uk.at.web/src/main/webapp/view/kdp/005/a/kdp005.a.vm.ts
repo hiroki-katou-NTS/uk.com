@@ -140,7 +140,7 @@ module nts.uk.at.view.kdp005.a {
 										});
 									}
 								});
-							}else {
+							} else {
 								self.openDialogF({
 									mode: 'admin'
 								})
@@ -441,8 +441,6 @@ module nts.uk.at.view.kdp005.a {
 							.then(() => {
 								if (!ko.unwrap(self.modeBasyo)) {
 									self.openDialogK().done((result) => {
-										console.log(result);
-
 										if (result) {
 											self.saveSuccess = true;
 											self.loginInfo = loginResult.em;
@@ -451,19 +449,19 @@ module nts.uk.at.view.kdp005.a {
 												location.reload();
 											});
 										} else {
-											if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-												setTimeout(() => {
-													if (self.saveSuccess) {
-														location.reload();
-													}
-												}, 500);
-											}
+											location.reload();
+											// if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
+											// 	setTimeout(() => {
+											// 		if (self.saveSuccess) {
+											// 			location.reload();
+											// 		}
+											// 	}, 500);
+											// }
 											// if (self.loginInfo) {
 											// 	self.login(self.loginInfo).done(() => {
 											// 		if (__viewContext.user.companyId != self.loginInfo.companyId || __viewContext.user.employeeCode != self.loginInfo.employeeCode) {
 											// 			setTimeout(() => {
 											// 				if (!self.saveSuccess) {
-											// 					console.log('Chung dep trai');
 
 											// 					location.reload();
 											// 				}
@@ -474,7 +472,6 @@ module nts.uk.at.view.kdp005.a {
 											// 	if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
 											// 		setTimeout(() => {
 											// 			if (!self.saveSuccess) {
-											// 				console.log('Chung dep trai');
 											// 				location.reload();
 											// 			}
 											// 		}, 500);
@@ -591,6 +588,7 @@ module nts.uk.at.view.kdp005.a {
 												}
 											};
 											service.addCheckCard(registerdata).done((res) => {
+
 												//phat nhac
 												if (source) {
 													let audio = new Audio(source);
@@ -637,6 +635,7 @@ module nts.uk.at.view.kdp005.a {
 							};
 
 							service.addCheckCard(registerdata).done((res) => {
+
 								//phat nhac
 								if (source) {
 									let audio = new Audio(source);
@@ -867,7 +866,7 @@ module nts.uk.at.view.kdp005.a {
 											dfd.resolve();
 										}
 									});
-							}else {
+							} else {
 								dfd.resolve();
 							}
 						});

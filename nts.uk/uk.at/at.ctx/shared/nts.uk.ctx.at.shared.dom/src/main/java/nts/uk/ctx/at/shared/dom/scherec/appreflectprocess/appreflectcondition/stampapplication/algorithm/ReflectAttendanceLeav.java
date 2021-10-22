@@ -66,7 +66,7 @@ public class ReflectAttendanceLeav {
 
 	public static TimeActualStamp createTimeActualStamp(TimeStampAppShare data) {
 		return new TimeActualStamp(null, new WorkStamp(
-				new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null), data.getTimeOfDay()),
+				new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()), data.getTimeOfDay()),
 				data.getWorkLocationCd()), 0);
 	}
 

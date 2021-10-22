@@ -15,6 +15,7 @@ public class ParamDialog {
 	private String employeeId;
 	private Integer itemId;
 	private String valueOld;
+	private Integer taskFrameNo;
 	public ParamDialog (GeneralDate date, String selectCode){
 		this.date = date;
 		this.selectCode = selectCode;

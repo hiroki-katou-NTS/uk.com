@@ -60,7 +60,7 @@ public class RCApplicationCancellationProcessTest {
 				ReflectApplicationHelper.createReflectStatusResult(ReflectedState.NOTREFLECTED), // 反映状態=未反映
 				NotUseAtr.NOT_USE);
 
-		assertThat(actualResult.getStatusWorkRecord().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
+		assertThat(actualResult.getStatusWorkRecord().getReflectStatus()).isEqualTo(ReflectedState.CANCELED);
 		new Verifications() {
 			{
 				require.processRecover((ApplicationShare) any, (GeneralDate) any, (ReflectStatusResult) any,

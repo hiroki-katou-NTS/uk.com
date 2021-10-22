@@ -1,5 +1,5 @@
 .div_line {
-	margin-top: 5px;
+	margin-top: 3px;
 	float: left;
 	clear: both;
 	width: 100%;
@@ -9,7 +9,7 @@
 }
 
 #contents-area {
-	padding: 20px 0px 0px 20px;
+	padding: 0 10px !important;
 }
 .label .div_line{
 	width: 275px;	
@@ -27,7 +27,7 @@
 	width: 85px;
 }
 .column-1 .panel{
-	padding: 5px;
+	padding: 4px;
 }
 
 .column-1 table td{
@@ -42,7 +42,7 @@
 		margin-top: 6px;
 }
 .column-2{
-	margin-top: 130px;
+	margin-top: 28px;
 	margin-left: -75px;
 }
 .restart{
@@ -70,6 +70,8 @@ table.terminalInfo tr td{
 	vertical-align: top;
 	border: 0px !important; 
 }
-.testcss {
-	color: red;	
+
+.column-2 > div:nth-child(1) {
+	margin-left: 40px;
+	margin-bottom: 58px;
 }

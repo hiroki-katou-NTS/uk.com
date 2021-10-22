@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.procwithbasedate.GetNumberOfCompenLeavObtainBaseDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
@@ -29,6 +30,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
@@ -50,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AbsenceReruitmentMngInPeriodQuery {
@@ -653,22 +658,12 @@ public class AbsenceReruitmentMngInPeriodQuery {
 	 * @param date
 	 * @return
 	 */
-	public static CompenLeaveAggrResult getAbsRecMngRemain(RequireM2 require, CacheCarrier cacheCarrier,
+	public static LeaveRemainingDayNumber getAbsRecMngRemain(RequireM11 require, CacheCarrier cacheCarrier,
 			String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
-		//社員に対応する締め期間を取得する
-		DatePeriod period = ClosureService.findClosurePeriod(require, cacheCarrier, employeeID, date);
-		val inputParam = new AbsRecMngInPeriodRefactParamInput(companyID, //・ログイン会社ID
-				employeeID, //・INPUT．社員ID
-				new DatePeriod(period.start(), period.start().addYears(1).addDays(-1)), //・集計開始日＝締め期間．開始年月日 - ・集計終了日＝締め期間．開始年月日＋１年－１日
-				date, //・基準日＝INPUT．基準日
-				false, //・モード＝その他モード
-				false, //・上書きフラグ=false
-				Collections.emptyList(), //上書き用の暫定管理データ：なし
-				Collections.emptyList(), 
-				Collections.emptyList(),
-				Optional.empty(),Optional.empty(),Optional.empty(), new FixedManagementDataMonth());
-		return NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
+		// 基準日時点で取得可能な振休日数を取得する
+		LeaveRemainingDayNumber leaveRemainingDayNumber = GetNumberOfCompenLeavObtainBaseDate.process(require, companyID, employeeID, date);
+		return leaveRemainingDayNumber;
 	}
 
 
@@ -773,6 +768,10 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			}			
 		}
 		return lstOutputOfRec;
+	}
+	
+	public static interface RequireM11 extends GetNumberOfCompenLeavObtainBaseDate.Require {
+	    
 	}
 
 	public static interface RequireM10 extends RequireM9, RequireM1, RequireM5 {
@@ -887,6 +886,22 @@ public class AbsenceReruitmentMngInPeriodQuery {
 			public List<PayoutManagementData> payoutManagementData(String cid, String sid, GeneralDate ymd, double unUse,
 					DigestionAtr state) {
 				return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
+			}
+
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return closureRepo.findByListId(companyId, closureId);
+			}
+
+			@Override
+			public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+					GeneralDate baseDate) {
+				return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 			}
 		};
 	}

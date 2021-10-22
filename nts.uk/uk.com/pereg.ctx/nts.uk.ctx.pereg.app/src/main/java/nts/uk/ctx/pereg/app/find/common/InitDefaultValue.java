@@ -190,7 +190,7 @@ public class InitDefaultValue {
 				// 子の看護・介護休暇情報
 				case "IS00376":
 				case "IS00381":
-					valueItem.setValue(String.valueOf(UpperLimitSetting.FAMILY_INFO.value));
+					valueItem.setValue(String.valueOf(UpperLimitSetting.PER_INFO_EVERY_YEAR.value));
 					break;
 				default:
 					break;

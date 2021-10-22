@@ -151,7 +151,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		}).collect(Collectors.toList());
 
 		return MenuBar.createFromJavaType(mb.ccgstMenuBarPK.menuBarId, mb.menuBarName, mb.selectedAtr, mb.system,
-				mb.menuCls, mb.code, mb.backgroundColor, mb.textColor, mb.displayOrder, titleMenus);
+				mb.menuCls, mb.code, mb.displayOrder, titleMenus);
 	}
 
 	/**
@@ -202,8 +202,7 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 			CcgstMenuBarPK ccgstMenuBarPK = new CcgstMenuBarPK(domain.getCompanyId(), domain.getWebMenuCode().v(),
 					mn.getMenuBarId().toString());
 			return new SptmtMenuBar(ccgstMenuBarPK, mn.getMenuBarName().v(), mn.getSelectedAtr().value,
-					mn.getSystem().value, mn.getMenuCls().value, mn.getCode().v(), mn.getBackgroundColor().v(),
-					mn.getTextColor().v(), mn.getDisplayOrder(), titleMenus);
+					mn.getSystem().value, mn.getMenuCls().value, mn.getCode().v(), mn.getDisplayOrder(), titleMenus);
 		}).collect(Collectors.toList());
 		return menuBars;
 	}

@@ -69,9 +69,9 @@
                             <table tabindex="6" id="single-list" data-bind="ntsGridList: {
                                 dataSource: items,
                                 primaryKey: 'code',
-                                columns: [ { headerText: '#{i18n.getText('KSM008_191')}', key: 'code', width: 80, formatter: _.escape },
+                                columns: [ { headerText: '#{i18n.getText('KSM008_191')}', key: 'code', width: 45, formatter: _.escape },
                                            { headerText: '#{i18n.getText('KSM008_192')}', key: 'name', width: 180, formatter: _.escape },
-                                           { headerText: '#{i18n.getText('KSM008_193')}', key: 'maxNumberOfDay', width: 80, formatter: _.escape }
+                                           { headerText: '#{i18n.getText('KSM008_193')}', key: 'maxNumberOfDay', width: 60, formatter: _.escape }
                                           ],
                                 deleteOptions : {visible : false},
                                 multiple: false,
@@ -80,7 +80,7 @@
                         },name:#{i18n.getText('KSM008_190')}"></table>
                         </div>
                     </div>
-                    <div class="cell valign-top">
+                    <div class="cell valign-top content-right">
                         <div class="table">
                             <!-- I6_1 -->
                             <div class="cell valign-center">
@@ -103,7 +103,7 @@
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_2 -->
-                                <button id="I7_2"  tabindex="9" data-bind="click: openKdl001ModalIScreen" style="margin-right: 5px;margin-left: 89px;width: 48px">#{i18n.getText('KSM008_198')}</button>
+                                <button id="I7_2"  tabindex="9" data-bind="click: openKdl001ModalIScreen" style="margin-right: 5px;width: 48px">#{i18n.getText('KSM008_198')}</button>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I7_3 -->
@@ -117,7 +117,7 @@
                             <div class="cell valign-center">
                                 <!-- I8_2 -->
                                 <input id="I8_2" class="width-common" tabindex="10"
-                                       data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: iScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_201]'}, style: { marginRight: '5px' ,marginLeft: '102px'}"/>
+                                       data-bind="ntsNumberEditor: {constraint: 'ConsecutiveNumberOfDays', value: iScreenWorkingHour.numberOfConDays, required: true, name: '#[KSM008_201]'}, style: { marginRight: '5px' }"/>
                             </div>
                             <div class="cell valign-center">
                                 <!-- I8_3 -->
