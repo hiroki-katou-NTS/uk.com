@@ -76,12 +76,8 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
 
         public static openKDL052(param: any) {
             const vm = new ko.ViewModel();
-
-            if (param.employeeIds.length > 1) {
-                vm.$window.modal('/view/kdl/052/multi.xhtml', param);
-            } else {
-                vm.$window.modal('/view/kdl/052/single.xhtml', param);
-            }
+            setShared('KDL052A_PARAM', param);            
+            vm.$window.modal('/view/kdl/052/a/index.xhtml');
         }
 
         public static openKDL017(param: any) {

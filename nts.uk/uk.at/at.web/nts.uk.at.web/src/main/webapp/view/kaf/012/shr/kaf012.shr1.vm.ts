@@ -267,11 +267,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                 employeeList: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
             };
-            if (data.employeeList.length > 1) {
-                vm.$window.modal('/view/kdl/052/multi.xhtml', data);
-            } else {
-                vm.$window.modal('/view/kdl/052/single.xhtml', data);
-            }
+            setShared('KDL052A_PARAM', data);
+            modal('/view/kdl/052/a/index.xhtml');           
         }
 
         openKDL017() {

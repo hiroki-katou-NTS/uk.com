@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdl052.test {
-    import setShare = nts.uk.ui.windows.setShared;
+    import setShared = nts.uk.ui.windows.setShared;
     const Paths = {
         GET_SID: "at/request/dialog/employmentsystem/getSid"
     };
@@ -91,7 +91,12 @@ module nts.uk.at.view.kdl052.test {
                 return;
 			}
             
-            self.$window.modal('at', '/view/kdl/052/a/index.xhtml', data);            
+			let param = {
+                employeeIds: empIds,
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
+            }
+			setShared('KDL052A_PARAM', param);
+            self.$window.modal('at', '/view/kdl/052/a/index.xhtml');            
         }
     }
 

@@ -53,9 +53,8 @@ module nts.uk.at.view.kdl052.a {
 
         constructor(private params: any) {            
             super();
-            let self = this;        
-            self.listEmpId = params.empIds;  
-            // self.managementCheck(params.managementCheck);
+            let self = this; 
+            self.listEmpId = getShared('KDL052A_PARAM').employeeIds;
           
             self.listComponentOption = {
                 isShowAlreadySet: self.isShowAlreadySet(),
