@@ -38,7 +38,7 @@
 						<td>	
 							<div>
 								<button data-bind="">#{i18n.getText('KDW013_82')}</button>
-								<span data-bind="text: itemId28"></span>
+								<span data-bind="text: itemId28.value"></span>
 							</div>
 						</td>
 					</tr>
@@ -49,7 +49,7 @@
 						<td>	
 							<div>
 								<button data-bind="">#{i18n.getText('KDW013_82')}</button>
-								<span data-bind="text: itemId29"></span>
+								<span data-bind="text: itemId29.value"></span>
 							</div>
 						</td>
 					</tr>
@@ -58,19 +58,19 @@
 							<div>#{i18n.getText('KDW013_83')}</div>
 						</td>
 						<td>	
-							<div data-bind="with:itemId31_34">
+							<div data-bind="with: itemId31_34">
 								<input data-bind="ntsTimeEditor: { 
-									name: 'Duration', 
+									name: '#[KDW013_84]', 
 									constraint: 'AttendanceClock', 
-									value: start, 
+									value: start.value, 
 									inputFormat: 'time', 
 									mode: 'time', 
 									option: {width: '50px'}}" />
 								#{i18n.getText('KDW013_30')}																			
 								<input data-bind="ntsTimeEditor: { 
-									name: 'Duration', 
+									name: '#[KDW013_85]', 
 									constraint: 'AttendanceClock', 
-									value: end, 
+									value: end.value, 
 									inputFormat: 'time', 
 									mode: 'time', 
 									option: {width: '50px'}}" />
@@ -89,17 +89,17 @@
 											<td>
 												<div>
 													<input data-bind="ntsTimeEditor: { 
-														name: 'Duration', 
+														name: start.name, 
 														constraint: 'AttendanceClock', 
-														value: start, 
+														value: start.value, 
 														inputFormat: 'time', 
 														mode: 'time', 
 														option: {width: '50px'}}" />
 													#{i18n.getText('KDW013_30')}																			
 													<input data-bind="ntsTimeEditor: { 
-														name: 'Duration', 
+														name: end.name, 
 														constraint: 'AttendanceClock', 
-														value: end, 
+														value: end.value, 
 														inputFormat: 'time', 
 														mode: 'time', 
 														option: {width: '50px'}}" />
@@ -115,18 +115,18 @@
 												<td>
 													<div>
 														<input data-bind="ntsTimeEditor: { 
-															name: 'Duration', 
+															name: start.name, 
 															constraint: 'AttendanceClock', 
-															value: start, 
+															value: start.value, 
 															inputFormat: 'time', 
 															mode: 'time', 
 															option: {width: '50px'}}" 
 														/>
 														#{i18n.getText('KDW013_30')}																			
 														<input data-bind="ntsTimeEditor: { 
-															name: 'Duration', 
+															name: end.name, 
 															constraint: 'AttendanceClock', 
-															value: end, 
+															value: end.value, 
 															inputFormat: 'time', 
 															mode: 'time', 
 															option: {width: '50px'}}" 

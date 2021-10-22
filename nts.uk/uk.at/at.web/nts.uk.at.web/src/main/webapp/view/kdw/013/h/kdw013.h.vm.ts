@@ -12,31 +12,28 @@ module nts.uk.at.view.kdw013.h {
 			start: "at/record/stamp/timestampinputsetting/saveStampPage"
 		}
 		export class ScreenModel {
-			itemId28: KnockoutObservable<string> = ko.observable('H2_3');
-			itemId29: KnockoutObservable<string> = ko.observable('H2_6');
+			itemId28: ItemValue;
+			itemId29: ItemValue;
 
-			itemId31_34: StartEndTime = new StartEndTime();
+			itemId31_34: StartEndTime;
 
-			itemId157_159: StartEndTime = new StartEndTime();
-			itemId163_165: StartEndTime = new StartEndTime();
-			itemId169_171: StartEndTime = new StartEndTime();
-			itemId175_177: StartEndTime = new StartEndTime();
-			itemId181_183: StartEndTime = new StartEndTime();
-			itemId187_189: StartEndTime = new StartEndTime();
-			itemId193_195: StartEndTime = new StartEndTime();
-			itemId199_201: StartEndTime = new StartEndTime();
-			itemId205_207: StartEndTime = new StartEndTime();
-			itemId211_213: StartEndTime = new StartEndTime();
-
-			breakTimeBase: StartEndTime[] = [this.itemId157_159, this.itemId163_165]
-			breakTimeOptions: StartEndTime[] = [this.itemId169_171, this.itemId181_183,
-												this.itemId187_189, this.itemId193_195,
-												this.itemId199_201, this.itemId205_207,
-												this.itemId205_207, this.itemId211_213];
+			itemId157_159: StartEndTime;
+			itemId163_165: StartEndTime;
+			breakTimeBase: StartEndTime[] = [];
+			
+			itemId169_171: StartEndTime;
+			itemId175_177: StartEndTime;
+			itemId181_183: StartEndTime;
+			itemId187_189: StartEndTime;
+			itemId193_195: StartEndTime;
+			itemId199_201: StartEndTime;
+			itemId205_207: StartEndTime;
+			itemId211_213: StartEndTime;
+			breakTimeOptions: StartEndTime[] = [];
 
 			isShowBreakTimeOptions: KnockoutObservable<boolean> = ko.observable(false);
 
-			itemOptions: KnockoutObservableArray<ItemValueOption> = ko.observableArray([]);
+			itemOptions: ItemValueOption[] = [];
 
 			params: any;
 
@@ -61,13 +58,35 @@ module nts.uk.at.view.kdw013.h {
 				}).always(() => {
 					block.clear();
 				});*/
+				self.breakTimeBase.push(this.itemId157_159, this.itemId163_165);
+				self.breakTimeOptions.push(this.itemId169_171, this.itemId181_183,
+											this.itemId187_189, this.itemId193_195,
+											this.itemId199_201, this.itemId205_207,
+											this.itemId205_207, this.itemId211_213);
 				dfd.resolve();
 				return dfd.promise();
 			}
 			
 			fakeData(): void {
 				let self = this;
-				let tg: ItemValueOption[] = [];
+				
+				self.itemId28 = new ItemValue({ itemId: 28, value: 'item 28', valueType: 0, layoutCode: 'layoutCode 28' });
+				self.itemId29 = new ItemValue({ itemId: 29, value: 'item 29', valueType: 0, layoutCode: 'layoutCode 29' });
+	
+				self.itemId31_34 = new StartEndTime({ itemId: 31, value: 20, valueType: 0, layoutCode: 'layoutCode 31' }, { itemId: 34, value: 30, valueType: 0, layoutCode: 'layoutCode 34' });
+	
+				self.itemId157_159 = new StartEndTime({ itemId: 157, value: 20, valueType: 0, layoutCode: 'layoutCode 157' }, { itemId: 159, value: 30, valueType: 0, layoutCode: 'layoutCode 159' }, 1);
+				self.itemId163_165 = new StartEndTime({ itemId: 163, value: 20, valueType: 0, layoutCode: 'layoutCode 163' }, { itemId: 165, value: 30, valueType: 0, layoutCode: 'layoutCode 165' }, 2);
+				
+				self.itemId169_171 = new StartEndTime({ itemId: 169, value: 20, valueType: 0, layoutCode: 'layoutCode 163' }, { itemId: 171, value: 30, valueType: 0, layoutCode: 'layoutCode 171' }, 3);
+				self.itemId175_177 = new StartEndTime({ itemId: 175, value: 20, valueType: 0, layoutCode: 'layoutCode 175' }, { itemId: 177, value: 30, valueType: 0, layoutCode: 'layoutCode 177' }, 4);
+				self.itemId181_183 = new StartEndTime({ itemId: 181, value: 20, valueType: 0, layoutCode: 'layoutCode 181' }, { itemId: 183, value: 30, valueType: 0, layoutCode: 'layoutCode 183' }, 5);
+				self.itemId187_189 = new StartEndTime({ itemId: 187, value: 20, valueType: 0, layoutCode: 'layoutCode 187' }, { itemId: 189, value: 30, valueType: 0, layoutCode: 'layoutCode 189' }, 6);
+				self.itemId193_195 = new StartEndTime({ itemId: 193, value: 20, valueType: 0, layoutCode: 'layoutCode 193' }, { itemId: 195, value: 30, valueType: 0, layoutCode: 'layoutCode 195' }, 7);
+				self.itemId199_201 = new StartEndTime({ itemId: 199, value: 20, valueType: 0, layoutCode: 'layoutCode 199' }, { itemId: 201, value: 30, valueType: 0, layoutCode: 'layoutCode 201' }, 8);
+				self.itemId205_207 = new StartEndTime({ itemId: 205, value: 20, valueType: 0, layoutCode: 'layoutCode 205' }, { itemId: 207, value: 30, valueType: 0, layoutCode: 'layoutCode 207' }, 9);
+				self.itemId211_213 = new StartEndTime({ itemId: 211, value: 20, valueType: 0, layoutCode: 'layoutCode 211' }, { itemId: 213, value: 30, valueType: 0, layoutCode: 'layoutCode 213' }, 10);
+				
 				let attendentItems = [
 					216, 221, 226, 231, 236, 241, 246, 251, 
 					256, 261, 266, 271, 276, 281, 286, 291, 
@@ -87,15 +106,39 @@ module nts.uk.at.view.kdw013.h {
 					729, 730, 731, 732, 733, 734, 735, 736, 
 					737, 738, 739, 740, 802, 807, 812, 817, 822];
 				_.forEach(attendentItems, (id)=>{
-					tg.push(new ItemValueOption({itemId: id, value: '', valueType: 0, layoutCode: ''}, 'Item ' + id, 7));	
+					self.itemOptions.push(new ItemValueOption({itemId: id, value: '', valueType: 0, layoutCode: ''}, true, 'Item ' + id, 7));	
 				});
-				self.itemOptions(tg);
 			}
 
 			registration() {
 				let self = this;
 				let data: IItemValue[] = [];
-				data.push({ite})
+				
+				if(self.itemId28.isChange()){
+					data.push(self.itemId28.toDataSave());	
+				}
+				
+				if(self.itemId29.isChange()){
+					data.push(self.itemId29.toDataSave());	
+				}
+				
+				self.itemId31_34.toDataSave().forEach((e) => data.push(e));
+				
+				self.breakTimeBase.forEach((startEnd)=>{
+					startEnd.toDataSave().forEach((e) => data.push(e));
+				});
+				
+				self.breakTimeOptions.forEach((startEnd)=>{
+					startEnd.toDataSave().forEach((e) => data.push(e));
+				});
+				
+				self.itemOptions.forEach((item)=>{
+					if(item.use() && item.isChange()){
+						data.push(item.toDataSave());	
+					}
+				});
+				
+				console.log(data);
 			}
 
             /**
@@ -108,29 +151,42 @@ module nts.uk.at.view.kdw013.h {
 			showTime() {
 				this.isShowBreakTimeOptions(!this.isShowBreakTimeOptions());
 			}
-		}
+		}	
 	}
 	class StartEndTime {
-		start: KnockoutObservable<number> = ko.observable(null);
-		end: KnockoutObservable<number> = ko.observable(null);
-		constructor() {
-			this.end.subscribe((value) => {
+		start: ItemValue;
+		end: ItemValue;
+		constructor(start: IItemValue, end: IItemValue, breakTimeNo?: number) {
+			this.start = new ItemValue(start, breakTimeNo ? getText('KDW013_88', [breakTimeNo]): undefined);
+			this.end = new ItemValue(end, breakTimeNo ? getText('KDW013_89', [breakTimeNo]): undefined);
+			this.end.value.subscribe(() => {
 			});
+		}
+		toDataSave(): IItemValue[]{
+			let result: IItemValue[] = [];
+			if(this.start.isChange()){
+				result.push(this.start.toDataSave());
+			}
+			if(this.end.isChange()){
+				result.push(this.end.toDataSave());
+			}
+			return result;
 		}
 	}
 	class ItemValue {
 		itemId: number;
-		use: KnockoutObservable<boolean> = ko.observable(true);
-		value: KnockoutObservable<string> = ko.observable(null);
+		value: KnockoutObservable<string>;
 		valueBeforeChange: any;
 		valueType: number;
 		layoutCode: string;
-		constructor(itemValue: IItemValue) {
+		name: string; //only use for break times
+		constructor(itemValue: IItemValue, name? : string) {
 			this.itemId = itemValue.itemId;
-			this.value(itemValue.value);
+			this.value = ko.observable(itemValue.value);
 			this.valueBeforeChange = itemValue.value;
 			this.valueType = itemValue.valueType;
 			this.layoutCode = itemValue.layoutCode;
+			this.name = name;
 		}
 		toDataSave(): IItemValue{
 			return {
@@ -147,21 +203,17 @@ module nts.uk.at.view.kdw013.h {
 	
 	class ItemValueOption extends ItemValue{
 		lable: KnockoutObservable<string> = ko.observable('');
-		use: KnockoutObservable<boolean> = ko.observable(true);
+		use: KnockoutObservable<boolean> = ko.observable(false);
 		type: number;
-		value: KnockoutObservable<string> = ko.observable(null);
 		options: KnockoutObservableArray<any> = ko.observableArray([]);
-		valueBeforeChange: any;
-		valueType: number;
-		layoutCode: string;
-		constructor(itemValue: IItemValue, name?: string, type?: number) {
-			this.itemId = itemValue.itemId;
-			this.value(itemValue.value);
-			this.valueBeforeChange = itemValue.value;
-			this.valueType = itemValue.valueType;
-			this.layoutCode = itemValue.layoutCode;
-			this.lable(name);
-			this.type = type;
+		constructor(itemValue: IItemValue, use: boolean, name?: string, type?: number) {
+			super(itemValue);
+			if(use){
+				this.use(use);
+				this.layoutCode = itemValue.layoutCode;
+				this.lable(name);
+				this.type = type;	
+			}
 		}
 	}
 	type IItemValue = {
