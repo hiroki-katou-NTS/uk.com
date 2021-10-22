@@ -60,7 +60,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	
 	/*  */
 	@Column(name = "IS_DECIMALIZATION")
-	private Integer isDecimalization;
+	private Boolean isDecimalization;
 	
 	/*  */
 	@Column(name = "DECIMAL_DEGIT_NUMBER")
@@ -68,7 +68,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	
 	/*  */
 	@Column(name = "USE_PADDING")
-	private Integer usePadding;
+	private Boolean usePadding;
 	
 	/*  */
 	@Column(name = "PADDING_LENGTH")
@@ -121,7 +121,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 			val r = (StringRevise) reviseValue;
 			
 			entity.itemType = ItemType.STRING.value;
-			entity.usePadding = r.isUsePadding() ? 1 : 0;
+			entity.usePadding = r.isUsePadding();
 			r.getPadding().ifPresent(p -> {
 				entity.paddingLength = p.getLength().v();
 				entity.paddingMethod = p.getMethod().value;
@@ -136,7 +136,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 			val r = (RealRevise) reviseValue;
 			
 			entity.itemType = ItemType.REAL.value;
-			entity.isDecimalization = r.isDecimalization() ? 1 : 0;
+			entity.isDecimalization = r.isDecimalization();
 			entity.decimalLength = r.getLength().map(l -> l.v()).orElse(null);
 		}
 		
@@ -176,8 +176,8 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 		switch(EnumAdaptor.valueOf(itemType, ItemType.class)) {
 			case STRING:
 				return new StringRevise(
-						usePadding == 1,
-						Optional.ofNullable(usePadding == 1 ? new Padding(
+						usePadding,
+						Optional.ofNullable(usePadding ? new Padding(
 								new PaddingLength(paddingLength),
 								EnumAdaptor.valueOf(paddingMethod, PaddingMethod.class)) : null),
 						codeConvert);
@@ -187,7 +187,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 			case REAL:
 				return new RealRevise(
 						BooleanUtils.toBoolean(isDecimalization),
-						Optional.ofNullable(isDecimalization == 1 ? new DecimalDigitNumber(decimalLength) : null));
+						Optional.ofNullable(isDecimalization ? new DecimalDigitNumber(decimalLength) : null));
 			case DATE:
 				return new DateRevise(
 						EnumAdaptor.valueOf(dateFormat, ExternalImportDateFormat.class));
