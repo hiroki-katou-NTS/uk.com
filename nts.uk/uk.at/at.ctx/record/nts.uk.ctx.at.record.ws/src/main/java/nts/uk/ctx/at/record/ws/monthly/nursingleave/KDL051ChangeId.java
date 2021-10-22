@@ -30,8 +30,6 @@ public class KDL051ChangeId {
 	@Inject
 	private GetDeitalInfoNursingByEmp getDeitalInfoNursingByEmp;
 
-	private static String COMPANYID = AppContexts.user().companyId();
-
 	@Path("changeId/{employeeId}")
 	@POST
 	public KDL051ProcessDto getChildCareNusingLeave(@PathParam("employeeId") String employeeId) {
@@ -47,14 +45,14 @@ public class KDL051ChangeId {
 	@Path("getChildNursingLeave")
 	@POST
 	public ChildNursingLeaveDto getChildNursingLeave(List<String> listEmpId) {
-		ChildNursingLeaveDto data = childNursingLeave.get(COMPANYID, listEmpId);
+		ChildNursingLeaveDto data = childNursingLeave.get(AppContexts.user().companyId(), listEmpId);
 		return data;
 	}
 
 	@Path("getDeitalInfoNursingByEmp")
 	@POST
 	public NursingAndChildNursingRemainDto getDeitalInfoNursingByEmp(String employeeId) {
-		NursingAndChildNursingRemainDto data = getDeitalInfoNursingByEmp.get(COMPANYID, employeeId,
+		NursingAndChildNursingRemainDto data = getDeitalInfoNursingByEmp.get(AppContexts.user().companyId(), employeeId,
 				NursingCategory.ChildNursing);
 		return data;
 	}
@@ -62,7 +60,7 @@ public class KDL051ChangeId {
 	@Path("getDeitalInfoNursingByEmp/{employeeId}")
 	@POST
 	public NursingAndChildNursingRemainDto getDeitalInfoNursingByEmployee(@PathParam("employeeId") String employeeId) {
-		NursingAndChildNursingRemainDto data = getDeitalInfoNursingByEmp.get(COMPANYID, employeeId,
+		NursingAndChildNursingRemainDto data = getDeitalInfoNursingByEmp.get(AppContexts.user().companyId(), employeeId,
 				NursingCategory.Nursing);
 		return data;
 	}
