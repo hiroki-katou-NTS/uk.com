@@ -239,8 +239,6 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         for (PersonalScheduleByIndividualFormat item : dataBuildList) {
             int weekNO = item.getWeekNo();
             Map<Integer, String> holiday = item.getHoliday().get(weekNO);
-            cells.copyRows(cells, 3, rowCount, 5);
-            cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
             printCalender(cells,
                     rowCount,
                     0,
@@ -342,14 +340,17 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 cells.get(rowCount + 3, secondCol).setValue(item.getD27());
             }
             rowCount += 5;
-            // Check paging
+            
             if (isNextPage(rowCount, pageIndex)) {
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
+                cells.copyRows(cells, 3, rowCount, 30);
+                cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
             }
         }
         PageSetup pageSetup = wsSource.getPageSetup();
-        pageSetup.setPrintArea(PRINT_AREA + (pageIndex == 0 ? MAX_ROW_IN_PAGE : pageIndex * MAX_ROW_IN_PAGE));
+        val totalRow = ((pageIndex + 1) * 30) + 3;
+        pageSetup.setPrintArea(PRINT_AREA + totalRow);
     }
 
     private void removeTopBorder(Cell cell) {
@@ -360,7 +361,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private boolean isNextPage(int rowCount, int pageIndex) {
-        return (rowCount - (33 * pageIndex)) >= 33;
+        return (rowCount - (30 * pageIndex)) > 30;
     }
 
     int getInit(List<DateInformation> dateInfolist) {
