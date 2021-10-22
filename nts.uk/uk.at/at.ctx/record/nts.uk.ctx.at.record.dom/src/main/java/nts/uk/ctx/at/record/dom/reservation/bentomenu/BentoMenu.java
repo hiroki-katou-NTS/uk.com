@@ -77,20 +77,18 @@ public class BentoMenu extends AggregateRoot {
 		return BentoReservation.reserve(registerInfor, reservationDate,workLocationCode, bentoReservationDetails);
 	}
 	
-//	/**
-//	 * 締め時刻別のメニュー
-//	 * @return
-//	 */
-//	public BentoMenuByClosingTime getByClosingTime(Optional<WorkLocationCode> workLocationCode) {
-//		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr() && x.getWorkLocationCode().equals(workLocationCode))
-//				.map(x -> x.itemByClosingTime())
-//				.collect(Collectors.toList());
-//		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr() && x.getWorkLocationCode().equals(workLocationCode))
-//				.map(x -> x.itemByClosingTime())
-//				.collect(Collectors.toList());
-//		return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
-//	}
-	
+	/**
+	 * [3] 勤務場所より締め時刻別のメニュー
+	 * @param opWorkLocationCode Optional<勤務場所コード>
+	 * @param reservationClosingTimeFrame 枠番
+	 * @return 弁当
+	 */
+	public Bento getMenuByClosingTimeWorkLocate(Optional<WorkLocationCode> opWorkLocationCode, ReservationClosingTimeFrame reservationClosingTimeFrame) {
+		WorkLocationCode workLocationCode = opWorkLocationCode.isPresent() ? opWorkLocationCode.get() : null;
+		return menu.stream().filter(x -> x.getReceptionTimezoneNo()==reservationClosingTimeFrame &&
+				x.getWorkLocationCode().map(y -> y.equals(workLocationCode)).orElse(false)).findAny().orElse(null);
+	}
+		
 	/**
 	 * 予約受付チェック
 	 * @param dateTime 予約登録日時
