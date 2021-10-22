@@ -104,6 +104,26 @@ module nts.uk.ui.at.kdw013.e {
         getCbbList() {
             const vm = this;
 
+            vm.taskLst2().push({
+                taskCode: '-1',
+                taskName: '未選択'
+            });
+
+            vm.taskLst3().push({
+                taskCode: '-1',
+                taskName: '未選択'
+            });
+
+            vm.taskLst4().push({
+                taskCode: '-1',
+                taskName: '未選択'
+            });
+
+            vm.taskLst5().push({
+                taskCode: '-1',
+                taskName: '未選択'
+            });
+
             _.forEach(vm.taskDtos(), task => {
                 if (task.taskFrameNo == 1) {
 
@@ -154,19 +174,19 @@ module nts.uk.ui.at.kdw013.e {
             });
 
             vm.selectedTaskCD2.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD2 = value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD2 = value == '-1' ? null : value;
             });
 
             vm.selectedTaskCD3.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD3 = value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD3 = value == '-1' ? null : value;
             });
 
             vm.selectedTaskCD4.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD4 = value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD4 = value == '-1' ? null : value;
             });
 
             vm.selectedTaskCD5.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD5 = value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD5 = value == '-1' ? null : value;
             });
 
             vm.startTime.subscribe((value)=> {
