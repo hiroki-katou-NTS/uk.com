@@ -5,7 +5,9 @@ module nts.uk.ui.at.kdw013.b {
 	import error = nts.uk.ui.dialog.error;
 	const API: API = {
         START: '/screen/at/kdw013/common/start',
-        SELECT: '/screen/at/kdw013/c/select'
+        SELECT: '/screen/at/kdw013/c/select',
+        START_F: '/screen/at/kdw013/f/start_task_fav_register',
+        ADD_FAV_TASK_F: '/screen/at/kdw013/f/create_task_fav',
     };
 
     const COMPONENT_NAME = 'kdp013b';
@@ -34,7 +36,7 @@ module nts.uk.ui.at.kdw013.b {
                 <div class="actions">
                     <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
-					<button data-bind="click: $component.openF, icon: 229, size: 12"></button>
+					<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12"></button>
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
             </div>
@@ -63,6 +65,32 @@ module nts.uk.ui.at.kdw013.b {
 	            </table>
 			</div>
         </div>
+        <div class="popup-area-f-from-b">
+            <!-- F2_1 -->
+            <div class= "pb10 align-left" data-bind="i18n: 'KDW013_58'"></div>
+
+            <!-- F3_2 -->
+            <div class="textEditor pb10">
+                <!-- F3_1 -->
+                <label class="pr10" data-bind="i18n: 'KDW013_59'"></label>
+                <input
+                class="nameInput"
+                tabindex="1"
+                id="KDW013_59"
+                data-bind="ntsTextEditor: {
+                    value: favTaskName, 
+                    required: true,
+                    constraint: 'FavoriteTaskName',
+                    name: '#[KDW013_59]',
+                    enable: true
+                    }"
+                />
+            </div>
+
+            <!-- F4_1 -->
+            <button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_1', click: addFavTask"></button>
+        </div>
+
         <style>
             .detail-event {
                 width: 320px;
@@ -116,6 +144,22 @@ module nts.uk.ui.at.kdw013.b {
 				border: 1px solid #999;
 				margin-bottom: 5px;
 			}
+            .popup-area-f-from-b {
+                padding: 20px !important;
+                text-align: right;
+            }
+            .pb10 {
+                padding-bottom: 10px !important;
+            }
+            .pb20 {
+                padding-bottom: 20px !important;
+            }           
+            .align-left {
+                text-align: left;
+            }     
+            .pr10 {
+                padding-right: 10px;
+            }
         </style>
         `;
 
@@ -128,9 +172,30 @@ module nts.uk.ui.at.kdw013.b {
         taskFrameSettings: a.TaskFrameSettingDto[] = [];
 		time: KnockoutObservable<string> = ko.observable('');
 
+        // F画面を起動する
+        favoriteTaskItem: KnockoutObservable<FavoriteTaskItemDto | null> = ko.observable(null);
+
+        registerFavoriteCommand: KnockoutObservableArray<RegisterFavoriteCommand> = ko.observableArray([]);
+        favTaskName: KnockoutObservable<string> = ko.observable('');
+        // F画面: add new 
+        taskContents: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
+
 		position: any;
         constructor(public params: Params) {
             super();
+            const vm = this
+
+            // Init popup
+            $(".popup-area-f-from-b").ntsPopup({
+                trigger: ".popupButton-f-from-b",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-f-from-b"
+                },
+                showOnStart: false,
+                dismissible: true
+            })
 
         }
 
@@ -268,9 +333,49 @@ module nts.uk.ui.at.kdw013.b {
 			return item;
         }
 
-		openF() {
+        addFavTask() {
             const vm = this;
-           
+
+            //_.forEach(vm.itemValues(), v => {
+
+                // vm.taskContents().push({
+                //     itemId: v.itemId,
+                //     taskCode: v.value.toString()
+                // })
+
+            //});
+
+            vm.taskContents([{
+                itemId: 4,
+                taskCode: "1"
+            },
+            {
+                itemId: 5,
+                taskCode: "2"
+            },
+            {
+                itemId: 6,
+                taskCode: "3"
+            },
+            {
+                itemId: 7,
+                taskCode: "4"
+            },
+            {
+                itemId: 8,
+                taskCode: "5"
+            }]);
+
+            const registerFavoriteCommand : RegisterFavoriteCommand = {
+                taskName: vm.favTaskName(),
+                contents: vm.taskContents()
+            }
+
+            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand))
+            .done(() => {
+                vm.$dialog.info({ messageId: 'Msg_15' });
+            }).always(() => vm.$blockui('clear'));
+               
         }
 
         remove() {
