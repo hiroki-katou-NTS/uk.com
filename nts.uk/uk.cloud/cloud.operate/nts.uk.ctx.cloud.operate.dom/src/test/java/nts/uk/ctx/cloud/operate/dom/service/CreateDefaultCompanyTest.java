@@ -2,7 +2,7 @@ package nts.uk.ctx.cloud.operate.dom.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nts.uk.ctx.cloud.operate.dom.CreateDefaultCompany;
+import nts.uk.ctx.cloud.operate.dom.tenant.CreateDefaultCompany;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

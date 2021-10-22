@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.tenant.dom;
+package nts.uk.ctx.cloud.operate.dom.tenant;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -8,9 +8,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.shr.com.tenant.event.CreatedTenantEvent;
 
-/**
- * テナントを作る
- */
 public class CreateTenant {
 
     public static AtomTask create(
@@ -28,8 +25,7 @@ public class CreateTenant {
 
         return AtomTask.of(() -> {
             require.save(tenantAuthentication);
-            event.publish();
-        });
+        }).then(event.publish());
     }
 
     public static interface Require {

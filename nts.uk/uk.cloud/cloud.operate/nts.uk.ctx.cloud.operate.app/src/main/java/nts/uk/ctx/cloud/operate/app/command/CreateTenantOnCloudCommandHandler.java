@@ -14,11 +14,11 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
-import nts.uk.ctx.cloud.operate.dom.CreateDefaultCompany;
+import nts.uk.ctx.cloud.operate.dom.tenant.CreateDefaultCompany;
 import nts.uk.ctx.cloud.operate.dom.service.CreateInitialOptionsService;
+import nts.uk.ctx.cloud.operate.dom.tenant.CreateTenant;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
-import nts.uk.ctx.sys.tenant.dom.CreateTenant;
 import nts.uk.shr.com.license.option.purchasestate.OptionLicensePurchaseState;
 
 /**

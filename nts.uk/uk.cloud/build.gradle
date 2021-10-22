@@ -201,6 +201,7 @@ project (':cloud.operate:nts.uk.ctx.cloud.operate.dom') {
 	}
 	dependencies {
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
+		compile(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version)
 	}
 }
 
@@ -216,7 +217,6 @@ project (':cloud.operate:nts.uk.ctx.cloud.operate.app') {
 	dependencies {
 		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
 		compile(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version)
-		compile(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.dom', version: version)
 
 		compile project (':cloud.operate:nts.uk.ctx.cloud.operate.dom')
 	}
