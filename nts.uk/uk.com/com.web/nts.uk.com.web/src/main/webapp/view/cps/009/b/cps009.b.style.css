@@ -11,11 +11,11 @@
 }
 
 .requiredCell {
-	background-color: #FFC000;
+	background-color: #FFC000 !important;
 }
 
 .notrequiredCell {
-	background-color: #C7F391;
+	background-color: #C7F391 !important;
 }
 
 #grid0 td[role="gridcell"] {

@@ -51,7 +51,12 @@ module nts.uk.com.view.cps009.b.viewmodel {
                     });
                 } else {
                     self.itemInitLst = data.itemLst;
-                    self.state = data.itemRequired;
+					self.state = _.forEach(data.itemRequired, (i: any) => {
+						if (!_.find(i.state, o => o == 'requiredCell')) {
+							i.state.push('notrequiredCell')
+						}
+					})
+                    //self.state = data.itemRequired;
                 }
                 dfd.resolve();
             });
