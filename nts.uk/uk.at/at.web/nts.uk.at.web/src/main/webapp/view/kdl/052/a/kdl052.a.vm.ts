@@ -99,7 +99,8 @@ module nts.uk.at.view.kdl052.a {
             } else {
                 self.$window.size(580, 560);
                 $("#left-content").hide();
-            }           
+            }  
+            $("#btnClose").focus();
         }
 
 
