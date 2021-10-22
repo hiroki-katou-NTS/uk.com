@@ -72,11 +72,15 @@ module nts.uk.at.view.kdl052.a {
                 disableSelection: self.disableSelection(),
                 maxRows: 15,
                 tabindex: -1
-            };            
+            };  
 
             self.columns = ko.observableArray([
-                { headerText: getText('KDL052_25'), key: 'digestionDate', width: 160 },                
-                { headerText: getText('KDL052_26'), key: 'numberOfUse', width: 80 }
+                { headerText: getText('KDL052_25'), key: 'digestionDate', width: 170, formatter: v => {
+                    return "<div style='margin-right: 30px; display: flex; float:right;'>" + v + " </div>";}
+                },                
+                { headerText: getText('KDL052_26'), key: 'numberOfUse', width: 80, formatter: v => {
+                    return '<div style="margin-left: 10px;">' + v + '</div>';}
+                } 
             ]); 
 
             self.selectedCode.subscribe((code: string) => {
@@ -128,11 +132,7 @@ module nts.uk.at.view.kdl052.a {
                self.numberOfUse(data.numberOfUse);
                
                _.forEach(data.listDigestionDetails, item => {
-                    if(item.digestionStatus == ''){
-                        listDigestionDetails.push(new ItemModel('   ' + item.digestionDate, item.numberOfUse));
-                    } else {
-                        listDigestionDetails.push(new ItemModel(item.digestionStatus + ' ' + item.digestionDate, item.numberOfUse));
-                    }                    
+                    listDigestionDetails.push(new ItemModel(item.digestionStatus + ' ' + item.digestionDate, item.numberOfUse));                
                });
                self.itemLts(_.sortBy(listDigestionDetails, ['digestionDate']));
             }).fail((res) => {
