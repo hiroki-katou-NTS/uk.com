@@ -4799,8 +4799,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: moment(new Date()).format("YYYY/MM/DD")
             }
-			setShared('OPEN_WINDOWS_DATA', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
-            modal('/view/kdl/052/single.xhtml');
+			setShared('KDL052A_PARAM', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
+            modal('/view/kdl/052/a/index.xhtml');
         }
 
     }
