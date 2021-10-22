@@ -178,7 +178,7 @@ module nts.uk.ui.at.kdw013.b {
         registerFavoriteCommand: KnockoutObservableArray<RegisterFavoriteCommand> = ko.observableArray([]);
         favTaskName: KnockoutObservable<string> = ko.observable('');
         // F画面: add new 
-        taskContents: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
+        taskContents: TaskContentDto[] = [];
 
 		position: any;
         constructor(public params: Params) {
@@ -217,6 +217,11 @@ module nts.uk.ui.at.kdw013.b {
 
                         let {taskBlock} = extendedProps;
                     	vm.taskFrameSettings = extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList;
+						
+						//set valua in f screen
+						
+						vm.taskContents = _.map(_.filter(taskBlock.taskDetails[0].taskItemValues, i => i.itemId > 3 && i.itemId < 9), t => {return { itemId: t.itemId, taskCode: t.value}});
+						
 						let param ={
 							refDate: start,
 							itemIds: _.filter(_.map(extendedProps.displayManHrRecordItems, i => i.itemId), t => t > 8)
@@ -345,30 +350,9 @@ module nts.uk.ui.at.kdw013.b {
 
             //});
 
-            vm.taskContents([{
-                itemId: 4,
-                taskCode: "1"
-            },
-            {
-                itemId: 5,
-                taskCode: "2"
-            },
-            {
-                itemId: 6,
-                taskCode: "3"
-            },
-            {
-                itemId: 7,
-                taskCode: "4"
-            },
-            {
-                itemId: 8,
-                taskCode: "5"
-            }]);
-
             const registerFavoriteCommand : RegisterFavoriteCommand = {
                 taskName: vm.favTaskName(),
-                contents: vm.taskContents()
+                contents: vm.taskContents
             }
 
             vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand))
