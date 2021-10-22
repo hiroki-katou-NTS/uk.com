@@ -32,6 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -338,7 +339,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn7C233(),
                     item.getColn7C234(),
                     holiday,
-                    6
+                    7
             );
             if (query.isTotalDisplay()) {
                 //calender item seven for each row
@@ -367,7 +368,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
             }
             rowCount += 5;
-            
+
             if (isNextPage(rowCount, pageIndex)) {
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
@@ -437,7 +438,12 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         List<WorkScheduleWorkInforDto> workInforDtoList = dataSource.getWorkInforDtoList();
         List<WeeklyAgreegateResult> weeklyAgreegateResults = dataSource.getAgreegateResults();
         Optional<LegalWorkTimeOfEmployee> legalWorktime = dataSource.getLegalWorkTimeOfEmployee();
-        int count = startDayOfWeek - 1;
+
+        // Fix #56942
+        List<Integer> headerList = generateTableHeader(startDayOfWeek);
+        val startDateValue = dataSource.getDateInformationList().get(0).getDayOfWeek().value;
+        int count = ArrayUtils.indexOf(headerList.toArray(), startDateValue);
+
         boolean isFirst = true;
         List<PersonalScheduleByIndividualFormat> dataList = new ArrayList<>();
         PersonalScheduleByIndividualFormat format = new PersonalScheduleByIndividualFormat();
