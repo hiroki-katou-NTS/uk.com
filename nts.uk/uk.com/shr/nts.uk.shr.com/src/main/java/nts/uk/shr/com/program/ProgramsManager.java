@@ -3688,7 +3688,7 @@ public class ProgramsManager {
 	public static final Program KDL051 = new Program(WebAppId.AT, 
             ProgramIdConsts.KDL051A,
             "KDL051_1",
-            "/view/kdl/051/a.xhtml");
+            "/view/kdl/051/a/index.xhtml");
 	/**
 	 * KDL053
 	 */
