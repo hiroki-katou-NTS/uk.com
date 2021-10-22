@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -324,21 +323,20 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
      */
     private void aggregationSuspensionProcessing(String companyId, String execId) {
         // ドメインモデル「任意期間集計実行ログ」を更新する
-        List<AggrPeriodExcution> listDomain = this.aggrPeriodExcutionRepo.findAggrCode(companyId, execId);
-        listDomain = listDomain.stream()
-                // 任意期間集計実行ログ．実行状況 = 中断開始
-                .map(domain -> AggrPeriodExcution.createFromJavaType(
-                        companyId,
-                        execId,
-                        domain.getAggrFrameCode().v(),
-                        domain.getAggrId(),
-                        domain.getStartDateTime(),
-                        domain.getEndDateTime(),
-                        domain.getExecutionAtr().value,
-                        ExecutionStatus.START_OF_INTERRUPTION.value,
-                        domain.getPresenceOfError().value))
-                .collect(Collectors.toList());
-        this.aggrPeriodExcutionRepo.updateAll(listDomain);
+        Optional<AggrPeriodExcution> optDomain = this.aggrPeriodExcutionRepo.findByAggrId(companyId, execId);
+        optDomain.ifPresent(domain -> {
+        	domain = AggrPeriodExcution.createFromJavaType(
+                    companyId,
+                    "System",
+                    domain.getAggrFrameCode().v(),
+                    domain.getAggrId(),
+                    domain.getStartDateTime(),
+                    domain.getEndDateTime(),
+                    domain.getExecutionAtr().value,
+                    ExecutionStatus.START_OF_INTERRUPTION.value,
+                    domain.getPresenceOfError().value);
+        	this.aggrPeriodExcutionRepo.updateExcution(domain);
+        });
     }
 
     /**

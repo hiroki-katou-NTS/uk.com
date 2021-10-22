@@ -45,6 +45,10 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 	// 子の看護休暇管理
 	@PeregItem("IS00379")
 	private Double childCareUsedDays;
+	
+	// 子の看護使用時間
+	@PeregItem("IS01101")
+	private Integer childCareUsedTimes;
 
 	// 介護休暇管理
 	@PeregItem("IS00380")
@@ -65,6 +69,10 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 	// 介護使用日数
 	@PeregItem("IS00384")
 	private Double careUsedDays;
+	
+	// 介護使用時間
+	@PeregItem("IS01102")
+	private Integer careUsedTimes;
 
 	public static CareLeaveInfoDto createFromDomain(String employeeId,
 			Optional<ChildCareLeaveRemainingInfo> childCareInfoDomainOpt,
@@ -90,8 +98,14 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 		if (childCareUsedNumberDataOpt.isPresent()) {
 			ChildCareUsedNumberData childCareDataDomain = childCareUsedNumberDataOpt.get();
 			result.setChildCareUsedDays(childCareDataDomain.getUsedDay().v());
+			if (childCareDataDomain.getUsedTimes().isPresent()) {
+				result.setChildCareUsedTimes(childCareDataDomain.getUsedTimes().get().v());
+			} else {
+				result.setChildCareUsedTimes(null);
+			}
 		} else {
 			result.setChildCareUsedDays(null);
+			result.setChildCareUsedTimes(null);
 		}
 
 		// care-info
@@ -109,8 +123,14 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 		if (careUsedNumberDataOpt.isPresent()) {
 			CareUsedNumberData careDataDomain = careUsedNumberDataOpt.get();
 			result.setCareUsedDays(careDataDomain.getUsedDay().v());
+			if (careDataDomain.getUsedTimes().isPresent()) {
+				result.setCareUsedTimes(careDataDomain.getUsedTimes().get().v());
+			} else {
+				result.setCareUsedTimes(null);
+			}
 		} else {
 			result.setCareUsedDays(null);
+			result.setCareUsedTimes(null);
 		}
 
 		return result;
@@ -144,8 +164,14 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 		if (childCareUsedNumberDataOpt.isPresent()) {
 			ChildCareUsedNumberData childCareDataDomain = childCareUsedNumberDataOpt.get();
 			result.setChildCareUsedDays(childCareDataDomain.getUsedDay().v());
+			if (childCareDataDomain.getUsedTimes().isPresent()) {
+				result.setChildCareUsedTimes(childCareDataDomain.getUsedTimes().get().v());
+			} else {
+				result.setChildCareUsedTimes(null);
+			}
 		} else {
 			result.setChildCareUsedDays(null);
+			result.setChildCareUsedTimes(null);
 		}
 
 		// care-info
@@ -167,8 +193,14 @@ public class CareLeaveInfoDto extends PeregDomainDto {
 		if (careUsedNumberDataOpt.isPresent()) {
 			CareUsedNumberData careDataDomain = careUsedNumberDataOpt.get();
 			result.setCareUsedDays(careDataDomain.getUsedDay().v());
+			if (careDataDomain.getUsedTimes().isPresent()) {
+				result.setCareUsedTimes(careDataDomain.getUsedTimes().get().v());
+			} else {
+				result.setCareUsedTimes(null);
+			}
 		} else {
 			result.setCareUsedDays(null);
+			result.setCareUsedTimes(null);
 		}
 
 		return result;

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,10 @@ public class WwfdtAppInstRoute extends ContractUkJpaEntity {
 	@Id
 	@Column(name="ROOT_STATE_ID")
 	public String rootStateID;
+	
+	@Version
+	@Column(name="EXCLUS_VER")
+	private int version;
 	
 	@Column(name="EMPLOYEE_ID")
 	public String employeeID;

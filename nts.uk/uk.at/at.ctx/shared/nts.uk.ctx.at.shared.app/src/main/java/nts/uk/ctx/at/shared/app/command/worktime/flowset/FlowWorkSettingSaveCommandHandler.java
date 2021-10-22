@@ -66,9 +66,9 @@ public class FlowWorkSettingSaveCommandHandler extends CommandHandler<FlowWorkSe
 		}
 
 		// update mode
-		FlowWorkSetting oldDomain = this.flowRepo.find(companyId, command.getWorktimeSetting().worktimeCode).get();
+//		FlowWorkSetting oldDomain = this.flowRepo.find(companyId, command.getWorktimeSetting().worktimeCode).get();
 		flowWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+				command.getWorktimeSetting().getWorkTimeDivision(), flowWorkSetting);
 		flowWorkSetting.setDefaultData(ScreenMode.valueOf(command.getScreenMode()));
 		// Validate + common handler
 		this.validate(command, flowWorkSetting);

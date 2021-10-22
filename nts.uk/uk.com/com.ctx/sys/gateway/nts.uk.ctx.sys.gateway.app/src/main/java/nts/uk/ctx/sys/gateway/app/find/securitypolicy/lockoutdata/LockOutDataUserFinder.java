@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDat
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserDto;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.SearchUser;
 import nts.uk.shr.com.context.AppContexts;
@@ -46,7 +46,7 @@ public class LockOutDataUserFinder {
 		List<LockOutDataUserDto> lstLockOutDataUserDto = new ArrayList<LockOutDataUserDto>();
 		String contractCd = AppContexts.user().contractCode();
 		//get list LockOutData
-		List<LockOutData> lstLockOutData = lockOutDataRepository.findByContractCode(contractCd);
+		List<LockoutData> lstLockOutData = lockOutDataRepository.findByContractCode(contractCd);
 			lstLockOutData.forEach(item -> {
 				LockOutDataUserDto lockOutDataUserDto = new LockOutDataUserDto();
 				if (item != null) {
@@ -86,11 +86,11 @@ public class LockOutDataUserFinder {
 	 * @return the lock out data dto
 	 */
 	public LockOutDataDto findLockOutDataByUserId(String UserId) {
-		Optional<LockOutData> optLockOutData = lockOutDataRepository.findByUserId(UserId);
+		Optional<LockoutData> optLockOutData = lockOutDataRepository.find(UserId);
 		if (!optLockOutData.isPresent()) {
 			return null;
 		}
-		LockOutData lockOutData = optLockOutData.get();
+		LockoutData lockOutData = optLockOutData.get();
 		return new LockOutDataDto(lockOutData.getUserId(), lockOutData.getLockOutDateTime(),
 				lockOutData.getLogType().value, lockOutData.getContractCode().v(), lockOutData.getLoginMethod().value);
 	}

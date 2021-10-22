@@ -1,6 +1,6 @@
 div[class^=screen-i] {
-	padding-top: 30px;
 	padding-left: 30px;
+	padding-top: 10px;
 }
 
 .screen-i .panel.ntsPanel {
@@ -21,7 +21,7 @@ div[class^=screen-i] {
 }
 
 .screen-i #ccgcomponent {
-	margin: -30px 0 0 -30px;
+	margin: 0px 0 0 -30px;
 }
 
 .screen-i #kcpcomponent>div {
@@ -45,8 +45,9 @@ div[class^=screen-i] {
 }
 
 .screen-i .information {
-	padding-top: 0;
 	min-width: 400px;
+	padding-top: 20px;
+	
 }
 .container-custom {
 	display: flex;

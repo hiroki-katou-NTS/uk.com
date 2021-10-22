@@ -450,7 +450,7 @@ public class RegulationInfoEmployeeFinder {
 	public RegulationInfoEmployeeDto findCurrentLoginEmployeeInfo(LoginEmployeeQuery query) {
 		String loginEmployeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getBaseDate(), query.getSystemType());
+		RegulationInfoEmployee loginEmployee = this.repo.findBySid(companyId, loginEmployeeId, query.getBaseDate().toDate(), query.getSystemType());
 
 		switch(EnumAdaptor.valueOf(query.getSystemType(), CCG001SystemType.class)) {
 			case SALARY:

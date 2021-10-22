@@ -59,7 +59,6 @@ public class IntegrationOfWorkTime {
 	/** 流動勤務設定 */
 	private Optional<FlowWorkSetting> flowWorkSetting;
 	
-	
 	/**
 	 * Constructor（通常勤務）
 	 * @param workTimeCode 就業時間帯コード
@@ -412,5 +411,21 @@ public class IntegrationOfWorkTime {
 		/** ○一番最初の時間帯を取得 */
 		/** ○取得した時間帯の開始時刻を返す */
 		return timeZones.get(0).getStart();
+	}
+	
+	/**
+	 * コアタイム時間帯設定を取得する
+	 * (出勤系ではない場合は最低勤務時間を0：00にする)
+	 * @param workType 勤務種類
+	 * @return コアタイム時間帯設定
+	 */
+	public Optional<CoreTimeSetting> getCoreTimeSettingForCalc(Optional<WorkType> workType) {
+		if (!this.flexWorkSetting.isPresent()) return Optional.empty();
+		if (!workType.isPresent()) return Optional.of(this.flexWorkSetting.get().getCoreTimeSetting());
+		if (workType.get().isWeekDayAttendance()) {
+			return Optional.of(this.flexWorkSetting.get().getCoreTimeSetting());
+		}
+		// 出勤系ではない場合は最低勤務時間を0：00にする
+		return Optional.of(this.flexWorkSetting.get().getCoreTimeSetting().changeZeroMinWorkTime());
 	}
 }

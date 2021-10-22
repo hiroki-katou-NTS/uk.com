@@ -20,4 +20,8 @@ public class ApprovalRootStateImport_New {
 	
 	private GeneralDate date;
 	
+	private int rootType;
+	
+	private String employeeID;
+	
 }

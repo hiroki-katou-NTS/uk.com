@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -50,9 +49,8 @@ public class ReflectTemporaryStartEnd {
 	@Inject
 	private ReflectTimeOfDay reflectTimeOfDay;
 	
-	public ReflectStampOuput reflect(Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
+	public ReflectStampOuput reflect(String companyId, Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
-		String companyId = AppContexts.user().companyId();
 		// ドメインモデル「臨時勤務利用管理」を取得する
 		Optional<TemporaryWorkUseManage> optTempWorkUse = tempWorkRepo.findByCid(companyId);
 		if(!optTempWorkUse.isPresent() || optTempWorkUse.get().getUseClassification() == UseAtr.NOTUSE) {

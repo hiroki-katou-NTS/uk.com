@@ -45,6 +45,16 @@ public interface EmployeeMonthDaySettingRepository {
 	List<String> findAllEmployeeRegister(CompanyId companyId, Year year);
 	
 	/**
+	 *  Find by years.
+	 * @param companyId the company id
+	 * @param employee the employee
+	 * @param yearList  the list year
+	 * @return the List
+	 */
+	List<EmployeeMonthDaySetting> findByYears(CompanyId companyId, String employee, List<Year> yearList);
+
+	
+	/**
 	 * Adds the.
 	 *
 	 * @param domain the domain

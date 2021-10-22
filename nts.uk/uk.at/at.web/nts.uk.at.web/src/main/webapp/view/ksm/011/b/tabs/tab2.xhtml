@@ -11,10 +11,11 @@
         class="goback"
         data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
       ></a>
-      <button tabindex="3"
-        class="proceed"
-        data-bind="text: $vm.$i18n('KSM011_18'), click: registerRulesCompanyShiftTable, enable: $root.errors.isEmpty"
-      ></button>
+      <button tabindex="3" class="proceed"
+        data-bind="text: $vm.$i18n('KSM011_18'),
+                    click: registerRulesCompanyShiftTable,
+                    enable: $root.errors.isEmpty() &amp;&amp; enableRegButton()">
+      </button>
       <button tabindex="3"
               class="danger"
               data-bind="text: $vm.$i18n('KSM011_118'), click: deleteRulesCompanyShiftTable, enable: enableDeleteButton"

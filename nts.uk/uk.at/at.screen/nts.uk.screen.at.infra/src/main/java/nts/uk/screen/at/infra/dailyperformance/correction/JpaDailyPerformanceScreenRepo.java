@@ -926,7 +926,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
 				.setParameter("lstItem", lstAttendanceItem).getList();
 		return entities.stream().map(i -> {
-			return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
+			return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName, i.displayName,
 					i.displayNumber, i.userCanSet == 1 ? true : false, i.nameLineFeedPosition, i.dailyAttendanceAtr,
 					i.typeOfMaster != null ? i.typeOfMaster.intValue() : null,
 					i.primitiveValue == null ? null : i.primitiveValue.intValue());
@@ -940,11 +940,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 			return Collections.emptyList();
 		return this.queryProxy().query(SEL_ATTENDANCE_ITEM_CONTROL, KshmtDayAtdCtr.class)
 				.setParameter("companyId", companyId).setParameter("lstItem", lstAttendanceItem).getList().stream()
-				.map(c -> {
-					return new DPAttendanceItemControl(c.kshmtDayAtdCtrPK.itemDailyID,
-							c.inputUnitOfTimeItem, c.headerBgColorOfDailyPer != null ? c.headerBgColorOfDailyPer : "",
-							null);
-				}).collect(Collectors.toList());
+				.map(c -> new DPAttendanceItemControl(
+						c.kshmtDayAtdCtrPK.itemDailyID,
+						null,
+						c.headerBgColorOfDailyPer != null ? c.headerBgColorOfDailyPer : "",
+						null
+				)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -1396,7 +1397,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	public List<AuthorityFormatInitialDisplayDto> findAuthorityFormatInitialDisplay(String companyId) {
 		return this.queryProxy().query(SEL_DAILY_PERFORMACE_DISPLAY, KfnmtDailyPerformanceDisplay.class)
 				.setParameter("companyId", companyId).getList(k -> new AuthorityFormatInitialDisplayDto(companyId,
-						k.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode));
+						k.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode, k.kfnmtDailyPerformanceDisplayPK.pcSpAtr));
 	}
 
 	@Override

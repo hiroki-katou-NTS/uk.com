@@ -39,7 +39,7 @@ public class StampPersonalEngravingWs {
 	
 	@POST
 	@Path("registerDailyIdentify")
-	public void registerDailyIdentify(RegisterDailyIDentifyCommand	 param) throws InterruptedException {
+	public void registerDailyIdentify(RegisterDailyIDentifyCommand param) throws InterruptedException {
 		registerDailyIDentifyCommandHandler.handle(param);
 	}
 	

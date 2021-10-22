@@ -28,13 +28,11 @@ public class RegisterDailyIDentifyCommandHandler extends CommandHandler<Register
 
 	@Override
 	protected void handle(CommandHandlerContext<RegisterDailyIDentifyCommand> context) {
-		String employeId = AppContexts.user().employeeId();
+		String employeId = context.getCommand().getSid();
 		SelfConfirmDay selfConfirm = new SelfConfirmDay(GeneralDate.today(), true);
 		List<SelfConfirmDay> selfConfirms = new ArrayList<>(Arrays.asList(selfConfirm));
 		ParamIdentityConfirmDay param = new ParamIdentityConfirmDay(employeId, selfConfirms);
 //		Pair<String, GeneralDate> update = new Pair <String, GeneralDate> ();
 		boolean register = registerIdentityConfirmDay.registerIdentity(param, new ArrayList<>(), new HashSet<>());
 	}
-
-	
 }

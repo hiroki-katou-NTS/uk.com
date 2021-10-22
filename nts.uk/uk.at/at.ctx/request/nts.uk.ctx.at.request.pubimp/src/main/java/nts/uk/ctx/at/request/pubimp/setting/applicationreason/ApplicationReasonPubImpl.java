@@ -29,7 +29,7 @@ public class ApplicationReasonPubImpl implements ApplicationReasonPub {
 				.map(x -> new ApplicationReasonExport(companyId, x.getApplicationType().value,
 						x.getReasonTypeItemLst().stream()
 								.map(y -> Pair.of(y.getAppStandardReasonCD().v(), y.getReasonForFixedForm().v()))
-								.collect(Collectors.toList())))
+								.collect(Collectors.toList()), x.getOpHolidayAppType().map(y -> y.value)))
 				.collect(Collectors.toList());
 	}
 

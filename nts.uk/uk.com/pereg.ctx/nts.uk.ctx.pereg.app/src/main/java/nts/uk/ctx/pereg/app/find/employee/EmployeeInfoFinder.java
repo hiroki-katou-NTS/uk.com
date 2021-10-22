@@ -158,7 +158,8 @@ public class EmployeeInfoFinder {
 		}
 
 		// Check duplicate loginID
-		Boolean isDuplicateLoginId = !CollectionUtil.isEmpty(this.userRepo.getByLoginId(empInfo.getLoginId()));
+		String contractCode = AppContexts.user().contractCode();
+		Boolean isDuplicateLoginId = this.userRepo.getByContractAndLoginId(contractCode, empInfo.getLoginId()).isPresent();
 		if (isDuplicateLoginId) {
 
 			throw new BusinessException("Msg_757");

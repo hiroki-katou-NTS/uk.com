@@ -80,8 +80,7 @@ public class AcScreenCondSetDto {
 
 	public static AcScreenCondSetDto fromDomain(AcScreenCondSet domain) {
 		return new AcScreenCondSetDto(domain.getConditionSetCd().v(), domain.getAcceptItemNum().v(),
-				domain.getSelectComparisonCondition().isPresent() ? domain.getSelectComparisonCondition().get().value
-						: null,
+				domain.getSelectComparisonCondition().value,
 				domain.getTimeConditionValue1().isPresent() ? domain.getTimeConditionValue1().get().v() : null,
 				domain.getTimeConditionValue2().isPresent() ? domain.getTimeConditionValue2().get().v() : null,
 				domain.getTimeMomentConditionValue1().isPresent() ? domain.getTimeMomentConditionValue1().get().v()

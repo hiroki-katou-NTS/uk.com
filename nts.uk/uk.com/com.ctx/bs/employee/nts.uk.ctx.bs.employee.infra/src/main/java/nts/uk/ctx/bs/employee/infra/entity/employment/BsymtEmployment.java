@@ -5,7 +5,6 @@
 package nts.uk.ctx.bs.employee.infra.entity.employment;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

@@ -159,7 +159,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeId,baseDate);
 
 		if (!personalLablorCodition.isPresent()
-				|| personalLablorCodition.get().getWorkCategory().getWeekdayTime() == null) {
+				|| personalLablorCodition.get().getWorkCategory().getWorkTime().getWeekdayTime() == null) {
 			if (!CollectionUtil.isEmpty(workTypes)) {
 				// 先頭の勤務種類を選択する
 				selectedData.setSelectedWorkTypeCd(workTypes.get(0));
@@ -173,8 +173,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		} else {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する
 			
-			Optional<WorkTypeCode> wkTypeOpt = personalLablorCodition.get().getWorkCategory().getWeekdayTime()
-					.getWorkTypeCode();
+			Optional<WorkTypeCode> wkTypeOpt = Optional.of(personalLablorCodition.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
 			if (wkTypeOpt.isPresent()) {
 				String wkTypeCd = wkTypeOpt.get().v();
 				
@@ -188,14 +187,14 @@ public class DataWorkServiceImpl implements IDataWorkService {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
 
 			WorkTimeSetting workTime = workTimeSettingRepository.findByCode(companyId,
-					personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().toString())
+					personalLablorCodition.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get().toString())
 					.orElseGet(()->{
 						return workTimeSettingRepository.findByCompanyId(companyId).get(0);
 					});
 			selectedData.setSelectedWorkTimeCd(workTime.getWorktimeCode().toString());
 			selectedData.setSelectedWorkTimeName(workTime.getWorkTimeDisplayName().getWorkTimeName().v());
 			
-			String wkTimeCd = personalLablorCodition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get()
+			String wkTimeCd = personalLablorCodition.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get()
 					.toString();
 			
 			selectedData.setSelectedWorkTimeCd(wkTimeCd);

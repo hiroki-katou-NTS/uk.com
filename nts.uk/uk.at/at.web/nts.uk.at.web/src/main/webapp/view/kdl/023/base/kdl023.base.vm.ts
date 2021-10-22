@@ -355,12 +355,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 						dfd.fail();
 					}
 				}).fail(res => {
-					vm.$dialog.alert(res.message);
+                	vm.showErrorThenCloseDialog(res);
 					dfd.fail();
 				}).always(() => {
 					// Show message Msg_37 then close dialog.
 					if (vm.isDataEmpty) {
-						vm.showErrorThenCloseDialog();
+						vm.showErrorThenCloseDialog({messageId: "Msg_37"});
 						dfd.fail();
 					}
 					vm.$blockui('clear')
@@ -483,6 +483,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 			if (vm.reCheckEmptyHoliday() > 0) {
 				vm.$blockui('clear');
+				return;
 			}
 
 			let legalHolidayCd = '';
@@ -666,8 +667,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 					self.isDataEmpty = true;
 				}
 				dfd.resolve();
-			}).fail(() => {
-				self.showErrorThenCloseDialog();
+			}).fail((error: any) => {
+				self.showErrorThenCloseDialog(error);
 				dfd.fail();
 			});
 
@@ -741,11 +742,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 		/**
 		 * Show error then close dialog.
 		 */
-		private showErrorThenCloseDialog(): void {
+		private showErrorThenCloseDialog(error: any): void {
 			let vm = this;
-			nts.uk.ui.dialog.alertError({messageId: "Msg_37"}).then(() => {
+			nts.uk.ui.dialog.alertError(error).then(() => {
 				vm.$blockui("clear");
-				vm.closeDialog();
+				if (error.messageId == "Msg_37") {
+                    vm.closeDialog();
+				}
 			});
 		}
 

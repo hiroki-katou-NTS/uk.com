@@ -7,46 +7,56 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
+import nts.uk.ctx.sys.shared.dom.user.ContractCode;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class SgwdtLockout.
  */
-@Entity
-@Table(name="SGWDT_LOCKOUT")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
+@Entity
+@Table(name="SGWDT_LOCKOUT")
+public class SgwdtLockout extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The id. */
 	@EmbeddedId
-	private SgwmtLockoutDataPK sgwmtLockoutDataPK;
+	private SgwdtLockoutPK sgwdtLockoutDataPK;
 
 	/** The lock type. */
 	@Column(name="LOCK_TYPE")
 	private Integer lockType;
-
-	/** The login method. */
+	
 	@Column(name="LOGIN_METHOD")
 	private Integer loginMethod;
 	
-	/**
-	 * Instantiates a new sgwmt lockout data.
-	 */
-	public SgwdtLockout() {
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
+	public static final JpaEntityMapper<SgwdtLockout> MAPPER = new JpaEntityMapper<>(SgwdtLockout.class);
+	
 	@Override
 	protected Object getKey() {
-		return this.sgwmtLockoutDataPK;
+		return this.sgwdtLockoutDataPK;
+	}
+	
+	public LockoutData toDomain() {
+		return new LockoutData(
+				new ContractCode(this.sgwdtLockoutDataPK.getContractCd()), 
+				this.sgwdtLockoutDataPK.getUserId(), 
+				this.sgwdtLockoutDataPK.getLockoutDateTime(), 
+				LockType.valueOf(this.lockType), 
+				LoginMethod.valueOf(this.loginMethod));
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +66,7 @@ public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((sgwmtLockoutDataPK == null) ? 0 : sgwmtLockoutDataPK.hashCode());
+		result = prime * result + ((sgwdtLockoutDataPK == null) ? 0 : sgwdtLockoutDataPK.hashCode());
 		return result;
 	}
 
@@ -72,10 +82,10 @@ public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		SgwdtLockout other = (SgwdtLockout) obj;
-		if (sgwmtLockoutDataPK == null) {
-			if (other.sgwmtLockoutDataPK != null)
+		if (sgwdtLockoutDataPK == null) {
+			if (other.sgwdtLockoutDataPK != null)
 				return false;
-		} else if (!sgwmtLockoutDataPK.equals(other.sgwmtLockoutDataPK))
+		} else if (!sgwdtLockoutDataPK.equals(other.sgwdtLockoutDataPK))
 			return false;
 		return true;
 	}

@@ -36,7 +36,7 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
                                 <span data-bind="i18n: 'KDP003_67', style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></span>
                                 <span data-bind="text: $data.displayMessageNotice.endDate, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></span>
                             </div>
-                        	<div data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></div>
+                        	<div class= "notificationMessage" data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></div>
                         </div>
                     </com:ko-foreach>
                 </div>
@@ -51,7 +51,7 @@ xmlns:h="http://xmlns.jcp.org/jsf/html">
                                 <span data-bind="i18n: 'KDP003_67', style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></span>
                                 <span data-bind="text: $data.displayMessageNotice.endDate, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></span>
                             </div>
-                            <div data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></div>
+                            <div class= "notificationMessage" data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></div>
                         </div>
                     </com:ko-foreach>
                 </div>

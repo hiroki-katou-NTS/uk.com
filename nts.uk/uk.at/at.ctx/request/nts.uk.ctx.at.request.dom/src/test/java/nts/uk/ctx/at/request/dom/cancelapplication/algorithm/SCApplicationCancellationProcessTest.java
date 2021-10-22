@@ -96,7 +96,7 @@ public class SCApplicationCancellationProcessTest {
 				ReflectApplicationHelper.createReflectStatusResult(ReflectedState.NOTREFLECTED), // 反映状態=未反映
 				NotUseAtr.NOT_USE);
 
-		assertThat(actualResult.getStatusWorkSchedule().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
+		assertThat(actualResult.getStatusWorkSchedule().getReflectStatus()).isEqualTo(ReflectedState.CANCELED);
 		new Verifications() {
 			{
 				require.process((ApplicationShare) any, (GeneralDate) any, (ReflectStatusResult) any,

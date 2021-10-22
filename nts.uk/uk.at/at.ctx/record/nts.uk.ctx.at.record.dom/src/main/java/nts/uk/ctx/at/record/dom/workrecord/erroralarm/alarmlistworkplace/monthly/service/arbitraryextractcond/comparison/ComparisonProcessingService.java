@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckC
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareSingleValue;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 import javax.ejb.Stateless;
 import java.text.DecimalFormat;
@@ -47,29 +48,37 @@ public class ComparisonProcessingService {
         boolean check = condition.checkTarget(avgTime);
         CheckConditions checkConditions = condition.getCheckConditions();
 
+        String averageTime = avgTime.toString();
+        if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
+            TimeWithDayAttr avgTime1 = new TimeWithDayAttr(avgTime.intValue());
+            averageTime = avgTime1.getRawTimeWithFormat();
+        }
         String message;
         if (checkConditions.isSingleValue()) {
             CompareSingleValue compareSingleValue = ((CompareSingleValue) checkConditions);
             if (!check) return null;
-            String time = compareSingleValue.getValue().toString();
-            try {
-                if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
-                    Double ts = (Double.parseDouble(time) / 60);
-                    DecimalFormat  f = new DecimalFormat("####.##");
-                    time = f.format(ts) + "h";
-                }
-            } catch (Exception e) {
-                time = compareSingleValue.getValue().toString();
+            String timeToCompare = compareSingleValue.getValue().toString();
+            if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
+                TimeWithDayAttr time = new TimeWithDayAttr(Integer.parseInt(timeToCompare));
+                timeToCompare = time.getRawTimeWithFormat();
             }
-            message = TextResource.localize("KAL020_402", averageTimeName,
-                    compareSingleValue.getCompareOpertor().nameId, time,
-                    avgTime.toString());
+            message = TextResource.localize(
+                    "KAL020_402",
+                    averageTimeName,
+                    compareSingleValue.getCompareOpertor().nameId,
+                    timeToCompare,
+                    averageTime
+            );
         } else {
             CompareRange compareRange = ((CompareRange) checkConditions);
             if (!check) return null;
 
-            message = TextResource.localize("KAL020_403", averageTimeName, getFormula(compareRange,condition),
-                    avgTime.toString());
+            message = TextResource.localize(
+                    "KAL020_403",
+                    averageTimeName,
+                    getFormula(compareRange, condition),
+                    averageTime
+            );
         }
 
         // 抽出結果を作成
@@ -77,7 +86,7 @@ public class ComparisonProcessingService {
         return new ExtractResultDto(new AlarmValueMessage(message),
                 new AlarmValueDate(String.valueOf(ym.v()), Optional.empty()),
                 condition.getMonExtracConName().v(),
-                Optional.ofNullable(TextResource.localize("KAL020_408", avgTime.toString())),
+                Optional.ofNullable(TextResource.localize("KAL020_408", averageTime)),
                 Optional.of(new MessageDisplay(condition.getMessageDisp().v())),
                 workplaceId);
     }
@@ -86,16 +95,11 @@ public class ComparisonProcessingService {
         String formula = "";
         String timeStart = compareRange.getStartValue().toString();
         String timeEnd = compareRange.getEndValue().toString();
-        try {
-            if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
-                Double tsStart = (Double.parseDouble(timeStart) / 60);
-                DecimalFormat  f = new DecimalFormat("####.##");
-                timeStart = f.format(tsStart) + "h"; 
-                Double tsEnd = (Double.parseDouble(timeEnd) / 60);
-                timeEnd = f.format(tsEnd) + "h";
-            }
-        } catch (Exception e) {
-            System.out.println("Error  "+ e.getMessage());
+        if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
+            TimeWithDayAttr timeStart1 = new TimeWithDayAttr(Integer.parseInt(timeStart));
+            timeStart = timeStart1.getRawTimeWithFormat();
+            TimeWithDayAttr timeEnd1 = new TimeWithDayAttr(Integer.parseInt(timeEnd));
+            timeEnd = timeEnd1.getRawTimeWithFormat();
         }
         switch (compareRange.getCompareOperator()) {
             case BETWEEN_RANGE_OPEN:

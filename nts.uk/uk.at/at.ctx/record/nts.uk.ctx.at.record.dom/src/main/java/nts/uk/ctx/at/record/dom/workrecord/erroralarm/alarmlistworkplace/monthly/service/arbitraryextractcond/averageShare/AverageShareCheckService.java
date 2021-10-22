@@ -5,6 +5,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.CheckMonthlyItemsType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.comparison.ComparisonProcessingService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.DataCheckAlarmListService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
@@ -41,7 +42,6 @@ public class AverageShareCheckService {
      * @param times List＜月別実績＞
      * @param empInfos List＜社員情報＞
      * @param ym 年月
-     * @param attendaceName List＜勤怠項目名称＞
      */
     public ExtractResultDto check(String workplaceId,
                                   ExtractionMonthlyCon condition,
@@ -66,7 +66,7 @@ public class AverageShareCheckService {
                 itemIds
         );
 
-        for (AttendanceTimeOfMonthly time : times) {
+//        for (AttendanceTimeOfMonthly time : times) {
             for (EmployeeInfoImported empInfo : empInfos) {
                 List<MonthlyRecordValuesDto> lstRecordValue = monData.get(empInfo.getSid());
                 if (lstRecordValue != null && !lstRecordValue.isEmpty()) {
@@ -83,11 +83,11 @@ public class AverageShareCheckService {
 
                 }
             }
-        }
+//        }
 
         Double avg = empInfos.size() == 0 ? 0: total / (double) empInfos.size();
-        BigDecimal bd = new BigDecimal(Double.toString(avg));
-        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal bd = BigDecimal.valueOf(avg);
+        bd = bd.setScale(1, RoundingMode.HALF_UP);
         return comparisonProcessingService.compare(workplaceId, condition, bd.doubleValue(), condition.getCheckMonthlyItemsType().nameId, ym);
 
     }

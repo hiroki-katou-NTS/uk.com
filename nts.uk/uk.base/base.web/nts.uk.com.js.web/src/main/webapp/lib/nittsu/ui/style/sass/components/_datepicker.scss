@@ -420,16 +420,20 @@ body {
 //   }
 // }
 
-.ntsDateRange_Container {
-  display: flex;
-  align-items: center;
-
-  &>.ntsDateRangeComponent.ntsControl {
+.ntsDateRangePicker_Container{
+  display: inline-block;
+  
+  &>.ntsDateRange_Container {
     display: flex;
     align-items: center;
-
-    &>.ntsRangeLabel{
-      margin: 0 5px;
+  
+    &>.ntsDateRangeComponent.ntsControl {
+      display: flex;
+      align-items: center;
+  
+      &>.ntsRangeLabel{
+        margin: 0 5px;
+      }
     }
-  }
+  }  
 }

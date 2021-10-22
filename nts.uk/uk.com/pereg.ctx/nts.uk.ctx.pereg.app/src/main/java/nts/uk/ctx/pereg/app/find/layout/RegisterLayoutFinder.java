@@ -129,6 +129,23 @@ public class RegisterLayoutFinder {
 					theThirdItem.setValue(GeneralDate.max());
 				}
 			}
+
+			// Fix bug 117979
+			if (classItem.getItems() != null) {
+				if (!classItem.getItems().isEmpty()) {
+					classItem.getItems().stream().forEach(f -> {
+						if (f.getCategoryCode().equals("CS00049") && f.getItemCode().equals("IS00560")) {
+							if (f.getValue() != null) {
+								if (f.getValue().toString().equals("")) {
+									f.setValue("0");
+								}
+							}else {
+								f.setValue("0");
+							}
+						}
+					});
+				}
+			}
 		});
 
 		// check and set employeeName to businessName

@@ -32,7 +32,9 @@
 } */
 
 .mylabel {
-	margin-left: 45px;
+	margin-left: 48px;
+	display: flex;
+	align-items: center;
 }
 
 .mylabel2 {
@@ -44,11 +46,11 @@
 	display: flex;
 }
 .headerColor {
-	margin-left: 132px;
+	margin-left: 39px;
 }
 
 .unitRounding {
-	margin-left: 145px;
+	margin-left: 48px;
 }
 
 .leftpanel {

@@ -27,7 +27,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
@@ -36,13 +35,15 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -75,9 +76,6 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	ScBasicScheduleAdapter scBasicScheduleAdapter;
 	
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-	
-	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
 	
 	@Inject
@@ -97,6 +95,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	
 	@Inject 
 	CommonAlgorithm commonAlgorith;
+	
+	@Inject
+    private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	/**Refactor 4
 	 * 	直行直帰登録前チェック
@@ -134,11 +135,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<ConfirmMsgOutput> listResult = processBeforeRegister.processBeforeRegister_New(companyId,
 				EmploymentRootAtr.APPLICATION, agenAtr, application, null, 
 				inforGoBackCommonDirectOutput
-				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? inforGoBackCommonDirectOutput
-						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
+				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				Collections.emptyList(),
-				inforGoBackCommonDirectOutput
-				.getAppDispInfoStartup());
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup(), 
+                goBackDirectly.getDataWork().isPresent() ? Arrays.asList(goBackDirectly.getDataWork().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
+                Optional.empty(),
+                goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty(), false);
 		return listResult;
 	}
 	/**Refactor4
@@ -197,7 +199,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getVersion(),
 				workTypeCode,
 				workTimeCode,
-				inforGoBackCommonDirectOutput.getAppDispInfoStartup());
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup(), 
+				goBackDirectly.getDataWork().isPresent() ? Arrays.asList(goBackDirectly.getDataWork().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
+				Optional.empty(), 
+				false);
 	}
 	/**
 	 * 共通登録前のエラーチェック処理
@@ -333,8 +338,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<GeneralDate> listDates = new ArrayList<>();
 		listDates.add(application.getAppDate().getApplicationDate());
 		// 暫定データの登録
-//		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-//				application.getEmployeeID(), listDates);
+		interimRemainDataMngRegisterDateChange.registerDateChange(
+				AppContexts.user().companyId(),
+				application.getEmployeeID(), 
+				listDates);
 
 		
 		// アルゴリズム「2-3.新規画面登録後の処理」を実行する
@@ -376,9 +383,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		List<GeneralDate> listDates = new ArrayList<>();
 		listDates.add(application.getAppDate().getApplicationDate());
 		// 暫定データの登録
-		// reflect application is not done
-//		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-//				application.getEmployeeID(), listDates);
+		interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
+				application.getEmployeeID(), listDates);
 //		アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		return detailAfterUpdate.processAfterDetailScreenRegistration(companyId, application.getAppID(), inforGoBackCommonDirectOutput.getAppDispInfoStartup());
 //		return null;

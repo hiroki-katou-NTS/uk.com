@@ -5,6 +5,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -19,7 +20,7 @@ import java.util.Optional;
 public class UpdateAnualWorkLedgerDomainService {
     public static AtomTask updateSetting(Require require, String settingId, OutputItemSettingCode code,
                                          OutputItemSettingName name, SettingClassificationCommon settingCategory,
-                                         List<DailyOutputItemsAnnualWorkLedger> dailyOutputItems, List<OutputItem> monthlyOutputItems) {
+                                         List<DailyOutputItemsAnnualWorkLedger> dailyOutputItems, List<OutputItemWorkLedger> monthlyOutputItems) {
 
         // 1 ⓪出力設定の詳細を取得する(会社ID, GUID) : 年間勤務台帳の出力設定
         Optional<AnnualWorkLedgerOutputSetting> oldSetting = require.getSetting(settingId);

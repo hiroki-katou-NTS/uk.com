@@ -37,11 +37,11 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	public Optional<PersonRole> find(String roleId) {
 		SacmtRolePerson entity = this.queryProxy().query(FIND_BY_ROLE_ID, SacmtRolePerson.class)
 				.setParameter("roleId", roleId).getSingleOrNull();
-		PersonRole domain = new PersonRole();
+		PersonRole domain = null;
 		if (entity != null) {
 			domain = toDomain(entity);
 		}
-		return Optional.of(domain);
+		return Optional.ofNullable(domain);
 	}
 
 	private static PersonRole toDomain(SacmtRolePerson entity) {

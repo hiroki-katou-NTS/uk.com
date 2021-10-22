@@ -2,7 +2,8 @@ package nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.condition.ov
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.core.groups.Tuple;
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -10,6 +11,8 @@ import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
@@ -27,62 +30,6 @@ public class BeforeOtWorkAppReflectTest {
 
 	@Injectable
 	private BeforeOtWorkAppReflect.Require require;
-
-	/*
-	 * テストしたい内容
-	 * 
-	 * 
-	 * →勤務情報、始業終業の反映が出来る
-	 * 
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →[勤務情報、始業終業を反映する] = する
-	 * 
-	 */
-	@Test
-	public void test1() {
-
-		val overTimeApp = ReflectApplicationHelper.createOverTimeAppWorkHours("003", "003", 600, 800);// 勤務情報 = ("003",
-																										// "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
-		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(1, 0, 0);
-		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");// 勤務種類コード
-		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).extracting(x -> x.getWorkNo().v(),
-				x -> x.getAttendance().v(), x -> x.getLeaveWork().v())
-				.containsExactly(Tuple.tuple(1, 600, 800));
-	}
-
-	/*
-	 * テストしたい内容
-	 * 
-	 * 
-	 * →勤務情報、始業終業の反映が出来ない
-	 * 
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →[勤務情報、始業終業を反映する] = しない
-	 * 
-	 */
-	@Test
-	public void test2() {
-
-		val overTimeApp = ReflectApplicationHelper.createOverTimeAppWorkHours("003", "003", 600, 800);// 勤務情報 = ("003",
-		// "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
-		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).isEmpty();
-		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, 0, 0);
-		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("001");// 就業時間帯コード
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("001");// 勤務種類コード
-		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).isEmpty();
-
-	}
 
 	/*
 	 * テストしたい内容
@@ -140,6 +87,62 @@ public class BeforeOtWorkAppReflectTest {
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get()
 				.getOverTimeWorkFrameTime().get(0).getOverTimeWork().getTime().v()).isEqualTo(113);
+
+	}
+	
+	/*
+	 * テストしたい内容
+	 * 
+	 * →input.残業申請.申請時間.フレックス超過時間 <> empty →①フレックス時間を反映する
+	 * 
+	 * →input.残業申請.申請時間.フレックス超過時間  empty →②フレックス時間を反映しない
+	 * 
+	 * 準備するデータ
+	 * 
+	 * 
+	 */
+	@Test
+	public void test5() {
+
+		//①フレックス時間を反映する
+		AppOverTimeShare overTimeApp = ReflectApplicationHelper.createOverTime(AttendanceTypeShare.NORMALOVERTIME, 120);// 
+		overTimeApp.getApplicationTime().setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(111)));
+		
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
+		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+		.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().setOnlyFlexTime(new AttendanceTimeOfExistMinus(123));
+		
+		BeforeOtWorkAppReflect reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.NOT_USE.value, 0);
+		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime().v()).isEqualTo(111);
+		
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getTime().v()).isEqualTo(123);
+		
+
+		//②フレックス時間を反映しない
+		overTimeApp = ReflectApplicationHelper.createOverTime(AttendanceTypeShare.NORMALOVERTIME, 120);// 
+		overTimeApp.getApplicationTime().setFlexOverTime(Optional.empty());
+		
+		dailyApp = ReflectApplicationHelper
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
+		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+		.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().setBeforeApplicationTime(new AttendanceTime(123));
+		
+		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+		.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().setOnlyFlexTime(new AttendanceTimeOfExistMinus(123));
+		
+		reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, NotUseAtr.NOT_USE.value, 0);
+		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getBeforeApplicationTime().v()).isEqualTo(123);
+		
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime().getTime().v()).isEqualTo(123);
 
 	}
 }

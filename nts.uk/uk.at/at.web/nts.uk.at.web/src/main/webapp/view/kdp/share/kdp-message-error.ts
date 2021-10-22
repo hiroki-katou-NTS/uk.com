@@ -302,6 +302,8 @@ module nts.uk.at.view.kdp.share {
 
             if (content) {
                 vm.contentMessager(content);
+            } else {
+                vm.contentMessager('');
             }
         }
     }

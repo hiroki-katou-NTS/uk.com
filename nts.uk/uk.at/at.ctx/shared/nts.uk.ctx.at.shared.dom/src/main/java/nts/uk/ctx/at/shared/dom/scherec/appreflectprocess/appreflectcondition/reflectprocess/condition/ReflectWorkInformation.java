@@ -28,7 +28,11 @@ public class ReflectWorkInformation {
 
 	public static List<Integer> reflectInfo(Require require, String cid, WorkInfoDto workInfo, DailyRecordOfApplication dailyApp,
 			Optional<Boolean> changeWorkType, Optional<Boolean> changeWorkTime) {
-
+		
+		//#118580
+		if(!workInfo.getWorkTypeCode().isPresent()) {
+			return new ArrayList<>();
+		}
 		List<Integer> lstItemId = new ArrayList<>();
 		if (changeWorkType.orElse(false) || changeWorkTime.orElse(false)) {
 			// [input. 勤務種類を反映する]をチェック
@@ -48,10 +52,10 @@ public class ReflectWorkInformation {
 			}
 			
 			// 勤務情報と始業終業を変更する
-			dailyApp.getWorkInformation().changeWorkSchedule(require,
+			lstItemId.addAll(dailyApp.getWorkInformation().changeWorkSchedule(require,
 					new WorkInformation(workInfo.getWorkTypeCode().orElse(null), 
 										workInfo.getWorkTimeCode().orElse(null)), 
-					changeWorkType.orElse(false), changeWorkTime.orElse(false));
+					changeWorkType.orElse(false), changeWorkTime.orElse(false)));
 			
 			//申請の反映先をチェックする
 			if(dailyApp.getClassification() == ScheduleRecordClassifi.SCHEDULE) {

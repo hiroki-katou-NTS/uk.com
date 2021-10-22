@@ -194,6 +194,7 @@ div#master-wrapper {
 								padding-left: 5px;
 								padding-right: 5px;
 								border-radius: 2px;
+								white-space: pre-wrap;
 
 								&.divider {
 									cursor: default;
@@ -399,5 +400,28 @@ div#master-wrapper {
 		&>div#operation-info {
 			display: none;
 		}
+	}
+}
+
+body {
+
+	#pg-id, #pg-id-caret {
+		position: absolute; 
+		top: 0px; 
+		left: 0px; 
+		z-index: -1; 
+		visibility: hidden; 
+	}
+
+	#pg-id {
+		background-color: #ffffcc; 
+		padding: 5px 10px; 
+		box-shadow: 5px 5px 5px 0px #b1b1b1;
+	}
+
+	#pg-id-caret {
+		border: solid 10px transparent; 
+		border-bottom-color: #ffffcc; 
+		margin: -20px 0 0 10px;
 	}
 }

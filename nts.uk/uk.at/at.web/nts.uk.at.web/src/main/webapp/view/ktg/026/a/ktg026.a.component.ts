@@ -106,6 +106,10 @@ module nts.uk.at.view.ktg026.a {
             return 'special-exceeding-limit';
         }
 
+        if (state === 8) {
+            return 'bg-exceed-special-upperlimit color-exceed-special-upperlimit'
+        }
+
         return '';
     }
 
@@ -159,6 +163,7 @@ module nts.uk.at.view.ktg026.a {
                             const max = _
                                 .chain(data)
                                 .reduce((p, c) => {
+                                    if (!c) return p;
                                     const { time } = c;
                                     const { ot, wh } = time;
                                     const tt = ot + wh;
@@ -331,7 +336,7 @@ module nts.uk.at.view.ktg026.a {
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr style="height: 35px;">
                                 <td>
-                                    <div>
+                                    <div data-bind="if: row">
                                         <div class="text-center" data-bind="text: row.date" style="float:left; width: 60%;"></div>
                                         <div class="text-right" data-bind="time: row.time.tt, css: row.state" style="height: 25px; padding-right: 5px;"></div>
                                     </div>
@@ -646,6 +651,10 @@ module nts.uk.at.view.ktg026.a {
                             };
                         })
                         .value();
+
+                    // Min length to show full height of tooltip. Resolve chartjs's problem
+                    if (data.length === 2 || data.length === 3) data.length = 4;
+                    if (data.length === 1) data.length = 3;
 
                     // rebind new data to table & chart
                     vm.dataTable(data);

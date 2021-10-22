@@ -470,7 +470,7 @@ public class DivTimeSysFixedCheckService {
 		if(isPcDivergence) {
 			return calcCurrentDivergenceTime(empId, tarD, tl, shareContainer);
 		} 
-		return dt.getDivTimeAfterDeduction() == null ? 0 : dt.getDivTimeAfterDeduction().valueAsMinutes();
+		return dt.getDivTime().valueAsMinutes();
 	}
 
 	private DateHistoryItem getHisItem(Map<String, Object> historyR, boolean isWHis) {

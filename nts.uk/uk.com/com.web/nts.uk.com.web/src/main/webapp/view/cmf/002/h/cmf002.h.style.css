@@ -4,18 +4,6 @@
 #master-wrapper {
     overflow: hidden;
 }
-div.form-label {
-    display: inline-block;
-    box-sizing: border-box;
-    height: 30px;
-    width: 90px;
-    border-style: solid;
-    border-color: #97D155;
-    border-width: 0 0 0 5px;
-    padding: 0 10px 0 8px;
-    margin:10px 5px 20px 50px;
-}
-
 
 div.label {
     width: 100%;
@@ -84,20 +72,7 @@ tr{
 	margin-left: 46px;
 }
 
-button.x-large {
-    font-size: 22px;
-    padding: 6px 35px;
-    background-color: #A4EEB0;
-    margin-bottom: 5px;
-    height: 45px;
-    box-shadow: 0 5px #999;
+.form-label {
+  margin-left: 50px;
+  margin-bottom: 10px;
 }
-
-button.large {
-    font-size: 15px;
-    padding: 4px 10px;
-    margin-bottom: 4px;
-    height: 34px;
-    box-shadow: 0 4px rgba(0, 0, 0, 0.4);
-}
-

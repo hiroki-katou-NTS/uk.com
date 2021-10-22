@@ -9,6 +9,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 受入選別条件設定: 主キー情報
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class OiomtAcScreenCondSetPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,13 +29,6 @@ public class OiomtAcScreenCondSetPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String cid;
-
-	/**
-	 * システム種類
-	 */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
 
 	/**
 	 * 条件設定コード

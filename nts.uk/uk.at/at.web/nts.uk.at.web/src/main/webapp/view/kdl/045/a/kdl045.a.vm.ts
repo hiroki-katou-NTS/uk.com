@@ -27,6 +27,8 @@ module nts.uk.at.view.kdl045.a {
             workTypeName: KnockoutObservable<string>;
             workTime: KnockoutObservable<string>;
             workTimeName: KnockoutObservable<string>;
+			workTypeAbName: KnockoutObservable<string>;
+            workTimeAbName: KnockoutObservable<string>;
             //A1_5
             basedate: KnockoutObservable<string> = ko.observable("");
 
@@ -245,16 +247,18 @@ module nts.uk.at.view.kdl045.a {
                 self.workTypeName = ko.observable();
                 self.workTime = ko.observable();
                 self.workTimeName = ko.observable();
+				self.workTypeAbName = ko.observable();
+				self.workTimeAbName = ko.observable();
 
 				if(self.employee().employeeInfo.workScheduleDto != null){
 					self.workType = ko.observable(self.employee().employeeInfo.workScheduleDto.workTypeCode);
 	                self.workTime = ko.observable(self.employee().employeeInfo.workScheduleDto.workTimeCode);
 				}
                 
-                if(self.employee().employeeInfo.fixedWorkInforDto != null){
+               /* if(self.employee().employeeInfo.fixedWorkInforDto != null){
                     self.workTypeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTypeName);
                     self.workTimeName = ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workTimeName);
-                }
+                }*/
 
                 //A1_5
                 let shortW = moment(self.employee().employeeInfo.workInfoDto.date).format("dd");
@@ -653,9 +657,7 @@ module nts.uk.at.view.kdl045.a {
                     if (childData) {
                         self.isExistWorkType(true);
                         self.workType(childData.selectedWorkTypeCode);
-                        self.workTypeName(childData.selectedWorkTypeName);
                         self.workTime(childData.selectedWorkTimeCode);
-                        self.workTimeName(childData.selectedWorkTimeName);
 
                         //value
                         //A5_6,A5_7,A5_10,A5_11 
@@ -716,8 +718,10 @@ module nts.uk.at.view.kdl045.a {
                         self.employee().unit ==1?self.employee().targetId:null)
                 }
                 service.getInformationStartup(command).done(function (result) {
+					self.workTypeAbName(result.workTypeSettingName !=null?result.workTypeSettingName.workTypeAbName:null);
+        			self.workTimeAbName(result.workTimeSettingName !=null?result.workTimeSettingName.workTimeAbName:null);
                     self.informationStartup = new shareModelData.GetInformationStartupOutput(
-                        result.workTimezoneCommonSet, result.listUsageTimeAndType, result.showYourDesire, result.workAvaiOfOneDayDto ,result.workStyle
+                        result.workTimezoneCommonSet, result.listUsageTimeAndType, result.showYourDesire, result.workAvaiOfOneDayDto ,result.workStyle,result.workTypeSettingName,result.workTimeSettingName
                     );
                     dfd.resolve();
                 }).fail(function (res: any) {
@@ -774,6 +778,10 @@ module nts.uk.at.view.kdl045.a {
                 }
                 block.grayout();
                 service.getMoreInformation(command).done(function (result) {
+					self.workTypeName(result.workTypeSettingName == null?null : result.workTypeSettingName.workTypeName);
+	            	self.workTimeName(result.workTimeSettingName == null?null :result.workTimeSettingName.workTimeName);
+					self.workTypeAbName(result.workTypeSettingName == null?null : result.workTypeSettingName.workTypeAbName);
+	            	self.workTimeAbName(result.workTimeSettingName == null?null :result.workTimeSettingName.workTimeAbName);
                     self.workStyle(result.workStyle);
                     self.workStyle.valueHasMutated();
                     self.disableA10(false);
@@ -886,6 +894,8 @@ module nts.uk.at.view.kdl045.a {
 
             displayInformationStartup(): void {
                 let self = this;
+				self.workTypeName(self.informationStartup.workTypeSettingName == null?null: self.informationStartup.workTypeSettingName.workTypeName);
+	            self.workTimeName(self.informationStartup.workTimeSettingName == null?null: self.informationStartup.workTimeSettingName.workTimeName);
                 //displayA87
                 for (let i = 0; i < self.informationStartup.listUsageTimeAndType.length; i++) {
                     if (self.informationStartup.listUsageTimeAndType[i].typeVacation == shareModelData.TimeVacationType.ATWORK) {
@@ -1049,8 +1059,8 @@ module nts.uk.at.view.kdl045.a {
                             };
                         
                         let fixedWorkInforDto = {
-                                workTypeName : self.workTypeName(),//勤務種類名称
-                                workTimeName : self.workTimeName(), //就業時間帯名称
+                                workTypeName : self.workTypeAbName() ,//勤務種類名称
+                                workTimeName : self.workTimeAbName(), //就業時間帯名称
                                 workType : self.workTimeForm(),//勤務タイプ
                                 fixBreakTime : self.fixBreakTime(),
 								isHoliday : self.workStyle() == 0 ? true : false
@@ -1085,7 +1095,7 @@ module nts.uk.at.view.kdl045.a {
                         };
                     
                     let fixedWorkInforDto = {
-                            workTypeName : self.workTypeName(),//勤務種類名称
+                            workTypeName : self.workTypeAbName(),//勤務種類名称
                             workTimeName : null, //就業時間帯名称
                             workType : null,//勤務タイプ
                             fixBreakTime : false,

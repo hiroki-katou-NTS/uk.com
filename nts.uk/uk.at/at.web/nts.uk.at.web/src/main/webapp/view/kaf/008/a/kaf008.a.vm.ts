@@ -136,6 +136,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             };
 
             // vm.$errors("clear");
+            if ($('#A10_D4 input').ntsError('hasError')) {
+                $('#A10_D4 input').ntsError('clear');
+            }
 
             vm.$validate([
                 '#kaf000-a-component4 .nts-input'
@@ -153,7 +156,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             }).fail(err => {
                 vm.dataFetch().businessTripOutput.businessTripActualContent = [];
                 vm.dataFetch.valueHasMutated();
-                vm.handleError(err);
+                if (_.isEmpty(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opMsgErrorLst)) {
+                    vm.handleError(err);
+                }
             }).always(() => vm.$blockui("hide"));
         }
 

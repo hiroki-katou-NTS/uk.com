@@ -58,6 +58,8 @@ implements PeregAddListCommandHandler<AddSpecialLeaveGrant17Command> {
 					c.getNumberDayUse().doubleValue(),
 					c.getTimeUse() != null ? c.getTimeUse().intValue() : null,
 					null,
+					c.getNumberDaysOver() != null ? c.getNumberDaysOver().doubleValue() : null, 
+					c.getTimeOver() != null ? c.getTimeOver().intValue() : null,
 					c.getNumberDayRemain().doubleValue(),
 					c.getTimeRemain() != null ? c.getTimeRemain().intValue() : null,
 					0.0,

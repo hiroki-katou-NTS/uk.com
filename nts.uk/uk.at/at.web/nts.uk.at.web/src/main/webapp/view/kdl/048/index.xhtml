@@ -11,7 +11,7 @@
 			<com:scriptfile set="IGNITE" />
       <script>var dialogSize = { width: 885 , height: 640};</script>
       <com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+				nts.uk.ctx.at.function.dom.employmentfunction.commonform.FormCalItemSettingName
       </com:ValidatorScript>
 			<!-- kdl029 a-->
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -41,20 +41,20 @@
           <com:ko-if bind="itemNameLine().displayFlag">
             <div class="text-input">
               <!-- A3_1 -->
-              <div data-bind="ntsFormLabel: {constraint: 'ItemName'}" >#{i18n.getText('KDL048_3')}</div>
+              <div data-bind="ntsFormLabel: {constraint: 'FormCalItemSettingName'}" >#{i18n.getText('KDL048_3')}</div>
               <!-- A3_2 -->
               <input id ="A3_2" data-bind="ntsTextEditor: {
                 name: '#[KDL048_3]',
                 value: attendanceRecordName,
-                constraint: 'ItemName',
+                constraint: 'FormCalItemSettingName',
                 option: ko.mapping.fromJS(
                   new nts.uk.ui.option.TextEditorOption({
                     textmode: 'text',
-                    width: '100px',
+                    width: '130px',
                     textalign: 'left',
                   })
                 ),
-                enable: itemNameLine().displayInputCategory === 2,
+                enable: itemNameLine().displayInputCategory !== 1,
                 readonly: itemNameLine().displayInputCategory !== 2,
               }" class="input"/>
             </div>

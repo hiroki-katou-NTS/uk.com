@@ -8,12 +8,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BundledBusinessException;
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
+import nts.arc.task.tran.TransactionService;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.ChangeLoginPasswordOfUser;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -22,54 +21,29 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 public class ChangePasswordCommandHandler extends CommandHandler<ChangePasswordCommand> {
-
-	/** The user adapter. */
+	
 	@Inject
-	private UserAdapter userAdapter;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
-	 * .CommandHandlerContext)
-	 */
+	private ChangePasswordCommandRequire requireProvider;
+	
+	@Inject
+	private TransactionService transaction;
+	
 	@Override
 	protected void handle(CommandHandlerContext<ChangePasswordCommand> context) {
-
-		String userId = AppContexts.user().userId();
 		ChangePasswordCommand command = context.getCommand();
-
-		String oldPassword = command.getOldPassword();
-		String newPassword = command.getNewPassword();
-		String confirmNewPassword = command.getConfirmNewPassword();
+		val require = requireProvider.createRequire();
 		
-		if (!StringUtil.isNullOrEmpty(oldPassword, true)
-				&& !StringUtil.isNullOrEmpty(newPassword, true)
-				&& !StringUtil.isNullOrEmpty(confirmNewPassword, true)) {
-			// Check password - Request List 383
-			CheckBeforeChangePass checkResult = this.userAdapter.checkBeforeChangePassword(userId, oldPassword, newPassword, confirmNewPassword);
-			if (checkResult.isError()) {
-				// Throw error list
-				BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
-				checkResult.getMessage().forEach(item -> {
-					// get messageId
-					String msgId = item.getMessage();
-					String param = item.getParam();
-					if (param != null) {
-						bundledBusinessExceptions.addMessage(msgId, param);
-					} else {
-						bundledBusinessExceptions.addMessage(msgId);
-					}
-
-				});
-				if (!bundledBusinessExceptions.cloneExceptions().isEmpty()) {
-					throw bundledBusinessExceptions;
-				}
-			} else {
-				// Update password - Request List 384				
-				this.userAdapter.updatePassword(userId,newPassword);
-			}	
-		}
+		val atomTask = ChangeLoginPasswordOfUser.change(
+				require, 
+				AppContexts.user().userId(), 
+				command.getOldPassword(), 
+				command.getNewPassword(), 
+				command.getConfirmNewPassword());
+		
+		transaction.execute(atomTask);
+	}
+	
+	public static interface Require extends ChangeLoginPasswordOfUser.Require {
+		
 	}
 }

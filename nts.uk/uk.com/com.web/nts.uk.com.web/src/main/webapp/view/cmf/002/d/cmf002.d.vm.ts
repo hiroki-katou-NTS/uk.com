@@ -253,19 +253,19 @@ module nts.uk.com.view.cmf002.d.viewmodel {
         }
 
         setCssClass(){
-            let self = this;
-            _.each(self.cndDetai().listOutCndDetailItem(), (item: OutCndDetailItemDto) => {
-                item.clazz("")
-            })
-            let length = self.cndDetai().listOutCndDetailItem().length;
-            if (length > 6) {
-                let lastItem1: OutCndDetailItemDto = self.cndDetai().listOutCndDetailItem()[length - 1];
-                lastItem1.clazz("last-item");
-            }
-            if (length > 7) {
-                let lastItem2: OutCndDetailItemDto = self.cndDetai().listOutCndDetailItem()[length - 2];
-                lastItem2.clazz("last-item");
-            }
+            // let self = this;
+            // _.each(self.cndDetai().listOutCndDetailItem(), (item: OutCndDetailItemDto) => {
+            //     item.clazz("")
+            // })
+            // let length = self.cndDetai().listOutCndDetailItem().length;
+            // if (length > 6) {
+            //     let lastItem1: OutCndDetailItemDto = self.cndDetai().listOutCndDetailItem()[length - 1];
+            //     lastItem1.clazz("last-item");
+            // }
+            // if (length > 7) {
+            //     let lastItem2: OutCndDetailItemDto = self.cndDetai().listOutCndDetailItem()[length - 2];
+            //     lastItem2.clazz("last-item");
+            // }
         }
 
         // Reverse word

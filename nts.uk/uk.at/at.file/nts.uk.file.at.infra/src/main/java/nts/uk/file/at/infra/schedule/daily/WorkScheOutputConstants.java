@@ -28,7 +28,7 @@ public class WorkScheOutputConstants {
 	public static final String REMARK = "備考";
 	
 	/** The Constant PERSONAL_NAME. */
-	public static final String PERSONAL_NAME = "個人名";
+	public static final String PERSONAL_NAME = "KWR006_76";
 	
 	/** The Constant PERIOD. */
 	public static final String PERIOD = "[期間]";
@@ -150,6 +150,6 @@ public class WorkScheOutputConstants {
 	/** The Constant RANGE_DAILY_WORKPLACE_ROW. */
 	public static final String RANGE_DAILY_WORKPLACE_ROW = "DailyWorkplaceRow";
 	
-	public static final String PERIOD_SYMBOL = "～";
+	public static final String PERIOD_SYMBOL = "　～　";
 	
 }

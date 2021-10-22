@@ -11,3 +11,7 @@
 #master-wrapper div#contents-area{
 	padding: 0 !important;
 }
+
+.notificationMessage {
+	white-space: pre-wrap;
+}
