@@ -123,6 +123,21 @@ public class PremiumTime {
 	}
 	
 	/**
+	 * 再計算する
+	 * @param personCostCalc 人件費計算設定
+	 * @return 割増時間
+	 */
+	public PremiumTime reCalc(PersonCostCalculation personCostCalc) {
+		//割増金額
+		AttendanceAmountDaily amount = AttendanceAmountDaily.ZERO;
+		Optional<PremiumSetting> premiumSetting = personCostCalc.getPremiumSetting(this.premiumTimeNo);
+		if(premiumSetting.isPresent()) {
+			amount = calcPremiumAmount(this.unitPrice, premiumSetting.get().getRate(), this.premitumTime, personCostCalc.getRoundingSetting());
+		}
+		return new PremiumTime(this.premiumTimeNo, this.premitumTime, amount, this.unitPrice);
+	}
+	
+	/**
 	 * 割増金額を計算する
 	 * @param priceUnit 単価
 	 * @param premiumRate 割増率
@@ -130,7 +145,7 @@ public class PremiumTime {
 	 * @param roundingSet 人件費丸め設定
 	 * @return 割増金額
 	 */
-	public static AttendanceAmountDaily calcPremiumAmount(WorkingHoursUnitPrice priceUnit, PremiumRate premiumRate,
+	private static AttendanceAmountDaily calcPremiumAmount(WorkingHoursUnitPrice priceUnit, PremiumRate premiumRate,
 			AttendanceTime premiumTime, PersonCostRoundingSetting roundingSet) {
 		// A = 単価 * 割増率
 		BigDecimal afterPremium = BigDecimal.valueOf(priceUnit.v()).multiply(premiumRate.toDecimal());
@@ -142,21 +157,5 @@ public class PremiumTime {
 		BigDecimal afterAmountRounding = roundingSet.getAmountRoundingSetting().round(amount);
 		// Bを返す
 		return  new AttendanceAmountDaily(afterAmountRounding.intValue());
-	}
-	
-	public PremiumTime secondReCalc(Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory, PersonCostCalculation personCostCalculation) {
-		Optional<PremiumSetting> premiumSetting = personCostCalculation.getPremiumSetting(this.premiumTimeNo);
-		if(!premiumSetting.isPresent()) {
-			return PremiumTime.createAllZero(this.premiumTimeNo);
-		}
-		//社員時間単価を取得する
-		WorkingHoursUnitPrice priceUnit = WorkingHoursUnitPrice.ZERO;
-		if(unitPriceHistory.isPresent()) {
-			priceUnit = personCostCalculation.getPremiumUnitPrice(this.premiumTimeNo, unitPriceHistory.get());
-		}
-		//割増金額
-		AttendanceAmountDaily amount = calcPremiumAmount(priceUnit, premiumSetting.get().getRate(), this.premitumTime, personCostCalculation.getRoundingSetting());
-		
-		return new PremiumTime(this.premiumTimeNo, this.premitumTime, amount, priceUnit);
 	}
 }

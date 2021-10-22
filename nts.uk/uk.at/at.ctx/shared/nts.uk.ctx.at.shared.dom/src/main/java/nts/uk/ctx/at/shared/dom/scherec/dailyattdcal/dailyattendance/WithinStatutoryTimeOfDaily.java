@@ -549,7 +549,7 @@ public class WithinStatutoryTimeOfDaily {
 	}
 
 	/**
-	 * 実働所定内割増を計算する
+	 * 実働所定内割増時間を計算する
 	 * @param recordReget 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
 	 * @param vacationClass 休暇クラス
 	 * @param workType 勤務種類
@@ -600,6 +600,10 @@ public class WithinStatutoryTimeOfDaily {
 				.getWithinPremiumTime();
 	}
 
+	/**
+	 * 就業時間金額を再計算する
+	 * @param personCost 人件費計算設定
+	 */
 	public void reCalcWithinWorkTimeAmount(Optional<PersonCostCalculation> personCost) {
 		//就業時間金額の計算
 		BigDecimal beforeRound = workTime.hourWithDecimal().multiply(BigDecimal.valueOf(unitPrice.v()));

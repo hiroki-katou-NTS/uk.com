@@ -297,7 +297,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			DailyRecordToAttendanceItemConverter afterReCalcDto = forCalcDivergenceDto.setData(result);
 			
 			if (!attendanceItemIdList.isEmpty()) {
-
 				// 手修正された項目の値を計算値に戻す(手修正再計算の後Ver)
 				afterReCalcDto.merge(itemValueList);
 				result = afterReCalcDto.toDomain();
@@ -448,11 +447,10 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 
 			// 割増時間の計算
-			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily
-					.createPremiumTimeOfDailyPerformance(
-							companyCommonSetting.getPersonnelCostSetting().get(targetDate),
-							forCalcDivergenceDto,
-							recordReGetClass.getPersonDailySetting().getUnitPrice());
+			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = PremiumTimeOfDailyPerformance.calcPremiumTime(
+					forCalcDivergenceDto,
+					recordReGetClass.getPersonDailySetting().getUnitPrice(),
+					companyCommonSetting.getPersonnelCostSetting().get(targetDate));
 
 			// 乖離時間を計算する
 			val reCalcDivergence = DivergenceTimeOfDaily.create(forCalcDivergenceDto,
@@ -539,11 +537,10 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
 
 		// 割増時間の計算
-		PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance =
-				ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformanceForSupport(
-						recordReGetClass.getCompanyCommonSetting().getPersonnelCostSetting().get(recordReGetClass.getIntegrationOfDaily().getYmd()),
+		PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = PremiumTimeOfDailyPerformance.calcPremiumTimeForSupport(
 						forCalcDivergenceDto,
-						recordReGetClass.getPersonDailySetting().getUnitPrice());
+						recordReGetClass.getPersonDailySetting().getUnitPrice(),
+						recordReGetClass.getCompanyCommonSetting().getPersonnelCostSetting().get(recordReGetClass.getIntegrationOfDaily().getYmd()));
 
 		val reCreateActual = ActualWorkingTimeOfDaily.of(
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
@@ -572,6 +569,13 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		return calcResultIntegrationOfDaily;
 	}
 	
+	/**
+	 * 手修正後の再計算（2回目）
+	 * @param companyCommonSet 会社別設定管理
+	 * @param personDailySet 社員設定管理
+	 * @param calcResult 手修正後の日別勤怠(Work)
+	 * @return 日別勤怠(Work)
+	 */
 	public static IntegrationOfDaily secondReCalc(ManagePerCompanySet companyCommonSet, ManagePerPersonDailySet personDailySet, IntegrationOfDaily calcResult) {
 		Optional<AttendanceTimeOfDailyAttendance> attendanceTime = calcResult.getAttendanceTimeOfDailyPerformance();
 		if(!attendanceTime.isPresent()) {
@@ -579,7 +583,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		}
 		// 割増時間
 		PremiumTimeOfDailyPerformance old = attendanceTime.get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance();
-		PremiumTimeOfDailyPerformance reCalc = old.secondReCalc(personDailySet.getUnitPrice(), companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
+		PremiumTimeOfDailyPerformance reCalc = old.reCalc(companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
 		
 		ActualWorkingTimeOfDaily reCreateActual = ActualWorkingTimeOfDaily.of(
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
@@ -601,8 +605,14 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		return calcResult;
 	}
 
-	public static IntegrationOfDaily secondReCalcForSuport(ManagePerCompanySet companyCommonSet, ManagePerPersonDailySet personDailySet, IntegrationOfDaily calcResult,
-			SupportFrameNo supportNo) {
+	/**
+	 * 手修正後の再計算（応援用、2回目）
+	 * @param companyCommonSet 会社別設定管理
+	 * @param personDailySet 社員設定管理
+	 * @param calcResult 手修正後の日別勤怠(Work)
+	 * @return 日別勤怠(Work)
+	 */
+	public static IntegrationOfDaily secondReCalcForSuport(ManagePerCompanySet companyCommonSet, IntegrationOfDaily calcResult, SupportFrameNo supportNo) {
 		Optional<OuenWorkTimeOfDailyAttendance> support = calcResult.getOuenTime().stream()
 				.filter(o -> o.getWorkNo().equals(supportNo))
 				.findFirst();
@@ -611,7 +621,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		}
 		// 割増時間
 		PremiumTimeOfDailyPerformance old = support.get().getWorkTime().getPremiumTime();
-		PremiumTimeOfDailyPerformance reCalc = old.secondReCalc(personDailySet.getUnitPrice(), companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
+		PremiumTimeOfDailyPerformance reCalc = old.reCalc(companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
 		
 		ActualWorkingTimeOfDaily reCreateActual = ActualWorkingTimeOfDaily.of(
 				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),

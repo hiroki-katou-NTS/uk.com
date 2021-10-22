@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
@@ -79,6 +78,7 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 	 * @param calculateOfTotalConstraintTime  総拘束時間の計算
 	 * @param converter コンバーター
 	 * @param ouenWorkTimeSheet 応援作業時間帯
+	 * @param integrationOfDaily 手修正を戻した日別勤怠(Work)
 	 * @return 時間帯別勤怠の時間
 	 */
 	public static OuenAttendanceTimeEachTimeSheet create(
@@ -149,7 +149,6 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 		// 手修正後の再計算(2回目)
 		result = AttendanceTimeOfDailyAttendance.secondReCalcForSuport(
 				recordReGetClass.getCompanyCommonSetting(),
-				recordReGetClass.getPersonDailySetting(),
 				copyIntegrationOfDaily,
 				ouenWorkTimeSheet.getWorkNo());
 		

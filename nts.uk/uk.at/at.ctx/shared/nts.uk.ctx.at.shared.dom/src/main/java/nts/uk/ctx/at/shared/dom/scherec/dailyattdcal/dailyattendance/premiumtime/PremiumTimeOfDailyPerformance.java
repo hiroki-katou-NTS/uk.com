@@ -64,16 +64,18 @@ public class PremiumTimeOfDailyPerformance {
 	public static PremiumTimeOfDailyPerformance calcPremiumTime(
 			DailyRecordToAttendanceItemConverter dailyRecordDto,
 			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
-			PersonCostCalculation personCostCalculation) {
-
+			Optional<PersonCostCalculation> personCostCalc) {
+		if(!personCostCalc.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
 		//割増時間
-		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
-				.map(pcc -> PremiumTime.create(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
+		List<PremiumTime> times = personCostCalc.get().getPremiumSettings().stream()
+				.map(pcc -> PremiumTime.create(dailyRecordDto, unitPriceHistory, personCostCalc.get(), pcc))
 				.collect(Collectors.toList());
 		
 		//割増労働時間合計
 		AttendanceTime totalTime = new AttendanceTime(times.stream()
-				.filter(t -> personCostCalculation.isIncludeTotalTime(t.getPremiumTimeNo()))
+				.filter(t -> personCostCalc.get().isIncludeTotalTime(t.getPremiumTimeNo()))
 				.map(t -> t.getPremitumTime().valueAsMinutes())
 				.collect(Collectors.summingInt(v -> v)));
 		
@@ -89,22 +91,24 @@ public class PremiumTimeOfDailyPerformance {
 	 * 日別勤怠の割増時間の計算（応援用）
 	 * @param dailyRecordDto 日別勤怠コンバーター
 	 * @param unitPriceHistory 社員単価履歴
-	 * @param personCostCalculation 人件費計算設定
+	 * @param personCostCalc 人件費計算設定
 	 * @return 日別勤怠の割増時間
 	 */
 	public static PremiumTimeOfDailyPerformance calcPremiumTimeForSupport(
 			DailyRecordToAttendanceItemConverter dailyRecordDto,
 			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
-			PersonCostCalculation personCostCalculation) {
-		
+			Optional<PersonCostCalculation> personCostCalc) {
+		if(!personCostCalc.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
 		//割増時間
-		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
-			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
+		List<PremiumTime> times = personCostCalc.get().getPremiumSettings().stream()
+			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, unitPriceHistory, personCostCalc.get(), pcc))
 			.collect(Collectors.toList());
 
 		//割増労働時間合計
 		AttendanceTime totalTime = new AttendanceTime(times.stream()
-				.filter(t -> personCostCalculation.isIncludeTotalTime(t.getPremiumTimeNo()))
+				.filter(t -> personCostCalc.get().isIncludeTotalTime(t.getPremiumTimeNo()))
 				.map(t -> t.getPremitumTime().valueAsMinutes())
 				.collect(Collectors.summingInt(v -> v)));
 		
@@ -121,16 +125,18 @@ public class PremiumTimeOfDailyPerformance {
 		return this.premiumTimes.stream().filter(tc -> tc.getPremiumTimeNo().equals(number)).findFirst();
 	}
 
-	public PremiumTimeOfDailyPerformance secondReCalc(
-			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
-			Optional<PersonCostCalculation> personCostCalculation) {
+	/**
+	 * 再計算する
+	 * @param personCostCalculation 人件費計算設定
+	 * @return 日別勤怠の割増時間
+	 */
+	public PremiumTimeOfDailyPerformance reCalc(Optional<PersonCostCalculation> personCostCalculation) {
 		if(!personCostCalculation.isPresent()) {
-			return PremiumTimeOfDailyPerformance.createEmpty();
+			return this;
 		}
-		
 		//割増時間
 		List<PremiumTime> times = this.premiumTimes.stream()
-			.map(p -> p.secondReCalc(unitPriceHistory, personCostCalculation.get()))
+			.map(p -> p.reCalc(personCostCalculation.get()))
 			.collect(Collectors.toList());
 
 		//割増労働時間合計

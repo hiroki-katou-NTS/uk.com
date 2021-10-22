@@ -100,12 +100,6 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 		
 		copyIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(calcResult));
 		
-//		//編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-//		List<Integer> attendanceItemIdList = recordReGetClass.getIntegrationOfDaily().getEditState().stream()
-//				.map(editState -> editState.getAttendanceItemId())
-//				.distinct()
-//				.collect(Collectors.toList());
-		
 		//手修正後の再計算
 		IntegrationOfDaily result = AttendanceTimeOfDailyAttendance.reCalcForSupport(
 				copyIntegrationOfDaily,

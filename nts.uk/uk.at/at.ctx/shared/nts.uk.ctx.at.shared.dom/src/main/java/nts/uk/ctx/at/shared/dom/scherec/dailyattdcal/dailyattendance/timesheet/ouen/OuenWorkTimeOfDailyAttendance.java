@@ -59,6 +59,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	 * @param converter コンバーター
 	 * @param allTimeSheets 全ての応援作業時間帯
 	 * @param processingTimeSheet 処理中の応援作業時間帯
+	 * @param integrationOfDaily 手修正を戻した日別勤怠(Work)
 	 * @return 日別勤怠の応援作業時間
 	 */
 	public static OuenWorkTimeOfDailyAttendance create(

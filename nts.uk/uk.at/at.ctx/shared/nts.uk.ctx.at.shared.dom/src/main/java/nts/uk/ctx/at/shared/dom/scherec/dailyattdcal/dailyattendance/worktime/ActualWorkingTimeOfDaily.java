@@ -231,30 +231,6 @@ public class ActualWorkingTimeOfDaily {
 				);
 		
 	}
-	
-	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(Optional<PersonCostCalculation> personCostCalculation,
-	 																				DailyRecordToAttendanceItemConverter dailyRecordDto,
-	 																				Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory) {
-		if(!personCostCalculation.isPresent()) {
-			return PremiumTimeOfDailyPerformance.createEmpty();
-		}
-		return PremiumTimeOfDailyPerformance.calcPremiumTime(dailyRecordDto, unitPriceHistory, personCostCalculation.get());
-	}
-	
-	/**
-	 * 割増時間を計算する（応援用）
-	 * @param personCostCalculation 人件費計算設定
-	 * @param dailyRecordDto 日別勤怠コンバーター
-	 * @return 日別勤怠の割増時間
-	 */
-	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForSupport(Optional<PersonCostCalculation> personCostCalculation,
-																								DailyRecordToAttendanceItemConverter dailyRecordDto,
-																								Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory) {
-		if(!personCostCalculation.isPresent()) {
-			return PremiumTimeOfDailyPerformance.createEmpty();
-		}
-		return PremiumTimeOfDailyPerformance.calcPremiumTimeForSupport(dailyRecordDto, unitPriceHistory, personCostCalculation.get());
-	}
 
 	/**
 	 * エラーチェックの指示メソッド 
