@@ -255,9 +255,9 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             };
             setShared('KDL051A_PARAM', data);
             if(data.employeeIds.length > 1 ) {
-                modal("/view/kdl/051/multi.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 980, height: 570});
             } else {
-                modal("/view/kdl/051/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
             }
         }
 

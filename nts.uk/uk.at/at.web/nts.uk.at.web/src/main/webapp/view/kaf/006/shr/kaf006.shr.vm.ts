@@ -68,9 +68,9 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
         public static openKDL051(param: any) {
             setShared('KDL051A_PARAM', param);
             if(param.employeeIds.length > 1 ) {
-                modal("/view/kdl/051/multi.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 980, height: 570});
             } else {
-                modal("/view/kdl/051/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
             }
         }
 
