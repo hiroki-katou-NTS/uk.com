@@ -102,9 +102,9 @@ public class AnnLeaEmpBasicInfoDomService{
 		AnnualPaidLeaveSetting annualPaidLeaveSet = annualPaidLeaveSettingRepository.findByCompanyId(AppContexts.user().companyId());
 
 		if (annualPaidLeaveSet.getTimeSetting().getTimeManageType() == ManageDistinct.NO
-				|| annualPaidLeaveSet.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.NO) {
+				|| annualPaidLeaveSet.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.YES) {
 			return annLeaveRemainNumber.getDays() + "日";
-		}
+		}	
 
 		int remainingMinutes = annLeaveRemainNumber.getMinutes();
 
