@@ -11,6 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
@@ -148,7 +149,7 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 				Field f = this.getField(type, i);
 				Optional<ActualItemUsageValue> actualValue;
 				try {
-					actualValue = Optional.ofNullable(String.valueOf(f.get(entity))).map(ActualItemUsageValue::new);
+					actualValue = Optional.ofNullable(f.get(entity)).map(String::valueOf).map(ActualItemUsageValue::new);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					actualValue = Optional.empty();
 				}
@@ -173,6 +174,9 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		domain.getItemDatas().forEach(itemData -> {
 			String type = itemData.getItemClassification().toString().toLowerCase();
 			Optional<String> optActualValue = itemData.getActualValue().map(ActualItemUsageValue::v);
+			if (optActualValue.isPresent() && StringUtil.isNullOrEmpty(optActualValue.get(), true)) {
+				optActualValue = Optional.empty();
+			}
 			Field f = this.getField(type, Integer.valueOf(itemData.getItemNo().v()));
 			try {
 				switch (itemData.getItemClassification()) {

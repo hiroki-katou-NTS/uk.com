@@ -27,10 +27,7 @@ module nts.uk.com.view.oem002.a {
         { headerText: vm.$i18n("OEM002_10"), key: 'code', width: 70 },
         { headerText: vm.$i18n("OEM002_11"), key: 'name', width: 200 },
       ]);
-    }
 
-    mounted() {
-      const vm = this;
       vm.selectedEquipmentInfoCode.subscribe(value => {
         if (value) {
           const api = nts.uk.text.format(API.getEquipmentInfo, value);
@@ -50,7 +47,10 @@ module nts.uk.com.view.oem002.a {
         }
       });
       vm.isNewMode.subscribe(() => vm.$nextTick(() => $("#A2_10").focus()));
+    }
 
+    mounted() {
+      const vm = this;
       vm.$blockui("grayout");
       vm.getAll().always(() => vm.$blockui("clear"));
       $("#A2_10").focus();
@@ -143,7 +143,7 @@ module nts.uk.com.view.oem002.a {
           if (result) {
             vm.selectedEquipmentInfo().equipmentClsCode(result.code);
             vm.selectedEquipmentInfo().equipmentClsName(result.name);
-
+            vm.$validate("#A2_9");
             vm.fixReadonlyA2_9();
           }
         });

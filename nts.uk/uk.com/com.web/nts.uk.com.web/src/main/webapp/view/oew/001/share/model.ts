@@ -195,6 +195,7 @@ module nts.uk.com.view.oew001.share.model {
     memo: string;
     helpContent: string;
     constraint: ui.vm.Constraint;
+    constraintName: string;
 
     constructor(init?: Partial<OptionalItem>) {
       $.extend(this, init);
@@ -220,6 +221,10 @@ module nts.uk.com.view.oew001.share.model {
       $.extend(this, init);
     }
   }
+
+  export function setReadOnly(itemId: string) {
+    $(itemId).attr("readonly", "readonly");
+  }
 }
 
 module nts.uk.com.view.oew001.share.model.constants {
@@ -229,6 +234,7 @@ module nts.uk.com.view.oew001.share.model.constants {
   export const FIXED_VALUE_A = 9;
   export const MAXIMUM_COL_WIDTH = 450;
   export const MAXIMUM_GRID_WIDTH = 1200;
+  export const NTS_GRID_CACHE_KEY = `${window.location.href}/A6`;
 }
 
 module nts.uk.com.view.oew001.share.model.enums {

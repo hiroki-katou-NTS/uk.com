@@ -1,8 +1,6 @@
 package nts.uk.file.com.infra.equipment.data;
 
 import java.io.OutputStream;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +28,7 @@ import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemDisplay;
@@ -118,6 +117,11 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	private static final int FIXED_VALUE_C = 8;
 	// Max col width
 	private static final int MAX_COLUMN_WIDTH = 300;
+	// Excel Number format: Text
+	// https://docs.aspose.com/cells/net/data-formatting/
+	private static final int TEXT_FORMAT = 49;
+	// マスタ未登録
+	private static final String MASTER_NOT_REGISTERED = "マスタ未登録";
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EquipmentDataExportDataSource dataSource) {
@@ -137,7 +141,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				extension = CSV_EXTENSION;
 			}
 			this.printData(sheet, reportContext, dataSource);
-			sheet.autoFitRows();
+			sheet.setActiveCell(EXPORT_YM_HEADER);
 			
 			String fileName = dataSource.getFormSetting().map(data -> data.getTitle().v()).orElse("") + extension;
 			OutputStream outputStream = this.createNewFile(generatorContext, this.getReportName(fileName));
@@ -240,7 +244,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 							isBlueBackground.get());
 					break;
 				case EQUIPMENT_CLS_NAME_INDEX:
-					this.printDataCell(cell, optEquipmentCls.map(data -> data.getName().v()).orElse(null),
+					this.printDataCell(cell, optEquipmentCls.map(data -> data.getName().v()).orElse(MASTER_NOT_REGISTERED),
 							TextAlignmentType.LEFT, isBlueBackground.get());
 					break;
 				case EQUIPMENT_CODE_INDEX:
@@ -248,7 +252,8 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 							isBlueBackground.get());
 					break;
 				case EQUIPMENT_NAME_INDEX:
-					this.printDataCell(cell, optEquipmentInfo.map(data -> data.getEquipmentName().v()).orElse(null),
+					// #120573
+					this.printDataCell(cell, optEquipmentInfo.map(data -> data.getEquipmentName().v()).orElse(MASTER_NOT_REGISTERED),
 							TextAlignmentType.LEFT, isBlueBackground.get());
 					break;
 				case USE_DATE_INDEX:
@@ -261,7 +266,8 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 								TextAlignmentType.LEFT, isBlueBackground.get());
 					} else {
 						// case CSV_SCD_INDEX
-						this.printDataCell(cell, optEmployee.map(EmployeeInformation::getEmployeeCode).orElse(null),
+						// #120570
+						this.printDataCell(cell, optEmployee.map(EmployeeInformation::getEmployeeCode).map(String::trim).orElse(null),
 								TextAlignmentType.LEFT, isBlueBackground.get());
 					}
 					break;
@@ -289,13 +295,15 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 						String value = itemData.getActualValue().map(ActualItemUsageValue::v).orElse(null);
 						int alignType = TextAlignmentType.LEFT;
 
-						// Only format number data if excel
-						if (itemData.getItemClassification().equals(ItemClassification.NUMBER) && isPrintExcel) {
-							value = String.format("%,d", Integer.valueOf(value));
-							alignType = TextAlignmentType.RIGHT;
-						} else if (itemData.getItemClassification().equals(ItemClassification.TIME) && isPrintExcel) {
-							value = LocalTime.MIN.plus(Duration.ofMinutes(Integer.valueOf(value))).toString();
-							alignType = TextAlignmentType.RIGHT;
+						if (value != null) {
+							// Only format number data if excel
+							if (itemData.getItemClassification().equals(ItemClassification.NUMBER) && isPrintExcel) {
+								value = String.format("%,d", Integer.valueOf(value));
+								alignType = TextAlignmentType.RIGHT;
+							} else if (itemData.getItemClassification().equals(ItemClassification.TIME) && isPrintExcel) {
+								value = this.formatTime(Integer.valueOf(value));
+								alignType = TextAlignmentType.RIGHT;
+							}
 						}
 						this.printDataCell(cell, value, alignType, isBlueBackground.get());
 					});
@@ -397,6 +405,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 		style.setHorizontalAlignment(alignType);
 		style.setVerticalAlignment(TextAlignmentType.CENTER);
 		style.setPattern(BackgroundType.SOLID);
+		style.setNumber(TEXT_FORMAT);
 		if (isBlueBackground != null) {
 			if (isBlueBackground) {
 				// Even row background color
@@ -432,5 +441,19 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 			return 1;
 		}
 		return e1.get().getEmployeeCode().compareTo(e2.get().getEmployeeCode());
+	}
+	
+	/**
+	 * Format Time_Short_Hm
+	 * 
+	 * @param value minutes
+	 * @return
+	 */
+	private String formatTime(int value) {
+		final String template = "%d:%s";
+		final int hours = value / 60;
+		final int minutes = value % 60;
+		return String.format(template, hours, 
+				StringUtil.padLeft(String.valueOf(minutes), 2, '0'));
 	}
 }
