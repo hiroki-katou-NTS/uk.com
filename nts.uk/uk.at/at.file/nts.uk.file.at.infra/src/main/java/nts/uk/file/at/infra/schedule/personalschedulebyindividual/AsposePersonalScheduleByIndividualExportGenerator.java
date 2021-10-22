@@ -334,12 +334,18 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 int firstCol = 35;
                 int secondCol = 38;
                 cells.get(rowCount, firstCol).setValue(item.getD21());
-                cells.get(rowCount + 1, firstCol).setValue(item.getD22());
+                Cell cellD22 = cells.get(rowCount + 1, firstCol);
+                cellD22.setValue(item.getD22());
                 cells.get(rowCount + 1, secondCol).setValue(item.getD23());
                 cells.get(rowCount + 2, firstCol).setValue(item.getD24());
                 cells.get(rowCount + 2, secondCol).setValue(item.getD25());
                 cells.get(rowCount + 3, firstCol).setValue(item.getD26());
-                cells.get(rowCount + 3, secondCol).setValue(item.getD27());
+                Cell cellD27 = cells.get(rowCount + 3, secondCol);
+                cellD27.setValue(item.getD27());
+                if (item.getD21().isEmpty() || item == null) {
+                    setBgColor(cellD22);
+                    setBgColor(cellD27);
+                }
             }
             rowCount += 5;
             // Check paging
@@ -350,6 +356,15 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         }
         PageSetup pageSetup = wsSource.getPageSetup();
         pageSetup.setPrintArea(PRINT_AREA + (pageIndex == 0 ? MAX_ROW_IN_PAGE : pageIndex * MAX_ROW_IN_PAGE));
+    }
+
+    /*
+    * #ddddd2
+    * */
+    private void setBgColor(Cell cell) {
+        Style style = cell.getStyle();
+        style.setForegroundColor(Color.fromArgb(221, 221, 210));
+        cell.setStyle(style);
     }
 
     private void removeTopBorder(Cell cell) {
