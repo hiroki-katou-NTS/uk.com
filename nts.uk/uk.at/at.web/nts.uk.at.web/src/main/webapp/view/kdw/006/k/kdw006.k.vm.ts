@@ -105,15 +105,30 @@ module nts.uk.at.view.kmk006.k {
             const vm = this;
             vm.$ajax('at', API.LIST_HISTORY)
                 .then((history: IHistory[]) => {
-                    _.forEach(history, ((item: IHistory) => {
-                        item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
-                    }));
-                    vm.historyLocals = history;
-                    if (itemId) {
-                        const exist = _.find(history, ((value: IHistory) => { return value.itemId === itemId }));
-                        if (exist) {
-                            if (exist.dateHistoryItems.length > 0) {
-                                vm.modelHistory.update(exist.dateHistoryItems[0]);
+                    if (history.length > 0) {
+                        _.forEach(history, ((item: IHistory) => {
+                            item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
+                        }));
+                        vm.historyLocals = history;
+                        if (itemId) {
+                            const exist = _.find(history, ((value: IHistory) => { return value.itemId === itemId }));
+                            if (exist) {
+                                if (exist.dateHistoryItems.length > 0) {
+                                    vm.modelHistory.update(exist.dateHistoryItems[0]);
+                                } else {
+                                    vm.model.update({
+                                        historyId: ko.unwrap(vm.modelHistory.historyId),
+                                        itemId: '',
+                                        code: '',
+                                        name: '',
+                                        externalCode: ''
+                                    });
+                                    vm.modelHistory.update({
+                                        historyId: ko.unwrap(vm.modelHistory.historyId),
+                                        startDate: null,
+                                        endDate: null,
+                                    })
+                                }
                             } else {
                                 vm.model.update({
                                     historyId: ko.unwrap(vm.modelHistory.historyId),
@@ -126,25 +141,14 @@ module nts.uk.at.view.kmk006.k {
                                     historyId: ko.unwrap(vm.modelHistory.historyId),
                                     startDate: null,
                                     endDate: null,
-                                })
+                                });
                             }
                         } else {
-                            vm.model.update({
-                                historyId: ko.unwrap(vm.modelHistory.historyId),
-                                itemId: '',
-                                code: '',
-                                name: '',
-                                externalCode: ''
-                            });
-                            vm.modelHistory.update({
-                                historyId: ko.unwrap(vm.modelHistory.historyId),
-                                startDate: null,
-                                endDate: null,
-                            });
+                            vm.modelHistory.update(history[0].dateHistoryItems[0]);
+                            vm.modelHistory.historyId.valueHasMutated();
                         }
                     } else {
-                        vm.modelHistory.update(history[0].dateHistoryItems[0]);
-                        vm.modelHistory.historyId.valueHasMutated();
+                        vm.screenMode(SCREEN_MODE.NOT_HISTORY);
                     }
                 })
                 .then(() => {
@@ -236,10 +240,15 @@ module nts.uk.at.view.kmk006.k {
                             .then(() => {
                                 vm.$ajax(API.LIST_HISTORY)
                                     .done((history: IHistory[]) => {
-                                        _.forEach(history, ((item: IHistory) => {
-                                            item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
-                                        }))
-                                        vm.historyLocals = history;
+                                        if (history.length > 0) {
+                                            _.forEach(history, ((item: IHistory) => {
+                                                item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
+                                            }))
+                                            vm.historyLocals = history;
+                                        } else {
+                                            vm.screenMode(SCREEN_MODE.NOT_HISTORY);
+                                            vm.historyLocals = history;
+                                        }
                                     })
                                     .then(() => {
                                         const exist = _.find(vm.historyLocals, ((item: IHistory) => {
@@ -258,10 +267,15 @@ module nts.uk.at.view.kmk006.k {
                     } else {
                         vm.$ajax(API.LIST_HISTORY)
                             .done((history: IHistory[]) => {
-                                _.forEach(history, ((item: IHistory) => {
-                                    item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
-                                }))
-                                vm.historyLocals = history;
+                                if (history.length > 0) {
+                                    _.forEach(history, ((item: IHistory) => {
+                                        item.dateHistoryItems = _.orderBy(item.dateHistoryItems, ['startDate'], ['desc']);
+                                    }))
+                                    vm.historyLocals = history;
+                                } else {
+                                    vm.screenMode(SCREEN_MODE.NOT_HISTORY);
+                                    vm.historyLocals = history;
+                                }
                             })
                             .then(() => {
                                 const exist = _.find(vm.historyLocals, ((item: IHistory) => {
