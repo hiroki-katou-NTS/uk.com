@@ -4790,7 +4790,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 baseDate: new Date()
             }
             setShared('KDL051A_PARAM', param);
-            modal("/view/kdl/051/single.xhtml");
+            nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
         }
 
 		openKDL052Dialog() {
