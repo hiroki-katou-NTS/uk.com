@@ -174,26 +174,26 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         List<Integer> list = new ArrayList<>();
         switch (dateInfo) {
             case MONDAY:
-                list = list1;
+                list = list7;
                 break;
             case TUESDAY:
-                list = list2;
+                list = list6;
                 break;
             case WEDNESDAY:
-                list = list3;
+                list = list5;
                 break;
             case THURSDAY:
                 list = list4;
                 break;
             case FRIDAY:
-                list = list5;
+                list = list3;
                 break;
 
             case SATURDAY:
-                list = list6;
+                list = list2;
                 break;
             case SUNDAY:
-                list = list7;
+                list = list1;
                 break;
         }
         return list;
