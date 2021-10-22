@@ -1339,10 +1339,10 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			case 13:
 			case 16:
 				if (sum.equals(0.0))
-					return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0" : "";
+					return zeroDisplayType == ZeroDisplayType.DISPLAY ? "0円" : "";
 				sumInt = sum.intValue();
 				DecimalFormat format = new DecimalFormat("###,###,###");
-				return format.format(sum.intValue());
+				return format.format(sum.intValue()) + "円";
 			default:
 				break;
 
@@ -1532,13 +1532,16 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		String stringAmountA = a.replaceAll(",", "");
 		String stringAmountB = b.replaceAll(",", "");
+		
+		int subStrAmountA = a.indexOf("円");
+		int subStrAmountB = b.indexOf("円");
 
-		Double amountA = Double.parseDouble(stringAmountA.toString());
-		Double amountB = Double.parseDouble(stringAmountB.toString());
+		Double amountA = Double.parseDouble(stringAmountA.substring(0, subStrAmountA));
+		Double amountB = Double.parseDouble(stringAmountB.substring(0, subStrAmountB));
 		
 		Double totalAmount = amountA + amountB;
 		DecimalFormat format = new DecimalFormat("###,###,###");
-		return format.format(totalAmount);
+		return format.format(totalAmount) + "円";
 	}
 
 	/**
