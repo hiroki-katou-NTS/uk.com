@@ -59,8 +59,8 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 		//
 		checkEnable: KnockoutObservable<boolean> = ko.observable(false);
 		checkSub: KnockoutObservable<boolean> = ko.observable(false);
-		changeMode : KnockoutObservable<boolean> = ko.observable(false);
-		showGrid : KnockoutObservable<boolean> = ko.observable(false);
+		changeMode: KnockoutObservable<boolean> = ko.observable(false);
+		showGrid: KnockoutObservable<boolean> = ko.observable(false);
 
 		searchText: KnockoutObservable<string> = ko.observable('');
 
@@ -83,27 +83,6 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 			self.isShowWorkPlaceName = ko.observable(false);
 			self.isShowSelectAllButton = ko.observable(false);
 			self.disableSelection = ko.observable(false);
-
-			//Number of grants Heda
-			self.columns = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL029_36'), key: 'granddate', width: 125 },
-				{ headerText: nts.uk.resource.getText('KDL029_35'), key: 'numbergrants', width: 110 },
-				{ headerText: nts.uk.resource.getText('KDL029_34'), key: 'numberuses', width: 110 },
-				{ headerText: nts.uk.resource.getText('KDL029_33'), key: 'remaining', width: 115 },
-				{ headerText: nts.uk.resource.getText('KDL029_32'), key: 'expirationdate', width: 135 }
-			]);
-
-			//
-			self.columns2 = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL029_29'), key: 'digestionday', width: 150 },
-				{ headerText: nts.uk.resource.getText('KDL029_28'), key: 'digestionuse', width: 70 }
-			]);
-
-			self.currentCode = ko.observable(0);
-			self.currentCodeList = ko.observableArray([]);
-
-			self.currentCode2 = ko.observable(0);
-			self.currentCodeList2 = ko.observableArray([]);
 
 			if (self.paramData.length > 1) {
 				$("#area-right").show();
@@ -133,11 +112,15 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 			self.listComponentOption.selectedCode.subscribe((value: any) => {
 				if (value == null) return;
 				self.checkSolid = 0;
-				
+
 				if (self.checkSub()) {
-					self.getData(value);
+					$("#grid-grand").ntsGrid("destroy")
+					$("#grid-grand-2").ntsGrid("destroy")
+					self.getData(value).done(() => {
+						self.createGrid();	
+					});
 				}
-				
+
 				self.checkSub(true);
 			})
 		}
@@ -146,21 +129,69 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 			let self = this, dfd = $.Deferred<any>();
 			self.checkSub(false);
 			nts.uk.ui.block.grayout();
-			self.getData("");
+			self.getData("").done(() => {
+				setTimeout(function() {
+					self.createGrid();
+					dfd.resolve();
+				}, 1);
+			});
 			nts.uk.ui.block.clear();
 			dfd.resolve();
 			return dfd.promise();
 		}
 
-		getData(value : any): JQueryPromise<any> {
+		createGrid() {
+			let self = this;
+			$("#grid-grand").ntsGrid({
+				height: '145px',
+				name: '#KDL029_37',
+				multiple: false,
+				dataSource: self.holidayData(),
+				primaryKey: 'granddate',
+				virtualization: true,
+				virtualizationMode: 'continuous',
+				// virtualizationMode: "fixed",
+				columns: [
+					{ headerText: nts.uk.resource.getText('KDL029_36'), key: 'granddate', width: 125 },
+					{ headerText: nts.uk.resource.getText('KDL029_35'), key: 'numbergrants', width: 110 },
+					{ headerText: nts.uk.resource.getText('KDL029_34'), key: 'numberuses', width: 110 },
+					{ headerText: nts.uk.resource.getText('KDL029_33'), key: 'remaining', width: 115 },
+					{ headerText: nts.uk.resource.getText('KDL029_32'), key: 'expirationdate', width: 135 }
+				],
+				features: [{ name: 'Resizing', type: 'local' }]
+			});
+
+			$("#grid-grand-2").ntsGrid({
+				height: '170px',
+				name: '#KDL029_30',
+				multiple: false,
+				dataSource: self.holidayData2(),
+				primaryKey: 'digestionday',
+				virtualization: true,
+				virtualizationMode: 'continuous',
+				// virtualizationMode: "fixed",
+				columns: [
+					{ headerText: '', key: 'annualHolidayStatus', width: 200,hidden: true } ,
+					{ headerText: nts.uk.resource.getText('KDL029_29'), key: 'digestionday', width: 150, formatter: function (digestionDate : any, record : any) {
+                        return "<div style='margin-left: 1px;display: flex;'><div style='width: 35px;' >"+record.annualHolidayStatus.toString()+"</div> <div style='width: 155px;float:right;'> " + digestionDate + " </div></div>"; 
+                	} },
+					{ headerText: nts.uk.resource.getText('KDL029_28'), key: 'digestionuse', width: 100 ,formatter: (v : any) => {
+                    	return '<div style="margin-left: 10px;">' + v + '</div>';
+                    } } 
+				],
+				features: [{ name: 'Resizing', type: 'local' }]
+			});
+		}
+
+		getData(value: any): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			let param = self.paramData;
-			if (value != ""){
-				let idParam = _.filter(self.paramData, (x : any) => {
+			if (value != "") {
+				let idParam = _.filter(self.paramData, (x: any) => {
 					return _.includes(x.slice(-12), value)
 				})
-				
-				if(idParam.length > 0) {
+
+				if (idParam.length > 0) {
 					param = idParam;
 				}
 			}
@@ -174,9 +205,9 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 					self.annMaxTime(data.accHolidayDto.annMaxTime);
 					self.annLimitStart(data.accHolidayDto.annLimitStart);
 					self.annLimitEnd(data.accHolidayDto.annLimitEnd);
-					
+
 					// ※2 , ※1
-					if (!data.accHolidayDto.annAccManaAtr){
+					if (!data.accHolidayDto.annAccManaAtr) {
 						self.changeMode(true);
 						self.showGrid(false);
 					}
@@ -184,7 +215,7 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 						self.showGrid(true);
 						self.changeMode(false);
 					}
-						
+
 				} else {
 					self.changeMode(true);
 					self.showGrid(false);
@@ -198,15 +229,15 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 				self.bindDataToGrid();
 				if (!self.checkSub())
 					self.listComponentOption.selectedCode(self.employeeList()[0].code);
-					
+
 				let name = null;
 				name = _.filter(self.employeeList(), (x: any) => {
 					return _.isEqual(x.code, value == "" ? self.employeeList()[0].code : value);
 				});
-				
+
 				if (name.length > 0)
-				self.employeeCodeName(name[0].code + " " + name[0].name);
-				
+					self.employeeCodeName(name[0].code + " " + name[0].name);
+
 				$("#cancel-btn").focus();
 
 				nts.uk.ui.block.clear();
@@ -220,14 +251,14 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 			self.holidayData([]);
 			self.holidayData2([]);
 			if (_.isNil(self.dataHoliday())) return;
-			
-			_.forEach(self.dataHoliday().lstRemainAnnAccHoliday, (x: AnnualAccumulatedHoliday /**  */, index) => {
-				self.holidayData.push(new HolidayInfo(x.grandDate,x.numberGrants, x.numberOfUse,x.numberOfRemain,x.dateOfExpiry));
-			})
-			_.forEach(self.dataHoliday().lstAnnAccHoliday , (x: DetailsAnnuaAccumulatedHoliday, index) => {
-				self.holidayData2.push(new HolidayInfo2(x.annualHolidayStatus + " " + x.digestionDate, x.numberOfUse));
-			})
 
+			_.forEach(self.dataHoliday().lstRemainAnnAccHoliday, (x: AnnualAccumulatedHoliday /**  */, index) => {
+				self.holidayData.push(new HolidayInfo(x.grandDate, x.numberGrants, x.numberOfUse, x.numberOfRemain, x.dateOfExpiry));
+			})
+			_.forEach(self.dataHoliday().lstAnnAccHoliday, (x: DetailsAnnuaAccumulatedHoliday, index) => {
+				self.holidayData2.push(new HolidayInfo2(x.annualHolidayStatus , x.digestionDate, x.numberOfUse));
+			})
+			
 			return dfd.promise();
 		}
 
@@ -397,26 +428,28 @@ module nts.uk.at.view.kdl029.a.viewmodel {
 			self.digestionDate = (digestionDate);
 		}
 	}
-	
+
 	class HolidayInfo {
-		grandDate: string;
+		granddate: string;
 		numbergrants: string;
 		numberuses: string;
 		remaining: string;
 		expirationdate: string;
-		constructor(grandDate: string, numbergrants: string, numberuses: string, remaining: string, expirationdate: string) {
-			this.grandDate = grandDate;
+		constructor(granddate: string, numbergrants: string, numberuses: string, remaining: string, expirationdate: string) {
+			this.granddate = granddate;
 			this.numbergrants = numbergrants;
 			this.numberuses = numberuses;
 			this.remaining = remaining;
 			this.expirationdate = expirationdate;
 		}
 	}
-	
+
 	class HolidayInfo2 {
 		digestionday: string;
 		digestionuse: string;
-		constructor(digestionday: string, digestionuse: string) {
+		annualHolidayStatus: string;
+		constructor(annualHolidayStatus: string, digestionday: string, digestionuse: string) {
+			this.annualHolidayStatus = annualHolidayStatus;
 			this.digestionday = digestionday;
 			this.digestionuse = digestionuse;
 		}

@@ -93,24 +93,27 @@
 							</div>
 							<!-- A3 -->
 							<div tabindex="-1" id="grid-data" style="margin-top: 10px;">
-								<table tabindex="-1" id="single-list"
-									data-bind="ntsGridList: {
+								<table tabindex="-1" id="grid-grand"></table>
+									<!-- data-bind="ntsGridList: {
 							name : '#KDL020_7'	,							
 							height: 280,
 							options: holidayData,
 							columns: columns,
 							multiple: false,
+							virtualization: true,
+                    		virtualizationMode: 'continuous',
 							value: currentCode,
+							features: [{ name: 'Resizing', type: 'local' }],
 							rows : 5}">
-								</table>
+								</table> -->
 							</div>
 							<div style="margin-top: 10px;">
 								<!-- A4_1 -->
 								<label id="latest-annual-leave">#{i18n.getText('KDL020_57')}</label>
 							</div>
 							<div tabindex="-1" id="grid-data-2" style="margin-top: 10px;">
-								<table tabindex="-1" id="single-list"
-									data-bind="ntsGridList: {
+								<table tabindex="-1" id="grid-grand-2"></table>
+									<!-- data-bind="ntsGridList: {
 							name : '#KDL020_58'	,							
 							height: 280,
 							options: holidayData2,
@@ -118,7 +121,7 @@
 							multiple: false,
 							value: currentCode2,
 							rows : 6}">
-								</table>
+								</table> -->
 							</div>
 						</div>
 
