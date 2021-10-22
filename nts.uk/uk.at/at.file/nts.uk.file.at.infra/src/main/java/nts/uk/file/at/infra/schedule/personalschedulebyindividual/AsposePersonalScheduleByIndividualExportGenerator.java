@@ -349,7 +349,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             }
         }
         PageSetup pageSetup = wsSource.getPageSetup();
-        pageSetup.setPrintArea(PRINT_AREA + rowCount);
+        pageSetup.setPrintArea(PRINT_AREA + (pageIndex == 0 ? MAX_ROW_IN_PAGE : pageIndex * MAX_ROW_IN_PAGE));
     }
 
     private void removeTopBorder(Cell cell) {
