@@ -123,7 +123,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             _.each(self.tabMs, (item, index) => {
 
                 let paramTab = {
-                    id: 'tab-' + String(index + 1), title: item.title, content: '.tab-content-' + String(index + 1), enable: ko.observable(item.enable), visible: ko.observable(item.visible)
+                    id: 'tab-' + String(index + 1), title: item.title, content: '.tab-content-' + String(index + 1), enable: item.enable, visible: item.visible
                 };
                 paramTabs.push(paramTab);
                 self.enableList.push(ko.observable(false));
@@ -807,12 +807,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
     }
     export class TabM {
         title?: string;
-        enable: boolean;
-        visible: boolean
+        enable: KnockoutObservable<boolean>;
+        visible: KnockoutObservable<boolean>
         constructor(title: string, enable: boolean, visible: boolean) {
             this.title = title;
-            this.enable = enable;
-            this.visible = visible;
+            this.enable = ko.observable(enable);
+            this.visible = ko.observable(visible);
         }
     }
 

@@ -268,6 +268,24 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         self.tabs()[5].visible(false);
                     
                     } 
+                    if (data.appStampOptional) {
+                        if (data.appStampOptional.listTimeStampApp) {
+                            let dataTab0 = _.filter(data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 0 || item.destinationTimeApp.timeStampAppEnum === 1);
+                            let dataTab1 = _.filter(data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 2);
+
+                            if (self.tabs()[0].visible()) self.tabs()[0].visible(dataTab0.length > 0); 
+                            if (self.tabs()[1].visible()) self.tabs()[1].visible(dataTab1.length > 0); 
+                        }
+                        if (data.appStampOptional.listTimeStampAppOther) {
+                            let dataTab2 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 2);
+                            let dataTab3 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 0);
+                            let dataTab4 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 1);
+
+                            if (self.tabs()[2].visible()) self.tabs()[2].visible(dataTab2.length > 0); 
+                            if (self.tabs()[3].visible()) self.tabs()[3].visible(dataTab3.length > 0); 
+                            if (self.tabs()[4].visible()) self.tabs()[4].visible(dataTab4.length > 0); 
+                        }
+                    }
                 } 
             });
        } 
