@@ -1023,7 +1023,7 @@ module nts.uk.ui.at.kdw013.a {
                     cooperationInfo: null
                 },
                 {
-                    code : "11",
+                    code : "9",
                     taskFrameNo: 1,
                     displayInfo: {
                         taskName: "taskName11",
@@ -1037,7 +1037,7 @@ module nts.uk.ui.at.kdw013.a {
                     cooperationInfo: null
                 },
                 {
-                    code : "111",
+                    code : "2",
                     taskFrameNo: 1,
                     displayInfo: {
                         taskName: "taskName111",
@@ -1136,7 +1136,7 @@ module nts.uk.ui.at.kdw013.a {
                     workNo: 1,
                     workContent: {
                         work: {
-                            workCD1: "1",
+                            workCD1: "9",
                             workCD2: "2",
                             workCD3: "3",
                             workCD4: "4",
@@ -1198,35 +1198,6 @@ module nts.uk.ui.at.kdw013.a {
                 }
 
             ]);
-
-            vm.taskSettings([
-                {
-                    frameNo: 1,
-                    frameName: 'name1',
-                    useAtr: 1
-                },
-                {
-                    frameNo: 2,
-                    frameName: 'name2',
-                    useAtr: 1
-                },
-                {
-                    frameNo: 3,
-                    frameName: 'name3',
-                    useAtr: 1
-                },
-                {
-                    frameNo: 4,
-                    frameName: 'name4',
-                    useAtr: 1
-                },
-                {
-                    frameNo: 5,
-                    frameName: 'name5',
-                    useAtr: 1
-                }
-            ]);
-
 
             var warnings: TaskInfo[] = [ ];
 
