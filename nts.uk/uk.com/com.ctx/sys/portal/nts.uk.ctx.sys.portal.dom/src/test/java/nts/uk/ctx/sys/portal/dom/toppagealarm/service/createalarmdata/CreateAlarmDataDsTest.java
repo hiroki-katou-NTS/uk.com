@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm.service.createalarmdata;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), delInfo.get().getDisplayEmpClassfication().value);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
 				times = 0;
 			}
 			{
@@ -83,7 +84,7 @@ public class CreateAlarmDataDsTest {
 				times = 1;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), delInfo.get().getDisplayEmpClassfication().value);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
 				times = 0;
 			}
 			{
@@ -114,7 +115,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), delInfo.get().getDisplayEmpClassfication().value);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
 				times = 0;
 			}
 			{
@@ -133,7 +134,7 @@ public class CreateAlarmDataDsTest {
 				times = 1;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), delInfo.get().getDisplayEmpClassfication().value);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
 				times = 0;
 			}
 			{
@@ -163,7 +164,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), delInfo.get().getDisplayEmpClassfication().value);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
 				times = 0;
 			}
 			{
@@ -182,7 +183,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), delInfo.get().getDisplayEmpClassfication().value);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, delInfo.get().getSids(), delInfo.get().getAlarmListParttenCode().get(), new ArrayList<>(), delInfo.get().getDisplayEmpClassfication().value);
 				times = 1;
 			}
 			{
@@ -211,7 +212,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, (Integer) any);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, new ArrayList<>(), (Integer) any);
 				times = 0;
 			}
 			{
@@ -230,7 +231,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, (Integer) any);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, new ArrayList<>(), (Integer) any);
 				times = 0;
 			}
 			{
@@ -259,7 +260,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, (Integer) any);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, new ArrayList<>(), (Integer) any);
 				times = 0;
 			}
 			{
@@ -278,7 +279,7 @@ public class CreateAlarmDataDsTest {
 				times = 0;
 			}
 			{
-				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, (Integer) any);
+				UpdateAlarmDataDs.create(rq2, CreateAlarmDataDsHelper.CID, CreateAlarmDataDsHelper.SIDS, (String) any, new ArrayList<>(), (Integer) any);
 				times = 0;
 			}
 			{

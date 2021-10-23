@@ -69,7 +69,7 @@ public class ReflectSupportStartEnd {
 		if (data.getDestinationTimeApp().getStartEndClassification() == StartEndClassificationShare.START) {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(
 					new WorkNo(data.getDestinationTimeApp().getSupportWork().orElse(null)),
-					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
+					Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()),
 							data.getTimeOfDay())),
 					Optional.empty());
 			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
@@ -86,7 +86,7 @@ public class ReflectSupportStartEnd {
 				data.getWorkLocationCd().orElse(null));
 		lstItemId.add(CancelAppStamp.createItemId(921, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
 
-		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty(), Optional.empty());
+		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
 						SupportFrameNo.of(data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE)), workContent, sheet, Optional.empty()),
@@ -103,7 +103,7 @@ public class ReflectSupportStartEnd {
 			sheet = TimeSheetOfAttendanceEachOuenSheet.create(old.getTimeSheet().getWorkNo(),
 					Optional.of(new WorkTimeInformation(
 							new ReasonTimeChange(TimeChangeMeans.APPLICATION, old.getTimeSheet().getStart()
-									.map(x -> x.getReasonTimeChange().getEngravingMethod()).orElse(null)),
+									.flatMap(x -> x.getReasonTimeChange().getEngravingMethod())),
 							data.getTimeOfDay())),
 					old.getTimeSheet().getEnd());
 			lstItemId.add(CancelAppStamp.createItemId(929, data.getDestinationTimeApp().getEngraveFrameNo(), 10));
@@ -126,7 +126,7 @@ public class ReflectSupportStartEnd {
 			workplace = old.getWorkContent().getWorkplace();
 		}
 
-		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty(), Optional.empty());
+		WorkContent workContent = WorkContent.create(workplace, old.getWorkContent().getWork(), Optional.empty());
 		return Pair.of(OuenWorkTimeSheetOfDailyAttendance.create(old.getWorkNo(), workContent, sheet, Optional.empty()), lstItemId);
 
 	}

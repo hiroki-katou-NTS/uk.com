@@ -17,6 +17,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.BooleanUtils;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -49,6 +58,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 	})
 public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final JpaEntityMapper<KrcdtDayInfoCalc> MAPPER = new JpaEntityMapper<>(KrcdtDayInfoCalc.class);
     @EmbeddedId
     public KrcstDaiCalculationSetPK krcstDaiCalculationSetPK;
     
@@ -107,6 +117,19 @@ public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializabl
         this.divergenceTime = divergenceTime;
     }
 
+	public static KrcdtDayInfoCalc toEntity(CalAttrOfDailyPerformance domain, String flexExcessTimeId, String holWorkTimeId, String overTimeWorkId) {
+		return new KrcdtDayInfoCalc(
+				new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()),
+				flexExcessTimeId,
+				BooleanUtils.toInteger(domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr()),
+				BooleanUtils.toInteger(domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr()),
+				holWorkTimeId,
+				overTimeWorkId,
+				BooleanUtils.toInteger(domain.getCalcategory().getLeaveEarlySetting().isLate()),
+				BooleanUtils.toInteger(domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly()),
+				domain.getCalcategory().getDivergenceTime().getDivergenceTime().value);
+	}
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -132,9 +155,20 @@ public class KrcdtDayInfoCalc extends ContractUkJpaEntity implements Serializabl
         return "entities.KrcdtDayInfoCalc[ krcstDaiCalculationSetPK=" + krcstDaiCalculationSetPK + " ]";
     }
 
+	public CalAttrOfDailyPerformance toDomain(KrcmtCalcSetFlex flexCalc, KrcmtCalcSetHdWork holidayCalc, KrcmtCalcSetOverTime overtimeCalc) {
+		return new CalAttrOfDailyPerformance(
+				this.krcstDaiCalculationSetPK.sid,
+				this.krcstDaiCalculationSetPK.ymd,
+				flexCalc.toDomain(),
+				new AutoCalRaisingSalarySetting(BooleanUtils.toBoolean(this.bonusPaySpeCalSet), BooleanUtils.toBoolean(this.bonusPayNormalCalSet)),
+				holidayCalc.toDomain(),
+				overtimeCalc.toDomain(),
+				new AutoCalcOfLeaveEarlySetting(BooleanUtils.toBoolean(this.leaveLateSet), BooleanUtils.toBoolean(this.leaveEarlySet)),
+				new AutoCalcSetOfDivergenceTime(EnumAdaptor.valueOf(this.divergenceTime, DivergenceTimeAttr.class)));
+	}
+
 	@Override
 	protected Object getKey() {
 		return krcstDaiCalculationSetPK;
 	}
-    
 }

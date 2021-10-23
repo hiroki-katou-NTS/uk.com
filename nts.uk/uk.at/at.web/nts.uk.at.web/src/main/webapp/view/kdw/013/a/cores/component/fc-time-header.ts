@@ -63,20 +63,21 @@ module nts.uk.ui.at.kdw013.timeheader {
             });
         }
         
-        
-
-        formatTime(value: number | null, time) {
-            const vm = this;
-            const className =  time.date;
-            let icon = `<i class='warningIcon ` + className + `'> </i>`;
-            
-            vm.OpenIDialog = () => {
-                let screenA = vm.params.screenA;
-                screenA.taskInfos();
+        OpenIDialog(vm, time) {
+            let screenA = vm.params.screenA;
+            let {$settings} = screenA;
+                screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
 
                 // 作業リスト
                 screenA.taskDtos();
-
+                let eventInDay = _.chain(screenA.events())
+                    .filter((evn) => { return moment(time).isSame(evn.start, 'days'); })
+                    .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                    .sortBy('end')
+                    .value();
+                _.map(eventInDay, evn => { return { workNo: _.get(evn, 'extendedProps.taskBlock.taskDetails[0].supNo') 
+                                                    }; });
+                screenA.events()
                 // 日別勤怠の応援作業時間
                 screenA.ouenWorkTimes();
 
@@ -84,14 +85,18 @@ module nts.uk.ui.at.kdw013.timeheader {
                 screenA.ouenWorkTimeSheets();
 
                 //対象日
-                screenA.targetDate();
+                screenA.targetDate(moment(time).toDate());
+        }
+        
+        
 
-            }
-            
-            
+        formatTime(value: number | null, time) {
+            const vm = this;
+            const className =  time.date;
+            let icon = `<i class='warningIcon ` + className + `'> </i>`;
             
             setTimeout(()=> { 
-                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 2, size: '20px', width: 20, height: 20 }, click: vm.OpenIDialog }); 
+                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 2, size: '20px', width: 20, height: 20 }, click: () => { vm.OpenIDialog(vm, time); } }); 
                 $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
             }, 300);
             if (!value) {

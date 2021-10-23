@@ -40,9 +40,9 @@ public class RecoverSCBeforeAppReflectAdaperImpl implements RecoverSCBeforeAppRe
 
 		return new SCReflectStatusResultExport(
 				EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, SCReflectedStateExport.class),
-				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value,
+				reflectStatus.getReasonNotReflectWorkRecord() == null ? null : EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value,
 						SCReasonNotReflectDailyExport.class),
-				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value,
+						reflectStatus.getReasonNotReflectWorkSchedule() == null ? null : EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value,
 						SCReasonNotReflectExport.class));
 	}
 
@@ -50,8 +50,8 @@ public class RecoverSCBeforeAppReflectAdaperImpl implements RecoverSCBeforeAppRe
 
 		return new ReflectStatusResult(
 				EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, ReflectedState.class),
-				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, ReasonNotReflectDaily.class),
-				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, ReasonNotReflect.class));
+				reflectStatus.getReasonNotReflectWorkRecord() == null ? null : EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, ReasonNotReflectDaily.class),
+				reflectStatus.getReasonNotReflectWorkSchedule() == null ? null : EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, ReasonNotReflect.class));
 	}
 
 }

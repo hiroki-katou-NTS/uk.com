@@ -43,4 +43,10 @@ public class SptdtTopAlarmSubSyaPK implements Serializable {
 	@Column(name = "SUB_SID")
 	private String subSid;
 	
+	/**
+	 * パターンコード
+	 */
+	@Column(name = "ALARM_PATTERN_CD")
+	private String patternCode;
+	
 }

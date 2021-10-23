@@ -202,7 +202,7 @@
                                          required: true,
                                          readonly: true}" />
                                         </td>
-                                        <td class="pad_left_5px">
+                                        <td class="pad_left_5px pt-6">
                                             <!-- BA2-4, BA2-5 -->
                                             <div id="comBoxOperator" tabindex="5" style = "width : 280px " class="combo-box" data-bind="ntsComboBox: {
                                              name:'#[KAL003_60]',
@@ -218,7 +218,7 @@
                                              ]}">
                                             </div>
                                         </td>
-                                        <td class="pad_left_5px">
+                                        <td class="pad_left_5px pt-6">
                                             <!-- BA2-6 -->
                                             <com:ko-if bind="checkItem() == 0 || checkItem() == 4">
                                                 <!-- 時間, 連続時間の場合 -->
@@ -263,7 +263,7 @@
                                             </com:ko-if>
 
                                         </td>
-                                        <td class="pad_left_5px">
+                                        <td class="pad_left_5px pt-6">
                                             <!-- BA2-7 -->
                                             <com:ko-if bind="checkItem() == 0 || checkItem() == 4">
                                                 <!-- 時間, 連続時間の場合 -->
@@ -333,7 +333,7 @@
                                         </td>
                                         <!-- <td></td> -->
                                         <!-- BA1-5-->
-                                        <td style="padding-left: 73px">
+                                        <td>
                                             <div id="ba1_5_target_working_hours" align="right" data-bind="ntsRadioBoxGroup: {
                                      options: $parent.itemListTargetSelectionRange_BA1_5,
                                      optionsValue: 'value',
@@ -713,7 +713,7 @@
                                                 </com:ko>
                                                 <com:ko bind="haveCombobox() === true" tag="if">
                                                     <!-- bind combo -->
-                                                    <div tabindex ="5" style="margin-top: 3px;" class="combo-box" data-bind="ntsComboBox: {
+                                                    <div tabindex ="5" class="combo-box" data-bind="ntsComboBox: {
                                                 name:'#[KAL003_60]',
                                                 options: function(){
                                                 	if($data.typeCheckItem() !== 1 &amp;&amp; $data.typeCheckItem() !== 2){
@@ -1091,11 +1091,12 @@
 													name:'#[KAL003_40]',
 					                                 value: $vm.displayAttendanceItemSelections_BA2_3,
 					                                 required: true,
-					                                 readonly: true}" />
+					                                 readonly: true,
+                                          option: { width: '200px' }}" />
 										</td>
 										
 															
-										<td class="pad_left_5px">
+										<td class="pad_left_5px pt-6">
 											<!-- B1_58, B1_59 -->
 											<com:ko-if bind="[tcWM.TIME, tcWM.TIMES, tcWM.AMOUNT,
 														tcWM.AVERAGE_TIME, tcWM.AVERAGE_TIMES,
@@ -1145,7 +1146,7 @@
 										 	</com:ko-if>
 											
 										</td>
-										<td class="pad_left_5px">
+										<td class="pad_left_5px pt-6">
 											<!-- B1_60 --> 
 											<com:ko-if bind="[tcWM.TIME, tcWM.CONTINUOUS_TIME].indexOf(typeCheckItem()) > -1"> 
 												<!-- 時間 -->
@@ -1281,7 +1282,7 @@
 											 </com:ko-if>
 										</td>
 										<!-- C1_61 -->
-										<td class="pad_left_5px">
+										<td class="pad_left_5px pt-6">
 											<com:ko-if bind="[tcWM.TIME].indexOf(typeCheckItem()) > -1">
 												<!-- 時間 -->
 												<input id="endValue" class="value-input needcheck" style = "width : 100px ! important"
@@ -1433,21 +1434,19 @@
 							<div id="div_check_conditions_ba9">
 								<table>
 									<colgroup>
-										<col width="100px" />
-										<col width="60px" />
 										<col width="150px" />
-										<col width="150px" />
-										<col width="150px"  />
+										<col width="300px" />
+										<col width="266px" />
+										<col width="50px" />
+										<col width="50px"  />
 									</colgroup>
 									<tr class="row">
 										<td class="pad_left_10px">
-										</td>
-										<td>
 											<!--B1_151 -->
-											<div>#{i18n.getText('KAL003_157')}</div>
+											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL003_157')}</div>
 										</td>
 <!-- 										<td class="pad_left_5px" style="display: inline;"> -->
-										<td>
+										<td class="pad_left_5px pt-6">
 											<!-- B1_152, B1_153 -->
 											<div id="comBoxOperator" class="combo-box" tabindex = "7"
 												data-bind="ntsComboBox: {
@@ -1465,7 +1464,7 @@
 											</div>
 											
 										</td>
-										<td class="pad_left_10px" style="margin-left: 30px">
+										<td class="pad_left_5px pt-6" style="margin-left: 30px">
 											<!-- BA3-2--> 
 											<input class="value-input needcheck" id="BA3_2"
 											tabindex = "8"

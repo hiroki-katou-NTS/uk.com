@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.List;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -13,5 +14,5 @@ public interface StampDomainService {
             String empCalAndSumExecLogID, GeneralDate date, String employeeId, String companyId,RecreateFlag recreateFlag);
     //打刻を取得する (new)
     public List<Stamp> handleDataNew(StampReflectRangeOutput s,
-            GeneralDate date, String employeeId, String companyId,EmbossingExecutionFlag flag);
+            GeneralDate date, String employeeId, String companyId,EmbossingExecutionFlag flag,CacheCarrier carrier);
 }

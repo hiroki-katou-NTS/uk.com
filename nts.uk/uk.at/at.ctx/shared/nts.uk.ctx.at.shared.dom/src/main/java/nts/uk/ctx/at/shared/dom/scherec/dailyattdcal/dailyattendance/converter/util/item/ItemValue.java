@@ -60,7 +60,7 @@ public class ItemValue implements Cloneable {
 		this(value, valueType, layoutCode, itemId, path, false);
 	}
 	
-	private ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String pathLink, boolean isFixed){
+	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String pathLink, boolean isFixed){
 		this.valueType = valueType;
 		this.layoutCode = layoutCode;
 		this.itemId = itemId;

@@ -105,7 +105,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 const vm = this;
                 let id = $('.fc-task-events .edit-popup').data('favId');
                 //A: お気に入り作業を削除する
-                vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/delete_task_set', {favId:id}))
+                vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/delete_task_set', { favId: id }))
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
                             vm.params.screenA.reLoad();

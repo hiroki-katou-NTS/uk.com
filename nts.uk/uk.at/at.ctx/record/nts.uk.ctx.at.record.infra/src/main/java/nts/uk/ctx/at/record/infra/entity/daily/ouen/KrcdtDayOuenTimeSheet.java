@@ -88,10 +88,6 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 	@Column(name = "WORK_CD5")
 	public String workCd5;
 	
-	/** 作業CD5 */
-	@Column(name = "WORK_REMARKS")
-	public String workRemarks;
-	
 	@OneToOne(mappedBy = "krcdtDayOuenTimeSheet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	public KrcdtDayTsSupSupplInfo krcdtDayTsSupSupplInfo;
 	
@@ -120,10 +116,6 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 				entity.workCd3 = work.getWorkCD3().map(w -> w.v()).orElse(null); 
 				entity.workCd4 = work.getWorkCD4().map(w -> w.v()).orElse(null);
 				entity.workCd5 = work.getWorkCD5().map(w -> w.v()).orElse(null);
-			});
-			
-			oTimeSheetAtt.getWorkContent().getWorkRemarks().ifPresent(remarks -> {
-				entity.workRemarks = remarks.v();
 			});
 			
 			entity.workNo = oTimeSheetAtt.getTimeSheet().getWorkNo().v();

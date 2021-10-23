@@ -62,7 +62,7 @@ public class CreateDisplayContentWorkStatusQuery {
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
         val listEmployee = listEmployeeStatus.stream()
                 .map(StatusOfEmployee::getEmployeeId).collect(Collectors.toList());
-        Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid, datePeriod.end(), listIds);
+        Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid);
 
         List<AttendanceResultDto> listItemValue = require.getValueOf(listEmployee, datePeriod, listIds);
         Map<String, Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>>> mapValue = new HashMap<>();
@@ -117,7 +117,7 @@ public class CreateDisplayContentWorkStatusQuery {
                                         allDataMaster.getOrDefault(WORK_TYPE, null)
                                         : allDataMaster.getOrDefault(WORKING_HOURS, null);
                                 val name = master != null ? master.getOrDefault(sub.getValue(), null) : null;
-                                character.append(" ").append(name != null ? name.getName() : sub.getValue());
+                                character.append(name != null ? name.getName() : sub.getValue());
                             }
                         }
                         itemValue.add(
@@ -173,8 +173,7 @@ public class CreateDisplayContentWorkStatusQuery {
 
         List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds);
 
-        Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference,
-                                                                    List<Integer> lstDivNO);
+        Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId);
     }
 
     public static <T> Predicate<T> distinctByKey(

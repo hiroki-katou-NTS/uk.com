@@ -123,6 +123,7 @@ table#table tr td.title {
 .input_width {
 	width: 80px;
 	float: left;
+  height: 32px;
 }
 .em_table_with{
 	min-width: 600px;

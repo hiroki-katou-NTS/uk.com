@@ -375,9 +375,9 @@ module nts.uk.ui.at.kdw013.a {
                         return;
                     }
                     
-                    let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.attendanceItemId });
+                    let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.itemId });
 
-                    if (!!start && !!end && moment(date).isBetween(start, end)) {
+                    if (!!start && !!end && moment(date).isBetween(start, end, undefined, '[)')) {
                         const params: ChangeDateParam = {
                             employeeId,
                             refDate: moment(date).startOf('day').format(DATE_TIME_FORMAT),
@@ -693,13 +693,13 @@ module nts.uk.ui.at.kdw013.a {
                 return dates;
             };
     
-            let sid = vm.employee() ? vm.employee() : vm.$user.employeeId;
+            let employeeId = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
     
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
-            let changedDates = dateRanges().map(date => {
+            let changedDates = _.chain(dateRanges()).map(date => {
                 const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'day') });
                 const data = _.find(vm.$datas().lstWorkRecordDetailDto, (e) => { return moment(e.date).isSame(date, 'day') });
 
@@ -715,56 +715,62 @@ module nts.uk.ui.at.kdw013.a {
                 }
 
                 return { date: date, changed: false };
+            }).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value();
+    
+    
+            let workDetails = dateRanges().map((date) => {
+                const lstWorkDetailsParamCommand = _
+                    .chain($events)
+                    .filter(({ start }) => moment(start).isSame(date, 'day'))
+                    .map(({ start, end, extendedProps }) => {
+                        const {
+                            workCD1,
+                            workCD2,
+                            workCD3,
+                            workCD4,
+                            workCD5,
+                            workLocationCD,
+                            remarks,
+                            supportFrameNo
+                        } = extendedProps;
 
+                        return {
+                            remarks,
+                            supportFrameNo,
+                            workGroup: {
+                                workCD1: !_.isEmpty(workCD1) ? workCD1 : undefined,
+                                workCD2: !_.isEmpty(workCD2) ? workCD2 : undefined,
+                                workCD3: !_.isEmpty(workCD3) ? workCD3 : undefined,
+                                workCD4: !_.isEmpty(workCD4) ? workCD4 : undefined,
+                                workCD5: !_.isEmpty(workCD5) ? workCD5 : undefined,
+                            },
+                            workLocationCD: workLocationCD == "" ? null : workLocationCD,
+                            timeZone: {
+                                end: getTimeOfDate(end),
+                                start: getTimeOfDate(start)
+                            }
+                        };
+                    })
+                    .value();
 
+                return {
+                    date: moment(date).format(DATE_TIME_FORMAT),
+                    lstWorkDetailsParamCommand
+                };
             });
+    
+            let manHrlst = [];
 
+            let integrationOfDailys = [];
             
             const command: RegisterWorkContentCommand = {
-                changedDates: _.chain(changedDates).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value(),
+                changedDates,
                 editStateSetting,
-                employeeId: sid,
+                employeeId,
+                manHrlst,
+                integrationOfDailys,
                 mode,
-                workDetails: dateRanges().map((date) => {
-                    const lstWorkDetailsParamCommand = _
-                        .chain($events)
-                        .filter(({ start }) => moment(start).isSame(date, 'day'))
-                        .map(({ start, end, extendedProps }) => {
-                            const {
-                                workCD1,
-                                workCD2,
-                                workCD3,
-                                workCD4,
-                                workCD5,
-                                workLocationCD,
-                                remarks,
-                                supportFrameNo
-                            } = extendedProps;
-                           
-                            return {
-                                remarks,
-                                supportFrameNo,
-                                workGroup: {
-                                    workCD1: !_.isEmpty(workCD1) ? workCD1 : undefined,
-                                    workCD2: !_.isEmpty(workCD2) ? workCD2 : undefined,
-                                    workCD3: !_.isEmpty(workCD3) ? workCD3 : undefined,
-                                    workCD4: !_.isEmpty(workCD4) ? workCD4 : undefined,
-                                    workCD5: !_.isEmpty(workCD5) ? workCD5 : undefined,
-                                },
-                                workLocationCD: workLocationCD == "" ? null :workLocationCD,
-                                timeZone: {
-                                    end: getTimeOfDate(end),
-                                    start: getTimeOfDate(start)
-                                }
-                            };
-                        })
-                        .value();
-
-                    return {
-                        date: moment(date).format(DATE_TIME_FORMAT),
-                        lstWorkDetailsParamCommand
-                    };
-                })
+                workDetails
             };
 
             vm

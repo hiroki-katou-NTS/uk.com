@@ -8,3 +8,9 @@
 #kaf-006-c #label-1 {
     width: 108px !important;
 }
+
+.listApproverRootState table td, .listApproverRootState table th {
+	border: 1px solid black;
+	text-align: center;
+	height: 25px;
+}

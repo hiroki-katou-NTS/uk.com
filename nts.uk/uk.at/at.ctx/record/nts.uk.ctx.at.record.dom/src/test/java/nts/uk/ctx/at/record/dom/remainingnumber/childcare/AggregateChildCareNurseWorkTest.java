@@ -195,7 +195,7 @@ public class AggregateChildCareNurseWorkTest {
 	}
 
 	@Test
-	// 集計期間の翌日を集計する時は、処理は行わない
+	// 集計期間の翌日を集計する時は、処理は行う
 	// falseの場合：子の看護介護計算残数を返す
 	public void testCalcRemaining2() {
 		val companyId = "0001";
@@ -211,7 +211,7 @@ public class AggregateChildCareNurseWorkTest {
 			}
 		};
 
-		val expect = calcRemaining(4.0, 0, 5); //期待値：計算残数（残日数、残時間、上限日数）
+		val expect = calcRemaining(0.0, null, 0); //期待値：計算残数（残日数、残時間、上限日数）
 		val calcRemaining = childCare.calcRemaining("0001", "000001",
 				new DatePeriod(ymd(2020, 12, 1),ymd(2020, 12, 31)),
 				ymd(2021,1, 10),
@@ -290,7 +290,6 @@ public class AggregateChildCareNurseWorkTest {
 	public void testCalcUsed1() {
 		val childCare = createChildCare11(0, 0, 0, null, 0, true);	//終了日の翌日の期間 = true
 		val nextPeriodEndAtr = childCare.calcUsed("0001", "000001",
-												new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
 												ymd(2020,10, 16),
 												usedNumber(0.0, 0),	// 起算日からの使用数
 												require);
@@ -312,7 +311,6 @@ public class AggregateChildCareNurseWorkTest {
 
 		val expect = calcUsedNumber(4.0, 180, 1, 1, 1.0, 60);//期待値：起算日からの使用数、時間休暇使用回数、時間休暇使用日数、集計期間の使用数
 		val calcUsed = childCare.calcUsed("0001", "000001",
-				new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
 				ymd(2020,10, 16),
 				usedNumber(3.0, 120),	// 起算日からの使用数（日数、時間）
 				require);

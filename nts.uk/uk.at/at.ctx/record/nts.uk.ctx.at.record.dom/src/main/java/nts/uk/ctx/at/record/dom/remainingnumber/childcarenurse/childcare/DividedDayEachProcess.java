@@ -55,4 +55,14 @@ public class DividedDayEachProcess {
 		domain.yearAtr = yearAtr;
 		return domain;
 	}
+	
+	/*
+	 * 終了日期間として扱う
+	 */
+	public void treatAsPeriodEnd(){
+		this.setEndDate(NextDayAfterPeriodEndWork.of(true, this.getEndDate().isNextPeriodEndAtr()));
+	}
+	
+	
+	
 }

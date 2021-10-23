@@ -34,6 +34,17 @@ public interface EmploymentMonthDaySettingRepository {
 	 */
 	List<EmploymentMonthDaySetting> findByCompany(CompanyId companyId);
 	
+	
+	/**
+	 * Find by year.
+	 *
+	 * @param companyId the company id
+	 * @param employmentCode the employment code
+	 * @param year the List<year>
+	 * @return the List
+	 */
+	List<EmploymentMonthDaySetting> findByYears(CompanyId companyId, String employmentCode, List<Year> year);
+	
 	/**
 	 * Find all emp register.
 	 *

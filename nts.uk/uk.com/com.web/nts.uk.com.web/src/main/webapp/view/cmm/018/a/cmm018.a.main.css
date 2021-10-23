@@ -25,8 +25,6 @@
 
 #left-contents {
 	width: 260px;
-	margin-bottom: 20px;
-	/* height: 606px; */
 }
 
 .contents-header td {
@@ -172,8 +170,13 @@ table#grid_matome_headers_fixed thead tr th{
 .jinji_right1{
 	
 }
+
 .sidebar-content {
     overflow: unset !important;
+}
+
+.master-content {
+	overflow: auto !important;
 }
 
 #grid_matomeB_virtualContainer {
@@ -295,3 +298,4 @@ table#grid_matomeF_headers_fixed thead tr th{
 	margin-left: 20px;
 	display: table;
 }
+

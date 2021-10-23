@@ -26,6 +26,6 @@ public class WorkContentCommand {
 		return WorkContent.create(null,
 				Optional.of(WorkGroup.create(this.work.getWorkCD1(), this.work.getWorkCD2(),
 						this.work.getWorkCD3(), this.work.getWorkCD4(), this.work.getWorkCD5())),
-				Optional.empty(), Optional.empty());
+				Optional.empty());
 	}
 }

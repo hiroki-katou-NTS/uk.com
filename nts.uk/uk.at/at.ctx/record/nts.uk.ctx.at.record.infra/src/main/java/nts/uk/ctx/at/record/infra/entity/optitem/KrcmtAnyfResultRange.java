@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.infra.entity.optitem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -14,8 +15,9 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.infra.repository.optitem.JpaCalcResultRangeGetMemento;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.*;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -41,30 +43,6 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	/** The lower limit atr. */
 	@Column(name = "LOWER_LIMIT_ATR")
 	private int lowerLimitAtr;
-
-//	/** The upper time range. */
-//	@Column(name = "UPPER_TIME_RANGE")
-//	private Integer upperTimeRange;
-//
-//	/** The lower time range. */
-//	@Column(name = "LOWER_TIME_RANGE")
-//	private Integer lowerTimeRange;
-//
-//	/** The upper number range. */
-//	@Column(name = "UPPER_NUMBER_RANGE")
-//	private Double upperNumberRange;
-//
-//	/** The lower number range. */
-//	@Column(name = "LOWER_NUMBER_RANGE")
-//	private Double lowerNumberRange;
-//
-//	/** The upper amount range. */
-//	@Column(name = "UPPER_AMOUNT_RANGE")
-//	private Integer upperAmountRange;
-//
-//	/** The lower amount range. */
-//	@Column(name = "LOWER_AMOUNT_RANGE")
-//	private Integer lowerAmountRange;
 	
 	@Column(name = "UPPER_DAY_TIME_RANGE")
 	private Integer upperDayTimeRange;
@@ -101,6 +79,15 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	
 	@Column(name = "LOWER_MON_AMOUNT_RANGE")
 	private Integer lowerMonAmountRange;
+
+	@Column(name = "INPUT_UNIT_TIME")
+	private Integer timeItemInputUnit;
+
+	@Column(name = "INPUT_UNIT_NUMBER")
+	private Integer numberItemInputUnit;
+
+	@Column(name = "INPUT_UNIT_AMOUNT")
+	private Integer amountItemInputUnit;
 
 	/**
 	 * Instantiates a new krcst calc result range.
@@ -161,5 +148,15 @@ public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Seriali
 	
 	public CalcResultRange toDomain() {
 	    return new CalcResultRange(new JpaCalcResultRangeGetMemento(this));
+	}
+
+	public Optional<DailyResultInputUnit> getDailyInputUnit() {
+		if (this.timeItemInputUnit == null && this.numberItemInputUnit == null && this.amountItemInputUnit == null)
+			return Optional.empty();
+		return Optional.of(new DailyResultInputUnit(
+				Optional.ofNullable(timeItemInputUnit == null ? null : EnumAdaptor.valueOf(timeItemInputUnit, TimeItemInputUnit.class)),
+				Optional.ofNullable(numberItemInputUnit == null ? null : EnumAdaptor.valueOf(numberItemInputUnit, NumberItemInputUnit.class)),
+				Optional.ofNullable(amountItemInputUnit == null ? null : EnumAdaptor.valueOf(amountItemInputUnit, AmountItemInputUnit.class))
+		));
 	}
 }

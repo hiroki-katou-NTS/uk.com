@@ -104,7 +104,7 @@ public class Helper {
 		}
 	}
 	
-	static void processConstraints(Class<?> pvClass, BiConsumer<String, String> action){
+	public static void processConstraints(Class<?> pvClass, BiConsumer<String, String> action){
 		annotationsStream(pvClass)
 		.map(a -> a.toString())
 		.filter(r -> r.contains(PrimitiveValueConstraintPackage.NAME) || r.contains("nts.uk.shr.com.primitive"))

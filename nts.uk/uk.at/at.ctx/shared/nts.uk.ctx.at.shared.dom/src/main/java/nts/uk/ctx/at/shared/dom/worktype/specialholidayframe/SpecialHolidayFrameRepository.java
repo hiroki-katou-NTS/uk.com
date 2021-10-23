@@ -43,4 +43,6 @@ public interface SpecialHolidayFrameRepository {
 	void update(SpecialHolidayFrame specialHolidayFrame);
 	
 	List<SpecialHolidayFrame> findByCompanyIdAndUseCls(String companyId, int useCls);
+	
+	List<SpecialHolidayFrame> findDataDisplay(String companyId , int useAtr,int timeMngAtr );
 }

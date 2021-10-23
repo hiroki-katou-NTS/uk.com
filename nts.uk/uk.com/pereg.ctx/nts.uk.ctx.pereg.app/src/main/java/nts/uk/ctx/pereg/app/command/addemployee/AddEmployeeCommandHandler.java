@@ -38,11 +38,13 @@ import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.pereg.dom.person.info.item.PersonInfoItemDefinitionSimple;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUserRepository;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
+import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
@@ -52,7 +54,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.ItemValueType;
-import nts.uk.shr.pereg.app.command.ItemsByCategory;
+import nts.uk.shr.pereg.app.command.ItemsByCategory; 
 
 /**
  * @author sonnlb
@@ -77,6 +79,8 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 	private EmpRegHistoryRepository empHisRepo;
 	@Inject
 	private PerInfoCategoryRepositoty cateRepo;
+	@Inject
+	private LoginPasswordOfUserRepository loginPasswordOfUserRepo;
 
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070");
@@ -700,12 +704,11 @@ public class AddEmployeeCommandHandler extends CommandHandlerWithResult<AddEmplo
 
 	private void addNewUser(String personId, AddEmployeeCommand command, String userId) {
 		// add new user
-		String passwordHash = PasswordHash.generate(command.getPassword(), userId);
-		User newUser = User.createFromJavatype(userId, false, passwordHash, command.getLoginId(),
-				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "", command.getEmployeeName(), personId, 1);
-
+		User newUser = User.createFromJavatype(userId, false, command.getLoginId(),
+				AppContexts.user().contractCode(), GeneralDate.max(), 0, 0, "", command.getEmployeeName(), personId);
 		this.userRepository.addNewUser(newUser);
-
+		val newUserPassword = LoginPasswordOfUser.initialPassword(userId, command.getPassword());
+		this.loginPasswordOfUserRepo.save(newUserPassword);
 	}
 
 	private void addAvatar(String personId, String avatarOrgId, String avatarCropedId) {

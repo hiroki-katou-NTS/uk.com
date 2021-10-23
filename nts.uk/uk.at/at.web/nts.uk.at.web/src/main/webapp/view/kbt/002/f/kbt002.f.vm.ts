@@ -10,7 +10,7 @@ module nts.uk.at.view.kbt002.f {
     changeSetting: 'at/function/processexec/changeSetting',
   };
 
-  const DATETIME_FORMAT = 'YYYY/MM/DD HH:mm:ss';
+  const DATETIME_FORMAT = 'YY/M/D HH:mm:ss';
   const DOM_DATA_VALUE = 'data-value';
   const SELECTED_CLASS = "selected";
 
@@ -98,7 +98,7 @@ module nts.uk.at.view.kbt002.f {
       vm.$nextTick(() => {
         vm.$grid.ntsGrid({
           name: '#[KBT002_126]',
-          width: "1200px",
+          width: "1245px",
           height: "450px",
           dataSource: vm.dataSourceModel(),
           primaryKey: 'execItemCd',
@@ -109,7 +109,7 @@ module nts.uk.at.view.kbt002.f {
               key: 'execItem',
               width: 150,
               formatter: (value: string, record: ExecutionItemInfomationModel) => {
-                return `<span style="white-space: nowrap;">${_.escape(value)}</span>`;
+                return `<span class="limited-label" style="white-space: nowrap;">${_.escape(value)}</span>`;
               }
             },
             {
@@ -118,18 +118,18 @@ module nts.uk.at.view.kbt002.f {
               width: 30,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 if (value === 0) {
-                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_314")}" tabindex="4"></i></div>`;
+                  return `<div class="cell-center"><i class="icon-warning" data-bind="ntsIcon: { no: 228, width: 20, height: 20 }" title="${vm.$i18n("KBT002_314")}" tabindex="4"></i></div>`;
                 } else if (value === 1) {
-                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_315")}" tabindex="4"></i></div>`;
+                  return `<div class="cell-center"><i class="icon-warning" data-bind="ntsIcon: { no: 228, width: 20, height: 20 }" title="${vm.$i18n("KBT002_315")}" tabindex="4"></i></div>`;
                 } else {
-                  return '';
+                  return `<div class="cell-center"><i class="icon-warning"></i></div>`;
                 }
               }
             },
             {
               headerText: vm.$i18n("KBT002_121"),
               key: 'execStatus',
-              width: 80,
+              width: 70,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 if (value === 0) {
                   // 現在の実行状態 = 実行中
@@ -146,39 +146,13 @@ module nts.uk.at.view.kbt002.f {
                 }
               }
             },
-            {
-              headerText: vm.$i18n("KBT002_257"),
-              key: 'execItemCd',
-              width: 70,
-              formatter: (value: number, record: ExecutionItemInfomationModel) => {
-                const enabled: boolean = (record.execStatus === 1 || record.execStatus === 2);
-                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": 5, "disabled": !enabled });
-                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
-                $button.append(`<i class="img-icon icon-start"></i>${vm.$i18n('KBT002_262')}`);
-                return $button[0].outerHTML;
-              }
-            },
-            {
-              headerText: vm.$i18n("KBT002_258"),
-              key: 'execItemCd',
-              width: 70,
-              formatter: (value: number, record: ExecutionItemInfomationModel) => {
-                const enabled: boolean = (record.execStatus === 0);
-                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": 6, "disabled": !enabled });
-                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
-                $button.append(`<i class="img-icon icon-stop"></i>${vm.$i18n('KBT002_133')}`);
-                return $button[0].outerHTML;
-              }
-            },
-            { headerText: vm.$i18n("KBT002_131"), key: 'nextExecDate', width: 180, formatter: _.escape },
-            { headerText: vm.$i18n("KBT002_259"), key: 'isTaskExecution', width: 100, ntsControl: 'Switch' },
-            { headerText: vm.$i18n("KBT002_260"), key: 'lastStartDateTime', width: 180, formatter: _.escape },
-            { headerText: vm.$i18n("KBT002_261"), key: 'lastEndDateTime', width: 180, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_260"), key: 'lastStartDateTime', width: 150, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_261"), key: 'lastEndDateTime', width: 150, formatter: _.escape },
             { headerText: vm.$i18n("KBT002_204"), key: 'processingTime', width: 80, formatter: _.escape },
             {
               headerText: vm.$i18n("KBT002_143"),
               key: 'overallStatus',
-              width: 80,
+              width: 100,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 if (value === 0) {
                   // 全体の終了状態 = 未実施
@@ -206,11 +180,37 @@ module nts.uk.at.view.kbt002.f {
               width: 50,
               formatter: (value: any, record: ExecutionItemInfomationModel) => {
                 const enabled = (record.execStatus === 1 || record.execStatus === 2) && (record.overallStatus !== 0 && record.overallStatus !== 3);
-                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": 8, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
+                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": 5, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 return $button[0].outerHTML;
               }
             },
+            { headerText: vm.$i18n("KBT002_131"), key: 'nextExecDate', width: 150, formatter: _.escape },
+            {
+              headerText: vm.$i18n("KBT002_257"),
+              key: 'execItemCd',
+              width: 70,
+              formatter: (value: number, record: ExecutionItemInfomationModel) => {
+                const enabled: boolean = (record.execStatus === 1 || record.execStatus === 2);
+                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": 6, "disabled": !enabled });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
+                $button.append(`<i class="img-icon icon-start" data-bind="ntsIcon: { no: 226, width: 25, height: 25 }"></i>${vm.$i18n('KBT002_262')}`);
+                return $button[0].outerHTML;
+              }
+            },
+            {
+              headerText: vm.$i18n("KBT002_258"),
+              key: 'execItemCd',
+              width: 70,
+              formatter: (value: number, record: ExecutionItemInfomationModel) => {
+                const enabled: boolean = (record.execStatus === 0);
+                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": 7, "disabled": !enabled });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
+                $button.append(`<i class="img-icon icon-stop" data-bind="ntsIcon: { no: 227, width: 25, height: 25 }"></i>${vm.$i18n('KBT002_133')}`);
+                return $button[0].outerHTML;
+              }
+            },
+            { headerText: vm.$i18n("KBT002_259"), key: 'isTaskExecution', width: 100, ntsControl: 'Switch' },
             {
               headerText: vm.$i18n("KBT002_147"),
               key: 'execItemCd',
@@ -252,13 +252,21 @@ module nts.uk.at.view.kbt002.f {
           _.forEach(vm.dataSource(), item => {
             const $switch = $(`.nts-grid-control-isTaskExecution-${nts.uk.text.padLeft(item.execItemCd, '0', 2)}`);
             // Add tabindex for switch
-            $switch.attr("tabindex", "7");
+            $switch.find("button:first-child()").attr("tabindex", "8");
             // Disable F3_7
             if (!item.executionTaskSetting) {
               $switch.find("button").attr("disabled", "disabled");
               $switch.attr("tabindex", "-1");
             }
+
+            
           });
+          // Force rebind
+          for (var i = 0; i < vm.dataSource().length; i++) {
+            ko.applyBindings(vm, $("#F2_1 .icon-warning")[i]);
+            ko.applyBindings(vm, $("#F2_1 .icon-start")[i]);
+            ko.applyBindings(vm, $("#F2_1 .icon-stop")[i]);
+          }
           vm.$grid.igGrid("virtualScrollTo", index);
         });
       });
@@ -291,6 +299,8 @@ module nts.uk.at.view.kbt002.f {
 
     private repeatCheckAsyncResult(taskId: any, selectedItem: any) {
       const vm = this;
+      // Wait for maximum 3 sec
+      var delay = 3;
       return nts.uk.deferred.repeat(conf => conf
         .task(() => {
           return (nts.uk.request as any).asyncTask.getInfo(taskId)
@@ -323,7 +333,16 @@ module nts.uk.at.view.kbt002.f {
             })
             .fail((err: any) => vm.$dialog.error({ messageId: err.messageId }));
         })
-        .while(infor => infor.pending || infor.running)
+        .while(() => {
+          if (!vm.isOnceCurrentStatus() || !vm.isOnceMessage101() || !vm.isOnceInterupt()) {
+            vm.isOnceCurrentStatus(true);
+            vm.isOnceMessage101(true);
+            vm.isOnceInterupt(true);
+            return false;
+          } else {
+            return delay-- > 0;
+          }
+        })
         .pause(1000));
     }
 
@@ -426,7 +445,7 @@ module nts.uk.at.view.kbt002.f {
               vm.$ajax(API.changeSetting, command)
                 .then((res) => {
                   selectedItem.executionTaskSetting = res;
-                  vm.rebind(selectedItem);
+                  vm.getExecItemInfo(res.execItemCd);
                 })
                 .fail((err) => {
                   vm.revertSwitch($item, selectedItem);
@@ -469,17 +488,6 @@ module nts.uk.at.view.kbt002.f {
           // bussiness logic after modal closed
           vm.$blockui('clear');
         });
-    }
-
-    private rebind(dataToReplace: any) {
-      const vm = this;
-      const data = _.find(vm.dataSourceModel(), { execItemCd: dataToReplace.execItemCd });
-      const index = vm.dataSourceModel().indexOf(data);
-      data.isTaskExecution = dataToReplace.executionTaskSetting.enabledSetting;
-      data.nextExecDate = dataToReplace.executionTaskSetting.nextExecDateTime ? 
-                          moment.utc(dataToReplace.executionTaskSetting.nextExecDateTime).format(DATETIME_FORMAT) : 
-                          vm.$i18n('KBT002_165');
-      vm.initGridList(index);
     }
   }
 

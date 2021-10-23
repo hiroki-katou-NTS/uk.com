@@ -22,19 +22,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 @Getter
 public class ManageCalcStateAndResult {
 
-	//計算処理が実行された
-	boolean isCalc;
-	
 	@Setter
 	IntegrationOfDaily integrationOfDaily;
 	
 	/**
-	 * @param isCalc 計算したかどうかのboolean true = 計算できた。
 	 * Constructor 
 	 */
-	private ManageCalcStateAndResult(boolean isCalc, IntegrationOfDaily integrationOfDaily) {
+	private ManageCalcStateAndResult(IntegrationOfDaily integrationOfDaily) {
 		super();
-		this.isCalc = isCalc;
 		this.integrationOfDaily = integrationOfDaily;
 	}
 	
@@ -44,7 +39,7 @@ public class ManageCalcStateAndResult {
 	 * @return
 	 */
 	public static ManageCalcStateAndResult successCalc(IntegrationOfDaily integrationOfDaily) {
-		return new ManageCalcStateAndResult(true, integrationOfDaily);
+		return new ManageCalcStateAndResult(integrationOfDaily);
 	}
 
 	/**
@@ -54,7 +49,7 @@ public class ManageCalcStateAndResult {
 	 * @return 計算結果管理
 	 */
 	public static ManageCalcStateAndResult failCalc(IntegrationOfDaily integrationOfDaily, AttendanceItemConvertFactory attendanceItemConvertFactory) {
-		return ManageCalcStateAndResult.noCalcProc(false, integrationOfDaily, attendanceItemConvertFactory);
+		return ManageCalcStateAndResult.noCalcProc(integrationOfDaily, attendanceItemConvertFactory);
 	}
 
 	/**
@@ -64,17 +59,16 @@ public class ManageCalcStateAndResult {
 	 * @return 計算結果管理
 	 */
 	public static ManageCalcStateAndResult successCalcForNoCalc(IntegrationOfDaily integrationOfDaily, AttendanceItemConvertFactory attendanceItemConvertFactory) {
-		return ManageCalcStateAndResult.noCalcProc(true, integrationOfDaily, attendanceItemConvertFactory);
+		return ManageCalcStateAndResult.noCalcProc(integrationOfDaily, attendanceItemConvertFactory);
 	}
 	
 	/**
 	 * 計算処理をしなかったときのConstructor
-	 * @param isCalc 計算処理が実行された
 	 * @param integrationOfDaily 日別実績work
 	 * @param attendanceItemConvertFactory 勤怠項目コンバータ作成I/F
 	 * @return 計算結果管理
 	 */
-	public static ManageCalcStateAndResult noCalcProc(boolean isCalc, IntegrationOfDaily integrationOfDaily, AttendanceItemConvertFactory attendanceItemConvertFactory) {
+	public static ManageCalcStateAndResult noCalcProc(IntegrationOfDaily integrationOfDaily, AttendanceItemConvertFactory attendanceItemConvertFactory) {
 
 		// // 編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
@@ -104,6 +98,6 @@ public class ManageCalcStateAndResult {
 			integrationOfDaily = recordAllZeroValueIntegration;
 		}
 		
-		return new ManageCalcStateAndResult(isCalc, integrationOfDaily);
+		return new ManageCalcStateAndResult(integrationOfDaily);
 	}	
 }

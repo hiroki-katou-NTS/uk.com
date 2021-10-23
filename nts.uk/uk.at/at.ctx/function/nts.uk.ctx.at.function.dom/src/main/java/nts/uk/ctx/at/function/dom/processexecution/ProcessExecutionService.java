@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.task.schedule.cron.CronSchedule;
 import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDateTime;
@@ -57,4 +61,23 @@ public interface ProcessExecutionService {
 	UkJobScheduleOptions buildScheduleOptions(Class<? extends UkScheduledJob> job, CronType cronType, CronSchedule cron,
 			ScheduledJobUserData userData, ExecutionTaskSetting execTaskSetting);
 
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理自動実行ログ履歴.次回実行日時を過ぎているか.次回実行日時を過ぎているか
+	 * @param cid
+	 * @param execItemCd
+	 * @return
+	 */
+	NextExecutionDateTimeDto isPassNextExecutionDateTime(String cid, String execItemCd);
+	
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public class NextExecutionDateTimeDto {
+		
+		// Optional<次回実行日時>
+		private Optional<GeneralDateTime> nextExecDateTime = Optional.empty();
+		
+		// 判定結果
+		private boolean isPassNextExecDateTime = false;
+	}
 }

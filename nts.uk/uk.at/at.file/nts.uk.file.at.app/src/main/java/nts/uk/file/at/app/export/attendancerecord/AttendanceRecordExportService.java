@@ -762,7 +762,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							dailyData.setSecondCol(flag <= 15 ? false : true);
 							dailyDataList.add(dailyData);
 							// Check end of week
-							if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+							DayOfWeek endOfWeek = optionalAttendanceRecExpSet.get().getStartOfWeek().calculateJavatypeEndOfWeek();
+							if (startDateByClosure.localDate().getDayOfWeek().equals(endOfWeek)) {
 								AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
 								// Set weekly data
 								weeklyData.setDailyDatas(dailyDataList);
@@ -1003,14 +1004,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 																				.filter(e -> e.getEmployeeId().equals(employee.getEmployeeId()))
 																				.findFirst().get();
 		
-							attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentCode() + " "
+							attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentCode() + "　"
 									+ result.getEmployment().getEmploymentName().toString());
 							attendanceRecRepEmpData
-									.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
+									.setInvidual(employee.getEmployeeCode().trim() + "　" + employee.getEmployeeName().trim());
 							attendanceRecRepEmpData.setTitle(result.getPosition() == null ? ""
-									: result.getPosition().getPositionCode() + " " + result.getPosition().getPositionName().toString());
+									: result.getPosition().getPositionCode() + "　" + result.getPosition().getPositionName().toString());
 							attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
-									: result.getWorkplace().getWorkplaceCode().toString() + " "
+									: result.getWorkplace().getWorkplaceCode().toString() + "　"
 											+ result.getWorkplace().getWorkplaceName().toString());
 							attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
 									: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
@@ -1222,8 +1223,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 * @return the code from invidual
 	 */
 	String getCodeFromInvidual(String invidual) {
-		int index = invidual.indexOf(" ");
-		return invidual.substring(0, index + 1).trim();
+		int index = invidual.indexOf("　");
+		return invidual.substring(0, index).trim();
 	}
 
 	/**
@@ -1613,7 +1614,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			if (isDaily) {
 				minuteInt *= -1;
 			}
-			Integer hourInt = minuteInt / 60;
+			Integer hourInt = 24 - minuteInt / 60;
 			minuteInt = minuteInt % 60;
 			return isDaily ? ("前日 " + String.format(FORMAT, hourInt, minuteInt)) : String.format(FORMAT, hourInt, minuteInt);
 		} else {

@@ -8,7 +8,9 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 受入条件設定（定型）: 主キー情報
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Embeddable
+@Setter
+@Getter
 public class OiomtStdAcceptCondSetPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -26,13 +30,6 @@ public class OiomtStdAcceptCondSetPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String cid;
-
-	/**
-	 * システム種類
-	 */
-	@Basic(optional = false)
-	@Column(name = "SYSTEM_TYPE")
-	public int systemType;
 
 	/**
 	 * 外部受入条件コード

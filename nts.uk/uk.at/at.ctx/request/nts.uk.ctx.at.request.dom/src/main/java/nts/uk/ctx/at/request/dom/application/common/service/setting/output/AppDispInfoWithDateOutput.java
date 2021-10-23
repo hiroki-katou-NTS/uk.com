@@ -8,7 +8,6 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
@@ -69,7 +68,7 @@ public class AppDispInfoWithDateOutput {
 	 * 承認ルートエラー情報
 	 */
 	@Setter
-	private Optional<ErrorFlagImport> opErrorFlag;
+	private Optional<List<MsgErrorOutput>> opMsgErrorLst;
 	
 	/**
 	 * 表示する実績内容
@@ -108,7 +107,7 @@ public class AppDispInfoWithDateOutput {
 		this.appDeadlineUseCategory = appDeadlineUseCategory;
 		this.opEmploymentSet = Optional.empty();
 		this.opListApprovalPhaseState = Optional.empty();
-		this.opErrorFlag = Optional.empty();
+		this.opMsgErrorLst = Optional.empty();
 		this.opActualContentDisplayLst = Optional.empty();
 		this.opPreAppContentDisplayLst = Optional.empty();
 		this.opAppDeadline = Optional.empty();

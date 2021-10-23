@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 670, height: 530 };</script>
+			<script>var dialogSize = { width: 670, height: 610 };</script>
 			<com:ValidatorScript> 
 	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataFormatNullReplacement
 	            nts.uk.ctx.exio.dom.exo.dataformat.init.DataTypeFixedValue
@@ -25,7 +25,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents"
+			<div id="contents-area" class="dialog-contents"
 				data-bind="with: numberDataFormatSetting ">
 				<!--  I1:  タイトル  -->
 				<div id="I1" class="label label-big dialog-title">#{i18n.getText('CMF002_137')}</div>

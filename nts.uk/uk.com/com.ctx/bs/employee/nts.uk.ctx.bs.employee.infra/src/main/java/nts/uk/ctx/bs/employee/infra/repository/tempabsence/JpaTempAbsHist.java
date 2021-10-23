@@ -386,11 +386,12 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 	@Override
 	public void addAll(Map<String, DateHistoryItem> dateHistItemsMap) {
 		String cid = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
 		String INS_SQL = "INSERT INTO BSYMT_TEMP_ABS_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
-				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," + " HIST_ID, CID, SID," + " START_DATE, END_DATE)"
+				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," + " HIST_ID, CONTRACT_CD, CID, SID," + " START_DATE, END_DATE)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, CID_VAL, SID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+				+ " HIST_ID_VAL, CONTRACT_CD_VAL, CID_VAL, SID_VAL, START_DATE_VAL, END_DATE_VAL); ";
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -413,6 +414,7 @@ public class JpaTempAbsHist extends JpaRepository implements TempAbsHistReposito
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
 			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("CID_VAL", "'" + cid + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getKey() + "'");
 			sql = sql.replace("START_DATE_VAL", "'" + dateHistItem.start() + "'");

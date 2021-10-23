@@ -26,14 +26,14 @@ public class CreateAttendanceTimeZoneHelper {
 		return OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(1),
 				WorkContent.create(WorkplaceOfWorkEachOuen
 						.create(new nts.uk.ctx.at.shared.dom.common.WorkplaceId("DUMMY"), new WorkLocationCD("DUMMY")),
-						Optional.empty(), Optional.empty()),
+					Optional.empty(), Optional.empty()),
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(
 								new ReasonTimeChange(EnumAdaptor.valueOf(0, TimeChangeMeans.class), Optional.empty()),
 								new TimeWithDayAttr(100))),
 						Optional.of(new WorkTimeInformation(
 								new ReasonTimeChange(EnumAdaptor.valueOf(0, TimeChangeMeans.class), Optional.empty()),
-								new TimeWithDayAttr(1000)))));
+								new TimeWithDayAttr(1000)))), Optional.empty());
 	}
 
 }

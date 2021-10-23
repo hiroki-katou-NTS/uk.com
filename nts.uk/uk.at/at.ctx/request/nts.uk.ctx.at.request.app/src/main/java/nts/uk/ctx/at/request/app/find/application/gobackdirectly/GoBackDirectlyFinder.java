@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +108,7 @@ public class GoBackDirectlyFinder {
 				goBackDirectService.getDateChangeAlgorithm(
 						companyId,
 						paramStart.getAppDates().stream().map(item -> GeneralDate.fromString(item, "yyyy/MM/dd")).collect(Collectors.toList()),
-						paramStart.getEmployeeIds(),
+						CollectionUtil.isEmpty(paramStart.getEmployeeIds()) ? Arrays.asList(AppContexts.user().employeeId()) : paramStart.getEmployeeIds(),
 						paramStart.getInforGoBackCommonDirectDto().toDomain())
 				);
 	}

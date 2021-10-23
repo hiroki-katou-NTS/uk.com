@@ -6,9 +6,9 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDetailOutput;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
@@ -80,7 +80,7 @@ public interface AppWorkChangeService {
 	 * @param appWorkChange 勤務変更申請
 	 * @return
 	 */
-	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, ErrorFlagImport errorFlag, Application application, AppWorkChange appWorkChange, AppDispInfoStartupOutput appDispInfoStartupOutput);
+	public WorkChangeCheckRegOutput checkBeforeRegister(String companyID, List<MsgErrorOutput> msgErrorLst, Application application, AppWorkChange appWorkChange, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 登録時チェック処理（勤務変更申請）
@@ -167,5 +167,6 @@ public interface AppWorkChangeService {
 	 * @param opErrorFlag
 	 * @return
 	 */
-	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, ErrorFlagImport opErrorFlag, AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo);
+	public WorkChangeCheckRegOutput checkBeforeRegister(Boolean mode, String companyId, Application application, AppWorkChange appWorkChange, List<MsgErrorOutput> msgErrorLst, 
+			AppDispInfoStartupOutput appDispInfoStartupOutput, AppWorkChangeDispInfo appWorkChangeDispInfo);
 }

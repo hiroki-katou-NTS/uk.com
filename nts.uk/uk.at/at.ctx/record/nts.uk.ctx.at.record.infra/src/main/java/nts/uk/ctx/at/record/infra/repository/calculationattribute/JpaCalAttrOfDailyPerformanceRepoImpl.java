@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -32,17 +31,9 @@ import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstDaiCalc
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetFlex;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetHdWork;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetOverTime;
-import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -55,78 +46,36 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				.find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcdtDayInfoCalc.class).orElse(null);
 		if (calc != null) {
 			//1
-//			KrcmtCalcSetFlex flexCalc = this.queryProxy()
-//					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcmtCalcSetFlex.class).orElse(null);
 			String sql1 = "select * from KRCMT_CALC_SET_FLEX "
 					+ " where FLEX_EXCESS_TIME_ID = ?";
 			Optional<KrcmtCalcSetFlex> flexCalc= Optional.empty();
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql1)) {
 				stmt.setString(1 , StringUtils.rightPad(calc.flexExcessTimeId, 36));
-				flexCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
-					KrcmtCalcSetFlex ent = new KrcmtCalcSetFlex(
-							rec.getString("FLEX_EXCESS_TIME_ID"),
-							rec.getInt("FLEX_EXCESS_TIME_CAL_ATR"),
-							rec.getInt("FLEX_EXCESS_LIMIT_SET")
-							);
-					return ent;
-				});
-				
+				flexCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> KrcmtCalcSetFlex.MAPPER.toEntity(rec));
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
 			//2
-//			KrcmtCalcSetHdWork holidayCalc = this.queryProxy()
-//					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcmtCalcSetHdWork.class).orElse(null);
 			String sql2 = "select * from KRCMT_CALC_SET_HD_WORK "
 					+ " where HOL_WORK_TIME_ID = ?";
 			Optional<KrcmtCalcSetHdWork> holidayCalc= Optional.empty();
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql2)) {
 				stmt.setString(1 , StringUtils.rightPad(calc.holWorkTimeId, 36));
-				holidayCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
-					KrcmtCalcSetHdWork ent = new KrcmtCalcSetHdWork(
-							rec.getString("HOL_WORK_TIME_ID"),
-							rec.getInt("HOL_WORK_TIME_CAL_ATR"),
-							rec.getInt("HOL_WORK_TIME_LIMIT_SET"),
-							rec.getInt("LATE_NIGHT_TIME_CAL_ATR"),
-							rec.getInt("LATE_NIGHT_TIME_LIMIT_SET")
-							);
-					return ent;
-				});
-				
+				holidayCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> KrcmtCalcSetHdWork.MAPPER.toEntity(rec));
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
 			//3
-//			KrcmtCalcSetOverTime overtimeCalc = this.queryProxy()
-//					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcmtCalcSetOverTime.class).orElse(null);
 			String sql3 = "select * from KRCMT_CALC_SET_OVER_TIME "
 					+ " where OVER_TIME_WORK_ID = ?";
 			Optional<KrcmtCalcSetOverTime> overtimeCalc= Optional.empty();
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql3)) {
 				stmt.setString(1 , StringUtils.rightPad(calc.overTimeWorkId, 36));
-				overtimeCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
-					KrcmtCalcSetOverTime ent = new KrcmtCalcSetOverTime(
-							rec.getString("OVER_TIME_WORK_ID"),
-							rec.getInt("EARLY_OVER_TIME_CAL_ATR"),
-							rec.getInt("EARLY_OVER_TIME_LIMIT_SET"),
-							rec.getInt("EARLY_MID_OT_CAL_ATR"),
-							rec.getInt("EARLY_MID_OT_LIMIT_SET"),
-							rec.getInt("NORMAL_OVER_TIME_CAL_ATR"),
-							rec.getInt("NORMAL_OVER_TIME_LIMIT_SET"),
-							rec.getInt("NORMAL_MID_OT_CAL_ATR"),
-							rec.getInt("NORMAL_MID_OT_LIMIT_SET"),
-							rec.getInt("LEGAL_OVER_TIME_CAL_ATR"),
-							rec.getInt("LEGAL_OVER_TIME_LIMIT_SET"),
-							rec.getInt("LEGAL_MID_OT_CAL_ATR"),
-							rec.getInt("LEGAL_MID_OT_LIMIT_SET")
-							);
-					return ent;
-				});
-				
+				overtimeCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> KrcmtCalcSetOverTime.MAPPER.toEntity(rec));
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
-			return toDomain(calc, flexCalc.get(), holidayCalc.get(), overtimeCalc.get());
+			return calc.toDomain(flexCalc.get(), holidayCalc.get(), overtimeCalc.get());
 		}
 		return null;
 	}
@@ -154,8 +103,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				calc.divergenceTime = domain.getCalcategory().getDivergenceTime().getDivergenceTime().value;
 			}
 			if (domain.getCalcategory().getLeaveEarlySetting() != null) {
-				calc.leaveEarlySet = domain.getCalcategory().getLeaveEarlySetting().isLate() ? 1 : 0;
-				calc.leaveLateSet = domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+				calc.leaveEarlySet = domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+				calc.leaveLateSet = domain.getCalcategory().getLeaveEarlySetting().isLate() ? 1 : 0;
 			}
 			setFlexCalcSetting(domain.getCalcategory().getFlexExcessTime().getFlexOtTime(), flexCalc);
 			setHolidayCalcSetting(domain.getCalcategory().getHolidayTimeSetting(), holidayCalc);
@@ -170,36 +119,14 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void add(CalAttrOfDailyPerformance domain) {
-		KrcmtCalcSetFlex flexCalc = new KrcmtCalcSetFlex(IdentifierUtil.randomUniqueId());
-		setFlexCalcSetting(domain.getCalcategory().getFlexExcessTime().getFlexOtTime(), flexCalc);
-
-		KrcmtCalcSetHdWork holidayCalc = new KrcmtCalcSetHdWork(IdentifierUtil.randomUniqueId());
-		setHolidayCalcSetting(domain.getCalcategory().getHolidayTimeSetting(), holidayCalc);
-
-		KrcmtCalcSetOverTime overtimeCalc = new KrcmtCalcSetOverTime(IdentifierUtil.randomUniqueId());
-		setOvertimeCalcSetting(domain.getCalcategory().getOvertimeSetting(), overtimeCalc);
-
-		KrcdtDayInfoCalc calcSet = new KrcdtDayInfoCalc(
-				new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()));
-		if (domain.getCalcategory().getRasingSalarySetting() != null) {
-			calcSet.bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
-			calcSet.bonusPaySpeCalSet = domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
-		}
-		if (domain.getCalcategory().getDivergenceTime() != null) {
-			calcSet.divergenceTime = domain.getCalcategory().getDivergenceTime().getDivergenceTime().value;
-		}
-		if (domain.getCalcategory().getLeaveEarlySetting() != null) {
-			calcSet.leaveEarlySet = domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
-			calcSet.leaveLateSet = domain.getCalcategory().getLeaveEarlySetting().isLate() ? 1 : 0;
-		}
-		calcSet.overTimeWorkId = overtimeCalc.overTimeWorkId;
-		calcSet.flexExcessTimeId = flexCalc.flexExcessTimeId;
-		calcSet.holWorkTimeId = holidayCalc.holWorkTimeId;
+		KrcmtCalcSetFlex flexCalc = KrcmtCalcSetFlex.toEntity(domain.getCalcategory().getFlexExcessTime(), IdentifierUtil.randomUniqueId());
+		KrcmtCalcSetHdWork holidayCalc = KrcmtCalcSetHdWork.toEntity(domain.getCalcategory().getHolidayTimeSetting(), IdentifierUtil.randomUniqueId());
+		KrcmtCalcSetOverTime overtimeCalc = KrcmtCalcSetOverTime.toEntity(domain.getCalcategory().getOvertimeSetting(), IdentifierUtil.randomUniqueId());
+		KrcdtDayInfoCalc calcSet = KrcdtDayInfoCalc.toEntity(domain, flexCalc.flexExcessTimeId, holidayCalc.holWorkTimeId, overtimeCalc.overTimeWorkId);
 		commandProxy().insert(flexCalc);
 		commandProxy().insert(holidayCalc);
 		commandProxy().insert(overtimeCalc);
 		commandProxy().insert(calcSet);
-//		this.getEntityManager().flush();
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -229,63 +156,12 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			for (int i = 0; i < empIds.size(); i++) {
 				stmt.setString(i + 3, empIds.get(i));
 			}
-			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				return new CalAttrOfDailyPerformance(rec.getString("SID"), 
-						rec.getGeneralDate("YMD"), 
-						new AutoCalFlexOvertimeSetting(new AutoCalSetting(EnumAdaptor.valueOf(rec.getInt("FLEX_EXCESS_LIMIT_SET"), TimeLimitUpperLimitSetting.class), 
-																			EnumAdaptor.valueOf(rec.getInt("FLEX_EXCESS_TIME_CAL_ATR"), AutoCalAtrOvertime.class))), 
-						new AutoCalRaisingSalarySetting(rec.getInt("BONUS_PAY_SPE_CAL_SET") == 1, 
-														rec.getInt("BONUS_PAY_NORMAL_CAL_SET") == 1), 
-						new AutoCalRestTimeSetting(
-								newAutoCalcSetting(rec.getInt("HOL_WORK_TIME_CAL_ATR"), rec.getInt("HOL_WORK_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("LATE_NIGHT_TIME_CAL_ATR"), rec.getInt("LATE_NIGHT_TIME_LIMIT_SET"))), 
-						new AutoCalOvertimeSetting(
-								newAutoCalcSetting(rec.getInt("EARLY_OVER_TIME_CAL_ATR"), rec.getInt("EARLY_OVER_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("EARLY_MID_OT_CAL_ATR"), rec.getInt("EARLY_MID_OT_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("NORMAL_OVER_TIME_CAL_ATR"), rec.getInt("NORMAL_OVER_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("NORMAL_MID_OT_CAL_ATR"), rec.getInt("NORMAL_MID_OT_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("LEGAL_OVER_TIME_CAL_ATR"), rec.getInt("LEGAL_OVER_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("LEGAL_MID_OT_CAL_ATR"), rec.getInt("LEGAL_MID_OT_LIMIT_SET"))), 
-						new AutoCalcOfLeaveEarlySetting(rec.getInt("LEAVE_EARLY_SET") == 1,
-														rec.getInt("LEAVE_LATE_SET")  == 1),
-						new AutoCalcSetOfDivergenceTime(getEnum(rec.getInt("DIVERGENCE_TIME"), DivergenceTimeAttr.class)));
-			});
+			return new NtsResultSet(stmt.executeQuery())
+					.getList(rec -> KrcdtDayInfoCalc.MAPPER.toEntity(rec).toDomain(
+							KrcmtCalcSetFlex.MAPPER.toEntity(rec),
+							KrcmtCalcSetHdWork.MAPPER.toEntity(rec),
+							KrcmtCalcSetOverTime.MAPPER.toEntity(rec)));
 		}
-	}
-
-	private CalAttrOfDailyPerformance toDomain(KrcdtDayInfoCalc calc, KrcmtCalcSetFlex flexCalc,
-			KrcmtCalcSetHdWork holidayCalc, KrcmtCalcSetOverTime overtimeCalc) {
-		AutoCalSetting flex = null;
-		AutoCalRestTimeSetting holiday = null;
-		AutoCalOvertimeSetting overtime = null;
-		if (flexCalc != null) {
-			flex = newAutoCalcSetting(flexCalc.flexExcessTimeCalAtr, flexCalc.flexExcessLimitSet);
-		}
-		if (holidayCalc != null) {
-			holiday = new AutoCalRestTimeSetting(
-					newAutoCalcSetting(holidayCalc.holWorkTimeCalAtr, holidayCalc.holWorkTimeLimitSet),
-					newAutoCalcSetting(holidayCalc.lateNightTimeCalAtr, holidayCalc.lateNightTimeLimitSet));
-		}
-		if (overtimeCalc != null) {
-			overtime = new AutoCalOvertimeSetting(
-					newAutoCalcSetting(overtimeCalc.earlyOverTimeCalAtr, overtimeCalc.earlyOverTimeLimitSet),
-					newAutoCalcSetting(overtimeCalc.earlyMidOtCalAtr, overtimeCalc.earlyMidOtLimitSet),
-					newAutoCalcSetting(overtimeCalc.normalOverTimeCalAtr, overtimeCalc.normalOverTimeLimitSet),
-					newAutoCalcSetting(overtimeCalc.normalMidOtCalAtr, overtimeCalc.normalMidOtLimitSet),
-					newAutoCalcSetting(overtimeCalc.legalOverTimeCalAtr, overtimeCalc.legalOverTimeLimitSet),
-					newAutoCalcSetting(overtimeCalc.legalMidOtCalAtr, overtimeCalc.legalMidOtLimitSet));
-		}
-
-		return new CalAttrOfDailyPerformance(calc.krcstDaiCalculationSetPK.sid, calc.krcstDaiCalculationSetPK.ymd,
-				new AutoCalFlexOvertimeSetting(flex),
-				new AutoCalRaisingSalarySetting(
-						calc.bonusPaySpeCalSet == 1 ? true : false,
-						calc.bonusPayNormalCalSet == 1 ? true : false
-						),
-				holiday, overtime,
-				new AutoCalcOfLeaveEarlySetting(calc.leaveEarlySet == 1 ? true : false,
-						calc.leaveLateSet  == 1 ? true : false),
-				new AutoCalcSetOfDivergenceTime(getEnum(calc.divergenceTime, DivergenceTimeAttr.class)));
 	}
 
 	private void setOvertimeCalcSetting(AutoCalOvertimeSetting domain, KrcmtCalcSetOverTime overtimeCalc) {
@@ -334,15 +210,6 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			holidayCalc.lateNightTimeLimitSet = domain.getLateNightTime() == null ? 0
 					: domain.getLateNightTime().getUpLimitORtSet().value;
 		}
-	}
-
-	private AutoCalSetting newAutoCalcSetting(int calc, int limit) {
-		return new AutoCalSetting(getEnum(limit, TimeLimitUpperLimitSetting.class),
-				getEnum(calc, AutoCalAtrOvertime.class));
-	}
-
-	private <T> T getEnum(int value, Class<T> className) {
-		return EnumAdaptor.valueOf(value, className);
 	}
 
 	@Override
@@ -407,28 +274,11 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 			for (int i = 0; i < dates.size(); i++) {
 				stmt.setDate(1 + i + employeeIds.size(), Date.valueOf(dates.get(i).localDate()));
 			}
-			
-			return new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				return new CalAttrOfDailyPerformance(rec.getString("SID"), 
-						rec.getGeneralDate("YMD"), 
-						new AutoCalFlexOvertimeSetting(new AutoCalSetting(EnumAdaptor.valueOf(rec.getInt("FLEX_EXCESS_LIMIT_SET"), TimeLimitUpperLimitSetting.class), 
-																			EnumAdaptor.valueOf(rec.getInt("FLEX_EXCESS_TIME_CAL_ATR"), AutoCalAtrOvertime.class))), 
-						new AutoCalRaisingSalarySetting(rec.getInt("BONUS_PAY_SPE_CAL_SET") == 1, 
-														rec.getInt("BONUS_PAY_NORMAL_CAL_SET") == 1), 
-						new AutoCalRestTimeSetting(
-								newAutoCalcSetting(rec.getInt("HOL_WORK_TIME_CAL_ATR"), rec.getInt("HOL_WORK_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("LATE_NIGHT_TIME_CAL_ATR"), rec.getInt("LATE_NIGHT_TIME_LIMIT_SET"))), 
-						new AutoCalOvertimeSetting(
-								newAutoCalcSetting(rec.getInt("EARLY_OVER_TIME_CAL_ATR"), rec.getInt("EARLY_OVER_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("EARLY_MID_OT_CAL_ATR"), rec.getInt("EARLY_MID_OT_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("NORMAL_OVER_TIME_CAL_ATR"), rec.getInt("NORMAL_OVER_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("NORMAL_MID_OT_CAL_ATR"), rec.getInt("NORMAL_MID_OT_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("LEGAL_OVER_TIME_CAL_ATR"), rec.getInt("LEGAL_OVER_TIME_LIMIT_SET")),
-								newAutoCalcSetting(rec.getInt("LEGAL_MID_OT_CAL_ATR"), rec.getInt("LEGAL_MID_OT_LIMIT_SET"))), 
-						new AutoCalcOfLeaveEarlySetting(rec.getInt("LEAVE_EARLY_SET") == 1,
-														rec.getInt("LEAVE_LATE_SET")  == 1),
-						new AutoCalcSetOfDivergenceTime(getEnum(rec.getInt("DIVERGENCE_TIME"), DivergenceTimeAttr.class)));
-			});
+			return new NtsResultSet(stmt.executeQuery())
+					.getList(rec -> KrcdtDayInfoCalc.MAPPER.toEntity(rec).toDomain(
+							KrcmtCalcSetFlex.MAPPER.toEntity(rec),
+							KrcmtCalcSetHdWork.MAPPER.toEntity(rec),
+							KrcmtCalcSetOverTime.MAPPER.toEntity(rec)));
 		}
     }
 }
