@@ -204,7 +204,7 @@ public class SupportWorkReflection {
 			eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()), null);
 		}
 
-		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty(), Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = null;
 
