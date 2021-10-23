@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kdw013.query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -31,13 +32,13 @@ public class EstimatedTimeZone {
 
 	// 休憩時間帯
 
-	private List<BreakTimeSheet> breakTimeSheets;
+	private List<BreakTimeSheet> breakTimeSheets = new ArrayList<BreakTimeSheet>();
 
 	// List<計算用時間帯>
 
-	private List<TimezoneUse> timezones;
+	private List<TimezoneUse> timezones = new ArrayList<TimezoneUse>();
 
 	// List<時間帯>
 
-	private List<TimeSpanForCalc> itemSpans;
+	private List<TimeSpanForCalc> itemSpans = new ArrayList<TimeSpanForCalc>();
 }

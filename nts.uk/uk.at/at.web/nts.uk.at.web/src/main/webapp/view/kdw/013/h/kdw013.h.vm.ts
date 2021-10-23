@@ -8,8 +8,8 @@ module nts.uk.at.view.kdw013.h {
 	import getText = nts.uk.resource.getText;
 
 	export module viewmodel {
-		const paths: any = {
-			start: "at/record/stamp/timestampinputsetting/saveStampPage"
+		const paths: any = {			
+			start: "screen/at/kdw013/h/start",
 		}
 		export class ScreenModel {
 			itemId28: ItemValue;
@@ -35,7 +35,8 @@ module nts.uk.at.view.kdw013.h {
 
 			itemOptions: ItemValueOption[] = [];
 
-			params: any;
+			params: Param;
+			dataMaster: DataMaster;
 
 			constructor() {
 				let self = this;
@@ -46,25 +47,50 @@ module nts.uk.at.view.kdw013.h {
 			public startPage(): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
-				/*block.invisible();
-				ajax(paths.getSettingCommonStamp).done(function(data: any) {
-					self.settingsStampUse = data; 
-					if(!data.supportUse){
-						self.optionPopup([{ code: 1, name: getText("KDP010_336")}]);
-					}
-					
-				}).fail(function(res:any) {
-					error({ messageId: res.messageId });
-				}).always(() => {
-					block.clear();
-				});*/
 				self.breakTimeBase.push(this.itemId157_159, this.itemId163_165);
 				self.breakTimeOptions.push(this.itemId169_171, this.itemId181_183,
 											this.itemId187_189, this.itemId193_195,
 											this.itemId199_201, this.itemId205_207,
 											this.itemId205_207, this.itemId211_213);
-				dfd.resolve();
+				block.invisible();
+				let param = attendentItems;
+				param.push(28,29);
+				ajax(paths.start, {itemIds: param}).done(function(data: DataMaster) {
+					self.dataMaster = data;
+					self.setDataMaster();
+					console.log(data);
+					dfd.resolve();					
+				}).fail(function(res:any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
 				return dfd.promise();
+			}
+			
+			setDataMaster(){
+				let self = this;
+				if(self.dataMaster && self.dataMaster.workTypes && self.itemId28.value()){
+					let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
+					if(workType){
+						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
+					}else{
+						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+					}
+				}else{
+					self.itemId28.itemSelectedDisplay('');
+				}
+				
+				if(self.dataMaster && self.dataMaster.workTimeSettings && self.itemId29.value()){
+					let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
+					if(workTime){
+						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
+					}else{
+						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
+					}
+				}else{
+					self.itemId29.itemSelectedDisplay('');
+				}
 			}
 			
 			fakeData(): void {
@@ -87,24 +113,7 @@ module nts.uk.at.view.kdw013.h {
 				self.itemId205_207 = new StartEndTime({ itemId: 205, value: 20, valueType: 0, layoutCode: 'layoutCode 205' }, { itemId: 207, value: 30, valueType: 0, layoutCode: 'layoutCode 207' }, 9);
 				self.itemId211_213 = new StartEndTime({ itemId: 211, value: 20, valueType: 0, layoutCode: 'layoutCode 211' }, { itemId: 213, value: 30, valueType: 0, layoutCode: 'layoutCode 213' }, 10);
 				
-				let attendentItems = [
-					216, 221, 226, 231, 236, 241, 246, 251, 
-					256, 261, 266, 271, 276, 281, 286, 291, 
-					296, 301, 306, 311, 439, 444, 449, 454, 
-					459, 532, 535, 559, 592, 598, 604, 610, 
-					641, 642, 643, 644, 645, 646, 647, 648, 
-					649, 650, 651, 652, 653, 654, 655, 656, 
-					657, 658, 659, 660, 661, 662, 663, 664, 
-					665, 666, 667, 668, 669, 670, 671, 672, 
-					673, 674, 675, 676, 677, 678, 679, 680, 
-					681, 682, 683, 684, 685, 686, 687, 688, 
-					689, 690, 691, 692, 693, 694, 695, 696, 
-					697, 698, 699, 700, 701, 702, 703, 704, 
-					705, 706, 707, 708, 709, 710, 711, 712, 
-					713, 714, 715, 716, 717, 718, 719, 720, 
-					721, 722, 723, 724, 725, 726, 727, 728, 
-					729, 730, 731, 732, 733, 734, 735, 736, 
-					737, 738, 739, 740, 802, 807, 812, 817, 822];
+				
 				_.forEach(attendentItems, (id)=>{
 					self.itemOptions.push(new ItemValueOption({itemId: id, value: '', valueType: 0, layoutCode: ''}, true, 'Item ' + id, 7));	
 				});
@@ -175,14 +184,15 @@ module nts.uk.at.view.kdw013.h {
 	}
 	class ItemValue {
 		itemId: number;
-		value: KnockoutObservable<string>;
+		value: KnockoutObservable<string> = ko.observable(null);
 		valueBeforeChange: any;
 		valueType: number;
 		layoutCode: string;
+		itemSelectedDisplay: KnockoutObservable<string> = ko.observable('');
 		name: string; //only use for break times
-		constructor(itemValue: IItemValue, name? : string) {
+		constructor(itemValue?: IItemValue, name? : string) {
 			this.itemId = itemValue.itemId;
-			this.value = ko.observable(itemValue.value);
+			this.value(itemValue.value);
 			this.valueBeforeChange = itemValue.value;
 			this.valueType = itemValue.valueType;
 			this.layoutCode = itemValue.layoutCode;
@@ -216,12 +226,68 @@ module nts.uk.at.view.kdw013.h {
 			}
 		}
 	}
+	
+	let attendentItems = [
+					216, 221, 226, 231, 236, 241, 246, 251, 
+					256, 261, 266, 271, 276, 281, 286, 291, 
+					296, 301, 306, 311, 439, 444, 449, 454, 
+					459, 532, 535, 559, 592, 598, 604, 610, 
+					641, 642, 643, 644, 645, 646, 647, 648, 
+					649, 650, 651, 652, 653, 654, 655, 656, 
+					657, 658, 659, 660, 661, 662, 663, 664, 
+					665, 666, 667, 668, 669, 670, 671, 672, 
+					673, 674, 675, 676, 677, 678, 679, 680, 
+					681, 682, 683, 684, 685, 686, 687, 688, 
+					689, 690, 691, 692, 693, 694, 695, 696, 
+					697, 698, 699, 700, 701, 702, 703, 704, 
+					705, 706, 707, 708, 709, 710, 711, 712, 
+					713, 714, 715, 716, 717, 718, 719, 720, 
+					721, 722, 723, 724, 725, 726, 727, 728, 
+					729, 730, 731, 732, 733, 734, 735, 736, 
+					737, 738, 739, 740, 802, 807, 812, 817, 822];
+	
 	type IItemValue = {
 		itemId: number;
 		value: any;
 		valueType: number;
 		layoutCode: string;
 	}
+	
+	type Param = {
+		employeeId: string; //対象社員
+		date: String; //対象日
+		IntegrationOfDaily: any; //日別実績(Work)
+		displayAttItems: DisplayAttItem[]; //実績入力ダイアログ表示項目一覧  => List<表示する勤怠項目>
+		itemValues: IItemValue[]; //実績内容  => List<ItemValue>
+		lockInfos: DailyLock | null; //日別実績のロック状態 Optional<日別実績のロック状態>
+	}
+	
+	type DataMaster = {
+		attItemName: any[];
+		dailyAttendanceItem: any[]; 
+		divergenceReasonInputMethods: any[];
+		divergenceTimeRoots: any[];
+		workTimeSettings: any[];
+		workTypes: any[];
+	}
+	
+	type DailyLock = {
+		employeeId: string;
+		date: Date;
+		lockDailyResult: number;
+		lockWpl: number;
+		lockApprovalMontｈ: number;
+		lockConfirmMonth: number;
+		lockApprovalDay: number;
+		lockConfirmDay: number;
+		lockPast: number;
+	}
+	
+	type DisplayAttItem = {
+		attendanceItemId: number;
+		order: number;
+	}
+	
 	__viewContext.ready(function() {
 		var screenModel = new viewmodel.ScreenModel();
 		screenModel.startPage().done(function() {
