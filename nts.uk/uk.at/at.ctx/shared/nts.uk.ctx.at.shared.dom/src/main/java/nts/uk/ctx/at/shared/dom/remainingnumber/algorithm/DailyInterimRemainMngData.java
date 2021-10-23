@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
@@ -68,6 +69,10 @@ public class DailyInterimRemainMngData {
 	 * 暫定介護休暇データ
 	 */
 	private List<TempCareManagement> careData;
+	/**
+	 * 暫定公休管理データ
+	 */
+	private List<TempPublicHolidayManagement> publicHolidayData;
 
 
 	public static DailyInterimRemainMngData createEmpty(GeneralDate ymd) {
@@ -83,6 +88,7 @@ public class DailyInterimRemainMngData {
 		dom.specialHolidayData = new ArrayList<>();
 		dom.childCareData = new ArrayList<>();
 		dom.careData = new ArrayList<>();
+		dom.publicHolidayData = new ArrayList<>();
 
 		return dom;
 	}

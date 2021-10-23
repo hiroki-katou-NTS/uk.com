@@ -10,7 +10,6 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -52,7 +52,8 @@ public class VacationAppReflectOptionTest {
 				"004");// 就業時間帯コード **/
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
 				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1);// no = 1, 就業時間帯コード = 001
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE,
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 出退勤を反映する=反映する
 		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
 				new ArrayList<>(), NotUseAtr.USE, dailyApp);
@@ -82,7 +83,8 @@ public class VacationAppReflectOptionTest {
 				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1);// no = 1, 就業時間帯コード = 001
 		String workTimeBefore = dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v();// 前就業時間帯コード
 
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE,
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.NOT_REFLECT);// 出退勤を反映する=反映しない
 
 		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
@@ -101,7 +103,6 @@ public class VacationAppReflectOptionTest {
 	 * 
 	 * 準備するデータ
 	 * 
-	 * →休暇系申請の反映.出退勤を反映する = する;
 	 * 
 	 */
 	@Test
@@ -114,44 +115,20 @@ public class VacationAppReflectOptionTest {
 
 		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
 
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.USE, // 出退勤を反映する=する
+		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, // 出退勤を反映する=するư
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);
 
 		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
 				workingHours, NotUseAtr.USE, dailyApp);
 
-		assertThat(resultActual.getDomainDaily().getWorkInformation().getScheduleTimeSheets())
-				.extracting(x -> x.getWorkNo().v(), x -> x.getAttendance().v(), x -> x.getLeaveWork().v())
-				.contains(Tuple.tuple(1, 488, 1028));
-	}
-
-	/*
-	 * テストしたい内容
-	 * 
-	 * →出退勤を反映しない
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →休暇系申請の反映.出退勤を反映する = する;
-	 * 
-	 */
-	@Test
-	public void test4() {
-		WorkInformation workInfo = new WorkInformation("003", // 勤務種類コード
-				"004");// 就業時間帯コード **/
-
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// no = 1, 就業時間帯コード = 001
-		val noBefore = dailyApp.getWorkInformation().getScheduleTimeSheets();// 勤務予定時間帯 = empty
-
-		List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 488, 1028));
-
-		VacationAppReflectOption option = new VacationAppReflectOption(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, // 出退勤を反映する=しない
-				ReflectWorkHourCondition.REFLECT);
-
-		DailyAfterAppReflectResult resultActual = option.processSC(require, "", workInfo,
-				workingHours, NotUseAtr.USE, dailyApp);
-
-		assertThat(resultActual.getDomainDaily().getWorkInformation().getScheduleTimeSheets()).isEqualTo(noBefore);
+		assertThat(resultActual.getDomainDaily().getAttendanceLeave().get().getTimeLeavingWorks())
+		.extracting(x -> x.getWorkNo().v(), // No
+				x -> x.getStampOfAttendance().get().getTimeDay().getTimeWithDay().get().v(), // 出勤 .時刻
+				x -> x.getStampOfAttendance().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(), // 出勤.時刻変更手段
+				x -> x.getStampOfLeave().get().getTimeDay().getTimeWithDay().get().v(), // 退勤 .時刻
+				x -> x.getStampOfLeave().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans())// 退勤.時刻変更手段
+		.contains(Tuple.tuple(1, 488, TimeChangeMeans.APPLICATION, 1028,
+				TimeChangeMeans.APPLICATION));
 	}
 }

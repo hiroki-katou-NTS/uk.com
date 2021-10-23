@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoI
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailedScreenBeforeStartOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenAppData;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
@@ -151,7 +152,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 				detailScreenAppData.getApplication().getEmployeeID(), 
 				detailScreenAppData.getApplication().getEnteredPersonID());
 		// 詳細画面の利用者とステータスを取得する
-		DetailedScreenPreBootModeOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
+		DetailedScreenBeforeStartOutput detailedScreenPreBootModeOutput = beforePreBootMode.judgmentDetailScreenMode(
 				companyID, 
 				AppContexts.user().employeeId(), 
 				detailScreenAppData.getApplication(), 
@@ -168,6 +169,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 				detailedScreenPreBootModeOutput.getUser(), 
 				detailedScreenPreBootModeOutput.getReflectPlanState(), 
 				outputMode);
+		appDetailScreenInfo.setPastApp(detailedScreenPreBootModeOutput.isPastApp());
 		appDetailScreenInfo.setAuthorizableFlags(Optional.of(detailedScreenPreBootModeOutput.isAuthorizableFlags()));
 		appDetailScreenInfo.setApprovalATR(Optional.of(detailedScreenPreBootModeOutput.getApprovalATR()));
 		appDetailScreenInfo.setAlternateExpiration(Optional.of(detailedScreenPreBootModeOutput.isAlternateExpiration()));

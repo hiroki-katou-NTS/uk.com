@@ -21,15 +21,12 @@ public class UserExport {
 	/** The user ID. */
 	private String userID;
 	
-	/** The password. */
-	private String password;
-
 	/** The login ID. */
 	private String loginID;
 	
 	/** The mail address. */
 	private Optional<String> mailAddress;
-
+	
 	/** The contract code. */
 	private String contractCode;
 	
@@ -38,13 +35,10 @@ public class UserExport {
 	
 	/** The expiration date. */
 	private GeneralDate expirationDate;
-
+	
 	/** The associated person ID. */
 	private Optional<String> associatedPersonID;
 	
-	/** The associated person ID. */
-	private int passStatus;
-
 	/**
 	 * Instantiates a new user export.
 	 *
@@ -57,21 +51,18 @@ public class UserExport {
 	 * @param associatedPersonID the associated person ID
 	 * @param expirationDate the expiration date
 	 */
-	public UserExport(String userID, String loginID, String contractCode, String userName, String password, String mailAddress, String associatedPersonID,
-			GeneralDate expirationDate ,int passStatus) {
+	public UserExport(String userID, String loginID, String contractCode, String userName, String mailAddress, String associatedPersonID,
+			GeneralDate expirationDate) {
 		this.userID = userID;
 		this.loginID = loginID;
 		this.contractCode = contractCode;
 		this.userName = Optional.ofNullable(userName == null ? null : userName);
-		this.password = password;
 		this.mailAddress =Optional.ofNullable(mailAddress == null ? null : mailAddress);
 		this.associatedPersonID = Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID);
 		this.expirationDate = expirationDate;
-		this.passStatus = passStatus;
-	}	
+	}
 	
 	public boolean isExistAssociatedPersonID(String associatedPersonID){
 		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
 	}
-	
 }

@@ -122,9 +122,9 @@ public class FlexInfoDisplay {
 		
 		String hist = dailyPerformanceScreenRepo.findWorkConditionLastest(workConditions.stream().map(x -> x.getHistoryId()).collect(Collectors.toList()), employeeId);
 		Optional<WorkingConditionItem> wCItem = workConditions.stream().filter(x -> x.getHistoryId().equals(hist)).findFirst();
-		if(!wCItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) return new FlexShortage().createShowFlex(false);
+		if(!wCItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()) return new FlexShortage().createShowFlex(false);
 		 //TODO 所定時間（1日の時間内訳）を取得する
-		 Optional<PredeterminedTimeExport> predertermineOpt = predetemineTimeSettingPub.acquirePredeterminedTime(AppContexts.user().companyId(),  wCItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
+		 Optional<PredeterminedTimeExport> predertermineOpt = predetemineTimeSettingPub.acquirePredeterminedTime(AppContexts.user().companyId(),  wCItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get().v());
 		 if(!predertermineOpt.isPresent()) return null;
 		 //TODO フレックス不足の相殺が実施できるかチェックする
 		 CheckShortage checkShortage = checkShortageFlex.checkShortageFlex(employeeId, baseDate);

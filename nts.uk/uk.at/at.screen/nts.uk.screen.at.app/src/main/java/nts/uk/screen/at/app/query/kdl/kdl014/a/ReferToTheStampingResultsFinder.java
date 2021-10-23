@@ -119,8 +119,14 @@ public class ReferToTheStampingResultsFinder {
 	private List<WorkLocation> step3(List<EmployeeStampInfo> listEmployeeStampInfo) {
 		
 		List<StampInfoDisp> listStampInfoDisp = listEmployeeStampInfo.stream().flatMap(m->m.getListStampInfoDisp().stream()).collect(Collectors.toList());
+
+		List<Stamp> listStamp = new ArrayList<>();
 		
-		List<Stamp> listStamp = listStampInfoDisp.stream().flatMap(m -> m.getStamp().stream()).collect(Collectors.toList());
+		listStampInfoDisp.stream().forEach(f -> {
+			if (f.getStamp().isPresent()){
+				listStamp.add(f.getStamp().get());
+			}
+		});
 		
 		List<Stamp> listStampFilter = listStamp.stream().filter(m -> m.getRefActualResults().getWorkInforStamp().isPresent()).collect(Collectors.toList());
 		
@@ -157,21 +163,22 @@ public class ReferToTheStampingResultsFinder {
 			
 			employeeStampListInfo.stream().forEach(stampInfo -> {
 				stampInfo.getListStampInfoDisp().stream().forEach(stamp -> {
-					stamp.getStamp().forEach(st -> {
-						
+					
+					if (stamp.getStamp().isPresent()) {
 						Optional<WorkLocation> wl = Optional.empty();
 						
-						if (st.getRefActualResults().getWorkInforStamp().isPresent() && st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
+						if (stamp.getStamp().get().getRefActualResults().getWorkInforStamp().isPresent() 
+								&& stamp.getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
 							wl = workLocationList.stream()
 									.filter(c -> c.getWorkLocationCD().v()
-											.equals(st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()))
+											.equals(stamp.getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()))
 									.findFirst();
 						}
 						
-						EmpInfomationDto em = createEmpInfoDto(empInfo, stamp, st, wl);
+						EmpInfomationDto em = createEmpInfoDto(empInfo, stamp, stamp.getStamp().get(), wl);
 						
 						listEmps.add(em);
-					});
+					}
 				});
 			});
 		});

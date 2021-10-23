@@ -201,7 +201,7 @@ public class ReflectApplicationHelper {
 						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(480))),
 						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
-								new TimeWithDayAttr(1020))))));
+								new TimeWithDayAttr(1020)))), Optional.empty()));
 
 		// 日別勤怠の勤怠時間
 		List<LateTimeOfDaily> lateTimeOfDaily = new ArrayList<>();

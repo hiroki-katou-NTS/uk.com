@@ -58,12 +58,6 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		lstItemId.addAll(ReflectWorkInformation.reflectInfo(require, companyId, workInfoDto, dailyApp, Optional.of(true),
 				Optional.of(true)));
 
-		// 始業終業の反映
-		lstItemId.addAll(ReflectStartEndWork.reflect(require, companyId, dailyApp,
-				businessTripInfo.get().getWorkingHours().isPresent() ? businessTripInfo.get().getWorkingHours().get()
-						: new ArrayList<>(),
-				bussinessTrip.getPrePostAtr()));
-
 		// 該当の[出張勤務情報. 勤務時間帯]をチェック
 		if (!businessTripInfo.get().getWorkingHours().isPresent()
 				|| businessTripInfo.get().getWorkingHours().get().isEmpty()) {

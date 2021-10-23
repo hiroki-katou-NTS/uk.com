@@ -40,6 +40,6 @@ public class SendTimeInfomationServiceTest {
 		};
 
 		SendTimeInfomation resultActual = SendTimeInfomationService.send();
-		assertThat(resultActual).isEqualTo(new SendTimeInfomation(20, 6, 8, 6, 6, 6, 0));
+		assertThat(resultActual).isEqualTo(new SendTimeInfomation("07E4", "06", "08", "06", "06", "06", "00"));
 	}
 }

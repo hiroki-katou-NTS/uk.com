@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
@@ -67,6 +68,9 @@ public class AggregateMonthlyRecordValue {
 	/** 子の看護休暇月別残数データ */
 	@Setter
 	private List<ChildcareRemNumEachMonth> childHdRemainList;
+	/** 公休月別残数データ */
+	@Setter
+	private List<PublicHolidayRemNumEachMonth> publicRemainList;
 
 //	/** 年休積立年休の集計結果 */
 //	@Setter
@@ -104,7 +108,8 @@ public class AggregateMonthlyRecordValue {
 		this.specialLeaveRemainList = new ArrayList<>();
 		this.careHdRemainList = new ArrayList<>();
 		this.childHdRemainList = new ArrayList<>();
-
+		this.publicRemainList = new ArrayList<>();
+		
 //		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 //		this.absRecRemainMngOfInPeriodOpt = Optional.empty();
 //		this.breakDayOffRemainMngOfInPeriodOpt = Optional.empty();
@@ -249,6 +254,10 @@ public class AggregateMonthlyRecordValue {
 		ChildcareRemNumEachMonth childCareRemain = null;
 		if (this.childHdRemainList.size() > 0) childCareRemain = this.childHdRemainList.get(0);
 		result.setChildCare(Optional.ofNullable(childCareRemain));
+		PublicHolidayRemNumEachMonth publicHolidayRemain = null;
+		if (this.publicRemainList.size() > 0) publicHolidayRemain = this.publicRemainList.get(0);
+		result.setPublicHolidayLeaveRemain(Optional.ofNullable(publicHolidayRemain));
+		
 		return result;
 	}
 }

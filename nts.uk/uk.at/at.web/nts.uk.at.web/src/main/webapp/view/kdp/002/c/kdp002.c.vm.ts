@@ -2,6 +2,10 @@
 
 module nts.uk.at.view.kdp002.c {
 
+	const kDP002RequestUrl = {
+		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting'
+	}
+
 	interface TimeClock {
 		tick: number;
 		now: KnockoutObservable<Date>;
@@ -27,6 +31,7 @@ module nts.uk.at.view.kdp002.c {
 			employeeId: string;
 			employeeCode: string;
 			mode: a.Mode;
+			error: any;
 		}
 
 		export class ScreenModel extends ko.ViewModel {
@@ -78,6 +83,7 @@ module nts.uk.at.view.kdp002.c {
 			value5: KnockoutObservable<string> = ko.observable('');
 
 			showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
+			noticeSetting: KnockoutObservable<INoticeSet> = ko.observable(null);
 
 			constructor() {
 				super();
@@ -95,22 +101,26 @@ module nts.uk.at.view.kdp002.c {
 				self.laceName.subscribe(() => {
 					self.setSizeDialog();
 				});
+				self.$ajax(kDP002RequestUrl.FINGER_STAMP_SETTING)
+				.then((data: any) => {
+					self.noticeSetting(data.noticeSetDto);
+				});
 			}
-			
-			setSizeDialog(){
+
+			setSizeDialog() {
 				let self = this;
-				if(self.laceName() == ''){
-					if(self.showBtnNoti()){
+				if (self.laceName() == '') {
+					if (self.showBtnNoti()) {
 						self.$window.size(565, 450);
-					}else{
+					} else {
 						self.$window.size(535, 450);
 					}
-				}else{
-					if(self.showBtnNoti()){
+				} else {
+					if (self.showBtnNoti()) {
 						self.$window.size(600, 450);
-					}else{
+					} else {
 						self.$window.size(565, 450);
-					}					
+					}
 				}
 			}
 
@@ -140,6 +150,8 @@ module nts.uk.at.view.kdp002.c {
 				let itemIds: DISPLAY_ITEM_IDS = nts.uk.ui.windows.getShared("KDP010_2C");
 				self.infoEmpFromScreenA = nts.uk.ui.windows.getShared("infoEmpToScreenC");
 
+				console.log(self.infoEmpFromScreenA);
+
 				self.getWorkPlacwName(self.infoEmpFromScreenA.workPlaceId);
 
 				let data = {
@@ -153,8 +165,6 @@ module nts.uk.at.view.kdp002.c {
 				service.startScreen(data).done((res) => {
 					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 
-					console.log(res);
-					
 					if (res) {
 
 						if (_.size(res.stampRecords) > 0) {
@@ -222,22 +232,24 @@ module nts.uk.at.view.kdp002.c {
 						}
 					}
 					if (res.confirmResult) {
-						if (res.confirmResult.permissionCheck == 1) 
-						self.permissionCheck(res.confirmResult.permissionCheck == 1);
+						if (res.confirmResult.permissionCheck == 1)
+							self.permissionCheck(res.confirmResult.permissionCheck == 1);
 					} else {
 						self.displayButton(false);
 					}
 
 					if (ko.unwrap(self.permissionCheck)) {
 						if (res.setting == 2) {
-							self.permissionCheck(false);
+							if (self.infoEmpFromScreenA.error && self.infoEmpFromScreenA.error.dailyAttdErrorInfos && self.infoEmpFromScreenA.error.dailyAttdErrorInfos.length > 0) {
+								self.permissionCheck(false);
+							}else {
+								self.permissionCheck(true);
+							}
 						}
 					}
 				});
 
 				self.$window.shared("screenC").done((nameScreen: any) => {
-					console.log(nameScreen);
-					
 					switch (nameScreen.screen) {
 						case 'KDP001':
 						case 'KDP002':
@@ -275,11 +287,8 @@ module nts.uk.at.view.kdp002.c {
 				const vm = this;
 				const mockvm = new ko.ViewModel();
 
-				let startDate = mockvm.$date.now();
-				startDate.setDate(startDate.getDate() - 3);
-
 				const param = {
-					startDate: startDate,
+					startDate: mockvm.$date.now(),
 					endDate: mockvm.$date.now(),
 					sid: vm.infoEmpFromScreenA.employeeId
 				}
@@ -326,7 +335,7 @@ module nts.uk.at.view.kdp002.c {
 
 			openDialogU() {
 				const vm = this;
-				const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
+				const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp), setting: ko.unwrap(vm.noticeSetting) };
 				vm.$window.modal('/view/kdp/002/u/index.xhtml', params)
 					.then(() => {
 						vm.modeShowPointNoti(false);
@@ -345,7 +354,10 @@ module nts.uk.at.view.kdp002.c {
 			 * Close dialog
 			 */
 			public registerDailyIdentify(): void {
-				service.registerDailyIdentify().done(() => {
+				const vm = this;
+				const param = {sid: vm.infoEmpFromScreenA.employeeId};
+
+				service.registerDailyIdentify(param).done(() => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" })
 						.then(() => {
 							nts.uk.ui.windows.close();

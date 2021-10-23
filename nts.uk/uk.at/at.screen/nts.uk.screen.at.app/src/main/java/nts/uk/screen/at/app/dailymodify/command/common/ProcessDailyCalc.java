@@ -89,7 +89,10 @@ public class ProcessDailyCalc {
 			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert, itemOlds);
 			itemErrors.addAll(items);
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
+			// 開始終了時刻順序不正チェック
+			List<DPItemValue> itemInputsPlus = validatorDataDaily.checkInputDataPlus(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);
+			itemInputErors.addAll(itemInputsPlus);
 			itemInputWorkType = lstNotFoundWorkType.stream().filter(
 					wt -> wt.getEmployeeId().equals(x.getKey().getLeft()) && wt.getDate().equals(x.getKey().getRight()))
 					.collect(Collectors.toList());
@@ -181,9 +184,9 @@ public class ProcessDailyCalc {
 		List<DailyRecordWorkCommand> commandNew = ProcessCommonCalc.createCommands(sid, dailyEdits, queryChange);
 
 		List<DailyRecordWorkCommand> commandOld = ProcessCommonCalc.createCommands(sid, dailyOlds, queryChange);
-
+		//日別実績の修正からの計算
 		resultIU = calcDaily(dailyEdits, commandNew, commandOld, dailyItemOlds, monthParam, execType);
-
+		//計算後エラーチェック
 		ErrorAfterCalcDaily checkErrorAfterCalcDaily = checkErrorAfterCalcDaily(resultIU, param.getResultOlds(),
 				param.getDateRange(),
 				param.getDailyDtoEditAll().stream()

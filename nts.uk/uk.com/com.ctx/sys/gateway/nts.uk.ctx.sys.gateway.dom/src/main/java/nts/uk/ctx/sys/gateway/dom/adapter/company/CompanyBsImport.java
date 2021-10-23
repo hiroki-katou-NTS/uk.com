@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.gateway.dom.adapter.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 
 /**
  * 
@@ -24,4 +25,7 @@ public class CompanyBsImport {
 	/** 廃止区分*/
 	private int isAbolition;
 	
+	public static String createCompanyId(String contractCd, String companyCode) {
+		return contractCd + "-" + companyCode;
+	}
 }

@@ -7,11 +7,13 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
@@ -24,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
  *         逐次発生の休暇明細
  */
 @Getter
-public class AccumulationAbsenceDetail {
+public class AccumulationAbsenceDetail implements Cloneable{
 
 	/**
 	 * 社員ID
@@ -148,13 +150,12 @@ public class AccumulationAbsenceDetail {
 						Collectors.summingDouble(x -> x.getAssocialInfo().getDayNumberUsed().v()),
 						x -> new LeaveRemainingDayNumber(x)));
 	}
-
 	public static interface Require {
 
 		/**
 		 * ＜条件＞ ・社員ID＝逐次発生の休暇明細.社員ID 
 		 * ・使用日＝逐次発生の休暇明細．年月日．年月日 
-		 * ・発生日 >= INPUT．基準日
+		 * ・発生日 > INPUT．基準日
 		 */
 		// PayoutSubofHDManaRepository.getPayoutSubWithDateUse
 		List<PayoutSubofHDManagement> getPayoutSubWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate);
@@ -172,7 +173,7 @@ public class AccumulationAbsenceDetail {
 		/**
 		 * ＜条件＞ ・社員ID＝逐次発生の休暇明細.社員ID 
 		 * ・使用日＝逐次発生の休暇明細．年月日．年月日 
-		 * ・発生日 >= INPUT．基準日
+		 * ・発生日 > INPUT．基準日
 		 */
 		// LeaveComDayOffManaRepository.getLeaveComWithDateUse
 		List<LeaveComDayOffManagement> getLeaveComWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate);
@@ -181,7 +182,7 @@ public class AccumulationAbsenceDetail {
 		 * ＜条件＞ 逐次発生の休暇明細．年月日．日付不明 = false 
 		 * ・社員ID＝逐次発生の休暇明細.社員ID 
 		 * ・発生日＝逐次発生の休暇明細．年月日．年月日
-		 * ・使用日 >= INPUT．基準日
+		 * ・使用日 > INPUT．基準日
 		 */
 		// LeaveComDayOffManaRepository.getLeaveComWithOutbreakDay
 		List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay,
@@ -277,4 +278,28 @@ public class AccumulationAbsenceDetail {
 
 	}
 
+	private AccumulationAbsenceDetail cloneDetail() {
+		return new AccuVacationBuilder(this.getEmployeeId(), this.getDateOccur(), this.getOccurrentClass(),
+				this.getDataAtr(), this.getManageId()).numberOccurren(
+						new NumberConsecuVacation(new ManagementDataRemainUnit(this.getNumberOccurren().getDay().v()),
+								this.getNumberOccurren().getTime()))
+				        .unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(this.getUnbalanceNumber().getDay().v()),
+								this.getUnbalanceNumber().getTime()))
+						.build();
+	}
+
+	@Override
+	public AccumulationAbsenceDetail clone() {
+		if (this instanceof UnbalanceCompensation) {
+			val detail = (UnbalanceCompensation) this;
+			return new UnbalanceCompensation(cloneDetail(), detail.getDeadline(), detail.getDigestionCate(),
+					detail.getExtinctionDate(), detail.getLegalInExClassi());
+		} else if (this instanceof UnbalanceVacation) {
+			val detail = (UnbalanceVacation) this;
+			return new UnbalanceVacation(detail.getDeadline(), detail.getDigestionCate(), detail.getExtinctionDate(),
+					cloneDetail(), detail.getTimeOneDay(), detail.getTimeHalfDay());
+		} else {
+			return cloneDetail();
+		}
+	}
 }

@@ -3,8 +3,8 @@
 	margin-right: 20px;
 }
 
-tbody > td:first-child {
-  background-color: rgb(207, 241, 165);
+.mgrid .mgrid-header td {
+  background-color: #CFF1A5;
 }
 
 .content {

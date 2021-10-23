@@ -4,7 +4,7 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 /**
- * 休暇使用時間
+ * 月別休暇使用時間
  * @author masaaki_jinno
  *
  */

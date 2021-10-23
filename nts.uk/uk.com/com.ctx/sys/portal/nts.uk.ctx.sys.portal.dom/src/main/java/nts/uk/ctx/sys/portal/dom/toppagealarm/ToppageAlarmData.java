@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -90,10 +92,28 @@ public class ToppageAlarmData extends AggregateRoot {
 	/*
 	 * [3] 部下の社員IDを変更する
 	 */
-	public void changeSubSids(List<String> newSubSid) {
+	public void changeSubSids(List<String> newSubSid, List<String> noErrSids) {
 		if (this.displayAtr == DisplayAtr.SUPERIOR) {
-			this.subSids = newSubSid;
+			this.subSids.addAll(newSubSid);
+			this.subSids = this.subSids.stream()
+					.filter(sid -> !noErrSids.contains(sid))
+					.distinct()
+					.collect(Collectors.toList());
 		}
+	}
+	
+	/*
+	 * [4]上長の場合はエラーが解消済みになるか
+	 */
+	public boolean isErrorResolved(List<String> noErrSids) {
+		if (this.displayAtr != DisplayAtr.SUPERIOR) {
+			return false;
+		}
+		this.subSids = this.subSids.parallelStream()
+				.filter(sid -> !noErrSids.contains(sid))
+				.distinct()
+				.collect(Collectors.toList());
+		return this.subSids.isEmpty();
 	}
 	
 	/**

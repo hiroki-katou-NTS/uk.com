@@ -381,9 +381,9 @@ public class ReflectApplicationHelper {
 				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("11111"), new WorkLocationCD("AAAA")),
 						Optional.empty(), Optional.empty()),
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(no),
-						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),
 								new TimeWithDayAttr(480))),
-						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),
 								new TimeWithDayAttr(1020))))));
 
 		// 日別勤怠の勤怠時間

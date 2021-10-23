@@ -171,4 +171,20 @@ public class JpaEmployeeMonthDaySettingRepository extends JpaRepository implemen
 				.map(x -> new EmployeeMonthDaySetting(new JpaEmployeeMonthDaySettingGetMemento(Arrays.asList(x))))
 				.collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<EmployeeMonthDaySetting> findByYears(CompanyId companyId, String employee, List<Year> years) {
+		List<EmployeeMonthDaySetting> domain = new ArrayList<>();
+		for(Year year:years){
+			List<KshmtHdpubMonthdaysSya> result = this.findBy(companyId, employee, year, null);
+		
+			// Check connection
+			if (result.isEmpty()) {
+				connection();
+			}
+		
+			domain.add(new EmployeeMonthDaySetting(new JpaEmployeeMonthDaySettingGetMemento(result)));
+		}
+		return domain;
+	}
 }

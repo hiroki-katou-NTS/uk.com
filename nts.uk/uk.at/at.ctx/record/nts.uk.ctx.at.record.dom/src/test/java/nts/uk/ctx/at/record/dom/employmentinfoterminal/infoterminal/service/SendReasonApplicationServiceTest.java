@@ -88,20 +88,20 @@ public class SendReasonApplicationServiceTest {
 				require.getReasonByAppType(anyString, (List<Integer>) any);
 				result = Arrays.asList(
 						new ApplicationReasonRc("1", ApplicationType.OVER_TIME_APPLICATION,
-								Arrays.asList(Pair.of(1, "A1"))),
+								Arrays.asList(Pair.of(1, "A1")), Optional.empty()),
 						new ApplicationReasonRc("1", ApplicationType.ABSENCE_APPLICATION,
-								Arrays.asList(Pair.of(2, "A2"))),
+								Arrays.asList(Pair.of(2, "A2")), Optional.of(0)),
 						new ApplicationReasonRc("1", ApplicationType.WORK_CHANGE_APPLICATION,
-								Arrays.asList(Pair.of(3, "A3"))),
+								Arrays.asList(Pair.of(3, "A3")), Optional.empty()),
 						new ApplicationReasonRc("1", ApplicationType.BREAK_TIME_APPLICATION,
-								Arrays.asList(Pair.of(4, "A4"))),
+								Arrays.asList(Pair.of(4, "A4")), Optional.empty()),
 						new ApplicationReasonRc("1", ApplicationType.STAMP_APPLICATION,
-								Arrays.asList(Pair.of(5, "A5"))),
+								Arrays.asList(Pair.of(5, "A5")), Optional.empty()),
 						new ApplicationReasonRc("1", ApplicationType.ANNUAL_HOLIDAY_APPLICATION,
-								Arrays.asList(Pair.of(6, "A6"))),
+								Arrays.asList(Pair.of(6, "A6")), Optional.empty()),
 						new ApplicationReasonRc("1", ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION,
-								Arrays.asList(Pair.of(7, "A7"))),
-						new ApplicationReasonRc("1", ApplicationType.APPLICATION_36, Arrays.asList(Pair.of(8, "A8")))
+								Arrays.asList(Pair.of(7, "A7")), Optional.empty()),
+						new ApplicationReasonRc("1", ApplicationType.APPLICATION_36, Arrays.asList(Pair.of(8, "A8")), Optional.empty())
 
 				);
 			}

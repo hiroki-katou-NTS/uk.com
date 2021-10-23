@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 420,
-					height :790
+					height :740
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -28,9 +28,12 @@
 				</div>
 				<!-- B002: Text: カテゴリ名 -->
 				<label id="ctgName" style="margin-top: 10px; margin-left: 10px;"
-					data-bind="text: categoryName"></label> <br />
+					data-bind="text: categoryName"></label>
 				<!-- B003: label 項目選択 -->
-				<div data-bind="ntsFormLabel: {}" class='distane'>
+				<div data-bind="ntsFormLabel: {}" class='distane' style="
+				display: block;
+				margin-top: -7px;
+			">
 					<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
 				</div>
 				<!-- B004: table -->
@@ -45,19 +48,18 @@
 					<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
 				</div>
 				<!-- B010: switch button 項目初期値設定-->
-				<div id="B_010" class="cf"
+				<div id="B_010" class="cf" tab-index="4"
 					data-bind="ntsSwitchButton: {
 											name: '#[CPS009_35]',
 											options: roundingRules,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedRuleCode,
-											enable: true }"
-					tab-index="4"></div>
+											enable: true }"></div>
 			</div>
 			<div id='functions-area-bottom'>
 				<!-- B011: button 決定 -->
-				<button id="registration" class="proceed large"
+				<button id="registration" class="proceed x-large"
 					data-bind="click: registerItems" tab-index="5">#{i18n.getText('CPS009_38')}</button>
 				<!-- B012: button キャンセル -->
 				<button id="cancel" data-bind="click: closeDialog" tab-index="6">#{i18n.getText('CPS009_30')}</button>

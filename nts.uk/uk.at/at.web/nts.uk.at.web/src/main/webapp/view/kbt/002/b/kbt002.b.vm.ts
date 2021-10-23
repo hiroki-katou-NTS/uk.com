@@ -97,24 +97,8 @@ module nts.uk.at.view.kbt002.b {
       vm.selectedTaskEnableSetting(TaskEnableSettingClassificationCode.DISABLED);
       vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(undefined));
       vm.selectedTab(TabPanelId.TAB_1);
-      vm.$ajax(API.getMasterInfo)
-        .then((response: any) => {
-          vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
-          vm.alarmByUserList(_.map(response.alarmPatternSettingList, (item: any) => new ItemModel({ code: item.alarmPatternCD, name: item.alarmPatternName })));
-          vm.stdAcceptList(response.stdAcceptCondSetList);
-          vm.stdOutputList(response.stdOutputCondSetList);
-          vm.indexReconList(response.indexReorgCateList);
-          vm.storagePatternList(_.map(response.dataStoragePatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
-          vm.deletionPatternList(_.map(response.dataDelPatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
-
-          vm.defaultMasterData = new DefaultMasterData({
-            stdOutputList: _.cloneDeep(vm.stdOutputList()),
-            stdAcceptList: _.cloneDeep(vm.stdAcceptList()),
-            indexReconList: _.cloneDeep(vm.indexReconList())
-          });
-        })
-        .fail(err => { errors.clearAll(); });
-        (__viewContext as any).viewModel = vm;
+      vm.getMasterInfo();
+      (__viewContext as any).viewModel = vm;
     }
 
     mounted() {
@@ -153,18 +137,36 @@ module nts.uk.at.view.kbt002.b {
                 vm.targetDateText(vm.buildTargetDateStr(vm.currentExecItem()));
               }
             })
+            .then(() => vm.focusInput())
             .always(() => vm.$blockui("clear"));
         }
         vm.$ajax(API.getSystemProperties).then((value: any) => {
           vm.otsukaOption(value.otsukaOption);
-          vm.isCloud(value.cloud);
-        });
-
-        vm.$nextTick(() => {
-          vm.focusInput();
+          vm.isCloud(false);
         });
         errors.clearAll();
       });
+    }
+
+    private getMasterInfo(): JQueryPromise<any> {
+      const vm = this;
+      return vm.$ajax(API.getMasterInfo)
+      .then((response: any) => {
+        vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
+        vm.alarmByUserList(_.map(response.alarmPatternSettingList, (item: any) => new ItemModel({ code: item.alarmPatternCD, name: item.alarmPatternName })));
+        vm.stdAcceptList(response.stdAcceptCondSetList);
+        vm.stdOutputList(response.stdOutputCondSetList);
+        vm.indexReconList(response.indexReorgCateList);
+        vm.storagePatternList(_.map(response.dataStoragePatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
+        vm.deletionPatternList(_.map(response.dataDelPatternSetList, (item: any) => new ItemModel({ code: item.patternCode, name: item.patternName })));
+
+        vm.defaultMasterData = new DefaultMasterData({
+          stdOutputList: _.cloneDeep(vm.stdOutputList()),
+          stdAcceptList: _.cloneDeep(vm.stdAcceptList()),
+          indexReconList: _.cloneDeep(vm.indexReconList())
+        });
+      })
+      .fail(err => { errors.clearAll(); });
     }
 
     /**
@@ -243,18 +245,20 @@ module nts.uk.at.view.kbt002.b {
       vm.taskSetting.valueHasMutated();
 
       //Reset screen
-      vm.currentExecItem(new ExecutionItem());
-      vm.currentExecItem().execScopeCls(0);
-      vm.currentExecItem().refDate(moment.utc().format("YYYY/MM/DD"));
-      vm.selectedTaskEnableSetting(TaskEnableSettingClassificationCode.DISABLED);
-      vm.selectedTab(TabPanelId.TAB_1);
-      vm.currentExecItem().processExecType(0);
-      vm.currentStdAcceptList([]);
-      vm.currentStdOutputList([]);
-      vm.currentIndexReconList([]);
-      vm.stdAcceptList(_.cloneDeep(vm.defaultMasterData.stdAcceptList));
-      vm.stdOutputList(_.cloneDeep(vm.defaultMasterData.stdOutputList));
-      vm.indexReconList(_.cloneDeep(vm.defaultMasterData.indexReconList));
+      vm.getMasterInfo().then(() => {
+        vm.currentExecItem(new ExecutionItem());
+        vm.currentExecItem().execScopeCls(0);
+        vm.currentExecItem().refDate(moment.utc().format("YYYY/MM/DD"));
+        vm.selectedTaskEnableSetting(TaskEnableSettingClassificationCode.DISABLED);
+        vm.selectedTab(TabPanelId.TAB_1);
+        vm.currentExecItem().processExecType(0);
+        vm.currentStdAcceptList([]);
+        vm.currentStdOutputList([]);
+        vm.currentIndexReconList([]);
+        vm.stdAcceptList(_.cloneDeep(vm.defaultMasterData.stdAcceptList));
+        vm.stdOutputList(_.cloneDeep(vm.defaultMasterData.stdOutputList));
+        vm.indexReconList(_.cloneDeep(vm.defaultMasterData.indexReconList));
+      }).then(() => vm.focusInput());
     }
 
     /**
@@ -318,15 +322,16 @@ module nts.uk.at.view.kbt002.b {
                 this.$dialog.info({ messageId: "Msg_16" })
                   .then(() => {
                     // Bussiness logic after info show
-                    $.when(vm.getProcExecList())
-                      .done(() => {
-                        if (vm.execItemList().length > 0) {
-                          if (oldIndex === lastIndex) {
-                            oldIndex--;
-                          }
-                          vm.selectedExecCode(vm.execItemList()[oldIndex].execItemCode);
-                        }
-                      });
+                    if (vm.execItemList().length > 1) {
+                      if (oldIndex === lastIndex) {
+                        oldIndex--;
+                      } else {
+                        oldIndex++;
+                      }
+                      vm.getProcExecList(vm.execItemList()[oldIndex].execItemCode);
+                    } else {
+                      vm.getProcExecList();
+                    }
                   });
               })
               .fail((res: any) => {
@@ -361,7 +366,7 @@ module nts.uk.at.view.kbt002.b {
             vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(result));
             vm.hasExecTaskSetting(true);
           } else {
-            vm.hasExecTaskSetting(false);
+            vm.hasExecTaskSetting(!!vm.taskSetting());
           }
         });
     }

@@ -142,7 +142,7 @@ export class KafS10Step1Component extends Vue {
             let codeTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTime');
             let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
             let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
-            self.createWorkInfo(codeType, codeTime);
+            self.createWorkInfo(codeType, codeTime, nameType, nameTime);
             self.createBreakTime(_.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.breakTimeZoneSettingList.timeZones'));
 
             // load work hours

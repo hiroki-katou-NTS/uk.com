@@ -28,6 +28,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -79,6 +81,9 @@ public class KTG004Finder {
 	
 	@Inject
 	private AbsenceServiceProcess absenceServiceProcess;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	/** 起動する */
 	public WorkStatusSettingDto getApprovedDataWidgetStart() {
@@ -316,10 +321,30 @@ public class KTG004Finder {
 				childNursingManagement ? ManageDistinct.YES : ManageDistinct.NO, 
 				longTermCareManagement ? ManageDistinct.YES : ManageDistinct.NO);
 		if(numberOfRemain != null) {
-			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
-			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
-			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
-			result.setRemainingHolidays(numberOfRemain.getSubVacaRemain());
+			//積立年休残日数
+			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearDayRemain(), new AttendanceTime(numberOfRemain.getYearHourRemain())));
+			//代休残数
+			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubDayRemain(), new AttendanceTime(numberOfRemain.getSubHdHourRemain())));
+			//年休残数
+			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getLastYearRemain());
+			//振休残日数
+			result.setRemainingHolidays(numberOfRemain.getVacaRemain());
+			//子の看護残数
+			result.setNursingRemainingNumberOfChildren(new RemainingDaysAndTimeDto(numberOfRemain.getChildNursingDayRemain(), new AttendanceTime(numberOfRemain.getChildNursingHourRemain())));
+			//介護残数
+			result.setLongTermCareRemainingNumber(new RemainingDaysAndTimeDto(numberOfRemain.getNursingRemain(), new AttendanceTime(numberOfRemain.getNursingHourRemain())));
+			// 付与年月日
+			result.setGrantDate(numberOfRemain.getGrantDate());
+			// 付与日数
+			result.setGrantDays(numberOfRemain.getGrantDays());
+			
+		}
+		
+		if (subHdManage) {
+		    CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
+		    if (compensatoryLeaveComSetting != null) {
+		        result.setSubHolidayTimeManage(compensatoryLeaveComSetting.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
+		    }
 		}
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])

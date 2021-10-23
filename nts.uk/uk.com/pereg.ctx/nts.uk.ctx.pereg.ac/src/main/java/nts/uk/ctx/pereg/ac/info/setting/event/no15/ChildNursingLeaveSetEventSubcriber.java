@@ -34,7 +34,7 @@ public class ChildNursingLeaveSetEventSubcriber implements DomainEventSubscriber
 
 	private static final List<String> ctgCodeLst = Arrays.asList(new String[] { "CS00036" });
 
-	private static final List<String> itemCdLst = Arrays.asList(new String[] { "IS00380", "IS00381","IS00382","IS00383","IS00384" });
+	private static final List<String> itemCdLst = Arrays.asList(new String[] { "IS00375", "IS00376","IS00377","IS00378","IS00379","IS01101" });
 
 
 	@Override

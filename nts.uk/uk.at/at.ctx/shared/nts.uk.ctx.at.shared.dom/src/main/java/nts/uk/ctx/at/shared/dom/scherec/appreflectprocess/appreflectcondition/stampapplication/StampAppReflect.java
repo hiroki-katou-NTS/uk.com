@@ -152,7 +152,7 @@ public class StampAppReflect extends AggregateRoot {
 		TimeZoneWithWorkNo timzone = new TimeZoneWithWorkNo(workNo.v(), startTime, endTime);
 
 		// 反映する
-		return ReflectStartEndWork.reflect(require, companyId, dailyApp, Arrays.asList(timzone), prePostAtr,
+		return ReflectStartEndWork.reflect(require, companyId, dailyApp, Arrays.asList(timzone), 
 				timzone.getTimeZone().getStartTime() != null, timzone.getTimeZone().getEndTime() != null);
 	}
 

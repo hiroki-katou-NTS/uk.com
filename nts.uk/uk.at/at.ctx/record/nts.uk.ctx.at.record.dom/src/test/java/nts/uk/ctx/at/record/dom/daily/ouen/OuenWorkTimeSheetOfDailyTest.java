@@ -142,7 +142,7 @@ public class OuenWorkTimeSheetOfDailyTest {
 						WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("Dummy"),new WorkLocationCD("Dummy")),
 								Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())),
 								Optional.empty()),
-						TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty())));
+						TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()), Optional.empty()));
 		
 		OuenWorkTimeSheetOfDaily ouenWorkTimeSheetOfDaily = new OuenWorkTimeSheetOfDaily(empId, ymd, list);
 		

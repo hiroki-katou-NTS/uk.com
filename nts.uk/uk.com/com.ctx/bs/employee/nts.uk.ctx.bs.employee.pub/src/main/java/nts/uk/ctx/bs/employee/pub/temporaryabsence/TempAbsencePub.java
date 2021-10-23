@@ -1,9 +1,8 @@
 package nts.uk.ctx.bs.employee.pub.temporaryabsence;
 
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.pub.workplace.affiliate.AffWorkplaceHistoryItemExport;
-
 import java.util.List;
+
+import nts.arc.time.calendar.period.DatePeriod;
 
 public interface TempAbsencePub {
 
@@ -17,4 +16,12 @@ public interface TempAbsencePub {
      */
     TempAbsenceExport getTempAbsence(String cid, DatePeriod period, List<String> employeeIds);
 
+    /**
+     * RequestList493
+     * 社員ID（List）と期間から期間中に１日でも休職・休業している社員を取得する
+     * @param sids
+     * @param period
+     * @return
+     */
+    List<String> getAbsenceEmpsByPeriod(List<String> sids, DatePeriod period);
 }

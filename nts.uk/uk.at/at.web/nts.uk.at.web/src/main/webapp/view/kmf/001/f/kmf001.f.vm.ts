@@ -44,6 +44,7 @@ module nts.uk.pr.view.kmf001.f {
             manageDistinctEnums: KnockoutObservableArray<Enum>;
             applyPermissionEnums: KnockoutObservableArray<Enum>;
             expirationTimeEnums: KnockoutObservableArray<Enum>;
+            filteredExpirationTimeEnums: KnockoutObservableArray<Enum>;
             timeVacationDigestiveUnitEnums: KnockoutObservableArray<Enum>;
             compensatoryOccurrenceDivisionEnums: KnockoutObservableArray<Enum>;
             transferSettingDivisionEnums: KnockoutObservableArray<RadioEnum>;
@@ -122,6 +123,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.manageDistinctEnums = ko.observableArray([]);
                 self.applyPermissionEnums = ko.observableArray([]);
                 self.expirationTimeEnums = ko.observableArray([]);
+                self.filteredExpirationTimeEnums = ko.observableArray([]);
                 self.timeVacationDigestiveUnitEnums = ko.observableArray([]);
                 self.compensatoryOccurrenceDivisionEnums = ko.observableArray([]);
                 self.transferSettingDivisionEnums = ko.observableArray([]);
@@ -222,6 +224,25 @@ module nts.uk.pr.view.kmf001.f {
                 });
 
                 self.compenManage.subscribe(() => self.clearError());
+                self.manageDeadline.subscribe(value => {
+                  if (value === 0) {
+                    self.filteredExpirationTimeEnums(_.filter(self.expirationTimeEnums(), e => !_.includes([0, 1, 2], e.value)));
+                  } else {
+                    self.filteredExpirationTimeEnums(self.expirationTimeEnums());
+                  }
+                })
+
+                self.compenTimeManage.subscribe(value => {
+                  if (value === 0) {
+                    self.selectedOfWorkTime(0);
+                    self.selectedOfOverTime(0);
+                    self.transferSettingDivisionEnums()[1].enable(false);
+                    self.transferSettingDivisionEnums.valueHasMutated();
+                  } else {
+                    self.transferSettingDivisionEnums()[1].enable(true);
+                    self.transferSettingDivisionEnums.valueHasMutated();
+                  }
+                })
 
                 //employment
                 self.employmentBackUpData = ko.observable();
@@ -420,7 +441,7 @@ module nts.uk.pr.view.kmf001.f {
                 let dfd = $.Deferred();
                 service.getEnumTransferSettingDivision().done(function(res: Array<RadioEnum>) {
                     res.forEach(function(item, index) {
-                        item.enable = true;
+                        item.enable = ko.observable(true);
                     });
                     self.transferSettingDivisionEnums(res);
                     dfd.resolve();
@@ -497,7 +518,8 @@ module nts.uk.pr.view.kmf001.f {
                 let self = this;
                 self.compenManage(data.isManaged);
                 self.managementClassification(data.linkingManagementATR);
-                self.manageDeadline(data.compensatoryAcquisitionUse.termManagement);
+                self.manageDeadline(data.compensatoryAcquisitionUse.termManagement === 0 ? 1 : 0);
+                self.manageDeadline.valueHasMutated();
 
                 self.expirationDateCode(data.compensatoryAcquisitionUse.expirationTime);
                 self.compenPreApply(data.compensatoryAcquisitionUse.preemptionPermit);
@@ -640,6 +662,7 @@ module nts.uk.pr.view.kmf001.f {
             //default data company
             private defaultData() {
                 var self = this;
+                self.manageDeadline.valueHasMutated();
                 return {
                     companyId: "",
                     isManaged: 0,
@@ -695,7 +718,7 @@ module nts.uk.pr.view.kmf001.f {
                         expirationTime: self.isManageCompen() ? self.expirationDateCode() : data.compensatoryAcquisitionUse.expirationTime,
                         preemptionPermit: self.isManageCompen() ? self.compenPreApply() : data.compensatoryAcquisitionUse.preemptionPermit,
                         deadlCheckMonth: self.isManageCompen() ? self.compenDeadlCheckMonth() : data.compensatoryAcquisitionUse.deadlCheckMonth,       
-                        termManagement : self.manageDeadline ()                  
+                        termManagement : self.manageDeadline() === 0 ? 1 : 0                  
                         
                         },
                     linkingManagementATR : self.managementClassification(),

@@ -56,9 +56,9 @@
                                     { prop: 'categoryName', length: 14}
                                 ]}"></div>
 								<button id="column-display" data-bind="text: '#{i18n.getText('CPS003_14')}', click: $vm.settingColumns.bind($vm)"></button>
-								<div class="fixed-width margin-left" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_15')}</div>
+								<div id="history-type-lbl" class="fixed-width margin-left" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS003_15')}</div>
 								<label id="history-type" data-bind="text: $vm.histType"></label>
-								<button data-bind="ntsHelpButton: {textId: 'CPS003_16', position: 'right center' }">？</button>
+								<button data-bind="ntsHelpButton: {textId: 'CPS003_16', position: 'right center' }">?</button>
 						</div>
 						<div class="grid-setting">
 							<div class="form-group margin-left">

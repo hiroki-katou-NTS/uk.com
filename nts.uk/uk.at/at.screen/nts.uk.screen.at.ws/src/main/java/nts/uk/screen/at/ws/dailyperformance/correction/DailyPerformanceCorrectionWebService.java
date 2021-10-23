@@ -23,22 +23,24 @@ import javax.ws.rs.Produces;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
-import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.web.session.HttpSubSession;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthoritySetting;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.MonthlyPerfomanceAuthorityFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.screen.at.app.dailymodify.command.DailyCalculationRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
+import nts.uk.screen.at.app.dailyperformance.correction.HolidayRemainParam;
 import nts.uk.screen.at.app.dailyperformance.correction.InfomationInitScreenProcess;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
@@ -57,6 +59,8 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DatePeriodInfo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpAndDate;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErAlWorkRecordShortDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ErrorReferenceDto;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDOutput;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.GetWkpIDParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.HolidayRemainNumberDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionStateParam;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.calctime.DCCalcTime;
@@ -86,7 +90,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmploye
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author hungnm
@@ -167,6 +170,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private DPCorrectionProcessorMob dpCorrectionProcessorMob;
+	
+	@Inject
+	private WorkplacePub workplacePub;
 	
 	@POST
 	@Path("startScreen")
@@ -491,9 +497,9 @@ public class DailyPerformanceCorrectionWebService {
 	}
 	
 	@POST
-	@Path("getRemainNum/{employeeId}")
-	public HolidayRemainNumberDto getRemainNumb(@PathParam(value = "employeeId") String employeeId) {
-		return remainNumberService.getRemainingHolidayNumber(employeeId);
+	@Path("getRemainNum")
+	public HolidayRemainNumberDto getRemainNumb(HolidayRemainParam param) {
+		return remainNumberService.getRemainingHolidayNumber(param.getEmployeeId(), param.getClosureDate());
 	}
 
 	@POST
@@ -557,5 +563,14 @@ public class DailyPerformanceCorrectionWebService {
 	@Path("getPrimitiveAll")
 	public Map<Integer, String> getPrimitiveAll() {
 		return DPHeaderDto.getPrimitiveAll();
+	}
+	
+	@POST
+	@Path("findWplIDByCode")
+	public GetWkpIDOutput findWplIDByCode(GetWkpIDParam param) {
+	    return new GetWkpIDOutput(workplacePub.getWkpNewByCdDate(
+	            param.getCompanyId(), 
+	            param.getWkpCode(), 
+	            GeneralDate.fromString(param.baseDate, "yyyy/MM/dd")).orElse(null));
 	}
 }

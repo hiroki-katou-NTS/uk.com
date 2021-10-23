@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 
 /**
@@ -57,7 +59,11 @@ public class ChangeDailyAttendanceProcess {
 						workStampNew.getLocationCode());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
-				if (timeLeavOpt.get().getAttendanceStamp().isPresent() && newData.getAttendanceStamp().isPresent()) {
+				if (newData.getAttendanceStamp().isPresent()) {
+					if (!timeLeavOpt.get().getAttendanceStamp().isPresent()) {
+						timeLeavOpt.get().setAttendanceStamp(
+								Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.AUTOMATIC_SET)));
+					}
 					timeLeavOpt.get().getAttendanceStamp().get()
 							.setStamp(newData.getAttendanceStamp().get().getStamp());
 				}
@@ -73,7 +79,11 @@ public class ChangeDailyAttendanceProcess {
 						workStampNew.getLocationCode());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
-				if (timeLeavOpt.get().getLeaveStamp().isPresent() && newData.getLeaveStamp().isPresent()) {
+				if (newData.getLeaveStamp().isPresent()) {
+					if (!timeLeavOpt.get().getLeaveStamp().isPresent()) {
+						timeLeavOpt.get().setLeaveStamp(
+								Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.AUTOMATIC_SET)));
+					}
 					timeLeavOpt.get().getLeaveStamp().get().setStamp(newData.getLeaveStamp().get().getStamp());
 				}
 			}

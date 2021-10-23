@@ -12,11 +12,16 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.bs.company.dom.company.AbolitionAtr;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
+import nts.uk.ctx.bs.company.dom.company.CompanyCode;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
+import nts.uk.ctx.bs.company.dom.company.MonthStr;
+import nts.uk.ctx.bs.company.dom.company.Name;
+import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -163,31 +168,30 @@ public class CompanyPubImp implements ICompanyPub {
 			
 			Company company = companyOpt.get();
 			
-			AddInfor addInfor = company.getAddInfor();
+			Optional<AddInfor> addInfor = company.getAddInfor();
 			
 			AddInforExport addInforExport = new AddInforExport();
 			
-			if(addInfor != null) {
-				
-				addInforExport = new AddInforExport(addInfor.getCompanyId(), 
-						addInfor.getFaxNum()== null?"": addInfor.getFaxNum().v(),
-						addInfor.getAdd_1() == null? "": addInfor.getAdd_1().v(),
-						addInfor.getAdd_2() == null? "": addInfor.getAdd_2().v(),
-						addInfor.getAddKana_1() == null? "": addInfor.getAddKana_1().v(),
-						addInfor.getAddKana_2() == null? "": addInfor.getAddKana_2().v(),
-						addInfor.getPostCd() == null? "": addInfor.getPostCd().v(),
-						addInfor.getPhoneNum() == null? "": addInfor.getPhoneNum().v());
+			if(addInfor.isPresent()) {
+				addInforExport = new AddInforExport(addInfor.get().getCompanyId(), 
+						addInfor.get().getFaxNum()== null?"": addInfor.get().getFaxNum().v(),
+						addInfor.get().getAdd_1() == null? "": addInfor.get().getAdd_1().v(),
+						addInfor.get().getAdd_2() == null? "": addInfor.get().getAdd_2().v(),
+						addInfor.get().getAddKana_1() == null? "": addInfor.get().getAddKana_1().v(),
+						addInfor.get().getAddKana_2() == null? "": addInfor.get().getAddKana_2().v(),
+						addInfor.get().getPostCd() == null? "": addInfor.get().getPostCd().v(),
+						addInfor.get().getPhoneNum() == null? "": addInfor.get().getPhoneNum().v());
 			}
 			
 			CompanyExport622 companyExport = new CompanyExport622(company.getCompanyId(),
 					company.getCompanyCode() == null? "": company.getCompanyCode().v(),
 					company.getCompanyName() == null? "": company.getCompanyName().v(),
-					company.getComNameKana() == null? "": company.getComNameKana().v(),
-					company.getShortComName() == null? "": company.getShortComName().v(),
-					company.getRepname() == null? "": company.getRepname().v(),
-					company.getRepjob() == null? "": company.getRepjob().v(),
+					company.getComNameKana().isPresent() ? company.getComNameKana().get().v(): "",
+					company.getShortComName().isPresent() ? company.getShortComName().get().v(): "",
+					company.getRepname().isPresent() ? company.getRepname().get().v(): "",
+					company.getRepjob().isPresent() ? company.getRepjob().get().v(): "",
 					company.getContractCd() == null? "": company.getContractCd().v(),
-					company.getTaxNo() == null? "": company.getTaxNo().v(),
+					company.getTaxNo().isPresent() ? company.getTaxNo().get().v(): "",
 					company.getStartMonth() == null? 1: company.getStartMonth().value,
 					addInforExport,
 					company.getIsAbolition().value);
@@ -236,5 +240,17 @@ public class CompanyPubImp implements ICompanyPub {
 		YearMonthPeriod result = company.get().getPeriodTheYear(year);
 
 		return result;
+	}
+	
+	//暦の年月から年月期間を取得する
+	@Override
+	public Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String cid, YearMonth yearMonth){
+		Optional<Company> company = this.repo.getComanyInfoByCid(cid);
+
+		if (!company.isPresent()) {
+			return Optional.empty();
+		}
+
+		return Optional.of(company.get().getYearMonthPeriodByCalendarYearmonth(yearMonth));
 	}
 }

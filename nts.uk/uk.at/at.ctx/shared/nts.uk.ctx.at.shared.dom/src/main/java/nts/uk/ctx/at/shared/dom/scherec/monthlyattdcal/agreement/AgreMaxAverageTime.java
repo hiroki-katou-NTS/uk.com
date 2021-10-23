@@ -151,7 +151,7 @@ public class AgreMaxAverageTime implements Cloneable {
 			return;
 		}
 		
-		if (this.averageTime.greaterThanOrEqualTo(limitTime.getError().valueAsMinutes())) {
+		if (this.averageTime.greaterThanOrEqualTo(limitTime.getAlarm().valueAsMinutes())) {
 			this.status = AgreMaxTimeStatusOfMonthly.ALARM_OVER;
 			return;
 		}

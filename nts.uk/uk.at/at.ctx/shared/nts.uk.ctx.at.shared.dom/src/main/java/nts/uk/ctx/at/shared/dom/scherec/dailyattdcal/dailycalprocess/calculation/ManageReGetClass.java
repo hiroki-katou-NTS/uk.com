@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -199,17 +198,8 @@ public class ManageReGetClass {
 	 * @return コアタイム時間帯設定
 	 */
 	public Optional<CoreTimeSetting> getCoreTimeSetting() {
-		if (!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFlexWorkSetting().isPresent())
-			return Optional.empty();
-			
-		if (!this.workType.isPresent())
-			return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting());
-		
-		if (this.workType.get().isWeekDayAttendance()) {
-			return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting());
-		} else {// 出勤系ではない場合は最低勤務時間を0：00にする
-			return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting().changeZeroMinWorkTime());
-		}
+		if (!this.integrationOfWorkTime.isPresent()) return Optional.empty();
+		return this.integrationOfWorkTime.get().getCoreTimeSettingForCalc(this.workType);
 	}
 	
 	/**
@@ -251,17 +241,6 @@ public class ManageReGetClass {
 			return Optional.empty();
 		
 		return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting().getGoOutCalc());
-	}
-	
-	/**
-	 * 「遅刻早退を控除する」を取得する
-	 * @return 遅刻早退を控除する
-	 */
-	public DeductLeaveEarly getLeaveLateSet() {
-		if(!this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent())
-			return DeductLeaveEarly.createAllTrue();
-			
-		return this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 	}
 	
 	/**

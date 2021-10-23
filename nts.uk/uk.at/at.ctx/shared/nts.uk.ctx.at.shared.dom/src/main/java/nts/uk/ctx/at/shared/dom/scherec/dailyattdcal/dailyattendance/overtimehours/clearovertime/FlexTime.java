@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
@@ -16,6 +17,7 @@ public class FlexTime implements Cloneable{
 	//フレックス時間
 	private TimeDivergenceWithCalculationMinusExist flexTime;
 	//申請時間
+	@Setter
 	private AttendanceTime beforeApplicationTime; 
 	
 	/**

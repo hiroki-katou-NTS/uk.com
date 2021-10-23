@@ -7,9 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
@@ -18,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
@@ -31,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class NumberCompensatoryLeavePeriodProcess {
@@ -92,15 +90,8 @@ public class NumberCompensatoryLeavePeriodProcess {
 		private final EmpSubstVacationRepository empSubstVacationRepository;
 
 		private final ComSubstVacationRepository comSubstVacationRepository;
-
-
-		private final CompanyAdapter companyAdapter;
 		
 		private final PayoutSubofHDManaRepository payoutSubofHDManaRepository;
-
-		private final ClosureEmploymentRepository closureEmploymentRepo;
-
-		private final ClosureRepository closureRepo;
 
 		public RequireImpl(RequireImplBuilder builder) {
 			this.substitutionOfHDManaDataRepository = builder.getSubstitutionOfHDManaDataRepository();
@@ -109,23 +100,8 @@ public class NumberCompensatoryLeavePeriodProcess {
 			this.shareEmploymentAdapter = builder.getShareEmploymentAdapter();
 			this.empSubstVacationRepository = builder.getEmpSubstVacationRepository();
 			this.comSubstVacationRepository = builder.getComSubstVacationRepository();
-			this.companyAdapter = builder.getCompanyAdapter();
-			this.closureEmploymentRepo = builder.getClosureEmploymentRepo();
-			this.closureRepo = builder.getClosureRepo();
 			this.payoutSubofHDManaRepository = builder.getPayoutSubofHDManaRepository();
 
-		}
-
-		@Override
-		public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd,
-				double unOffseDays) {
-			return substitutionOfHDManaDataRepository.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
-		}
-
-		@Override
-		public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse,
-				DigestionAtr state) {
-			return payoutManagementDataRepository.getByUnUseState(cid, sid, ymd, unUse, state);
 		}
 
 		@Override
@@ -136,12 +112,6 @@ public class NumberCompensatoryLeavePeriodProcess {
 		@Override
 		public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
 			return interimRecAbasMngRepository.getRecBySidDatePeriod(sid, period);
-		}
-
-		@Override
-		public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId,
-				GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
 		}
 
 		@Override
@@ -160,13 +130,18 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate) {
-			return payoutSubofHDManaRepository.getBySubId(sid, digestDate);
+		public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
+			return payoutSubofHDManaRepository.getOccDigetByListSid(sid, date);
 		}
 
 		@Override
-		public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
-			return payoutSubofHDManaRepository.getByPayoutId(sid, occDate);
+		public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
+			return substitutionOfHDManaDataRepository.getBysiD(AppContexts.user().companyId(), sid);
+		}
+
+		@Override
+		public List<PayoutManagementData> getPayoutMana(String sid) {
+			return payoutManagementDataRepository.getSid(AppContexts.user().companyId(), sid);
 		}
 	}
 

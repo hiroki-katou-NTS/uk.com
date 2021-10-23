@@ -42,4 +42,9 @@ public class SharedTempAbsenceAdapterImpl implements SharedTempAbsenceAdapter {
                                 x.getFamilyMemberId()))
                         .collect(Collectors.toList()));
     }
+
+	@Override
+	public List<String> getAbsenceEmpsByPeriod(List<String> sids, DatePeriod period) {
+		return this.tempAbsencePub.getAbsenceEmpsByPeriod(sids, period);
+	}
 }

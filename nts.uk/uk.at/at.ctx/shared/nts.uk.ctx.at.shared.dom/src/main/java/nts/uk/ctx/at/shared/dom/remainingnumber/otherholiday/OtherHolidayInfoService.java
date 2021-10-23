@@ -548,7 +548,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		// 労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
-		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
+		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode();
 
 		if (!workTimeCD.isPresent()) {
 			return getCompanySet(cid);
@@ -619,7 +619,7 @@ public class OtherHolidayInfoService {
 			}
 			
 			// 労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
-			Optional<WorkTimeCode> workTimeCD = workingCondItemOpt.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
+			Optional<WorkTimeCode> workTimeCD = workingCondItemOpt.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode();
 			if (!workTimeCD.isPresent()) {
 				result.put(c, designatedTimeCid);
 				return;
@@ -1177,5 +1177,35 @@ public class OtherHolidayInfoService {
 			}
 		});
 		return result;
+	}
+	
+	/**
+	 * IS00366 getRemainDays
+	 */
+	public BigDecimal getRemainDays(String sid) {
+		String cid = AppContexts.user().companyId();
+		// 取得した「休出管理データ」の未使用日数を合計
+		Double sumUnUsedDay = leaveManaDataRepository
+				.getBySidWithsubHDAtr(cid, sid, DigestionAtr.UNUSED.value).stream()
+				.mapToDouble(i -> i.getUnUsedDays().v()).sum();
+		// 取得した「代休管理データ」の未相殺日数を合計
+		Double sumRemain = comDayOffManaDataRepository.getBySidWithReDay(cid, sid).stream()
+				.mapToDouble(i -> i.getRemainDays().v()).sum();
+		return new BigDecimal(sumUnUsedDay - sumRemain);
+	}
+	
+	/**
+	 * IS00368 getRemainLeft
+	 */
+	public BigDecimal getRemainLeft(String sid) {
+		String cid = AppContexts.user().companyId();
+		// 取得した「振出管理データ」の未使用日数を合計
+		Double sumUnUsedDay = payoutManagementDataRepository
+				.getSidWithCod(cid,sid, DigestionAtr.UNUSED.value).stream()
+				.mapToDouble(i -> i.getUnUsedDays().v()).sum();
+		// 取得した「振休管理データ」の未相殺日数を合計
+		Double sumRemain = substitutionOfHDManaDataRepository.getBysiDRemCod(cid, sid).stream()
+				.mapToDouble(i -> i.getRemainDays().v()).sum();
+		return new BigDecimal(sumUnUsedDay - sumRemain);
 	}
 }

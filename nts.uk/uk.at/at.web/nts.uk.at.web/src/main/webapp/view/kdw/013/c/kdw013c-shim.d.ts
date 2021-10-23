@@ -3,6 +3,8 @@ module nts.uk.ui.at.kdw013 {
     export type API = {
         readonly START: string;
         readonly SELECT: string;
+        readonly START_F: string;
+        readonly ADD_FAV_TASK_F: string;
     };
 
     export type TASK_FRAME_NO = 1 | 2 | 3 | 4 | 5;

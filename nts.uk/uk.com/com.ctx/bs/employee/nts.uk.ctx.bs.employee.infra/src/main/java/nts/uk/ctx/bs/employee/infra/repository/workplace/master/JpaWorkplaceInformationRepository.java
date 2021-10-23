@@ -160,6 +160,7 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 	public void deleteWorkplaceInfor(String companyId, String wkpHistId, String wkpId) {
 		this.commandProxy().remove(BsymtWorkplaceInfor.class, new BsymtWorkplaceInforPk(companyId, wkpHistId, wkpId));
 	}
+	
 	@Override
 	public Optional<WorkplaceInformation> getWkpNewByIdDate(String companyId, String wkpId, GeneralDate baseDate){
 		String qr = "SELECT info FROM BsymtWorkplaceInfor info"
@@ -295,6 +296,19 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 					.getList(f -> new WkpDto(f.getPk().getWorkplaceId(), f.getWorkplaceName())));
 		});
 		return result;
+	}
+	
+	@Override
+	public List<WorkplaceInformation> findAll(String companyId) {
+		
+		String query = "SELECT e FROM BsymtWorkplaceInfor e "
+				+ "WHERE e.pk.companyId = :cid "
+				+ "ORDER BY e.hierarchyCode ASC";
+
+		return this.queryProxy()
+				.query(query, BsymtWorkplaceInfor.class)
+				.setParameter("cid", companyId)
+				.getList(e -> e.toDomain());
 	}
 	
 	@Override

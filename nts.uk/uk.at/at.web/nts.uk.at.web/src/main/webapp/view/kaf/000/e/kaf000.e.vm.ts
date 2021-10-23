@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf000.e.viewmodel {
             .done((successData: any) => {
                 vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
 					CommonProcess.handleMailResult(successData, vm).then(() => {
-						let param = [successData.reflectAppId];
+						let param = successData.reflectAppIdLst;
 	                	nts.uk.request.ajax("at", API.reflectAppSingle, param);
 	                    vm.$window.close({reload: true});
 					});

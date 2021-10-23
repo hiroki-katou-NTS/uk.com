@@ -16,8 +16,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
-import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfo;
-import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.ScheMasterInfoRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 
 /**
@@ -31,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTy
 public class RequestPeriodChangeDefault implements RequestPeriodChangeService {
 
 	@Inject
-	private ScheMasterInfoRepository scheMasterInfoRepo;
+	private WorkScheduleRepository workScheduleRepository;
 	
 	@Override
 	public List<DatePeriod> getPeriodChange(String employeeId, DatePeriod period,
@@ -45,14 +44,14 @@ public class RequestPeriodChangeDefault implements RequestPeriodChangeService {
 			// INPUT「処理期間」をOUTPUTとして返す
 			return result;
 		}
-
-		// ドメインモデル「勤務予定マスタ情報」を取得する
-		List<ScheMasterInfo> listScheMasterInfo = scheMasterInfoRepo.getScheMasterInfoByPeriod(employeeId, period);
+		
+		//「勤務予定Repository．所属情報を取得する」を実行する
+		List<AffInfoForWorkSchedule> listAffInfoForWorkSchedule =  workScheduleRepository.getAffiliationInfor(employeeId, period);
 
 		// ◆INPUT．「変更比較対象」 = 職場 の場合
 		if (isWorkplace) {
-			Map<String, List<ScheMasterInfo>> mappedByWp = listScheMasterInfo.stream().filter(c->c.getWorkplaceId() != null)
-					.collect(Collectors.groupingBy(c -> c.getWorkplaceId()));
+			Map<String, List<AffInfoForWorkSchedule>> mappedByWp = listAffInfoForWorkSchedule.stream().filter(c->c.getAffiliationInforOfDailyAttd().getWplID() != null)
+					.collect(Collectors.groupingBy(c -> c.getAffiliationInforOfDailyAttd().getWplID()));
 			Map<String, List<ExWorkplaceHistItemImported>> mapDateWpl = workplaceHistory.stream().filter(c->c.getWorkplaceId() != null)
 					.collect(Collectors.groupingBy(c -> c.getWorkplaceId()));
 			Set<GeneralDate> lstDateAll = new HashSet<>();
@@ -72,12 +71,12 @@ public class RequestPeriodChangeDefault implements RequestPeriodChangeService {
 				List<GeneralDate> lstDateNeedCheck = afterMerge.stream().flatMap(x -> x.datesBetween().stream())
 						.collect(Collectors.toList());
 
-				List<ScheMasterInfo> lstWplDate = mappedByWp.get(wpl);
+				List<AffInfoForWorkSchedule> lstWplDate = mappedByWp.get(wpl);
 				if (lstWplDate == null) {
 					lstDateAll.addAll(lstDateNeedCheck);
 					continue;
 				}
-				List<GeneralDate> lstDateWpl = lstWplDate.stream().map(x -> x.getGeneralDate()).sorted((x, y) -> x.compareTo(y))
+				List<GeneralDate> lstDateWpl = lstWplDate.stream().map(x -> x.getYmd()).sorted((x, y) -> x.compareTo(y))
 						.collect(Collectors.toList());
 				lstDateWpl.removeAll(lstDateNeedCheck);
 				lstDateAll.addAll(lstDateWpl);
@@ -103,8 +102,8 @@ public class RequestPeriodChangeDefault implements RequestPeriodChangeService {
 			}
 			return lstResult;
 		}else {//◆INPUT．「変更比較対象」 =　勤務種別　の場合
-			Map<String, List<ScheMasterInfo>> mappedByWkType = listScheMasterInfo.stream().filter(c->c.getBusinessTypeCd() != null)
-					.collect(Collectors.groupingBy(c -> c.getBusinessTypeCd()));
+			Map<String, List<AffInfoForWorkSchedule>> mappedByWkType = listAffInfoForWorkSchedule.stream().filter(c->c.getAffiliationInforOfDailyAttd().getBusinessTypeCode().isPresent())
+					.collect(Collectors.groupingBy(c -> c.getAffiliationInforOfDailyAttd().getBusinessTypeCode().get().v()));
 			Map<String, List<BusinessTypeOfEmployeeHis>> mapDateWtype = worktypeHis.stream().filter(c -> c.getEmployee().getBusinessTypeCode() != null)
 					.collect(Collectors.groupingBy(c -> c.getEmployee().getBusinessTypeCode().v()));
 			Set<GeneralDate> lstDateAll = new HashSet<>();
@@ -119,13 +118,13 @@ public class RequestPeriodChangeDefault implements RequestPeriodChangeService {
 					}
 				 if(afterMerge.isEmpty()) continue;
 				 List<GeneralDate> lstDateNeedCheck = afterMerge.stream().flatMap(x -> x.datesBetween().stream()).collect(Collectors.toList());
-				 List<ScheMasterInfo> lstWpTypeDate = 
+				 List<AffInfoForWorkSchedule> lstWpTypeDate = 
 						 mappedByWkType.get(wtype);
 				 if(lstWpTypeDate == null) {
 					 lstDateAll.addAll(lstDateNeedCheck);
 					 continue;
 				 }
-				 List<GeneralDate> lstDateWpl = lstWpTypeDate.stream().map(x -> x.getGeneralDate()).sorted((x, y) -> x.compareTo(y)).collect(Collectors.toList());
+				 List<GeneralDate> lstDateWpl = lstWpTypeDate.stream().map(x -> x.getYmd()).sorted((x, y) -> x.compareTo(y)).collect(Collectors.toList());
 				 lstDateWpl.removeAll(lstDateNeedCheck);
 				 lstDateAll.addAll(lstDateWpl);
 				 

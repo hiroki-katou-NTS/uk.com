@@ -304,30 +304,29 @@ module nts.uk.com.view.cmf005.b.viewmodel {
         } else {
           self.listDataCategory([]);
         }
-
-        if (res.dailyReferMonth && res.dailyReferYear) {
-          self.dateValue().startDate = moment.utc().subtract(res.dailyReferYear - 1, 'year').subtract(res.dailyReferMonth - 1, 'month').format('YYYY/MM/DD');
-        } else {
-          self.dateValue().startDate = moment.utc().subtract(1, 'month').add(1, 'day').format('YYYY/MM/DD');
-        }
-        self.dateValue.valueHasMutated();
-        if (res.monthlyReferMonth && res.monthlyReferYear) {
-          self.monthValue().startDate = moment.utc().subtract(res.monthlyReferYear - 1, 'year').subtract(res.monthlyReferMonth - 1, 'month').format('YYYY/MM');
-        } else {
-          self.monthValue().startDate = moment.utc().format('YYYY/MM');
-        }
-        self.monthValue.valueHasMutated();
-        if (res.annualReferYear) {
-          self.yearValue().startDate = moment.utc().subtract(res.annualReferYear - 1, 'year').format('YYYY');
-        } else {
-          self.yearValue().startDate = moment.utc().format('YYYY');
-        }
-        self.yearValue.valueHasMutated();
-        self.setDateRangePickerRequired();
         nts.uk.ui.errors.clearAll();
+      }).then(() => {
+        return service.getClosurePeriod().then(result => {
+          const startDate = moment.utc(result.startDate, "YYYY/MM/DD");
+          const endDate = moment.utc(result.endDate, "YYYY/MM/DD");
+          
+          self.dateValue({
+            startDate: startDate.format("YYYY/MM/DD"),
+            endDate: endDate.format("YYYY/MM/DD")
+          });
+          self.monthValue({
+            startDate: startDate.format("YYYY/MM"),
+            endDate: endDate.format("YYYY/MM")
+          });
+          self.yearValue({
+            startDate: startDate.format("YYYY"),
+            endDate: endDate.format("YYYY")
+          });
+          self.setDateRangePickerRequired();
+        })
       }).always(() => {
         block.clear();
-      })
+      });
     }
 
     /**

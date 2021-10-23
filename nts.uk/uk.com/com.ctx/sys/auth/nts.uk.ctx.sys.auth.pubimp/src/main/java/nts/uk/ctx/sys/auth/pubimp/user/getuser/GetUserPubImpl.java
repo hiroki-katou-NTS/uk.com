@@ -17,13 +17,13 @@ import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 public class GetUserPubImpl implements GetUserPublish {
-
+	
 	@Inject
 	private UserRepository userRepo;
-
+	
 	@Inject
 	private PersonAdapter personAdapter;
-
+	
 	@Override
 	public List<GetUserDto> getUser(List<String> userIds) {
 		List<User> users = userRepo.getByListUser(userIds);
@@ -32,21 +32,19 @@ public class GetUserPubImpl implements GetUserPublish {
 				.map(x -> x.getAssociatedPersonID().get()).collect(Collectors.toList());
 		Map<String, PersonImport> personImportList = personAdapter.findByPersonIds(associatedPersonIdList).stream()
 				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
-
+		
 		return users.stream().map(user -> {
 			GetUserDto dto = createDto(user);
-
+			
 			// change user-name
 			PersonImport personImport = personImportList.get(user.getAssociatedPersonID().get());
 			if (personImport != null) {
 				dto.setUserName(Optional.of(personImport.getPersonName()));
-		
 			}
 			return dto;
 		}).collect(Collectors.toList());
-
 	}
-
+	
 	@Override
 	public Optional<GetUserDto> getUserWithPersonId(String personId) {
 		Optional<User> _user = userRepo.getByAssociatedPersonId(personId);
@@ -56,14 +54,12 @@ public class GetUserPubImpl implements GetUserPublish {
 		User user = _user.get();
 		return Optional.of(createDto(user));
 	}
-
+	
 	private GetUserDto createDto(User user) {
 		return new GetUserDto(user.getUserID(),
 				user.getLoginID().v(),
 				user.getUserName().isPresent() ? user.getUserName().get().v() : "",
 				user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : "",
-				user.getMailAddress().isPresent() ? user.getMailAddress().get().v() : "",
-				user.getPassword().v());
+				user.getMailAddress().isPresent() ? user.getMailAddress().get().v() : "");
 	}
-
 }

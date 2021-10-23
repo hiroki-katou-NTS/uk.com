@@ -37,6 +37,7 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 					dto.setAttendanceItemDisplayNumber(item.getAttendanceItemDisplayNumber());
 					dto.setTypeOfAttendanceItem(item.getTypeOfAttendanceItem());
 					dto.setFrameCategory(item.getFrameCategory());
+					dto.setDisplayName(item.getDisplayName());
 					return dto;
 				}).collect(Collectors.toList());
 	}

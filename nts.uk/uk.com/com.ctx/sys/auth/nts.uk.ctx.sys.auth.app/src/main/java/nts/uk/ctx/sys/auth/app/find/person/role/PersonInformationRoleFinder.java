@@ -59,8 +59,8 @@ public class PersonInformationRoleFinder {
 		return result;
 	}
 	
-	public PersonRole find(String roleId) {
-		return this.personRoleRepo.find(roleId).get();
+	public Optional<PersonRole> find(String roleId) {
+		return this.personRoleRepo.find(roleId);
 	}
 	
 	public List<RoleDto> getListRoleByRoleType(int roleType ){

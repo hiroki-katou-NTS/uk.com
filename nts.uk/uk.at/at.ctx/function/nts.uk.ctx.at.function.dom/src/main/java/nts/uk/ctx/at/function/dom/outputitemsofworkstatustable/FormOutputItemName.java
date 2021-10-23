@@ -5,9 +5,9 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * 帳票の出力項目名称
+ * 勤務状況表の出力項目名称
  */
-@StringMaxLength(6)
+@StringMaxLength(20)
 public class FormOutputItemName extends StringPrimitiveValue<FormOutputItemName> {
 
     /**

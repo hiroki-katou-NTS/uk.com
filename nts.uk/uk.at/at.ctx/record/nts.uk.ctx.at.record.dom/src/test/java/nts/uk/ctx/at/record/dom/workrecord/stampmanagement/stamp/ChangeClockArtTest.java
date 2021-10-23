@@ -55,10 +55,6 @@ public class ChangeClockArtTest {
 		assertThat(changeClockArt.checkWorkingOut()).isFalse();
 		changeClockArt = ChangeClockArt.valueOf(11);
 		assertThat(changeClockArt.checkWorkingOut()).isFalse();
-		changeClockArt = ChangeClockArt.valueOf(12);
-		assertThat(changeClockArt.checkWorkingOut()).isFalse();
-		changeClockArt = ChangeClockArt.valueOf(13);
-		assertThat(changeClockArt.checkWorkingOut()).isFalse();
 	}
 	
 }

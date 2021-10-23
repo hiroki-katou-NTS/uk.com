@@ -94,39 +94,47 @@ module nts.uk.at.view.kmf002.e.sidebar {
                   if (typeStart == SideBarTabIndex.SECOND) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
-                    self.screenB(new viewModelTabB.ScreenModel());
-                    $.when(self.screenB().start_page()).done(function() {
+                    // self.screenB(new viewModelTabB.ScreenModel());
+                    setTimeout(() => {
+                      $.when(self.screenB().start_page()).done(function() {
                         dfd.resolve(self);
                         blockUI.clear();
                         $( "#scrB .datePickerYear" ).focus();
-                    });    
+                      });    
+                    }, 500);
                 } else if (typeStart == SideBarTabIndex.FIRST) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
-                    self.screenE(new viewModelTabE.ScreenModel());
-                    $.when(self.screenE().start_page()).done(function() {
+                    // self.screenE(new viewModelTabE.ScreenModel());
+                    setTimeout(() => {
+                      $.when(self.screenE().start_page()).done(function() {
                         dfd.resolve(self);
                         blockUI.clear();
                         $( "#scrE .datePickerYear" ).focus();
-                    });    
+                      });
+                    }, 500);
                 } else if (typeStart == SideBarTabIndex.THIRD) {
                     nts.uk.ui.errors.clearAll()
                     blockUI.grayout();
-                    self.screenD(new viewModelTabD.ScreenModel());
-                    $.when(self.screenD().start_page()).done(function() {
-                        dfd.resolve(self);
-                        blockUI.clear();
-                        $( "#scrD .datePickerYear" ).focus();
-                    });    
+                    // self.screenD(new viewModelTabD.ScreenModel());
+                    setTimeout(() => {
+                      $.when(self.screenD().start_page()).done(function() {
+                          dfd.resolve(self);
+                          blockUI.clear();
+                          $( "#scrD .datePickerYear" ).focus();
+                      });
+                    }, 500);
                 } else if (typeStart == SideBarTabIndex.FOURTH) {
                     nts.uk.ui.errors.clearAll();
                     blockUI.grayout();
-                    self.screenC(new viewModelTabC.ScreenModel());
-                    $.when(self.screenC().start_page()).done(function() {
-                        dfd.resolve(self);
-                        blockUI.clear();
-                        $( "#scrC .datePickerYear" ).focus();
-                    });    
+                    // self.screenC(new viewModelTabC.ScreenModel());
+                    setTimeout(() => {
+                      $.when(self.screenC().start_page()).done(function() {
+                          dfd.resolve(self);
+                          blockUI.clear();
+                          $( "#scrC .datePickerYear" ).focus();
+                      });    
+                    }, 500);
                   }
                 })
                 
@@ -243,21 +251,44 @@ module nts.uk.at.view.kmf002.e.sidebar {
                 let self = this;
                 var dfd = $.Deferred();
                 $.when(service.findAll()).done(function(data: any) {  
-                    if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
-                        self.managePublicHoliday(data.managePublicHoliday);
-                        
-                        self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
-                        self.publicHolidayPeriod(data.publicHolidayPeriod);
-                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);                       
-                    } else {
+//                    if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
+//                        self.managePublicHoliday(data.managePublicHoliday);
+//                        
+//                        self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+//                        self.publicHolidayPeriod(data.publicHolidayPeriod);
+//                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);                       
+//                    } else {
+//                        self.managePublicHoliday(ManagePubHD.MANAGE);
+//                        self.enableCarryOverDeadline(true);    
+//                        self.enableCarryOverNumberOfPublicHdIsNegative(true);
+//                        self.enablePubHDPeriod(true);       
+//                        self.isDisableSetUnitBtn(false) ;
+//                        
+//                    }
+                    if (data.managePublicHoliday == null) {
                         self.managePublicHoliday(ManagePubHD.MANAGE);
-                        self.enableCarryOverDeadline(true);    
-                        self.enableCarryOverNumberOfPublicHdIsNegative(true);
-                        self.enablePubHDPeriod(true);       
                         self.isDisableSetUnitBtn(false) ;
                         
+                    } else {
+                        self.managePublicHoliday(data.managePublicHoliday)
                     }
-
+                    if (data.carryOverNumberOfPublicHdIsNegative == null) {
+                        self.enableCarryOverNumberOfPublicHdIsNegative(true);
+                    }
+                    else {
+                        self.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+                    }
+                    if (data.publicHolidayPeriod == null) {
+                        self.enablePubHDPeriod(true);
+                    } else {
+                        self.publicHolidayPeriod(data.publicHolidayPeriod);
+                    }
+                    if (data.publicHdCarryOverDeadline == null) {
+                        self.enableCarryOverDeadline(true);
+                    }
+                    else {
+                        self.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
+                    }
                     // notify variable observable
                     // self.managePublicHoliday.valueHasMutated();
                     // self.publicHolidayPeriod.valueHasMutated();

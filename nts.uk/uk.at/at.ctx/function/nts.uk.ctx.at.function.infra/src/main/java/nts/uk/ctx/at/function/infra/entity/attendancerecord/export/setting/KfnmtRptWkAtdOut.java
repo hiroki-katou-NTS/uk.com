@@ -18,9 +18,11 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.DayOfWeek;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
@@ -88,6 +90,10 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 	@Basic(optional = false)
 	@Column(name = "MONTH_APP_DISP_ATR")
 	private BigDecimal monthAppDispAtr;
+	
+	@Basic(optional = false)
+	@Column(name = "START_OF_WEEK")
+	private BigDecimal startOfWeek;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
@@ -154,6 +160,11 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 	}
 
 	@Override
+	public void setStartOfWeek(DayOfWeek startOfWeek) {
+		this.startOfWeek = BigDecimal.valueOf(startOfWeek.value);
+	}
+
+	@Override
 	public void setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay monthlyConfirmedDisplay) {
 		this.monthAppDispAtr = BigDecimal.valueOf(monthlyConfirmedDisplay.value);
 	}
@@ -202,6 +213,11 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 	@Override
 	public ExportFontSize getExportFontSize() {
 		return ExportFontSize.valueOf(this.charSizeType.intValue());
+	}
+
+	@Override
+	public DayOfWeek getStartOfWeek() {
+		return EnumAdaptor.valueOf(startOfWeek.intValue(), DayOfWeek.class);
 	}
 
 	@Override

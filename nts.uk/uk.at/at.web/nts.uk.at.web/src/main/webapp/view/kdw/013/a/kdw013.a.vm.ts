@@ -603,38 +603,6 @@ module nts.uk.ui.at.kdw013.a {
                 showOnStart: false,
                 dismissible: true
             });
-
-            //F: 起動する
-            const fcommand : StartTaskFavoriteRegisterParam = {
-                favId: '' //giá trị default
-            }
-            
-            // favId sẽ truyền param vào popup F -> sẽ update sau
-            fcommand.favId = '76dac909-8af0-40ea-a2c9-7c080d867f2c';
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.START_F, fcommand))
-            .then((response: FavoriteTaskItemDto) => {
-                if (response) {
-                    vm.favoriteTaskItem(response);
-                    vm.favTaskName(response.taskName);
-                }
-
-            }).always(() => vm.$blockui('clear'));
-
-             // G: 起動する
-             const gCommand : StartTaskFavoriteRegisterParam = {
-                favId: '' //giá trị default
-            }
-            
-            // favId sẽ truyền param vào popup G -> sẽ update sau
-            gCommand.favId = '5671a985-39c7-4552-a426-884066437429';
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.START_G, gCommand))
-            .then((response: OneDayFavoriteSetDto) => {
-                if (response) {
-                    vm.oneDayFavoriteSet(response);
-                    vm.oneDayFavTaskName(response.taskName);
-                }
-
-            }).always(() => vm.$blockui('clear'));
         
         }
 
@@ -960,23 +928,11 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         // Popup F:
-        registerFavTask() {
-            const vm = this;
-            let favId = vm.favoriteTaskItem().favoriteId;
-
-            if (favId =='') {
-                vm.addFavTask();
-            } else {
-                vm.updateFavName(favId);
-            }
-
-        }
-
         updateFavName(favTaskId: string) {
             const vm = this;
 
             const updateFavNameCommand: UpdateFavNameCommand = {
-                favId: favTaskId,
+                favId: vm.favoriteTaskItem().favoriteId,
                 favName: vm.favTaskName()
             }
 
@@ -987,51 +943,6 @@ module nts.uk.ui.at.kdw013.a {
                 });
             }).always(() => vm.$blockui('clear'));
 
-        }
-
-        addFavTask() {
-            const vm = this;
-
-            //_.forEach(vm.itemValues(), v => {
-
-                // vm.taskContents().push({
-                //     itemId: v.itemId,
-                //     taskCode: v.value.toString()
-                // })
-
-            //});
-
-            vm.taskContents([{
-                itemId: 4,
-                taskCode: "1"
-            },
-            {
-                itemId: 5,
-                taskCode: "2"
-            },
-            {
-                itemId: 6,
-                taskCode: "3"
-            },
-            {
-                itemId: 7,
-                taskCode: "4"
-            },
-            {
-                itemId: 8,
-                taskCode: "5"
-            }]);
-
-            const registerFavoriteCommand : RegisterFavoriteCommand = {
-                taskName: vm.favTaskName(),
-                contents: vm.taskContents()
-            }
-
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
-            }).always(() => vm.$blockui('clear'));
-               
         }
 
         // Popup G:

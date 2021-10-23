@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.kdl035;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -10,32 +9,32 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.experimental.var;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.find.application.common.service.other.output.ActualContentDisplayDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.screen.at.app.dailyperformance.correction.closure.FindClosureDateService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SubHolidaySubWorkAssociationFinder {
-    @Inject
-    private FindClosureDateService closureService;
-
     @Inject
     private InterimRecAbasMngRepository interimRecAbasMngRepo;
 
@@ -48,19 +47,35 @@ public class SubHolidaySubWorkAssociationFinder {
     @Inject
     private ComSubstVacationRepository comSubstVacationRepo;
 
+    @Inject
+    private ClosureRepository closureRepo;
+
+    @Inject
+    private ClosureEmploymentRepository closureEmploymentRepo;
+
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
+    
+    @Inject
+    private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
+
     /**
      * 振休振出関連付けダイアログ起動
      * @param inputData
      * @return
      */
     public Kdl035OutputData init(Kdl035InputData inputData) {
-        Optional<ClosurePeriod> closurePeriod = closureService.getClosurePeriod(inputData.getEmployeeId(), GeneralDate.today());
-        if (!closurePeriod.isPresent())
-            throw new BusinessException(new RawErrorMessage("Closure Period Not Found!"));
+        // 社員に対応する締め期間を取得する
+        DatePeriod closurePeriod = ClosureService.findClosurePeriod(
+                ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
+                new CacheCarrier(),
+                inputData.getEmployeeId(),
+                GeneralDate.today()
+        );
 
         List<SubstituteWorkData> outputData = getSubsituteWorkData(
                 inputData.getEmployeeId(),
-                closurePeriod.get(),
+                closurePeriod,
                 inputData.getManagementData().stream().map(PayoutSubofHDManagementDto::toDomain).collect(Collectors.toList())
         );
 
@@ -87,7 +102,7 @@ public class SubHolidaySubWorkAssociationFinder {
     /**
      * 紐付可能な振出データを取得する
      */
-    private List<SubstituteWorkData> getSubsituteWorkData(String employeeId, ClosurePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
+    private List<SubstituteWorkData> getSubsituteWorkData(String employeeId, DatePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
         List<SubstituteWorkData> result = new ArrayList<>();
 
         // 暫定振出データを取得する
@@ -98,6 +113,13 @@ public class SubHolidaySubWorkAssociationFinder {
 
         // 紐付け中の振出データを取得する
         result.addAll(getDrawingDataDuringLinking(employeeId, closurePeriod, managementData));
+        
+        // ドメインモデル「暫定残数管理データ」を取得する
+//        List<PayoutSubofHDManagement> payoutSubofHDManagements = payoutSubofHDManaRepository.getByListOccDate(employeeId, result.stream().map(x -> x.getSubstituteWorkDate()).collect(Collectors.toList()));
+//        List<GeneralDate> payoutDates = payoutSubofHDManagements.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
+//        
+//        result = result.stream().filter(x -> !payoutDates.contains(x.getSubstituteWorkDate())).collect(Collectors.toList());
+        
 
         result.sort(Comparator.comparing(SubstituteWorkData::getSubstituteWorkDate));
         return result;
@@ -106,22 +128,21 @@ public class SubHolidaySubWorkAssociationFinder {
     /**
      * 暫定振出データを取得する
      */
-    private List<SubstituteWorkData> getProvisionalDrawingData(String employeeId, ClosurePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
+    private List<SubstituteWorkData> getProvisionalDrawingData(String employeeId, DatePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
         List<GeneralDate> outbreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
 
-        // ドメインモデル「暫定残数管理データ」を取得する
         // ドメインモデル「暫定振出管理データ」を取得する
         List<SubstituteWorkData> result = interimRecAbasMngRepo.getRecBySidDatePeriod(
                 employeeId,
                 new DatePeriod(
-                        closurePeriod.getPeriod().start(),
-                        closurePeriod.getPeriod().start().addYears(1)
+                        closurePeriod.start(),
+                        closurePeriod.start().addYears(1)
                 )).stream()
                 .filter(i -> !outbreakDays.contains(i.getYmd()) && i.getUnUsedDays().v() > 0)
                 .map(recMng -> new SubstituteWorkData(
                         recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value,
                         recMng.getExpirationDate(),
-                        recMng.getExpirationDate().beforeOrEquals(closurePeriod.getPeriod().end()),
+                        recMng.getExpirationDate().beforeOrEquals(closurePeriod.end()),
                         recMng.getYmd(),
                         recMng.getUnUsedDays().v()
                 )).collect(Collectors.toList());
@@ -132,7 +153,7 @@ public class SubHolidaySubWorkAssociationFinder {
     /**
      * 確定振出データを取得する
      */
-    private List<SubstituteWorkData> getFixedDrawingData(String employeeId, ClosurePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
+    private List<SubstituteWorkData> getFixedDrawingData(String employeeId, DatePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
         List<GeneralDate> outBreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
 
         // ドメインモデル「振出管理データ」を取得する
@@ -144,7 +165,7 @@ public class SubHolidaySubWorkAssociationFinder {
                 .map(payout -> new SubstituteWorkData(
                         DataType.ACTUAL.value,
                         payout.getExpiredDate(),
-                        payout.getExpiredDate().beforeOrEquals(closurePeriod.getPeriod().end()),
+                        payout.getExpiredDate().beforeOrEquals(closurePeriod.end()),
                         payout.getPayoutDate().getDayoffDate().orElse(null),
                         payout.getUnUsedDays().v()
                 )).collect(Collectors.toList());
@@ -155,7 +176,7 @@ public class SubHolidaySubWorkAssociationFinder {
     /**
      * 紐付け中の振出データを取得する
      */
-    private List<SubstituteWorkData> getDrawingDataDuringLinking(String employeeId, ClosurePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
+    private List<SubstituteWorkData> getDrawingDataDuringLinking(String employeeId, DatePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
         List<SubstituteWorkData> result = new ArrayList<>();
 
         if (managementData.isEmpty()) return result;
@@ -164,20 +185,38 @@ public class SubHolidaySubWorkAssociationFinder {
 
         // ドメインモデル「暫定残数管理データ」を取得する
         // ドメインモデル「暫定振出管理データ」を取得する
+//        List<SubstituteWorkData> recData = interimRecAbasMngRepo.getRecBySidDatePeriod(
+//                employeeId,
+//                new DatePeriod(
+//                        outBreakDays.stream().min(GeneralDate::compareTo).get(),
+//                        outBreakDays.stream().max(GeneralDate::compareTo).get()
+//                )).stream()
+//                .filter(i -> outBreakDays.contains(i.getYmd()))
+//                .map(recMng -> new SubstituteWorkData(
+//                        recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value,
+//                        recMng.getExpirationDate(),
+//                        recMng.getExpirationDate().beforeOrEquals(closurePeriod.end()),
+//                        recMng.getYmd(),
+//                        recMng.getUnUsedDays().v()
+//                )).collect(Collectors.toList());
         List<SubstituteWorkData> recData = interimRecAbasMngRepo.getRecBySidDatePeriod(
                 employeeId,
                 new DatePeriod(
-                        outBreakDays.stream().min(GeneralDate::compareTo).get(),
-                        outBreakDays.stream().max(GeneralDate::compareTo).get()
+                    outBreakDays.stream().min(GeneralDate::compareTo).get(),
+                    outBreakDays.stream().max(GeneralDate::compareTo).get()
                 )).stream()
                 .filter(i -> outBreakDays.contains(i.getYmd()))
-                .map(recMng -> new SubstituteWorkData(
-                        recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value,
-                        recMng.getExpirationDate(),
-                        recMng.getExpirationDate().beforeOrEquals(closurePeriod.getPeriod().end()),
-                        recMng.getYmd(),
-                        recMng.getUnUsedDays().v()
-                )).collect(Collectors.toList());
+                    .map(recMng -> {
+                                PayoutSubofHDManagement a = managementData.stream().filter(c -> c.getAssocialInfo().getOutbreakDay().equals(recMng.getYmd()))
+                                    .collect(Collectors.toList()).get(0);
+                                return new SubstituteWorkData(
+                                    recMng.getCreatorAtr() == CreateAtr.RECORD || recMng.getCreatorAtr() == CreateAtr.FLEXCOMPEN ? DataType.ACTUAL.value : DataType.APPLICATION_OR_SCHEDULE.value,
+                                    recMng.getExpirationDate(),
+                                    recMng.getExpirationDate().beforeOrEquals(closurePeriod.end()),
+                                    recMng.getYmd(),
+                                    a.getAssocialInfo().getDayNumberUsed().v()
+                                );}
+                ).collect(Collectors.toList());
         result.addAll(recData);
 
         // ドメインモデル「振出管理データ」を取得する
@@ -187,7 +226,7 @@ public class SubHolidaySubWorkAssociationFinder {
                 .map(payout -> new SubstituteWorkData(
                         DataType.ACTUAL.value,
                         payout.getExpiredDate(),
-                        payout.getExpiredDate().beforeOrEquals(closurePeriod.getPeriod().end()),
+                        payout.getExpiredDate().beforeOrEquals(closurePeriod.end()),
                         payout.getPayoutDate().getDayoffDate().orElse(null),
                         payout.getUnUsedDays().v()
                 )).collect(Collectors.toList());

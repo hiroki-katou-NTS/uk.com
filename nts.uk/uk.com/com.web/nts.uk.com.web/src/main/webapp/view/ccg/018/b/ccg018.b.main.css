@@ -6,7 +6,7 @@
 }
 
 #sample-component {
-	margin: 30px 0 0 50px;
+	margin: 30px 0 0 45px;
 }
 
 .fixed-flex-layout-right {
@@ -101,5 +101,5 @@ span.ui-iggrid-headertext {
 	margin-left: 12px;
 }
 .fixed-flex-layout > .fixed-flex-layout-left {
-	margin-right: 5px !important;
+	margin-right: 0px !important;
 }

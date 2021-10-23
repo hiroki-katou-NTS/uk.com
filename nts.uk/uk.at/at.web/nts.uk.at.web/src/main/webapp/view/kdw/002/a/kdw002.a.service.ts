@@ -51,10 +51,10 @@ module nts.uk.at.view.kdw002.a {
         export function getNameMonthly(listID : any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getNameMonthly,listID);
         }
-        export function getDailyAttdItem(roleID: string): JQueryPromise<any> {
+        export function getDailyAttdItem(roleID?: string): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getDailyAttItem);
         }
-        export function getMonthlyAttdItem(roleID: string): JQueryPromise<any> {
+        export function getMonthlyAttdItem(roleID?: string): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getMontlyAttItem);
         }
     }
