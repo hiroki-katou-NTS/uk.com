@@ -187,7 +187,6 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 					Optional.ofNullable(WorkGroup.create(
 							null, 
 							Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())), 
-					Optional.empty(),
 					Optional.empty());
 		}
 		ReasonTimeChange reasonTimeChangeStart = null;

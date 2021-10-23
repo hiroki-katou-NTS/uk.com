@@ -180,7 +180,6 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.workNo = dataUpdate.workNo;
 		entityOld.startTimeChangeWay = dataUpdate.startTimeChangeWay;
 		entityOld.endTimeChangeWay = dataUpdate.endTimeChangeWay;
-		entityOld.workRemarks = dataUpdate.workRemarks;
 		entityOld.workplaceId = dataUpdate.workplaceId;
 		entityOld.startStampMethod = dataUpdate.startStampMethod;
 		entityOld.endStampMethod = dataUpdate.endStampMethod;
@@ -207,7 +206,6 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)),
 						(ots.workCd1 == null && ots.workCd2 == null && ots.workCd3 == null && ots.workCd4 == null && ots.workCd5 == null) ? Optional.empty() :
 						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
-						StringUtil.isNullOrEmpty(ots.workRemarks, true) ? Optional.empty() : Optional.of(new WorkinputRemarks(ots.workRemarks)),
 						ots.krcdtDayTsSupSupplInfo == null ? Optional.empty() : Optional.of(toWorkSuppInfo(ots.krcdtDayTsSupSupplInfo))
 						), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
