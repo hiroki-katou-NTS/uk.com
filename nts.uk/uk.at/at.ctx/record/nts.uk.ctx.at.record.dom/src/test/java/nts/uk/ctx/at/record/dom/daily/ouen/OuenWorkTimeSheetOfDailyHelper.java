@@ -58,21 +58,21 @@ public class OuenWorkTimeSheetOfDailyHelper {
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()), Optional.empty()));
 		list.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(2),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId("Dummy"), new WorkLocationCD("Dummy")),
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty()), Optional.empty()));
 		list.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(3),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId("Dummy"), new WorkLocationCD("Dummy")),
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(3), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(3), Optional.empty(), Optional.empty()), Optional.empty()));
 		
 		return list;
 	}
@@ -85,7 +85,7 @@ public class OuenWorkTimeSheetOfDailyHelper {
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty()), Optional.empty()));
 		return list;
 	}
 }
