@@ -41,24 +41,23 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	
 		return new WorkContentDto(
 					WorkplaceOfWorkEachOuenDto.from(domain.getWorkplace()),
-					WorkGroupDto.from(domain.getWork().orElse(null)),
-					WorkSuppInfoDto.from(domain.getWorkSuppInfo().orElse(null)));
+					Optional.ofNullable(WorkGroupDto.from(domain.getWork().isPresent() ? domain.getWork().get() : null)),
+					Optional.ofNullable(WorkSuppInfoDto.from(domain.getWorkSuppInfo().isPresent() ? domain.getWorkSuppInfo().get() : null)));
 	}
 	
 	public WorkContent domain() {
 		return WorkContent.create(
 				workplace == null ? WorkplaceOfWorkEachOuen.create(new WorkplaceId(""), null) : workplace.domain(), 
-				workOpt,
-				Optional.empty(),
-				workSuppInfo); 
+				Optional.of(workOpt.get().domain()),
+				Optional.of(workSuppInfo.get().domain())); 
 	} 
 	
 	@Override
 	public WorkContentDto clone() {
 		WorkContentDto result = new WorkContentDto();
 		result.setWorkplace(workplace == null ? null : workplace.clone());
-		result.setWork(!workOpt.isPresent() ? null : workOpt.get().clone());
-		result.setWorkSuppInfo(!workSuppInfo.isPresent() ? null : workSuppInfo.get().clone());
+		result.setWorkOpt(!workOpt.isPresent() ? Optional.empty() : Optional.of(workOpt.get().clone()));
+		result.setWorkSuppInfo(!workSuppInfo.isPresent() ? Optional.empty() : Optional.of(workSuppInfo.get().clone()));
 		return result;
 	}
 	
@@ -99,9 +98,9 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 		case WORKPLACE_BYSUPPORT:
 			return Optional.ofNullable(workplace);
 		case WORKGROUP:
-			return workOpt;
+			return Optional.ofNullable(workOpt.isPresent() ? workOpt.get() : null);
 		case SUPP:
-			return workSuppInfo;
+			return Optional.ofNullable(workSuppInfo.isPresent() ? workSuppInfo.get() : null);
 		default:
 			return Optional.empty();
 		}
