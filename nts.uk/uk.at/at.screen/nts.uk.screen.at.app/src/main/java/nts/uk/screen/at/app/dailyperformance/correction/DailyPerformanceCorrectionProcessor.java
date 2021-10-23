@@ -1525,8 +1525,8 @@ public class DailyPerformanceCorrectionProcessor {
 									x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(),
 									x.getColumnWidth().intValue()))
 							.collect(Collectors.toList());
-					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).sorted().collect(Collectors.toList());
-					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().sorted().collect(Collectors.toList());
+					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
+					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
 
 				}
 			} else {
@@ -1569,7 +1569,7 @@ public class DailyPerformanceCorrectionProcessor {
 			String authorityDailyID =  AppContexts.user().roles().forAttendance(); 
 			if (lstFormat.size() > 0) {
 				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
-						lstAtdItemUnique, true).stream().sorted(Comparator.comparing(DPBusinessTypeControl::getAttendanceItemId)).collect(Collectors.toList());
+						lstAtdItemUnique, true);
 				if(lstDPBusinessTypeControl.isEmpty()) {
 					screenDto.setErrorInfomation(DCErrorInfomation.ITEM_HIDE_ALL.value);
 					return null;
@@ -1585,9 +1585,9 @@ public class DailyPerformanceCorrectionProcessor {
 					                              )
 					                      .collect(Collectors.toList()); 
 			result.setLstBusinessTypeCode(lstDPBusinessTypeControl);
-			result.setLstFormat(lstFormat.stream().sorted(Comparator.comparing(FormatDPCorrectionDto::getAttendanceItemId)).collect(Collectors.toList()));
+			result.setLstFormat(lstFormat);
 			result.setLstSheet(lstSheet);
-			result.setLstAtdItemUnique(lstAtdItemUnique.stream().sorted().collect(Collectors.toList()));
+			result.setLstAtdItemUnique(lstAtdItemUnique);
 			result.setBussiness(dailyPerformanceDto.getSettingUnit().value);
 		}
 		return result;
