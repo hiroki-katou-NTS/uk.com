@@ -871,6 +871,17 @@ module nts.uk.ui.at.kdw013.calendar {
                     this.popupPosition.event(null);
                     this.popupPosition.setting(null);
                 });
+    
+        }
+
+        enableBreakTime(){
+            let vm = this;
+            let data = ko.unwrap(vm.params.$datas);
+            if (data) {
+                const {estimateZones} = data;
+                return !!_.find(estimateZones, ets => { return moment(etz.ymd).isSame(moment(vm.params.initialDate()), 'days') });;
+            }
+            return false;
         }
 
         public mounted() {
@@ -1236,38 +1247,31 @@ module nts.uk.ui.at.kdw013.calendar {
                         mutatedEvents();
                         return;
                     }
-                    //đoạn này cần lấy dữ liệu thực tế
-                    let start = moment(currentDate).set('hour', 11).set('minute', 30).toDate();
-                    let end = moment(currentDate).set('hour', 12).set('minute', 30).toDate();
-                    events.push({
-                            id: randomId(),
-                            title: '',
-                            start,
-                            end,
-                            textColor: '',
-                            backgroundColor: '#fbb3fb',
-                            extendedProps: {
-                                id: randomId(),
-                                status: 'normal',
-                                isTimeBreak: true
-                            } as any
-                        });
-
-                    let start = moment(currentDate).set('hour', 16).set('minute', 30).toDate();
-                    let end = moment(currentDate).set('hour', 17).set('minute', 30).toDate();
-                    events.push({
-                            id: randomId(),
-                            title: '',
-                            start,
-                            end,
-                            textColor: '',
-                            backgroundColor: '#fbb3fb',
-                            extendedProps: {
-                                id: randomId(),
-                                status: 'normal',
-                                isTimeBreak: true
-                            } as any
-                        });
+                    let data =  ko.unwrap(vm.params.$datas);
+                    const {estimateZones} = data;
+                    
+                    _.forEach(estimateZones, etz => {
+                        if (moment(etz.ymd).isSame(moment(currentDate), 'days')) {
+                            const {breakTimeSheets} = etz;
+                            _.forEach(breakTimeSheets, bts => {
+                                let start = moment(currentDate).set('hour', bts.start / 60).set('minute', bts.start % 60).toDate();
+                                let end = moment(currentDate).set('hour', bts.end / 60).set('minute', bts.end % 60).toDate();
+                                events.push({
+                                    id: randomId(),
+                                    title: '',
+                                    start,
+                                    end,
+                                    textColor: '',
+                                    backgroundColor: '#fbb3fb',
+                                    extendedProps: {
+                                        id: randomId(),
+                                        status: 'normal',
+                                        isTimeBreak: true
+                                    } as any
+                                });
+                            });
+                        }
+                    });
                 
                 updateEvents();
             });
@@ -2091,7 +2095,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     if (checkBtn) {
                                        
                                         
-                                        ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: isShowBreakTime, enable:ko.observable(true) , text: vm.$i18n('KDW013_54'), readonly:ko.observable(false)} });
+                                        ko.applyBindingsToNode(checkBtn, { ntsCheckBox: { checked: isShowBreakTime, text: vm.$i18n('KDW013_66') } });
                                         
                                     }
 
@@ -3180,7 +3184,11 @@ module nts.uk.ui.at.kdw013.calendar {
             // test item
             _.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
         }
+        
 
+        
+
+       
 
         public getFrameNo(events){
                 let maxNo = 20;
@@ -3512,6 +3520,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 super();
 
             }
+
+            
 
             mounted() {
                 const vm = this;

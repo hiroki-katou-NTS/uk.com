@@ -5,6 +5,174 @@ module nts.uk.ui.at.kdw013 {
 	export type ITimeSpanForCalc 				= { start: Date; end: Date; }
 	export type IManHrPerformanceTaskBlock 		= { caltimeSpan: ITimeSpanForCalc; taskDetails: IManHrTaskDetail[]; }
 	export type IDailyActualManHoursActualWork 	= { date: string; taskBlocks: IManHrPerformanceTaskBlock[]; }
+    
+    export type RegisterWorkContentCommand = {
+        /** 対象者 */
+        employeeId: string;
+        // 工数実績変換結果
+        manHrlst: Array<ManHrRecordConvertResultCommand>;
+
+        // 日別勤怠(Work)
+        integrationOfDailys: Array<IntegrationOfDailyCommand>;
+
+        /** 編集状態<Enum.日別勤怠の編集状態> */
+        editStateSetting: number;
+
+        /** List<年月日,List<作業詳細>> */
+        workDetails: Arrays<WorkDetailCommand>;
+
+        /** 確認モード */
+        mode: number;
+
+        /** 変更対象日 */
+        changedDates: Array<Date>;
+    }
+    
+    export type WorkGroupCommand = {
+        /** 作業CD1 */
+        workCD1: string;
+
+        /** 作業CD2 */
+        workCD2: string;
+
+        /** 作業CD3 */
+        workCD3: string;
+
+        /** 作業CD4 */
+        workCD4: string;
+
+        /** 作業CD5 */
+        workCD5: string;
+    }
+    
+    export type TimeZoneCommand = {
+        // 開始
+        start: number;
+
+        // 終了
+        end: number;
+    }
+    
+    export type WorkDetailsParamCommand = {
+        // 応援勤務枠No: 応援勤務枠No
+        supportFrameNo: number;
+
+        // 時間帯: 時間帯
+        timeZone: TimeZoneCommand;
+        // 作業グループ
+        workGroup: WorkGroupCommand;
+
+        // 備考: 作業入力備考
+        remarks: String;
+
+        // 勤務場所: 勤務場所コード
+        workLocationCD: String;
+    }
+    
+    export type WorkDetailCommand = {
+        /** 年月日 */
+        date: Date;
+
+        /** List<作業詳細> */
+        lstWorkDetailsParamCommand: Array<WorkDetailsParamCommand>;
+    }
+    
+    export type WorkInformationCommand = {
+        // 勤務種類コード
+        workType: String;
+        // 就業時間帯コード
+        workTime: String;
+    }
+    
+    export type ScheduleTimeSheetCommand = {
+        workNo: number;
+
+        attendance: number;
+
+        leaveWork: number;
+    }
+    
+    export type NumberOfDaySuspensionCommand = {
+
+        // 振休振出日数
+        days: number;
+
+        // 振休振出区分
+        classifiction: number;
+    }
+
+    export type WorkInfoOfDailyAttendanceCommand = {
+        // 勤務実績の勤務情報
+        recordInfoDto: WorkInformationCommand;
+
+        // 計算状態
+        calculationState: number;
+
+        // 直行区分
+        goStraightAtr: number;
+
+        // 直帰区分
+        backStraightAtr: number;
+
+        // 曜日
+        dayOfWeek: number;
+
+        // 始業終業時間帯
+        scheduleTimeSheets: Array<ScheduleTimeSheetCommand>;
+
+        // 振休振出として扱う日数
+        numberDaySuspension: NumberOfDaySuspensionCommand;
+    }
+    
+    export type IntegrationOfDailyCommand = {
+        // 社員ID
+        employeeId: string;
+
+        // 年月日
+        ymd: Date;
+
+        // 勤務情報: 日別勤怠の勤務情報
+        workInformationDto: WorkInfoOfDailyAttendanceCommand;
+    }
+    
+    export type ManHrRecordConvertResultCommand = {
+        /** 年月日*/
+        ymd: Date;
+
+        /** 作業リスト*/
+        taskList: Array<ManHrTaskDetailCommand>;
+
+        /** 実績内容 */
+        manHrContents: Array<ItemValueCommand>;
+    }
+    
+    export type ManHrTaskDetailCommand = {
+        /** 作業項目値*/
+        taskItemValues: Array<TaskItemValueCommand>;
+
+        /** 応援勤務枠No*/
+        supNo: number;
+    }
+    
+    export type ItemValueCommand = {
+        value: string;
+
+        valueType: number;
+
+        layoutCode: string;
+
+        itemId: number;
+        pathLink: string;
+        isFixed: boolean;
+    }
+    
+    export type TaskItemValueCommand = {
+        /** 工数実績項目ID*/
+        itemId: number;
+
+        /** 値*/
+        value: string;
+    }
 
 	export type TaskBlockDetailContentDto = {
         // 開始時刻
