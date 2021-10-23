@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.kdw.kdw013.c;
+package nts.uk.screen.at.ws.kdw.kdw013.bch;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +9,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
+import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
 import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
 import nts.uk.screen.at.ws.kdw.kdw013.SelectWorkItemParam;
@@ -24,7 +27,7 @@ import nts.uk.screen.at.ws.kdw.kdw013.StartWorkInputPanelDto;
  */
 @Path("screen/at/kdw013")
 @Produces(MediaType.APPLICATION_JSON)
-public class KDW013CWebService {
+public class KDW013BCHWebService {
 
 	@Inject
 	private GetWorkDataMasterInformation getWorkDataMasterInformation;
@@ -65,4 +68,18 @@ public class KDW013CWebService {
 		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getEmployeeId(), param.getRefDate(),
 				new TaskFrameNo(param.getTaskFrameNo()), Optional.of(new TaskCode(param.getTaskCode()))));
 	}
+	
+	@POST
+	@Path("h/start")
+	public AttendanceItemMasterInformationDto startH(ParamH param) {
+		return getWorkDataMasterInformation.getAttendanceItemMasterInformation(param.itemIds);
+	}
+	
+	
+}
+@NoArgsConstructor
+@Data
+class ParamH {
+	//勤怠項目リスト => List<勤怠項目ID>
+	public List<Integer> itemIds;
 }
