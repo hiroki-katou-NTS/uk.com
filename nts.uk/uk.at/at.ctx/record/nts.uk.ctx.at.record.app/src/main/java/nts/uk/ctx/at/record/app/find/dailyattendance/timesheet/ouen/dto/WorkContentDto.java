@@ -98,9 +98,9 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 		case WORKPLACE_BYSUPPORT:
 			return Optional.ofNullable(workplace);
 		case WORKGROUP:
-			return Optional.ofNullable(workOpt.isPresent() ? workOpt.get() : null);
+			return Optional.ofNullable(workOpt == null || !workOpt.isPresent() ? null : workOpt.get());
 		case SUPP:
-			return Optional.ofNullable(workSuppInfo.isPresent() ? workSuppInfo.get() : null);
+			return Optional.ofNullable(workSuppInfo == null || !workSuppInfo.isPresent() ? null : workSuppInfo.get());
 		default:
 			return Optional.empty();
 		}
