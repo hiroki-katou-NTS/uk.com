@@ -67,7 +67,7 @@ public class RegisterWorkHoursServiceHelper {
 				.create(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo(1),
 						WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("workplaceId"),
 								new WorkLocationCD("WCD")), Optional.empty(), Optional.empty()),
-						TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()));
+						TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()), Optional.empty());
 
 		result.add(ouenTimeSheet);
 		result.add(ouenTimeSheet);

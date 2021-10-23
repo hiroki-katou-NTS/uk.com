@@ -1078,7 +1078,7 @@ public class SupportWorkReflection {
 				informationWork.getLocationCD() == null ? null
 						: new WorkLocationCD(informationWork.getLocationCD().v()));
 
-		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty(), Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());
