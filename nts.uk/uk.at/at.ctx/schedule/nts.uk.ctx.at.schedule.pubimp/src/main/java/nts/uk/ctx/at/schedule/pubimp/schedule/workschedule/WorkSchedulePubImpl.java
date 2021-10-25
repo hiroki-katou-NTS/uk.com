@@ -218,9 +218,9 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
             List<BreakTimeSheetExport> breakTimeSheetExports = breakTimeSheets.stream().map(y -> {
                 return new BreakTimeSheetExport(
                         y.getBreakFrameNo().v(), 
-                        y.getStartTime() != null ? y.getStartTime().v() : null, 
-                        y.getEndTime() != null ? y.getEndTime().v() : null, 
-                        y.getBreakTime() != null ? y.getBreakTime().v() : null);
+                        y.getStartTime() != null ? y.getStartTime().v() : 0, 
+                        y.getEndTime() != null ? y.getEndTime().v() : 0, 
+                        y.getBreakTime() != null ? y.getBreakTime().v() : 0);
             }).collect(Collectors.toList());
             result.setListBreakTimeSheetExports(breakTimeSheetExports);
         });
