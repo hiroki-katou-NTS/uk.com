@@ -61,8 +61,10 @@
                     <table style="width: 100%;">
                         <tr>
                             <td>
-                                <div data-bind="ntsFormLabel:{ required:true, constraint:[]}">
-                                    #{i18n.getText('KDW003_18')}</div>
+                                <!-- <div data-bind="ntsFormLabel:{ required:true }">
+                                    #{i18n.getText('KDW003_18')}</div> -->
+                                    <div>
+                                        #{i18n.getText('KDW003_18')}</div>
                             </td>
                             <!--G5-3 & G5-4-->
                             <td>
@@ -75,7 +77,7 @@
                         <tr data-bind="if: enableTaskFrame1 ">
                             <td>
                                 <!--G5-5-->
-                                <div data-bind="ntsFormLabel:{ required:false}">作業1</div>
+                                <div data-bind="text: frameName1"></div>
                             </td>
                             <td colspan="2">
                                 <!--G5-6-->
@@ -95,7 +97,7 @@
                         <tr data-bind="if: enableTaskFrame2 ">
                             <td>
                                 <!--G5-8-->
-                                <div data-bind="ntsFormLabel:{ required:false}">作業2</div>
+                                <div data-bind="text: frameName2"></div>
                             </td>
                             <td>
                                 <!--G5-9-->
@@ -115,7 +117,7 @@
                         
                         <tr data-bind="if: enableTaskFrame3 ">
                             <td>
-                                <div data-bind="ntsFormLabel:{ required:false}">作業3</div>
+                                <div data-bind="text: frameName3"></div>
                             </td>
                             <td>
                                 <!--G5-12-->
@@ -135,7 +137,7 @@
                         
                         
                         <tr data-bind="if: enableTaskFrame4 ">
-                            <td><div data-bind="ntsFormLabel:{ required:false}">作業4</div></td>
+                            <td><div data-bind="text: frameName4"></div></td>
                             <td>
                                 <!--G5-15-->
                                 <div id="task-list" tabindex="13" data-bind="ntsComboBox: {
@@ -152,7 +154,7 @@
                             </td>
                         </tr>
                         <tr data-bind="if: enableTaskFrame5 ">
-                            <td><div data-bind="ntsFormLabel:{ required:false}">作業5</div></td>
+                            <td><div data-bind="text: frameName5"></div></td>
                             <td>
                                 <!--G5-18-->
                                 <div id="task-list" tabindex="14" data-bind="ntsComboBox: {

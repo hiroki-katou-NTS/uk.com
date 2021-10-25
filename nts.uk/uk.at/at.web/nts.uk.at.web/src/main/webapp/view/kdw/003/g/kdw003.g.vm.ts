@@ -11,7 +11,9 @@ module nts.uk.at.view.kdw003.cg {
         REGISTER_TASK_INITIAL_SEL_SETTING: "screen/at/task/register",
         UPDATE_TASK_INITIAL_SEL_SETTING: "screen/at/task/update",
         DELETE_TASK_INITIAL_SEL_SETTING: "screen/at/task/remove",
-        COPY_TASK_INITIAL_SEL_SETTING: "screen/at/task/copy"
+        COPY_TASK_INITIAL_SEL_SETTING: "screen/at/task/copy",
+        CHECK_SETTING: "screen/at/task/checkSetting"
+
     };
 
     @bean()
@@ -48,6 +50,12 @@ module nts.uk.at.view.kdw003.cg {
         enableTaskFrame3: KnockoutObservable<boolean> = ko.observable(false);
         enableTaskFrame4: KnockoutObservable<boolean> = ko.observable(false);
         enableTaskFrame5: KnockoutObservable<boolean> = ko.observable(false);
+
+        frameName1: KnockoutObservable<string> = ko.observable('');
+        frameName2: KnockoutObservable<string> = ko.observable('');
+        frameName3: KnockoutObservable<string> = ko.observable('');
+        frameName4: KnockoutObservable<string> = ko.observable('');
+        frameName5: KnockoutObservable<string> = ko.observable('');
 
         taskListFrame1: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame2: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
@@ -212,6 +220,12 @@ module nts.uk.at.view.kdw003.cg {
                     self.enableTaskFrame3(taskList[0].listFrameNoUseAtr[2] == 1);
                     self.enableTaskFrame4(taskList[0].listFrameNoUseAtr[3] == 1);
                     self.enableTaskFrame5(taskList[0].listFrameNoUseAtr[4] == 1);
+
+                    self.frameName1(taskList[0].listFrameName[0]);
+                    self.frameName2(taskList[0].listFrameName[1]);
+                    self.frameName3(taskList[0].listFrameName[2]);
+                    self.frameName4(taskList[0].listFrameName[3]);
+                    self.frameName5(taskList[0].listFrameName[4]);
                     
                     taskLst1 = _.filter(taskLst, item => { return item.frameNo == 1; });
                     taskLst2 = _.filter(taskLst, item => { return item.frameNo == 2; });
@@ -486,25 +500,25 @@ module nts.uk.at.view.kdw003.cg {
 
         openDialogCDL023() {
             let self = this;
-            let params: IObjectDuplication = {
-                code: self.selectedEmployee(),
-                name: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.businessName)[0],
-                targetType: TargetType.WORKPLACE_PERSONAL,
-                itemListSetting: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.id),
-                // baseDate: moment('YYYY/MM/DD').toDate(),
-                baseDate: new Date(),
-                // workFrameNoSelection: self.selectedWorkCode()
-            };
-
-            nts.uk.ui.windows.setShared("CDL023Input", params);
-            // open dialog
-            nts.uk.ui.windows.sub.modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
-                let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
-                let prams = nts.uk.ui.windows.getShared("CDL023Output");
-                if (!nts.uk.util.isNullOrUndefined(prams)) {
-                    self.copyTaskInitialSelHist(lstSelection, self.selectedEmployee());
-                }
-            });
+            self.$ajax(Paths.CHECK_SETTING).done((data: any) => {
+                let params: IObjectDuplication = {
+                    code: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.code)[0],
+                    name: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.businessName)[0],
+                    targetType: TargetType.WORKPLACE_PERSONAL,
+                    itemListSetting: data,
+                    // baseDate: moment('YYYY/MM/DD').toDate(),
+                    baseDate: new Date()
+                };
+    
+                nts.uk.ui.windows.setShared("CDL023Input", params);
+                // open dialog
+                nts.uk.ui.windows.sub.modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
+                    let prams: any = getShared("CDL023Output");   
+                    if (!nts.uk.util.isNullOrUndefined(prams)) {
+                        self.copyTaskInitialSelHist(prams, self.selectedEmployee());
+                    }
+                });
+            } );           
         }
         copyTaskInitialSelHist(dataTarget: Array<string>, dataSource: string) {
             let self = this;
@@ -518,6 +532,7 @@ module nts.uk.at.view.kdw003.cg {
                 self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                     self.isReload(false);
                     self.findDetail(command.empIdDes[0], self.isReload());
+                    self.selectedEmployee(command.empIdDes[0]);
                     self.enableNewBtn(true);
                 });
             }).fail((error) => {
@@ -577,15 +592,18 @@ module nts.uk.at.view.kdw003.cg {
         taskName: string;
         frameNo: number;
         listFrameNoUseAtr: Array<number>;
+        listFrameName: Array<string>;
         startDate: string;
         endDate: string;
         displayName: string;
-        constructor(taskCode: string, displayName: string, taskName?: string,  frameNo?: number, startDate?: string, endDate?: string, frameNoUseAtr?: Array<number>){
+        constructor(taskCode: string, displayName: string, taskName?: string,  frameNo?: number, 
+                                    startDate?: string, endDate?: string, frameNoUseAtr?: Array<number>, frameName?: Array<string>){
             this.taskCode = taskCode;
             this.taskName = taskName; 
             this.displayName = displayName;
             this.frameNo = frameNo;        
             this.listFrameNoUseAtr = frameNoUseAtr;  
+            this.listFrameName = frameName;
             this.startDate = startDate;
             this.endDate = endDate;           
         }
