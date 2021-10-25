@@ -6,8 +6,11 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 500 };</script>
+			<script>var dialogSize = { width: 500, height: 490 };</script>
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+			</com:ValidatorScript>
 
 			<com:scriptfile path="../share/functional.js" />
 			<com:stylefile path="./kdw013.e.css" />
@@ -16,7 +19,7 @@
 		<ui:define name="content">
 			<div id="contents-area" class="kdw-013-e">
 				<!--E1_1-->
-				<div class="panel panel-frame panel-width">
+				<div class="panel panel-frame panel-width" id="panel-e">
 					<table class="table-screen-e">
 						<colgroup>
 							<col width="123px" />
@@ -33,8 +36,9 @@
 											value:  startTime,
 											inputFormat: 'time', 
 											name: '#[KDW013_14]',
-											option: { width: '50px' },
+											option: { width: '39px' },
 											required: true,
+											constraint: 'AttendanceTime'
 										}" />
 									<!-- E2_3 終了時刻-->
 									<span data-bind="i18n: 'KDW013_30'"></span>
@@ -44,8 +48,9 @@
 											value:  endTime, 
 											inputFormat: 'time', 
 											name: '#[KDW013_31]',
-											option: { width: '50px' },
+											option: { width: '39px' },
 											required: true,
+											constraint: 'AttendanceTime'
 										}" />
 								</td>
 							</tr>
@@ -59,32 +64,31 @@
 											value: totalTime, 
 											inputFormat: 'time', 
 											name: '#[KDW013_25]',
-											option: { width: '50px' },
+											option: { width: '39px' },
 											required: true,
+											constraint: 'AttendanceTime'
 										}" />
 								</td>
 							</tr>
-							<com:ko-if bind="useTask1">
-								<tr>
-									<!-- E4_1 -->
-									<td data-bind="text: setTaskName1"></td>
-									<!-- E4_2 -->
-									<!-- E4_3 -->
-									<td>
-										<div id="task-combobox" style="vertical-align: bottom;" tabindex="4" 
-										data-bind="ntsComboBox: {
-											name: setTaskName1,
-											options: taskLst1,
-											optionsValue: 'taskCode',
-											optionsText: 'taskName',
-											value: selectedTaskCD1,
-											required: true,
-											visibleItemsCount: 10,
-											editable: true,
-										}"></div>
-									</td>
-								</tr>
-							</com:ko-if>
+							<tr>
+								<!-- E4_1 -->
+								<td data-bind="text: setTaskName1"></td>
+								<!-- E4_2 -->
+								<!-- E4_3 -->
+								<td>
+									<div id="task-combobox" style="vertical-align: bottom;" tabindex="4" 
+									data-bind="ntsComboBox: {
+										name: setTaskName1,
+										options: taskLst1,
+										optionsValue: 'taskCode',
+										optionsText: 'taskName',
+										value: selectedTaskCD1,
+										required: true,
+										visibleItemsCount: 10,
+										editable: true,
+									}"></div>
+								</td>
+							</tr>
 							<com:ko-if bind="useTask2">
 								<tr>
 									<!-- E6_1 -->

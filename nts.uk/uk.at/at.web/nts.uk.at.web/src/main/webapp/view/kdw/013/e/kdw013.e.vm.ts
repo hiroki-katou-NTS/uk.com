@@ -67,6 +67,12 @@ module nts.uk.ui.at.kdw013.e {
             vm.startTime(vm.ouenWorkTimeSheet().timeSheet.start.timeWithDay);
             vm.endTime(vm.ouenWorkTimeSheet().timeSheet.end.timeWithDay);
             vm.totalTime(vm.ouenWorkTime().workTime.totalTime);
+            vm.selectedTaskCD1(vm.ouenWorkTimeSheet().workContent.work.workCD1 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD1);
+            vm.selectedTaskCD2(vm.ouenWorkTimeSheet().workContent.work.workCD2 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD2);
+            vm.selectedTaskCD3(vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD3);
+            vm.selectedTaskCD4(vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD4);
+            vm.selectedTaskCD5(vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD5);
+
         }
 
         getSetting() {
@@ -103,6 +109,11 @@ module nts.uk.ui.at.kdw013.e {
 
         getCbbList() {
             const vm = this;
+
+            vm.taskLst1().push({
+                taskCode: '-1',
+                taskName: '未選択'
+            });
 
             vm.taskLst2().push({
                 taskCode: '-1',
@@ -163,6 +174,14 @@ module nts.uk.ui.at.kdw013.e {
 
 
             });
+
+
+            // Sort list combobox by code in ascending order
+            vm.taskLst1().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
+            vm.taskLst2().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
+            vm.taskLst3().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
+            vm.taskLst4().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
+            vm.taskLst5().sort((a, b) => parseInt(a.taskCode) - parseInt(b.taskCode));
         }
        
         mounted() {
