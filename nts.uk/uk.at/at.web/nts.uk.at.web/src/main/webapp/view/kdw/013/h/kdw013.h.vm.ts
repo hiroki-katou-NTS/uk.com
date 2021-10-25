@@ -102,25 +102,25 @@ module nts.uk.at.view.kdw013.h {
 					let option: Option[] = [];
 					let divergenceReasonInputMethods = null;
 					//trường hợp đặc biệt
-					if (item.itemId == 438) {
+					if (item.itemId == 438 || item.itemId == 439) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 1);
-					} else if (item.itemId == 443) {
+					} else if (item.itemId == 443 || item.itemId == 444) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 2);
-					} else if (item.itemId == 448) {
+					} else if (item.itemId == 448 || item.itemId == 449) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 3);
-					} else if (item.itemId == 453) {
+					} else if (item.itemId == 453 || item.itemId == 454) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 4);
-					} else if (item.itemId == 458) {
+					} else if (item.itemId == 458 || item.itemId == 459) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 5);
-					} else if (item.itemId == 801) {
+					} else if (item.itemId == 801 || item.itemId == 802) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 6);
-					} else if (item.itemId == 806) {
+					} else if (item.itemId == 806 || item.itemId == 807) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 7);
-					} else if (item.itemId == 811) {
+					} else if (item.itemId == 811 || item.itemId == 811) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 8);
-					} else if (item.itemId == 816) {
+					} else if (item.itemId == 816 || item.itemId == 817) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 9);
-					} else if (item.itemId == 821) {
+					} else if (item.itemId == 821 || item.itemId == 822) {
 						divergenceReasonInputMethods = _.find(self.dataMaster.divergenceReasonInputMethods, d => d.divergenceTimeNo == 10);
 					}
 
