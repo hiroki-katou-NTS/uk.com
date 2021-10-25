@@ -38,7 +38,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.HEAD;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -217,7 +216,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private void printCalender(Cells cells, int rowCount, int col,
-                               String l1P1, String l1P2, String l2P1, String l2P2, String l3P1, String l3P2, Map<Integer, String> holidayMap, int colNO, Integer holidayClass,DateInformation dateInformation) {
+                               String l1P1, String l1P2, String l2P1, String l2P2, String l3P1, String l3P2, Map<Integer, String> holidayMap, int colNO, Integer holidayClass, DateInformation dateInformation) {
         int secondLieOfCalender = rowCount + 2;
         int thirdLieOfCalender = rowCount + 4;
         String divider = getText("KSU002_67");
@@ -259,7 +258,11 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     void setBgColor(Color color, Cell cell) {
         Style style = cell.getStyle();
-        style.setForegroundColor(color);
+        if (style.getPattern() == BackgroundType.SOLID) {
+            style.setForegroundColor(color);
+        } else {
+            style.setBackgroundColor(color);
+        }
         cell.setStyle(style);
     }
 
