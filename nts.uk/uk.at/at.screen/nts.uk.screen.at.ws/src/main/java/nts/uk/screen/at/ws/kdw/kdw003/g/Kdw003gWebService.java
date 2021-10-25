@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.kdw.kdw003.g;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHistRepo;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.CopyHistCommandHandler;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.DeleteHistCommandHandler;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.HistCommand;
@@ -22,6 +24,7 @@ import nts.uk.screen.at.app.query.kdw.kdw003.g.GetTaskInitialSelSettingScreenQue
 import nts.uk.screen.at.app.query.kdw.kdw003.g.GetTaskItemInfoScreenQuery;
 import nts.uk.screen.at.app.query.kdw.kdw003.g.TaskInitialSelSettingDto;
 import nts.uk.screen.at.app.query.kdw.kdw003.g.TaskItemDto;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -52,6 +55,9 @@ public class Kdw003gWebService extends WebService {
 	
 	@Inject
 	CopyHistCommandHandler copyHistCommandHandler;	 
+	
+	@Inject
+	TaskInitialSelHistRepo taskInitialSelHistRepo;
 	 
 	@POST
 	@Path("/getTaskItemInfo")
@@ -93,5 +99,13 @@ public class Kdw003gWebService extends WebService {
 	@Path("/copy")
 	public void removeHist(HistCommandCopy command) {
 		this.copyHistCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/checkSetting")
+	public List<String> checkSetting(){
+		String companyId = AppContexts.user().companyId();
+		List<String> emps = this.taskInitialSelHistRepo.getByCid(companyId).stream().map(e -> e.getEmpId()).collect(Collectors.toList());
+		return emps;
 	}
 }
