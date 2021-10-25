@@ -33,40 +33,54 @@ public class ActualManHrTaskBlockCreationServiceTest {
 	String sId = "employee";
 	GeneralDate date = GeneralDate.today();
 	
-	@Test
-	public void test1() {
-		
-		List<ManHrTaskDetail> taskDetails = new ArrayList<>();
-		List<TaskItemValue> taskItemValues = new ArrayList<>();
-		
-		taskItemValues.add(new TaskItemValue(1, "1"));
-		taskItemValues.add(new TaskItemValue(2, "2"));
-		
-		ManHrTaskDetail detail = new ManHrTaskDetail(taskItemValues, new SupportFrameNo(1));
-		ManHrTaskDetail detail2 = new ManHrTaskDetail(taskItemValues, new SupportFrameNo(2));
-		taskDetails.add(detail);
-		taskDetails.add(detail2);
-		
-		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
-		
-		List<TaskTimeZone> timezones = new ArrayList<>();
-		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(1), new TimeWithDayAttr(10)), new SupportFrameNo(1)));
-		
-		//if not $作業時間帯グループ.isEmpty
-		TaskTimeGroup group = new TaskTimeGroup(sId, date, timezones);
-
-		new Expectations() {
-			{
-				require.get(sId, date);
-				result = Optional.of(group);
-
-			}
-		};
-		DailyActualManHrActualTask actualResult = ActualManHrTaskBlockCreationService.create(require, sId, date,
-				taskDetails);
-
-		assertThat(expectedResult.getDate()).isEqualTo(actualResult.getDate());
-	}
+//	@Test
+//	public void test1() {
+//		
+//		List<ManHrTaskDetail> taskDetails = new ArrayList<>();
+//		List<TaskItemValue> taskItemValues = new ArrayList<>();
+//		
+//		taskItemValues.add(new TaskItemValue(1, "1"));
+//		taskItemValues.add(new TaskItemValue(2, "2"));
+//		
+//		ManHrTaskDetail detail = new ManHrTaskDetail(taskItemValues, new SupportFrameNo(1));
+//		ManHrTaskDetail detail2 = new ManHrTaskDetail(taskItemValues, new SupportFrameNo(2));
+//		taskDetails.add(detail);
+//		taskDetails.add(detail2);
+//		
+//		List<ManHrPerformanceTaskBlock> taskBlocks = new ArrayList<>();
+//		
+//		List<ManHrTaskDetail> manHrtaskDetails = new ArrayList<>();
+//		
+//		manHrtaskDetails.add(new ManHrTaskDetail(taskItemValues, new SupportFrameNo(1)));
+//		
+//		ManHrPerformanceTaskBlock block = new ManHrPerformanceTaskBlock(new TimeSpanForCalc (new TimeWithDayAttr(10), new TimeWithDayAttr(20)), taskDetails);
+//		taskBlocks.add(block);
+//		
+//		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, taskBlocks);
+//		
+//		List<TaskTimeZone> timezones = new ArrayList<>();
+//		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new SupportFrameNo(1)));
+//		
+//		//if not $作業時間帯グループ.isEmpty
+//		TaskTimeGroup group = new TaskTimeGroup(sId, date, timezones);
+//
+//		new Expectations() {
+//			{
+//				require.get(sId, date);
+//				result = Optional.of(group);
+//
+//			}
+//		};
+//		DailyActualManHrActualTask actualResult = ActualManHrTaskBlockCreationService.create(require, sId, date,
+//				taskDetails);
+//
+//		assertThat(expectedResult.getDate()).isEqualTo(actualResult.getDate());
+//		
+//		for (ManHrPerformanceTaskBlock taskBlock : actualResult.getTaskBlocks()) {
+//			assertThat(taskBlock.getCaltimeSpan().start()).isEqualTo(10);
+//			assertThat(taskBlock.getCaltimeSpan().end()).isEqualTo(20);
+//		}
+//	}
 	
 	@Test
 	public void test2() {
