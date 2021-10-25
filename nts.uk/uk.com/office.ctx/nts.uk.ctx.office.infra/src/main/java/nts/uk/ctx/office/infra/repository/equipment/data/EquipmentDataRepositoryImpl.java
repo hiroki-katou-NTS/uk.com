@@ -2,6 +2,7 @@ package nts.uk.ctx.office.infra.repository.equipment.data;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,9 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 
 	// Maximum number of value for each item type
 	private static final int MAXIMUM_VALUE = 9;
+	private static final List<Integer> TEXT_ITEM_NOS = Arrays.asList(1, 2, 3);
+	private static final List<Integer> NUMBER_ITEM_NOS = Arrays.asList(4, 5, 6);
+	private static final List<Integer> TIME_ITEM_NOS = Arrays.asList(7, 8, 9);
 	
 	private static final String SELECT_ALL = "SELECT t FROM OfidtEquipmentDayAtd t ";
 	private static final String AND_WITHIN_PERIOD = "AND t.useDate >= :startDate AND t.useDate <= :endDate ";
@@ -146,6 +150,9 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		for (ItemClassification itemCls : ItemClassification.values()) {
 			String type = itemCls.toString().toLowerCase();
 			for (int i = 1; i <= MAXIMUM_VALUE; i++) {
+				if (!this.isWithinItemNos(itemCls, i)) {
+					continue;
+				}
 				Field f = this.getField(type, i);
 				Optional<ActualItemUsageValue> actualValue;
 				try {
@@ -205,5 +212,17 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		} catch (SecurityException | NoSuchFieldException e) {
 			return null;
 		}
+	}
+	
+	private boolean isWithinItemNos(ItemClassification itemClassification, int index) {
+		switch (itemClassification) {
+		case TEXT:
+			return TEXT_ITEM_NOS.contains(index);
+		case NUMBER:
+			return NUMBER_ITEM_NOS.contains(index);
+		case TIME:
+			return TIME_ITEM_NOS.contains(index);
+		}
+		return false;
 	}
 }
