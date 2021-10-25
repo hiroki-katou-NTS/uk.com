@@ -4,11 +4,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
-import nts.uk.ctx.office.dom.equipment.data.ItemData;
+import nts.uk.ctx.office.dom.equipment.data.ResultData;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ItemDataDto {
+public class ResultDataDto {
 
 	/**
 	 * 項目NO
@@ -25,8 +25,8 @@ public class ItemDataDto {
 	 */
 	private String actualValue;
 
-	public static ItemDataDto fromDomain(ItemData domain) {
-		return new ItemDataDto(domain.getItemNo().v(), domain.getItemClassification().value,
+	public static ResultDataDto fromDomain(ResultData domain) {
+		return new ResultDataDto(domain.getItemNo().v(), domain.getItemClassification().value,
 				domain.getActualValue().map(ActualItemUsageValue::v).orElse(null));
 	}
 }

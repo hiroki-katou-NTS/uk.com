@@ -42,11 +42,11 @@ public class EquipmentDataDto {
 	/**
 	 * 項目データ
 	 */
-	private List<ItemDataDto> itemDatas;
+	private List<ResultDataDto> itemDatas;
 
 	public static EquipmentDataDto fromDomain(EquipmentData domain) {
 		return new EquipmentDataDto(domain.getInputDate(), domain.getUseDate(), domain.getSid(),
 				domain.getEquipmentCode().v(), domain.getEquipmentClassificationCode().v(),
-				domain.getItemDatas().stream().map(ItemDataDto::fromDomain).collect(Collectors.toList()));
+				domain.getResultDatas().stream().map(ResultDataDto::fromDomain).collect(Collectors.toList()));
 	}
 }

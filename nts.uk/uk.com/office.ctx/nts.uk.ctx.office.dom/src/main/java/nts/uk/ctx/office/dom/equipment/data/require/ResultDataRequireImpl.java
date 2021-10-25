@@ -1,14 +1,18 @@
-package nts.uk.ctx.office.dom.equipment.data;
+package nts.uk.ctx.office.dom.equipment.data.require;
 
 import java.util.Optional;
+
+import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
 import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentRecordItemSettingRepository;
+import nts.uk.ctx.office.dom.equipment.data.ResultData;
 
 @AllArgsConstructor
-public class ItemDataRequireImpl implements ItemData.Require {
+public class ResultDataRequireImpl implements ResultData.Require {
 	
+	@Inject
 	private EquipmentRecordItemSettingRepository repository;
 
 	@Override

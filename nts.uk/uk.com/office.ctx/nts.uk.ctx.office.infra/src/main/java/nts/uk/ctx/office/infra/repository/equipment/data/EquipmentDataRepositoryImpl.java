@@ -2,6 +2,7 @@ package nts.uk.ctx.office.infra.repository.equipment.data;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificat
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
-import nts.uk.ctx.office.dom.equipment.data.ItemData;
+import nts.uk.ctx.office.dom.equipment.data.ResultData;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
 import nts.uk.ctx.office.infra.entity.equipment.data.OfidtEquipmentDayAtd;
 import nts.uk.ctx.office.infra.entity.equipment.data.OfidtEquipmentDayAtdPK;
@@ -29,6 +30,9 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 
 	// Maximum number of value for each item type
 	private static final int MAXIMUM_VALUE = 9;
+	private static final List<Integer> TEXT_ITEM_NOS = Arrays.asList(1, 2, 3);
+	private static final List<Integer> NUMBER_ITEM_NOS = Arrays.asList(4, 5, 6);
+	private static final List<Integer> TIME_ITEM_NOS = Arrays.asList(7, 8, 9);
 	
 	private static final String SELECT_ALL = "SELECT t FROM OfidtEquipmentDayAtd t ";
 	private static final String AND_WITHIN_PERIOD = "AND t.useDate >= :startDate AND t.useDate <= :endDate ";
@@ -142,10 +146,13 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	}
 
 	private EquipmentData toDomain(OfidtEquipmentDayAtd entity) {
-		List<ItemData> itemDatas = new ArrayList<>();
+		List<ResultData> itemDatas = new ArrayList<>();
 		for (ItemClassification itemCls : ItemClassification.values()) {
 			String type = itemCls.toString().toLowerCase();
 			for (int i = 1; i <= MAXIMUM_VALUE; i++) {
+				if (!this.isWithinItemNos(itemCls, i)) {
+					continue;
+				}
 				Field f = this.getField(type, i);
 				Optional<ActualItemUsageValue> actualValue;
 				try {
@@ -153,7 +160,7 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					actualValue = Optional.empty();
 				}
-				itemDatas.add(new ItemData(new EquipmentItemNo(String.valueOf(i)), itemCls, actualValue));
+				itemDatas.add(new ResultData(new EquipmentItemNo(String.valueOf(i)), itemCls, actualValue));
 			}
 		}
 		return new EquipmentData(entity.getPk().getInputDate(), entity.getUseDate(), entity.getPk().getSid(),
@@ -171,7 +178,7 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		entity.setEquipmentCode(domain.getEquipmentCode().v());
 		entity.setUseDate(domain.getUseDate());
 		
-		domain.getItemDatas().forEach(itemData -> {
+		domain.getResultDatas().forEach(itemData -> {
 			String type = itemData.getItemClassification().toString().toLowerCase();
 			Optional<String> optActualValue = itemData.getActualValue().map(ActualItemUsageValue::v);
 			if (optActualValue.isPresent() && StringUtil.isNullOrEmpty(optActualValue.get(), true)) {
@@ -205,5 +212,17 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 		} catch (SecurityException | NoSuchFieldException e) {
 			return null;
 		}
+	}
+	
+	private boolean isWithinItemNos(ItemClassification itemClassification, int index) {
+		switch (itemClassification) {
+		case TEXT:
+			return TEXT_ITEM_NOS.contains(index);
+		case NUMBER:
+			return NUMBER_ITEM_NOS.contains(index);
+		case TIME:
+			return TIME_ITEM_NOS.contains(index);
+		}
+		return false;
 	}
 }

@@ -189,8 +189,7 @@ module nts.uk.com.view.oew001.a {
         equipmentClsCode: vm.selectedEquipmentClsCode(),
         equipmentClsName: vm.equipmentClsName(),
         equipmentInfoCode: vm.selectedEquipmentInfoCode(),
-        equipmentInfoName: _.find(vm.equipmentInformationList(), { "code": vm.selectedEquipmentInfoCode() }).name,
-        sid: __viewContext.user.employeeId,
+        equipmentInfoName: selectedEquipmentInfo.name,
         employeeName: ko.observable(null),
         validStartDate: moment.utc(selectedEquipmentInfo.effectiveStartDate, model.constants.YYYY_MM_DD),
         validEndDate: moment.utc(selectedEquipmentInfo.effectiveEndDate, model.constants.YYYY_MM_DD),
@@ -199,17 +198,23 @@ module nts.uk.com.view.oew001.a {
         param.inputDate = moment.utc().format(model.constants.YYYY_MM_DD);
         param.useDate = ko.observable(moment.utc().format(model.constants.YYYY_MM_DD));
         param.optionalItems = ko.observableArray(vm.optionalItems());
+        param.sid = __viewContext.user.employeeId;
       } else {
         const item = _.find(vm.dataSource(), { id: input.id });
-        param.inputDate = item.inputDate,
-        param.useDate = ko.observable(item.useDate),
-        param.optionalItems = ko.observableArray(item.optionalItems)
+        param.inputDate = item.inputDate;
+        param.useDate = ko.observable(item.useDate);
+        param.optionalItems = ko.observableArray(item.optionalItems);
+        param.sid = item.sid;
       }
       
       vm.$window.modal("/view/oew/001/b/index.xhtml", ko.toJS(param))
         .then((result: any) => {
           if (!!result) {
-            vm.performSearchData(param.isNewMode && result.isSaveSuccess);
+            let topPos: number;
+            if (!param.isNewMode) {
+              topPos = $("#A6_scrollContainer").scrollTop();
+            }
+            vm.performSearchData(param.isNewMode && result.isSaveSuccess, topPos);
             if (result.isSaveSuccess) {
               vm.saveCharacteristic();
             }
@@ -256,7 +261,7 @@ module nts.uk.com.view.oew001.a {
         });
     }
 
-    public performSearchData(isScrollBottom: boolean = true) {
+    public performSearchData(isScrollBottom: boolean = true, topPos: number = 0) {
       const vm = this;
       vm.$blockui("grayout");
       const param: SearchDataParam = new SearchDataParam(vm.selectedEquipmentClsCode(), vm.selectedEquipmentInfoCode(), vm.yearMonth());
@@ -264,6 +269,8 @@ module nts.uk.com.view.oew001.a {
         if (isScrollBottom) {
           // #120568
           $("#A6").igGrid("virtualScrollTo", vm.dataSource().length - 1);
+        } else {
+          vm.$nextTick(() => $("#A6").igGrid("virtualScrollTo", topPos + "px"));
         }
       }).always(() => vm.$blockui("clear"));
     }

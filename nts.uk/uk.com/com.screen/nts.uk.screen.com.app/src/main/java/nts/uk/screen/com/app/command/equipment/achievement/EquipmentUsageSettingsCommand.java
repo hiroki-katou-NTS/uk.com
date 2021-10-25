@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.command.equipment.achievement;
+package nts.uk.screen.com.app.command.equipment.achievement;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import nts.uk.ctx.office.app.command.equipment.achievement.dto.EquipmentPerformI
 import nts.uk.ctx.office.app.command.equipment.achievement.dto.EquipmentUsageRecordItemSettingDto;
 
 @Value
-public class InsertEquipmentUsageSettingsCommand {
+public class EquipmentUsageSettingsCommand {
 	
 	/**
 	 * 設備帳票設定

@@ -14,4 +14,7 @@ public interface EquipmentFormSettingRepository {
 
 	// [3] Get
 	Optional<EquipmentFormSetting> findByCid(String cid);
+	
+	// [4] 削除後Insertする																							
+	void insertAfterDelete(EquipmentFormSetting domain);
 }

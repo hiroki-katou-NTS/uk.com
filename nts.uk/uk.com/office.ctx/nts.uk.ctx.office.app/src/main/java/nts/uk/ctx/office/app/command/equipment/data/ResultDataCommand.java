@@ -3,8 +3,8 @@ package nts.uk.ctx.office.app.command.equipment.data;
 import lombok.Value;
 
 @Value
-public class ItemDataCommand {
-	
+public class ResultDataCommand {
+
 	/**
 	 * 項目NO
 	 */

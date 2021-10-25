@@ -63,4 +63,10 @@ public class EquipmentPerformInputFormatSettingRepositoryImpl extends JpaReposit
 		return Optional.of(this.toDomain(entities));
 	}
 
+	@Override
+	public void insertAfterDelete(EquipmentPerformInputFormatSetting domain) {
+		this.delete(domain.getCid());
+		this.insert(domain);
+	}
+
 }

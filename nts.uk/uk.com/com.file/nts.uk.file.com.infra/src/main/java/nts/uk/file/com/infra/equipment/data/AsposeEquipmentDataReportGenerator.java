@@ -32,10 +32,11 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemDisplay;
+import nts.uk.ctx.office.dom.equipment.achievement.UsageRecordUnit;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
-import nts.uk.ctx.office.dom.equipment.data.ItemData;
+import nts.uk.ctx.office.dom.equipment.data.ResultData;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 import nts.uk.file.com.app.equipment.data.EquipmentDataExportDataSource;
 import nts.uk.file.com.app.equipment.data.EquipmentDataExportGenerator;
@@ -287,7 +288,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				if (!optItemSetting.isPresent()) {
 					this.printCell(cell, null, TextAlignmentType.LEFT, isBlueBackground.get());
 				} else {
-					Optional<ItemData> optItemData = equipmentData.getItemDatas().stream().filter(
+					Optional<ResultData> optItemData = equipmentData.getResultDatas().stream().filter(
 							data -> data.getItemNo().equals(itemDisplay.getItemNo()) && data.getItemClassification()
 									.equals(optItemSetting.get().getInputcontrol().getItemCls()))
 							.findFirst();
@@ -362,7 +363,13 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				Cell cell = cells.get(headerRow, col);
 
 				// Set column value
-				this.printCell(cell, itemSetting.getItems().getItemName().v(), alignType, null);
+				String value = itemSetting.getItems().getItemName().v();
+				Optional<UsageRecordUnit> optUnit = itemSetting.getItems().getUnit();
+				if (optUnit.isPresent() && !StringUtil.isNullOrEmpty(optUnit.get().v(), true)) {
+					value = value.concat(TextResource.localize("OEW001_109") + optUnit.get()
+							+ TextResource.localize("OEW001_110"));
+				}
+				this.printCell(cell, value, alignType, null);
 
 				// Set column width
 				int width = Math.min(MAX_COLUMN_WIDTH, itemDisplay.getDisplayWidth().v() * FIXED_VALUE_C);

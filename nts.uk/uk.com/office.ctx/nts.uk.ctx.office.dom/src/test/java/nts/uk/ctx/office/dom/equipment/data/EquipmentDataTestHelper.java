@@ -21,21 +21,21 @@ public class EquipmentDataTestHelper {
 	public static final String EQUIPMENT_CLS_CD = "0001";
 
 	public static EquipmentData mockDomain(GeneralDate useDate) {
-		List<ItemData> itemDatas = EquipmentDataTestHelper.mockItemDatas();
+		List<ResultData> itemDatas = EquipmentDataTestHelper.mockItemDatas();
 		return new EquipmentData(GeneralDateTime.now(), useDate, SID, new EquipmentCode(EQUIPMENT_CD),
 				new EquipmentClassificationCode(EQUIPMENT_CLS_CD), itemDatas);
 	}
 
 	public static Map<EquipmentItemNo, ActualItemUsageValue> mockValueMap() {
 		return EquipmentDataTestHelper.mockItemDatas().stream()
-				.collect(Collectors.toMap(ItemData::getItemNo, data -> data.getActualValue().orElse(null)));
+				.collect(Collectors.toMap(ResultData::getItemNo, data -> data.getActualValue().orElse(null)));
 	}
 	
-	public static ItemData createItemData(String itemNo, ItemClassification itemCls, String value) {
-		return new ItemData(new EquipmentItemNo(itemNo), itemCls, Optional.of(value).map(ActualItemUsageValue::new));
+	public static ResultData createItemData(String itemNo, ItemClassification itemCls, String value) {
+		return new ResultData(new EquipmentItemNo(itemNo), itemCls, Optional.of(value).map(ActualItemUsageValue::new));
 	}
 	
-	private static List<ItemData> mockItemDatas() {
+	private static List<ResultData> mockItemDatas() {
 		return Arrays.asList(
 				EquipmentDataTestHelper.createItemData("1", ItemClassification.TEXT, "abc"),
 				EquipmentDataTestHelper.createItemData("4", ItemClassification.NUMBER, "123"),

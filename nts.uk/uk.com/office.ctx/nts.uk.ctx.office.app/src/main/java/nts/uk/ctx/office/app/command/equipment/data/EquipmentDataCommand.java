@@ -36,5 +36,5 @@ public class EquipmentDataCommand {
 	/**
 	 * 項目データ
 	 */
-	private List<ItemDataCommand> itemDatas;
+	private List<ResultDataCommand> itemDatas;
 }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.office.app.command.equipment.data;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,12 +13,15 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentRecordItemSettingRepository;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
-import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
-import nts.uk.ctx.office.dom.equipment.data.EquipmentUsageCreationResultTemp;
-import nts.uk.ctx.office.dom.equipment.data.ItemData.Require;
-import nts.uk.ctx.office.dom.equipment.data.ItemDataRequireImpl;
+import nts.uk.ctx.office.dom.equipment.data.ItemData;
+import nts.uk.ctx.office.dom.equipment.data.RegisterResult;
+import nts.uk.ctx.office.dom.equipment.data.domainservice.UpdateUsageRecordDomainService;
+import nts.uk.ctx.office.dom.equipment.data.domainservice.UpdateUsageRecordDomainService.Require;
+import nts.uk.ctx.office.dom.equipment.data.require.UpdateUsageRecordDomainServiceRequireImpl;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,36 +33,36 @@ public class UpdateEquipmentDataCommandHandler extends CommandHandler<EquipmentD
 
 	@Inject
 	private EquipmentDataRepository equipmentDataRepository;
-	
+
 	@Inject
 	private EquipmentRecordItemSettingRepository equipmentRecordItemSettingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<EquipmentDataCommand> context) {
 		String cid = AppContexts.user().companyId();
-		String sid = AppContexts.user().employeeId();
 
-		Require require = new ItemDataRequireImpl(equipmentRecordItemSettingRepository);
+		Require require = new UpdateUsageRecordDomainServiceRequireImpl(equipmentRecordItemSettingRepository,
+				equipmentDataRepository);
 		EquipmentDataCommand command = context.getCommand();
-		// 1.get(設備コード、ログイン社員ID、利用日、入力日)
-		Optional<EquipmentData> optEquipmentData = this.equipmentDataRepository.findByUsageInfo(cid,
-				command.getEquipmentCode(), command.getUseDate(), sid, command.getInputDate());
-		optEquipmentData.ifPresent(equipmentData -> {
-			Map<EquipmentItemNo, ActualItemUsageValue> itemDataMap = command.getItemDatas().stream()
-					.collect(Collectors.toMap(data -> new EquipmentItemNo(data.getItemNo()),
-							data -> new ActualItemUsageValue(data.getActualValue())));
-			// 2.変更登録(require, 項目データList)
-			EquipmentUsageCreationResultTemp temp = equipmentData.updateItemDatas(require, cid, itemDataMap);
-			// 3.[設備利用実績作成Temp.エラーList.isEmpty]
-			if (temp.getErrorMap().isEmpty()) {
-				// persist(設備利用実績作成Temp.設備利用実績データ)
-				temp.getEquipmentData().ifPresent(this.equipmentDataRepository::update);
-				return;
-			}
+		EquipmentClassificationCode equipmentClsCode = new EquipmentClassificationCode(
+				command.getEquipmentClassificationCode());
+		EquipmentCode equipmentCode = new EquipmentCode(command.getEquipmentCode());
+		List<ItemData> itemDatas = command.getItemDatas().stream()
+				.map(data -> new ItemData(new EquipmentItemNo(data.getItemNo()),
+						new ActualItemUsageValue(data.getActualValue())))
+				.collect(Collectors.toList());
+
+		// 1. 変更する(require, 会社ID, 設備コード, 入力日, 設備分類コード, 利用者ID, 利用日, Map<項目NO、入力値>)
+		RegisterResult registerResult = UpdateUsageRecordDomainService.update(require, cid, equipmentCode,
+				command.getInputDate(), equipmentClsCode, command.getSid(), command.getUseDate(), itemDatas);
+		// 2. [エラーがあるか＝true]
+		if (registerResult != null && registerResult.isHasError()) {
 			BundledBusinessException ex = BundledBusinessException.newInstance();
-			temp.getErrorMap().forEach((k,v) -> ex.addMessage(v));
+			registerResult.getErrorItems().forEach(err -> ex.addMessage(err.getErrorMessage()));
 			throw ex;
-		});
+		}
+		// 3. [エラーがあるか＝false]
+		registerResult.getPersistTask().ifPresent(transaction::execute);
 	}
 
 }
