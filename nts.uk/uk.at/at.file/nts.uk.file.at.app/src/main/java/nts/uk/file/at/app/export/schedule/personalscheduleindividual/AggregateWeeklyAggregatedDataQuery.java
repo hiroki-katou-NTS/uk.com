@@ -17,11 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +53,8 @@ public class AggregateWeeklyAggregatedDataQuery {
                     recordList
             );
             //1.2 Map<社員ID, Map<集計対象の勤怠時間, BigDecimal>>
-            BigDecimal workingHours = WorkingTimeCounterService.get(dailyAtList).get(loginEmployeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN.getValue());
+            val workTimeCounterMap = WorkingTimeCounterService.get(dailyAtList);
+            BigDecimal workingHours = workTimeCounterMap.isEmpty() ? BigDecimal.ZERO : workTimeCounterMap.get(new EmployeeId(loginEmployeeId)).get(AttendanceTimesForAggregation.WORKING_WITHIN);
             //1.3集計する(Require, List<日別勤怠(Work)>)
             Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> holidayService = WorkdayHolidayCounterService.count(new WorkdayHolidayCounterService.Require() {
                 @Override
@@ -66,11 +63,11 @@ public class AggregateWeeklyAggregatedDataQuery {
                 }
             }, dailyAtList);
             //1.3.1$労働時間 = result.get(社員ID).get( 就業時間 )
-            val holidays = holidayService.get(loginEmployeeId).get(WorkClassificationAsAggregationTarget.HOLIDAY.value);
+            val holidays = holidayService.isEmpty() ? BigDecimal.ZERO : holidayService.get(new EmployeeId(loginEmployeeId)).get(WorkClassificationAsAggregationTarget.HOLIDAY);
             week++;
             list.add(new WeeklyAgreegateResult(week, workingHours, holidays));
         }
         //return OrderedList<労働時間, 休日日数>
-        return list.stream().sorted().collect(Collectors.toList());
+        return list.stream().sorted(Comparator.comparing(WeeklyAgreegateResult::getWeek)).collect(Collectors.toList());
     }
 }
