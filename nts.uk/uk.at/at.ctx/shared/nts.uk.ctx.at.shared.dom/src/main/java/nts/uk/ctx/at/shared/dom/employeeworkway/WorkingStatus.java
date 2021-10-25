@@ -1,15 +1,15 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.shared.dom.employeeworkway;
 
 import lombok.RequiredArgsConstructor;
 
 /**
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定
- * 予定管理状態 Enum
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.就業状態
+ * 就業状態
  * @author HieuLt
  *
  */
 @RequiredArgsConstructor
-public enum ScheManaStatus {
+public enum WorkingStatus {
 	// 0:在籍していない
 	NOT_ENROLLED(0, "在籍していない"),
 
@@ -34,16 +34,16 @@ public enum ScheManaStatus {
 	public final String name;
 
 	/* The Constant values. */
-	private final static ScheManaStatus[] values = ScheManaStatus.values();
+	private final static WorkingStatus[] values = WorkingStatus.values();
 
-	public static ScheManaStatus valueOf(Integer value) {
+	public static WorkingStatus valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (ScheManaStatus val : ScheManaStatus.values) {
+		for (WorkingStatus val : WorkingStatus.values) {
 			if (val.value == value) {
 				return val;
 			}
@@ -57,19 +57,19 @@ public enum ScheManaStatus {
 	 * @return Boolean needCreateWorkSchedule
 	 */
 	public boolean  needCreateWorkSchedule(){
-		if(this.value == ScheManaStatus.NOT_ENROLLED.value){
+		if(this.value == WorkingStatus.NOT_ENROLLED.value){
 			return false;
 		}
-		if(this.value == ScheManaStatus.INVALID_DATA.value){
+		if(this.value == WorkingStatus.INVALID_DATA.value){
 			return false;
 		}
-		if(this.value == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE.value){
+		if(this.value == WorkingStatus.DO_NOT_MANAGE_SCHEDULE.value){
 			return false;
 		}
-		if(this.value == ScheManaStatus.ON_LEAVE.value){
+		if(this.value == WorkingStatus.ON_LEAVE.value){
 			return true;
 		}
-		if(this.value == ScheManaStatus.CLOSED.value){
+		if(this.value == WorkingStatus.CLOSED.value){
 			return true;
 		}
 		return true; //SCHEDULE_MANAGEMENT

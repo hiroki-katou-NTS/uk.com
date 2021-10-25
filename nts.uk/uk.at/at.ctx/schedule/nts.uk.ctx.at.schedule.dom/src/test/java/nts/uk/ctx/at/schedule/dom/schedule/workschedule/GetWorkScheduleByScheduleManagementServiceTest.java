@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.domainservice;
+package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -21,43 +21,44 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatus;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService.Require;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService.Require;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
+import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 
 @RunWith(JMockit.class)
-public class WorkScheManaStatusServiceTest {
+public class GetWorkScheduleByScheduleManagementServiceTest {
 
 	@Injectable
 	private Require require;
 
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is false
+	 * $社員の就業状態.勤務予定が必要か() is false
 	 */
 	@Test
 	public void testGetScheduleManagement() {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		
-		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
-				ScheManaStatus.CLOSED, Optional.empty(), Optional.empty());
-		new MockUp<ScheManaStatuTempo>() {
+		EmployeeWorkingStatus scheManaStatuTempo = new EmployeeWorkingStatus("emp1", GeneralDate.today(),
+				WorkingStatus.CLOSED, Optional.empty(), Optional.empty());
+		new MockUp<EmployeeWorkingStatus>() {
 			@Mock
-			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
+			public EmployeeWorkingStatus create(EmployeeWorkingStatus.Require require, String employeeID, GeneralDate date) {
 				return scheManaStatuTempo;
 			}
 		};
 		
-		new MockUp<ScheManaStatus>() {
+		new MockUp<WorkingStatus>() {
 			@Mock
 			public boolean  needCreateWorkSchedule(){
 				return false;
 			}
 		};
 		
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByScheduleManagementService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -65,7 +66,7 @@ public class WorkScheManaStatusServiceTest {
 	}
 	
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is true
+	 * $社員の就業状態.勤務予定が必要か() is true
 	 * require.勤務予定を取得する( 社員ID, $ ) is empty
 	 */
 	@Test
@@ -73,11 +74,11 @@ public class WorkScheManaStatusServiceTest {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		
-		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
-				ScheManaStatus.SCHEDULE_MANAGEMENT, Optional.empty(), Optional.empty());
-		new MockUp<ScheManaStatuTempo>() {
+		EmployeeWorkingStatus scheManaStatuTempo = new EmployeeWorkingStatus("emp1", GeneralDate.today(),
+				WorkingStatus.SCHEDULE_MANAGEMENT, Optional.empty(), Optional.empty());
+		new MockUp<EmployeeWorkingStatus>() {
 			@Mock
-			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
+			public EmployeeWorkingStatus create(EmployeeWorkingStatus.Require require, String employeeID, GeneralDate date) {
 				return scheManaStatuTempo;
 			}
 		};
@@ -87,13 +88,13 @@ public class WorkScheManaStatusServiceTest {
 				require.get(anyString, GeneralDate.today());
 			}
 		};
-		new MockUp<ScheManaStatus>() {
+		new MockUp<WorkingStatus>() {
 			@Mock
 			public boolean  needCreateWorkSchedule(){
 				return true;
 			}
 		};
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByScheduleManagementService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -101,7 +102,7 @@ public class WorkScheManaStatusServiceTest {
 	}
 	
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is true
+	 * $社員の就業状態.勤務予定が必要か() is true
 	 * require.勤務予定を取得する( 社員ID, $ ) not empty
 	 * 
 	 */
@@ -115,11 +116,11 @@ public class WorkScheManaStatusServiceTest {
 				TaskSchedule.createWithEmptyList(),
 				Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 
-		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
-				ScheManaStatus.ON_LEAVE, Optional.empty(), Optional.empty());
-		new MockUp<ScheManaStatuTempo>() {
+		EmployeeWorkingStatus scheManaStatuTempo = new EmployeeWorkingStatus("emp1", GeneralDate.today(),
+				WorkingStatus.ON_LEAVE, Optional.empty(), Optional.empty());
+		new MockUp<EmployeeWorkingStatus>() {
 			@Mock
-			public ScheManaStatuTempo create(ScheManaStatuTempo.Require require, String employeeID, GeneralDate date) {
+			public EmployeeWorkingStatus create(EmployeeWorkingStatus.Require require, String employeeID, GeneralDate date) {
 				return scheManaStatuTempo;
 			}
 		};
@@ -130,14 +131,14 @@ public class WorkScheManaStatusServiceTest {
 				result = Optional.of(workSchedule);
 			}
 		};
-		new MockUp<ScheManaStatus>() {
+		new MockUp<WorkingStatus>() {
 			@Mock
 			public boolean  needCreateWorkSchedule(){
 				return true;
 			}
 		};
 		
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByScheduleManagementService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.of(workSchedule)));

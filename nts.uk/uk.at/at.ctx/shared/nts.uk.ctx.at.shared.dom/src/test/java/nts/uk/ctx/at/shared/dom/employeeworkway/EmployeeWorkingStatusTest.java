@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.shared.dom.employeeworkway;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -15,10 +15,12 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo.Require;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.TempAbsenceFrameNo;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
+import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus.Require;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -27,14 +29,14 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.SecondSituation;
 
 @RunWith(JMockit.class)
-public class ScheManaStatuTempoTest {
+public class EmployeeWorkingStatusTest {
 
 	@Injectable
 	private Require require;
 
 	@Test
 	public void getters() {
-		val data = ScheManaStatuTempo.create(require, "empId", GeneralDate.today());
+		val data = EmployeeWorkingStatus.create(require, "empId", GeneralDate.today());
 		NtsAssert.invokeGetters(data);
 	}
 
@@ -63,7 +65,7 @@ public class ScheManaStatuTempoTest {
 
 
 		// Execute
-		val result = ScheManaStatuTempo.create(require, empId, date);
+		val result = EmployeeWorkingStatus.create(require, empId, date);
 
 
 		// Assertions
@@ -72,7 +74,7 @@ public class ScheManaStatuTempoTest {
 		assertThat( result.getOptTempAbsenceFrameNo() ).isEmpty();
 		assertThat( result.getOptEmploymentCd() ).isEmpty();
 
-		assertThat( result.getScheManaStatus() ).isEqualTo( ScheManaStatus.NOT_ENROLLED );
+		assertThat( result.getWorkingStatus() ).isEqualTo( WorkingStatus.NOT_ENROLLED );
 
 	}
 
@@ -109,7 +111,7 @@ public class ScheManaStatuTempoTest {
 
 
 		// Execute
-		val result = ScheManaStatuTempo.create(require, empId, date);
+		val result = EmployeeWorkingStatus.create(require, empId, date);
 
 
 		// Assertions
@@ -117,7 +119,7 @@ public class ScheManaStatuTempoTest {
 		assertThat( result.getDate() ).isEqualTo( date );
 		assertThat( result.getOptTempAbsenceFrameNo() ).isEmpty();
 
-		assertThat( result.getScheManaStatus() ).isEqualTo( ScheManaStatus.INVALID_DATA );
+		assertThat( result.getWorkingStatus() ).isEqualTo( WorkingStatus.INVALID_DATA );
 		assertThat( result.getOptEmploymentCd() ).isEmpty();
 
 	}
@@ -161,7 +163,7 @@ public class ScheManaStatuTempoTest {
 
 
 		// Execute
-		val result = ScheManaStatuTempo.create(require, empId, date);
+		val result = EmployeeWorkingStatus.create(require, empId, date);
 
 
 		// Assertions
@@ -169,7 +171,7 @@ public class ScheManaStatuTempoTest {
 		assertThat( result.getDate() ).isEqualTo( date );
 		assertThat( result.getOptTempAbsenceFrameNo() ).isEmpty();
 
-		assertThat( result.getScheManaStatus() ).isEqualTo( ScheManaStatus.INVALID_DATA );
+		assertThat( result.getWorkingStatus() ).isEqualTo( WorkingStatus.INVALID_DATA );
 		assertThat( result.getOptEmploymentCd() )
 			.isEqualTo( Optional.of(new EmploymentCode(hirePeriod.getEmploymentCd())) );
 
@@ -217,7 +219,7 @@ public class ScheManaStatuTempoTest {
 
 
 		// Execute
-		val result = ScheManaStatuTempo.create(require, empId, date);
+		val result = EmployeeWorkingStatus.create(require, empId, date);
 
 
 		// Assertions
@@ -225,7 +227,7 @@ public class ScheManaStatuTempoTest {
 		assertThat( result.getDate() ).isEqualTo( date );
 		assertThat( result.getOptTempAbsenceFrameNo() ).isEmpty();
 
-		assertThat( result.getScheManaStatus() ).isEqualTo( ScheManaStatus.DO_NOT_MANAGE_SCHEDULE );
+		assertThat( result.getWorkingStatus() ).isEqualTo( WorkingStatus.DO_NOT_MANAGE_SCHEDULE );
 		assertThat( result.getOptEmploymentCd() )
 			.isEqualTo( Optional.of(new EmploymentCode(hirePeriod.getEmploymentCd())) );
 
@@ -281,7 +283,7 @@ public class ScheManaStatuTempoTest {
 
 
 		// Execute
-		val result = ScheManaStatuTempo.create(require, empId, date);
+		val result = EmployeeWorkingStatus.create(require, empId, date);
 
 
 		// Assertions
@@ -289,7 +291,7 @@ public class ScheManaStatuTempoTest {
 		assertThat( result.getDate() ).isEqualTo( date );
 		assertThat( result.getOptTempAbsenceFrameNo() ).isEmpty();
 
-		assertThat( result.getScheManaStatus() ).isEqualTo( ScheManaStatus.ON_LEAVE );
+		assertThat( result.getWorkingStatus() ).isEqualTo( WorkingStatus.ON_LEAVE );
 		assertThat( result.getOptEmploymentCd() )
 			.isEqualTo( Optional.of(new EmploymentCode(hirePeriod.getEmploymentCd())) );
 
@@ -349,14 +351,14 @@ public class ScheManaStatuTempoTest {
 
 
 		// Execute
-		val result = ScheManaStatuTempo.create(require, empId, date);
+		val result = EmployeeWorkingStatus.create(require, empId, date);
 
 
 		// Assertions
 		assertThat( result.getEmployeeID() ).isEqualTo( empId );
 		assertThat( result.getDate() ).isEqualTo( date );
 
-		assertThat( result.getScheManaStatus() ).isEqualTo( ScheManaStatus.CLOSED );
+		assertThat( result.getWorkingStatus() ).isEqualTo( WorkingStatus.CLOSED );
 		assertThat( result.getOptEmploymentCd() )
 			.isEqualTo( Optional.of(new EmploymentCode(hirePeriod.getEmploymentCd())) );
 		assertThat( result.getOptTempAbsenceFrameNo() )
@@ -415,14 +417,14 @@ public class ScheManaStatuTempoTest {
 
 
 		// Execute
-		val result = ScheManaStatuTempo.create(require, empId, date);
+		val result = EmployeeWorkingStatus.create(require, empId, date);
 
 
 		// Assertions
 		assertThat( result.getEmployeeID() ).isEqualTo( empId );
 		assertThat( result.getDate() ).isEqualTo( date );
 
-		assertThat( result.getScheManaStatus() ).isEqualTo( ScheManaStatus.SCHEDULE_MANAGEMENT );
+		assertThat( result.getWorkingStatus() ).isEqualTo( WorkingStatus.SCHEDULE_MANAGEMENT );
 		assertThat( result.getOptEmploymentCd() )
 			.isEqualTo( Optional.of(new EmploymentCode(hirePeriod.getEmploymentCd())) );
 		assertThat( result.getOptTempAbsenceFrameNo() ).isEmpty();
