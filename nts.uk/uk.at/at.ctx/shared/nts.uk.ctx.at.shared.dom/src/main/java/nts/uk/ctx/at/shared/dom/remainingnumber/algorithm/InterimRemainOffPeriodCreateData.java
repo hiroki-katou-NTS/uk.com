@@ -46,7 +46,7 @@ public class InterimRemainOffPeriodCreateData {
 		GeneralDate sEndDate = inputParam.getDateData().end();
 		//対象日の雇用別休暇管理設定を抽出する
 		List<AffPeriodEmpCodeImport> lstDateEmployment = lstEmployment.stream()
-				.filter(x -> x.getPeriod().start().beforeOrEquals(sStartDate) && x.getPeriod().end().afterOrEquals(sEndDate))
+				.filter(x -> x.getPeriod().start().beforeOrEquals(sEndDate) && x.getPeriod().end().afterOrEquals(sStartDate))
 				.collect(Collectors.toList());
 		EmploymentHolidayMngSetting employmentHolidaySetting = new EmploymentHolidayMngSetting();
 		if(!lstDateEmployment.isEmpty() && lstDateEmployment.size() == 1) {
