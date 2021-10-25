@@ -3103,7 +3103,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    setShared("KDL014A_PARAM", {
+                    setShared("KDL014A-PARAM", {
                         startDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         endDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         employeeID: lstEmployee[0].code
