@@ -434,7 +434,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = {
             	appIDLst: [vm.currentApp()],
 				isMultiMode: false,
-				appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+				appDispInfoStartupOutput: vm.appDispInfoStartupOutput(), 
+
             };
             nts.uk.ui.windows.setShared("KDL030_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml");
@@ -445,8 +446,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
+					let hdsubRecLinkData: any = null
+					if(vm.childParam.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION && vm.kaf011BViewModel().appCombinaSelected() == 0){
+						hdsubRecLinkData = {
+							absId: vm.kaf011BViewModel().displayInforWhenStarting().abs.application.appID, 
+							recId: vm.kaf011BViewModel().displayInforWhenStarting().rec.application.appID,
+							linkApp: vm.kaf011BViewModel().application().appID() == vm.kaf011BViewModel().displayInforWhenStarting().abs.application.appID 
+								? vm.kaf011BViewModel().displayInforWhenStarting().rec.application : vm.kaf011BViewModel().displayInforWhenStarting().abs.application
+						}
+						// hdsubRecLinkData.linkApp.inputDate = moment().format('YYYY/MM/DD HH:mm:ss');
+					}	
+
 					let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
-		            	command = { appDispInfoStartupOutput };
+		            	command = { 
+							appDispInfoStartupOutput: appDispInfoStartupOutput, 
+							hdsubRecLinkData: hdsubRecLinkData
+						 };
                     return vm.$ajax(API.deleteapp, command);
                 }
             }).done((successData: any) => {

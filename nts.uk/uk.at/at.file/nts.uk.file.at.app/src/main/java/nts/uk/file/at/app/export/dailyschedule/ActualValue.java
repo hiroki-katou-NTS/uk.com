@@ -28,6 +28,8 @@ public class ActualValue {
 	/** The value type. */
 	private int valueType;
 	
+	private String unit = "";
+	
 	/**
 	 * Value.
 	 *
@@ -69,6 +71,21 @@ public class ActualValue {
 		this.attendanceId = attendanceId;
 		this.value = value;
 		this.valueType = valueType;
+		this.setUnit(EnumAdaptor.valueOf(valueType, ValueType.class));
+	}
+	
+	public void setUnit(ValueType valueType) {
+		switch (valueType) {
+		case AMOUNT:
+		case AMOUNT_NUM:
+			this.unit = "円"; break;
+		case COUNT:
+		case COUNT_WITH_DECIMAL:
+			this.unit = "回"; break;
+		case DAYS:
+			this.unit = "日"; break;
+		default: break;
+		}
 	}
 
 	/* (non-Javadoc)

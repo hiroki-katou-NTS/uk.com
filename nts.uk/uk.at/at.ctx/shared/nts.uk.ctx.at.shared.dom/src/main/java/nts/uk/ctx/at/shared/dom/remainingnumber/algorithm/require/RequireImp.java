@@ -51,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
+import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
@@ -765,4 +766,11 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
 	}
 	
+    @Override
+    public Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId,
+            GeneralDate baseDate, String workTypeCode, WorkingDayCategory workingDayCategory) {
+        return this.workingConditionItemService.getHolidayWorkScheduleNew(companyId, employeeId, baseDate, workTypeCode,
+                workingDayCategory);
+    }
+
 }

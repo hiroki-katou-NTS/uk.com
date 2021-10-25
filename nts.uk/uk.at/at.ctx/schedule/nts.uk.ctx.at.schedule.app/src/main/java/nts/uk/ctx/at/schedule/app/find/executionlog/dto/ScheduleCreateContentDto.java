@@ -56,6 +56,8 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 	/** 月間パターンコード */
 	public String monthlyPatternCode;
 
+	public String monthlyPatternName;
+
     /** The start date. */
 	public GeneralDate startDate;
 	

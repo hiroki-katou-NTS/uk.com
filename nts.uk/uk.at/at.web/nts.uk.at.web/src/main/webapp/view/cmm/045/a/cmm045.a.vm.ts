@@ -560,6 +560,7 @@ module cmm045.a.viewmodel {
 						self.updateFromAppListExtractCondition();
 						self.mode(obj.appListAtr);	
 					}
+					nts.uk.request.location.current.queryString.items = {a: self.mode().toString()};
 					history.pushState({}, null, "?a="+self.mode());
 				} else {
 					character.remove('AppListExtractCondition');
