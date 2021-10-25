@@ -93,7 +93,9 @@ module nts.uk.com.view.oew001.b {
         }));
       }, err => {
         if (!!err.messageId) {
-          return vm.$dialog.error({ messageId: err.messageId });
+          return vm.$dialog.error({ messageId: err.messageId }).then(() => vm.$window.close({
+            isMsg2319: err.messageId === "Msg_2319"
+          }));
         } else if (!!err.errors) {
           return (nts.uk.ui.dialog as any).bundledErrors(err);
         }

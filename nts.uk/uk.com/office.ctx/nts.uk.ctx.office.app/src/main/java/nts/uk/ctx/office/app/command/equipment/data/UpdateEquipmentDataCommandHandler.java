@@ -40,7 +40,6 @@ public class UpdateEquipmentDataCommandHandler extends CommandHandler<EquipmentD
 	@Override
 	protected void handle(CommandHandlerContext<EquipmentDataCommand> context) {
 		String cid = AppContexts.user().companyId();
-		String sid = AppContexts.user().employeeId();
 
 		Require require = new UpdateUsageRecordDomainServiceRequireImpl(equipmentRecordItemSettingRepository,
 				equipmentDataRepository);
@@ -55,7 +54,7 @@ public class UpdateEquipmentDataCommandHandler extends CommandHandler<EquipmentD
 
 		// 1. 変更する(require, 会社ID, 設備コード, 入力日, 設備分類コード, 利用者ID, 利用日, Map<項目NO、入力値>)
 		RegisterResult registerResult = UpdateUsageRecordDomainService.update(require, cid, equipmentCode,
-				command.getInputDate(), equipmentClsCode, sid, command.getUseDate(), itemDatas);
+				command.getInputDate(), equipmentClsCode, command.getSid(), command.getUseDate(), itemDatas);
 		// 2. [エラーがあるか＝true]
 		if (registerResult != null && registerResult.isHasError()) {
 			BundledBusinessException ex = BundledBusinessException.newInstance();
