@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -41,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtime
  *
  */
 @Getter
+@NoArgsConstructor
 public class IntegrationOfDaily {
 	//社員ID
 	@Setter

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.jobmanagement.manhourrecorditem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -41,6 +42,9 @@ public class JpaManHourRecordItemRepository extends JpaRepository implements Man
 
 	@Override
 	public List<ManHourRecordItem> get(String cId, List<Integer> items) {
+		if(items.isEmpty()) {
+			return new ArrayList<ManHourRecordItem>();
+		}
 		return this.queryProxy().query(SELECT_BY_CID_AND_ITEM, KrcmtManHrItem.class)
 				.setParameter("cId", cId)
 				.setParameter("items", items)

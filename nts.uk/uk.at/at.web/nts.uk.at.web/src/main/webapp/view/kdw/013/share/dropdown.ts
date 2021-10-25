@@ -48,7 +48,7 @@ module nts.uk.ui.at.kdw013.share {
                 height: 31px;
             }
             .nts-dropdown.show.error {
-                height: 52px;
+                height: 54px;
             }
             .nts-dropdown.show>div.message {
                 display: none;
@@ -56,7 +56,7 @@ module nts.uk.ui.at.kdw013.share {
             .nts-dropdown.show>div.dropdown-container {
                 height: auto;
                 z-index: 3;
-                position: fixed;
+                position: absolute;
                 overflow-y: auto;
             }
             .nts-dropdown.show>div.dropdown-container {
@@ -106,6 +106,7 @@ module nts.uk.ui.at.kdw013.share {
                 const visibleItemsCount = allBindingsAccessor.get('visibleItemsCount'); 
                 const required = allBindingsAccessor.get('required');
                 const hasError: undefined | KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
+				const flagError: undefined | KnockoutObservable<boolean> = allBindingsAccessor.get('flagError');
 
                 const msg = $('<div>', { class: 'message' }).get(0);
                 const subscribe = ($selected: string) => {
@@ -138,6 +139,9 @@ module nts.uk.ui.at.kdw013.share {
                                 $(msg).appendTo(element);
                                 element.classList.add('error');
                             }
+							if(flagError){
+								flagError(!flagError());	
+							}
                         });
                 }
 
@@ -147,9 +151,8 @@ module nts.uk.ui.at.kdw013.share {
                         const $required = ko.unwrap(required);
 
                         if ($required && !$selected) {
-                            return viewModel.$i18n.message('MsgB_2', [ko.unwrap(name)]);
+                            return nts.uk.resource.getMessage('MsgB_2', [ko.unwrap(name)]);
                         }
-
                         return '';
                     },
                     disposeWhenNodeIsRemoved: element
@@ -158,8 +161,6 @@ module nts.uk.ui.at.kdw013.share {
                 ko.applyBindingsToNode(msg, { text }, bindingContext);
 
                 ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { selected, items, required, visibleItemsCount } } }, bindingContext);
-
-                element.removeAttribute('data-bind');
 
                 element.setAttribute('role', randomId());
 
@@ -197,11 +198,17 @@ module nts.uk.ui.at.kdw013.share {
                             ko.tasks
                                 .schedule(() => {
                                     const { top, height } = $(element).children().get(0).getBoundingClientRect();
-
                                     if (top + height < innerHeight - 10) {
-                                        $ct.style.top = top + 'px';
+										let taskDetails = $('.taskDetails').last();
+										let lastTable = $('.taskDetails table').last();
+										if(taskDetails.offset().top + taskDetails.outerHeight(true) > lastTable.offset().top + lastTable.outerHeight(true)){
+											$ct.style.top = (height - 31) * -1 + 'px';	
+										}else{
+											$ct.style.top = '0px';
+										}
+                                        
                                     } else {
-                                        $ct.style.top = top - height + 31 + 'px';
+                                        $ct.style.top = (height - 31) * -1 + 'px';
                                     }
                                 });
                         }
@@ -259,9 +266,7 @@ module nts.uk.ui.at.kdw013.share {
             }
         }
 
-        @component({
-            name: COMPONENT_NAME,
-            template: `
+		let template = `
             <div class="dropdown-container">
                 <input type="text" class="nts-input" data-bind="
                         value: $component.filter,
@@ -287,6 +292,10 @@ module nts.uk.ui.at.kdw013.share {
                 </div>
             </div>
             `
+
+        @component({
+            name: COMPONENT_NAME,
+            template: template
         })
         export class DropdownViewModel extends ko.ViewModel {
             show: KnockoutObservable<boolean> = ko.observable(false);
@@ -346,7 +355,7 @@ module nts.uk.ui.at.kdw013.share {
                 vm.visibleItemsCount = params.visibleItemsCount;
             }
         
-            setvisibleItemCount(show){
+            setvisibleItemCount(show: boolean){
                 const vm = this;
                 const { visibleItemsCount } = vm;
             
@@ -416,6 +425,9 @@ module nts.uk.ui.at.kdw013.share {
                             .resolve(true)
                             .then(() => {
                                 if (!ko.unwrap(show)) {
+									if($('.taskDetails').height() < 500){
+										$('.taskDetails').css({ "overflow-y": "unset"});
+									}
                                     vm.show(true);
                                 }
 

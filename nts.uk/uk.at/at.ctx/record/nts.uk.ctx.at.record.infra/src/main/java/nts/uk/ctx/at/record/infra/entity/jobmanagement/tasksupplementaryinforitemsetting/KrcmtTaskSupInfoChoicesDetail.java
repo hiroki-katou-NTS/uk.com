@@ -6,20 +6,15 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ChoiceCode;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ChoiceName;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ExternalCode;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
-import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservation;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * 
@@ -29,8 +24,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_TAST_SUP_INFO_CHOICES_DETAIL")
-public class KrcmtTaskSupInfoChoicesDetail extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KRCMT_TASK_SUP_INFO_CHOICES_DETAIL")
+public class KrcmtTaskSupInfoChoicesDetail extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,9 +38,6 @@ public class KrcmtTaskSupInfoChoicesDetail extends ContractUkJpaEntity implement
 	@Column(name = "NAME")
 	public String name;
 
-	@Column(name = "CID")
-	public String cid;
-	
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -55,7 +47,6 @@ public class KrcmtTaskSupInfoChoicesDetail extends ContractUkJpaEntity implement
 		this.pk = new KrcmtTaskSupInfoChoicesDetailPk(domain.getHistoryId(), domain.getCode().v(), domain.getItemId());
 		this.externalCd = domain.getExternalCode().isPresent() ? domain.getExternalCode().get().v() : null;
 		this.name = domain.getName().v();
-		this.cid = AppContexts.user().companyId();
 	}
 
 	public TaskSupInfoChoicesDetail toDomain() {

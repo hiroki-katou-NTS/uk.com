@@ -24,16 +24,27 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.WorkDetailData;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
+import nts.uk.ctx.at.record.infra.entity.daily.timezone.KrcdtDayTsSupSupplInfo;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoCommentItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoNumItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoSelectionItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppInfoTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppNumValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkSuppComment;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkSuppInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkinputRemarks;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
@@ -169,7 +180,6 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.workNo = dataUpdate.workNo;
 		entityOld.startTimeChangeWay = dataUpdate.startTimeChangeWay;
 		entityOld.endTimeChangeWay = dataUpdate.endTimeChangeWay;
-		entityOld.workRemarks = dataUpdate.workRemarks;
 		entityOld.workplaceId = dataUpdate.workplaceId;
 		entityOld.startStampMethod = dataUpdate.startStampMethod;
 		entityOld.endStampMethod = dataUpdate.endStampMethod;
@@ -189,13 +199,15 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	}
 	
 	public OuenWorkTimeSheetOfDaily toDomain(List<KrcdtDayOuenTimeSheet> es) {
+		
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = es.stream().map(ots -> OuenWorkTimeSheetOfDailyAttendance.create(
 				SupportFrameNo.of(ots.pk.ouenNo), 
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)),
 						(ots.workCd1 == null && ots.workCd2 == null && ots.workCd3 == null && ots.workCd4 == null && ots.workCd5 == null) ? Optional.empty() :
 						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
-						StringUtil.isNullOrEmpty(ots.workRemarks, true) ? Optional.empty() : Optional.of(new WorkinputRemarks(ots.workRemarks))), 
+						ots.krcdtDayTsSupSupplInfo == null ? Optional.empty() : Optional.of(toWorkSuppInfo(ots.krcdtDayTsSupSupplInfo))
+						), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(ots.workNo), 
 						Optional.of(new WorkTimeInformation(
@@ -207,9 +219,66 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 									new ReasonTimeChange(
 											ots.endTimeChangeWay == null ? TimeChangeMeans.REAL_STAMP : EnumAdaptor.valueOf(ots.endTimeChangeWay, TimeChangeMeans.class), 
 											ots.endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(ots.endStampMethod, EngravingMethod.class))), 
-									ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))))).collect(Collectors.toList());
+									ots.endTime == null ? null : new TimeWithDayAttr(ots.endTime)))), Optional.empty())).collect(Collectors.toList());
 		
 		return OuenWorkTimeSheetOfDaily.create(es.get(0).pk.sid, es.get(0).pk.ymd, ouenTimeSheet);
+	}
+
+	private WorkSuppInfo toWorkSuppInfo(KrcdtDayTsSupSupplInfo ts) {
+		
+		//補足時間情報
+		List<SuppInfoTimeItem> suppInfoTimeItems = new ArrayList<>();
+		SuppInfoTimeItem suppInfoTimeItem1 = new SuppInfoTimeItem(new SuppInfoNo(1), new AttendanceTime(ts.supplInfoTime1));
+		SuppInfoTimeItem suppInfoTimeItem2 = new SuppInfoTimeItem(new SuppInfoNo(2), new AttendanceTime(ts.supplInfoTime2));
+		SuppInfoTimeItem suppInfoTimeItem3 = new SuppInfoTimeItem(new SuppInfoNo(3), new AttendanceTime(ts.supplInfoTime3));
+		SuppInfoTimeItem suppInfoTimeItem4 = new SuppInfoTimeItem(new SuppInfoNo(4), new AttendanceTime(ts.supplInfoTime4));
+		SuppInfoTimeItem suppInfoTimeItem5 = new SuppInfoTimeItem(new SuppInfoNo(5), new AttendanceTime(ts.supplInfoTime5));
+		suppInfoTimeItems.add(suppInfoTimeItem1);
+		suppInfoTimeItems.add(suppInfoTimeItem2);
+		suppInfoTimeItems.add(suppInfoTimeItem3);
+		suppInfoTimeItems.add(suppInfoTimeItem4);
+		suppInfoTimeItems.add(suppInfoTimeItem5);
+		
+		//補足数値情報
+		List<SuppInfoNumItem> suppInfoNumItems = new ArrayList<>();
+		SuppInfoNumItem suppInfoNumItem1 = new SuppInfoNumItem(new SuppInfoNo(1), new SuppNumValue(ts.supplInfoNumber1));
+		SuppInfoNumItem suppInfoNumItem2 = new SuppInfoNumItem(new SuppInfoNo(2), new SuppNumValue(ts.supplInfoNumber2));
+		SuppInfoNumItem suppInfoNumItem3 = new SuppInfoNumItem(new SuppInfoNo(3), new SuppNumValue(ts.supplInfoNumber3));
+		SuppInfoNumItem suppInfoNumItem4 = new SuppInfoNumItem(new SuppInfoNo(4), new SuppNumValue(ts.supplInfoNumber4));
+		SuppInfoNumItem suppInfoNumItem5 = new SuppInfoNumItem(new SuppInfoNo(5), new SuppNumValue(ts.supplInfoNumber5));
+		suppInfoNumItems.add(suppInfoNumItem1);
+		suppInfoNumItems.add(suppInfoNumItem2);
+		suppInfoNumItems.add(suppInfoNumItem3);
+		suppInfoNumItems.add(suppInfoNumItem4);
+		suppInfoNumItems.add(suppInfoNumItem5);
+		
+		//補足コメント情報
+		List<SuppInfoCommentItem> suppInfoCommentItems = new ArrayList<>();
+		SuppInfoCommentItem suppInfoCommentItem1 = new SuppInfoCommentItem(new SuppInfoNo(1), new WorkSuppComment(ts.supplInfoComment1));
+		SuppInfoCommentItem suppInfoCommentItem2 = new SuppInfoCommentItem(new SuppInfoNo(2), new WorkSuppComment(ts.supplInfoComment2));
+		SuppInfoCommentItem suppInfoCommentItem3 = new SuppInfoCommentItem(new SuppInfoNo(3), new WorkSuppComment(ts.supplInfoComment3));
+		SuppInfoCommentItem suppInfoCommentItem4 = new SuppInfoCommentItem(new SuppInfoNo(4), new WorkSuppComment(ts.supplInfoComment4));
+		SuppInfoCommentItem suppInfoCommentItem5 = new SuppInfoCommentItem(new SuppInfoNo(5), new WorkSuppComment(ts.supplInfoComment5));
+		suppInfoCommentItems.add(suppInfoCommentItem1);
+		suppInfoCommentItems.add(suppInfoCommentItem2);
+		suppInfoCommentItems.add(suppInfoCommentItem3);
+		suppInfoCommentItems.add(suppInfoCommentItem4);
+		suppInfoCommentItems.add(suppInfoCommentItem5);
+		
+		//補足選択項目情報
+		List<SuppInfoSelectionItem> suppInfoSelectionItems = new ArrayList<>();
+		SuppInfoSelectionItem suppInfoSelectionItem1 = new SuppInfoSelectionItem(new SuppInfoNo(1), new ChoiceCode(ts.supplInfoCode1));
+		SuppInfoSelectionItem suppInfoSelectionItem2 = new SuppInfoSelectionItem(new SuppInfoNo(2), new ChoiceCode(ts.supplInfoCode2));
+		SuppInfoSelectionItem suppInfoSelectionItem3 = new SuppInfoSelectionItem(new SuppInfoNo(3), new ChoiceCode(ts.supplInfoCode3));
+		SuppInfoSelectionItem suppInfoSelectionItem4 = new SuppInfoSelectionItem(new SuppInfoNo(4), new ChoiceCode(ts.supplInfoCode4));
+		SuppInfoSelectionItem suppInfoSelectionItem5 = new SuppInfoSelectionItem(new SuppInfoNo(5), new ChoiceCode(ts.supplInfoCode5));
+		suppInfoSelectionItems.add(suppInfoSelectionItem1);
+		suppInfoSelectionItems.add(suppInfoSelectionItem2);
+		suppInfoSelectionItems.add(suppInfoSelectionItem3);
+		suppInfoSelectionItems.add(suppInfoSelectionItem4);
+		suppInfoSelectionItems.add(suppInfoSelectionItem5);
+		
+		return new WorkSuppInfo(suppInfoTimeItems, suppInfoNumItems, suppInfoCommentItems, suppInfoSelectionItems);
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.daily.timegroup;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
-import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroup;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeZone;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.context.AppContexts;
@@ -47,7 +44,7 @@ public class KsrdtTaskTsGroup extends ContractUkJpaEntity implements Serializabl
 	}
 
 	public KsrdtTaskTsGroup(TaskTimeZone timezone, String sId, GeneralDate date) {
-		this.pk = new KsrdtTaskTsGroupPk(sId, date, timezone.getCaltimeSpan().start(), timezone.getSubNo().v());
+		this.pk = new KsrdtTaskTsGroupPk(sId, date, timezone.getCaltimeSpan().start(), timezone.getSupNo().v());
 		this.cid = AppContexts.user().companyId();
 		this.endClock = timezone.getCaltimeSpan().end();
 	}

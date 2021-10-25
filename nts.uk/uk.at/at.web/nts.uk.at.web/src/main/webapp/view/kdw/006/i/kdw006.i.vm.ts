@@ -16,6 +16,8 @@ module nts.uk.at.view.kdw006.i.viewmodel {
         messageColor: KnockoutObservable<string>;
         boldAtr: KnockoutObservable<boolean>;
 
+        enableSwich: KnockoutObservable<boolean>;
+
         oldValues: any;
 
         constructor() {
@@ -37,11 +39,12 @@ module nts.uk.at.view.kdw006.i.viewmodel {
             self.elapsedMonthsValue = ko.observable(0);
 
             self.useAtr = ko.observable(0);
-            self.useAtrTask = ko.observable(null);
+            self.useAtrTask = ko.observable(0);
             self.time = ko.observable(0);
             self.displayMessage = ko.observable("test");
             self.messageColor = ko.observable("");
             self.boldAtr = ko.observable(true);
+            self.enableSwich = ko.observable(true);
 
             self.oldValues = {};
         }
@@ -57,6 +60,16 @@ module nts.uk.at.view.kdw006.i.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.$blockui("hide");
             });
+
+            self.useAtrTask.subscribe(() => {
+                if (ko.unwrap(self.useAtrTask) == 1) {
+                    self.enableSwich(true);
+                    $("#I1_1").attr('disabled','disabled');
+                } else {
+                    self.enableSwich(false);
+                    $("#I1_1").attr('disabled','disabled');
+                }
+            })
 
             return dfd.promise();
         }
@@ -83,6 +96,8 @@ module nts.uk.at.view.kdw006.i.viewmodel {
                     self.oldValues.messageColor = self.messageColor();
                     self.oldValues.boldAtr = self.boldAtr();
                     self.useAtrTask(res.usrAtr);
+
+                    self.useAtrTask.valueHasMutated();
                     dfd.resolve();
                 } else {
                     dfd.resolve();

@@ -23,7 +23,7 @@ import nts.uk.ctx.at.record.infra.entity.daily.timegroup.KsrdtTaskTsGroup;
 public class JpaTaskTimeGroupRepository extends JpaRepository implements TaskTimeGroupRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT g FROM KsrdtTaskTsGroup g";
-	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE g.sId = :sId";
+	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE g.pk.sId = :sId";
 	private static final String SELECT_BY_SID_AND_DATE = SELECT_BY_SID + " AND g.pk.date = :date";
 	private static final String SELECT_BY_SID_AND_PERIOD = SELECT_BY_SID + " AND g.pk.date >= :start AND g.pk.date <= :end";
 

@@ -50,7 +50,7 @@ public class ActualManHrTaskBlockCreationService {
 
 				// $作業詳細 = 工数実績項目リスト：$2.応援勤務枠No.含む($1.対象応援勤務枠)
 				for (ManHrTaskDetail d : taskDetails) {
-					if (d.getSupNo() == t.getSubNo()) {
+					if (d.getSupNo().equals(t.getSupNo())) {
 						lstTaskDetail.add(d);
 					}
 				}
@@ -60,10 +60,10 @@ public class ActualManHrTaskBlockCreationService {
 
 				// $作業ブロックリスト.追加する($作業ブロック)
 				taskBlocks.add(taskBlock);
+				
+				// 工数実績項目リスト = 工数実績項目リスト：except $作業詳細
+				taskDetails.removeAll(lstTaskDetail);
 			}
-
-			// 工数実績項目リスト = 工数実績項目リスト：except $作業詳細
-			taskDetails.removeAll(lstTaskDetail);
 
 			// 工数実績項目リスト：
 			// $開始時刻

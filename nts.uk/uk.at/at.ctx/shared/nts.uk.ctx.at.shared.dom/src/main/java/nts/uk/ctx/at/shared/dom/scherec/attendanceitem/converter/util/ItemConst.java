@@ -347,6 +347,8 @@ public interface ItemConst extends Cloneable {
 	public final String WORKGROUP = "作業グループ";
 	public final String WORKCODE = "作業CD";
 	public final String WORKREMARKS = "作業入力備考";
+	public final String SELECTION = "選択";
+	public final String SUPP = "補足";
 	public final String THIS_YEAR = "本年";
 	public final String NEXT_YEAR = "翌年";
 }

@@ -25,8 +25,8 @@
     box-sizing: border-box;
     border: 1px solid;
     border-radius: 5px;
-    width: 500px;
-    padding: 20px;
+    width: 358px;
+    padding: 20px 10px;
     height: 86px;
 }
 
@@ -34,8 +34,8 @@
     box-sizing: border-box;
     border: 1px solid;
     border-radius: 5px;
-    width: 500px;
-    padding: 20px;
+    width: 684px;
+    padding: 20px 10px;
     height: 100px;
     height: 86px;
 }
@@ -52,7 +52,7 @@
     box-sizing: border-box;
     border: 1px solid;
     border-radius: 5px;
-    width: 500px;
+    width: 415px;
     padding: 20px;
     padding: 32px 20px;
     height: 86px;
@@ -85,7 +85,7 @@
 
 .view-kdw #tab-panel .tab-content-1 .content .row-1 button {
     margin-left: 20px;
-    width: 59px;
+    width: 65px;
 }
 
 .view-kdw #tab-panel .tab-content-1 .content .row-2 {
@@ -103,7 +103,7 @@
 
 .view-kdw #tab-panel .tab-content-1 .content .row-2 button {
     margin-left: 20px;
-    width: 59px;
+    width: 65px;
 }
 
 .view-kdw #tab-panel .tab-content-1 .content .row-3 {
@@ -120,7 +120,7 @@
 
 .view-kdw #tab-panel .tab-content-1 .content .row-3 button {
     margin-left: 20px;
-    width: 59px;
+    width: 65px;
 }
 
 .ntsSwapGridArea .ntsSwapComponent {
@@ -128,15 +128,23 @@
 }
 
 .ntsSwapSearchLeft #swap-list-search-area-input{
-    width: 173px !important;
+    width: 137px !important;
+}
+
+.tab-content-3 .ntsSwapSearchLeft #swap-list-att-search-area-input{
+    width: 137px !important;
 }
 
 .ntsSwapSearchRight #swap-list-search-area-input{
-    width: 206px !important;
+    width: 172px !important;
+}
+
+.tab-content-3 .ntsSwapSearchRight #swap-list-att-search-area-input{
+    width: 172px !important;
 }
 
 .ntsSwapSearchRight {
-    width: 327px !important;
+    width: 275px !important;
 }
 
 .ntsMoveDataArea {
@@ -151,14 +159,33 @@
     float: left;    
 }
 
+#swap-list-att_container {
+    float: left;    
+}
+
 #swap-list-gridArea1 {
-    width: 317px !important;
+    width: 227px !important;
+}
+
+#swap-list-att-gridArea1 {
+    width: 227px !important;
 }
 
 #swap-list-gridArea2 {
-    width: 326px !important;
+    width: 250px !important;
 }
 
+#swap-list-att-grid1_displayContainer {
+    height: 286.609px !important;
+}
+
+#swap-list-att-grid2_displayContainer {
+    height: 286.609px !important;
+}
+
+#swap-list-att-gridArea2 {
+    width: 250px !important;
+}
 .upDown-container{
     padding-top: 167px;
 }
@@ -167,7 +194,15 @@
     overflow: hidden !important;
 }
 
+#swap-list-att-grid1_horizontalScrollContainer {
+    overflow: hidden !important;
+}
+
 #swap-list-grid2_horizontalScrollContainer {
+    overflow: hidden !important;
+}
+
+#swap-list-att-grid2_horizontalScrollContainer {
     overflow: hidden !important;
 }
 
@@ -176,7 +211,7 @@
 }
 
 .view-kdw #tab-panel .tab-content-2 .content .title-left {
-    width: 413px;
+    width: 370px;
     float: left;
 }
 
@@ -185,6 +220,10 @@
 }
 
 .view-kdw #tab-panel .tab-content-3 .content .title-left {
-    width: 413px;
+    width: 370px;
     float: left;
+}
+
+.upDown-container {
+    margin-left: 10px;
 }

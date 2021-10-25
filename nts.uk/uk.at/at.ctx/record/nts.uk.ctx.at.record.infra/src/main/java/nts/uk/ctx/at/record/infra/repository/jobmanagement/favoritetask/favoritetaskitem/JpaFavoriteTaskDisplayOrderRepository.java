@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.favoritetask
 public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository implements FavoriteTaskDisplayOrderRepository {
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT o FROM KrcdtTaskFavFrameSetDisporder o";
-	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE s.sId = :sId";
+	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE o.sId = :sId";
 
 	@Override
 	public void insert(FavoriteTaskDisplayOrder order) {
@@ -39,10 +39,11 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 
 	@Override
 	public void delete(String sId) {
-		Optional<KrcdtTaskFavFrameSetDisporder> entity = this.queryProxy()
-				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getSingle();
-		if (entity.isPresent()) {
-			this.commandProxy().remove(entity.get());
+		List<KrcdtTaskFavFrameSetDisporder> entities = this.queryProxy()
+				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getList();
+		
+		for (KrcdtTaskFavFrameSetDisporder entity: entities) {
+			this.commandProxy().remove(entity);
 		}
 	}
 
@@ -55,7 +56,7 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 				.query(SELECT_BY_SID, KrcdtTaskFavFrameSetDisporder.class).setParameter("sId", sId).getList();
 
 		for (KrcdtTaskFavFrameSetDisporder e : entities) {
-			displayOrders.add(new FavoriteDisplayOrder(e.pk.favId, e.pk.disporder));
+			displayOrders.add(new FavoriteDisplayOrder(e.favId, e.disporder));
 		}
 
 		return Optional.of(new FavoriteTaskDisplayOrder(sId, displayOrders));

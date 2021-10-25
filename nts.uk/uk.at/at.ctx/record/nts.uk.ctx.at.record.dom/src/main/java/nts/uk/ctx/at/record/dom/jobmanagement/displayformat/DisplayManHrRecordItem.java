@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.displayformat;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 
@@ -10,10 +11,11 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  *
  */
 @Getter
+@AllArgsConstructor
 public class DisplayManHrRecordItem implements DomainObject {
 
-	// 項目ID: 勤怠項目ID
-	private int attendanceItemId;
+	// 項目ID: 工数実績項目ID
+	private int itemId;
 
 	// 表示順
 	private int order;

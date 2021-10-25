@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLink;
+import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLinkRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItem;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordItemRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
@@ -76,6 +78,9 @@ public class GetWorkDataMasterInformation {
     @Inject
     private DivergenceReasonInputMethodI divergenceReasonInputMethodI;
     
+    @Inject
+    private ManHourRecordAndAttendanceItemLinkRepository manHourRecordAndAttendanceItemLinkRepo;
+    
     /**
      * @name 作業データマスタ情報を取得する
      * @param referenceDate 基準日
@@ -116,6 +121,9 @@ public class GetWorkDataMasterInformation {
     	//取得する(工数実績項目ID)
     	List<ManHourRecordItem> manHourRecordItems = manHourRecordItemRepo.get(loginUserContext.companyId(), itemIds);
     	
+    	//5 Call App:: 日次の勤怠項目を取得する
+    	ManHourRecordAttendanceItemLinkAttendanceItemsDto manHourRecordAttendanceItem = this.getManHourRecordAttendanceItemLinkAttendanceItems(itemIds);
+    	
     	return new WorkDataMasterInformationDto(
     			mapTask.get(1).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
     			mapTask.get(2).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
@@ -124,8 +132,28 @@ public class GetWorkDataMasterInformation {
     			mapTask.get(5).stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList()), 
     			workLocation.stream().map(c->WorkLocationDto.fromDomain(c)).collect(Collectors.toList()), 
     			taskSupInfoChoicesDetails.stream().map(c-> new TaskSupInfoChoicesDetailDto(c)).collect(Collectors.toList()), 
-    			manHourRecordItems.stream().map(c-> new ManHourRecordItemDto(c)).collect(Collectors.toList()));
+    			manHourRecordItems.stream().map(c-> new ManHourRecordItemDto(c)).collect(Collectors.toList()),
+    			manHourRecordAttendanceItem.attendanceItems, manHourRecordAttendanceItem.manHourRecordAndAttendanceItemLink);
     			
+    }
+    
+    /**
+     * @name 日次の勤怠項目を取得する
+     * @param 工数実績項目リスト  List<Integer> itemIds
+     */
+    public ManHourRecordAttendanceItemLinkAttendanceItemsDto getManHourRecordAttendanceItemLinkAttendanceItems(List<Integer> itemIds) {
+    	LoginUserContext loginUserContext = AppContexts.user();
+    	
+    	//Get*(ログイン会社ID,工数実績項目リスト)
+    	List<ManHourRecordAndAttendanceItemLink> manHourRecordAndAttendanceItemLink = manHourRecordAndAttendanceItemLinkRepo.get(loginUserContext.companyId(), itemIds);
+    	
+    	//Get*(ログイン会社ID,工数実績項目と勤怠項目の紐付け.工数実績項目ID)
+    	List<DailyAttendanceItem> attendanceItems = dailyAttendanceItemRepo.findByADailyAttendanceItems(
+    			manHourRecordAndAttendanceItemLink.stream().map(c->c.getAttendanceItemId()).collect(Collectors.toList()), 
+    			loginUserContext.companyId());
+    	
+    	return new ManHourRecordAttendanceItemLinkAttendanceItemsDto(attendanceItems, manHourRecordAndAttendanceItemLink);
+    	
     }
     
     /**

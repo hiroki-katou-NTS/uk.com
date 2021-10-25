@@ -50,3 +50,18 @@
 .view-kdw .right-content .column-3 {
     padding-top: 10px;
 }
+
+.inputCode {
+    max-width: 185px !important;
+    width: 185px !important;
+}
+
+.inputName {
+    max-width: 185px !important;
+    width: 185px !important;
+}
+
+.inputMemo {
+    max-width: 185px !important;
+    width: 185px !important;
+}

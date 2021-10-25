@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.jobmanagement.manhourrecorditem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,18 +32,26 @@ public class JpaManHourRecordAndAttendanceItemLinkRepository extends JpaReposito
 
 	@Override
 	public List<ManHourRecordAndAttendanceItemLink> get(String cId) {
-		return this.queryProxy().query(SELECT_BY_CID, KrcmtManHrItemLink.class).getList(item -> item.toDomain());
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtManHrItemLink.class)
+				.setParameter("cId", cId)
+				.getList(item -> item.toDomain());
+		
 	}
 
 	@Override
 	public List<ManHourRecordAndAttendanceItemLink> get(String cId, List<Integer> items) {
+		if(items.isEmpty()) return new ArrayList<ManHourRecordAndAttendanceItemLink>();
 		return this.queryProxy().query(SELECT_BY_CID_AND_ITEM, KrcmtManHrItemLink.class)
+				.setParameter("cId", cId)
+				.setParameter("items", items)
 				.getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<ManHourRecordAndAttendanceItemLink> get(String cId, int attItem) {
 		return this.queryProxy().query(SELECT_BY_CID_AND_ATT_ITEM, KrcmtManHrItemLink.class)
+				.setParameter("cId", cId)
+				.setParameter("attItem", attItem)
 				.getSingle(item -> item.toDomain());
 	}
 
