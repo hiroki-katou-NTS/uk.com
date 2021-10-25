@@ -649,7 +649,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 weekCount++;
                 Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
                 if (weekTotal.isPresent()) {
-                    format.setD27(String.valueOf(weekTotal.get().getHolidays().intValue()));
+                    format.setD27(String.valueOf(weekTotal.get().getHolidays().doubleValue()));
                     format.setD23(minuteToTime(weekTotal.get().getWorkingHours().intValue()));
                 } else {
                     format.setD27("0");
@@ -686,7 +686,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (iteration == size) {
                     Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
                     if (weekTotal.isPresent()) {
-                        format.setD27(String.valueOf(weekTotal.get().getHolidays().intValue()));
+                        format.setD27(String.valueOf(weekTotal.get().getHolidays().doubleValue()));
                         format.setD23(minuteToTime(weekTotal.get().getWorkingHours().intValue()));
                     } else {
                         format.setD27("0");
