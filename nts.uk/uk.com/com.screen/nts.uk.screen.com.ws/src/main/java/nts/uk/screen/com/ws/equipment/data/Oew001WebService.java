@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -58,8 +59,8 @@ public class Oew001WebService extends WebService {
 	}
 	
 	@POST
-	@Path("getEmployeeList")
-	public List<EmployeeInformationImport> getEmployeeList() {
-		return this.equipmentDataUsageInputScreenQuery.getEmployeeList();
+	@Path("getEmployeeInfo/{sid}")
+	public List<EmployeeInformationImport> getEmployeeInfo(@PathParam("sid") String sid) {
+		return this.equipmentDataUsageInputScreenQuery.getEmployeeInfo(sid);
 	}
 }

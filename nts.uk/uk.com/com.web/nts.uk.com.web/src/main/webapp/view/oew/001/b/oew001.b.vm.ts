@@ -4,7 +4,7 @@ module nts.uk.com.view.oew001.b {
   import model = oew001.share.model;
 
   const API = {
-    getEmployeeList: "com/screen/oew001/getEmployeeList",
+    getEmployeeInfo: "com/screen/oew001/getEmployeeInfo/{0}",
     insert: "ctx/office/equipment/data/insert",
     update: "ctx/office/equipment/data/update",
     delete: "ctx/office/equipment/data/delete",
@@ -42,7 +42,7 @@ module nts.uk.com.view.oew001.b {
     mounted() {
       const vm = this;
       vm.$blockui("grayout");
-      vm.getEmployeeList().then(() => {
+      vm.getEmployeeInfo().then(() => {
         vm.data().employeeName(_.find(vm.employeeList(), { "employeeId": vm.data().sid }).businessName);
         vm.data.valueHasMutated();
       })
@@ -57,9 +57,9 @@ module nts.uk.com.view.oew001.b {
       });
     }
 
-    private getEmployeeList(): JQueryPromise<any> {
+    private getEmployeeInfo(): JQueryPromise<any> {
       const vm = this;
-      return vm.$ajax(API.getEmployeeList).then(result => vm.employeeList(result));
+      return vm.$ajax(nts.uk.text.format(API.getEmployeeInfo, vm.data().sid)).then(result => vm.employeeList(result));
     }
 
     /**
