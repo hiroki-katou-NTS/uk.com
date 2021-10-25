@@ -38,4 +38,6 @@ public class DisplayEvery28Param {
 	public boolean isLastDay;
 	
 	public int mode;
+	
+	public boolean toAdvancePeriod; // 期間を進めるか
 }
