@@ -110,14 +110,6 @@ public class UpdateUsageRecordDomainServiceTest {
 		List<ItemData> itemDatas = Arrays
 				.asList(new ItemData(new EquipmentItemNo("1"), new ActualItemUsageValue("new")));
 
-		new Expectations() {
-			{
-				require.getEquipmentData(EquipmentDataTestHelper.CID, domain.getEquipmentCode(), useDate,
-						EquipmentDataTestHelper.SID, domain.getInputDate());
-				result = Optional.empty();
-			};
-		};
-
 		// then
 		NtsAssert.businessException("Msg_2319",
 				() -> UpdateUsageRecordDomainService.update(require, EquipmentDataTestHelper.CID,
