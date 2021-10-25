@@ -67,21 +67,21 @@ module nts.uk.ui.at.kdw013.b {
         </div>
         <div class="popup-area-f-from-b">
             <!-- F2_1 -->
-            <div class= "pb10 align-left" data-bind="i18n: 'KDW013_58'"></div>
+            <div class= "pb10 align-left" data-bind="i18n: 'KDW013_70'"></div>
 
             <!-- F3_2 -->
             <div class="textEditor pb10">
                 <!-- F3_1 -->
-                <label class="pr10" data-bind="i18n: 'KDW013_59'"></label>
+                <label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
                 <input
                 class="nameInput"
                 tabindex="1"
-                id="KDW013_59"
+                id="KDW013_71"
                 data-bind="ntsTextEditor: {
                     value: favTaskName, 
                     required: true,
                     constraint: 'FavoriteTaskName',
-                    name: '#[KDW013_59]',
+                    name: '#[KDW013_71]',
                     enable: true
                     }"
                 />

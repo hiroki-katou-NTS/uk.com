@@ -642,13 +642,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     initialDate: $component.params.initialDate,
                     $settings: $component.params.$settings
                 "></div>
-            <div class="fc-oneday-events" data-bind="
-                    kdw013-oneday-events: 'kdw013-oneday-events',
-                    mode: $component.params.editable,
-                    items: $component.onedayDragItems,
-                    $settings: $component.params.$settings,
-                    screenA:$component.params.screenA
-                "></div>
             <div class="fc-task-events" data-bind="
                     kdw013-task-events: 'kdw013-task-events',
                     mode: $component.params.editable,
@@ -656,6 +649,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     $settings: $component.params.$settings,
                     screenA:$component.params.screenA
                 "></div>
+            <div class="fc-oneday-events" data-bind="
+                    kdw013-oneday-events: 'kdw013-oneday-events',
+                    mode: $component.params.editable,
+                    items: $component.onedayDragItems,
+                    $settings: $component.params.$settings,
+                    screenA:$component.params.screenA
+                "></div>
+            
 
 
         </div>
