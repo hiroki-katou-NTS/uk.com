@@ -10,6 +10,7 @@ module nts.uk.at.view.kdw013.h {
 	export module viewmodel {
 		const paths: any = {
 			start: "screen/at/kdw013/h/start",
+			save: "screen/at/kdw013/h/save"
 		}
 		export class ScreenModel {
 			itemId28: ItemValue;
@@ -206,6 +207,21 @@ module nts.uk.at.view.kdw013.h {
 				});
 
 				console.log(data);
+				
+				block.invisible();
+				let param = {
+					empTarget: self.params.employeeId, //対象社員
+					targetDate: self.params.date, //対象日
+					items: data, //実績内容  => List<ItemValue> id và giá trị
+					integrationOfDaily: null
+				};
+				ajax(paths.save, param).done(() => {
+					info({ messageId: 'Msg_15' });
+				}).fail(function(res: any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
 			}
 
             /**
@@ -265,7 +281,7 @@ module nts.uk.at.view.kdw013.h {
 			};
 		}
 		isChange(): boolean {
-			return this.value() == this.valueBeforeChange;
+			return this.value() != this.valueBeforeChange;
 		}
 	}
 
@@ -299,7 +315,7 @@ module nts.uk.at.view.kdw013.h {
 
 	type Param = {
 		employeeId: string; //対象社員
-		date: String; //対象日
+		date: Date; //対象日
 		IntegrationOfDaily: any; //日別実績(Work)
 		displayAttItems: DisplayAttItem[]; //実績入力ダイアログ表示項目一覧  => List<表示する勤怠項目> id và thứ tự hiển thị
 		itemValues: IItemValue[]; //実績内容  => List<ItemValue> id và giá trị
@@ -333,8 +349,8 @@ module nts.uk.at.view.kdw013.h {
 	}
 
 	let paramFake: Param = {
-		employeeId: null, //対象社員
-		date: null, //対象日
+		employeeId: __viewContext.user.employeeId, //対象社員
+		date: new Date(), //対象日
 		IntegrationOfDaily: null, //日別実績(Work)
 		displayAttItems: [//実績入力ダイアログ表示項目一覧  => List<表示する勤怠項目> id và thứ tự hiển thị
 			{ attendanceItemId: 216, order: 1 }, { attendanceItemId: 221, order: 2 },{ attendanceItemId: 226, order:3}, { attendanceItemId: 231, order: 4 }, { attendanceItemId: 236, order: 5 },{ attendanceItemId: 241, order: 6 }, { attendanceItemId: 246, order: 7 }, { attendanceItemId: 251, order: 8 }, { attendanceItemId: 256, order: 9 },

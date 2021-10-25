@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.kdw.kdw013.bch;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,8 +14,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.screen.at.app.kdw013.a.IntegrationOfDailyCommand;
+import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
+import nts.uk.screen.at.app.kdw013.h.CreateAchievementRegistrationParam;
 import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
 import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
@@ -32,8 +36,8 @@ public class KDW013BCHWebService {
 	@Inject
 	private GetWorkDataMasterInformation getWorkDataMasterInformation;
 
-//	@Inject
-//	private StartWorkInputPanel startWorkInputPanel;
+	@Inject
+	private CreateAchievementRegistrationParam createAchievementRegistrationParam;
 
 	@Inject
 	private SelectWorkItem selectWorkItem;
@@ -74,7 +78,16 @@ public class KDW013BCHWebService {
 	public AttendanceItemMasterInformationDto startH(ParamH param) {
 		return getWorkDataMasterInformation.getAttendanceItemMasterInformation(param.itemIds);
 	}
-	
+
+	@POST
+	@Path("h/save")
+	public void saveH(KDW013HSaveCommand command) {
+		createAchievementRegistrationParam.registerAchievements(
+				command.empTarget, 
+				command.targetDate, 
+				command.items.stream().map(c-> ItemValueCommand.toDomain(c)).collect(Collectors.toList()), 
+				IntegrationOfDailyCommand.toDomain(command.integrationOfDaily));
+	}
 	
 }
 @NoArgsConstructor
