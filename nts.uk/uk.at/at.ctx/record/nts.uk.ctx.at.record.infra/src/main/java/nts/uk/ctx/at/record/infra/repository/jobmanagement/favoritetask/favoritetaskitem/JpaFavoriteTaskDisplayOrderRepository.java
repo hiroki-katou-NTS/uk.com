@@ -22,6 +22,7 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT o FROM KrcdtTaskFavFrameSetDisporder o";
 	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE o.sId = :sId";
+	private static final String SELECT_BY_FAVID = SELECT_ALL_QUERY_STRING + " WHERE o.favId = :favId";
 
 	@Override
 	public void insert(FavoriteTaskDisplayOrder order) {
@@ -60,6 +61,17 @@ public class JpaFavoriteTaskDisplayOrderRepository extends JpaRepository impleme
 		}
 
 		return Optional.of(new FavoriteTaskDisplayOrder(sId, displayOrders));
+	}
+
+	@Override
+	public void deleteByFavId(String favoriteId) {
+		Optional<KrcdtTaskFavFrameSetDisporder> entityOpt = this.queryProxy()
+				.query(SELECT_BY_FAVID, KrcdtTaskFavFrameSetDisporder.class).setParameter("favId", favoriteId).getSingle();
+		
+		if (entityOpt.isPresent()) {
+			this.commandProxy().remove(entityOpt.get());
+		}
+		
 	}
 
 }

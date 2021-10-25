@@ -74,6 +74,11 @@ public class DeleteFavoriteForOneDayCommandHandler extends CommandHandler<Delete
 
 		}
 
+		@Override
+		public void deleteByFavId(String favoriteId) {
+			orderRepo.deleteByFavId(favoriteId);			
+		}
+
 	}
 
 }
