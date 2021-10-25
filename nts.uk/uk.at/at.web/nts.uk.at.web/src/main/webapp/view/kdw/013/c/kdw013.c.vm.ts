@@ -390,7 +390,7 @@ module nts.uk.ui.at.kdw013.c {
 				<tbody>
 					<tr class="functional">
                         <td>
-							<a href="#" data-bind="i18n: 'KDW013_57', click: addTaskDetails"></a>
+							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails"></a>
                             <br />
 							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, disable: timeError || errors || !$root.errors.isEmpty()"></button>
                         </td>
