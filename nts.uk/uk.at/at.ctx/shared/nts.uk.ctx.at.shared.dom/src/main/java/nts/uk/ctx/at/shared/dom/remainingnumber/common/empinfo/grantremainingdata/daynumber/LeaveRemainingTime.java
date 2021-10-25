@@ -37,4 +37,14 @@ public class LeaveRemainingTime extends TimeDurationPrimitiveValue<LeaveRemainin
 		// 時間加算
 		return new LeaveRemainingTime( v() + aLeaveRemainingTime.v() );
 	}
+	
+	//[1]残数超過分を補正する
+	public LeaveRemainingTime correctTheExcess(){
+		if(this.v() < 0){
+			return new LeaveRemainingTime(0);
+		}else{
+			return this;
+		}
+	}
+	
 }

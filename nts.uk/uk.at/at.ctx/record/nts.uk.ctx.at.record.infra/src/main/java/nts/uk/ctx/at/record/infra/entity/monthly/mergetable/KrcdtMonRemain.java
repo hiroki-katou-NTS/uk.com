@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
@@ -219,9 +220,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	/** 半日年休使用回数付与後 */
 	@Column(name = "AL_HALF_USED_TIMES_AFTER")
 	public Integer annleaHalfUsedTimesAfter;
-	/** 半日年休残回数 */
-	@Column(name = "AL_HALF_REM_TIMES")
-	public Integer annleaHalfRemainingTimes;
 	/** 半日年休残回数付与前 */
 	@Column(name = "AL_HALF_REM_TIMES_BEFORE")
 	public Integer annleaHalfRemainingTimesBefore;
@@ -238,9 +236,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	/** 実半日年休使用回数付与後 */
 	@Column(name = "AL_FACT_HALF_USED_TIMES_AF")
 	public Integer annleaFactHalfUsedTimesAfter;
-	/** 実半日年休残回数 */
-	@Column(name = "AL_FACT_HALF_REM_TIMES")
-	public Integer annleaFactHalfRemainingTimes;
 	/** 実半日年休残回数付与前 */
 	@Column(name = "AL_FACT_HALF_REM_TIMES_BE")
 	public Integer annleaFactHalfRemainingTimesBefore;
@@ -248,18 +243,13 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	@Column(name = "AL_FACT_HALF_REM_TIMES_AF")
 	public Integer annleaFactHalfRemainingTimesAfter;
 
-	/** 時間年休上限残時間 */
-	@Column(name = "AL_TIME_REM_MINUTES")
-	public Integer annleaTimeRemainingMinutes;
+
 	/** 時間年休上限残時間付与前 */
 	@Column(name = "AL_TIME_REM_MINUTES_BEFORE")
 	public Integer annleaTimeRemainingMinutesBefore;
 	/** 時間年休上限残時間付与後 */
 	@Column(name = "AL_TIME_REM_MINUTES_AFTER")
 	public Integer annleaTimeRemainingMinutesAfter;
-	/** 実時間年休上限残時間 */
-	@Column(name = "AL_FACT_TIME_REM_MINUTES")
-	public Integer annleaFactTimeRemainingMinutes;
 	/** 実時間年休上限残時間付与前 */
 	@Column(name = "AL_FACT_TIME_REM_MINUTES_BE")
 	public Integer annleaFactTimeRemainingMinutesBefore;
@@ -1730,7 +1720,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			if (normalHalf.getUsedNum().getTimesAfterGrant().isPresent()) {
 				this.annleaHalfUsedTimesAfter = normalHalf.getUsedNum().getTimesAfterGrant().get().v();
 			}
-			this.annleaHalfRemainingTimes = normalHalf.getRemainingNum().getTimes().v();
 			this.annleaHalfRemainingTimesBefore = normalHalf.getRemainingNum().getTimesBeforeGrant().v();
 			if (normalHalf.getRemainingNum().getTimesAfterGrant().isPresent()) {
 				this.annleaHalfRemainingTimesAfter = normalHalf.getRemainingNum().getTimesAfterGrant().get().v();
@@ -1745,7 +1734,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			if (realHalf.getUsedNum().getTimesAfterGrant().isPresent()) {
 				this.annleaFactHalfUsedTimesAfter = realHalf.getUsedNum().getTimesAfterGrant().get().v();
 			}
-			this.annleaFactHalfRemainingTimes = realHalf.getRemainingNum().getTimes().v();
 			this.annleaFactHalfRemainingTimesBefore = realHalf.getRemainingNum().getTimesBeforeGrant().v();
 			if (realHalf.getRemainingNum().getTimesAfterGrant().isPresent()) {
 				this.annleaFactHalfRemainingTimesAfter = realHalf.getRemainingNum().getTimesAfterGrant().get().v();
@@ -1755,7 +1743,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		// 上限残時間
 		if (domain.getMaxRemainingTime().isPresent()) {
 			val normalMax = domain.getMaxRemainingTime().get();
-			this.annleaTimeRemainingMinutes = normalMax.getTime().v();
 			this.annleaTimeRemainingMinutesBefore = normalMax.getTimeBeforeGrant().v();
 			if (normalMax.getTimeAfterGrant().isPresent()) {
 				this.annleaTimeRemainingMinutesAfter = normalMax.getTimeAfterGrant().get().v();
@@ -1765,7 +1752,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		// 実上限残時間
 		if (domain.getRealMaxRemainingTime().isPresent()) {
 			val realMax = domain.getRealMaxRemainingTime().get();
-			this.annleaFactTimeRemainingMinutes = realMax.getTime().v();
 			this.annleaFactTimeRemainingMinutesBefore = realMax.getTimeBeforeGrant().v();
 			if (realMax.getTimeAfterGrant().isPresent()) {
 				this.annleaFactTimeRemainingMinutesAfter = realMax.getTimeAfterGrant().get().v();
@@ -1819,19 +1805,15 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.annleaHalfUsedTimes = null;
 		this.annleaHalfUsedTimesBefore = null;
 		this.annleaHalfUsedTimesAfter = null;
-		this.annleaHalfRemainingTimes = null;
 		this.annleaHalfRemainingTimesBefore = null;
 		this.annleaHalfRemainingTimesAfter = null;
 		this.annleaFactHalfUsedTimes = null;
 		this.annleaFactHalfUsedTimesBefore = null;
 		this.annleaFactHalfUsedTimesAfter = null;
-		this.annleaFactHalfRemainingTimes = null;
 		this.annleaFactHalfRemainingTimesBefore = null;
 		this.annleaFactHalfRemainingTimesAfter = null;
-		this.annleaTimeRemainingMinutes = null;
 		this.annleaTimeRemainingMinutesBefore = null;
 		this.annleaTimeRemainingMinutesAfter = null;
-		this.annleaFactTimeRemainingMinutes = null;
 		this.annleaFactTimeRemainingMinutesBefore = null;
 		this.annleaFactTimeRemainingMinutesAfter = null;
 		this.annleaGrantAtr = 0;
@@ -3048,8 +3030,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 半日年休
 		HalfDayAnnualLeave halfDayAnnualLeave = null;
-		if (this.annleaHalfRemainingTimes != null &&
-			this.annleaHalfRemainingTimesBefore != null &&
+		if (this.annleaHalfRemainingTimesBefore != null &&
 			this.annleaHalfUsedTimes != null &&
 			this.annleaHalfUsedTimesBefore != null){
 			RemainingTimes valHalfRemainTimesAfter = null;
@@ -3062,7 +3043,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			}
 			halfDayAnnualLeave = HalfDayAnnualLeave.of(
 					HalfDayAnnLeaRemainingNum.of(
-							new RemainingTimes(this.annleaHalfRemainingTimes),
 							new RemainingTimes(this.annleaHalfRemainingTimesBefore),
 							Optional.ofNullable(valHalfRemainTimesAfter)),
 					HalfDayAnnLeaUsedNum.of(
@@ -3073,8 +3053,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 実半日年休
 		HalfDayAnnualLeave realHalfDayAnnualLeave = null;
-		if (this.annleaFactHalfRemainingTimes != null &&
-			this.annleaFactHalfRemainingTimesBefore != null &&
+		if (this.annleaFactHalfRemainingTimesBefore != null &&
 			this.annleaFactHalfUsedTimes != null &&
 			this.annleaFactHalfUsedTimesBefore != null){
 			RemainingTimes valFactHalfRemainTimesAfter = null;
@@ -3087,7 +3066,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			}
 			realHalfDayAnnualLeave = HalfDayAnnualLeave.of(
 					HalfDayAnnLeaRemainingNum.of(
-							new RemainingTimes(this.annleaFactHalfRemainingTimes),
 							new RemainingTimes(this.annleaFactHalfRemainingTimesBefore),
 							Optional.ofNullable(valFactHalfRemainTimesAfter)),
 					HalfDayAnnLeaUsedNum.of(
@@ -3117,29 +3095,25 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 上限残時間
 		AnnualLeaveMaxRemainingTime maxRemainingTime = null;
-		if (this.annleaTimeRemainingMinutes != null &&
-			this.annleaTimeRemainingMinutesBefore != null){
-			RemainingMinutes valTimeRemainMinutesAfter = null;
+		if (this.annleaTimeRemainingMinutesBefore != null){
+			LeaveRemainingTime valTimeRemainMinutesAfter = null;
 			if (this.annleaTimeRemainingMinutesAfter != null){
-				valTimeRemainMinutesAfter = new RemainingMinutes(this.annleaTimeRemainingMinutesAfter);
+				valTimeRemainMinutesAfter = new LeaveRemainingTime(this.annleaTimeRemainingMinutesAfter);
 			}
 			maxRemainingTime = AnnualLeaveMaxRemainingTime.of(
-					new RemainingMinutes(this.annleaTimeRemainingMinutes),
-					new RemainingMinutes(this.annleaTimeRemainingMinutesBefore),
+					new LeaveRemainingTime(this.annleaTimeRemainingMinutesBefore),
 					Optional.ofNullable(valTimeRemainMinutesAfter));
 		}
 
 		// 実上限残時間
 		AnnualLeaveMaxRemainingTime realMaxRemainingTime = null;
-		if (this.annleaFactTimeRemainingMinutes != null &&
-			this.annleaFactTimeRemainingMinutesBefore != null){
-			RemainingMinutes valFactTimeRemainMinutesAfter = null;
+		if (this.annleaFactTimeRemainingMinutesBefore != null){
+			LeaveRemainingTime valFactTimeRemainMinutesAfter = null;
 			if (this.annleaFactTimeRemainingMinutesAfter != null){
-				valFactTimeRemainMinutesAfter = new RemainingMinutes(this.annleaFactTimeRemainingMinutesAfter);
+				valFactTimeRemainMinutesAfter = new LeaveRemainingTime(this.annleaFactTimeRemainingMinutesAfter);
 			}
 			realMaxRemainingTime = AnnualLeaveMaxRemainingTime.of(
-					new RemainingMinutes(this.annleaFactTimeRemainingMinutes),
-					new RemainingMinutes(this.annleaFactTimeRemainingMinutesBefore),
+					new LeaveRemainingTime(this.annleaFactTimeRemainingMinutesBefore),
 					Optional.ofNullable(valFactTimeRemainMinutesAfter));
 		}
 

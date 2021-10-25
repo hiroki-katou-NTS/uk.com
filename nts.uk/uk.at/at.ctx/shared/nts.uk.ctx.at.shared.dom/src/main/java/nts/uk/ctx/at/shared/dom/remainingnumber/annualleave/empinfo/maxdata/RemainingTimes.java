@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 
 /**
  * 休暇残回数
@@ -31,6 +30,15 @@ public class RemainingTimes extends IntegerPrimitiveValue<RemainingTimes> implem
     /** クローン */
 	public RemainingTimes clone() {
 		return new RemainingTimes(this.v());
+	}
+	
+	//[１]残数超過分を補正する
+	public RemainingTimes correctTheExcess(){
+		if(this.v().doubleValue() < 0.0){
+			return new RemainingTimes(0);
+		}else{
+			return new RemainingTimes(this.v());
+		}
 	}
 }
 

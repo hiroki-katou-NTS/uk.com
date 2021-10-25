@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
@@ -117,16 +119,64 @@ public class AnnualLeaveRemaining implements Cloneable {
 	 * 年休付与情報を更新
 	 * @param remainingDataList 年休付与残数データリスト
 	 * @param afterGrantAtr 付与後フラグ
+	 * @param maxData 年休上限データ
+	 * @param endDay 終了日
 	 */
-	public void updateRemainingNumber(
-			List<AnnualLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
+	public void updateRemainingNumber(List<AnnualLeaveGrantRemainingData> remainingDataList,
+			GrantBeforeAfterAtr grantPeriodAtr, AnnualLeaveMaxData maxData, GeneralDate endDay) {
 
 		// 年休付与残数データから年休（マイナスあり）を作成
 		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 
 		// 年休（マイナスなし）を年休（マイナスあり）で上書き　＆　年休からマイナスを削除
 		this.annualLeaveNoMinus = updateRemainingNumberNoMinus(this.annualLeaveWithMinus);
-
+		
+		//半日年休　
+		if(maxData.getHalfdayAnnualLeaveMax().isPresent()){
+			//更新する
+			if(this.halfDayAnnualLeaveWithMinus.isPresent()){
+				this.halfDayAnnualLeaveWithMinus = Optional.of(this.halfDayAnnualLeaveWithMinus.get()
+						.update(maxData.getHalfdayAnnualLeaveMax().get(), grantPeriodAtr));
+			}else{
+				HalfDayAnnualLeave  halfDayAnnual = new HalfDayAnnualLeave();
+				this.halfDayAnnualLeaveWithMinus = Optional.of(halfDayAnnual
+						.update(maxData.getHalfdayAnnualLeaveMax().get(), grantPeriodAtr));
+			}
+			//残数超過分を補正する
+			this.halfDayAnnualLeaveNoMinus = Optional.of(this.halfDayAnnualLeaveWithMinus.get().correctTheExcess());
+		}else{
+			//半日年休（マイナスあり）と半日年休（マイナスなし）Optional.empty()にする
+			this.halfDayAnnualLeaveWithMinus = Optional.empty();
+			this.halfDayAnnualLeaveNoMinus = Optional.empty();
+		}
+		
+		//時間年休
+		if(maxData.getTimeAnnualLeaveMax().isPresent()){
+			//更新する
+			if(this.timeAnnualLeaveWithMinus.isPresent()){
+				this.timeAnnualLeaveWithMinus = Optional.of(this.timeAnnualLeaveWithMinus.get()
+						.update(maxData.getTimeAnnualLeaveMax().get(), grantPeriodAtr));
+			}else{
+				AnnualLeaveMaxRemainingTime leaveMaxRemainingTime = new AnnualLeaveMaxRemainingTime();
+					this.timeAnnualLeaveWithMinus = Optional.of(leaveMaxRemainingTime
+							.update(maxData.getTimeAnnualLeaveMax().get(), grantPeriodAtr));
+			}
+			//残数超過分を補正する
+			this.timeAnnualLeaveNoMinus = Optional.of(this.timeAnnualLeaveWithMinus.get().correctTheExcess());
+			
+		}else{
+			//時間年休（マイナスあり）と時間年休（マイナスなし）Optional.empty()にする
+			this.timeAnnualLeaveWithMinus = Optional.empty();
+			this.timeAnnualLeaveNoMinus = Optional.empty();
+		}
+		
+		//未消化数　更新する
+		if(this.annualLeaveUndigestNumber.isPresent()){
+			this.annualLeaveUndigestNumber = Optional.of(this.annualLeaveUndigestNumber.get().update(remainingDataList, endDay));
+		}else{
+			AnnualLeaveUndigestNumber UndigestNumber = new AnnualLeaveUndigestNumber();
+			this.annualLeaveUndigestNumber = Optional.of(UndigestNumber.update(remainingDataList, endDay));
+		}
 	}
 
 	/**

@@ -30,6 +30,15 @@ public class UsedTimes extends IntegerPrimitiveValue<UsedTimes> implements Seria
 	public UsedTimes add(UsedTimes target) {
 		return new UsedTimes(this.v() + target.v());
 	}
+	
+	//[１]残数超過分を補正する
+	public UsedTimes correctTheExcess(RemainingTimes remainingTomes){
+		if(remainingTomes.v() < 0.0){
+			return new UsedTimes(this.v() + remainingTomes.v());
+		}else{
+			return new UsedTimes(this.v());
+		}
+	}
 
 }
 
