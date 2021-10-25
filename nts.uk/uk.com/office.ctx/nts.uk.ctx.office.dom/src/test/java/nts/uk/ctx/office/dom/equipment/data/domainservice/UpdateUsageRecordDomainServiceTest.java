@@ -15,6 +15,8 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
+import nts.uk.ctx.office.dom.equipment.achievement.ErrorItem;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.domain.EquipmentUsageRecordItemSettingTestHelper;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
@@ -115,5 +117,45 @@ public class UpdateUsageRecordDomainServiceTest {
 				() -> UpdateUsageRecordDomainService.update(require, EquipmentDataTestHelper.CID,
 						domain.getEquipmentCode(), domain.getInputDate(), domain.getEquipmentClassificationCode(),
 						EquipmentDataTestHelper.SID, useDate, itemDatas));
+	}
+	
+	/**
+	 * [prv-1]項目制限をチェックする結果を取得する
+	 * エラーがない
+	 */
+	@Test
+	public void testValidateItemLimitNoErr() {
+		// given
+		ItemData itemData = new ItemData(new EquipmentItemNo("1"), new ActualItemUsageValue("abc"));
+		List<EquipmentUsageRecordItemSetting> itemSettings = Arrays.asList(
+				EquipmentUsageRecordItemSettingTestHelper.mockDomain("1", ItemClassification.TEXT, 3),
+				EquipmentUsageRecordItemSettingTestHelper.mockDomain("2", ItemClassification.NUMBER, 10));
+		
+		// when
+		Optional<ErrorItem> optErrorItem = NtsAssert.Invoke.staticMethod(UpdateUsageRecordDomainService.class, 
+				"validateItemLimit", itemData, itemSettings);
+		
+		// then
+		assertThat(optErrorItem).isEmpty();
+	}
+	
+	/**
+	 * [prv-1]項目制限をチェックする結果を取得する
+	 * エラーがある
+	 */
+	@Test
+	public void testValidateItemLimitHasError() {
+		// given
+		ItemData itemData = new ItemData(new EquipmentItemNo("1"), new ActualItemUsageValue("abcdef"));
+		List<EquipmentUsageRecordItemSetting> itemSettings = Arrays.asList(
+				EquipmentUsageRecordItemSettingTestHelper.mockDomain("1", ItemClassification.TEXT, 3),
+				EquipmentUsageRecordItemSettingTestHelper.mockDomain("2", ItemClassification.NUMBER, 10));
+		
+		// when
+		Optional<ErrorItem> optErrorItem = NtsAssert.Invoke.staticMethod(UpdateUsageRecordDomainService.class, 
+				"validateItemLimit", itemData, itemSettings);
+		
+		// then
+		assertThat(optErrorItem).isPresent();
 	}
 }
