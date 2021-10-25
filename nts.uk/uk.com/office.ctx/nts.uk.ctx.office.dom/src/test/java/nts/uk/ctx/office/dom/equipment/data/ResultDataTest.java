@@ -2,6 +2,8 @@ package nts.uk.ctx.office.dom.equipment.data;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -67,5 +69,24 @@ public class ResultDataTest {
 		
 		// then
 		assertThat(resultData).isNull();
+	}
+	
+	/**
+	 * [1] 項目値を変更する
+	 */
+	@Test
+	public void testUpdateValue() {
+		// given
+		ResultData resultData = new ResultData(new EquipmentItemNo("1"), ItemClassification.TEXT, Optional.empty());
+		List<ItemData> itemValues = Arrays.asList(
+				new ItemData(new EquipmentItemNo("1"), new ActualItemUsageValue("new")),
+				new ItemData(new EquipmentItemNo("3"), new ActualItemUsageValue("none")));
+		
+		// when
+		resultData.updateValue(itemValues);
+		
+		// then
+		assertThat(resultData.getActualValue()).isPresent();
+		assertThat(resultData.getActualValue().get().v()).isEqualTo("new");
 	}
 }

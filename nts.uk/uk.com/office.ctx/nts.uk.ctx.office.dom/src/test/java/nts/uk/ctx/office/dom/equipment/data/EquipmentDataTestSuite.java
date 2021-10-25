@@ -11,6 +11,7 @@ import nts.uk.ctx.office.dom.equipment.data.domainservice.UpdateUsageRecordDomai
 @SuiteClasses({
 	EquipmentDataTest.class, 
 	ResultDataTest.class,
+	RegisterResultTest.class,
 	InsertUsageRecordDomainServiceTest.class,
 	UpdateUsageRecordDomainServiceTest.class
 })

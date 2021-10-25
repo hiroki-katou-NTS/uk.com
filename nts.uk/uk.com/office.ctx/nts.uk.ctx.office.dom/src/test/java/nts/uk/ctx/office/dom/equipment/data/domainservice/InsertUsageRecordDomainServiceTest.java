@@ -33,7 +33,8 @@ public class InsertUsageRecordDomainServiceTest {
 	private Require require;
 
 	/**
-	 * [1] 新規登録する エラーがない、登録する
+	 * [1] 新規登録する
+	 * エラーがない
 	 */
 	@Test
 	public void testInsertDataNoErr() {
@@ -70,7 +71,7 @@ public class InsertUsageRecordDomainServiceTest {
 	}
 
 	/**
-	 * [1] 新規登録する エラーがない、登録する
+	 * [1] 新規登録する
 	 * Msg_2233
 	 */
 	@Test
@@ -96,7 +97,7 @@ public class InsertUsageRecordDomainServiceTest {
 	}
 
 	/**
-	 * [1] 新規登録する エラーがない、登録する
+	 * [1] 新規登録する
 	 * エラーがある
 	 */
 	@Test
@@ -130,7 +131,7 @@ public class InsertUsageRecordDomainServiceTest {
 	}
 
 	/**
-	 * [1] 新規登録する エラーがない、登録する
+	 * [1] 新規登録する
 	 * $設備情報 == null
 	 */
 	@Test
