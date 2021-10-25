@@ -78,7 +78,8 @@ public class GetAnAppointmentQuery {
         return new AppointmentDto(
                 workInforDtoList,
                 agreegateResults,
-                aqDatePeriodList.getPeriodItem()
+                aqDatePeriodList.getPeriodItem(),
+                aqDatePeriodList.getPeriod()
         );
     }
 }

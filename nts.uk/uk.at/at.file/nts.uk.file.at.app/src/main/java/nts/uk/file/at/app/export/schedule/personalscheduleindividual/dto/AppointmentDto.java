@@ -18,4 +18,6 @@ public class AppointmentDto<T> {
 
     //週合計の期間リスト
     private List<DatePeriod> periodItem;
+
+    private DatePeriod period;
 }

@@ -32,7 +32,7 @@ public class PersonalScheduleByIndividualExportQuery {
             int startDate,
             boolean isTotalDisplay) {
         AppointmentDto appointmentResult = getAnAppointmentQuery.get(period, startDate, isTotalDisplay);
-        BasicInformationDto basicInfo = basicInformationQuery.get(isTotalDisplay, period);
+        BasicInformationDto basicInfo = basicInformationQuery.get(isTotalDisplay, appointmentResult.getPeriod());
         return new PersonalScheduleIndividualDataSource(
                 basicInfo.getCompanyName(),
                 basicInfo.getWorkplaceInfo(),
