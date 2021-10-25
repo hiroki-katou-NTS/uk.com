@@ -271,4 +271,57 @@ public class ItemInputControlTest {
 		assertThat(actual).isNotPresent();
 	}
 	
+	/**
+	 * [2] エラーメッセージを作成する
+	 * case 文字
+	 */
+	@Test
+	public void testCreateErrorItemCaseText() {
+		// given
+		ItemInputControl item = ItemInputControlTestHelper.caseText(5);
+		EquipmentItemNo itemNo = new EquipmentItemNo("1");
+		UsageItemName itemName = new UsageItemName("ItemName");
+		
+		// when
+		ErrorItem errorItem = item.createErrorItem(itemNo, itemName);
+		
+		// then
+		assertThat(errorItem.getErrorMessage()).isNotBlank();
+	}
+	
+	/**
+	 * [2] エラーメッセージを作成する
+	 * case 数字
+	 */
+	@Test
+	public void testCreateErrorItemCaseNumber() {
+		// given
+		ItemInputControl item = ItemInputControlTestHelper.caseNumber(0, 3);
+		EquipmentItemNo itemNo = new EquipmentItemNo("1");
+		UsageItemName itemName = new UsageItemName("ItemName");
+		
+		// when
+		ErrorItem errorItem = item.createErrorItem(itemNo, itemName);
+		
+		// then
+		assertThat(errorItem.getErrorMessage()).isNotBlank();
+	}
+	
+	/**
+	 * [2] エラーメッセージを作成する
+	 * case 時間
+	 */
+	@Test
+	public void testCreateErrorItemCaseTime() {
+		// given
+		ItemInputControl item = ItemInputControlTestHelper.caseTime(0, 300);
+		EquipmentItemNo itemNo = new EquipmentItemNo("1");
+		UsageItemName itemName = new UsageItemName("ItemName");
+		
+		// when
+		ErrorItem errorItem = item.createErrorItem(itemNo, itemName);
+		
+		// then
+		assertThat(errorItem.getErrorMessage()).isNotBlank();
+	}
 }
