@@ -18,6 +18,6 @@ public class GetListOfCompaniesScreenQuery {
     @Inject
     private CompanyAdapter companyAdapter;
     public List<CompanyImport> getListCompany(){
-        return companyAdapter.findAllCompany();
+        return companyAdapter.findAllCompanyImport();
     }
 }

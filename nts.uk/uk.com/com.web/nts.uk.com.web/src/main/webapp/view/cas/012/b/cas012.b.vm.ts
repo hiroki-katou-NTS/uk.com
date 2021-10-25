@@ -1,21 +1,14 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cas012.b {
     import block = nts.uk.ui.block;
-    import errors = nts.uk.ui.errors;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     var format = nts.uk.text.format;
     const API = {
-        getCompanyIdOfLoginUser: "ctx/sys/auth/roleset/companyidofloginuser",
-        searchUser : "ctx/sys/auth/user/findByKey",
-        searchCompanyInfo:"ctx/sys/auth/grant/roleindividual/searchCompanyInfo",
-        getEmployeeList:"ctx/sys/auth/grant/roleindividual/getEmployeeList/{0}",
-        getCompanyList: "ctx/sys/auth/grant/roleindividual/getCompanyList"
-
+        getEmployeeList:"screen/com/cas012/b/get-employee-info/{0}"
     };
     @bean()
     class ViewModel extends ko.ViewModel {
-
         companyId: KnockoutObservable<string> = ko.observable('');
         loginCid: KnockoutObservable<string> = ko.observable('');
         companyCode: KnockoutObservable<string>;
@@ -24,13 +17,10 @@ module nts.uk.com.view.cas012.b {
         itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         listCompany: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
-
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         isRequired: KnockoutObservable<boolean>;
-
-
         // start declare KCP005
         listComponentOption: any;
         selectedCodeKCP: KnockoutObservable<string>;
@@ -48,8 +38,6 @@ module nts.uk.com.view.cas012.b {
         employInfors: KnockoutObservableArray<any> = ko.observableArray([]);
         listEmployee: KnockoutObservableArray<EmployInfor> = ko.observableArray([]);
         optionalColumnDatasource: KnockoutObservableArray<any> = ko.observableArray([]);
-        // end KCP005
-
 
         constructor(params: any) {
             super();
@@ -73,92 +61,78 @@ module nts.uk.com.view.cas012.b {
             vm.isShowSelectAllButton = ko.observable(false);
             vm.disableSelection = ko.observable(false);
             vm.employeeList = ko.observableArray<UnitModel>([]);
-            block.invisible();
-            vm.$ajax('com', API.getCompanyIdOfLoginUser).done((data) => {
-                if (isNullOrUndefined(data)) {
-                    vm.backToTopPage();
-                } else {
-                    vm.loginCid(data);
-                }
-                vm.getListCompany();
-            }).fail(error => {
-                vm.backToTopPage();
-            })
+            let cidLogin = vm.$user.companyId;
+            vm.loginCid(cidLogin);
+            vm.companyId.subscribe((cid) => {
+                 if (cid){
+                vm.getListEmployee(cid);
+                 }
+            });
+            vm.getListCompany();
             vm.KCP005_load()
         }
         created() {
-            let vm = this;
-            vm.companyId.subscribe((cid) => {
-                if (cid){
-                    vm.getListEmployee(cid);
-                }
-            });
-
         }
         mounted() {
             let vm = this;
             vm.setFocus();
         }
         setFocus() {
-                $('#combo-box2').focus();
+            $('#combo-box2').focus();
         }
         getListEmployee(cid : string):JQueryPromise<any>{
             let vm = this,
-             dfd = $.Deferred();
-             block.invisible();
-                let _path = format(API.getEmployeeList,cid);
-                vm.$ajax('com',_path ).done((data) => {
-                    if(!isNullOrEmpty(data)){
-                        let emps : any = [];
-                        let job : any = [];
-                        for (let i =0; i<data.length;i++) {
-                            let item = data[i];
-                            emps.push({
-                                id: item.employeeId,
-                                code: item.employeeCode,
-                                name: item.businessName,
-                                affiliationName: item.workplaceName
-                            });
-                            job.push({
-                                empId: item.employeeCode,
-                                content: item.jobTitleName
-                            })
-                        }
-                        vm.optionalColumnDatasource(job);
-                        vm.employInfors(emps);
-                        vm.listEmployee(data);
-                    }else {
-                        block.clear()
+                dfd = $.Deferred();
+            block.invisible();
+            let _path = format(API.getEmployeeList,cid);
+            vm.$ajax('com',_path ).done((data) => {
+                if(!isNullOrEmpty(data)){
+                    let emps : any = [];
+                    let job : any = [];
+                    for (let i =0; i<data.length;i++) {
+                        let item = data[i];
+                        emps.push({
+                            id: item.employeeId,
+                            code: item.employeeCode,
+                            name: item.businessName,
+                            affiliationName: item.workplaceName
+                        });
+                        job.push({
+                            empId: item.employeeCode,
+                            content: item.jobTitleName
+                        })
                     }
-                }).always(()=>{
+                    vm.optionalColumnDatasource(job);
+                    vm.employInfors(emps);
+                    vm.listEmployee(data);
+                }else {
                     block.clear()
-                }).fail(()=>{
-                    vm.backToTopPage();
-                    dfd.reject();
-                });
+                }
+            }).always(()=>{
+                block.clear()
+            }).fail(()=>{
+                vm.backToTopPage();
+                dfd.reject();
+            });
             return dfd.promise();
         }
         getListCompany(){
             let vm = this,
-            cid: string = nts.uk.ui.windows.getShared("cid_from_a");
-            block.invisible();
-            vm.$ajax('com', API.getCompanyList).done((data)=>{
+                dataFromScreenA: any = nts.uk.ui.windows.getShared("cid_from_a");
+            if(!isNullOrUndefined(dataFromScreenA)){
                 let companys : ItemModel[] = [];
-                if(!isNullOrUndefined(data)){
-                    for (let i =0; i<data.length;i++) {
-                        let item = data[i];
-                        companys.push( new ItemModel(item.companyCode,item.companyName,item.companyId) )
-                    }
-                    vm.listCompany(companys);
-                    if(isNullOrUndefined(cid) || cid == ""){
-                        cid = vm.loginCid();
-                    }
-                    vm.companyId(cid);
+                let cid = dataFromScreenA.cid;
+                let listCompany = dataFromScreenA.listCompany;
+                for (let i =0; i<listCompany.length;i++) {
+                    let item = listCompany[i];
+                    companys.push( new ItemModel(item.companyCode,item.companyName,item.companyId) )
                 }
-            }).fail(()=>{
-                vm.backToTopPage();
-            }).always(()=>{
-            });
+                vm.listCompany(companys);
+                if(isNullOrUndefined(cid) || cid == ""){
+                    cid = vm.loginCid();
+                }
+                vm.companyId(cid);
+            }
         }
         KCP005_load() {
             let vm = this;
@@ -183,7 +157,7 @@ module nts.uk.com.view.cas012.b {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 showOptionalColumn: true,
-                optionalColumnName: nts.uk.resource.getText("CAS013_33"),
+                optionalColumnName: nts.uk.resource.getText("CAS012_27"),
                 optionalColumnDatasource: vm.optionalColumnDatasource,
                 maxWidth: 520,
                 maxRows: 15,

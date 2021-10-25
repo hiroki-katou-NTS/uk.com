@@ -1,10 +1,11 @@
-package nts.uk.screen.com.app.command.cas012;
+package nts.uk.ctx.sys.auth.app.command.cas012;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.GrantSystemAdminRoleService;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
@@ -33,8 +34,9 @@ public class Cas012AddCommandHandler extends CommandHandler<Cas012AddOrUpdateCom
     protected void handle(CommandHandlerContext<Cas012AddOrUpdateCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
         val cid = AppContexts.user().companyId();
+        DatePeriod validPeriod = new DatePeriod(command.getStartDate(),command.getEndDate());
         RequireImpl require = new RequireImpl(roleIndividualGrantRepository, roleRepository, userRepo,cid);
-        AtomTask task = GrantSystemAdminRoleService.grant(require, command.getUId(), command.getValidPeriod());
+        AtomTask task = GrantSystemAdminRoleService.grant(require, command.getUId(),validPeriod);
         transaction.execute(task::run);
     }
 
@@ -47,7 +49,13 @@ public class Cas012AddCommandHandler extends CommandHandler<Cas012AddOrUpdateCom
 
         @Override
         public Optional<RoleIndividualGrant> getGrantInfoByRoleTypeOfUser(String userId, RoleType roleType) {
-            return roleIndividualGrantRepository.findByUserCompanyRoleType(userId, cid, roleType.value);
+            val listDomain = roleIndividualGrantRepository.findByUserAndRole(userId,roleType.value);
+            if(listDomain.isEmpty()){
+                return Optional.empty();
+            }else {
+                return Optional.of(listDomain.get(0));
+            }
+
         }
 
         @Override

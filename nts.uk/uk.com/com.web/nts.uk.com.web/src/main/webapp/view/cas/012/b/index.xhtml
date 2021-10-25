@@ -8,7 +8,7 @@
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
-        <script>var dialogSize = {width: 620, height: 575};</script>
+        <script>var dialogSize = {width: 625, height: 580};</script>
         <com:ValidatorScript>
             nts.uk.shr.com.primitive.PersonId
         </com:ValidatorScript>
@@ -21,10 +21,10 @@
     <ui:define name="content">
         <div id="contents-area">
             <div class="cf">
-                <div class="CAS012-b">
+                <div class="cas012-b">
                     <div class="control-group">
                         <!--B1_1-->
-                        <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS012_21')}</div>
+                        <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('Com_Company')}</div>
                         <!--B1_2-->
                         <div id="combo-box2" tabindex="1"
                              data-bind="ntsComboBox: {
@@ -34,32 +34,19 @@
 											visibleItemsCount: 20,
 											value: companyId,
 											optionsText: 'name',
-											selectFirstIfNull: false,
-											columns: [
+												columns: [
 											{ prop: 'code',length: 4},
  											{ prop: 'name', length: 10}]}">
                         </div>
                     </div>
-                    <!--<div class="control-group">-->
-                        <!--<div id="B3" tabindex="2"-->
-                             <!--data-bind="ntsSearchBox:{-->
-								<!--searchMode: 'highlight',-->
-								<!--targetKey: 'code',-->
-							 	<!--comId: 'kcp005',-->
-							 	<!--items: employInfors,-->
-							 	<!--selected: multiSelectedCode,-->
-							 	<!--selectedKey: 'categoryId',-->
-							 	<!--fields: ['code','name'],-->
-							 	<!--mode: 'igGrid'}"/>-->
-                    <!--</div>-->
                     <div id="kcp005"  tabindex="3" ></div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom">
             <button class="proceed x-large" tabindex="4"
-                    data-bind="click :decision">#{i18n.getText('CAS012_24')}</button>
-            <button data-bind="click :cancel_Dialog" tabindex="5">#{i18n.getText('CAS012_25')}</button>
+                    data-bind="click :decision">#{i18n.getText('CAS012_28')}</button>
+            <button data-bind="click :cancel_Dialog" tabindex="5">#{i18n.getText('CAS012_29')}</button>
         </div>
     </ui:define>
 </ui:composition>

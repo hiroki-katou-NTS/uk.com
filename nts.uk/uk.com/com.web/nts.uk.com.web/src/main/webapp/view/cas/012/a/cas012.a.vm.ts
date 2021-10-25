@@ -1,5 +1,4 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-import forIn = require("lodash/forIn");
 
 module nts.uk.com.view.cas012.a {
     import block = nts.uk.ui.block;
@@ -11,33 +10,21 @@ module nts.uk.com.view.cas012.a {
     let format = nts.uk.text.format;
     const API = {
         getCompanyIdOfLoginUser: "ctx/sys/auth/roleset/companyidofloginuser",
-        getRoleType: "ctx/sys/auth/grant/roleindividual/getRoleType",
-
-        getRole: "ctx/sys/auth/grant/roleindividual/getRoles/incharge/{0}",
-        getRoleGrants: "ctx/sys/auth/grant/roleindividual/getRoleGrants",
-        getRoleGrant: "ctx/sys/auth/grant/roleindividual/getRoleGrant",
-
-        insertRoleGrant: "ctx/sys/auth/grant/roleindividual/insertRoleGrant",
-        upDateRoleGrant: "ctx/sys/auth/grant/roleindividual/upDateRoleGrant",
-        deleteRoleGrant: "ctx/sys/auth/grant/roleindividual/deleteRoleGrant",
-
-        getCompanyInfo: "ctx/sys/auth/grant/roleindividual/getCompanyInfo",
-        getWorkPlaceInfo: "ctx/sys/auth/grant/roleindividual/getWorkPlaceInfo",
-        getJobTitle: "ctx/sys/auth/grant/roleindividual/getJobTitle",
-
-        // Old
-        getMetadata: "ctx/sys/auth/grant/roleindividual/getmetadata",
-        getAll: "ctx/sys/auth/grant/roleindividual/findall",
-        createRoleIndividual: "ctx/sys/auth/grant/roleindividual/create",
-        updateRoleIndividual: "ctx/sys/auth/grant/roleindividual/update",
-        deleteRoleIndividual: "ctx/sys/auth/grant/roleindividual/delete"
+        getDataInit: "screen/com/cas012/a/get-data-init",
+        getListEmployee: "screen/com/cas012/a/get-employee",
+        getEmployeeInfo: "screen/com/cas012/a/get-employee-info",
+        delete: "ctx/sys/auth/grant/cas012/a/delete",
+        update: "ctx/sys/auth/grant/cas012/a/update",
+        addNew: "ctx/sys/auth/grant/cas012/a/add",
+        deleteCompanySys: "ctx/sys/auth/grant/cas012/a/sys/company/delete",
+        updateCompanySys: "ctx/sys/auth/grant/cas012/a/sys/company/update",
+        addNewCompanySys: "ctx/sys/auth/grant/cas012/a/sys/company/add",
 
     };
 
     @bean()
     class ViewModel extends ko.ViewModel {
         //A51
-        selectRoleCheckbox: KnockoutObservable<string> = ko.observable('');
         langId: KnockoutObservable<string> = ko.observable('ja');
         // Metadata
         isCreateMode: KnockoutObservable<boolean> = ko.observable(false);
@@ -45,17 +32,15 @@ module nts.uk.com.view.cas012.a {
         isDelete: KnockoutObservable<boolean> = ko.observable(false);
 
         //
-        listCompany:KnockoutObservableArray<CompanyInfo> = ko.observableArray([]);
-        enableListCompany:KnockoutObservable<boolean> = ko.observable(false);
+        listCompany: KnockoutObservableArray<CompanyInfo> = ko.observableArray([]);
+        enableListCompany: KnockoutObservable<boolean> = ko.observable(false);
         selectedCid: KnockoutObservable<string> = ko.observable('');
 
-        //ComboBOx RollType
         listRoleType: KnockoutObservableArray<RollType>;
         selectedRoleType: KnockoutObservable<number> = ko.observable(0);
 
         //list Roll
         listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
-        selectedRole: KnockoutObservable<string> = ko.observable('');
         selectedUserID: KnockoutObservable<string>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
 
@@ -71,7 +56,6 @@ module nts.uk.com.view.cas012.a {
         dateValue: KnockoutObservable<any>;
 
         // A8
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
 
         // Start declare KCP005
@@ -86,10 +70,9 @@ module nts.uk.com.view.cas012.a {
         isShowSelectAllButton: KnockoutObservable<boolean>;
         disableSelection: KnockoutObservable<boolean>;
 
-        employeeList: KnockoutObservableArray<UnitModel> =  ko.observableArray<UnitModel>([]);
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
 
         baseDate: KnockoutObservable<Date>;
-
 
         employyeCode: KnockoutObservable<string>;
         employyeName: KnockoutObservable<string>;
@@ -107,7 +90,6 @@ module nts.uk.com.view.cas012.a {
             super();
             let vm = this;
             let dfd = $.Deferred();
-            //A51
 
             vm.employyeCode = ko.observable('');
             vm.employyeName = ko.observable('');
@@ -131,7 +113,7 @@ module nts.uk.com.view.cas012.a {
                 {headerText: '', key: 'id', hidden: true},
                 {headerText: nts.uk.resource.getText("CAS012_35"), key: 'employeeCodeAndName', width: 252},
                 {headerText: nts.uk.resource.getText("CAS012_32"), key: 'period', width: 203},
-                {headerText: nts.uk.resource.getText("CAS012_36"), key: 'companyCode', width: 60},
+                {headerText: nts.uk.resource.getText("CAS012_36"), key: 'companyCode', width: 90}
             ]);
 
             vm.columnsIndividual = ko.observableArray([
@@ -145,31 +127,7 @@ module nts.uk.com.view.cas012.a {
             vm.loginID = ko.observable('');
             vm.userName = ko.observable('');
             vm.dateValue = ko.observable({});
-            //tab
-            vm.tabs = ko.observableArray([
-                {
-                    id: 'tab-1',
-                    title: nts.uk.resource.getText("CAS012_13"),
-                    content: '.tab-content-1',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
-                },
-                {
-                    id: 'tab-2',
-                    title: nts.uk.resource.getText("CAS012_14"),
-                    content: '.tab-content-2',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
-                },
-                {
-                    id: 'tab-3',
-                    title: nts.uk.resource.getText("CAS012_15"),
-                    content: '.tab-content-3',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
-                },
-            ]);
-            vm.selectedTab = ko.observable('tab-1');
+
             block.invisible();
             vm.$ajax('com', API.getCompanyIdOfLoginUser).done((companyId: any) => {
                 if (!companyId) {
@@ -185,44 +143,37 @@ module nts.uk.com.view.cas012.a {
                 dfd.reject();
             }).always(() => {
             });
-            vm.companyId.subscribe((cid: string) => {
-                vm.selectCid(cid.toString(), '');
-                vm.isSelectedUser(false);
-                vm.isDelete(false);
-            });
         }
 
         created(params: any) {
             let vm = this;
         }
-
         mounted() {
             const vm = this;
             vm.selectedRoleType.subscribe((roleType: number) => {
-                if(roleType == ListType.SYSTEM_MANAGER){
-                    vm.enableListCompany(true);
-                }else if(roleType == ListType.COMPANY_MANAGER){
+                if (roleType == ListType.SYSTEM_MANAGER) {
                     vm.enableListCompany(false);
+                    vm.selectCid('', roleType, "")
+                } else if (roleType == ListType.COMPANY_MANAGER) {
+                    vm.enableListCompany(true);
+                    vm.selectedCid.valueHasMutated();
                 }
                 vm.isCreateMode(false);
                 vm.isSelectedUser(false);
                 vm.isDelete(false);
             });
-
+            vm.selectedCid.subscribe((cid) => {
+                if (!isNullOrUndefined(cid) && vm.selectedRoleType() == ListType.COMPANY_MANAGER) {
+                    let roleType = vm.selectedRoleType();
+                    vm.selectCid(cid, roleType, "")
+                }
+            });
             vm.multiSelectedCode.subscribe((e) => {
-
                 if (!isNullOrUndefined(e)) {
                     vm.selectRoleEmployee(e);
                 }
             });
             $('#combo-box').focus();
-        }
-
-        //A51
-        setDefault() {
-            let vm = this;
-            nts.uk.util.value.reset($("#combo-box, #A_SEL_001"),
-                vm.defaultValue() !== '' ? vm.defaultValue() : undefined);
         }
 
         //A51
@@ -234,11 +185,12 @@ module nts.uk.com.view.cas012.a {
             let vm = this;
             let dfd = $.Deferred();
             block.invisible();
-            let roleTypes : any[]= [];
-            vm.$ajax('com', API.getMetadata).done((data)=> {
-                if (!isNullOrEmpty(data)) {
-                    for (let i =0; i<data.length; i++){
-                        roleTypes.push(new RollType(data[i].value,data[i].localizedName))
+            let roleTypes: any[] = [];
+            vm.$ajax('com', API.getDataInit).done((data) => {
+                if (!isNullOrUndefined(data)) {
+                    let enumRoleType = data.enumRoleType;
+                    for (let i = 0; i < enumRoleType.length; i++) {
+                        roleTypes.push(new RollType(enumRoleType[i].value, enumRoleType[i].localizedName))
                     }
                     vm.listRoleType(roleTypes);
                     vm.listCompany(data.listCompany)
@@ -271,153 +223,128 @@ module nts.uk.com.view.cas012.a {
             }
         }
 
-        private selectCid(roleId: string, userIdSelected: string): void {
+        private selectCid(cid: string, roleType: number, id: string): void {
             let vm = this;
             let employeeSearchs: UnitModel[] = [];
             let index = _.findIndex(vm.employeeList(), (e) => {
-                return e.id == userIdSelected
+                return e.id == id
             });
-            if (roleId != '') {
-                block.invisible();
-                vm.$ajax('com', API.getRoleGrants, roleId).done(function (data: any) {
-                    if (!isNullOrEmpty(data)) {
-                        for (let entry of data) {
-                            employeeSearchs.push(new UnitModel(entry))
-                        }
-                        if (isNullOrEmpty(employeeSearchs)) {
-                            vm.multiSelectedCode();
-                            vm.dateValue({});
-                            vm.companyId('');
-                            vm.companyName('');
-                            vm.companyCode('');
-                            vm.workplaceCode('');
-                            vm.workplaceName('');
-                            vm.jobTitleCode('');
-                            vm.jobTitleName('');
-                            vm.employyeCode('');
-                            vm.employyeName('');
-                        }
-                        vm.employeeList(employeeSearchs);
-                        let indexNew = _.findIndex(vm.employeeList(), (e) => {
-                            return e.id == userIdSelected
-                        });
-                        if (index >= 0 && index < vm.employeeList().length && indexNew < 0) {
-                            vm.multiSelectedCode(vm.employeeList()[index].id);
-                        }
-                        if ((index) == vm.employeeList().length && indexNew < 0) {
-                            vm.multiSelectedCode(vm.employeeList()[index - 1].id);
-                        }
-                        if (index < 0 && indexNew >= 0) {
-                            vm.multiSelectedCode(vm.employeeList()[indexNew].id);
-                            // vm.multiSelectedCode.valueHasMutated();
-                        }
-                        if (index == indexNew && index < 0) {
-                            vm.multiSelectedCode(vm.employeeList()[0].id);
-                            // vm.multiSelectedCode.valueHasMutated();
-                        }
-                        if (index == indexNew && index > 0) {
-                            vm.multiSelectedCode(vm.employeeList()[index].id);
-                            // vm.multiSelectedCode.valueHasMutated();
-                        }
-                    } else {
-                        vm.employeeList([]);//KCP005
-                        vm.listRoleIndividual([]);
-                        vm.loginID('');
-                        vm.userName('');
-                        vm.dateValue({});
-                        vm.New();
-
+            block.invisible();
+            let params = {
+                cid: cid,
+                roleType: roleType
+            };
+            vm.$ajax('com', API.getListEmployee, params).done(function (data: any) {
+                if (!isNullOrEmpty(data)) {
+                    for (let entry of data) {
+                        employeeSearchs.push(new UnitModel(entry))
                     }
-                }).always(() => {
-                    block.clear();
-                }).fail(() => {
+                    if (isNullOrEmpty(employeeSearchs)) {
+                        vm.multiSelectedCode();
+                        vm.dateValue({});
+                        vm.companyId('');
+                        vm.companyName('');
+                        vm.companyCode('');
+                        vm.workplaceCode('');
+                        vm.workplaceName('');
+                        vm.jobTitleCode('');
+                        vm.jobTitleName('');
+                        vm.employyeCode('');
+                        vm.employyeName('');
+                    }
+                    vm.employeeList(employeeSearchs);
+                    let indexNew = _.findIndex(vm.employeeList(), (e) => {
+                        return e.id == id
+                    });
+                    if (index >= 0 && index < vm.employeeList().length && indexNew < 0) {
+                        vm.multiSelectedCode(vm.employeeList()[index].id);
+                    }
+                    if ((index) == vm.employeeList().length && indexNew < 0) {
+                        vm.multiSelectedCode(vm.employeeList()[index - 1].id);
+                    }
+                    if (index < 0 && indexNew >= 0) {
+                        vm.multiSelectedCode(vm.employeeList()[indexNew].id);
+                        // vm.multiSelectedCode.valueHasMutated();
+                    }
+                    if (index == indexNew && index < 0) {
+                        vm.multiSelectedCode(vm.employeeList()[0].id);
+                        // vm.multiSelectedCode.valueHasMutated();
+                    }
+                    if (index == indexNew && index > 0) {
+                        vm.multiSelectedCode(vm.employeeList()[index].id);
+                        // vm.multiSelectedCode.valueHasMutated();
+                    }
+                } else {
+                    vm.employeeList([]);//KCP005
+                    vm.listRoleIndividual([]);
+                    vm.loginID('');
+                    vm.userName('');
+                    vm.dateValue({});
+                    vm.new();
 
-                });
-            } else {
-                vm.employeeList([]);//KCP005
-                vm.listRoleIndividual([]);
-                vm.loginID('');
-                vm.userName('');
-                vm.dateValue({});
-                vm.companyId('');
-                vm.companyName('');
-                vm.companyCode('');
-                vm.workplaceCode('');
-                vm.workplaceName('');
-                vm.jobTitleCode('');
-                vm.jobTitleName('');
-                vm.employyeCode('');
-                vm.employyeName('');
-                block.clear()
-            }
+                }
+            }).always(() => {
+                block.clear();
+            }).fail(() => {
+
+            });
         }
 
         private selectRoleEmployee(id: string): void {
             let vm = this;
-            let roleId = vm.selectedRole();
-            if (roleId != '') {
-                let userEmployee = _.find(vm.employeeList(), (i) => i.id == id.toString());
 
-                let number = vm.checkFirt();
-                if(!isNullOrEmpty(userEmployee)){
-                    number += 1;
-                    vm.checkFirt(number);
+            let userEmployee = _.find(vm.employeeList(), (i) => i.id == id.toString());
+            let number = vm.checkFirt();
+            if (!isNullOrEmpty(userEmployee)) {
+                number += 1;
+                vm.checkFirt(number);
+                vm.employyeCode(userEmployee.employeeCode);
+                vm.employyeName(userEmployee.employeeName);
+                vm.companyId(userEmployee.companyID);
+                vm.companyName(userEmployee.companyName);
+                vm.companyCode(userEmployee.companyCode);
+                vm.selectedUserID(userEmployee.userID);
+                vm.dateValue(new datePeriod(userEmployee.startValidPeriod, userEmployee.endValidPeriod));
+                block.invisible();
+                let wpl = {
+                    cid: userEmployee.companyID,
+                    sid: userEmployee.employeeId
+                };
+                $.when(
+                    vm.$ajax('com', API.getEmployeeInfo, wpl))
+                    .done((data) => {
+                        if (!isNullOrUndefined(data)) {
+                            vm.jobTitleCode(data.jobTitleCode);
+                            vm.jobTitleName(data.jobTitleName);
+                            vm.workplaceCode(data.workplaceCode);
+                            vm.workplaceName(data.workplaceName);
+                        } else {
+                            vm.jobTitleCode('');
+                            vm.jobTitleName('');
+                            vm.workplaceCode('');
+                            vm.workplaceName('');
+                        }
+                        vm.setFocus();
+                    }).always(() => {
+                    block.clear();
+                });
+                vm.isCreateMode(false);
+                vm.isSelectedUser(false);
+                vm.isDelete(true);
 
-                    vm.employyeCode(userEmployee.employeeCode);
-                    vm.employyeName(userEmployee.employeeName);
-                    vm.companyId(userEmployee.companyID);
-                    vm.companyName(userEmployee.companyName);
-                    vm.companyCode(userEmployee.companyCode);
-                    vm.selectedUserID(userEmployee.userID);
-                    vm.dateValue(new datePeriod(userEmployee.startValidPeriod, userEmployee.endValidPeriod));
-                    block.invisible();
-                    let wpl = {
-                        cid: userEmployee.companyID,
-                        employeeID:userEmployee.employeeId };
-                    $.when(
-                        vm.$ajax('com', API.getWorkPlaceInfo,wpl),
-                        vm.$ajax('com', API.getJobTitle, userEmployee.employeeId))
-                        .done((workPlace: any,job:any)=>{
-
-                            if (workPlace != null) {
-                                vm.workplaceCode(workPlace.workPlaceCode);
-                                vm.workplaceName(workPlace.workPlaceName);
-                            } else {
-                                vm.workplaceCode('');
-                                vm.workplaceName('');
-                            }
-                            if (job != null) {
-                                vm.jobTitleCode(job.jobTitleCode);
-                                vm.jobTitleName(job.jobTitleName);
-                            } else {
-                                vm.jobTitleCode('');
-                                vm.jobTitleName('');
-                            }
-                            vm.setFocus();
-                        }).always(()=>{
-                        block.clear();
-                    });
-                    vm.isCreateMode(false);
-                    vm.isSelectedUser(false);
-                    vm.isDelete(true);
-
-
-                }else {
-                    vm.isCreateMode(true);
-                    vm.jobTitleCode('');
-                    vm.jobTitleName('');
-                    vm.workplaceCode('');
-                    vm.workplaceName('');
-                    vm.companyId('');
-                    vm.companyName('');
-                    vm.companyCode('');
-                    vm.setFocus();
-                }
             } else {
-                vm.isDelete(false);
+                vm.isCreateMode(true);
+                vm.jobTitleCode('');
+                vm.jobTitleName('');
+                vm.workplaceCode('');
+                vm.workplaceName('');
+                vm.companyId('');
+                vm.companyName('');
+                vm.companyCode('');
+                vm.setFocus();
             }
         }
-        New(): void {
+        new(): void {
             let vm = this;
             vm.isCreateMode(true);
             vm.isDelete(false);
@@ -441,14 +368,18 @@ module nts.uk.com.view.cas012.a {
 
         createNew(): void {
             let vm = this;
-            vm.New();
+            vm.new();
             vm.openBModal();
         }
 
         openBModal(): void {
             let vm = this;
-            nts.uk.ui.windows.setShared("cid_from_a", vm.companyId());
-            nts.uk.ui.windows.sub.modal('/view/cas/013/b/index.xhtml').onClosed(() => {
+            nts.uk.ui.windows.setShared("cid_from_a",{
+                listCompany:vm.listCompany(),
+                cid:vm.companyId()
+            });
+            nts.uk.ui.errors.clearAll();
+            nts.uk.ui.windows.sub.modal('/view/cas/012/b/index.xhtml').onClosed(() => {
                 let employeeInf = nts.uk.ui.windows.getShared("employeeInf");
                 let cidSelected = nts.uk.ui.windows.getShared("cid");
                 if (!isNullOrUndefined(employeeInf)) {
@@ -459,12 +390,12 @@ module nts.uk.com.view.cas012.a {
                     vm.workplaceCode(employeeInf.workplaceCode);
                     vm.workplaceName(employeeInf.workplaceName);
                     vm.selectedUserID(employeeInf.userId);
+                    $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 }
                 if (!isNullOrUndefined(cidSelected)) {
                     vm.companyName(cidSelected.name);
                     vm.companyCode(cidSelected.code);
                     vm.companyId(cidSelected.id);
-
                 }
 
             });
@@ -472,6 +403,8 @@ module nts.uk.com.view.cas012.a {
 
         save(): void {
             let vm = this;
+            $("#daterangepicker").find(".ntsStartDatePicker").trigger("validate");
+            $("#daterangepicker").find(".ntsEndDatePicker").trigger("validate");
             if (!nts.uk.util.isNullOrUndefined(vm.employyeCode())
                 && !nts.uk.util.isNullOrUndefined(vm.employyeName())
                 && !nts.uk.util.isNullOrUndefined(vm.companyCode())
@@ -482,115 +415,168 @@ module nts.uk.com.view.cas012.a {
                 if (vm.isSelectedUser() && vm.isCreateMode()) {
                     vm.insert();
                 } else {
-                    vm.upDate();
+                    vm.update();
                 }
             }
             else if (nts.uk.util.isNullOrUndefined(vm.employyeName()) || vm.employyeName() == '') {
                 nts.uk.ui.dialog.alertError({
                     messageId: "Msg_218",
-                    messageParams: [nts.uk.resource.getText("CAS012_10")]
+                    messageParams: [nts.uk.resource.getText("CAS013_10")]
                 });
-            }
-            else if (nts.uk.util.isNullOrUndefined(vm.dateValue().startDate) || nts.uk.util.isNullOrUndefined(vm.dateValue().endDate)) {
-                $(".nts-input").trigger("validate");
             }
         }
 
         private insert(): void {
             let vm = this;
             let roleType = vm.selectedRoleType();
-            let roleId = vm.selectedRole();
             let userId = vm.selectedUserID();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
-            let cid = vm.companyId();
             block.invisible();
-            let roleGrant = {
-                userID: userId,
-                roleID: roleId,
-                roleType: roleType,
-                startValidPeriod: start,
-                endValidPeriod: end,
-                companyID:cid
-            };
-            vm.$ajax('com', API.insertRoleGrant, roleGrant).done(function (data: any) {
-                if (!nts.uk.util.isNullOrUndefined(data)) {
-                    vm.selectedUserID("");
-                    vm.selectRole(roleId, data);
+            if (roleType == ListType.SYSTEM_MANAGER) {
+                let roleGrant = {
+                    uId: userId,
+                    startDate: start,
+                    endDate: end
+                };
+                block.invisible();
+                vm.$ajax('com', API.addNew, roleGrant).done(function () {
+                    vm.selectedUserID(userId);
+                    vm.selectCid("",roleType,userId);
+                    vm.isCreateMode(false);
+                    nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                }).always(() => {
+                }).fail(() => {
+                    nts.uk.ui.dialog.alertError({
+                        messageId: "Msg_61",
+                        messageParams: [nts.uk.resource.getText("CAS012_11")]
+                    });
+                    block.clear();
+                });
+            }
+            else if (roleType == ListType.COMPANY_MANAGER) {
+                let roleGrant = {
+                    cId: vm.companyId(),
+                    uId: userId,
+                    startDate: start,
+                    endDate: end,
+                    roleType:roleType
+                };
+                block.invisible();
+                vm.$ajax('com', API.addNewCompanySys, roleGrant).done(function () {
+                    vm.selectCid(vm.companyId(),roleType,userId);
+                    vm.selectedUserID(userId);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     vm.isCreateMode(false);
-                } else {
+                }).always(() => {
+                }).fail(() => {
                     nts.uk.ui.dialog.alertError({
                         messageId: "Msg_61",
                         messageParams: [nts.uk.resource.getText("CAS012_11")]
                     });
-                }
-            }).always(() => {
-                block.clear();
-            });
+                    block.clear();
+                });
+            }
+
+
         }
 
-        private upDate(): void {
-            let vm = this;
-            let roleTpye = vm.selectedRoleType();
-            let roleId = vm.selectedRole();
-            let userId = vm.selectedUserID();
+        private update(): void {
+            let vm = this,
+                userId = vm.selectedUserID(),
+                roleType = vm.selectedRoleType();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
-            let cid = vm.companyId();
-            let roleGrant = {
-                userID: userId,
-                roleID: roleId,
-                roleType: roleTpye,
-                startValidPeriod: start,
-                endValidPeriod: end,
-                companyID: cid
-
-            };
-            vm.$ajax('com', API.upDateRoleGrant, roleGrant).done(function (data: any) {
-                if (!nts.uk.util.isNullOrUndefined(data)) {
-                    vm.selectRole(roleId, data);
+            if (roleType == ListType.SYSTEM_MANAGER) {
+                let roleGrant = {
+                    uId: userId,
+                    startDate: start,
+                    endDate: end,
+                };
+                block.invisible();
+                vm.$ajax('com', API.update, roleGrant).done(() => {
+                    vm.selectCid("",roleType,userId);
+                    vm.selectedUserID(userId);
+                    vm.isCreateMode(false);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                } else {
+                }).always(() => {
+                }).fail(() => {
                     nts.uk.ui.dialog.alertError({
                         messageId: "Msg_61",
                         messageParams: [nts.uk.resource.getText("CAS012_11")]
                     });
-                }
-                vm.isCreateMode(false);
-            }).always(() => {
-                block.clear();
-            });
+                    block.clear();
+                });
+            } else if (roleType == ListType.COMPANY_MANAGER) {
+                let roleGrant = {
+                    cId: vm.companyId(),
+                    uId: userId,
+                    startDate: start,
+                    endDate: end,
+                    roleType:roleType
+                };
+                block.invisible();
+                vm.$ajax('com', API.updateCompanySys, roleGrant).done(() => {
+                    vm.selectCid(vm.companyId(),roleType,userId);
+                    vm.selectedUserID(userId);
+                    vm.isCreateMode(false);
+                    nts.uk.ui.dialog.info({messageId: "Msg_15"});
+                }).always(() => {
+                }).fail(() => {
+                    nts.uk.ui.dialog.alertError({
+                        messageId: "Msg_61",
+                        messageParams: [nts.uk.resource.getText("CAS012_11")]
+                    });
+                    block.clear();
+                });
+            }
+
         }
 
-        Delete(): void {
-            let vm = this;
+        remove(): void {
+            let vm = this,
+                roleType = vm.selectedRoleType();
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
                     let vm = this;
-                    let roleTpye = vm.selectedRoleType();
                     let userId = vm.selectedUserID();
                     block.invisible();
                     let cid = vm.companyId();
-                    let roleGrant = {
-                        userID: userId,
-                        roleType: roleTpye,
-                        companyID: cid
-                    };
-                    let id = cid+userId;
-                    vm.$ajax('com', API.deleteRoleGrant, roleGrant).done(function () {
-                        nts.uk.ui.dialog.info({messageId: "Msg_16"});
-                    }).always(() => {
-                        block.clear();
-                    });
-                    vm.selectCid(vm.selectedCid(), id);
+                    if (roleType == ListType.SYSTEM_MANAGER) {
+                        let roleGrant = {
+                            userId: userId
+                        };
+                        vm.$ajax('com', API.delete, roleGrant).done(function () {
+                            nts.uk.ui.dialog.info({messageId: "Msg_16"});
+                            vm.selectCid("",roleType,userId);
+                            vm.selectedUserID(userId);
+                        }).always(() => {
+                        }).fail(()=>{
+                            block.clear();
+                        });
+                    }
+                    else if (roleType == ListType.COMPANY_MANAGER) {
+                        let roleGrant = {
+                            cId: cid,
+                            uId: userId,
+                            roleType: roleType
+                        };
+                        vm.$ajax('com', API.deleteCompanySys, roleGrant).done(function () {
+                            nts.uk.ui.dialog.info({messageId: "Msg_16"});
+                            vm.selectCid(vm.companyId(),roleType,userId);
+                            vm.selectedUserID(userId);
+                        }).always(() => {
+
+                        }).fail(()=>{
+                            block.clear();
+                        });
+                    }
+
                 });
             }
             vm.setFocus();
         }
-
     }
-
 
     class RollType {
         value: string;
@@ -608,21 +594,11 @@ module nts.uk.com.view.cas012.a {
         companyName: string;
         isAbolition: number;
 
-        constructor( cid: string,companyCode: string, companyName: string,isAbolition:number) {
+        constructor(cid: string, companyCode: string, companyName: string, isAbolition: number) {
             this.companyCode = companyCode;
             this.companyName = companyName;
             this.companyId = this.companyId;
             this.isAbolition = isAbolition;
-        }
-    }
-
-    class WorkPlaceInfo {
-        workplaceCode: string;
-        workplacepName: string;
-
-        constructor(workplaceCode: string, workplacepName: string) {
-            this.workplaceCode = workplaceCode;
-            this.workplacepName = workplacepName;
         }
     }
 
@@ -639,16 +615,6 @@ module nts.uk.com.view.cas012.a {
             this.name = name;
             this.assignAtr = assignAtr;
             this.companyId = this.companyId;
-        }
-    }
-
-    class JobTitle {
-        jobTitleCode: string;
-        jobTitleName: string;
-
-        constructor(jobTitleCode: string, jobTitleName: string) {
-            this.jobTitleCode = jobTitleCode;
-            this.jobTitleName = jobTitleName;
         }
     }
 
@@ -693,35 +659,37 @@ module nts.uk.com.view.cas012.a {
         static SYSTEM_MANAGER = 0;
         static COMPANY_MANAGER = 1;
     }
+
     export class UnitModel {
-        id?:string;
-        companyID?:string;
+        id?: string;
+        companyID?: string;
         companyCode?: string;
         companyName?: string;
         userID?: string;
-        employeeId?:string;
+        employeeId?: string;
         employeeCode?: string;
         employeeName?: string;
         period?: string;
         startValidPeriod?: string;
         endValidPeriod?: string;
-        employeeCodeAndName?:string
+        employeeCodeAndName?: string
 
         constructor(data: any) {
             this.id = data.id;
             this.companyID = data.companyID;
-            this.companyCode= data.companyCode;
-            this.companyName= data.companyName;
-            this.userID= data.userID;
-            this.employeeId= data.employeeId;
-            this.employeeCode= data.employeeCode;
-            this.employeeName= data.employeeName;
-            this.period= data.startValidPeriod+ " ~ " +data.endValidPeriod;
-            this.startValidPeriod= data.startValidPeriod;
+            this.companyCode = data.companyCode;
+            this.companyName = data.companyName;
+            this.userID = data.userID;
+            this.employeeId = data.employeeId;
+            this.employeeCode = data.employeeCode;
+            this.employeeName = data.employeeName;
+            this.period = data.startValidPeriod + " ~ " + data.endValidPeriod;
+            this.startValidPeriod = data.startValidPeriod;
             this.endValidPeriod = data.endValidPeriod;
-            this.employeeCodeAndName = data.employeeCode + " "+data.employeeName;
+            this.employeeCodeAndName = data.employeeCode + " " + data.employeeName;
         }
     }
+
     export class SelectType {
         static SELECT_BY_SELECTED_CODE = 1;
         static SELECT_ALL = 2;
@@ -732,6 +700,9 @@ module nts.uk.com.view.cas012.a {
     export interface UnitAlreadySettingModel {
         userID: string;
         isAlreadySetting: boolean;
+    }
+    export interface Cas012DeleteCommand{
+        uId:string;
     }
 
 }

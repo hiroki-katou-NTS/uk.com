@@ -1,6 +1,6 @@
 body{
-    min-width: 711px;
-    width: auto !important;
+	min-width: 711px;
+	width: auto !important;
 }
 .container {
 	margin-left: 15px;
@@ -77,10 +77,10 @@ body{
 	display: inline-block;
 }
 
-label.ntsControl.limited-label {
-	width : 125px;
-    margin-left: 15px;
-}
+/*label.ntsControl.limited-label {*/
+/*width : 125px;*/
+/*margin-left: 15px;*/
+/*}*/
 
 .ui-widget-header {
 	background: #cff1a5;
@@ -91,11 +91,11 @@ label.ntsControl.limited-label {
 }
 
 .table-food-td{
-    border: 1px solid #dddddd;
+	border: 1px solid #dddddd;
 }
 
 div.ntsLabel, label.ntsLabel, div.form-label, label.form-label {
-    width: 55px;
+	width: 55px;
 }
 
 .caret-background:not(.deprecate).caret-bottom, .caret-background:not(.deprecate).caret-top, .caret-background:not(.deprecate).caret-left, .caret-background:not(.deprecate).caret-right {
@@ -103,4 +103,14 @@ div.ntsLabel, label.ntsLabel, div.form-label, label.form-label {
 }
 #kcp005{
 	margin-top: 10px;
+}
+
+.code{
+	width: 120px;
+	padding-left: 5px;
+}
+.name{
+	width: 325px;
+	margin-left: -22px;
+
 }

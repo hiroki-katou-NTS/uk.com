@@ -36,7 +36,7 @@ public class Cas012aDto {
                                         String employeeCode,
                                         String employeeName) {
         return new Cas012aDto(
-                domain.getCompanyId()+domain.getUserId(),
+                domain.getUserId(),
                 domain.getCompanyId(),
                 companyCode,
                 companyName,

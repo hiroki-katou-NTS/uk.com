@@ -10,6 +10,7 @@ import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.PersonalEmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
+import nts.uk.ctx.sys.auth.dom.role.RoleType;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -35,12 +36,12 @@ public class SearchForRolePersonalizedGrantScreenQuery {
     public List<Cas012aDto> getListPersonalizedGrant(Integer roleType,String cid){
         List<RoleIndividualGrant> roleIndividualGrants = new ArrayList<>();
         List<Cas012aDto> rGrants = new ArrayList<>();
-        if(cid == null){
-            roleIndividualGrants = roleIndividualGrantRepository.findByRoleType(roleType);
+        if(roleType == RoleType.SYSTEM_MANAGER.value){
+            roleIndividualGrants.addAll(roleIndividualGrantRepository.findByRoleType(roleType));
         }else {
-            roleIndividualGrants = roleIndividualGrantRepository.findByCompanyIdAndRoleType(cid,roleType);
+            roleIndividualGrants.addAll(roleIndividualGrantRepository.findByCompanyIdAndRoleType(cid,roleType));
         }
-        for (val grant : roleIndividualGrants) {
+        for (RoleIndividualGrant grant : roleIndividualGrants) {
             val uid = grant.getUserId();
             Optional<PersonalEmployeeInfoImport> optEmployeeInfoImport =
                     userIDQuery.getEmployeeIDFromUserID(uid);

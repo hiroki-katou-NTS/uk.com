@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.command.cas012;
+package nts.uk.ctx.sys.auth.app.command.cas012;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
@@ -33,7 +33,7 @@ public class Cas012DeleteCommandHandler extends CommandHandler<Cas012DeleteComma
         val command = commandHandlerContext.getCommand();
         val cid = AppContexts.user().companyId();
         RequireImpl require = new RequireImpl(roleIndividualGrantRepository,roleRepository,userRepo,cid);
-        AtomTask task = GrantSystemAdminRoleService.deprive(require,command.getUId());
+        AtomTask task = GrantSystemAdminRoleService.deprive(require,command.getUserId());
         transaction.execute(task::run);
     }
 
@@ -45,7 +45,12 @@ public class Cas012DeleteCommandHandler extends CommandHandler<Cas012DeleteComma
         private String cid;
         @Override
         public Optional<RoleIndividualGrant> getGrantInfoByRoleTypeOfUser(String userId, RoleType roleType) {
-            return roleIndividualGrantRepository.findByUserCompanyRoleType(userId,cid,roleType.value);
+            val listDomain = roleIndividualGrantRepository.findByUserAndRole(userId,roleType.value);
+            if(listDomain.isEmpty()){
+                return Optional.empty();
+            }else {
+                return Optional.of(listDomain.get(0));
+            }
         }
 
         @Override
