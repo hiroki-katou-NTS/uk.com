@@ -436,7 +436,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             }
             rowCount += 5;
 
-            if (isNextPage(rowCount, pageIndex)) {
+            if (isNextPage(rowCount, pageIndex) && dataBuildList.size() > 6) {
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
                 cells.copyRows(cells, 3, rowCount, 30);
