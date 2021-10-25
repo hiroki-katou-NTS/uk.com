@@ -1,6 +1,7 @@
 package nts.uk.file.at.infra.schedule.personalschedulebyindividual;
 
 import lombok.Data;
+import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -67,6 +68,15 @@ public class PersonalScheduleByIndividualFormat {
     private Integer coln5HoliayClass;
     private Integer coln6HoliayClass;
     private Integer coln7HoliayClass;
+
+    // Date inf0
+    private DateInformation coln1Info;
+    private DateInformation coln2Info;
+    private DateInformation coln3Info;
+    private DateInformation coln4Info;
+    private DateInformation coln5Info;
+    private DateInformation coln6Info;
+    private DateInformation coln7Info;
 
     // item c2_3_5
     private String fromTo;
