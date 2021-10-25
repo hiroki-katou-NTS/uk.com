@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.error.ErrorMessage;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 
@@ -38,7 +37,7 @@ public class EquipmentUsageRecordItemSetting extends AggregateRoot {
 	 * @param inputVal 入力値
 	 * @return エラー
 	 */
-	public Optional<ErrorMessage> check(ActualItemUsageValue inputVal) {
-		return this.inputcontrol.checkErrors(this.itemNo, this.items.getItemName(), Optional.of(inputVal));
+	public Optional<ErrorItem> check(Optional<ActualItemUsageValue> optInputVal) {
+		return this.inputcontrol.checkErrors(this.itemNo, this.items.getItemName(), optInputVal);
 	}
 }

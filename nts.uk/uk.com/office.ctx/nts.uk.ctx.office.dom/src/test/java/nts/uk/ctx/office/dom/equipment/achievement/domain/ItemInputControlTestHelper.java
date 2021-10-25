@@ -88,8 +88,8 @@ public class ItemInputControlTestHelper {
 	public static ItemInputControl caseText(Integer digitsNumber) {
 		ItemClassification itemCls = ItemClassification.TEXT;
 		Optional<DigitsNumber> digitsNo = Optional.of(new DigitsNumber(digitsNumber));
-		Optional<MaximumUsageRecord> maximum = Optional.of(new MaximumUsageRecord(10));
-		Optional<MinimumUsageRecord> minimum = Optional.of(new MinimumUsageRecord(1));
+		Optional<MaximumUsageRecord> maximum = Optional.empty();
+		Optional<MinimumUsageRecord> minimum = Optional.empty();
 		return new ItemInputControl(itemCls, true, digitsNo, maximum, minimum);
 	}
 	

@@ -29,4 +29,10 @@ public interface EquipmentFormatSettingRepository {
 	 * @return 設備の実績入力フォーマット設定
 	 */
 	Optional<EquipmentPerformInputFormatSetting> get(String cid);
+	
+	/**
+	 * [4] 削除後Insertする
+	 * @param domain	設備の実績入力フォーマット設定
+	 */
+	void insertAfterDelete(EquipmentPerformInputFormatSetting domain);
 }

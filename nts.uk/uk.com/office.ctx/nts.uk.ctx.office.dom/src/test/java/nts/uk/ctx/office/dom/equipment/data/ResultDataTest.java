@@ -14,10 +14,10 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.domain.EquipmentUsageRecordItemSettingTestHelper;
-import nts.uk.ctx.office.dom.equipment.data.ItemData.Require;
+import nts.uk.ctx.office.dom.equipment.data.ResultData.Require;
 
 @RunWith(JMockit.class)
-public class ItemDataTest {
+public class ResultDataTest {
 
 	@Injectable
 	private Require require;
@@ -25,7 +25,7 @@ public class ItemDataTest {
 	@Test
 	public void getters() {
 		// when
-		ItemData domain = EquipmentDataTestHelper.createItemData("1", ItemClassification.TEXT, "test");
+		ResultData domain = EquipmentDataTestHelper.createItemData("1", ItemClassification.TEXT, "test");
 
 		// then
 		NtsAssert.invokeGetters(domain);
@@ -33,12 +33,11 @@ public class ItemDataTest {
 
 	/**
 	 * [C-1] 新規追加 
-	 * $エラー.isPresent() == false
 	 */
 	@Test
 	public void testCreateTempItemDataNoErr() {
 		// given
-		ItemData domain = EquipmentDataTestHelper.createItemData("1", ItemClassification.TEXT, "test");
+		ResultData domain = EquipmentDataTestHelper.createItemData("1", ItemClassification.TEXT, "test");
 
 		new Expectations() {
 			{
@@ -49,36 +48,11 @@ public class ItemDataTest {
 		};
 
 		// when
-		ItemCreationResultTemp temp = ItemData.createTempData(require, EquipmentDataTestHelper.CID,
+		ResultData resultData = ResultData.createData(require, EquipmentDataTestHelper.CID,
 				new EquipmentItemNo("1"), new ActualItemUsageValue("test"));
 		
 		// then
-		assertThat(temp.getItemData().isPresent()).isTrue();
-		assertThat(temp.getItemData().get()).isEqualTo(domain);
-	}
-	
-	/**
-	 * [C-1] 新規追加 
-	 * $エラー.isPresent() == true
-	 */
-	@Test
-	public void testCreateTempItemDataHasErr() {
-		// given
-		new Expectations() {
-			{
-				require.getItemSetting(EquipmentDataTestHelper.CID, "1");
-				result = Optional
-						.of(EquipmentUsageRecordItemSettingTestHelper.mockDomain("1", ItemClassification.TEXT, 5));
-			};
-		};
-
-		// when
-		ItemCreationResultTemp temp = ItemData.createTempData(require, EquipmentDataTestHelper.CID,
-				new EquipmentItemNo("1"), new ActualItemUsageValue("test1234"));
-		
-		// then
-		assertThat(temp.getItemData().isPresent()).isFalse();
-		assertThat(temp.getErrorMsg().isPresent()).isTrue();
+		assertThat(resultData).isEqualTo(domain);
 	}
 	
 	/**
@@ -88,10 +62,10 @@ public class ItemDataTest {
 	@Test
 	public void testCreateTempItemDataNoItemSetting() {
 		// when
-		ItemCreationResultTemp temp = ItemData.createTempData(require, EquipmentDataTestHelper.CID,
+		ResultData resultData = ResultData.createData(require, EquipmentDataTestHelper.CID,
 				new EquipmentItemNo("15"), new ActualItemUsageValue("test"));
 		
 		// then
-		assertThat(temp).isNull();
+		assertThat(resultData).isNull();
 	}
 }

@@ -2,7 +2,7 @@
 module nts.uk.com.view.oem003.a {
 
   const API = {
-    register: 'ctx/office/equipment/achivement/register',
+    register: 'com/screen/oem003/insert',
     findSettings: 'com/screen/oem003/findSettings',
   };
 

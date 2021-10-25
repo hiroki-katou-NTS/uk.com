@@ -29,6 +29,9 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 
 	private static final String SELECT_BY_CID = "SELECT t FROM OfimtEquipmentDayItem t " + "WHERE t.pk.cid = :cid";
 
+	private static final String SELECT_BY_CID_AND_ITEM_NOS = "SELECT t FROM OfimtEquipmentDayItem t "
+			+ "WHERE t.pk.cid = :cid " + "AND t.pk.itemNo IN :itemNos";
+
 	private EquipmentUsageRecordItemSetting toDomain(OfimtEquipmentDayItem entity) {
 		ItemInputControl inputControl = new ItemInputControl(
 				EnumAdaptor.valueOf(entity.getItemCls(), ItemClassification.class), entity.getRequire() == 1,
@@ -73,8 +76,8 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 
 	@Override
 	public List<EquipmentUsageRecordItemSetting> findByCid(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID, OfimtEquipmentDayItem.class)
-				.setParameter("cid", cid).getList(this::toDomain);
+		return this.queryProxy().query(SELECT_BY_CID, OfimtEquipmentDayItem.class).setParameter("cid", cid)
+				.getList(this::toDomain);
 	}
 
 	@Override
@@ -82,6 +85,19 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 		return this.queryProxy()
 				.find(new OfimtEquipmentDayItemPK(cid, Integer.valueOf(itemNo)), OfimtEquipmentDayItem.class)
 				.map(this::toDomain);
+	}
+
+	@Override
+	public List<EquipmentUsageRecordItemSetting> findByCidAndItemNos(String cid, List<String> itemNos) {
+		return this.queryProxy().query(SELECT_BY_CID_AND_ITEM_NOS, OfimtEquipmentDayItem.class).setParameter("cid", cid)
+				.setParameter("itemNos", itemNos).getList(this::toDomain);
+	}
+
+	@Override
+	public void insertAllAfterDeleteAll(String cid, List<EquipmentUsageRecordItemSetting> domains) {
+		this.deleteAll(cid,
+				domains.stream().map(EquipmentUsageRecordItemSetting::getItemNo).collect(Collectors.toList()));
+		this.insertAll(domains);
 	}
 
 }

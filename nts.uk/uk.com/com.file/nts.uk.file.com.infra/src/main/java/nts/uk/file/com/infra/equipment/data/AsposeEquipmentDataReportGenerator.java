@@ -35,7 +35,7 @@ import nts.uk.ctx.office.dom.equipment.achievement.ItemDisplay;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
-import nts.uk.ctx.office.dom.equipment.data.ItemData;
+import nts.uk.ctx.office.dom.equipment.data.ResultData;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 import nts.uk.file.com.app.equipment.data.EquipmentDataExportDataSource;
 import nts.uk.file.com.app.equipment.data.EquipmentDataExportGenerator;
@@ -287,7 +287,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				if (!optItemSetting.isPresent()) {
 					this.printCell(cell, null, TextAlignmentType.LEFT, isBlueBackground.get());
 				} else {
-					Optional<ItemData> optItemData = equipmentData.getItemDatas().stream().filter(
+					Optional<ResultData> optItemData = equipmentData.getResultDatas().stream().filter(
 							data -> data.getItemNo().equals(itemDisplay.getItemNo()) && data.getItemClassification()
 									.equals(optItemSetting.get().getInputcontrol().getItemCls()))
 							.findFirst();

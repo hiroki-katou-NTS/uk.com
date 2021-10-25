@@ -37,4 +37,10 @@ public class EquipmentFormSettingRepositoryImpl extends JpaRepository implements
 		return this.queryProxy().find(cid, OfimtEquipmentDayRpt.class).map(this::toDomain);
 	}
 
+	@Override
+	public void insertAfterDelete(EquipmentFormSetting domain) {
+		this.delete(domain.getCid());
+		this.insert(domain);
+	}
+
 }

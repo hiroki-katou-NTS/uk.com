@@ -19,4 +19,10 @@ public interface EquipmentRecordItemSettingRepository {
 
 	// [4] Get
 	Optional<EquipmentUsageRecordItemSetting> findByCidAndItemNo(String cid, String itemNo);
+	
+	// [5] Get*																							
+	List<EquipmentUsageRecordItemSetting> findByCidAndItemNos(String cid, List<String> itemNos);
+	
+	// [6] 削除後Insertする																							
+	void insertAllAfterDeleteAll(String cid, List<EquipmentUsageRecordItemSetting> domains);
 }

@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
-import nts.arc.error.ErrorMessage;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
+import nts.uk.ctx.office.dom.equipment.achievement.ErrorItem;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 
 @RunWith(JMockit.class)
@@ -32,7 +32,7 @@ public class EquipmentUsageRecordItemSettingTest {
 		EquipmentUsageRecordItemSetting domain = EquipmentUsageRecordItemSettingTestHelper.createDoamin();
 		ActualItemUsageValue inputVal = new ActualItemUsageValue("input value");
 		
-		Optional<ErrorMessage> actual = domain.check(inputVal);
+		Optional<ErrorItem> actual = domain.check(Optional.of(inputVal));
 		assertThat(actual).isNotPresent();
 	}
 	
@@ -45,7 +45,7 @@ public class EquipmentUsageRecordItemSettingTest {
 		EquipmentUsageRecordItemSetting domain = EquipmentUsageRecordItemSettingTestHelper.createDoamin();
 		ActualItemUsageValue inputVal = new ActualItemUsageValue("input value mock to error");
 		
-		Optional<ErrorMessage> actual = domain.check(inputVal);
+		Optional<ErrorItem> actual = domain.check(Optional.of(inputVal));
 		assertThat(actual).isPresent();
 	}
 }
