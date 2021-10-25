@@ -258,12 +258,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     void setBgColor(Color color, Cell cell) {
         Style style = cell.getStyle();
-        if (style.getPattern() == BackgroundType.SOLID) {
-            style.setForegroundColor(color);
-        } else {
-            style.setBackgroundColor(color);
-        }
+        style.setPattern(BackgroundType.SOLID);
+        style.setForegroundColor(color);
         cell.setStyle(style);
+        System.out.println("[Valid Fill Color]: " + style.getForegroundColor());
     }
 
     private void setHolidayClassColor(List<Cell> cellsClass, int HolidayClass) {
