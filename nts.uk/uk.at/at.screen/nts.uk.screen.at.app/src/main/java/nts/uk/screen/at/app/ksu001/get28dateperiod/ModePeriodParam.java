@@ -17,4 +17,6 @@ import lombok.Setter;
 @Getter
 public class ModePeriodParam {
 	public String endDate; // A画面パラメータ．基準期間．終了日
+	
+	public boolean toAdvancePeriod; // 期間を進めるか
 }

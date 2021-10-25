@@ -199,9 +199,9 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("change-confirmed-state") 
+	@Path("change-confirmed-state")
 	public void changeConfirmedStateHandler(List<ChangeConfirmedStateCommand> param) {
-		changeConfirmedStateHandler.handle(param);;
+		changeConfirmedStateHandler.handle(param);
 	}
 	
 	@POST
@@ -215,7 +215,7 @@ public class KSU001WebService extends WebService{
 	@Path("get-28day-period")
 	public DatePeriodDto get28DaysPeriod(ModePeriodParam param){
 		GeneralDate endDate = GeneralDate.fromString(param.endDate, "yyyy/MM/dd");
-		DatePeriodDto data = mode28DayPeriod.get(endDate);
+		DatePeriodDto data = mode28DayPeriod.get(endDate, param.toAdvancePeriod);
 		return data;
 	}
 	

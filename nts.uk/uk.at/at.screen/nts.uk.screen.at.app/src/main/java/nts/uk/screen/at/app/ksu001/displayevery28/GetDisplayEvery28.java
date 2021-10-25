@@ -35,7 +35,7 @@ public class GetDisplayEvery28 {
 	public DisplayEvery28Dto get(DisplayEvery28Param param) {
 		DisplayEvery28Dto output = new DisplayEvery28Dto();
 		// 取得する(年月日)
-		DatePeriodDto datePeriodDto = screenQuery28DayPeriod.get(param.getDate());
+		DatePeriodDto datePeriodDto = screenQuery28DayPeriod.get(param.getDate(), param.toAdvancePeriod);
 		if (param.getMode() == FuncCtrlDisplayFormatDto.Shift.value) { // Aa:シフト表示の場合
 			ChangePeriodInShiftResult changePeriodInShiftResult_New =
 					changePeriodInShift.getData(
