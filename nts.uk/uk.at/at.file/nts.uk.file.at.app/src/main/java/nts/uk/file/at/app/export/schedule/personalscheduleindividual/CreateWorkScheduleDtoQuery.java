@@ -1,12 +1,13 @@
 package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
 import lombok.val;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -26,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +39,6 @@ import java.util.stream.Collectors;
 public class CreateWorkScheduleDtoQuery {
     @Inject
     private WorkTypeRepository workTypeRepository;
-
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
     @Inject
@@ -60,24 +61,25 @@ public class CreateWorkScheduleDtoQuery {
      * @return DatePeriodListDto
      */
     public List<WorkScheduleWorkInforDto> get(List<IntegrationOfDaily> dailyListAttendanceWork) {
+        if (dailyListAttendanceWork.isEmpty()) return Collections.emptyList();
         String companyId = AppContexts.user().companyId();
-        List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendanceList = dailyListAttendanceWork
-                .stream()
-                .map(x -> x.getWorkInformation()).collect(Collectors.toList());
-       /* //1.日別勤怠の実績で利用する勤務種類と就業時間帯
-        val workType = GetListWtypeWtimeUseDailyAttendRecordService.getdata(workInfoOfDailyAttendanceList);
-        workInfoOfDailyAttendanceList.stream().map(x -> x.getRecordInfo()).collect(Collectors.toList());
+        val workInfoOfDailyAttendanceList = dailyListAttendanceWork
+                .stream().map(IntegrationOfDaily::getWorkInformation).collect(Collectors.toList());
 
-        //2.廃止された勤務種類
+       // 1.日別勤怠の実績で利用する勤務種類と就業時間帯
+        val lstWrkTypeWrkTimeDailyAtt = GetListWtypeWtimeUseDailyAttendRecordService.getdata(workInfoOfDailyAttendanceList);
+
+        // 2.廃止された勤務種類
         val workTypeList = workTypeRepository.findByCidAndWorkTypeCodes(
                 companyId,
-                workInfoOfDailyAttendanceList.stream().map(x -> x.getRecordInfo().getWorkTypeCode().v()).collect(Collectors.toList())
-        );
-        //3.就業時間帯も取得する
-        val workTimeList = workTimeSettingRepository.getListWorkTime(
+                lstWrkTypeWrkTimeDailyAtt.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()));
+
+        // 3.就業時間帯も取得する
+        val workTimeSettingList = workTimeSettingRepository.getListWorkTime(
                 companyId,
-                workInfoOfDailyAttendanceList.stream().map(x -> x.getRecordInfo().getWorkTimeCode().v()).collect(Collectors.toList())
-        );*/
+                lstWrkTypeWrkTimeDailyAtt.getLstWorkTimeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
+        );
+
         List<WorkScheduleWorkInforDto> workInforDtoList = new ArrayList<>();
         //loop：日別勤怠(Work) in input.List<日別勤怠(Work)>
         for (val ntegrationOfDaily : dailyListAttendanceWork) {
@@ -88,40 +90,34 @@ public class CreateWorkScheduleDtoQuery {
                     return workTypeRepo.findByPK(companyId, workTypeCd);
                 }
 
-                // implements WorkInformation.Require
                 @Override
                 public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
                     return workTimeSettingRepository.findByCode(companyId, workTimeCode);
                 }
 
-                // implements WorkInformation.Require
                 @Override
                 public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
                     return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
                 }
 
-                // implements WorkInformation.Require
                 @Override
                 public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
                     Optional<FixedWorkSetting> workSetting = fixedWorkSet.findByKey(companyId, code.v());
                     return workSetting.isPresent() ? workSetting.get() : null;
                 }
 
-                // implements WorkInformation.Require
                 @Override
                 public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
                     Optional<FlowWorkSetting> workSetting = flowWorkSet.find(companyId, code.v());
                     return workSetting.isPresent() ? workSetting.get() : null;
                 }
 
-                // implements WorkInformation.Require
                 @Override
                 public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
                     Optional<FlexWorkSetting> workSetting = flexWorkSet.find(companyId, code.v());
                     return workSetting.isPresent() ? workSetting.get() : null;
                 }
 
-                // implements WorkInformation.Require
                 @Override
                 public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
                     Optional<PredetemineTimeSetting> workSetting = predetemineTimeSet.findByWorkTimeCode(companyId, wktmCd.v());
@@ -129,24 +125,50 @@ public class CreateWorkScheduleDtoQuery {
                 }
             });
 
-            String workTypeCode = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
-            val workTYpeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
-            String workTypeName = workTYpeOpt.isPresent() ? workTYpeOpt.get().getAbbreviationName().v() : "";
-            String workingHoursCode = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ?ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(): "";
-            val workingHourOpt = workTimeSettingRepository.findByCode(companyId, workingHoursCode);
-            String workingHoursName = workingHourOpt.isPresent() ? workingHourOpt.get().getWorkTimeDisplayName().getWorkTimeAbName().v() : "";
+
+            // 勤務種類コード = 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード
+            val workTypeCode = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
+            val workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().v().equals(workTypeCode)).findFirst();
+            // 勤務種類名= 勤務種類．勤務種類略名
+            String workTypeName = workTypeOpt.isPresent() ? workTypeOpt.get().getAbbreviationName().v() : "";
+
+            // 就業時間帯コード = 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード
+            val workTimeCode = ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() != null
+                    ? ntegrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v()
+                    : "";
+//            if (StringUtils.isEmpty(workTimeCode)) continue;
+            val workTimeOpt = workTimeSettingList.stream().filter(x -> x.getWorktimeCode().equals(workTimeCode)).findFirst();
+            // 就業時間帯名= 就業時間帯の設定．表示名．略名
+            val worTimeName = workTimeOpt.isPresent() ? workTimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
+
             Integer startTime = null;
+            if (ntegrationOfDaily.getAttendanceLeave().isPresent()) {
+                Optional<TimeLeavingWork> timeLeavingWork = ntegrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+                if (timeLeavingWork.isPresent()) {
+                    if (timeLeavingWork.get().getAttendanceStamp().isPresent()) {
+                        if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()) {
+                            if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
+                                if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+                                    startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             Integer endTime = null;
             if (ntegrationOfDaily.getAttendanceLeave().isPresent()) {
-                val startTimeOpt2 = ntegrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
-                if (startTimeOpt2.isPresent()) {
-                    if (startTimeOpt2.get().getAttendanceStamp().isPresent() &&
-                            startTimeOpt2.get().getAttendanceStamp().get().getTimeVacation().isPresent()) {
-                        startTime = startTimeOpt2.get().getAttendanceStamp().get().getTimeVacation().get().getStart().hour();
-                    }
-                    if (startTimeOpt2.get().getLeaveStamp().isPresent() &&
-                            startTimeOpt2.get().getLeaveStamp().get().getTimeVacation().isPresent()) {
-                        endTime = startTimeOpt2.get().getLeaveStamp().get().getTimeVacation().get().getStart().hour();
+                val timeLeavingWork = ntegrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+                if (timeLeavingWork.isPresent()) {
+                    if (timeLeavingWork.get().getLeaveStamp().isPresent()) {
+                        if (timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()) {
+                            if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
+                                if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+                                    endTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -156,8 +178,8 @@ public class CreateWorkScheduleDtoQuery {
                             workStyle,
                             Optional.of(workTypeCode),
                             Optional.of(workTypeName),
-                            Optional.of(workingHoursCode),
-                            Optional.of(workingHoursName),
+                            Optional.of(workTimeCode),
+                            Optional.of(workTypeName),
                             Optional.ofNullable(startTime),
                             Optional.ofNullable(endTime)
                     )

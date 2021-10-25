@@ -67,7 +67,7 @@ public class GetAnAppointmentQuery {
                     }
                 },
                 Arrays.asList(new EmployeeId(employeeId)),
-                period);
+                aqDatePeriodList.getPeriod());
         //3.List<勤務予定（勤務情報）dto）
         val workInforDtoList = createWorkScheduleDtoQuery.get(dailyAttendance);
         //4.
