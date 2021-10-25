@@ -96,7 +96,7 @@ module nts.uk.ui.at.kdw013.timeheader {
             let icon = `<i class='warningIcon ` + className + `'> </i>`;
             
             setTimeout(()=> { 
-                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 2, size: '20px', width: 20, height: 20 }, click: () => { vm.OpenIDialog(vm, time); } }); 
+                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '20px', width: 20, height: 20 }, click: () => { vm.OpenIDialog(vm, time); } }); 
                 $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
             }, 300);
             if (!value) {

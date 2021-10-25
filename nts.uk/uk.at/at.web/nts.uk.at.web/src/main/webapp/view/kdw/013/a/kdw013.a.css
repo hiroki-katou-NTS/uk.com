@@ -67,3 +67,9 @@
 	margin-left: unset !important;
 	min-width: unset !important;
 }
+
+.fc-task-events  .fav-icon:after , .fc-oneday-events  .fav-icon:after  {
+	content: '\2807';
+	font-size: 15px;
+	text-align: end;
+}

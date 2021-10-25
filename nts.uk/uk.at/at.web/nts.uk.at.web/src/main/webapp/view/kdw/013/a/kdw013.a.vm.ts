@@ -669,6 +669,29 @@ module nts.uk.ui.at.kdw013.a {
             console.log('equipmentInput click');
         }
 
+        getManHrlst(dates){
+    
+            let result = [];
+            const vm = this;
+            _.forEach(dates, date => {
+                const eventInday = _.filter(vm.events(), (e) => { return moment(e.start).isSame(date, 'day') });
+
+                if (eventInday.length) {
+
+                    let events = _.chain(eventInday).map(e => {
+
+                        let manHrContents = [];
+                        let taskList = _.get(e, 'extendedProps.taskBlock.taskDetails');
+                        return { ymd: date, taskList, manHrContents };
+                    }).value();
+
+                    result.push(...events);
+                }
+            });
+
+            return result;
+        }
+
         saveData() {
             const vm = this;
             const { events, dateRange } = vm;
@@ -759,11 +782,11 @@ module nts.uk.ui.at.kdw013.a {
                 };
             });
     
-            let manHrlst = [];
+            let manHrlst = vm.getManHrlst(dateRanges());
 
-            let integrationOfDailys = [];
+            let integrationOfDailys = _.get(vm.$datas(), 'lstIntegrationOfDaily', []);
             
-            const command: RegisterWorkContentCommand = {
+            const command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
                 changedDates,
                 editStateSetting,
                 employeeId,

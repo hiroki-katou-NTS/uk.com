@@ -2034,7 +2034,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 dayHeaderDidMount : (arg, createElement) => {
                    $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon' data-bind="ntsIcon: { no: 2, width: 20, height: 20 }" ></i>`);
-                   setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 2, size: '20px', width: 20, height: 20 } }); }, 300);
+                   setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 20, height: 20 } }); }, 300);
                 }
                 ,
                 viewDidMount: ({ el, view }) => {

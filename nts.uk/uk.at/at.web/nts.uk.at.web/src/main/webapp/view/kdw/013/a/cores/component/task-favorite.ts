@@ -44,7 +44,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                             <div style="display: flex;">
                                 <label  class='limited-label' style='width:90%;cursor: pointer;'  data-bind='text: item.title'>
                                 </label>
-                                <i data-bind="ntsIcon: { no: 2, width: 20, height: 25  },click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'favId', '')) }">
+                                <i class='fav-icon img-icon' style='width: 20px; height: 25px;' data-bind="click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'favId', '')) }">
                                 </i>
                             </div>
                         </li>
@@ -71,6 +71,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 .fc-container .fc-task-events .show {
                     visibility: visible;
                 }
+                
             </style>
            `
         })
