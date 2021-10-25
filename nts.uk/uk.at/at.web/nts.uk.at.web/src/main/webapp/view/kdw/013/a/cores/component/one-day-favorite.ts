@@ -73,10 +73,6 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                 .fc-container .fc-oneday-events .show {
                     visibility: visible;
                 }
-              .fc-oneday-events  .fav-icon:after {
-                      content: '\2807';
-                      font-size: 15px;
-                      }
             </style>
            `
     })

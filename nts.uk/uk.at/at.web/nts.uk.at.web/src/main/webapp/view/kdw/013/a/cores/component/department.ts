@@ -38,7 +38,7 @@ module nts.uk.ui.at.kdw013.department {
             <div id='department-acc' data-bind="ntsAccordion: { active: 0}">
                 <h3>
                     <label data-bind="i18n: 'KDW013_4'"></label>
-                    <i style='float:right;' data-bind="ntsIcon: { no: 2, width: 20, height: 20 }" ></i>
+                    <i style='float:right;' data-bind="ntsIcon: { no: 233, width: 20, height: 20 }" ></i>
                 </h3>
         
                 <div class='fc-employees'>
