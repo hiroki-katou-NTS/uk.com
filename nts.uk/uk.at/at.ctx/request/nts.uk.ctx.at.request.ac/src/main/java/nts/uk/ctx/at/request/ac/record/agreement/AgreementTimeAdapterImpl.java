@@ -181,7 +181,7 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 		
 		return AgreementTimeOfMonthly.of(
 				new AttendanceTimeMonth(export.getAgreementTime()), 
-				OneMonthTime.of(oneMonthErrorAlarmTime, upperLimit));
+				OneMonthTime.createWithCheck(oneMonthErrorAlarmTime, upperLimit));
 	}
 
 	/** TODO: 36協定時間対応により、コメントアウトされた */
@@ -202,14 +202,14 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 			agreementTimeYear = AgreementTimeYear.of(
 					AgreementTimeOfYear.of(
 							new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getAgreementTime()),
-							OneYearTime.of(
+							OneYearTime.createWithCheck(
 									OneYearErrorAlarmTime.of(
 											new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getThreshold().getErrorTime()),
 											new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getThreshold().getAlarmTime())),
 									new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getThreshold().getUpperLimit()))),
 					AgreementTimeOfYear.of(
 							new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getAgreementTime()),
-							OneYearTime.of(
+							OneYearTime.createWithNoUpperLimit(
 									OneYearErrorAlarmTime.of(
 											new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getErrorTime()),
 											new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getAlarmTime())))), 

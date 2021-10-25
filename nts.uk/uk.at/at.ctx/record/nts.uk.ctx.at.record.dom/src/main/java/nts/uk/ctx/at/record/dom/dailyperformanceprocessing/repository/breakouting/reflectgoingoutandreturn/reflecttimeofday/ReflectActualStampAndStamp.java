@@ -84,7 +84,7 @@ public class ReflectActualStampAndStamp {
 		timeFrame.setNumberOfReflections(number);
 		timeActualStamp.setNumberOfReflectionStamp(number);
 		//反映済み区分　←　true
-		stamp.setReflectedCategory(true);
+		stamp.getImprintReflectionStatus().markAsReflected(ymd);
 		
 		return timeActualStamp;
 	}

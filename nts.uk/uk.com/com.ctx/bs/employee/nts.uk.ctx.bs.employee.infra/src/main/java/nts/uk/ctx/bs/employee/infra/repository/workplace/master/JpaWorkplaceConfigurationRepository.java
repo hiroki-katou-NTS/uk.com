@@ -68,6 +68,11 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 	}
 
 	@Override
+	public void updateHistoryItem(String companyId, DateHistoryItem historyItem) {
+		this.commandProxy().update(BsymtWorkplaceConfig.fromDomain(companyId, historyItem));
+	}
+
+	@Override
 	public void deleteWorkplaceConfig(String companyId, String workplaceHistoryId) {
 		this.commandProxy().remove(BsymtWorkplaceConfig.class,
 				new BsymtWorkplaceConfigPk(companyId, workplaceHistoryId));

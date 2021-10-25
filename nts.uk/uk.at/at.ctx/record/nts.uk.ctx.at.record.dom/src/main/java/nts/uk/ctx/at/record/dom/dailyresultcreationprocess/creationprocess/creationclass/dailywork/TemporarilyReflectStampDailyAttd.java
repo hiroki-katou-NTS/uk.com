@@ -2,12 +2,14 @@ package nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.crea
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.ReflectGoingOutAndReturn;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.entranceandexit.EntranceAndExit;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect.ReflectStampSupport;
@@ -77,7 +79,7 @@ public class TemporarilyReflectStampDailyAttd {
 				/** 直行区分=ONにする */
 				integrationOfDaily.getWorkInformation().setGoStraightAtr(NotUseAttribute.Use);
 				//打刻。反映区分＝反映済み
-				stamp.setReflectedCategory(true);
+				stamp.getImprintReflectionStatus().markAsReflected(integrationOfDaily.getYmd());
 			}
 			
 			changeDailyAtt.setAttendance(true);
@@ -95,7 +97,7 @@ public class TemporarilyReflectStampDailyAttd {
 				/** 直帰区分=ONにする */
 				integrationOfDaily.getWorkInformation().setBackStraightAtr(NotUseAttribute.Use);
 				//打刻。反映区分＝反映済み
-				stamp.setReflectedCategory(true);
+				stamp.getImprintReflectionStatus().markAsReflected(integrationOfDaily.getYmd());
 			}
 
 			changeDailyAtt.setAttendance(true);
@@ -134,7 +136,8 @@ public class TemporarilyReflectStampDailyAttd {
 		case START_OF_SUPPORT:
 		case END_OF_SUPPORT:	
 			//応援開始 OR 応援終了　OR　応援出勤　OR 臨時+応援出勤
-		reflectStampSupport.reflect(companyId, stamp, integrationOfDaily, stampReflectRangeOutput);
+			reflectStampSupport.reflect(companyId, stamp, integrationOfDaily, stampReflectRangeOutput);
+			
 			return listErrorMessageInfo;
 		default :
 			return listErrorMessageInfo;

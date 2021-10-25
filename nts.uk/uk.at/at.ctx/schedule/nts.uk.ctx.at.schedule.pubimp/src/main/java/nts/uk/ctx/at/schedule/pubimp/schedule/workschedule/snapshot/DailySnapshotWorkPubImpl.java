@@ -95,5 +95,12 @@ public class DailySnapshotWorkPubImpl implements DailySnapshotWorkPub {
 					.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<DailySnapshotWorkExport> find(List<String> sid, DatePeriod ymd) {
+		return repo.find(sid, ymd).stream()
+				.map(c -> convert(c.getSid(), c.getYmd(), c.getSnapshot()))
+				.collect(Collectors.toList());
+	}
+
 	
 }
