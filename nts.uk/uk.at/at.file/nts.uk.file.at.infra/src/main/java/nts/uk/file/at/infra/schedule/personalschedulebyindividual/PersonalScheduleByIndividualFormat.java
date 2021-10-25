@@ -59,6 +59,15 @@ public class PersonalScheduleByIndividualFormat {
     private Integer coln6C234;
     private Integer coln7C234;
 
+    // Holiday clssification
+    private Integer coln1HoliayClass;
+    private Integer coln2HoliayClass;
+    private Integer coln3HoliayClass;
+    private Integer coln4HoliayClass;
+    private Integer coln5HoliayClass;
+    private Integer coln6HoliayClass;
+    private Integer coln7HoliayClass;
+
     // item c2_3_5
     private String fromTo;
     private String D11;

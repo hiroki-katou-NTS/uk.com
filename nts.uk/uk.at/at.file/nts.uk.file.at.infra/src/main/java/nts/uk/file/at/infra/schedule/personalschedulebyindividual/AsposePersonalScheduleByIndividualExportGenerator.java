@@ -15,10 +15,12 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
@@ -214,7 +216,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private void printCalender(Cells cells, int rowCount, int col,
-                               String l1P1, String l1P2, String l2P1, String l2P2, Integer l3P1, Integer l3P2, Map<Integer, String> holidayMap, int colNO) {
+                               String l1P1, String l1P2, String l2P1, String l2P2, Integer l3P1, Integer l3P2, Map<Integer, String> holidayMap, int colNO, Integer holidayClass) {
         int secondLieOfCalender = rowCount + 2;
         int thirdLieOfCalender = rowCount + 4;
         String divider = getText("KSU002_67");
@@ -223,17 +225,48 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         if (l2P1 == null) l2P1 = "";
         if (l2P2 == null) l2P2 = "";
         if (l3P1 == null) l3P1 = 0;
+        List<Cell> cellsClass = new ArrayList<>();
         if (!holidayMap.containsKey(colNO)) {
             cells.get(rowCount, col).setValue(l1P1 + " " + l1P2);
             cells.get(secondLieOfCalender, col).setValue(l2P1 + " " + l2P2);
             if (l3P1 != null && l3P2 != null) {
                 cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
             }
+            if (holidayClass != null) {
+                cellsClass.addAll(
+                        Arrays.asList(cells.get(rowCount, col), cells.get(secondLieOfCalender, col), cells.get(thirdLieOfCalender, col))
+                );
+                setHolidayClassColor(cellsClass, holidayClass);
+            }
         } else {
             cells.get(rowCount, col).setValue(l1P1);
             cells.get(secondLieOfCalender, col).setValue(holidayMap.get(col));
             Cell cell = cells.get(secondLieOfCalender, col);
             setTextColorRed(cell);
+        }
+    }
+
+    private void setHolidayClassColor(List<Cell> cellsClass, int HolidayClass) {
+        WorkStyle workStyle = EnumAdaptor.valueOf(HolidayClass, WorkStyle.class);
+        Color color = new Color();
+        switch (workStyle) {
+            case MORNING_WORK:
+                color = Color.fromArgb(255, 127, 39);
+                break;
+            case ONE_DAY_REST:
+                color = Color.fromArgb(255, 0, 0);
+                break;
+            case ONE_DAY_WORK:
+                color = Color.fromArgb(0,0,255);
+                break;
+            case AFTERNOON_WORK:
+                color = Color.fromArgb(255, 127, 39);
+                break;
+        }
+        for (Cell cell : cellsClass) {
+            Style style = cell.getStyle();
+            style.getFont().setColor(color);
+            cell.setStyle(style);
         }
     }
 
@@ -263,7 +296,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn1C233(),
                     item.getColn1C234(),
                     holiday,
-                    1
+                    1,
+                    item.getColn1HoliayClass()
             );
             printCalender(cells,
                     rowCount,
@@ -275,7 +309,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn2C233(),
                     item.getColn2C234(),
                     holiday,
-                    2
+                    2,
+                    item.getColn2HoliayClass()
             );
 
             printCalender(cells,
@@ -288,7 +323,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn3C233(),
                     item.getColn3C234(),
                     holiday,
-                    3
+                    3,
+                    item.getColn3HoliayClass()
             );
             printCalender(cells,
                     rowCount,
@@ -300,7 +336,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn4C233(),
                     item.getColn4C234(),
                     holiday,
-                    4
+                    4,
+                    item.getColn4HoliayClass()
             );
 
             printCalender(cells,
@@ -313,7 +350,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn5C233(),
                     item.getColn5C234(),
                     holiday,
-                    5
+                    5,
+                    item.getColn5HoliayClass()
             );
             printCalender(cells,
                     rowCount,
@@ -325,7 +363,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn6C233(),
                     item.getColn6C234(),
                     holiday,
-                    6
+                    6,
+                    item.getColn6HoliayClass()
             );
 
             //calender item seven for each row
@@ -339,7 +378,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     item.getColn7C233(),
                     item.getColn7C234(),
                     holiday,
-                    7
+                    7,
+                    item.getColn7HoliayClass()
             );
             if (query.isTotalDisplay()) {
                 //calender item seven for each row
@@ -347,10 +387,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 int secondCol = 38;
                 cells.get(rowCount, firstCol).setValue(item.getD21());
                 Cell cellD22 = cells.get(rowCount + 1, firstCol);
-                Cell cellD23 =cells.get(rowCount + 1, secondCol);
-                Cell cellD24 =cells.get(rowCount + 2, firstCol);
+                Cell cellD23 = cells.get(rowCount + 1, secondCol);
+                Cell cellD24 = cells.get(rowCount + 2, firstCol);
                 Cell cellD25 = cells.get(rowCount + 2, secondCol);
-                Cell cellD26 =cells.get(rowCount + 3, firstCol);
+                Cell cellD26 = cells.get(rowCount + 3, firstCol);
                 Cell cellD27 = cells.get(rowCount + 3, secondCol);
                 cellD22.setValue(item.getD22());
                 cellD23.setValue(item.getD23());
@@ -364,7 +404,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 setBgWhile(cellD25);
                 setBgWhile(cellD26);
                 setBgWhile(cellD27);
-                setBgWhile(cells.get(rowCount+4,firstCol));
+                setBgWhile(cells.get(rowCount + 4, firstCol));
 
             }
             rowCount += 5;
@@ -471,6 +511,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn1C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn1C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn1HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 isFirst = false;
                 if (dateInfo.isHoliday()) {
@@ -486,6 +527,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn2C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn2C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn2HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
                     holiday.put(2, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
@@ -500,6 +542,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn3C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn3C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn3HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
                     holiday.put(3, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
@@ -514,6 +557,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn4C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn4C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn4HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
                     holiday.put(4, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
@@ -528,6 +572,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn5C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn5C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn5HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
                     holiday.put(5, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
@@ -542,6 +587,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn6C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn6C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn6HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
                     holiday.put(6, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
@@ -556,6 +602,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (workDetail.isPresent()) {
                     format.setColn7C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
                     format.setColn7C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn7HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
                     holiday.put(7, dateInfo.getHolidayName().isPresent() ? dateInfo.getHolidayName().get().v() : "");
