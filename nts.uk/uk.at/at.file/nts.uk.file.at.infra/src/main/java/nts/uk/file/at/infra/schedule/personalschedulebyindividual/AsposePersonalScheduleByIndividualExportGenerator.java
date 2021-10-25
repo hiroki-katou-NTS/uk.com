@@ -216,7 +216,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private void printCalender(Cells cells, int rowCount, int col,
-                               String l1P1, String l1P2, String l2P1, String l2P2, Integer l3P1, Integer l3P2, Map<Integer, String> holidayMap, int colNO, Integer holidayClass) {
+                               String l1P1, String l1P2, String l2P1, String l2P2, String l3P1, String l3P2, Map<Integer, String> holidayMap, int colNO, Integer holidayClass) {
         int secondLieOfCalender = rowCount + 2;
         int thirdLieOfCalender = rowCount + 4;
         String divider = getText("KSU002_67");
@@ -224,7 +224,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         if (l1P2 == null) l1P2 = "";
         if (l2P1 == null) l2P1 = "";
         if (l2P2 == null) l2P2 = "";
-        if (l3P1 == null) l3P1 = 0;
+        if (l3P1 == null) l3P1 = "";
         List<Cell> cellsClass = new ArrayList<>();
         if (!holidayMap.containsKey(colNO)) {
             cells.get(rowCount, col).setValue(l1P1 + " " + l1P2);
@@ -479,7 +479,6 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         List<WeeklyAgreegateResult> weeklyAgreegateResults = dataSource.getAgreegateResults();
         Optional<LegalWorkTimeOfEmployee> legalWorktime = dataSource.getLegalWorkTimeOfEmployee();
 
-        // Fix #56942
         List<Integer> headerList = generateTableHeader(startDayOfWeek);
         val startDateValue = dataSource.getDateInformationList().get(0).getDayOfWeek().value;
         int count = ArrayUtils.indexOf(headerList.toArray(), startDateValue);
@@ -509,8 +508,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setColn1C231(workTypeCodeAndName(workDetail));
                 format.setColn1C232(workHourCode(workDetail));
                 if (workDetail.isPresent()) {
-                    format.setColn1C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
-                    format.setColn1C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn1C233(workDetail.get().getStartTime().isPresent() ? minuteToTime(workDetail.get().getStartTime().get()) : null);
+                    format.setColn1C234(workDetail.get().getEndTime().isPresent() ? minuteToTime(workDetail.get().getEndTime().get()) : null);
                     format.setColn1HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 isFirst = false;
@@ -525,8 +524,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setColn2C231(workTypeCodeAndName(workDetail));
                 format.setColn2C232(workHourCode(workDetail));
                 if (workDetail.isPresent()) {
-                    format.setColn2C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
-                    format.setColn2C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn2C233(workDetail.get().getStartTime().isPresent() ? minuteToTime(workDetail.get().getStartTime().get()) : "");
+                    format.setColn2C234(workDetail.get().getEndTime().isPresent() ? minuteToTime(workDetail.get().getEndTime().get()) : "");
                     format.setColn2HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
@@ -540,8 +539,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setColn3C231(workTypeCodeAndName(workDetail));
                 format.setColn3C232(workHourCode(workDetail));
                 if (workDetail.isPresent()) {
-                    format.setColn3C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
-                    format.setColn3C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn3C233(workDetail.get().getStartTime().isPresent() ? minuteToTime(workDetail.get().getStartTime().get()) : null);
+                    format.setColn3C234(workDetail.get().getEndTime().isPresent() ? minuteToTime(workDetail.get().getEndTime().get()) : null);
                     format.setColn3HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
@@ -555,8 +554,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setColn4C231(workTypeCodeAndName(workDetail));
                 format.setColn4C232(workHourCode(workDetail));
                 if (workDetail.isPresent()) {
-                    format.setColn4C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
-                    format.setColn4C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn4C233(workDetail.get().getStartTime().isPresent() ? minuteToTime(workDetail.get().getStartTime().get()) : null);
+                    format.setColn4C234(workDetail.get().getEndTime().isPresent() ? minuteToTime(workDetail.get().getEndTime().get()) : null);
                     format.setColn4HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
@@ -570,8 +569,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setColn5C231(workTypeCodeAndName(workDetail));
                 format.setColn5C232(workHourCode(workDetail));
                 if (workDetail.isPresent()) {
-                    format.setColn5C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
-                    format.setColn5C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn5C233(workDetail.get().getStartTime().isPresent() ? minuteToTime(workDetail.get().getStartTime().get()) : null);
+                    format.setColn5C234(workDetail.get().getEndTime().isPresent() ? minuteToTime(workDetail.get().getEndTime().get()) : null);
                     format.setColn5HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
@@ -585,8 +584,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setColn6C231(workTypeCodeAndName(workDetail));
                 format.setColn6C232(workHourCode(workDetail));
                 if (workDetail.isPresent()) {
-                    format.setColn6C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
-                    format.setColn6C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn6C233(workDetail.get().getStartTime().isPresent() ? minuteToTime(workDetail.get().getStartTime().get()) : null);
+                    format.setColn6C234(workDetail.get().getEndTime().isPresent() ? minuteToTime(workDetail.get().getEndTime().get()) : null);
                     format.setColn6HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
@@ -600,8 +599,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 format.setColn7C231(workTypeCodeAndName(workDetail));
                 format.setColn7C232(workHourCode(workDetail));
                 if (workDetail.isPresent()) {
-                    format.setColn7C233(workDetail.get().getStartTime().isPresent() ? workDetail.get().getStartTime().get() : null);
-                    format.setColn7C234(workDetail.get().getEndTime().isPresent() ? workDetail.get().getEndTime().get() : null);
+                    format.setColn7C233(workDetail.get().getStartTime().isPresent() ? minuteToTime(workDetail.get().getStartTime().get()) : null);
+                    format.setColn7C234(workDetail.get().getEndTime().isPresent() ? minuteToTime(workDetail.get().getEndTime().get()) : null);
                     format.setColn7HoliayClass(workDetail.get().getWorkHolidayCls().isPresent() ? workDetail.get().getWorkHolidayCls().get().value : null);
                 }
                 if (dateInfo.isHoliday()) {
@@ -616,8 +615,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 weekCount++;
                 Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
                 if (weekTotal.isPresent()) {
-                    format.setD27(String.valueOf(weekTotal.get().getHolidays()));
-                    format.setD23(String.valueOf(weekTotal.get().getWorkingHours()));
+                    format.setD27(String.valueOf(weekTotal.get().getHolidays().intValue()));
+                    format.setD23(minuteToTime(weekTotal.get().getWorkingHours().intValue()));
                 } else {
                     format.setD27("0");
                     format.setD23("0:00");
@@ -653,8 +652,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 if (iteration == size) {
                     Optional<WeeklyAgreegateResult> weekTotal = weekTotal(weeklyAgreegateResults, weekCount);
                     if (weekTotal.isPresent()) {
-                        format.setD27(String.valueOf(weekTotal.get().getHolidays()));
-                        format.setD23(String.valueOf(weekTotal.get().getWorkingHours()));
+                        format.setD27(String.valueOf(weekTotal.get().getHolidays().intValue()));
+                        format.setD23(minuteToTime(weekTotal.get().getWorkingHours().intValue()));
                     } else {
                         format.setD27("0");
                         format.setD23("0:00");
@@ -748,6 +747,14 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             return inforDto.getWorkingHoursName().get();
         }
         return "";
+    }
+
+    private String minuteToTime(Integer totalMinute) {
+        if (totalMinute == null) return "0:00";
+        int hour = totalMinute / 60;
+        int minute = totalMinute % 60;
+
+        return (hour < 10 ? "0" + hour : hour) + ":" + (minute < 10 ? "0" + minute : minute);
     }
 
 

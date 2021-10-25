@@ -42,22 +42,22 @@ public class PersonalScheduleByIndividualFormat {
     private String coln7C232;
 
     // item c2_3_3
-    private Integer coln1C233;
-    private Integer coln2C233;
-    private Integer coln3C233;
-    private Integer coln4C233;
-    private Integer coln5C233;
-    private Integer coln6C233;
-    private Integer coln7C233;
+    private String coln1C233;
+    private String coln2C233;
+    private String coln3C233;
+    private String coln4C233;
+    private String coln5C233;
+    private String coln6C233;
+    private String coln7C233;
 
     // item c2_3_4
-    private Integer coln1C234;
-    private Integer coln2C234;
-    private Integer coln3C234;
-    private Integer coln4C234;
-    private Integer coln5C234;
-    private Integer coln6C234;
-    private Integer coln7C234;
+    private String coln1C234;
+    private String coln2C234;
+    private String coln3C234;
+    private String coln4C234;
+    private String coln5C234;
+    private String coln6C234;
+    private String coln7C234;
 
     // Holiday clssification
     private Integer coln1HoliayClass;
