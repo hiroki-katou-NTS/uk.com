@@ -213,7 +213,7 @@ module nts.uk.at.view.kdw013.h {
 					empTarget: self.params.employeeId, //対象社員
 					targetDate: self.params.date, //対象日
 					items: data, //実績内容  => List<ItemValue> id và giá trị
-					integrationOfDaily: null
+					integrationOfDaily: self.params.IntegrationOfDaily
 				};
 				ajax(paths.save, param).done(() => {
 					info({ messageId: 'Msg_15' });
