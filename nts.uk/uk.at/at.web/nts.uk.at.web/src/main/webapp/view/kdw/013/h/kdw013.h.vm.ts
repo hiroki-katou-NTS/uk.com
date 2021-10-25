@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdw013.h {
 	import getShared = nts.uk.ui.windows.getShared;
+	import setShared = nts.uk.ui.windows.setShared;
 	import block = nts.uk.ui.block;
 	import info = nts.uk.ui.dialog.info;
 	import error = nts.uk.ui.dialog.error;
@@ -10,7 +11,8 @@ module nts.uk.at.view.kdw013.h {
 	export module viewmodel {
 		const paths: any = {
 			start: "screen/at/kdw013/h/start",
-			save: "screen/at/kdw013/h/save"
+			save: "screen/at/kdw013/h/save",
+			getWorkPlaceId: "screen/at/kdw013/h/getWorkPlaceId"
 		}
 		export class ScreenModel {
 			itemId28: ItemValue;
@@ -177,6 +179,61 @@ module nts.uk.at.view.kdw013.h {
 				self.itemId211_213 = new StartEndTime({ itemId: 211, value: 20, valueType: 0, layoutCode: 'layoutCode 211' }, { itemId: 213, value: 30, valueType: 0, layoutCode: 'layoutCode 213' }, 10);
 
 			}
+			
+			openKdl001() {
+                var self = this;
+                setShared('kml001multiSelectMode', false);
+                setShared('kml001selectAbleCodeList', []);
+                setShared('kml001selectedCodeList', self.itemId29.value() ? [self.itemId29.value()]: []);
+                setShared('kml001isSelection', true);
+                setShared('kml001BaseDate', self.params.date);
+				ajax(paths.getWorkPlaceId, { employeeId: self.params.employeeId, date: self.params.date }).done(function(data: any) {
+					setShared('kml001WorkPlaceId', data ? data.employeeId: null);
+					nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml").onClosed(function () {
+	                    const kml001selectedCodeList = getShared("kml001selectedCodeList");
+							self.itemId29.value(kml001selectedCodeList[0]);
+							if(self.itemId29.value() && self.itemId28.value() != ''){
+								let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
+								if (workTime) {
+									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
+								} else {
+									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
+								}	
+							}else{
+								self.itemId29.itemSelectedDisplay('');
+							}
+	                    console.log(kml001selectedCodeList);
+	                });
+				}).fail(function(res: any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
+            }
+
+			openKdl002() {
+                var self = this;
+	            setShared('KDL002_Multiple',false);
+	           	setShared('KDL002_AllItemObj',[]);
+	            setShared('kdl002isSelection',true);
+	            setShared('KDL002_SelectedItemId',self.itemId29.value() ? [self.itemId29.value()]: []);
+	            setShared('KDL002_isShowNoSelectRow', false);
+	            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
+	                var lst = getShared('KDL002_SelectedNewItem');
+						self.itemId28.value(lst[0]);
+						if(self.itemId28.value() && self.itemId28.value() != ''){
+							let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
+							if (workType){
+								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
+							} else {
+								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+							}
+						}else{
+							self.itemId28.itemSelectedDisplay('');
+						}
+	                console.log(lst);
+	            });
+            }
 
 			registration() {
 				let self = this;

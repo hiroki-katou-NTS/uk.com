@@ -10,8 +10,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.IntegrationOfDailyCommand;
@@ -41,6 +44,9 @@ public class KDW013BCHWebService {
 
 	@Inject
 	private SelectWorkItem selectWorkItem;
+	
+	@Inject
+	private ScWorkplaceAdapter workplaceAdapter;
 
 	
 	/**
@@ -78,6 +84,12 @@ public class KDW013BCHWebService {
 	public AttendanceItemMasterInformationDto startH(ParamH param) {
 		return getWorkDataMasterInformation.getAttendanceItemMasterInformation(param.itemIds);
 	}
+	
+	@POST
+	@Path("h/getWorkPlaceId")
+	public WorkPlaceId getWorkPlaceId(EmployeeIdDate param) {
+		return workplaceAdapter.findWorkplaceById(param.employeeId, param.date).map(c-> new WorkPlaceId(c.getWorkplaceId())).orElse(null);
+	}
 
 	@POST
 	@Path("h/save")
@@ -95,4 +107,18 @@ public class KDW013BCHWebService {
 class ParamH {
 	//勤怠項目リスト => List<勤怠項目ID>
 	public List<Integer> itemIds;
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+class WorkPlaceId {
+	public String workPlaceId;
+}
+
+@NoArgsConstructor
+@Data
+class EmployeeIdDate {
+	public String employeeId;
+	public GeneralDate date;
 }
