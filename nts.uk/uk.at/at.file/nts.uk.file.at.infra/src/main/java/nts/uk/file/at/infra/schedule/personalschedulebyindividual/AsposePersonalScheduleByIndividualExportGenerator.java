@@ -219,8 +219,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     private void printCalender(Cells cells, int rowCount, int col,
                                String l1P1, String l1P2, String l2P1, String l2P2, String l3P1, String l3P2, Map<Integer, String> holidayMap, int colNO, Integer holidayClass, DateInformation dateInformation) {
-        int secondLieOfCalender = rowCount + 2;
-        int thirdLieOfCalender = rowCount + 4;
+        int secondLieOfCalender = rowCount + 1;
+        int thirdLieOfCalender = rowCount + 2;
         String divider = getText("KSU002_67");
         if (l1P1 == null) l1P1 = "";
         if (l1P2 == null) l1P2 = "";
@@ -230,31 +230,36 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         List<Cell> cellsClass = new ArrayList<>();
         if (!holidayMap.containsKey(colNO)) {
             cells.get(rowCount, col).setValue(l1P1 + "   " + l1P2);
-            cells.get(secondLieOfCalender, col).setValue(l2P1 + " " + l2P2);
+            cells.get(secondLieOfCalender, col).setValue(l2P1);
+            cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
             if (l3P1 != null && l3P2 != null) {
                 cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
             }
             if (holidayClass != null) {
                 cellsClass.addAll(
-                        Arrays.asList(cells.get(secondLieOfCalender, col), cells.get(thirdLieOfCalender, col))
+                        Arrays.asList(cells.get(secondLieOfCalender, col), cells.get(secondLieOfCalender, col + 3), cells.get(thirdLieOfCalender, col))
                 );
                 setHolidayClassColor(cellsClass, holidayClass);
             }
         } else {
             cells.get(rowCount, col).setValue(l1P1);
-            cells.get(secondLieOfCalender, col).setValue(holidayMap.get(col));
+            cells.get(secondLieOfCalender, col).setValue(l2P1);
             Cell cell = cells.get(secondLieOfCalender, col);
+            setTextColorRed(cell);
+            cell = cells.get(secondLieOfCalender, col + 3);
             setTextColorRed(cell);
         }
         Cell cell = cells.get(rowCount, col);
-        if (dateInformation.isSpecificDay()) {
-            setBgColor(Color.fromArgb(250, 230, 180), cell);
-        } else if (dateInformation.isHoliday() || dateInformation.getDayOfWeek().value == DayOfWeek.SUNDAY.value) {
-            setBgColor(Color.fromArgb(250, 200, 250), cell);
-        } else if (dateInformation.getDayOfWeek().value == DayOfWeek.SATURDAY.value) {
-            setBgColor(Color.fromArgb(204, 236, 255), cell);
-        } else {
-            setBgColor(Color.fromArgb(242, 242, 242), cell);
+        if (dateInformation != null) {
+            if (dateInformation.isSpecificDay()) {
+                setBgColor(Color.fromArgb(250, 230, 180), cell);
+            } else if (dateInformation.isHoliday() || dateInformation.getDayOfWeek().value == DayOfWeek.SUNDAY.value) {
+                setBgColor(Color.fromArgb(250, 200, 250), cell);
+            } else if (dateInformation.getDayOfWeek().value == DayOfWeek.SATURDAY.value) {
+                setBgColor(Color.fromArgb(204, 236, 255), cell);
+            } else {
+                setBgColor(Color.fromArgb(242, 242, 242), cell);
+            }
         }
     }
 
