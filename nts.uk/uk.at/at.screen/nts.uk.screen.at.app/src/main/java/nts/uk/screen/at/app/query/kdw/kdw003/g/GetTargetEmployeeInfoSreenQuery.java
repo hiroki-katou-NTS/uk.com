@@ -27,7 +27,7 @@ public class GetTargetEmployeeInfoSreenQuery {
 	public List<EmployeeInfoDto> get(List<String> employeeIds, GeneralDate baseDate){
 		
 		EmployeeInformationQueryDtoImport param = new EmployeeInformationQueryDtoImport(
-				new ArrayList<>(employeeIds), baseDate, false, false, false, false,	false, false);
+				new ArrayList<>(employeeIds), baseDate, true, false, false, false, false, false);
 		
 		//1.call <<Public>> 社員の情報を取得する
 		List<EmployeeInformationImport> listEmpInfo = employeeInformationAdapter.getEmployeeInfo(param);
