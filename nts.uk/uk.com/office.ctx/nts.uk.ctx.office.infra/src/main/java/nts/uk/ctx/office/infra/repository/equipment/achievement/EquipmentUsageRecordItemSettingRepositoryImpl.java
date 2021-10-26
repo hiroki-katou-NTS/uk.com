@@ -67,10 +67,11 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 	}
 
 	@Override
-	public void deleteAll(String cid, List<EquipmentItemNo> itemNos) {
-		List<OfimtEquipmentDayItemPK> pkList = itemNos.stream()
-				.map(data -> new OfimtEquipmentDayItemPK(cid, Integer.valueOf(data.v()))).collect(Collectors.toList());
-		this.commandProxy().removeAll(OfimtEquipmentDayItem.class, pkList);
+	public void deleteAll(String cid) {
+		List<OfimtEquipmentDayItem> entities = this.queryProxy()
+				.query(SELECT_BY_CID, OfimtEquipmentDayItem.class).setParameter("cid", cid)
+				.getList();
+		this.commandProxy().removeAll(entities);
 		this.getEntityManager().flush();
 	}
 
@@ -95,8 +96,7 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 
 	@Override
 	public void insertAllAfterDeleteAll(String cid, List<EquipmentUsageRecordItemSetting> domains) {
-		this.deleteAll(cid,
-				domains.stream().map(EquipmentUsageRecordItemSetting::getItemNo).collect(Collectors.toList()));
+		this.deleteAll(cid);
 		this.insertAll(domains);
 	}
 
