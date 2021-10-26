@@ -78,9 +78,7 @@ module nts.uk.at.view.kdw003.cg {
         constructor() {
             super();
             const self = this;
-            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(true);
-            self.selectedItem = ko.observable(null);           
+            let first: TaskModel = new TaskModel('', getText('KDW003_143'));
 
             let ccg001ComponentOption: any = {
                 /** Common properties */
@@ -96,7 +94,9 @@ module nts.uk.at.view.kdw003.cg {
 
                 /** Required parameter */
                 baseDate: moment().toISOString(), // 基準日
-                periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                // periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                periodStartDate: moment.utc(getShared("dataShareKdw003g").baseDate, "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                
                 periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
                 // dateRangePickerValue: self.dateValue,
                 inService: true, // 在職区分
@@ -127,8 +127,8 @@ module nts.uk.at.view.kdw003.cg {
                             id: item.employeeId,
                             code: item.employeeCode,
                             businessName: item.employeeName,
-                            workplaceName: data.affiliationName,
-                            workplaceId: data.workplaceId,
+                            workplaceName: item.affiliationName,
+                            workplaceId: item.affiliationId,
                             depName: '',
                             isAlreadySetting: true
                         }
@@ -168,8 +168,14 @@ module nts.uk.at.view.kdw003.cg {
                 let listTaskFrame2 = _.filter(self.taskListFrame2(), task => { return (date <= task.endDate && date >= task.startDate) });
                 let listTaskFrame3 = _.filter(self.taskListFrame3(), task => { return (date <= task.endDate && date >= task.startDate) });
                 let listTaskFrame4 = _.filter(self.taskListFrame4(), task => { return (date <= task.endDate && date >= task.startDate) });
-                let listTaskFrame5 = _.filter(self.taskListFrame5(), task => { return (date <= task.endDate && date >= task.startDate) });                
-                
+                let listTaskFrame5 = _.filter(self.taskListFrame5(), task => { return (date <= task.endDate && date >= task.startDate) });   
+
+                listTaskFrame1.unshift(first);
+                listTaskFrame2.unshift(first);
+                listTaskFrame3.unshift(first);
+                listTaskFrame4.unshift(first);
+                listTaskFrame5.unshift(first);
+
                 self.listTaskFrame1(listTaskFrame1);
                 self.listTaskFrame2(listTaskFrame2);
                 self.listTaskFrame3(listTaskFrame3);
@@ -407,11 +413,11 @@ module nts.uk.at.view.kdw003.cg {
             command.startDate = moment(self.startDate()).format("YYYY/MM/DD");
             command.endDate = moment(self.endDate()).format("YYYY/MM/DD");
             command.lstTask = [
-                self.selectedTaskCode1(), 
-                self.selectedTaskCode2(), 
-                self.selectedTaskCode3(), 
-                self.selectedTaskCode4(), 
-                self.selectedTaskCode5()
+                self.selectedTaskCode1() === '' ? null : self.selectedTaskCode1(), 
+                self.selectedTaskCode2() === '' ? null : self.selectedTaskCode2(), 
+                self.selectedTaskCode3() === '' ? null : self.selectedTaskCode3(), 
+                self.selectedTaskCode4() === '' ? null : self.selectedTaskCode4(), 
+                self.selectedTaskCode5() === '' ? null : self.selectedTaskCode5()
             ]
             self.$blockui("invisible");
             
@@ -439,11 +445,11 @@ module nts.uk.at.view.kdw003.cg {
             command.endDate = moment(self.endDate()).format("YYYY/MM/DD");
             command.oldStartDate =  moment(self.startDatePeriod()).format("YYYY/MM/DD");
             command.lstTask = [
-                self.selectedTaskCode1(), 
-                self.selectedTaskCode2(), 
-                self.selectedTaskCode3(), 
-                self.selectedTaskCode4(), 
-                self.selectedTaskCode5()
+                self.selectedTaskCode1() === '' ? null : self.selectedTaskCode1(), 
+                self.selectedTaskCode2() === '' ? null : self.selectedTaskCode2(), 
+                self.selectedTaskCode3() === '' ? null : self.selectedTaskCode3(), 
+                self.selectedTaskCode4() === '' ? null : self.selectedTaskCode4(), 
+                self.selectedTaskCode5() === '' ? null : self.selectedTaskCode5()
             ]
             self.$blockui("invisible");
             self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
