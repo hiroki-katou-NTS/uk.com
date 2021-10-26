@@ -43,8 +43,8 @@ public class WorkInfoOfDailyAttendanceCommand {
 				EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
 				EnumAdaptor.valueOf(this.goStraightAtr, NotUseAttribute.class),
 				EnumAdaptor.valueOf(this.backStraightAtr, NotUseAttribute.class),
-				EnumAdaptor.valueOf(this.dayOfWeek, DayOfWeek.class), this.scheduleTimeSheets.stream()
-						.map(st -> ScheduleTimeSheetCommand.toDomain(st)).collect(Collectors.toList()),
-				Optional.ofNullable(this.numberDaySuspension.toDomain()));
+				EnumAdaptor.valueOf(this.dayOfWeek, DayOfWeek.class), 
+				this.scheduleTimeSheets.stream().map(st -> ScheduleTimeSheetCommand.toDomain(st)).collect(Collectors.toList()),
+				Optional.ofNullable(this.numberDaySuspension == null ? null : this.numberDaySuspension.toDomain()));
 	}
 }
