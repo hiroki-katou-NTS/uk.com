@@ -242,9 +242,18 @@ export class Ccg008AComponent extends Vue {
             }
         }
         //setRemainAlternationNoDay
-        if (item.remainAlternationNoDay || item.remainAlternationNoDay === 0) {
-            results.push({name:'代休残数', value: item.remainAlternationNoDay, prefix: 'KTG029_60'});
+        if (item.vacationSetting.substituteTimeManage) {
+            let timeDisp = vm.$dt.timedr(item.remainAlternationNoDay);
+            if (timeDisp.startsWith('0')) {
+                results.push({name:'代休残数', value: timeDisp.substr(1, timeDisp.length)});
+            } else {
+                results.push({name:'代休残数', value: timeDisp});
+            }
+        } else {
+            results.push({name:'代休残数', value: vm.$i18n('CCGS08_36', [item.remainAlternationDay.toString()])});
         }
+        // if (item.remainAlternationNoDay || item.remainAlternationNoDay === 0) {
+        // }
       
         if (item.remainsLeft || item.remainsLeft === 0) {
             results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});

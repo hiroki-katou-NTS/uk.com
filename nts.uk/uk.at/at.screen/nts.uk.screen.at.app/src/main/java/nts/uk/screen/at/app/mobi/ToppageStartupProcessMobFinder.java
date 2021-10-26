@@ -60,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.NumberConsecutiveVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -627,12 +628,13 @@ public class ToppageStartupProcessMobFinder {
 			        // アルゴリズム「18.代休残数表示」を実行する_Thực hiện thuật toán"18.Hiển thị nghỉ
 			        // bù"
 			        // Xử lý 18
-			        Double remain = BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
+			        NumberConsecutiveVacation numberConsecutiveVacation = BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
 			                requireM11Imp,
 			                new CacheCarrier(),
 			                employeeId,
-			                systemDate).getDays().v();
-			        dataKTG029.setRemainAlternationNoDay(remain != null ? remain : 0.0);
+			                systemDate);
+			        dataKTG029.setRemainAlternationDay(numberConsecutiveVacation.getDays() != null ? numberConsecutiveVacation.getDays().v() : 0.0);
+			        dataKTG029.setRemainAlternationNoDay(numberConsecutiveVacation.getRemainTime() != null ? numberConsecutiveVacation.getRemainTime().v() : 0);
 			    }
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMNANT_NUMBER
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {

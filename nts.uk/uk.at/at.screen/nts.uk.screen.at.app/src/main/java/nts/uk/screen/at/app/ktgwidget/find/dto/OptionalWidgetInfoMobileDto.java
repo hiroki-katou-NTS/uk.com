@@ -63,8 +63,11 @@ public class OptionalWidgetInfoMobileDto {
 	/** 16 Reserved Years Remain Number 積立年休残数 */
 	private RemainingNumber reservedYearsRemainNo;
 	
-	/** 18 Remain Alternation Number 代休残数 */
-	private Double remainAlternationNoDay;
+	/** 18 Remain Alternation Number 代休の残時間 */
+	private int remainAlternationNoDay;
+	
+	/** 18 Remain Alternation Number 代休の残日残数 */
+	private Double remainAlternationDay;
 	
 	/** 19 RemainsLeft 振休残数 */
 	private Double remainsLeft;
