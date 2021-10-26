@@ -43,22 +43,6 @@ public class SendTimeRecordSettingServiceTest {
 	public void setUp() throws Exception {
 	}
 
-	/*
-	 * テストしたい内容
-	 * 
-	 * →設定を送信しない
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →設定がない
-	 */
-	@Test
-	public void testSendEmpty() {
-
-		Optional<SendTimeRecordSetting> actual = SendTimeRecordSettingService.send(require, new EmpInfoTerminalCode("1"),
-				new ContractCode("1"));
-		assertThat(actual).isEqualTo(Optional.empty());
-	}
 
 	/*
 	 * テストしたい内容

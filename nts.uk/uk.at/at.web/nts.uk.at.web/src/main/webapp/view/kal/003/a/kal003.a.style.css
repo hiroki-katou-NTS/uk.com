@@ -72,7 +72,7 @@ div[class="tab-content-6"] {
 
 .flabel {
 	display: inline-block;
-	width: 190px;
+	width: 90px;
 }
 
 .ntsRadioBox .label {
@@ -170,4 +170,16 @@ button.nts-switch-button{
 #fixed-table2 thead, #fixed-table2 tbody tr {
     display:table;
     width:100%;
+}
+
+.switchbox-wrappers.radio-wrappers label:last-child input+span {
+	width: 75px;
+}
+
+.switchbox-wrappers.radio-wrappers label:first-child input+span {
+	width: 75px;
+}
+
+.setting-button {
+  width: 75px;
 }

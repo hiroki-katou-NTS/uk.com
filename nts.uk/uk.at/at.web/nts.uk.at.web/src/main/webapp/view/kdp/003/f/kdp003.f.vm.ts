@@ -76,7 +76,6 @@ module nts.uk.at.kdp003.f {
 			if (!params) {
 				vm.params = {} as any;
 			} else if (params) {
-				console.log(params);
 				
 				const { companyId, employee } = params as EmployeeModeParam;
 

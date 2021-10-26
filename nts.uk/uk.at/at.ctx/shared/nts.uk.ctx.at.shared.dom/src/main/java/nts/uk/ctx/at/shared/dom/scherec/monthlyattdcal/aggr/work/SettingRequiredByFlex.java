@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.FlexAggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -26,9 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.Insu
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryLaborDivisionService;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -49,7 +48,7 @@ public class SettingRequiredByFlex {
 	/** フレックス勤務所定労働時間取得 */
 	@Setter
 	@Getter
-	private Optional<GetFlexPredWorkTime> getFlexPredWorkTimeOpt;
+	private Optional<ComFlexMonthActCalSet> comFlexSetOpt;
 	/** フレックス不足の年休補填管理 */
 	@Setter
 	@Getter
@@ -76,7 +75,7 @@ public class SettingRequiredByFlex {
 	private AttendanceTimeMonth canNextCarryforwardTimeMonth;
 	/** 休出枠の役割 */
 	@Getter
-	private Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap;
+	private Map<Integer, WorkdayoffFrame> roleHolidayWorkFrameMap;
 
 	@Setter
 	@Getter
@@ -84,11 +83,11 @@ public class SettingRequiredByFlex {
 	/**
 	 * コンストラクタ
 	 */
-	public SettingRequiredByFlex(){
+	public SettingRequiredByFlex() {
 		
 		this.flexAggrSet = null;
 		this.monthlyAggrSetOfFlexOpt = Optional.empty();
-		this.getFlexPredWorkTimeOpt = Optional.empty();
+		this.comFlexSetOpt = Optional.empty();
 		this.insufficientFlexOpt = Optional.empty();
 		this.flexShortageLimitOpt = Optional.empty();
 		this.holidayAdditionMap = new HashMap<>();
@@ -162,14 +161,14 @@ public class SettingRequiredByFlex {
 		/** 当月かを確認する */
 		if(isCurrentMonth) {
 			/** ○「フレックス勤務所定労働時間取得」を取得する */
-			if (!this.getFlexPredWorkTimeOpt.isPresent()) {
+			if (!this.comFlexSetOpt.isPresent()) {
 				/** エラーログ書き込み */
 //				this.errorInfos.add(new MonthlyAggregationErrorInfo("016", new ErrMessageContent(TextResource.localize("Msg_1243"))));
 				return Optional.empty();
 			}
 			/** ○「フレックス勤務所定労働時間取得」を確認する */
-			int prescribedTime = this.getFlexPredWorkTimeOpt.map(c -> {
-				if (c.getReference() == ReferencePredTimeOfFlex.FROM_MASTER)
+			int prescribedTime = this.comFlexSetOpt.map(c -> {
+				if (c.isWithinTimeUsageAttr())
 					return workingTime.getSpecifiedSetting().v();
 
 				/** 当月の月別実績の勤怠時間を取得する */

@@ -30,6 +30,8 @@ public class EnterStampFromSmartPhoneService {
 	 * 
 	 * @param 契約コード
 	 *            contractCode
+	 * @param 会社ID
+	 *            cid
 	 * @param 社員ID
 	 *            employeeID
 	 * @param 打刻日時
@@ -44,7 +46,7 @@ public class EnterStampFromSmartPhoneService {
 	 *            ページNOとボタン位置NOから作成する打刻種類を判断する 社員の打刻データを作成する
 	 */
 
-	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeID,
+	public static TimeStampInputResult create(Require require, String cid, ContractCode contractCode, String employeeID,
 			GeneralDateTime stampDatetime, StampButton stampButton, Optional<GeoCoordinate> positionInfor,
 			RefectActualResult refActualResults) {
 		//	$打刻場所 = 打刻場所を求める#取得する(require,地理座標)
@@ -73,7 +75,7 @@ public class EnterStampFromSmartPhoneService {
 
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.SMART_PHONE);
 
-		return CreateStampDataForEmployeesService.create(require, contractCode, employeeID, Optional.ofNullable(null),
+		return CreateStampDataForEmployeesService.create(require, cid, contractCode, employeeID, Optional.ofNullable(null),
 				stampDatetime, relieve, buttonSettingOpt.get().getButtonType(), refActualResults,
 				positionInfor);
 

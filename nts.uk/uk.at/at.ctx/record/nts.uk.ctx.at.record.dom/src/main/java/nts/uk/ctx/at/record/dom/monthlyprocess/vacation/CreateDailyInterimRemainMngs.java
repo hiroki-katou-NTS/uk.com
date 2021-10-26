@@ -92,7 +92,7 @@ public class CreateDailyInterimRemainMngs {
 		return dailyRemains.entrySet().stream().map(c -> new DailyInterimRemainMngData(c.getKey(), c.getValue().getInterimAbsData(),
 																c.getValue().getRecAbsData(), c.getValue().getRecData(), c.getValue().getDayOffData(), c.getValue().getAnnualHolidayData(),
 																c.getValue().getResereData(), c.getValue().getBreakData(), c.getValue().getSpecialHolidayData(),
-																c.getValue().getChildCareData(),c.getValue().getCareData()))
+																c.getValue().getChildCareData(),c.getValue().getCareData(),c.getValue().getPublicHolidayData()))
 							.collect(Collectors.toList());
 	}
 

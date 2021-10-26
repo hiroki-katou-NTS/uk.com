@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
  * テナントを作る
  */
 public class CreateTenant {
-	
+
 	public static AtomTask create(
 			Require require,
 			String tenantCode,
@@ -19,7 +19,7 @@ public class CreateTenant {
 			GeneralDate tenantStartDate,
 			String administratorLoginId,
 			String administratorPassword) {
-		
+
 		if (require.existsTenant(tenantCode)) {
 			throw new BusinessException(
 					new RawErrorMessage("テナントコード " + tenantCode + " は既に存在します。"));
@@ -28,17 +28,16 @@ public class CreateTenant {
 		val tenantAuthentication = TenantAuthentication.create(tenantCode, tenantPassword, tenantStartDate);
 		
 		return AtomTask.of(() -> {
-			
+
 			require.add(tenantAuthentication);
-			
+
 		});
 	}
 
-	
 	public static interface Require {
-		
+
 		boolean existsTenant(String tenantCode);
-		
+
 		void add(TenantAuthentication tenantAuthentication);
 	}
 }

@@ -98,7 +98,7 @@ public class AggregateChildCareNurseWork {
 	 * エラーチェック
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param period 期間
+	 * @param aggregatePeriod 集計期間
 	 * @param criteriaDate 基準日
 	 * @param startUsed 月初時点の使用数
 	 * Require｛
@@ -112,7 +112,7 @@ public class AggregateChildCareNurseWork {
 	 * @return 子の看護介護エラー情報 ChildCareNurseErrors
 	 */
 	public List<ChildCareNurseErrors> errorInfo(
-			String companyId, String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			String companyId, String employeeId, DatePeriod aggregatePeriod, GeneralDate criteriaDate,
 			ChildCareNurseUsedNumber startUsed, NursingCategory nursingCategory, Require require) {
 
 		List<ChildCareNurseErrors> errors = new ArrayList<>();
@@ -146,7 +146,7 @@ public class AggregateChildCareNurseWork {
 			val currentDayProcess = provisionalDate.get(idx);
 
 			errors.addAll(checkOverUsedNumberWork.checkOverUsedNumberWork(
-					companyId, employeeId, period, criteriaDate, currentDayProcess, nursingCategory, require));
+					companyId, employeeId, aggregatePeriod, criteriaDate, currentDayProcess, nursingCategory, require));
 		}
 
 		// 「子の看護介護エラー情報」を返す
@@ -157,24 +157,24 @@ public class AggregateChildCareNurseWork {
 	 * 残数と使用数を計算する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param period 期間
+	 * @param aggregatePeriod 集計期間
 	 * @param criteriaDate 基準日
 	 * @param startUsed 月初時点の使用数
 	 * @return  子の看護介護集計期間WORK
 	 *
 	 */
-	public AggregateChildCareNurseWork calcRemainingUsed(String companyId, String employeeId, DatePeriod period,
+	public AggregateChildCareNurseWork calcRemainingUsed(String companyId, String employeeId, DatePeriod aggregatePeriod,
 			GeneralDate criteriaDate, ChildCareNurseUsedNumber startUsed, NursingCategory nursingCategory, Require require) {
 
 		// 使用数計算
-		ChildCareNurseCalcUsedNumber calcUsed = calcUsed(companyId, employeeId, period, criteriaDate, startUsed, require);
+		ChildCareNurseCalcUsedNumber calcUsed = calcUsed(companyId, employeeId, criteriaDate, startUsed, require);
 
 		// エラーチェック
-		List<ChildCareNurseErrors> errorInfo = errorInfo(companyId, employeeId, period, criteriaDate, startUsed, nursingCategory, require);
+		List<ChildCareNurseErrors> errorInfo = errorInfo(companyId, employeeId, aggregatePeriod, criteriaDate, startUsed, nursingCategory, require);
 
 		// 残数計算
 		ChildCareNurseRemainingNumberCalcWork calcRemaining =
-				calcRemaining(companyId, employeeId, period, criteriaDate, startUsed, calcUsed, nursingCategory, require);
+				calcRemaining(companyId, employeeId, aggregatePeriod, criteriaDate, startUsed, calcUsed, nursingCategory, require);
 
 		// 期間ごとの計算結果を作成
 		ChildCareNurseCalcResultWithinPeriod calcResultWithinPeriod =
@@ -199,20 +199,16 @@ public class AggregateChildCareNurseWork {
 	 * 残数計算
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param period 期間
+	 * @param aggregatePeriod 集計期間
 	 * @param criteriaDate 基準日
 	 * @param startUsed 月初時点の使用数
 	 * @param startDateUsed 起算日からの使用数
 	 * @return  子の看護介護計算残数
 	 */
 	public ChildCareNurseRemainingNumberCalcWork calcRemaining(String companyId, String employeeId,
-			DatePeriod period, GeneralDate criteriaDate, ChildCareNurseUsedNumber startUsed,
+			DatePeriod aggregatePeriod, GeneralDate criteriaDate, ChildCareNurseUsedNumber startUsed,
 			ChildCareNurseCalcUsedNumber startDateUsed, NursingCategory nursingCategory, Require require) {
 
-		// 集計期間の翌日を集計する時は、処理は行わない
-		if(this.getNextDayAfterPeriodEnd().isNextPeriodEndAtr()) {
-			return new ChildCareNurseRemainingNumberCalcWork();
-		}
 
 		// INPUT．Require．子の看護・介護休暇基本情報を取得する
 		Optional<NursingCareLeaveRemainingInfo> employeeInfo = require.employeeInfo(employeeId, nursingCategory);
@@ -222,21 +218,27 @@ public class AggregateChildCareNurseWork {
 
 		// 期間ごとの上限日数を求める
 		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
-		childCareNurseUpperLimitPeriod = employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
+		childCareNurseUpperLimitPeriod = employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId,
+				aggregatePeriod, criteriaDate, require);
 
+		
 		// 期間終了日時点の上限日数を確認
-		// ===上限日数期間．期間．開始日 <= パラメータ「期間．終了日」<= 上限日数期間．期間．終了日
-		ChildCareNurseUpperLimitPeriod upperLimitPeriod = childCareNurseUpperLimitPeriod.stream()
-																									.filter(x -> x.getPeriod().contains(period.end())).findFirst().get();
+		// ===上限日数期間．期間．開始日 <= 「子の看護介護休暇 集計期間WORK.期間．終了日」<= 上限日数期間．期間．終了日
+		Optional<ChildCareNurseUpperLimitPeriod> upperLimitPeriod = childCareNurseUpperLimitPeriod.stream()
+				.filter(x -> x.getPeriod().contains(this.period.end())).findFirst();
 
+		if(!upperLimitPeriod.isPresent()){
+			return new ChildCareNurseRemainingNumberCalcWork();
+		}
+		
 		// 上限日数を設定
 		// ===子の看護介護計算残数．上限日数←取得した「上限日数」
 		ChildCareNurseRemainingNumberCalcWork upperLimit = new ChildCareNurseRemainingNumberCalcWork();
-		upperLimit.setUpperLimit(upperLimitPeriod.getLimitDays());
+		upperLimit.setUpperLimit(upperLimitPeriod.get().getLimitDays());
 
 		// 子の看護介護残数を求める
 		ChildCareNurseRemainingNumber calcRemainingNumber = calcRemainingNumber(companyId,
-				employeeId, upperLimitPeriod.getLimitDays(), startDateUsed.getStartdateInfo(), criteriaDate, require);
+				employeeId, upperLimitPeriod.get().getLimitDays(), startDateUsed.getStartdateInfo(), criteriaDate, require);
 
 		// 残数を使い過ぎていないか
 		boolean checkRemainingNumber = calcRemainingNumber.checkOverUpperLimit();
@@ -248,7 +250,7 @@ public class AggregateChildCareNurseWork {
 		}else {
 			// 残数不足数を求める
 			ChildCareNurseRemainingNumber calcShortageRemainingNumber =
-					shortageRemainingNumber(companyId,employeeId, period, startUsed, criteriaDate, nursingCategory, require);
+					shortageRemainingNumber(companyId,employeeId, aggregatePeriod, startUsed, criteriaDate, nursingCategory, require);
 			upperLimit.setRemainNumber(calcShortageRemainingNumber);
 		}
 		// 「子の看護介護計算残数」を返す
@@ -272,21 +274,39 @@ public class AggregateChildCareNurseWork {
 		// =====日数←上限日数、時間←0
 		// ===減算する日と時間←日と時間
 		// =====日数←使用数.日数、時間←使用数.時間
-		DayAndTime subDayAndTime = DayAndTime.subDayAndTime(DayAndTime.of(new TimeOfUse(0), new DayNumberOfUse(limitDays.v().doubleValue())),
-																						DayAndTime.of(usedNumber.getUsedTimes().orElse(new TimeOfUse(0)), usedNumber.getUsedDay()),
-																						companyId,
-																						employeeId,
-																						criteriaDate,
-																						require);
+		return getRemainingNumber(
+				require, criteriaDate,companyId,employeeId,
+				DayAndTime.of(new TimeOfUse(0), new DayNumberOfUse(limitDays.v().doubleValue())),
+				DayAndTime.of(usedNumber.getUsedTimes().orElse(new TimeOfUse(0)), usedNumber.getUsedDay()));
+	}
+	
+	/**
+	 * 残数から使用数を引く
+	 * @param require
+	 * @param criteriaDate
+	 * @param companyId
+	 * @param employeeId
+	 * @param sender
+	 * @param used
+	 * @return
+	 */
+	private static ChildCareNurseRemainingNumber getRemainingNumber(
+			RequireM3 require, GeneralDate criteriaDate, 
+			String companyId, String employeeId,
+			DayAndTime sender, DayAndTime used){
+		
+		DayAndTime subDayAndTime = DayAndTime.subDayAndTime(sender,
+				used,
+				companyId,
+				employeeId,
+				criteriaDate,
+				require);
 
-		// 日と時間を残数に変換する
-		//	===	子の看護介護残数．日数　＝　日と時間．日
-		//	===	子の看護介護残数．時間　＝　日と時間．時間
 		DayNumberOfRemain remainDay = new DayNumberOfRemain(subDayAndTime.getDay().v());
 		TimeOfRemain remainTimes = new TimeOfRemain(subDayAndTime.getTime().v());
-
+		
 		ChildCareNurseRemainingNumber remUsedNumber =ChildCareNurseRemainingNumber.of(remainDay,Optional.of(remainTimes));
-
+		
 		return remUsedNumber;
 	}
 
@@ -294,7 +314,7 @@ public class AggregateChildCareNurseWork {
 	 * 残数不足数を求める
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param period 期間
+	 * @param aggregatePeriod 集計期間
 	 * @param startUsed 月初時点の使用数
 	 * @param criteriaDate 基準日
 	 * @param require
@@ -305,7 +325,7 @@ public class AggregateChildCareNurseWork {
 	 * @return 超過確認使用数、子の看護介護残数
 	 */
 	private ChildCareNurseRemainingNumber shortageRemainingNumber(String companyId,
-			String employeeId, DatePeriod period, ChildCareNurseUsedNumber startUsed,
+			String employeeId, DatePeriod aggregatePeriod, ChildCareNurseUsedNumber startUsed,
 			GeneralDate criteriaDate, NursingCategory nursingCategory, RequireM4 require){
 
 		ChildCareCheckOverUsedNumberWork checkOverUsedNumberWork;
@@ -335,18 +355,27 @@ public class AggregateChildCareNurseWork {
 			// 残数不足数を計算
 			//		===会社ID←パラメータ「会社ID」
 			//		===社員ID←パラメータ「社員ID」
-			//		===期間←パラメータ「期間」
+			//		===集計期間←パラメータ「集計期間」
+			//		===期間←「期間」
 			//		===基準日←パラメータ「基準日」
 			//		===暫定子の看護介護管理データ←処理中の「暫定子の看護介護管理データ」
 			//		===Require
 			ChildCareShortageRemainingNumberWork shortageRemainingNumber =
-					checkOverUsedNumberWork.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, currentDayProcess, nursingCategory, require);
+					checkOverUsedNumberWork.calcShortageRemainingNumber(companyId, employeeId, this.period, aggregatePeriod, criteriaDate,
+							currentDayProcess, nursingCategory, require);
 
 			// 計算結果を更新
 			// ===超過確認用使用数 +=　子の看護介護残数不足数． 使用可能数
 			// ===子の看護看護残数 ー=　子の看護介護残数不足数．残数不足数
 			checkOverUsedNumberWork.getUsedNumber().add(shortageRemainingNumber.getAvailable());
-			remainingNumber.sub(shortageRemainingNumber.getShortageRemNum());
+			
+			remainingNumber = getRemainingNumber(require, criteriaDate, companyId, employeeId, 
+					DayAndTime.of((new TimeOfUse(remainingNumber.getRemainTimes().orElse(new TimeOfRemain(0)).v())),
+									new DayNumberOfUse(remainingNumber.getRemainDay().v())),
+					DayAndTime.of(
+								new TimeOfUse(shortageRemainingNumber.getShortageRemNum().getRemainTimes().orElse(new TimeOfRemain(0)).v())
+								,new DayNumberOfUse(shortageRemainingNumber.getShortageRemNum().getRemainDay().v())
+					));
 		}
 
 		// 「子の看護介護残数」を返す
@@ -357,13 +386,12 @@ public class AggregateChildCareNurseWork {
 	 * 使用数計算
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param period 集計期間
 	 * @param criteriaDate 基準日
 	 * @param startUsed 月初時点の使用数
 	 * @return 子の看護介護計算使用数
 	 *
 	 */
-	public ChildCareNurseCalcUsedNumber calcUsed(String companyId, String employeeId, DatePeriod period, GeneralDate criteriaDate, ChildCareNurseUsedNumber startUsed, Require require) {
+	public ChildCareNurseCalcUsedNumber calcUsed(String companyId, String employeeId, GeneralDate criteriaDate, ChildCareNurseUsedNumber startUsed, Require require) {
 
 		// 集計期間の翌日を集計する時は、処理は行わない
 		if(this.getNextDayAfterPeriodEnd().isNextPeriodEndAtr()) {

@@ -1,0 +1,5 @@
+文言定義Excel→文言定義ToCSVを使ってCSV→CSVをCSVToInsertを使ってScriptにする
+
+
+
+\\192.168.50.4\share\500_新構想開発\08_基盤\60_ツール\文言定義ToCSV

@@ -19,7 +19,7 @@
 }
 
 .panel-frame.cell {
-	width: 111px;
+	width: 125px;
 	height: auto;
 	padding: 0px;
 	border: 1px inset gray;
@@ -27,11 +27,13 @@
 }
 
 .sub {
-	margin: 10px;
-	border-radius: 5px;
-	height: 28px;
-	text-align: center;
-	word-wrap: break-word;
+  margin: 10px;
+  border-radius: 5px;
+  height: 28px;
+  text-align: center;
+  word-wrap: break-word;
+  display: flex;
+  align-items: center;
 }
 
 .seal {
@@ -71,7 +73,7 @@
 }
 
 .tab-content-2 {
-	width: 690px;
+	width: 810px;
 }
 
 .search {
@@ -101,11 +103,11 @@
 
 .addSign {
 	background: url("../image/addSign1.png");
-	margin: -8px 10px;
-	border-radius: 5px;
-	height: 28px;
-	text-align: center;
-	padding-bottom: 5px;
+	height: 48px;
+  text-align: center;
+  width: 50px;
+  background-repeat: no-repeat;
+  margin-left: 15px;
 }
 
 .switch>button {

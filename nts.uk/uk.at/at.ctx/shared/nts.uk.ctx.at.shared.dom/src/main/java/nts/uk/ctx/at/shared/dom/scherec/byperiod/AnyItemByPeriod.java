@@ -74,8 +74,7 @@ public class AnyItemByPeriod implements Cloneable {
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets) {
 		
-		val result = AnyItemAggregateService.aggregateAnyItemPeriod(period, false, true, 
-				null, calcDailys, companySets, employeeSets, (optionalItem) -> null, (anyItemAggrResult) -> {});
+		val result = AnyItemAggregateService.aggregateAnyItemAnyPeriod(period, calcDailys, companySets, employeeSets);
 		
 		result.entrySet().forEach(r -> {
 

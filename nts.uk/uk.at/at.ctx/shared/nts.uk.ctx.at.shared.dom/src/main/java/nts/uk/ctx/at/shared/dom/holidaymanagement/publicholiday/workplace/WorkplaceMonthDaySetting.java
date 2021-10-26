@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
@@ -103,5 +106,23 @@ public class WorkplaceMonthDaySetting extends AggregateRoot{
 		} else if (!workplaceId.equals(other.workplaceId))
 			return false;
 		return true;
+	}
+	
+	
+	/**
+	 * 年月リストから職場月間日数設定を取得する
+	 * @param yearMonthList 年月リスト
+	 * @return List＜月間公休日数設定＞
+	 */
+	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSetting(List<YearMonth> yearMonthList){
+		List<PublicHolidayMonthSetting> publicHolidayMonthSetting = new ArrayList<>();
+		
+		for(YearMonth yearMonth : yearMonthList){
+			publicHolidayMonthSetting.addAll(this.publicHolidayMonthSettings
+					.stream()
+					.filter(x -> yearMonth.equals(x.createYearMonth()))
+					.collect(Collectors.toList())); 
+			}
+		return publicHolidayMonthSetting;
 	}
 }

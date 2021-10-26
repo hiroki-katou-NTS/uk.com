@@ -90,7 +90,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
 
 			// 「積立年休不足ダミーフラグ」をチェック
-			if (remainingData.isShortageRemain() == false){
+			if (remainingData.isDummyData() == false){
 
 				// 明細に積立年休付与残数データ．明細を追加
 				this.details.add(ReserveLeaveRemainingDetail.of(

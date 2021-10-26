@@ -235,6 +235,40 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	}
 	
 	/**
+	 * 出勤休日区分に対応する全ての所定時間を取得する
+	 * @param attr 出勤休日区分
+	 * @return 所定時間設定List(使用区分付き)
+	 */
+	public List<TimezoneUse> getTimeSheets(AttendanceHolidayAttr attr) {
+		
+		List<TimezoneUse> results = new ArrayList<>();
+		for (TimezoneUse timeSheet : this.timeSheets){
+			switch (attr) {
+			case MORNING:
+				TimeWithDayAttr amStart = timeSheet.getStart();
+				TimeWithDayAttr amEnd = this.AMEndTime;
+				if (amStart.lessThan(amEnd)){
+					results.add(new TimezoneUse(amStart, amEnd, timeSheet.getUseAtr(), timeSheet.getWorkNo()));
+				}
+				break;
+			case AFTERNOON:
+				TimeWithDayAttr pmStart = this.PMStartTime;
+				TimeWithDayAttr pmEnd = timeSheet.getEnd();
+				if (pmStart.lessThan(pmEnd)){
+					results.add(new TimezoneUse(pmStart, pmEnd, timeSheet.getUseAtr(), timeSheet.getWorkNo()));
+				}
+				break;
+			case FULL_TIME:
+			case HOLIDAY:
+				results.add(timeSheet);
+			default:
+				break;
+			}
+		}
+		return results;
+	}
+	
+	/**
 	 * 勤務NOに一致する所定時間帯を取得する
 	 * （出勤休日区分は参照しない為、午前休午後休の時間帯補正をしません）
 	 * @param workNo 勤務NO

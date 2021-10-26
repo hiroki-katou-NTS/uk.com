@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.daily;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -24,7 +22,6 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -96,15 +93,23 @@ public interface DailyRecordAdUpService {
 	 * @param lstPairRemove  List<Pair<employeeId, date>>
 	 * @param hasRemoveError has remove error
 	 */
+	public default void adUpEmpError(List<EmployeeDailyPerError> errors, List<Pair<String, GeneralDate>> lstPairRemove) {
+		adUpEmpError(errors, lstPairRemove, true);
+	}
 	public void adUpEmpError(List<EmployeeDailyPerError> errors, List<Pair<String, GeneralDate>> lstPairRemove,
 			boolean hasRemoveError);
 
 	public List<IntegrationOfDaily> adTimeAndAnyItemAdUp(List<IntegrationOfDaily> dailys);
 
-	public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily, Optional<IdentityProcessUseSet> iPUSOpt,
-			Optional<ApprovalProcessingUseSetting> approvalSet);
+	/**
+	 * エラーで本人確認と上司承認を解除する
+	 * @param domainDaily
+	 * @param iPUSOpt
+	 * @param approvalSet
+	 */
+	public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily);
 
-	default void addAllDomain(IntegrationOfDaily domain) {
+	public default void addAllDomain(IntegrationOfDaily domain) {
 
 		// ドメインモデル「日別実績の勤務情報」を更新する
 		adUpWorkInfo(
@@ -160,7 +165,7 @@ public interface DailyRecordAdUpService {
 		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
 		//adUpSupportTime(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTimeSheet());
 
-		adUpEmpError(domain.getEmployeeError(), new ArrayList<>(), false);
+		adUpEmpError(domain.getEmployeeError(),  Arrays.asList(Pair.of(domain.getEmployeeId(), domain.getYmd())));
 
 		adTimeAndAnyItemAdUp(Arrays.asList(domain));
 	}

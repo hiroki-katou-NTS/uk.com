@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -51,7 +52,7 @@ public class SCSubstituteLeaveAppReflectTest {
 
 		/// 勤務情報、出退勤を反映する
 		VacationAppReflectOption workInfoAttendanceReflect = new VacationAppReflectOption(NotUseAtr.USE, // 1日休暇の場合は出退勤を削除
-				NotUseAtr.USE, // 出退勤を反映する
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 就業時間帯を反映する
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE,
@@ -72,11 +73,14 @@ public class SCSubstituteLeaveAppReflectTest {
 		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("005");
 
 		//③ 出退勤の反映
-		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets())
+		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks())
 		.extracting(x -> x.getWorkNo().v(), // No
-				x -> x.getAttendance().v(), // 出勤 .時刻
-				x -> x.getLeaveWork().v()) // 退勤 .時刻
-		.contains(Tuple.tuple(1, 777, 999));
+				x -> x.getStampOfAttendance().get().getTimeDay().getTimeWithDay().get().v(), // 出勤 .時刻
+				x -> x.getStampOfAttendance().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(), // 出勤.時刻変更手段
+				x -> x.getStampOfLeave().get().getTimeDay().getTimeWithDay().get().v(), // 退勤 .時刻
+				x -> x.getStampOfLeave().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans())// 退勤.時刻変更手段
+		.contains(Tuple.tuple(1, 777, TimeChangeMeans.APPLICATION, 999,
+				TimeChangeMeans.APPLICATION));
 
 	}
 

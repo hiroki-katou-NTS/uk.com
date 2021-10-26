@@ -474,7 +474,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		registerNotCalcDomain(commandNew, commandOld, isUpdate);
 		List<IntegrationOfDaily> lastDt =  updateDomainAfterCalc(domainDailyNew);
 		
-		dailyRecordAdUpService.removeConfirmApproval(domainDailyNew, Optional.empty(), Optional.empty());
+		// エラーで本人確認と上司承認を解除する
+		dailyRecordAdUpService.removeConfirmApproval(domainDailyNew);
 		if (month != null && month.getEmployeeId() != null) {
 			// val error = x.getEmployeeMonthlyPerErrorList().get(0);
 			employeeMonthlyPerErrorRepository.removeAll(month.getEmployeeId(), new YearMonth(month.getYearMonth()),
@@ -639,7 +640,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		/** 補正で修正された可能性がある項目：　休憩、出退勤、応援時間帯のIDを取得する */
 		val itemChangeByCorrection = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME, 
-				DailyDomainGroup.SUPPORT_TIMESHEET, DailyDomainGroup.ATTENDACE_LEAVE);
+				DailyDomainGroup.SUPPORT_TIMESHEET, DailyDomainGroup.ATTENDACE_LEAVE, DailyDomainGroup.SHORT_TIME);
 		
 		converter.setData(command.toDomain());
 		val newValues = converter.convert(itemChangeByCorrection);
@@ -710,6 +711,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 		case DAILY_SUPPORT_TIMESHEET_NAME:
 			return isUpdate ? this.supportUpdateHandler : this.supportAddHandler;
+		case DAILY_SNAPSHOT_NAME:
+			return isUpdate ? this.snapshotUpdateHandler : this.snapshotAddHandler;
 		default:
 			return null;
 		}

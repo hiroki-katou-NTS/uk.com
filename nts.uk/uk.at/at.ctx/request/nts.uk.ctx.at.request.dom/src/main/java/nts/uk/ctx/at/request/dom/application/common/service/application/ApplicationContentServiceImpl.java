@@ -127,6 +127,11 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// 時間休暇申請データを作成
+			content = appContentDetailCMM045.createAnnualHolidayData(
+					app, 
+					approvalListDisplaySetting.getAppReasonDisAtr(), 
+					ScreenAtr.KDL030, 
+					companyID);
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 遅刻早退取消申請データを作成

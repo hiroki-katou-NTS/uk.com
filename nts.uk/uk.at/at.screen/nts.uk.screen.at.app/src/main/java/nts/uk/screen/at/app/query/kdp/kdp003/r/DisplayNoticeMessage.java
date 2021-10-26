@@ -11,10 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.portal.app.query.notice.MessageNoticeDto;
+import nts.uk.ctx.sys.portal.dom.notice.DestinationClassification;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNotice;
 import nts.uk.ctx.sys.portal.dom.notice.MessageNoticeRepository;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.EmployeeInfoImport;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.MessageNoticeAdapter;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.UniversalK.就業.KDP_打刻.KDP003_打刻入力(氏名選択).R:メッセージ表示.メニュー別OCD.打刻入力(共有)でお知らせメッセージを表示する
@@ -39,10 +41,17 @@ public class DisplayNoticeMessage {
 	 */
 	public List<MsgNoticeDto> displayNoticeMessage(DatePeriod period, List<String> wkpIds) {
 		List<MsgNoticeDto> msgNoticeDtos = new ArrayList<>();
-		List<EmployeeInfoImport> employeeInfos =  new ArrayList<>(); 
+		List<EmployeeInfoImport> employeeInfos =  new ArrayList<>();
+		String cid = AppContexts.user().companyId();
+		List<MessageNotice> messageNotices = new ArrayList<>();
 		
 		// 1. 職場IDListからメッセージを取得する
-		final List<MessageNotice> messageNotices = msgNoticeRepo.getMsgFromWpIdList(period, wkpIds);
+		List<MessageNotice> messageNotices1 = msgNoticeRepo.getMsgFromWpIdList(period, wkpIds, cid);
+		messageNotices1.stream().filter(f -> f.getTargetInformation().getDestination().value != 0).collect(Collectors.toList());
+		List<MessageNotice> messageNotices2 = msgNoticeRepo.getMsgInDestinationCategoryAndCid(period, DestinationClassification.ALL, cid);
+		
+		messageNotices.addAll(messageNotices2);
+		messageNotices.addAll(messageNotices1);
 		
 		//2. Not　お知らせメッセージ(List)　Is Empty
 		if (!messageNotices.isEmpty()) {

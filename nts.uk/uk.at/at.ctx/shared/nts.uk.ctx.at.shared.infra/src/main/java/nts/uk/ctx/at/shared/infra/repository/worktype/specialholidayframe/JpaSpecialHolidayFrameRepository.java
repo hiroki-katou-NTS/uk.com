@@ -30,7 +30,13 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 	private static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT a FROM KshmtSpecialHolidayFrame a"
 			+ "	WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId"
 			+ "		AND a.useAtr = :useAtr";
+	
+	private static final String FIND = "SELECT a FROM KshmtSpecialHolidayFrame a"
+			+ "	WHERE a.kshmtSpecialHolidayFramePK.companyId = :companyId"
+			+ "		AND a.useAtr = :useAtr"
+			+ "		AND a.timeMngAtr = :timeMngAtr";
 
+			
 	private static SpecialHolidayFrame toDomain(KshmtSpecialHolidayFrame entity) {
 		SpecialHolidayFrame domain = SpecialHolidayFrame.createSimpleFromJavaType(entity.kshmtSpecialHolidayFramePK.companyId,
 				entity.kshmtSpecialHolidayFramePK.specialHdFrameNo,
@@ -118,4 +124,18 @@ public class JpaSpecialHolidayFrameRepository extends JpaRepository implements S
 				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<SpecialHolidayFrame> findDataDisplay(String companyId, int useAtr, int timeMngAtr) {
+		return this.queryProxy().query(FIND, KshmtSpecialHolidayFrame.class)
+				.setParameter("companyId", companyId)
+				.setParameter("useAtr", useAtr)
+				.setParameter("timeMngAtr", timeMngAtr)
+				.getList().stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
+	}
+
+
+
 }

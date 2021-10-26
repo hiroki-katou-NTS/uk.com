@@ -11,7 +11,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.serialize.binary.SerializableWithOptional;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 
 /**
  * The Class ReferWorkRecord.
@@ -26,7 +26,7 @@ public class ReferWorkRecord extends DomainObject implements SerializableWithOpt
 	// 所定時間参照先
 	private Optional<ReferenceDestinationAbsenceWorkingHours> timeReferenceDestination;
 	// 会社一律の加算時間
-	private Optional<BreakdownTimeDay> additionTimeCompany;
+	private Optional<BreakDownTimeDay> additionTimeCompany;
 
 	private void writeObject(ObjectOutputStream stream){
 		writeObjectWithOptional(stream);
@@ -41,7 +41,7 @@ public class ReferWorkRecord extends DomainObject implements SerializableWithOpt
 	 * @param additionTimeCompany
 	 */
 	public ReferWorkRecord(ReferenceDestinationAbsenceWorkingHours timeReferenceDestination,
-			BreakdownTimeDay additionTimeCompany) {
+			BreakDownTimeDay additionTimeCompany) {
 		super();
 		this.timeReferenceDestination = Optional.of(timeReferenceDestination);
 		this.additionTimeCompany = Optional.of(additionTimeCompany);

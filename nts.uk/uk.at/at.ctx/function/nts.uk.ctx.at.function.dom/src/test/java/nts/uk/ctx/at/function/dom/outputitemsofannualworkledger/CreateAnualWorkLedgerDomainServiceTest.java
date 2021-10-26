@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DumData;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class CreateAnualWorkLedgerDomainServiceTest {
      */
     @Test
     public void testCreateAnualWorkLedgerFail_01() {
-        List<OutputItem> outputItems = DumData.outputItems;
+        List<OutputItemWorkLedger> outputItems = DumDataTest.outputItems;
         List<DailyOutputItemsAnnualWorkLedger> dailyoutputItems = DumData.dailyOutputItemList;
         OutputItemSettingCode code = new OutputItemSettingCode("code");
         OutputItemSettingName name = new OutputItemSettingName("name");
@@ -56,7 +57,7 @@ public class CreateAnualWorkLedgerDomainServiceTest {
      */
     @Test
     public void testCreateAnualWorkLedgerFail_02() {
-        List<OutputItem> outputItems = DumData.outputItems;
+        List<OutputItemWorkLedger> outputItems = DumDataTest.outputItems;
         List<DailyOutputItemsAnnualWorkLedger> dailyoutputItems = DumData.dailyOutputItemList;
 
         OutputItemSettingCode code = new OutputItemSettingCode("code");
@@ -83,7 +84,7 @@ public class CreateAnualWorkLedgerDomainServiceTest {
      */
     @Test
     public void testCreateAnualWorkLedgerSucess_03() {
-        List<OutputItem> outputItems = DumData.outputItems;
+        List<OutputItemWorkLedger> outputItems = DumDataTest.outputItems;
         List<DailyOutputItemsAnnualWorkLedger> dailyoutputItems = DumData.dailyOutputItemList;
         OutputItemSettingCode code = new OutputItemSettingCode("code");
         OutputItemSettingName name = new OutputItemSettingName("name");
@@ -116,7 +117,7 @@ public class CreateAnualWorkLedgerDomainServiceTest {
      */
     @Test
     public void testCreateAnualWorkLedgerSuccess_04() {
-        List<OutputItem> outputItems = DumData.outputItems;
+        List<OutputItemWorkLedger> outputItems = DumDataTest.outputItems;
         List<DailyOutputItemsAnnualWorkLedger> dailyoutputItems = DumData.dailyOutputItemList;
 
         OutputItemSettingCode code = new OutputItemSettingCode("code");

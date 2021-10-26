@@ -507,13 +507,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				} else {
 					result = ManageCalcStateAndResult.failCalc(record, attendanceItemConvertFactory);
 				}
-				
-				if(result.isCalc()) {
-					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
-				}
-				else {
-					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.No_Calculated);
-				}
+				result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 				returnList.add(result);
 			}
 			else {

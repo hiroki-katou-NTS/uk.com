@@ -17,6 +17,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -43,6 +49,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 	})
 public class KrcmtCalcSetFlex extends ContractUkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final JpaEntityMapper<KrcmtCalcSetFlex> MAPPER = new JpaEntityMapper<>(KrcmtCalcSetFlex.class);
     @Id
     @Basic(optional = false)
     @NotNull
@@ -71,6 +78,12 @@ public class KrcmtCalcSetFlex extends ContractUkJpaEntity implements Serializabl
         this.flexExcessLimitSet = flexExcessLimitSet;
     }
 
+	public static KrcmtCalcSetFlex toEntity(AutoCalFlexOvertimeSetting domain, String flexExcessTimeId) {
+		return new KrcmtCalcSetFlex(
+				flexExcessTimeId,
+				domain.getFlexOtTime().getCalAtr().value,
+				domain.getFlexOtTime().getUpLimitORtSet().value);
+	}
 
     @Override
     public int hashCode() {
@@ -96,6 +109,13 @@ public class KrcmtCalcSetFlex extends ContractUkJpaEntity implements Serializabl
     public String toString() {
         return "entities.KrcmtCalcSetFlex[ flexExcessTimeId=" + flexExcessTimeId + " ]";
     }
+
+	public AutoCalFlexOvertimeSetting toDomain() {
+		return new AutoCalFlexOvertimeSetting(
+				new AutoCalSetting(
+						EnumAdaptor.valueOf(this.flexExcessLimitSet, TimeLimitUpperLimitSetting.class),
+						EnumAdaptor.valueOf(this.flexExcessTimeCalAtr, AutoCalAtrOvertime.class)));
+	}
 
 	@Override
 	protected Object getKey() {

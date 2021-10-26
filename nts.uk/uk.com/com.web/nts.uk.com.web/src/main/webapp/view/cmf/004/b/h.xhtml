@@ -15,13 +15,13 @@
                 </div>
                 <div class="div-line">
                     <!--H3_2 復旧元ファイルラベル -->
-                    <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_171')}</div>
+                    <div class="div-column-1" data-bind="ntsFormLabel: {}" style="width: 100px">#{i18n.getText('CMF004_171')}</div>
                     <!--H3_3 復旧ファイル-->
                     <span class="limited-label" style="width:400px;" data-bind="text: $vm.recoverySourceFile" />
                 </div>
                 <div class="div-line">
                     <!--H3_4 コード名称ラベル-->
-                    <div class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_172')}</div>
+                    <div class="div-column-1" data-bind="ntsFormLabel: {}" style="width: 100px">#{i18n.getText('CMF004_172')}</div>
                     <!--H3_5 コード-->
                     <label data-bind="text: $vm.recoverySourceCode" />
                     <!--H3_6 保存セット名称-->
@@ -89,9 +89,9 @@
                 <div>
                     <div class="flex div-line">
                         <!--H11_1 復旧する期間設定-->
-                        <div id="H11_1" class="div-column-1" data-bind="ntsFormLabel: {}" style="margin-right: 10px">#{i18n.getText('CMF004_466')}</div>
+                        <div id="H11_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_466')}</div>
                         <!--H11_2 日次-->
-                        <label id="H11_2" class="flex valign-center" style="margin-right: 10px">#{i18n.getText('CMF004_467')}</label>
+                        <label id="H11_2" class="flex valign-center">#{i18n.getText('CMF004_467')}</label>
                         <div class="ntsControl">
                             <!--H11_2_1 日次期間入力-->
                             <div id="H11_2_1" class="valign-center" data-bind="ntsDateRangePicker: { 
@@ -102,9 +102,9 @@
                         </div>
                     </div>
                     <div class="flex div-line">
-                        <div class="div-column-1" style="margin-right: 10px"></div>
+                        <div class="div-column-1"></div>
                         <!--H11_3 月次-->
-                        <label id="H11_3" class="flex valign-center" style="margin-right: 10px">#{i18n.getText('CMF004_468')}</label>
+                        <label id="H11_3" class="flex valign-center">#{i18n.getText('CMF004_468')}</label>
                         <div class="ntsControl">
                             <!--H11_3_1 月次期間入力-->
                             <div id="H11_3_1" class="valign-center" data-bind="ntsDateRangePicker: { 
@@ -116,9 +116,9 @@
                         </div>
                     </div>
                     <div class="flex div-line">
-                        <div class="div-column-1" style="margin-right: 10px"></div>
+                        <div class="div-column-1"></div>
                         <!--H11_4 年次-->
-                        <label id="H11_4" class="flex valign-center" style="margin-right: 10px">#{i18n.getText('CMF004_469')}</label>
+                        <label id="H11_4" class="flex valign-center">#{i18n.getText('CMF004_469')}</label>
                         <div class="ntsControl">
                             <!--H11_4_1 年次期間入力-->
                             <div id="H11_4_1" class="valign-center" data-bind="ntsDateRangePicker: { 
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="div-line">
+                <div class="flex div-line">
                     <!--H8_1 復旧前に保存(ラベル)-->
                     <div id="H8_1" class="div-column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF004_471')}</div>
                     <!--E8_2 復旧前に保存-->

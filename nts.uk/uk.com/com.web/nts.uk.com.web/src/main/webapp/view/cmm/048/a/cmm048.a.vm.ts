@@ -6,7 +6,7 @@ module nts.uk.com.view.cmm048.a {
     find: "query/cmm048userinformation/find",
     updateEmployeeContact: "ctx/bs/employee/data/management/contact/update",
     updatePersonInformation: "ctx/bs/person/personal/information/update",
-    updateUserChange: "ctx/sys/auth/user/information/update"
+    changeOwnLoginPassword: "ctx/sys/gateway/login/password/userpassword/changeOwn"
   };
 
   const ID_AVATAR_CHANGE = 'avatar-change';
@@ -334,6 +334,16 @@ module nts.uk.com.view.cmm048.a {
           default: break;
         }
       });
+
+      if (vm.isUseOfProfile()) {
+        vm.selectedTab('tab-1');
+      } else if (vm.isUseOfPassword()) {
+        vm.selectedTab('tab-2');
+      } else if (vm.isUseOfNotice()) {
+        vm.selectedTab('tab-3');
+      } else {
+        vm.selectedTab('tab-4');
+      }
     }
 
     private init() {
@@ -352,6 +362,7 @@ module nts.uk.com.view.cmm048.a {
       //data binding
       vm.$blockui('grayout');
       vm.$ajax(API.find).then((data: UserInformationDto) => {
+        $('#master-content').css({ 'display': '' });
         //set code
         vm.companyId(data.employeeDataMngInfo.companyId);
         vm.employeeId(data.employeeDataMngInfo.employeeId);
@@ -374,6 +385,7 @@ module nts.uk.com.view.cmm048.a {
       })
         .fail((error: any) => {
           vm.$blockui('clear');
+          $('#master-content').css({ 'display': 'none' });
           if (error.messageId === "Msg_1775") {
             vm.$dialog.error(error).then(() => {
               vm.openDialogCmm049();
@@ -594,16 +606,16 @@ module nts.uk.com.view.cmm048.a {
             employeeContact: employeeContact,
             useOfProfile: vm.isUseOfProfile()
           });
-          const userChangeCommand = new UserChangeCommand({
-            userChange: userChange,
-            useOfPassword: vm.isUseOfPassword(),
-            useOfLanguage: vm.isUseOfLanguage(),
+          const changeOwnLoginPasswordCommand = new ChangeOwnLoginPasswordCommand({
+            currentPassword: vm.currentPassword(),
+            newPassword: vm.newPassword(),
+            confirmPassword: vm.confirmPassword(),
           });
           vm.$blockui('grayout');
           $.when(
             vm.$ajax(API.updateEmployeeContact, contactCommand),
             vm.$ajax(API.updatePersonInformation, personalCommand),
-            vm.$ajax(API.updateUserChange, userChangeCommand)
+            vm.$ajax(API.changeOwnLoginPassword, changeOwnLoginPasswordCommand)
           ).then(() => {
             vm.$blockui('clear');
             vm.$dialog.info({ messageId: 'Msg_15' });
@@ -804,23 +816,27 @@ module nts.uk.com.view.cmm048.a {
     }
   }
 
-  /**
-   * Command アカウント情報を登録する
+ /**
+   * Command ユーザーのログインパスワードを変更する
    */
-  class UserChangeCommand {
+  class ChangeOwnLoginPasswordCommand {
 
     /**
-     * ユーザを変更する
+     * 現行のパスワード
      */
-    userChange: UserCommand;
+    currentPassword: string;
 
-    //fix bug #113902
-    useOfPassword: boolean;
+    /**
+     * 新しいパスワード
+     */
+    newPassword: string;
 
-    //fix bug #113902
-    useOfLanguage: boolean;
+    /**
+     * 新しいパスワード（確認）
+     */
+    confirmPassword: string;
 
-    constructor(init?: Partial<UserChangeCommand>) {
+    constructor(init?: Partial<ChangeOwnLoginPasswordCommand>) {
       $.extend(this, init);
     }
   }

@@ -107,12 +107,26 @@ module nts.uk.at.view.kwr008.a {
             enableAuthority: KnockoutObservable<boolean> = ko.observable(false);
 
             selectedRestore: string = '';
+
+            startMonth: KnockoutObservable<any> = ko.observable(null);
             
             constructor() {
                 var self = this;
 
                 // dump
                 self.selectedEmployee = ko.observableArray([]);
+                self.periodDate = ko.computed(() => {
+                  if (self.printFormat() === 0) {
+                    return self.dateValue();
+                  } else {
+                    const startDate = self.fiscalYear() + self.startMonth();
+                    const endDate = moment.utc(startDate, "YYYYMM").add(11, 'M');
+                    return {
+                      startDate: startDate,
+                      endDate: endDate.format("YYYYMM")
+                    };
+                  }
+                })
                 // initial ccg options
                 self.setDefaultCcg001Option();
 
@@ -347,11 +361,11 @@ module nts.uk.at.view.kwr008.a {
                 self.retirement = ko.observable(false); // 退職区分
                 
                 self.systemType = ko.observable(2); //ok -
-                self.showClosure = ko.observable(false); // 就業締め日利用
-                self.showBaseDate = ko.observable(true); // 基準日利用
-                self.showAllClosure = ko.observable(false); // 全締め表示
-                self.showPeriod = ko.observable(false); // 対象期間利用
-                self.periodFormatYM = ko.observable(false); // 対象期間精度
+                self.showClosure = ko.observable(true); // 就業締め日利用
+                self.showBaseDate = ko.observable(false); // 基準日利用
+                self.showAllClosure = ko.observable(true); // 全締め表示
+                self.showPeriod = ko.observable(true); // 対象期間利用
+                self.periodFormatYM = ko.observable(true); // 対象期間精度
             }
 
             /**
@@ -383,11 +397,10 @@ module nts.uk.at.view.kwr008.a {
                     showAllClosure: self.showAllClosure(), // 全締め表示
                     showPeriod: self.showPeriod(), // 対象期間利用
                     periodFormatYM: self.periodFormatYM(), // 対象期間精度
+                    maxPeriodRange: "1", // 最長期間
 
                     /** Required parameter */
-                    baseDate: moment(self.baseDate()).format("YYYY-MM-DD"), // 基準日
-                    periodStartDate: periodStartDate, // 対象期間開始日
-                    periodEndDate: periodEndDate, // 対象期間終了日
+                    dateRangePickerValue: self.periodDate,
                     inService: self.inService(), // 在職区分
                     leaveOfAbsence: self.leaveOfAbsence(), // 休職区分
                     closed: self.closed(), // 休業区分
@@ -413,6 +426,14 @@ module nts.uk.at.view.kwr008.a {
                         self.selectedEmployee(data.listEmployee);
                         self.applyKCP005ContentSearch(data.listEmployee);
                         self.baseDate(moment(data.baseDate.toDateTime()));
+                        
+                        if (self.printFormat() === 0) {
+                          self.dateValue().startDate = moment(data.periodStart).format("YYYYMM");
+                          self.dateValue().endDate = moment(data.periodEnd).format("YYYYMM");
+                          self.dateValue.valueHasMutated();
+                        } else {
+                          self.fiscalYear(moment(data.periodStart).format("YYYY"));
+                        }
                     }
                 }
                 //$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
@@ -505,6 +526,8 @@ module nts.uk.at.view.kwr008.a {
                     }).always(() => {
                         block.clear();
                     });
+
+                service.getStartMonth().then(data => self.startMonth(data));
                 return dfd.promise();
             }
             public validate(): boolean {

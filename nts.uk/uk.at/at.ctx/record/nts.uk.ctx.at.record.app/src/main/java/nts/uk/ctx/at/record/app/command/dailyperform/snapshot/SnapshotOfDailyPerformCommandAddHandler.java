@@ -17,7 +17,7 @@ public class SnapshotOfDailyPerformCommandAddHandler extends CommandFacade<Snaps
 	@Override
 	protected void handle(CommandHandlerContext<SnapshotOfDailyPerformCommand> context) {
 		context.getCommand().getData().ifPresent(d -> {
-			repo.save(DailySnapshotWorkImport.from(context.getCommand().getEmployeeId(), context.getCommand().getWorkDate(), d));
+			repo.update(DailySnapshotWorkImport.from(context.getCommand().getEmployeeId(), context.getCommand().getWorkDate(), d));
 		});
 	}
 }

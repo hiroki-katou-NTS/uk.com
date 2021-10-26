@@ -44,12 +44,6 @@ public class SptmtMenuBar extends ContractUkJpaEntity implements Serializable {
 	@Column(name = "CODE")
 	public String code;
 	
-	@Column(name = "BACKGROUND_COLOR")
-	public String  backgroundColor;
-	
-	@Column(name = "TEXT_COLOR")
-	public String textColor;
-	
 	@Column(name = "DISPLAY_ORDER")
 	public int displayOrder;
 	
@@ -70,8 +64,7 @@ public class SptmtMenuBar extends ContractUkJpaEntity implements Serializable {
 	}
 
 	public SptmtMenuBar(CcgstMenuBarPK ccgstMenuBarPK, String menuBarName, int selectedAtr,
-			int system, int menuCls, String code, String backgroundColor, String textColor, int displayOrder,
-			List<SptmtTitleBar> titleMenus) {
+			int system, int menuCls, String code, int displayOrder, List<SptmtTitleBar> titleMenus) {
 		super();
 		this.ccgstMenuBarPK = ccgstMenuBarPK;
 		this.menuBarName = menuBarName;
@@ -79,8 +72,6 @@ public class SptmtMenuBar extends ContractUkJpaEntity implements Serializable {
 		this.system = system;
 		this.menuCls = menuCls;
 		this.code = code;
-		this.backgroundColor = backgroundColor;
-		this.textColor = textColor;
 		this.displayOrder = displayOrder;
 		this.titleMenus = titleMenus;
 	}

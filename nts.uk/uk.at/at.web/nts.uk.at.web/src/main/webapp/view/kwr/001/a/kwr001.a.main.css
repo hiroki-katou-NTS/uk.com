@@ -19,7 +19,8 @@
 
 .table1 {
 	width: 1200px;
-	margin-left: 5%;
+	margin-left: 100px;
+  margin-top: 20px;
 }
 
 .A10_19{
@@ -94,7 +95,7 @@ hr {
 }
 
 .td-left .panel.panel-frame {
-	width: 545px;
+	width: 517px;
 }
 
 .td-right .right .panel.panel-frame {
@@ -145,4 +146,9 @@ hr {
 
 .row .form-label {
 	width: 110px;
+}
+
+#A1_5 {
+  margin-left: 10px;
+  width: 50px;
 }

@@ -28,12 +28,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
@@ -46,7 +44,6 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 日別実績の所定外時間
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class ExcessOfStatutoryTimeOfDaily {
@@ -87,11 +84,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * 各時間の計算を指示するクラス
 	 * アルゴリズム：日別実績の所定外時間
 	 * @param recordReget 実績
-	 * @param calcMethod フレックス勤務の非勤務日の場合の計算方法
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param siftCode 就業時間帯コード
 	 * @param workTimeDailyAtr 勤務形態区分
 	 * @param eachCompanyTimeSet 会社別代休時間設定
@@ -103,11 +98,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(
 			ManageReGetClass recordReget,
-			CalcMethodOfNoWorkingDayForCalc calcMethod,
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			Optional<WorkTimeCode> siftCode,
 			Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
@@ -132,11 +125,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 		//残業時間
 		val overTime = calculationOverTime(
 				recordReget,
-				calcMethod,
 				workType,
 				flexCalcMethod,
 				vacationClass,
-				statutoryDivision,
 				siftCode,
 				flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting,beforeApplicationTime,
 				declareResult);
@@ -161,11 +152,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 	/**
 	 * 残業時間の計算
 	 * @param oneDay 実績
-	 * @param calcMethod フレックス勤務の非勤務日の場合の計算方法
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param siftCode 就業時間帯
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
@@ -179,11 +168,10 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	private static OverTimeOfDaily calculationOverTime(
 			ManageReGetClass oneDay,
-			CalcMethodOfNoWorkingDayForCalc calcMethod,
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
+			Optional<WorkTimeCode> siftCode,
 			AttendanceTime flexPreAppTime,
 			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
@@ -195,11 +183,9 @@ public class ExcessOfStatutoryTimeOfDaily {
 			if(oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
 				return OverTimeOfDaily.calculationTime(
 						oneDay,
-						calcMethod,
 						workType,
 						flexCalcMethod,
 						vacationClass,
-						statutoryDivision,
 						siftCode,
 						flexPreAppTime,
 						conditionItem,

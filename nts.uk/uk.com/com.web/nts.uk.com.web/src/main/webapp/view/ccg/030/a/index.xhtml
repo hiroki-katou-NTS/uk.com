@@ -94,21 +94,9 @@
 								</td>
 								<td></td>
 							</tr>
-							<tr data-bind="with: selectedFlowMenu">
-								<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CCG030_15')}</div></td>
-								<td>
-									<span id="">#{i18n.getText('CCG030_16')}</span>
-									<input id="inp_width" class="input-size" data-bind="ntsNumberEditor: { value: width, constraint: 'Width', required: true , immediate:true , name: '#[CCG030_23]'}" tabindex="11" />
-									<span>#{i18n.getText('CCG030_18')}</span>
-									<span style="margin-left: 30px;">#{i18n.getText('CCG030_17')}</span>
-									<input id="inp_height" class="input-size" data-bind="ntsNumberEditor: { value: height, constraint: 'Height', required: true , immediate: true , name: '#[CCG030_24]'}" tabindex="12" />
-									<span>#{i18n.getText('CCG030_18')}</span>
-								</td>
-								<td></td>
-							</tr>
 							<tr>
 								<td>
-									<button id="preview" data-bind="click : open030B_Dialog, enable: enablePreview" tabindex="13" style="margin-top: 25px;">#{i18n.getText('CCG030_4')}</button></td>
+									<button id="preview" data-bind="click : open030B_Dialog, enable: enablePreview" tabindex="13" style="margin-top: 10px;">#{i18n.getText('CCG030_4')}</button></td>
 								<td></td>
 								<td></td>
 							</tr>

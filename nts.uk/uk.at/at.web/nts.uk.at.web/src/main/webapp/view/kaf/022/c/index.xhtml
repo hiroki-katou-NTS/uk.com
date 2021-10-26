@@ -30,12 +30,12 @@
                      data-bind="click: deleteEmploymentSet,
                                 enable: screenMode() == 1" >#{i18n.getText('KAF022_275')}</button>
         </div>
-        <div id="contents-area" class="fixed-flex-layout">
+        <div id="contents-area" class="fixed-flex-layout" style="padding: 0">
             <div class="fixed-flex-layout-left">
                 <div id="empt-list-setting"/>
             </div>
             <div id="right-content" class="fixed-flex-layout-right">
-                <div class="control-group valign-center">
+                <div class="valign-center" style="margin-bottom: 5px">
                     <!--L4_1 単位情報-->
                     <div data-bind="ntsFormLabel: {required: false, text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Employment')])}"> </div>
                     <div style="margin-left: 30px;padding: 0 10px 0 8px; display: inline-block;">

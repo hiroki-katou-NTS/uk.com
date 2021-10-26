@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ReflectAppDestination;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.OthersReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.ReflectFlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.reflectbreak.ReflectApplicationTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TranferOvertimeCompensatory;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
@@ -71,6 +72,12 @@ public class AfterOtWorkAppReflect {
 		// 残業時間の反映
 		ReflectApplicationTime.process(overTimeApp.getApplicationTime().getApplicationTime(), dailyApp,
 				Optional.of(ReflectAppDestination.RECORD));
+		
+		//フレックス時間を反映する
+		if(overTimeApp.getApplicationTime().getFlexOverTime().isPresent()) {
+			ReflectFlexTime.reflectFlex(dailyApp, overTimeApp.getApplicationTime().getFlexOverTime().get());
+		}
+
 
 		// その他項目の反映
 		this.getOthersReflect().process(overTimeApp.getApplicationTime(), dailyApp);
