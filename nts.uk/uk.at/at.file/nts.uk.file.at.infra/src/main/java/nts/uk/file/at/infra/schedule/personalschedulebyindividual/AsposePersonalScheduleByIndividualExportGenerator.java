@@ -39,6 +39,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.HEAD;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -463,43 +464,24 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
             }
         }
-        int size = dataBuildList.size();
-        int nextLoop = 0;
-        if (size < 6) {
-            nextLoop = 6 - size;
-        }
-        if (size > 6 && size % 6 != 0) {
-            double totalPage = size * 1.0 / 6;
-            if (!isInteger(totalPage)) {
-                int decimal = (int) totalPage; //
-                double fractional = totalPage - decimal;
-                double nextLoopD = Double.parseDouble("0." + fractional);
-                nextLoop = (int) Math.round(nextLoopD * 6);
-            }
-        }
-        if (nextLoop > 0) {
-            int count = 0;
-            for (PersonalScheduleByIndividualFormat item : dataBuildList) {
-                if (count == nextLoop) {
-                    break;
+        int dataRemaining = Math.abs(dataBuildList.size() - (pageIndex <= 0 ? 6 : pageIndex * 6));
+        if (dataRemaining < 6) {
+            int col = 0;
+            while (dataRemaining > 0) {
+                for (Integer header : generateTableHeader(query.getStartDate())) {
+                    Cell cell = cells.get(rowCount, col);
+                    if (header == DayOfWeek.SUNDAY.value) {
+                        setBgColor(Color.fromArgb(250, 200, 250), cell);
+                    } else if (header == DayOfWeek.SATURDAY.value) {
+                        setBgColor(Color.fromArgb(204, 236, 255), cell);
+                    } else {
+                        setBgColor(Color.fromArgb(242, 242, 242), cell);
+                    }
+                    col += 5;
                 }
-                item = dataBuildList.get(0);
-                DateInformation dateInfo1 = item.getColn1Info();
-                DateInformation dateInfo2 = item.getColn2Info();
-                DateInformation dateInfo3 = item.getColn3Info();
-                DateInformation dateInfo4 = item.getColn4Info();
-                DateInformation dateInfo5 = item.getColn5Info();
-                DateInformation dateInfo6 = item.getColn6Info();
-                DateInformation dateInfo7 = item.getColn7Info();
-                setHeader(dateInfo1, cells.get(rowCount, 0));
-                setHeader(dateInfo2, cells.get(rowCount, 5));
-                setHeader(dateInfo3, cells.get(rowCount, 10));
-                setHeader(dateInfo4, cells.get(rowCount, 15));
-                setHeader(dateInfo5, cells.get(rowCount, 20));
-                setHeader(dateInfo6, cells.get(rowCount, 25));
-                setHeader(dateInfo7, cells.get(rowCount, 30));
-                count++;
                 rowCount += 5;
+                col = 0;
+                dataRemaining--;
             }
         }
         PageSetup pageSetup = wsSource.getPageSetup();
