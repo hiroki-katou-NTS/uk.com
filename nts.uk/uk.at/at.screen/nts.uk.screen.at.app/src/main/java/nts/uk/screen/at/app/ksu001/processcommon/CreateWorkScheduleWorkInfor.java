@@ -11,9 +11,9 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -70,7 +70,7 @@ public class CreateWorkScheduleWorkInfor {
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 	
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(
-			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap) {		
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap) {		
 
 		String companyId = AppContexts.user().companyId();
 		List<WorkInfoOfDailyAttendance>  listWorkInfo = new ArrayList<WorkInfoOfDailyAttendance>();
@@ -98,11 +98,11 @@ public class CreateWorkScheduleWorkInfor {
 		// step 5
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = new ArrayList<>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
-			ScheManaStatuTempo key = k;
+			EmployeeWorkingStatus key = k;
 			Optional<WorkSchedule> value = v;
 
 			// step 5.1
-			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
+			boolean needToWork = key.getWorkingStatus().needCreateWorkSchedule();
 			if (!value.isPresent()) {
 				// step 5.2
 				WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()

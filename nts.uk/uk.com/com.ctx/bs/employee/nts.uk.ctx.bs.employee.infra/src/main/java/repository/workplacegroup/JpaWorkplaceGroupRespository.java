@@ -12,6 +12,7 @@ import entity.workplacegroup.BsymtWorkplaceGroupPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType;
 
 /**
  * 職場グループRepository
@@ -168,6 +169,13 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 		return this.queryProxy().query(SELECT_BY_CID_ORDER, BsymtWorkplaceGroup.class)
 				.setParameter("CID", CID)
 				.getList(c -> c.toDomain());
+	}
+
+	@Override
+	public List<WorkplaceGroup> getWorkplaceGroupByCidAndFilterList(String cid,
+			List<WorkplaceGroupType> filterList) {
+		// TODO dev code
+		return null;
 	}
 
 }

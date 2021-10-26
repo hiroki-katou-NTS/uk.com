@@ -661,7 +661,7 @@ public class DailyPerformanceCorrectionProcessor {
 							value = NAME_EMPTY;
 						} else {
 							if (groupType != null) {
-								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
+								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value || groupType == TypeLink.WKP_GROUP.value) {
 //									Optional<CodeName> optCodeName = dataDialogWithTypeProcessor
 //											.getCodeNameWithId(groupType, data.getDate(), value);
 									val mapCodeNameAll = mapGetName.get(groupType).get(value);
@@ -1528,6 +1528,7 @@ public class DailyPerformanceCorrectionProcessor {
 		result.setComboItemReason(EnumCodeName.getReasonGoOut());
 		result.setComboItemCalcCompact(EnumCodeName.getCalcCompact());
 		result.setComboTimeLimit(EnumCodeName.getComboTimeLimit());
+		result.setComboNursingLicenseCls(EnumCodeName.getNursingLicenseCls());
 		result.setItemIds(lstAtdItemUnique);
 		return result;
 	}
@@ -1877,14 +1878,17 @@ public class DailyPerformanceCorrectionProcessor {
 			} else {
 				Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empTarget,
 						period.start());
-				if(!closurePeriodOpt.isPresent()) return null;
-				GeneralDate dateRefer = GeneralDate.ymd(closurePeriodOpt.get().getYearMonth().year(),
-						closurePeriodOpt.get().getYearMonth().month(),
-						closurePeriodOpt.get().getYearMonth().lastDateInMonth());
-				yearMonth = closurePeriodOpt.get().getYearMonth();
+				YearMonth ym = period.end().yearMonth();
+				if(closurePeriodOpt.isPresent()) {
+					ym = closurePeriodOpt.get().getYearMonth();
+				}
+				GeneralDate dateRefer = GeneralDate.ymd(ym.year(),
+						ym.month(),
+						ym.lastDateInMonth());
+				yearMonth = ym;
 				lstClosurePeriod.addAll(GetClosurePeriod
 						.fromYearMonth(requireService.createRequire(), new CacheCarrier(),
-								empTarget, dateRefer, closurePeriodOpt.get().getYearMonth()));
+								empTarget, dateRefer, ym));
 			}
 //			if(lstClosurePeriod.isEmpty()) return null;
 			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);;
@@ -1928,8 +1932,11 @@ public class DailyPerformanceCorrectionProcessor {
 			// エラーアラーム(error alarm)
 			Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empLogin,
 					period.start());
-			if(!closurePeriodOpt.isPresent()) return null;
-			result = DateRange.convertPeriod(closurePeriodOpt.get().getPeriod());
+			if(!closurePeriodOpt.isPresent()) {
+				result = DateRange.convertPeriod(period);
+			}else {
+				result = DateRange.convertPeriod(closurePeriodOpt.get().getPeriod());
+			}
 		}
 				
 		return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);

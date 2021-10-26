@@ -32,7 +32,11 @@ public enum TypeLink {
 	
 	WORK(15, "作業"),
 	
-	ADDITION(16, "加給");
+	ADDITION(16, "加給"),
+	
+	NURSE_LICENSE_CLS(17,"看護免許区分"),
+	
+	WKP_GROUP(18,"職場グループ");
 
 	/** The value. */
 	public int value;

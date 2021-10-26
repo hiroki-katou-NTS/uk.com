@@ -29,7 +29,7 @@
 	position: absolute;
 }
 
-#officeWorker{
+#officeWorker, #nursingManager{
 	margin-left: -50px;
 	display: inline-block;
 	vertical-align: bottom;

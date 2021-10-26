@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.shortworktime;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -72,4 +73,22 @@ public interface SWorkTimeHistItemRepository {
 	 * @return
 	 */
 	List<ShortWorkTimeHistoryItem> findWithSidDatePeriod(String companyId, List<String> employeeIds, DatePeriod period);
+	
+	/**
+	 * 社員を指定して年月日時点の履歴項目を取得する
+	 * @param sid 社員ID
+	 * @param baseDate 年月日
+	 * @return
+	 */
+	Optional<ShortWorkTimeHistoryItem> getShortWorkTimeHistoryItemBySidAndBaseDate(String sid, GeneralDate baseDate);
+	
+	/**
+	 * 社員IDリストを指定して年月日時点の履歴項目を取得する
+	 * @param sids 社員IDリスト
+	 * @param baseDate 年月日
+	 * @return
+	 */
+	List<ShortWorkTimeHistoryItem> getShortWorkTimeHistoryItemBySidsAndBaseDate(List<String> sids, GeneralDate baseDate);
+	
+	
 }

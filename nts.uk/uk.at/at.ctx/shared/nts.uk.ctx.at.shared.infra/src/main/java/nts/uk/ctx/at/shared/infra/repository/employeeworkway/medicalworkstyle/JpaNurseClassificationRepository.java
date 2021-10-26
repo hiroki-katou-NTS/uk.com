@@ -50,14 +50,15 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 	//[4] update(看護区分）
 	@Override
 	public void update(NurseClassification nurseClassification) {
-		String sqlQuery = "UPDATE KSCMT_NURSE_LICENSE SET NAME = ? , LICENSE_ATR = ?, IS_OFFICE_WORK = ?  WHERE CID = ? AND CD = ? ";
+		String sqlQuery = "UPDATE KSCMT_NURSE_LICENSE SET NAME = ? , LICENSE_ATR = ?, IS_OFFICE_WORK = ?, IS_NURSE_ADMINISTRATOR = ?  WHERE CID = ? AND CD = ? ";
 		try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(sqlQuery))) {
 			ps.setString(1, nurseClassification.getNurseClassifiName().v());
 			ps.setInt(2, nurseClassification.getLicense().value);
 			ps.setInt(3, nurseClassification.isOfficeWorker() ? 1 : 0);
+			ps.setInt(4, nurseClassification.isNursingManager() ? 1 : 0);
 
-			ps.setString(4, nurseClassification.getCompanyId().v());
-			ps.setString(5, nurseClassification.getNurseClassifiCode().v());
+			ps.setString(5, nurseClassification.getCompanyId().v());
+			ps.setString(6, nurseClassification.getNurseClassifiCode().v());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -74,16 +75,21 @@ public class JpaNurseClassificationRepository extends JpaRepository implements N
 
 	private NurseClassification toDomain(KscmtNurseLicense ent) {
 		return new NurseClassification(new CompanyId(ent.getKscmtNurseLicensePK().getCompanyId()),
-				new NurseClassifiCode(ent.getKscmtNurseLicensePK().getCode()), new NurseClassifiName(ent.getName()),
-				LicenseClassification.valueOf(ent.getLicenseAtr()), ent.getOfficeWork() == 1,
-				false);//TODO dev update entity
+				new NurseClassifiCode(ent.getKscmtNurseLicensePK().getCode()), 
+				new NurseClassifiName(ent.getName()),
+				LicenseClassification.valueOf(ent.getLicenseAtr()), 
+				ent.getOfficeWork() == 1,
+				ent.getNursingManager() == 1);
 	}
 	
 
 	private KscmtNurseLicense toEntity(NurseClassification domain) {
 		return new KscmtNurseLicense(
 				new KscmtNurseLicensePK(domain.getCompanyId().v(), domain.getNurseClassifiCode().v()),
-				domain.getNurseClassifiName().v(), domain.getLicense().value, domain.isOfficeWorker() ? 1 : 0);
+				domain.getNurseClassifiName().v(), 
+				domain.getLicense().value, 
+				domain.isOfficeWorker() ? 1 : 0,  
+				domain.isNursingManager() ? 1 : 0);
 	}
 
 }

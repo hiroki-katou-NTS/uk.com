@@ -151,6 +151,15 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 		}
 		
 	}
+
+	@Override
+	public void deleteByTenantCode(String tenantCode) {
+		List<KrcmtStampCard> entities = this.queryProxy().query(GET_ALL_BY_CONTRACT_CD, KrcmtStampCard.class)
+				.setParameter("contractCode", tenantCode).getList();
+		if (!entities.isEmpty())
+			this.commandProxy().removeAll(entities);
+		
+	}
 	
 	@Override
 	public void deleteBySid(String sid) {
@@ -449,5 +458,4 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 				.map(x -> toDomain(x))
 				.collect(Collectors.toList());
 	}
-
 }

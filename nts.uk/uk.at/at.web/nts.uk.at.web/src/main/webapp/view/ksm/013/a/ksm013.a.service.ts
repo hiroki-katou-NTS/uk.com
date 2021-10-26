@@ -7,7 +7,7 @@ module nts.uk.at.view.ksm013.a {
             update: "ctx/at/nurse/classification/update",
             remove: "ctx/at/nurse/classification/delete"
         }
-
+        // file webservice NurseClassificationWebService
         /**
         * get all Patt Calender
         */

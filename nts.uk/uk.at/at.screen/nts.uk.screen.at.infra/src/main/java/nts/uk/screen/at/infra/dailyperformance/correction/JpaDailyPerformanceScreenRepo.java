@@ -3,8 +3,6 @@
  */
 package nts.uk.screen.at.infra.dailyperformance.correction;
 
-import static java.util.stream.Collectors.*;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -254,6 +252,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_FIND_WORKPLACE_LOCATION_JDBC = "SELECT WK_LOCATION_CD, WK_LOCATION_NAME FROM KRCMT_WORK_LOCATION WHERE CONTRACT_CD = ?";
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE_JDBC = "SELECT CODE, NAME FROM BSYMT_EMPLOYMENT WHERE CID = ?";
+
+	private final static String SEL_ALL_WORKPLACEGROUP_JDBC = "SELECT w.CD, w.NAME, w.WKPGRP_ID FROM BSYMT_WORKPLACE_GROUP w WHERE w.CID = ?";
 
 	private final static String SEL_ALL_WORKPLACE_JDBC;
 
@@ -554,7 +554,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 				.append("SELECT w.WKP_CD, w.WKP_NAME, w.WKP_ID FROM BSYMT_WKP_INFO w ");
 		builderString.append("WHERE w.CID = ?");
 		SEL_ALL_WORKPLACE_JDBC = builderString.toString();
-
+		
 		builderString = new StringBuilder();
 		builderString.append("SELECT w FROM BsymtWorkplaceInfor w ");
 		builderString.append("WHERE w.pk.companyId = :cid ");
@@ -930,8 +930,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		String companyId = AppContexts.user().companyId();
 		List<KrcmtDailyAttendanceItem> entities = this.queryProxy()
 				.query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("lstItem", lstAttendanceItem).getList()
-			.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+				.setParameter("lstItem", lstAttendanceItem).getList();
 		return entities.stream().map(i -> {
 			return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
 					i.displayNumber, i.userCanSet == 1 ? true : false, i.nameLineFeedPosition, i.dailyAttendanceAtr,
@@ -2028,6 +2027,19 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	});
 	
 		return !results.isEmpty();
+	}
+
+	@Override
+	public List<CodeName> findWorkplaceGroup(String companyId) {
+		try (PreparedStatement statement = this.connection().prepareStatement(SEL_ALL_WORKPLACEGROUP_JDBC)) {
+			statement.setString(1, companyId);
+			return new NtsResultSet(statement.executeQuery()).getList(rs -> {
+				return new CodeName(rs.getString("CD"), rs.getString("NAME"), rs.getString("WKPGRP_ID"));
+			});
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

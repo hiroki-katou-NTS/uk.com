@@ -372,6 +372,72 @@ module nts.uk.ui.validation {
             return result;
         }
     }
+    
+    export class OutputCellValidator implements IValidator {
+        name: string;
+        constraint: any;
+        charType: nts.uk.text.CharType;
+        required: boolean;
+
+        constructor(name: string, primitiveValueName: string, option?: any) {
+            this.name = name;
+            this.constraint = getConstraint(primitiveValueName);
+            if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                this.constraint = {};
+            }
+            
+            this.charType = text.getCharType(primitiveValueName);
+            this.required = (!nts.uk.util.isNullOrUndefined(option.required) && option.required) || this.constraint.required;
+        }
+
+        validate(inputText: string, option?: any): ValidationResult {
+            var result = new ValidationResult();
+            if (util.isNullOrEmpty(inputText)) {
+                if (this.required !== undefined && this.required !== false) {
+                    result.fail(nts.uk.resource.getMessage('MsgB_1', [ this.name ]), 'MsgB_1');
+                    return result;
+                } 
+                
+                result.success(inputText);
+                return result;
+            }
+            
+            let validateResult;
+            if (!util.isNullOrUndefined(this.charType)) { 
+                if (this.charType.viewName === toBeResource.alphaNumeric) {
+                    inputText = text.toUpperCase(inputText);
+                }
+                
+                validateResult = this.charType.validate(inputText); 
+                if (!validateResult.isValid) {
+                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, 
+                                [ this.name, (!util.isNullOrUndefined(this.constraint.maxLength) 
+                                    ? this.charType.getViewLength(this.constraint.maxLength) : 9999) ]), validateResult.errorCode);
+                    return result;
+                }
+            } else {
+                validateResult = result;    
+            }
+            
+            if (this.constraint !== undefined && this.constraint !== null) {
+                if (this.constraint.maxLength !== undefined && text.countHalf(inputText) > this.constraint.maxLength) {
+                    let maxLength = this.constraint.maxLength;
+                    result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [ this.name, maxLength ]), validateResult.errorCode);
+                    return result;
+                }
+                
+                if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {  
+                    if (!text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                        result.fail(nts.uk.resource.getMessage('Msg_2300', [ this.name ]), 'Msg_2300');
+                        return result;
+                    }  
+                }
+            }
+            
+            result.success(inputText);
+            return result;
+        }
+    }
 
     export class NumberValidator implements IValidator {
         name: string;

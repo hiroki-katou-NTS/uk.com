@@ -434,6 +434,10 @@ module nts.uk.ui.koExtentions {
             if (data.constraint === "EmployeeCode") {
                 return new validation.EmployeeCodeValidator(name, { required: required });
             }
+            
+            if (data.constraint == "OutputCell") {
+                return new validation.OutputCellValidator(name, constraintName, { required: required });
+            }
 
             return new validation.StringValidator(name, constraintName, { required: required });
         }

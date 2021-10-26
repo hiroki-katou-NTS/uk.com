@@ -223,6 +223,42 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	}
 	
 	@Override
+	public Map<GeneralDate, List<AffWorkplaceHistory>> findByEmployees(String companyId, List<String> employeeIds, List<GeneralDate> listdate) {
+		Map<GeneralDate, List<AffWorkplaceHistory>> result = new HashMap<GeneralDate, List<AffWorkplaceHistory>>();
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			for (GeneralDate generalDate : listdate) {
+				result.put(generalDate, new ArrayList<>());
+			}
+			return result;
+		}
+
+		String query = "SELECT aw FROM BsymtAffiWorkplaceHist aw  WHERE aw.cid = :companyId AND aw.sid IN :employeeIds";
+		List<BsymtAffiWorkplaceHist> datatList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// Query.
+			datatList.addAll(this.queryProxy().query(query, BsymtAffiWorkplaceHist.class)
+					.setParameter("companyId", companyId)
+					.setParameter("employeeIds", subList)
+					.getList());
+		});
+		
+		for (GeneralDate date : listdate) {
+			List<BsymtAffiWorkplaceHist> list = datatList.stream().filter(c -> c.getStrDate().beforeOrEquals(date) && c.getEndDate().afterOrEquals(date)).collect(Collectors.toList());
+			// Group by his id.
+			Map<String, List<BsymtAffiWorkplaceHist>> resultMap = list.stream()
+					.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getHisId));
+
+			// Convert to domain.
+			List<AffWorkplaceHistory> data = resultMap.keySet().stream().map(key -> {
+				return this.toDomainTemp(resultMap.get(key));
+			}).collect(Collectors.toList());
+			result.put(date, data);
+		}
+
+		return result;
+	}
+	
+	@Override
 	public List<AffWorkplaceHistory> findByEmployeesWithPeriod(List<String> employeeIds, DatePeriod period) {
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();

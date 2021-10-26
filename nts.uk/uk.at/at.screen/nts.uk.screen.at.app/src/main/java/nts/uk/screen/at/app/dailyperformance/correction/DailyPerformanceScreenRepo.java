@@ -165,6 +165,8 @@ public interface DailyPerformanceScreenRepo {
 	
 	List<CodeName> findReason(String companyId);
 	
+	List<CodeName> findWorkplaceGroup(String companyId);
+	
 	ClosureEmploymentDto findByEmploymentCD(String companyID, String employmentCD);
 	
 	List<DailyRecEditSetDto> getDailyRecEditSet(List<String> listEmployeeId, DateRange dateRange);

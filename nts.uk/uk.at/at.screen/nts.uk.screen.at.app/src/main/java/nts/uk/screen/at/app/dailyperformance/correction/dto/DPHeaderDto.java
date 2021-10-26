@@ -151,6 +151,11 @@ public class DPHeaderDto {
 						String.valueOf(withChild) + "px", "", false, "ComboboxTimeLimit", false, false, "center-align", null);
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
+			}else if (item.getTypeGroup() == TypeLink.NURSE_LICENSE_CLS.value) {
+				DPHeaderDto dtoG = new DPHeaderDto("名称", "Name" + keyId, "number",
+						String.valueOf(withChild) + "px", "", false, "ComboboxNurseLicenseCLS", false, false, "center-align", null);
+				groups.add(dtoG);
+				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 			}
 			groups.get(0).setColor(dto.getColor());
 			groups.get(1).setColor(dto.getColor());

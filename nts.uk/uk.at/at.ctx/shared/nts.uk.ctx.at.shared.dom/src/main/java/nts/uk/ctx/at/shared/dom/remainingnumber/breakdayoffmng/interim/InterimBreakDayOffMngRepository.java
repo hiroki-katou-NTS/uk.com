@@ -163,4 +163,8 @@ public interface InterimBreakDayOffMngRepository {
 	
 	// [7] 削除する 暫定代休管理データ
 	void deleteDayoffWithDateList(String sid, List<GeneralDate> lstDate);
+	
+	List<InterimBreakMng> getBreakBySidDateList(String sid, List<GeneralDate> lstDate);
+	
+	List<InterimDayOffMng> getDayOffDateList(String sid, List<GeneralDate> lstDate);
 }

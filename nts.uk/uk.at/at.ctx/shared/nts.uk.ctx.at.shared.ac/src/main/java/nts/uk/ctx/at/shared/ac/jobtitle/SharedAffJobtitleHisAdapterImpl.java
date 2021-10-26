@@ -29,8 +29,12 @@ public class SharedAffJobtitleHisAdapterImpl implements SharedAffJobtitleHisAdap
 			return Optional.empty();
 		}
 		DatePeriod dateRange = new DatePeriod(employeeJobHis.get().getStartDate(), employeeJobHis.get().getEndDate());
-		SharedAffJobTitleHisImport affJobTitleSidImport = new SharedAffJobTitleHisImport(employeeJobHis.get().getEmployeeId(),
-				employeeJobHis.get().getJobTitleID(), dateRange, employeeJobHis.get().getJobTitleName());
+		SharedAffJobTitleHisImport affJobTitleSidImport = new SharedAffJobTitleHisImport(
+				employeeJobHis.get().getEmployeeId(),
+				employeeJobHis.get().getJobTitleID(), dateRange,
+				employeeJobHis.get().getJobTitleName(),
+				null//TODO dev add jobtileCode
+				);
 		return Optional.of(affJobTitleSidImport);
 	}
 
@@ -46,7 +50,9 @@ public class SharedAffJobtitleHisAdapterImpl implements SharedAffJobtitleHisAdap
 				export.getEmployeeId(),
 				export.getJobTitleID(), 
 				dateRange, 
-				export.getJobTitleName());
+				export.getJobTitleName(),
+				null//TODO dev add jobtileCode
+				);
 	}
 
 }

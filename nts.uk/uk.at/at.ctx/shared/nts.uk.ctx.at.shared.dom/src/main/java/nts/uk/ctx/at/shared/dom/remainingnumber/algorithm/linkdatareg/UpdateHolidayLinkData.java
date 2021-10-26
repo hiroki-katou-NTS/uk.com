@@ -28,6 +28,20 @@ public class UpdateHolidayLinkData {
 	public static AtomTask updateProcess(Require require, String sid, List<GeneralDate> lstDate,
 			List<InterimAbsMng> lstAbsMng, List<InterimRecMng> lstRecMng) {
 
+		// $紐付いている発生一覧
+		val lstInterimRecMng = getOccurTempDataFromAssoci(require, sid, lstDate).stream()
+						.filter(x -> lstRecMng.stream().noneMatch(y -> y.getYmd().equals(x.getYmd())))
+						.collect(Collectors.toList());
+
+		// $紐付いている消化一覧
+		val lstInterimAbsMng = getDigestTempDataFromAssoci(require, sid, lstDate).stream()
+						.filter(x -> lstAbsMng.stream().noneMatch(y -> y.getYmd().equals(x.getYmd())))
+						.collect(Collectors.toList());
+
+		lstRecMng.addAll(lstInterimRecMng);
+		lstAbsMng.addAll(lstInterimAbsMng);
+		
+		
 		// ＄逐次消化一覧
 		val lstDigest = lstAbsMng.stream().map(x -> x.convertSeqVacationState()).collect(Collectors.toList());
 
@@ -50,22 +64,30 @@ public class UpdateHolidayLinkData {
 				.map(x -> PayoutSubofHDManagement.of(sid, x)).collect(Collectors.toList());
 		
 		//	$変更後の発生一覧 
-		List<AccumulationAbsenceDetail> kyusyutsuChange = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+		List<AccumulationAbsenceDetail>  furisyutsuChange = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
 				.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE).collect(Collectors.toList());
 		//$変更後の消化一覧
-		List<AccumulationAbsenceDetail> daikyuChange = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+		List<AccumulationAbsenceDetail> furikyuChange = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
 				.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.DIGESTION).collect(Collectors.toList());
 
 		List<InterimRecMng> furisyutsu = lstRecMng.stream().map(x -> {
-			val dataTemp = kyusyutsuChange.stream().filter(y -> y.getManageId().equals(x.getRemainManaID()))
+			val dataTemp = furisyutsuChange.stream().filter(y -> y.getManageId().equals(x.getRemainManaID()))
 					.findFirst();
 			return dataTemp.map(z -> x.updateUnoffsetNum(z)).orElse(null);
 		}).collect(Collectors.toList());
 
 		List<InterimAbsMng> furikyu = lstAbsMng.stream().map(x -> {
-			val dataTemp = daikyuChange.stream().filter(y -> y.getManageId().equals(x.getRemainManaID())).findFirst();
+			val dataTemp = furikyuChange.stream().filter(y -> y.getManageId().equals(x.getRemainManaID())).findFirst();
 			return dataTemp.map(z -> x.updateUnoffsetNum(z)).orElse(null);
 		}).collect(Collectors.toList());
+		
+		//$暫定振出管理を削除する年月日一覧
+		List<GeneralDate> lstFurisyutsu = furisyutsu.stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
+		lstFurisyutsu.addAll(lstDate);
+		
+		//	$暫定振休管理を削除する年月日一覧
+		List<GeneralDate> lstFurikyu= furikyu.stream().map(x -> x.getYmd()).filter(x -> !lstDate.contains(x)).collect(Collectors.toList());
+		lstFurikyu.addAll(lstDate);
 		
 		return AtomTask.of(() -> {
 			// [R-1] 振出振休紐付け管理を削除する
@@ -75,17 +97,37 @@ public class UpdateHolidayLinkData {
 			require.insertPayoutList(linkCouple);
 
 			// [R-3] 暫定振出管理を削除する
-			require.deleteRecMngWithDateList(sid, lstDate);
+			require.deleteRecMngWithDateList(sid, lstFurisyutsu);
 
 			// [R-4] 暫定振出管理を登録する
 			require.insertRecMngList(furisyutsu);
 
 			// [R-5] 暫定振休管理を削除する
-			require.deleteAbsMngWithDateList(sid, lstDate);
+			require.deleteAbsMngWithDateList(sid, lstFurikyu);
 
 			// [R-6] 暫定振休管理を登録する
 			require.insertAbsMngList(furikyu);
 		});
+	}
+
+	// [1] 変更要求と紐付いている暫定データを取得する(発生)
+	private static List<InterimRecMng> getOccurTempDataFromAssoci(Require require, String sid,
+			List<GeneralDate> lstDate) {
+		// $紐付け一覧
+		List<PayoutSubofHDManagement> linkData = require.getByListDate(sid, lstDate);
+
+		return require.getRecBySidDateList(sid,
+				linkData.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList()));
+	}
+
+	// [2] 変更要求と紐付いている暫定データを取得する(消化)
+	private static List<InterimAbsMng> getDigestTempDataFromAssoci(Require require, String sid,
+			List<GeneralDate> lstDate) {
+		// $紐付け一覧
+		List<PayoutSubofHDManagement> linkData = require.getByListOccDate(sid, lstDate);
+
+		return require.getAbsBySidDateList(sid,
+				linkData.stream().map(x -> x.getAssocialInfo().getDateOfUse()).collect(Collectors.toList()));
 	}
 
 	public static interface Require extends GetModifiOutbreakDigest.Require {
@@ -113,6 +155,18 @@ public class UpdateHolidayLinkData {
 		// [R-6] 暫定振休管理を登録する
 		// InterimRecAbasMngRepository.insertAbsMngList
 		void insertAbsMngList(List<InterimAbsMng> lstDomain);
+		
+		//PayoutSubofHDManaRepository
+		List<PayoutSubofHDManagement> getByListDate(String sid, List<GeneralDate> lstDate);
+
+		//PayoutSubofHDManaRepository
+		List<PayoutSubofHDManagement> getByListOccDate(String sid, List<GeneralDate> lstDate);
+		
+		// InterimRecAbasMngRepository
+		List<InterimAbsMng> getAbsBySidDateList(String sid, List<GeneralDate> lstDate);
+		
+		//InterimRecAbasMngRepository
+		List<InterimRecMng> getRecBySidDateList(String sid, List<GeneralDate> lstDate);
 
 	}
 

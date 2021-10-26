@@ -29,4 +29,9 @@ public class NurseCategoryCommand {
 	 * 	事務的業務従事者か
 	 */
 	private boolean officeWorker;
+	
+	/**
+	 * 看護管理者か
+	 */
+	private boolean nursingManager;
 }

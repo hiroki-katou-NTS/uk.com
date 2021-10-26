@@ -197,8 +197,8 @@ public class CreateDailyResultDomainServiceNew {
 		// マスタ情報を取得する
 		// Imported(就業)「社員の履歴情報」 を取得する
 		// reqList401
-		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
-				.getEmployeeGeneralInfo(emloyeeIds, periodTime);
+		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService.getEmployeeGeneralInfo(emloyeeIds, periodTime);
+		
 		List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(emloyeeIds, periodTime);
 		
 		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);

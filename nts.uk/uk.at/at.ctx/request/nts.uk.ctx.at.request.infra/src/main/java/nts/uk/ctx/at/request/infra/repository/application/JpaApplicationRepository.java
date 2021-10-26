@@ -331,6 +331,26 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		
 	}
 
+	final static String FIND_WITH_BASEDATE = SELECT_MEMO
+			+ " FROM KRQDT_APPLICATION a" 
+			+ " join KRQDT_APP_REFLECT_STATE b"
+			+ "  on a.APP_ID = b.APP_ID and  a.CID = b.CID"
+			+ " WHERE  a.APPLICANTS_SID =  @sid "
+			+ " AND a.APP_START_DATE <= @baseDate " + " AND a.APP_END_DATE >= @baseDate " + " AND a.APP_TYPE IN @appType " 
+			+ " AND b.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY a.INPUT_DATE ASC";
+	@Override
+	public List<Application> getByPeriodReflectType(String sid, GeneralDate baseDate, List<Integer> reflect,
+			List<Integer> appType) {
+		List<Map<String, Object>> mapLst = new NtsStatement(FIND_WITH_BASEDATE, this.jdbcProxy())
+				.paramString("sid", sid)
+				.paramDate("baseDate", baseDate)
+				.paramInt("recordStatus", reflect)
+				.paramInt("appType", appType)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
+	}
+	
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Application> getListAppByType(String companyId, String employeeID, GeneralDate startDate,
