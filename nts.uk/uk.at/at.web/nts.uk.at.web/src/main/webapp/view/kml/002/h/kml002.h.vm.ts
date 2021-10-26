@@ -134,10 +134,7 @@ module nts.uk.at.view.kml002.k {
             self.itemMonthly.subscribe((val) => {
                 val.amount1.subscribe((amount) => {                    
                     self.clearErrorMonth();  
-                    if(amount == '' ||  parseInt(amount) == 0) {
-                        $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]});
-                        self.enableRegisterBtn(false);
-                    } else if(!self.validateAll() && amount != '' &&  parseInt(amount) > 0) {
+                   if(!self.validateAll()) {
                         self.enableRegisterBtn(true);
                     }
                     
@@ -317,10 +314,7 @@ module nts.uk.at.view.kml002.k {
             self.itemAnnual.subscribe((val) => {
                 val.amount1.subscribe((amount) => {
                     self.clearErrorAnnual();
-                    if(amount == '' ||  parseInt(amount) == 0){
-                        $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtn(false);
-                    } else if(!self.validateAll() && amount != '' &&  parseInt(amount) > 0){
+                    if(!self.validateAll()){
                         self.enableRegisterBtn(true);
                     }
                     
@@ -502,10 +496,7 @@ module nts.uk.at.view.kml002.k {
             self.itemMonthlyScreenK.subscribe((val) => {
                 val.amount1.subscribe((amount) => {                    
                     self.clearErrorMonth();
-                    if(amount == '' ||  parseInt(amount) == 0){
-                        $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]}); 
-                        self.enableRegisterBtnScreenK(false);
-                    } else if(!self.validateAllScreenK() && amount != '' &&  parseInt(amount) > 0){
+                    if(!self.validateAllScreenK()){
                         self.enableRegisterBtnScreenK(true);
                     }
                     if(val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
@@ -682,10 +673,7 @@ module nts.uk.at.view.kml002.k {
             self.itemAnnualScreenK.subscribe((val) => {
                 val.amount1.subscribe((amount) => {
                     self.clearErrorAnnual();
-                    if(amount == '' || parseInt(amount) == 0){
-                        $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] }); 
-                        self.enableRegisterBtnScreenK(false);
-                    } else if(!self.validateAllScreenK() && amount != '' && parseInt(amount) > 0){
+                    if(!self.validateAllScreenK()){
                         self.enableRegisterBtnScreenK(true);
                     }
                     if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
@@ -911,16 +899,6 @@ module nts.uk.at.view.kml002.k {
                 self.itemHandling(new ItemHandling(dataHandling));
                 self.itemMonthly(new ItemMonthly(dataMonthly));
                 self.itemAnnual(new ItemAnnual(dataAnnual));
-                self.itemMonthly().amount1() == '' || self.itemAnnual().amount1() == '' ? self.enableRegisterBtn(false) : self.enableRegisterBtn(true);
-                if(self.itemMonthly().amount1() == '' || parseInt(self.itemMonthly().amount1()) == 0) {
-                    $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]});
-                    self.enableRegisterBtn(false);
-                }
-
-                if(self.itemAnnual().amount1() == '' || parseInt(self.itemAnnual().amount1()) == 0) {
-                    $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                    self.enableRegisterBtn(false);
-                }
                 $('#month1').focus();
             }).always(() => {
                 self.$blockui("hide");
@@ -934,8 +912,11 @@ module nts.uk.at.view.kml002.k {
 
             if (self.validateAll()) {
                 return;
-            }
-                       
+            }          
+                 
+            if (!self.condition() ) {
+                return;
+            }   
             handlings.push({ "frameNo": 1, "backgroundColor": self.itemHandling().backgroundColor1() });
             handlings.push({ "frameNo": 2, "backgroundColor": self.itemHandling().backgroundColor2() });
             handlings.push({ "frameNo": 3, "backgroundColor": self.itemHandling().backgroundColor3() });
@@ -1082,23 +1063,7 @@ module nts.uk.at.view.kml002.k {
                     self.enableDeleteBtn(false);
                 }
                 self.itemMonthlyScreenK(new ItemMonthly(dataMonthly));
-                self.itemAnnualScreenK(new ItemAnnual(dataAnnual));
-                if(self.itemMonthlyScreenK().amount1() == '' || parseInt(self.itemMonthlyScreenK().amount1()) == 0) {
-                    $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]}); 
-                    self.enableRegisterBtnScreenK(false);
-                } else {
-                    self.clearErrorAnnual();
-                    self.clearErrorMonth();
-                    self.enableRegisterBtnScreenK(true);
-                }
-                if(self.itemAnnualScreenK().amount1() == '' || parseInt(self.itemAnnualScreenK().amount1()) == 0) {
-                    $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                    self.enableRegisterBtnScreenK(false);
-                } else {
-                    self.clearErrorAnnual();
-                    self.clearErrorMonth();
-                    self.enableRegisterBtnScreenK(true);
-                }
+                self.itemAnnualScreenK(new ItemAnnual(dataAnnual));               
                 $('#month1screenk').focus();
             }).always(() => {
                 self.$blockui("hide");
@@ -1110,6 +1075,10 @@ module nts.uk.at.view.kml002.k {
             let command:any = {}, months: Array<ItemAmountModel> = [], 
             years: Array<ItemAmountModel> = [];
             if (self.validateAllScreenK()) {
+                return;
+            }
+
+            if (!self.conditionScreenK()) {
                 return;
             }
 
@@ -1237,7 +1206,10 @@ module nts.uk.at.view.kml002.k {
                 self.enableRegisterBtn(false);                 
                 return true;                
             }
-            self.enableRegisterBtn(true);
+            if(self.itemMonthly().amount1() !='' && parseInt(self.itemMonthly().amount1()) != 0
+                && self.itemAnnual().amount1() != '' && parseInt(self.itemAnnual().amount1())!= 0){
+                self.enableRegisterBtn(true);
+            }            
             return false;
         }
 
@@ -1258,9 +1230,55 @@ module nts.uk.at.view.kml002.k {
                 self.enableRegisterBtnScreenK(false);
                 return true;
             }
-            self.enableRegisterBtnScreenK(true);
+
+            if(self.itemMonthlyScreenK().amount1() !='' && parseInt(self.itemMonthlyScreenK().amount1()) != 0
+                && self.itemAnnualScreenK().amount1() != '' && parseInt(self.itemAnnualScreenK().amount1())!= 0){
+                self.enableRegisterBtnScreenK(true);
+            }               
             return false;
         }
+
+        private condition(): boolean {
+            const self = this;
+            if(self.itemMonthly().amount1() !='' && parseInt(self.itemMonthly().amount1()) != 0
+                && self.itemAnnual().amount1() != '' && parseInt(self.itemAnnual().amount1())!= 0){
+                self.enableRegisterBtn(true);
+                return true;
+            }                
+
+            self.itemMonthly().amount1() == '' || self.itemAnnual().amount1() == '' ? self.enableRegisterBtn(false) : self.enableRegisterBtn(true);
+            if(self.itemMonthly().amount1() == '' || parseInt(self.itemMonthly().amount1()) == 0) {
+                $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]});
+                self.enableRegisterBtn(false);
+            }
+
+            if(self.itemAnnual().amount1() == '' || parseInt(self.itemAnnual().amount1()) == 0) {
+                $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
+                self.enableRegisterBtn(false);
+            }
+            return false;
+        }
+
+        private conditionScreenK(): boolean {
+            const self = this;
+            if(self.itemMonthlyScreenK().amount1() !='' && parseInt(self.itemMonthlyScreenK().amount1()) != 0
+                && self.itemAnnualScreenK().amount1() != '' && parseInt(self.itemAnnualScreenK().amount1())!= 0){
+                self.enableRegisterBtnScreenK(true);
+                return true;
+            }            
+            if(self.itemMonthlyScreenK().amount1() == '' || parseInt(self.itemMonthlyScreenK().amount1()) == 0) {
+                $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]}); 
+                self.enableRegisterBtnScreenK(false);
+            } 
+            if(self.itemAnnualScreenK().amount1() == '' || parseInt(self.itemAnnualScreenK().amount1()) == 0) {
+                $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
+                self.enableRegisterBtnScreenK(false);
+            } 
+            return false;
+        }
+
+
+
 
         private clearError(): void {
             $('#colorpicker1').ntsError('clear');
