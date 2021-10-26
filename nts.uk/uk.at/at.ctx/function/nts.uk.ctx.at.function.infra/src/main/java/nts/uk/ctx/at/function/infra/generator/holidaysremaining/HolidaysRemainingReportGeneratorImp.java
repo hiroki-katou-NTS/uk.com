@@ -3020,24 +3020,48 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.get(firstRow + (isTime ? 2 : 1), 9).setStyle(style2);
 
         if (currentSituationImportedLeft != null) {
-            // O1_2 子の看護休暇_使用数日数
-            val numberOfDaysUsedBeforeGrant = currentSituationImportedLeft.getNumberOfDaysUsedBeforeGrant();
-            cells.get(firstRow, 6).setValue(numberOfDaysUsedBeforeGrant == null ? "" : df.format(numberOfDaysUsedBeforeGrant));
-            // O1_3 子の看護休暇_残数
+            // O1_2 子の看護休暇_使用数日数->付与前使用日数+付与後使用日数
+            val numOfUsebf = currentSituationImportedLeft.getNumberOfDaysUsedBeforeGrant();
+            val numOfUseAf = currentSituationImportedLeft.getDaysOfUseAfterGrant();
+            Double vl1_2 = (numOfUsebf == null && numOfUseAf == null) ? null :
+                    ((numOfUsebf == null ? 0 : numOfUsebf) + (numOfUseAf == null ? 0 : numOfUseAf));
+            cells.get(firstRow, 6).setValue(vl1_2 == null ? "" : df.format(vl1_2));
+            cells.get(firstRow, 6).setValue(vl1_2 == null ? "" : df.format(vl1_2));
+
+
+            // O1_3 子の看護休暇_残数->付与前残日数(※1)	(※1)翌年のデータがある(≠empty)場合、付与後残日数
+            val remainingDaysAfterGrant = currentSituationImportedLeft.getRemainingDaysAfterGrant();
             val remainingDaysBeforeGrant = currentSituationImportedLeft.getRemainingDaysBeforeGrant();
-            cells.get(firstRow, 7).setValue(remainingDaysBeforeGrant == null ? "" : df.format(remainingDaysBeforeGrant));
-            if (remainingDaysBeforeGrant != null && remainingDaysBeforeGrant < 0) {
-                setForegroundRed(cells.get(firstRow, 7));
+            if (remainingDaysAfterGrant == null) {
+                cells.get(firstRow, 7).setValue(remainingDaysBeforeGrant == null ? "" : df.format(remainingDaysBeforeGrant));
+                if (remainingDaysBeforeGrant != null && remainingDaysBeforeGrant < 0) {
+                    setForegroundRed(cells.get(firstRow, 7));
+                }
+            } else {
+                cells.get(firstRow, 7).setValue(df.format(remainingDaysAfterGrant));
+                if (remainingDaysAfterGrant < 0) {
+                    setForegroundRed(cells.get(firstRow, 7));
+                }
             }
             // O1_6 子の看護休暇_上限日数
             cells.get(firstRow, 8).setValue(TextResource.localize("KDR001_82"));
             if (isTime) {
-                //O1_4子の看護休暇_使用数時間 ->付与前使用時間
+                //O1_4子の看護休暇_使用数時間 ->付与前使用時間->付与前使用時間+付与後使用時間
+                val usageTimeAfterGrant = currentSituationImportedLeft.getUsageTimeAfterGrant();
                 val usageTimeBeforeGrant = currentSituationImportedLeft.getUsageTimeBeforeGrant();
-                cells.get(firstRow + 1, 6).setValue(usageTimeBeforeGrant == null ? "" : convertToTime(usageTimeBeforeGrant));
-                //O1_5子の看護休暇_上限日数	->付与前残時間
+                Integer vl_14 = (usageTimeBeforeGrant == null && usageTimeAfterGrant == null) ? null :
+                        ((usageTimeBeforeGrant == null ? 0 : usageTimeBeforeGrant) + (usageTimeAfterGrant == null ? 0 : usageTimeAfterGrant));
+                cells.get(firstRow + 1, 6).setValue(vl_14 == null ? "" : convertToTime(vl_14));
+
+                //O1_5子の看護休暇_上限日数	->付与前残時間->付与前残時間(※2)	(※2)翌年のデータがある(≠empty)場合、付与後残時間
                 val remainingTimesBeforeGrant = currentSituationImportedLeft.getRemainingTimesBeforeGrant();
-                cells.get(firstRow + 1, 7).setValue(remainingTimesBeforeGrant == null ? "" : convertToTime(remainingTimesBeforeGrant));
+                val remainingTimesAfterGrant = currentSituationImportedLeft.getRemainingTimesAfterGrant();
+                if (remainingTimesAfterGrant != null) {
+                    cells.get(firstRow + 1, 7).setValue(convertToTime(remainingTimesAfterGrant));
+                } else {
+                    cells.get(firstRow + 1, 7).setValue(remainingTimesBeforeGrant == null ? "" : convertToTime(remainingTimesBeforeGrant));
+                }
+
             }
             //O1_7子の看護休暇_上限日数	{0}/{1}
             // {0}付与前上限日数
@@ -3195,17 +3219,22 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         } else {
                             if (currentMonth.compareTo(ym) < 0) {
                                 //O23_子の看護休暇_使用数日数実績値
-                                //付与前使用日数
+                                //付与前使用日数 = 付与前使用日数+付与後使用日数
                                 Double numberOfDaysUsedBeforeGrant = thisMonthFutureSituation.getNumberOfDaysUsedBeforeGrant();
+                                Double daysOfUseAfterGrant = thisMonthFutureSituation.getDaysOfUseAfterGrant();
+                                Double vl_23 = (numberOfDaysUsedBeforeGrant == null && daysOfUseAfterGrant == null)?null:
+                                        ((numberOfDaysUsedBeforeGrant==null?0:numberOfDaysUsedBeforeGrant)+(daysOfUseAfterGrant==null?0:daysOfUseAfterGrant));
                                 cells.get(firstRow, 10 + totalMonth)
-                                        .setValue(numberOfDaysUsedBeforeGrant == null || numberOfDaysUsedBeforeGrant == 0 ? null : df.format(numberOfDaysUsedBeforeGrant));
+                                        .setValue(vl_23 == null || vl_23 == 0 ? null : df.format(vl_23));
                                 if (isTime) {
                                     // 02_4 子の看護休暇_使用数時間実績値
-                                    //付与前使用時間
+                                    //付与前使用時間: 付与前使用時間+付与後使用時間
                                     Integer usageTimeBeforeGrant = thisMonthFutureSituation.getUsageTimeBeforeGrant();
+                                    Integer usageTimeAfterGrant = thisMonthFutureSituation.getUsageTimeAfterGrant();
+                                    Integer vl_24 = (usageTimeBeforeGrant == null && usageTimeAfterGrant == null)?null :
+                                            ((usageTimeBeforeGrant==null?0:usageTimeBeforeGrant)+(usageTimeAfterGrant == null?0:usageTimeAfterGrant));
                                     cells.get(firstRow + 1, 10 + totalMonth)
-                                            .setValue(usageTimeBeforeGrant == null || usageTimeBeforeGrant == 0 ? null : convertToTime(usageTimeBeforeGrant));
-
+                                            .setValue(vl_24 == null || vl_24 == 0 ? null : convertToTime(vl_24));
                                     // 02_5 特別休暇１_残数日数
                                     setBackgroundGray(cells.get(firstRow + 3, 10 + totalMonth));
                                     setBackgroundGray(cells.get(firstRow + 2, 10 + totalMonth));
