@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
+import nts.arc.error.I18NErrorMessage;
+import nts.arc.i18n.I18NText;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.ErrorItem;
@@ -23,8 +25,8 @@ public class RegisterResultTest {
 	public void testConstructorWithError() {
 		// given
 		List<ErrorItem> errorItems = Arrays.asList(
-				new ErrorItem(new EquipmentItemNo("1"), "error1"),
-				new ErrorItem(new EquipmentItemNo("5"), "error2"));
+				new ErrorItem(new EquipmentItemNo("1"), new I18NErrorMessage(I18NText.main("error1").build())),
+				new ErrorItem(new EquipmentItemNo("5"), new I18NErrorMessage(I18NText.main("error2").build())));
 		
 		// when
 		RegisterResult result = RegisterResult.withErrors(errorItems);
