@@ -20,6 +20,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
+import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
@@ -47,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Stateless
 public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByIndividualExportGenerator {
@@ -655,10 +657,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 }
                 if (!legalWorktime.isPresent()) {
                     format.setD25("0:00");
-                }
-                if (legalWorktime.isPresent()) {
+                } else {
                     if (legalWorktime.get().getWeeklyEstimateTime().isPresent()) {
-                        format.setD25(legalWorktime.get().getWeeklyEstimateTime().get().hour() + ":" + legalWorktime.get().getWeeklyEstimateTime().get().minute());
+                        val hourDifference = calculateHoursDifference(weekCount, weeklyAgreegateResults, legalWorktime.get().getWeeklyEstimateTime());
+                        format.setD25(convertNumberToTime(hourDifference));
                     }
                 }
                 format.setD11(d11);
@@ -692,10 +694,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     }
                     if (!legalWorktime.isPresent()) {
                         format.setD25("0:00");
-                    }
-                    if (legalWorktime.isPresent()) {
+                    } else {
                         if (legalWorktime.get().getWeeklyEstimateTime().isPresent()) {
-                            format.setD25(legalWorktime.get().getWeeklyEstimateTime().get().hour() + ":" + legalWorktime.get().getWeeklyEstimateTime().get().minute());
+                            val hourDifference = calculateHoursDifference(weekCount, weeklyAgreegateResults, legalWorktime.get().getWeeklyEstimateTime());
+                            format.setD25(convertNumberToTime(hourDifference));
                         }
                     }
                     format.setD11(d11);
@@ -787,6 +789,29 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         int minute = totalMinute % 60;
 
         return (hour < 10 ? "0" + hour : hour) + ":" + (minute < 10 ? "0" + minute : minute);
+    }
+
+    /**
+     * Calculate data of D2_5
+     * @param weekNumber
+     * @param weeklyAgreegateResults
+     * @param weeklyEstimateTime
+     * @return
+     */
+    private int calculateHoursDifference(int weekNumber, List<WeeklyAgreegateResult> weeklyAgreegateResults, Optional<MonthlyEstimateTime> weeklyEstimateTime) {
+        AtomicInteger hourDifference = new AtomicInteger(0);
+        val totalWorkingHourWeek = weeklyAgreegateResults.stream().filter(week -> week.getWeek() == weekNumber).findFirst();
+        weeklyEstimateTime.ifPresent(legal -> {
+            totalWorkingHourWeek.ifPresent(totalHour -> {
+                hourDifference.set(totalHour.getWorkingHours().intValue() - legal.valueAsMinutes());
+            });
+        });
+        return hourDifference.intValue();
+    }
+
+    private String convertNumberToTime(Integer number) {
+        return (number < 0 ? String.valueOf((int) Math.ceil(number / 60)) : String.valueOf((int) Math.floor(number / 60)))
+                + ':' + (Math.abs(number % 60) == 0 ? "00" : (String.valueOf(Math.abs(number % 60))));
     }
 
 
