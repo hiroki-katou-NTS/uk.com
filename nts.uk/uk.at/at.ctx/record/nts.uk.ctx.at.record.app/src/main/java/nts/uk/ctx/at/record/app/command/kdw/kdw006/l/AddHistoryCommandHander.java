@@ -46,7 +46,7 @@ public class AddHistoryCommandHander extends CommandHandlerWithResult<AddHistory
 		});
 
 		if (!dateHistoryItems.isEmpty()) {
-			if (dateHistoryItems.get(0).start().after(command.getStartDate())) {
+			if (dateHistoryItems.get(0).start().after(command.getStartDate()) || dateHistoryItems.get(0).start() == command.getStartDate()) {
 				throw new BusinessException("Msg_102");
 			} else {
 				List<DateHistoryItem> historysUpdate = new ArrayList<>();
