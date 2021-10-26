@@ -2746,7 +2746,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 val usageTimeBeforeGrant = currentSituationImportedLeft.getUsageTimeBeforeGrant();
                 val usageTimeAfterGrant = currentSituationImportedLeft.getUsageTimeAfterGrant();
                 Integer vl_14 = (usageTimeBeforeGrant == null && usageTimeAfterGrant == null) ? null :
-                        ((usageTimeBeforeGrant == null ? 0 : usageTimeBeforeGrant) + (usageTimeAfterGrant == null ? 0 : usageTimeAfterGrant))
+                        ((usageTimeBeforeGrant == null ? 0 : usageTimeBeforeGrant) + (usageTimeAfterGrant == null ? 0 : usageTimeAfterGrant));
                 cells.get(firstRow + 1, 6).setValue(vl_14 == null ? "" : convertToTime(vl_14));
 
 
@@ -2921,7 +2921,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                     Integer usageTimeBeforeGrant = thisMonthFutureSituation.getUsageTimeBeforeGrant();
                                     Integer usageTimeAfterGrant = thisMonthFutureSituation.getUsageTimeAfterGrant();
                                     Integer vl_24 = (usageTimeBeforeGrant == null && usageTimeAfterGrant == null)?null :
-                                            ((usageTimeBeforeGrant==null?0:usageTimeBeforeGrant)+(usageTimeAfterGrant == null?0:usageTimeAfterGrant))
+                                            ((usageTimeBeforeGrant==null?0:usageTimeBeforeGrant)+(usageTimeAfterGrant == null?0:usageTimeAfterGrant));
                                     cells.get(firstRow + 1, 10 + totalMonth)
                                             .setValue(vl_24 == null || vl_24 == 0 ? null : convertToTime(vl_24));
                                     // N2_5 特別休暇１_残数日数
