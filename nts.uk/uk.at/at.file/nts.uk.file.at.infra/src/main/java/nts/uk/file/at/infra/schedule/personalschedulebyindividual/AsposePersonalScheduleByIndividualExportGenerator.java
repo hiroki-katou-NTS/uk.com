@@ -1,6 +1,19 @@
 package nts.uk.file.at.infra.schedule.personalschedulebyindividual;
 
-import com.aspose.cells.*;
+import com.aspose.cells.BackgroundType;
+import com.aspose.cells.BorderType;
+import com.aspose.cells.Cell;
+import com.aspose.cells.CellArea;
+import com.aspose.cells.CellBorderType;
+import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
+import com.aspose.cells.HorizontalPageBreakCollection;
+import com.aspose.cells.PageSetup;
+import com.aspose.cells.Style;
+import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
+import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -28,7 +41,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Stateless
@@ -209,7 +228,12 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         if (l2P2 == null) l2P2 = "";
         if (l3P1 == null) l3P1 = "";
         List<Cell> cellsClass = new ArrayList<>();
-        if (!holidayMap.containsKey(colNO)) {
+        List<Cell> cellsWhile = new ArrayList<>();
+        if (holidayClass != null) {
+            holidayClass = 0;
+        }
+        WorkStyle workStyle = EnumAdaptor.valueOf(holidayClass, WorkStyle.class);
+        if (!holidayMap.containsKey(colNO) && workStyle != WorkStyle.ONE_DAY_REST) {
             cells.get(rowCount, col).setValue(l1P1 + "   " + l1P2);
             cells.get(secondLieOfCalender, col).setValue(l2P1);
             cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
@@ -225,12 +249,18 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         } else {
             cells.get(rowCount, col).setValue(l1P1);
             cells.get(secondLieOfCalender, col).setValue(l2P1);
-            cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
             Cell cell = cells.get(secondLieOfCalender, col);
             setTextColorRed(cell);
             cell = cells.get(secondLieOfCalender, col + 3);
             setTextColorRed(cell);
         }
+        cellsWhile.addAll(
+                Arrays.asList(cells.get(secondLieOfCalender, col),
+                        cells.get(secondLieOfCalender, col + 2),
+                        cells.get(secondLieOfCalender, col + 3),
+                        cells.get(thirdLieOfCalender, col),
+                        cells.get(thirdLieOfCalender + 1, col))
+        );
         Cell cell = cells.get(rowCount, col);
         if (dateInformation != null) {
             if (dateInformation.isSpecificDay()) {
@@ -242,6 +272,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             } else {
                 setBgColor(Color.fromArgb(242, 242, 242), cell);
             }
+        }
+        for (Cell cell1 : cellsWhile) {
+            setBgColor(Color.getWhite(), cell1);
         }
     }
 
@@ -430,29 +463,64 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
             }
         }
-        int dataRemaining = Math.abs(dataBuildList.size() - (pageIndex <= 0 ? 6 : pageIndex * 6));
-        if (dataRemaining < 6) {
-            int col = 0;
-            while (dataRemaining > 0) {
-                for (Integer header : generateTableHeader(query.getStartDate())) {
-                    Cell cell = cells.get(rowCount, col);
-                    if (header == DayOfWeek.SUNDAY.value) {
-                        setBgColor(Color.fromArgb(250, 200, 250), cell);
-                    } else if (header == DayOfWeek.SATURDAY.value) {
-                        setBgColor(Color.fromArgb(204, 236, 255), cell);
-                    } else {
-                        setBgColor(Color.fromArgb(242, 242, 242), cell);
-                    }
-                    col += 5;
+        int size = dataBuildList.size();
+        int nextLoop = 0;
+        if (size < 6) {
+            nextLoop = 6 - size;
+        }
+        if (size > 6 && size % 6 != 0) {
+            double totalPage = size * 1.0 / 6;
+            if (!isInteger(totalPage)) {
+                int decimal = (int) totalPage; //
+                double fractional = totalPage - decimal;
+                double nextLoopD = Double.parseDouble("0." + fractional);
+                nextLoop = (int) Math.round(nextLoopD * 6);
+            }
+        }
+        if (nextLoop > 0) {
+            int count = 0;
+            for (PersonalScheduleByIndividualFormat item : dataBuildList) {
+                if (count == nextLoop) {
+                    break;
                 }
+                item = dataBuildList.get(0);
+                DateInformation dateInfo1 = item.getColn1Info();
+                DateInformation dateInfo2 = item.getColn2Info();
+                DateInformation dateInfo3 = item.getColn3Info();
+                DateInformation dateInfo4 = item.getColn4Info();
+                DateInformation dateInfo5 = item.getColn5Info();
+                DateInformation dateInfo6 = item.getColn6Info();
+                DateInformation dateInfo7 = item.getColn7Info();
+                setHeader(dateInfo1, cells.get(rowCount, 0));
+                setHeader(dateInfo2, cells.get(rowCount, 5));
+                setHeader(dateInfo3, cells.get(rowCount, 10));
+                setHeader(dateInfo4, cells.get(rowCount, 15));
+                setHeader(dateInfo5, cells.get(rowCount, 20));
+                setHeader(dateInfo6, cells.get(rowCount, 25));
+                setHeader(dateInfo7, cells.get(rowCount, 30));
+                count++;
                 rowCount += 5;
-                col = 0;
-                dataRemaining--;
             }
         }
         PageSetup pageSetup = wsSource.getPageSetup();
         val totalRow = ((pageIndex + 1) * 30) + 3;
         pageSetup.setPrintArea(PRINT_AREA + totalRow);
+    }
+
+    public static boolean isInteger(double number) {
+        return Math.ceil(number) == Math.floor(number);
+    }
+
+    void setHeader(DateInformation dateInformation, Cell cell) {
+        if (dateInformation.isSpecificDay()) {
+            setBgColor(Color.fromArgb(250, 230, 180), cell);
+        } else if (dateInformation.isHoliday() || dateInformation.getDayOfWeek().value == DayOfWeek.SUNDAY.value) {
+            setBgColor(Color.fromArgb(250, 200, 250), cell);
+        } else if (dateInformation.getDayOfWeek().value == DayOfWeek.SATURDAY.value) {
+            setBgColor(Color.fromArgb(204, 236, 255), cell);
+        } else {
+            setBgColor(Color.fromArgb(242, 242, 242), cell);
+        }
     }
 
     /*

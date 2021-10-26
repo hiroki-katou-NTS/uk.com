@@ -139,7 +139,7 @@ public class CreateWorkScheduleDtoQuery {
 //            if (StringUtils.isEmpty(workTimeCode)) continue;
             val workTimeOpt = workTimeSettingList.stream().filter(x -> x.getWorktimeCode().equals(workTimeCode)).findFirst();
             // 就業時間帯名= 就業時間帯の設定．表示名．略名
-            val worTimeName = workTimeOpt.isPresent() ? workTimeOpt.get().getWorkTimeDisplayName().getWorkTimeName().v() : "";
+            val worTimeName = workTimeOpt.isPresent() ? workTimeOpt.get().getWorkTimeDisplayName().getWorkTimeAbName().v() : "";
 
             Integer startTime = null;
             if (ntegrationOfDaily.getAttendanceLeave().isPresent()) {
