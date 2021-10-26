@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.task.tran.AtomTask;
 
 /**
@@ -13,8 +16,9 @@ import nts.arc.task.tran.AtomTask;
  * @author tutt
  *
  */
-public class DeleteFavoriteTaskService {
 
+public class DeleteFavoriteTaskService {
+	
 //■Public
 	/**
 	 * [1] 追加する
@@ -44,6 +48,7 @@ public class DeleteFavoriteTaskService {
 				atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
 			} else {
 				atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
+				require.deleteByFavId(favoriteId);
 			}
 		}
 	
@@ -68,5 +73,7 @@ public class DeleteFavoriteTaskService {
 		// [R-4] 表示順を更新する
 		// お気に入り作業の表示順Repository.Update(お気に入り作業の表示順)
 		void update(FavoriteTaskDisplayOrder favoriteTaskDisplayOrder);
+		
+		void deleteByFavId(String favoriteId);
 	}
 }

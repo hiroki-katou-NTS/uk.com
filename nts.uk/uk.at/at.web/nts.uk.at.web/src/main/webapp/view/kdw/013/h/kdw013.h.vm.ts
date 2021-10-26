@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdw013.h {
 	import getShared = nts.uk.ui.windows.getShared;
+	import setShared = nts.uk.ui.windows.setShared;
 	import block = nts.uk.ui.block;
 	import info = nts.uk.ui.dialog.info;
 	import error = nts.uk.ui.dialog.error;
@@ -10,6 +11,8 @@ module nts.uk.at.view.kdw013.h {
 	export module viewmodel {
 		const paths: any = {
 			start: "screen/at/kdw013/h/start",
+			save: "screen/at/kdw013/h/save",
+			getWorkPlaceId: "screen/at/kdw013/h/getWorkPlaceId"
 		}
 		export class ScreenModel {
 			itemId28: ItemValue;
@@ -176,6 +179,58 @@ module nts.uk.at.view.kdw013.h {
 				self.itemId211_213 = new StartEndTime({ itemId: 211, value: 20, valueType: 0, layoutCode: 'layoutCode 211' }, { itemId: 213, value: 30, valueType: 0, layoutCode: 'layoutCode 213' }, 10);
 
 			}
+			
+			openKdl001() {
+                var self = this;
+                setShared('kml001multiSelectMode', false);
+                setShared('kml001selectAbleCodeList', []);
+                setShared('kml001selectedCodeList', self.itemId29.value() ? [self.itemId29.value()]: []);
+                setShared('kml001isSelection', true);
+                setShared('kml001BaseDate', self.params.date);
+				block.grayout();
+				ajax(paths.getWorkPlaceId, { employeeId: self.params.employeeId, date: self.params.date }).done(function(data: any) {
+					setShared('kml001WorkPlaceId', data ? data.employeeId: null);
+					nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml").onClosed(function () {
+	                    const kml001selectedCodeList = getShared("kml001selectedCodeList");
+							if(kml001selectedCodeList[0] && kml001selectedCodeList[0] != ''){
+								self.itemId29.value(kml001selectedCodeList[0]);
+								let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
+								if (workTime) {
+									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
+								} else {
+									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
+								}	
+							}
+	                    console.log(kml001selectedCodeList);
+	                });
+				}).fail(function(res: any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
+            }
+
+			openKdl002() {
+                var self = this;
+	            setShared('KDL002_Multiple',false);
+	           	setShared('KDL002_AllItemObj',[]);
+	            setShared('kdl002isSelection',true);
+	            setShared('KDL002_SelectedItemId',self.itemId29.value() ? [self.itemId29.value()]: []);
+	            setShared('KDL002_isShowNoSelectRow', false);
+	            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
+	                var lst = getShared('KDL002_SelectedNewItem');
+						if(lst[0] && lst[0] != ''){
+							self.itemId28.value(lst[0]);
+							let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
+							if (workType){
+								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
+							} else {
+								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+							}
+						}
+	                console.log(lst);
+	            });
+            }
 
 			registration() {
 				let self = this;
@@ -206,6 +261,21 @@ module nts.uk.at.view.kdw013.h {
 				});
 
 				console.log(data);
+				
+				block.invisible();
+				let param = {
+					empTarget: self.params.employeeId, //対象社員
+					targetDate: self.params.date, //対象日
+					items: data, //実績内容  => List<ItemValue> id và giá trị
+					integrationOfDaily: self.params.IntegrationOfDaily
+				};
+				ajax(paths.save, param).done(() => {
+					info({ messageId: 'Msg_15' });
+				}).fail(function(res: any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
 			}
 
             /**
@@ -265,7 +335,7 @@ module nts.uk.at.view.kdw013.h {
 			};
 		}
 		isChange(): boolean {
-			return this.value() == this.valueBeforeChange;
+			return this.value() != this.valueBeforeChange;
 		}
 	}
 
@@ -299,7 +369,7 @@ module nts.uk.at.view.kdw013.h {
 
 	type Param = {
 		employeeId: string; //対象社員
-		date: String; //対象日
+		date: Date; //対象日
 		IntegrationOfDaily: any; //日別実績(Work)
 		displayAttItems: DisplayAttItem[]; //実績入力ダイアログ表示項目一覧  => List<表示する勤怠項目> id và thứ tự hiển thị
 		itemValues: IItemValue[]; //実績内容  => List<ItemValue> id và giá trị
@@ -333,8 +403,8 @@ module nts.uk.at.view.kdw013.h {
 	}
 
 	let paramFake: Param = {
-		employeeId: null, //対象社員
-		date: null, //対象日
+		employeeId: __viewContext.user.employeeId, //対象社員
+		date: new Date(), //対象日
 		IntegrationOfDaily: null, //日別実績(Work)
 		displayAttItems: [//実績入力ダイアログ表示項目一覧  => List<表示する勤怠項目> id và thứ tự hiển thị
 			{ attendanceItemId: 216, order: 1 }, { attendanceItemId: 221, order: 2 },{ attendanceItemId: 226, order:3}, { attendanceItemId: 231, order: 4 }, { attendanceItemId: 236, order: 5 },{ attendanceItemId: 241, order: 6 }, { attendanceItemId: 246, order: 7 }, { attendanceItemId: 251, order: 8 }, { attendanceItemId: 256, order: 9 },

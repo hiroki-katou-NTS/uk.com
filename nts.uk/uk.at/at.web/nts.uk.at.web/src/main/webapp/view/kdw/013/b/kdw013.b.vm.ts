@@ -36,7 +36,9 @@ module nts.uk.ui.at.kdw013.b {
                 <div class="actions">
                     <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
-					<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12"></button>
+					<!-- ko if: dataSources().length = 1 -->
+						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12"></button>
+					<!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
             </div>
@@ -67,21 +69,21 @@ module nts.uk.ui.at.kdw013.b {
         </div>
         <div class="popup-area-f-from-b">
             <!-- F2_1 -->
-            <div class= "pb10 align-left" data-bind="i18n: 'KDW013_58'"></div>
+            <div class= "pb10 align-left" data-bind="i18n: 'KDW013_70'"></div>
 
             <!-- F3_2 -->
             <div class="textEditor pb10">
                 <!-- F3_1 -->
-                <label class="pr10" data-bind="i18n: 'KDW013_59'"></label>
+                <label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
                 <input
                 class="nameInput"
                 tabindex="1"
-                id="KDW013_59"
+                id="KDW013_71"
                 data-bind="ntsTextEditor: {
                     value: favTaskName, 
                     required: true,
                     constraint: 'FavoriteTaskName',
-                    name: '#[KDW013_59]',
+                    name: '#[KDW013_71]',
                     enable: true
                     }"
                 />

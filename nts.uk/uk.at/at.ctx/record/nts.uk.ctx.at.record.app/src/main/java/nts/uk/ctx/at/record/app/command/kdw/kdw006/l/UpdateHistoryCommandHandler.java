@@ -51,7 +51,7 @@ public class UpdateHistoryCommandHandler extends CommandHandler<AddHistoryComman
 
 		if (!dateHistoryItems.isEmpty() && dateHistoryItems.size() > 1) {
 			if (domain.isPresent()) {
-				if (dateHistoryItems.get(1).start().after(command.getStartDate())) {
+				if (dateHistoryItems.get(1).start().after(command.getStartDate()) || dateHistoryItems.get(1).start() == command.getStartDate()) {
 					throw new BusinessException("Msg_127");
 				} else {
 					List<DateHistoryItem> historysUpdateAfter = new ArrayList<>();
