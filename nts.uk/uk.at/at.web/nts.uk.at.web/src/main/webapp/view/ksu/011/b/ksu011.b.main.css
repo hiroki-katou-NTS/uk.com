@@ -1,0 +1,15 @@
+.form-label {
+    width: 100px;
+}
+
+#B5_2, #B5_3 {
+    width: 100px;
+}
+
+#B5_2_1, #B5_3_1 {
+    width: 460px;
+}
+
+.radio-wrappers .radio-wrapper {
+    display: block;
+}

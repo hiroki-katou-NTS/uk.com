@@ -1,0 +1,13 @@
+.form-label {
+    width: 100px;
+}
+
+.switchbox-wrappers {
+    display: inline-flex;
+}
+
+.switchbox-wrappers .radio-wrapper {
+    flex-direction: column;
+    text-align: center;
+    width: 85px;
+}
