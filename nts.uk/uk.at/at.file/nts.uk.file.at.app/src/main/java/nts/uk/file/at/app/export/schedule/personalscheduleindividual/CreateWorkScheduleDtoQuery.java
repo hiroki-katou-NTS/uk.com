@@ -179,7 +179,7 @@ public class CreateWorkScheduleDtoQuery {
                             Optional.of(workTypeCode),
                             Optional.of(workTypeName),
                             Optional.of(workTimeCode),
-                            Optional.of(workTypeName),
+                            Optional.of(worTimeName),
                             Optional.ofNullable(startTime),
                             Optional.ofNullable(endTime)
                     )

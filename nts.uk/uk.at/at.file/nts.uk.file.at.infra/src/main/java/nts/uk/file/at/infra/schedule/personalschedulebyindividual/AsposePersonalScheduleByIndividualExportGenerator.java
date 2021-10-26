@@ -757,8 +757,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 (inforDto.getWorkingHoursCode().isPresent() && inforDto.getWorkingHoursName().get().isEmpty())) {
             return inforDto.getWorkingHoursCode().get() + "" + getText("KSU002_79");
         }
-        if (inforDto.getWorkingHoursCode().isPresent() &&
-                (inforDto.getWorkingHoursName().isPresent() && !inforDto.getWorkingHoursName().get().isEmpty())) {
+        if ((inforDto.getWorkingHoursCode().isPresent() && !inforDto.getWorkingHoursCode().get().isEmpty())) {
             return inforDto.getWorkingHoursName().get();
         }
         return "";
@@ -774,6 +773,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     /**
      * Calculate data of D2_5
+     *
      * @param weekNumber
      * @param weeklyAgreegateResults
      * @param weeklyEstimateTime
