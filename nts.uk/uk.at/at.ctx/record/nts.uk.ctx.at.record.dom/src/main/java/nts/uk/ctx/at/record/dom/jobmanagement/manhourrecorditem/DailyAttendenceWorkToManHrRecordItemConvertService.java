@@ -47,10 +47,11 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 		// 2.データをセットする
 		// DailyRecordToAttendanceItemConverter.setData(日別勤怠(Work))
 		converter.setData(inteDaiy);
-
+		List<Integer> pamramItemIds = AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM).stream()
+				.map(x -> x.getItemId()).collect(Collectors.toList());
 		// 3.項目値リストに変換する
 		// DailyRecordToAttendanceItemConverter.convert(List.empty())
-		List<ItemValue> itemValues = converter.convert(Collections.emptyList());
+		List<ItemValue> itemValues = converter.convert(pamramItemIds);
 
 		// $紐付け設定 = require.紐付け設定を取得する(工数実績項目リスト)
 		List<ManHourRecordAndAttendanceItemLink> settings = require.get(itemIds);
