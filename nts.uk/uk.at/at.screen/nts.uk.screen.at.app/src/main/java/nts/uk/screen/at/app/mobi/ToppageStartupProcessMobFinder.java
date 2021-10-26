@@ -78,10 +78,26 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SixtyHourSettingOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmploymentSettingRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
@@ -116,6 +132,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.RemainingNumber;
 import nts.uk.screen.at.app.ktgwidget.find.dto.TimeOT;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHoliday;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearlyHolidayInfo;
+import nts.uk.screen.at.app.ktgwidget.ktg004.VacationSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -214,6 +231,21 @@ public class ToppageStartupProcessMobFinder {
     
     @Inject
     private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
+    
+    @Inject
+    protected AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
+    
+    @Inject
+    private EmploymentSettingRepository employmentSettingRepo;
+    
+    @Inject
+    private NursingLeaveSettingRepository nursingLeaveSettingRepo;
+    
+    @Inject
+    private AbsenceTenProcessCommon absenceCommon;
+    
+    @Inject
+    private RetentionYearlySettingRepository retentionYearlySettingRepo;
 
 
 	public ToppageStartupDto startupProcessMob() {
@@ -490,12 +522,22 @@ public class ToppageStartupProcessMobFinder {
 
 	}
 
+	/**
+	 * トップページに勤怠状況を表示する
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
 	public OptionalWidgetInfoMobileDto getKTG029(GeneralDate startDate, GeneralDate endDate) {
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
 		OptionalWidgetInfoMobileDto dataKTG029 = new OptionalWidgetInfoMobileDto();
+		
+		// 「休暇設定」の初期値をセットする
+		VacationSetting vacationSetting = new VacationSetting();
+		
 		// set visible for 3 type
 		dataKTG029.setChildRemainNo(null);
 		dataKTG029.setCareLeaveNo(null);
@@ -520,7 +562,10 @@ public class ToppageStartupProcessMobFinder {
 	    		empSubstVacationRepo,
 	    		comSubstVacationRepo,
 	    		interimRecAbasMngRepo,
-	    		payoutHdManaRepo);
+	    		payoutHdManaRepo, 
+	    		annualPaidLeaveSettingRepo, 
+	    		employmentSettingRepo, 
+	    		retentionYearlySettingRepo);
 
 		if (!optTimeStatusDetailsSet.isPresent()) {
 			return null;
@@ -535,101 +580,148 @@ public class ToppageStartupProcessMobFinder {
 					|| timeStatusDisplayItem.getDetailType() == TimeStatusType.HALF_DAY_ANNUAL_REST_COUNT
 					|| timeStatusDisplayItem.getDetailType() == TimeStatusType.HOURLY_ANNUAL_HOLIDAY_AVAI_LIMIT)
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
-				// アルゴリズム「15.年休残数表示」を実行する_ THực hiện thuật toán "15. Hiển thị
-				// nghỉ phép năm còn lại "
-				// Xử lý 15
-				dataKTG029.setYearlyHoliday(setYearlyHoliday(companyId, employeeId, systemDate, datePeriod));
+			    // 10-1.年休の設定を取得する
+			    AnnualHolidaySetOutput annualHolidaySetOutput = AbsenceTenProcess.getSettingForAnnualHoliday(requireM11Imp, companyId);
+			    
+			    if (annualHolidaySetOutput.isYearHolidayManagerFlg()) {
+			        // セット：休暇設定.年休残数管理する　＝　true
+			        vacationSetting.setAnnualManage(true);
+			        
+			        // アルゴリズム「15.年休残数表示」を実行する_ THực hiện thuật toán "15. Hiển thị
+			        // nghỉ phép năm còn lại "
+			        // Xử lý 15
+			        dataKTG029.setYearlyHoliday(setYearlyHoliday(companyId, employeeId, systemDate, datePeriod));
+			    }
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.ACCUMULATED_ANNUAL_REST
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
-				// アルゴリズム「16.積立年休残数表示」を実行する_Thực hiện thuật toán "16.HIển thị
-				// nghỉ phép năm cộng dồn"
-				// Xử lý 16
-				KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter
-						.getNumberOfReservedYearsRemain(employeeId, systemDate);
-				boolean showAfter = false;
-				if (KTGRsvLeaveInfoImport.getGrantDay() != null) {
-					showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay())
-							&& endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay());
-				}
-				dataKTG029.setReservedYearsRemainNo(new RemainingNumber("", KTGRsvLeaveInfoImport.getRemainingDays(),
-						KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
+			    // 10-4.積立年休の設定を取得する
+			    boolean setForYearlyReserved = AbsenceTenProcess.getSetForYearlyReserved(requireM11Imp, new CacheCarrier(), companyId, employeeId, GeneralDate.today());
+			    
+			    if (setForYearlyReserved) {
+			        // セット：休暇設定.積立年休残数管理する　＝　true
+			        vacationSetting.setAccumAnnualManage(true);
+			        
+			        // アルゴリズム「16.積立年休残数表示」を実行する_Thực hiện thuật toán "16.HIển thị
+			        // nghỉ phép năm cộng dồn"
+			        // Xử lý 16
+			        KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter
+			                .getNumberOfReservedYearsRemain(employeeId, systemDate);
+			        boolean showAfter = false;
+			        if (KTGRsvLeaveInfoImport.getGrantDay() != null) {
+			            showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay())
+			                    && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay());
+			        }
+			        dataKTG029.setReservedYearsRemainNo(new RemainingNumber("", KTGRsvLeaveInfoImport.getRemainingDays(),
+			                KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
+			    }
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.NUMBER_DAYS_LEFT
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
-				// アルゴリズム「18.代休残数表示」を実行する_Thực hiện thuật toán"18.Hiển thị nghỉ
-				// bù"
-				// Xử lý 18
-				Double remain = BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
-						requireM11Imp,
-						new CacheCarrier(),
-						employeeId,
-						systemDate).getDays().v();
-				dataKTG029.setRemainAlternationNoDay(remain != null ? remain : 0.0);
+			    // 10-2.代休の設定を取得する
+			    SubstitutionHolidayOutput substitutionHolidayOutput = AbsenceTenProcess.getSettingForSubstituteHoliday(requireM11Imp, new CacheCarrier(), companyId, employeeId, GeneralDate.today());
+			    
+			    if (substitutionHolidayOutput.isSubstitutionFlg()) {
+			        // セット：休暇設定.代休残数管理する　＝　true、休暇設定.代休時間残数管理する＝時間代休管理区分
+			        vacationSetting.setSubstituteManage(true);
+			        vacationSetting.setSubstituteTimeManage(substitutionHolidayOutput.isTimeOfPeriodFlg());
+			        
+			        // アルゴリズム「18.代休残数表示」を実行する_Thực hiện thuật toán"18.Hiển thị nghỉ
+			        // bù"
+			        // Xử lý 18
+			        Double remain = BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
+			                requireM11Imp,
+			                new CacheCarrier(),
+			                employeeId,
+			                systemDate).getDays().v();
+			        dataKTG029.setRemainAlternationNoDay(remain != null ? remain : 0.0);
+			    }
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMNANT_NUMBER
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
-				// アルゴリズム「19.振休残数表示」を実行する_ THực hiện thuật toán "19.Hiển thị
-				// nghỉ bù ngày lễ không nghỉ"
-				// Xử lý 19
-				Double remainLeft = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
-						requireM11Imp,
-						new CacheCarrier(),
-						employeeId,
-						systemDate).v();
-				dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
+			    // 10-3.振休の設定を取得する
+			    LeaveSetOutput leaveSetOutput = AbsenceTenProcess.getSetForLeave(requireM11Imp, new CacheCarrier(), companyId, employeeId, GeneralDate.today());
+			    
+			    if (leaveSetOutput.isSubManageFlag()) {
+			        // セット：休暇設定.振休残数管理する　＝　true
+			        vacationSetting.setAccomoManage(true);
+			        
+			        // アルゴリズム「19.振休残数表示」を実行する_ THực hiện thuật toán "19.Hiển thị
+			        // nghỉ bù ngày lễ không nghỉ"
+			        // Xử lý 19
+			        Double remainLeft = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
+			                requireM11Imp,
+			                new CacheCarrier(),
+			                employeeId,
+			                systemDate).v();
+			        dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
+			    }
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.CHILD_NURSING_LEAVE_REMAINING // 種類＝子の看護休暇残数が取得できた
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
-				
-				// アルゴリズム「21.子の看護休暇残数表示」を実行する
-				// [NO.206]期間中の子の看護休暇残数を取得
-				ChildCareNursePeriodImport childNursePeriod =
-						getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
-								employeeId,
-								datePeriod,
-								InterimRemainMngMode.OTHER,
-								systemDate,
-								Optional.of(false),
-								Optional.empty(),
-								Optional.empty(),
-								Optional.empty(),
-								Optional.empty());
-				ChildCareNurseRemainingNumberImport remainingNumber = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber();
-				Double before = remainingNumber.getUsedDays();
-				Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
-				RemainingNumber childRemainNo = new RemainingNumber(
-						"",
-						before,
-						after,
-						GeneralDate.today(),
-						remainingNumber.getUsedTime().isPresent());
-				dataKTG029.setChildRemainNo(childRemainNo);
+			    // 子看護介護の設定の取得
+			    NursingLeaveSetting nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.ChildNursing.value);
+			    
+			    if (nursingLeaveSettings.getManageType().equals(ManageDistinct.YES)) {
+			        // セット：休暇設定.子の看護残数管理する　＝　true
+			        vacationSetting.setChildCaremanage(true);
+			        
+			        // アルゴリズム「21.子の看護休暇残数表示」を実行する
+			        // [NO.206]期間中の子の看護休暇残数を取得
+			        ChildCareNursePeriodImport childNursePeriod =
+			                getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+			                        employeeId,
+			                        datePeriod,
+			                        InterimRemainMngMode.OTHER,
+			                        systemDate,
+			                        Optional.of(false),
+			                        Optional.empty(),
+			                        Optional.empty(),
+			                        Optional.empty(),
+			                        Optional.empty());
+			        ChildCareNurseRemainingNumberImport remainingNumber = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber();
+			        Double before = remainingNumber.getUsedDays();
+			        Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
+			        RemainingNumber childRemainNo = new RemainingNumber(
+			                "",
+			                before,
+			                after,
+			                GeneralDate.today(),
+			                remainingNumber.getUsedTime().isPresent());
+			        dataKTG029.setChildRemainNo(childRemainNo);
+			    }
 				
 				
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_CARE_LEAVE // 種類＝介護休暇残数が取得できた
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
-				
-				// アルゴリズム「22.介護休暇残数表示」を実行する
-				// [NO.207]期間中の介護休暇残数を取得
-			    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-			            companyId, 
-			            employeeId, 
-			            datePeriod, 
-			            InterimRemainMngMode.OTHER, 
-			            systemDate, 
-			            Optional.of(false), 
-			            new ArrayList<TempChildCareNurseManagementImport>(),
-	                    Optional.empty(), 
-	                    Optional.empty(), 
-	                    Optional.empty());
-			    ChildCareNurseRemainingNumberImport remainingNumber = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber();
-				Double before = remainingNumber.getUsedDays();
-				Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
-				RemainingNumber careLeaveNo = new RemainingNumber(
-						"",
-						before,
-						after,
-						GeneralDate.today(),
-						remainingNumber.getUsedTime().isPresent());
-				
-				dataKTG029.setCareLeaveNo(careLeaveNo);
+			    // 子看護介護の設定の取得
+			    NursingLeaveSetting nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, NursingCategory.Nursing.value);
+			    
+			    if (nursingLeaveSettings.getManageType().equals(ManageDistinct.YES)) {
+			        // セット：休暇設定.介護残数管理する　＝　true
+			        vacationSetting.setNursingManage(true);
+			        
+			        // アルゴリズム「22.介護休暇残数表示」を実行する
+			        // [NO.207]期間中の介護休暇残数を取得
+			        ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+			                companyId, 
+			                employeeId, 
+			                datePeriod, 
+			                InterimRemainMngMode.OTHER, 
+			                systemDate, 
+			                Optional.of(false), 
+			                new ArrayList<TempChildCareNurseManagementImport>(),
+			                Optional.empty(), 
+			                Optional.empty(), 
+			                Optional.empty());
+			        ChildCareNurseRemainingNumberImport remainingNumber = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber();
+			        Double before = remainingNumber.getUsedDays();
+			        Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
+			        RemainingNumber careLeaveNo = new RemainingNumber(
+			                "",
+			                before,
+			                after,
+			                GeneralDate.today(),
+			                remainingNumber.getUsedTime().isPresent());
+			        
+			        dataKTG029.setCareLeaveNo(careLeaveNo);
+			    }
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// sử lý 23
@@ -676,33 +768,41 @@ public class ToppageStartupProcessMobFinder {
 					timeStatusDisplayItem.getDetailType() == TimeStatusType.EXCESS_NUMBER_REST_60H // 種類＝60H超休残数が取得できた
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE
 					) {
-				
-				// [RQ677]期間中の60H超休残数を取得する
-				AggrResultOfHolidayOver60hImport over60hImport = 
-						getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
-						            companyId, 
-						            employeeId, 
-						            datePeriod, 
-						            InterimRemainMngMode.OTHER, 
-						            systemDate, 
-						            Optional.of(false), 
-						            Optional.empty(), 
-						            Optional.empty());
-				
-				
-				AnnualLeaveRemainingTime over60h = over60hImport
-						.getAsOfPeriodEnd()
-						.getRemainingNumber()
-						.getRemainingTimeWithMinus();
-				
-				TimeOT extraRest = new TimeOT(over60h.hour(), over60h.minute());
-				dataKTG029.setExtraRest(extraRest);
+			    // 10-5.60H超休の設定を取得する
+			    SixtyHourSettingOutput setting60H = absenceCommon.getSixtyHourSetting(companyId, employeeId, GeneralDate.today());
+			    
+			    if (setting60H.isSixtyHourOvertimeMngDistinction()) {
+			        // セット：休暇設定.60H超休残数管理する　＝　true
+			        vacationSetting.setHoliday60HManage(true);
+			        
+			        // [RQ677]期間中の60H超休残数を取得する
+			        AggrResultOfHolidayOver60hImport over60hImport = 
+			                getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
+			                        companyId, 
+			                        employeeId, 
+			                        datePeriod, 
+			                        InterimRemainMngMode.OTHER, 
+			                        systemDate, 
+			                        Optional.of(false), 
+			                        Optional.empty(), 
+			                        Optional.empty());
+			        
+			        
+			        AnnualLeaveRemainingTime over60h = over60hImport
+			                .getAsOfPeriodEnd()
+			                .getRemainingNumber()
+			                .getRemainingTimeWithMinus();
+			        
+			        TimeOT extraRest = new TimeOT(over60h.hour(), over60h.minute());
+			        dataKTG029.setExtraRest(extraRest);
+			    }
 				
 				
 				
 			}
 
 		}
+		dataKTG029.setVacationSetting(vacationSetting);
 
 		return dataKTG029;
 	}
@@ -960,7 +1060,7 @@ public class ToppageStartupProcessMobFinder {
 		}
 	}
 	@AllArgsConstructor
-    private class RequireM11Imp implements BreakDayOffMngInPeriodQuery.RequireM11, AbsenceReruitmentMngInPeriodQuery.RequireM11 {
+    private class RequireM11Imp implements BreakDayOffMngInPeriodQuery.RequireM11, AbsenceReruitmentMngInPeriodQuery.RequireM11, AbsenceTenProcess.RequireM0, AbsenceTenProcess.RequireM1, AbsenceTenProcess.RequireM2, AbsenceTenProcess.RequireM3, AbsenceTenProcess.RequireM4 {
         private ComDayOffManaDataRepository comDayOffManaDataRepo;
         
         private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
@@ -994,6 +1094,12 @@ public class ToppageStartupProcessMobFinder {
         private InterimRecAbasMngRepository interimRecAbasMngRepo;
         
         private PayoutSubofHDManaRepository payoutHdManaRepo;
+        
+        private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo;
+        
+        private EmploymentSettingRepository employmentSettingRepo;
+        
+        private RetentionYearlySettingRepository retentionYearlySettingRepo;
 
         @Override
         public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId,
@@ -1124,6 +1230,48 @@ public class ToppageStartupProcessMobFinder {
         @Override
         public List<PayoutManagementData> getPayoutMana(String sid) {
             return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
+        }
+
+        @Override
+        public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
+            return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
+        }
+
+        @Override
+        public CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode) {
+            return compensLeaveEmSetRepo.find(companyId, employmentCode);
+        }
+
+        @Override
+        public CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId) {
+            return compensLeaveComSetRepo.find(companyId);
+        }
+
+        @Override
+        public Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode) {
+            return empSubstVacationRepo.findById(companyId, contractTypeCode);
+        }
+
+        @Override
+        public Optional<ComSubstVacation> comSubstVacation(String companyId) {
+            return comSubstVacationRepo.findById(companyId);
+        }
+
+        @Override
+        public Optional<EmptYearlyRetentionSetting> employmentYearlyRetentionSetting(String companyId,
+                String employmentCode) {
+            return employmentSettingRepo.find(companyId, employmentCode);
+        }
+
+        @Override
+        public Optional<RetentionYearlySetting> retentionYearlySetting(String companyId) {
+            return retentionYearlySettingRepo.findByCompanyId(companyId);
+        }
+
+        @Override
+        public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+                String employeeId, GeneralDate baseDate) {
+            return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
         }
     }
 }

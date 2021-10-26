@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.at.app.ktgwidget.ktg004.VacationSetting;
 
 @Getter
 @Setter
@@ -82,5 +83,8 @@ public class OptionalWidgetInfoMobileDto {
 	
 	/** ６０Ｈ超休残数 */
 	private TimeOT extraRest = new TimeOT(0, 0);
+	
+	/** 休暇設定 */
+	private VacationSetting vacationSetting;
 
 }
