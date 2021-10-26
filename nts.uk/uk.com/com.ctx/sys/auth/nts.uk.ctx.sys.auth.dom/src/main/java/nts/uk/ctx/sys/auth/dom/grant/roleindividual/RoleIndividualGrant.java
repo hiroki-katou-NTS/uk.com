@@ -108,7 +108,7 @@ public class RoleIndividualGrant extends AggregateRoot {
 			,	String grantTargetCompany
 			,	DatePeriod validPeriod ) {
 		
-		val role = require.getRoleByCompanyIdAndRoleType( RoleType.COMPANY_MANAGER );
+		val role = require.getRoleByRoleType( RoleType.COMPANY_MANAGER );
 		
 		return createFromRole( role, grantTargetUser, grantTargetCompany, validPeriod );
 		
@@ -167,13 +167,6 @@ public class RoleIndividualGrant extends AggregateRoot {
 		 * @return
 		 */
 		Role getRoleByRoleType( RoleType roleType );
-		
-		/**
-		 * 会社とロール種類からロールを取得する( 会社ID, ロール種類 )
-		 * @param roleType ロール種類
-		 * @return
-		 */
-		Role getRoleByCompanyIdAndRoleType( RoleType roleType );
 		
 		/**
 		 * ユーザを取得する
