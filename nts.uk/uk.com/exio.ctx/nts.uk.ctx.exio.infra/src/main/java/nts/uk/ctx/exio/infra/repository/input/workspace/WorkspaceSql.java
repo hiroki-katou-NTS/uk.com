@@ -18,8 +18,8 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.result.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
@@ -58,12 +58,10 @@ public class WorkspaceSql {
 	 * @param jdbcProxy
 	 */
 	public static void cleanOldTables(Require require, ExecutionContext context, JdbcProxy jdbcProxy) {
-		
-		require.getAllImportingDomains().forEach(domain -> {
-			val tableName = tableName(context, domain);
-			TemporaryTable.dropTable(jdbcProxy, tableName.asRevised());
-			TemporaryTable.dropTable(jdbcProxy, tableName.asCanonicalized());
-		});
+		val domain = require.getImportingDomain(context.getDomainId());		
+		val tableName = tableName(context, domain);
+		TemporaryTable.dropTable(jdbcProxy, tableName.asRevised());
+		TemporaryTable.dropTable(jdbcProxy, tableName.asCanonicalized());
 	}
 	
 	/**

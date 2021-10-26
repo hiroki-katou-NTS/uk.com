@@ -2551,6 +2551,10 @@ public class ProgramsManager {
             "/view/cmf/001/b/index.xhtml");
     public static final Program CMF001C = new Program(WebAppId.COM, ProgramIdConsts.CMF001C, "",
             "/view/cmf/001/c/index.xhtml");
+    public static final Program CMF001E = new Program(WebAppId.COM, ProgramIdConsts.CMF001E, "",
+            "/view/cmf/001/e/index.xhtml");
+    public static final Program CMF001F = new Program(WebAppId.COM, ProgramIdConsts.CMF001F, "",
+            "/view/cmf/001/f/index.xhtml");
     public static final Program CMF001X = new Program(WebAppId.COM, ProgramIdConsts.CMF001X, "",
             "/view/cmf/001/x/index.xhtml");
 
