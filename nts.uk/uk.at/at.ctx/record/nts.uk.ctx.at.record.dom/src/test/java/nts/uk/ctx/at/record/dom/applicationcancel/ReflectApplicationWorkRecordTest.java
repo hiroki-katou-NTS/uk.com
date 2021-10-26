@@ -89,7 +89,7 @@ public class ReflectApplicationWorkRecordTest {
 				times = 1;
 
 				// 「レコーダイメージ申請の対象日を取得する」のテスト呼び出す
-				GetTargetDateRecordApplication.getTargetDate(require, anyString, (AppRecordImageShare) any);
+				GetTargetDateRecordApplication.getTargetDate(require, (ContractCode) any, anyString, (AppRecordImageShare) any);
 				result = Pair.of(Optional.of(GeneralDate.ymd(2020, 01, 01)), Optional.of(createStamp()));
 				times = 1;
 
@@ -97,7 +97,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, "", appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require, new ContractCode(""),  "", appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
@@ -143,7 +143,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, "", appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require, new ContractCode(""),  "", appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);

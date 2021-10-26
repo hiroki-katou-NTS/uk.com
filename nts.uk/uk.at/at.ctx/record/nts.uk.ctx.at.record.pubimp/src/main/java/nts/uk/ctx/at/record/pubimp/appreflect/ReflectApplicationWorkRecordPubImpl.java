@@ -21,17 +21,16 @@ import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatu
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
 import nts.uk.ctx.at.record.dom.applicationcancel.ReflectApplicationWorkRecord;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.CheckRangeReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.CheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
+import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.pub.appreflect.ReflectApplicationWorkRecordPub;
 import nts.uk.ctx.at.record.pub.appreflect.export.RCReasonNotReflectDailyExport;
@@ -175,9 +174,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
     private ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
 	
 	@Inject
-	private CreateDailyResults createDailyResults;
-
-	@Inject
 	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 	
 	@Inject
@@ -212,11 +208,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				convertDailyRecordToAd, calculateDailyRecordServiceCenter, dailyRecordAdUpService,
 				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
-				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository, createDailyResults,
+				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
 				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
 				applicationReflectHistoryRepo);
-		val result = ReflectApplicationWorkRecord.process(impl ,AppContexts.user().companyId(), (ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime);
+		val result = ReflectApplicationWorkRecord.process(impl , new ContractCode(AppContexts.user().contractCode()), AppContexts.user().companyId(), (ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
 
@@ -294,8 +290,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
         
         private final ReflectWorkChangeAppRepository reflectWorkChangeAppRepository;
         
-        private CreateDailyResults createDailyResults;
-
         private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
         
         private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
@@ -457,19 +451,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
-				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, integrationOfDaily);
-		}
-
-		@Override
-		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
-				WorkInfoOfDailyAttendance workInformation) {
-			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
-		}
-
-		@Override
 		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId) {
 			return timeLeaveAppReflectRepository.findByCompany(companyId);
 		}
@@ -524,6 +505,17 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		@Override
 		public Optional<SubstituteLeaveAppReflect> findSubLeaveAppReflectByCompany(String companyId) {
 			return subLeaveAppReflectRepository.findSubLeaveAppReflectByCompany(companyId);
+		}
+
+		@Override
+		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber) {
+			return stampCardRepository.getByCardNoAndContractCode(stampNumber.v(), contractCode.v());
+		}
+
+		@Override
+		public Optional<ReflectStampDailyAttdOutput> createDailyDomAndReflectStamp(String cid, String employeeId,
+				GeneralDate date, Stamp stamp) {
+			return temporarilyReflectStampDailyAttd.createDailyDomAndReflectStamp(cid, employeeId, date, stamp);
 		}
 	}
 }

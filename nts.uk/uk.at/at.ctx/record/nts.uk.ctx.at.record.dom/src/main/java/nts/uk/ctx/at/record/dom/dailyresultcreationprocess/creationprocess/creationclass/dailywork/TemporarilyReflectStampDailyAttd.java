@@ -10,19 +10,28 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.ReflectGoingOutAndReturn;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.entranceandexit.EntranceAndExit;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect.ReflectStampSupport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectpclogoninfo.ReflectPcLogonInfo;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.ReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflecttemporarystartend.ReflectTemporaryStartEnd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.ReflectWork;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.EndStatus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
@@ -58,6 +67,15 @@ public class TemporarilyReflectStampDailyAttd {
 	
 	@Inject
 	private ReflectStampSupport reflectStampSupport;
+	
+	@Inject
+	private CreateDailyResults createDailyResults;
+	
+	@Inject
+	private DailyRecordShareFinder dailyRecordShareFinder;
+	
+	@Inject
+	private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 	/**
 	 * 打刻を反映する
 	 */
@@ -148,5 +166,67 @@ public class TemporarilyReflectStampDailyAttd {
 		
 		return listErrorMessageInfo;
 		
+	}
+	
+	//実績作って、打刻を反映する
+	public Optional<ReflectStampDailyAttdOutput> createDailyDomAndReflectStamp(String cid, String employeeId, GeneralDate date,
+			Stamp stamp) {
+//		$日別実績 = require.日別実績を作成する(社員ID, 年月日, しない, empty, empty, empty)
+	 		Optional<IntegrationOfDaily> integrationOfDaily = dailyRecordShareFinder.find(employeeId, date);
+	 		
+			OutputCreateDailyOneDay dailyOneDay;
+			if (integrationOfDaily.isPresent()) {
+				dailyOneDay = new OutputCreateDailyOneDay(new ArrayList<>(), integrationOfDaily.get(), new ArrayList<>(), ChangeDailyAttendance.createDefault(ScheduleRecordClassifi.RECORD));
+			} else {
+				dailyOneDay = createDailyResults.createDailyResult(cid, employeeId, date, ExecutionTypeDaily.CREATE
+						, createNull(employeeId, date));
+				if(dailyOneDay.getChangeDailyAttendance() == null) {
+					dailyOneDay.setChangeDailyAttendance(ChangeDailyAttendance.createDefault(ScheduleRecordClassifi.RECORD));
+				}
+			}
+			if (!dailyOneDay.getListErrorMessageInfo().isEmpty()){
+				return Optional.empty();
+			}
+			
+			//	$打刻反映範囲 = require.打刻反映時間帯を取得する($日別実績.日別実績の勤務情報)
+			OutputTimeReflectForWorkinfo forWorkinfo = timeReflectFromWorkinfo.get(cid, 
+					employeeId,
+					date,
+					dailyOneDay.getIntegrationOfDaily().getWorkInformation());
+			
+			if(forWorkinfo.getEndStatus() != EndStatus.NORMAL) {
+				return Optional.empty();
+			}
+			
+			//	$反映後の打刻 = require.打刻を反映する($日別実績, $打刻反映範囲, 打刻)
+			 this.reflectStamp(cid, stamp,
+					forWorkinfo.getStampReflectRangeOutput(),
+					dailyOneDay.getIntegrationOfDaily(),
+					dailyOneDay.getChangeDailyAttendance());
+			 return Optional.of(new ReflectStampDailyAttdOutput(dailyOneDay.getIntegrationOfDaily(), dailyOneDay.getChangeDailyAttendance()));
+	}
+	
+	//日別実績のディフォルトを作成する
+	private IntegrationOfDaily createNull(String sid, GeneralDate dateData) {
+		return new IntegrationOfDaily(
+				sid,
+				dateData,
+				null, 
+				null, 
+				null,
+				Optional.empty(), 
+				new ArrayList<>(), 
+				Optional.empty(), 
+				new BreakTimeOfDailyAttd(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				Optional.empty(), 
+				new ArrayList<>(),
+				Optional.empty(),
+				new ArrayList<>(),
+				Optional.empty());
 	}
 }

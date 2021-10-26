@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectstamp.ReflectStampInDailyRecord;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordStampService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.AutoCreateStampCardNumberService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -83,12 +85,22 @@ public class CreateStampDataForEmployeesService {
 		AtomTask atom = StampDataReflectProcessService.registerStamp(require, stampRecord, Optional.of(stamp)).orElse(AtomTask.none());
 		
 		// $打刻反映結果 = データタイムレコードを打刻に変換する#日別実績を処理する(require, 会社ID, 社員ID, $永続化処理)
-		Optional<StampDataReflectResult> reflectResult = ConvertTimeRecordStampService.createDailyData(require,
-				Optional.of(cid), Optional.of(employeeId), Optional.of(stamp), atom);
+//		Optional<StampDataReflectResult> reflectResult = ConvertTimeRecordStampService.createDailyData(require,
+//				Optional.of(cid), Optional.of(employeeId), Optional.of(stamp), atom);
+		Optional<StampDataReflectResult> stampDataResultOpt = ReflectStampInDailyRecord.reflect(require, cid, contractCode.v(), Optional.of(stamp));
 		
+		if(!stampDataResultOpt.isPresent()) {
+			return new TimeStampInputResult(new StampDataReflectResult(Optional.empty(), atom), stampResult.getAtomTask());
+		}
+		
+		List<AtomTask> taskLst = new ArrayList<>();
+		taskLst.add(atom);
+		taskLst.add(stampDataResultOpt.get().getAtomTask());
 		//return 打刻入力結果#打刻入力結果($打刻反映結果, $打刻カード作成結果.永続化処理)
-		
-		return new TimeStampInputResult(reflectResult.map(m -> m).orElse(null), stampResult.getAtomTask());
+
+		return new TimeStampInputResult(stampDataResultOpt
+				.map(m -> new StampDataReflectResult(m.getReflectDate(), AtomTask.bundle(taskLst))).orElse(null),
+				stampResult.getAtomTask());
 	}
 
 	/**
