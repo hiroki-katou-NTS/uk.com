@@ -13,3 +13,16 @@
 .radio-wrappers .radio-wrapper {
     display: block;
 }
+
+.nts-help-button-image {
+    transform: scale(0.68);
+    padding: 12px 12px !important;
+}
+
+.left-panel, .right-panel {
+    padding-top: 2px;
+}
+
+.left-panel {
+    padding-left: 15px!important;
+}

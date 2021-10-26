@@ -1,5 +1,13 @@
-.form-label {
+.left-panel {
+    padding-left: 15px!important;
+}
+
+.right-panel .form-label {
     width: 100px;
+}
+
+.right-panel .control-group {
+    margin-top: 15px;
 }
 
 .switchbox-wrappers {

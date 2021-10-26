@@ -48,8 +48,9 @@ module nts.uk.at.view.ksu011.d.viewmodel {
                     };
                     vm.$blockui("show");
                     vm.$ajax(API.duplicateSetting, command).done(() => {
-                        vm.$dialog.info({messageId: "Msg_15"});
-                        vm.$window.close(command.toCode);
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.$window.close(command.toCode);
+                        });
                     }).fail((error) => {
                         vm.$dialog.error(error).then(() => {
                             if (error.messageId == "Msg_2117") $("#D2_3 input")[0].focus();

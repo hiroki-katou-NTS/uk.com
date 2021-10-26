@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 640, height: 520 };</script>
+        <script>var dialogSize = { width: 640, height: 530 };</script>
         <com:scriptfile set="IGNITE" />
         <!--<com:stylefile path="ksu011.a.main.css" />-->
         <com:scriptfile path="ksu011.c.vm.js" />
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button id="C5_1" data-bind="click: decideSelect" class="proceed">#{i18n.getText('KSU011_59')}</button>
+            <button id="C5_1" data-bind="click: decideSelect" class="proceed x-large">#{i18n.getText('KSU011_59')}</button>
             <button id="C5_2" data-bind="click: cancel">#{i18n.getText('KSU011_60')}</button>
         </div>
     </ui:define>

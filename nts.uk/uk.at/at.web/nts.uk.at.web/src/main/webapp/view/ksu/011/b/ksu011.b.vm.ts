@@ -90,6 +90,11 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                     $("#B3_2").focus();
                 }
             });
+            vm.useSignStamp.subscribe(value => {
+                if (!value) {
+                    vm.$errors("clear");
+                }
+            });
             vm.getAllSetting(param.itemCode);
         }
 
@@ -127,11 +132,11 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                     vm.name(setting.name);
                     vm.useSignStamp(setting.signStampUseAtr == 1);
                     vm.columnName1(_.size(setting.titles) > 0 ? setting.titles[0] : null);
-                    vm.columnName2(_.size(setting.titles) > 1 ? setting.titles[0] : null);
-                    vm.columnName3(_.size(setting.titles) > 2 ? setting.titles[0] : null);
-                    vm.columnName4(_.size(setting.titles) > 3 ? setting.titles[0] : null);
-                    vm.columnName5(_.size(setting.titles) > 4 ? setting.titles[0] : null);
-                    vm.columnName6(_.size(setting.titles) > 5 ? setting.titles[0] : null);
+                    vm.columnName2(_.size(setting.titles) > 1 ? setting.titles[1] : null);
+                    vm.columnName3(_.size(setting.titles) > 2 ? setting.titles[2] : null);
+                    vm.columnName4(_.size(setting.titles) > 3 ? setting.titles[3] : null);
+                    vm.columnName5(_.size(setting.titles) > 4 ? setting.titles[4] : null);
+                    vm.columnName6(_.size(setting.titles) > 5 ? setting.titles[5] : null);
                     vm.personalCounter(setting.personalCounter || []);
                     vm.readonlyText1(countItems.filter(i => vm.personalCounter().indexOf(i.totalCountNo) >= 0).map(i => i.totalTimesName).join("、"));
                     vm.workplaceCounter(setting.workplaceCounter || []);

@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 1110, height: 640 };</script>
+        <script>var dialogSize = { width: 1080, height: 640 };</script>
         <com:ValidatorScript>
             nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableCode
             nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableName
@@ -156,11 +156,11 @@
                 </div>
                 <div class="control-group valign-center">
                     <div data-bind="ntsFormLabel: {text: $i18n('KSU011_49')}" style="width: auto;"/>
-                    <button data-bind="ntsHelpButton: {image: 'B8_2.png', position: 'right center', enable: true }">？</button>
+                    <button data-bind="ntsHelpButton: {image: 'B8_2.png', position: 'right center-89', enable: true }">？</button>
                 </div>
                 <div class="control-group valign-top">
                     <div class="form-label"/>
-                    <span data-bind="text: $i18n('KSU011_51')"/>
+                    <span data-bind="text: $i18n('KSU011_51')" style="line-height: 30px; padding-left: 45px;"/>
                     <div style="display: inline-block;"
                          data-bind="ntsRadioBoxGroup: {
                                             options: [
@@ -177,7 +177,7 @@
                 </div>
                 <div class="control-group valign-top">
                     <div class="form-label"/>
-                    <span data-bind="text: $i18n('KSU011_55')"/>
+                    <span data-bind="text: $i18n('KSU011_55')" style="line-height: 30px; padding-left: 45px;"/>
                     <div style="display: inline-block;"
                          data-bind="ntsRadioBoxGroup: {
                                             options: [
