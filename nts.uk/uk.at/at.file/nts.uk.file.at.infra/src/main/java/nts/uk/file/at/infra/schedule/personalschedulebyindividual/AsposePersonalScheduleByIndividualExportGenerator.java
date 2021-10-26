@@ -225,6 +225,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         } else {
             cells.get(rowCount, col).setValue(l1P1);
             cells.get(secondLieOfCalender, col).setValue(l2P1);
+            cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
             Cell cell = cells.get(secondLieOfCalender, col);
             setTextColorRed(cell);
             cell = cells.get(secondLieOfCalender, col + 3);
