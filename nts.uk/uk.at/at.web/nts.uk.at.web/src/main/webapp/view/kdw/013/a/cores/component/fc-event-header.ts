@@ -69,7 +69,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
 //                 //実績内容
 //                itemValues:manHrContents
                 //日別実績のロック状態 Optional<日別実績のロック状態>
-               lockInfos: DailyLock 
+               //lockInfos: DailyLock 
             }
             vm.$window.modal('at', '/view/kdw/013/h/index.xhtml', param).then(() => { });
             console.log('open H');
