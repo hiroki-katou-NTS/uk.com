@@ -19,7 +19,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.VariousVacationControl;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataSource;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
-import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialHolidayRemainDataOutputKdr;
+import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialVacationPastSituation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -2493,34 +2493,36 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     setForegroundRed(cells.get(firstRow, 7));
                 }
                 if (rs263 != null) {
-                    for (SpecialHolidayRemainDataOutputKdr item : rs263) {
+                    for (SpecialVacationPastSituation item : rs263) {
                         // Before this month
                         int totalMonth = totalMonths(dataSource.getStartMonth().yearMonth(), item.getYm());
                         if (currentMonth.compareTo(item.getYm()) > 0) {
                             if (maxRange >= totalMonth && totalMonth >= 0) {
-                                val bfNumofDate = item.getBeforeUseDays();
+                                val useDays = item.getUseDays();
                                 // M2_5 特別休暇１_使用日数, set lại giá trị cho cột này nếu bằng 0 thì không hiển thị ra
-                                cells.get(firstRow, 10 + totalMonth).setValue(bfNumofDate == 0 ? null : df.format(bfNumofDate));
+                                cells.get(firstRow, 10 + totalMonth).setValue(useDays == 0 ? null : df.format(useDays));
+                                if (useDays < 0) {
+                                    setForegroundRed(cells.get(firstRow, 10 + totalMonth));
+                                }
                                 if (isTime) {
                                     //M2_6
-                                    cells.get(firstRow + 1, 10 + totalMonth).setValue(item.getBeforeUseTimes() == 0 ? null :
-                                            convertToTime((int) item.getBeforeUseTimes()));
-
+                                    val useTime = item.getUseTimes();
+                                    cells.get(firstRow + 1, 10 + totalMonth).setValue(useTime == 0 ? null :
+                                            convertToTime(useTime));
+                                    val remainTimes = item.getRemainTimes();
                                     //M2_8
-                                    cells.get(firstRow + 3, 10 + totalMonth).setValue(convertToTime((int) item.getBeforeRemainTimes()));
-                                    if (item.getBeforeRemainTimes() < 0) {
+                                    cells.get(firstRow + 3, 10 + totalMonth).setValue(convertToTime(remainTimes));
+                                    if (useTime < 0) {
                                         setForegroundRed(cells.get(firstRow + 3, 10 + totalMonth));
                                     }
-                                    if (item.getBeforeUseTimes() < 0) {
+                                    if (remainTimes< 0) {
                                         setForegroundRed(cells.get(firstRow + 1, 10 + totalMonth));
                                     }
                                 }
+                                val remainDays = item.getRemainDays();
                                 // M2_7 特別休暇１_残数日数
-                                cells.get(firstRow + (isTime ? 2 : 1), 10 + totalMonth).setValue(df.format(item.getBeforeRemainDays()));
-                                if (item.getBeforeUseDays() < 0) {
-                                    setForegroundRed(cells.get(firstRow, 10 + totalMonth));
-                                }
-                                if (item.getBeforeRemainDays() < 0) {
+                                cells.get(firstRow + (isTime ? 2 : 1), 10 + totalMonth).setValue(df.format(remainDays));
+                                if (remainDays < 0) {
                                     setForegroundRed(cells.get(firstRow + (isTime ? 2 : 1), 10 + totalMonth));
                                 }
                             }
