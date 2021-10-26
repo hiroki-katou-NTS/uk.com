@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.task.tran.AtomTask;
 
 /**
@@ -16,7 +13,6 @@ import nts.arc.task.tran.AtomTask;
  * @author tutt
  *
  */
-
 public class DeleteFavoriteTaskService {
 	
 //■Public

@@ -32,7 +32,7 @@ public class FavoriteTaskItemTest {
 		favoriteContents.add(new TaskContent(1, new WorkCode("1")));
 		
 		FavoriteTaskItem item = new FavoriteTaskItem("employeeId", new FavoriteTaskName("name"), favoriteContents);
-		
+		item.setTaskName(new FavoriteTaskName("name1"));
 		NtsAssert.invokeGetters(item);
 	}
 
