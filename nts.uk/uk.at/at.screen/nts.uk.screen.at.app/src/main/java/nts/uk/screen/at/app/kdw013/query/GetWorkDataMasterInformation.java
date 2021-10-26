@@ -248,4 +248,9 @@ public class GetWorkDataMasterInformation {
 			return null;
 		}
     }
+    
+	/** @name 変更可能な勤務種類を取得する */
+    public void getChangeableWorkType(String employeeId, GeneralDate date, Optional<String> code) {
+    	
+    }
 }

@@ -187,20 +187,19 @@ module nts.uk.at.view.kdw013.h {
                 setShared('kml001selectedCodeList', self.itemId29.value() ? [self.itemId29.value()]: []);
                 setShared('kml001isSelection', true);
                 setShared('kml001BaseDate', self.params.date);
+				block.grayout();
 				ajax(paths.getWorkPlaceId, { employeeId: self.params.employeeId, date: self.params.date }).done(function(data: any) {
 					setShared('kml001WorkPlaceId', data ? data.employeeId: null);
 					nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml").onClosed(function () {
 	                    const kml001selectedCodeList = getShared("kml001selectedCodeList");
-							self.itemId29.value(kml001selectedCodeList[0]);
-							if(self.itemId29.value() && self.itemId28.value() != ''){
+							if(kml001selectedCodeList[0] && kml001selectedCodeList[0] != ''){
+								self.itemId29.value(kml001selectedCodeList[0]);
 								let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
 								if (workTime) {
 									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
 								} else {
 									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
 								}	
-							}else{
-								self.itemId29.itemSelectedDisplay('');
 							}
 	                    console.log(kml001selectedCodeList);
 	                });
@@ -220,16 +219,14 @@ module nts.uk.at.view.kdw013.h {
 	            setShared('KDL002_isShowNoSelectRow', false);
 	            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
 	                var lst = getShared('KDL002_SelectedNewItem');
-						self.itemId28.value(lst[0]);
-						if(self.itemId28.value() && self.itemId28.value() != ''){
+						if(lst[0] && lst[0] != ''){
+							self.itemId28.value(lst[0]);
 							let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
 							if (workType){
 								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
 							} else {
 								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
 							}
-						}else{
-							self.itemId28.itemSelectedDisplay('');
 						}
 	                console.log(lst);
 	            });

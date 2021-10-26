@@ -48,8 +48,8 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 
 			// $値 = $工数項目リスト.工数項目リスト：filter $.工数実績項目ID = $.工数実績項目ID
 			// map $.値
-			String value = manHrItems.stream().flatMap(m -> m.getTaskItemValues().stream())
-					.filter(f -> f.getItemId() == link.getItemId()).findAny().get().getValue();
+			Optional<TaskItemValue> taskItem = manHrItems.stream().flatMap(m -> m.getTaskItemValues().stream())
+					.filter(f -> f.getItemId() == link.getItemId()).findAny();
 
 			// $対象勤怠項目 = 勤怠項目リスト：find $.itemId == $.勤怠項目ID
 			// $対象勤怠項目.value($値)
@@ -57,9 +57,9 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 			Optional<ItemValue> itemValueOpt = attItems.stream().filter(f -> f.getItemId() == link.getItemId())
 					.findAny();
 
-			if (itemValueOpt.isPresent()) {
+			if (itemValueOpt.isPresent() && taskItem.isPresent()) {
 				ItemValue itemValue = itemValueOpt.get();
-				itemValue.value(value);
+				itemValue.value(taskItem.get().getValue());
 
 				// $更新後のItemValue.Add($対象勤怠項目)
 				result.add(itemValue);

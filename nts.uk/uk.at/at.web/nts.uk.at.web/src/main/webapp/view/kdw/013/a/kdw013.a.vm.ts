@@ -211,12 +211,12 @@ module nts.uk.ui.at.kdw013.a {
                 }
 
                 if (data && settings) {
-                    const { lstWorkRecordDetailDto } = data;
+                    const { dailyManHrTasks } = data;
                     const { tasks } = settings;
 
-                    if (lstWorkRecordDetailDto && tasks) {
+                    if (dailyManHrTasks && tasks) {
                         const events = _
-                            .chain(lstWorkRecordDetailDto)
+                            .chain(dailyManHrTasks)
                             .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
                                 const events: calendar.EventRaw[] =
                                     _.chain(lstWorkDetailsParamDto)
