@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         dataSourceOb: KnockoutObservableArray<any>;
         // set param
-        tabMs: Array<TabM>;
+        tabMs: KnockoutObservableArray<TabM>;
 
         isPreAtr: KnockoutObservable<boolean>;
         date: KnockoutObservable<string>;
@@ -120,16 +120,22 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             let paramTabs = [] as Array<any>;
             self.enableList = [];
             self.isLinkList = [];
-            _.each(self.tabMs, (item, index) => {
+            _.each(self.tabMs(), (item, index) => {
 
-                let paramTab = {
-                    id: 'tab-' + String(index + 1), title: item.title, content: '.tab-content-' + String(index + 1), enable: item.enable, visible: item.visible
-                };
-                paramTabs.push(paramTab);
-                self.enableList.push(ko.observable(false));
-                self.isLinkList.push(true);
-                nameGridsArray.push('grid' + String(index + 1));
+                if (item.visible()) {
+                    let paramTab = {
+                        id: 'tab-' + String(index + 1), title: item.title, content: '.tab-content-' + String(index + 1), enable: item.enable, visible: item.visible
+                    };
+                    paramTabs.push(paramTab);
+                    self.enableList.push(ko.observable(false));
+                    self.isLinkList.push(true);
+                    nameGridsArray.push('grid' + String(index + 1));
+                }
             });
+            self.tabMs.subscribe((value) => {
+                let tabsFilter = _.filter(paramTabs, (item) => {return item.visible()});
+                if (tabsFilter.length > 0) self.selectedTab(tabsFilter[0].id);
+            })
             self.nameGrids = ko.observableArray(nameGridsArray);
             self.tabs(paramTabs);
             // must assign param.tabs at mounted since tabs is not render

@@ -158,12 +158,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        isM: KnockoutObservable<boolean> = ko.observable(false);
        // select tab M
        selectedCode: KnockoutObservable<number> = ko.observable(0);
-       tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
+       tabMs: KnockoutObservableArray<TabM> = ko.observableArray([new TabM(this.$i18n('KAF002_29'), true, true),
                               new TabM(this.$i18n('KAF002_31'), true, true),
                               new TabM(this.$i18n('KAF002_76'), true, true),
                               new TabM(this.$i18n('KAF002_32'), true, true),
                               new TabM(this.$i18n('KAF002_33'), true, true),
-                              new TabM(this.$i18n('KAF002_34'), false, true)];
+                              new TabM(this.$i18n('KAF002_34'), false, true)]);
        
     //  ※M2.1_2 = ※M
     //  打刻申請起動時の表示情報.打刻申請設定.取消の機能の使用する　＝　使用する(use)
@@ -273,18 +273,19 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             let dataTab0 = _.filter(data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 0 || item.destinationTimeApp.timeStampAppEnum === 1);
                             let dataTab1 = _.filter(data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 2);
 
-                            if (self.tabs()[0].visible()) self.tabs()[0].visible(dataTab0.length > 0); 
-                            if (self.tabs()[1].visible()) self.tabs()[1].visible(dataTab1.length > 0); 
+                            if (self.tabs()[0].visible()) self.tabs()[0].visible(dataTab0.length > 0); self.tabMs()[0].visible(dataTab0.length > 0);
+                            if (self.tabs()[1].visible()) self.tabs()[1].visible(dataTab1.length > 0); self.tabMs()[1].visible(dataTab1.length > 0);
                         }
                         if (data.appStampOptional.listTimeStampAppOther) {
                             let dataTab2 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 2);
                             let dataTab3 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 0);
                             let dataTab4 = _.filter(data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 1);
 
-                            if (self.tabs()[2].visible()) self.tabs()[2].visible(dataTab2.length > 0); 
-                            if (self.tabs()[3].visible()) self.tabs()[3].visible(dataTab3.length > 0); 
-                            if (self.tabs()[4].visible()) self.tabs()[4].visible(dataTab4.length > 0); 
+                            if (self.tabs()[2].visible()) self.tabs()[2].visible(dataTab2.length > 0); self.tabMs()[2].visible(dataTab2.length > 0);
+                            if (self.tabs()[3].visible()) self.tabs()[3].visible(dataTab3.length > 0); self.tabMs()[3].visible(dataTab3.length > 0);
+                            if (self.tabs()[4].visible()) self.tabs()[4].visible(dataTab4.length > 0); self.tabMs()[4].visible(dataTab4.length > 0);
                         }
+                        self.tabMs.valueHasMutated();
                     }
                 } 
             });
@@ -862,6 +863,26 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         self.tabs()[5].visible(false);
                     
                     } 
+
+                    if (self.data.appStampOptional) {
+                        if (self.data.appStampOptional.listTimeStampApp) {
+                            let dataTab0 = _.filter(self.data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 0 || item.destinationTimeApp.timeStampAppEnum === 1);
+                            let dataTab1 = _.filter(self.data.appStampOptional.listTimeStampApp, (item: any) => item.destinationTimeApp.timeStampAppEnum === 2);
+
+                            if (self.tabs()[0].visible()) self.tabs()[0].visible(dataTab0.length > 0); self.tabMs()[0].visible(dataTab0.length > 0);
+                            if (self.tabs()[1].visible()) self.tabs()[1].visible(dataTab1.length > 0); self.tabMs()[1].visible(dataTab1.length > 0);
+                        }
+                        if (self.data.appStampOptional.listTimeStampAppOther) {
+                            let dataTab2 = _.filter(self.data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 2);
+                            let dataTab3 = _.filter(self.data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 0);
+                            let dataTab4 = _.filter(self.data.appStampOptional.listTimeStampAppOther, (item: any) => item.destinationTimeZoneApp.timeZoneStampClassification === 1);
+
+                            if (self.tabs()[2].visible()) self.tabs()[2].visible(dataTab2.length > 0); self.tabMs()[2].visible(dataTab2.length > 0);
+                            if (self.tabs()[3].visible()) self.tabs()[3].visible(dataTab3.length > 0); self.tabMs()[3].visible(dataTab3.length > 0);
+                            if (self.tabs()[4].visible()) self.tabs()[4].visible(dataTab4.length > 0); self.tabMs()[4].visible(dataTab4.length > 0);
+                        }
+                        self.tabMs.valueHasMutated();
+                    }
                     self.bindComment(self.data);
                     self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
