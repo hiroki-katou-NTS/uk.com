@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingDataS
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.SpecialVacationPastSituation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnLeaMaxDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -3969,10 +3970,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             cells.merge(firstRow + 4, 0, 1, 2, true);
             String yearHoliday = "0.0";
-            // AnnualLeaveUsedDayNumber yearHolidayDate = findAnnLeaUsedDaysAdapter.findUsedDays(employee.getEmployeeId(),criteriaDate);
-            // if(yearHolidayDate!=null){
-            //      yearHoliday = df.format(yearHolidayDate.v());
-            // }
+             AnnualLeaveUsedDayNumber yearHolidayDate = findAnnLeaUsedDaysAdapter.findUsedDays(employee.getEmployeeId(),criteriaDate);
+             if(yearHolidayDate!=null){
+                  yearHoliday = df.format(yearHolidayDate.v());
+             }
             cells.get(firstRow + 4, 0).setValue(TextResource.localize("KDR001_72", yearHoliday));
         }
     }
