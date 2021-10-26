@@ -73,10 +73,20 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 
 			//
 			self.columns = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 205 },
+				{ headerText: '', key: 'occurrenceDateStatus', width: 200,hidden: true } ,
+				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 205 ,formatter: function (accrualDate : any, record : any) {
+                       return "<div style='margin-left: 5px;display: flex;'><div style='width: 20px;' >"+record.occurrenceDateStatus.toString()+"</div> <div style='width: 155px;float:right;'> " + accrualDate + " </div></div>";   
+                } },
 				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 115 },
 				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 160 },
-				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 215 }
+				{ headerText: '', key: 'digestionDateStatus', width: 200,hidden: true } ,
+				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 215 ,formatter: function (digestionDate : any, record : any) {
+					let htmlStatus = record.digestionDateStatus.toString().length == 1 ? "<div style='margin-left: 10px;display: flex;'><div style='width: 25px;' >" : "<div style='margin-left: 5px;display: flex;'><div style='width: 31px;' >";
+                    if (record.digestionDateStatus.toString().length == 0) {
+						htmlStatus = "<div style='margin-left: 5px;display: flex;'><div style='width: 20px;' >";
+					}
+					return htmlStatus +record.digestionDateStatus.toString()+"</div> <div style='width: 155px;float:right;'> " + digestionDate + " </div></div>";   
+                } }
 			]);
 
 			self.switchOptions = ko.observableArray([
@@ -247,11 +257,17 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			let self = this, textA3_11_12_13 = "", text_A3_31_32 = "", text_A4_41_42_43 = "",
 				text45 = "<span style='color:#FF2D2D;'>" + z.dueDateStatus + "</span>";
 
-			textA3_11_12_13 = z.occurrenceDateStatus + " " + z.accrualDate + z.numberOccurrences;
-			text_A3_31_32 = "<span>" + text45 + " " + z.deadline; + "</span>"
-			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + z.digestionCount
+			textA3_11_12_13 = z.accrualDate + z.numberOccurrences;
+			
+			if (z.dueDateStatus.length > 0){
+				text_A3_31_32 = "<span>" + text45 + " " + z.deadline; + "</span>";
+			} else {
+				text_A3_31_32 = "<span style='margin-left:15px;'>" + text45 + " " + z.deadline; + "</span>";
+			}
+			
+			text_A4_41_42_43 = z.digestionDate + z.digestionCount
 
-			self.holidayData.push(new HolidayInfo(textA3_11_12_13, z.digestionStatus, text_A3_31_32, text_A4_41_42_43));
+			self.holidayData.push(new HolidayInfo(z.occurrenceDateStatus, textA3_11_12_13, z.digestionStatus, text_A3_31_32,z.digestionDateStatus, text_A4_41_42_43));
 
 			if ((_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
 				|| _.includes(z.digestionDateStatus, nts.uk.resource.getText('KDL005_40')))) {
@@ -443,14 +459,18 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 	}
 
 	class HolidayInfo {
+		occurrenceDateStatus : string;
 		accrualDate: string;
 		digestionStatus: string;
 		deadline: string;
+		digestionDateStatus : string;
 		digestionDate: string;
-		constructor(accrualDate: string, digestionStatus: string, deadline: string, digestionDate: string) {
+		constructor(occurrenceDateStatus : string, accrualDate: string, digestionStatus: string, deadline: string,digestionDateStatus : string, digestionDate: string) {
+			this.occurrenceDateStatus = occurrenceDateStatus;
 			this.accrualDate = accrualDate;
 			this.digestionStatus = digestionStatus;
 			this.deadline = deadline;
+			this.digestionDateStatus = digestionDateStatus;
 			this.digestionDate = digestionDate;
 		}
 	}
