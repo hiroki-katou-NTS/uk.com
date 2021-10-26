@@ -60,7 +60,7 @@
                 <!-- G6_2: 代休残数 -->
                 <div class="col-5 text-right">
                   <div v-if="remainNumber.manageTimeOff">
-                    {{$dt.timedr(remainNumber.compensatoryRemainTime)}}   
+                    {{getFormatTime(remainNumber.compensatoryRemainTime)}}   
                   </div>
                   <div v-else>
                     {{'KDWS03_52' | i18n(remainNumber.compensatoryRemain)}}

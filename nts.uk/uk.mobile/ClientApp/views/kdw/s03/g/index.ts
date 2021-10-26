@@ -127,6 +127,21 @@ export class KdwS03GComponent extends Vue {
             return hour.toString() + ':' + _.padStart(minute.toString(), 2, '0');
         }
     }
+
+    public getFormatTime(time) {
+        const self = this;
+
+        if (time) {
+            let timeStr: string = self.$dt.timedr(time);
+            if (timeStr.startsWith('0')) {
+                return timeStr.substr(1, timeStr.length);
+            } else {
+                return timeStr;
+            }
+        }
+
+        return '0:00';
+    }
 }
 const servicePath = {
     getRemain: 'screen/at/correctionofdailyperformance/getRemainNum',
