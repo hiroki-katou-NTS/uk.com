@@ -430,6 +430,26 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
             }
         }
+        int dataRemaining = Math.abs(dataBuildList.size() - (pageIndex <= 0 ? 6 : pageIndex * 6));
+        if (dataRemaining < 6) {
+            int col = 0;
+            while (dataRemaining > 0) {
+                for (Integer header : generateTableHeader(query.getStartDate())) {
+                    Cell cell = cells.get(rowCount, col);
+                    if (header == DayOfWeek.SUNDAY.value) {
+                        setBgColor(Color.fromArgb(250, 200, 250), cell);
+                    } else if (header == DayOfWeek.SATURDAY.value) {
+                        setBgColor(Color.fromArgb(204, 236, 255), cell);
+                    } else {
+                        setBgColor(Color.fromArgb(242, 242, 242), cell);
+                    }
+                    col += 5;
+                }
+                rowCount += 5;
+                col = 0;
+                dataRemaining--;
+            }
+        }
         PageSetup pageSetup = wsSource.getPageSetup();
         val totalRow = ((pageIndex + 1) * 30) + 3;
         pageSetup.setPrintArea(PRINT_AREA + totalRow);
