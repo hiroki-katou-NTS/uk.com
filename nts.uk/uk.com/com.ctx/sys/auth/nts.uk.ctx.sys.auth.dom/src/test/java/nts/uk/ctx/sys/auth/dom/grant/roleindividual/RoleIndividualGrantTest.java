@@ -100,7 +100,7 @@ public class RoleIndividualGrantTest {
 		
 		new Expectations() {
 			{
-				require.getRoleByCompanyIdAndRoleType( RoleType.COMPANY_MANAGER );
+				require.getRoleByRoleType( RoleType.COMPANY_MANAGER );
 				result = role ;
 			}
 		};
