@@ -31,6 +31,9 @@ module nts.uk.at.view.kdl001.a {
             selectedCodeBk: KnockoutObservable<string> = ko.observable(null);
             showNoSelectionRow: boolean = false;
 
+            // ver9
+            keywords: KnockoutObservableArray<WorkHoursFilterConditionDto> = ko.observableArray([]);
+
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([]);
@@ -135,6 +138,7 @@ module nts.uk.at.view.kdl001.a {
                             self.selectedCode(null);
                             self.selectedCodeBk(null);
                         }
+                        self.keywords(data.filterCondtions);
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     })
@@ -448,6 +452,15 @@ module nts.uk.at.view.kdl001.a {
             //workTime2: string;
             workAtr: string;
             remark: string;
+        }
+
+        export class WorkHoursFilterConditionDto {
+          // NO
+          no: number;
+          // 使用区分
+          notUseAtr: boolean;
+          // 名称
+          name: string;
         }
     }
 }

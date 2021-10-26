@@ -25,7 +25,7 @@
 
       <ui:define name="content">
         <div id="contents-area">
-          <div class="label">#{i18n.getText('KDL001_2')}</div>
+          <!-- <div class="label">#{i18n.getText('KDL001_2')}</div>
           <div class="control-group valign-center">
             <div class="table">
               <div class="cell">
@@ -84,6 +84,19 @@
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div class="setting-zone">
+            <div class="flex valign-center">
+              <label id="A2_22">#{i18n.getText('KDL001_25')}</label>
+              <a id="A2_23" class="hyperlink ml-10" href="#">#{i18n.getText('KDL001_26')}</a>
+              <button id="A2_24" data-bind="ntsHelpButton: { textId: 'KDL001_27', position: 'right center' }">?</button>
+            </div>
+            <div class="flex valign-center">
+              <div id="A2_25" class="panel panel-frame" data-bind="foreach: keywords">
+                <button class="A2_26" data-bind="text: name, enable: notUseAtr"></button>
               </div>
             </div>
           </div>
