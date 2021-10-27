@@ -232,11 +232,18 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         if (l3P1 == null) l3P1 = "";
         List<Cell> cellsClass = new ArrayList<>();
         List<Cell> cellsWhile = new ArrayList<>();
-        if (holidayClass != null) {
+        if (holidayClass == null) {
             holidayClass = 0;
         }
         WorkStyle workStyle = EnumAdaptor.valueOf(holidayClass, WorkStyle.class);
-        if (!holidayMap.containsKey(colNO) && workStyle != WorkStyle.ONE_DAY_REST) {
+        if (holidayMap.containsKey(colNO) || workStyle.value == WorkStyle.ONE_DAY_REST.value) {
+            cells.get(rowCount, col).setValue(l1P1);
+            cells.get(secondLieOfCalender, col).setValue(l2P1);
+            Cell cell = cells.get(secondLieOfCalender, col);
+            setTextColorRed(cell);
+            cell = cells.get(secondLieOfCalender, col + 3);
+            setTextColorRed(cell);
+        } else {
             cells.get(rowCount, col).setValue(l1P1 + "   " + l1P2);
             cells.get(secondLieOfCalender, col).setValue(l2P1);
             cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
@@ -249,13 +256,6 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 );
                 setHolidayClassColor(cellsClass, holidayClass);
             }
-        } else {
-            cells.get(rowCount, col).setValue(l1P1);
-            cells.get(secondLieOfCalender, col).setValue(l2P1);
-            Cell cell = cells.get(secondLieOfCalender, col);
-            setTextColorRed(cell);
-            cell = cells.get(secondLieOfCalender, col + 3);
-            setTextColorRed(cell);
         }
         if (datePeriod.contains(dateInformation.getYmd())) {
             cellsWhile.addAll(
