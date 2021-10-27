@@ -636,8 +636,9 @@ module nts.uk.at.view.kdw003.cg {
                 self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                     self.isReload(false);
                     self.findDetail(command.empIdDes[0], self.isReload());
-                    if(self.lstEmployee().length > 1)
-                        self.selectedEmployee(command.empIdDes[0]);
+                    let empDes = _.intersection(_.map(self.lstEmployee(), emp => emp.id), dataTarget);
+                    if(!_.isEmpty(empDes))
+                        self.selectedEmployee(empDes[0]);
                     self.enableNewBtn(true);
                 });
             }).fail((error) => {
