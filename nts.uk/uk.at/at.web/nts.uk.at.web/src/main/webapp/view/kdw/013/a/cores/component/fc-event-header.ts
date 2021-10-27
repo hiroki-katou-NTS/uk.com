@@ -54,23 +54,30 @@ module nts.uk.ui.at.kdw013.eventheadear {
         openHDialog(day) {
             const vm = this;
             vm.params.setting();
+            const screenA = vm.params.screenA;
+            const IntegrationOfDaily = _.find(_.get(vm.params.screenA.$datas(), 'lstIntegrationOfDaily', null), id => moment(id.ymd).isSame(moment(day.date), 'days'));
+            const lockInfos = _.get(vm.params.screenA.$datas(), 'lockInfos', []);
+            //const displayAttItems =  _.get(vm.params.screenA.$setting(), 'manHrInputDisplayFormat.displayAttItems', []);
+            const itemValues = _.find(_.get(vm.params.screenA.$datas(), 'convertRes', []), cv => moment(cv.ymd).isSame(moment(day.date), 'days')); 
+            const displayAttItems = _.get(vm.params.screenA.$settings(), 'manHrInputDisplayFormat.displayAttItems');
+           
             
             let param = {
                 //対象社員
-//                sid: vm.$user.employeeId,
-//                //対象日 
-//                date: day,
-//                //日別実績(Work) 
-//                IntegrationOfDaily:null,
-//                //実績入力ダイアログ表示項目一覧
-//                displayAttItems:,
-//                 //実績内容
-//                itemValues:manHrContents
-//                //日別実績のロック状態 Optional<日別実績のロック状態>
-//                lockInfos: DailyLock 
+                sid: vm.$user.employeeId,
+                //対象日 
+                date: day,
+                //日別実績(Work) 
+                IntegrationOfDaily,
+                //実績入力ダイアログ表示項目一覧
+                displayAttItems,
+                //実績内容
+                itemValues,
+                //日別実績のロック状態 Optional<日別実績のロック状態>
+                lockInfos
             }
-            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml', param).then(() => { });
-            console.log('open H');
+            vm.$window.shared('KDW013H', param);
+            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml').then(() => { });
         }
     }
 

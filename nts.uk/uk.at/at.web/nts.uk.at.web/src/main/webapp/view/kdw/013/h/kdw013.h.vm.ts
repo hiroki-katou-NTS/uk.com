@@ -12,7 +12,8 @@ module nts.uk.at.view.kdw013.h {
 		const paths: any = {
 			start: "screen/at/kdw013/h/start",
 			save: "screen/at/kdw013/h/save",
-			getWorkPlaceId: "screen/at/kdw013/h/getWorkPlaceId"
+			getWorkPlaceId: "screen/at/kdw013/h/getWorkPlaceId",
+			getWorkType: "screen/at/kdw013/h/getWorkType"
 		}
 		export class ScreenModel {
 			itemId28: ItemValue;
@@ -40,6 +41,7 @@ module nts.uk.at.view.kdw013.h {
 
 			params: Param;
 			dataMaster: DataMaster;
+			primitiveValueDaily: any[] = __viewContext.enums.PrimitiveValueDaily;
 
 			constructor() {
 				let self = this;
@@ -101,7 +103,7 @@ module nts.uk.at.view.kdw013.h {
 					let itemName = _.find(self.dataMaster.attItemName, a => a.attendanceItemId == item.itemId);
 					let itemType = _.find(self.dataMaster.dailyAttendanceItem, d => d.attendanceItemId == item.itemId);
 					let use = true;
-					item.setUseNameType(use, itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null);
+					item.setUseNameType(use, itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null));
 					let option: Option[] = [];
 					let divergenceReasonInputMethods = null;
 					//trường hợp đặc biệt
@@ -140,6 +142,13 @@ module nts.uk.at.view.kdw013.h {
 				});
 
 			}
+			
+			getPrimitiveValue(primitiveValue: number): string {
+				if(primitiveValue){
+					return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
+				}
+				return '';
+			}
 
 			orderOptionItems() {
 				let self = this;
@@ -161,8 +170,8 @@ module nts.uk.at.view.kdw013.h {
 				let self = this;
 
 				//fake data các item co dinh
-				self.itemId28 = new ItemValue({ itemId: 28, value: 'item 28', valueType: 0, layoutCode: 'layoutCode 28' });
-				self.itemId29 = new ItemValue({ itemId: 29, value: 'item 29', valueType: 0, layoutCode: 'layoutCode 29' });
+				self.itemId28 = new ItemValue({ itemId: 28, value: '000', valueType: 0, layoutCode: 'layoutCode 28' });
+				self.itemId29 = new ItemValue({ itemId: 29, value: '000', valueType: 0, layoutCode: 'layoutCode 29' });
 
 				self.itemId31_34 = new StartEndTime({ itemId: 31, value: 20, valueType: 0, layoutCode: 'layoutCode 31' }, { itemId: 34, value: 30, valueType: 0, layoutCode: 'layoutCode 34' });
 
@@ -187,20 +196,19 @@ module nts.uk.at.view.kdw013.h {
                 setShared('kml001selectedCodeList', self.itemId29.value() ? [self.itemId29.value()]: []);
                 setShared('kml001isSelection', true);
                 setShared('kml001BaseDate', self.params.date);
+				block.grayout();
 				ajax(paths.getWorkPlaceId, { employeeId: self.params.employeeId, date: self.params.date }).done(function(data: any) {
-					setShared('kml001WorkPlaceId', data ? data.employeeId: null);
+					setShared('kml001WorkPlaceId', data ? data.workPlaceId: null);
 					nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml").onClosed(function () {
 	                    const kml001selectedCodeList = getShared("kml001selectedCodeList");
-							self.itemId29.value(kml001selectedCodeList[0]);
-							if(self.itemId29.value() && self.itemId28.value() != ''){
+							if(kml001selectedCodeList[0] && kml001selectedCodeList[0] != ''){
+								self.itemId29.value(kml001selectedCodeList[0]);
 								let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
 								if (workTime) {
 									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
 								} else {
 									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
 								}	
-							}else{
-								self.itemId29.itemSelectedDisplay('');
 							}
 	                    console.log(kml001selectedCodeList);
 	                });
@@ -214,25 +222,25 @@ module nts.uk.at.view.kdw013.h {
 			openKdl002() {
                 var self = this;
 	            setShared('KDL002_Multiple',false);
-	           	setShared('KDL002_AllItemObj',[]);
 	            setShared('kdl002isSelection',true);
-	            setShared('KDL002_SelectedItemId',self.itemId29.value() ? [self.itemId29.value()]: []);
+	            setShared('KDL002_SelectedItemId',self.itemId28.value() ? [self.itemId28.value()]: []);
 	            setShared('KDL002_isShowNoSelectRow', false);
-	            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
-	                var lst = getShared('KDL002_SelectedNewItem');
-						self.itemId28.value(lst[0]);
-						if(self.itemId28.value() && self.itemId28.value() != ''){
-							let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
-							if (workType){
-								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
-							} else {
-								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+				ajax(paths.getWorkType, { employeeId: self.params.employeeId, date: self.params.date, code: self.itemId28.value() }).done(function(data: any) {
+					setShared('KDL002_AllItemObj', data);
+		            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
+		                var lst = getShared('KDL002_SelectedNewItem');
+							if(lst[0] && lst[0] != ''){
+								self.itemId28.value(lst[0].code);
+								let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
+								if (workType){
+									self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
+								} else {
+									self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+								}
 							}
-						}else{
-							self.itemId28.itemSelectedDisplay('');
-						}
-	                console.log(lst);
-	            });
+		                console.log(lst);
+		            });
+				});
             }
 
 			registration() {
@@ -321,6 +329,7 @@ module nts.uk.at.view.kdw013.h {
 		layoutCode: string;
 		itemSelectedDisplay: KnockoutObservable<string> = ko.observable('');
 		name: string; //only use for break times
+		
 		constructor(itemValue?: IItemValue, name?: string) {
 			this.itemId = itemValue.itemId;
 			this.value(itemValue.value);
@@ -328,6 +337,7 @@ module nts.uk.at.view.kdw013.h {
 			this.valueType = itemValue.valueType;
 			this.layoutCode = itemValue.layoutCode;
 			this.name = name;
+			
 		}
 		toDataSave(): IItemValue {
 			return {
@@ -347,16 +357,20 @@ module nts.uk.at.view.kdw013.h {
 		use: KnockoutObservable<boolean> = ko.observable(false);
 		type: number;
 		options: Option[] = [];
+		primitiveValue: string;
 		constructor(itemValue: IItemValue) {
 			super(itemValue);
 		}
-		setUseNameType(use: boolean, name?: string, type?: number) {
+		setUseNameType(use: boolean, name?: string, type?: number, primitiveValue?: string) {
 			if (use) {
 				this.use(use);
 				this.lable(name);
 				this.type = type;
+				this.primitiveValue = primitiveValue;
 			}
 		}
+		
+		
 	}
 	type Option = {
 		code: string;

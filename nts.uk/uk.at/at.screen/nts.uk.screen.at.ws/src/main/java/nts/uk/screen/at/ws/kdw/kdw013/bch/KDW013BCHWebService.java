@@ -58,19 +58,6 @@ public class KDW013BCHWebService {
 		return getWorkDataMasterInformation.get(param.refDate, param.itemIds);
 	}
 
-	
-	 // C:作業入力パネル.メニュー別OCD.作業入力パネルを起動する
-	 
-//	@POST
-//	@Path("c/start")
-//	public StartWorkInputPanelDto startWorkInputPanel(StartWorkInputPanelParam param) {
-//		WorkGroupDto workGrp = param.getWorkGroupDto();
-//		return StartWorkInputPanelDto.toDto(startWorkInputPanel.startPanel(param.getEmployeeId(), param.getRefDate(),
-//				WorkGroup.create(workGrp.getWorkCD1(), workGrp.getWorkCD2(), workGrp.getWorkCD3(), workGrp.getWorkCD4(),
-//						workGrp.getWorkCD5())));
-//	}
-	 
-
 	// C:作業入力パネル.メニュー別OCD.作業項目を選択する
 	@POST
 	@Path("c/select")
@@ -89,6 +76,12 @@ public class KDW013BCHWebService {
 	@Path("h/getWorkPlaceId")
 	public WorkPlaceId getWorkPlaceId(EmployeeIdDate param) {
 		return workplaceAdapter.findWorkplaceById(param.employeeId, param.date).map(c-> new WorkPlaceId(c.getWorkplaceId())).orElse(null);
+	}
+	
+	@POST
+	@Path("h/getWorkType")
+	public List<String> getWorkType(EmployeeIdDateCode param) {
+		return getWorkDataMasterInformation.getChangeableWorkType(param.employeeId, param.date, Optional.ofNullable(param.code));
 	}
 
 	@POST
@@ -121,4 +114,9 @@ class WorkPlaceId {
 class EmployeeIdDate {
 	public String employeeId;
 	public GeneralDate date;
+}
+
+@NoArgsConstructor
+class EmployeeIdDateCode extends EmployeeIdDate {
+	public String code;
 }

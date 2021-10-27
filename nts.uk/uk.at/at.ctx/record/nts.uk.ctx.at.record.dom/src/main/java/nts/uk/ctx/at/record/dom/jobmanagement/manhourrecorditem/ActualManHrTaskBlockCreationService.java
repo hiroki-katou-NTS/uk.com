@@ -93,7 +93,7 @@ public class ActualManHrTaskBlockCreationService {
 						// $時間帯 = 計算用時間帯#計算用時間帯($開始時刻,$終了時刻)
 						TimeSpanForCalc timeSpanForCalc = new TimeSpanForCalc(
 								new TimeWithDayAttr(Integer.parseInt(startTime)),
-								new TimeWithDayAttr(Integer.parseInt(startTime)));
+								new TimeWithDayAttr(Integer.parseInt(endTime)));
 
 						// $作業ブロック = 工数実績作業ブロック#工数実績作業ブロック($時間帯,$作業詳細)
 						ManHrPerformanceTaskBlock taskBlock = new ManHrPerformanceTaskBlock(timeSpanForCalc,

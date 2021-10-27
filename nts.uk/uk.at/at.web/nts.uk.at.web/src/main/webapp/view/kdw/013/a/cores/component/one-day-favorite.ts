@@ -5,6 +5,8 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
     })
     export class Kdw013OneDayEventBindingHandler implements KnockoutBindingHandler {
         init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
+            
+            
             const name = componentName();
             const mode = allBindingsAccessor.get('mode');
             const items = allBindingsAccessor.get('items');
@@ -12,7 +14,20 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             const screenA = allBindingsAccessor.get('screenA');      
             const params = { mode, items, screenA };
 
-            ko.applyBindingsToNode(element, { component: { name, params } });
+            const subscribe = (mode: boolean) => {
+
+                if (!mode) {
+                    ko.cleanNode(element);
+
+                    element.innerHTML = '';
+                } else {
+                    ko.applyBindingsToNode(element, { component: { name, params } });
+                }
+            };
+
+            mode.subscribe(subscribe);
+
+            subscribe(mode());
 
             return { controlsDescendantBindings: true };
             

@@ -15,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.Attenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 
 /**
  * DS:日別勤怠(Work)から工数実績項目に変換する
@@ -47,10 +49,11 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 		// 2.データをセットする
 		// DailyRecordToAttendanceItemConverter.setData(日別勤怠(Work))
 		converter.setData(inteDaiy);
-
+		List<Integer> pamramItemIds = AttendanceItemIdContainer.getIds(AttendanceItemType.DAILY_ITEM).stream()
+				.map(x -> x.getItemId()).collect(Collectors.toList());
 		// 3.項目値リストに変換する
 		// DailyRecordToAttendanceItemConverter.convert(List.empty())
-		List<ItemValue> itemValues = converter.convert(Collections.emptyList());
+		List<ItemValue> itemValues = converter.convert(pamramItemIds);
 
 		// $紐付け設定 = require.紐付け設定を取得する(工数実績項目リスト)
 		List<ManHourRecordAndAttendanceItemLink> settings = require.get(itemIds);
@@ -63,11 +66,11 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 
 			// $値 = $勤怠項目値：filter $.itemId = $.勤怠項目ID
 			// map $.value
-			String value = itemValues.stream().filter(f -> f.getItemId() == l.getItemId()).findAny()
+			String value = itemValues.stream().filter(f -> f.getItemId() == l.getAttendanceItemId()).findAny()
 					.map(m -> m.getValue()).orElse("");
 
 			// $作業項目値 = 作業項目値#作業項目値($.工数実績項目ID,$値)
-			TaskItemValue itemValue = new TaskItemValue(l.getAttendanceItemId(), value);
+			TaskItemValue itemValue = new TaskItemValue(l.getItemId(), value);
 
 			// $工数実績作業詳細 = $工数実績リスト：filter $.応援勤務枠No = $.応援勤務枠No
 			Optional<ManHrTaskDetail> optManHrTaskDetail = manHrRecords.stream()

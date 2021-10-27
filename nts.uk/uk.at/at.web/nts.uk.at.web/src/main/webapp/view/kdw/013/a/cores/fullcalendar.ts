@@ -1237,15 +1237,16 @@ module nts.uk.ui.at.kdw013.calendar {
 
             isShowBreakTime.subscribe(value => {
                     let currentDate = vm.params.initialDate();
-                
-                    if(!value){
-                         let breakEventInDay = _.chain(vm.calendar.getEvents())
+                    let breakEventInDay = _.chain(vm.calendar.getEvents())
                             .filter((evn) => { return moment(evn.start).isSame(moment(currentDate), 'days'); })
                             .filter((evn) => { return evn.extendedProps.isTimeBreak == true })
                             .value();
-                        
+                    if(!value){
                        _.forEach(breakEventInDay, e => e.remove());
                         mutatedEvents();
+                        return;
+                    }
+                    if (breakEventInDay.length) {
                         return;
                     }
                     let data =  ko.unwrap(vm.params.$datas);
@@ -1257,17 +1258,26 @@ module nts.uk.ui.at.kdw013.calendar {
                             _.forEach(breakTimeSheets, bts => {
                                 let start = moment(currentDate).set('hour', bts.start / 60).set('minute', bts.start % 60).toDate();
                                 let end = moment(currentDate).set('hour', bts.end / 60).set('minute', bts.end % 60).toDate();
+                                
+                                let { manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(currentDate), 'days'));
+                                const {no, breakTime} = bts;
                                 events.push({
                                     id: randomId(),
-                                    title: '',
+                                    title: vm.$i18n('KDW013_79'),
                                     start,
                                     end,
                                     textColor: '',
                                     backgroundColor: '#fbb3fb',
                                     extendedProps: {
+                                        no,
+                                        breakTime,
                                         id: randomId(),
                                         status: 'normal',
-                                        isTimeBreak: true
+                                        isTimeBreak: true,
+                                        taskBlock: {
+                                            manHrContents,
+                                            taskDetails: []
+                                        }
                                     } as any
                                 });
                             });
@@ -1521,6 +1531,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     const day = moment(date).add(1, 'day');
 
                                     if (end) {
+                                        if (end == '9999-12-32') { end = '9999-12-31' }
                                         if (day.isBefore(end, 'date')) {
                                             initialDate(day.toDate());
                                         }
@@ -1712,19 +1723,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         isTimeBreak
                         } = extendedProps;
                     selectedEvent.extendedProps = {
-                        employeeId,
-                        id,
-                        remarks,
-                        status,
-                        supportFrameNo : null,
-                        workCD1,
-                        workCD2,
-                        workCD3,
-                        workCD4,
-                        workCD5,
-                        workLocationCD,
-                        workingHours,
-                        isTimeBreak
+                        ...extendedProps,
+                        supportFrameNo : null
                     };
 
                 }
@@ -1919,8 +1919,14 @@ module nts.uk.ui.at.kdw013.calendar {
                         return;
                     }
 
-                             
-                
+                     let eventInDay = _.chain(events)
+                            .filter((evn) => { return moment(info.date).isSame(evn.start, 'days'); })
+                            .sortBy('end')
+                            .value();
+                    
+                     let frameNos =[];                    
+                     _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                    
                     let newEvent = {
                             id: randomId(),
                             start: info.date,
@@ -1936,7 +1942,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //年月日
                                 period: { start: info.date, end: moment(info.date).add(vm.params.slotDuration(), 'm').toDate() },
                                 //現在の応援勤務枠
-                                frameNos:[],                                
+                                frameNos,                                
                                 //工数実績作業ブロック
                                 taskBlock: {
                                     caltimeSpan: { start: info.date, end: moment(info.date).add(vm.params.slotDuration(), 'm').toDate() },
@@ -2071,7 +2077,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     // binding sum of work time within same day
                                     ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: { timesSet: timesSet, screenA: vm.params.screenA } } }, vm);
                                     // binding note for same day
-                                    ko.applyBindingsToNode(_events, { component: { name: 'fc-event-header', params: { data: attendancesSet, setting: $settings } } }, vm);
+                                    ko.applyBindingsToNode(_events, { component: { name: 'fc-event-header', params: { screenA: vm.params.screenA,  data: attendancesSet, setting: $settings } } }, vm);
                                 })
                                 .then(() => vm.calendar.setOption('height', '100px'))
                                 .then(() => {
@@ -2681,8 +2687,12 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // rerender event (deep clean selection)
                     updateEvents();
-                    
-                    
+                     let eventInDay = _.chain(events())
+                            .filter((evn) => { return moment(evn.start).isSame(moment(start), 'days'); })
+                            .sortBy('end')
+                            .value();
+                    let frameNos = [];
+                    _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
                     let newEvent = {
                         id: randomId(),
                         start: start,
@@ -2698,7 +2708,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             //年月日
                             period: { start:  start, end: end },
                             //現在の応援勤務枠
-                            frameNos: [],
+                            frameNos,
                             //工数実績作業ブロック
                             taskBlock: {
                                 caltimeSpan: { start: start, end: end },
@@ -2767,16 +2777,35 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     let isTaskDrop = _.find(vm.taskDragItems(), task => task.extendedProps.favId == extendedProps.favId);
                     
+                   
+                    
                     if (isTaskDrop) {
-                        let workCDs = _.map(_.get(extendedProps, 'dropInfo.favoriteContents', []), item => item.taskCode);
+                        let taskItemValues = _.map(_.get(extendedProps, 'dropInfo.favoriteContents', []), ({itemId, taskCode}) => { return { itemId, value: taskCode } });
+                        
+                        let wg = {
+                            workCD1: _.get(extendedProps, 'dropInfo.favoriteContents[0].taskCode', null),
+                            workCD2: _.get(extendedProps, 'dropInfo.favoriteContents[1].taskCode', null),
+                            workCD3: _.get(extendedProps, 'dropInfo.favoriteContents[2].taskCode', null),
+                            workCD4: _.get(extendedProps, 'dropInfo.favoriteContents[3].taskCode', null),
+                            workCD5: _.get(extendedProps, 'dropInfo.favoriteContents[4].taskCode', null),
+                        }
+                        
                         let eventInDay = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
                             .sortBy('end')
                             .value();
                         
+                        let frameNos = [];
+                        _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                        const startMinutes = (moment(start).hour() * 60) + moment(start).minute();
+                        const endMinutes = (moment(end).hour() * 60) + moment(end).minute();
+
+                        taskItemValues.push({ itemId: 1, value: startMinutes });
+                        taskItemValues.push({ itemId: 2, value: endMinutes });
+                        taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
                             events.push({
-                                title: getTitles(workCDs, vm.params.$settings().tasks),
+                                title: getTitles(wg, vm.params.$settings().tasks),
                                 start,
                                 end,
                                 textColor,
@@ -2790,14 +2819,14 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //社員ID
                                 employeeId: vm.params.employee() || vm.$user.employeeId,
                                 //年月日
-                                period: { start: start, end: end },
+                                period: {  start,  end },
                                 //現在の応援勤務枠
-                                frameNos:[],                                
+                                frameNos,                                
                                 //工数実績作業ブロック
                                 taskBlock: {
-                                    caltimeSpan: { start: start, end: end },
+                                    caltimeSpan: { start,  end },
 
-                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 0 : vm.getFrameNo(eventInDay), taskItemValues : vm.getTaskValues() }]
+                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 0 : vm.getFrameNo(eventInDay), taskItemValues }]
                                 },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
@@ -2818,9 +2847,15 @@ module nts.uk.ui.at.kdw013.calendar {
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60);
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
                             let [first] = task.taskContents;
-                            
+                            let wg = {
+                                workCD1: _.get(extendedProps, 'task.taskContents[0].taskContent.taskCode', null),
+                                workCD2: _.get(extendedProps, 'task.taskContents[1].taskContent.taskCode', null),
+                                workCD3: _.get(extendedProps, 'task.taskContents[2].taskContent.taskCode', null),
+                                workCD4: _.get(extendedProps, 'task.taskContents[3].taskContent.taskCode', null),
+                                workCD5: _.get(extendedProps, 'task.taskContents[4].taskContent.taskCode', null),
+                            }
                             events.push({
-                                title: getTitles(workCDs, vm.params.$settings().tasks),
+                                title: getTitles(wg, vm.params.$settings().tasks),
                                 start : timeStart,
                                 end : timeEnd,
                                 textColor,
@@ -2951,7 +2986,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.calendar.render();
                 });
 
-            // change weekends 
             ko.computed({
                 read: () => {
                     const wk = ko.unwrap<boolean>(weekends);
