@@ -378,7 +378,8 @@ public class WorkTimeSettingFinder {
         Integer useATR = null;
         // ドメインモデル「就業時間帯の絞り込み条件」を取得
         List<WorkHoursFilterConditionDto> filterConditions = this.workHoursFilterConditionRepository
-        		.findByCid(cid).stream().map(WorkHoursFilterConditionDto::fromDomain)
+        		.findByCid(companyID).stream().map(WorkHoursFilterConditionDto::fromDomain)
+        		.sorted(Comparator.comparing(WorkHoursFilterConditionDto::getNo))
         		.collect(Collectors.toList());
         // ドメインモデル「複数回勤務管理」を取得する
         Optional<WorkManagementMultiple> optWorkMultiple = workMultipleRepo.findByCode(companyID);

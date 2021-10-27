@@ -18,15 +18,15 @@ module nts.uk.at.view.kdl001.a {
             return nts.uk.request.ajax(paths.findByTime, command);
         }
 
-        export function registerKeyword(param: any) {
+        export function registerKeyword(param: any): JQueryPromise<any> {
           return nts.uk.request.ajax(paths.registerKeyword, param);
         }
 
-        export function searchByKeyword(param: any) {
+        export function searchByKeyword(param: any): JQueryPromise<any> {
           return nts.uk.request.ajax(paths.searchByKeyword, param);
         }
 
-        export function searchByDetails(param: any) {
+        export function searchByDetails(param: any): JQueryPromise<any> {
           return nts.uk.request.ajax(paths.searchByDetails, param);
         }
     }

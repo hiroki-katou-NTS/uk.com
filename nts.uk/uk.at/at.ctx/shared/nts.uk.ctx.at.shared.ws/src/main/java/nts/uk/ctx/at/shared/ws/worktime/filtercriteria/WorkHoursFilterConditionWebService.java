@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.filtercriteria.SearchByDetailsPara
 import nts.uk.ctx.at.shared.app.find.worktime.filtercriteria.SearchByKeywordParam;
 import nts.uk.ctx.at.shared.app.find.worktime.filtercriteria.WorkHoursFilterConditionFinder;
 
-@Path("ctx/at/shared/worktime/filtercondition")
+@Path("at/shared/worktime/filtercondition")
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkHoursFilterConditionWebService extends WebService {
 
