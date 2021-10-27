@@ -19,6 +19,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -39,7 +40,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.HEAD;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -219,7 +219,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private void printCalender(Cells cells, int rowCount, int col,
-                               String l1P1, String l1P2, String l2P1, String l2P2, String l3P1, String l3P2, Map<Integer, String> holidayMap, int colNO, Integer holidayClass, DateInformation dateInformation) {
+                               String l1P1, String l1P2, String l2P1, String l2P2,
+                               String l3P1, String l3P2, Map<Integer, String> holidayMap,
+                               int colNO, Integer holidayClass, DateInformation dateInformation, DatePeriod datePeriod) {
         int secondLieOfCalender = rowCount + 1;
         int thirdLieOfCalender = rowCount + 2;
         String divider = getText("KSU002_67");
@@ -255,13 +257,15 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             cell = cells.get(secondLieOfCalender, col + 3);
             setTextColorRed(cell);
         }
-        cellsWhile.addAll(
-                Arrays.asList(cells.get(secondLieOfCalender, col),
-                        cells.get(secondLieOfCalender, col + 2),
-                        cells.get(secondLieOfCalender, col + 3),
-                        cells.get(thirdLieOfCalender, col),
-                        cells.get(thirdLieOfCalender + 1, col))
-        );
+        if (datePeriod.contains(dateInformation.getYmd())) {
+            cellsWhile.addAll(
+                    Arrays.asList(cells.get(secondLieOfCalender, col),
+                            cells.get(secondLieOfCalender, col + 2),
+                            cells.get(secondLieOfCalender, col + 3),
+                            cells.get(thirdLieOfCalender, col),
+                            cells.get(thirdLieOfCalender + 1, col))
+            );
+        }
         Cell cell = cells.get(rowCount, col);
         if (dateInformation != null) {
             if (dateInformation.isSpecificDay()) {
@@ -277,6 +281,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         for (Cell cell1 : cellsWhile) {
             setBgColor(Color.getWhite(), cell1);
         }
+
+
     }
 
     void setBgColor(Color color, Cell cell) {
@@ -321,7 +327,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         Cells cells = wsSource.getCells();
         HorizontalPageBreakCollection hPageBreaks = wsSource.getHorizontalPageBreaks();
         List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource, query.getStartDate());
-
+        DatePeriod period = new DatePeriod(GeneralDate.fromString(query.getPeriod().getStartDate(), "yyyy/MM/dd"),
+                GeneralDate.fromString(query.getPeriod().getEndDate(), "yyyy/MM/dd"));
         int rowCount = 3;
         int pageIndex = 0;
         for (PersonalScheduleByIndividualFormat item : dataBuildList) {
@@ -339,7 +346,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     holiday,
                     1,
                     item.getColn1HoliayClass(),
-                    item.getColn1Info()
+                    item.getColn1Info(),
+                    period
             );
             printCalender(cells,
                     rowCount,
@@ -353,7 +361,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     holiday,
                     2,
                     item.getColn2HoliayClass(),
-                    item.getColn2Info()
+                    item.getColn2Info(),
+                    period
             );
 
             printCalender(cells,
@@ -368,7 +377,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     holiday,
                     3,
                     item.getColn3HoliayClass(),
-                    item.getColn3Info()
+                    item.getColn3Info(),
+                    period
             );
             printCalender(cells,
                     rowCount,
@@ -382,7 +392,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     holiday,
                     4,
                     item.getColn4HoliayClass(),
-                    item.getColn4Info()
+                    item.getColn4Info(),
+                    period
             );
 
             printCalender(cells,
@@ -397,7 +408,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     holiday,
                     5,
                     item.getColn5HoliayClass(),
-                    item.getColn5Info()
+                    item.getColn5Info(),
+                    period
             );
             printCalender(cells,
                     rowCount,
@@ -411,7 +423,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     holiday,
                     6,
                     item.getColn6HoliayClass(),
-                    item.getColn6Info()
+                    item.getColn6Info(),
+                    period
             );
 
             //calender item seven for each row
@@ -427,7 +440,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                     holiday,
                     7,
                     item.getColn7HoliayClass(),
-                    item.getColn7Info()
+                    item.getColn7Info(),
+                    period
             );
             if (query.isTotalDisplay()) {
                 //calender item seven for each row
