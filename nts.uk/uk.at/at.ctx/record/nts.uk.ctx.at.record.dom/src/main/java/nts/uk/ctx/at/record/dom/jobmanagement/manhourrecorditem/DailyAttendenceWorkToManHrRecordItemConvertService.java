@@ -66,11 +66,11 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 
 			// $値 = $勤怠項目値：filter $.itemId = $.勤怠項目ID
 			// map $.value
-			String value = itemValues.stream().filter(f -> f.getItemId() == l.getItemId()).findAny()
+			String value = itemValues.stream().filter(f -> f.getItemId() == l.getAttendanceItemId()).findAny()
 					.map(m -> m.getValue()).orElse("");
 
 			// $作業項目値 = 作業項目値#作業項目値($.工数実績項目ID,$値)
-			TaskItemValue itemValue = new TaskItemValue(l.getAttendanceItemId(), value);
+			TaskItemValue itemValue = new TaskItemValue(l.getItemId(), value);
 
 			// $工数実績作業詳細 = $工数実績リスト：filter $.応援勤務枠No = $.応援勤務枠No
 			Optional<ManHrTaskDetail> optManHrTaskDetail = manHrRecords.stream()

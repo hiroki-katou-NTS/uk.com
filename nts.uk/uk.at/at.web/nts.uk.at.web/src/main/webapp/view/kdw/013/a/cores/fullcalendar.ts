@@ -1258,7 +1258,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 let start = moment(currentDate).set('hour', bts.start / 60).set('minute', bts.start % 60).toDate();
                                 let end = moment(currentDate).set('hour', bts.end / 60).set('minute', bts.end % 60).toDate();
                                 
-                                let {taskList, manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(currentDate), 'days'));
+                                let { manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(currentDate), 'days'));
                                 const {no, breakTime} = bts;
                                 events.push({
                                     id: randomId(),
@@ -1918,8 +1918,15 @@ module nts.uk.ui.at.kdw013.calendar {
                         return;
                     }
 
-                             
-                
+                     let eventInDay = _.chain(events)
+                            .filter((evn) => { return moment(info.date).isSame(evn.start, 'days'); })
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                    
+                     let frameNos =[];                    
+                     _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                    
                     let newEvent = {
                             id: randomId(),
                             start: info.date,
@@ -1935,7 +1942,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //年月日
                                 period: { start: info.date, end: moment(info.date).add(vm.params.slotDuration(), 'm').toDate() },
                                 //現在の応援勤務枠
-                                frameNos:[],                                
+                                frameNos,                                
                                 //工数実績作業ブロック
                                 taskBlock: {
                                     caltimeSpan: { start: info.date, end: moment(info.date).add(vm.params.slotDuration(), 'm').toDate() },
@@ -2680,8 +2687,12 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // rerender event (deep clean selection)
                     updateEvents();
-                    
-                    
+                     let eventInDay = _.chain(events())
+                            .filter((evn) => { return moment(evn.start).isSame(moment(start), 'days'); })
+                            .sortBy('end')
+                            .value();
+                    let frameNos = [];
+                    _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
                     let newEvent = {
                         id: randomId(),
                         start: start,
@@ -2697,7 +2708,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             //年月日
                             period: { start:  start, end: end },
                             //現在の応援勤務枠
-                            frameNos: [],
+                            frameNos,
                             //工数実績作業ブロック
                             taskBlock: {
                                 caltimeSpan: { start: start, end: end },

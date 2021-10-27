@@ -16,13 +16,5 @@ public class WorkDetailsParamCommand {
 	
 	// 時間帯: 時間帯
 	private TimeZoneCommand timeZone;
-	// 作業グループ
-	private WorkGroupCommand workGroup;
-	
-	// 備考: 作業入力備考
-	private String remarks;
-	
-	// 勤務場所: 勤務場所コード
-	private String workLocationCD;
 
 }

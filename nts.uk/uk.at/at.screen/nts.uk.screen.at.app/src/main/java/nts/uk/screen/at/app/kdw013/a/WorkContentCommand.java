@@ -27,7 +27,7 @@ public class WorkContentCommand {
 
 		return WorkContent.create(this.getWorkplace().toDomain(),
 				Optional.ofNullable(this.getWork() == null ? null : this.getWork().toDomain()),
-				Optional.ofNullable(this.getWork() == null ? null : this.getWorkSuppInfo().toDomain()));
+				Optional.ofNullable(this.getWorkSuppInfo() == null ? null : this.getWorkSuppInfo().toDomain()));
 	}
 
 }

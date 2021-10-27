@@ -571,7 +571,7 @@ module nts.uk.ui.at.kdw013.c {
                     let {displayManHrRecordItems, taskBlock, employeeId} = extendedProps;
 					vm.frameNos(extendedProps.frameNos);
 					if(taskBlock.taskDetails[0].supNo == null){
-						taskBlock.taskDetails[0].supNo == vm.generateFrameNo();
+						taskBlock.taskDetails[0].supNo = vm.generateFrameNo();
 					}
                     vm.taskFrameSettings(extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList);
 					let param = {

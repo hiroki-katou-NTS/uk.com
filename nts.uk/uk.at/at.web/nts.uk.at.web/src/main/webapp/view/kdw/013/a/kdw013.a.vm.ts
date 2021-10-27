@@ -209,52 +209,86 @@ module nts.uk.ui.at.kdw013.a {
                 if (cache.pair === -1) {
                     return;
                 }
-
-                if (data && settings) {
-                    const { dailyManHrTasks } = data;
-                    const { tasks } = settings;
-
-                    if (dailyManHrTasks && tasks) {
-                        const events = _
-                            .chain(dailyManHrTasks)
-                            .map(({ date, taskBlocks }) => {
-                                const events: calendar.EventRaw[] =
-                                    _.chain(taskBlocks)
-                                        .map(({caltimeSpan, taskDetails}) => {
-                                            const $date = moment(date, DATE_FORMAT).toDate();
-
-                                            const { end, start } = caltimeSpan;
-                                            let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days'));
-                                            
-                                            return {
-                                                start: setTimeOfDate($date, start),
-                                                end: setTimeOfDate($date, end),
-                                                title: taskDetails.length ? getTitles(wg, tasks) : vm.$i18n('KDW013_79'),
-                                                backgroundColor: taskDetails.length ? getBackground(wg, tasks) : '#fbb3fb',
-                                                textColor: '',
-                                                extendedProps: {
-                                                    id: randomId(),
-                                                    status: 'normal' as any,
-                                                    isTimeBreak: !taskDetails.length,
-                                                    isChanged: false,
-                                                    taskBlock: {
-                                                        manHrContents,
-                                                        taskDetails
-                                                    }
-                                                } as any
-                                            };
-                                        })
-                                        .value();
-
-                                return events;
-                            })
-                            .flatten()
-                            .value();
+                const { tasks } = settings;
+                if (data) {
+                    let events = [];
+                    _.forEach(_.get(data, 'lstIntegrationOfDaily'), ld => {
                         
-                        vm.events(events);
+                        
+                        let frameNos =[];
+                        
+                        let hrTask = _.find(_.get(data, 'dailyManHrTasks', []), dt => moment(dt.ymd).isSame(moment(ld.ymd)));
+                        
+                        
+                        let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
+                        
+                        _.forEach(_.get(ld, 'breakTime.breakTimeSheets',[]), bt => {
+                            frameNos.push(bt.no);
+                            events.push(
+                                {
+                                    start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
+                                    end: setTimeOfDate(moment(ld.ymd).toDate(), bt.end),
+                                    title: vm.$i18n('KDW013_79'),
+                                    backgroundColor: '#fbb3fb',
+                                    textColor: '',
+                                    extendedProps: {
+                                        no: bt.no,
+                                        breakTime: bt.breakTime,
+                                        id: randomId(),
+                                        status: 'normal' as any,
+                                        isTimeBreak: true,
+                                        isChanged: false,
+                                        taskBlock: {
+                                            manHrContents,
+                                            taskDetails: []
+                                        }
+                                    } as any
+                                }
 
-                        return;
-                    }
+                            );
+                        })
+                        
+                        _.forEach(_.get(ld, 'ouenTimeSheet', []), ts => {
+                            let {timeSheet, workContent, workNo} = ts;
+                            let start = _.get(timeSheet, 'start.timeWithDay');
+                            let end = _.get(timeSheet, 'end.timeWithDay');
+                            let taskBlock = _.find(_.get(hrTask, 'taskBlocks', []), tb => td.caltimeSpan.start == start && td.caltimeSpan.start == end);
+                            let work = _.get(workContent, 'work');
+                            let {taskList} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
+                            let task = _.find(taskList, t => t.supNo == workNo);  
+                            frameNos.push(vm.getFrameNo(events));
+                            events.push({
+                                taskFrameUsageSetting: ko.unwrap((vm.$settings)),
+                                period: { start, end },
+                                displayManHrRecordItems: _.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
+                                employeeId: vm.employee() || vm.$user.employeeId,
+                                start: setTimeOfDate(moment(ld.ymd).toDate(), start),
+                                end: setTimeOfDate(moment(ld.ymd).toDate(), end),
+                                title: work ? getTitles(work, tasks) : '',
+                                backgroundColor: work ? getBackground(work, tasks) : '',
+                                textColor: '',
+                                extendedProps: {
+                                    frameNo: vm.getFrameNo(events),
+                                    frameNos,
+                                    id: randomId(),
+                                    isTimeBreak: false,
+                                    isChanged: false,
+                                    status: 'normal' as any,
+                                    taskBlock: {
+                                        caltimeSpan: { start, end },
+                                        taskDetails: [{ supNo: workNo, taskItemValues: task.taskItemValues }]
+                                    }
+                                }
+                            });
+                        });
+                        
+                        
+                        
+                        
+                    });
+
+                    vm.events(events);
+                    return;
                 }
 
                 vm.events([]);
@@ -580,6 +614,30 @@ module nts.uk.ui.at.kdw013.a {
         
         }
 
+            getFrameNo(events){
+                let maxNo = 20;
+                let resultNo = 1;
+                for (let i = 1; i < maxNo; i++) {
+                    let event = _.find(events, e => _.get(e, 'extendedProps.frameNo') == i);
+                    if (!event) {
+                        resultNo = i;
+                        break;
+                    }
+                }
+                return resultNo;
+            }
+
+        getTaskValues(){
+            const vm = this;
+                 let items = [];
+
+                 _.forEach(_.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []), function(item) {
+                     items.push({ itemId: item.itemId, value: null });
+                 });
+    
+                return items;
+        }
+
         reLoad(){
             const vm = this;
             vm
@@ -652,9 +710,15 @@ module nts.uk.ui.at.kdw013.a {
 
                 if (eventInday.length) {
 
-                    let events = _.chain(eventInday).map(e => {
+                    let events = _.chain(eventInday)
+                        .filter(e => _.get(e, 'extendedProps.isTimeBreak', false) == false)
+                        .map(e => {
 
                         let {taskDetails, manHrContents} = _.get(e, 'extendedProps.taskBlock');
+                        
+                        if (!manHrContents) {
+                            manHrContents = _.get(_.find(_.get(vm.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days')), 'manHrContents', []);
+                        }
 
                         return { ymd: date, taskList: taskDetails, manHrContents };
                     }).value();
@@ -715,46 +779,7 @@ module nts.uk.ui.at.kdw013.a {
             }).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value();
     
     
-            let workDetails = dateRanges().map((date) => {
-                const lstWorkDetailsParamCommand = _
-                    .chain($events)
-                    .filter(({ start }) => moment(start).isSame(date, 'day'))
-                    .map(({ start, end, extendedProps }) => {
-                        const {
-                            workCD1,
-                            workCD2,
-                            workCD3,
-                            workCD4,
-                            workCD5,
-                            workLocationCD,
-                            remarks,
-                            supportFrameNo
-                        } = extendedProps;
-
-                        return {
-                            remarks,
-                            supportFrameNo,
-                            workGroup: {
-                                workCD1: !_.isEmpty(workCD1) ? workCD1 : undefined,
-                                workCD2: !_.isEmpty(workCD2) ? workCD2 : undefined,
-                                workCD3: !_.isEmpty(workCD3) ? workCD3 : undefined,
-                                workCD4: !_.isEmpty(workCD4) ? workCD4 : undefined,
-                                workCD5: !_.isEmpty(workCD5) ? workCD5 : undefined,
-                            },
-                            workLocationCD: workLocationCD == "" ? null : workLocationCD,
-                            timeZone: {
-                                end: getTimeOfDate(end),
-                                start: getTimeOfDate(start)
-                            }
-                        };
-                    })
-                    .value();
-
-                return {
-                    date: moment(date).format(DATE_TIME_FORMAT),
-                    lstWorkDetailsParamCommand
-                };
-            });
+            let workDetails = vm.createWorkDetails(dateRanges()); 
     
             let manHrlst = vm.getManHrlst(dateRanges());
 
@@ -831,6 +856,41 @@ module nts.uk.ui.at.kdw013.a {
             vm.dateRange({ start, end });
         }
 
+        createWorkDetails(dates){
+            let vm = this;
+            let result = [];
+
+            _.forEach(dates, date => {
+                const lstWorkDetailsParamCommand = _
+                    .chain(vm.events())
+                    .filter(({ start }) => moment(start).isSame(date, 'day'))
+                    .filter(({ extendedProps }) => _.get(extendedProps, 'taskBlock.taskDetails', []).length > 1)
+                    .map(({ start, end, extendedProps }) => {
+                        const {
+                            taskBlock,
+                            no
+                        } = extendedProps;
+
+                        return {
+                            supportFrameNo: no,
+                            timeZone: {
+                                end: getTimeOfDate(end),
+                                start: getTimeOfDate(start)
+                            }
+                        };
+                    })
+                    .value();
+                if (lstWorkDetailsParamCommand.length) {
+                    result.push({
+                        date: moment(date).format(DATE_TIME_FORMAT),
+                        lstWorkDetailsParamCommand
+                    });
+                }
+            });
+
+            return result;
+        }
+
         createIDaily(dates){
             const vm = this;
             let result = [];
@@ -840,20 +900,25 @@ module nts.uk.ui.at.kdw013.a {
 
                 const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
 
-
-                //mapping break time
-                const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
                 
-                let breakTime = _.get(id, 'breakTime');
-                breakTime.breakTimeSheets = _.map(breakTimes, bt => {
+                if (id) {
 
-                    return {
-                        no: _.get(bt, 'extendedProps.no'),
-                        breakTime: _.get(bt, 'extendedProps.breakTime'),
-                        start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
-                        end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
-                    };
-                });
+                    //mapping break time
+                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+
+                    let breakTime = _.get(id, 'breakTime');
+                    breakTime.breakTimeSheets = _.map(breakTimes, bt => {
+
+                        return {
+                            no: _.get(bt, 'extendedProps.no'),
+                            breakTime: _.get(bt, 'extendedProps.breakTime'),
+                            start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
+                            end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
+                        };
+                    });
+                    //mapping normal block   
+                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == false);
+                }
             });
 
             return ids;
