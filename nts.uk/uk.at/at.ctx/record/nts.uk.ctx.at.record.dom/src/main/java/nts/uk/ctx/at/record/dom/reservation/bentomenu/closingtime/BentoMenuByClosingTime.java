@@ -59,14 +59,14 @@ public class BentoMenuByClosingTime {
 	
 	/**
 	 * 現在時刻で作る
+	 * @param roleID ロールID
 	 * @param reservationSetting 予約設定
 	 * @param bentoLst 弁当
 	 * @param orderAtr 発注区分
 	 * @param orderDate 注文日
 	 * @return
 	 */
-	public static BentoMenuByClosingTime createForCurrent(ReservationSetting reservationSetting, List<Bento> bentoLst, boolean orderAtr, GeneralDate orderDate) {
-		String roleID = AppContexts.user().roles().forAttendance();
+	public static BentoMenuByClosingTime createForCurrent(String roleID, ReservationSetting reservationSetting, List<Bento> bentoLst, boolean orderAtr, GeneralDate orderDate) {
 		ClockHourMinute reservationTime = ClockHourMinute.now();
 		List<ReservationRecTimeZone> reservationRecTimeZoneLst = reservationSetting.getReservationRecTimeZoneLst();
 		

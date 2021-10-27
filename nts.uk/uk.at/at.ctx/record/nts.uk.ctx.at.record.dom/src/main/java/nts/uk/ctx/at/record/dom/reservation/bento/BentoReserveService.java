@@ -25,13 +25,13 @@ public class BentoReserveService {
 	 * @param dateTime 予約登録日時
 	 * @param bentoDetails 明細
 	 * @param frameNo 枠No
+	 * @param companyID 会社ID
 	 * @param workLocationCode 勤務場所コード
 	 * @return
 	 */
 	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, 
-			Map<Integer, BentoReservationCount> bentoDetails, int frameNo, Optional<WorkLocationCode> workLocationCode) {
+			Map<Integer, BentoReservationCount> bentoDetails, int frameNo, String companyID, Optional<WorkLocationCode> workLocationCode) {
 		
-		String companyID = AppContexts.user().companyId();
 		ReservationRecTimeZone reservationRecTimeZone = require.getReservationSetByOpDistAndFrameNo(companyID, frameNo, 0);
 		
 		if(reservationRecTimeZone==null) {

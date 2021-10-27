@@ -35,7 +35,7 @@ public class BentoMenuHistServiceTest {
                 () -> BentoMenuHistService.register(require, new DatePeriod(GeneralDate.today(),
                         GeneralDate.max()), "cid",null),
                 any -> require.add(any.get()),
-                any -> require.addBentomenu(any.get(),any.get(),any.get()));
+                any -> require.addBentomenu(any.get(), any.get()));
     }
 
     /**
@@ -101,7 +101,7 @@ public class BentoMenuHistServiceTest {
                         new DatePeriod(GeneralDate.today().addDays(3)
                                 , GeneralDate.max()), "cid",null),
                 any -> require.add(any.get()),
-                any -> require.addBentomenu(any.get(),any.get(),any.get()),
+                any -> require.addBentomenu(any.get(), any.get()),
                 any -> require.update(any.get()));
 
     }

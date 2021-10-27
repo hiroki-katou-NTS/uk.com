@@ -9,7 +9,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 自分の弁当予約を修正する
@@ -26,13 +25,13 @@ public class BentoReserveModifyService {
 	 * @param dateTime 予約登録日時
 	 * @param bentoDetails 明細
 	 * @param frameNo 枠No
+	 * @param companyID 会社ID	
 	 * @param workLocationCode 勤務場所コード
 	 * @return
 	 */
 	public static AtomTask reserve(Require require, ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, 
-			Map<Integer, BentoReservationCount> bentoDetails, int frameNo, Optional<WorkLocationCode> workLocationCode) {
+			Map<Integer, BentoReservationCount> bentoDetails, int frameNo, String companyID, Optional<WorkLocationCode> workLocationCode) {
 		
-		String companyID = AppContexts.user().companyId();
 		ReservationRecTimeZone reservationRecTimeZone = require.getReservationSetByOpDistAndFrameNo(companyID, frameNo, 0);
 		
 		if(reservationRecTimeZone==null) {

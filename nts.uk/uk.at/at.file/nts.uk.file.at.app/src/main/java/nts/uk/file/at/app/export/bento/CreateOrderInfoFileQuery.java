@@ -427,7 +427,8 @@ public class CreateOrderInfoFileQuery {
             	continue;
 			}
             List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
-            BentoMenuByClosingTime menu = BentoMenuByClosingTime.createForCurrent(reservationSetting, bentoMenuList.getMenu(), item.isOrdered(), item.getReservationDate().getDate());
+            String roleID = AppContexts.user().roles().forAttendance();
+            BentoMenuByClosingTime menu = BentoMenuByClosingTime.createForCurrent(roleID, reservationSetting, bentoMenuList.getMenu(), item.isOrdered(), item.getReservationDate().getDate());
             List<BentoItemByClosingTime> bentos;
             if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1){
                 bentos = menu.getMenu1();

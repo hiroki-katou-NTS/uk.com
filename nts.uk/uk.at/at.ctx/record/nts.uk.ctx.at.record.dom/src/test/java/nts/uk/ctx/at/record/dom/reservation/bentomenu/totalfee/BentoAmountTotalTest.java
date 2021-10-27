@@ -34,8 +34,7 @@ public class BentoAmountTotalTest {
 	 			"historyID",
 	 			Arrays.asList(
 	 					Helper.Menu.Item.bentoAmount(1, 20, 10),  // frameNo, amount1, amount2
-	 					Helper.Menu.Item.bentoAmount(2, 100, 30)),
-	 			Helper.ClosingTime.UNLIMITED);
+	 					Helper.Menu.Item.bentoAmount(2, 100, 30)));
 	 	
 		Map<Integer, Integer> bentoDetails = new HashMap<>();
 		bentoDetails.put(1, 5);  // frameNo, quantity
@@ -52,8 +51,7 @@ public class BentoAmountTotalTest {
 		// only frame 1
 	 	BentoMenu bentoMenu = new BentoMenu(
 	 			"historyID",
-	 			Arrays.asList(Helper.Menu.Item.bentoAmount(1, 20, 10)),
-	 			Helper.ClosingTime.UNLIMITED);
+	 			Arrays.asList(Helper.Menu.Item.bentoAmount(1, 20, 10)));
 	 	
 		Map<Integer, Integer> bentoDetails = new HashMap<>();
 		bentoDetails.put(1, 5);

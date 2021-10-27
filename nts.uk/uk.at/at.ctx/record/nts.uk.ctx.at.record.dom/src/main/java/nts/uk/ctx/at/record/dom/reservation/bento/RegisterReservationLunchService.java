@@ -12,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 弁当予約設定を登録する
+ * delete #120643
  *
  * @author Quang.nh1
  */
