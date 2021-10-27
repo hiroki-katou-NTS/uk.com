@@ -44,7 +44,7 @@ public class JpaScheduleDailyTableRepository extends JpaRepository implements Sc
                         entity.kagmtRptScherecSignStamps.clear();
                         for (int i = 0; i < domain.getItemSetting().getInkanRow().getTitleList().size(); i++) {
                             KagmtRptScherecSignStamp tmp = new KagmtRptScherecSignStamp();
-                            tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i);
+                            tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i + 1);
                             tmp.title = domain.getItemSetting().getInkanRow().getTitleList().get(i).v();
                             entity.kagmtRptScherecSignStamps.add(tmp);
                         }

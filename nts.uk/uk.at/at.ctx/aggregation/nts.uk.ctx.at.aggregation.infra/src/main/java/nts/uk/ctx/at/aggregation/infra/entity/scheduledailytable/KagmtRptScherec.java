@@ -69,7 +69,7 @@ public class KagmtRptScherec extends ContractUkJpaEntity implements Serializable
         this.kagmtRptScherecSignStamps = new ArrayList<>();
         for (int i = 0; i < domain.getItemSetting().getInkanRow().getTitleList().size(); i++) {
             KagmtRptScherecSignStamp tmp = new KagmtRptScherecSignStamp();
-            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i);
+            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i + 1);
             tmp.title = domain.getItemSetting().getInkanRow().getTitleList().get(i).v();
             this.kagmtRptScherecSignStamps.add(tmp);
         }

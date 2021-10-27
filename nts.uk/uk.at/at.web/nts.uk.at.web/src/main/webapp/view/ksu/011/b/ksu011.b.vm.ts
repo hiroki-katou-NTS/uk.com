@@ -98,10 +98,6 @@ module nts.uk.at.view.ksu011.b.viewmodel {
             vm.getAllSetting(param.itemCode);
         }
 
-        mounted() {
-
-        }
-
         getAllSetting(code?: string) {
             const vm = this;
             vm.$blockui("show");
@@ -114,7 +110,7 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                         vm.selectedOutputItemCode(vm.outputItems()[0].code);
                     }
                 } else {
-                    vm.selectedOutputItemCode(null);
+                    vm.selectedOutputItemCode() == null ? vm.selectedOutputItemCode.valueHasMutated() : vm.selectedOutputItemCode(null);
                 }
             }).fail(error => {
                 vm.$dialog.error(error);
