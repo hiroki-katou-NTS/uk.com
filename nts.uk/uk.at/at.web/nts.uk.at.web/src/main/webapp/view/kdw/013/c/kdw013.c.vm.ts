@@ -250,7 +250,9 @@ module nts.uk.ui.at.kdw013.c {
                                 <td>
 									<div class="ntsControl fix">
 										<input class="inputRange" data-bind="ntsTimeEditor: {
+											name: i18n: 'KDW013_25',
 											value: value,
+											constraint: 'AttendanceTime', 
 											mode: 'time',
 											inputFormat: 'time',
 											required: true,
@@ -297,16 +299,17 @@ module nts.uk.ui.at.kdw013.c {
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
-						<!-- ko if: (type == 2 || type == 9) && itemId > 8 && use -->
+						<!-- ko if: type == 2 && itemId > 8 && use -->
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px'},
-											required: false,
-											enable: true,
+											option: {width: '233px',
+													unitID: 'TIMES'},
 										}" />
 									</div>
 								</td>
@@ -318,6 +321,8 @@ module nts.uk.ui.at.kdw013.c {
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
 											option: {
 												width: '223px', 
@@ -325,9 +330,7 @@ module nts.uk.ui.at.kdw013.c {
 												decimallength: 2, 
 												currencyformat: 'JPY',
 												currencyposition: 'left'
-											},
-											required: false,
-											enable: true,
+											}
 										}" />
 									</div>
 								</td>
@@ -339,11 +342,11 @@ module nts.uk.ui.at.kdw013.c {
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
 											mode: 'time',
 											inputFormat: 'time',
-											required: false,
-											enable: true,
 											option: {width: '233px'}
 											}" />
 									</div>
@@ -356,11 +359,10 @@ module nts.uk.ui.at.kdw013.c {
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeWithDayEditor: { 
-											name: 'Time With Day', 
+											name: lable,
+											constraint: primitiveValue, 
 											constraint:'TimeWithDayAttr', 
 											value: value, 
-											enable: true, 
-											required: false,
 											option: {
 												width: '233px',
 												timeWithDay: true
@@ -376,9 +378,24 @@ module nts.uk.ui.at.kdw013.c {
                                 <td>
 									<div class="ntsControl fix">
 										<textarea data-bind="ntsMultilineEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px'},
-											enable: true}" />
+											option: {width: '233px'}}" />
+									</div>
+								</td>
+                            </tr>
+                        <!-- /ko -->
+						<!-- ko if: (type == 9 && itemId > 8) && use -->
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											name: lable,
+											constraint: primitiveValue, 
+											value: value,
+											option: {width: '233px'}}" />
 									</div>
 								</td>
                             </tr>
@@ -665,7 +682,7 @@ module nts.uk.ui.at.kdw013.c {
                             .confirm({ messageId: 'Msg_2094' })
                             .then((v: 'yes' | 'no') => {
                                 if (v === 'yes') {
-									$(vm.$el).find('.inputRange').ntsError("clear");
+									$(vm.$el).find('.nts-input').ntsError("clear");
                                     vm.params.close("yes");
                                 }
                             });
@@ -675,12 +692,12 @@ module nts.uk.ui.at.kdw013.c {
                                 .confirm({ messageId: 'Msg_2094' })
                                 .then((v: 'yes' | 'no') => {
                                     if (v === 'yes') {
-										$(vm.$el).find('.inputRange').ntsError("clear");
+										$(vm.$el).find('.nts-input').ntsError("clear");
                                          params.close();
                                     }
                                 });
                         } else {
-							$(vm.$el).find('.inputRange').ntsError("clear");	
+							$(vm.$el).find('.nts-input').ntsError("clear");
                             params.close();
                         }
                     }
@@ -963,7 +980,14 @@ module nts.uk.ui.at.kdw013.c {
 					let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, i => i.itemId == item.itemId);
 					if(infor){
 						item.lable(infor.name);
-						item.use(infor.useAtr == 1);	
+						item.use(infor.useAtr == 1);
+						let attendanceItemLink = _.find(data.manHourRecordAndAttendanceItemLink, l => l.frameNo == vm.supNo && l.itemId == item.itemId);
+						if(attendanceItemLink){
+							let attendanceItem: DailyAttendanceItemDto = _.find(data.attendanceItems, a => a.attendanceItemId == attendanceItemLink.attendanceItemId);
+							if(attendanceItem){
+								item.primitiveValue = getPrimitiveValue(attendanceItem.primitiveValue);
+							}
+						}
 					}
 					if(item.itemId == 9 ){
 						item.options(
@@ -1165,6 +1189,15 @@ module nts.uk.ui.at.kdw013.c {
 			}
 			return displayInfo.taskName;
 		}
+	}
+	
+	let primitiveValueDaily: any[] = __viewContext.enums.PrimitiveValueDaily;
+	
+	let getPrimitiveValue = (primitiveValue: number): string =>{
+		if(primitiveValue){
+			return _.find(primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
+		}
+		return '';
 	}
 
     type Params = {
