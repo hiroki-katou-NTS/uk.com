@@ -189,7 +189,7 @@ module nts.uk.at.view.kdw013.h {
                 setShared('kml001BaseDate', self.params.date);
 				block.grayout();
 				ajax(paths.getWorkPlaceId, { employeeId: self.params.employeeId, date: self.params.date }).done(function(data: any) {
-					setShared('kml001WorkPlaceId', data ? data.employeeId: null);
+					setShared('kml001WorkPlaceId', data ? data.workPlaceId: null);
 					nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml").onClosed(function () {
 	                    const kml001selectedCodeList = getShared("kml001selectedCodeList");
 							if(kml001selectedCodeList[0] && kml001selectedCodeList[0] != ''){
@@ -213,14 +213,14 @@ module nts.uk.at.view.kdw013.h {
 			openKdl002() {
                 var self = this;
 	            setShared('KDL002_Multiple',false);
-	           	setShared('KDL002_AllItemObj',[]);
+	           	setShared('KDL002_AllItemObj',['']);
 	            setShared('kdl002isSelection',true);
-	            setShared('KDL002_SelectedItemId',self.itemId29.value() ? [self.itemId29.value()]: []);
+	            setShared('KDL002_SelectedItemId',self.itemId28.value() ? [self.itemId28.value()]: []);
 	            setShared('KDL002_isShowNoSelectRow', false);
 	            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
 	                var lst = getShared('KDL002_SelectedNewItem');
 						if(lst[0] && lst[0] != ''){
-							self.itemId28.value(lst[0]);
+							self.itemId28.value(lst[0].code);
 							let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
 							if (workType){
 								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);

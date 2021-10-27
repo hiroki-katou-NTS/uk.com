@@ -976,7 +976,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         // Popup F:
-        updateFavName(favTaskId: string) {
+        updateFavName() {
             const vm = this;
 
             const updateFavNameCommand: UpdateFavNameCommand = {
@@ -984,12 +984,24 @@ module nts.uk.ui.at.kdw013.a {
                 favName: vm.favTaskName()
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-                    vm.reLoad();    
-                });
-            }).always(() => vm.$blockui('clear'));
+            vm.$blockui('show');
+            vm.$validate(".input-f").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
 
         }
 
@@ -1013,12 +1025,24 @@ module nts.uk.ui.at.kdw013.a {
                 favName: vm.oneDayFavTaskName()
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-                    vm.reLoad();
-                });
-            }).always(() => vm.$blockui('clear'));
+            vm.$blockui('show');
+            vm.$validate(".input-g").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
 
         }
 
@@ -1046,10 +1070,24 @@ module nts.uk.ui.at.kdw013.a {
 
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
-            }).always(() => vm.$blockui('clear'));
+            vm.$blockui('show');
+            vm.$validate(".input-g").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
         }
 
         createWarning() {
