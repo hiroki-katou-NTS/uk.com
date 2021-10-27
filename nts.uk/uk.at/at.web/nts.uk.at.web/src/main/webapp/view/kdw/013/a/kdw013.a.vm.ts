@@ -719,6 +719,21 @@ module nts.uk.ui.at.kdw013.a {
                         if (!manHrContents) {
                             manHrContents = _.get(_.find(_.get(vm.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days')), 'manHrContents', []);
                         }
+                            
+                        _.forEach(taskDetails, td => {
+
+                            _.forEach(td.taskItemValues, ti => {
+                                const start = (moment(e.start).hour() * 60) + moment(e.start).minute();
+                                const end = (moment(e.end).hour() * 60) + moment(e.end).minute();
+                                if (ti.itemId == 1) { ti.value = start };
+                                if (ti.itemId == 2) { ti.value = end };
+                                if (taskDetails.length == 1) {
+                                    if (ti.itemId == 3) { ti.value = end - start };
+                                }
+
+                            });
+
+                        });
 
                         return { ymd: date, taskList: taskDetails, manHrContents };
                     }).value();
