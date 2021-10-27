@@ -1257,6 +1257,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             _.forEach(breakTimeSheets, bts => {
                                 let start = moment(currentDate).set('hour', bts.start / 60).set('minute', bts.start % 60).toDate();
                                 let end = moment(currentDate).set('hour', bts.end / 60).set('minute', bts.end % 60).toDate();
+                                const {no, breakTime} = bts;
                                 events.push({
                                     id: randomId(),
                                     title: '',
@@ -1265,6 +1266,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                     textColor: '',
                                     backgroundColor: '#fbb3fb',
                                     extendedProps: {
+                                        no,
+                                        breakTime,
                                         id: randomId(),
                                         status: 'normal',
                                         isTimeBreak: true
@@ -1521,6 +1524,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     const day = moment(date).add(1, 'day');
 
                                     if (end) {
+                                        if (end == '9999-12-32') { end = '9999-12-31' }
                                         if (day.isBefore(end, 'date')) {
                                             initialDate(day.toDate());
                                         }
