@@ -24,10 +24,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.KTGRsvLeaveInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
-import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
@@ -37,15 +35,18 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumberImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveRemainingNumberImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -228,7 +229,7 @@ public class ToppageStartupProcessMobFinder {
     private GetHolidayOver60hRemNumWithinPeriodAdapter getHolidayOver60hRemNumWithinPeriodAdapter;
 
     @Inject
-    private GetRemainingNumberChildCareNurseAdapter getRemainingNumberChildCareNurseAdapter;
+    private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
     
     @Inject
     private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
@@ -243,10 +244,16 @@ public class ToppageStartupProcessMobFinder {
     private NursingLeaveSettingRepository nursingLeaveSettingRepo;
     
     @Inject
+    private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
+    
+    @Inject
     private AbsenceTenProcessCommon absenceCommon;
     
     @Inject
     private RetentionYearlySettingRepository retentionYearlySettingRepo;
+    
+    @Inject
+    private AnnLeaveRemainNumberAdapter annLeaveRemainNumberAdapter;
 
 
 	public ToppageStartupDto startupProcessMob() {
@@ -666,17 +673,19 @@ public class ToppageStartupProcessMobFinder {
 			        
 			        // アルゴリズム「21.子の看護休暇残数表示」を実行する
 			        // [NO.206]期間中の子の看護休暇残数を取得
-			        ChildCareNursePeriodImport childNursePeriod =
-			                getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
-			                        employeeId,
-			                        datePeriod,
-			                        InterimRemainMngMode.OTHER,
-			                        systemDate,
-			                        Optional.of(false),
-			                        Optional.empty(),
-			                        Optional.empty(),
-			                        Optional.empty(),
-			                        Optional.empty());
+//			        ChildCareNursePeriodImport childNursePeriod =
+//			                getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+//			                        employeeId,
+//			                        datePeriod,
+//			                        InterimRemainMngMode.OTHER,
+//			                        systemDate,
+//			                        Optional.of(false),
+//			                        Optional.empty(),
+//			                        Optional.empty(),
+//			                        Optional.empty(),
+//			                        Optional.empty());
+			        ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareAdapter
+		                    .getRemainingNumberChildCare(companyId, employeeId, GeneralDate.today());
 			        ChildCareNurseRemainingNumberImport remainingNumber = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber();
 			        Double before = remainingNumber.getUsedDays();
 			        Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
@@ -701,17 +710,19 @@ public class ToppageStartupProcessMobFinder {
 			        
 			        // アルゴリズム「22.介護休暇残数表示」を実行する
 			        // [NO.207]期間中の介護休暇残数を取得
-			        ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-			                companyId, 
-			                employeeId, 
-			                datePeriod, 
-			                InterimRemainMngMode.OTHER, 
-			                systemDate, 
-			                Optional.of(false), 
-			                new ArrayList<TempChildCareNurseManagementImport>(),
-			                Optional.empty(), 
-			                Optional.empty(), 
-			                Optional.empty());
+//			        ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+//			                companyId, 
+//			                employeeId, 
+//			                datePeriod, 
+//			                InterimRemainMngMode.OTHER, 
+//			                systemDate, 
+//			                Optional.of(false), 
+//			                new ArrayList<TempChildCareNurseManagementImport>(),
+//			                Optional.empty(), 
+//			                Optional.empty(), 
+//			                Optional.empty());
+			        ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberNursingAdapter
+		                    .getRemainingNumberNursing(companyId, employeeId, GeneralDate.today());
 			        ChildCareNurseRemainingNumberImport remainingNumber = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber();
 			        Double before = remainingNumber.getUsedDays();
 			        Double after = Double.valueOf(remainingNumber.getUsedTime().orElse(0));
@@ -966,10 +977,10 @@ public class ToppageStartupProcessMobFinder {
 			}
 		}
 		// lấy request 198
-		NumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = optionalWidgetAdapter
+		ReNumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = annLeaveRemainNumberAdapter
 				.getReferDateAnnualLeaveRemainNumber(employeeId, date);
 
-		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberImport();
+		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberExport();
 		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
 				new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue() / 60,
 						remainingNumber.getAnnualLeaveGrantPreTime().intValue() % 60),

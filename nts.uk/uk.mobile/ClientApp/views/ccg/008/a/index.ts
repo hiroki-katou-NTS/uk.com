@@ -214,8 +214,7 @@ export class Ccg008AComponent extends Vue {
         if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
             results.push({
                 name:'KTG029_23', 
-                value: yearlyHld.nextTimeInfo.day, 
-                prefix: 'KTG029_60'
+                value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), yearlyHld.nextTimeInfo.hours.hours + ':' + yearlyHld.nextTimeInfo.hours.min])
             }); 
         }
         // next grantDate
