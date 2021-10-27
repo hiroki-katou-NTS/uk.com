@@ -223,48 +223,24 @@ module nts.uk.ui.at.kdw013.a {
                                         .map(({caltimeSpan, taskDetails}) => {
                                             const $date = moment(date, DATE_FORMAT).toDate();
 
-                                            const { end, start, workingHours } = timeZone;
-                                            const {
-                                                workCD1,
-                                                workCD2,
-                                                workCD3,
-                                                workCD4,
-                                                workCD5
-                                            } = workGroup;
-                                            const task = getTask(workGroup, tasks) || { displayInfo: {} } as any as c.TaskDto;
-                                            
-                                            const wg = {
-                                                workCD1,
-                                                workCD2,
-                                                workCD3,
-                                                workCD4,
-                                                workCD5
-                                            }
-
-                                            const { timeWithDay: startTime } = start;
-                                            const { timeWithDay: endTime } = end;
+                                            const { end, start } = caltimeSpan;
+                                            let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days'));
                                             
                                             return {
-                                                start: setTimeOfDate($date, caltimeSpan.start),
-                                                end: setTimeOfDate($date, caltimeSpan.end),
+                                                start: setTimeOfDate($date, start),
+                                                end: setTimeOfDate($date, end),
                                                 title: taskDetails.length ? getTitles(wg, tasks) : vm.$i18n('KDW013_79'),
                                                 backgroundColor: taskDetails.length ? getBackground(wg, tasks) : '#fbb3fb',
                                                 textColor: '',
                                                 extendedProps: {
                                                     id: randomId(),
                                                     status: 'normal' as any,
-                                                    remarks,
-                                                    employeeId,
-                                                    supportFrameNo,
-                                                    workCD1,
-                                                    workCD2,
-                                                    workCD3,
-                                                    workCD4,
-                                                    workCD5,
-                                                    workLocationCD,
-                                                    workingHours,
                                                     isTimeBreak: !taskDetails.length,
-                                                    isChanged: false
+                                                    isChanged: false,
+                                                    taskBlock: {
+                                                        manHrContents,
+                                                        taskDetails
+                                                    }
                                                 } as any
                                             };
                                         })
