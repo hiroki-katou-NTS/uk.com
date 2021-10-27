@@ -20,6 +20,7 @@ public class ReservationRecTimeZoneTest {
 		NtsAssert.invokeGetters(target);
 	}
 	
+	@Test
 	public void reservation_fail_frame1() {
 		ReservationClosingTimeFrame frameNo = ReservationClosingTimeFrame.FRAME1;
 		GeneralDate orderDate = GeneralDate.today();
@@ -27,6 +28,7 @@ public class ReservationRecTimeZoneTest {
 		assertThat(Frame2.canMakeReservation(frameNo, orderDate, reservationTime)).isEqualTo(false);
 	}
 	
+	@Test
 	public void reservation_success_frame1() {
 		ReservationClosingTimeFrame frameNo = ReservationClosingTimeFrame.FRAME1;
 		GeneralDate orderDate = GeneralDate.today();
