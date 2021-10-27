@@ -2967,6 +2967,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
                         let data = [dataTemp];
+                        self.formatCodes(data);
                         self.hideComponent();
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
