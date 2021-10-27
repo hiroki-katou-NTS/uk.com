@@ -170,8 +170,8 @@ module nts.uk.at.view.kdw013.h {
 				let self = this;
 
 				//fake data các item co dinh
-				self.itemId28 = new ItemValue({ itemId: 28, value: 'item 28', valueType: 0, layoutCode: 'layoutCode 28' });
-				self.itemId29 = new ItemValue({ itemId: 29, value: 'item 29', valueType: 0, layoutCode: 'layoutCode 29' });
+				self.itemId28 = new ItemValue({ itemId: 28, value: '000', valueType: 0, layoutCode: 'layoutCode 28' });
+				self.itemId29 = new ItemValue({ itemId: 29, value: '000', valueType: 0, layoutCode: 'layoutCode 29' });
 
 				self.itemId31_34 = new StartEndTime({ itemId: 31, value: 20, valueType: 0, layoutCode: 'layoutCode 31' }, { itemId: 34, value: 30, valueType: 0, layoutCode: 'layoutCode 34' });
 
