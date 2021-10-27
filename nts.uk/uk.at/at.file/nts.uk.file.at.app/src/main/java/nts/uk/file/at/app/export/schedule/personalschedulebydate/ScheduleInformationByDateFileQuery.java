@@ -173,7 +173,7 @@ public class ScheduleInformationByDateFileQuery {
             String workTypeName = workTypeOpt.get().getAbbreviationName().v();
 
             // 就業時間帯名称 = 就業時間帯の設定．表示名．略名
-            String workTimeName = workTimeSetOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
+            String workTimeName = workTimeSetOpt.get().getWorkTimeDisplayName().getWorkTimeAbName().v();
 
             // 勤務タイプ = 就業時間帯の設定.勤務区分.勤務形態を取得する()
             Integer workType = workTimeForm.value;
