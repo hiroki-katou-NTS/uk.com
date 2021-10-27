@@ -38,6 +38,8 @@ public class WorkInfoOfDailyAttendanceDto {
 
 	// 振休振出として扱う日数
 	private NumberOfDaySuspensionDto numberDaySuspension;
+	
+	private long ver; 
 
 	public static WorkInfoOfDailyAttendanceDto toDto(WorkInfoOfDailyAttendance domain) {
 		return new WorkInfoOfDailyAttendanceDto(WorkInformationDto.fromDomain(domain.getRecordInfo()),
@@ -47,7 +49,8 @@ public class WorkInfoOfDailyAttendanceDto {
 						.collect(Collectors.toList()),
 				domain.getNumberDaySuspension().isPresent()
 						? NumberOfDaySuspensionDto.from(domain.getNumberDaySuspension().get())
-						: null);
+						: null,
+						domain.getVer());
 	}
 
 }

@@ -54,7 +54,7 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 			// $対象勤怠項目 = 勤怠項目リスト：find $.itemId == $.勤怠項目ID
 			// $対象勤怠項目.value($値)
 
-			Optional<ItemValue> itemValueOpt = attItems.stream().filter(f -> f.getItemId() == link.getItemId())
+			Optional<ItemValue> itemValueOpt = attItems.stream().filter(f -> f.getItemId() == link.getAttendanceItemId())
 					.findAny();
 
 			if (itemValueOpt.isPresent() && taskItem.isPresent()) {

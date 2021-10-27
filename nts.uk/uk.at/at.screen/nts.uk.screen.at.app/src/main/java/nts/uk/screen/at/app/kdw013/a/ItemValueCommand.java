@@ -24,7 +24,11 @@ public class ItemValueCommand {
 	private boolean isFixed;
 
 	public static ItemValue toDomain(ItemValueCommand iv) {
-		return new ItemValue(iv.getValue(), EnumAdaptor.valueOf(iv.getValueType(), ValueType.class), iv.getLayoutCode(),
-				iv.getItemId(), iv.getPathLink(), iv.isFixed());
+		return new ItemValue(iv.getValue(),
+				iv.getValueType() == null ? null : EnumAdaptor.valueOf(iv.getValueType(), ValueType.class),
+				iv.getLayoutCode(),
+				iv.getItemId(),
+				iv.getPathLink(), 
+				iv.isFixed());
 	}
 }
