@@ -607,11 +607,11 @@ public class ToppageStartupProcessMobFinder {
 			        // Xử lý 16
 			        KTGRsvLeaveInfoImport KTGRsvLeaveInfoImport = optionalWidgetAdapter
 			                .getNumberOfReservedYearsRemain(employeeId, systemDate);
-			        boolean showAfter = false;
-			        if (KTGRsvLeaveInfoImport.getGrantDay() != null) {
-			            showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay())
-			                    && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay());
-			        }
+			        boolean showAfter = true;
+//			        if (KTGRsvLeaveInfoImport.getGrantDay() != null) {
+//			            showAfter = startDate.beforeOrEquals(KTGRsvLeaveInfoImport.getGrantDay())
+//			                    && endDate.afterOrEquals(KTGRsvLeaveInfoImport.getGrantDay());
+//			        }
 			        dataKTG029.setReservedYearsRemainNo(new RemainingNumber("", KTGRsvLeaveInfoImport.getRemainingDays(),
 			                KTGRsvLeaveInfoImport.getAftRemainDay(), KTGRsvLeaveInfoImport.getGrantDay(), showAfter));
 			    }

@@ -267,7 +267,7 @@ export class Ccg008AComponent extends Vue {
             const {before, after, showAfter} = item.childRemainNo;
             results.push({
                 name: 'CCGS08_26',
-                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(after)]) : vm.$i18n('CCGS08_36', [String(before)]),
+                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]) : vm.$i18n('CCGS08_36', [String(before)]),
                 isFormatNew: true
                 
             });
@@ -278,7 +278,7 @@ export class Ccg008AComponent extends Vue {
             const {before, after, showAfter} = item.careLeaveNo;
             results.push({
                 name: 'CCGS08_27',
-                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(after)]) : vm.$i18n('CCGS08_36', [String(before)]),
+                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]) : vm.$i18n('CCGS08_36', [String(before)]),
                 isFormatNew: true
                 
             });
@@ -309,6 +309,21 @@ export class Ccg008AComponent extends Vue {
 
         
         return results;
+    }
+
+    public getFormatTime(time) {
+        const self = this;
+
+        if (time) {
+            let timeStr: string = self.$dt.timedr(time);
+            if (timeStr.startsWith('0')) {
+                return timeStr.substr(1, timeStr.length);
+            } else {
+                return timeStr;
+            }
+        }
+
+        return '0:00';
     }
 
     public createNormalList(overtimes: Array<any>, currentYearMonth: any): Array<any> {
