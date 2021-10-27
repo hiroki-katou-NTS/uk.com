@@ -217,6 +217,7 @@ module nts.uk.ui.at.kdw013.b {
                     const event = ko.unwrap(data);
 
                     if (event && event.extendedProps.status == "update") {
+                        vm.favTaskName('');
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
 						const startTime = getTimeOfDate(start);
                         const endTime = getTimeOfDate(end);

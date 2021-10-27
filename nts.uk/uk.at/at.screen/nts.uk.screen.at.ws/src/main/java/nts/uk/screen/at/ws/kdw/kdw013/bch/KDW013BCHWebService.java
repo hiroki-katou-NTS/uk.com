@@ -77,6 +77,12 @@ public class KDW013BCHWebService {
 	public WorkPlaceId getWorkPlaceId(EmployeeIdDate param) {
 		return workplaceAdapter.findWorkplaceById(param.employeeId, param.date).map(c-> new WorkPlaceId(c.getWorkplaceId())).orElse(null);
 	}
+	
+	@POST
+	@Path("h/getWorkType")
+	public List<String> getWorkType(EmployeeIdDateCode param) {
+		return getWorkDataMasterInformation.getChangeableWorkType(param.employeeId, param.date, Optional.ofNullable(param.code));
+	}
 
 	@POST
 	@Path("h/save")
@@ -108,4 +114,9 @@ class WorkPlaceId {
 class EmployeeIdDate {
 	public String employeeId;
 	public GeneralDate date;
+}
+
+@NoArgsConstructor
+class EmployeeIdDateCode extends EmployeeIdDate {
+	public String code;
 }

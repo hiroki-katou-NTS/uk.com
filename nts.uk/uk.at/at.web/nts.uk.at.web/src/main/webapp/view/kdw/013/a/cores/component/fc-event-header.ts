@@ -57,7 +57,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
             const screenA = vm.params.screenA;
             const IntegrationOfDaily = _.find(_.get(vm.params.screenA.$datas(), 'lstIntegrationOfDaily', null), id => moment(id.ymd).isSame(moment(day.date), 'days'));
             const lockInfos = _.get(vm.params.screenA.$datas(), 'lockInfos', []);
-            const displayAttItems =  _.get(vm.params.screenA.$setting(), 'manHrInputDisplayFormat.displayAttItems', []);
+            //const displayAttItems =  _.get(vm.params.screenA.$setting(), 'manHrInputDisplayFormat.displayAttItems', []);
             const itemValues = _.find(_.get(vm.params.screenA.$datas(), 'convertRes', []), cv => moment(cv.ymd).isSame(moment(day.date), 'days')); 
             let param = {
                 //対象社員
@@ -67,7 +67,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                 //日別実績(Work) 
                 IntegrationOfDaily,
 //                //実績入力ダイアログ表示項目一覧
-                displayAttItems,
+               // displayAttItems,
 //                 //実績内容
                 itemValues,
                 //日別実績のロック状態 Optional<日別実績のロック状態>
