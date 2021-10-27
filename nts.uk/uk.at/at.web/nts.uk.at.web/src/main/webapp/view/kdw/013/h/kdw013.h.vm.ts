@@ -12,7 +12,8 @@ module nts.uk.at.view.kdw013.h {
 		const paths: any = {
 			start: "screen/at/kdw013/h/start",
 			save: "screen/at/kdw013/h/save",
-			getWorkPlaceId: "screen/at/kdw013/h/getWorkPlaceId"
+			getWorkPlaceId: "screen/at/kdw013/h/getWorkPlaceId",
+			getWorkType: "screen/at/kdw013/h/getWorkType"
 		}
 		export class ScreenModel {
 			itemId28: ItemValue;
@@ -213,23 +214,25 @@ module nts.uk.at.view.kdw013.h {
 			openKdl002() {
                 var self = this;
 	            setShared('KDL002_Multiple',false);
-	           	setShared('KDL002_AllItemObj',['']);
 	            setShared('kdl002isSelection',true);
 	            setShared('KDL002_SelectedItemId',self.itemId28.value() ? [self.itemId28.value()]: []);
 	            setShared('KDL002_isShowNoSelectRow', false);
-	            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
-	                var lst = getShared('KDL002_SelectedNewItem');
-						if(lst[0] && lst[0] != ''){
-							self.itemId28.value(lst[0].code);
-							let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
-							if (workType){
-								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
-							} else {
-								self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+				ajax(paths.getWorkType, { employeeId: self.params.employeeId, date: self.params.date, code: self.itemId28.value() }).done(function(data: any) {
+					setShared('KDL002_AllItemObj', data);
+		            nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
+		                var lst = getShared('KDL002_SelectedNewItem');
+							if(lst[0] && lst[0] != ''){
+								self.itemId28.value(lst[0].code);
+								let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
+								if (workType){
+									self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
+								} else {
+									self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+								}
 							}
-						}
-	                console.log(lst);
-	            });
+		                console.log(lst);
+		            });
+				});
             }
 
 			registration() {
