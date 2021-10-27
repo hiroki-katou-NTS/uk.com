@@ -26,18 +26,18 @@ public class DeleteEquipmentDataCommandHandler extends CommandHandler<DeleteEqui
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteEquipmentDataCommand> context) {
-		String cid = AppContexts.user().companyId();
-		String sid = AppContexts.user().employeeId();
-
 		DeleteEquipmentDataCommand command = context.getCommand();
-		// 1.get(設備コード、ログイン社員ID、利用日、入力日)
+		String cid = AppContexts.user().companyId();
+		String sid = command.getSid();
+
+		// 1.get(設備コード、利用者ID、利用日、入力日)
 		Optional<EquipmentData> optEquipmentData = this.equipmentDataRepository.findByUsageInfo(cid,
 				command.getEquipmentCode(), command.getUseDate(), sid, command.getInputDate());
 		// 2.[設備利用実績データ　IS NULL]
 		if (!optEquipmentData.isPresent()) {
 			throw new BusinessException("Msg_2237");
 		}
-		// 3.delete(設備コード、ログイン社員ID、利用日、入力日)
+		// 3.delete(設備コード、利用者ID、利用日、入力日)
 		this.equipmentDataRepository.delete(cid, sid, command.getInputDate());
 	}
 

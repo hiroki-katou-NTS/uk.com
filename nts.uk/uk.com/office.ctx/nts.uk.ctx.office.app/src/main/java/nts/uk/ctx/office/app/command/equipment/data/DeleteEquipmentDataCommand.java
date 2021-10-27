@@ -10,15 +10,20 @@ public class DeleteEquipmentDataCommand {
 	/**
 	 * 設備コード
 	 */
-	private final String equipmentCode;
+	private String equipmentCode;
+	
+	/**
+	 * 利用者ID
+	 */
+	private String sid;
 	
 	/**
 	 * 利用日
 	 */
-	private final GeneralDate useDate;
+	private GeneralDate useDate;
 	
 	/**
 	 * 入力日
 	 */
-	private final GeneralDateTime inputDate;
+	private GeneralDateTime inputDate;
 }

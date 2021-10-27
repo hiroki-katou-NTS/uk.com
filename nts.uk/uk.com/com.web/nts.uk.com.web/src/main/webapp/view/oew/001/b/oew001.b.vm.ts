@@ -151,6 +151,7 @@ module nts.uk.com.view.oew001.b {
           const input = vm.data();
           const param = {
             equipmentCode: input.equipmentInfoCode,
+            sid: vm.data().sid,
             inputDate: moment.utc(input.inputDate).toISOString(),
             useDate: moment.utc(input.useDate(), model.constants.YYYY_MM_DD).toISOString(),
           };
