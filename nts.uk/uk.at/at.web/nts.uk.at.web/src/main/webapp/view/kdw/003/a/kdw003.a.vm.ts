@@ -3697,7 +3697,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                        return __viewContext.user.employeeId == emp.id;
                     })
                     self.selectedEmployee(_.isEmpty(employeeLoginInList) ? self.lstEmployee()[0].id : employeeLoginInList.id);
-                    self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
+                    //#120496
+                    //self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.hasEmployee = true;
                     self.closureId = dataList.closureId;
                     self.loadKcp009();
