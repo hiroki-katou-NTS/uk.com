@@ -91,7 +91,7 @@ module nts.uk.at.view.kdw003.cg {
                 showBaseDate: true, // 基準日利用
                 showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
-                showPeriod: true, // 対象期間利用
+                showPeriod: false, // 対象期間利用
                 periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
@@ -636,7 +636,8 @@ module nts.uk.at.view.kdw003.cg {
                 self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                     self.isReload(false);
                     self.findDetail(command.empIdDes[0], self.isReload());
-                    self.selectedEmployee(command.empIdDes[0]);
+                    if(self.lstEmployee().length > 1)
+                        self.selectedEmployee(command.empIdDes[0]);
                     self.enableNewBtn(true);
                 });
             }).fail((error) => {
