@@ -69,7 +69,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
 //                //実績入力ダイアログ表示項目一覧
                 displayAttItems,
 //                 //実績内容
-                itemValues
+                itemValues,
                 //日別実績のロック状態 Optional<日別実績のロック状態>
                lockInfos
             }

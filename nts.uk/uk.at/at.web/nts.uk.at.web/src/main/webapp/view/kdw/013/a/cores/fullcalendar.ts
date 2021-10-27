@@ -1257,10 +1257,12 @@ module nts.uk.ui.at.kdw013.calendar {
                             _.forEach(breakTimeSheets, bts => {
                                 let start = moment(currentDate).set('hour', bts.start / 60).set('minute', bts.start % 60).toDate();
                                 let end = moment(currentDate).set('hour', bts.end / 60).set('minute', bts.end % 60).toDate();
+                                
+                                let {taskList, manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(currentDate), 'days'));
                                 const {no, breakTime} = bts;
                                 events.push({
                                     id: randomId(),
-                                    title: '',
+                                    title: vm.$i18n('KDW013_79'),
                                     start,
                                     end,
                                     textColor: '',
@@ -1270,7 +1272,11 @@ module nts.uk.ui.at.kdw013.calendar {
                                         breakTime,
                                         id: randomId(),
                                         status: 'normal',
-                                        isTimeBreak: true
+                                        isTimeBreak: true,
+                                        taskBlock: {
+                                            manHrContents,
+                                            taskDetails: []
+                                        }
                                     } as any
                                 });
                             });
@@ -1716,19 +1722,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         isTimeBreak
                         } = extendedProps;
                     selectedEvent.extendedProps = {
-                        employeeId,
-                        id,
-                        remarks,
-                        status,
-                        supportFrameNo : null,
-                        workCD1,
-                        workCD2,
-                        workCD3,
-                        workCD4,
-                        workCD5,
-                        workLocationCD,
-                        workingHours,
-                        isTimeBreak
+                        ...extendedProps,
+                        supportFrameNo : null
                     };
 
                 }

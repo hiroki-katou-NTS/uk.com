@@ -217,16 +217,10 @@ module nts.uk.ui.at.kdw013.a {
                     if (dailyManHrTasks && tasks) {
                         const events = _
                             .chain(dailyManHrTasks)
-                            .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
+                            .map(({ date, taskBlocks }) => {
                                 const events: calendar.EventRaw[] =
-                                    _.chain(lstWorkDetailsParamDto)
-                                        .map(({
-                                            remarks,
-                                            supportFrameNo,
-                                            timeZone,
-                                            workGroup,
-                                            workLocationCD,
-                                        }) => {
+                                    _.chain(taskBlocks)
+                                        .map(({caltimeSpan, taskDetails}) => {
                                             const $date = moment(date, DATE_FORMAT).toDate();
 
                                             const { end, start, workingHours } = timeZone;
@@ -251,10 +245,10 @@ module nts.uk.ui.at.kdw013.a {
                                             const { timeWithDay: endTime } = end;
                                             
                                             return {
-                                                start: setTimeOfDate($date, startTime),
-                                                end: setTimeOfDate($date, endTime || (startTime + 60)),
-                                                title: getTitles(wg, tasks),
-                                                backgroundColor : getBackground(wg, tasks),
+                                                start: setTimeOfDate($date, caltimeSpan.start),
+                                                end: setTimeOfDate($date, caltimeSpan.end),
+                                                title: taskDetails.length ? getTitles(wg, tasks) : vm.$i18n('KDW013_79'),
+                                                backgroundColor: taskDetails.length ? getBackground(wg, tasks) : '#fbb3fb',
                                                 textColor: '',
                                                 extendedProps: {
                                                     id: randomId(),
@@ -269,6 +263,7 @@ module nts.uk.ui.at.kdw013.a {
                                                     workCD5,
                                                     workLocationCD,
                                                     workingHours,
+                                                    isTimeBreak: !taskDetails.length,
                                                     isChanged: false
                                                 } as any
                                             };
@@ -290,7 +285,10 @@ module nts.uk.ui.at.kdw013.a {
             };
 
             vm.$datas
-                .subscribe((datas) => computedEvents(datas, ko.unwrap(vm.$settings)));
+                .subscribe((datas) => {
+                    computedEvents(datas, ko.unwrap(vm.$settings))
+
+                });
     
             vm.events.subscribe((datas) => vm.dataChanged(true));
 
@@ -680,9 +678,9 @@ module nts.uk.ui.at.kdw013.a {
 
                     let events = _.chain(eventInday).map(e => {
 
-                        let manHrContents = [];
-                         let taskList = _.get(e, 'extendedProps.taskBlock.taskDetails',[]);
-                        return { ymd: date, taskList, manHrContents };
+                        let {taskDetails, manHrContents} = _.get(e, 'extendedProps.taskBlock');
+
+                        return { ymd: date, taskList: taskDetails, manHrContents };
                     }).value();
 
                     result.push(...events);

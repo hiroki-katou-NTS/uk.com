@@ -44,6 +44,7 @@ public class JpaTaskTimeGroupRepository extends JpaRepository implements TaskTim
 		if (entity.isPresent()) {
 			this.commandProxy().remove(entity.get());
 		}
+		this.getEntityManager().flush();
 	}
 
 	@Override
