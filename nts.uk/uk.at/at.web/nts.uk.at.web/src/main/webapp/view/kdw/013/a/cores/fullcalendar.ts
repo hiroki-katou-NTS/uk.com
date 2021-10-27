@@ -2798,7 +2798,12 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         let frameNos = [];
                         _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
-                        
+                        const startMinutes = (moment(start).hour() * 60) + moment(start).minute();
+                        const endMinutes = (moment(end).hour() * 60) + moment(end).minute();
+
+                        taskItemValues.push({ itemId: 1, value: startMinutes });
+                        taskItemValues.push({ itemId: 2, value: endMinutes });
+                        taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
                             events.push({
                                 title: getTitles(wg, vm.params.$settings().tasks),
                                 start,
@@ -2814,12 +2819,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //社員ID
                                 employeeId: vm.params.employee() || vm.$user.employeeId,
                                 //年月日
-                                period: { start: start, end: end },
+                                period: {  start,  end },
                                 //現在の応援勤務枠
                                 frameNos,                                
                                 //工数実績作業ブロック
                                 taskBlock: {
-                                    caltimeSpan: { start: start, end: end },
+                                    caltimeSpan: { start,  end },
 
                                     taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 0 : vm.getFrameNo(eventInDay), taskItemValues }]
                                 },
@@ -2842,9 +2847,15 @@ module nts.uk.ui.at.kdw013.calendar {
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60);
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
                             let [first] = task.taskContents;
-                            
+                            let wg = {
+                                workCD1: _.get(extendedProps, 'task.taskContents[0].taskContent.taskCode', null),
+                                workCD2: _.get(extendedProps, 'task.taskContents[1].taskContent.taskCode', null),
+                                workCD3: _.get(extendedProps, 'task.taskContents[2].taskContent.taskCode', null),
+                                workCD4: _.get(extendedProps, 'task.taskContents[3].taskContent.taskCode', null),
+                                workCD5: _.get(extendedProps, 'task.taskContents[4].taskContent.taskCode', null),
+                            }
                             events.push({
-                                title: getTitles(workCDs, vm.params.$settings().tasks),
+                                title: getTitles(wg, vm.params.$settings().tasks),
                                 start : timeStart,
                                 end : timeEnd,
                                 textColor,
