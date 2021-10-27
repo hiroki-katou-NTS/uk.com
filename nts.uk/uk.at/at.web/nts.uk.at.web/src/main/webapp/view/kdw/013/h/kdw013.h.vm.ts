@@ -41,6 +41,7 @@ module nts.uk.at.view.kdw013.h {
 
 			params: Param;
 			dataMaster: DataMaster;
+			primitiveValueDaily: any[] = __viewContext.enums.PrimitiveValueDaily;
 
 			constructor() {
 				let self = this;
@@ -102,7 +103,7 @@ module nts.uk.at.view.kdw013.h {
 					let itemName = _.find(self.dataMaster.attItemName, a => a.attendanceItemId == item.itemId);
 					let itemType = _.find(self.dataMaster.dailyAttendanceItem, d => d.attendanceItemId == item.itemId);
 					let use = true;
-					item.setUseNameType(use, itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null);
+					item.setUseNameType(use, itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null));
 					let option: Option[] = [];
 					let divergenceReasonInputMethods = null;
 					//trường hợp đặc biệt
@@ -140,6 +141,13 @@ module nts.uk.at.view.kdw013.h {
 					}
 				});
 
+			}
+			
+			getPrimitiveValue(primitiveValue: number): string {
+				if(primitiveValue){
+					return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
+				}
+				return '';
 			}
 
 			orderOptionItems() {
@@ -321,6 +329,7 @@ module nts.uk.at.view.kdw013.h {
 		layoutCode: string;
 		itemSelectedDisplay: KnockoutObservable<string> = ko.observable('');
 		name: string; //only use for break times
+		
 		constructor(itemValue?: IItemValue, name?: string) {
 			this.itemId = itemValue.itemId;
 			this.value(itemValue.value);
@@ -328,6 +337,7 @@ module nts.uk.at.view.kdw013.h {
 			this.valueType = itemValue.valueType;
 			this.layoutCode = itemValue.layoutCode;
 			this.name = name;
+			
 		}
 		toDataSave(): IItemValue {
 			return {
@@ -347,16 +357,20 @@ module nts.uk.at.view.kdw013.h {
 		use: KnockoutObservable<boolean> = ko.observable(false);
 		type: number;
 		options: Option[] = [];
+		primitiveValue: string;
 		constructor(itemValue: IItemValue) {
 			super(itemValue);
 		}
-		setUseNameType(use: boolean, name?: string, type?: number) {
+		setUseNameType(use: boolean, name?: string, type?: number, primitiveValue?: string) {
 			if (use) {
 				this.use(use);
 				this.lable(name);
 				this.type = type;
+				this.primitiveValue = primitiveValue;
 			}
 		}
+		
+		
 	}
 	type Option = {
 		code: string;
