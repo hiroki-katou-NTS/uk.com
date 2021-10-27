@@ -618,18 +618,19 @@ module nts.uk.ui.at.ksu002.a {
 		}
 		
 		openB() {
-			let self = this;
-			const { begin, finish } = self.baseDate();
-			let param = {
-				employeeCode: self.startupProcessingInformation().employeeCode,//社員コード
-				businessName: self.startupProcessingInformation().businessName,//社員名
-				yearMonth: self.yearMonth(),//対象年月
-				startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
-				endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
-				dayOfWeek: self.dayStartWeek()//起算曜日
-			}
-			setShared('dataShareDialogKSU002B', param);
-			nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
+			let vm = this;
+			const { begin, finish } = vm.baseDate();
+			let shareData = {
+                startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
+                endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
+                employeeCode: vm.startupProcessingInformation().employeeCode,//社員コード
+                employeeName: vm.startupProcessingInformation().businessName,//社員名
+                targetDate: moment(vm.yearMonth(), 'YYYYMMDD').format('YYYY/MM/DD'),//対象年月
+                startDay: vm.dayStartWeek()//起算曜日
+            }
+            vm.$window.storage("ksu002B_params", shareData).then(() => {
+                nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
+            });
 		}
 		// UI-8: Undo-Redoの処理
 		undoOrRedo(action: 'undo' | 'redo') {
