@@ -1237,15 +1237,16 @@ module nts.uk.ui.at.kdw013.calendar {
 
             isShowBreakTime.subscribe(value => {
                     let currentDate = vm.params.initialDate();
-                
-                    if(!value){
-                         let breakEventInDay = _.chain(vm.calendar.getEvents())
+                    let breakEventInDay = _.chain(vm.calendar.getEvents())
                             .filter((evn) => { return moment(evn.start).isSame(moment(currentDate), 'days'); })
                             .filter((evn) => { return evn.extendedProps.isTimeBreak == true })
                             .value();
-                        
+                    if(!value){
                        _.forEach(breakEventInDay, e => e.remove());
                         mutatedEvents();
+                        return;
+                    }
+                    if (breakEventInDay.length) {
                         return;
                     }
                     let data =  ko.unwrap(vm.params.$datas);
@@ -1920,7 +1921,6 @@ module nts.uk.ui.at.kdw013.calendar {
 
                      let eventInDay = _.chain(events)
                             .filter((evn) => { return moment(info.date).isSame(evn.start, 'days'); })
-                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
                             .sortBy('end')
                             .value();
                     
@@ -2777,16 +2777,30 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     let isTaskDrop = _.find(vm.taskDragItems(), task => task.extendedProps.favId == extendedProps.favId);
                     
+                   
+                    
                     if (isTaskDrop) {
-                        let workCDs = _.map(_.get(extendedProps, 'dropInfo.favoriteContents', []), item => item.taskCode);
+                        let taskItemValues = _.map(_.get(extendedProps, 'dropInfo.favoriteContents', []), ({itemId, taskCode}) => { return { itemId, value: taskCode } });
+                        
+                        let wg = {
+                            workCD1: _.get(extendedProps, 'dropInfo.favoriteContents[0].taskCode', null),
+                            workCD2: _.get(extendedProps, 'dropInfo.favoriteContents[1].taskCode', null),
+                            workCD3: _.get(extendedProps, 'dropInfo.favoriteContents[2].taskCode', null),
+                            workCD4: _.get(extendedProps, 'dropInfo.favoriteContents[3].taskCode', null),
+                            workCD5: _.get(extendedProps, 'dropInfo.favoriteContents[4].taskCode', null),
+                        }
+                        
                         let eventInDay = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
                             .sortBy('end')
                             .value();
                         
+                        let frameNos = [];
+                        _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                        
                             events.push({
-                                title: getTitles(workCDs, vm.params.$settings().tasks),
+                                title: getTitles(wg, vm.params.$settings().tasks),
                                 start,
                                 end,
                                 textColor,
@@ -2802,12 +2816,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //年月日
                                 period: { start: start, end: end },
                                 //現在の応援勤務枠
-                                frameNos:[],                                
+                                frameNos,                                
                                 //工数実績作業ブロック
                                 taskBlock: {
                                     caltimeSpan: { start: start, end: end },
 
-                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 0 : vm.getFrameNo(eventInDay), taskItemValues : vm.getTaskValues() }]
+                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 0 : vm.getFrameNo(eventInDay), taskItemValues }]
                                 },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
@@ -2961,7 +2975,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.calendar.render();
                 });
 
-            // change weekends 
             ko.computed({
                 read: () => {
                     const wk = ko.unwrap<boolean>(weekends);
