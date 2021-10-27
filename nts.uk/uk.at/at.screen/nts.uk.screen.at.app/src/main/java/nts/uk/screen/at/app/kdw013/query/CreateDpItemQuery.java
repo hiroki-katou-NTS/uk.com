@@ -136,7 +136,7 @@ public class CreateDpItemQuery {
 		 * lstNotFoundWorkType = List.Empty
 		 * showDialogError = false
 		 * showFlex = false
-		 * checkDailyChange = false
+		 * checkDailyChange = true
 		 * approvalConfirmCache = 作成した「approvalConfirmCache」
 		 * domainMonthOpt = Optional.empty
 		 * paramCommonAsync = NULL
@@ -162,7 +162,7 @@ public class CreateDpItemQuery {
     			new ArrayList<>(), 
     			false, 
     			false, 
-    			false, 
+    			true, 
     			approvalConfirmCache, 
     			Optional.empty(), 
     			null);
@@ -221,7 +221,7 @@ public class CreateDpItemQuery {
 		existingList.forEach(eItem -> {
 
 			itemVals.stream().filter(iv -> iv.getItemId() == eItem.getItemId()).findFirst().ifPresent(iv -> {
-				if (!iv.getValue().equals(eItem.getValue())) {
+				if (iv.getValue() != null && !iv.getValue().equals(eItem.getValue())) {
 					changedList.add(iv);
 				}
 			});

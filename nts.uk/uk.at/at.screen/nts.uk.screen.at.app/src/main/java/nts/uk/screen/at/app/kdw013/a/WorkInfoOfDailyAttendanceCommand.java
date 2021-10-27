@@ -36,15 +36,21 @@ public class WorkInfoOfDailyAttendanceCommand {
 
 	// 振休振出として扱う日数
 	private NumberOfDaySuspensionCommand numberDaySuspension;
+	
+	private long ver;
 
 	public WorkInfoOfDailyAttendance toDomain() {
-
-		return new WorkInfoOfDailyAttendance(this.recordInfoDto.toDomain(),
+		
+		WorkInfoOfDailyAttendance result =	new WorkInfoOfDailyAttendance(this.recordInfoDto.toDomain(),
 				EnumAdaptor.valueOf(this.calculationState, CalculationState.class),
 				EnumAdaptor.valueOf(this.goStraightAtr, NotUseAttribute.class),
 				EnumAdaptor.valueOf(this.backStraightAtr, NotUseAttribute.class),
 				EnumAdaptor.valueOf(this.dayOfWeek, DayOfWeek.class), 
 				this.scheduleTimeSheets.stream().map(st -> ScheduleTimeSheetCommand.toDomain(st)).collect(Collectors.toList()),
 				Optional.ofNullable(this.numberDaySuspension == null ? null : this.numberDaySuspension.toDomain()));
+		
+		result.setVer(this.getVer());
+
+		return result;
 	}
 }

@@ -76,7 +76,7 @@ module nts.uk.ui.at.kdw013.b {
                 <!-- F3_1 -->
                 <label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
                 <input
-                class="nameInput"
+                class="input-f-b"
                 tabindex="1"
                 id="KDW013_71"
                 data-bind="ntsTextEditor: {
@@ -149,6 +149,7 @@ module nts.uk.ui.at.kdw013.b {
             .popup-area-f-from-b {
                 padding: 20px !important;
                 text-align: right;
+                width: 244px;
             }
             .pb10 {
                 padding-bottom: 10px !important;
@@ -216,6 +217,7 @@ module nts.uk.ui.at.kdw013.b {
                     const event = ko.unwrap(data);
 
                     if (event && event.extendedProps.status == "update") {
+                        vm.favTaskName('');
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
 						const startTime = getTimeOfDate(start);
                         const endTime = getTimeOfDate(end);
@@ -351,24 +353,30 @@ module nts.uk.ui.at.kdw013.b {
         addFavTask() {
             const vm = this;
 
-            //_.forEach(vm.itemValues(), v => {
-
-                // vm.taskContents().push({
-                //     itemId: v.itemId,
-                //     taskCode: v.value.toString()
-                // })
-
-            //});
-
             const registerFavoriteCommand : RegisterFavoriteCommand = {
                 taskName: vm.favTaskName(),
                 contents: vm.taskContents
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
-            }).always(() => vm.$blockui('clear'));
+            vm.$blockui('show');
+            vm.$validate(".input-f-b").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                                
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
+
                
         }
 

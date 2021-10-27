@@ -217,59 +217,30 @@ module nts.uk.ui.at.kdw013.a {
                     if (dailyManHrTasks && tasks) {
                         const events = _
                             .chain(dailyManHrTasks)
-                            .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
+                            .map(({ date, taskBlocks }) => {
                                 const events: calendar.EventRaw[] =
-                                    _.chain(lstWorkDetailsParamDto)
-                                        .map(({
-                                            remarks,
-                                            supportFrameNo,
-                                            timeZone,
-                                            workGroup,
-                                            workLocationCD,
-                                        }) => {
+                                    _.chain(taskBlocks)
+                                        .map(({caltimeSpan, taskDetails}) => {
                                             const $date = moment(date, DATE_FORMAT).toDate();
 
-                                            const { end, start, workingHours } = timeZone;
-                                            const {
-                                                workCD1,
-                                                workCD2,
-                                                workCD3,
-                                                workCD4,
-                                                workCD5
-                                            } = workGroup;
-                                            const task = getTask(workGroup, tasks) || { displayInfo: {} } as any as c.TaskDto;
-                                            
-                                            const wg = {
-                                                workCD1,
-                                                workCD2,
-                                                workCD3,
-                                                workCD4,
-                                                workCD5
-                                            }
-
-                                            const { timeWithDay: startTime } = start;
-                                            const { timeWithDay: endTime } = end;
+                                            const { end, start } = caltimeSpan;
+                                            let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days'));
                                             
                                             return {
-                                                start: setTimeOfDate($date, startTime),
-                                                end: setTimeOfDate($date, endTime || (startTime + 60)),
-                                                title: getTitles(wg, tasks),
-                                                backgroundColor : getBackground(wg, tasks),
+                                                start: setTimeOfDate($date, start),
+                                                end: setTimeOfDate($date, end),
+                                                title: taskDetails.length ? getTitles(wg, tasks) : vm.$i18n('KDW013_79'),
+                                                backgroundColor: taskDetails.length ? getBackground(wg, tasks) : '#fbb3fb',
                                                 textColor: '',
                                                 extendedProps: {
                                                     id: randomId(),
                                                     status: 'normal' as any,
-                                                    remarks,
-                                                    employeeId,
-                                                    supportFrameNo,
-                                                    workCD1,
-                                                    workCD2,
-                                                    workCD3,
-                                                    workCD4,
-                                                    workCD5,
-                                                    workLocationCD,
-                                                    workingHours,
-                                                    isChanged: false
+                                                    isTimeBreak: !taskDetails.length,
+                                                    isChanged: false,
+                                                    taskBlock: {
+                                                        manHrContents,
+                                                        taskDetails
+                                                    }
                                                 } as any
                                             };
                                         })
@@ -290,7 +261,10 @@ module nts.uk.ui.at.kdw013.a {
             };
 
             vm.$datas
-                .subscribe((datas) => computedEvents(datas, ko.unwrap(vm.$settings)));
+                .subscribe((datas) => {
+                    computedEvents(datas, ko.unwrap(vm.$settings))
+
+                });
     
             vm.events.subscribe((datas) => vm.dataChanged(true));
 
@@ -680,9 +654,9 @@ module nts.uk.ui.at.kdw013.a {
 
                     let events = _.chain(eventInday).map(e => {
 
-                        let manHrContents = [];
-                         let taskList = _.get(e, 'extendedProps.taskBlock.taskDetails',[]);
-                        return { ymd: date, taskList, manHrContents };
+                        let {taskDetails, manHrContents} = _.get(e, 'extendedProps.taskBlock');
+
+                        return { ymd: date, taskList: taskDetails, manHrContents };
                     }).value();
 
                     result.push(...events);
@@ -978,7 +952,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         // Popup F:
-        updateFavName(favTaskId: string) {
+        updateFavName() {
             const vm = this;
 
             const updateFavNameCommand: UpdateFavNameCommand = {
@@ -986,12 +960,24 @@ module nts.uk.ui.at.kdw013.a {
                 favName: vm.favTaskName()
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-                    vm.reLoad();    
-                });
-            }).always(() => vm.$blockui('clear'));
+            vm.$blockui('show');
+            vm.$validate(".input-f").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
 
         }
 
@@ -1015,12 +1001,24 @@ module nts.uk.ui.at.kdw013.a {
                 favName: vm.oneDayFavTaskName()
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-                    vm.reLoad();
-                });
-            }).always(() => vm.$blockui('clear'));
+            vm.$blockui('show');
+            vm.$validate(".input-g").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
 
         }
 
@@ -1048,10 +1046,24 @@ module nts.uk.ui.at.kdw013.a {
 
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
-            }).always(() => vm.$blockui('clear'));
+            vm.$blockui('show');
+            vm.$validate(".input-g").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
         }
 
         createWarning() {
