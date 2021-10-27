@@ -207,10 +207,11 @@ export class Ccg008AComponent extends Vue {
         const vm = this;
 
         let results = [];
+        let vacationSetting = item.vacationSetting;
     
         // yearlyHoliday
         let yearlyHld = item.yearlyHoliday;
-        if (yearlyHld && !yearlyHld.calculationMethod) {
+        if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
             results.push({
                 name:'KTG029_23', 
                 value: yearlyHld.nextTimeInfo.day, 
@@ -218,48 +219,51 @@ export class Ccg008AComponent extends Vue {
             }); 
         }
         // next grantDate
-        if (yearlyHld && yearlyHld.nextGrantDate) {
-            let grantDays = 0;
-            if (yearlyHld.nextGrantDateInfo && yearlyHld.grantedDaysNo) {
-                grantDays = yearlyHld.grantedDaysNo;
+        if (vacationSetting.annualManage) {
+            if (yearlyHld && yearlyHld.nextGrantDate) {
+                let grantDays = 0;
+                if (yearlyHld.nextGrantDateInfo && yearlyHld.grantedDaysNo) {
+                    grantDays = yearlyHld.grantedDaysNo;
+                }
+                results.push({
+                    name: 'CCGS08_16', 
+                    value: moment(new Date(yearlyHld.nextGrantDate)).format('YY/MM/DD') + '　' + grantDays + vm.$i18n('CCGS08_19'), 
+                    // prefix: 'KTG029_60'
+                });
+            } else {
+                results.push({
+                    name: 'CCGS08_16', 
+                    value: vm.$i18n('CCGS08_38'), 
+                    // prefix: 'KTG029_60'
+                });
             }
-            results.push({
-                name: 'CCGS08_16', 
-                value: moment(new Date(yearlyHld.nextGrantDate)).format('YY/MM/DD') + '　' + grantDays + vm.$i18n('CCGS08_19'), 
-                // prefix: 'KTG029_60'
-            });
-        } else {
-            results.push({
-                name: 'CCGS08_16', 
-                value: vm.$i18n('CCGS08_38'), 
-                // prefix: 'KTG029_60'
-            });
         }
         // 積立年休残数
-        if (item.reservedYearsRemainNo) {
+        if (item.reservedYearsRemainNo && vacationSetting.accumAnnualManage) {
             if (item.reservedYearsRemainNo.showAfter) {
                 results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
             }
         }
         //setRemainAlternationNoDay
-        if (item.vacationSetting.substituteTimeManage) {
-            let timeDisp = vm.$dt.timedr(item.remainAlternationNoDay);
-            if (timeDisp.startsWith('0')) {
-                results.push({name:'代休残数', value: timeDisp.substr(1, timeDisp.length)});
+        if (vacationSetting.substituteManage) {
+            if (item.vacationSetting.substituteTimeManage) {
+                let timeDisp = vm.$dt.timedr(item.remainAlternationNoDay);
+                if (timeDisp.startsWith('0')) {
+                    results.push({name:'代休残数', value: timeDisp.substr(1, timeDisp.length)});
+                } else {
+                    results.push({name:'代休残数', value: timeDisp});
+                }
             } else {
-                results.push({name:'代休残数', value: timeDisp});
+                results.push({name:'代休残数', value: vm.$i18n('CCGS08_36', [item.remainAlternationDay.toString()])});
             }
-        } else {
-            results.push({name:'代休残数', value: vm.$i18n('CCGS08_36', [item.remainAlternationDay.toString()])});
         }
-        // if (item.remainAlternationNoDay || item.remainAlternationNoDay === 0) {
-        // }
-      
-        if (item.remainsLeft || item.remainsLeft === 0) {
-            results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});
+        if (vacationSetting.accomoManage) {
+            if (item.remainsLeft || item.remainsLeft === 0) {
+                results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});
+            }
         }
         // 子看護管理区分
-        if (!!item.childRemainNo) {
+        if (!!item.childRemainNo && vacationSetting.childCaremanage) {
             const {before, after, showAfter} = item.childRemainNo;
             results.push({
                 name: 'CCGS08_26',
@@ -270,7 +274,7 @@ export class Ccg008AComponent extends Vue {
         } 
 
         // 介護管理区分
-        if (!!item.careLeaveNo) {
+        if (!!item.careLeaveNo && vacationSetting.nursingManage) {
             const {before, after, showAfter} = item.careLeaveNo;
             results.push({
                 name: 'CCGS08_27',
@@ -291,11 +295,11 @@ export class Ccg008AComponent extends Vue {
 
         // ６０Ｈ超休残数
         // todo format time
-        if (!!item.extraRest) {
+        if (!!item.extraRest && vacationSetting.holiday60HManage) {
             const {hours, min} = item.extraRest;
             results.push({
                 name: 'CCGS08_28',
-                value: vm.$i18n('CCGS08_37', [String(0), String(hours) + (min >= 10 ? min : ('0' + min))]),
+                value: vm.$i18n('CCGS08_37', [String(0), String(hours) + ':' + (min >= 10 ? min : ('0' + min))]),
                 isFormatNew: true
                 
             });
