@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
+import nts.arc.error.ErrorMessage;
+import nts.arc.error.I18NErrorMessage;
 import nts.arc.i18n.I18NText;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
@@ -87,10 +89,10 @@ public class ItemInputControlTest {
 		UsageItemName itemName = new UsageItemName("ItemName");
 		Optional<ActualItemUsageValue> inputVal = Optional.empty();
 		Optional<ErrorItem> actual = item.checkErrors(itemNo, itemName, inputVal);
-		String expect = I18NText.main("Msg_2228").addRaw(itemName.v()).build().buildMessage();
+		ErrorMessage expect = new I18NErrorMessage(I18NText.main("Msg_2228").addRaw(itemName.v()).build());
 		
 		assertThat(actual).isPresent();
-		assertThat(actual.get().getErrorMessage()).isEqualTo(expect);
+		assertThat(actual.get().getErrorMessage()).isEqualByComparingTo(expect);
 	}
 	
 	/**
@@ -121,12 +123,12 @@ public class ItemInputControlTest {
 		UsageItemName itemName = new UsageItemName("ItemName");
 		Optional<ActualItemUsageValue> inputVal = Optional.of(new ActualItemUsageValue("ActualItemUsageValue"));
 		Optional<ErrorItem> actual = item.checkErrors(itemNo, itemName, inputVal);
-		String expect = I18NText.main("Msg_2229")
+		ErrorMessage expect = new I18NErrorMessage(I18NText.main("Msg_2229")
 				.addRaw(itemName.v())
 				.addRaw(item.getDigitsNo().get())
-				.build().buildMessage();
+				.build());
 		assertThat(actual).isPresent();
-		assertThat(actual.get().getErrorMessage()).isEqualTo(expect);
+		assertThat(actual.get().getErrorMessage()).isEqualByComparingTo(expect);
 	}
 	
 	/**
@@ -160,13 +162,13 @@ public class ItemInputControlTest {
 		Optional<ActualItemUsageValue> inputVal = Optional.of(new ActualItemUsageValue("11"));
 		Optional<ErrorItem> actual = item.checkErrors(itemNo, itemName, inputVal);
 		
-		String expect = I18NText.main("Msg_2246")
+		ErrorMessage expect = new I18NErrorMessage(I18NText.main("Msg_2246")
 				.addRaw(itemName.v())
 				.addRaw(item.getMinimum().get().v())
 				.addRaw(item.getMaximum().get().v())
-				.build().buildMessage();
+				.build());
 		assertThat(actual).isPresent();
-		assertThat(actual.get().getErrorMessage()).isEqualTo(expect);
+		assertThat(actual.get().getErrorMessage()).isEqualByComparingTo(expect);
 	}
 	
 	/**
@@ -183,13 +185,13 @@ public class ItemInputControlTest {
 		Optional<ActualItemUsageValue> inputVal = Optional.of(new ActualItemUsageValue("0"));
 		Optional<ErrorItem> actual = item.checkErrors(itemNo, itemName, inputVal);
 		
-		String expect = I18NText.main("Msg_2246")
+		ErrorMessage expect = new I18NErrorMessage(I18NText.main("Msg_2246")
 				.addRaw(itemName.v())
 				.addRaw(item.getMinimum().get().v())
 				.addRaw(item.getMaximum().get().v())
-				.build().buildMessage();
+				.build());
 		assertThat(actual).isPresent();
-		assertThat(actual.get().getErrorMessage()).isEqualTo(expect);
+		assertThat(actual.get().getErrorMessage()).isEqualByComparingTo(expect);
 	}
 	
 	/**
@@ -223,13 +225,13 @@ public class ItemInputControlTest {
 		Optional<ActualItemUsageValue> inputVal = Optional.of(new ActualItemUsageValue("4100"));
 		Optional<ErrorItem> actual = item.checkErrors(itemNo, itemName, inputVal);
 		
-		String expect = I18NText.main("Msg_2247")
+		ErrorMessage expect = new I18NErrorMessage(I18NText.main("Msg_2247")
 				.addRaw(itemName.v())
 				.addRaw(ItemInputControlTestHelper.formatTime(item.getMinimum().get().v()))
 				.addRaw(ItemInputControlTestHelper.formatTime(item.getMaximum().get().v()))
-				.build().buildMessage();
+				.build());
 		assertThat(actual).isPresent();
-		assertThat(actual.get().getErrorMessage()).isEqualTo(expect);
+		assertThat(actual.get().getErrorMessage()).isEqualByComparingTo(expect);
 	}
 	
 	/**
@@ -246,13 +248,14 @@ public class ItemInputControlTest {
 		Optional<ActualItemUsageValue> inputVal = Optional.of(new ActualItemUsageValue("900"));
 		Optional<ErrorItem> actual = item.checkErrors(itemNo, itemName, inputVal);
 		
-		String expect = I18NText.main("Msg_2247")
+		ErrorMessage expect = new I18NErrorMessage(I18NText.main("Msg_2247")
 				.addRaw(itemName.v())
 				.addRaw(ItemInputControlTestHelper.formatTime(item.getMinimum().get().v()))
 				.addRaw(ItemInputControlTestHelper.formatTime(item.getMaximum().get().v()))
-				.build().buildMessage();
+				.build());
 		assertThat(actual).isPresent();
-		assertThat(actual.get().getErrorMessage()).isEqualTo(expect);	}
+		assertThat(actual.get().getErrorMessage()).isEqualByComparingTo(expect);	
+	}
 	
 	/**
 	 * [1] 項目制御のエラーをチェックする
@@ -286,7 +289,7 @@ public class ItemInputControlTest {
 		ErrorItem errorItem = item.createErrorItem(itemNo, itemName);
 		
 		// then
-		assertThat(errorItem.getErrorMessage()).isNotBlank();
+		assertThat(errorItem.getErrorMessage().getMessage()).isNotBlank();
 	}
 	
 	/**
@@ -304,7 +307,7 @@ public class ItemInputControlTest {
 		ErrorItem errorItem = item.createErrorItem(itemNo, itemName);
 		
 		// then
-		assertThat(errorItem.getErrorMessage()).isNotBlank();
+		assertThat(errorItem.getErrorMessage().getMessage()).isNotBlank();
 	}
 	
 	/**
@@ -322,6 +325,6 @@ public class ItemInputControlTest {
 		ErrorItem errorItem = item.createErrorItem(itemNo, itemName);
 		
 		// then
-		assertThat(errorItem.getErrorMessage()).isNotBlank();
+		assertThat(errorItem.getErrorMessage().getMessage()).isNotBlank();
 	}
 }

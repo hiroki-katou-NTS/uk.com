@@ -7,6 +7,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.error.I18NErrorMessage;
 import nts.arc.i18n.I18NText;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
@@ -80,8 +81,8 @@ public class ItemInputControl extends ValueObject {
 	public Optional<ErrorItem> checkErrors(EquipmentItemNo itemNo, UsageItemName itemName,
 			Optional<ActualItemUsageValue> optInputVal) {
 		if (this.require && !this.isValidInput(optInputVal)) {
-			String errorMessage = I18NText.main("Msg_2228").addRaw(itemName.v()).build().buildMessage();
-			return Optional.of(new ErrorItem(itemNo, errorMessage));
+			I18NText errorMessage = I18NText.main("Msg_2228").addRaw(itemName.v()).build();
+			return Optional.of(new ErrorItem(itemNo, new I18NErrorMessage(errorMessage)));
 		}
 
 		if (!this.isValidInput(optInputVal)) {
@@ -104,23 +105,22 @@ public class ItemInputControl extends ValueObject {
 	 * @return エラー項目
 	 */
 	public ErrorItem createErrorItem(EquipmentItemNo itemNo, UsageItemName itemName) {
-		String errorMessage = null;
+		I18NText errorMessage = null;
 		switch (this.itemCls) {
 		case TEXT:
-			errorMessage = I18NText.main("Msg_2229").addRaw(itemName.v()).addRaw(this.digitsNo.get()).build()
-					.buildMessage();
+			errorMessage = I18NText.main("Msg_2229").addRaw(itemName.v()).addRaw(this.digitsNo.get()).build();
 			break;
 		case NUMBER:
 			errorMessage = I18NText.main("Msg_2246").addRaw(itemName.v()).addRaw(this.minimum.get().v())
-					.addRaw(this.maximum.get().v()).build().buildMessage();
+					.addRaw(this.maximum.get().v()).build();
 			break;
 		case TIME:
 			errorMessage = I18NText.main("Msg_2247").addRaw(itemName.v())
 					.addRaw(this.formatTime(this.minimum.get().v())).addRaw(this.formatTime(this.maximum.get().v()))
-					.build().buildMessage();
+					.build();
 			break;
 		}
-		return new ErrorItem(itemNo, errorMessage);
+		return new ErrorItem(itemNo, new I18NErrorMessage(errorMessage));
 	}
 
 	/**
