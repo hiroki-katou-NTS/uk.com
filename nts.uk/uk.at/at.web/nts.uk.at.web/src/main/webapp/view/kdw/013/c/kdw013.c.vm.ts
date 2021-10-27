@@ -250,7 +250,7 @@ module nts.uk.ui.at.kdw013.c {
                                 <td>
 									<div class="ntsControl fix">
 										<input class="inputRange" data-bind="ntsTimeEditor: {
-											name: i18n: 'KDW013_25',
+											name: $i18n('KDW013_25'),
 											value: value,
 											constraint: 'AttendanceTime', 
 											mode: 'time',
