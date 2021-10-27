@@ -21,10 +21,14 @@ import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesHistoryRepository;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workingtype.ChangeableWorktypeGroup;
+import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmpRepo;
+import nts.uk.ctx.at.record.dom.workrecord.workingtype.WorkingTypeChangedByEmployment;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethodI;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskListOfSpecifiedWorkFrameNoQuery;
 import nts.uk.ctx.at.shared.app.query.worktime.worktimeset.WorkTimeSettingQuery;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
@@ -34,9 +38,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRel
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -80,6 +87,9 @@ public class GetWorkDataMasterInformation {
     
     @Inject
     private ManHourRecordAndAttendanceItemLinkRepository manHourRecordAndAttendanceItemLinkRepo;
+    
+    @Inject
+    private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
     
     /**
      * @name 作業データマスタ情報を取得する
@@ -250,7 +260,36 @@ public class GetWorkDataMasterInformation {
     }
     
 	/** @name 変更可能な勤務種類を取得する */
-    public void getChangeableWorkType(String employeeId, GeneralDate date, Optional<String> code) {
+    public List<String> getChangeableWorkType(String employeeId, GeneralDate date, Optional<String> code) {
+    	LoginUserContext loginUser = AppContexts.user();
+    	if(!code.isPresent())
+    		return new ArrayList<String>();
     	
+    	//call 社員と基準日から雇用履歴項目を取得する
+    	AffEmploymentHistoryDto employmentHistoryItem = dailyPerformanceScreenRepo.getAffEmploymentHistory(loginUser.companyId(), employeeId, date);
+    	
+    	//call 変更可能な勤務種類を検索する (ko tồn tại)
+    	if(employmentHistoryItem != null) {
+    		
+    	}
+    	return new ArrayList<String>();
     }
+    
+    @Inject
+    WorkingTypeChangedByEmpRepo workingTypeChangedByEmpRepo;
+    
+    //変更可能な勤務種類を検索する (ko tồn tại)
+    public List<String> getWorkType(String employmentCode, String workTypeCode) {
+    	LoginUserContext loginUser = AppContexts.user();
+    	WorkingTypeChangedByEmployment workingTypeChangedByEmployment = workingTypeChangedByEmpRepo.get(new CompanyId(loginUser.companyId()), new EmploymentCode(employmentCode));
+    	List<ChangeableWorktypeGroup> changeableWorkTypeGroups = workingTypeChangedByEmployment.getChangeableWorkTypeGroups().stream().filter(c -> 
+    	c.getWorkTypeList().contains(workTypeCode)).collect(Collectors.toList());
+    	if(!changeableWorkTypeGroups.isEmpty()) {
+    		
+    	}else {
+    		return workTypeRepository.findByCompanyId(loginUser.companyId()).stream().map(c->c.getWorkTypeCode().v()).collect(Collectors.toList());
+    	}
+    	return new ArrayList<>();
+    }
+    
 }

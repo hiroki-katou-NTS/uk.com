@@ -188,7 +188,12 @@ module nts.uk.ui.at.kdw013.b {
             const vm = this
 
             // Init popup
-            $(".popup-area-f-from-b").ntsPopup({
+        	vm.initPopup();    
+
+        }
+
+		initPopup(){
+			$(".popup-area-f-from-b").ntsPopup({
                 trigger: ".popupButton-f-from-b",
                 position: {
                     my: "left top",
@@ -197,9 +202,8 @@ module nts.uk.ui.at.kdw013.b {
                 },
                 showOnStart: false,
                 dismissible: true
-            })
-
-        }
+            })			
+		}
 
         mounted() {
             const vm = this;
@@ -236,10 +240,14 @@ module nts.uk.ui.at.kdw013.b {
 							vm.dataSources(taskDetails);
 							setTimeout(() => {
 								vm.updatePopupSize();
+								// Init popup
+        						vm.initPopup();
 							}, 150);
 						}).always(() => block.clear());
                     } else {
                         vm.dataSources(taskDetails);
+						// Init popup
+						vm.initPopup();
                     }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
