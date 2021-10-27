@@ -64,11 +64,11 @@ public class KrcdtTaskFavFrameSet extends ContractCompanyUkJpaEntity implements 
 		this.favId = domain.getFavoriteId();
 		this.sId = domain.getEmployeeId();
 		this.favName = domain.getTaskName().v();
-		this.taskCd1 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 4).findAny().map(m -> m.getTaskCode().v()).orElse("");
-		this.taskCd2 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 5).findAny().map(m -> m.getTaskCode().v()).orElse("");
-		this.taskCd3 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 6).findAny().map(m -> m.getTaskCode().v()).orElse("");
-		this.taskCd4 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 7).findAny().map(m -> m.getTaskCode().v()).orElse("");
-		this.taskCd5 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 8).findAny().map(m -> m.getTaskCode().v()).orElse("");
+		this.taskCd1 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 4).findAny().map(m -> m.getTaskCode().v().isEmpty() ? null : m.getTaskCode().v()).orElse(null);
+		this.taskCd2 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 5).findAny().map(m -> m.getTaskCode().v().isEmpty() ? null : m.getTaskCode().v()).orElse(null);
+		this.taskCd3 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 6).findAny().map(m -> m.getTaskCode().v().isEmpty() ? null : m.getTaskCode().v()).orElse(null);
+		this.taskCd4 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 7).findAny().map(m -> m.getTaskCode().v().isEmpty() ? null : m.getTaskCode().v()).orElse(null);
+		this.taskCd5 = domain.getFavoriteContents().stream().filter(f -> f.getItemId() == 8).findAny().map(m -> m.getTaskCode().v().isEmpty() ? null : m.getTaskCode().v()).orElse(null);
 	}
 	
 	public FavoriteTaskItem toDomain() {
