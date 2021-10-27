@@ -42,7 +42,7 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
     private final int START_HEADER_ROW = 6;
     private final int START_DATA_ROW = 8;
     private final int START_DATE_COL = 5;
-    private final int MAX_ROWS_PER_PAGE = 37;
+    private final int MAX_ROWS_PER_PAGE = 51;
 
     private int startRow = START_DATA_ROW;
     private final List<Integer> indexes = new ArrayList<>();
@@ -298,6 +298,8 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
                 Optional<ShiftDisplayInfoDto> recordShiftInfo = dataSource.getShiftDisplayInfos().stream()
                         .filter(shift -> shift.getEmployeeId().equals(employee.getEmployeeId()) && shift.getYmd().equals(date) && shift.getTargetData() == ScheRecGettingAtr.ONLY_RECORD)
                         .findFirst();
+                String scheduleShiftName = scheduleShiftInfo.isPresent() ? scheduleShiftInfo.get().getShiftName().orElse("") : "";
+                String recordShifName = recordShiftInfo.isPresent() ? recordShiftInfo.get().getShiftName().orElse("") : "";
 
                 if (d == targetDates.size() - 1) style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
                 else style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
@@ -307,7 +309,7 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
                 style.setForegroundColor(Color.getWhite());
                 this.setShiftColor(style, scheduleShiftInfo);
                 cells.get(startRow, START_DATE_COL + d).setStyle(style);
-                cells.get(startRow, START_DATE_COL + d).setValue(scheduleShiftInfo.isPresent() ? scheduleShiftInfo.get().getShiftName().orElse(getText("KSU011_86")) : getText("KSU011_86"));
+                cells.get(startRow, START_DATE_COL + d).setValue(scheduleShiftName.isEmpty() ? getText("KSU011_86") : scheduleShiftName);
 
                 style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.DOTTED);
                 style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(lastEmployee ? CellBorderType.DOUBLE : CellBorderType.THIN);
@@ -315,13 +317,11 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
                 this.setShiftColor(style, recordShiftInfo);
                 cells.get(startRow + 1, START_DATE_COL + d).setStyle(style);
                 if (displayBothWhenDiffOnly) {
-                    if ((!scheduleShiftInfo.isPresent() && !recordShiftInfo.isPresent()) || (scheduleShiftInfo.isPresent() && recordShiftInfo.isPresent() && recordShiftInfo.get().getShiftName().orElse("").equals(scheduleShiftInfo.get().getShiftName().orElse("")))) {
-                        // leave blank
-                    } else {
-                        cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShiftInfo.isPresent() ? recordShiftInfo.get().getShiftName().orElse(getText("KSU011_86")) : getText("KSU011_86"));
+                    if (!scheduleShiftName.equals(recordShifName)) {
+                        cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShifName.isEmpty() ? getText("KSU011_86") : recordShifName);
                     }
                 } else {
-                    cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShiftInfo.isPresent() ? recordShiftInfo.get().getShiftName().orElse(getText("KSU011_86")) : getText("KSU011_86"));
+                    cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShifName.isEmpty() ? getText("KSU011_86") : recordShifName);
                 }
             }
 
@@ -463,9 +463,9 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
     }
 
     private void handlePageBreak(Worksheet worksheet) {
-        int start = START_DATA_ROW, maxRowPerPage = MAX_ROWS_PER_PAGE;
+        int start = START_DATA_ROW;
         for (int i = 0; i < indexes.size(); i++) {
-            if (indexes.get(i) - start > maxRowPerPage) {
+            if (indexes.get(i) - start > MAX_ROWS_PER_PAGE) {
                 worksheet.getHorizontalPageBreaks().add(indexes.get(i - 1).intValue());
                 start = indexes.get(i - 1);
             }
