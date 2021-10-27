@@ -822,7 +822,7 @@ module nts.uk.ui.at.kdw013.c {
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
-                vm.caltimeSpanView({start: getTimeOfDate(taskBlocks.caltimeSpan.start), end: getTimeOfDate(taskBlocks.caltimeSpan.end)});
+                vm.caltimeSpanView({start: _.isDate(taskBlocks.caltimeSpan.start) ? getTimeOfDate(taskBlocks.caltimeSpan.start):taskBlocks.caltimeSpan.start, end: _.isDate(taskBlocks.caltimeSpan.end) ? getTimeOfDate(taskBlocks.caltimeSpan.end): taskBlocks.caltimeSpan.end});
             }
         }
         
