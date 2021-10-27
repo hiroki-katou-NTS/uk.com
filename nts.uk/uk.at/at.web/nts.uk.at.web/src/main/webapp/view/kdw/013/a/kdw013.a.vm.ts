@@ -273,7 +273,7 @@ module nts.uk.ui.at.kdw013.a {
                                     id: randomId(),
                                     isTimeBreak: false,
                                     isChanged: false,
-                                    status: 'normal' as any,
+                                    status: 'update' as any,
                                     taskBlock: {
                                         caltimeSpan: { start, end },
                                         taskDetails: [{ supNo: workNo, taskItemValues: task.taskItemValues }]
