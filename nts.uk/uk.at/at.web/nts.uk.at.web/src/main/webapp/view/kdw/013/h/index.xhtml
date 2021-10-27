@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<head>
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
+</head>
+
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 460, height: 493 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="kdw013.h.vm.js" />
+			
+			<com:ValidatorScript>
+				nts.uk.shr.com.time.AttendanceClock
+			</com:ValidatorScript>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1" class="proceed" data-bind="click: registration">#{i18n.getText('KDW013_1')}</button>
+				<button data-bind="click:closeDialog">#{i18n.getText('KDW013_37')}</button>
+			</div>
+			<div id="contents-area">
+				<div class="error" data-bind="text: 'test lable'"></div>
+				<table class="basic-items">
+					<colgroup>
+						<col width="105px"/>
+					</colgroup>
+					<tr>
+						<td>
+							<div>#{i18n.getText('KDW013_80')}</div>
+						</td>
+						<td>	
+							<div>
+								<button data-bind="click: openKdl002">#{i18n.getText('KDW013_82')}</button>
+								<span data-bind="text: itemId28.itemSelectedDisplay"></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div>#{i18n.getText('KDW013_81')}</div>
+						</td>
+						<td>	
+							<div>
+								<button data-bind="click: openKdl001">#{i18n.getText('KDW013_82')}</button>
+								<span data-bind="text: itemId29.itemSelectedDisplay"></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div>#{i18n.getText('KDW013_83')}</div>
+						</td>
+						<td>	
+							<div data-bind="with: itemId31_34">
+								<input data-bind="ntsTimeEditor: { 
+									name: '#[KDW013_84]', 
+									constraint: 'AttendanceClock', 
+									value: start.value, 
+									inputFormat: 'time', 
+									mode: 'time', 
+									option: {width: '50px'}}" />
+								#{i18n.getText('KDW013_30')}																			
+								<input data-bind="ntsTimeEditor: { 
+									name: '#[KDW013_85]', 
+									constraint: 'AttendanceClock', 
+									value: end.value, 
+									inputFormat: 'time', 
+									mode: 'time', 
+									option: {width: '50px'}}" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div>#{i18n.getText('KDW013_87')}</div>
+						</td>
+						<td>
+							<div style="width:200px; display: inline-block;">
+								<table>
+									<tbody data-bind="foreach: breakTimeBase">
+										<tr>
+											<td>
+												<div>
+													<input data-bind="ntsTimeEditor: { 
+														name: start.name, 
+														constraint: 'AttendanceClock', 
+														value: start.value, 
+														inputFormat: 'time', 
+														mode: 'time', 
+														option: {width: '50px'}}" />
+													#{i18n.getText('KDW013_30')}																			
+													<input data-bind="ntsTimeEditor: { 
+														name: end.name, 
+														constraint: 'AttendanceClock', 
+														value: end.value, 
+														inputFormat: 'time', 
+														mode: 'time', 
+														option: {width: '50px'}}" />
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<com:ko-if bind="isShowBreakTimeOptions">
+									<table>
+										<tbody data-bind="foreach: breakTimeOptions">
+											<tr>
+												<td>
+													<div>
+														<input data-bind="ntsTimeEditor: { 
+															name: start.name, 
+															constraint: 'AttendanceClock', 
+															value: start.value, 
+															inputFormat: 'time', 
+															mode: 'time', 
+															option: {width: '50px'}}" 
+														/>
+														#{i18n.getText('KDW013_30')}																			
+														<input data-bind="ntsTimeEditor: { 
+															name: end.name, 
+															constraint: 'AttendanceClock', 
+															value: end.value, 
+															inputFormat: 'time', 
+															mode: 'time', 
+															option: {width: '50px'}}" 
+														/>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</com:ko-if>	
+							</div>
+							<div style="width:100px; display: inline-block; vertical-align: inherit;">
+								<a href="" data-bind="click: showTime">#{i18n.getText('KDW013_92')}</a>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<table class="optionItems">
+					<colgroup>
+						<col width="105px" />
+					</colgroup>
+					<tbody data-bind="foreach: itemOptions">
+						<com:ko-if bind="type == 0 &amp;&amp; use">
+                            <tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsComboBox: {
+										name: lable,
+										options: options,
+										optionsValue: 'code',
+										visibleItemsCount: 10,
+										value: value,
+										optionsText: 'name',
+										editable: true,
+										selectFirstIfNull: false,
+										width: '255px',
+										columns: [
+											{ prop: 'code', length: 4 },
+											{ prop: 'name', length: 10 },
+										]}"></div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+                        <com:ko-if bind="(type == 2 || type == 9) &amp;&amp; use">
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											value: value,
+											option: {width: '233px'}}" />
+									</div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+                        <com:ko-if bind="type == 3 &amp;&amp; use">
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											value: value,
+											option: {
+												width: '223px', 
+												numberGroup: true, 
+												decimallength: 2, 
+												currencyformat: 'JPY',
+												currencyposition: 'left'
+											}}" />
+									</div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+                        <com:ko-if bind="type == 5 &amp;&amp; use">
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTimeEditor: {
+											value: value,
+											mode: 'time',
+											inputFormat: 'time',
+											option: {width: '233px'}}" />
+									</div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+                        <com:ko-if bind="type == 6 &amp;&amp; use">
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTimeWithDayEditor: { 
+											name: 'Time With Day', 
+											constraint:'TimeWithDayAttr', 
+											value: value, 
+											option: {
+												width: '233px',
+												timeWithDay: true
+											}}" />
+									</div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+                        <com:ko-if bind="type == 7 &amp;&amp; use">
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsTextEditor: {
+											value: value,
+											option: {width: '233px'}}" />
+									</div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+					</tbody>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

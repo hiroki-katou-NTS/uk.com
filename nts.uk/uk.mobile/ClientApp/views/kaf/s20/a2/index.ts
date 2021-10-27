@@ -7,6 +7,7 @@ import { KafS00CComponent } from '../../s00/c';
 import { AppType, KafS00ShrComponent } from '../../s00/shr';
 import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/define';
 import { CmmS45CComponent } from '../../../cmm/s45/c/index';
+import {KafS20AmountInputComponent, KafS20NumberInputComponent, KafS20TimeInputComponent} from '../components';
 
 @component({
     name: 'kafs20a2',
@@ -17,45 +18,27 @@ import { CmmS45CComponent } from '../../../cmm/s45/c/index';
         'KafS00AComponent': KafS00AComponent,
         'KafS00BComponent': KafS00BComponent,
         'KafS00CComponent': KafS00CComponent,
-        'cmms45c': CmmS45CComponent
+        'cmms45c': CmmS45CComponent,
+        'kafs20-amount-input': KafS20AmountInputComponent,
+        'kafs20-number-input': KafS20NumberInputComponent,
+        'kafs20-time-input': KafS20TimeInputComponent
     },
-    resource: require('./resources.json'),
-    validations: {
-        optionalItemApplication: {
-            amount: {
-                loop: true,
-                constraint: 'AnyItemAmount'
-            },
-            number: {
-                loop: true,
-                constraint: 'AnyItemTimes'
-            },
-            time: {
-                loop: true,
-                constraint: 'AnyItemTime'
-            }
-        }
-    },
-    constraints: [
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount',
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes',
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime'
-    ]
+    resource: require('./resources.json')
 })
 export class KafS20A2Component extends KafS00ShrComponent {
     public title: string = 'KafS20A2';
     public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
-    public application!: IApplication;
+    public application: IApplication;
     public optionalItemApplication: OptionalItemApplication[] = [];
     public isValidateAll: boolean = true;
     @Prop({ default: () => true })
     public mode: boolean;
 
     @Prop({ default: () => [] })
-    public readonly settingItems!: IOptionalItemAppSet;
+    public readonly settingItems: IOptionalItemAppSet;
 
     @Prop({default : () => {}})
-    public params!: IParams;
+    public params: IParams;
 
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
     public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
@@ -118,8 +101,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
             appDetail.optionalItems.forEach((optionalItem: any) => {
                 let item = _.find(optionalItems, {itemNo: optionalItem.optionalItemNo});
-                let controlAttendance = _.find(appDetail.controlOfAttendanceItems, {itemDailyID: optionalItem.optionalItemNo + 640});
-                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, dispOrder } = optionalItem;
+                // let controlAttendance = _.find(appDetail.controlOfAttendanceItems, {itemDailyID: optionalItem.optionalItemNo + 640});
+                const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, dispOrder, inputCheck } = optionalItem;
                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
                 vm.optionalItemApplication.push({
@@ -134,13 +117,14 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     amount: item ? item.amount : null,
                     number: item ? item.times : null,
                     time: item ? item.time : null,
-                    inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
+                    inputUnitOfItem: vm.getInputUnit(optionalItemAtr, calcResultRange),
                     optionalItemAtr,
                     optionalItemName,
                     optionalItemNo,
                     unit,
                     description,
-                    dispOrder
+                    dispOrder,
+                    inputCheckbox: inputCheck
                 });
             });
             vm.optionalItemApplication.sort((a, b) => a.dispOrder - b.dispOrder);
@@ -160,27 +144,27 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 let params = {
                     optionalItemNos: settingNoItems,
                 };
-                const firstreq = vm.$http.post('at', API.getControlAttendance, params);
-                const seconreq = vm.$http.post('at', API.getListItemNo, params);
+                // const firstreq = vm.$http.post('at', API.getControlAttendance, params);
+                // const seconreq = vm.$http.post('at', API.getListItemNo, params);
 
-                Promise.all([firstreq, seconreq])
+                // Promise.all([firstreq, seconreq])
+                vm.$http.post('at', API.getListItemNo, params)
                     .then((res: any) => {
                         vm.$mask('hide');
 
-                        let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
-                        let optionalNoItems: IOptionalItemDto[] = res[1].data;
+                        // let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
+                        let optionalNoItems: IOptionalItemDto[] = res.data;
 
                         settingNoItems.forEach((itemNo: number) => {
                             let optionalItem = optionalNoItems.find((optionalItem) => {
 
                                 return optionalItem.optionalItemNo == itemNo;
                             });
-                            let controlAttendance = controlAttendances.find((controlAttendance) => {
+                            // let controlAttendance = controlAttendances.find((controlAttendance) => {
+                            //     return itemNo == controlAttendance.itemDailyID - 640;
+                            // });
 
-                                return itemNo == controlAttendance.itemDailyID - 640;
-                            });
-
-                            const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description } = optionalItem;
+                            const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, inputCheck } = optionalItem;
                             const { lowerCheck, upperCheck, amountRange, numberRange, timeRange } = calcResultRange;
                             const { dailyAmountRange } = amountRange;
 
@@ -199,13 +183,14 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                 amount: null,
                                 number: null,
                                 time: null,
-                                inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
+                                inputUnitOfItem: vm.getInputUnit(optionalItemAtr, calcResultRange),
                                 optionalItemAtr,
                                 optionalItemName,
                                 optionalItemNo,
                                 unit,
                                 description,
-                                dispOrder: null
+                                dispOrder: null,
+                                inputCheckbox: inputCheck
                             });
                         });
 
@@ -216,6 +201,42 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     });
             }
         });
+    }
+
+    private getInputUnit(optionalItemAtr: number, calcResultRange: any) {
+        const vm = this;
+        if (optionalItemAtr == 0) {
+            switch (calcResultRange.timeInputUnit) {
+                case 0: return parseInt(vm.$i18n('KMK002_141'));
+                case 1: return parseInt(vm.$i18n('KMK002_142'));
+                case 2: return parseInt(vm.$i18n('KMK002_143'));
+                case 3: return parseInt(vm.$i18n('KMK002_144'));
+                case 4: return parseInt(vm.$i18n('KMK002_145'));
+                case 5: return parseInt(vm.$i18n('KMK002_146'));
+                default: return null;
+            }
+        }
+        if (optionalItemAtr == 1) {
+            switch (calcResultRange.numberInputUnit) {
+                case 0: return parseFloat(vm.$i18n('KMK002_150'));
+                case 1: return parseFloat(vm.$i18n('KMK002_151'));
+                case 2: return parseFloat(vm.$i18n('KMK002_152'));
+                case 3: return parseFloat(vm.$i18n('KMK002_153'));
+                default: return null;
+            }
+        }
+        if (optionalItemAtr == 2) {
+            switch (calcResultRange.amountInputUnit) {
+                case 0: return parseInt(vm.$i18n('KMK002_160'));
+                case 1: return parseInt(vm.$i18n('KMK002_161'));
+                case 2: return parseInt(vm.$i18n('KMK002_162'));
+                case 3: return parseInt(vm.$i18n('KMK002_163'));
+                case 4: return parseInt(vm.$i18n('KMK002_164'));
+                default: return null;
+            }
+        }
+
+        return null;
     }
 
     public backToStep1() {
@@ -341,7 +362,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         if (_.isArray(res.errors)) {
             res.errors.forEach((error) => {
                 document.querySelector('.item-' + error.parameterIds[1] + ' input').classList.add('is-invalid');
-                document.querySelector('.item-' + error.parameterIds[1] + ' .invalid-feedback').innerHTML = '<span>' + error.errorMessage + '</span>';
+                document.querySelector('.item-' + error.parameterIds[1] + ' .invalid-feedback').innerHTML += '<span>' + error.errorMessage + '</span>';
             });
         } else {
             return vm.$modal.error(res);

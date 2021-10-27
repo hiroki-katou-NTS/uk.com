@@ -4,20 +4,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
+import nts.uk.ctx.at.record.infra.entity.daily.timezone.KrcdtDayTsSupSupplInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "KRCDT_DAY_TS_SUP")
 public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements Serializable {
 
@@ -82,10 +88,9 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 	@Column(name = "WORK_CD5")
 	public String workCd5;
 	
-	/** 作業CD5 */
-	@Column(name = "WORK_REMARKS")
-	public String workRemarks;
-
+	@OneToOne(mappedBy = "krcdtDayOuenTimeSheet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	public KrcdtDayTsSupSupplInfo krcdtDayTsSupSupplInfo;
+	
 	@Override
 	protected Object getKey() {
 		return pk;
@@ -111,10 +116,6 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 				entity.workCd3 = work.getWorkCD3().map(w -> w.v()).orElse(null); 
 				entity.workCd4 = work.getWorkCD4().map(w -> w.v()).orElse(null);
 				entity.workCd5 = work.getWorkCD5().map(w -> w.v()).orElse(null);
-			});
-			
-			oTimeSheetAtt.getWorkContent().getWorkRemarks().ifPresent(remarks -> {
-				entity.workRemarks = remarks.v();
 			});
 			
 			entity.workNo = oTimeSheetAtt.getTimeSheet().getWorkNo().v();

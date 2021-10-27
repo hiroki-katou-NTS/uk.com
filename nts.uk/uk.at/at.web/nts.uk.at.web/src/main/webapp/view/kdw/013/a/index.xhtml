@@ -10,6 +10,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
+				nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName
 			</com:ValidatorScript>
 			
 			<com:stylefile set="FULLCALENDAR" />
@@ -19,7 +20,21 @@
 			<com:scriptfile path="../share/dropdown.js" />
 			<com:scriptfile path="../share/input-time.js" />
 			<com:scriptfile path="../share/description.js" />
+			<com:scriptfile path="../share/temporary.js" />
 			<com:scriptfile path="./cores/fullcalendar.js" />
+			
+			<com:scriptfile path="./cores/component/one-day-favorite.js" />
+			<com:scriptfile path="./cores/component/task-favorite.js" />
+			
+			<com:scriptfile path="./cores/component/fc-event-header.js" />
+			<com:scriptfile path="./cores/component/fc-time-header.js" />
+			<com:scriptfile path="./cores/component/date-picker.js" />
+			<com:scriptfile path="./cores/component/approved-list.js" />
+			<com:scriptfile path="./cores/component/department.js" />
+			<com:scriptfile path="./cores/component/fc-setting.js" />
+			<com:scriptfile path="./cores/component/sb-resizer.js" />
+			
+
 
 			<com:stylefile path="./kdw013.a.css" />
 			<com:scriptfile path="./kdw013.a.vm.js" />
@@ -32,9 +47,97 @@
 				<button id='btn_register' data-bind="i18n: 'KDW013_1', click: $vm.saveData, mutable: $vm.$toggle.save, hasFocus: true" class="proceed"></button>
 				<button data-bind="i18n: 'KDW013_2', click: $vm.confirm, kdw-toggle: $vm.$toggle.confirm"></button>
 				<button data-bind="i18n: 'KDW013_3', click: $vm.removeConfirm, kdw-toggle: $vm.$toggle.remove"></button>
+				<button data-bind="i18n: 'KDW013_62', click: $vm.equipmentInput"></button>
+				
+			</div>
+			<div>
+				<div class="popup-area-f">
+					<!-- F2_1 -->
+					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_70'"></div>
+
+					<!-- F3_2 -->
+					<div class="textEditor pb10">
+						<!-- F3_1 -->
+						<label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
+						<input
+						  class="nameInput"
+						  tabindex="1"
+						  id="KDW013_71"
+						  data-bind="ntsTextEditor: {
+							value: favTaskName, 
+							required: true,
+							constraint: 'FavoriteTaskName',
+							name: '#[KDW013_71]',
+							enable: true
+							}"
+						/>
+					</div>
+
+					<!-- F4_1 -->
+					<button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_1', click: $vm.updateFavName"></button>
+				</div>
+				
+				<div class="popup-area-g">
+					<!-- G2_1 -->
+					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_72'"></div>
+
+					<!-- G3_2 -->
+					<div class="textEditor pb10">
+						<!-- G3_1 -->
+						<label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
+						<input
+						  class="nameInput"
+						  tabindex="1"
+						  id="KDW013_71"
+						  data-bind="ntsTextEditor: {
+							value: oneDayFavTaskName, 
+							required: true,
+							constraint: 'FavoriteTaskName',
+							name: '#[KDW013_71]',
+							enable: true
+							}"
+						/>
+					</div>
+
+					<!-- G4_1 -->
+					<button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_1', click: $vm.registerOneDayFavTask"></button>
+				</div>
+				<div class="popup-area-i">
+					<!-- I1_2 -->
+					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_90'"></div>
+
+					<!--I2_1 -->
+					<!--I2_2 -->
+					
+					<div id="taskInfo" data-bind = "foreach: $vm.taskInfos">
+						<div class="panel panel-frame panel-width">
+							
+							<table id="tbl-task">
+								<tr>
+									<td data-bind="text: name"></td>
+									<td class="pl15 icon-edit">
+										<button class="go-button edit-button" tabindex="1" data-bind = "click: function(data){ $vm.openEDialog(data, $vm);}">
+											<i data-bind="ntsIcon: { no: 204, width: 15, height: 20}"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+							
+							<div>
+								<!--I2_3 -->
+								<label class="" data-bind="i18n: 'KDW013_25'"></label>
+	
+								<!--I2_4 -->
+								<label data-bind="text: time"></label>
+							</div>
+						</div>
+					</div>
+						
+				</div>
 			</div>
 			<div id="contents-area">
-				<div data-bind="
+				<div
+					data-bind="
 					fullcalendar: $vm.events,
 					employee: $vm.employee,
 					confirmers: $vm.confirmers,
@@ -44,6 +147,7 @@
 					slotDuration: $vm.slotDuration,
 					initialDate: $vm.initialDate,
 					initialView: $vm.initialView,
+					isShowBreakTime:$vm.isShowBreakTime,
 					availableView: $vm.availableView,
 					breakTime: $vm.breakTime,
 					businessHours: $vm.businessHours,
@@ -57,7 +161,8 @@
 						editor: 'kdp013c'
 					},
 					$datas: $vm.$datas,
-					$settings: $vm.$settings
+					$settings: $vm.$settings,
+					screenA: $vm
 				"></div>
 			</div>
         </ui:define>

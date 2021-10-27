@@ -39,6 +39,7 @@ public class GetTaskItemInfoScreenQuery {
 	public List<TaskItemDto> GetTaskItemInfo() {
 		List<TaskItemDto> results = new ArrayList<TaskItemDto>();
 		List<Integer> listFrameUseAtr = new ArrayList<Integer>();
+		List<String> listFrameName = new ArrayList<String>();
 		String companyId = AppContexts.user().companyId();
 		Boolean hasTaskFrameSetting = true;
 		/** 1.Get(ログイン会社 ID)*/
@@ -55,6 +56,7 @@ public class GetTaskItemInfoScreenQuery {
 
 		for (int i = 0; i < lstTaskFrameSettings.size(); i++) {
 			listFrameUseAtr.add(lstTaskFrameSettings.get(i).getUseAtr().value);
+			listFrameName.add(lstTaskFrameSettings.get(i).getTaskFrameName().v());
 			if (lstTaskFrameSettings.get(i).getUseAtr().value != 0) {
 				hasTaskFrameSetting = false;
 			}
@@ -80,6 +82,7 @@ public class GetTaskItemInfoScreenQuery {
 						.startDate(task.getExpirationDate().start().toString())
 						.endDate(task.getExpirationDate().end().toString())
 						.listFrameNoUseAtr(listFrameUseAtr)
+						.listFrameName(listFrameName)
 						.build();
 		}).collect(Collectors.toList());	
 	

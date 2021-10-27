@@ -4,6 +4,7 @@ package nts.uk.ctx.at.record.dom.daily.ouen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -80,5 +81,13 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 			}
 		}
 		return result.stream().distinct().collect(Collectors.toList());
+	}
+	
+	public void updateOuenTimeSheet(OuenWorkTimeSheetOfDailyAttendance ouenTimeSheetNew) {
+		Optional<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheetOld = this.ouenTimeSheet.stream().filter(c->c.getWorkNo().v() == ouenTimeSheetNew.getWorkNo().v()).findFirst();
+		if(ouenTimeSheetOld.isPresent()) {
+			this.ouenTimeSheet.removeIf(c->c.getWorkNo().v() == ouenTimeSheetNew.getWorkNo().v());
+			this.ouenTimeSheet.add(ouenTimeSheetNew);
+		}
 	}
 }

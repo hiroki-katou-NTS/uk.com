@@ -11,7 +11,10 @@ module nts.uk.at.view.kdw003.cg {
         REGISTER_TASK_INITIAL_SEL_SETTING: "screen/at/task/register",
         UPDATE_TASK_INITIAL_SEL_SETTING: "screen/at/task/update",
         DELETE_TASK_INITIAL_SEL_SETTING: "screen/at/task/remove",
-        COPY_TASK_INITIAL_SEL_SETTING: "screen/at/task/copy"
+        COPY_TASK_INITIAL_SEL_SETTING: "screen/at/task/copy",
+        CHECK_SETTING: "screen/at/task/checkSetting",
+        GET_CHILD_TASK_ITEM_INFO: "screen/at/task/getListChildTask"
+
     };
 
     @bean()
@@ -49,6 +52,12 @@ module nts.uk.at.view.kdw003.cg {
         enableTaskFrame4: KnockoutObservable<boolean> = ko.observable(false);
         enableTaskFrame5: KnockoutObservable<boolean> = ko.observable(false);
 
+        frameName1: KnockoutObservable<string> = ko.observable('');
+        frameName2: KnockoutObservable<string> = ko.observable('');
+        frameName3: KnockoutObservable<string> = ko.observable('');
+        frameName4: KnockoutObservable<string> = ko.observable('');
+        frameName5: KnockoutObservable<string> = ko.observable('');
+
         taskListFrame1: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame2: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame3: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
@@ -66,13 +75,12 @@ module nts.uk.at.view.kdw003.cg {
         selectedTaskCode3: KnockoutObservable<string> = ko.observable("");
         selectedTaskCode4: KnockoutObservable<string> = ko.observable("");
         selectedTaskCode5: KnockoutObservable<string> = ko.observable("");
+        first: TaskModel = new TaskModel('', getText('KDW003_143'));
       
         constructor() {
             super();
             const self = this;
-            self.systemReference = ko.observable(SystemType.EMPLOYMENT);
-            self.isDisplayOrganizationName = ko.observable(true);
-            self.selectedItem = ko.observable(null);           
+            // let first: TaskModel = new TaskModel('', getText('KDW003_143'));
 
             let ccg001ComponentOption: any = {
                 /** Common properties */
@@ -83,12 +91,14 @@ module nts.uk.at.view.kdw003.cg {
                 showBaseDate: true, // 基準日利用
                 showClosure: false, // 就業締め日利用
                 showAllClosure: false, // 全締め表示
-                showPeriod: true, // 対象期間利用
+                showPeriod: false, // 対象期間利用
                 periodFormatYM: false, // 対象期間精度
 
                 /** Required parameter */
                 baseDate: moment().toISOString(), // 基準日
-                periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                // periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                periodStartDate: moment.utc(getShared("dataShareKdw003g").baseDate, "YYYY/MM/DD").toISOString(), // 対象期間開始日
+                
                 periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
                 // dateRangePickerValue: self.dateValue,
                 inService: true, // 在職区分
@@ -119,8 +129,8 @@ module nts.uk.at.view.kdw003.cg {
                             id: item.employeeId,
                             code: item.employeeCode,
                             businessName: item.employeeName,
-                            workplaceName: data.affiliationName,
-                            workplaceId: data.workplaceId,
+                            workplaceName: item.affiliationName,
+                            workplaceId: item.affiliationId,
                             depName: '',
                             isAlreadySetting: true
                         }
@@ -160,15 +170,38 @@ module nts.uk.at.view.kdw003.cg {
                 let listTaskFrame2 = _.filter(self.taskListFrame2(), task => { return (date <= task.endDate && date >= task.startDate) });
                 let listTaskFrame3 = _.filter(self.taskListFrame3(), task => { return (date <= task.endDate && date >= task.startDate) });
                 let listTaskFrame4 = _.filter(self.taskListFrame4(), task => { return (date <= task.endDate && date >= task.startDate) });
-                let listTaskFrame5 = _.filter(self.taskListFrame5(), task => { return (date <= task.endDate && date >= task.startDate) });                
-                
+                let listTaskFrame5 = _.filter(self.taskListFrame5(), task => { return (date <= task.endDate && date >= task.startDate) });   
+
+                listTaskFrame1.unshift(self.first);
+                listTaskFrame2.unshift(self.first);
+                listTaskFrame3.unshift(self.first);
+                listTaskFrame4.unshift(self.first);
+                listTaskFrame5.unshift(self.first);
+
                 self.listTaskFrame1(listTaskFrame1);
                 self.listTaskFrame2(listTaskFrame2);
                 self.listTaskFrame3(listTaskFrame3);
                 self.listTaskFrame4(listTaskFrame4);
                 self.listTaskFrame5(listTaskFrame5);               
-            });
+            });            
+
             self.loadData();
+
+            self.selectedTaskCode1.subscribe(code => {
+                self.getChildTask(1, code);
+            });
+
+            self.selectedTaskCode2.subscribe(code => {
+                self.getChildTask(2, code);
+            });
+
+            self.selectedTaskCode3.subscribe(code => {
+                self.getChildTask(3, code);
+            });
+
+            self.selectedTaskCode4.subscribe(code => {
+                self.getChildTask(4, code);
+            });
         }
 
         find(taskCode: string, listTask: Array<TaskModel>): boolean {
@@ -199,33 +232,6 @@ module nts.uk.at.view.kdw003.cg {
 
             self.$blockui("invisible");
             self.$ajax(Paths.GET_TASK_ITEM_INFO).done((taskList: Array<TaskModel>) => {
-                
-                if(!_.isNull(taskList) && !_.isEmpty(taskList)){                    
-                    _.each(taskList, task => {
-                        taskLst.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate ));
-                    });
-                    let temp = taskList[0];
-                    listFrameUseAtr = temp.listFrameNoUseAtr;
-
-                    self.enableTaskFrame1(taskList[0].listFrameNoUseAtr[0] == 1);
-                    self.enableTaskFrame2(taskList[0].listFrameNoUseAtr[1] == 1);
-                    self.enableTaskFrame3(taskList[0].listFrameNoUseAtr[2] == 1);
-                    self.enableTaskFrame4(taskList[0].listFrameNoUseAtr[3] == 1);
-                    self.enableTaskFrame5(taskList[0].listFrameNoUseAtr[4] == 1);
-                    
-                    taskLst1 = _.filter(taskLst, item => { return item.frameNo == 1; });
-                    taskLst2 = _.filter(taskLst, item => { return item.frameNo == 2; });
-                    taskLst3 = _.filter(taskLst, item => { return item.frameNo == 3; });
-                    taskLst4 = _.filter(taskLst, item => { return item.frameNo == 4; }); 
-                    taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });  
-
-                    self.taskListFrame1(taskLst1);
-                    self.taskListFrame2(taskLst2);
-                    self.taskListFrame3(taskLst3);
-                    self.taskListFrame4(taskLst4);
-                    self.taskListFrame5(taskLst5);
-                }
-
                 self.$ajax(Paths.GET_TARGET_EMPLOYEE_INFO, dataShare).done((dataList: Array<EmployeeModel>) =>{
                     if (!_.isNull(dataList) && !_.isEmpty(dataList)){
                         _.each(dataList, data => {
@@ -242,6 +248,38 @@ module nts.uk.at.view.kdw003.cg {
                 }).always(() => {
                     self.$blockui("hide");
                 });
+                
+                if(!_.isNull(taskList) && !_.isEmpty(taskList)){                    
+                    _.each(taskList, task => {
+                        taskLst.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate ));
+                    });
+                    let temp = taskList[0];
+                    listFrameUseAtr = temp.listFrameNoUseAtr;
+
+                    self.enableTaskFrame1(taskList[0].listFrameNoUseAtr[0] == 1);
+                    self.enableTaskFrame2(taskList[0].listFrameNoUseAtr[1] == 1);
+                    self.enableTaskFrame3(taskList[0].listFrameNoUseAtr[2] == 1);
+                    self.enableTaskFrame4(taskList[0].listFrameNoUseAtr[3] == 1);
+                    self.enableTaskFrame5(taskList[0].listFrameNoUseAtr[4] == 1);
+
+                    self.frameName1(taskList[0].listFrameName[0]);
+                    self.frameName2(taskList[0].listFrameName[1]);
+                    self.frameName3(taskList[0].listFrameName[2]);
+                    self.frameName4(taskList[0].listFrameName[3]);
+                    self.frameName5(taskList[0].listFrameName[4]);
+                    
+                    taskLst1 = _.filter(taskLst, item => { return item.frameNo == 1; });
+                    taskLst2 = _.filter(taskLst, item => { return item.frameNo == 2; });
+                    taskLst3 = _.filter(taskLst, item => { return item.frameNo == 3; });
+                    taskLst4 = _.filter(taskLst, item => { return item.frameNo == 4; }); 
+                    taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });  
+
+                    self.taskListFrame1(taskLst1);
+                    self.taskListFrame2(taskLst2);
+                    self.taskListFrame3(taskLst3);
+                    self.taskListFrame4(taskLst4);
+                    self.taskListFrame5(taskLst5);
+                }                
             }).fail((res) => {
                 self.$dialog.alert({messageId: res.messageId}).then(() => {
                     self.closeDialog();
@@ -360,6 +398,86 @@ module nts.uk.at.view.kdw003.cg {
             $('#startDate').focus();
         }
 
+        getChildTask(taskFrameNo: number, taskCode: string):void {
+            const self = this;           
+            let request: any = {
+                taskFrameNo : taskFrameNo,
+                taskCode: taskCode
+            };
+            let listTask2: Array<TaskModel> = [],
+            listTask3: Array<TaskModel> = [],
+            listTask4: Array<TaskModel> = [],
+            listTask5: Array<TaskModel> = [];
+            self.$blockui("invisible");
+            self.$ajax(Paths.GET_CHILD_TASK_ITEM_INFO, request).done((data: any) => {
+                if (!_.isNull(data)) {                    
+                   switch(request.taskFrameNo){
+                        case 1:
+                            if(_.isEmpty(data)){
+                                let task:any = _.find(self.listTaskFrame2(), task => task.taskCode == self.selectedTaskCode2());
+                                listTask2.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                listTask2.push(self.first);
+                                self.listTaskFrame2([]);
+                            } else {
+                                _.each(data, task => {
+                                    listTask2.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                });
+                                listTask2.unshift(self.first);
+                            } 
+                            self.listTaskFrame2(listTask2);
+                            break;
+                        case 2:
+                            if(_.isEmpty(data)){
+                                let task:any = _.find(self.listTaskFrame3(), task => task.taskCode == self.selectedTaskCode3());
+                                listTask3.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                listTask3.push(self.first);
+                                self.listTaskFrame3([]);
+                            } else {
+                                _.each(data, task => {
+                                    listTask3.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                });
+                                listTask3.unshift(self.first);
+                            }                                                     
+                            
+                            self.listTaskFrame3(listTask3);
+                            break;
+                        case 3:
+                            if(_.isEmpty(data)){
+                                let task:any = _.find(self.listTaskFrame4(), task => task.taskCode == self.selectedTaskCode4());
+                                listTask4.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                listTask4.push(self.first);
+                                self.listTaskFrame4([]);
+                            } else {
+                                _.each(data, task => {
+                                    listTask4.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                });
+                                listTask4.unshift(self.first);
+                            }                                
+                            
+                            self.listTaskFrame4(listTask4);
+                            break;
+                        case 4:
+                            if(_.isEmpty(data)){
+                                let task:any = _.find(self.listTaskFrame5(), task => task.taskCode == self.selectedTaskCode5());
+                                listTask5.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                listTask5.push(self.first);
+                                self.listTaskFrame5([]);
+                            } else {
+                                _.each(data, task => {
+                                    listTask5.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
+                                });
+                                listTask5.unshift(self.first);
+                            }                                                            
+                            
+                            self.listTaskFrame5(listTask5);
+                            break;
+                   }
+                }
+            }).always(() => {
+                self.$blockui("hide");
+            });
+        }
+
         resetData(): void {
             let self = this;
             self.startDate(moment(new Date()).format("YYYY/MM/DD"));
@@ -393,11 +511,11 @@ module nts.uk.at.view.kdw003.cg {
             command.startDate = moment(self.startDate()).format("YYYY/MM/DD");
             command.endDate = moment(self.endDate()).format("YYYY/MM/DD");
             command.lstTask = [
-                self.selectedTaskCode1(), 
-                self.selectedTaskCode2(), 
-                self.selectedTaskCode3(), 
-                self.selectedTaskCode4(), 
-                self.selectedTaskCode5()
+                self.selectedTaskCode1() === '' ? null : self.selectedTaskCode1(), 
+                self.selectedTaskCode2() === '' ? null : self.selectedTaskCode2(), 
+                self.selectedTaskCode3() === '' ? null : self.selectedTaskCode3(), 
+                self.selectedTaskCode4() === '' ? null : self.selectedTaskCode4(), 
+                self.selectedTaskCode5() === '' ? null : self.selectedTaskCode5()
             ]
             self.$blockui("invisible");
             
@@ -425,11 +543,11 @@ module nts.uk.at.view.kdw003.cg {
             command.endDate = moment(self.endDate()).format("YYYY/MM/DD");
             command.oldStartDate =  moment(self.startDatePeriod()).format("YYYY/MM/DD");
             command.lstTask = [
-                self.selectedTaskCode1(), 
-                self.selectedTaskCode2(), 
-                self.selectedTaskCode3(), 
-                self.selectedTaskCode4(), 
-                self.selectedTaskCode5()
+                self.selectedTaskCode1() === '' ? null : self.selectedTaskCode1(), 
+                self.selectedTaskCode2() === '' ? null : self.selectedTaskCode2(), 
+                self.selectedTaskCode3() === '' ? null : self.selectedTaskCode3(), 
+                self.selectedTaskCode4() === '' ? null : self.selectedTaskCode4(), 
+                self.selectedTaskCode5() === '' ? null : self.selectedTaskCode5()
             ]
             self.$blockui("invisible");
             self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
@@ -486,25 +604,25 @@ module nts.uk.at.view.kdw003.cg {
 
         openDialogCDL023() {
             let self = this;
-            let params: IObjectDuplication = {
-                code: self.selectedEmployee(),
-                name: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.businessName)[0],
-                targetType: TargetType.WORKPLACE_PERSONAL,
-                itemListSetting: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.id),
-                // baseDate: moment('YYYY/MM/DD').toDate(),
-                baseDate: new Date(),
-                // workFrameNoSelection: self.selectedWorkCode()
-            };
-
-            nts.uk.ui.windows.setShared("CDL023Input", params);
-            // open dialog
-            nts.uk.ui.windows.sub.modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
-                let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
-                let prams = nts.uk.ui.windows.getShared("CDL023Output");
-                if (!nts.uk.util.isNullOrUndefined(prams)) {
-                    self.copyTaskInitialSelHist(lstSelection, self.selectedEmployee());
-                }
-            });
+            self.$ajax(Paths.CHECK_SETTING).done((data: any) => {
+                let params: IObjectDuplication = {
+                    code: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.code)[0],
+                    name: self.lstEmployee().filter(i => i.id == self.selectedEmployee()).map(i => i.businessName)[0],
+                    targetType: TargetType.WORKPLACE_PERSONAL,
+                    itemListSetting: data,
+                    // baseDate: moment('YYYY/MM/DD').toDate(),
+                    baseDate: new Date()
+                };
+    
+                nts.uk.ui.windows.setShared("CDL023Input", params);
+                // open dialog
+                nts.uk.ui.windows.sub.modal('com', 'view/cdl/023/a/index.xhtml').onClosed(() => {
+                    let prams: any = getShared("CDL023Output");   
+                    if (!nts.uk.util.isNullOrUndefined(prams)) {
+                        self.copyTaskInitialSelHist(prams, self.selectedEmployee());
+                    }
+                });
+            } );           
         }
         copyTaskInitialSelHist(dataTarget: Array<string>, dataSource: string) {
             let self = this;
@@ -518,6 +636,9 @@ module nts.uk.at.view.kdw003.cg {
                 self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                     self.isReload(false);
                     self.findDetail(command.empIdDes[0], self.isReload());
+                    let empDes = _.intersection(_.map(self.lstEmployee(), emp => emp.id), dataTarget);
+                    if(!_.isEmpty(empDes))
+                        self.selectedEmployee(empDes[0]);
                     self.enableNewBtn(true);
                 });
             }).fail((error) => {
@@ -577,15 +698,18 @@ module nts.uk.at.view.kdw003.cg {
         taskName: string;
         frameNo: number;
         listFrameNoUseAtr: Array<number>;
+        listFrameName: Array<string>;
         startDate: string;
         endDate: string;
         displayName: string;
-        constructor(taskCode: string, displayName: string, taskName?: string,  frameNo?: number, startDate?: string, endDate?: string, frameNoUseAtr?: Array<number>){
+        constructor(taskCode: string, displayName: string, taskName?: string,  frameNo?: number, 
+                                    startDate?: string, endDate?: string, frameNoUseAtr?: Array<number>, frameName?: Array<string>){
             this.taskCode = taskCode;
             this.taskName = taskName; 
             this.displayName = displayName;
             this.frameNo = frameNo;        
             this.listFrameNoUseAtr = frameNoUseAtr;  
+            this.listFrameName = frameName;
             this.startDate = startDate;
             this.endDate = endDate;           
         }
