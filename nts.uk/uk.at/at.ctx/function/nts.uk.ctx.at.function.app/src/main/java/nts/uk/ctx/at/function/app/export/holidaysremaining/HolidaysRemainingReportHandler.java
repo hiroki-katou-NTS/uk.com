@@ -290,7 +290,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                                                            GeneralDate endDate,
                                                            Optional<YearMonth> currMonth) {
         // 263New
-        List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2;
+        List<SpecialVacationPastSituation> getSpeHdOfConfMonVer2;
         // RequestList369
         Optional<GeneralDate> grantDate = Optional.empty();
         // RequestList281
@@ -663,23 +663,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         );
         getSpeHdOfConfMonVer2 =
                 rq263.getSpeHdOfConfMonVer2(employeeId, period, mapRemainMer)
-                        .stream().map(e -> new SpecialHolidayRemainDataOutputKdr(
+                        .stream().map(e -> new SpecialVacationPastSituation(
                         e.getSid(),
                         e.getYm(),
                         e.getSpecialHolidayCd(),
                         e.getUseDays(),
-                        e.getBeforeUseDays(),
-                        e.getAfterUseDays(),
                         e.getUseTimes(),
-                        e.getBeforeUseTimes(),
-                        e.getAfterUseTimes(),
-                        e.getUseNumber(),
-                        e.getRemainDays(),
-                        e.getRemainTimes(),
-                        e.getBeforeRemainDays(),
-                        e.getBeforeRemainTimes(),
-                        e.getAfterRemainDays(),
-                        e.getAfterRemainTimes()
+                        e.getAfterRemainDays() == 0 ?e.getBeforeRemainDays() :e.getAfterRemainDays(),
+                        e.getAfterRemainTimes() == 0 ?e.getBeforeRemainTimes():e.getAfterRemainTimes()
                 )).collect(Collectors.toList());
         // RQ 342
         monthlyConfirmedCareForEmployees = getChildcareRemNumEachMonth.getMonthlyConfirmedCareForEmployees(employeeId, lstYrMon);

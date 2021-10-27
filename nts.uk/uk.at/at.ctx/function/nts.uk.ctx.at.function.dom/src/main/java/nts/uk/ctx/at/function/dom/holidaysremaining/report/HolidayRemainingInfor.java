@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.holidaysremaining.report;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,7 +75,7 @@ public class HolidayRemainingInfor {
     private AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h;
     //363
     List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New;
-    List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2;
+    List<SpecialVacationPastSituation> getSpeHdOfConfMonVer2;
     Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight;
     Optional<ClosureInfo> closureInforOpt;
     Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon;
@@ -112,7 +111,7 @@ public class HolidayRemainingInfor {
                                  CompenLeaveAggrResult compenLeaveAggrResult,
                                  AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h,
                                  List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New,
-                                 List<SpecialHolidayRemainDataOutputKdr> getSpeHdOfConfMonVer2,
+                                 List<SpecialVacationPastSituation> getSpeHdOfConfMonVer2,
                                  Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight,
                                  Optional<ClosureInfo> closureInforOpt,
                                  Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon,
