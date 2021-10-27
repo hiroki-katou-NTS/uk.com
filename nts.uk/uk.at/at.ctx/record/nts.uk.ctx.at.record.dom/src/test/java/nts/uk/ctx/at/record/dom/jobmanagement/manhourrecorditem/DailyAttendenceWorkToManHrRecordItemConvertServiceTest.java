@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
  * @author tutt
  *
  */
- @RunWith(JMockit.class)
+ //@RunWith(JMockit.class)
 public class DailyAttendenceWorkToManHrRecordItemConvertServiceTest {
  	
 	@Injectable
