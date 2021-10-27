@@ -46,8 +46,6 @@ public enum WS_AttendanceItem {
 	StartBreakTime10( 211, "休憩開始時刻10"),
 	EndBreakTime10( 213, "休憩開始時刻10"),
 	
-	BreakTime( 535, "休憩時間"),
-	
 	GoStraight( 859, "休憩開始時刻10"),
 	BackStraight( 860, "休憩開始時刻10");
 	
@@ -102,7 +100,6 @@ public enum WS_AttendanceItem {
 		case EndBreakTime8:
 		case EndBreakTime9:
 		case EndBreakTime10:
-		case BreakTime:
 			return true;
 		default:
 			return false;
