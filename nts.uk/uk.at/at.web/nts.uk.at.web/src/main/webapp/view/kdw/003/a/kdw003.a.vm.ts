@@ -2626,19 +2626,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.resolve(lstEmployee);
                 }else if (!_.isEmpty(self.selectedEmployee())) {
                     //let dfd2 = $.Deferred();
-                    service.searchEmployee(self.selectedEmployee()).done(data => {
-                        let emp = {
-                            id: data.employeeId,
-                            code: data.employeeCode,
-                            businessName: data.businessName,
-                            workplaceName: data.orgName,
-                            workplaceId: "",
-                            depName: '',
-                            isLoginUser: false
-                        }
-                        lstEmployee.push(emp);
-                        self.lstEmployee(lstEmployee);
-                        dfd.resolve(lstEmployee);
+                    self.searchEmployee().done(data => {
+                        dfd.resolve(data);
                         //  dfd2.resolve();
                     });
                     // dfd2.promise();
@@ -2650,6 +2639,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstEmployee = self.lstEmployee();
                 dfd.resolve(lstEmployee);
             }
+            return dfd.promise();
+        }
+
+        searchEmployee(): JQueryPromise<any> {
+            let dfd = $.Deferred(), self = this,lstEmployee = [];;
+            service.searchEmployee($('#search-input-'+'emp-component').val()).done(data => {
+                let emp = {
+                    id: data.employeeId,
+                    code: data.employeeCode,
+                    businessName: data.businessName,
+                    workplaceName: data.wkpDisplayName,
+                    workplaceId: "",
+                    depName: '',
+                    isLoginUser: false
+                }
+                lstEmployee.push(emp);
+                self.lstEmployee(lstEmployee);
+                dfd.resolve(lstEmployee);
+                //  dfd2.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
