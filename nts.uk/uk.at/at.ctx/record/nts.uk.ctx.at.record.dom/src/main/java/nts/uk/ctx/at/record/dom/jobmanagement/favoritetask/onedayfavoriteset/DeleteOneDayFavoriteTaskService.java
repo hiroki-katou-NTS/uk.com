@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.task.tran.AtomTask;
 
 /**
@@ -15,12 +12,8 @@ import nts.arc.task.tran.AtomTask;
  * @author tutt
  * @name UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.1日お気に入りセット.お気に入り作業を削除する
  */
-@Stateless
 public class DeleteOneDayFavoriteTaskService {
 	
-	@Inject
-	private static OneDayFavoriteTaskDisplayOrderRepository orderRepo;
-
 	public static AtomTask create(Require require, String employeeId, String favoriteId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 

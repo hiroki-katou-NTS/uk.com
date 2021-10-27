@@ -681,7 +681,7 @@ module nts.uk.ui.at.kdw013.a {
                     let events = _.chain(eventInday).map(e => {
 
                         let manHrContents = [];
-                        let taskList = _.get(e, 'extendedProps.taskBlock.taskDetails');
+                         let taskList = _.get(e, 'extendedProps.taskBlock.taskDetails',[]);
                         return { ymd: date, taskList, manHrContents };
                     }).value();
 
@@ -784,7 +784,7 @@ module nts.uk.ui.at.kdw013.a {
     
             let manHrlst = vm.getManHrlst(dateRanges());
 
-            let integrationOfDailys = _.get(vm.$datas(), 'lstIntegrationOfDaily', []);
+            let integrationOfDailys = vm.createIDaily(dateRanges());
             
             const command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
                 changedDates,
@@ -857,6 +857,33 @@ module nts.uk.ui.at.kdw013.a {
             vm.dateRange({ start, end });
         }
 
+        createIDaily(dates){
+            const vm = this;
+            let result = [];
+
+            let ids = _.get(vm.$datas(), 'lstIntegrationOfDaily', []);
+            _.forEach(dates, date => {
+
+                const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
+
+
+                //mapping break time
+                const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+                
+                let breakTime = _.get(id, 'breakTime');
+                breakTime.breakTimeSheets = _.map(breakTimes, bt => {
+
+                    return {
+                        no: _.get(bt, 'extendedProps.no'),
+                        breakTime: _.get(bt, 'extendedProps.breakTime'),
+                        start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
+                        end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
+                    };
+                });
+            });
+
+            return ids;
+        }
         // 作業実績を確認する
         confirm() {
             const vm = this;

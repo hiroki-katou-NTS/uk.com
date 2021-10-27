@@ -85,7 +85,7 @@ module nts.uk.ui.at.kdw013.timeheader {
                 screenA.ouenWorkTimeSheets();
 
                 //対象日
-                screenA.targetDate(moment(time).toDate());
+                screenA.targetDate(moment(time.date).toDate());
         }
         
         
