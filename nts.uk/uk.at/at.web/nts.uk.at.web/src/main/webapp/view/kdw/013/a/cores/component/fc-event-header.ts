@@ -59,6 +59,9 @@ module nts.uk.ui.at.kdw013.eventheadear {
             const lockInfos = _.get(vm.params.screenA.$datas(), 'lockInfos', []);
             //const displayAttItems =  _.get(vm.params.screenA.$setting(), 'manHrInputDisplayFormat.displayAttItems', []);
             const itemValues = _.find(_.get(vm.params.screenA.$datas(), 'convertRes', []), cv => moment(cv.ymd).isSame(moment(day.date), 'days')); 
+            const displayAttItems = _.get(vm.params.screenA.$settings(), 'manHrInputDisplayFormat.displayAttItems');
+           
+            
             let param = {
                 //対象社員
                 sid: vm.$user.employeeId,
@@ -66,15 +69,15 @@ module nts.uk.ui.at.kdw013.eventheadear {
                 date: day,
                 //日別実績(Work) 
                 IntegrationOfDaily,
-//                //実績入力ダイアログ表示項目一覧
-               // displayAttItems,
-//                 //実績内容
+                //実績入力ダイアログ表示項目一覧
+                displayAttItems,
+                //実績内容
                 itemValues,
                 //日別実績のロック状態 Optional<日別実績のロック状態>
-               lockInfos
+                lockInfos
             }
-            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml', param).then(() => { });
-            console.log('open H');
+            vm.$window.shared('KDW013H', param);
+            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml').then(() => { });
         }
     }
 
