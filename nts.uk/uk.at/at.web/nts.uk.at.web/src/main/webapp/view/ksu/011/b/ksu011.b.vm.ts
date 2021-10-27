@@ -210,7 +210,9 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             const index = _.findIndex(vm.outputItems(), i => i.code == vm.selectedOutputItemCode());
                             let nextCode = null;
-                            if (vm.outputItems().length > 1) nextCode = vm.outputItems()[Math.min(index + 1, vm.outputItems().length - 2)].code;
+                            if (vm.outputItems().length > 1) {
+                                nextCode = index == vm.outputItems().length - 1 ? vm.outputItems()[index - 1].code : vm.outputItems()[index + 1].code;
+                            }
                             vm.getAllSetting(nextCode);
                         });
                     }).fail((error) => {

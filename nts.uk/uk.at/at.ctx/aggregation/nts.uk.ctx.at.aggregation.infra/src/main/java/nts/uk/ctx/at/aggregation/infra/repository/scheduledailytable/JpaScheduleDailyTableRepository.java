@@ -44,7 +44,7 @@ public class JpaScheduleDailyTableRepository extends JpaRepository implements Sc
                         entity.kagmtRptScherecSignStamps.clear();
                         for (int i = 0; i < domain.getItemSetting().getInkanRow().getTitleList().size(); i++) {
                             KagmtRptScherecSignStamp tmp = new KagmtRptScherecSignStamp();
-                            tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i + 1);
+                            tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i);
                             tmp.title = domain.getItemSetting().getInkanRow().getTitleList().get(i).v();
                             entity.kagmtRptScherecSignStamps.add(tmp);
                         }
@@ -52,14 +52,14 @@ public class JpaScheduleDailyTableRepository extends JpaRepository implements Sc
                     entity.personCounters.clear();
                     for (int i = 0; i < domain.getItemSetting().getPersonalCounter().size(); i++) {
                         KagmtRptScherecTallyByperson tmp = new KagmtRptScherecTallyByperson();
-                        tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i + 1);
+                        tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i);
                         tmp.totalTimesNo = domain.getItemSetting().getPersonalCounter().get(i);
                         entity.personCounters.add(tmp);
                     }
                     entity.workplaceCounters.clear();
                     for (int i = 0; i < domain.getItemSetting().getWorkplaceCounter().size(); i++) {
                         KagmtRptScherecTallyBywkp tmp = new KagmtRptScherecTallyBywkp();
-                        tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i + 1);
+                        tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i);
                         tmp.totalTimesNo = domain.getItemSetting().getWorkplaceCounter().get(i);
                         entity.workplaceCounters.add(tmp);
                     }

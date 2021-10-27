@@ -69,21 +69,21 @@ public class KagmtRptScherec extends ContractUkJpaEntity implements Serializable
         this.kagmtRptScherecSignStamps = new ArrayList<>();
         for (int i = 0; i < domain.getItemSetting().getInkanRow().getTitleList().size(); i++) {
             KagmtRptScherecSignStamp tmp = new KagmtRptScherecSignStamp();
-            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i + 1);
+            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i);
             tmp.title = domain.getItemSetting().getInkanRow().getTitleList().get(i).v();
             this.kagmtRptScherecSignStamps.add(tmp);
         }
         this.personCounters = new ArrayList<>();
         for (int i = 0; i < domain.getItemSetting().getPersonalCounter().size(); i++) {
             KagmtRptScherecTallyByperson tmp = new KagmtRptScherecTallyByperson();
-            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i + 1);
+            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i);
             tmp.totalTimesNo = domain.getItemSetting().getPersonalCounter().get(i);
             this.personCounters.add(tmp);
         }
         this.workplaceCounters = new ArrayList<>();
         for (int i = 0; i < domain.getItemSetting().getWorkplaceCounter().size(); i++) {
             KagmtRptScherecTallyBywkp tmp = new KagmtRptScherecTallyBywkp();
-            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i + 1);
+            tmp.pk = new KagmtRptScherecSignStampPk(this.pk.companyId, this.pk.code, i);
             tmp.totalTimesNo = domain.getItemSetting().getWorkplaceCounter().get(i);
             this.workplaceCounters.add(tmp);
         }

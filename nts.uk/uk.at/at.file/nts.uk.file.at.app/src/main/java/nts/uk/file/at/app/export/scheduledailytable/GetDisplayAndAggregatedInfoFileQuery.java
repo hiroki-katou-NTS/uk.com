@@ -127,7 +127,7 @@ public class GetDisplayAndAggregatedInfoFileQuery {
                     Optional<ShiftMaster> shiftMaster = shiftMasterRepo.getByWorkTypeAndWorkTime(
                             companyId,
                             integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),
-                            integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v()
+                            integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(PrimitiveValueBase::v).orElse(null)
                     );
                     Optional<WorkStyle> workStyle = Optional.empty();
                     if (shiftMaster.isPresent()) {
