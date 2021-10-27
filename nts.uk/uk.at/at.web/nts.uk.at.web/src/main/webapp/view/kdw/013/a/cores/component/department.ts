@@ -183,7 +183,10 @@ constructor(private params: EmployeeDepartmentParams) {
 
 OpenKDialog(){
     const vm = this;
-    console.log('pika');
+    vm.$window.modal('at', '/view/kdw/013/k/index.xhtml', { date: moment().toDate() }).then(() => {
+
+
+    });
 }
 
 mounted() {

@@ -9,8 +9,24 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 const items = allBindingsAccessor.get('items');
                 const screenA = allBindingsAccessor.get('screenA');
                 const params = { mode, items ,screenA};
+                
+                
+                const subscribe = (mode: boolean) => {
 
-                ko.applyBindingsToNode(element, { component: { name, params } });
+                    if (!mode) {
+                        ko.cleanNode(element);
+
+                        element.innerHTML = '';
+                    } else {
+                        ko.applyBindingsToNode(element, { component: { name, params } });
+                    }
+                };
+
+                mode.subscribe(subscribe);
+
+                subscribe(mode());
+
+                
 
                 return { controlsDescendantBindings: true };
             }
