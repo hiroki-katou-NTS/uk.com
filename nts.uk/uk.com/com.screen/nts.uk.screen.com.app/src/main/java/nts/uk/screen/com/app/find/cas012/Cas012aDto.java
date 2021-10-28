@@ -30,6 +30,7 @@ public class Cas012aDto {
     private GeneralDate endValidPeriod;
 
     public static Cas012aDto fromDomain(RoleIndividualGrant domain ,
+                                        String companyID,
                                         String companyCode,
                                         String companyName,
                                         String employeeId,
@@ -37,7 +38,7 @@ public class Cas012aDto {
                                         String employeeName) {
         return new Cas012aDto(
                 domain.getUserId(),
-                domain.getCompanyId(),
+                companyID,
                 companyCode,
                 companyName,
                 domain.getUserId(),

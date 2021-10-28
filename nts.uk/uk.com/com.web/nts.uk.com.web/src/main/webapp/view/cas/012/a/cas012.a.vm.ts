@@ -432,6 +432,7 @@ module nts.uk.com.view.cas012.a {
             let userId = vm.selectedUserID();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
+            let cid = vm.selectedCid();
             block.invisible();
             if (roleType == ListType.SYSTEM_MANAGER) {
                 let roleGrant = {
@@ -456,7 +457,7 @@ module nts.uk.com.view.cas012.a {
             }
             else if (roleType == ListType.COMPANY_MANAGER) {
                 let roleGrant = {
-                    cId: vm.companyId(),
+                    cId: cid,
                     uId: userId,
                     startDate: start,
                     endDate: end,
@@ -464,7 +465,7 @@ module nts.uk.com.view.cas012.a {
                 };
                 block.invisible();
                 vm.$ajax('com', API.addNewCompanySys, roleGrant).done(function () {
-                    vm.selectCid(vm.companyId(),roleType,userId);
+                    vm.selectCid(cid,roleType,userId);
                     vm.selectedUserID(userId);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     vm.isCreateMode(false);
@@ -484,7 +485,8 @@ module nts.uk.com.view.cas012.a {
         private update(): void {
             let vm = this,
                 userId = vm.selectedUserID(),
-                roleType = vm.selectedRoleType();
+                roleType = vm.selectedRoleType(),
+                cid = vm.selectedCid();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
             if (roleType == ListType.SYSTEM_MANAGER) {
@@ -509,7 +511,7 @@ module nts.uk.com.view.cas012.a {
                 });
             } else if (roleType == ListType.COMPANY_MANAGER) {
                 let roleGrant = {
-                    cId: vm.companyId(),
+                    cId: cid,
                     uId: userId,
                     startDate: start,
                     endDate: end,
@@ -517,7 +519,7 @@ module nts.uk.com.view.cas012.a {
                 };
                 block.invisible();
                 vm.$ajax('com', API.updateCompanySys, roleGrant).done(() => {
-                    vm.selectCid(vm.companyId(),roleType,userId);
+                    vm.selectCid(cid,roleType,userId);
                     vm.selectedUserID(userId);
                     vm.isCreateMode(false);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
@@ -541,7 +543,7 @@ module nts.uk.com.view.cas012.a {
                     let vm = this;
                     let userId = vm.selectedUserID();
                     block.invisible();
-                    let cid = vm.companyId();
+                    let cid = vm.selectedCid();
                     if (roleType == ListType.SYSTEM_MANAGER) {
                         let roleGrant = {
                             userId: userId
@@ -563,7 +565,7 @@ module nts.uk.com.view.cas012.a {
                         };
                         vm.$ajax('com', API.deleteCompanySys, roleGrant).done(function () {
                             nts.uk.ui.dialog.info({messageId: "Msg_16"});
-                            vm.selectCid(vm.companyId(),roleType,userId);
+                            vm.selectCid(cid,roleType,userId);
                             vm.selectedUserID(userId);
                         }).always(() => {
 
