@@ -5988,7 +5988,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             nts.uk.ui.block.grayout();
             // call <<ScreenQuery>> 28日の期間を取得する
-            service.get28DayPeriod({ endDate: self.dateTimeAfter(), toAdvancePeriod : true }).done((data: any) => {
+            service.get28DayPeriod({ endDate: self.dateTimeAfter(), isNextMonth : true }).done((data: any) => {
                 let startDateOnScreen = self.dateTimePrev(); // start Hiển thị trên màn hình
                 let endDateOnScreen = self.dateTimeAfter(); //end Hiển thị trên màn hình
                 // A3_2_② 表示切替の期間のチェック②

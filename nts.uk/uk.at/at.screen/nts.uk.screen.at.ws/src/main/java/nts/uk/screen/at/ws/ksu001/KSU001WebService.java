@@ -215,7 +215,7 @@ public class KSU001WebService extends WebService{
 	@Path("get-28day-period")
 	public DatePeriodDto get28DaysPeriod(ModePeriodParam param){
 		GeneralDate endDate = GeneralDate.fromString(param.endDate, "yyyy/MM/dd");
-		DatePeriodDto data = mode28DayPeriod.get(endDate, param.toAdvancePeriod);
+		DatePeriodDto data = mode28DayPeriod.get(endDate, param.isNextMonth);
 		return data;
 	}
 	
