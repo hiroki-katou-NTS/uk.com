@@ -368,11 +368,9 @@ public class WorkSchedule implements DomainAggregate {
 		if ( newBreakTimeList.isEmpty() ) {
 			updatedAttendanceItemList = new ArrayList<>(Arrays.asList( 
 					WS_AttendanceItem.StartBreakTime1, 
-					WS_AttendanceItem.EndBreakTime1,
-					WS_AttendanceItem.BreakTime) );
+					WS_AttendanceItem.EndBreakTime1) );
 		} else {
 			updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
-			updatedAttendanceItemList.add(WS_AttendanceItem.BreakTime);
 		}
 		updatedAttendanceItemList.forEach( item -> this.lstEditState.add(
 				EditStateOfDailyAttd.createByHandCorrection(require, item.ID, this.employeeID)));
