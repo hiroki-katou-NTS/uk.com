@@ -119,7 +119,7 @@ public class CreateAchievementRegistrationParam {
     			new ArrayList<>(), 
     			false, 
     			false, 
-    			false, 
+    			true, 
     			approvalConfirmCache, 
     			Optional.empty(), 
     			null);
