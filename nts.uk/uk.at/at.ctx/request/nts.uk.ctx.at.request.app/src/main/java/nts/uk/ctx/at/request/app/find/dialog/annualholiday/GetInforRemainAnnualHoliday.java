@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTe
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 /**
  * 
  * @author phongtq
@@ -80,7 +81,8 @@ public class GetInforRemainAnnualHoliday {
 				accHolidayDto.setAnnLimitEnd(periodGrantDate.get().getPeriod().end().toString());
 				
 				// ・年休・積休残数詳細情報DTO．次回付与予定日　＝　取得した期間．開始日
-				accHolidayDto.setNextScheDate(periodGrantDate.get().getNextGrantDate().isPresent() ? periodGrantDate.get().getNextGrantDate().get().toString() : "");
+				if (periodGrantDate.get().getNextGrantDate().isPresent())
+				accHolidayDto.setNextScheDate(TextResource.localize("KDL020_67", periodGrantDate.get().getNextGrantDate().get().toString(), this.getDayOfJapan(periodGrantDate.get().getNextGrantDate().get().dayOfWeek())));
 			
 				// 年休消化一覧を取得
 				annuaAccumulatedHoliday = annualLeave.getListAnnualLeave(sID);
@@ -97,6 +99,25 @@ public class GetInforRemainAnnualHoliday {
 			accHolidayDto.setAnnManaAtr(annualHd.isSuspensionTimeYearFlg());
 		
 		return accHolidayDto;
+	}
+	
+	public String getDayOfJapan(int day) {
+		switch (day) {
+		case 1:
+			return "月";
+		case 2:
+			return "火";
+		case 3:
+			return "水";
+		case 4:
+			return "木";
+		case 5:
+			return "金";
+		case 6:
+			return "土";
+		default:
+			return "日";
+		}
 	}
 
 }
