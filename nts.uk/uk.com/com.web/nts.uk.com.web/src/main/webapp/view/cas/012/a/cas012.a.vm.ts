@@ -40,7 +40,6 @@ module nts.uk.com.view.cas012.a {
         selectedRoleType: KnockoutObservable<number> = ko.observable(0);
 
         //list Roll
-        listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
         selectedUserID: KnockoutObservable<string>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
 
@@ -104,7 +103,6 @@ module nts.uk.com.view.cas012.a {
             vm.jobTitleName = ko.observable('');
             vm.EmployeeIDList = ko.observableArray([]);
             vm.listRoleType = ko.observableArray([]);
-            vm.listRole = ko.observableArray([]);
             vm.selectedUserID = ko.observable('');
             vm.listRoleIndividual = ko.observableArray([]);
             vm.multiSelectedCode = ko.observable();
@@ -217,7 +215,7 @@ module nts.uk.com.view.cas012.a {
             if (vm.isCreateMode() || vm.checkFirt() == 1) {
                 $('#combo-box').focus();
             } else {
-                if (vm.listRole().length > 0) {
+                if (vm.listRoleType().length > 0) {
                     $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 }
             }

@@ -72,7 +72,7 @@ public class GetEmployeeListScreenQuery {
                     mapUidPerId.get(pid).getUserID(),
                     sid,
                     employeeInfoDtoExportMap.get(sid).getEmployeeCode(),
-                    mapUidPerId.get(pid).getUserName().isPresent() ? mapUidPerId.get(pid).getUserName().get().v():null,
+                    employeeInfoDtoExportMap.get(sid).getPerName(),
                     jobHistExportMap.isPresent() ? jobHistExportMap.get().getJobTitleId() : null,
                     jobHistExportMap.isPresent() ? jobHistExportMap.get().getJobTitleCode() : null,
                     jobHistExportMap.isPresent() ? jobHistExportMap.get().getJobTitleName() : null,
