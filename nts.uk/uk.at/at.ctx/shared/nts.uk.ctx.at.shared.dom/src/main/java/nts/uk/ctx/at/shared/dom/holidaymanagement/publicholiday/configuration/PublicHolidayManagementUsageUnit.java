@@ -147,7 +147,7 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 				require.getEmpHistBySidAndPeriod(employeeIds,  new DatePeriod(criteriaDate, criteriaDate))
 				.stream().findFirst().map(c ->c);
 		
-		if(employmentHist.isPresent()){
+		if(!employmentHist.isPresent()){
 			return new ArrayList<>();
 		}
 		if(employmentHist.get().getAffPeriodEmpCodeExports().isEmpty()){
