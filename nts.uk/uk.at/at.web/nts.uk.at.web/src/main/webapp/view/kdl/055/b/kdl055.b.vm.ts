@@ -26,46 +26,47 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     vm.overwrite = obj.overwrite;
                     vm.filename(obj.mappingFile);
                 }
+            }).then(() => {
+                let dataShare = getShared('dataShareDialogKDL055B');
+                if (dataShare) {
+                    vm.$blockui('show');
+                    vm.$ajax(paths.getCaptureData, { data: dataShare, overwrite: vm.overwrite }).done((res: CaptureDataOutput) => {
+                        if (res) {
+                            console.log(res);
+                            vm.data = res;
+                        }
+                    }).then(() => {
+                        if (vm.data) {
+                            vm.convertToGrid(vm.data);
+                            vm.loadGrid();
+                            vm.loadError(vm.data);
+                        }
+                    }).fail((err: any) => {
+                        if (err) {
+                            vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
+                        }
+                    }).always(() => vm.$blockui('hide'));
+                } else if (params) {
+                    vm.$blockui('show');
+                    vm.$ajax(paths.getCaptureData, { data: params, overwrite: vm.overwrite }).done((res: CaptureDataOutput) => {
+                        if (res) {
+                            console.log(res);
+                            vm.data = res;
+                        }
+                    }).then(() => {
+                        if (vm.data) {
+                            vm.convertToGrid(vm.data);
+                            vm.loadGrid();
+                            vm.loadError(vm.data);
+                        }
+                    }).fail((err: any) => {
+                        if (err) {
+                            vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
+                        }
+                    }).always(() => vm.$blockui('hide'));
+                }
             });
             
-            let dataShare = getShared('dataShareDialogKDL055B');
-            if (dataShare) {
-                vm.$blockui('show');
-                vm.$ajax(paths.getCaptureData, { data: dataShare, overwrite: vm.overwrite }).done((res: CaptureDataOutput) => {
-                    if (res) {
-                        console.log(res);
-                        vm.data = res;
-                    }
-                }).then(() => {
-                    if (vm.data) {
-                        vm.convertToGrid(vm.data);
-                        vm.loadGrid();
-                        vm.loadError(vm.data);
-                    }
-                }).fail((err: any) => {
-                    if (err) {
-                        vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
-                    }
-                }).always(() => vm.$blockui('hide'));
-            } else if (params) {
-                vm.$blockui('show');
-                vm.$ajax(paths.getCaptureData, { data: params, overwrite: vm.overwrite }).done((res: CaptureDataOutput) => {
-                    if (res) {
-                        console.log(res);
-                        vm.data = res;
-                    }
-                }).then(() => {
-                    if (vm.data) {
-                        vm.convertToGrid(vm.data);
-                        vm.loadGrid();
-                        vm.loadError(vm.data);
-                    }
-                }).fail((err: any) => {
-                    if (err) {
-                        vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
-                    }
-                }).always(() => vm.$blockui('hide'));
-            }
 
             setInterval(() => {
                 if ($('#grid')) {
@@ -274,13 +275,20 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     }
                     return false;
                 });
-                if (updateDates.length > 0 && flag) {
-                    setShared('statusKDL055', 'UPDATE');
+                if (flag) {
+                    if (updateDates.length > 0) {
+                        setShared('openA', false);
+                        setShared('statusKDL055', 'UPDATE');
+                    } else {
+                        setShared('openA', false);
+                        setShared('statusKDL055', 'CANCEL');
+                    }
                 } else {
-
+                    setShared('openA', true);
                     setShared('statusKDL055', 'CANCEL');
                 }
             } else {
+                setShared('openA', false);
                 setShared('statusKDL055', 'CANCEL');
             }
 

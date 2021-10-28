@@ -4566,6 +4566,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.windows.sub.modal("/view/kdl/055/b/index.xhtml").onClosed(() => {
                         let resultB = getShared('statusKDL055');
                         console.log(resultB);
+                        let openAKDL055 = getShared('openA');
                         if (resultB == 'UPDATE') {
                             nts.uk.ui.block.grayout();
                             self.getNewData(userInfor.disPlayFormat).done(() => {
@@ -4574,7 +4575,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     nts.uk.ui.block.clear();
                                 }
                             });
-                        } else if (resultB == 'CANCEL') {
+                        } else if (resultB == 'CANCEL' && openAKDL055) {
                             self.openKDL055();
                         }
                     });
