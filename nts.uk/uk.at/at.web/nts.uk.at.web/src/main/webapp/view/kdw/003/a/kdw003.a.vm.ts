@@ -2406,7 +2406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     initScreen: self.hasEmployee ? 1 : 0,
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                     lstEmployee: lstEmployee,
-                    formatCodes: self.formatCodes(),
+                    formatCodes: self.formatCodes()==null?[]:self.formatCodes(),
                     objectShare: null,
                     showLock: self.showLock(),
                     closureId: self.closureId,
