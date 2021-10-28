@@ -42,12 +42,16 @@ module nts.uk.at.view.kdw013.h {
 			params: Param;
 			dataMaster: DataMaster;
 			primitiveValueDaily: any[] = __viewContext.enums.PrimitiveValueDaily;
+			
+			errorLable: KnockoutObservable<string> = ko.observable('');
 
 			constructor() {
 				let self = this;
 				self.params = getShared('KDW013H');
+				self.setError();
 				self.setBaseItems();// data co dinh
 				self.orderOptionItems(); // data item tuy y
+				
 			}
 
 			public startPage(): JQueryPromise<any> {
@@ -72,6 +76,38 @@ module nts.uk.at.view.kdw013.h {
 					block.clear();
 				});
 				return dfd.promise();
+			}
+			
+			setError(){
+				let self = this;
+				let infor: any = _.find(self.params.lockInfos, (i:DailyLock)=> moment(self.params.date).isSame(moment(i.date)));
+				if(infor){
+					let err: string = null;
+					if(infor.lockPast = 1){
+						err = getText('KDW013_53');
+					}
+					if(infor.lockWpl = 1){
+						err = err ? (err + ',' + getText('KDW013_54')) : getText('KDW013_54');
+					}
+					if(infor.lockApprovalMontｈ = 1){
+						err = err ? (err + ',' + getText('KDW013_55')) : getText('KDW013_55');
+					}
+					if(infor.lockConfirmMonth = 1){
+						err = err ? (err + ',' + getText('KDW013_56')) : getText('KDW013_56');
+					}
+					if(infor.lockApprovalDay = 1){
+						err = err ? (err + ',' + getText('KDW013_57')) : getText('KDW013_57');
+					}
+					if(infor.lockConfirmDay = 1){
+						err = err ? (err + ',' + getText('KDW013_58')) : getText('KDW013_58');
+					}
+					if(infor.lockDailyResult = 1){
+						err = err ? (err + ',' + getText('KDW013_59')) : getText('KDW013_59');
+					}
+					if(err){
+						self.errorLable(getText('KDW013_52', [err]));
+					}
+				}
 			}
 
 			setDataMaster() {
@@ -407,7 +443,7 @@ module nts.uk.at.view.kdw013.h {
 
 	type DailyLock = {
 		employeeId: string;
-		date: Date;
+		date: string;
 		lockDailyResult: number;
 		lockWpl: number;
 		lockApprovalMontｈ: number;
