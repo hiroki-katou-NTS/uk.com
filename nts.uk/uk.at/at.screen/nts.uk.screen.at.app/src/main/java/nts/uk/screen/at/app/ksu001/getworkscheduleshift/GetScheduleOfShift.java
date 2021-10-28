@@ -105,7 +105,7 @@ public class GetScheduleOfShift {
 				EmpLeaveHistoryAdapter empLeaveHisAdapter, EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter,
 				EmploymentHisScheduleAdapter employmentHisScheduleAdapter) {
 
-			List<WorkSchedule> lstWorkSchedule = workScheduleRepo.getList(empIdList, period);
+			List<WorkSchedule> lstWorkSchedule = workScheduleRepo.getListJDBC(empIdList, period);
 			workScheduleCache = NestedMapCache.preloadedAll(lstWorkSchedule.stream(),
 					workSchedule -> workSchedule.getEmployeeID(), workSchedule -> workSchedule.getYmd());
 
