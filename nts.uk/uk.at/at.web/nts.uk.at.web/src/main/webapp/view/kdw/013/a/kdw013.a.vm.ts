@@ -710,16 +710,15 @@ module nts.uk.ui.at.kdw013.a {
 
                 if (eventInday.length) {
 
-                    let events = _.chain(eventInday)
-                        .filter(e => _.get(e, 'extendedProps.isTimeBreak', false) == false)
-                        .map(e => {
 
-                        let {taskDetails, manHrContents} = _.get(e, 'extendedProps.taskBlock');
-                        
-                        if (!manHrContents) {
-                            manHrContents = _.get(_.find(_.get(vm.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days')), 'manHrContents', []);
-                        }
-                            
+                    let listTaskDetails = [];
+
+                    let  manHrContents = _.get(_.find(_.get(vm.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days')), 'manHrContents', []);
+
+                    
+                    
+                    _.forEach(_.filter(eventInday, e => _.get(e, 'extendedProps.isTimeBreak', false) == false), e => {
+                        let {taskDetails} = _.get(e, 'extendedProps.taskBlock');
                         _.forEach(taskDetails, td => {
 
                             _.forEach(td.taskItemValues, ti => {
@@ -735,10 +734,10 @@ module nts.uk.ui.at.kdw013.a {
 
                         });
 
-                        return { ymd: date, taskList: taskDetails, manHrContents };
-                    }).value();
+                        listTaskDetails.push(...taskDetails);
+                    });
 
-                    result.push(...events);
+                    result.push({ ymd: date, taskList: listTaskDetails, manHrContents });
                 }
             });
 
@@ -822,7 +821,10 @@ module nts.uk.ui.at.kdw013.a {
                         if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {
                             return vm.$dialog
                                 .info({ messageId: 'Msg_15' })
-                                .then(() => lstOvertimeLeaveTime);
+                                .then(() => lstOvertimeLeaveTime)
+                                .then(() => {vm.dataChanged(false);
+                                            vm.reLoad();
+                                })
                         } else {
 
                             let errors = lstErrorMessageInfo.map(x => {
@@ -836,16 +838,10 @@ module nts.uk.ui.at.kdw013.a {
                             nts.uk.ui.dialog.bundledErrors({ errors });
                         }
                     }
-                    
-                   
-
                     return $
                         .Deferred()
                         .resolve()
                         .then(() => null);
-                    
-                    
-                    
                 })
                 .fail((response: ErrorMessage) => {
                     const { messageId, parameterIds } = response;
