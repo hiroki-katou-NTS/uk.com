@@ -12,9 +12,9 @@ namespace Build4Cloud
     {
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length != 2)
             {
-                Console.WriteLine("コマンドライン引数でプロジェクト（comやatなど）を指定してください");
+                Console.WriteLine("コマンドライン引数でプロジェクト（comやatなど）とデータソース数を指定してください");
                 return;
             }
 
@@ -24,9 +24,11 @@ namespace Build4Cloud
                 Project = args[0],  // "com" | "at" | ...
             };
 
+            int datasourcesCount = int.Parse(args[1]);
+
             var xml = new PersistenceXml(context.GetPathToPersistenceXml());
 
-            xml.CreateCloudEdition(2);
+            xml.CreateCloudEdition(datasourcesCount);
 
             Build(context);
 

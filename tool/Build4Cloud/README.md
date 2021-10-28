@@ -13,9 +13,11 @@ UKのwarファイルをクラウド用にビルドするツールです。
 コマンドライン
 
 ```
-Build4Cloud [project]
+Build4Cloud [project] [datasourcesCount]
 ```
 
-引数`[project]`には"com"や"at"などを指定。
+`[project]` :  "com"や"at"などを指定。
+
+`[datasourcesCount]` : テナント別のデータソースの数を指定。"2"を指定した場合、`UK`, `UK1`, `UK2` の計3つのデータソースとなるので注意。
 
 対象ソースコードのフォルダは、このEXEの実行位置（ワーキングディレクトリ）から探しにいく仕様。
