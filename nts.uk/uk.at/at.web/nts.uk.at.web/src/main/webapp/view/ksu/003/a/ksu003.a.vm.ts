@@ -1523,9 +1523,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					});
 					__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
 					__viewContext.viewModel.viewmodelAb.taskChecked.valueHasMutated();
+					
+					block.clear();
 				}
-
-				block.clear();
+			block.clear();
+				
 			}
 			else {
 				self.getWorkingByDate(self.targetDate(), 1).done(() => {
@@ -1544,9 +1546,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						});
 						__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
 						__viewContext.viewModel.viewmodelAb.taskChecked.valueHasMutated();
+						
+						block.clear();
 					}
-
 					block.clear();
+
 				});
 			}
 		}
@@ -2464,7 +2468,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								let $grid = $('div.ex-body-detail');
 								self.updateAfterSaveData($grid[0]).done(() => {
 									self.destroyAndCreateGrid(self.lstEmpId, 0);
-									block.clear();
 								});
 							});
 						} else {
@@ -2472,7 +2475,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							let $grid = $('div.ex-body-detail');
 							self.updateAfterSaveData($grid[0]).done(() => {
 								self.destroyAndCreateGrid(self.lstEmpId, 0);
-								block.clear();
 							});
 						}
 					} else {
@@ -2492,21 +2494,35 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						return arrV.timeSpanForCalcDto.start == newV.timeSpanForCalcDto.start && arrV.timeSpanForCalcDto.end == newV.timeSpanForCalcDto.end;
 					})
 				})
+				self.taskPasteData.lstTaskScheduleDetailEmp = _.map(self.taskPasteData.lstTaskScheduleDetailEmp, (x : any) => {
+					let taskScheduleDetail = _.map(x.taskScheduleDetail, (y : any) => {
+						return {
+							taskCode: y.taskCode,
+							timeSpanForCalcDto : {
+								start: y.timeSpanForCalcDto.start, 
+								end:  y.timeSpanForCalcDto.end
+							}
+						}
+					})
+					return {
+						empId : x.empId,
+						taskScheduleDetail : taskScheduleDetail
+					}
+				})
 				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
 					if (type != 1) {
 						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 						block.grayout();
 						self.destroyAndCreateGrid(self.lstEmpId, 0);
 						//self.getTask();
-
-						block.clear();
 					}
+					block.grayout();
 					self.taskSaveData = [];
 					self.taskPasteData = [];
 					self.lstTaskScheduleDetailEmp = [];
 					self.lstChartTask = [];
 					self.enableSave(false);
-					block.clear();
+					//block.clear();
 				}).fail(function(error: any) {
 					block.clear();
 					alertError(error);
@@ -5583,7 +5599,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			})
 	
 			let newLstChartTsk = _.filter(self.lstChartTask, (x: any) => x.line == line), arrRemoveTask: any = [], arrRemoveTaskNew: any = [];
-
+			let idResize = id;
 			if (newLstChartTsk.length > 0) {
 				for (let i = 0; i < newLstChartTsk.length; i++) { // kiem tra voi list task cu
 					let task: any = newLstChartTsk[i],
@@ -5666,7 +5682,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										timeSpanForCalcDto: {
 											start: tsd.timeSpanForCalcDto.start,
 											end: tsd.timeSpanForCalcDto.end
-										}
+										},
+									id : idResize
 									})
 								})
 
@@ -5763,7 +5780,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
 									})
 
-									self.bindDataToTask(filTask != null ? filTask[0].code : null, end, self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end, line, `pgc${util.randomId().split("-").join("")}`, "add");
+									self.bindDataToTask(filTask != null ? filTask[0].code : null, end, self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end, line, `pgc${util.randomId().split("-").join("")}`, "add", idResize);
 
 									indexTaskNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind: any) => {
 										return ind.empId === self.dataScreen003A().employeeInfo[line].empId;
@@ -5790,7 +5807,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
 									})
 
-									self.bindDataToTask(filTask != null ? filTask[0].code : null, end, self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end, line, `pgc${util.randomId().split("-").join("")}`, "add");
+									self.bindDataToTask(filTask != null ? filTask[0].code : null, end, self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end, line, `pgc${util.randomId().split("-").join("")}`, "add", idResize);
 									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
 									continue;
 								}
@@ -5919,19 +5936,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							return inlc.empId == self.dataScreen003A().employeeInfo[line].empId;
 						});
 						
-						if (sTime > start && sTime < end && eTime > end)
+						if (sTime > start && sTime < end && eTime > end){
 							end = sTime;
 							if (indDel != -1){
 								_.remove(self.lstTaskScheduleDetailEmp[indDel].taskScheduleDetail, (y: any) => {
-									return y.timeSpanForCalcDto.start == eTime || y.timeSpanForCalcDto.end == sTime;
+									return  y.id == idResize && (y.timeSpanForCalcDto.start == eTime || y.timeSpanForCalcDto.end == sTime);
 							});
+							}
 						}
 
 						if (sTime < start && eTime > sTime && eTime < end){
 							start = eTime
 							if (indDel != -1){
 								_.remove(self.lstTaskScheduleDetailEmp[indDel].taskScheduleDetail, (y: any) => {
-									return y.timeSpanForCalcDto.start == eTime || y.timeSpanForCalcDto.end == sTime;
+									return y.id == idResize && (y.timeSpanForCalcDto.start == eTime || y.timeSpanForCalcDto.end == sTime);
 							});
 						}
 						}
@@ -5951,18 +5969,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								end = endAfterFilShowChart;
 							}
 
-							self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null, sTimeNew, eTimeNew, line, `pgc${util.randomId().split("-").join("")}`, "add");
+							self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null, sTimeNew, eTimeNew, line, `pgc${util.randomId().split("-").join("")}`, "add", idResize);
 						}
 					}
 				}
 			}
 
-			self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null, start, end, line, id, "add");
+			self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null, start, end, line, id, "add", idResize);
 
 			self.enableSave(true);
 		}
 
-		bindDataToTask(code: any, start: any, end: any, line: any, id: any, type: any) {
+		bindDataToTask(code: any, start: any, end: any, line: any, id: any, type: any, idResize : any) {
 			let self = this;
 
 			let taskScheduleDetail: any = [];
@@ -5972,7 +5990,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					timeSpanForCalcDto: {
 						start: start,
 						end: end
-					}
+					},
+					id : idResize
 				});
 			};
 
@@ -6020,7 +6039,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							timeSpanForCalcDto: {
 								start: tsd.timeSpanForCalcDto.start,
 								end: tsd.timeSpanForCalcDto.end
-							}
+							},
+							id : idResize
 						})
 					})
 
@@ -6043,7 +6063,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							timeSpanForCalcDto: {
 								start: start,
 								end: end
-							}
+							},
+							id : idResize
 						});
 				}
 
@@ -6061,7 +6082,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				end: end,
 				id: id,
 				line: line,
-				code: code
+				code: code,
+				idR : idResize
 			});
 
 			_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp, (emp: any) => {
