@@ -42,13 +42,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Stateless
@@ -257,7 +251,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 setHolidayClassColor(cellsClass, holidayClass);
             }
         }
-        if (datePeriod.contains(dateInformation.getYmd())) {
+        if (Objects.nonNull(dateInformation) && datePeriod.contains(dateInformation.getYmd())) {
             cellsWhile.addAll(
                     Arrays.asList(cells.get(secondLieOfCalender, col),
                             cells.get(secondLieOfCalender, col + 2),
