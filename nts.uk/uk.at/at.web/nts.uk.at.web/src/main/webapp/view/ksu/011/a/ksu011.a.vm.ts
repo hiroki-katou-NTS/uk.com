@@ -43,7 +43,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                 } else return null;
             });
             vm.displayPeriod = ko.computed(() => {
-                if (vm.periodStart() && vm.periodEnd() && moment.utc(vm.periodStart()).isBetween(moment.utc("01/01/1900"), moment.utc("12/31/9999")))
+                if (vm.periodStart() && vm.periodEnd() && moment.utc(vm.periodStart()).isSameOrAfter(moment.utc("01/01/1900")) && moment.utc(vm.periodStart()).isSameOrBefore(moment.utc("12/31/9999")))
                     return vm.$i18n("KSU011_79", [moment.utc(vm.periodStart()).format("YYYY/MM/DD") + "～" + vm.periodEnd().format("YYYY/MM/DD")]);
                 else return "";
             });
@@ -92,7 +92,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                 vm.$dialog.error({messageId: "Msg_2316"});
                 return;
             }
-            vm.$blockui("show");
+            vm.$blockui("grayout");
             const exportQuery = {
                 workplaceGroupIds: vm.currentIds(),
                 periodStart: vm.periodStart(),

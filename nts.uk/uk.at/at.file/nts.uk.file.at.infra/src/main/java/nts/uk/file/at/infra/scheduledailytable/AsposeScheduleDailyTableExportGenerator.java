@@ -19,8 +19,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
+
 import nts.arc.time.calendar.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +41,9 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
     private final int START_HEADER_ROW = 6;
     private final int START_DATA_ROW = 8;
     private final int START_DATE_COL = 5;
-    private final int MAX_ROWS_PER_PAGE = 51;
+    private final int MAX_ROWS_PER_PAGE_28 = 48;
+    private final int MAX_ROWS_PER_PAGE_30 = 50;
+    private final int MAX_ROWS_PER_PAGE_31 = 52;
 
     private int startRow = START_DATA_ROW;
     private final List<Integer> indexes = new ArrayList<>();
@@ -61,7 +62,7 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
             this.settingPage(worksheet, dataSource.getCompanyName(), dataSource.getScheduleDailyTableName());
             this.printHeader(worksheet, wkgGroupData, dataSource.getHeadingTitles(), period);
             this.printContent(worksheet, wkgGroupData, period, displayBothWhenDiffOnly, dataSource.getComment());
-            this.handlePageBreak(worksheet);
+            this.handlePageBreak(worksheet, period.datesBetween().size());
             worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
         }
         designer.processDesigner();
@@ -298,8 +299,8 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
                 Optional<ShiftDisplayInfoDto> recordShiftInfo = dataSource.getShiftDisplayInfos().stream()
                         .filter(shift -> shift.getEmployeeId().equals(employee.getEmployeeId()) && shift.getYmd().equals(date) && shift.getTargetData() == ScheRecGettingAtr.ONLY_RECORD)
                         .findFirst();
-                String scheduleShiftName = scheduleShiftInfo.isPresent() ? scheduleShiftInfo.get().getShiftName().orElse("") : "";
-                String recordShifName = recordShiftInfo.isPresent() ? recordShiftInfo.get().getShiftName().orElse("") : "";
+                String scheduleShiftName = scheduleShiftInfo.isPresent() ? scheduleShiftInfo.get().getShiftName().orElse("") : null;
+                String recordShiftName = recordShiftInfo.isPresent() ? recordShiftInfo.get().getShiftName().orElse("") : null;
 
                 if (d == targetDates.size() - 1) style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
                 else style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
@@ -309,7 +310,9 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
                 style.setForegroundColor(Color.getWhite());
                 this.setShiftColor(style, scheduleShiftInfo);
                 cells.get(startRow, START_DATE_COL + d).setStyle(style);
-                cells.get(startRow, START_DATE_COL + d).setValue(scheduleShiftName.isEmpty() ? getText("KSU011_86") : scheduleShiftName);
+                if (scheduleShiftName != null) {
+                    cells.get(startRow, START_DATE_COL + d).setValue(scheduleShiftName.isEmpty() ? getText("KSU011_86") : scheduleShiftName);
+                }
 
                 style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.DOTTED);
                 style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(lastEmployee ? CellBorderType.DOUBLE : CellBorderType.THIN);
@@ -317,11 +320,13 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
                 this.setShiftColor(style, recordShiftInfo);
                 cells.get(startRow + 1, START_DATE_COL + d).setStyle(style);
                 if (displayBothWhenDiffOnly) {
-                    if (!scheduleShiftName.equals(recordShifName)) {
-                        cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShifName.isEmpty() ? getText("KSU011_86") : recordShifName);
+                    if (scheduleShiftName != null && recordShiftName != null && !scheduleShiftName.equals(recordShiftName)) {
+                        cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShiftName.isEmpty() ? getText("KSU011_86") : recordShiftName);
                     }
                 } else {
-                    cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShifName.isEmpty() ? getText("KSU011_86") : recordShifName);
+                    if (recordShiftName != null) {
+                        cells.get(startRow + 1, START_DATE_COL + d).setValue(recordShiftName.isEmpty() ? getText("KSU011_86") : recordShiftName);
+                    }
                 }
             }
 
@@ -356,8 +361,9 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
         }
 
         // F1, F2, F3
-        indexes.add(startRow);
+        int startTotalRow = startRow;
         for (int i = 0; i < 5; i++) {
+            indexes.add(startRow);
             Style style = cells.get(startRow, 0).getStyle();
             style.setVerticalAlignment(TextAlignmentType.CENTER);
             style.setHorizontalAlignment(TextAlignmentType.CENTER);
@@ -446,26 +452,30 @@ public class AsposeScheduleDailyTableExportGenerator extends AsposeCellsReportGe
             cells.merge(startRow + 2, 3, 1, 2);
             startRow += 3;
         }
-        cells.merge(indexes.get(indexes.size() - 1), 0, 15, 2);
+        cells.merge(startTotalRow, 0, 15, 2);
 
         // G1_1
-        cells.get(indexes.get(indexes.size() - 1), START_DATE_COL + targetDates.size()).setValue(comment);
-        cells.merge(indexes.get(indexes.size() - 1), START_DATE_COL + targetDates.size(), 15, 20);
+        cells.get(startTotalRow, START_DATE_COL + targetDates.size()).setValue(comment);
+        cells.merge(startTotalRow, START_DATE_COL + targetDates.size(), 15, 20);
         Style commentStyle = cells.get(indexes.get(indexes.size() - 1), START_DATE_COL + targetDates.size()).getStyle();
         commentStyle.getFont().setName(FONT_NAME);
         commentStyle.getFont().setSize(FONT_SIZE);
         commentStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
         commentStyle.setVerticalAlignment(TextAlignmentType.TOP);
         commentStyle.setTextWrapped(true);
-        cells.get(indexes.get(indexes.size() - 1), START_DATE_COL + targetDates.size()).setStyle(commentStyle);
+        cells.get(startTotalRow, START_DATE_COL + targetDates.size()).setStyle(commentStyle);
 
         indexes.add(startRow);
     }
 
-    private void handlePageBreak(Worksheet worksheet) {
+    private void handlePageBreak(Worksheet worksheet, int days) {
         int start = START_DATA_ROW;
+        int maxRowsPerPage;
+        if (days == 31) maxRowsPerPage = MAX_ROWS_PER_PAGE_31;
+        else if (days == 30) maxRowsPerPage = MAX_ROWS_PER_PAGE_30;
+        else maxRowsPerPage = MAX_ROWS_PER_PAGE_28;
         for (int i = 0; i < indexes.size(); i++) {
-            if (indexes.get(i) - start > MAX_ROWS_PER_PAGE) {
+            if (indexes.get(i) - start > maxRowsPerPage) {
                 worksheet.getHorizontalPageBreaks().add(indexes.get(i - 1).intValue());
                 start = indexes.get(i - 1);
             }
