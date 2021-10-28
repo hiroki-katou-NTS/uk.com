@@ -8,6 +8,8 @@
 
 .right-panel .control-group {
     margin-top: 15px;
+    max-width: 714px;
+    min-width: 544px;
 }
 
 .switchbox-wrappers {
@@ -18,4 +20,8 @@
     flex-direction: column;
     text-align: center;
     width: 85px;
+}
+
+#multi-list-nopanel tr td {
+    height: 24px;
 }

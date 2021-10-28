@@ -78,6 +78,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                 vm.$dialog.error(error);
             }).always(() => {
                 vm.$blockui("hide");
+                if (vm.outputItems().length == 0) $("#A4_4").focus();
             });
         }
 

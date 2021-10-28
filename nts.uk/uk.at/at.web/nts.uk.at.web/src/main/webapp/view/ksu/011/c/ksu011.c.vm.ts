@@ -36,8 +36,9 @@ module nts.uk.at.view.ksu011.c.viewmodel {
         }
 
         mounted() {
-            $("#up-down").height(250);
-            $("#up-down .upDown-container").height(250);
+            // if IE, set up down buttons height to 250, otherwise 264
+            $("#up-down").height(window.document.documentMode ? 250 : 264);
+            $("#up-down .upDown-container").height(window.document.documentMode ? 250 : 264);
             $("#swap-list-grid1_container").focus();
         }
 

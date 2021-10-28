@@ -26,3 +26,12 @@
 .left-panel {
     padding-left: 15px!important;
 }
+
+.right-panel .control-group {
+    width: 702px;
+    margin-bottom: 11px;
+}
+
+#B2_3 tr td {
+    height: 24px;
+}
