@@ -69,27 +69,22 @@ public class AggrResultOfPublicHoliday {
 				closureDate,
 				ClosureStatus.UNTREATED,
 				publicHolidayInformation.stream()
-					.filter(x ->x.getYearMonth().equals(yearMonth))
 					.findFirst()
 					.map(x -> x.getPublicHolidayDigestionInformation().getPublicHolidayday())
 					.orElse(new LeaveGrantDayNumber(0.0)),
 				publicHolidayInformation.stream()
-					.filter(x ->x.getYearMonth().equals(yearMonth))
 					.findFirst()
 					.map(x -> x.getPublicHolidayDigestionInformation().getCarryForwardNumber())
 					.orElse(new LeaveRemainingDayNumber(0.0)),				
 				publicHolidayInformation.stream()
-					.filter(x ->x.getYearMonth().equals(yearMonth))
 					.findFirst()
 					.map(x -> x.getPublicHolidayDigestionInformation().getNumberOfAcquisitions())
 					.orElse(new LeaveUsedDayNumber(0.0)),					
 				publicHolidayInformation.stream()
-					.filter(x ->x.getYearMonth().equals(yearMonth))
 					.findFirst()
 					.map(x -> x.getPublicHolidayCarryForwardInformation().getCarryForwardNumber())
 					.orElse(new LeaveRemainingDayNumber(0.0)),	
 				publicHolidayInformation.stream()
-					.filter(x ->x.getYearMonth().equals(yearMonth))
 					.findFirst()
 					.map(x -> x.getPublicHolidayCarryForwardInformation().getUnusedNumber())
 					.orElse(new LeaveRemainingDayNumber(0.0))					

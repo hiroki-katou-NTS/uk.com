@@ -68,7 +68,7 @@ public class JpaPublicHolidayCarryForwardDataRepo extends JpaRepository implemen
 		}
 
 		KshdtHdpubRem entity = new KshdtHdpubRem();
-		entity.fromDomainForUpdate(domain);
+		entity.fromDomainForInsert(domain);
 		this.commandProxy().insert(entity);
 		this.getEntityManager().flush();
 	}
