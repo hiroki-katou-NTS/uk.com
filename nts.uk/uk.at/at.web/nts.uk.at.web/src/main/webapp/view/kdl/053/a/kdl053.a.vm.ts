@@ -69,6 +69,7 @@ module nts.uk.at.view.kdl053.a {
                 })               
                 errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
             });
+            errorRegistrationList = _.sortBy(errorRegistrationList, ['scd', 'date'])
 
             self.hasError(data.isRegistered == 1); 
 
