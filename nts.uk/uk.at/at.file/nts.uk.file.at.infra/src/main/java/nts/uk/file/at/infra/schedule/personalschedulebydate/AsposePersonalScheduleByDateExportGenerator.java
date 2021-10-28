@@ -223,7 +223,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 cells.get(rowCount, 6).setValue(minuteToTime(item.getTotalBreakTime()));         // C2_3_16
             }
 
-            if (graphVacationDisplay) {
+//            if (graphVacationDisplay) {
                 // C3_2_1
                 System.out.println("C3_2_1");
                 if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
@@ -327,7 +327,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                         }
                     }
                 }
-            }
+//            }
 
             if (displayActual) {
                 // C3_2_14
