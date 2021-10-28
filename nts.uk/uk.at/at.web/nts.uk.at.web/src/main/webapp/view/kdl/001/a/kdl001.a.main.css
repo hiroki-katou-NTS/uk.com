@@ -132,6 +132,10 @@ button:disabled {
   background-color: #ccc;
 }
 
+.constraint.below {
+  z-index: 10000;
+}
+
 #A2_25 {
   width: 441px;
   float: left;
