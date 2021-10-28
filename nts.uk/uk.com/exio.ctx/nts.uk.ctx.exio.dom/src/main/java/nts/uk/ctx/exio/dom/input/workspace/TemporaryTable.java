@@ -21,7 +21,11 @@ public class TemporaryTable {
 	private static final String PREFIX = "外部受入_";
 	
 	public static String createTableName(ExecutionContext context, String name) {
-		return PREFIX + name + "_" + context.getCompanyId().replace("-", "");
+		return PREFIX + context.getDomainId().value + "_"  + name + "_" + context.getCompanyId().replace("-", "");
+	}
+
+	public static String createErrorTableName(String companyId, String name) {
+		return PREFIX + name + "_" + companyId.replace("-", "");
 	}
 	
 	/**
