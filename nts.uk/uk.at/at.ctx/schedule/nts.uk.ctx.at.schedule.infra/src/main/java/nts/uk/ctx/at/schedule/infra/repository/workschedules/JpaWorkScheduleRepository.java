@@ -185,17 +185,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		if (sids.isEmpty())
 			return new ArrayList<>();
 
-		long start1 = System.nanoTime();
-		List<KscdtSchBasicInfo> entitys = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
+		List<WorkSchedule> result = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
 				.setParameter("sids", sids).setParameter("startDate", period.start())
-				.setParameter("endDate", period.end()).getList();
-		System.out.println("Time get Entity:  " + ((System.nanoTime() - start1 )/1000000) + "ms");
-		
-		long start2 = System.nanoTime();
-		List<WorkSchedule> rs = entitys.stream().map(c -> c.toDomain(c.pk.sid, c.pk.ymd)).collect(Collectors.toList());
-		System.out.println("Time convert :  " + ((System.nanoTime() - start2 )/1000000) + "ms");
-		
-		return rs;
+				.setParameter("endDate", period.end()).getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
+		return result;
 	}
 
 	@Override
