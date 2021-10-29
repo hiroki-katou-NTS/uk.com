@@ -2229,10 +2229,6 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // get all event with border is black
                     const seletions = () => _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
-
-                    if (event.extendedProps.isTimeBreak) {
-                        return;
-                    }
                     
                     // single select
                     if (!shift) {
@@ -2250,9 +2246,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         } else {
                             vm.$view('view');
                         }
-
-                        popupData.event(event);
-
+                        if (!event.extendedProps.isTimeBreak) {
+                            popupData.event(event);
+                        }
                         // update exclude-times
                         const sameDayEvent = _
                             .chain(vm.calendar.getEvents())
@@ -2262,8 +2258,11 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         popupData.excludeTimes(sameDayEvent);
 
-                        // show popup on edit mode
-                        popupPosition.event(el);
+                        if (!event.extendedProps.isTimeBreak) {
+                            // show popup on edit mode
+                            popupPosition.event(el);
+
+                        }
 
                         // update mouse pointer
                         const { screenX, screenY } = jsEvent;
@@ -3217,7 +3216,7 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             // test item
-            _.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
+            //_.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
         }
         
 
