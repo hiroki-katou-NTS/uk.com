@@ -17,11 +17,11 @@ public class GetDataInitCmm051ScreenQuery {
     @Inject
     private GetInitialDisplayInWorkModeScreenQuery inWorkModeScreenQuery;
 
-    public EmployeeInformationDto getDataInit() {
+    public Cmm051InitDto getDataInit() {
         String attendance = AppContexts.user().roles().forAttendance();
         if (attendance == null) {
             throw new BusinessException("Msg_1103");
         }
-        return inWorkModeScreenQuery.getinitdDisplayInWorkMode();
+        return inWorkModeScreenQuery.getInitDisplayInWorkMode();
     }
 }

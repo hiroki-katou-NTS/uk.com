@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class EmployeeInforAndWorkplaceInforDto {
+public class EmployeeInfoAndWorkplaceInfoDto {
    private List<WorkplaceInforParam> workplaceInfors;
    private List<EmployeeDataMngInfoDto> listEmployee;
    private List<PersonDto> personList;

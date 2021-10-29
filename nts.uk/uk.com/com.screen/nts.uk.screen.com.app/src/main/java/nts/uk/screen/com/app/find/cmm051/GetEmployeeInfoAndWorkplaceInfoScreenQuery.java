@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 /**
  * <Screen Query> 社員モードで社員情報と職場情報一覧を取得する
- *
+ * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM051_職場管理者の登録.A:職場管理者の登録.メニュー別OCD.社員モードで社員情報と職場情報一覧を取得する
  * @author chinh.hm
  */
 @Stateless
-public class GetEmployeeInforAndWorkplaceInforScreenQuery {
+public class GetEmployeeInfoAndWorkplaceInfoScreenQuery {
     @Inject
     private EmployeeDataMngInfoRepository employeeDataMngInfoRepository;
     @Inject
@@ -26,8 +26,8 @@ public class GetEmployeeInforAndWorkplaceInforScreenQuery {
     @Inject
     private GetList0fWorkplaceInformationScreenQuery workplaceInformationScreenQuery;
 
-    public EmployeeInforAndWorkplaceInforDto getListInfomation(List<String> sids) {
-        List<WorkplaceInforParam> workplaceInfors = new ArrayList<>();
+    public EmployeeInfoAndWorkplaceInfoDto getListInformation(List<String> sids) {
+        List<WorkplaceInforParam> workplaceInfo = new ArrayList<>();
         List<EmployeeDataMngInfoDto> listEmployee = employeeDataMngInfoRepository.findByListEmployeeId(sids)
                 .stream().map(EmployeeDataMngInfoDto::toDto).collect(Collectors.toList());
         List<String> listPersonId = listEmployee.stream().map(EmployeeDataMngInfoDto::getPersonId)
@@ -41,8 +41,8 @@ public class GetEmployeeInforAndWorkplaceInforScreenQuery {
                         e.getBirthDate()
                 )).collect(Collectors.toList());
         for (val e : listEmployee) {
-            workplaceInfors.addAll(workplaceInformationScreenQuery.getListWplInfo(e.getEmployeeId()));
+            workplaceInfo.addAll(workplaceInformationScreenQuery.getListWplInfo(e.getEmployeeId()));
         }
-        return new EmployeeInforAndWorkplaceInforDto(workplaceInfors, listEmployee, personList);
+        return new EmployeeInfoAndWorkplaceInfoDto(workplaceInfo, listEmployee, personList);
     }
 }

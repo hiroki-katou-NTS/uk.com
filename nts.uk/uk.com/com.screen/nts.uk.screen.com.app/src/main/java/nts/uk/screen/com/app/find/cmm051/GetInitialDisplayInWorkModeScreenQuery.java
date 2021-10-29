@@ -22,15 +22,17 @@ public class GetInitialDisplayInWorkModeScreenQuery {
     @Inject
     private GetListEmployeeInformationScreenQuery informationScreenQuery;
 
-    public EmployeeInformationDto getinitdDisplayInWorkMode() {
+    public Cmm051InitDto getInitDisplayInWorkMode() {
+        Cmm051InitDto rs = new Cmm051InitDto();
         String sid = AppContexts.user().employeeId();
         GeneralDate referenceDate = GeneralDate.today();
         Optional<WorkplaceInfoImport> workplaceInfoImportOptional = messageNoticeAdapter
                 .getWorkplaceInfo(sid, referenceDate);
         if (workplaceInfoImportOptional.isPresent()) {
-            return informationScreenQuery
-                    .getLiEmployeeInfo(workplaceInfoImportOptional.get().getWorkplaceId());
-        } else return null;
-
+            rs.setWorkplaceInfoImport(workplaceInfoImportOptional.get());
+            rs.setEmployeeInformation(informationScreenQuery
+                    .getLiEmployeeInfo(workplaceInfoImportOptional.get().getWorkplaceId()));
+        }
+        return rs;
     }
 }
