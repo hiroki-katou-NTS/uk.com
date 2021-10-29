@@ -1383,7 +1383,7 @@ public class DailyPerformanceCorrectionProcessor {
 											.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
 													? appMapDateSid.get(
 															value.getEmployeeId() + "|" + value.getProcessingDate())
-													: ""));
+													: "", errorSetting.getTypeAtr()));
 							rowId++;
 						}
 					}
