@@ -1,6 +1,4 @@
 .tab_8_round_setting {
-	width: 300px;
-	display: inline-block;
 	overflow: hidden;
 }
 
@@ -14,4 +12,8 @@
 
 .official-setting-tab-content {
 	width: 620px !important;
+}
+
+#A33_40 {
+  width: 110px;
 }
