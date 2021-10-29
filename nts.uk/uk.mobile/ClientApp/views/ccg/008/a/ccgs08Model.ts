@@ -164,7 +164,7 @@ export class DateInfoDto {
 }
 
 export class TimeDto {
-  public hours: Number;
+  public hours: number;
   public min: number;
 }
 

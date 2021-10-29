@@ -211,11 +211,11 @@ export class Ccg008AComponent extends Vue {
     
         // yearlyHoliday
         let yearlyHld = item.yearlyHoliday;
+        let timeRemain = (yearlyHld.nextTimeInfo.hours.hours) * 60 + yearlyHld.nextTimeInfo.hours.min;
         if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
             results.push({
                 name:'KTG029_23', 
-                value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), yearlyHld.nextTimeInfo.hours.hours + ':' + 
-                    (yearlyHld.nextTimeInfo.hours.min < 0 ? 0 - yearlyHld.nextTimeInfo.hours.min : yearlyHld.nextTimeInfo.hours.min) ])
+                value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), vm.getFormatTime(timeRemain)])
             }); 
         }
         // next grantDate

@@ -45,6 +45,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -980,10 +981,18 @@ public class ToppageStartupProcessMobFinder {
 		ReNumAnnLeaReferenceDateImport reNumAnnLeaReferenceDate = annLeaveRemainNumberAdapter
 				.getReferDateAnnualLeaveRemainNumber(employeeId, date);
 
+		Double yearDays = 0d;
+		int yearHours = 0;
+		List<AnnualLeaveGrantImport> annualLeaveGrantExports = reNumAnnLeaReferenceDate.getAnnualLeaveGrantExports();
+		for (int i = 0; i < annualLeaveGrantExports.size(); i++) {
+		    yearHours += annualLeaveGrantExports.get(i).getRemainMinutes();
+        }
+		
 		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberExport();
-		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(remainingNumber.getAnnualLeaveGrantPreDay(),
-				new TimeOT(remainingNumber.getAnnualLeaveGrantPreTime().intValue() / 60,
-						remainingNumber.getAnnualLeaveGrantPreTime().intValue() % 60),
+		yearDays = remainingNumber == null ? 0 : remainingNumber.getAnnualLeaveGrantDay();
+		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(yearDays,
+				new TimeOT(yearHours / 60,
+				        yearHours % 60),
 				remainingNumber.getNumberOfRemainGrantPre(),
 				new TimeOT(remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue() / 60,
 						remainingNumber.getTimeAnnualLeaveWithMinusGrantPre().intValue() % 60)));
