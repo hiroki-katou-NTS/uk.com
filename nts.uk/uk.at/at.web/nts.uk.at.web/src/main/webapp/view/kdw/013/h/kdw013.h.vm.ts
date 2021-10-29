@@ -44,6 +44,8 @@ module nts.uk.at.view.kdw013.h {
 			primitiveValueDaily: any[] = __viewContext.enums.PrimitiveValueDaily;
 			
 			errorLable: KnockoutObservable<string> = ko.observable('');
+			
+			block: KnockoutObservable<boolean> = ko.observable(true);
 
 			constructor() {
 				let self = this;
@@ -83,29 +85,31 @@ module nts.uk.at.view.kdw013.h {
 				let infor: any = _.find(self.params.lockInfos, (i:DailyLock)=> moment(self.params.date).isSame(moment(i.date)));
 				if(infor){
 					let err: string = null;
-					if(infor.lockPast = 1){
+					if(infor.lockPast == 0){
 						err = getText('KDW013_53');
 					}
-					if(infor.lockWpl = 1){
+					if(infor.lockWpl == 0){
 						err = err ? (err + ',' + getText('KDW013_54')) : getText('KDW013_54');
 					}
-					if(infor.lockApprovalMontｈ = 1){
+					if(infor.lockApprovalMontｈ == 0){
 						err = err ? (err + ',' + getText('KDW013_55')) : getText('KDW013_55');
 					}
-					if(infor.lockConfirmMonth = 1){
+					if(infor.lockConfirmMonth == 0){
 						err = err ? (err + ',' + getText('KDW013_56')) : getText('KDW013_56');
 					}
-					if(infor.lockApprovalDay = 1){
+					if(infor.lockApprovalDay == 0){
 						err = err ? (err + ',' + getText('KDW013_57')) : getText('KDW013_57');
 					}
-					if(infor.lockConfirmDay = 1){
+					if(infor.lockConfirmDay == 0){
 						err = err ? (err + ',' + getText('KDW013_58')) : getText('KDW013_58');
 					}
-					if(infor.lockDailyResult = 1){
+					if(infor.lockDailyResult == 0){
 						err = err ? (err + ',' + getText('KDW013_59')) : getText('KDW013_59');
 					}
 					if(err){
 						self.errorLable(getText('KDW013_52', [err]));
+					}else{
+						self.block(false);
 					}
 				}
 			}
