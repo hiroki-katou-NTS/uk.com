@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.ksu.ksu008.a;
+package nts.uk.screen.at.ws.ksu.ksu008;
 
 import nts.uk.screen.at.app.ksu008.a.GetOutPutLayoutListInfoForKsu008;
 import nts.uk.screen.at.app.ksu008.a.dto.Form9LayoutDto;
@@ -27,6 +27,5 @@ public class Ksu008AWebServive {
     public List<Form9LayoutDto> getInitInformation() {
         return this.getOutPutlayoutListInfoForKsu008.get(AppContexts.user().companyId());
     }
-
 
 }
