@@ -11,7 +11,7 @@ import nts.arc.enums.EnumAdaptor;
 public enum WorkplaceCounterCategory {
 
 	/** 人件費・時間 */
-	LABOR_COSTS_AND_TIME(0, "Enum_WorkplaceCounterCategory_LaborCostsAndTime "),
+	LABOR_COSTS_AND_TIME(0, "Enum_WorkplaceCounterCategory_LaborCostsAndTime"),
 
 	/** 外部予算実績 */
 	EXTERNAL_BUDGET(1, "Enum_WorkplaceCounterCategory_ExternalBudget"),
