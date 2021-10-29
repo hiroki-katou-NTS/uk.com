@@ -24,7 +24,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDateAndEmpID;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectProcessService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.RegisterStampData;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -80,7 +80,7 @@ public class ConvertTimeRecordStampService {
 		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTerOpt.get().getCreateStampInfo().createStamp(contractCode, stampReceptData, empInfoTerCode);
 		if(!stamp.isPresent()) return Pair.of(Optional.empty(), AtomTask.none());
 		
-		Optional<AtomTask> stampReflectResult = StampDataReflectProcessService.registerStamp(require,
+		Optional<AtomTask> stampReflectResult = RegisterStampData.registerStamp(require,
 				stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
 		if(!stampReflectResult.isPresent()) {
 			return Pair.of(Optional.empty(), AtomTask.none());
@@ -120,7 +120,7 @@ public class ConvertTimeRecordStampService {
 	}
 	
 	//日別実績を処理する
-	public static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
+	private static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
 			ContractCode contractCode, Optional<String> sid, Optional<Stamp> stamp, AtomTask atomTask) {
 
 		if (!sid.isPresent() || !cid.isPresent() || !stamp.isPresent()) {
@@ -172,7 +172,7 @@ public class ConvertTimeRecordStampService {
 //
 //	}
 
-	public static interface Require extends StampDataReflectProcessService.Require, ReflectStampInDailyRecord.Require,
+	public static interface Require extends RegisterStampData.Require, ReflectStampInDailyRecord.Require,
 			ReflectDataStampDailyService.Require, ClosureService.RequireM3 {
 
 		// [R-1]就業情報端末を取得する

@@ -14,13 +14,12 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 /**
  * @author ThanhNX
  *
- *         打刻データ反映処理
+ *         打刻を登録する
  *         UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻.打刻データ反映処理
  */
-public class StampDataReflectProcessService {
-
+public class RegisterStampData {
 	
-	// [2] 打刻を登録する
+	//打刻を登録する
 	public static Optional<AtomTask> registerStamp(Require require, StampRecord stampRecord,
 			Optional<Stamp> stamp) {
 		if (stamp.isPresent() && require.existsStamp(stampRecord.getContractCode(), stampRecord.getStampNumber(),
