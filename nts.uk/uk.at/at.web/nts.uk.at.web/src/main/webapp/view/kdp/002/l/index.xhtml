@@ -23,6 +23,7 @@
                         <!-- L2_1 検索作業名 -->
                        	<input id="L2_1" tabindex="1" data-bind="ntsTextEditor: {
 								value: searchValue,
+								enterkey: onClickSearch,
 								option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 					            	textmode: 'text',
 					            	placeholder: '#{i18n.getText('KDP002_67')}',

@@ -142,12 +142,6 @@ module nts.uk.at.view.kdp002.l {
 
                 });
 
-            // Trigger button click on enter
-            $( "#L2_1" ).keyup((event: any) => {
-                if (event.keyCode === 13) {
-                    vm.onClickSearch();
-                }
-            });
         }
 
         getTask(param: ITaskParam) {
