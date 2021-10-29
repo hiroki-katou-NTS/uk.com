@@ -7,8 +7,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommandHandler;
 import nts.uk.screen.at.app.kdw013.query.CreateDpItemQuery;
@@ -37,10 +41,25 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 	@Inject
 	private GetTargetTime getTargetTime;
 	
+	@Inject
+	private OuenWorkTimeSheetOfDailyRepo ouenSheetRepo;
+	
+	@Inject
+	private OuenWorkTimeOfDailyRepo ouenTimeRepo;
+	
+	@Inject
+	private EditStateOfDailyPerformanceRepository esRepo;
+	
 	@Override
 	protected RegisterWorkContentDto handle(CommandHandlerContext<RegisterWorkContentCommand> context) {
 		
 		RegisterWorkContentCommand command = context.getCommand();
+		
+		
+		//xoa co dinh No1 
+		
+//		this.ouenSheetRepo.removePK(command.getEmployeeId(), GeneralDate.today(), 1);
+//		this.ouenTimeRepo.removePK(command.getEmployeeId(), GeneralDate.today(), 1);
 		
 		RegisterWorkContentDto result = new RegisterWorkContentDto();
 		// 1. 実績登録パラメータを作成する
@@ -48,8 +67,9 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		DPItemParent dataParent = createDpItemQuery.CreateDpItem(command.getEmployeeId(), command.getChangedDates(),
 				command.getManHrlst(), command.getIntegrationOfDailys());
 
+		//throw business
 		// 2. 修正した実績を登録する
-		this.dailyModifyRCommandFacade.insertItemDomain(dataParent);
+		DataResultAfterIU dataResult = this.dailyModifyRCommandFacade.insertItemDomain(dataParent);
 		
 		// 3. 作業時間帯グループを登録する
 		
