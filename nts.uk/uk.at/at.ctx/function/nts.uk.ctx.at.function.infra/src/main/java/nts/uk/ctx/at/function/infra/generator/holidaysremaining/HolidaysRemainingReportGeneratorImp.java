@@ -660,8 +660,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             }
                     ).sum();
 
-            //Double valueE15 = use_date + use_after_grant; //
-            Double valueE15 = use_after_grant; //
+            Double valueE15 = use_date + use_after_grant;
+            //Double valueE15 = use_after_grant;
             Double used_Days = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
                     valueE15 : null;
@@ -722,8 +722,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 }
                         ).mapToDouble(e -> e).sum();
 
-                //val valueE114 = use_time + use_after_grant_time;
-                val valueE114 = use_after_grant_time;
+                val valueE114 = use_time + use_after_grant_time;
+                //val valueE114 = use_after_grant_time ;
                 Double uses_Hours = valueE114;
                 val e114 = uses_Hours != null ? convertToTime(uses_Hours.intValue()) : "";
                 cells.get(firstRow + 1, 6).setValue(e114);
