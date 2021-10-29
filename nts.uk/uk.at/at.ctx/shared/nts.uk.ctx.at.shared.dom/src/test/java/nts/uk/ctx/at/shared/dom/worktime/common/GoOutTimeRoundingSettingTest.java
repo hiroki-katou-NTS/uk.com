@@ -17,7 +17,7 @@ public class GoOutTimeRoundingSettingTest {
 
 	@Test
 	public void getters() {
-		GoOutTimeRoundingSetting target = new GoOutTimeRoundingSetting(RoundingGoOutTimeSheet.INDIVIDUAL_ROUNDING, TimeRoundingSetting.ONE_MIN_DOWN);
+		GoOutTimeRoundingSetting target = new GoOutTimeRoundingSetting(RoundingGoOutTimeSheet.INDIVIDUAL_ROUNDING, TimeRoundingSetting.oneMinDown());
 		NtsAssert.invokeGetters(target);
 	}
 
