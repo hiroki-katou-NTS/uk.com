@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,8 @@ public class CreateDailyOneDay {
 	@Inject
 	private IntegrationOfDailyGetter integrationGetter;
 	
+	private static List<Integer> WORKTYPE_WORKTIME_ID = Arrays.asList(28, 29);
+	
 	/**
 	 * 
 	 * @param companyId 会社ID
@@ -60,13 +63,17 @@ public class CreateDailyOneDay {
         //日別実績が既に存在しない場合OR「作成する」の場合	
  		ChangeDailyAttendance changeDailyAtt;
         if(integrationOfDailys.isEmpty() || executionType == ExecutionTypeDaily.CREATE) {
-        	
+        	//処理前の編集状態を取得
+			boolean isEditSateBefore = integrationOfDaily.getEditState().stream()
+					.filter(x -> WORKTYPE_WORKTIME_ID.contains(x.getAttendanceItemId())).findFirst().map(x -> true)
+					.orElse(false);
+
         	//日別実績を作成する 
 			OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
 					executionType, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
         	listErrorMessageInfo.addAll(outputCreate.getListErrorMessageInfo());
         	integrationOfDaily = outputCreate.getIntegrationOfDaily();
-        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, false, ScheduleRecordClassifi.RECORD, false);
+        	changeDailyAtt = new ChangeDailyAttendance(true, true, true, isEditSateBefore, ScheduleRecordClassifi.RECORD, false);
         } else { 
         	
         	changeDailyAtt = new ChangeDailyAttendance(false, false, false, false, ScheduleRecordClassifi.RECORD, false);
