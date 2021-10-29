@@ -18,10 +18,13 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.AffInfoForWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
@@ -945,17 +948,24 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public List<WorkSchedule> getListJDBC(List<String> sids, DatePeriod period) {
 		if (sids.isEmpty() || period == null)
 			return new ArrayList<>();
-
-		String listEmp = "(";
-		for (int i = 0; i < sids.size(); i++) {
-			listEmp += "'" + sids.get(i) + "',";
-		}
-		// remove last , in string and add )
-		listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
 		
-		Map<Pair<String, GeneralDate>, ActualWorkingTimeOfDaily> mapActualWorkingTimeOfDaily = this.getListActualWorkingTimeOfDaily(listEmp, period);
+		List<WorkSchedule> result = new ArrayList<>();
 		
-		return getListWorkSchedule(listEmp, period, mapActualWorkingTimeOfDaily);
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			String listEmp = "(";
+			for (int i = 0; i < subList.size(); i++) {
+				listEmp += "'" + subList.get(i) + "',";
+			}
+			// remove last , in string and add )
+			listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
+			
+			Map<Pair<String, GeneralDate>, ActualWorkingTimeOfDaily> mapActualWorkingTimeOfDaily = this.getListActualWorkingTimeOfDaily(listEmp, period);
+			
+			result.addAll(getListWorkSchedule(listEmp, period, mapActualWorkingTimeOfDaily));
+			
+		});
+		
+		return result;
 
 	}
 	
