@@ -134,7 +134,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 		if(this.roundingMethod.isInFrame()) {
 			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason, dedAtr, reverse));
 		}
-		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
+		return Optional.of(TimeRoundingSetting.oneMinDown());
 	}
 	
 	/**
@@ -153,7 +153,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 		if(this.roundingMethod.isAfterTotalInFrame()) {
 			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason.get(), dedAtr, reverse));
 		}
-		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
+		return Optional.of(TimeRoundingSetting.oneMinDown());
 	}
 
 	/**
@@ -169,11 +169,11 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 			return Optional.empty();
 		}
 		if(dedAtr.isDeduction()) {
-			return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
+			return Optional.of(TimeRoundingSetting.oneMinDown());
 		}
 		if(this.roundingMethod.isAfterTotal()) {
-			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason.get(), dedAtr, TimeRoundingSetting.ONE_MIN_DOWN));
+			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason.get(), dedAtr, TimeRoundingSetting.oneMinDown()));
 		}
-		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
+		return Optional.of(TimeRoundingSetting.oneMinDown());
 	}
 }

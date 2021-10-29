@@ -17,9 +17,9 @@ public class GoOutTimezoneRoundingSetTest {
 	@Test
 	public void getters() {
 		GoOutTimezoneRoundingSet target = GoOutSetHelper.createGoOutTimezoneRoundingSet(
-				TimeRoundingSetting.ONE_MIN_DOWN,
-				TimeRoundingSetting.ONE_MIN_DOWN,
-				TimeRoundingSetting.ONE_MIN_DOWN);
+				TimeRoundingSetting.oneMinDown(),
+				TimeRoundingSetting.oneMinDown(),
+				TimeRoundingSetting.oneMinDown());
 		NtsAssert.invokeGetters(target);
 	}
 
@@ -31,7 +31,7 @@ public class GoOutTimezoneRoundingSetTest {
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_30MIN, Rounding.ROUNDING_DOWN)); //残業：30分切り捨て
 		
 		TimeRoundingSetting result = target.getRoundingSet(ActualWorkTimeSheetAtr.HolidayWork, // 休日出勤
-				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.ONE_MIN_DOWN);
+				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.oneMinDown());
 		
 		//result == 5分切り捨て
 		assertThat(result.getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_5MIN);
@@ -46,7 +46,7 @@ public class GoOutTimezoneRoundingSetTest {
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_30MIN, Rounding.ROUNDING_DOWN)); //残業：30分切り捨て
 		
 		TimeRoundingSetting result = target.getRoundingSet(ActualWorkTimeSheetAtr.WithinWorkTime, // 就業時間内
-				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.ONE_MIN_DOWN);
+				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.oneMinDown());
 		
 		//result == 15分切り上げ
 		assertThat(result.getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_15MIN);
@@ -61,7 +61,7 @@ public class GoOutTimezoneRoundingSetTest {
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_30MIN, Rounding.ROUNDING_DOWN)); //残業：30分切り捨て
 		
 		TimeRoundingSetting result = target.getRoundingSet(ActualWorkTimeSheetAtr.OverTimeWork, // 残業
-				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.ONE_MIN_DOWN);
+				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.oneMinDown());
 		
 		//result == 30分切り捨て
 		assertThat(result.getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_30MIN);
@@ -76,7 +76,7 @@ public class GoOutTimezoneRoundingSetTest {
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_30MIN, Rounding.ROUNDING_DOWN)); //残業：30分切り捨て
 		
 		TimeRoundingSetting result = target.getRoundingSet(ActualWorkTimeSheetAtr.EarlyWork, // 早出残業
-				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.ONE_MIN_DOWN);
+				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.oneMinDown());
 		
 		//result == 30分切り捨て
 		assertThat(result.getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_30MIN);
@@ -91,7 +91,7 @@ public class GoOutTimezoneRoundingSetTest {
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_30MIN, Rounding.ROUNDING_DOWN)); //残業：30分切り捨て
 		
 		TimeRoundingSetting result = target.getRoundingSet(ActualWorkTimeSheetAtr.StatutoryOverTimeWork, // 法定内残業
-				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.ONE_MIN_DOWN);
+				GoingOutReason.PRIVATE, DeductionAtr.Appropriate, TimeRoundingSetting.oneMinDown());
 		
 		//result == 30分切り捨て
 		assertThat(result.getRoundingTime()).isEqualTo(Unit.ROUNDING_TIME_30MIN);

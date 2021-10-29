@@ -30,10 +30,6 @@ public class TimeRoundingSetting extends DomainObject implements Cloneable{
 	// 端数処理
 	private Rounding rounding;
 
-	
-	/** Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN (1分切り捨て) */
-	public static final TimeRoundingSetting ONE_MIN_DOWN = new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
-
 	/**
 	 * Instantiates a new time rounding setting.
 	 *
@@ -58,6 +54,14 @@ public class TimeRoundingSetting extends DomainObject implements Cloneable{
 	public TimeRoundingSetting(int roundingTime, int rounding) {
 		this.roundingTime = EnumAdaptor.valueOf(roundingTime, Unit.class);
 		this.rounding = EnumAdaptor.valueOf(rounding, Rounding.class);
+	}
+	
+	/**
+	 * 1分切り捨てで作る
+	 * @return Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN
+	 */
+	public static TimeRoundingSetting oneMinDown() {
+		return new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
 	}
 
 //	/**

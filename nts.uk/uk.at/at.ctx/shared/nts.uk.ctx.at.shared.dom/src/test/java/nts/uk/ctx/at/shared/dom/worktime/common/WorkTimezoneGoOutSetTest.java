@@ -18,8 +18,8 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 public class WorkTimezoneGoOutSetTest {
 
 	@Test
-	public void test() {
-		WorkTimezoneGoOutSet target = GoOutSetHelper.createWorkTimezoneGoOutSet(GoOutTimeRoundingMethod.AFTER_TOTAL, TimeRoundingSetting.ONE_MIN_DOWN);
+	public void getters() {
+		WorkTimezoneGoOutSet target = GoOutSetHelper.createWorkTimezoneGoOutSet(GoOutTimeRoundingMethod.AFTER_TOTAL, TimeRoundingSetting.oneMinDown());
 		NtsAssert.invokeGetters(target);
 	}
 
