@@ -214,7 +214,8 @@ export class Ccg008AComponent extends Vue {
         if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
             results.push({
                 name:'KTG029_23', 
-                value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), yearlyHld.nextTimeInfo.hours.hours + ':' + yearlyHld.nextTimeInfo.hours.min])
+                value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), yearlyHld.nextTimeInfo.hours.hours + ':' + 
+                    (yearlyHld.nextTimeInfo.hours.min < 0 ? 0 - yearlyHld.nextTimeInfo.hours.min : yearlyHld.nextTimeInfo.hours.min) ])
             }); 
         }
         // next grantDate
@@ -249,6 +250,8 @@ export class Ccg008AComponent extends Vue {
                 let timeDisp = vm.$dt.timedr(item.remainAlternationNoDay);
                 if (timeDisp.startsWith('0')) {
                     results.push({name:'代休残数', value: timeDisp.substr(1, timeDisp.length)});
+                } else if (timeDisp.startsWith('-0')) {
+                    results.push({name:'代休残数', value: timeDisp.slice(0, 1) + timeDisp.slice(2)});
                 } else {
                     results.push({name:'代休残数', value: timeDisp});
                 }
@@ -317,6 +320,8 @@ export class Ccg008AComponent extends Vue {
             let timeStr: string = self.$dt.timedr(time);
             if (timeStr.startsWith('0')) {
                 return timeStr.substr(1, timeStr.length);
+            } else if (timeStr.startsWith('-0')) {
+                return timeStr.slice(0, 1) + timeStr.slice(2);
             } else {
                 return timeStr;
             }
