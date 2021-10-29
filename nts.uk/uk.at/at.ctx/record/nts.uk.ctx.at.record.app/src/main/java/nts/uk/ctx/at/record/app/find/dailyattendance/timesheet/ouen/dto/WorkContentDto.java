@@ -48,8 +48,8 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	public WorkContent domain() {
 		return WorkContent.create(
 				workplace == null ? WorkplaceOfWorkEachOuen.create(new WorkplaceId(""), null) : workplace.domain(), 
-						Optional.ofNullable(workOpt.map(x-> x.domain()).orElse(null)),
-						Optional.ofNullable(workSuppInfo.map(x-> x.domain()).orElse(null))); 
+				Optional.ofNullable(workOpt.isPresent()?workOpt.get().domain():null),
+				Optional.ofNullable(workSuppInfo.isPresent()?workSuppInfo.get().domain():null)); 
 	} 
 	
 	@Override
