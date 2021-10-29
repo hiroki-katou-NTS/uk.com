@@ -2039,8 +2039,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     return undefined;
                 },
-                dayHeaderDidMount : (arg, createElement) => {
-                   $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon' data-bind="ntsIcon: { no: 2, width: 20, height: 20 }" ></i>`);
+                dayHeaderDidMount : (arg, createElement) => {                    
+                    
+                   $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon' ></i>`);
                    setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 20, height: 20 } }); }, 300);
                 }
                 ,
@@ -3221,7 +3222,7 @@ module nts.uk.ui.at.kdw013.calendar {
         
 
         
-
+        
        
 
         public getFrameNo(events){
@@ -3797,7 +3798,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     const tg = evt.target as HTMLElement;
                     //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
-                    if ($(tg).closest('#master-content').length > 0 && !$(tg).closest('.fc-ckb-break-time').length > 0)
+                    let clickOnMaster = $(tg).closest('#master-content').length > 0 ;
+                    let notClickOnbreakTime = !$(tg).closest('.fc-ckb-break-time').length > 0;
+                    
+                    if (clickOnMaster  && notClickOnbreakTime)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {
