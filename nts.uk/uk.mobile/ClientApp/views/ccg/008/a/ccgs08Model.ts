@@ -164,8 +164,8 @@ export class DateInfoDto {
 }
 
 export class TimeDto {
-  public hours: Number;
-  public min: Number;
+  public hours: number;
+  public min: number;
 }
 
 export class DisplayItemType {
