@@ -4391,7 +4391,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     } else {
                         delete header.group;
                     }
-                }
+					header.headerText = '<div style="max-height: 20px;">' + header.headerText + '</div>';
+                } else {
+					header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
+				}
                 tempList.push(header);
             });
             self.headersGrid = tempList;
@@ -4442,7 +4445,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
                     if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
-                            headerText = "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName ;
+                            headerText = '<div style="max-height: 40px;">' + "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName + '</div>';
                             $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
                            // headerText = header.headerText.split(" ")[0];
@@ -4450,12 +4453,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     } else {
                         if (self.showHeaderNumber()) {
-                            headerText =  "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
-                            $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
+                            headerText =  '<div style="max-height: 20px;">' + "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName + '</div>';
+							let keyHeader = _.replace(header.headerText, '<div style="max-height: 20px;">', '');
+							keyHeader = _.replace(keyHeader, '</div>', '');
+                            $("#dpGrid").mGrid("headerText", keyHeader, headerText, true);
                         } else {
                           //  headerText = header.headerText.split(" ")[0];
-                            headerText = header.attendanceName;
-                            $("#dpGrid").mGrid("headerText", "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + headerText, header.headerText, true);
+                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
+                            $("#dpGrid").mGrid("headerText", headerText, header.headerText, true);
                         }
                     }
                 }

@@ -647,7 +647,7 @@ public class SupportWorkReflection {
 				
 				if(lastData.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
 					// 最後の退勤の応援データを補正する
-					WorkTimeInformation information = WorkTimeInformation.createByAutomaticSet(endOuenLast.get().getTimeWithDay().get());
+					WorkTimeInformation information = WorkTimeInformation.createByAutomaticSet(endOuenLast.get().getTimeWithDay().isPresent()?endOuenLast.get().getTimeWithDay().get():null);
 					lastData.getTimeSheet()
 							.setStart(information);
 				}
