@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -65,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
@@ -443,38 +445,54 @@ public class CalculationRangeOfOneDay {
 			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
 			StatutoryAtr statutoryAtr,
-			TimeSheetRoundingAtr roundAtr,
-			Optional<TimeRoundingSetting> sumRoundSet) {
+			Optional<WorkTimezoneGoOutSet> goOutSet) {
 		
-		int deductMinutes = 0;		// 控除時間
+		AttendanceTime withinDeduct = AttendanceTime.ZERO;
+		AttendanceTime overTimeDeduct = AttendanceTime.ZERO;
+		AttendanceTime holidayWorkDeduct = AttendanceTime.ZERO;
 		// 法定内
 		if (statutoryAtr.isStatutory()) {
 			if (this.withinWorkingTimeSheet.isPresent()) {
 				// 就業時間帯から控除時間を取得
-				deductMinutes += this.withinWorkingTimeSheet.get()
-						.getDeductionTime(conditionAtr, dedAtr, roundAtr).valueAsMinutes();
+				withinDeduct = this.withinWorkingTimeSheet.get().getDeductionTime(conditionAtr, dedAtr, goOutSet);
 			}
 		}
 		// 法定外
 		else if (statutoryAtr.isExcess()) {
 			if (this.outsideWorkTimeSheet.isPresent()) {
 				// 残業時間帯から控除時間を取得
-				deductMinutes += this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromOverTime(conditionAtr, dedAtr, roundAtr).valueAsMinutes();
+				overTimeDeduct = this.outsideWorkTimeSheet.get()
+						.getDeductionTimeFromOverTime(conditionAtr, dedAtr, goOutSet);
 				// 休出時間帯から控除時間を取得
-				deductMinutes += this.outsideWorkTimeSheet.get()
-						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, roundAtr).valueAsMinutes();
+				holidayWorkDeduct = this.outsideWorkTimeSheet.get()
+						.getDeductionTimeFromHolidayWork(conditionAtr, dedAtr, goOutSet);
 			}
 		}
-		// 丸め区分を取得
-		if (roundAtr == TimeSheetRoundingAtr.ALL){
-			// 丸め処理（合算丸め区分を使用）
-			if (sumRoundSet.isPresent()){
-				deductMinutes = sumRoundSet.get().round(deductMinutes);
+		if(withinDeduct.greaterThan(AttendanceTime.ZERO) && goOutSet.isPresent()) {
+			Optional<TimeRoundingSetting> withinRoundSet = goOutSet.get().getAfterTotal(ActualWorkTimeSheetAtr.WithinWorkTime, conditionAtr, dedAtr);
+			if(withinRoundSet.isPresent()){
+				withinDeduct = new AttendanceTime(withinRoundSet.get().round(withinDeduct.valueAsMinutes()));
 			}
 		}
+		if(overTimeDeduct.greaterThan(AttendanceTime.ZERO) && goOutSet.isPresent()) {
+			Optional<TimeRoundingSetting> overTimeRoundSet = goOutSet.get().getAfterTotal(ActualWorkTimeSheetAtr.OverTimeWork, conditionAtr, dedAtr);
+			if(overTimeRoundSet.isPresent()){
+				overTimeDeduct = new AttendanceTime(overTimeRoundSet.get().round(overTimeDeduct.valueAsMinutes()));
+			}
+		}
+		if(holidayWorkDeduct.greaterThan(AttendanceTime.ZERO) && goOutSet.isPresent()) {
+			Optional<TimeRoundingSetting> holidayWorkRoundSet = goOutSet.get().getAfterTotal(ActualWorkTimeSheetAtr.HolidayWork, conditionAtr, dedAtr);
+			if(holidayWorkRoundSet.isPresent()){
+				holidayWorkDeduct = new AttendanceTime(holidayWorkRoundSet.get().round(holidayWorkDeduct.valueAsMinutes()));
+			}
+		}
+		AttendanceTime total = AttendanceTime.ZERO;
+		total = total
+				.addMinutes(withinDeduct.valueAsMinutes())
+				.addMinutes(overTimeDeduct.valueAsMinutes())
+				.addMinutes(holidayWorkDeduct.valueAsMinutes());
 		// 控除時間を返す
-		return TimeWithCalculation.sameTime(new AttendanceTime(deductMinutes));
+		return TimeWithCalculation.sameTime(total);
 	}
 
 	/**

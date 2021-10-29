@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutRound;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGoout;
@@ -45,15 +45,14 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento#
-	 * getTotalRoundingSet()
+	 * getRoundingMethod()
 	 */
 	@Override
-	public TotalRoundingSet getTotalRoundingSet() {
+	public GoOutTimeRoundingMethod getRoundingMethod() {
 		if (this.kshmtWorktimeGoOutSet == null) {
 			return null;
 		}
-		return new TotalRoundingSet(this.kshmtWorktimeGoOutSet.getRoundingSameFrame(),
-				this.kshmtWorktimeGoOutSet.getRoundingCrossFrame());
+		return GoOutTimeRoundingMethod.valueOf(this.kshmtWorktimeGoOutSet.getRoundingMethod());
 	}
 
 	/*

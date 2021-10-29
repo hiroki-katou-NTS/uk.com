@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -431,5 +432,38 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 		AttendanceTime time = autoCalcSet.getCalAtr().isCalculateEmbossing() ? this.getMidNightTimeSheet().calcTotalTime() : AttendanceTime.ZERO;
 		AttendanceTime calcTime = this.getMidNightTimeSheet().calcTotalTime();
 		return TimeDivergenceWithCalculation.createTimeWithCalculation(time, calcTime);
+	}
+
+	/**
+	 * 時間の計算
+	 * @param goOutSet 就業時間帯の外出設定
+	 * @return 控除後の時間
+	 */
+	public AttendanceTime calcTime(Optional<WorkTimezoneGoOutSet> goOutSet) {
+		AttendanceTime length = new AttendanceTime(this.timeSheet.lengthAsMinutes());
+		AttendanceTime deduct = this.calcDeductionTime(goOutSet);
+		AttendanceTime beforeRound = length.minusMinutes(deduct.valueAsMinutes());
+		AttendanceTime afterRound = new AttendanceTime(this.rounding.round(beforeRound.valueAsMinutes()));
+		return afterRound;
+	}
+
+	/**
+	 * 控除時間の計算
+	 * @param goOutSet 就業時間帯の外出設定
+	 * @return 控除時間
+	 */
+	public AttendanceTime calcDeductionTime(Optional<WorkTimezoneGoOutSet> goOutSet) {
+		AttendanceTime result = new AttendanceTime(0);
+		//休憩
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
+		//外出(私用)
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
+		//外出(組合)
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
+		//育児
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet).valueAsMinutes());
+		//介護
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet).valueAsMinutes());
+		return result;
 	}
 }

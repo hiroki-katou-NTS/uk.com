@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 
 /**
  * 所定内外出合計時間
@@ -54,19 +55,19 @@ public class WithinOutingTotalTime {
 	public static WithinOutingTotalTime calcCoreTimeSeparate(
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
-			TimeSheetRoundingAtr roundAtr,
+			Optional<WorkTimezoneGoOutSet> goOutSet,
 			GoingOutReason reason) {
 		
 		ConditionAtr conditionAtr = ConditionAtr.convertFromGoOutReason(reason);	// 控除種別区分
 		
 		// 所定内合計時間の計算
 		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
-				conditionAtr, dedAtr, StatutoryAtr.Statutory, roundAtr, Optional.empty());
+				conditionAtr, dedAtr, StatutoryAtr.Statutory, goOutSet);
 		// コア内の外出時間の計算
 		FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)oneDay.getWithinWorkingTimeSheet().get();
-		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, conditionAtr, dedAtr, roundAtr);
+		AttendanceTime withinFlex = changedFlexTimeSheet.calcOutingTimeInFlex(true, conditionAtr, dedAtr, goOutSet);
 		// コア外外出時間の計算
-		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, conditionAtr, dedAtr, roundAtr);
+		AttendanceTime excessFlex = changedFlexTimeSheet.calcOutingTimeInFlex(false, conditionAtr, dedAtr, goOutSet);
 		// 外出合計時間を返す
 		return WithinOutingTotalTime.of(
 				withinDedTime,
@@ -85,13 +86,13 @@ public class WithinOutingTotalTime {
 	public static WithinOutingTotalTime calcCoreTimeNotSeparate(
 			CalculationRangeOfOneDay oneDay,
 			DeductionAtr dedAtr,
-			TimeSheetRoundingAtr roundAtr,
+			Optional<WorkTimezoneGoOutSet> goOutSet,
 			GoingOutReason reason) {
 		
 		// 所定内合計時間の計算
 		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
 				ConditionAtr.convertFromGoOutReason(reason),
-				dedAtr, StatutoryAtr.Statutory, roundAtr, Optional.empty());
+				dedAtr, StatutoryAtr.Statutory, goOutSet);
 		// 外出合計時間を返す（コア外に全て入れる）
 		return WithinOutingTotalTime.of(
 				withinDedTime,

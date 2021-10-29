@@ -10,12 +10,12 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 public interface WorkTimezoneGoOutSetGetMemento {
 
 	/**
-	 * Gets the total rounding set.
+	 * Gets the rounding method.
 	 *
-	 * @return the total rounding set
+	 * @return the rounding method
 	 */
-	//合計丸め設定
-	 TotalRoundingSet getTotalRoundingSet();
+	//丸め設定
+	 GoOutTimeRoundingMethod getRoundingMethod();
 
 	/**
 	 * Gets the diff timezone setting.

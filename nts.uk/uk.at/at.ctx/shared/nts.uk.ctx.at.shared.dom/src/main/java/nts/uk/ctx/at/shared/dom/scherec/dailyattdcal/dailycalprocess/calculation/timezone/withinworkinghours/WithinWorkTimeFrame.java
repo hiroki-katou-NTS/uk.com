@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
@@ -262,7 +263,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		Optional<LeaveEarlyDecisionClock> leaveEarlyDecisionClock =
 				parentSheet.getLeaveEarlyDecisionClock(this.workingHoursTimeNo.v());
 		// 就業時間の計算
-		AttendanceTime actualTime = calcActualTime(holidayCalcMethodSet,premiumAtr);
+		AttendanceTime actualTime = calcActualTime(holidayCalcMethodSet, premiumAtr, commonSetting.map(c -> c.getGoOutSet()));
 		// 実働時間を就業時間に入れる
 		AttendanceTime workTime = new AttendanceTime(actualTime.valueAsMinutes());
 		// 遅刻、早退時間を就業時間から控除
@@ -384,37 +385,37 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * 実働時間を計算する
 	 * @return　実働時間
 	 */
-	public AttendanceTime calcActualTime(HolidayCalcMethodSet holidayCalcMethodSet,PremiumAtr premiumAtr) {
+	public AttendanceTime calcActualTime(HolidayCalcMethodSet holidayCalcMethodSet ,PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		//開始～終了の間の時間を計算する
 		AttendanceTime result = new AttendanceTime(this.beforeLateEarlyTimeSheet.getTimeSpan().lengthAsMinutes());
 		//控除時間を控除する
-		result =  result.minusMinutes(this.calcDeductionTime(holidayCalcMethodSet, premiumAtr).valueAsMinutes());
+		result =  result.minusMinutes(this.calcDeductionTime(holidayCalcMethodSet, premiumAtr, goOutSet).valueAsMinutes());
 		//丸め処理
 		result = new AttendanceTime(this.rounding.round(result.valueAsMinutes()));
 		return result;
 	}
 	
 	//控除時間の計算
-	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet,PremiumAtr premiumAtr) {
+	public AttendanceTime calcDeductionTime(HolidayCalcMethodSet holidayCalcMethodSet, PremiumAtr premiumAtr, Optional<WorkTimezoneGoOutSet> goOutSet) {
 		AttendanceTime result = new AttendanceTime(0);
 		//休憩
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.BREAK, goOutSet).valueAsMinutes());
 		//外出(私用)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.PrivateGoOut, goOutSet).valueAsMinutes());
 		//外出(組合)
-		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.UnionGoOut).valueAsMinutes());
+		result = result.addMinutes(((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.UnionGoOut, goOutSet).valueAsMinutes());
 		//短時間
 		AttendanceTime shortTime = new AttendanceTime(0);
 		//介護
 		AttendanceTime careTime = new AttendanceTime(0);
 		//短時間勤務を控除するか判断
 		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
 		}
 		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isCalculateIncludCareTime()) {
-			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
-			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child, goOutSet);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care, goOutSet);
 		}
 		result = result.addMinutes(shortTime.valueAsMinutes());
 		result = result.addMinutes(careTime.valueAsMinutes());
@@ -645,12 +646,19 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		// 控除時間帯の登録
 		this.registDeductionList(ActualWorkTimeSheetAtr.WithinWorkTime, deductTimeSheet, commonSet);
 		this.timeSheet = afterDeduct;
+		// 控除時間帯を作り直す
+		DeductionTimeSheet recreated = new DeductionTimeSheet(
+				this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList()),
+				this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList()),
+				deductTimeSheet.getBreakTimeOfDailyList(),
+				deductTimeSheet.getDailyGoOutSheet(),
+				deductTimeSheet.getShortTimeSheets());
 		// 保持する控除時間帯を取得（計上用）
 		List<TimeSheetOfDeductionItem> recordList = WithinWorkTimeFrame.getDeductSheetForSave(
-				this.beforeLateEarlyTimeSheet, this.timeSheet, deductTimeSheet, DeductionAtr.Appropriate);
+				this.beforeLateEarlyTimeSheet, this.timeSheet, recreated, DeductionAtr.Appropriate);
 		// 保持する控除時間帯を取得（控除用）
 		List<TimeSheetOfDeductionItem> deductList = WithinWorkTimeFrame.getDeductSheetForSave(
-				this.beforeLateEarlyTimeSheet, this.timeSheet, deductTimeSheet, DeductionAtr.Deduction);
+				this.beforeLateEarlyTimeSheet, this.timeSheet, recreated, DeductionAtr.Deduction);
 		// 控除時間帯リストを入れ替える
 		this.recordedTimeSheet = recordList;
 		this.deductionTimeSheet = deductList;
