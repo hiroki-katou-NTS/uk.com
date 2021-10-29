@@ -61,25 +61,26 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                     vm.currentIds(data.workplaceGroupIds || []);
                 }
             });
-            vm.getAllSetting();
-        }
-
-        mounted() {
-            $("#A1_1").focus();
+            vm.getAllSetting().then(() => {
+                if (vm.outputItems().length == 0) $("#A4_4").focus();
+                else $("#A1_1").focus();
+            });
         }
 
         getAllSetting(code?: string) {
-            const vm = this;
+            const vm = this, dfd = $.Deferred();
             vm.$blockui("show");
             vm.$ajax(API.getAllSetting).done(settings => {
                 vm.outputItems(settings || []);
                 if (code) vm.selectedOutputItemCode(code);
+                dfd.resolve();
             }).fail(error => {
                 vm.$dialog.error(error);
+                dfd.reject();
             }).always(() => {
                 vm.$blockui("hide");
-                if (vm.outputItems().length == 0) $("#A4_4").focus();
             });
+            return dfd.promise();
         }
 
         exportExcel() {
