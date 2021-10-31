@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
@@ -41,25 +42,12 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 	@Inject
 	private GetTargetTime getTargetTime;
 	
-	@Inject
-	private OuenWorkTimeSheetOfDailyRepo ouenSheetRepo;
-	
-	@Inject
-	private OuenWorkTimeOfDailyRepo ouenTimeRepo;
-	
-	@Inject
-	private EditStateOfDailyPerformanceRepository esRepo;
-	
 	@Override
 	protected RegisterWorkContentDto handle(CommandHandlerContext<RegisterWorkContentCommand> context) {
 		
 		RegisterWorkContentCommand command = context.getCommand();
 		
 		
-		//xoa co dinh No1 
-		
-//		this.ouenSheetRepo.removePK(command.getEmployeeId(), GeneralDate.today(), 1);
-//		this.ouenTimeRepo.removePK(command.getEmployeeId(), GeneralDate.today(), 1);
 		
 		RegisterWorkContentDto result = new RegisterWorkContentDto();
 		// 1. 実績登録パラメータを作成する
@@ -70,6 +58,10 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		//throw business
 		// 2. 修正した実績を登録する
 		DataResultAfterIU dataResult = this.dailyModifyRCommandFacade.insertItemDomain(dataParent);
+		
+		if (!dataResult.getMessageAlert().equals("Msg_15")) {
+			throw new BusinessException(dataResult.getMessageAlert());
+		}
 		
 		// 3. 作業時間帯グループを登録する
 		
