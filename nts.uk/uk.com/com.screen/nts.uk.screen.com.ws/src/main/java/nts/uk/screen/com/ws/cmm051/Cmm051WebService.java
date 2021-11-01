@@ -36,6 +36,6 @@ public class Cmm051WebService extends WebService {
     @Path("get-data-init/employee-mode")
     @POST
     public EmployeeInfoAndWorkplaceInfoDto getListInformation(List<String> sids){
-        employeeModeScreenQuery.getListInformation(sids);
+       return employeeModeScreenQuery.getListInformation(sids);
     }
 }
