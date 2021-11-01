@@ -99,7 +99,7 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
 		
 		List<TaskTimeZone> timezones = new ArrayList<>();
-		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new SupportFrameNo(1)));
+		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new ArrayList<>(Arrays.asList(new SupportFrameNo(1)))));
 		
 		//if not $作業時間帯グループ.isEmpty
 		TaskTimeGroup group = new TaskTimeGroup(sId, date, timezones);
@@ -141,7 +141,7 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
 		
 		List<TaskTimeZone> timezones = new ArrayList<>();
-		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new SupportFrameNo(1)));
+		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new ArrayList<>(Arrays.asList(new SupportFrameNo(1)))));
 		
 		//if not $作業時間帯グループ.isEmpty
 		TaskTimeGroup group = new TaskTimeGroup(sId, date, timezones);
@@ -183,7 +183,7 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
 		
 		List<TaskTimeZone> timezones = new ArrayList<>();
-		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new SupportFrameNo(1)));
+		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new ArrayList<>(Arrays.asList(new SupportFrameNo(1)))));
 		
 		//if not $作業時間帯グループ.isEmpty
 		TaskTimeGroup group = new TaskTimeGroup(sId, date, timezones);
@@ -225,7 +225,7 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, new ArrayList<>());
 		
 		List<TaskTimeZone> timezones = new ArrayList<>();
-		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new SupportFrameNo(1)));
+		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new ArrayList<>(Arrays.asList(new SupportFrameNo(1)))));
 		
 		//if not $作業時間帯グループ.isEmpty
 		TaskTimeGroup group = new TaskTimeGroup(sId, date, timezones);
