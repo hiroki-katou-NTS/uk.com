@@ -214,11 +214,18 @@ export class Ccg008AComponent extends Vue {
         if (yearlyHld && yearlyHld.nextTimeInfo) {
             let timeRemain = (yearlyHld.nextTimeInfo.hours.hours) * 60 + yearlyHld.nextTimeInfo.hours.min;
             if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
-                results.push({
-                    name:'KTG029_23', 
-                    value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), vm.getFormatTime(timeRemain)])
-                }); 
-            }
+                    if (timeRemain) {
+                        results.push({
+                            name:'KTG029_23', 
+                            value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), vm.getFormatTime(timeRemain)])
+                        }); 
+                    } else {
+                        results.push({
+                            name:'KTG029_23', 
+                            value: vm.$i18n('CCGS08_36', [yearlyHld.nextTimeInfo.day.toString()])
+                        });
+                    }
+                }
         }
         // next grantDate
         if (vacationSetting.annualManage) {
