@@ -26,6 +26,8 @@ import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.PaperSizeType;
+import com.aspose.cells.PasteOptions;
+import com.aspose.cells.PasteType;
 import com.aspose.cells.Range;
 import com.aspose.cells.Style;
 import com.aspose.cells.TextAlignmentType;
@@ -229,6 +231,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant REPORT_ROW_START_RIGHT_COUNT. */
 	private static final int REPORT_ROW_START_RIGHT_COUNT = 1;
+	
+	private static final int BLANK_ROW_INDEX = 7;
+	private static final int FIRST_DATA_ROW_INDEX = 10;
 
 	/** The Constant EXPORT_EXCEL. */
 	private static final int EXPORT_EXCEL = 2;
@@ -690,51 +695,57 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		
 		// if case next page: copy monthly header
 		if (startNewPage > 0) {
+			PasteOptions opts = new PasteOptions();
+			opts.setPasteType(PasteType.ALL);
 			// copy monthly header 
 			Range fixMonthyHeader = worksheet.getCells().createRange(monthlyTitleFix);
 			Range monthTitleRange = worksheet.getCells().createRange(String.format(monthlyDataAddr,
 					(startNewPage + MONTHLY_TITLE_START_ROW), (startNewPage + MONTHLY_TITLE_START_ROW + 1)));
 			monthTitleRange.copyData(fixMonthyHeader);
-			monthTitleRange.copy(fixMonthyHeader);
+			monthTitleRange.copy(fixMonthyHeader, opts);
 			
 			// copy layout content monthly 
 			Range fixMonthyLayoutContent = worksheet.getCells().createRange(monthlyContentFix); 
-			monththDataRange.copy(fixMonthyLayoutContent);
+			monththDataRange.copy(fixMonthyLayoutContent, opts);
 			
 			// copy lai KWR002_221 月間累計
 			Range fixCumulativeTotal = worksheet.getCells().createRange(MONTHLY_CUMULATIVE_TOTAL_FIX);
 			Range monthCumulativeRange = worksheet.getCells().createRange(String.format(REPORT_CUMULATIVE_FIX,
 					(startNewPage + MONTHLY_TITLE_START_ROW), (startNewPage + MONTHLY_TITLE_START_ROW + 3)));
-			monthCumulativeRange.copy(fixCumulativeTotal);
+			monthCumulativeRange.copy(fixCumulativeTotal, opts);
 			monthCumulativeRange.copyData(fixCumulativeTotal);
 			
 			// copy daily header left
 			Range fixLeftDailyHeader = worksheet.getCells().createRange(dailyTitelFixLeft);
 			Range leftDailyTitleRange = worksheet.getCells().createRange(String.format(reportLeftColAddr,
 					(startNewPage + DAILY_TITLE_START_ROW), (startNewPage + DAILY_TITLE_START_ROW + 1)));
-			leftDailyTitleRange.copy(fixLeftDailyHeader);
+			leftDailyTitleRange.copy(fixLeftDailyHeader, opts);
 			leftDailyTitleRange.copyData(fixLeftDailyHeader);
 			
 			// copy daily header right 
 			Range fixRightDailyHeader = worksheet.getCells().createRange(dailyTitleFixRight);
 			Range rightDailyTitleRange = worksheet.getCells().createRange(String.format(reportRightColAddr,
 					(startNewPage + DAILY_TITLE_START_ROW), (startNewPage + DAILY_TITLE_START_ROW + 1)));
-			rightDailyTitleRange.copy(fixRightDailyHeader);
+			rightDailyTitleRange.copy(fixRightDailyHeader, opts);
 			rightDailyTitleRange.copyData(fixRightDailyHeader);
 			
 			// copy seal range 
 			Range fixSealRange = worksheet.getCells().createRange(sealRangeCopyFix);
 			Range sealRangeCopylayout = worksheet.getCells().createRange(String.format(sealRangeCopy,
 					(startNewPage + START_EMPLOYEE_DATA_ROW), (startNewPage + START_EMPLOYEE_DATA_ROW + 3)));
-			sealRangeCopylayout.copy(fixSealRange);
+			sealRangeCopylayout.copy(fixSealRange, opts);
 			sealRangeCopylayout.copyData(fixSealRange);
 			
 			// copy approval - copy dau xac nhan - monthly display mark
 			Range fixApprovalRange  = worksheet.getCells().createRange(reportApproval);
 			Range approvalCopy = worksheet.getCells().createRange(String.format(rangeApprovalCopy,
 					(startNewPage + APPROVAL_START_ROW), (startNewPage + APPROVAL_START_ROW)));
-			approvalCopy.copy(fixApprovalRange);
+			approvalCopy.copy(fixApprovalRange, opts);
 			approvalCopy.copyData(fixApprovalRange);
+			
+			// copy blank row
+			double blankRowHeight = worksheet.getCells().getRowHeight(BLANK_ROW_INDEX);
+			worksheet.getCells().setRowHeight(startNewPage + BLANK_ROW_INDEX, blankRowHeight);
 		} 
 		// fill data monthly column
 		List<AttendanceRecordReportColumnData> monthLyData = employeeData.getEmployeeMonthlyData();
@@ -872,6 +883,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		}
 		List<AttendanceRecordReportDailyData> dailyDatas = weeklyData.getDailyDatas();
 		boolean isWhiteBackground = dataRow.get(REPORT_ROW_BG) == REPORT_ROW_BG_WHITE;
+		double dataRowHeight = worksheet.getCells().getRowHeight(FIRST_DATA_ROW_INDEX);
 		for (int i = 1, j = dailyDatas.size(); i <= j; i++) {
 			Range dailyRange;
 			AttendanceRecordReportDailyData data = dailyDatas.get(i - 1);
@@ -896,6 +908,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 				dataRow.put(REPORT_RIGHT_ROW, row + 2);
 			}
+			dailyRange.setRowHeight(dataRowHeight);
 
 			// fill data data
 			dailyRange.get(0, 0).setValue(data.getDate());
@@ -980,6 +993,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		Cell cell = cells.get(startRow, startCol);
 		Style style = cell.getStyle();
 		style.setShrinkToFit(true);
+		style.setHorizontalAlignment(TextAlignmentType.LEFT);
+		style.setVerticalAlignment(TextAlignmentType.CENTER);
 		cell.setStyle(style);
 	}
 }
