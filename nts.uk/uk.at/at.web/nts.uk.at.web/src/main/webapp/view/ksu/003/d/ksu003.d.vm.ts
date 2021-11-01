@@ -41,8 +41,8 @@ module nts.uk.at.view.ksu003.d {
                 new RangeModel('8', 8),
                 new RangeModel('9', 9),
                 new RangeModel('10', 10),
-                new RangeModel('10', 11),
-                new RangeModel('10', 12)
+                new RangeModel('11', 11),
+                new RangeModel('12', 12)
             ]);
             vm.dataFromA = {
                 targetOrg: null,
