@@ -287,6 +287,13 @@ module nts.uk.at.view.kmk002.a {
                 //         $('#inp-upper-time-month').ntsError('clear');
                 //     }
                 })
+
+                this.enableUnit.subscribe(value => {
+                    if (value) {
+                        this.calcResultRange.upperCheck(false);
+                        this.calcResultRange.lowerCheck(false);
+                    }
+                });
             }
 
             /**
@@ -1019,13 +1026,20 @@ module nts.uk.at.view.kmk002.a {
                 dto.note = self.note();
                 dto.description = self.description();
                 dto.inputCheck = self.selectedClac() == 0 && self.performanceAtr() == 1 && self.optionalItemAtr() == 1 && self.enableUnit();
-
+                if (dto.inputCheck) {
+                    dto.calcResultRange.upperCheck = true;
+                    dto.calcResultRange.lowerCheck = true;
+                    dto.calcResultRange.numberRange.dailyNumberRange.lowerLimit = 0;
+                    dto.calcResultRange.numberRange.dailyNumberRange.upperLimit = 1;
+                    dto.calcResultRange.numberRange.monthlyNumberRange.lowerLimit = null;
+                    dto.calcResultRange.numberRange.monthlyNumberRange.upperLimit = null;
+                }
                 switch(self.optionalItemAtr()) {
                     case 0:
                         if (self.selectedClac() == 1) dto.calcResultRange.timeInputUnit = 0;
                         break;
                     case 1:
-                        if (self.selectedClac() == 1) dto.calcResultRange.numberInputUnit = 3;
+                        if (dto.inputCheck) dto.calcResultRange.numberInputUnit = 3;
                         break;
                     case 2:
                         if (self.selectedClac() == 1) dto.calcResultRange.amountInputUnit = 0;
@@ -1053,7 +1067,7 @@ module nts.uk.at.view.kmk002.a {
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
                 self.unit(dto.unit);
-                self.calcResultRange.fromDto(dto.calcResultRange);
+                self.calcResultRange.fromDto(dto.calcResultRange, dto.inputCheck);
                 self.selectedClac(dto.calAtr);
                 self.note(dto.note);
                 self.description(dto.description);
@@ -1479,13 +1493,13 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Convert dto to view model
              */
-            public fromDto(dto: any): void {
+            public fromDto(dto: any, inputCheck: boolean): void {
                 let self = this;
-                self.upperCheck(dto.upperCheck);
-                self.lowerCheck(dto.lowerCheck);
+                self.upperCheck(inputCheck ? false : dto.upperCheck);
+                self.lowerCheck(inputCheck ? false : dto.lowerCheck);
 
-                self.numberUpperDay(dto.numberRange.dailyNumberRange.upperLimit);
-                self.numberLowerDay(dto.numberRange.dailyNumberRange.lowerLimit);
+                self.numberUpperDay(inputCheck ? null : dto.numberRange.dailyNumberRange.upperLimit);
+                self.numberLowerDay(inputCheck ? null : dto.numberRange.dailyNumberRange.lowerLimit);
                 self.timeUpperDay(dto.timeRange.dailyTimeRange.upperLimit);
                 self.timeLowerDay(dto.timeRange.dailyTimeRange.lowerLimit);
                 self.amountUpperDay(dto.amountRange.dailyAmountRange.upperLimit);
@@ -1829,7 +1843,7 @@ module nts.uk.at.view.kmk002.a {
 
                         // show message save successful
                         nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-
+                        self.selectedCode.valueHasMutated();
                         dfd.resolve();
                     })
                     .fail(res => nts.uk.ui.dialog.bundledErrors(res))
