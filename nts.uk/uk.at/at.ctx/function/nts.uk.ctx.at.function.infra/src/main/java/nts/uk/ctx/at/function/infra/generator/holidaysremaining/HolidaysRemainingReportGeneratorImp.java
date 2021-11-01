@@ -3957,7 +3957,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         // D2_6 +D2_4: EMPLOYMENT CODE +EMPLOYMENT NAME
         cells.merge(firstRow + 2, 0, 1, 2, true);
         cells.get(firstRow + 2, 0).setValue(d2_6);
-        GeneralDate criteriaDate = GeneralDate.today();
+        //GeneralDate criteriaDate = GeneralDate.today();
         // D2_3 No.369
         if (isDisplayHolidayYear) {
             if (grantDate.isPresent()) {
@@ -3970,7 +3970,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             cells.merge(firstRow + 4, 0, 1, 2, true);
             String yearHoliday = "0.0";
-             AnnualLeaveUsedDayNumber yearHolidayDate = findAnnLeaUsedDaysAdapter.findUsedDays(employee.getEmployeeId(),criteriaDate);
+             AnnualLeaveUsedDayNumber yearHolidayDate = findAnnLeaUsedDaysAdapter.findUsedDays(employee.getEmployeeId());
              if(yearHolidayDate!=null){
                   yearHoliday = df.format(yearHolidayDate.v());
              }
