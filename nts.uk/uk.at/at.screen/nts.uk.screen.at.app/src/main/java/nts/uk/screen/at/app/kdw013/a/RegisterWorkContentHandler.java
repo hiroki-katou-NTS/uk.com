@@ -8,9 +8,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
-import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
-import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
@@ -67,8 +64,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		command.getWorkDetails().forEach(wd -> {
 
-			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(),
-					wd.toTimeZones());
+			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(), wd.toTimeZones());
 
 			this.handler.handle(cmd);
 		});

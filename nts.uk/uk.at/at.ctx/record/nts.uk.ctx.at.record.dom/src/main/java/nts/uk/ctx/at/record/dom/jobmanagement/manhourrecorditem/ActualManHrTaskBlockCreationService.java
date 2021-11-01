@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroup;
@@ -39,18 +40,15 @@ public class ActualManHrTaskBlockCreationService {
 
 		// if not $作業時間帯グループ.isEmpty
 		if (timeGroupOpt.isPresent()) {
-
-			// $作業時間帯グループ.時間帯リスト：
-			List<TaskTimeZone> timezones = timeGroupOpt.get().getTimezones();
-
 			// $作業詳細
 			List<ManHrTaskDetail> lstTaskDetail = new ArrayList<>();
-
-			for (TaskTimeZone t : timezones) {
+			// $作業時間帯グループ.時間帯リスト：
+			for (TaskTimeZone t : timeGroupOpt.get().getTimezones()) {
 
 				// $作業詳細 = 工数実績項目リスト：$2.応援勤務枠No.含む($1.対象応援勤務枠)
 				for (ManHrTaskDetail d : taskDetails) {
-					if (d.getSupNo().equals(t.getSupNo())) {
+					
+					if (t.getSupNos().stream().filter(sn-> sn.v().equals(d.getSupNo().v()) ).findFirst().isPresent()) {
 						lstTaskDetail.add(d);
 					}
 				}
@@ -62,18 +60,19 @@ public class ActualManHrTaskBlockCreationService {
 				taskBlocks.add(taskBlock);
 				
 				// 工数実績項目リスト = 工数実績項目リスト：except $作業詳細
-				taskDetails.removeAll(lstTaskDetail);
+				taskDetails = taskDetails
+						.stream().filter(x -> !lstTaskDetail.stream()
+								.filter(lt -> lt.getSupNo().v().equals(x.getSupNo().v())).findFirst().isPresent())
+						.collect(Collectors.toList());
 			}
 
 			// 工数実績項目リスト：
-			// $開始時刻
-			String startTime = "";
-
-			// $終了時刻
-			String endTime = "";
-
-			// 工数実績項目リスト：
 			for (ManHrTaskDetail d : taskDetails) {
+				// $開始時刻
+				String startTime = "";
+
+				// $終了時刻
+				String endTime = "";
 
 				for (TaskItemValue v : d.getTaskItemValues()) {
 
@@ -86,22 +85,20 @@ public class ActualManHrTaskBlockCreationService {
 					if (v.getItemId() == 2) {
 						endTime = v.getValue();
 					}
+				}
+				// if not ($開始時刻.isEmpty OR $終了時刻.isEmpty)
+				if (!(startTime.isEmpty() || endTime.isEmpty())) {
 
-					// if not ($開始時刻.isEmpty OR $終了時刻.isEmpty)
-					if (!(startTime.isEmpty() || endTime.isEmpty())) {
+					// $時間帯 = 計算用時間帯#計算用時間帯($開始時刻,$終了時刻)
+					TimeSpanForCalc timeSpanForCalc = new TimeSpanForCalc(
+							new TimeWithDayAttr(Integer.parseInt(startTime)),
+							new TimeWithDayAttr(Integer.parseInt(endTime)));
 
-						// $時間帯 = 計算用時間帯#計算用時間帯($開始時刻,$終了時刻)
-						TimeSpanForCalc timeSpanForCalc = new TimeSpanForCalc(
-								new TimeWithDayAttr(Integer.parseInt(startTime)),
-								new TimeWithDayAttr(Integer.parseInt(endTime)));
+					// $作業ブロック = 工数実績作業ブロック#工数実績作業ブロック($時間帯,$作業詳細)
+					ManHrPerformanceTaskBlock taskBlock = new ManHrPerformanceTaskBlock(timeSpanForCalc, taskDetails);
 
-						// $作業ブロック = 工数実績作業ブロック#工数実績作業ブロック($時間帯,$作業詳細)
-						ManHrPerformanceTaskBlock taskBlock = new ManHrPerformanceTaskBlock(timeSpanForCalc,
-								lstTaskDetail);
-
-						// $作業ブロックリスト.追加する($作業ブロック)
-						taskBlocks.add(taskBlock);
-					}
+					// $作業ブロックリスト.追加する($作業ブロック)
+					taskBlocks.add(taskBlock);
 				}
 			}
 		}

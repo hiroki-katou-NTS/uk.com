@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.timegroup;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
@@ -21,5 +23,5 @@ public class TaskTimeZone implements DomainValue {
 	private final TimeSpanForCalc caltimeSpan;
 
 	/** 対象応援勤務枠 */
-	private final SupportFrameNo supNo;
+	private final List<SupportFrameNo> supNos;
 }

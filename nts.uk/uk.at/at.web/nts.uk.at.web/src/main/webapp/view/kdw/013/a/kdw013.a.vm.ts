@@ -714,8 +714,6 @@ module nts.uk.ui.at.kdw013.a {
                     let listTaskDetails = [];
 
                     let  manHrContents = _.get(_.find(_.get(vm.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days')), 'manHrContents', []);
-
-                    
                     
                     _.forEach(_.filter(eventInday, e => _.get(e, 'extendedProps.isTimeBreak', false) == false), e => {
                         let {taskDetails} = _.get(e, 'extendedProps.taskBlock');
@@ -724,8 +722,8 @@ module nts.uk.ui.at.kdw013.a {
                             _.forEach(td.taskItemValues, ti => {
                                 const start = (moment(e.start).hour() * 60) + moment(e.start).minute();
                                 const end = (moment(e.end).hour() * 60) + moment(e.end).minute();
-                                if (ti.itemId == 1) { ti.value = start };
-                                if (ti.itemId == 2) { ti.value = end };
+                                if (ti.itemId == 1) { ti.value = taskDetails.length > 1 ? null : start };
+                                if (ti.itemId == 2) { ti.value = taskDetails.length > 1 ? null : end };
                                 if (taskDetails.length == 1) {
                                     if (ti.itemId == 3) { ti.value = end - start };
                                 }
@@ -808,55 +806,10 @@ module nts.uk.ui.at.kdw013.a {
                 mode,
                 workDetails
             };
-
-            vm
-                .$blockui('grayout')
-                // 作業を登録する
-                .then(() => vm.$ajax('at', API.REGISTER, command))
-                .then((response: RegisterWorkContentDto) => {
-                    vm.dataChanged(false);
-                    if (response) {
     
-                        const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;
-                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {
-                            return vm.$dialog
-                                .info({ messageId: 'Msg_15' })
-                                .then(() => lstOvertimeLeaveTime)
-                                .then(() => {vm.dataChanged(false);
-                                            vm.reLoad();
-                                })
-                        } else {
-
-                            let errors = lstErrorMessageInfo.map(x => {
-                                return {
-                                    message: x.messageError,
-                                    messageId: x.resourceID,
-                                    supplements: {}
-                                };
-                            });
-
-                            nts.uk.ui.dialog.bundledErrors({ errors });
-                        }
-                    }
-                    return $
-                        .Deferred()
-                        .resolve()
-                        .then(() => null);
-                })
-                .fail((response: ErrorMessage) => {
-                    const { messageId, parameterIds } = response;
-
-                    return vm.$dialog
-                        // Msg_2066, Msg_2080
-                        .error({ messageId, messageParams: parameterIds })
-                        .then(() => null);
-                })
-                .then((data: OvertimeLeaveTime[] | null) => {
-                    if (data && data.length) {
-                        vm.openDialogCaculationResult(data);
-                    }
-                })
-                .always(() => vm.$blockui('clear'));
+    
+            console.log(command);
+            vm                .$blockui('grayout')                 //作業を登録する                .then(() => vm.$ajax('at', API.REGISTER, command))                .then((response: RegisterWorkContentDto) => {                    vm.dataChanged(false);                    if (response) {                            const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {                            return vm.$dialog                                .info({ messageId: 'Msg_15' })                                .then(() => lstOvertimeLeaveTime)                                .then(() => {vm.dataChanged(false);                                            vm.reLoad();                                })                        } else {                            let errors = lstErrorMessageInfo.map(x => {                                return {                                    message: x.messageError,                                    messageId: x.resourceID,                                    supplements: {}                                };                            });                            nts.uk.ui.dialog.bundledErrors({ errors });                        }                    }                    return $                        .Deferred()                        .resolve()                        .then(() => null);                })                .fail((response: ErrorMessage) => {                    const { messageId, parameterIds } = response;                    return vm.$dialog                         Msg_2066, Msg_2080                        .error({ messageId, messageParams: parameterIds })                        .then(() => null);                })                .then((data: OvertimeLeaveTime[] | null) => {                    if (data && data.length) {                        vm.openDialogCaculationResult(data);                    }                })                .always(() => vm.$blockui('clear'));
         }
 
         // 日付を変更する
@@ -872,25 +825,32 @@ module nts.uk.ui.at.kdw013.a {
             let result = [];
 
             _.forEach(dates, date => {
-                const lstWorkDetailsParamCommand = _
+                const lstWorkDetailsParamCommand= []
+                
+                const eventHas2Task = _
                     .chain(vm.events())
                     .filter(({ start }) => moment(start).isSame(date, 'day'))
-                    .filter(({ extendedProps }) => _.get(extendedProps, 'taskBlock.taskDetails', []).length > 1)
-                    .map(({ start, end, extendedProps }) => {
-                        const {
-                            taskBlock,
-                            no
-                        } = extendedProps;
+                    .filter(({ extendedProps }) => _.get(extendedProps, 'taskBlock.taskDetails', []).length > 1).value();
+                    
+                _.forEach(eventHas2Task, ({ start, end, extendedProps }) => {
+                    const {
+                        taskBlock
+                    } = extendedProps;
+                    
+                    _.forEach(_.get(taskBlock, 'taskDetails',[]), td => {
 
-                        return {
-                            supportFrameNo: no,
+                        lstWorkDetailsParamCommand.push({
+                            supportFrameNo: td.supNo,
                             timeZone: {
                                 end: getTimeOfDate(end),
                                 start: getTimeOfDate(start)
                             }
-                        };
-                    })
-                    .value();
+                        });
+                    });
+                    
+                      
+                });
+                
                 if (lstWorkDetailsParamCommand.length) {
                     result.push({
                         date: moment(date).format(DATE_TIME_FORMAT),

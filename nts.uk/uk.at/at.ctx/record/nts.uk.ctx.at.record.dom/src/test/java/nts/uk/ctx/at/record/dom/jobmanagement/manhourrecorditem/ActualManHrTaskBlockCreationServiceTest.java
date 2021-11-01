@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +57,7 @@ public class ActualManHrTaskBlockCreationServiceTest {
 		DailyActualManHrActualTask expectedResult = new DailyActualManHrActualTask(date, taskBlocks);
 		
 		List<TaskTimeZone> timezones = new ArrayList<>();
-		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), new SupportFrameNo(1)));
+		timezones.add(new TaskTimeZone(new TimeSpanForCalc(new TimeWithDayAttr(10), new TimeWithDayAttr(20)), Arrays.asList(new SupportFrameNo(1)) ));
 		
 		//if not $作業時間帯グループ.isEmpty
 		TaskTimeGroup group = new TaskTimeGroup(sId, date, timezones);
