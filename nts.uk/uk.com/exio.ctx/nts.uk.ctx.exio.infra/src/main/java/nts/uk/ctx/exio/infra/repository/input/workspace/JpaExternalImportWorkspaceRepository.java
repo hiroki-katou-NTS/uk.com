@@ -21,7 +21,7 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 	@Override
 	public void setup(Require require, ExecutionContext context) {
 		
-		val workspace = WorkspaceSql.create(require, context, jdbcProxy());
+		val workspace = WorkspaceSql.create(require, context, jdbcProxy(), this.database().product());
 		
 		// 編集済み一時テーブル
 		workspace.createTableRevised();
