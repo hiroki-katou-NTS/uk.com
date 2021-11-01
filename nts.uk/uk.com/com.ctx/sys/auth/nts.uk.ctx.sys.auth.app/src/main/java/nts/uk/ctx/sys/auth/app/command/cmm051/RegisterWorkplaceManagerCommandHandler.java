@@ -37,7 +37,7 @@ public class RegisterWorkplaceManagerCommandHandler extends CommandHandler<Regis
             val oldDomain = oldDomainOpt.get();
             RequireImpl require = new RequireImpl(empCompanyHistoryAdapter, workplaceManagerRepository);
             DatePeriod historyPeriod = new DatePeriod(command.getStartDate(), command.getEndDate());
-            oldDomain.setHistoryPeriod(historyPeriod);
+            //oldDomain.setHistoryPeriod(historyPeriod);
             AtomTask task = RegisterWorkplaceManagerService.changePeriod(require,oldDomain);
             transaction.execute(task);
         }
