@@ -6,6 +6,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
+import nts.gul.error.FatalLog;
 import nts.gul.file.FileUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.shr.com.context.AppContexts;
@@ -167,7 +168,7 @@ public class DefaultStoredFileStreamService implements StoredFileStreamService {
 			try {
 				Files.createDirectory(pathByTenant);
 			} catch (IOException e) {
-				throw new RuntimeException("フォルダ作成に失敗：" + pathByTenant.toString());
+				FatalLog.write(DefaultStoredFileStreamService.class, "フォルダ作成に失敗：" + pathByTenant.toString());
 			}
 		}
 

@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 
 import lombok.val;
 import nts.arc.layer.infra.data.EntityManagerLoader;
+import nts.gul.error.FatalLog;
 import nts.gul.reflection.ReflectionUtil;
 
 @ApplicationScoped
@@ -54,7 +55,7 @@ public class CloudEntityManagerLoader implements EntityManagerLoader{
     	String datasourceName = TenantLocatorService.getConnectedDataSource();
     	EntityManager em = entityManagersMap.get(datasourceName);
     	if (em == null) {
-    		throw new RuntimeException("データソースに一致するマネージャが見つかりませんでした。");
+			throw FatalLog.writeThenException(this, "データソースに一致するマネージャが見つかりませんでした: " + datasourceName);
     	}
     	return em;
     }
