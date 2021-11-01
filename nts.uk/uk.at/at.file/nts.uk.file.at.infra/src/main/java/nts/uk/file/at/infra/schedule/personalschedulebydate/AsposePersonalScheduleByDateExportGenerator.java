@@ -5,7 +5,6 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -123,21 +122,21 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         // Header C:
         cells.get(6, 0).setValue(getText("KSU003_159"));      // C1_1
         if (!isDoubleWorkDisplay) {      //２回勤務表示 = 非表示
-            cells.get(6, 1).setValue(getText("KSU003_165"));  // C2_2_1
-            cells.get(6, 2).setValue(getText("KSU003_166"));  // C2_2_2
-            cells.get(6, 3).setValue(getText("KSU003_167"));  // C2_2_3
-            cells.get(6, 4).setValue(getText("KSU003_168"));  // C2_2_4
-            cells.get(6, 5).setValue(getText("KSU003_169"));  // C2_2_5
-            cells.get(6, 6).setValue(getText("KSU003_170"));  // C2_2_6
+            cells.get(6, 1).setValue(charBreak(getText("KSU003_165"), 2));  // C2_2_1
+            cells.get(6, 2).setValue(charBreak(getText("KSU003_166"), 2));  // C2_2_2
+            cells.get(6, 3).setValue(charBreak(getText("KSU003_167"), 2));  // C2_2_3
+            cells.get(6, 4).setValue(charBreak(getText("KSU003_168"), 2));  // C2_2_4
+            cells.get(6, 5).setValue(charBreak(getText("KSU003_169"), 2));  // C2_2_5
+            cells.get(6, 6).setValue(charBreak(getText("KSU003_170"), 2));  // C2_2_6
         } else {                         //２回勤務表示 = 表示
-            cells.get(6, 1).setValue(getText("KSU003_171"));  // C2_3_1
-            cells.get(6, 2).setValue(getText("KSU003_172"));  // C2_3_2
-            cells.get(6, 3).setValue(getText("KSU003_173"));  // C2_3_3
-            cells.get(6, 4).setValue(getText("KSU003_174"));  // C2_3_4
+            cells.get(6, 1).setValue(charBreak(getText("KSU003_171"), 2));  // C2_3_1
+            cells.get(6, 2).setValue(charBreak(getText("KSU003_172"), 2));  // C2_3_2
+            cells.get(6, 3).setValue(charBreak(getText("KSU003_173"), 2));  // C2_3_3
+            cells.get(6, 4).setValue(charBreak(getText("KSU003_174"), 2));  // C2_3_4
             cells.get(7, 3).setValue(getText("KSU003_175"));  // C2_3_5
             cells.get(7, 4).setValue(getText("KSU003_176"));  // C2_3_6
-            cells.get(6, 5).setValue(getText("KSU003_177"));  // C2_3_7
-            cells.get(6, 6).setValue(getText("KSU003_178"));  // C2_3_8
+            cells.get(6, 5).setValue(charBreak(getText("KSU003_177"), 2));  // C2_3_7
+            cells.get(6, 6).setValue(charBreak(getText("KSU003_178"), 2));  // C2_3_8
         }
 
         // Set style by each column
@@ -225,7 +224,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
 //            if (graphVacationDisplay) {
                 // C3_2_1
-                System.out.println("C3_2_1");
                 if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
                     val shape1a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape1a.getColumn() != null) {
@@ -241,7 +239,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_4
-                System.out.println("C3_2_4");
                 if (item.getWorkType().equals(WorkTimeForm.FLOW.value)) {
                     val shape4a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape4a.getColumn() != null) {
@@ -257,7 +254,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_5
-                System.out.println("C3_2_5");
                 if (item.getWorkType().equals(WorkTimeForm.FLEX.value)) {
                     val shape5 = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
                     if (shape5.getColumn() != null) {
@@ -274,7 +270,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_3
-                System.out.println("C3_2_3");
                 if (!item.getOverTimeList().isEmpty()) {
                     for (ChangeableWorkTimeDto overTime : item.getOverTimeList()) {
                         TimeCheckedDto timeChecked = validateTime(graphStartTime, overTime.getStartTime(), overTime.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()),
@@ -289,7 +284,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_2
-                System.out.println("C3_2_2");
                 if (!item.getBreakTimeList().isEmpty()) {
                     val breakTimeList = item.getBreakTimeList();
                     for (BreakTimeSheet breakTime : breakTimeList) {
@@ -305,7 +299,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_8
-                System.out.println("C3_2_8");
                 if (!item.getChildCareShortTimeList().isEmpty()) {
                     for (val time : item.getChildCareShortTimeList()) {
                         val shape8 = calculateConvertToShape(pixelOfColumn, graphStartTime, time.getStartTime(), time.getEndTime());
@@ -316,7 +309,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_7
-                System.out.println("C3_2_7");
                 if (!item.getListTimeVacationAndType().isEmpty()) {
                     for (val timeVacation : item.getListTimeVacationAndType()) {
                         for (val time : timeVacation.getTimeVacation().getTimeZone()) {
@@ -575,20 +567,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         return new TimeRangeLimitDto(startTime, endTime);
     }
 
-    private TimeRangeLimitDto checkRangeBreakTime(List<TimeSpanForCalcDto> timeSpanForCalcList, TimeRangeLimitDto fixedTime) {
-        TimeRangeLimitDto timeRange = new TimeRangeLimitDto(0, 9999);
-        for (val item : timeSpanForCalcList) {
-            if (item.getStart() > fixedTime.getMaxLimit()) {
-                timeRange.setMaxLimit(item.getStart());
-            }
-            if (item.getEnd() < fixedTime.getMinLimit()) {
-                timeRange.setMinLimit(item.getEnd());
-            }
-        }
-
-        return timeRange;
-    }
-
     /**
      * Convert to hour + minute
      *
@@ -758,7 +736,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
     private boolean isInRange(int i, int minValueInclusive, int maxValueInclusive) {
         return (i >= minValueInclusive && i <= maxValueInclusive);
-//        return (i < minValueInclusive && i > maxValueInclusive);
     }
 
     private boolean isOverlap(int startTime, int endTime, int minValue, int maxValue) {
@@ -767,6 +744,15 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 //        return (IntStream.rangeClosed(minValue, maxValue).anyMatch(n -> n == startTime)) || (IntStream.rangeClosed(minValue, maxValue).anyMatch(n -> n == endTime));
 
         return startTime <= maxValue && minValue <= endTime;
+    }
+
+    private String charBreak(String source, int charNumBreak) {
+        StringBuilder destination = new StringBuilder();
+        for (int i = 1; i <= source.length(); i++) {
+            destination.append(source.charAt(i - 1));
+            if (i == charNumBreak) destination.append("\n");
+        }
+        return destination.toString();
     }
 
     private void printB5(Cells cells, List<SpecificName> specDayCompanies, List<SpecificName> specDayWorkplaces) {
