@@ -25,27 +25,27 @@ public class RegisterWorkplaceManagerCommandHandler extends CommandHandler<Regis
     @Inject
     private WorkplaceManagerRepository workplaceManagerRepository;
 
-    @Inject
-    private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
+//    @Inject
+//    private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
 
     @Override
     protected void handle(CommandHandlerContext<RegisterWorkplaceManagerCommand> commandHandlerContext) {
-        val command = commandHandlerContext.getCommand();
-        val id = command.getWkpManagerId();
-        val oldDomainOpt = workplaceManagerRepository.getWorkplaceManagerByID(id);
-        if (oldDomainOpt.isPresent()) {
-            val oldDomain = oldDomainOpt.get();
-            RequireImpl require = new RequireImpl(empCompanyHistoryAdapter, workplaceManagerRepository);
-            DatePeriod historyPeriod = new DatePeriod(command.getStartDate(), command.getEndDate());
-            //oldDomain.setHistoryPeriod(historyPeriod);
-            AtomTask task = RegisterWorkplaceManagerService.changePeriod(require,oldDomain);
-            transaction.execute(task);
-        }
+//        val command = commandHandlerContext.getCommand();
+//        val id = command.getWkpManagerId();
+//        val oldDomainOpt = workplaceManagerRepository.getWorkplaceManagerByID(id);
+//        if (oldDomainOpt.isPresent()) {
+//            val oldDomain = oldDomainOpt.get();
+//            RequireImpl require = new RequireImpl(empCompanyHistoryAdapter, workplaceManagerRepository);
+//            DatePeriod historyPeriod = new DatePeriod(command.getStartDate(), command.getEndDate());
+//            //oldDomain.setHistoryPeriod(historyPeriod);
+//            AtomTask task = RegisterWorkplaceManagerService.changePeriod(require,oldDomain);
+//            transaction.execute(task);
+//        }
     }
 
     @AllArgsConstructor
     public class RequireImpl implements RegisterWorkplaceManagerService.Require {
-        private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
+      //  private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
         private WorkplaceManagerRepository workplaceManagerRepository;
 
 
@@ -68,7 +68,8 @@ public class RegisterWorkplaceManagerCommandHandler extends CommandHandler<Regis
 
         @Override
         public List<EmpEnrollPeriodImport> getEmployeeCompanyHistory(String sid, DatePeriod datePeriod) {
-            return empCompanyHistoryAdapter.getEnrollmentPeriod(Collections.singletonList(sid), datePeriod);
+          //  return empCompanyHistoryAdapter.getEnrollmentPeriod(Collections.singletonList(sid), datePeriod);
+                return null;
         }
     }
 }
