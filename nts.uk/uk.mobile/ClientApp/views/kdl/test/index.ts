@@ -31,6 +31,8 @@ export class KdlTestComponent extends Vue {
     public referenceDate = '2021/08/30';
     public frameNo = '1';
     public dateKDLS12 = '2021/08/30';
+    public sidkdls12 = 'xxxxxx000000000004-0002-000000000001';
+    public taskCodekdls12 = 'FS0001              ';
     public selectedTask: any = {};
 
     public openKDL002() {
@@ -81,7 +83,9 @@ export class KdlTestComponent extends Vue {
             'taskMng',
             {
                 taskFrameNo: self.frameNo,
-                baseDate: self.dateKDLS12
+                baseDate: self.dateKDLS12,
+                sid: self.sidkdls12,
+                taskCode: self.taskCodekdls12
             }
         ).then((f: any) => {
             if (f) {
