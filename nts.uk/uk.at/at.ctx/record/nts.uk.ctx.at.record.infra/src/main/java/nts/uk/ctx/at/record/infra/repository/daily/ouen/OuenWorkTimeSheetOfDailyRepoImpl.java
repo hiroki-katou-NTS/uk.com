@@ -122,8 +122,10 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
 		List<KrcdtDayOuenTimeSheet> lstEntity = new ArrayList<>();
-		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
-			lstEntity.addAll(e);
+		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(entities -> {
+			
+			lstEntity.addAll(entities);
+			
 		});
 		
 		lstEntity.forEach(i -> {
@@ -132,8 +134,12 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				commandProxy().insert(i);
 				this.getEntityManager().flush();
 			} else{
-				updateData(entityOld.get(), i);
-				commandProxy().update(entityOld.get());
+				if (i.workCd1 == null && i.startTime == 0 && i.endTime == 0) {
+					commandProxy().remove(entityOld.get());
+				} else {
+					updateData(entityOld.get(), i);
+					commandProxy().update(entityOld.get());
+				}
 				this.getEntityManager().flush();
 			}
 		});

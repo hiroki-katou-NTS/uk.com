@@ -272,8 +272,8 @@ public class CreateDpItemQuery {
 		private ManHourRecordAndAttendanceItemLinkRepository manHourRepo;
 
 		@Override
-		public List<ManHourRecordAndAttendanceItemLink> get(List<Integer> items) {
-			return this.manHourRepo.get(AppContexts.user().companyId(), items);
+		public List<ManHourRecordAndAttendanceItemLink> get() {
+			return this.manHourRepo.get(AppContexts.user().companyId());
 		}
 
 	}
