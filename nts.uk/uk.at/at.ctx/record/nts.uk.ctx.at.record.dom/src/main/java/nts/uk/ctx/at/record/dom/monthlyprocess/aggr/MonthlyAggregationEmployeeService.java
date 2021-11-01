@@ -206,7 +206,7 @@ public class MonthlyAggregationEmployeeService {
 				if (executionType == ExecutionType.RERUN){
 	
 					// 編集状態を削除
-					atomTasks.add(AtomTask.of(() -> require.removeMonthEditState(employeeId, yearMonth, closureId, closureDate)));
+					require.transaction(AtomTask.of(() -> require.removeMonthEditState(employeeId, yearMonth, closureId, closureDate)));
 				}
 	
 				// 残数処理を行う必要があるかどうか判断　（Redmine#107271、EA#3434）
@@ -457,6 +457,7 @@ public class MonthlyAggregationEmployeeService {
 
 		void removeMonthEditState(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 
+		void transaction(AtomTask task);
 	}
 
 	public static interface RequireM3 {
