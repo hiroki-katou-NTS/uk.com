@@ -47,6 +47,7 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
+import nts.uk.ctx.at.record.dom.monthly.MonthlyAggregateForEmployees;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
@@ -764,7 +765,7 @@ public class RecordDomRequireService {
 		AgeementTimeCommonSettingService.RequireM1, CreateTempAnnLeaMngProc.RequireM3, AggregateSpecifiedDailys.RequireM1, ClosureService.RequireM6, ClosureService.RequireM5,
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1, ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2,
 		AgreementDomainService.RequireM5, AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1, GetExcessTimesYear.RequireM2, 
-		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, GetDaysForCalcAttdRate.RequireM2 {
+		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, GetDaysForCalcAttdRate.RequireM2, MonthlyAggregateForEmployees.Require {
 
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 		
