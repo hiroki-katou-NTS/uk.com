@@ -217,7 +217,7 @@ module nts.uk.ui.at.kdw013.a {
                         
                         let frameNos =[];
                         
-                        let hrTask = _.find(_.get(data, 'dailyManHrTasks', []), dt => moment(dt.ymd).isSame(moment(ld.ymd)));
+                        let hrTask = _.find(_.get(data, 'dailyManHrTasks', []), dt => moment(dt.date).isSame(moment(ld.ymd),'days'));
                         
                         
                         let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
@@ -246,16 +246,14 @@ module nts.uk.ui.at.kdw013.a {
                                 }
 
                             );
-                        })
+                        });
                         
-                        _.forEach(_.get(ld, 'ouenTimeSheet', []), ts => {
-                            let {timeSheet, workContent, workNo} = ts;
-                            let start = _.get(timeSheet, 'start.timeWithDay');
-                            let end = _.get(timeSheet, 'end.timeWithDay');
-                            let taskBlock = _.find(_.get(hrTask, 'taskBlocks', []), tb => td.caltimeSpan.start == start && td.caltimeSpan.start == end);
-                            let work = _.get(workContent, 'work');
-                            let {taskList} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
-                            let task = _.find(taskList, t => t.supNo == workNo);  
+                        _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
+                            const {taskDetails, caltimeSpan} = tb;
+                            const ts = _.find(_.get(ld, 'ouenTimeSheet', []), ot => ot.workNo == _.get(taskDetails[0], 'supNo', null));
+                            const {start, end} = caltimeSpan;
+                            const work = _.get(ts, 'workContent.work');
+                           
                             frameNos.push(vm.getFrameNo(events));
                             events.push({
                                 taskFrameUsageSetting: ko.unwrap((vm.$settings)),
@@ -276,10 +274,47 @@ module nts.uk.ui.at.kdw013.a {
                                     status: 'update' as any,
                                     taskBlock: {
                                         caltimeSpan: { start, end },
-                                        taskDetails: [{ supNo: workNo, taskItemValues: task.taskItemValues }]
+                                        taskDetails: taskDetails
                                     }
                                 }
                             });
+                        });
+                        
+                        
+                        _.forEach(_.get(ld, 'ouenTimeSheet', []), ts => {
+                            let {timeSheet, workContent, workNo} = ts;
+                            let start = _.get(timeSheet, 'start.timeWithDay');
+                            let end = _.get(timeSheet, 'end.timeWithDay');
+                            let work = _.get(workContent, 'work');
+                            let {taskList} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
+                            let task = _.find(taskList, t => t.supNo == workNo);  
+                            frameNos.push(vm.getFrameNo(events));
+                            
+                            if (start != null && end != null) {
+                                events.push({
+                                    taskFrameUsageSetting: ko.unwrap((vm.$settings)),
+                                    period: { start, end },
+                                    displayManHrRecordItems: _.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
+                                    employeeId: vm.employee() || vm.$user.employeeId,
+                                    start: setTimeOfDate(moment(ld.ymd).toDate(), start),
+                                    end: setTimeOfDate(moment(ld.ymd).toDate(), end),
+                                    title: work ? getTitles(work, tasks) : '',
+                                    backgroundColor: work ? getBackground(work, tasks) : '',
+                                    textColor: '',
+                                    extendedProps: {
+                                        frameNo: vm.getFrameNo(events),
+                                        frameNos,
+                                        id: randomId(),
+                                        isTimeBreak: false,
+                                        isChanged: false,
+                                        status: 'update' as any,
+                                        taskBlock: {
+                                            caltimeSpan: { start, end },
+                                            taskDetails: [{ supNo: workNo, taskItemValues: task.taskItemValues }]
+                                        }
+                                    }
+                                });
+                            }
                         });
                         
                         
@@ -837,18 +872,18 @@ module nts.uk.ui.at.kdw013.a {
                         taskBlock
                     } = extendedProps;
                     
+                    let nos =[];
                     _.forEach(_.get(taskBlock, 'taskDetails',[]), td => {
-
-                        lstWorkDetailsParamCommand.push({
-                            supportFrameNo: td.supNo,
+                        nos.push(td.supNo);
+                    });
+                    
+                    lstWorkDetailsParamCommand.push({
+                            supportFrameNos: nos,
                             timeZone: {
                                 end: getTimeOfDate(end),
                                 start: getTimeOfDate(start)
                             }
                         });
-                    });
-                    
-                      
                 });
                 
                 if (lstWorkDetailsParamCommand.length) {
