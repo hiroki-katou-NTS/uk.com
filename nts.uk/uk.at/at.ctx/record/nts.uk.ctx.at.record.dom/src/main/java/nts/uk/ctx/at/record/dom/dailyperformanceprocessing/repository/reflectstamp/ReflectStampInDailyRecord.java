@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDateAndEmpID;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.InfoReflectDestStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -26,19 +27,21 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectStampInDailyRecord {
 
-	public static Optional<StampDataReflectResult> reflect(Require require, String cid, String contractCode,
-			Optional<Stamp> stamp) {
-		// if(!打刻.isPresent())
-		if (!stamp.isPresent())
-			return Optional.empty();
+	public static Optional<StampDataReflectResult> reflect(Require require, String contractCode,
+			Stamp stamp) {
 		// $反映する日と社員ID
-		Optional<ReflectDateAndEmpID> reflectDateAndEmpID = ReflectDataStampDailyService.getJudgment(require, cid,
-				new ContractCode(contractCode), stamp.get());
+		Optional<InfoReflectDestStamp> reflectDateAndEmpID = ReflectDataStampDailyService.getJudgment(require,
+				new ContractCode(contractCode), stamp);
 		// <>$反映する日と社員ID.isPresent()
 		if (!reflectDateAndEmpID.isPresent())
 			return Optional.empty();
+		val cidInfo = require.getEmpData(Arrays.asList(reflectDateAndEmpID.get().getSid()));
+		if (cidInfo.isEmpty()) {
+			return Optional.empty();
+		}
+		String cid = cidInfo.get(0).getCompanyId();
 		Optional<ReflectStampDailyAttdOutput> stampDailyAttdOutput = require.createDailyDomAndReflectStamp(cid,
-				reflectDateAndEmpID.get().getSid(), reflectDateAndEmpID.get().getDate(), stamp.get());
+				reflectDateAndEmpID.get().getSid(), reflectDateAndEmpID.get().getDate(), stamp);
 
 		if (!stampDailyAttdOutput.isPresent())
 			return Optional.empty();

@@ -54,7 +54,7 @@ public class GetTargetDateRecordApplication {
 				new RefectActualResult(null, null, null), Optional.empty(),
 				lstCard.get(0).getStampCardId());
 
-		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, cid, contractCode,
+		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, contractCode,
 				stamp).map(x -> x.getDate());
 		return Pair.of(date, Optional.of(stamp));
 

@@ -14,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
@@ -72,12 +74,15 @@ public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWith
 	@Inject
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 	
+	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+	
 	@Override
 	protected CheckCanUseSmartPhoneStampResult handle(CommandHandlerContext<CheckCanUseSmartPhoneStampCommand> context) {
 
 		StampFunctionAvailableServiceRequireImpl require = new StampFunctionAvailableServiceRequireImpl(stampUsageRepo,
 				stampCardRepo, stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
-				temporarilyReflectStampDailyAttd);
+				temporarilyReflectStampDailyAttd, getMngInfoFromEmpIDListAdapter);
 
 		String employeeId = AppContexts.user().employeeId();
 		// 2.1 判断する(@Require, 社員ID, 打刻手段)
@@ -136,6 +141,8 @@ public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWith
 		private StampDakokuRepository stampDakokuRepo;
 
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+		
+		private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
 		
 		@Override
 		public List<EmployeeDataMngInfoImport> findBySidNotDel(List<String> sids) {
@@ -197,6 +204,11 @@ public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWith
 		public Optional<ReflectStampDailyAttdOutput> createDailyDomAndReflectStamp(String cid, String employeeId,
 				GeneralDate date, Stamp stamp) {
 			return temporarilyReflectStampDailyAttd.createDailyDomAndReflectStamp(cid, employeeId, date, stamp);
+		}
+
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
 		}
 	}
 

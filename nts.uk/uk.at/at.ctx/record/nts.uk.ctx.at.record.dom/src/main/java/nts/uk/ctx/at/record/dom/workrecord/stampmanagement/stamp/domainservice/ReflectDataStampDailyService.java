@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -26,18 +30,24 @@ public class ReflectDataStampDailyService {
 	 * @param stamp
 	 * @return 反映対象日
 	 */
-	public static Optional<ReflectDateAndEmpID> getJudgment(Require require, String cid, ContractCode contractCode,
+	public static Optional<InfoReflectDestStamp> getJudgment(Require require, ContractCode contractCode,
 			Stamp stamp) {
 		Stamp stampCheck = stamp.clone();
 		Optional<String> employeeId = require.getByCardNoAndContractCode(contractCode, stampCheck.getCardNumber())
 				.map(x -> x.getEmployeeId());
 		if (!employeeId.isPresent())
 			return Optional.empty();
+		//会社IDを取得する
+		val cidInfo = require.getEmpData(Arrays.asList(employeeId.get()));
+		if(cidInfo.isEmpty()) {
+			return Optional.empty();
+		}
+		String cid = cidInfo.get(0).getCompanyId();
 		GeneralDate date = stampCheck.getStampDateTime().toDate();
 		DatePeriod period = new DatePeriod(date.addDays(-2), date.addDays(1));
 		Optional<GeneralDate> reflectDate =  period.stream().filter(c -> require.createDailyDomAndReflectStamp(cid, employeeId.get(), c, stampCheck)
 				.map(x -> stampCheck.getImprintReflectionStatus().isReflectedCategory()).orElse(false)).findFirst();
-		return reflectDate.map(dateProcess -> new ReflectDateAndEmpID(dateProcess, employeeId.get()));
+		return reflectDate.map(dateProcess -> new InfoReflectDestStamp(dateProcess, employeeId.get()));
 	}
 
 	public static interface Require {
@@ -46,6 +56,10 @@ public class ReflectDataStampDailyService {
 		//TemporarilyReflectStampDailyAttd
 		public Optional<ReflectStampDailyAttdOutput> createDailyDomAndReflectStamp(String cid, String employeeId, GeneralDate date,
 				Stamp stamp);
+
+		//  会社IDを取得する
+		//GetMngInfoFromEmpIDListAdapter
+		List<EmpDataImport> getEmpData(List<String> empIDList);
 	}
 
 }

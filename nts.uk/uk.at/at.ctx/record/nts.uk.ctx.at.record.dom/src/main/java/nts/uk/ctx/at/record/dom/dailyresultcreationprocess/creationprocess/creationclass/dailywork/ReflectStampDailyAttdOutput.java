@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.al
 /**
  * @author thanh_nx
  *
- *         実績作って、打刻を反映するOutput
+ *         日別実績を作成して、打刻を反映するOutput
  */
 @AllArgsConstructor
 @Getter

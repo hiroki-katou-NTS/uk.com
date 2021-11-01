@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import mockit.Expectations;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -60,7 +62,7 @@ public class ReflectDataStampDailyServiceTest {
 			}
 		};
 
-		Optional<ReflectDateAndEmpID> optional = ReflectDataStampDailyService.getJudgment(require, cid,
+		Optional<InfoReflectDestStamp> optional = ReflectDataStampDailyService.getJudgment(require,
 				new ContractCode(""), stamp);
 
 		assertThat(optional.isPresent()).isFalse();
@@ -82,7 +84,7 @@ public class ReflectDataStampDailyServiceTest {
 			}
 		};
 		
-		Optional<ReflectDateAndEmpID> optional = ReflectDataStampDailyService.getJudgment(require, cid, new ContractCode(""), stamp);
+		Optional<InfoReflectDestStamp> optional = ReflectDataStampDailyService.getJudgment(require, new ContractCode(""), stamp);
 		
 		assertThat(optional.isPresent()).isFalse();
 
@@ -97,8 +99,8 @@ public class ReflectDataStampDailyServiceTest {
 		Stamp stamp = StampHelper.getStampDefault();
 		
 		ReflectDataStampDailyServiceRequireImplTest impl = new ReflectDataStampDailyServiceRequireImplTest();
-		Optional<ReflectDateAndEmpID> optional = ReflectDataStampDailyService
-				.getJudgment(impl, cid, new ContractCode(""), stamp);
+		Optional<InfoReflectDestStamp> optional = ReflectDataStampDailyService
+				.getJudgment(impl, new ContractCode(""), stamp);
 
 		assertThat(optional.isPresent()).isTrue();
 
@@ -121,6 +123,11 @@ public class ReflectDataStampDailyServiceTest {
 			}
 			stamp.getImprintReflectionStatus().markAsReflected(GeneralDate.ymd(2021, 03, 15));
 			return Optional.of(new ReflectStampDailyAttdOutput(null, ChangeDailyAttendance.createDefault(ScheduleRecordClassifi.RECORD)));
+		}
+
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return Arrays.asList(new EmpDataImport(cid, "", employeeId, "", Optional.empty()));
 		}
 		
 	}

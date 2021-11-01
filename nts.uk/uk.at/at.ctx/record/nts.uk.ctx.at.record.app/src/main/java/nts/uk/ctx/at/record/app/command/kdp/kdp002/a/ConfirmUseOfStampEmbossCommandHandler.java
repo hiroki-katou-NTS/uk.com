@@ -15,6 +15,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
@@ -76,13 +78,17 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	@Inject
 	private StampCardRepository stampCardRepository;
 	
+	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+	
 	@Override
 	protected void handle(CommandHandlerContext<ConfirmUseOfStampEmbossCommand> context) {
 		String employeeId = AppContexts.user().employeeId();
 
 		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampUsageRepo,
 				stampCardRepo, stampRecordRepo, stampDakokuRepo, stampCardEditRepo,
-				sysEmpPub, companyAdapter, temporarilyReflectStampDailyAttd, stampCardRepository);
+				sysEmpPub, companyAdapter, temporarilyReflectStampDailyAttd, stampCardRepository,
+				getMngInfoFromEmpIDListAdapter);
 
 		MakeUseJudgmentResults judgmentResults = StampFunctionAvailableService.decide(checkFuncRq, employeeId,
 				StampMeans.INDIVITION);
@@ -138,6 +144,8 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 		
 		private StampCardRepository stampCardRepository;
+		
+		private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
 		
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
@@ -201,6 +209,11 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		public Optional<ReflectStampDailyAttdOutput> createDailyDomAndReflectStamp(String cid, String employeeId,
 				GeneralDate date, Stamp stamp) {
 			return temporarilyReflectStampDailyAttd.createDailyDomAndReflectStamp(cid, employeeId, date, stamp);
+		}
+
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
 		}
 	}
 

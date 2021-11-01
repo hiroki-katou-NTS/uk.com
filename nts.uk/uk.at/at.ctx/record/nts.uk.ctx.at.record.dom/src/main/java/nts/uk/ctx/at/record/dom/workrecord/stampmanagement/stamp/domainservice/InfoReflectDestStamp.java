@@ -7,11 +7,11 @@ import nts.arc.time.GeneralDate;
 /**
  * @author thanh_nx
  *
- *         反映する日と社員ID
+ *         打刻の反映先情報
  */
 @AllArgsConstructor
 @Getter
-public class ReflectDateAndEmpID {
+public class InfoReflectDestStamp {
 	
 	//年月日
 	private GeneralDate date;

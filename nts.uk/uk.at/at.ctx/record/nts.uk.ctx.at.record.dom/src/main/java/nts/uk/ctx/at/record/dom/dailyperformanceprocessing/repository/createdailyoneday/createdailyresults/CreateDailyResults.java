@@ -67,6 +67,7 @@ public class CreateDailyResults {
 	@Inject
 	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 	
+	//マスターデータを取得して、日別実績を作成する
 	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
 			ExecutionTypeDaily executionType,
 			IntegrationOfDaily integrationOfDaily) {

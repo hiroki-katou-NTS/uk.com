@@ -15,6 +15,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCRequestSettingAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReasonNotReflect;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReasonNotReflectDaily;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
@@ -196,6 +198,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
+	
+	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
 
 	@Override
 	public Pair<RCReflectStatusResultExport, Optional<AtomTask>> process(Object application, GeneralDate date,
@@ -211,7 +216,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
 				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository, timePriorityRepository,
 				compensLeaveComSetRepository, subLeaveAppReflectRepository, substituteWorkAppReflectRepository,
-				applicationReflectHistoryRepo);
+				applicationReflectHistoryRepo, getMngInfoFromEmpIDListAdapter);
 		val result = ReflectApplicationWorkRecord.process(impl , new ContractCode(AppContexts.user().contractCode()), AppContexts.user().companyId(), (ApplicationShare) application, date, convertToDom(reflectStatus), reflectTime);
 		return Pair.of(convertToExport(result.getLeft()), result.getRight());
 	}
@@ -305,6 +310,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
     	private final SubstituteWorkAppReflectRepository substituteWorkAppReflectRepository;
     	
     	private final ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
+    	
+    	private final GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -516,6 +523,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		public Optional<ReflectStampDailyAttdOutput> createDailyDomAndReflectStamp(String cid, String employeeId,
 				GeneralDate date, Stamp stamp) {
 			return temporarilyReflectStampDailyAttd.createDailyDomAndReflectStamp(cid, employeeId, date, stamp);
+		}
+
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
 		}
 	}
 }
