@@ -2406,7 +2406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     initScreen: self.hasEmployee ? 1 : 0,
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                     lstEmployee: lstEmployee,
-                    formatCodes: self.formatCodes(),
+                    formatCodes: self.formatCodes()==null?[]:self.formatCodes(),
                     objectShare: null,
                     showLock: self.showLock(),
                     closureId: self.closureId,
@@ -2967,6 +2967,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
                         let data = [dataTemp];
+                        self.formatCodes(data);
                         self.hideComponent();
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
