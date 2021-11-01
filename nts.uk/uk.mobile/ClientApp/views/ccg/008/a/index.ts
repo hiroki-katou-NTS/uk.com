@@ -211,12 +211,14 @@ export class Ccg008AComponent extends Vue {
     
         // yearlyHoliday
         let yearlyHld = item.yearlyHoliday;
-        let timeRemain = (yearlyHld.nextTimeInfo.hours.hours) * 60 + yearlyHld.nextTimeInfo.hours.min;
-        if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
-            results.push({
-                name:'KTG029_23', 
-                value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), vm.getFormatTime(timeRemain)])
-            }); 
+        if (yearlyHld && yearlyHld.nextTimeInfo) {
+            let timeRemain = (yearlyHld.nextTimeInfo.hours.hours) * 60 + yearlyHld.nextTimeInfo.hours.min;
+            if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
+                results.push({
+                    name:'KTG029_23', 
+                    value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), vm.getFormatTime(timeRemain)])
+                }); 
+            }
         }
         // next grantDate
         if (vacationSetting.annualManage) {
@@ -267,23 +269,42 @@ export class Ccg008AComponent extends Vue {
         // 子看護管理区分
         if (!!item.childRemainNo && vacationSetting.childCaremanage) {
             const {before, after, showAfter} = item.childRemainNo;
-            results.push({
-                name: 'CCGS08_26',
-                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]) : vm.$i18n('CCGS08_36', [String(before)]),
-                isFormatNew: true
-                
-            });
+            if (after) {
+                results.push({
+                    name: 'CCGS08_26',
+                    value: vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]),
+                    isFormatNew: true
+                    
+                });
+            } else {
+                results.push({
+                    name: 'CCGS08_26',
+                    value: vm.$i18n('CCGS08_36', [String(before)]),
+                    isFormatNew: true
+                    
+                });
+            }
         } 
 
         // 介護管理区分
         if (!!item.careLeaveNo && vacationSetting.nursingManage) {
             const {before, after, showAfter} = item.careLeaveNo;
-            results.push({
-                name: 'CCGS08_27',
-                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]) : vm.$i18n('CCGS08_36', [String(before)]),
-                isFormatNew: true
-                
-            });
+
+            if (after) {
+                results.push({
+                    name: 'CCGS08_27',
+                    value: vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]),
+                    isFormatNew: true
+                    
+                });
+            } else {
+                results.push({
+                    name: 'CCGS08_27',
+                    value: vm.$i18n('CCGS08_36', [String(before)]),
+                    isFormatNew: true
+                    
+                });
+            }
         }
 
 
