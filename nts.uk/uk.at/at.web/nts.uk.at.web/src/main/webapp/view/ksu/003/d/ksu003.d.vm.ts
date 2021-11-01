@@ -40,7 +40,9 @@ module nts.uk.at.view.ksu003.d {
                 new RangeModel('7', 7),
                 new RangeModel('8', 8),
                 new RangeModel('9', 9),
-                new RangeModel('10', 10)
+                new RangeModel('10', 10),
+                new RangeModel('10', 11),
+                new RangeModel('10', 12)
             ]);
             vm.dataFromA = {
                 targetOrg: null,
