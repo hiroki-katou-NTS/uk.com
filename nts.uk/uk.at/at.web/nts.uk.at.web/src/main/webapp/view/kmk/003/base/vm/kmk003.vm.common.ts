@@ -1389,6 +1389,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: WorkTimezoneGoOutSetDto) {
+                    this.roundingMethod(data.roundingMethod);
                     this.diffTimezoneSetting.updateData(data.diffTimezoneSetting);
                 }
 
