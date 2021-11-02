@@ -16,6 +16,11 @@
       <com:scriptfile set="IGNITE" />
       <com:scriptfile path="../share/model.js" />
       <com:scriptfile path="oew001.b.vm.js" />
+      <com:ValidatorScript>
+        nts.uk.ctx.office.dom.equipment.data.UseTextItem
+        nts.uk.ctx.office.dom.equipment.data.UseNumericItem
+        nts.uk.ctx.office.dom.equipment.data.UseTimeItem
+      </com:ValidatorScript>
     </ui:define>
 
     <ui:define name="content">
@@ -70,6 +75,7 @@
                       <input class="B2_2_1 mr-10" data-bind="ntsTextEditor: {
                       name: itemName,
                       value: value,
+                      constraint: 'UseTextItem',
                       option: { width: width }
                     }" tabindex="2" />
                     </com:ko-if>
@@ -78,6 +84,7 @@
                       <input class="B2_2_1 mr-10" data-bind="ntsNumberEditor: {
                       name: itemName,
                       value: value,
+                      constraint: 'UseNumericItem',
                       option: { width: width }
                     }" tabindex="2" />
                     </com:ko-if>
@@ -88,6 +95,7 @@
                       value: value,
                       mode: 'time',
                       inputFormat: 'time',
+                      constraint: 'UseTimeItem',
                       option: { width: width }
                     }" tabindex="2" />
                     </com:ko-if>
