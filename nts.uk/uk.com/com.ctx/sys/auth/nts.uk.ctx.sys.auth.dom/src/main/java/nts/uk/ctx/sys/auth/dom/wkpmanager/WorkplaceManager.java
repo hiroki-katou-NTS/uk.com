@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.dom.wkpmanager;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
@@ -17,15 +18,16 @@ import nts.gul.text.IdentifierUtil;
 @Getter
 public class WorkplaceManager implements DomainAggregate{
 	/** ID */
-	private String workplaceManagerId;
+	private final String workplaceManagerId;
 	
 	/** 職場ID */
-	private String workplaceId;
+	private final String workplaceId;
 	
 	/** 社員ID */
-	private String employeeId;
+	private final String employeeId;
 
 	/** 履歴期間 */
+	@Setter
 	private DatePeriod historyPeriod;
 	
 	/**
