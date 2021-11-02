@@ -480,6 +480,251 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			this.year = new Year(calcedYear);
 		}
 	}
+	
+	/**
+	 * clones from 集計準備
+	 */
+	public void prepareAggregationClones(RequireM5 require, CacheCarrier cacheCarrier, String companyId,
+			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate, DatePeriod procPeriod,
+			WorkingConditionItem workingConditionItem, int startWeekNo, MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets, MonthlyCalculatingDailys monthlyCalcDailys,
+			MonthlyOldDatas monthlyOldDatas, Optional<UsageUnitSetting> unitSetting) {
+		this.companyId = companyId;
+		this.employeeId = employeeId;
+		this.yearMonth = yearMonth;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
+		this.procPeriod = procPeriod;
+		this.workingConditionItem = workingConditionItem;
+		this.workingSystem = workingConditionItem.getLaborSystem();
+
+		this.settingsByReg = new SettingRequiredByReg(companyId);
+		this.settingsByDefo = new SettingRequiredByDefo(companyId);
+		this.settingsByFlex = new SettingRequiredByFlex();
+		this.companySets = companySets;
+		this.employeeSets = employeeSets;
+
+		this.monthlyCalculatingDailys = monthlyCalcDailys;
+
+		// 社員を取得する
+		this.employee = employeeSets.getEmployee();
+
+		// 退職月か確認する （変形労働勤務の月単位集計：精算月判定に利用）
+		this.isRetireMonth = false;
+		if (procPeriod.contains(this.employee.getRetiredDate()))
+			this.isRetireMonth = true;
+
+		// 期間終了日時点の雇用コードを取得する
+		val employmentOpt = employeeSets.getEmployment(procPeriod.end());
+		if (employmentOpt.isPresent()) {
+			this.employmentCd = employmentOpt.get().getEmploymentCode();
+		}
+
+		// 期間終了日時点の職場IDを取得する
+		val workplaceOpt = employeeSets.getWorkplace(procPeriod.end());
+		if (workplaceOpt.isPresent()) {
+			this.workplaceId = workplaceOpt.get().getWorkplaceId();
+		}
+		
+		this.settingsByFlex.setFlexAggregateMethodMonthly(companySets.getVerticalTotalMethod().getFlexAggregateMethod());
+		this.settingsByDefo.setDefoAggregateMethod(companySets.getVerticalTotalMethod().getDefoAggregateMethod());
+
+		// 「締め」 取得
+		this.closureOpt = Optional.ofNullable(companySets.getClosureMap().get(closureId.value));
+
+		//val unitSetting = require.usageUnitSetting(companyId).orElse(null);
+		if (!unitSetting.isPresent()) return;
+		
+		// 通常勤務月別実績集計設定 （基準：期間終了日）
+		if (this.workingSystem == WorkingSystem.REGULAR_WORK) {
+			val regularAggrSetOpt = GetRegularAggrSet.regularWorkTimeAggrSet(require, cacheCarrier,
+					companyId, this.employmentCd, employeeId, procPeriod.end(), unitSetting.get(), 
+					employeeSets.getShaRegSetOpt(), companySets.getComRegSetOpt());
+			
+			if (!regularAggrSetOpt.isPresent()) {
+				this.errorInfos.add(new MonthlyAggregationErrorInfo("007",
+						new ErrMessageContent(TextResource.localize("Msg_1234"))));
+				return;
+			}
+			this.settingsByReg.setRegularAggrSet(regularAggrSetOpt.get());
+		}
+
+		// 変形労働月別実績集計設定 （基準：期間終了日）
+		if (this.workingSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
+			val deforAggrSetOpt = GetDeforAggrSet.deforWorkTimeAggrSet(require, cacheCarrier,
+					companyId, this.employmentCd, employeeId, procPeriod.end(), 
+					unitSetting.get(), employeeSets.getShaIrgSetOpt(), companySets.getComIrgSetOpt());
+			
+			if (!deforAggrSetOpt.isPresent()) {
+				this.errorInfos.add(new MonthlyAggregationErrorInfo("007",
+						new ErrMessageContent(TextResource.localize("Msg_1234"))));
+				return;
+			}
+			this.settingsByDefo.setDeforAggrSet(deforAggrSetOpt.get());
+		}
+
+		// フレックス月別実績集計設定 （基準：期間終了日）
+		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) {
+			val flexAggrSetOpt = GetFlexAggrSet.flexWorkTimeAggrSet(require, cacheCarrier,
+					companyId, this.employmentCd, employeeId, procPeriod.end(), 
+					unitSetting.get(), employeeSets.getShaFlexSetOpt(), companySets.getComFlexSetOpt());
+			
+			if (!flexAggrSetOpt.isPresent()) {
+				this.errorInfos.add(new MonthlyAggregationErrorInfo("007",
+						new ErrMessageContent(TextResource.localize("Msg_1234"))));
+				return;
+			}
+			this.settingsByFlex.setFlexAggrSet(flexAggrSetOpt.get());
+
+			// フレックス勤務の月別集計設定
+			this.settingsByFlex.setMonthlyAggrSetOfFlexOpt(Optional.of(companySets.getAggrSetOfFlex()));
+
+			this.settingsByFlex.setComFlexSetOpt(companySets.getComFlexSetOpt());
+
+			// フレックス不足の年休補填管理
+			this.settingsByFlex.setInsufficientFlexOpt(companySets.getInsufficientFlexOpt());
+
+			// フレックス不足の繰越上限管理
+			this.settingsByFlex.setFlexShortageLimitOpt(companySets.getFlexShortageLimitOpt());
+		}
+
+		// 法定内振替順設定
+		this.settingsByReg.setLegalTransferOrderSet(companySets.getLegalTransferOrderSet());
+		this.settingsByDefo.setLegalTransferOrderSet(companySets.getLegalTransferOrderSet());
+
+		// 残業枠の役割
+		for (val roleOverTimeFrame : companySets.getRoleOverTimeFrameList()) {
+			val otFrameNo = roleOverTimeFrame.getOvertimeWorkFrNo().v().intValue();
+			this.settingsByReg.getRoleOverTimeFrameMap().putIfAbsent(otFrameNo, roleOverTimeFrame);
+			this.settingsByDefo.getRoleOverTimeFrameMap().putIfAbsent(otFrameNo, roleOverTimeFrame);
+
+			// 自動的に除く残業枠
+			if (roleOverTimeFrame.getRole() != RoleOvertimeWorkEnum.MIX_IN_OUT_STATUTORY)
+				continue;
+			this.settingsByReg.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
+			this.settingsByDefo.getAutoExceptOverTimeFrames().add(roleOverTimeFrame);
+		}
+
+		// 休出枠の役割
+		for (val holidayWorkFrame : companySets.getWorkDayoffFrameList()) {
+			this.settingsByReg.getRoleHolidayWorkFrameMap()
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
+			this.settingsByDefo.getRoleHolidayWorkFrameMap()
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
+			this.settingsByFlex.getRoleHolidayWorkFrameMap()
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
+
+			// 自動的に除く休出枠
+			if (holidayWorkFrame.getRole() != WorkdayoffFrameRole.MIX_WITHIN_OUTSIDE_STATUTORY)
+				continue;
+			this.settingsByReg.getAutoExceptHolidayWorkFrames()
+					.add(holidayWorkFrame.getWorkdayoffFrNo().v().intValue());
+			this.settingsByDefo.getAutoExceptHolidayWorkFrames()
+					.add(holidayWorkFrame.getWorkdayoffFrNo().v().intValue());
+		}
+
+		// 休暇加算時間設定
+		this.settingsByReg.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
+		this.settingsByDefo.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
+		this.settingsByFlex.getHolidayAdditionMap().putAll(companySets.getHolidayAdditionMap());
+
+		// 週間、月間法定・所定労働時間 取得
+		switch (this.workingSystem) {
+		case REGULAR_WORK:
+		case VARIABLE_WORKING_TIME_WORK:
+			val monAndWeekStatTimeOpt = MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(
+					require, cacheCarrier,
+					companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth, this.workingSystem);
+			if (!monAndWeekStatTimeOpt.isPresent()) {
+				this.errorInfos.add(new MonthlyAggregationErrorInfo("008",
+						new ErrMessageContent(TextResource.localize("Msg_1235"))));
+				break;
+			}
+			val monAndWeekStatTime = monAndWeekStatTimeOpt.get();
+			val weekMinutes = new AttendanceTimeMonth(monAndWeekStatTime.getWeeklyEstimateTime().v());
+			val monthMinutes = new AttendanceTimeMonth(monAndWeekStatTime.getMonthlyEstimateTime().v());
+			/** 按分した法定労働時間を取得する　（月別実績に保存する用） */
+			this.statutoryWorkingTime = companySets.getVerticalTotalMethod().getDefoAggregateMethod().getStatutoryWorkingTime(
+					require, cacheCarrier, employeeId, yearMonth, monthMinutes, weekMinutes, procPeriod, closureId);
+			this.settingsByReg.setStatutoryWorkingTimeWeek(weekMinutes);
+			this.settingsByReg.setStatutoryWorkingTimeMonth(monthMinutes);
+			this.settingsByDefo.setStatutoryWorkingTimeWeek(weekMinutes);
+			this.settingsByDefo.setStatutoryWorkingTimeMonth(monthMinutes);
+			break;
+		case FLEX_TIME_WORK:
+			val flexMonAndWeekStatTime = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
+					require, cacheCarrier, companyId, this.employmentCd, employeeId, procPeriod.end(), yearMonth);
+//			this.statutoryWorkingTime = this.settingsByFlex.getStatutoryWorkingTimeMonth(require, yearMonth, procPeriod, closureId,
+//					monthlyCompensatoryTime, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
+			/** 按分した法定労働時間を取得する　（月別実績に保存する用） */
+			this.settingsByFlex.setStatutoryWorkingTimeMonth(new AttendanceTimeMonth(flexMonAndWeekStatTime.getStatutorySetting().v()));
+			this.settingsByFlex.setPrescribedWorkingTimeMonth(new AttendanceTimeMonth(flexMonAndWeekStatTime.getSpecifiedSetting().v()));
+			this.settingsByFlex.setWeekAverageTime(new AttendanceTimeMonth(flexMonAndWeekStatTime.getWeekAveSetting().v()));
+			
+			// 退職日が当月の期間内の時、翌月繰越可能時間 = 0
+			if (this.isRetireMonth)
+				break;
+
+			// 翌月までの労働条件を確認する
+			GeneralDate nextEndDate = procPeriod.end().addDays(31); // 翌月終了日を含む期間（月末対策のため、31日加算）
+			DatePeriod checkPeriod = new DatePeriod(procPeriod.start(), nextEndDate);
+			List<WorkingConditionItem> workingConditionItems = require
+					.workingConditionItem(employeeId, checkPeriod);
+			List<WorkingConditionItem> workConditions = workingConditionItems.stream()
+					.filter(x -> x.getLaborSystem().equals(WorkingSystem.FLEX_TIME_WORK)).collect(Collectors.toList());
+
+			// フレックス期間がなければ、翌月繰越可能時間 = 0
+			if (workConditions.isEmpty())
+				break;
+
+			// 社員のフレックス繰越上限時間（翌月繰越可能時間）を求める
+			CalcFlexChangeDto calcFlex = CalcFlexChangeDto.createCalcFlexDto(employeeId, procPeriod.end());
+			calcFlex.createWCItem(workConditions);
+			ConditionCalcResult conditionResult = require.flexConditionCalcResult(cacheCarrier,
+					companyId, calcFlex);
+			long canNextCarryforwardSeconds = 0L;
+			try {
+				canNextCarryforwardSeconds = Time.parse(conditionResult.getValueResult()).totalSeconds();
+			} catch (Exception ex) {
+				canNextCarryforwardSeconds = 0L;
+			}
+			long canNextCarryforwardMinute = canNextCarryforwardSeconds / Time.STEP;
+			this.settingsByFlex
+					.setCanNextCarryforwardTimeMonth(new AttendanceTimeMonth((int) canNextCarryforwardMinute));
+			break;
+		default:
+			this.statutoryWorkingTime = new AttendanceTimeMonth(0);
+			break;
+		}
+
+		// 実績の勤務情報リスト
+		for (val workInfoOfDaily : monthlyCalcDailys.getWorkInfoOfDailyMap().entrySet()) {
+			val ymd = workInfoOfDaily.getKey();
+			this.workInfoOfRecordMap.put(ymd, workInfoOfDaily.getValue().getRecordInfo());
+		}
+
+		// 月別実績の勤怠時間 既存データ
+		this.originalData = monthlyOldDatas.getAttendanceTime();
+
+		// 週NO 確認
+		this.startWeekNo = startWeekNo;
+
+		// 36協定運用設定を取得
+		val agreementOperationSetOpt = companySets.getAgreementOperationSet();
+		if (!agreementOperationSetOpt.isPresent()) {
+			this.errorInfos.add(
+					new MonthlyAggregationErrorInfo("017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
+		} else {
+			val agreementOperationSet = agreementOperationSetOpt.get();
+
+			// 年度 設定 （36協定用）
+			int calcedYear = this.yearMonth.year();
+			int startingMonth = agreementOperationSet.getStartingMonth().value + 1; // 起算月
+			if (this.yearMonth.month() < startingMonth)
+				calcedYear--;
+			this.year = new Year(calcedYear);
+		}
+	}
 
 	/**
 	 * 集計関連設定のコピー

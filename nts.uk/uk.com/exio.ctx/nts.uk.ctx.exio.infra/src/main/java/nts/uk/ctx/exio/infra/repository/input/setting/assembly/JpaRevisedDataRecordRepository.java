@@ -50,10 +50,15 @@ public class JpaRevisedDataRecordRepository extends JpaRepository implements Rev
 	}
 
 	@Override
+	public List<RevisedDataRecord> findAll(Require require, ExecutionContext context) {
+		return WorkspaceSql.create(require, context, jdbcProxy()).findAllRevised();
+	}
+
+	@Override
 	public List<RevisedDataRecord> findByCriteria(
 			Require require, ExecutionContext context, int criteriaItemNo, String criteriaValue) {
 		
 		return WorkspaceSql.create(require, context, jdbcProxy())
-				.findRevisedWhere(require, criteriaItemNo, criteriaValue);
+				.findRevisedWhere(criteriaItemNo, criteriaValue);
 	}
 }

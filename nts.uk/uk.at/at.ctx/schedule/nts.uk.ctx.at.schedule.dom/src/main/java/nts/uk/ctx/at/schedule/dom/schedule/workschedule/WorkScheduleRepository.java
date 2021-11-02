@@ -49,6 +49,8 @@ public interface WorkScheduleRepository {
 	
 	void update(WorkSchedule workSchedule);
 	
+	void updateConfirmedState(WorkSchedule workSchedule);
+	
 	void delete(String sid, DatePeriod datePeriod);
 	
 	/** Delete (勤務予定) **/

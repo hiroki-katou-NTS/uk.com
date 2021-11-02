@@ -9,12 +9,12 @@ import lombok.val;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.util.Either;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 社員コードを社員IDに正準化する
@@ -30,11 +30,10 @@ public class EmployeeCodeCanonicalization {
 	/** 社員IDの項目No */
 	final int itemNoEmployeeId;
 	
-	public EmployeeCodeCanonicalization(DomainWorkspace workspace) {
-		itemNoEmployeeCode = workspace.getItemByName("社員コード").getItemNo();
-		itemNoEmployeeId = workspace.getItemByName("SID").getItemNo();
+	public EmployeeCodeCanonicalization(ItemNoMap map) {
+		this(map.getItemNo("社員コード"), map.getItemNo("SID"));
 	}
-
+	
 	/**
 	 * 渡された編集済みデータを正準化する
 	 * @param require
