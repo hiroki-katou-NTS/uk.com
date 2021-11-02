@@ -26,15 +26,15 @@ public enum ApplicationType {
 	LEAVE_TIME_APPLICATION(7),
 	/**	打刻申請 */
 	STAMP_APPLICATION(8),
-	/**	打刻申請（レコーダイメージ） */
-	REGISTER_TIME_CARD_IMAGE(9),
 	/**	時間休暇申請 */
 	ANNUAL_HD_APPLICATION(10),
 	/**	遅刻早退取消申請 */
 	EARLY_LEAVE_CANCEL_APPLICATION(11),
 	/**	振休振出申請 */
 	COMPLEMENT_LEAVE_APPLICATION(12),
-	/**	任意申請 */
-	OPTIONAL_APPLICATION(13);
+	/**	任意項目申請 */
+	OPTIONAL_APPLICATION(13),
+	/** 申請一覧 */
+	APPLICATION_LIST(14);
 	public final int value;
 }

@@ -66,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalC
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -148,6 +149,10 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 	/** 月末勤務種別コード */
 	@Column(name = "LAST_BUS_CD")
 	public String lastBusinessTypeCd;
+	
+	/** 労働契約時間 */
+	@Column(name = "CONTRACT_TIME")
+	public int contractTime;
 	
 	/* KRCDT_MON_AGGR_TOTAL_WRK */
 	/** 所定内割増時間 */
@@ -2408,6 +2413,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.lastJobTitleId = domain.getLastInfo().getJobTitleId().v();
 		this.lastClassCd = domain.getLastInfo().getClassCd().v();
 		this.lastBusinessTypeCd = domain.getLastInfo().getBusinessTypeCd().map(c -> c.v()).orElse(null);
+		this.contractTime = domain.getContractTime().valueAsMinutes();
 		
 		this.version = domain.getVersion();
 	}
@@ -2424,6 +2430,7 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 		this.lastJobTitleId = "";
 		this.lastClassCd = "";
 		this.lastBusinessTypeCd = "";
+		this.contractTime = 0;
 	}
 
 	/**
@@ -3169,7 +3176,8 @@ public class KrcdtMonTimeAtd extends ContractUkJpaEntity implements Serializable
 						new WorkplaceId(this.lastWorkplaceId),
 						new JobTitleId(this.lastJobTitleId),
 						new ClassificationCode(this.lastClassCd),
-						Optional.ofNullable(this.lastBusinessTypeCd == null ? null : new BusinessTypeCode(this.lastBusinessTypeCd))));
+						Optional.ofNullable(this.lastBusinessTypeCd == null ? null : new BusinessTypeCode(this.lastBusinessTypeCd))),
+				new LaborContractTime(this.contractTime));
 		
 		domain.setVersion(this.version);
 		

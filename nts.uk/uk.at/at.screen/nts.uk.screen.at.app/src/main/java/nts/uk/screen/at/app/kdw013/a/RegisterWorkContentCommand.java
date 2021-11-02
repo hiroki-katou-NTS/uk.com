@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,25 +17,38 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 @Getter
 @AllArgsConstructor
 public class RegisterWorkContentCommand {
-	
+
 	/** 対象者 */
 	private String employeeId;
-	
-	private List<ManHrRecordConvertResult> manHrlst;
-	
-	
-	private List<IntegrationOfDaily> integrationOfDailys;
-	
+
+	// 工数実績変換結果
+	private List<ManHrRecordConvertResultCommand> manHrlst;
+
+	// 日別勤怠(Work)
+	private List<IntegrationOfDailyCommand> integrationOfDailys;
+
 	/** 編集状態<Enum.日別勤怠の編集状態> */
 	private int editStateSetting;
-	
-	/** List<年月日,List<作業詳細>> */
+
+	// 作業時間帯
 	private List<WorkDetailCommand> workDetails;
-	
+
 	/** 確認モード */
 	private int mode;
-	
+
 	/** 変更対象日 */
 	private List<GeneralDate> changedDates;
 	
+	
+	public List<ManHrRecordConvertResult> getManHrlst(){
+		
+		return	this.manHrlst.stream().map(mh-> ManHrRecordConvertResultCommand.toDomain(mh)).collect(Collectors.toList());		
+	}
+	
+	public List<IntegrationOfDaily> getIntegrationOfDailys() {
+		return this.integrationOfDailys.stream().map(id -> IntegrationOfDailyCommand.toDomain(id))
+				.collect(Collectors.toList());
+
+	}
+
 }

@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -89,8 +90,8 @@ public class ValidatorDataDailyRes {
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 
-	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
-	private static final Integer[] CARE = { 763, 764, 765, 766 };
+	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762, 580 };
+	private static final Integer[] CARE = { 763, 764, 765, 766, 586 };
 	private static final Integer[] INPUT_CHECK = { 759, 760, 761, 762, 763, 764, 765, 766, 157, 159, 163, 165, 171, 169,
 			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 			17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
@@ -102,6 +103,11 @@ public class ValidatorDataDailyRes {
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
 	static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length).boxed()
 			.collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x / 3 + 1));
+	
+	private static final Integer[] INPUT_CHECK_PLUS = { 3, 4, 5, 6, 31, 34, 41, 44, 51, 53, 59, 61, 67, 69, 75, 77, 79, 81, 83, 85, 
+			88, 91, 95, 98, 102, 105, 109, 112, 116, 119, 123, 126, 130, 133, 137, 140, 144, 147, 151, 154, 794, 795, 796, 797 };
+	public static final Map<Integer, Integer> INPUT_CHECK_PLUS_MAP = IntStream.range(0, INPUT_CHECK_PLUS.length).boxed()
+			.collect(Collectors.toMap(x -> INPUT_CHECK_PLUS[x], x -> x % 2 == 0 ? INPUT_CHECK_PLUS[x + 1] : INPUT_CHECK_PLUS[x - 1]));
 	
 	private final static String EMPTY_STRING = "";
 
@@ -138,15 +144,37 @@ public class ValidatorDataDailyRes {
 
 	private List<DPItemValue> hasChildCare(List<DPItemValue> items) {
 		List<DPItemValue> itemChild = items.stream()
-				.filter(x -> x.getValue() != null && (x.getItemId() == CHILD_CARE[0] || x.getItemId() == CHILD_CARE[1]
-						|| x.getItemId() == CHILD_CARE[2] || x.getItemId() == CHILD_CARE[3]))
+				.filter(x -> {
+					boolean check = false;
+					
+					if ((x.getValue() != null) && (x.getItemId() == CHILD_CARE[0] || x.getItemId() == CHILD_CARE[1]
+							|| x.getItemId() == CHILD_CARE[2] || x.getItemId() == CHILD_CARE[3] || x.getItemId() == CHILD_CARE[4]))
+						check = true;
+					
+					if (check == true) {
+						if (x.getValue().equals("0") && x.getItemId() == CHILD_CARE[4]) check = false;
+					}
+					
+					return check;
+				})
 				.collect(Collectors.toList());
 		return itemChild.isEmpty() ? new ArrayList<>() : itemChild;
 	}
 
 	private List<DPItemValue> hasCare(List<DPItemValue> items) {
-		List<DPItemValue> itemCare = items.stream().filter(x -> x.getValue() != null && (x.getItemId() == CARE[0]
-				|| x.getItemId() == CARE[1] || x.getItemId() == CARE[2] || x.getItemId() == CARE[3]))
+		List<DPItemValue> itemCare = items.stream().filter(x -> {
+			boolean check = false;
+			if (x.getValue() != null && (x.getItemId() == CARE[0]
+					|| x.getItemId() == CARE[1] || x.getItemId() == CARE[2] || x.getItemId() == CARE[3] || x.getItemId() == CARE[4]))
+				check = true;
+			
+			if (check == true) {
+				if (x.getValue().equals("0") && x.getItemId() == CARE[4]) check = false;
+			}
+			
+			return check;
+				
+		})
 				.collect(Collectors.toList());
 		return itemCare.isEmpty() ? new ArrayList<>() : itemCare;
 	}
@@ -162,6 +190,7 @@ public class ValidatorDataDailyRes {
 			boolean childCare760 = childMap.containsKey(CHILD_CARE[1]);
 			boolean childCare761 = childMap.containsKey(CHILD_CARE[2]);
 			boolean childCare762 = childMap.containsKey(CHILD_CARE[3]);
+			boolean childCare580 = childMap.containsKey(CHILD_CARE[4]);
 			if (!(childCare759 && childCare760)) {
 				if (childCare759) {
 					result.add(childMap.get(CHILD_CARE[0]));
@@ -176,6 +205,8 @@ public class ValidatorDataDailyRes {
 					result.add(childMap.get(CHILD_CARE[3]));
 				}
 			}
+			
+			if(!childCare580) result.add(childMap.get(CHILD_CARE[4]));
 			return result;
 		} else if (!cares.isEmpty()) {
 			Map<Integer, DPItemValue> caresMap = cares.stream()
@@ -184,6 +215,7 @@ public class ValidatorDataDailyRes {
 			boolean care764 = caresMap.containsKey(CARE[1]);
 			boolean care765 = caresMap.containsKey(CARE[2]);
 			boolean care766 = caresMap.containsKey(CARE[3]);
+			boolean care586 = caresMap.containsKey(CARE[4]);
 			if (!(care763 && care764)) {
 				if (care763) {
 					result.add(caresMap.get(CARE[0]));
@@ -198,6 +230,8 @@ public class ValidatorDataDailyRes {
 					result.add(caresMap.get(CARE[3]));
 				}
 			}
+			
+			if(!care586) result.add(caresMap.get(CARE[4]));
 			return result;
 		}
 		return Collections.emptyList();
@@ -262,6 +296,64 @@ public class ValidatorDataDailyRes {
 						x.setMessage("Msg_1400");
 						result.add(x);
 					}
+				}
+			}
+		});
+		return result;
+	}
+	
+	// UKDesign.UniversalK.就業.KDW_日別実績.KDW003_日別実績の修正.A：日別実績の修正_NEW.アルゴリズム.計算、登録.チェック処理.計算前エラーチェック.開始終了時刻順序不正チェック.開始終了時刻順序不正チェック
+	public List<DPItemValue> checkInputDataPlus(List<DPItemValue> items, List<DailyModifyResult> itemValues) {
+		List<DPItemValue> result = new ArrayList<>();
+		// loc chua item can check
+		List<DPItemValue> itemCanCheck = items.stream().filter(x -> INPUT_CHECK_PLUS_MAP.containsKey(x.getItemId()))
+				.collect(Collectors.toList());
+		if (itemCanCheck.isEmpty())
+			return result;
+		Map<Integer, String> itemCheckMap = itemCanCheck.stream()
+				.collect(Collectors.toMap(x -> x.getItemId(), x -> x.getValue() == null ? "" : x.getValue()));
+		List<DPItemValue> itemCheckDBs = new ArrayList<>();
+		// loc nhung thang chi duoc insert 1 trong 1 cap
+		itemCanCheck.forEach(x -> {
+			Integer itemCheck = INPUT_CHECK_PLUS_MAP.get(x.getItemId());
+			if (!itemCheckMap.containsKey(itemCheck)) {
+				itemCheckDBs.add(x);
+			}else {
+				if(itemCheck != null) {
+					 Integer itemId1 = x.getItemId();
+					 Integer itemId2 = INPUT_CHECK_PLUS_MAP.get(itemId1);
+					 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+							: itemCheckMap.get(itemId2);
+					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+								: itemCheckMap.get(itemId2);
+					if (Strings.isNotBlank(valueItemIdStart) && Strings.isNotBlank(valueItemIdEnd) && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+						x.setMessage("Msg_1400");
+						result.add(x);
+					}
+				}
+			}
+		});
+		if (itemCheckDBs.isEmpty())
+			return result;
+
+		if (itemValues.isEmpty())
+			return result;
+		Map<Integer, String> valueGetFromDBMap = itemValues.get(0).getItems().stream()
+				.collect(Collectors.toMap(x -> x.getItemId(), x -> x.getValue() == null ? "" : x.getValue()));
+		itemCheckDBs.stream().forEach(x -> {
+			Integer itemId = INPUT_CHECK_PLUS_MAP.get(x.getItemId()); 
+			if(itemId != null) {
+				 Integer itemId1 = x.getItemId();
+				 Integer itemId2 = INPUT_CHECK_PLUS_MAP.get(itemId1);
+				 String valueItemIdStart = (itemId1 < itemId2) ? x.getValue()
+						: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
+								: valueGetFromDBMap.get(itemId2);
+				 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
+							: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
+									: valueGetFromDBMap.get(itemId2);
+				if (Strings.isNotBlank(valueItemIdStart) && Strings.isNotBlank(valueItemIdEnd) && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+					x.setMessage("Msg_1400");
+					result.add(x);
 				}
 			}
 		});
@@ -648,7 +740,11 @@ public class ValidatorDataDailyRes {
 			messageIds.add("Msg_1415");
 		} else if(errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value){
 			messageIds.add("Msg_1414");
-		}
+		} else if(errroType.value == ErrorType.CHILDCARE_HOLIDAY.value){
+            messageIds.add("Msg_2264");
+        } else if(errroType.value == ErrorType.CARE_HOLIDAY.value){
+            messageIds.add("Msg_2265");
+        }
 
 		return messageIds;
 	}

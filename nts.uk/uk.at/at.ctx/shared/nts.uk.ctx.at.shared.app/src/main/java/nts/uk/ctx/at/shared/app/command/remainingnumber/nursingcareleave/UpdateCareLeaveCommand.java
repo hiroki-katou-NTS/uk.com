@@ -31,6 +31,10 @@ public class UpdateCareLeaveCommand {
 	// 子の看護休暇管理
 	@PeregItem("IS00379")
 	private BigDecimal childCareUsedDays;
+	
+	// 子の看護使用時間
+	@PeregItem("IS01101")
+	private BigDecimal childCareUsedTimes;
 
 	// 介護休暇管理
 	@PeregItem("IS00380")
@@ -51,4 +55,8 @@ public class UpdateCareLeaveCommand {
 	// 介護使用日数
 	@PeregItem("IS00384")
 	private BigDecimal careUsedDays;
+	
+	// 介護使用時間
+	@PeregItem("IS01102")
+	private BigDecimal careUsedTimes;
 }

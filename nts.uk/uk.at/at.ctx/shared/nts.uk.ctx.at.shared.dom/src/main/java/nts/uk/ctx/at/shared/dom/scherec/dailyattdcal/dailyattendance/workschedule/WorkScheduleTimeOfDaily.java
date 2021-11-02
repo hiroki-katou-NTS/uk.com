@@ -98,7 +98,6 @@ public class WorkScheduleTimeOfDaily {
 				Collections.emptyList(),
 				personDailySetting.getPersonInfo(),
 				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc()),
-				personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly(),
 				Optional.of(schedulePerformance.getCalculationRangeOfOneDay().getWorkInformationOfDaily().getRecordInfo().getWorkTimeCode()),
 				new DeclareTimezoneResult());
 		

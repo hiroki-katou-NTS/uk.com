@@ -5,10 +5,12 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommandHandler;
 import nts.uk.screen.at.app.kdw013.query.CreateDpItemQuery;
@@ -42,33 +44,39 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		RegisterWorkContentCommand command = context.getCommand();
 		
+		
+		
 		RegisterWorkContentDto result = new RegisterWorkContentDto();
 		// 1. 実績登録パラメータを作成する
 
 		DPItemParent dataParent = createDpItemQuery.CreateDpItem(command.getEmployeeId(), command.getChangedDates(),
 				command.getManHrlst(), command.getIntegrationOfDailys());
 
+		//throw business
 		// 2. 修正した実績を登録する
-		this.dailyModifyRCommandFacade.insertItemDomain(dataParent);
+		DataResultAfterIU dataResult = this.dailyModifyRCommandFacade.insertItemDomain(dataParent);
 		
-		// 6. 作業時間帯グループを登録する
+		if (!dataResult.getMessageAlert().equals("Msg_15")) {
+			throw new BusinessException(dataResult.getMessageAlert());
+		}
+		
+		// 3. 作業時間帯グループを登録する
 		
 		command.getWorkDetails().forEach(wd -> {
 
-			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(),
-					wd.toTimeZones());
+			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(), wd.toTimeZones());
 
 			this.handler.handle(cmd);
 		});
 
-		// 3. アラーム発生対象日を確認する
+		// 4. アラーム発生対象日を確認する
 
 		checkAlarmTargetDate.checkAlarm(command.getEmployeeId(), command.getChangedDates());
 		
 		
 		if(command.getMode() == 1){
 			
-			// 4.残業申請・休出時間申請の対象時間を取得する
+			// 5.残業申請・休出時間申請の対象時間を取得する
 			
 			List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(),
 					command.getChangedDates());
@@ -77,7 +85,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 			
 		}
 		
-		// 5. List<残業休出時間>.isPresent check dưới client
+		// 6. List<残業休出時間>.isPresent check dưới client
 
 		return result;
 	}

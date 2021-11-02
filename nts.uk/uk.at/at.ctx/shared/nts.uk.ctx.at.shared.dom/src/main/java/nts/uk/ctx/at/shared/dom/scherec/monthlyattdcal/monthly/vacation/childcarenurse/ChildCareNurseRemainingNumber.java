@@ -4,12 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 
 /**
  * 子の看護介護残数
@@ -75,16 +71,6 @@ public class ChildCareNurseRemainingNumber {
 			return true;
 		}else {
 			return false;
-		}
-	}
-
-	/** 子の看護介護残数を引算 */
-	public void sub(ChildCareNurseRemainingNumber usedNumber) {
-		remainDay = new DayNumberOfRemain(remainDay.v() - usedNumber.getRemainDay().v());
-		if (remainTimes.isPresent()) {
-			remainTimes = remainTimes.map(c -> c.minusMinutes(usedNumber.getRemainTimes().map(x -> x.v()).orElse(0)));
-		} else {
-			remainTimes = usedNumber.getRemainTimes();
 		}
 	}
 }

@@ -66,8 +66,9 @@ public class SupportWorkReflection {
 	@Inject
 	private TaskOperationSettingRepository taskOperationSettingRepo;
 
-	public ReflectionAtr supportWorkReflect(SupportParam param, IntegrationOfDaily integrationOfDaily,
+	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
+
 		String cid = AppContexts.user().companyId();
 		
 		/** 工数入力の利用設定を取得する */
@@ -149,7 +150,7 @@ public class SupportWorkReflection {
 	public boolean checkStarEndSupport(WorkTimeInformation timeDay, StampReflectRangeOutput stampReflectRangeOutput) {
 		// パラメータ。勤怠打刻を反映範囲ないか確認する
 		// 打刻反映範囲。外出。開始＜＝勤怠打刻。時刻。時刻＜＝打刻反映範囲。外出。終了
-		if (timeDay != null && stampReflectRangeOutput.getGoOut().getStart().v() <= timeDay.getTimeWithDay().get().v()
+		if (timeDay != null && timeDay.getTimeWithDay().isPresent() && stampReflectRangeOutput.getGoOut().getStart().v() <= timeDay.getTimeWithDay().get().v()
 				&& timeDay.getTimeWithDay().get().v() <= stampReflectRangeOutput.getGoOut().getEnd().v()) {
 			return true;
 		}
@@ -231,7 +232,7 @@ public class SupportWorkReflection {
 			eachOuen = WorkplaceOfWorkEachOuen.create(new WorkplaceId(informationWork.getWorkplaceId().v()), null);
 		}
 
-		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty(), Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 
 		TimeSheetOfAttendanceEachOuenSheet timeSheet = null;
 
@@ -674,7 +675,7 @@ public class SupportWorkReflection {
 				
 				if(lastData.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET) {
 					// 最後の退勤の応援データを補正する
-					WorkTimeInformation information = WorkTimeInformation.createByAutomaticSet(endOuenLast.get().getTimeWithDay().get());
+					WorkTimeInformation information = WorkTimeInformation.createByAutomaticSet(endOuenLast.get().getTimeWithDay().isPresent()?endOuenLast.get().getTimeWithDay().get():null);
 					lastData.getTimeSheet()
 							.setStart(information);
 				}
@@ -1040,7 +1041,9 @@ public class SupportWorkReflection {
 			// if Nullじゃない場合
 			// 最後の退勤の時刻と同じ時刻の応援データを応援データ一覧から検索して抜き出し
 			// 最後の退勤。打刻。時刻。時刻
-			Integer time1 = detectAttendance.getLastLeave().get().getStamp().isPresent() ? detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay().get().v() : null;
+			Integer time1 = detectAttendance.getLastLeave().isPresent() && detectAttendance.getLastLeave().get().getStamp().isPresent() 
+					&& detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+					? detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay().get().v() : null;
 			// 同一打刻の判断基準。同一打刻とみなす範囲
 			Integer time2 = judgmentSupport == null ? 0 : judgmentSupport.getSameStampRanceInMinutes().v();
 			
@@ -1063,7 +1066,9 @@ public class SupportWorkReflection {
 					departureTempo.setLastLeave(ouenWorkTimeAfter);
 
 					// 出退勤の応援。最後の退勤。時間帯。開始。時刻。時刻＝最後の退勤。打刻。時刻。時刻
-					if (departureTempo.getLastLeave().get().getTimeSheet().getEnd().isPresent()) {
+					if (departureTempo.getLastLeave().isPresent() 
+							&& departureTempo.getLastLeave().get().getTimeSheet().getEnd().isPresent()
+							&& detectAttendance.getLastLeave().get().getStamp().isPresent()) {
 						departureTempo.getLastLeave().get().getTimeSheet().getEnd().get().setTimeWithDay(
 								detectAttendance.getLastLeave().get().getStamp().get().getTimeDay().getTimeWithDay());
 					}
@@ -1101,7 +1106,7 @@ public class SupportWorkReflection {
 				informationWork.getLocationCD() == null ? null
 						: new WorkLocationCD(informationWork.getLocationCD().v()));
 
-		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty(), Optional.empty());
+		WorkContent workContent = WorkContent.create(eachOuen, Optional.empty(), Optional.empty());
 		if (startAtr == StartAtr.START_OF_SUPPORT) {
 			TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(0),
 					Optional.ofNullable(timeDay), Optional.empty());

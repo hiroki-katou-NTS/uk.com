@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse;
 
 import java.util.List;
 import java.util.Optional;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.export.GetRemNumClosureStart;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -14,11 +13,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.NursingCareLeaveRemainingInfo;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
-import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurse;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggregateChildCareNurseWork;
 
@@ -54,16 +51,6 @@ public class GetRemainingNumberChildCareNurseService {
 		Optional<ChildCareLeaveRemainingInfo> childCareLeaveEmployeeInfo(String employeeId);
 		//介護休暇基本情報を取得する（社員ID）
 		Optional<CareLeaveRemainingInfo> careLeaveEmployeeInfo(String employeeId);
-
-
-		// 会社の年休設定を取得する（会社ID）
-		AnnualPaidLeaveSetting annualLeaveSet(String companyId);
-
-		// 社員の契約時間を取得する（社員ID、基準日）
-		LaborContractTime empContractTime(String employeeId, GeneralDate criteriaDate );
-
-		// 年休の契約時間を取得する（会社ID、社員ID、基準日）
-		LaborContractTime contractTime(String companyId, String employeeId,  GeneralDate criteriaDate);
 
 		// 子の看護休暇使用数データを取得（社員ID）
 		Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId);

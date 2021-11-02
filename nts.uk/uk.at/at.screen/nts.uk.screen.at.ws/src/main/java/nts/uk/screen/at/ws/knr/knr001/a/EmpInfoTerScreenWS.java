@@ -15,6 +15,9 @@ import nts.uk.screen.at.app.query.knr.knr001.a.GetEmpInfoTerminalListDto;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedTerminalInfo;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetSelectedTerminalInfoDto;
 import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkLocationNameDto;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkplaceNameChangingBaseDateDto;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkplaceNameChangingBaseDateInput;
+import nts.uk.screen.at.app.query.knr.knr001.a.GetWorkplaceNameChangingBaseDateSQ;
 
 /**
  *
@@ -29,6 +32,9 @@ public class EmpInfoTerScreenWS extends WebService {
 	private GetEmpInfoTerminalList getEmpInfoTerminalList;
 	@Inject
 	private GetSelectedTerminalInfo getSelectedTerminalInfo;
+	
+	@Inject
+	private GetWorkplaceNameChangingBaseDateSQ getWorkplaceNameChangingBaseDateSQ;
 
 	@POST
 	@Path("getall")
@@ -46,5 +52,11 @@ public class EmpInfoTerScreenWS extends WebService {
 	@Path("getworklocationname/{workLocationCD}")
 	public GetWorkLocationNameDto getWorkLocationName(@PathParam("workLocationCD") String workLocationCD) {
 		return this.getSelectedTerminalInfo.getWorkLocationName(workLocationCD);
+	}
+	
+	@POST
+	@Path("getWorkplaceNameChangingBaseDate")
+	public List<GetWorkplaceNameChangingBaseDateDto> getWorkplaceNameChangingBaseDate(GetWorkplaceNameChangingBaseDateInput input) {
+		return this.getWorkplaceNameChangingBaseDateSQ.getWorkplaceNameChangingBaseDate(input);
 	}
 }

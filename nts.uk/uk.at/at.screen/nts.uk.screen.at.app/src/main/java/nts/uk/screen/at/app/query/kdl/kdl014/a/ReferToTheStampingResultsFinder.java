@@ -30,6 +30,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
+import nts.uk.query.pub.employee.EmployeeInformationExport;
+import nts.uk.query.pub.employee.EmployeeInformationPub;
+import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 import nts.uk.screen.at.app.query.kdl.kdl014.a.dto.EmpInfomationDto;
 import nts.uk.screen.at.app.query.kdl.kdl014.a.dto.Kdl014EmpParamDto;
 import nts.uk.screen.at.app.query.kdl.kdl014.a.dto.ReferToTheStampingResultsDto;
@@ -56,6 +59,9 @@ public class ReferToTheStampingResultsFinder {
 	
 	@Inject
 	private WorkLocationRepository workLocationRepo;
+	
+	@Inject
+	private EmployeeInformationPub employeeInformationPub;
 	
 	public ReferToTheStampingResultsDto get(Kdl014EmpParamDto param) {
 		
@@ -85,7 +91,7 @@ public class ReferToTheStampingResultsFinder {
 	}
 
 	private List<String> step1(Kdl014EmpParamDto param, List<EmployeeStampInfo> listEmployeeStampInfo) {
-		List<String> employeeIds = param.getListEmp().stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		List<String> employeeIds = param.getListEmp();
 		
 		GetListStampEmployeeService.Require require = new RequireImpl(stampCardRepository, stampRecordRepository, stampDakokuRepository);
 		
@@ -119,8 +125,14 @@ public class ReferToTheStampingResultsFinder {
 	private List<WorkLocation> step3(List<EmployeeStampInfo> listEmployeeStampInfo) {
 		
 		List<StampInfoDisp> listStampInfoDisp = listEmployeeStampInfo.stream().flatMap(m->m.getListStampInfoDisp().stream()).collect(Collectors.toList());
+
+		List<Stamp> listStamp = new ArrayList<>();
 		
-		List<Stamp> listStamp = listStampInfoDisp.stream().flatMap(m -> m.getStamp().stream()).collect(Collectors.toList());
+		listStampInfoDisp.stream().forEach(f -> {
+			if (f.getStamp().isPresent()){
+				listStamp.add(f.getStamp().get());
+			}
+		});
 		
 		List<Stamp> listStampFilter = listStamp.stream().filter(m -> m.getRefActualResults().getWorkInforStamp().isPresent()).collect(Collectors.toList());
 		
@@ -157,21 +169,22 @@ public class ReferToTheStampingResultsFinder {
 			
 			employeeStampListInfo.stream().forEach(stampInfo -> {
 				stampInfo.getListStampInfoDisp().stream().forEach(stamp -> {
-					stamp.getStamp().forEach(st -> {
-						
+					
+					if (stamp.getStamp().isPresent()) {
 						Optional<WorkLocation> wl = Optional.empty();
 						
-						if (st.getRefActualResults().getWorkInforStamp().isPresent() && st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
+						if (stamp.getStamp().get().getRefActualResults().getWorkInforStamp().isPresent() 
+								&& stamp.getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
 							wl = workLocationList.stream()
 									.filter(c -> c.getWorkLocationCD().v()
-											.equals(st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()))
+											.equals(stamp.getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()))
 									.findFirst();
 						}
 						
-						EmpInfomationDto em = createEmpInfoDto(empInfo, stamp, st, wl);
+						EmpInfomationDto em = createEmpInfoDto(empInfo, stamp, stamp.getStamp().get(), wl);
 						
 						listEmps.add(em);
-					});
+					}
 				});
 			});
 		});
@@ -193,6 +206,19 @@ public class ReferToTheStampingResultsFinder {
 				stamp.getStampAtr(),
 				wl.isPresent() ? wl.get().getWorkLocationName().v() : null,
 				st.getLocationInfor().isPresent() ? st.getLocationInfor().get() : null);
+	}
+	
+	public List<EmployeeInformationExport> getEmployeeData(Kdl014EmpParamDto param) {
+	    EmployeeInformationQueryDto dataParam = new EmployeeInformationQueryDto(
+	            param.getListEmp(), 
+	            param.getEnd(), 
+	            true, 
+	            false, 
+	            false, 
+	            false, 
+	            false, 
+	            false);
+	    return employeeInformationPub.find(dataParam);
 	}
 
 	@AllArgsConstructor

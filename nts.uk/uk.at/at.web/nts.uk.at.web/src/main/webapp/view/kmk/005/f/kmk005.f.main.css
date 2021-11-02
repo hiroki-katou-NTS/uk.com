@@ -60,19 +60,19 @@ button.nts-switch-button {
 }
 .combo-box1 {
 	width: 150px;
-	height: 25px;
+	display: table-cell;
 }
 .combo-box2 {
 	width: 75px;
-	height: 25px;
+	display: table-cell;
 }
 .combo-box3 {
 	width: 125px;
-	height: 25px;
+	display: table-cell;
 }
 .combo-box4 {
 	width: 135px;
-	height: 25px;
+	display: table-cell;
 }
 #table-panel-1 > thead > tr > th {
 	padding-left: 10px;

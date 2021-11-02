@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk006.l {
         selectedStartDateInput: KnockoutObservable<string | null> = ko.observable('');
         selectedStartDateText: KnockoutObservable<string | null> = ko.observable('');
         selectedEndDate: KnockoutObservable<string> = ko.observable('');
-        copyPreviousConfig: KnockoutObservable<boolean> = ko.observable(true);
+        copyPreviousConfig: KnockoutObservable<boolean> = ko.observable(false);
         isLatestHistory: KnockoutObservable<boolean> = ko.observable(true);
         textTitle: KnockoutObservable<string> = ko.observable('');
         public model: HistoryItem = new HistoryItem();
@@ -76,7 +76,7 @@ module nts.uk.at.view.kmk006.l {
 
         mounted() {
             const vm = this;
-            $('.list-history').focus();
+            $('.list-history #single-list_container').focus();
             vm.$errors('clear');
         }
 
@@ -133,6 +133,12 @@ module nts.uk.at.view.kmk006.l {
                                     }));
                                 }));
                                 vm.lstWpkHistory(_.orderBy(hisLocal, ['startDate'], ['desc']));
+                            } else {
+                                hisLocal = [];
+                                vm.lstWpkHistory([]);
+                                vm.screenMode(SCREEN_MODE.NEW);
+                                vm.setEndDate();
+                                vm.selectedStartDateInput('');
                             }
                         })
                         .then(() => {
@@ -149,6 +155,17 @@ module nts.uk.at.view.kmk006.l {
             vm.$window.close();
         }
 
+        validate(action: 'clear' | undefined = undefined) {
+            if (action === 'clear') {
+                return $.Deferred().resolve()
+                    .then(() => $('.nts-input').ntsError('clear'));
+            } else {
+                return $.Deferred().resolve()
+                    .then(() => $('.nts-input').trigger("validate"))
+                    .then(() => !$('.nts-input').ntsError('hasError'));
+            }
+        }
+
         AddOrUpdate() {
             const vm = this;
             const param = {
@@ -162,21 +179,26 @@ module nts.uk.at.view.kmk006.l {
             if (ko.unwrap(vm.screenMode) === SCREEN_MODE.ADD || ko.unwrap(vm.screenMode) === SCREEN_MODE.NEW) {
                 vm.$blockui('invisible')
                     .then(() => {
-                        vm.$ajax('at', API.RESISTER, param)
-                            .done((hisId: any) => {
-                                vm.$errors('clear');
-                                vm.$dialog.info({ messageId: 'Msg_15' })
-                                    .then(() => {
-                                        hisLocal.push(new HistoryItem({
-                                            historyId: hisId.hisId,
-                                            startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
-                                            endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
-                                        }));
-                                        vm.reload();
-                                    });
-                            })
-                            .fail((data: any) => {
-                                vm.$dialog.info({ messageId: data.messageId })
+                        vm.validate()
+                            .then((valid: boolean) => {
+                                if (valid) {
+                                    vm.$ajax('at', API.RESISTER, param)
+                                        .done((hisId: any) => {
+                                            vm.$errors('clear');
+                                            vm.$dialog.info({ messageId: 'Msg_15' })
+                                                .then(() => {
+                                                    hisLocal.push(new HistoryItem({
+                                                        historyId: hisId.hisId,
+                                                        startDate: moment(ko.unwrap(vm.selectedStartDateInput)).format(DATE_FORMAT),
+                                                        endDate: moment(ko.unwrap(vm.selectedEndDate)).format(DATE_FORMAT)
+                                                    }));
+                                                    vm.reload();
+                                                });
+                                        })
+                                        .fail((data: any) => {
+                                            vm.$dialog.info({ messageId: data.messageId })
+                                        })
+                                }
                             })
                     })
                     .always(() => vm.$blockui('clear'));

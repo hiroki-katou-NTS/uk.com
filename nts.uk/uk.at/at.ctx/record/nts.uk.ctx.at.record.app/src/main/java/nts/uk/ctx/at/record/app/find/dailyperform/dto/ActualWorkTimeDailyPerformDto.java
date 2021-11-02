@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.dailyperform.editstate.EditStateOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
@@ -116,13 +117,18 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst, AttendanceItemD
 					constraintDifferenceTime == null ? 0 : constraintDifferenceTime, 
 					timeDifferenceWorkingHours == null ? 0 : timeDifferenceWorkingHours,
 				new DivergenceTimeOfDaily(ConvertHelper.mapTo(divergenceTime,
-								c -> new DivergenceTime(toAttendanceTimeWithMinus(c.getDivergenceTimeAfterDeduction()),
-										toAttendanceTimeWithMinus(c.getDeductionTime()), toAttendanceTimeWithMinus(c.getDivergenceTime()),
+								c -> new DivergenceTime(toAttendanceTimeWithMinus(c.getDivergenceTime()),
 										c.getNo(),
 										c.getDivergenceReason() == null ? null : new DivergenceReasonContent(c.getDivergenceReason()),
 										c.getDivergenceReasonCode() == null ? null : new DiverdenceReasonCode(c.getDivergenceReasonCode())))),
 				new PremiumTimeOfDailyPerformance(ConvertHelper.mapTo(premiumTimes,
 										c -> new PremiumTime(ExtraTimeItemNo.valueOf(c.getNo()), toAttendanceTime(c.getPremitumTime()), toAttendanceAmountDaily(c.getPremiumAmount())))));
+	}
+	
+	public void correct(List<EditStateOfDailyPerformanceDto> editStates) {
+		
+		if (this.totalWorkingTime != null) 
+			this.totalWorkingTime.correct(editStates);
 	}
 
 	private AttendanceTime toAttendanceTime(Integer value) {

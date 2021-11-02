@@ -8,7 +8,8 @@ const kDP002RequestUrl = {
     SETTING_NIKONIKO: 'at/record/stamp/setting_emoji_stamp',
     SEND_EMOJI: 'at/record/stamp/regis_emotional_state',
     GET_SETTING: 'at/record/stamp/settingNoti',
-    WORKPLACE_INFO: "screen/at/kdp003/workplace-info"
+    WORKPLACE_INFO: "screen/at/kdp003/workplace-info",
+    FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting'
 }
 
 interface TimeClock {
@@ -67,6 +68,7 @@ class KDP002BViewModel extends ko.ViewModel {
     modeShowPointNoti: KnockoutObservable<boolean | null> = ko.observable(null);
     showBtnNoti: KnockoutObservable<boolean | null> = ko.observable(null);
     activeViewU: KnockoutObservable<boolean> = ko.observable(false);
+    noticeSetting: KnockoutObservable<INoticeSet> = ko.observable(null);
 
 
     constructor() {
@@ -127,6 +129,11 @@ class KDP002BViewModel extends ko.ViewModel {
 		vm.workPlace.subscribe(()=>{
 			vm.settingSizeView();
 		});
+
+        vm.$ajax(kDP002RequestUrl.FINGER_STAMP_SETTING)
+            .then((data: any) => {
+                vm.noticeSetting(data.noticeSetDto);
+            });
     }
 
     mounted() {
@@ -346,10 +353,8 @@ class KDP002BViewModel extends ko.ViewModel {
 
     getNotification() {
         const vm = this;
-        let startDate = vm.$date.now();
-        startDate.setDate(startDate.getDate() - 3);
         const param = {
-            startDate: startDate,
+            startDate: vm.$date.now(),
             endDate: vm.$date.now(),
             sid: vm.infoEmpFromScreenA.employeeId
         }
@@ -416,7 +421,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
     openDialogU() {
         const vm = this;
-        const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp) };
+        const params = { sid: vm.infoEmpFromScreenA.employeeId, data: ko.unwrap(vm.notificationStamp), setting: ko.unwrap(vm.noticeSetting) };
         vm.activeViewU(true);
         vm.$window
             .modal('/view/kdp/002/u/index.xhtml', params)
@@ -545,4 +550,13 @@ enum Emoji {
 
     // いい感じ
     HAPPY = 4
+}
+
+interface INoticeSet {
+    personMsgColor: IColorSettingDto ; //個人メッセージ色
+}
+
+interface IColorSettingDto {
+    textColor: string; //文字色
+    backGroundColor: string //背景色
 }

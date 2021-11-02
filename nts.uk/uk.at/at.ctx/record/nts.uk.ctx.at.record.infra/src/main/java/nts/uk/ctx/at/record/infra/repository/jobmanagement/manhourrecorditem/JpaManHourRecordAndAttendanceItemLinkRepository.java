@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.jobmanagement.manhourrecorditem;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,7 @@ public class JpaManHourRecordAndAttendanceItemLinkRepository extends JpaReposito
 
 	@Override
 	public List<ManHourRecordAndAttendanceItemLink> get(String cId, List<Integer> items) {
+		if(items.isEmpty()) return new ArrayList<ManHourRecordAndAttendanceItemLink>();
 		return this.queryProxy().query(SELECT_BY_CID_AND_ITEM, KrcmtManHrItemLink.class)
 				.setParameter("cId", cId)
 				.setParameter("items", items)

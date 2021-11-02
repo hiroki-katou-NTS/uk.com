@@ -3,6 +3,8 @@ module nts.uk.ui.at.kdw013 {
     export type API = {
         readonly START: string;
         readonly SELECT: string;
+        readonly START_F: string;
+        readonly ADD_FAV_TASK_F: string;
     };
 
     export type TASK_FRAME_NO = 1 | 2 | 3 | 4 | 5;
@@ -96,19 +98,19 @@ module nts.uk.ui.at.kdw013 {
 
     export type StartWorkInputPanelDto = {
         /** 利用可能作業1リスト */
-        taskListDto1: TaskDto[];
+        taskFrameNo1: TaskDto[];
 
         /** 利用可能作業2リスト */
-        taskListDto2: TaskDto[];
+        taskFrameNo2: TaskDto[];
 
         /** 利用可能作業3リスト */
-        taskListDto3: TaskDto[];
+        taskFrameNo3: TaskDto[];
 
         /** 利用可能作業4リスト */
-        taskListDto4: TaskDto[];
+        taskFrameNo4: TaskDto[];
 
         /** 利用可能作業5リスト */
-        taskListDto5: TaskDto[];
+        taskFrameNo5: TaskDto[];
 
 		/** List<勤務場所> */
         workLocation: a.WorkLocationDto[];
@@ -145,6 +147,15 @@ module nts.uk.ui.at.kdw013 {
 	
 		/* 名称の改行位置*/
 		 nameLineFeedPosition: number;
+		
+		/* マスタの種類 */
+		masterType: number;
+
+		/* 怠項目のPrimitiveValue */
+		primitiveValue: number;
+
+		/* 表示名称 */
+		displayName: string;
 	}
 	
 	export type ManHourRecordAndAttendanceItemLinkDto = {

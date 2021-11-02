@@ -1,19 +1,27 @@
 package nts.uk.ctx.at.record.app.command.stamp.card.stampcard.management.personalengraving;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
+import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
@@ -21,12 +29,19 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPgAlTrRepository;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
@@ -34,10 +49,12 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -45,7 +62,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
  * @author anhdt 打刻入力(個人)を登録する
@@ -82,16 +105,56 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 	
 	@Inject
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+	
+	@Inject
+	private DailyRecordShareFinder dailyRecordShareFinder;
+	
+	@Inject
+	private EmpInfoTerminalRepository empInfoTerminalRepository;
+
+	@Inject
+	private EmployeeManageRCAdapter employeeManageRCAdapter;
+
+	@Inject
+	private TopPgAlTrRepository executionLog;
+	
+	@Inject
+	private DailyRecordAdUpService dailyRecordAdUpService;
+	
+	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+	
+	@Inject
+	private IGetInfoForLogin iGetInfoForLogin;
+	
+	@Inject
+	private LoginUserContextManager loginUserContextManager;
+	
+    @Inject
+    private CalculateDailyRecordServiceCenter calcService;
+    
+    @Inject
+    private ClosureRepository closureRepo;
+
+    @Inject
+	 private ClosureEmploymentRepository closureEmploymentRepo;
+
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
 
 	@Override
 	protected RegisterStampDataResult handle(CommandHandlerContext<RegisterStampDataCommand> context) {
 		CreateStampDataForEmployeesRequiredImpl required = new CreateStampDataForEmployeesRequiredImpl(
 				stampCardRepository, stampDakokuRepo, stampRecordRepo, createDailyResultDomainServiceNew, stampCardEditRepo,
-				sysEmpPub, companyAdapter, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd);
+				sysEmpPub, companyAdapter, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
+				dailyRecordShareFinder, empInfoTerminalRepository, employeeManageRCAdapter, executionLog, 
+				dailyRecordAdUpService, getMngInfoFromEmpIDListAdapter, iGetInfoForLogin, loginUserContextManager, 
+				calcService, closureRepo, closureEmploymentRepo, shareEmploymentAdapter);
 
 		RegisterStampDataCommand cmd = context.getCommand();
 		String employeeId = AppContexts.user().employeeId();
 		TimeStampInputResult result = CreateStampDataForEmployeesService.create(required,
+				AppContexts.user().companyId(),
 				new ContractCode(AppContexts.user().contractCode()), employeeId, Optional.empty(),
 				cmd.retriveDateTime(), cmd.toRelieve(), cmd.toButtonType(),
 				cmd.toRefectActualResult(), Optional.ofNullable(cmd.toGeoCoordinate()));
@@ -145,6 +208,30 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+		
+		private DailyRecordShareFinder dailyRecordShareFinder;
+		
+		private EmpInfoTerminalRepository empInfoTerminalRepository;
+
+		private EmployeeManageRCAdapter employeeManageRCAdapter;
+
+		private TopPgAlTrRepository executionLog;
+		
+		private DailyRecordAdUpService dailyRecordAdUpService;
+		
+		private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+		
+		private IGetInfoForLogin iGetInfoForLogin;
+		
+		private LoginUserContextManager loginUserContextManager;
+		
+		 private CalculateDailyRecordServiceCenter calcService;
+		 
+		 private ClosureRepository closureRepo;
+
+		 private ClosureEmploymentRepository closureEmploymentRepo;
+		 
+		 private ShareEmploymentAdapter shareEmploymentAdapter;
 
 		@Override
 		public void insert(StampRecord stampRecord) {
@@ -197,24 +284,124 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		}
 
 		@Override
-		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
+		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, integrationOfDaily);
 		}
 
 		@Override
-		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
+		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
-			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
+			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
 		}
 
 		@Override
-		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+		public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
-			return this.temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
+			return this.temporarilyReflectStampDailyAttd.reflectStamp(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 
+		@Override
+		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
+				GeneralDateTime dateTime) {
+			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
+		}
+		
+		@Override
+		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
+			return dailyRecordShareFinder.find(employeeId, date);
+		}
+		
+		@Override
+		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
+				ContractCode contractCode) {
+			return empInfoTerminalRepository.getEmpInfoTerminal(empInfoTerCode, contractCode);
+		}
+
+		@Override
+		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber) {
+			return stampCardRepository.getByCardNoAndContractCode(stampNumber.v(), contractCode.v());
+		}
+
+		@Override
+		public List<String> getListEmpID(String companyID, GeneralDate referenceDate) {
+			return employeeManageRCAdapter.getListEmpID(companyID, referenceDate);
+		}
+
+		@Override
+		public void insertLogAll(TopPageAlarmEmpInfoTer alEmpInfo) {
+			executionLog.insertLogAll(alEmpInfo);
+
+		}
+
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
+		}
+
+		@Override
+		public CompanyInfo getCompanyInfoById(String companyId) {
+			return companyAdapter.getCompanyInfoById(companyId);
+		}
+
+		@Override
+		public Optional<String> getUserIdFromLoginId(String perId) {
+			return iGetInfoForLogin.getUserIdFromLoginId(perId);
+		}
+
+		@Override
+		public void loggedInAsEmployee(String userId, String personId, String contractCode, String companyId,
+				String companyCode, String employeeId, String employeeCode) {
+			loginUserContextManager.loggedInAsEmployee(userId, personId, contractCode, companyId, companyCode, employeeId, employeeCode);
+		}
+
+		@Override
+		public List<IntegrationOfDaily> calculatePassCompanySetting(String cid,
+				List<IntegrationOfDaily> integrationOfDaily, ExecutionType reCalcAtr) {
+			return calcService.calculatePassCompanySetting(integrationOfDaily, Optional.empty(), reCalcAtr);
+		}
+
+		@Override
+		public void loggedOut() {
+			loginUserContextManager.loggedOut();
+		}
+
+		@Override
+		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+		}
+
+		@Override
+		public Optional<Closure> closure(String companyId, int closureId) {
+			return closureRepo.findById(companyId, closureId);
+		}
+
+		@Override
+		public void addAllDomain(IntegrationOfDaily domain) {
+			dailyRecordAdUpService.addAllDomain(domain);
+		}
+
+		@Override
+		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+				GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+			return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+		}
+
+		@Override
+		public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+			return closureRepo.findByListId(companyId, closureId);
+		}
 	}
 }

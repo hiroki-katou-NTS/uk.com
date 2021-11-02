@@ -239,7 +239,7 @@ public class KrcdtDayTimeGoout extends ContractUkJpaEntity implements Serializab
 				this.specialHolidayUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes() : 0 ;
 				this.overVacationUseTime =  outingTimeOfDaily.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().valueAsMinutes() : 0 ;
 				this.specialHdFrameNo = outingTimeOfDaily.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
-				this.childCareUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime().valueAsMinutes() : 0;
+				this.childCareUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime().valueAsMinutes() : 0;
 				this.careUseTime = outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime() != null ? outingTimeOfDaily.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime().valueAsMinutes() : 0;			
 			
 			}

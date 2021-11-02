@@ -122,8 +122,10 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 	@Override
 	public void update(List<OuenWorkTimeSheetOfDaily> domain) {
 		List<KrcdtDayOuenTimeSheet> lstEntity = new ArrayList<>();
-		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(e -> {
-			lstEntity.addAll(e);
+		domain.stream().map(c -> KrcdtDayOuenTimeSheet.convert(c)).forEach(entities -> {
+			
+			lstEntity.addAll(entities);
+			
 		});
 		
 		lstEntity.forEach(i -> {
@@ -132,8 +134,12 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				commandProxy().insert(i);
 				this.getEntityManager().flush();
 			} else{
-				updateData(entityOld.get(), i);
-				commandProxy().update(entityOld.get());
+				if (i.workCd1 == null && i.startTime == 0 && i.endTime == 0) {
+					commandProxy().remove(entityOld.get());
+				} else {
+					updateData(entityOld.get(), i);
+					commandProxy().update(entityOld.get());
+				}
 				this.getEntityManager().flush();
 			}
 		});
@@ -180,7 +186,6 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.workNo = dataUpdate.workNo;
 		entityOld.startTimeChangeWay = dataUpdate.startTimeChangeWay;
 		entityOld.endTimeChangeWay = dataUpdate.endTimeChangeWay;
-		entityOld.workRemarks = dataUpdate.workRemarks;
 		entityOld.workplaceId = dataUpdate.workplaceId;
 		entityOld.startStampMethod = dataUpdate.startStampMethod;
 		entityOld.endStampMethod = dataUpdate.endStampMethod;
@@ -204,10 +209,11 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = es.stream().map(ots -> OuenWorkTimeSheetOfDailyAttendance.create(
 				SupportFrameNo.of(ots.pk.ouenNo), 
 				WorkContent.create(
-						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)), 
+						WorkplaceOfWorkEachOuen.create(new WorkplaceId(ots.workplaceId), new WorkLocationCD(ots.workLocationCode)),
+						(ots.workCd1 == null && ots.workCd2 == null && ots.workCd3 == null && ots.workCd4 == null && ots.workCd5 == null) ? Optional.empty() :
 						Optional.of(WorkGroup.create(ots.workCd1, ots.workCd2, ots.workCd3, ots.workCd4, ots.workCd5)),
-						StringUtil.isNullOrEmpty(ots.workRemarks, true) ? Optional.empty() : Optional.of(new WorkinputRemarks(ots.workRemarks)),
-						Optional.of(toWorkSuppInfo(ots.krcdtDayTsSupSupplInfo))), 
+						ots.krcdtDayTsSupSupplInfo == null ? Optional.empty() : Optional.of(toWorkSuppInfo(ots.krcdtDayTsSupSupplInfo))
+						), 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(ots.workNo), 
 						Optional.of(new WorkTimeInformation(
@@ -392,5 +398,32 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				rec.getString("WORK_CD5") != null ? rec.getString("WORK_CD5").trim() : rec.getString("WORK_CD5"),
 				rec.getInt("TOTAL_TIME"));
 	}
-
+	
+	@Override
+	public List<OuenWorkTimeSheetOfDaily> find(List<String> sid, DatePeriod ymd) {
+		List<KrcdtDayOuenTimeSheet> entitis = new ArrayList<>();
+		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			entitis.addAll(this.queryProxy().query("SELECT s FROM KrcdtDayOuenTimeSheet s WHERE s.pk.sid IN :sid"
+				+ " AND s.pk.ymd >= :start AND s.pk.ymd <= :end", KrcdtDayOuenTimeSheet.class)
+				.setParameter("sid", p)
+				.setParameter("start", ymd.start())
+				.setParameter("end", ymd.end())
+				.getList()
+			);
+		});
+		if(entitis.isEmpty())
+			return new ArrayList<>();
+		List<OuenWorkTimeSheetOfDaily> rs = new ArrayList<>();
+		sid.forEach(id -> {
+			ymd.datesBetween().forEach(item -> {
+				List<KrcdtDayOuenTimeSheet> entitisBySidAndDate = entitis.stream().filter(i -> i.pk.sid.equals(id) && i.pk.ymd.equals(item)).collect(Collectors.toList());
+				if(!entitisBySidAndDate.isEmpty()){
+					rs.add(toDomain(entitisBySidAndDate));
+				}
+			});
+		});
+		return rs;
+	}
+	
 }
+

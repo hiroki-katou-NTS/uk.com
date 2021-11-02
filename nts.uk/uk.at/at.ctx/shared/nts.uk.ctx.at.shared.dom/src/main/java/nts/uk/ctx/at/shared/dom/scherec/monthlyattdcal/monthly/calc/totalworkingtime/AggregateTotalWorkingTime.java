@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.RegAndIrgTimeOfWeekly;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 /**
@@ -173,7 +173,7 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 		// 労働制を元に、該当する設定を取得する
 		LegalTransferOrderSetOfAggrMonthly legalTransferOrderSet = new LegalTransferOrderSetOfAggrMonthly(companyId);
 		Map<Integer, OvertimeWorkFrame> roleOverTimeFrameMap = new HashMap<>();
-		Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap = new HashMap<>();
+		Map<Integer, WorkdayoffFrame> roleHolidayWorkFrameMap = new HashMap<>();
 		List<OvertimeWorkFrame> autoExceptOverTimeFrames = new ArrayList<>();
 		List<Integer> autoExceptHolidayWorkFrames = new ArrayList<>();
 		ExcessOutsideTimeSetReg excessOutsideTimeSet = new ExcessOutsideTimeSetReg(false, false, false, false);

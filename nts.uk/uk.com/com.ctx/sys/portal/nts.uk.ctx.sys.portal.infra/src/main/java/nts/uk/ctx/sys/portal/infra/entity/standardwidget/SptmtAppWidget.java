@@ -13,8 +13,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWidgetItem;
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.DetailStandardWidgetTypeSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -84,7 +86,7 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 
 	public StandardWidget toDomain() {
 
-		StandardWidget standardWidget = new StandardWidget(companyId, "", null, null, null, null);
+		StandardWidget standardWidget = new StandardWidget(companyId);
 		
 		List<ApplicationStatusDetailedSetting> appStatusSettings = new ArrayList<>();
 
@@ -114,9 +116,15 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 		appStatusSettings.add(remandDisplay);
 		appStatusSettings.add(applimitDisplay);
 
-		standardWidget.setName(this.getTopPagePartName());
+		standardWidget.setName(new TopPagePartName(this.topPagePartName));
 		standardWidget.setAppStatusDetailedSettingList(appStatusSettings);
-		standardWidget.setStandardWidgetType(StandardWidgetType.APPLICATION_STATUS);
+		List<DetailStandardWidgetTypeSetting> detailSettingStandardWidgetTypes = new ArrayList<DetailStandardWidgetTypeSetting>();
+		detailSettingStandardWidgetTypes.add(new DetailStandardWidgetTypeSetting(
+				NotUseAtr.NOT_USE,
+				StandardWidgetType.APPLICATION_STATUS
+		));
+		
+		standardWidget.setDetailSettingStandardWidgetTypes(detailSettingStandardWidgetTypes);
 		return standardWidget;
 	}
 

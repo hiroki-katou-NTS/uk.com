@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.ApprovalProcessParam;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
@@ -58,7 +59,11 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 		AppDispInfoStartupOutput appDispInfoStartupOutput = cmd.getAppDispInfoStartupOutput().toDomain();
 		AppDetailScreenInfo appDetailScreenInfo = appDispInfoStartupOutput.getAppDetailScreenInfo().get();
 		Application application = appDetailScreenInfo.getApplication();
-		return approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, memo, Collections.emptyList(), false);
+		ApprovalProcessParam approvalProcessParam = new ApprovalProcessParam(
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet(),
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null));
+		return approve(companyID, application.getAppID(), application, approvalProcessParam, memo, Collections.emptyList(), false);
 	}
 	
 	/**
@@ -70,7 +75,7 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 	 * @param memo
 	 * @return
 	 */
-	public ApproveProcessResult approve(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo,
+	public ApproveProcessResult approve(String companyID, String appID, Application application, ApprovalProcessParam approvalProcessParam, String memo,
 			List<ListOfAppTypes> listOfAppTypes, boolean isFromCMM045) {
 		ApproveProcessResult approveProcessResult = new ApproveProcessResult();
 		//アルゴリズム「排他チェック」を実行する (thực hiện xử lý 「check version」)
@@ -92,7 +97,7 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
         String applicant = "";
         for(Application appLoop : appLst) {
         	//8-2.詳細画面承認後の処理
-            ProcessApprovalOutput processApprovalOutput = detailAfterApproval.doApproval(companyID, appLoop.getAppID(), appLoop, appDispInfoStartupOutput, memo);
+            ProcessApprovalOutput processApprovalOutput = detailAfterApproval.doApproval(companyID, appLoop.getAppID(), appLoop, approvalProcessParam, memo);
             if(Strings.isNotBlank(processApprovalOutput.getAppID())) {
             	approveProcessResult.getAppIDLst().add(processApprovalOutput.getAppID());
             }
@@ -111,9 +116,8 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
         	return approveProcessResult;
         }
         // IF文を参照
- 		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
- 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
- 		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && appTypeSetting.isSendMailWhenApproval();
+ 		AppTypeSetting appTypeSetting = approvalProcessParam.getAppTypeSetting();
+ 		boolean condition = approvalProcessParam.isMailServerSet() && appTypeSetting.isSendMailWhenApproval();
  		if(condition) {
  			approveProcessResult.setAutoSendMail(true);
  			if(!CollectionUtil.isEmpty(approverLst)) {

@@ -71,4 +71,8 @@ public class LeaveGrantNumber {
 		return this.getMinutes().get();
 	}
 
+	public boolean isZero() {
+		return this.days.v().equals(0.0) && this.getMinutesOrZero().equals(0);
+	}
+
 }

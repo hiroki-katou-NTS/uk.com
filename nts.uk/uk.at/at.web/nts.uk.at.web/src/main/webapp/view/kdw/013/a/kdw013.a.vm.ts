@@ -34,7 +34,22 @@ module nts.uk.ui.at.kdw013.a {
         // Chọn ngày ở [画面イメージ]A6_1/[固有部品]A1_1
         CHANGE_DATE: '/screen/at/kdw013/a/changeDate',
         // RegisterWorkContentCommand
-        REGISTER: '/screen/at/kdw013/a/register_work_content'
+        REGISTER: '/screen/at/kdw013/a/register_work_content',
+
+        // POPUP F
+        // 作業お気に入り登録を起動する
+        START_F: '/screen/at/kdw013/f/start_task_fav_register',
+        // 作業お気に入りを新規追加する
+        ADD_FAV_TASK_F: '/screen/at/kdw013/f/create_task_fav',
+        // 作業お気に入り名称を変更する
+        UPDATE_TASK_NAME_F: '/screen/at/kdw013/f/update_task_name',
+        // POPUP G
+        // 1日作業お気に入り登録を起動する
+        START_G: '/screen/at/kdw013/g/start_task_fav_register',
+        // 1日作業お気に入りを新規追加する
+        ADD_FAV_TASK_G: '/screen/at/kdw013/g/create_task_fav',
+        // 1日作業お気に入り名称を変更する
+        UPDATE_TASK_NAME_G: '/screen/at/kdw013/g/update_task_name'
     };
 
     const initialCache = (): ChangeDateParam => ({
@@ -116,11 +131,43 @@ module nts.uk.ui.at.kdw013.a {
         $settings: KnockoutObservable<StartProcessDto | null> = ko.observable(null);
     
         dataChanged: KnockoutObservable<boolean> = ko.observable(false);
+        favTaskName: KnockoutObservable<string> = ko.observable('');
+        oneDayFavTaskName: KnockoutObservable<string> = ko.observable('');
+
+        // F画面を起動する
+        favoriteTaskItem: KnockoutObservable<FavoriteTaskItemDto | null> = ko.observable(null);
+
+        // F画面: add new 
+        taskContents: KnockoutObservableArray<TaskContentDto> = ko.observableArray();
+
+        // G画面を起動する
+        oneDayFavoriteSet: KnockoutObservable<OneDayFavoriteSetDto | null> = ko.observable(null);
+
+        // G画面: add new 
+        taskBlocks: KnockoutObservableArray<TaskBlockDetailContentDto> = ko.observableArray();
+
+        // 作業枠利用設定
+        taskSettings: KnockoutObservableArray<a.TaskFrameSettingDto> = ko.observableArray();
+
+        // I画面
+        taskInfos: KnockoutObservableArray<TaskInfo> = ko.observableArray();
+        
+        // 作業リスト
+        taskDtos: KnockoutObservableArray<TaskDto> =  ko.observableArray();
+
+        // 日別勤怠の応援作業時間
+        ouenWorkTimes: KnockoutObservableArray<OuenWorkTimeOfDailyAttendance> =  ko.observableArray();
+
+        // 日別勤怠の応援作業時間帯
+        ouenWorkTimeSheets: KnockoutObservableArray<OuenWorkTimeSheetOfDailyAttendance> =  ko.observableArray();
+
+        //対象日
+        targetDate: KnockoutObservable<Date> =  ko.observable();
 
         constructor() {
             super();
-
             const vm = this;
+            vm.createWarning();
             let $query = vm.getQuery();
             const { employee } = vm;
             const { mode } = $query;
@@ -162,88 +209,131 @@ module nts.uk.ui.at.kdw013.a {
                 if (cache.pair === -1) {
                     return;
                 }
-
-                if (data && settings) {
-                    const { lstWorkRecordDetailDto } = data;
-                    const { tasks } = settings;
-
-                    if (lstWorkRecordDetailDto && tasks) {
-                        const events = _
-                            .chain(lstWorkRecordDetailDto)
-                            .map(({ date, employeeId, lstWorkDetailsParamDto }) => {
-                                const events: calendar.EventRaw[] =
-                                    _.chain(lstWorkDetailsParamDto)
-                                        .map(({
-                                            remarks,
-                                            supportFrameNo,
-                                            timeZone,
-                                            workGroup,
-                                            workLocationCD,
-                                        }) => {
-                                            const $date = moment(date, DATE_FORMAT).toDate();
-
-                                            const { end, start, workingHours } = timeZone;
-                                            const {
-                                                workCD1,
-                                                workCD2,
-                                                workCD3,
-                                                workCD4,
-                                                workCD5
-                                            } = workGroup;
-                                            const task = getTask(workGroup, tasks) || { displayInfo: {} } as any as c.TaskDto;
-                                            
-                                            const wg = {
-                                                workCD1,
-                                                workCD2,
-                                                workCD3,
-                                                workCD4,
-                                                workCD5
-                                            }
-
-                                            const { timeWithDay: startTime } = start;
-                                            const { timeWithDay: endTime } = end;
-                                            
-                                            return {
-                                                start: setTimeOfDate($date, startTime),
-                                                end: setTimeOfDate($date, endTime || (startTime + 60)),
-                                                title: getTitles(wg, tasks),
-                                                backgroundColor : getBackground(wg, tasks),
-                                                textColor: '',
-                                                extendedProps: {
-                                                    id: randomId(),
-                                                    status: 'normal' as any,
-                                                    remarks,
-                                                    employeeId,
-                                                    supportFrameNo,
-                                                    workCD1,
-                                                    workCD2,
-                                                    workCD3,
-                                                    workCD4,
-                                                    workCD5,
-                                                    workLocationCD,
-                                                    workingHours,
-                                                    isChanged: false
-                                                } as any
-                                            };
-                                        })
-                                        .value();
-
-                                return events;
-                            })
-                            .flatten()
-                            .value();
+                const { tasks } = settings;
+                if (data) {
+                    let events = [];
+                    _.forEach(_.get(data, 'lstIntegrationOfDaily'), ld => {
                         
-                        vm.events(events);
+                        
+                        let frameNos =[];
+                        
+                        let hrTask = _.find(_.get(data, 'dailyManHrTasks', []), dt => moment(dt.date).isSame(moment(ld.ymd),'days'));
+                        
+                        
+                        let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
+                        
+                        _.forEach(_.get(ld, 'breakTime.breakTimeSheets',[]), bt => {
+                            frameNos.push(bt.no);
+                            events.push(
+                                {
+                                    start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
+                                    end: setTimeOfDate(moment(ld.ymd).toDate(), bt.end),
+                                    title: vm.$i18n('KDW013_79'),
+                                    backgroundColor: '#fbb3fb',
+                                    textColor: '',
+                                    extendedProps: {
+                                        no: bt.no,
+                                        breakTime: bt.breakTime,
+                                        id: randomId(),
+                                        status: 'normal' as any,
+                                        isTimeBreak: true,
+                                        isChanged: false,
+                                        taskBlock: {
+                                            manHrContents,
+                                            taskDetails: []
+                                        }
+                                    } as any
+                                }
 
-                        return;
-                    }
+                            );
+                        });
+                        
+                        _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
+                            const {taskDetails, caltimeSpan} = tb;
+                            const ts = _.find(_.get(ld, 'ouenTimeSheet', []), ot => ot.workNo == _.get(taskDetails[0], 'supNo', null));
+                            const {start, end} = caltimeSpan;
+                            const work = _.get(ts, 'workContent.work');
+                           
+                            frameNos.push(vm.getFrameNo(events));
+                            events.push({
+                                taskFrameUsageSetting: ko.unwrap((vm.$settings)),
+                                period: { start, end },
+                                displayManHrRecordItems: _.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
+                                employeeId: vm.employee() || vm.$user.employeeId,
+                                start: setTimeOfDate(moment(ld.ymd).toDate(), start),
+                                end: setTimeOfDate(moment(ld.ymd).toDate(), end),
+                                title: work ? getTitles(work, tasks) : '',
+                                backgroundColor: work ? getBackground(work, tasks) : '',
+                                textColor: '',
+                                extendedProps: {
+                                    frameNo: vm.getFrameNo(events),
+                                    frameNos,
+                                    id: randomId(),
+                                    isTimeBreak: false,
+                                    isChanged: false,
+                                    status: 'update' as any,
+                                    taskBlock: {
+                                        caltimeSpan: { start, end },
+                                        taskDetails: taskDetails
+                                    }
+                                }
+                            });
+                        });
+                        
+                        
+                        _.forEach(_.get(ld, 'ouenTimeSheet', []), ts => {
+                            let {timeSheet, workContent, workNo} = ts;
+                            let start = _.get(timeSheet, 'start.timeWithDay');
+                            let end = _.get(timeSheet, 'end.timeWithDay');
+                            let work = _.get(workContent, 'work');
+                            let {taskList} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
+                            let task = _.find(taskList, t => t.supNo == workNo);  
+                            frameNos.push(vm.getFrameNo(events));
+                            
+                            if (start != null && end != null) {
+                                events.push({
+                                    taskFrameUsageSetting: ko.unwrap((vm.$settings)),
+                                    period: { start, end },
+                                    displayManHrRecordItems: _.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
+                                    employeeId: vm.employee() || vm.$user.employeeId,
+                                    start: setTimeOfDate(moment(ld.ymd).toDate(), start),
+                                    end: setTimeOfDate(moment(ld.ymd).toDate(), end),
+                                    title: work ? getTitles(work, tasks) : '',
+                                    backgroundColor: work ? getBackground(work, tasks) : '',
+                                    textColor: '',
+                                    extendedProps: {
+                                        frameNo: vm.getFrameNo(events),
+                                        frameNos,
+                                        id: randomId(),
+                                        isTimeBreak: false,
+                                        isChanged: false,
+                                        status: 'update' as any,
+                                        taskBlock: {
+                                            caltimeSpan: { start, end },
+                                            taskDetails: [{ supNo: workNo, taskItemValues: task.taskItemValues }]
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        
+                        
+                        
+                        
+                    });
+
+                    vm.events(events);
+                    return;
                 }
 
                 vm.events([]);
             };
 
             vm.$datas
-                .subscribe((datas) => computedEvents(datas, ko.unwrap(vm.$settings)));
+                .subscribe((datas) => {
+                    computedEvents(datas, ko.unwrap(vm.$settings))
+
+                });
     
             vm.events.subscribe((datas) => vm.dataChanged(true));
 
@@ -328,9 +418,9 @@ module nts.uk.ui.at.kdw013.a {
                         return;
                     }
                     
-                    let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.attendanceItemId });
+                    let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.itemId });
 
-                    if (!!start && !!end && moment(date).isBetween(start, end)) {
+                    if (!!start && !!end && moment(date).isBetween(start, end, undefined, '[)')) {
                         const params: ChangeDateParam = {
                             employeeId,
                             refDate: moment(date).startOf('day').format(DATE_TIME_FORMAT),
@@ -522,6 +612,92 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$settings(response);
                 })
                 .always(() => vm.$blockui('clear'));
+
+            // Init popup
+            $(".popup-area-f").ntsPopup({
+                trigger: ".popupButton-f",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-f"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $(".popup-area-g").ntsPopup({
+                trigger: ".popupButton-g",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-g"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+
+            $(".popup-area-i").ntsPopup({
+                trigger: ".popupButton-i",
+                position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: ".popupButton-i"
+                },
+                showOnStart: false,
+                dismissible: true
+            });
+        
+        }
+
+            getFrameNo(events){
+                let maxNo = 20;
+                let resultNo = 1;
+                for (let i = 1; i < maxNo; i++) {
+                    let event = _.find(events, e => _.get(e, 'extendedProps.frameNo') == i);
+                    if (!event) {
+                        resultNo = i;
+                        break;
+                    }
+                }
+                return resultNo;
+            }
+
+        getTaskValues(){
+            const vm = this;
+                 let items = [];
+
+                 _.forEach(_.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []), function(item) {
+                     items.push({ itemId: item.itemId, value: null });
+                 });
+    
+                return items;
+        }
+
+        reLoad(){
+            const vm = this;
+            vm
+                .$blockui('grayout')
+                .then(() => vm.$ajax('at', API.START))
+                .fail(function(error) {
+                    vm.$dialog.error({ messageId: error.messageId });
+                })
+                .then((response: StartProcessDto) => {
+        
+                    vm.$window
+                        .storage('KDW013_SETTING')
+                        .then((value: any) => {
+                            if (value) {
+                                vm.initialView(value.initialView || 'oneDay');
+                                vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
+                                vm.scrollTime(value.scrollTime || 420);
+                                vm.slotDuration(value.slotDuration || 30);
+                            }
+                        });
+        
+        
+                    vm.$settings(response);
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         getDOW(date){
@@ -560,6 +736,47 @@ module nts.uk.ui.at.kdw013.a {
             console.log('equipmentInput click');
         }
 
+        getManHrlst(dates){
+    
+            let result = [];
+            const vm = this;
+            _.forEach(dates, date => {
+                const eventInday = _.filter(vm.events(), (e) => { return moment(e.start).isSame(date, 'day') });
+
+                if (eventInday.length) {
+
+
+                    let listTaskDetails = [];
+
+                    let  manHrContents = _.get(_.find(_.get(vm.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(date), 'days')), 'manHrContents', []);
+                    
+                    _.forEach(_.filter(eventInday, e => _.get(e, 'extendedProps.isTimeBreak', false) == false), e => {
+                        let {taskDetails} = _.get(e, 'extendedProps.taskBlock');
+                        _.forEach(taskDetails, td => {
+
+                            _.forEach(td.taskItemValues, ti => {
+                                const start = (moment(e.start).hour() * 60) + moment(e.start).minute();
+                                const end = (moment(e.end).hour() * 60) + moment(e.end).minute();
+                                if (ti.itemId == 1) { ti.value = taskDetails.length > 1 ? null : start };
+                                if (ti.itemId == 2) { ti.value = taskDetails.length > 1 ? null : end };
+                                if (taskDetails.length == 1) {
+                                    if (ti.itemId == 3) { ti.value = end - start };
+                                }
+
+                            });
+
+                        });
+
+                        listTaskDetails.push(...taskDetails);
+                    });
+
+                    result.push({ ymd: date, taskList: listTaskDetails, manHrContents });
+                }
+            });
+
+            return result;
+        }
+
         saveData() {
             const vm = this;
             const { events, dateRange } = vm;
@@ -584,13 +801,13 @@ module nts.uk.ui.at.kdw013.a {
                 return dates;
             };
     
-            let sid = vm.employee() ? vm.employee() : vm.$user.employeeId;
+            let employeeId = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
     
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
-            let changedDates = dateRanges().map(date => {
+            let changedDates = _.chain(dateRanges()).map(date => {
                 const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'day') });
                 const data = _.find(vm.$datas().lstWorkRecordDetailDto, (e) => { return moment(e.date).isSame(date, 'day') });
 
@@ -606,109 +823,28 @@ module nts.uk.ui.at.kdw013.a {
                 }
 
                 return { date: date, changed: false };
-
-
-            });
-
-            
-            const command: RegisterWorkContentCommand = {
-                changedDates: _.chain(changedDates).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value(),
-                editStateSetting,
-                employeeId: sid,
-                mode,
-                workDetails: dateRanges().map((date) => {
-                    const lstWorkDetailsParamCommand = _
-                        .chain($events)
-                        .filter(({ start }) => moment(start).isSame(date, 'day'))
-                        .map(({ start, end, extendedProps }) => {
-                            const {
-                                workCD1,
-                                workCD2,
-                                workCD3,
-                                workCD4,
-                                workCD5,
-                                workLocationCD,
-                                remarks,
-                                supportFrameNo
-                            } = extendedProps;
-                           
-                            return {
-                                remarks,
-                                supportFrameNo,
-                                workGroup: {
-                                    workCD1: !_.isEmpty(workCD1) ? workCD1 : undefined,
-                                    workCD2: !_.isEmpty(workCD2) ? workCD2 : undefined,
-                                    workCD3: !_.isEmpty(workCD3) ? workCD3 : undefined,
-                                    workCD4: !_.isEmpty(workCD4) ? workCD4 : undefined,
-                                    workCD5: !_.isEmpty(workCD5) ? workCD5 : undefined,
-                                },
-                                workLocationCD: workLocationCD == "" ? null :workLocationCD,
-                                timeZone: {
-                                    end: getTimeOfDate(end),
-                                    start: getTimeOfDate(start)
-                                }
-                            };
-                        })
-                        .value();
-
-                    return {
-                        date: moment(date).format(DATE_TIME_FORMAT),
-                        lstWorkDetailsParamCommand
-                    };
-                })
-            };
-
-            vm
-                .$blockui('grayout')
-                // 作業を登録する
-                .then(() => vm.$ajax('at', API.REGISTER, command))
-                .then((response: RegisterWorkContentDto) => {
-                    vm.dataChanged(false);
-                    if (response) {
+            }).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value();
     
-                        const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;
-                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {
-                            return vm.$dialog
-                                .info({ messageId: 'Msg_15' })
-                                .then(() => lstOvertimeLeaveTime);
-                        } else {
+    
+            let workDetails = vm.createWorkDetails(dateRanges()); 
+    
+            let manHrlst = vm.getManHrlst(dateRanges());
 
-                            let errors = lstErrorMessageInfo.map(x => {
-                                return {
-                                    message: x.messageError,
-                                    messageId: x.resourceID,
-                                    supplements: {}
-                                };
-                            });
-
-                            nts.uk.ui.dialog.bundledErrors({ errors });
-                        }
-                    }
-                    
-                   
-
-                    return $
-                        .Deferred()
-                        .resolve()
-                        .then(() => null);
-                    
-                    
-                    
-                })
-                .fail((response: ErrorMessage) => {
-                    const { messageId, parameterIds } = response;
-
-                    return vm.$dialog
-                        // Msg_2066, Msg_2080
-                        .error({ messageId, messageParams: parameterIds })
-                        .then(() => null);
-                })
-                .then((data: OvertimeLeaveTime[] | null) => {
-                    if (data && data.length) {
-                        vm.openDialogCaculationResult(data);
-                    }
-                })
-                .always(() => vm.$blockui('clear'));
+            let integrationOfDailys = vm.createIDaily(dateRanges());
+            
+            const command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
+                changedDates,
+                editStateSetting,
+                employeeId,
+                manHrlst,
+                integrationOfDailys,
+                mode,
+                workDetails
+            };
+    
+    
+            console.log(command);
+            vm                .$blockui('grayout')                 //作業を登録する                .then(() => vm.$ajax('at', API.REGISTER, command))                .then((response: RegisterWorkContentDto) => {                    vm.dataChanged(false);                    if (response) {                            const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {                            return vm.$dialog                                .info({ messageId: 'Msg_15' })                                .then(() => lstOvertimeLeaveTime)                                .then(() => {vm.dataChanged(false);                                            vm.reLoad();                                })                        } else {                            let errors = lstErrorMessageInfo.map(x => {                                return {                                    message: x.messageError,                                    messageId: x.resourceID,                                    supplements: {}                                };                            });                            nts.uk.ui.dialog.bundledErrors({ errors });                        }                    }                    return $                        .Deferred()                        .resolve()                        .then(() => null);                })                .fail((response: ErrorMessage) => {                    const { messageId, parameterIds } = response;                    return vm.$dialog                         Msg_2066, Msg_2080                        .error({ messageId, messageParams: parameterIds })                        .then(() => null);                })                .then((data: OvertimeLeaveTime[] | null) => {                    if (data && data.length) {                        vm.openDialogCaculationResult(data);                    }                })                .always(() => vm.$blockui('clear'));
         }
 
         // 日付を変更する
@@ -719,6 +855,80 @@ module nts.uk.ui.at.kdw013.a {
             vm.dateRange({ start, end });
         }
 
+        createWorkDetails(dates){
+            let vm = this;
+            let result = [];
+
+            _.forEach(dates, date => {
+                const lstWorkDetailsParamCommand= []
+                
+                const eventHas2Task = _
+                    .chain(vm.events())
+                    .filter(({ start }) => moment(start).isSame(date, 'day'))
+                    .filter(({ extendedProps }) => _.get(extendedProps, 'taskBlock.taskDetails', []).length > 1).value();
+                    
+                _.forEach(eventHas2Task, ({ start, end, extendedProps }) => {
+                    const {
+                        taskBlock
+                    } = extendedProps;
+                    
+                    let nos =[];
+                    _.forEach(_.get(taskBlock, 'taskDetails',[]), td => {
+                        nos.push(td.supNo);
+                    });
+                    
+                    lstWorkDetailsParamCommand.push({
+                            supportFrameNos: nos,
+                            timeZone: {
+                                end: getTimeOfDate(end),
+                                start: getTimeOfDate(start)
+                            }
+                        });
+                });
+                
+                if (lstWorkDetailsParamCommand.length) {
+                    result.push({
+                        date: moment(date).format(DATE_TIME_FORMAT),
+                        lstWorkDetailsParamCommand
+                    });
+                }
+            });
+
+            return result;
+        }
+
+        createIDaily(dates){
+            const vm = this;
+            let result = [];
+
+            let ids = _.get(vm.$datas(), 'lstIntegrationOfDaily', []);
+            _.forEach(dates, date => {
+
+                const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
+
+                
+                if (id) {
+
+                    //mapping break time
+                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+
+                    let breakTime = _.get(id, 'breakTime');
+                    breakTime.breakTimeSheets = _.map(breakTimes, bt => {
+
+                        return {
+                            no: _.get(bt, 'extendedProps.no'),
+                            breakTime: _.get(bt, 'extendedProps.breakTime'),
+                            start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
+                            end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
+                        };
+                    });
+                    //mapping normal block   
+                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == false);
+                }
+            });
+
+            return ids;
+        }
         // 作業実績を確認する
         confirm() {
             const vm = this;
@@ -811,365 +1021,388 @@ module nts.uk.ui.at.kdw013.a {
                 .modal('at', '/view/kdw/013/d/index.xhtml', data)
                 .then(() => { });
         }
-    }
 
-    export module department {
-        type EmployeeDepartmentParams = {
-            mode: KnockoutObservable<boolean>;
-            employee: KnockoutObservable<string>;
-            $settings: KnockoutObservable<a.StartProcessDto | null>;
-        };
+        // Popup F:
+        updateFavName() {
+            const vm = this;
 
-        @component({
-            name: 'kdw013-department',
-            template: `
-            <div data-bind="ntsAccordion: { active: 0}">
-                <h3>
-                    <label data-bind="i18n: 'KDW013_4'"></label>
-                </h3>
+            const updateFavNameCommand: UpdateFavNameCommand = {
+                favId: vm.favoriteTaskItem().favoriteId,
+                favName: vm.favTaskName()
+            }
 
-                <div class='fc-employees'>
-                        <div data-bind="ntsComboBox: {
-                        name: $component.$i18n('KDW013_5'),
-                        options: $component.departments,
-                        visibleItemsCount: 14,
-                        value: $component.department,
-                        editable: true,
-                        selectFirstIfNull: true,
-                        optionsValue: 'workplaceId',
-                        optionsText: 'wkpDisplayName',
-                        columns: [
-                            { prop: 'workplaceCode', length: 4 },
-                            { prop: 'wkpDisplayName', length: 10 }
-                        ]
-                    }"></div>
-                <ul class="list-employee" data-bind="foreach: { data: $component.employees, as: 'item' }">
-                    <li class="item" data-bind="
-                        click: function() { $component.selectEmployee(item.employeeId) },
-                        timeClick: -1,
-                        css: {
-                            'selected': ko.computed(function() { return item.employeeId === ko.unwrap($component.params.employee); })
-                        }">
-                        <div data-bind="text: item.employeeCode"></div>
-                        <div data-bind="text: item.employeeName"></div>
-                    </li>
-                </ul>
-                </div>
-            </div> 
-            `
-        })
-        export class EmployeeDepartmentComponent extends ko.ViewModel {
-            department: KnockoutObservable<string> = ko.observable('');
-
-            employees!: KnockoutComputed<EmployeeBasicInfoDto[]>;
-            departments!: KnockoutComputed<WorkplaceInfoDto[]>;
-
-            constructor(private params: EmployeeDepartmentParams) {
-                super();
-
-                const vm = this;
-                const { $settings, mode } = params;
-
-                vm.employees = ko.computed({
-                    read: () => {
-                        const loaded = ko.unwrap(mode);
-                        const $sets = ko.unwrap($settings);
-                        const $dept = ko.unwrap(vm.department);
-
-                        if ($sets) {
-                            const { refWorkplaceAndEmployeeDto } = $sets;
-
-                            if (refWorkplaceAndEmployeeDto) {
-                                const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
-                                let emps = _.filter(employeeInfos,{'workplaceId': $dept });
-                                // updating
-                                return loaded ? [] : _.filter(lstEmployeeInfo, (o) => {
-                                   return !!_.find(emps, { 'employeeId': o.employeeId });
-                                });
-                            }
-                        }
-
-                        return [];
-                    },
-                    write: (value: any) => {
-
-                    }
-                });
-    
-    
-                vm.department.subscribe((value) => {
-                    const emps = ko.unwrap(vm.employees);
-                    if (vm.employees().length) {
-                        
-                        const [first] = emps;
-                        vm.params.employee(first.employeeId);
-                    }
-                });
-    
-                
-
-                vm.departments = ko.computed({
-                    read: () => {
-                        const loaded = ko.unwrap(mode);
-                        const $sets = ko.unwrap($settings);
-
-                        if ($sets) {
-                            const { refWorkplaceAndEmployeeDto } = $sets;
-
-                            if (refWorkplaceAndEmployeeDto) {
-                                const { workplaceInfos } = refWorkplaceAndEmployeeDto;
-
-                                return loaded ? [] : workplaceInfos;
-                            }
-                        }
-
-                        return [];
-                    },
-                    write: (value: any) => {
-
-                    }
-                });
-    
-                vm.departments
-                    .subscribe((deps) => {
-                        if (!_.isEmpty(deps)) {
-
-                            let empInfo = _.find(vm.params.$settings().refWorkplaceAndEmployeeDto.employeeInfos, { 'employeeId': vm.$user.employeeId });
-
-                            if (empInfo) {
-
-                                let selectedWkp = _.find(deps, { 'workplaceId': empInfo.workplaceId });
-
-                                if (selectedWkp) {
-
-                                    vm.department(selectedWkp.workplaceId);
-                                }
-                            }
-
-                        }
+            vm.$blockui('show');
+            vm.$validate(".input-f").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
                     });
 
-                vm.employees
-                    .subscribe((emps: EmployeeBasicInfoDto[]) => {
-                        if (emps.length && !ko.unwrap(vm.params.employee)) {
-
-                            let emp = _.find(emps, { 'employeeId': vm.$user.employeeId });
-                            if (emp) {
-                                vm.params.employee(emp.employeeId);
-                            } else {
-                                const [first] = emps;
-                                vm.params.employee(first.employeeId);
-                            }
-
-                        }
-                    });
-            }
-
-            mounted() {
-                const vm = this;
-                const { $el } = vm;
-
-                $($el)
-                    .removeAttr('data-bind')
-                    .find('[data-bind]')
-                    .removeAttr('data-bind');
-            }
-
-            public selectEmployee(id: string) {
-                const vm = this;
-                const { department } = vm;
-                const { employee } = vm.params;
-
-                employee(id);
-
-                //department.valueHasMutated();
-            }
-        }
-    }
-
-    export module datePicker {
-        type Kdw013DatePickerParams = {
-            initialDate: Date | KnockoutObservable<Date>;
-            firstDay: KnockoutObservable<number>;
-        };
-
-        @component({
-            name: 'kdw013-date-picker',
-            template: `<div id='fc-date-picker'></div>
-            <style rel="stylesheet">
-                .fc-date-picker{
-                    height:240px;
-                    padding: 0 !important;
+                } else {
+                    vm.$blockui("clear");
                 }
-                .fc-date-picker .nts-input {
-                    display: none;
-                }
-            </style>
-        `
-        })
-        export class Kdw013DatePickerComponent extends ko.ViewModel {
-            constructor(public params: Kdw013DatePickerParams) {
-                $('#fc-date-picker').fcdatepicker({
-                language: 'ja-JP',
-                format: "YYYY/MM/DD",
-                date: params.initialDate(),
-                autoShow: true,
-                weekStart: params.firstDay(),
-                inline: true
             });
-                params.firstDay.subscribe(value => {
-                    if (value == undefined) {
-                        return;
+
+        }
+
+        // Popup G:
+        registerOneDayFavTask() {
+            const vm = this;
+            let favId = vm.oneDayFavoriteSet().favId;
+
+            if (favId =='') {
+                vm.addOneDayFavTask();
+            } else {
+                vm.updateOneDayFavName(favId);
+            }
+        }
+
+        updateOneDayFavName(favTaskId: string) {
+            const vm = this;
+
+            const updateFavNameCommand: UpdateFavNameCommand = {
+                favId: favTaskId,
+                favName: vm.oneDayFavTaskName()
+            }
+
+            vm.$blockui('show');
+            vm.$validate(".input-g").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
+
+        }
+
+        addOneDayFavTask(){
+            const vm = this;
+
+            vm.taskBlocks([
+                {
+                    startTime: 1,
+                    endTime: 2,
+                    taskContents: [{
+                        frameNo: 1,
+                        taskContent:{
+                            itemId: 1,
+                            taskCode: "1"
+                        }
                     }
-                    $('#fc-date-picker').fcdatepicker('destroy');
-                    $('#fc-date-picker').fcdatepicker({
-                                    language: 'ja-JP',
-                                    format: "YYYY/MM/DD",
-                                    date: params.initialDate(),
-                                    autoShow: true,
-                                    weekStart: value,
-                                    inline: true
-                                });
-                });
-                ko.utils.registerEventHandler('#fc-date-picker', "change", function(event) {
-                    if(!moment(vm.initialDate()).isSame(moment($('#fc-date-picker').fcdatepicker('getDate'))))
-                   vm.initialDate($('#fc-date-picker').fcdatepicker('getDate'));
-                });
-                params.initialDate.subscribe((value) => {
-                    $('#fc-date-picker').fcdatepicker('setDate', value);
-                });
-                super();
+                ]
+            }]);
+
+            const registerFavoriteForOneDayCommand : RegisterFavoriteForOneDayCommand = {
+                employeeId: vm.$user.employeeId,
+                taskName: vm.oneDayFavTaskName(),
+                contents: ko.unwrap(vm.taskBlocks)
+
             }
+
+            vm.$blockui('show');
+            vm.$validate(".input-g").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                            vm.reLoad();    
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
+        }
+
+        createWarning() {
+            const vm = this;
+
+            vm.taskDtos([
+                {
+                    code : "1",
+                    taskFrameNo: 1,
+                    displayInfo: {
+                        taskName: "taskName1",
+                        taskAbName: "taskAbName1",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "9",
+                    taskFrameNo: 1,
+                    displayInfo: {
+                        taskName: "taskName11",
+                        taskAbName: "taskAbName11",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "2",
+                    taskFrameNo: 1,
+                    displayInfo: {
+                        taskName: "taskName111",
+                        taskAbName: "taskAbName111",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "2",
+                    taskFrameNo: 2,
+                    displayInfo: {
+                        taskName: "taskName2",
+                        taskAbName: "taskAbName2",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "3",
+                    taskFrameNo: 3,
+                    displayInfo: {
+                        taskName: "taskName3",
+                        taskAbName: "taskAbName3",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "4",
+                    taskFrameNo: 4,
+                    displayInfo: {
+                        taskName: "taskName4",
+                        taskAbName: "taskAbName4",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                },
+                {
+                    code : "5",
+                    taskFrameNo: 5,
+                    displayInfo: {
+                        taskName: "taskName5",
+                        taskAbName: "taskAbName5",
+                        color: "red",
+                        taskNote: "taskNote"
+                    },
+                    childTaskList: [""],
+                    expirationStartDate: "",
+                    expirationEndDate: "",
+                    cooperationInfo: null
+                }
+
+            ]);
+
+            vm.ouenWorkTimes([
+                {
+                    workNo: 1,
+                    workTime: {
+                        totalTime: 11
+                    }
+                },
+                {
+                    workNo: 2,
+                    workTime: {
+                        totalTime: 22
+                    }
+                },
+                {
+                    workNo: 3,
+                    workTime: {
+                        totalTime: 33
+                    }
+                }
+                
+            ]);
+
+            vm.ouenWorkTimeSheets([
+                {
+                    workNo: 1,
+                    workContent: {
+                        work: {
+                            workCD1: "9",
+                            workCD2: "2",
+                            workCD3: "3",
+                            workCD4: "4",
+                            workCD5: "5",
+                        }
+                    },
+                    timeSheet: {
+                        workNo: 1,
+                        start: {
+                            timeWithDay: 100
+                        },
+                        end: {
+                            timeWithDay: 300
+                        }
+                    }
+                },
+                {
+                    workNo: 2,
+                    workContent: {
+                        work: {
+                            workCD1: "1",
+                            workCD2: "2",
+                            workCD3: "3",
+                            workCD4: "4",
+                            workCD5: "5",
+                        }
+                    },
+                        timeSheet: {
+                            workNo: 2,
+                            start: {
+                                timeWithDay: 100
+                            },
+                            end: {
+                                timeWithDay: 300
+                            }
+                        }
+                   
+                },
+                {
+                    workNo: 3,
+                    workContent: {
+                        work: {
+                            workCD1: "1",
+                            workCD2: "2",
+                            workCD3: "3",
+                            workCD4: "4",
+                            workCD5: "5",
+                        }
+                    },
+                    timeSheet: {
+                        workNo:3,
+                        start: {
+                            timeWithDay: 100
+                        },
+                        end: {
+                            timeWithDay: 300
+                        }
+                    }
+                }
+
+            ]);
+
+            var warnings: TaskInfo[] = [ ];
+
+            _.forEach(vm.ouenWorkTimes(), wt => {
+
+                let ouenWorkTimeSheet: OuenWorkTimeSheetOfDailyAttendance  = ko.utils.arrayFirst(vm.ouenWorkTimeSheets(), function (e) {return e.workNo == wt.workNo});
+                let workCD1 = ouenWorkTimeSheet.workContent.work.workCD1;
+                let workCD2 = ouenWorkTimeSheet.workContent.work.workCD2;
+                let workCD3 = ouenWorkTimeSheet.workContent.work.workCD3;
+                let workCD4 = ouenWorkTimeSheet.workContent.work.workCD4;
+                let workCD5 = ouenWorkTimeSheet.workContent.work.workCD5;
+                let taskName1 = '';
+                let taskName2 = '';
+                let taskName3 = '';
+                let taskName4 = '';
+                let taskName5 = '';
+
+                _.forEach(vm.taskDtos(), task => {
+                    if (task.taskFrameNo == 1 && task.code == workCD1) {
+                        taskName1 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 2 && task.code == workCD2) {
+                        taskName2 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 3 && task.code == workCD3) {
+                        taskName3 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 4 && task.code == workCD4) {
+                        taskName4 = task.displayInfo.taskName;
+                    }
+
+                    if (task.taskFrameNo == 5 && task.code == workCD5) {
+                        taskName5 = task.displayInfo.taskName;
+                    }
+                });
+                
+                let taskNames =
+                    (taskName1 != '' ? taskName1 + ' ' : '') +
+                    (taskName2 != '' ? taskName2 + ' ' : '') + 
+                    (taskName3 != '' ? taskName3 + ' ' : '') +
+                    (taskName4 != '' ? taskName4 + ' ' : '') +
+                    taskName5;
+                
+                    warnings.push({
+                        workNo: wt.workNo,
+                        name: taskNames,
+                        time: wt.workTime.totalTime
+                });
+               
+            });
+
+            vm.taskInfos(warnings);
+        }
+
+        openEDialog(data: any, vm: any) {
+            
+            let param = {
+                workNo: data.workNo,
+                taskDtos: ko.unwrap(vm.taskDtos),
+                ouenWorkTimes: ko.unwrap(vm.ouenWorkTimes),
+                ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
+                taskSettings: ko.unwrap(vm.taskSettings),
+                //対象日
+                date: vm.targetDate()
+            }
+		
+            vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
         }
     }
 
-    export module approved {
-        type Kdw013ApprovedParams = {
-            mode: KnockoutObservable<boolean>;
-            confirmers: KnockoutObservableArray<calendar.Employee>;
-            $settings: KnockoutObservable<a.StartProcessDto | null>;
-        };
-
-        @component({
-            name: 'kdw013-approveds',
-            template: `
-             <div data-bind="ntsAccordion: { active: 0}">
-                <h3>
-                    <label data-bind="i18n: 'KDW013_6'"></label>
-                </h3>
-                <div class='fc-employees'>
-                    <ul data-bind="foreach: { data: $component.params.confirmers, as: 'item' }">
-                        <li class="item">
-                            <div data-bind="text: item.code"></div>
-                            <div data-bind="text: item.name"></div>
-                        </li>
-                   </ul>
-                </div>
-            </div>
-           `
-        })
-        export class Kdw013ApprovedComponent extends ko.ViewModel {
-            constructor(public params: Kdw013ApprovedParams) {
-                super();
-            }
-        }
-    }
-
-    export module event {
-        @component({
-            name: 'kdw013-events',
-            template: `
-            <div class='edit-popup'>
-                    <ul>
-                        <li data-bind="i18n: 'KDW013_65' ,click:$component.openFdialog"></li>
-                        <li data-bind="i18n: 'KDW013_66' ,click:$component.removeFav"></li>
-                    </ul>
-            </div>
-            <div data-bind="ntsAccordion: { active: 0}">
-                <h3>
-                    <label data-bind="i18n: 'KDW013_63'"></label>
-                </h3>
-                <div class='fc-events'>
-                    <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
-                        <li class="title" data-bind="attr: {
-                            'data-id': _.get(item.extendedProps, 'relateId', ''),
-                            'data-color': item.backgroundColor
-                        }">
-                            <div data-bind="style: {
-                                'background-color': item.backgroundColor
-                            }"></div>
-                            <div style="display: flex;">
-                                <label  class='limited-label' style='width:90%;cursor: pointer;'  data-bind='text: item.title'>
-                                </label>
-                                <i data-bind="ntsIcon: { no: 2, width: 20, height: 25  },click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'relateId', '')) }">
-                                </i>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <style rel="stylesheet">
-                .fc-container .fc-events .edit-popup{
-                    visibility: hidden;
-                    position: fixed;
-                    z-index: 99;
-                    box-shadow: 1px 1px 5px 2px #888;
-                    background-color: #fff;
-                    padding: 0 10px;
-                }
-                .fc-container .fc-events .edit-popup ul li{
-                    cursor: pointer;
-                    padding: 5px 5px;
-                }
-                .fc-container .fc-events .edit-popup ul li:hover{
-                    background: #CDE2CD;
-                    color: #0086EA ;
-                }
-                .fc-container .fc-events .show {
-                    visibility: visible;
-                }
-            </style>
-           `
-        })
-        export class Kdw013EventComponent extends ko.ViewModel {
-            constructor(public params: EventParams) {
-                super();
-            }
-            
-            editFav(e,id) {
-                let editPopup = $('.fc-events .edit-popup');
-                let pst = e.target;
-                if(!pst){
-                   editPopup.removeClass('show'); 
-                }
-                const { top, left, height, width } = pst.getBoundingClientRect();
-                editPopup.addClass('show');
-                editPopup.css({ "top": top, "left": left+width });
-                editPopup.data('relateId', id);
-            }
-            
-            removeFav(data) {
-                const vm = this;
-                let id = $('.fc-events .edit-popup').data('relateId');
-
-                let newArrays = _.filter(vm.params.items(), item => {
-                    return _.get(item, 'extendedProps.relateId') != $('.fc-events .edit-popup').data('relateId');
-                });
-
-                vm.params.items(newArrays);
-                $('.fc-events .edit-popup').removeClass('show');
-            }
-            
-            openFdialog(data) {
-                const vm = this;
-                $('.fc-events .edit-popup').removeClass('show');
-                console.log('open F');
-            }
-        }
-
-        type EventParams = {
-            items: KnockoutObservableArray<any>;
-            mode: KnockoutComputed<boolean>;
-        };
-    }
+    
 }

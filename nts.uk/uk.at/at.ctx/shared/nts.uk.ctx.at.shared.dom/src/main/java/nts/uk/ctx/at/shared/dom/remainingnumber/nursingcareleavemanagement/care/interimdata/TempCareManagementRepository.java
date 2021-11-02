@@ -24,6 +24,7 @@ public interface TempCareManagementRepository {
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 * @return 該当する暫定介護データ　（年月日順）
+	 *  RequestList686
 	 */
 	List<TempCareManagement> findByPeriodOrderByYmd(String employeeId, DatePeriod period);
 
@@ -39,18 +40,21 @@ public interface TempCareManagementRepository {
 	 * @param ymd 年月日
 	 * @param tempCareManagement 暫定介護データ
 	 */
-	void remove(String employeeId,  GeneralDate ymd, TempCareManagement tempCareManagement);
+	void remove(TempCareManagement tempCareManagement);
 
 	/**
-	 * ドメインモデル「暫定介護管理データ」を取得する
-	 * @param employeeId 社員ID
-	 * @param period 指定期間の開始日<=対象日<=INPUT．指定期間の終了日
-	 * @return 暫定介護管理データ
+	 * 削除
+	 * @param sid
+	 * @param ymd
 	 */
-	 // RequestList686
-	public List<TempCareManagement> findBySidPeriod(String employeeId, DatePeriod period);
-
 	public void deleteBySidAndYmd(String sid, GeneralDate ymd);
+	
+	/**
+	 * 削除　期間
+	 * @param sid
+	 * @param period
+	 */
+	public void deleteBySidDatePeriod(String sid, DatePeriod period);
 
 }
 

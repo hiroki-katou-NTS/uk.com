@@ -340,6 +340,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         self.bindActualData();
         let dataClone = _.clone(self.data);
         if (dataClone) {
+
+            self.data.appDispInfoStartupOutput = ko.toJS(self.appDispInfoStartupOutput);
+
             return;
         }
         self.$blockui( "show" );

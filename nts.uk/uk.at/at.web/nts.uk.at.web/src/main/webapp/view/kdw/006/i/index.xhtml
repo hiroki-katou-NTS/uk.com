@@ -18,15 +18,15 @@
 			</com:EnumScript>
 
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+				nts.uk.ctx.at.shared.dom.common.time.TotalWorkDivergenceTime
 				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage
 			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<a id="I1_1" class="goback" tabindex="1"
-					data-bind="ntsLinkButton: { action: jumpTo}, css: { 'has-info': useAtrTask() == 0}">#{i18n.getText('KDW006_25')}</a>
-				<button id="I1_2" class="proceed" tabindex="2" data-bind="click: register, enable: useAtrTask() == 1"
+					data-bind="ntsLinkButton: { action: jumpTo}">#{i18n.getText('KDW006_25')}</a>
+				<button id="I1_2" class="proceed" tabindex="2" data-bind="click: register"
 					style="margin-left: 40px;">#{i18n.getText('KDW006_26')}</button>
 			</div>
 			<div id="contents-area">
@@ -129,11 +129,10 @@
 									<input id="I4_7" tabindex="9" data-bind="ntsTimeEditor: {
 										name: $i18n('KDW006_248'),
 										value: time,
-										constraint: 'AttendanceTimeMonth',
+										constraint: 'TotalWorkDivergenceTime',
 										inputFormat: 'time',
 										mode: 'time',
 										option: {width: '50'},
-										required: useAtr() == 1,
 										enable: useAtr() == 1 &amp;&amp; useAtrTask() == 1}" />
 								</div>
 								<div class="d-flex">

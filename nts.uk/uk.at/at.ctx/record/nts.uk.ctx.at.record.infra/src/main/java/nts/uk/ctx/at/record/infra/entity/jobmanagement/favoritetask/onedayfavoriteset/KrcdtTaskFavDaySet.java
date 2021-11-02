@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.OneDayFavoriteSet;
-import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkplacePossible;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**

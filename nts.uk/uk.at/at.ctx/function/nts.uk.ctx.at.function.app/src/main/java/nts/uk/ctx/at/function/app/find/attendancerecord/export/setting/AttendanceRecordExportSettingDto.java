@@ -44,6 +44,8 @@ public class AttendanceRecordExportSettingDto {
 	/** The item sel type. */
 	Integer itemSelType;
 	
+	Integer startOfWeek;
+	
 	/**
 	 * Instantiates a new attendance record export setting dto.
 	 */

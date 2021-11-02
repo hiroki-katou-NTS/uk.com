@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * refactor 4
@@ -165,7 +168,7 @@ public class Application implements DomainAggregate {
 				0,
 				IdentifierUtil.randomUniqueId(), 
 				prePostAtr, 
-				employeeID, 
+				Strings.isBlank(employeeID) ? AppContexts.user().employeeId() : employeeID, 
 				appType, 
 				appDate, 
 				enteredPerson, 
@@ -228,5 +231,23 @@ public class Application implements DomainAggregate {
 	
 	public Application getApplication() {
 		return this;
+	}
+	
+	public void setApplication(Application application) {
+		this.setVersion(application.getVersion());
+		this.setAppID(application.getAppID());
+		this.setPrePostAtr(application.getPrePostAtr());
+		this.setEmployeeID(application.getEmployeeID());
+		this.setAppType(application.getAppType());
+		this.setAppDate(application.getAppDate());
+		this.setEnteredPersonID(application.getEnteredPersonID());
+		this.setInputDate(application.getInputDate());
+		this.setReflectionStatus(application.getReflectionStatus());
+		this.setOpStampRequestMode(application.getOpStampRequestMode());
+		this.setOpReversionReason(application.getOpReversionReason());
+		this.setOpAppStartDate(application.getOpAppStartDate());
+		this.setOpAppEndDate(application.getOpAppEndDate());
+		this.setOpAppReason(application.getOpAppReason());
+		this.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD());
 	}
 }

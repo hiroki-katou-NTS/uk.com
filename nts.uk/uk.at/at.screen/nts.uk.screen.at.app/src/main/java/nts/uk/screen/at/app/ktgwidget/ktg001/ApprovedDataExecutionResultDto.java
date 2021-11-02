@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedDataDetailDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.StatusDetailedSettingDto;
 
@@ -30,10 +31,10 @@ public class ApprovedDataExecutionResultDto {
 	private Boolean appDisplayAtr = false;
 
 	// 承認すべき日の実績が存在する
-	private Boolean dayDisplayAtr = false;
+	private List<ApprovedDataDetailDto> dayDisplayAtrList;
 
 	// 承認すべき月の実績が存在す
-	private Boolean monthDisplayAtr = false;
+	private List<ApprovedDataDetailDto> monthDisplayAtrList;
 
 	// 承認すべき36協定が存在する
 	private Boolean agrDisplayAtr = false;

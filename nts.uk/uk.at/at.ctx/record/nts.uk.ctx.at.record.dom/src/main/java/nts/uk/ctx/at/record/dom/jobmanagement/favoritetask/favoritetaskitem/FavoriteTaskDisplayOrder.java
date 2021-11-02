@@ -78,7 +78,7 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	public void delete(String favoriteId) {
 		// $削除対象
 		// filter $.お気に入りID == お気に入りID
-		Optional<FavoriteDisplayOrder> detetedObj = this.displayOrders.stream().filter(f -> f.getFavId() == favoriteId).findAny();
+		Optional<FavoriteDisplayOrder> detetedObj = this.displayOrders.stream().filter(f -> f.getFavId().equals(favoriteId)).findAny();
 
 		// filter $.表示順 > $削除対象.表示順
 		// $.表示順を前にずらす()
@@ -91,7 +91,7 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 			}
 
 			// except $削除対象
-			this.displayOrders = this.displayOrders.stream().filter(f -> f.getFavId() != favoriteId)
+			this.displayOrders = this.displayOrders.stream().filter(f -> !f.getFavId().equals(favoriteId))
 					.collect(Collectors.toList());
 		}
 		

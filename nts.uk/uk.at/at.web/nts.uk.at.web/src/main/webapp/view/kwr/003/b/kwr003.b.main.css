@@ -47,3 +47,6 @@
 .kwr003-contents .pull-left {
   padding-left: 15px;
 }
+ td.text-center .nts-editor-wrapped .text-input-kwr{
+  width: 130px !important;
+}

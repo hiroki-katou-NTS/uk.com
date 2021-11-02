@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -76,5 +77,20 @@ public class StampBreakCalculation extends WorkTimeDomainObject implements Clone
 			throw new RuntimeException("StampBreakCalculation clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 休憩として扱うか
+	 * @param reason 外出理由
+	 * @return true：休憩として扱う false：休憩として扱わない
+	 */
+	public boolean isUseAsRest(GoingOutReason reason) {
+		if(this.usePrivateGoOutRest && reason.isPrivate()) {
+			return true;
+		}
+		if(this.useAssoGoOutRest && reason.isUnion()) {
+			return true;
+		}
+		return false;
 	}
 }

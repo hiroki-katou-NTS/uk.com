@@ -20,8 +20,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -57,7 +55,7 @@ public class RecoverWorkScheduleBeforeAppReflectTest {
 		SCRecoverAppReflectOutput result = RecoverWorkScheduleBeforeAppReflect.process(require, app,
 				GeneralDate.ymd(2021, 04, 21), createStatus(SCReflectedState.REFLECTED), NotUseAtr.NOT_USE);
 		assertThat(result.getSchedule()).isEmpty();
-		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(SCReflectedState.REFLECTED);
+		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(SCReflectedState.CANCELED);
 		new Verifications() {
 			{
 				require.insertSchedule((WorkSchedule) any);
@@ -92,9 +90,6 @@ public class RecoverWorkScheduleBeforeAppReflectTest {
 			{
 				require.get(anyString, (GeneralDate) any);
 				result = Optional.of(ReflectApplicationHelper.createWorkSchedule());
-
-				WorkingConditionService.findWorkConditionByEmployee(require, anyString, (GeneralDate) any);
-				result = Optional.of(new WorkingConditionItem("", ManageAtr.USE, "1"));
 			}
 		};
 
@@ -139,9 +134,6 @@ public class RecoverWorkScheduleBeforeAppReflectTest {
 			{
 				require.get(anyString, (GeneralDate) any);
 				result = Optional.of(ReflectApplicationHelper.createWorkSchedule());
-
-				WorkingConditionService.findWorkConditionByEmployee(require, anyString, (GeneralDate) any);
-				result = Optional.of(new WorkingConditionItem("", ManageAtr.USE, "1"));
 			}
 		};
 

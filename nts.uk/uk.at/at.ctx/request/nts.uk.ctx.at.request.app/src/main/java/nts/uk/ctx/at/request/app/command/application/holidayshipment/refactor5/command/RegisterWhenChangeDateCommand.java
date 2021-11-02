@@ -15,4 +15,6 @@ public class RegisterWhenChangeDateCommand {
 	public String appReason;
 	
 	public Integer appStandardReasonCD;
+	
+	public boolean checkFlag = false;
 }

@@ -22,7 +22,7 @@ public class MonthlyAttItemCanAggregate extends AggregateRoot {
 	private MonthlyAttItemId attItemId;
 
 	/** 集計可能区分 */
-	private boolean editable;
+	private boolean calculable;
 
 	private MonthlyAttItemCanAggregate() {}
 
@@ -47,7 +47,7 @@ public class MonthlyAttItemCanAggregate extends AggregateRoot {
 	public void getMemento(MementoGetter memento) {
 		this.cid = new CompanyId(memento.getCid());
 		this.attItemId = new MonthlyAttItemId(memento.getAttItemId());
-		this.editable = memento.isEditable();
+		this.calculable = memento.isCalculable();
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class MonthlyAttItemCanAggregate extends AggregateRoot {
 	public void setMemento(MementoSetter memento) {
 		memento.setCid(this.cid.v());
 		memento.setAttItemId(this.attItemId.v());
-		memento.setEditable(this.editable);
+		memento.setCalculable(this.calculable);
 	}
 
 	public static interface MementoSetter {
@@ -66,7 +66,7 @@ public class MonthlyAttItemCanAggregate extends AggregateRoot {
 
 		void setAttItemId(BigDecimal attItemId);
 
-		void setEditable(boolean editable);
+		void setCalculable(boolean calculable);
 	}
 
 	public static interface MementoGetter {
@@ -74,7 +74,7 @@ public class MonthlyAttItemCanAggregate extends AggregateRoot {
 
 		BigDecimal getAttItemId();
 
-		boolean isEditable();
+		boolean isCalculable();
 	}
 
 }

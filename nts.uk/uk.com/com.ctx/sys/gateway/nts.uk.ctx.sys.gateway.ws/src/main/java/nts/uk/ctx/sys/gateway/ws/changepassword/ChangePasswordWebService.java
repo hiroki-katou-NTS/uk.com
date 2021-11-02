@@ -19,8 +19,6 @@ import nts.uk.ctx.sys.gateway.app.command.changepassword.ChangePasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ChangePasswordCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommand;
 import nts.uk.ctx.sys.gateway.app.command.changepassword.ForgotPasswordCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommand;
-import nts.uk.ctx.sys.gateway.app.command.changepassword.MobileChangePasswordCommandHandler;
 import nts.uk.ctx.sys.gateway.app.command.loginold.dto.LoginInforDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.PasswordPolicyFinder;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.dto.PasswordPolicyDto;
@@ -44,9 +42,6 @@ public class ChangePasswordWebService extends WebService{
 	/** The change pass command handler. */
 	@Inject
 	private ChangePasswordCommandHandler changePassCommandHandler;
-	
-	@Inject
-	private MobileChangePasswordCommandHandler mobileChangePassHandler;
 	
 	/** The forgot password command handler. */
 	@Inject
@@ -78,17 +73,6 @@ public class ChangePasswordWebService extends WebService{
 	public void channgePassWord(ChangePasswordCommand command) {
 		this.changePassCommandHandler.handle(command);
 	}
-	/**
-	 * Channge pass word.
-	 *
-	 * @param command the command
-	 */
-	@POST
-	@Path("submitchangepass/mobile")
-	public void channgePassWord(MobileChangePasswordCommand command) {
-		this.mobileChangePassHandler.handle(command);
-	}
-
 	
 	/**
 	 * Submit forgot pass.

@@ -2272,6 +2272,9 @@ module nts.custombinding {
                         } else if (x.type == ITEM_TYPE.SET_TABLE) {
                             x.dispType = DISP_TYPE.SET_TABLE;
                         }
+                        if(x.itemCode == 'IS00129' || x.itemCode == 'IS00138') {
+                            x.dispType = DISP_TYPE.SET_MULTILINE;
+                        }
                     });
                 },
                 hierarchies = (cls: IItemClassification) => {

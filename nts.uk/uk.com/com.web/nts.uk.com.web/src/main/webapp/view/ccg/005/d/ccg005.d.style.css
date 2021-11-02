@@ -58,3 +58,7 @@ button#D1_4 {
 .D5_2_switch_btn .nts-switch-button {
   width: 80px;
 }
+.D5_2_switch_btn span {
+  width: 75px;
+  text-align: center;
+}

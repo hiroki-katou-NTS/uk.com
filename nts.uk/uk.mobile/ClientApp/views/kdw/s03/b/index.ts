@@ -1,3 +1,4 @@
+
 import { Vue, _, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { TimeDuration, TimeWithDay } from '@app/utils';
@@ -9,6 +10,7 @@ import { CdlS03AComponent } from 'views/cdl/s03/a';
 import { CdlS04AComponent } from 'views/cdl/s04/a';
 import { CdlS02AComponent } from 'views/cdl/s02/a';
 import { CdlS24AComponent } from 'views/cdl/s24/a';
+import { Kdls12Component } from 'views/kdl/s12';
 
 @component({
     name: 'kdws03b',
@@ -75,7 +77,8 @@ import { CdlS24AComponent } from 'views/cdl/s24/a';
         'cdls03a': CdlS03AComponent,
         'cdls04a': CdlS04AComponent,
         'cdls02a': CdlS02AComponent,
-        'cdls24a': CdlS24AComponent 
+        'cdls24a': CdlS24AComponent,
+        'kdls12a': Kdls12Component
     },
 })
 export class KdwS03BComponent extends Vue {
@@ -287,10 +290,12 @@ export class KdwS03BComponent extends Vue {
         self.masterData[MasterType.CDLS04_Possition] = data[MasterType.CDLS04_Possition];
         self.masterData[MasterType.CDLS02_Employment] = data[MasterType.CDLS02_Employment];
         self.masterData[MasterType.CDLS24_BusinessType] = data[MasterType.CDLS24_BusinessType];
+        self.masterData[MasterType.KDLS12_TaskSelection] = data[MasterType.KDLS12_TaskSelection];
+
         // tạo dữ liệu conbo box tạm thời cho các dialog chưa dc làm
         _.forEach(data[MasterType.KDLS10_ServicePlace], (o) => {
             self.masterData.servicePlace.push({ code: o.code, name: o.name });
-        });
+        }); 
         if (!_.find(self.masterData.servicePlace, (item) => item.code == '')) {
             self.masterData.servicePlace.push({ code: '', name: 'なし' });
         }
@@ -333,7 +338,8 @@ export class KdwS03BComponent extends Vue {
                 self.getItemMasterType(key) == MasterType.CDLS03_Classification ||
                 self.getItemMasterType(key) == MasterType.CDLS04_Possition ||
                 self.getItemMasterType(key) == MasterType.CDLS02_Employment ||
-                self.getItemMasterType(key) == MasterType.CDLS24_BusinessType;
+                self.getItemMasterType(key) == MasterType.CDLS24_BusinessType ||
+                self.getItemMasterType(key) == MasterType.KDLS12_TaskSelection;
     }
 
     public getRowComboBox(key: string) {
@@ -628,6 +634,7 @@ export class KdwS03BComponent extends Vue {
             case MasterType.CDLS04_Possition: self.openCDLS04(key); break;
             case MasterType.CDLS02_Employment: self.openCDLS02(key); break;
             case MasterType.CDLS24_BusinessType: self.openCDLS24(key); break;
+            case MasterType.KDLS12_TaskSelection: self.openKDLS12(key); break;
             default: break;
         }
     }
@@ -689,6 +696,40 @@ export class KdwS03BComponent extends Vue {
             }
         });
     }
+
+    private openKDLS12(key: string) {
+        let self = this;
+        let rowData = _.find(self.params.rowData.rowData, (o) => o.key == key);
+        let selectedCD = self.screenData[0][key];
+        let keyList = _.keys(WORK_FRAME_MAP);
+        let dateParam15: any = null, taskFrameNo: any = null;
+       
+        dateParam15 =  moment(self.params.date).format('YYYY/MM/DD');       
+        for (let itemTaskKey in keyList) {
+            if (_.includes(_.get(WORK_FRAME_MAP, keyList[itemTaskKey]), parseInt(self.getAttendanceItem(key).id))) {
+                taskFrameNo = parseInt(keyList[itemTaskKey]);
+                break;	
+            }
+        }
+        self.$modal(
+            'kdls12a',
+            {
+                isAddNone: true,
+                isMultiple: false,
+                showExpireDate: false,
+                baseDate: dateParam15,
+                taskFrameNo,
+                selectionCodeList: [selectedCD]
+            }
+        ).then((data: any) => {
+            if (data) {
+                self.screenData[0][key] = data.selectedTask.code;
+                rowData.value0 = data.selectedTask.code;
+                rowData.value = data.selectedTask.taskName;
+            }
+        });
+    }
+
 
     private openCDLS08(key: string) {
         let self = this;
@@ -803,7 +844,7 @@ export class KdwS03BComponent extends Vue {
             }
         });
     }
-
+    
     private isChangeDataRegister() {
         let self = this;
         let isChangeCheckBox = JSON.stringify(self.oldCheckBox).localeCompare(JSON.stringify(self.checked1s)) != 0;
@@ -1080,7 +1121,7 @@ const API = {
     linkItemCalc: 'screen/at/correctionofdailyperformance/calcTime'
 };
 
-const watchItem = ['28', '29', '31', '34', '41', '44'];
+const watchItem = ['28', '29', '31', '34', '41', '44', '859', '860', '623', '625', '924'];
 
 const CHECK_INPUT = {
     '759': '760', '760': '759', '761': '762',
@@ -1101,6 +1142,14 @@ const CHECK_INPUT = {
     '20': '19', '21': '22', '22': '21',
     '23': '24', '24': '23', '25': '26',
     '26': '25'
+};
+
+const WORK_FRAME_MAP = {
+    1: [924,934,944,954,964,974,984,994,1004,1014,1024,1034,1044,1054,1064,1074,1084,1094,1104,1114],
+    2: [925,935,945,955,965,975,985,995,1005,1015,1025,1035,1045,1055,1065,1075,1085,1095,1105,1115],
+    3: [926,936,946,956,966,976,986,996,1006,1016,1026,1036,1046,1056,1066,1076,1086,1096,1106,1116],
+    4: [927,937,947,957,967,977,987,997,1007,1017,1027,1037,1047,1057,1067,1077,1087,1097,1107,1117],
+    5: [928,938,948,958,968,978,988,998,1008,1018,1028,1038,1048,1058,1068,1078,1088,1098,1108,1118]
 };
 
 export enum PrimitiveAll {
@@ -1154,7 +1203,8 @@ export enum MasterType {
     ReasonGoOut = 11,
     Remasks = 12,
     TimeLimit = 13,
-    CDLS24_BusinessType = 14
+    CDLS24_BusinessType = 14,
+    KDLS12_TaskSelection = 15
 }
 
 interface RowData {

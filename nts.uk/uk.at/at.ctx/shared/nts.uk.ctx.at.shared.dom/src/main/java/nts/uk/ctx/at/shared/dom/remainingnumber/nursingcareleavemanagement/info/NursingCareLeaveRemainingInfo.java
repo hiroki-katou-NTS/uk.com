@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -92,41 +90,42 @@ public abstract class NursingCareLeaveRemainingInfo{
 	 * @return 上限日数期間（List）
 	 */
 	public List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate, RequireM7 require) {
+			String employeeId, DatePeriod calcPeriod, GeneralDate criteriaDate, RequireM7 require) {
 
 		List<ChildCareNurseUpperLimitSplit> childCareNurseUpperLimitSplit = new ArrayList<>();
-
-		// パラメータ「期間」を＋1日する
-		DatePeriod calcPeriod = new DatePeriod(period.start().addDays(1), period.end().addDays(1));
 
 		// INPUT．Require．介護看護休暇設定を取得する（会社ID、介護看護区分）
 		NursingLeaveSetting nursingLeaveSetting = require.nursingLeaveSetting(companyId, this.leaveType);
 
+		// 次回起算日を計算する期間を作成
+		DatePeriod nextCalcPeriod = new DatePeriod(calcPeriod.start().addDays(1), calcPeriod.end().addDays(1));
+
 		// 次回起算日を求める
-		GeneralDate nextStartMonthDay = nursingLeaveSetting.getNextStartMonthDay(calcPeriod.start());
+		GeneralDate nextStartMonthDay = nursingLeaveSetting.getNextStartMonthDay(nextCalcPeriod.start());
 
 		// 期間に次回起算日があるか
-		//	===期間．開始日 <=次回起算日 <= 期間．終了日
-		if (calcPeriod.contains(nextStartMonthDay)) {
+		//	===次回起算日を計算する期間．開始日 <=次回起算日 <= 次回起算日を計算する期間．終了日
+		if (nextCalcPeriod.contains(nextStartMonthDay)) {
 			// 期間．開始日から次回起算日の前日の上限日数を取得List<ChildCareTargetChanged> childCareTargetChanged
 			childCareNurseUpperLimitSplit.addAll(childCareNurseUpperLimitSplit(companyId, employeeId,
 					new DatePeriod(calcPeriod.start(), nextStartMonthDay.addDays(-1)), criteriaDate, nextStartMonthDay, require));
 
-			// 次回起算日から期間．終了日期間の上限日数を取得
+			// 次回起算日から次回起算日を計算する期間．終了日期間の上限日数を取得
 			childCareNurseUpperLimitSplit.addAll(childCareNurseUpperLimitSplit(companyId,employeeId,
-						new DatePeriod(nextStartMonthDay, calcPeriod.end()),criteriaDate,nextStartMonthDay, require));
+						new DatePeriod(nextStartMonthDay, nextCalcPeriod.end()),criteriaDate,nextStartMonthDay, require));
+			
+			//上限日数分割日から上限日数期間を作成
+			return limitSplitTolimitPeriod(new DatePeriod(calcPeriod.start(), nextCalcPeriod.end()),childCareNurseUpperLimitSplit);
 
 		}else {
 			// 期間．開始日を分割日に設定
 			childCareNurseUpperLimitSplit = childCareNurseUpperLimitSplit(companyId,employeeId,
 					calcPeriod ,criteriaDate, nextStartMonthDay,require);
+			
+			//上限日数分割日から上限日数期間を作成
+			return limitSplitTolimitPeriod(new DatePeriod(calcPeriod.start(), nextCalcPeriod.end()),childCareNurseUpperLimitSplit);
 		}
 
-		//上限日数分割日から上限日数期間を作成
-		List<ChildCareNurseUpperLimitPeriod> upperLimitPeriodList = limitSplitTolimitPeriod(calcPeriod,childCareNurseUpperLimitSplit);
-
-		// 「上限日数期間（List）」を返す
-		return upperLimitPeriodList;
 	}
 
 	/**
@@ -148,35 +147,66 @@ public abstract class NursingCareLeaveRemainingInfo{
 
 		// 上限設定を確認
 		// ===家族情報を参照：家族情報を参照
-		// ===個人情報を参照：個人情報を参照（毎年利用）
-		// ===　　　　：個人情報を参照（本年度のみ利用）
-		if (upperlimitSetting == UpperLimitSetting.FAMILY_INFO) {
+		//if (upperlimitSetting == UpperLimitSetting.FAMILY_INFO) {
 
 			// INPUT．Require．介護看護休暇設定を取得する
-			NursingLeaveSetting nursingLeaveSetting = require.nursingLeaveSetting(companyId, this.leaveType);
+			//NursingLeaveSetting nursingLeaveSetting = require.nursingLeaveSetting(companyId, this.leaveType);
 
 			// 家族情報から対象人数を履歴で求める
 			// ===社員ID←パラメータ「社員ID」
 			// ===期間←パラメータ「期間」
 			// ===基準日←パラメータ「基準日」
 			// ===Require
-			childCareNurseUpperLimitSplit = nursingLeaveSetting.getHistoryCountFromFamilyInfo(employeeId, period, criteriaDate, require);
-		} else {
+			//childCareNurseUpperLimitSplit = nursingLeaveSetting.getHistoryCountFromFamilyInfo(employeeId, period, criteriaDate, require);
+			
+			// 「上限日数分割日（List）」を返す
+			//return childCareNurseUpperLimitSplit;
+		//}  
+		
+		// ===個人情報を参照（本年度のみ利用）
+		if (upperlimitSetting == UpperLimitSetting.PER_INFO_FISCAL_YEAR){
 			// 期間に次回起算日が含まれているか
-			if (period.contains(nextStartMonthDay) && maxDayForNextFiscalYear.isPresent()) {
+			if (period.contains(nextStartMonthDay)) {
 				// 上限日数分割日に上限日数を設定
 				// ===年月日＝パラメータ「期間．開始日」
 				// ===上限日数＝次年度上限日数を設定
-				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForNextFiscalYear.get(), period.start()));
-			}else if(!period.contains(nextStartMonthDay) && maxDayForThisFiscalYear.isPresent()){
+				if(maxDayForNextFiscalYear.isPresent())
+				{
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForNextFiscalYear.get(), period.start()));
+				}else{
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(
+							new ChildCareNurseUpperLimit(0), period.start()));
+				}
+			}else if(!period.contains(nextStartMonthDay)){
 				// ===期間に次回起算日が含まれていない
 				// ===年月日＝パラメータ「期間．開始日」
 				// ===上限日数＝本年度上限日数を設定
-				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
+				if(maxDayForThisFiscalYear.isPresent()){
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
+				}else{
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(
+							new ChildCareNurseUpperLimit(0), period.start()));
+				}
 			}
+			// 「上限日数分割日（List）」を返す
+			return childCareNurseUpperLimitSplit;
 		}
-		// 「上限日数分割日（List）」を返す
-		return childCareNurseUpperLimitSplit;
+		// ===個人情報を参照（毎年利用）子の看護・介護休暇基本情報のドメイン修正時再度修正が必要
+		if(upperlimitSetting == UpperLimitSetting.PER_INFO_EVERY_YEAR){
+			// ===年月日＝パラメータ「期間．開始日」
+			// ===上限日数＝本年度上限日数を設定
+			if(maxDayForThisFiscalYear.isPresent()){			
+				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
+			}else{
+				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(
+						new ChildCareNurseUpperLimit(0), period.start()));
+			}
+			
+			// 「上限日数分割日（List）」を返す
+			return childCareNurseUpperLimitSplit;
+		}
+		
+		throw new RuntimeException();
 	}
 
 

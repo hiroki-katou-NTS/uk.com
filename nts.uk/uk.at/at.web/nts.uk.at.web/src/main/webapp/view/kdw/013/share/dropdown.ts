@@ -162,8 +162,6 @@ module nts.uk.ui.at.kdw013.share {
 
                 ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { selected, items, required, visibleItemsCount } } }, bindingContext);
 
-                element.removeAttribute('data-bind');
-
                 element.setAttribute('role', randomId());
 
                 $(element)
