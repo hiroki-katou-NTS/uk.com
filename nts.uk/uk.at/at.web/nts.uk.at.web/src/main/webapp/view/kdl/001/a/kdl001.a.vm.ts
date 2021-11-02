@@ -108,7 +108,7 @@ module nts.uk.at.view.kdl001.a {
                                 { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 130 },
                                 { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 180 },
                                 { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 180 }, //tam thoi comment theo yeu cau cua oohashi san
-                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 150 },
+                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 80 },
                                 { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span class="limited-label">${remark}</span>' }
                             ]);
                         } else {
@@ -117,7 +117,7 @@ module nts.uk.at.view.kdl001.a {
                                 { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 130 },
                                 { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 180 },
                                 //{ headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 }, //tam thoi comment theo yeu cau cua oohashi san
-                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 150 },
+                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 80 },
                                 { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span class="limited-label">${remark}</span>' }
                             ]);
                         }
@@ -411,7 +411,7 @@ module nts.uk.at.view.kdl001.a {
                 trigger: "#A2_23",
                 position: {
                   my: "left top",
-                  at: "right top",
+                  at: "left bottom",
                   of: "#A2_23"
                 },
                 showOnStart: false,

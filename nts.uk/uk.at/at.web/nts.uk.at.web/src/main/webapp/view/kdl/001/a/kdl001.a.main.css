@@ -108,6 +108,7 @@ div.nts-column{
 
 .query-zone {
   display: inline-block;
+  margin-left: 10px;
 }
 
 .query-zone > * {
@@ -120,12 +121,16 @@ div.nts-column{
 }
 
 .query-execute-part {
-  margin-top: 9px;
+  margin-top: 10px;
 }
 
 .query-other-part {
-  margin-top: 10px;
+  margin-top: 18px;
   display: grid;
+}
+
+.mr-10 {
+  margin-right: 10px;
 }
 
 button:disabled {
@@ -137,7 +142,7 @@ button:disabled {
 }
 
 #A2_25 {
-  width: 441px;
+  width: 417px;
   float: left;
 }
 
@@ -151,7 +156,7 @@ button:disabled {
 }
 
 #A6_1 {
-  width: 650px;
+  width: 700px;
 }
 
 #A6_3 {
