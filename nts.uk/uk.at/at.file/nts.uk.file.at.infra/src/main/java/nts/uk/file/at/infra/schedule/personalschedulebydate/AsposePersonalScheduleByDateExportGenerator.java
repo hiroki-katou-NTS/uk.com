@@ -5,6 +5,7 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -205,10 +206,10 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         int graphStartTime = dataSource.getQuery().getGraphStartTime();
         int pixelOfColumn = cells.getColumnWidthPixel(8);
 
-        for (int i = 1; i <= employeeWorkScheduleList.size(); i++) {
-            EmployeeWorkScheduleResultDto item = employeeWorkScheduleList.get(i - 1);
-            if (i == employeeWorkScheduleList.size())
-                if (employeeWorkScheduleList.size() == 1)
+        for (int i = 1; i <= employeeInfoList.size(); i++) {
+            val empInfo = employeeInfoList.get(i - 1);
+            if (i == employeeInfoList.size())
+                if (employeeInfoList.size() == 1)
                     cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 18 : 21, rowCount, 2);
                 else
                     cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
@@ -216,29 +217,29 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (isEndOfPage(rowCount, pageIndex) ? 49 : 9), rowCount, 2);
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
 
-            val empInfoOpt = employeeInfoList.stream().filter(x -> x.getEmployeeId().equals(item.getEmployeeId())).findFirst();
-
             // C1_2 + C1_3
-            cells.get(rowCount, 0).setValue(empInfoOpt.map(emp -> emp.getEmployeeCode() + SPACE + emp.getBusinessName()).orElse(EMPTY));
-            if (!isDoubleWorkDisplay) {
-                cells.get(rowCount, 1).setValue(getWorkName(item.getWorkTypeCode(), item.getWorkTypeName()));  // C2_2_7: WorkType
-                cells.get(rowCount, 2).setValue(getWorkName(item.getWorkTimeCode(), item.getWorkTimeName()));  // C2_2_8: WorkTime
-                cells.get(rowCount, 3).setValue(minuteToTime(item.getStartTime1()));          // C2_2_9
-                cells.get(rowCount, 4).setValue(minuteToTime(item.getEndTime1()));            // C2_2_10
-                cells.get(rowCount, 5).setValue(minuteToTime(item.getTotalWorkingHours()));   // C2_2_11
-                cells.get(rowCount, 6).setValue(minuteToTime(item.getTotalBreakTime()));      // C2_2_12
-            } else {
-                cells.get(rowCount, 1).setValue(getWorkName(item.getWorkTypeCode(), item.getWorkTypeName()));  // C2_3_9:  WorkType
-                cells.get(rowCount, 2).setValue(getWorkName(item.getWorkTimeCode(), item.getWorkTimeName()));  // C2_3_10: WorkTime
-                cells.get(rowCount, 3).setValue(minuteToTime(item.getStartTime1()));              // C2_3_11
-                cells.get(rowCount, 4).setValue(minuteToTime(item.getEndTime1()));                // C2_3_12
-                cells.get(rowCount + 1, 3).setValue(minuteToTime(item.getStartTime2()));     // C2_3_13
-                cells.get(rowCount + 1, 4).setValue(minuteToTime(item.getEndTime2()));       // C2_3_14
-                cells.get(rowCount, 5).setValue(minuteToTime(item.getTotalWorkingHours()));      // C2_3_15
-                cells.get(rowCount, 6).setValue(minuteToTime(item.getTotalBreakTime()));         // C2_3_16
-            }
+            cells.get(rowCount, 0).setValue(empInfo.getEmployeeCode() + SPACE + empInfo.getBusinessName());
 
-//            if (dataSource.getQuery().isGraphVacationDisplay()) {
+            EmployeeWorkScheduleResultDto item = employeeWorkScheduleList.stream().filter(x -> x.getEmployeeId().equals(empInfo.getEmployeeId())).findFirst().orElse(null);
+            if (item != null) {
+                if (!isDoubleWorkDisplay) {
+                    cells.get(rowCount, 1).setValue(getWorkName(item.getWorkTypeCode(), item.getWorkTypeName()));  // C2_2_7: WorkType
+                    cells.get(rowCount, 2).setValue(getWorkName(item.getWorkTimeCode(), item.getWorkTimeName()));  // C2_2_8: WorkTime
+                    cells.get(rowCount, 3).setValue(minuteToTime(item.getStartTime1()));          // C2_2_9
+                    cells.get(rowCount, 4).setValue(minuteToTime(item.getEndTime1()));            // C2_2_10
+                    cells.get(rowCount, 5).setValue(minuteToTime(item.getTotalWorkingHours()));   // C2_2_11
+                    cells.get(rowCount, 6).setValue(minuteToTime(item.getTotalBreakTime()));      // C2_2_12
+                } else {
+                    cells.get(rowCount, 1).setValue(getWorkName(item.getWorkTypeCode(), item.getWorkTypeName()));  // C2_3_9:  WorkType
+                    cells.get(rowCount, 2).setValue(getWorkName(item.getWorkTimeCode(), item.getWorkTimeName()));  // C2_3_10: WorkTime
+                    cells.get(rowCount, 3).setValue(minuteToTime(item.getStartTime1()));              // C2_3_11
+                    cells.get(rowCount, 4).setValue(minuteToTime(item.getEndTime1()));                // C2_3_12
+                    cells.get(rowCount + 1, 3).setValue(minuteToTime(item.getStartTime2()));     // C2_3_13
+                    cells.get(rowCount + 1, 4).setValue(minuteToTime(item.getEndTime2()));       // C2_3_14
+                    cells.get(rowCount, 5).setValue(minuteToTime(item.getTotalWorkingHours()));      // C2_3_15
+                    cells.get(rowCount, 6).setValue(minuteToTime(item.getTotalBreakTime()));         // C2_3_16
+                }
+
                 // C3_2_1
                 if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
                     val shape1a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
@@ -335,55 +336,53 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                         }
                     }
                 }
-//            }
 
-            if (displayActual) {
-                // C3_2_14
-                System.out.println("C3_2_14");
-                if (item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
-                    val shape14a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getActualStartTime1(), item.getActualEndTime1());
-                    if (shape14a.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape14a.getColumn(), shape14a.getWidth(), shape14a.getLeft(), getBarColor(BarType.WORKING_HOURS_ACTUAL), true, null);
-                    }
-                }
-
-                if (isDoubleWorkDisplay && item.getActualStartTime2() != null && item.getActualEndTime2() != null) {
-                    val shape14b = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getActualStartTime2(), item.getActualEndTime2());
-                    if (shape14b.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape14b.getColumn(), shape14b.getWidth(), shape14b.getLeft(), getBarColor(BarType.WORKING_HOURS_ACTUAL), true, null);
-                    }
-                }
-
-                // C3_2_16
-                System.out.println("C3_2_16");
-                if (!item.getOverTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
-                    for (val time : item.getOverTimeList()) {
-                        TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime(), time.getEndTime(), new TimeRangeLimitDto(item.getActualStartTime1(), item.getActualEndTime1()),
-                                (isDoubleWorkDisplay && item.getActualStartTime2() != null && item.getActualEndTime2() != null) ? new TimeRangeLimitDto(item.getActualStartTime2(), item.getActualEndTime2()) : null);
-                        if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
-
-                        val shape16 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
-                        if (shape16.getColumn() != null) {
-                            drawRectangle(shapes, rowCount, shape16.getColumn(), shape16.getWidth(), shape16.getLeft(), getBarColor(BarType.OVERTIME_HOURS_ACTUAL), true, null);
+                if (displayActual) {
+                    // C3_2_14
+                    if (item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
+                        val shape14a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getActualStartTime1(), item.getActualEndTime1());
+                        if (shape14a.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape14a.getColumn(), shape14a.getWidth(), shape14a.getLeft(), getBarColor(BarType.WORKING_HOURS_ACTUAL), true, null);
                         }
                     }
-                }
 
-                // C3_2_15
-                System.out.println("C3_2_15");
-                if (!item.getActualBreakTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
-                    for (val time : item.getActualBreakTimeList()) {     // max 10
-                        TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime().v(), time.getEndTime().v(), new TimeRangeLimitDto(item.getActualStartTime1(), item.getActualEndTime1()),
-                                (isDoubleWorkDisplay && item.getActualStartTime2() != null && item.getActualEndTime2() != null) ? new TimeRangeLimitDto(item.getActualStartTime2(), item.getActualEndTime2()) : null);
-                        if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
+                    if (isDoubleWorkDisplay && item.getActualStartTime2() != null && item.getActualEndTime2() != null) {
+                        val shape14b = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getActualStartTime2(), item.getActualEndTime2());
+                        if (shape14b.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape14b.getColumn(), shape14b.getWidth(), shape14b.getLeft(), getBarColor(BarType.WORKING_HOURS_ACTUAL), true, null);
+                        }
+                    }
 
-                        val shape15 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
-                        if (shape15.getColumn() != null) {
-                            drawRectangle(shapes, rowCount, shape15.getColumn(), shape15.getWidth(), shape15.getLeft(), getBarColor(BarType.BREAK_TIME_ACTUAL), true, null);
+                    // C3_2_16
+                    if (!item.getOverTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
+                        for (val time : item.getOverTimeList()) {
+                            TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime(), time.getEndTime(), new TimeRangeLimitDto(item.getActualStartTime1(), item.getActualEndTime1()),
+                                    (isDoubleWorkDisplay && item.getActualStartTime2() != null && item.getActualEndTime2() != null) ? new TimeRangeLimitDto(item.getActualStartTime2(), item.getActualEndTime2()) : null);
+                            if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
+
+                            val shape16 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
+                            if (shape16.getColumn() != null) {
+                                drawRectangle(shapes, rowCount, shape16.getColumn(), shape16.getWidth(), shape16.getLeft(), getBarColor(BarType.OVERTIME_HOURS_ACTUAL), true, null);
+                            }
+                        }
+                    }
+
+                    // C3_2_15
+                    if (!item.getActualBreakTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
+                        for (val time : item.getActualBreakTimeList()) {     // max 10
+                            TimeCheckedDto timeChecked = validateTime(graphStartTime, time.getStartTime().v(), time.getEndTime().v(), new TimeRangeLimitDto(item.getActualStartTime1(), item.getActualEndTime1()),
+                                    (isDoubleWorkDisplay && item.getActualStartTime2() != null && item.getActualEndTime2() != null) ? new TimeRangeLimitDto(item.getActualStartTime2(), item.getActualEndTime2()) : null);
+                            if (timeChecked.getStartTime() == null || timeChecked.getEndTime() == null) continue;
+
+                            val shape15 = calculateConvertToShape(pixelOfColumn, graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
+                            if (shape15.getColumn() != null) {
+                                drawRectangle(shapes, rowCount, shape15.getColumn(), shape15.getWidth(), shape15.getLeft(), getBarColor(BarType.BREAK_TIME_ACTUAL), true, null);
+                            }
                         }
                     }
                 }
             }
+
             rowCount += 2;
 
             // Paging
@@ -395,7 +394,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             }
 
             // Ruler close
-            if (i == employeeWorkScheduleList.size()) {
+            if (i == employeeInfoList.size()) {
                 cells.copyRows(cellsTemplate, 57, rowCount, 1);
                 rowCount += 1;
             }
@@ -475,7 +474,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private TimeCheckedDto checkRangeLimit(int graphStartTime, Integer start, Integer end) {
         val timeLimit = getTimeLimit(graphStartTime, OutputType.TOTAL_MINUTE);
-        if (!isInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) && !isInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())){
+        if (!isInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) && !isInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
             return null;
         }
         if (start > timeLimit.getMaxLimit()) return null;

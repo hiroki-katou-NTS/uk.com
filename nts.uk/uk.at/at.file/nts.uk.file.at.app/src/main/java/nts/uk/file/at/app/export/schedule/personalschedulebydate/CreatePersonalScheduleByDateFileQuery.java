@@ -5,6 +5,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.dto.EmployeeWorkScheduleResultDto;
 
@@ -76,7 +77,7 @@ public class CreatePersonalScheduleByDateFileQuery {
                 basicInformation.getCompanyInfo(),
                 basicInformation.getDisplayInfoOrganization(),
                 basicInformation.getDateInformation(),
-                basicInformation.getEmployeeInfoList(),
+                basicInformation.getEmployeeInfoList().stream().sorted(Comparator.comparing(EmployeeInformationImport::getEmployeeCode)).collect(Collectors.toList()),
                 employeeWorkScheduleResultList,
                 null);
     }
