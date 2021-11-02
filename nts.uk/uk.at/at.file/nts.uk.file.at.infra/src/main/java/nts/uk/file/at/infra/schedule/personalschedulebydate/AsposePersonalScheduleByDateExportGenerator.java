@@ -116,8 +116,26 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             setBottomBorder(cells, 4, 5, 11);
         }
 
-        // B5_1
+        // B5
         printB5(cells, dateInfo.getListSpecDayNameCompany(), dateInfo.getListSpecDayNameWorkplace());
+
+        // B6: Color description
+        cells.get(0, 31).setValue(getText("KSU003_144"));     // B6_1
+        cells.get(0, 35).setValue(getText("KSU003_146"));     // B6_3
+        cells.get(0, 39).setValue(getText("KSU003_148"));     // B6_5
+        cells.get(0, 43).setValue(getText("KSU003_150"));     // B6_7
+        cells.get(0, 47).setValue(getText("KSU003_152"));     // B6_9
+        cells.get(0, 52).setValue(getText("KSU003_154"));     // B6_11
+
+        cells.get(2, 31).setValue(getText("KSU003_145"));     // B6_2
+        cells.get(2, 35).setValue(getText("KSU003_147"));     // B6_4
+        cells.get(2, 43).setValue(getText("KSU003_149"));     // B6_6
+        cells.get(2, 47).setValue(getText("KSU003_153"));     // B6_10
+        cells.get(2, 52).setValue(getText("KSU003_155"));     // B6_12
+
+        cells.get(4, 31).setValue(getText("KSU003_156"));     // B6_13
+        cells.get(4, 35).setValue(getText("KSU003_157"));     // B6_14
+        cells.get(4, 39).setValue(getText("KSU003_158"));     // B6_15
 
         // Header C:
         cells.get(6, 0).setValue(getText("KSU003_159"));      // C1_1
@@ -184,10 +202,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         val employeeWorkScheduleList = dataSource.getEmployeeWorkScheduleList();
         val isDoubleWorkDisplay = dataSource.getQuery().isDoubleWorkDisplay();
         val displayActual = dataSource.getQuery().isDisplayActual();
-        val graphVacationDisplay = dataSource.getQuery().isGraphVacationDisplay();
         int graphStartTime = dataSource.getQuery().getGraphStartTime();
         int pixelOfColumn = cells.getColumnWidthPixel(8);
-        System.out.println("pixelOfColumn: " + pixelOfColumn);
 
         for (int i = 1; i <= employeeWorkScheduleList.size(); i++) {
             EmployeeWorkScheduleResultDto item = employeeWorkScheduleList.get(i - 1);
@@ -222,7 +238,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 cells.get(rowCount, 6).setValue(minuteToTime(item.getTotalBreakTime()));         // C2_3_16
             }
 
-//            if (graphVacationDisplay) {
+//            if (dataSource.getQuery().isGraphVacationDisplay()) {
                 // C3_2_1
                 if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
                     val shape1a = calculateConvertToShape(pixelOfColumn, graphStartTime, item.getStartTime1(), item.getEndTime1());
@@ -433,9 +449,9 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         int shapeWidth = minuteEnd == 0
                 ? (columnEnd * pixelOfColumn) - (columnStart * pixelOfColumn) - left
                 : ((columnEnd * pixelOfColumn) + Math.round(calcRatioCell(pixelOfColumn) * minuteEnd)) - (columnStart * pixelOfColumn) - left;
-        System.out.println("Input start: " + start + " => " + startTime.getHour() + ":" + startTime.getMinute() + ";   " + "Input end: " + end + " => " + endTime.getHour() + ":" + endTime.getMinute());
-        System.out.println("minuteStart: " + minuteStart + " => minuteEnd: " + minuteEnd + ";   " + "columnStart: " + columnStart + " => columnEnd: " + columnEnd);
-        System.out.println("left: " + left + ";   " + "shapeWidth: " + shapeWidth);
+//        System.out.println("Input start: " + start + " => " + startTime.getHour() + ":" + startTime.getMinute() + ";   " + "Input end: " + end + " => " + endTime.getHour() + ":" + endTime.getMinute());
+//        System.out.println("minuteStart: " + minuteStart + " => minuteEnd: " + minuteEnd + ";   " + "columnStart: " + columnStart + " => columnEnd: " + columnEnd);
+//        System.out.println("left: " + left + ";   " + "shapeWidth: " + shapeWidth);
 
         return new DrawRectangleProperties(columnStart, left, shapeWidth);
     }
