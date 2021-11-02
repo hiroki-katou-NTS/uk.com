@@ -90,9 +90,6 @@ public class WorkspaceSql {
 
 	private void createTable(String tableName) {
 		TemporaryTable.createTable(jdbcProxy, database, tableName, b -> {
-			for (WorkspaceItem item : workspace.getItemsPk()) {
-				b = b.columnPK(item.getName(), item.getDataTypeConfig());
-			}
 			b = b.column(ROW_NO.name, ROW_NO.type)
 					.column(CONTRACT_CD.name, CONTRACT_CD.type)
 					.column(CID.name, CID.type);
