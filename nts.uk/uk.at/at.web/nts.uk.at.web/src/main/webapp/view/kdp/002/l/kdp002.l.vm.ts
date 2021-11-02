@@ -188,7 +188,6 @@ module nts.uk.at.view.kdp002.l {
  					vm.framePosition(0);
                     vm.framePosition.valueHasMutated();
 					vm.searchValue('');
-                   	$('#L2_1').focus();
                 });
 
             }
@@ -230,6 +229,7 @@ module nts.uk.at.view.kdp002.l {
             }
 
             vm.wordCodeMap.set(vm.frameNo(), null);
+			$('#L2_1').focus();
         }
 
         onSelect(code: string) {
