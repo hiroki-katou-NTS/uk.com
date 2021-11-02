@@ -1,5 +1,12 @@
 <template>
   <div cl>
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+          <span>{{ "KDPS01_15" | i18n }}</span>
+        </h4>
+      </div>
+    </div>
     <!-- L1: 枠名 -->
     <label class="mb-2"
       >{{ "KDPS01_70" | i18n(frameName) }}
@@ -11,6 +18,7 @@
             <nts-text-editor
             id="taskNameCd"
             ref="L2_1"
+            v-focus
             v-bind:tabindex="1"
             v-model="taskNameCd"
             v-bind:show-title="true"
@@ -59,7 +67,7 @@
     <button
       v-for="button in tasks"
       v-bind:key="button.code"
-      ref="functionBtns"
+      v-bind:tabindex="4"
       type="button"
       class=" mb-2 btn btn-success btn-block btn-lg"
       v-click:500="() => onClickTask(button.code)"

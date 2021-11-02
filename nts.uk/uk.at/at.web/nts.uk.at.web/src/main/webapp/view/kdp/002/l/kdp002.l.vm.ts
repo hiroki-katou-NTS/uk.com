@@ -16,36 +16,6 @@ module nts.uk.at.view.kdp002.l {
 		GET_EMPLOYEE_TASKS: 'at/record/stamp/employee_work_by_stamping'
     }
 
-    @handler({
-        bindingName: 'firstFocus'
-    })
-    export class FocusButtonFirstBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLElement,
-            valueAccessor: () => KnockoutObservableArray<any>,
-            allBindingsAccessor: KnockoutAllBindingsAccessor,
-            viewModel: any,
-            bindingContext: KnockoutBindingContext) {
-            let focused: boolean = false;
-
-            const accessor = valueAccessor();
-
-            ko.computed({
-                read: () => {
-                    const buttons = ko.unwrap(accessor);
-
-                    if (focused === false && buttons.length) {
-                        ko.tasks
-                            .schedule(() => {
-                                focused = true;
-								setTimeout(() => $(element).find('button:first').focus(), 200);
-                            });
-                    }
-                },
-                disposeWhenNodeIsRemoved: element
-            });
-        }
-    }
-
     @bean()
     export class ViewModel extends ko.ViewModel {
 
@@ -111,7 +81,7 @@ module nts.uk.at.view.kdp002.l {
 
             setTimeout(() => {
                 vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(1)]));
-                //$('#L2_1').focus();
+                $('#L2_1').focus();
             }, 300);
 
             vm.framePosition
@@ -217,7 +187,8 @@ module nts.uk.at.view.kdp002.l {
                     vm.reload(0);
  					vm.framePosition(0);
                     vm.framePosition.valueHasMutated();
-                    
+					vm.searchValue('');
+                   	$('#L2_1').focus();
                 });
 
             }
@@ -283,6 +254,8 @@ module nts.uk.at.view.kdp002.l {
                     
                     vm.reload(0);
                     vm.framePosition(0);
+					vm.searchValue('');
+					$('#L2_1').focus();
                     }
                         
                 }
