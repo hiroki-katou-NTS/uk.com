@@ -18,6 +18,6 @@ public class SuppInfoCommentItemCommand {
 	public SuppInfoCommentItem toDomain() {
 
 		return new SuppInfoCommentItem(new SuppInfoNo(this.getSuppInfoNo()),
-				new WorkSuppComment(this.getWorkSuppComment()));
+				this.getWorkSuppComment()==null?null: new WorkSuppComment(this.getWorkSuppComment()));
 	}
 }
