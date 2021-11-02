@@ -145,9 +145,9 @@ module nts.uk.at.view.kdw003.b {
                         { key: "id", width: "130px", hidden: true, dataType: "number" },
                         { key: "employeeCode", width: "120px", headerText: getText('KDW003_32'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },
                         { key: "employeeName", width: "150px", headerText: getText('KDW003_33'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },
-                        { key: "date", width: "130px", headerText: getText('KDW003_34'), dataType: "string",hidden:self.diplayFormat() == 1 ? true : false },
-                        { key: "message", width: "300px", headerText: getText('KDW003_36'), dataType: "string" },
-                        { key: "itemName", width: "170px", headerText: getText('KDW003_37'), dataType: "string" }
+                        { key: "date", width: "95px", headerText: getText('KDW003_34'), dataType: "string",hidden:self.diplayFormat() == 1 ? true : false },
+                        { key: "message", headerText: getText('KDW003_36'), dataType: "string" },
+                        { key: "itemName", width: "120px", headerText: getText('KDW003_37'), dataType: "string" }
                     ],
                     features: [
                         {
@@ -196,14 +196,14 @@ module nts.uk.at.view.kdw003.b {
                                 { key: "stateBtn", width: "130px", hidden: true, dataType: "string" },
                                 { key: "employeeCode", width: "120px", headerText: getText('KDW003_32'), dataType: "string",hidden:self.diplayFormat() == 0 ? true : false },
                                 { key: "employeeName", width: "150px", headerText: getText('KDW003_33'), dataType: "string",hidden:self.diplayFormat() == 0 ? true : false },
-                                { key: "date", width: "130px", headerText: getText('KDW003_34'), dataType: "string", hidden:self.diplayFormat() == 1 ? true : false  },
-                                { key: "errorCode", width: "50px", headerText: "コード", dataType: "string" },
-                                { key: "errorAlarmAtr", width: "80px", headerText: getText('KDW003_129'), dataType: "string" },
-                                { key: "message", width: "300px", headerText: getText('KDW003_36'), dataType: "string" },
-                                { key: "itemName", width: "170px", headerText: getText('KDW003_37'), dataType: "string" },
+                                { key: "date", width: "95px", headerText: getText('KDW003_34'), dataType: "string", hidden:self.diplayFormat() == 1 ? true : false  },
+                                { key: "errorCode", width: "45px", headerText: "コード", dataType: "string" },
+                                { key: "errorAlarmAtr", width: "60px", headerText: getText('KDW003_129'), dataType: "string" },
+                                { key: "message", headerText: getText('KDW003_36'), dataType: "string" },
+                                { key: "itemName", width: "120px", headerText: getText('KDW003_37'), dataType: "string" },
                                 { key: "submitedName", width: "170px", headerText: getText('KDW003_62'), dataType: "string" },
                                 {
-                                    key: "application", width: "70px", headerText: getText('KDW003_63'), dataType: "string", unbound: true,
+                                    key: "application", width: "55px", headerText: getText('KDW003_63'), dataType: "string", unbound: true,
                                     template: "<input type= \"button\"  onclick = \"nts.uk.at.view.kdw003.b.viewmodel.redirectApplication(${id}) \" value= \" " + getText('KDW003_63') + " \" ${stateBtn} />"
                                 }
                             ],
