@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
  * 
  * @author tutk
  *
- *         日別実績の作成
+ *         日別実績の作成結果
  */
 @Getter
 @Setter

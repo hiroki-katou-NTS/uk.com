@@ -87,7 +87,7 @@ public class CreateStampDataForEmployeesService {
 		// $打刻反映結果 = データタイムレコードを打刻に変換する#日別実績を処理する(require, 会社ID, 社員ID, $永続化処理)
 //		Optional<StampDataReflectResult> reflectResult = ConvertTimeRecordStampService.createDailyData(require,
 //				Optional.of(cid), Optional.of(employeeId), Optional.of(stamp), atom);
-		Optional<StampDataReflectResult> stampDataResultOpt = ReflectStampInDailyRecord.reflect(require, contractCode.v(), stamp);
+		Optional<StampDataReflectResult> stampDataResultOpt = ReflectStampInDailyRecord.reflect(require, contractCode, stamp);
 		
 		if(!stampDataResultOpt.isPresent()) {
 			return new TimeStampInputResult(new StampDataReflectResult(Optional.empty(), atom), stampResult.getAtomTask());

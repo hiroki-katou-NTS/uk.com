@@ -18,5 +18,7 @@ public class InfoReflectDestStamp {
 	
 	//社員ID
 	private String sid;
-
+	
+	//会社ID
+    private String cid;
 }

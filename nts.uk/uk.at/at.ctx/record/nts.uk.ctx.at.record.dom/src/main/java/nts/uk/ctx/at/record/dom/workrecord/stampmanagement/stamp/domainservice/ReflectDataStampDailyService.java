@@ -47,7 +47,7 @@ public class ReflectDataStampDailyService {
 		DatePeriod period = new DatePeriod(date.addDays(-2), date.addDays(1));
 		Optional<GeneralDate> reflectDate =  period.stream().filter(c -> require.createDailyDomAndReflectStamp(cid, employeeId.get(), c, stampCheck)
 				.map(x -> stampCheck.getImprintReflectionStatus().isReflectedCategory()).orElse(false)).findFirst();
-		return reflectDate.map(dateProcess -> new InfoReflectDestStamp(dateProcess, employeeId.get()));
+		return reflectDate.map(dateProcess -> new InfoReflectDestStamp(dateProcess, employeeId.get(), cid));
 	}
 
 	public static interface Require {

@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.InfoReflectDestStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -27,20 +26,15 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectStampInDailyRecord {
 
-	public static Optional<StampDataReflectResult> reflect(Require require, String contractCode,
+	public static Optional<StampDataReflectResult> reflect(Require require, ContractCode contractCode,
 			Stamp stamp) {
-		// $反映する日と社員ID
+		// $打刻の反映先情報
 		Optional<InfoReflectDestStamp> reflectDateAndEmpID = ReflectDataStampDailyService.getJudgment(require,
-				new ContractCode(contractCode), stamp);
-		// <>$反映する日と社員ID.isPresent()
+				contractCode, stamp);
+		// <>$打刻の反映先情報.isPresent()
 		if (!reflectDateAndEmpID.isPresent())
 			return Optional.empty();
-		val cidInfo = require.getEmpData(Arrays.asList(reflectDateAndEmpID.get().getSid()));
-		if (cidInfo.isEmpty()) {
-			return Optional.empty();
-		}
-		String cid = cidInfo.get(0).getCompanyId();
-		Optional<ReflectStampDailyAttdOutput> stampDailyAttdOutput = require.createDailyDomAndReflectStamp(cid,
+		Optional<ReflectStampDailyAttdOutput> stampDailyAttdOutput = require.createDailyDomAndReflectStamp(reflectDateAndEmpID.get().getCid(),
 				reflectDateAndEmpID.get().getSid(), reflectDateAndEmpID.get().getDate(), stamp);
 
 		if (!stampDailyAttdOutput.isPresent())
@@ -53,7 +47,6 @@ public class ReflectStampInDailyRecord {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter().setData(domainDaily)
 				.completed();
 		List<ItemValue> listItemValue = converter.convert(attendanceItemIdList);
-
 		if (!attendanceItemIdList.isEmpty()) {
 			// 手修正項目のデータを元に戻す
 			domainDaily = require.restoreData(converter, domainDaily, listItemValue);
@@ -63,7 +56,7 @@ public class ReflectStampInDailyRecord {
 		domainDaily = require.process(domainDaily, stampDailyAttdOutput.get().getChangeDailyAttendance());
 
 		// $計算後の日別実績
-		List<IntegrationOfDaily> domainDailys = require.calculatePassCompanySetting(cid, Arrays.asList(domainDaily),
+		List<IntegrationOfDaily> domainDailys = require.calculatePassCompanySetting(reflectDateAndEmpID.get().getCid(), Arrays.asList(domainDaily),
 				ExecutionType.NORMAL_EXECUTION);
 
 		if (domainDailys.isEmpty())
@@ -73,7 +66,7 @@ public class ReflectStampInDailyRecord {
 			//日別実績を更新する
 			require.addAllDomain(domainDailyResult);
 			//暫定データの登録
-			require.registerDateChange(cid, reflectDateAndEmpID.get().getSid(),
+			require.registerDateChange(reflectDateAndEmpID.get().getCid(), reflectDateAndEmpID.get().getSid(),
 					Arrays.asList(reflectDateAndEmpID.get().getDate()));
 
 		});

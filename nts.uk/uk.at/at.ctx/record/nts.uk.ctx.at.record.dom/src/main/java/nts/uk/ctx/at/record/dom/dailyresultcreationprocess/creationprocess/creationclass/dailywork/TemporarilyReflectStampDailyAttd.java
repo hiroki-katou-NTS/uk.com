@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.ReflectGoingOutAndReturn;
@@ -188,14 +189,16 @@ public class TemporarilyReflectStampDailyAttd {
 		// $打刻反映範囲 = require.打刻反映時間帯を取得する($日別実績.日別実績の勤務情報)
 		OutputTimeReflectForWorkinfo forWorkinfo = timeReflectFromWorkinfo.get(cid, employeeId, date,
 				dailyOneDay.getIntegrationOfDaily().getWorkInformation());
-
 		if (forWorkinfo.getEndStatus() != EndStatus.NORMAL) {
 			return Optional.empty();
 		}
 
 		// $反映後の打刻 = require.打刻を反映する($日別実績, $打刻反映範囲, 打刻)
-		this.reflectStamp(cid, stamp, forWorkinfo.getStampReflectRangeOutput(), dailyOneDay.getIntegrationOfDaily(),
-				dailyOneDay.getChangeDailyAttendance());
+		val lstError = this.reflectStamp(cid, stamp, forWorkinfo.getStampReflectRangeOutput(),
+				dailyOneDay.getIntegrationOfDaily(), dailyOneDay.getChangeDailyAttendance());
+		if (!lstError.isEmpty())
+			return Optional.empty();
+		
 		return Optional.of(new ReflectStampDailyAttdOutput(dailyOneDay.getIntegrationOfDaily(),
 				dailyOneDay.getChangeDailyAttendance()));
 	}

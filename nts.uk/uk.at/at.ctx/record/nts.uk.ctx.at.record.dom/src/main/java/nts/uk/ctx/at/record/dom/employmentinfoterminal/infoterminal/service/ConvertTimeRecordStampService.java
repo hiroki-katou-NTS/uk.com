@@ -23,8 +23,8 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.InfoReflectDestStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.RegisterStampData;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
@@ -45,38 +45,38 @@ public class ConvertTimeRecordStampService {
 			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData) {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
-
 		if (!empInfoTerOpt.isPresent())
 			return Optional.empty();
 
 		// $就業情報端末.打刻(打刻受信データ)
-		val stamp = createStamp(require, empInfoTerOpt.get(), contractCode, stampReceptData);
-		
+		val stamp = createStamp(empInfoTerOpt.get(), contractCode, stampReceptData);
 		if(!stamp.isPresent()) {
 			return Optional.empty();
 		}
 		
 		Optional<AtomTask> stampReflectResult = RegisterStampData.registerStamp(require,
 				stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
-		
 		if(!stampReflectResult.isPresent()) {
 			return Optional.empty();
 		}
 		
+		//	$社員データ 
 		Optional<EmpDataImport> employeeData = getEmployeeData(require, contractCode, stamp.get().getKey().getCardNumber());
 		
 		if (!employeeData.isPresent())
 			return Optional
 					.of(new StampDataReflectResult(Optional.empty(), stampReflectResult.orElse(AtomTask.none())));
+		//＄終了状態
+		boolean loginSuccess = login(require, contractCode.v(), employeeData.get());
+		if(!loginSuccess)
+			return Optional
+					.of(new StampDataReflectResult(Optional.empty(), stampReflectResult.orElse(AtomTask.none())));
 		
-		login(require, contractCode.v(), employeeData.get());
-
-		return createDailyData(require, employeeData.get().getCompanyId(), contractCode,
-				employeeData.get().getEmployeeId(), stamp.get().getKey(), stampReflectResult.get());
+		return createDailyData(require, contractCode, stamp.get().getKey(), stampReflectResult.get());
 	}
 
 	//打刻を作成する
-	private static Optional<Pair<Stamp, StampRecord>> createStamp(Require require, EmpInfoTerminal empInfoTer,
+	private static Optional<Pair<Stamp, StampRecord>> createStamp(EmpInfoTerminal empInfoTer,
 			ContractCode contractCode, StampReceptionData stampReceptData){
 		//＄打刻
 		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTer.getCreateStampInfo().createStamp(contractCode, stampReceptData, empInfoTer.getEmpInfoTerCode());
@@ -108,19 +108,19 @@ public class ConvertTimeRecordStampService {
 	}
 
 	//日別実績を処理する
-	private static Optional<StampDataReflectResult> createDailyData(Require require, String cid,
-			ContractCode contractCode, String sid, Stamp stamp, AtomTask atomTask) {
+	private static Optional<StampDataReflectResult> createDailyData(Require require,
+			ContractCode contractCode, Stamp stamp, AtomTask atomTask) {
 
 		// $反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)
 		Optional<InfoReflectDestStamp> infoReflectDestStamp = ReflectDataStampDailyService.getJudgment(require, contractCode, 
 				stamp);
 		if (infoReflectDestStamp.isPresent()) {
 			//チェック日が当月以降かどうかを確認する
-			if(!checkInClosurePeriod(require, sid, infoReflectDestStamp.get().getDate())) {
+			if(!checkInClosurePeriod(require, infoReflectDestStamp.get().getSid(), infoReflectDestStamp.get().getDate())) {
 				return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
 			}
 			
-			Optional<StampDataReflectResult> stampDataResult = ReflectStampInDailyRecord.reflect(require, contractCode.v(), stamp);
+			Optional<StampDataReflectResult> stampDataResult = ReflectStampInDailyRecord.reflect(require, contractCode, stamp);
 			if(!stampDataResult.isPresent()) {
 				return Optional.of(new StampDataReflectResult(Optional.of(infoReflectDestStamp.get().getDate()), atomTask));
 			}
