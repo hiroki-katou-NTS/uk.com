@@ -253,9 +253,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                     }],
                                     applyTime: applyTime
                                 }
-                                if (_.filter(detail.timeZones, timeZone => timeZone.endTime && timeZone.startTime).length > 0) {
-                                    details.push(detail);
+                                if (_.filter(detail.timeZones, timeZone => timeZone.endTime && timeZone.startTime).length === 0) {
+                                    detail.timeZones = [];
                                 }
+                                details.push(detail);
                         }
                     } else {
                         const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == GoingOutReason.PRIVATE && z.enableInput() && (!!z.startTime() || !!z.endTime()));
