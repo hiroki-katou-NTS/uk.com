@@ -38,7 +38,7 @@ public class SuppInfoIntItemDto implements  ItemConst, AttendanceItemDataGate {
 	public static SuppInfoIntItemDto from(SuppInfoTimeItem domain) {
 		if (domain == null) return null;
 		
-		return new SuppInfoIntItemDto(domain.getSuppInfoNo().v(), domain.getAttTime().valueAsMinutes(), true);
+		return new SuppInfoIntItemDto(domain.getSuppInfoNo().v(),domain.getAttTime() == null ? null: domain.getAttTime().valueAsMinutes(), true);
 	}
 
 	public SuppInfoTimeItem toTime() {
