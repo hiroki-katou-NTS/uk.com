@@ -2578,8 +2578,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					
 					for (int i = 0; i < 9; i++) {
 						Cell dayTypeTag = cells.get(currentRow, i*2 + 3);
-						dayTypeTag.setValue((totalCountDay.getAllDayCount().get(i) == 0
-								&& condition.getZeroDisplayType() == ZeroDisplayType.NON_DISPLAY) ? "" : totalCountDay.getAllDayCount().get(i));
+						String value = totalCountDay.getAllDayCount().get(i);
+						boolean isZeroValue = Integer.valueOf(value.substring(0, value.length() - 1)) == 0;
+						dayTypeTag.setValue((isZeroValue && condition.getZeroDisplayType() == ZeroDisplayType.NON_DISPLAY) 
+								? "" : totalCountDay.getAllDayCount().get(i));
 					}
 					
 					currentRow++;
@@ -3374,7 +3376,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
     	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
     	if (valueTypeEnum.isIntegerCountable()) {
     		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
-    			cell.putValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : value, true);
+    			cell.putValue((zeroDisplayType == ZeroDisplayType.NON_DISPLAY && value.equals("0")) ? "" : totalValue.formatValue(), true);
     		} else {
     			if (!StringUtil.isNullOrEmpty(value, false))
 					cell.setValue(getTimeAttr(value, false, zeroDisplayType));
