@@ -46,7 +46,7 @@ public class CreatePersonalScheduleByDateFileQuery {
                 baseDate,
                 sortedEmployeeIds);
 
-        // 2. 取得する(): input (社員リスト, 期間, 実績も取得するか)
+        // 2. 取得する(社員リスト, 期間, 実績も取得するか)
         Map<ScheRecGettingAtr, List<IntegrationOfDaily>> dailyAttendanceMap = this.dailyAttendanceQuery.get(
                 sortedEmployeeIds,
                 new DatePeriod(baseDate, baseDate),

@@ -86,17 +86,16 @@ public class ScheduleInformationByDateFileQuery {
             val workTypeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
             // 就業時間帯コード = 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード
             val workTimeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ? dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v() : null;
-            if (workTimeCode == null) continue;
 
             val workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst();
-            val workTimeSetOpt = workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst();
+            Optional<WorkTimeSetting> workTimeSetOpt = workTimeCode != null ? workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst() : Optional.empty();
 
             // 4.1. 勤務形態を取得する() : return 就業時間帯の勤務形態
-            val workTimeForm = workTimeSetOpt.get().getWorkTimeDivision().getWorkTimeForm();
+            val workTimeForm = workTimeSetOpt.isPresent() ? workTimeSetOpt.get().getWorkTimeDivision().getWorkTimeForm() : null;
 
             // 4.2. 就業時間帯の勤務形態 == フレックス勤務用: コアタイム時間帯を取得する
             Optional<TimeSpanForCalc> coreTimeOpt = Optional.empty();
-            if (workTimeForm == WorkTimeForm.FLEX) {
+            if (workTimeForm != null && workTimeForm == WorkTimeForm.FLEX) {
                 RequireTimezoneOfCoreImpl requireImpl = new RequireTimezoneOfCoreImpl(workTypeRepo, flexWorkSet, predetemineTimeSet);
                 // コアタイム時間帯を取得する.取得する(Require, 勤務種類コード, 就業時間帯コード): INPUT: require, 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード, 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード : OUTPUT Optional<計算時間帯>
                 coreTimeOpt = GetTimezoneOfCoreTimeService.get(requireImpl, new WorkTypeCode(workTypeCode), new WorkTimeCode(workTimeCode));
@@ -104,7 +103,7 @@ public class ScheduleInformationByDateFileQuery {
 
             // 4.3. 就業時間帯の勤務形態 == 固定勤務
             List<TimeSpanForCalc> lstOver = new ArrayList<>();
-            if (workTimeForm == WorkTimeForm.FIXED) {
+            if (workTimeForm != null && workTimeForm == WorkTimeForm.FIXED) {
                 // 4.3.1. get(会社ID, 就業時間帯コード): return Optional<固定勤務設定>
                 val fixedWorkSettingOpt = fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
 
@@ -149,7 +148,7 @@ public class ScheduleInformationByDateFileQuery {
                     x.getShortWorkTimeFrameNo().v())).collect(Collectors.toList());
 
             // List＜休憩時間帯＞＝日別勤怠(Work)．日別勤怠の休憩時間帯．時間帯
-            List<BreakTimeSheet> breakTimeSheets = graphVacationDisplay ? dailyInfo.getBreakTime().getBreakTimeSheets() : Collections.emptyList();
+            List<BreakTimeSheet> breakTimeSheets = dailyInfo.getBreakTime() != null ? dailyInfo.getBreakTime().getBreakTimeSheets() : Collections.emptyList();
 
             // 開始時刻 1= 日別勤怠(Work)．出退勤．出退勤．出勤  : ※勤務NO = 1のもの。
             // 終了時刻 1= 日別勤怠(Work)．出退勤．出退勤．退勤  : ※勤務NO = 1のもの。
@@ -173,7 +172,7 @@ public class ScheduleInformationByDateFileQuery {
             String workTypeName = workTypeOpt.get().getAbbreviationName().v();
 
             // 就業時間帯名称 = 就業時間帯の設定．表示名．略名
-            String workTimeName = workTimeSetOpt.get().getWorkTimeDisplayName().getWorkTimeAbName().v();
+            String workTimeName = workTimeSetOpt.isPresent() ? workTimeSetOpt.get().getWorkTimeDisplayName().getWorkTimeAbName().v() : null;
 
             // 勤務タイプ = 就業時間帯の設定.勤務区分.勤務形態を取得する()
             Integer workType = workTimeForm.value;
@@ -194,7 +193,7 @@ public class ScheduleInformationByDateFileQuery {
                     .getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v() : null;
 
             // List<残業時間帯>
-            val overTimeSheets = this.getOverTimeSheets(workTimeForm, lstOver);
+            List<ChangeableWorkTimeDto> overTimeSheets = workTimeForm != null ? this.getOverTimeSheets(workTimeForm, lstOver) : Collections.emptyList();
 
             empWorkScheduleResults.add(new EmployeeWorkScheduleResultDto(
                     date,
@@ -203,17 +202,17 @@ public class ScheduleInformationByDateFileQuery {
                     Collections.emptyList(),  // actualBreakTimeList
                     overTimeSheets,           // overTimeList
                     shortWorkingTimeSheets,
-                    timeVacationList, // timeVacationMap,
+                    timeVacationList,         // timeVacationMap
                     coreStartTime,
                     coreEndTime,
                     totalBreakTime,
                     workType,
                     workTypeCode,
                     workTypeName,
-                    null,  //override ở 日付別実績情報を取得する
-                    null,  //override ở 日付別実績情報を取得する
-                    null,  //override ở 日付別実績情報を取得する
-                    null,  //override ở 日付別実績情報を取得する
+                    null,
+                    null,
+                    null,
+                    null,
                     totalWorkingHours,
                     workTimeCode,
                     workTimeName,
