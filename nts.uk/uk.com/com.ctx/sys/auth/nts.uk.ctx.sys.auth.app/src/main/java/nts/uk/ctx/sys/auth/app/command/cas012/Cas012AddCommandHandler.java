@@ -33,9 +33,8 @@ public class Cas012AddCommandHandler extends CommandHandler<Cas012AddOrUpdateCom
     @Override
     protected void handle(CommandHandlerContext<Cas012AddOrUpdateCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
         DatePeriod validPeriod = new DatePeriod(command.getStartDate(),command.getEndDate());
-        RequireImpl require = new RequireImpl(roleIndividualGrantRepository, roleRepository, userRepo,cid);
+        RequireImpl require = new RequireImpl(roleIndividualGrantRepository, roleRepository, userRepo);
         AtomTask task = GrantSystemAdminRoleService.grant(require, command.getUId(),validPeriod);
         transaction.execute(task::run);
     }
@@ -45,7 +44,6 @@ public class Cas012AddCommandHandler extends CommandHandler<Cas012AddOrUpdateCom
         private RoleIndividualGrantRepository roleIndividualGrantRepository;
         private RoleRepository roleRepository;
         private UserRepository userRepo;
-        private String cid;
 
         @Override
         public Optional<RoleIndividualGrant> getGrantInfoByRoleTypeOfUser(String userId, RoleType roleType) {
@@ -81,15 +79,6 @@ public class Cas012AddCommandHandler extends CommandHandler<Cas012AddOrUpdateCom
         @Override
         public Role getRoleByRoleType(RoleType roleType) {
             val listRole = roleRepository.findByType(roleType.value);
-            if (listRole.isEmpty()) {
-                return null;
-            }
-            return listRole.get(0);
-        }
-
-        @Override
-        public Role getRoleByCompanyIdAndRoleType(RoleType roleType) {
-            val listRole = roleRepository.findByType(cid, roleType.value);
             if (listRole.isEmpty()) {
                 return null;
             }

@@ -31,8 +31,7 @@ public class Cas012DeleteCommandHandler extends CommandHandler<Cas012DeleteComma
     @Override
     protected void handle(CommandHandlerContext<Cas012DeleteCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = AppContexts.user().companyId();
-        RequireImpl require = new RequireImpl(roleIndividualGrantRepository,roleRepository,userRepo,cid);
+        RequireImpl require = new RequireImpl(roleIndividualGrantRepository,roleRepository,userRepo);
         AtomTask task = GrantSystemAdminRoleService.deprive(require,command.getUserId());
         transaction.execute(task::run);
     }
@@ -42,7 +41,6 @@ public class Cas012DeleteCommandHandler extends CommandHandler<Cas012DeleteComma
         private RoleIndividualGrantRepository roleIndividualGrantRepository;
         private RoleRepository roleRepository;
         private UserRepository userRepo;
-        private String cid;
         @Override
         public Optional<RoleIndividualGrant> getGrantInfoByRoleTypeOfUser(String userId, RoleType roleType) {
             val listDomain = roleIndividualGrantRepository.findByUserAndRole(userId,roleType.value);
@@ -76,15 +74,6 @@ public class Cas012DeleteCommandHandler extends CommandHandler<Cas012DeleteComma
         @Override
         public Role getRoleByRoleType(RoleType roleType) {
             val listRole = roleRepository.findByType(roleType.value);
-            if(listRole.isEmpty()){
-                return null;
-            }
-            return listRole.get(0);
-        }
-
-        @Override
-        public Role getRoleByCompanyIdAndRoleType(RoleType roleType) {
-            val listRole = roleRepository.findByType(cid,roleType.value);
             if(listRole.isEmpty()){
                 return null;
             }

@@ -36,9 +36,8 @@ public class Cas012CompanyAdRegisterCommandHandler extends CommandHandler<Cas012
         if(domainOld.isPresent()){
             throw new BusinessException("Msg_61","Com_User");
         }
-        val cid = command.getCId();
         DatePeriod validPeriod = new DatePeriod(command.getStartDate(),command.getEndDate());
-        RequireImpl require = new RequireImpl(roleRepository,userRepo,cid);
+        RequireImpl require = new RequireImpl(roleRepository,userRepo);
         RoleIndividualGrant domain = RoleIndividualGrant.createGrantInfoOfCompanyManager(require,command.getUId(),command.getCId(),validPeriod);
         roleIndividualGrantRepo.add(domain);
 
@@ -48,20 +47,9 @@ public class Cas012CompanyAdRegisterCommandHandler extends CommandHandler<Cas012
 
         private RoleRepository roleRepository;
         private UserRepository userRepo;
-        private String cid;
         @Override
         public Role getRoleByRoleType(RoleType roleType) {
             val listRole = roleRepository.findByType(roleType.value);
-            if(listRole.isEmpty()){
-                return null;
-            }else {
-                return listRole.get(0);
-            }
-        }
-
-        @Override
-        public Role getRoleByCompanyIdAndRoleType(RoleType roleType) {
-            val listRole = roleRepository.findByType(cid,roleType.value);
             if(listRole.isEmpty()){
                 return null;
             }else {
