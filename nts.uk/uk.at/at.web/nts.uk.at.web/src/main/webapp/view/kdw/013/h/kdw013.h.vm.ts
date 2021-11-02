@@ -316,8 +316,7 @@ module nts.uk.at.view.kdw013.h {
 				let param = {
 					empTarget: self.params.employeeId, //対象社員
 					targetDate: moment(self.params.date), //対象日
-					items: data, //実績内容  => List<ItemValue> id và giá trị
-					integrationOfDaily: self.params.IntegrationOfDaily
+					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
 				ajax(paths.save, param).done(() => {
 					info({ messageId: 'Msg_15' });
@@ -430,7 +429,6 @@ module nts.uk.at.view.kdw013.h {
 	type Param = {
 		employeeId: string; //対象社員
 		date: string; //対象日
-		IntegrationOfDaily: any; //日別実績(Work)
 		displayAttItems: DisplayAttItem[]; //実績入力ダイアログ表示項目一覧  => List<表示する勤怠項目> id và thứ tự hiển thị
 		itemValues: IItemValue[]; //実績内容  => List<ItemValue> id và giá trị
 		lockInfos: DailyLock | null; //日別実績のロック状態 Optional<日別実績のロック状態>

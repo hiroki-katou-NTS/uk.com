@@ -74,7 +74,7 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 
 			// $工数実績作業詳細 = $工数実績リスト：filter $.応援勤務枠No = $.応援勤務枠No
 			Optional<ManHrTaskDetail> optManHrTaskDetail = manHrRecords.stream()
-					.filter(f -> f.getSupNo().equals(l.getFrameNo())).findAny();
+					.filter(f -> f.getSupNo().v().equals(l.getFrameNo().v())).findAny();
 
 			// if $工数実績作業詳細.isEmpty
 			if (!optManHrTaskDetail.isPresent()) {
