@@ -81,7 +81,7 @@ public class JpaTaskTimeGroupRepository extends JpaRepository implements TaskTim
 		
 		for (KsrdtTaskTsGroup group : entities) {
 			
-			String key =  String.valueOf(group.pk.startClock)  +  String.valueOf(group.endClock) + String.valueOf(group.pk.subNo);
+			String key =  String.valueOf(group.pk.startClock)  +  String.valueOf(group.endClock);
 			
 			TaskTimeZone value =  frameMaps.get(key);
 			

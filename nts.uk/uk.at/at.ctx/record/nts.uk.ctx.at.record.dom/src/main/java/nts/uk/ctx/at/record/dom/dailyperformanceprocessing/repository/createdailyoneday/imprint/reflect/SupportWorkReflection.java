@@ -68,8 +68,6 @@ public class SupportWorkReflection {
 
 	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
-
-		String cid = AppContexts.user().companyId();
 		
 		/** 工数入力の利用設定を取得する */
 		val manHrInputUsageSet = manHrInputUsageSettingRepo.get(cid);

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,9 +38,6 @@ public class ActualManHrTaskBlockCreationService {
 
 		// $作業時間帯グループ = require.作業時間帯グループを取得する(社員ID,年月日)
 		Optional<TaskTimeGroup> timeGroupOpt = require.get(sId, date);
-		
-		// $作業詳細
-		List<ManHrTaskDetail> lstTaskDetail = new ArrayList<>();
 
 		// if not $作業時間帯グループ.isEmpty
 		if (timeGroupOpt.isPresent()) {
@@ -48,12 +46,9 @@ public class ActualManHrTaskBlockCreationService {
 			for (TaskTimeZone t : timeGroupOpt.get().getTimezones()) {
 
 				// $作業詳細 = 工数実績項目リスト：$2.応援勤務枠No.含む($1.対象応援勤務枠)
-				for (ManHrTaskDetail d : taskDetails) {
-					
-					if (t.getSupNos().stream().filter(sn-> sn.v().equals(d.getSupNo().v())).findFirst().isPresent()) {
-						lstTaskDetail.add(d);
-					}
-				}
+				List<ManHrTaskDetail> lstTaskDetail = taskDetails.stream().filter(x -> t.getSupNos().stream()
+						.filter(sn -> sn.v().equals(x.getSupNo().v())).findFirst().isPresent())
+						.collect(Collectors.toList());
 
 				// $作業ブロック = 工数実績作業ブロック#工数実績作業ブロック($.時間帯,$作業詳細)
 				ManHrPerformanceTaskBlock taskBlock = new ManHrPerformanceTaskBlock(t.getCaltimeSpan(), lstTaskDetail);
@@ -63,13 +58,11 @@ public class ActualManHrTaskBlockCreationService {
 				
 				// 工数実績項目リスト = 工数実績項目リスト：except $作業詳細
 				taskDetails = taskDetails
-						.stream().filter(x -> !lstTaskDetail.stream().filter(lt -> lt.getSupNo().v().equals(x.getSupNo().v())).findFirst().isPresent()
-								)
+						.stream().filter(x -> !lstTaskDetail.stream().filter(lt -> lt.getSupNo().v().equals(x.getSupNo().v())).findFirst().isPresent())
 						.collect(Collectors.toList());
 			}
 		}
 		
-		//đoạn này cần phải xác nhận lại với anh Tuấn 
 		// 工数実績項目リスト：
 		for (ManHrTaskDetail d : taskDetails) {
 			// $開始時刻
@@ -97,7 +90,7 @@ public class ActualManHrTaskBlockCreationService {
 				TimeSpanForCalc timeSpanForCalc = new TimeSpanForCalc(new TimeWithDayAttr(Integer.parseInt(startTime)),new TimeWithDayAttr(Integer.parseInt(endTime)));
 
 				// $作業ブロック = 工数実績作業ブロック#工数実績作業ブロック($時間帯,$作業詳細)
-				ManHrPerformanceTaskBlock taskBlock = new ManHrPerformanceTaskBlock(timeSpanForCalc, lstTaskDetail);
+				ManHrPerformanceTaskBlock taskBlock = new ManHrPerformanceTaskBlock(timeSpanForCalc, Arrays.asList(d));
 
 				// $作業ブロックリスト.追加する($作業ブロック)
 				taskBlocks.add(taskBlock);
