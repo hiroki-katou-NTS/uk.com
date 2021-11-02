@@ -1,412 +1,444 @@
+////// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmm051.a {
-    export module viewmodel {
-        import alert = nts.uk.ui.dialog.alert;
-        import modal = nts.uk.ui.windows.sub.modal;
-        import setShared = nts.uk.ui.windows.setShared;
-        import getShared = nts.uk.ui.windows.getShared;
-        import FunctionPermission = base.FunctionPermission;
-        import WorkplaceManager = base.WorkplaceManager;
-        import ccg = nts.uk.com.view.ccg026;
-        import model = nts.uk.com.view.ccg026.component.model;
-        
-        export class ScreenModel {
-            langId: KnockoutObservable<string> = ko.observable('ja');
-            // KCP010
-            kcp010Model : kcp010.viewmodel.ScreenModel;
-            listComponentOption: ComponentOption;
-            
-            // Screen mode
-            isNewMode: KnockoutObservable<boolean>;
-            //Date Range Picker
-            dateValue: KnockoutObservable<any>;
-            
-            // Lists
-            wkpManagerList : KnockoutObservableArray<WorkplaceManager>;
-            
-            // Selected items 
-            selectedWkpId: KnockoutObservable<string>;
-            selectedWpkManagerId: KnockoutObservable<string>;
-            selectedWkpManager: KnockoutObservable<WorkplaceManager>;
-            
-            wkpManagerTree: any;
-            selectedCode: any;
-            headers: any;
+    import alert = nts.uk.ui.dialog.alert;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import FunctionPermission = base.FunctionPermission;
+    import WorkplaceManager = base.WorkplaceManager;
+    import ccg = nts.uk.com.view.ccg026;
+    import model = nts.uk.com.view.ccg026.component.model;
+    import block = nts.uk.ui.block;
+    import errors = nts.uk.ui.errors;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    const API = {
+        findAllWkpManager: "at/auth/workplace/manager/findAll/",
+        saveWkpManager: "at/auth/workplace/manager/save/",
+        deleteWkpManager: "at/auth/workplace/manager/remove/",
+        getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/"
+    };
+    const SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY = 'SHARE_IN_DIALOG_ADD_UPDATE_HISTORY';
 
+    @bean()
+    class ViewModel extends ko.ViewModel {
+        langId: KnockoutObservable<string> = ko.observable('ja');
+        // KCP010
+        kcp010Model: kcp010.viewmodel.ScreenModel;
+        ntsHeaderColumns: KnockoutObservableArray<any> = ko.observableArray([]);
+        historyId : KnockoutObservable<any> = ko.observable("1");
+        // Screen mode
+        isNewMode: KnockoutObservable<boolean>;
+        //Date Range Picker
+        dateValue: KnockoutObservable<any> = ko.observable("");
+        selectedWkpId: KnockoutObservable<string>;
+        selectedWpkManagerId: KnockoutObservable<string>;
+        selectedWkpManager: KnockoutObservable<WorkplaceManager>;
+        wkpManagerTree: any;
+        selectedCode: any;
+        headers: any;
+        // CCG026
+        component: ccg.component.viewmodel.ComponentModel;
+        listPermission: KnockoutObservableArray<FunctionPermission>;
+        // start declare KCP005
+        listComponentOption: any;
+        multiSelectedCode: KnockoutObservable<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingPersonal: KnockoutObservableArray<any>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        disableSelection: KnockoutObservable<boolean>;
+        employeeList: KnockoutObservableArray<any>;
+        baseDate: KnockoutObservable<Date>;
+        employInfors: KnockoutObservableArray<any> = ko.observableArray([]);
+        listEmployee: KnockoutObservableArray<any> = ko.observableArray([]);
+        dateHistoryList: KnockoutObservableArray<any> = ko.observableArray([]);
+        workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
+        mode:KnockoutObservable<number>= ko.observable(1);
+        constructor(params: any) {
+            super();
+            let vm = this;
+            vm.selectedWkpId = ko.observable('');
+            // Initial listComponentOption
+            vm.listComponentOption = {
+                targetBtnText: nts.uk.resource.getText("KCP010_3"),
+                tabIndex: 4
+            };
+            vm.selectedCode = ko.observable('');
+            let listDatePeriod : any = [];
+            let emps : any = [];
+            for (let i = 0; i <10;i++){
+                emps.push({
+                    id: i,
+                    code: i,
+                    name: i,
+                });
+                listDatePeriod.push({
+                    id: i,
+                    display: "AAAAAAAAAA"
+                })
+            }
+            vm.employInfors(emps);
+            vm.dateHistoryList(listDatePeriod);
+
+            vm.isNewMode = ko.observable(false);
+            vm.KCP005_load();
+            vm.ntsHeaderColumns = ko.observableArray([
+                { headerText: '', key: 'code', hidden: true },
+                { headerText: '', key: 'display', formatter: _.escape }
+            ]);
+        }
+        KCP005_load() {
+            let vm = this;
+            vm.baseDate = ko.observable(new Date());
+            vm.isShowAlreadySet = ko.observable(false);
+            vm.alreadySettingPersonal = ko.observableArray([]);
+            vm.isDialog = ko.observable(false);
+            vm.isShowNoSelectRow = ko.observable(false);
+            vm.isMultiSelect = ko.observable(false);
+            vm.isShowWorkPlaceName = ko.observable(false);
+            vm.isShowSelectAllButton = ko.observable(false);
+            vm.disableSelection = ko.observable(false);
+            vm.multiSelectedCode = ko.observable("1");
+            vm.listComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: false,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: vm.employInfors,
+                selectType: SelectType.SELECT_ALL,
+                selectedCode: vm.multiSelectedCode,
+                isDialog: false,
+                alreadySettingList: vm.alreadySettingPersonal,
+                isShowSelectAllButton: false,
+                showOptionalColumn: false,
+                maxWidth: 320,
+                maxRows: 15,
+            };
+            vm.multiSelectedCode.subscribe((e) => {
+
+            });
+            $('#kcp005').ntsListComponent(vm.listComponentOption)
+        }
+
+        // Start page
+        created() {
+            let vm = this;
+            var dfd = $.Deferred();
             // CCG026
-            component: ccg.component.viewmodel.ComponentModel;
-            listPermission: KnockoutObservableArray<FunctionPermission>;
-            constructor() {
-                let self = this;
-                
-                self.selectedWkpId = ko.observable('');
-                
-                // Initial listComponentOption
-                self.listComponentOption = {
-                    targetBtnText: nts.uk.resource.getText("KCP010_3"),
-                    tabIndex: 4
-                };
-                
-                self.selectedCode = ko.observable('');
-                self.selectedCode.subscribe(newValue => {
-                    self.selectedWpkManagerId(newValue);
-                });
-                
-                self.kcp010Model = $('#wkp-component').ntsLoadListComponent(self.listComponentOption);
-                self.kcp010Model.workplaceId.subscribe(function(wkpId) {
-                    if (wkpId) {
-                        self.selectedWkpId(wkpId);
-                        // Get workplace manager list
-                        self.getWkpManagerList(wkpId, '');
-                    }
-                });
-                
-                self.isNewMode = ko.observable(false);
-                self.dateValue = ko.observable({});
-                
-                self.wkpManagerList = ko.observableArray([]);
-                self.wkpManagerTree = ko.observableArray([]);
-                
-                self.selectedWkpManager = ko.observable(new WorkplaceManager(null));
-                self.selectedWpkManagerId = ko.observable('');
-                self.selectedWpkManagerId.subscribe(function(newValue) {
-                    // validate null or empty
-                    if (nts.uk.text.isNullOrEmpty(newValue)) {
-                        self.isNewMode(true);
-                    } else {
-                        // set update mode
-                        self.isNewMode(false);
-                        let data = _.filter(self.wkpManagerList(), function(o) { return o.wkpManagerId == newValue; });
-                        if (data[0]) {
-                            self.selectedWkpManager(new WorkplaceManager(data[0]));
-                        } else {
-                            let node = _.filter(self.wkpManagerTree(), function(o : Node) { return o.wkpManagerId == newValue; });
-                            let firstWkpMng = node[0].childs[0];
-                            if (firstWkpMng && firstWkpMng != null) {
-                                self.selectedCode(firstWkpMng.wkpManagerId);
-                            } else {
-                                self.selectedCode(self.wkpManagerList()[0].wkpManagerId);
-                            }
-                        }
-                    }
-                    self.initWkpManager();
-                });
-                
-                self.headers = ko.observableArray(["コード／名称"]);
-                self.listPermission = ko.observableArray([]);
-            }
-            
-            // Start page
-            start() {
-                let self = this;
-                var dfd = $.Deferred();
-                
-               
-                // CCG026
-                self.component = new ccg.component.viewmodel.ComponentModel({ 
-                      classification: 1,
-                      maxRow: 5
-                });
-                self.component.startPage().done(() => {
-                    self.listPermission(self.component.listPermissions());
-                });
-                dfd.resolve(); 
-                return dfd.promise();
-            }
-            
-            private reBindingTreeList() {
-                let self = this;
-                // re-binding
-                let $treeGrid: any = $("#treegrid2");
-                ko.cleanNode($treeGrid[0]);
-                ko.applyBindings(self, $treeGrid[0]);
-            }
-            
-            private getWkpManagerList(wkpId : string, savedWkpMngId: string): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                
-                self.wkpManagerTree([]);
-                self.wkpManagerList([]);
-                service.findAllWkpManagerByWkpId(wkpId).done(function(dataList) {
-                    if (dataList && dataList.length > 0) {
-                        self.isNewMode(false);
-                        self.wkpManagerList(dataList);
-                        if (nts.uk.text.isNullOrEmpty(savedWkpMngId)) {
-                            self.selectedCode(self.wkpManagerList()[0].wkpManagerId);
-                        } else {
-                            self.selectedCode(savedWkpMngId);
-                        }
-                        // Setup workplace manager display tree
-                        _.forEach(dataList, (mng) => {
-                            let node = _.find(self.wkpManagerTree(), function(o : Node) { return o.wkpManagerId == mng.employeeId; });
-                            if (node) { // Existed employee
-                                node.childs.push(new WorkplaceManager(mng));
-                            } else {
-                                self.wkpManagerTree.push(new Node(mng.employeeInfo.employeeCode, mng.employeeInfo.namePerson, [new WorkplaceManager(mng)], mng.employeeId));
-                            }
-                        });
-                        self.reBindingTreeList();
-                    } else {
-                        self.createWkpManager();
-                    }
-                    dfd.resolve();
-                }).fail((res: any) => {
-                    nts.uk.ui.block.clear();
-                });
-                return dfd.promise();
-            }
-            
-            private initWkpManager() {
-                let self = this;
-                nts.uk.ui.errors.clearAll();
-                if (self.isNewMode() == true) {
-                    self.selectedWkpManager(new WorkplaceManager(null));
-                    self.dateValue({});
-                    self.component.roleId('');
-                    self.component.roleId.valueHasMutated();
-                } else {
-                    self.dateValue({startDate : self.selectedWkpManager().startDate, endDate : self.selectedWkpManager().endDate});
-                    self.component.roleId(self.selectedWpkManagerId());
-                }
-                setTimeout(function(){$(".ntsStartDatePicker").focus();},100);
-            }
-            
-            /**
-             * Button on screen
-             */
-            // 新規 button
-            createWkpManager() {
-                let self = this;
-                nts.uk.ui.errors.clearAll();
-                self.isNewMode(true);
-                self.selectedCode('');
-                self.initWkpManager();
-            }
-            
-            // 登録 button
-            saveWkpManager() {
-                let self = this;
-
-                // validate
-                if (!self.validate()) {
-                    return;
-                }
-
-                // get JsObject
-                let command: any = self.toJsonObject();
-
-                nts.uk.ui.block.grayout();
-               
-                // insert or update workplace
-                service.saveWkpManager(ko.toJS(command)).done(function(savedWkpMngId) {
-                    nts.uk.ui.block.clear();
-                    
-                    // notice success
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                        // Get workplace manager list
-                        self.getWkpManagerList(self.selectedWkpId(), savedWkpMngId);
-                    });
-                }).fail((res: any) => {
-                    nts.uk.ui.block.clear();
-                    self.showMessageError(res);
-                });
-            }
-            
-            /**
-             * validate
-             */
-            private validate() {
-                let self = this;
-
-                // clear error
-                self.clearError();
-
-                // validate
-                $(".ntsDatepicker ").ntsEditor('validate');
-                $(".nts-editor").trigger("validate");
-                return !$('.nts-input').ntsError('hasError');
-            }
-            
-            /**
-             * clearError
-             */
-            private clearError() {
-                nts.uk.ui.errors.clearAll();
-            }
-            
-            // 削除 button
-            delWkpManager() {
-                let self = this;
-                let nodeList : Array<Node> = self.wkpManagerTree();
-                let currentNodeIndex = _.findIndex(nodeList, x => x.wkpManagerId == self.selectedWkpManager().employeeId);
-                if (currentNodeIndex < 0) {
-                    nts.uk.ui.dialog.alert('エラーがあります');
-                    return;
-                }
-                let currentNode = nodeList[currentNodeIndex];
-                let lastNodeIndex = nodeList.length - 1;
-                let currentItemList : Array<WorkplaceManager> = currentNode.childs;
-                let currentItemIndex = _.findIndex(currentItemList, x => x.wkpManagerId == self.selectedWkpManager().wkpManagerId);
-                let lastItemIndex = currentItemList.length - 1;
-                let isFinalElement = currentItemList.length - 1 == 0 ? true : false;
-
-                // show message confirm
-                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
-                    let command: any = {};
-                    command.wkpManagerId = self.selectedWpkManagerId();
-
-                    nts.uk.ui.block.grayout();
-                    service.deleteWkpManager(command).done(() => {
-                        // Get workplace manager list
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
-                            $.when(self.getWkpManagerList(self.selectedWkpId(), '')).done(()=>{
-                                var selectedId = "";
-                                if (self.wkpManagerList().length > 0) {
-                                    if (currentItemIndex == lastItemIndex) {
-                                        if (isFinalElement) {
-                                            if (currentNodeIndex == lastNodeIndex) {
-                                                var prevItemList = nodeList[currentNodeIndex - 1].childs;
-                                                selectedId = prevItemList[prevItemList.length - 1].wkpManagerId;
-                                            } else {
-                                                var nextItemList = nodeList[currentNodeIndex + 1].childs;
-                                                selectedId = nextItemList[0].wkpManagerId;
-                                            }
-                                        } else {
-                                            selectedId = currentItemList[currentItemIndex - 1].wkpManagerId;
-                                        }
-                                    } else {
-                                        selectedId = currentItemList[currentItemIndex + 1].wkpManagerId;
-                                    }
-                                }
-                                self.selectedCode(selectedId);
-                            });
-                        });
-                    }).fail((res: any) => {
-                        nts.uk.ui.dialog.bundledErrors(res);
-                    })
-                    nts.uk.ui.block.clear();
-                });
-            }
-            
-            // 社員選択 button
-            openDialogCDL009() {
-                let self = this;
-    
-                setShared('CDL009Params', {
-                    isMultiSelect: false,
-                    baseDate: moment(new Date()).toDate(),
-                    target: 1
-                }, true);
-    
-                modal("/view/cdl/009/a/index.xhtml").onClosed(function() {
-                    var isCancel = getShared('CDL009Cancel');
-                    if (isCancel) {
-                        return;
-                    }
-                    var employeeId = getShared('CDL009Output');
-                    self.getEmployeeInfo(employeeId);
-                });
-            }
-            
-            private getEmployeeInfo(empId: string) {
-                let self = this;
-                service.getEmployeeInfo(empId).done(function(data: any) {
-                    if (data) {
-                        self.selectedWkpManager().employeeId = empId;
-                        self.selectedWkpManager().employeeInfo({employeeId:data.employeeId,
-                                                                employeeCode:ko.observable(data.employeeCode),
-                                                                namePerson:data.personalName});
-                    }
-                }).fail(function(error) {
-                    self.showMessageError({ messageId: error.messageId });
-                });
-            }
-            /**
-             * Common
-             */
-            /**
-             * showMessageError
-             */
-            private showMessageError(res: any) {
-                if (res.businessException) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                }
-            }
-            /**
-             * toJsonObject
-             */
-            private toJsonObject(): any {
-                let self = this;
-
-                // to JsObject
-                let command: any = {};
-                command.newMode = self.isNewMode();
-                command.startDate = new Date(self.dateValue().startDate);
-                command.endDate = new Date(self.dateValue().endDate);
-                command.employeeId = self.selectedWkpManager().employeeId;
-                command.wkpId = self.selectedWkpId();
-                command.wkpManagerId = self.selectedWkpManager().wkpManagerId;
-                command.roleList = self.listPermission();
-
-                return command;
-            }
-            /*  
-           * Print file excel
-           */
-           private saveAsExcel(): void {
-               let self = this;
-//                modal("/view/cmm/051/m/index.xhtml").onClosed(function() {
-//                });
-               
-               let params = {
-                   date: null,
-                   mode: 1
-               };             
-               if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
-                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
-                }
-               nts.uk.ui.windows.sub.modal("/view/cdl/028/a/index.xhtml").onClosed(function() {
-                   var result = getShared('CDL028_A_PARAMS');
-                   if (result.status) {
-                        nts.uk.ui.block.grayout();
-                        let langId = self.langId();
-                        let date = moment.utc(result.standardDate, "YYYY/MM/DD");
-                        service.saveAsExcel(langId, date).done(function() {
-                            //nts.uk.ui.windows.close();
-                        }).fail(function(error) {
-                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                        }).always(function() {
-                            nts.uk.ui.block.clear();
-                        });
-                   }           
-               });
-            }
-            
-            
+            vm.component = new ccg.component.viewmodel.ComponentModel({
+                classification: 1,
+                maxRow: 5
+            });
+            vm.component.startPage().done(() => {
+            });
+            dfd.resolve();
+            return dfd.promise();
         }
-        
+        mounted() {
+        }
+
+        private getWkpManagerList(wkpId: string, savedWkpMngId: string): JQueryPromise<void> {
+            let vm = this;
+            let dfd = $.Deferred<void>();
+
+            return dfd.promise();
+        }
+
+        private initWkpManager() {
+            let vm = this;
+            nts.uk.ui.errors.clearAll();
+            if (vm.isNewMode() == true) {
+                vm.dateValue({});
+                vm.component.roleId('');
+                vm.component.roleId.valueHasMutated();
+            } else {
+                vm.dateValue({startDate: vm.selectedWkpManager().startDate, endDate: vm.selectedWkpManager().endDate});
+                vm.component.roleId(vm.selectedWpkManagerId());
+            }
+            setTimeout(function () {
+                $(".ntsStartDatePicker").focus();
+            }, 100);
+        }
+
         /**
-         * Interface ComponentOption of KCP010
+         * Button on screen
          */
-        export interface ComponentOption {
-            targetBtnText: string;
-            tabIndex: number;
+        // 新規 button
+        createWkpManager() {
+            let vm = this;
+            nts.uk.ui.errors.clearAll();
+            vm.isNewMode(true);
+            vm.selectedCode('');
+            vm.initWkpManager();
         }
-        
-        class Node {
-            wkpManagerId: string;
-            code: string;
-            name: string;
-            nodeText: string;
-            childs: any;
-            constructor(code: string, name: string, childs: Array<WorkplaceManager>, parentId: string) {
-                var self = this;
-                self.wkpManagerId = parentId;
-                self.code = code;
-                self.name = name;
-                self.nodeText = self.code + ' ' + self.name;
-                self.childs = childs;
+
+        // 登録 button
+        saveWkpManager() {
+            let vm = this;
+
+            // validate
+            if (!vm.validate()) {
+                return;
             }
+
+            // get JsObject
+            let command: any = vm.toJsonObject();
+            nts.uk.ui.block.grayout();
+            // insert or update workplace
+            vm.$ajax('com', API.saveWkpManager, ko.toJS(command)).done(function (savedWkpMngId) {
+                nts.uk.ui.block.clear();
+
+                // notice success
+                nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                    // Get workplace manager list
+                    vm.getWkpManagerList(vm.selectedWkpId(), savedWkpMngId);
+                });
+            }).fail((res: any) => {
+                nts.uk.ui.block.clear();
+                vm.showMessageError(res);
+            });
+        }
+
+        /**
+         * validate
+         */
+        private validate() {
+            let vm = this;
+
+            // clear error
+            vm.clearError();
+
+            // validate
+            $(".ntsDatepicker ").ntsEditor('validate');
+            $(".nts-editor").trigger("validate");
+            return !$('.nts-input').ntsError('hasError');
+        }
+
+        /**
+         * clearError
+         */
+        private clearError() {
+            nts.uk.ui.errors.clearAll();
+        }
+
+        // 削除 button
+        delWkpManager() {
+            let vm = this;
+            let nodeList: Array<Node> = vm.wkpManagerTree();
+            let currentNodeIndex = _.findIndex(nodeList, x => x.wkpManagerId == vm.selectedWkpManager().employeeId);
+            if (currentNodeIndex < 0) {
+                nts.uk.ui.dialog.alert('エラーがあります');
+                return;
+            }
+            let currentNode = nodeList[currentNodeIndex];
+            let lastNodeIndex = nodeList.length - 1;
+            let currentItemList: Array<WorkplaceManager> = currentNode.childs;
+            let currentItemIndex = _.findIndex(currentItemList, x => x.wkpManagerId == vm.selectedWkpManager().wkpManagerId);
+            let lastItemIndex = currentItemList.length - 1;
+            let isFinalElement = currentItemList.length - 1 == 0 ? true : false;
+
+            // show message confirm
+            nts.uk.ui.dialog.confirm({messageId: 'Msg_18'}).ifYes(() => {
+                }
+            );
+        }
+        openDialogA32(){
+            let vm = this;
+            let mode = vm.mode();
+            if(mode == 1){
+                vm.openDialogCDL009()
+            }else if(mode ==0){
+                vm.openCDL008Dialog()
+            }
+
+        }
+        openDialogA62(){
+            let vm = this;
+            let mode = vm.mode();
+            if(mode == 1){
+                vm.openCDL008Dialog()
+            }else if(mode ==0){
+                vm.openDialogCDL009()
+
+            }
+
+        }
+        // 社員選択 button
+        openDialogCDL009() {
+            let vm = this;
+
+            setShared('CDL009Params', {
+                isMultiSelect: false,
+                baseDate: moment(new Date()).toDate(),
+                target: 1
+            }, true);
+
+            modal("/view/cdl/009/a/index.xhtml").onClosed(function () {
+                var isCancel = getShared('CDL009Cancel');
+                if (isCancel) {
+                    return;
+                }
+                var employeeId = getShared('CDL009Output');
+                vm.getEmployeeInfo(employeeId);
+            });
+        }
+
+        private getEmployeeInfo(empId: string) {
+            let vm = this;
+        }
+
+        /**
+         * Common
+         */
+        /**
+         * showMessageError
+         */
+        private showMessageError(res: any) {
+            if (res.businessException) {
+                nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+            }
+        }
+
+        /**
+         * toJsonObject
+         */
+        private toJsonObject(): any {
+            let vm = this;
+
+            // to JsObject
+            let command: any = {};
+            command.newMode = vm.isNewMode();
+            command.startDate = new Date(vm.dateValue().startDate);
+            command.endDate = new Date(vm.dateValue().endDate);
+            command.employeeId = vm.selectedWkpManager().employeeId;
+            command.wkpId = vm.selectedWkpId();
+            command.wkpManagerId = vm.selectedWkpManager().wkpManagerId;
+            command.roleList = vm.listPermission();
+
+            return command;
+        }
+        /**
+         * Screen D - openAddHistoryDialog
+         */
+        public openAddHistoryDialog() {
+            let _self = this;
+            let dataToScreenB = {
+                isCreate: true,
+                isUpdate: false
+            };
+            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY,dataToScreenB);
+            nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
+
+            });
+        }
+        /**
+         * Screen E - openUpdateHistoryDialog
+         */
+        public openUpdateHistoryDialog() {
+            let _self = this;
+            let dataToScreenB = {
+                isCreate: false,
+                isUpdate: true
+            };
+            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY,dataToScreenB);
+            nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
+
+            });
+        }
+        public removeHistory(): void {
+            let _self = this;
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
+                    .ifYes(() => {
+                        nts.uk.ui.block.grayout();
+                    })
+                    .ifNo(() => {
+                    });
+        }
+        openCDL008Dialog(): void {
+            const vm = this;
+            const inputCDL008: any = {
+                startMode: StartMode.WORKPLACE,
+                isMultiple: true,
+                showNoSelection: false,
+                selectedCodes: vm.workPlaceIdList(),
+                isShowBaseDate: true,
+                baseDate: moment.utc().toISOString(),
+                selectedSystemType: SystemType.EMPLOYMENT,
+                isrestrictionOfReferenceRange: true
+            };
+            setShared('inputCDL008', inputCDL008);
+            modal('/view/cdl/008/a/index.xhtml').onClosed(() => {
+                const isCancel = getShared('CDL008Cancel');
+                if (isCancel) {
+                    return;
+                }
+                vm.workPlaceIdList(getShared('outputCDL008'));
+
+            });
+        }
+
+    }
+    enum SystemType {
+        PERSONAL_INFORMATION = 1,
+        EMPLOYMENT = 2,
+        SALARY = 3,
+        HUMAN_RESOURCES = 4,
+        ADMINISTRATOR = 5
+    }
+    enum StartMode {
+        WORKPLACE = 0,
+        DEPARTMENT = 1
+    }
+    /**
+     * Interface ComponentOption of KCP010
+     */
+    export interface ComponentOption {
+        targetBtnText: string;
+        tabIndex: number;
+    }
+
+    class Node {
+        wkpManagerId: string;
+        code: string;
+        name: string;
+        nodeText: string;
+        childs: any;
+
+        constructor(code: string, name: string, childs: Array<WorkplaceManager>, parentId: string) {
+            var vm = this;
+            vm.wkpManagerId = parentId;
+            vm.code = code;
+            vm.name = name;
+            vm.nodeText = vm.code + ' ' + vm.name;
+            vm.childs = childs;
         }
     }
+
+    export interface UnitModel {
+        code: string;
+        name?: string;
+        id?: string;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
+    }
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
 }

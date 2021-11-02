@@ -24,23 +24,23 @@ import java.util.List;
 public class AddNewWorkplaceManagerCommandHandler extends CommandHandler<AddNewWorkplaceManagerCommand> {
     @Inject
     private WorkplaceManagerRepository workplaceManagerRepository;
-//    @Inject
-//    private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
+    @Inject
+    private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
 
     @Override
     protected void handle(CommandHandlerContext<AddNewWorkplaceManagerCommand> commandHandlerContext) {
-//        val command = commandHandlerContext.getCommand();
-//        RequireImpl require = new RequireImpl(empCompanyHistoryAdapter, workplaceManagerRepository);
-//        String workplaceId = command.getWorkPlaceId();
-//        String sid = command.getSid();
-//        DatePeriod historyPeriod = new DatePeriod(command.getStartDate(), command.getEndDate());
-//        AtomTask task = RegisterWorkplaceManagerService.add(require, workplaceId, sid, historyPeriod);
-//        transaction.execute(task);
+        val command = commandHandlerContext.getCommand();
+        RequireImpl require = new RequireImpl(empCompanyHistoryAdapter, workplaceManagerRepository);
+        String workplaceId = command.getWorkPlaceId();
+        String sid = command.getSid();
+        DatePeriod historyPeriod = new DatePeriod(command.getStartDate(), command.getEndDate());
+        AtomTask task = RegisterWorkplaceManagerService.add(require, workplaceId, sid, historyPeriod);
+        transaction.execute(task);
     }
 
     @AllArgsConstructor
     public class RequireImpl implements RegisterWorkplaceManagerService.Require {
-      //  private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
+        private EmpCompanyHistoryAdapter empCompanyHistoryAdapter;
         private WorkplaceManagerRepository workplaceManagerRepository;
 
 
@@ -63,8 +63,7 @@ public class AddNewWorkplaceManagerCommandHandler extends CommandHandler<AddNewW
 
         @Override
         public List<EmpEnrollPeriodImport> getEmployeeCompanyHistory(String sid, DatePeriod datePeriod) {
-        //    return empCompanyHistoryAdapter.getEnrollmentPeriod(Collections.singletonList(sid), datePeriod);
-            return null;
+            return empCompanyHistoryAdapter.getEnrollmentPeriod(Collections.singletonList(sid), datePeriod);
         }
     }
 }
