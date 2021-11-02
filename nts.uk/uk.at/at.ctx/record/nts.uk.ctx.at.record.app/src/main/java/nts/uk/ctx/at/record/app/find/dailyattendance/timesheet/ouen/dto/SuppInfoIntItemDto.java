@@ -31,7 +31,7 @@ public class SuppInfoIntItemDto implements  ItemConst, AttendanceItemDataGate {
 	private int no;
 	
 	/** 補足 */
-	private int value;
+	private Integer value;
 	
 	private boolean time;
 	
@@ -48,7 +48,8 @@ public class SuppInfoIntItemDto implements  ItemConst, AttendanceItemDataGate {
 	public static SuppInfoIntItemDto from(SuppInfoNumItem domain) {
 		if (domain == null) return null;
 		
-		return new SuppInfoIntItemDto(domain.getSuppInfoNo().v(), domain.getSuppNumValue().v(), false);
+		return new SuppInfoIntItemDto(domain.getSuppInfoNo().v(),
+				domain.getSuppNumValue() == null ? null : domain.getSuppNumValue().v(), false);
 	}
 
 	public SuppInfoNumItem toNum() {
