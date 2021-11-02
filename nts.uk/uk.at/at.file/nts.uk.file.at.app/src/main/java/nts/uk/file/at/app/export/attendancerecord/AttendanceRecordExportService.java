@@ -244,6 +244,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		Comparator<WkpHistImport> compareByEmployeeAndDate = Comparator.comparing(WkpHistImport::getEmployeeId);
 		List<WkpHistImport> wkps = workplaceAdapter.findWkpBySid(empIDs, startByClosure).stream().sorted(compareByEmployeeAndDate).collect(Collectors.toList());
 		// Get workplace history
+		request.getEmployeeList().sort(Comparator.comparing(Employee::getEmployeeCode));
 		for (Employee e : request.getEmployeeList()) {
 			WkpHistImport hist = wkps.stream().filter(w -> w.getEmployeeId().equals(e.getEmployeeId())).findFirst().orElse(null);
 			if (hist == null) {
