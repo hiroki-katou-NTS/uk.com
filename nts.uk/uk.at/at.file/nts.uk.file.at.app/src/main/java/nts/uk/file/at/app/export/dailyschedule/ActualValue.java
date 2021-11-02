@@ -1,11 +1,14 @@
 package nts.uk.file.at.app.export.dailyschedule;
 
+import java.text.DecimalFormat;
+
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 /**
@@ -86,6 +89,26 @@ public class ActualValue {
 			this.unit = "日"; break;
 		default: break;
 		}
+	}
+	
+	public String formatValue() {
+		String result = null;
+		if (StringUtil.isNullOrEmpty(this.value, true)) {
+			return this.value;
+		}
+		switch(EnumAdaptor.valueOf(this.valueType, ValueType.class)) {
+		case AMOUNT:
+			DecimalFormat formatDouble = new DecimalFormat("###,###,###.#");
+			result = formatDouble.format(Double.valueOf(this.value));
+			break;
+		case AMOUNT_NUM:
+			DecimalFormat formatInt = new DecimalFormat("###,###,###");
+			result = formatInt.format(Integer.valueOf(this.value));
+			break;
+		default:
+			result = this.value;
+		}
+		return result.concat(this.unit);
 	}
 
 	/* (non-Javadoc)

@@ -269,9 +269,17 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get A9_7() {
         const self = this;
         let model = self.model as Model;
-        let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0;
+        let substituteLeaveManagement = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement');
+        let timeAllowanceManagement = substituteLeaveManagement.timeAllowanceManagement;
 
-        return self.getFormatTime(0, time);
+        if (timeAllowanceManagement) {
+            return self.formatTimeFromMinute(_.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0);
+        } else {
+            return self.$i18n('KAFS06_40', [_.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subHdRemain').toString()]);
+        }
+        // let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0;
+
+        // return self.getFormatTime(0, time);
     }
     // 休暇残数情報．年休残数
     // 休暇残数情報．年休残時間
