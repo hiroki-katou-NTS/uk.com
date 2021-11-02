@@ -24,7 +24,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.AffInfoForWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
@@ -173,25 +172,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
-	}
-
-//	@Override
-//	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
-//		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
-//				.setParameter("employeeIDs", employeeIDs)
-//				.getSingleOrNull();
-//		return Optional.ofNullable(date);
-//	}
-
-	@Override
-	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
-		if (sids.isEmpty())
-			return new ArrayList<>();
-
-		List<WorkSchedule> result = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
-				.setParameter("sids", sids).setParameter("startDate", period.start())
-				.setParameter("endDate", period.end()).getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
-		return result;
 	}
 
 	@Override
@@ -945,7 +925,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	}
 	
 	@Override
-	public List<WorkSchedule> getListJDBC(List<String> sids, DatePeriod period) {
+	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
 		if (sids.isEmpty() || period == null)
 			return new ArrayList<>();
 		

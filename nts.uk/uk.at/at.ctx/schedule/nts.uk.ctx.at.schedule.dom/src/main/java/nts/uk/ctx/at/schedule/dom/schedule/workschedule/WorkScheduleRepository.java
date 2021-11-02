@@ -58,8 +58,6 @@ public interface WorkScheduleRepository {
 
 	List<WorkSchedule> getList(List<String> sids, DatePeriod period);
 	
-	List<WorkSchedule> getListJDBC(List<String> sids, DatePeriod period);
-
 	Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo);
 
 	void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID);
