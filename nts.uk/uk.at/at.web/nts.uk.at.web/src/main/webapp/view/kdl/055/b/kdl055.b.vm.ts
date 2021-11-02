@@ -415,8 +415,8 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             });
 
             // dataSources
-            // let listPersonEmp = data.listPersonEmp;
-            let listPersonEmp = _.sortBy(data.listPersonEmp, ['employeeCode', 'businessName']);
+            let listPersonEmp = vm.sortListEmpInfo(data.listPersonEmp, data.importResult.orderOfEmployees);
+            // let listPersonEmp = _.sortBy(data.listPersonEmp, ['employeeCode', 'businessName']);
             let results = data.importResult.results;
 
             _.forEach(listPersonEmp, (emp) => {
@@ -458,6 +458,17 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             let date = new Date(text);
 
             return "<div>" + moment(date).format('M/D') + "<div><div>" + moment(date).format('dd') + "<div>"
+        }
+
+        sortListEmpInfo(emps: any[], orderList: any[]) {
+            let temp = _.map(orderList, orderItem => {
+                if (_.filter(emps, { 'employeeId': orderItem }).length > 0) {
+                    return _.filter(emps, { 'employeeId': orderItem })[0];
+                }
+                return null;
+            });
+
+            return _.filter(temp, item => item);
         }
     }
 
