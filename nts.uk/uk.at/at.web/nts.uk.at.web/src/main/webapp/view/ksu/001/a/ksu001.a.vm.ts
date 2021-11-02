@@ -4574,6 +4574,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     self.diseableCellsTime();
                                     nts.uk.ui.block.clear();
                                 }
+                                
+                                if(self.mode() == 'confirm'){
+                                    self.confirmMode();    
+                                }
                             });
                         } else if (resultB == 'CANCEL' && openAKDL055) {
                             self.openKDL055();
