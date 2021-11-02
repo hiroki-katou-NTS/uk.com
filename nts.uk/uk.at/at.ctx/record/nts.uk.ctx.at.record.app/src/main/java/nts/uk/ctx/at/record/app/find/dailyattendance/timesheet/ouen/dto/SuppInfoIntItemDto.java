@@ -42,7 +42,7 @@ public class SuppInfoIntItemDto implements  ItemConst, AttendanceItemDataGate {
 	}
 
 	public SuppInfoTimeItem toTime() {
-		return new SuppInfoTimeItem(new SuppInfoNo(no), new AttendanceTime(value));
+		return new SuppInfoTimeItem(new SuppInfoNo(no), value == null ? null : new AttendanceTime(value));
 	}
 	
 	public static SuppInfoIntItemDto from(SuppInfoNumItem domain) {
