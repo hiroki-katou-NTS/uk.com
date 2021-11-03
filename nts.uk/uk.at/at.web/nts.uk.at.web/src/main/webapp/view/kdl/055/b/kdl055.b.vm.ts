@@ -340,17 +340,18 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             let mappingErrorList = param.mappingErrorList;
             let errors: any[] = [];
             let results = vm.data.importResult.results;
+            let listPersonEmp = vm.sortListEmpInfo(param.listPersonEmp, param.importResult.orderOfEmployees);
             
             _.forEach(mappingErrorList, (error: MappingErrorOutput) => {
                 let err: any = { columnKey: 'nameHeader', id: null, index: null, message: error.errorMessage };
                 
                 if (error.employeeCode) {
-                    let empFilter = _.filter(param.listPersonEmp, {'employeeCode': error.employeeCode});
+                    let empFilter = _.filter(listPersonEmp, {'employeeCode': error.employeeCode});
                     let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
                     err.id = empId;
-                    for (let i = 0; i < param.listPersonEmp.length; i++) {
-                        if (param.listPersonEmp[i].employeeId === empId) {
-                            err.id = param.listPersonEmp[i].employeeId;
+                    for (let i = 0; i < listPersonEmp.length; i++) {
+                        if (listPersonEmp[i].employeeId === empId) {
+                            err.id = listPersonEmp[i].employeeId;
                             err.index = i;
                         }
                     }
