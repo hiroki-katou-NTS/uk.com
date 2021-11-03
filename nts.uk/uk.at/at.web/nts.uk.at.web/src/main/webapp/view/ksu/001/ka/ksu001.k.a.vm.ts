@@ -102,7 +102,8 @@ module nts.uk.at.view.ksu001.k.a {
                             self.characteristics.name = res.name;
                             self.characteristics.comments = self.comments();
                             character.save('characterKsu005a', self.characteristics);
-                            self.loadScheduleOutputSetting();
+                            self.selectedCode(res.code);
+                            $("#preview-frame")[0].innerHTML = "";
                         } else if (data[0].isAttendance) {                            
                             self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
                                 // self.openDialog();
