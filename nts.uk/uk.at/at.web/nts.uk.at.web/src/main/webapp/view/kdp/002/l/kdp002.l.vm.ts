@@ -187,7 +187,6 @@ module nts.uk.at.view.kdp002.l {
                     vm.reload(0);
  					vm.framePosition(0);
                     vm.framePosition.valueHasMutated();
-					vm.searchValue('');
                 });
 
             }

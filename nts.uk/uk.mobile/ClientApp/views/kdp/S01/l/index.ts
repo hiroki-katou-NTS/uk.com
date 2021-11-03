@@ -197,7 +197,6 @@ export class KdpS01LComponent extends Vue {
                 vm.reload(0);
                 vm.framePosition = 0;
                 vm.reloadData();
-                vm.taskNameCd = '';
 
             });
 
@@ -267,7 +266,9 @@ export class KdpS01LComponent extends Vue {
         }
 
         vm.wordCodeMap.set(vm.frameNo, null);
-
+        setTimeout(function () {
+            document.getElementsByTagName('input')[0].focus();
+        }, 200);
         
     }
 
