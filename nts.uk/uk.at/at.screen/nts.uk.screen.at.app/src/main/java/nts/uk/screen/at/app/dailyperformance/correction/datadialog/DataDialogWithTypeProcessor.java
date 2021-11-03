@@ -242,6 +242,13 @@ public class DataDialogWithTypeProcessor {
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
 			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
 					.createError(ErrorTypeWorkType.NO_GROUP.code);
+			
+		case 15:
+			// KDL012
+			codeName = this.getWorkWithFrameNo(companyId, param.getTaskFrameNo()).getCodeNames().stream()
+					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
 		default:
 			return null;
 		}
