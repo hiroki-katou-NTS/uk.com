@@ -68,23 +68,18 @@ module nts.uk.ui.at.kdw013.timeheader {
         
         OpenIDialog(vm, time) {
             let screenA = vm.params.screenA;
-            let {$settings} = screenA;
+            let {$settings, $datas} = screenA;
                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
-
-                // 作業リスト
-                screenA.taskDtos();
-                let eventInDay = _.chain(screenA.events())
-                    .filter((evn) => { return moment(time).isSame(evn.start, 'days'); })
-                    .sortBy('end')
-                    .value();
-                _.map(eventInDay, evn => { return { workNo: _.get(evn, 'extendedProps.taskBlock.taskDetails[0].supNo') 
-                                                    }; });
-                screenA.events()
-                // 日別勤怠の応援作業時間
-                screenA.ouenWorkTimes();
+                
+                let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []) id=> moment(id.ymd).isSame(moment(time.date), 'days'));
+                 // 作業リスト
+                screenA.taskDtos($settings().tasks);
 
                 // 日別勤怠の応援作業時間帯
-                screenA.ouenWorkTimeSheets();
+                screenA.ouenWorkTimeSheets(_.get(iod,'ouenTimeSheet'));
+                
+                // 日別勤怠の応援作業時間
+                screenA.ouenWorkTimes(_.get(iod,'ouenTime'));
 
                 //対象日
                 screenA.targetDate(moment(time.date).toDate());
