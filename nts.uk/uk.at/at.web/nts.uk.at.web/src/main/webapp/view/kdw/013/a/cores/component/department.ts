@@ -35,10 +35,10 @@ module nts.uk.ui.at.kdw013.department {
 @component({
     name: 'kdw013-department',
     template: `
-            <div id='department-acc' data-bind="ntsAccordion: { active: 0}">
+            <div id='department-acc' data-bind="ntsAccordion: {event:'keypress', active: 0}">
                 <h3>
                     <label data-bind="i18n: 'KDW013_4'"></label>
-                    <i style='float:right;' data-bind="ntsIcon: { no: 233, width: 20, height: 20 }" ></i>
+                    <i class='open-k-icon' style='float:right;' data-bind="ntsIcon: { no: 233, width: 25, height: 25 }" ></i>
                 </h3>
         
                 <div class='fc-employees'>
@@ -70,6 +70,9 @@ module nts.uk.ui.at.kdw013.department {
                 </div>
             </div>
 <style>
+.open-k-icon:hover{
+        background-color: rgb(229, 242, 255);
+}
 .fc-employees .ui-accordion-header{
         padding: 0.4rem 0rem 0.4rem 0.4rem !important;
 }
@@ -201,9 +204,13 @@ mounted() {
        vm.event = (evt, vm) => {
         const vm = this;
         const tg = evt.target as HTMLElement;
+           //phải làm trò  này để tách biệt 2 event khi click vào header và icon trên cái header đó
         if ($(tg).closest('.department h3').length > 0 && $(tg).is('i')) {
             vm.OpenKDialog();
-            evt.preventDefault();
+        }else{
+            if ($(tg).closest('.department .ui-accordion-header').length > 0) {
+                $('.department .ui-accordion-header').keypress();
+            }
         }
         
     };

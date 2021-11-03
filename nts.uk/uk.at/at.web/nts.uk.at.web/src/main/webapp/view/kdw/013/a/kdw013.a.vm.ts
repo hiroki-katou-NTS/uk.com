@@ -290,7 +290,7 @@ module nts.uk.ui.at.kdw013.a {
                             let task = _.find(taskList, t => t.supNo == workNo);  
                             frameNos.push(vm.getFrameNo(events));
                             
-                            if (start != null && end != null) {
+                            if (!start && !end) {
                                 events.push({
                                     taskFrameUsageSetting: ko.unwrap((vm.$settings)),
                                     period: { start, end },
@@ -1055,7 +1055,7 @@ module nts.uk.ui.at.kdw013.a {
         // Popup G:
         registerOneDayFavTask() {
             const vm = this;
-            let favId = vm.oneDayFavoriteSet().favId;
+            let favId = _.get(vm.oneDayFavoriteSet(), 'favId', '');
 
             if (favId =='') {
                 vm.addOneDayFavTask();
@@ -1095,20 +1095,6 @@ module nts.uk.ui.at.kdw013.a {
 
         addOneDayFavTask(){
             const vm = this;
-
-            vm.taskBlocks([
-                {
-                    startTime: 1,
-                    endTime: 2,
-                    taskContents: [{
-                        frameNo: 1,
-                        taskContent:{
-                            itemId: 1,
-                            taskCode: "1"
-                        }
-                    }
-                ]
-            }]);
 
             const registerFavoriteForOneDayCommand : RegisterFavoriteForOneDayCommand = {
                 employeeId: vm.$user.employeeId,
