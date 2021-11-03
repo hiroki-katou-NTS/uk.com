@@ -525,6 +525,15 @@ module nts.uk.at.view.kmk013.b_ref {
                         
                         // condition 26
                         self.conditionDisplay26(dataDomainSet.useAggDeformedSetting == 1? true : false);
+
+                        // #120188
+                        if (!self.conditionDisplay15()) {
+                          _.remove(self.tabs(), { id: 'tab-3' });
+                        }
+                        if (!self.conditionDisplay26()) {
+                          _.remove(self.tabs(), { id: 'tab-4' });
+                        }
+                        self.tabs.valueHasMutated();
                     }
                     
                     if (data[0] == null) {
