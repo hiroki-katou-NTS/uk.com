@@ -130,7 +130,6 @@ export class KdpS01LComponent extends Vue {
         vm.selectedCode = code;
         vm.framePosition = 0;
         let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo + 1, upperFrameWorkCode: vm.selectedCode};
-
         vm.$mask('show');
         vm.$http.post('at', API.GET_EMPLOYEE_TASKS, param).then((result: any) => {
             vm.$mask('hide');
@@ -153,6 +152,11 @@ export class KdpS01LComponent extends Vue {
 
             }
         });
+
+        setTimeout(function () {
+            document.getElementsByTagName('input')[0].focus();
+        }, 200);
+
     }
 
     public onClickSearch() {
@@ -195,10 +199,6 @@ export class KdpS01LComponent extends Vue {
                 vm.reloadData();
                 vm.taskNameCd = '';
 
-                //setTimeout(function () {
-                let focusElem = document.getElementById('taskNameCd');
-                (focusElem as HTMLElement).focus();
-                //}, 200);
             });
 
         }
