@@ -16,7 +16,8 @@ module nts.uk.com.view.cmm051.a {
         findAllWkpManager: "at/auth/workplace/manager/findAll/",
         saveWkpManager: "at/auth/workplace/manager/save/",
         deleteWkpManager: "at/auth/workplace/manager/remove/",
-        getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/"
+        getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/",
+        getDataInit:"com/screen/cmm051/get-data-init"
     };
     const SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY = 'SHARE_IN_DIALOG_ADD_UPDATE_HISTORY';
 
@@ -35,14 +36,13 @@ module nts.uk.com.view.cmm051.a {
         selectedWpkManagerId: KnockoutObservable<string>;
         selectedWkpManager: KnockoutObservable<WorkplaceManager>;
         wkpManagerTree: any;
-        selectedCode: any;
         headers: any;
         // CCG026
         component: ccg.component.viewmodel.ComponentModel;
         listPermission: KnockoutObservableArray<FunctionPermission>;
         // start declare KCP005
         listComponentOption: any;
-        multiSelectedCode: KnockoutObservable<string>;
+        multiSelectedCode: KnockoutObservable<string> = ko.observable("");
         isShowAlreadySet: KnockoutObservable<boolean>;
         alreadySettingPersonal: KnockoutObservableArray<any>;
         isDialog: KnockoutObservable<boolean>;
@@ -58,6 +58,9 @@ module nts.uk.com.view.cmm051.a {
         dateHistoryList: KnockoutObservableArray<any> = ko.observableArray([]);
         workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
         mode:KnockoutObservable<number>= ko.observable(1);
+        workplaceCode: KnockoutObservable<string>= ko.observable("");
+        workplaceName: KnockoutObservable<string>= ko.observable("");
+        selectedCode: KnockoutObservable<string>;
         constructor(params: any) {
             super();
             let vm = this;
@@ -67,29 +70,64 @@ module nts.uk.com.view.cmm051.a {
                 targetBtnText: nts.uk.resource.getText("KCP010_3"),
                 tabIndex: 4
             };
-            vm.selectedCode = ko.observable('');
             let listDatePeriod : any = [];
-            let emps : any = [];
+
             for (let i = 0; i <10;i++){
-                emps.push({
-                    id: i,
-                    code: i,
-                    name: i,
-                });
                 listDatePeriod.push({
                     id: i,
                     display: "AAAAAAAAAA"
                 })
             }
-            vm.employInfors(emps);
             vm.dateHistoryList(listDatePeriod);
-
+            vm.initScreen();
             vm.isNewMode = ko.observable(false);
-            vm.KCP005_load();
             vm.ntsHeaderColumns = ko.observableArray([
                 { headerText: '', key: 'code', hidden: true },
                 { headerText: '', key: 'display', formatter: _.escape }
             ]);
+        }
+        initScreen(){
+            let vm = this;
+            let workplaceManagerList : any[] = [];
+            let listEmployee : any[] = [] ;
+            let personList : any[] = [] ;
+            block.invisible();
+            vm.$ajax('com', API.getDataInit).done((data)=>{
+                if(!isNullOrUndefined(data)){
+                    vm.workplaceCode(data.workplaceInfoImport.workplaceCode);
+                    vm.workplaceName(data.workplaceInfoImport.workplaceName);
+                    workplaceManagerList = data.employeeInformation.workplaceManagerList;
+                    listEmployee = data.employeeInformation.listEmployee;
+                    personList = data.employeeInformation.personList;
+                    vm.setData(workplaceManagerList,listEmployee,personList);
+                }
+            }).always(()=>{
+                block.clear();
+            }).fail(()=>{
+            })
+        }
+        setData(workplaceManagerList : any[],listEmployee : any[] ,personList : any[]) :void{
+            let vm = this;
+            let emps : any = [];
+            if(!isNullOrEmpty(personList) && !isNullOrEmpty(listEmployee)){
+                for (let i =0;i<listEmployee.length;i++){
+                    let  em = listEmployee[i];
+                    let info  = _.find(personList,(e)=>e.pid == em.personId);
+                    if(!isNullOrUndefined(info)){
+                        emps.push({
+                            id: em.employeeId,
+                            code: em.employeeCode,
+                            name: info.businessName,
+                        });
+                    }
+
+                }
+                vm.employInfors(emps);
+                if(!isNullOrEmpty(emps)){
+                    vm.multiSelectedCode(emps[0].code);
+                }
+                vm.KCP005_load();
+            }
         }
         KCP005_load() {
             let vm = this;
@@ -102,7 +140,7 @@ module nts.uk.com.view.cmm051.a {
             vm.isShowWorkPlaceName = ko.observable(false);
             vm.isShowSelectAllButton = ko.observable(false);
             vm.disableSelection = ko.observable(false);
-            vm.multiSelectedCode = ko.observable("1");
+            vm.selectedCode = ko.observable("");
             vm.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
@@ -114,12 +152,9 @@ module nts.uk.com.view.cmm051.a {
                 alreadySettingList: vm.alreadySettingPersonal,
                 isShowSelectAllButton: false,
                 showOptionalColumn: false,
-                maxWidth: 320,
+                maxWidth: 400,
                 maxRows: 15,
             };
-            vm.multiSelectedCode.subscribe((e) => {
-
-            });
             $('#kcp005').ntsListComponent(vm.listComponentOption)
         }
 
@@ -138,6 +173,10 @@ module nts.uk.com.view.cmm051.a {
             return dfd.promise();
         }
         mounted() {
+            let vm = this;
+            vm.multiSelectedCode.subscribe((e) => {
+
+            });
         }
 
         private getWkpManagerList(wkpId: string, savedWkpMngId: string): JQueryPromise<void> {

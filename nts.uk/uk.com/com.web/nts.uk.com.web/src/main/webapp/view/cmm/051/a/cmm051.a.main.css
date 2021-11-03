@@ -86,11 +86,21 @@
 
 .a_3 {
     margin-top: 5px;
-    height: 45px
+    height: 45px;
+    display: flex;
 }
 .cmm-054{
     padding-left: 20px;
 }
 .date-list{
     margin-top: -20px;
+}
+.wp-code {
+    width: 120px;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.wp-name{
+    width: 120px;
+    margin-top: 5px;
 }

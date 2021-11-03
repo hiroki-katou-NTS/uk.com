@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 public class EmployeeInformationDto {
-    List<WorkplaceManager> workplaceManagerList;
+    List<WorkplaceManagerDto> workplaceManagerList;
     List<EmployeeDataMngInfoDto> listEmployee;
     List<PersonDto> personList;
 }

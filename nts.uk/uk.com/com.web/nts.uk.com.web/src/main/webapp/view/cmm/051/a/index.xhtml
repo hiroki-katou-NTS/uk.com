@@ -55,11 +55,11 @@
                       </div>
                   </div>
               </div>
-              <div class="a_3">
+              <div class="valign-center control-group a_3">
                   <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
                   <button tabindex="5" class="" data-bind="click: openDialogA32">#{i18n.getText('CMM051_42')}</button>
-                  <label class="ntsControl limited-label" data-bind="text:  "> </label>
-                  <label class="ntsControl limited-label" data-bind="text: "> </label>
+                  <label class="ntsControl limited-label wp-code" data-bind="text: workplaceCode()  "> </label>
+                  <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
               </div>
 
               <div id="left-content">
@@ -71,8 +71,8 @@
                   <div class="">
                       <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
                       <button tabindex="7" class="" data-bind="click: openDialogA62">#{i18n.getText('CMM051_47')}</button>
+                      <label class="ntsControl limited-label" data-bind="text:   "> </label>
                       <label class="ntsControl limited-label" data-bind="text:  "> </label>
-                      <label class="ntsControl limited-label" data-bind="text: "> </label>
                   </div>
                   <!--A7_1-->
                   <div class="date-list">

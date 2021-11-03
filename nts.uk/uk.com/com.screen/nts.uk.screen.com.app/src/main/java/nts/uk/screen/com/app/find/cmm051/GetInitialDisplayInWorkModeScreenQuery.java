@@ -31,7 +31,7 @@ public class GetInitialDisplayInWorkModeScreenQuery {
         if (workplaceInfoImportOptional.isPresent()) {
             rs.setWorkplaceInfoImport(workplaceInfoImportOptional.get());
             rs.setEmployeeInformation(informationScreenQuery
-                    .getLiEmployeeInfo(workplaceInfoImportOptional.get().getWorkplaceId()));
+                    .getLisEmployeeInfo(workplaceInfoImportOptional.get().getWorkplaceId()));
         }
         return rs;
     }

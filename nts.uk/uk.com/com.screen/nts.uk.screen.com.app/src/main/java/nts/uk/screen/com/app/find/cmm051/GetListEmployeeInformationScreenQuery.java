@@ -26,10 +26,12 @@ public class GetListEmployeeInformationScreenQuery {
     @Inject
     private PersonRepository personRepository;
 
-    public EmployeeInformationDto getLiEmployeeInfo(String workplaceId){
+    public EmployeeInformationDto getLisEmployeeInfo(String workplaceId){
         EmployeeInformationDto rs  = new EmployeeInformationDto();
-        List<WorkplaceManager> workplaceManagerList = workplaceManagerRepository.getWkpManagerListByWkpId(workplaceId);
-        List<String> sids = workplaceManagerList.stream().map(WorkplaceManager::getEmployeeId).distinct().collect(Collectors.toList());
+        List<WorkplaceManagerDto> workplaceManagerList = workplaceManagerRepository
+                .getWkpManagerListByWkpId(workplaceId)
+                .stream().map(WorkplaceManagerDto::new).collect(Collectors.toList());
+        List<String> sids = workplaceManagerList.stream().map(WorkplaceManagerDto::getEmployeeId).distinct().collect(Collectors.toList());
         List<EmployeeDataMngInfoDto> listEmployee = employeeDataMngInfoRepository.findByListEmployeeId(sids)
                 .stream().map(EmployeeDataMngInfoDto::toDto).collect(Collectors.toList());
         List<String> listPersonId = listEmployee.stream().map(EmployeeDataMngInfoDto::getPersonId)
