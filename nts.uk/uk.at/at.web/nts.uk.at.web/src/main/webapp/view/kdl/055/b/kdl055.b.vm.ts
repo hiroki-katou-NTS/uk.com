@@ -45,7 +45,8 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         if (err) {
                             vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
                         }
-                    }).always(() => vm.$blockui('hide'));
+                    })
+                    .always(() => {vm.$blockui('hide'); console.log("END blockUI")});
                 } else if (params) {
                     vm.$blockui('show');
                     vm.$ajax(paths.getCaptureData, { data: params, overwrite: vm.overwrite }).done((res: CaptureDataOutput) => {
@@ -63,7 +64,8 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         if (err) {
                             vm.$dialog.error({ messageId: err.messageId, messageParams: err.parameterIds });
                         }
-                    }).always(() => vm.$blockui('hide'));
+                    })
+                    .always(() => {vm.$blockui('hide'); console.log("END blockUI")});
                 }
             });
             
@@ -97,6 +99,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             let targets: ScheduleRegisterTarget[] = [];
 
             let dataSource: any[] = $("#grid").mGrid("dataSource");
+            let cellStates: any[] = _.filter(vm.gridOptions.features, {'name': 'CellStyles'})[0].states;
 
             _.forEach(dataSource, item => {
                 _.forEach(vm.data.importableDates, date => {
@@ -104,7 +107,13 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     if (item[date]) {
                         target.date = date;
                         target.importCode = item[date];
-                        targets.push(target);
+                        
+                        if (_.filter(cellStates, { 'columnKey': date, 'rowId': item.employeeId,  }).length > 0) {
+                            let states = _.filter(cellStates, { 'columnKey': date, 'rowId': item.employeeId,  })[0].state;
+                            if (!_.includes(states, 'mgrid-disable')) {
+                                targets.push(target);
+                            }
+                        }
                     }
                 })
             });
@@ -297,6 +306,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
         loadGrid() {
             let vm = this;
+            console.log('3');
 
             if (vm.gridOptions.columns.length > 1) {
                 let columnFixing = { name: 'ColumnFixing', columnSettings: [{ columnKey: 'nameHeader', isFixed: true }]};
@@ -320,10 +330,12 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 features: vm.gridOptions.features,
                 ntsControls: vm.gridOptions.ntsControls
             }).create();
+            console.log('4');
         }
 
         loadError(param: CaptureDataOutput) {
             const vm = this;
+            console.log('5');
 
             let mappingErrorList = param.mappingErrorList;
             let errors: any[] = [];
@@ -387,10 +399,12 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             } else {
                 $('#register').focus();
             }
+            console.log('6');
         }
 
         convertToGrid(data: CaptureDataOutput) {
             const vm = this;
+            console.log('1');
 
             let headerStyle = { name: 'HeaderStyles', columns: [{ key: 'nameHeader', colors: ['weekday', 'align-center'] }] };
             let cellStates: any[] = [];
@@ -452,6 +466,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             // vm.gridOptions.features.push(columnFixing);
             vm.gridOptions.features.push(headerStyle);
             vm.gridOptions.features.push({ name: 'CellStyles', states: cellStates });
+            console.log('2');
         }
 
         convertDateHeader(text: string): string {
