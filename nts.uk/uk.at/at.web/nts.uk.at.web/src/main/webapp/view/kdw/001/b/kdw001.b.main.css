@@ -130,13 +130,15 @@
 }
 
 .setting-checkbox {
-  width: 200px;
+  width: 180px;
 }
 
 .describe-label {
   width: 100%;
   color: #aaa;
   padding-top: 10px;
+  white-space: break-spaces;
+  padding-left: 10px;
 }
 
 .step-2 .table {
@@ -144,7 +146,7 @@
 }
 
 .step-2 #button36Area, .step-2 #button6Area {
-  margin-top: 50px;
+  margin-left: 120px;
 }
 
 .nts-wizard .steps+.contents {
