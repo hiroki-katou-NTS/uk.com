@@ -472,6 +472,18 @@ module nts.uk.at.view.kmk013.b_ref {
                     return self.checkedB151() == true && self.selectedB164() == 1 && self.checkedB149() == true && self.checkedB1491() == false && self.enableB164() == true;
                 });
 
+                // Init B4_9
+                $("#B4_10").ntsPopup({
+                  trigger: "#B4_9",
+                  position: {
+                    my: "left top",
+                    at: "left bottom",
+                    of: "#B4_9"
+                  },
+                  showOnStart: false,
+                  dismissible: true
+                });
+
                 self.changeTabPanel();
                 
             }
