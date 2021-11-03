@@ -5,7 +5,6 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -36,8 +35,9 @@ import java.util.stream.Stream;
 public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByDateExportGenerator {
     private static final String TEMPLATE_FILE = "report/KSU003.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
-    private static final int MAX_ROW_IN_PAGE = 60;
+    private static final int MAX_ROW_IN_PAGE = 68;
     private static final int MAX_ROW_HEADER_IN_PAGE = 8;
+    private static final int MAX_EMPLOYEE_PER_PAGE = 30;
     private final String SPACE = "　";
     private final String EMPTY = "";
     private static final String PRINT_AREA = "A1:BE";
@@ -97,7 +97,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     /**
      * ページヘッダ② : Area B & Header C
      */
-    private void printHeader(Worksheet worksheet, PersonalScheduleByDateDataSource dataSource) {
+    private void printHeader(Worksheet worksheet, PersonalScheduleByDateDataSource dataSource) throws Exception {
         Cells cells = worksheet.getCells();
         val dateInfo = dataSource.getDateInformation();
         val orgInfo = dataSource.getDisplayInfoOrganization();
@@ -121,6 +121,14 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         printB5(cells, dateInfo.getListSpecDayNameCompany(), dateInfo.getListSpecDayNameWorkplace());
 
         // B6: Color description
+        int widthPixel = cells.getColumnWidthPixel(8);
+        ShapeCollection shapes = worksheet.getShapes();
+        drawSample(shapes, 0, 30, widthPixel, Color.fromArgb(204, 204, 255), null);
+        drawSample(shapes, 0, 34, widthPixel, Color.fromArgb(255, 192, 0), null);
+        drawSample(shapes, 0, 38, widthPixel, Color.fromArgb(255, 255, 0), null);
+        drawSample(shapes, 0, 42, widthPixel, Color.fromArgb(111, 165, 39), null);
+        drawSample(shapes, 0, 46, widthPixel, Color.fromArgb(195, 214, 155), null);
+        drawSample(shapes, 0, 51, widthPixel, Color.fromArgb(254, 223, 230), null);
         cells.get(0, 31).setValue(getText("KSU003_144"));     // B6_1
         cells.get(0, 35).setValue(getText("KSU003_146"));     // B6_3
         cells.get(0, 39).setValue(getText("KSU003_148"));     // B6_5
@@ -128,12 +136,20 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         cells.get(0, 47).setValue(getText("KSU003_152"));     // B6_9
         cells.get(0, 52).setValue(getText("KSU003_154"));     // B6_11
 
+        drawSample(shapes, 2, 30, widthPixel, Color.fromArgb(255, 153, 153), null);
+        drawSample(shapes, 2, 34, widthPixel, Color.fromArgb(0, 255, 204), null);
+        drawSample(shapes, 2, 42, widthPixel, Color.fromArgb(196, 189, 151), null);
+        drawSample(shapes, 2, 46, widthPixel, Color.fromArgb(235, 241, 222), null);
+        drawSample(shapes, 2, 51, widthPixel, Color.fromArgb(255, 204, 255), null);
         cells.get(2, 31).setValue(getText("KSU003_145"));     // B6_2
         cells.get(2, 35).setValue(getText("KSU003_147"));     // B6_4
         cells.get(2, 43).setValue(getText("KSU003_149"));     // B6_6
         cells.get(2, 47).setValue(getText("KSU003_153"));     // B6_10
         cells.get(2, 52).setValue(getText("KSU003_155"));     // B6_12
 
+        drawSample(shapes, 4, 30, widthPixel, Color.fromArgb(24, 23, 23), null);
+        drawSample(shapes, 4, 34, widthPixel, Color.fromArgb(255, 153, 255), null);
+        drawSample(shapes, 4, 38, widthPixel, Color.fromArgb(0, 102, 255), null);
         cells.get(4, 31).setValue(getText("KSU003_156"));     // B6_13
         cells.get(4, 35).setValue(getText("KSU003_157"));     // B6_14
         cells.get(4, 39).setValue(getText("KSU003_158"));     // B6_15
@@ -199,6 +215,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
         int rowCount = 9;
         int pageIndex = 0;
+        int elementsPerPage = 0;
         val employeeInfoList = dataSource.getEmployeeInfoList();
         val employeeWorkScheduleList = dataSource.getEmployeeWorkScheduleList();
         val isDoubleWorkDisplay = dataSource.getQuery().isDoubleWorkDisplay();
@@ -214,7 +231,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 else
                     cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
             else
-                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (isEndOfPage(rowCount, pageIndex) ? 49 : 9), rowCount, 2);
+                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (elementsPerPage == 29 ? 49 : 9), rowCount, 2);
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
 
             // C1_2 + C1_3
@@ -384,13 +401,17 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             }
 
             rowCount += 2;
+            elementsPerPage += 1;
 
             // Paging
-            if (isNextPage(rowCount, pageIndex)) {
+            if (elementsPerPage == MAX_EMPLOYEE_PER_PAGE) {
                 cells.copyRows(cellsTemplate, 57, rowCount, 1);  // close ruler
                 rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
+                cells.copyRows(cells, 0, rowCount, 9);
+                rowCount += 9;
+                elementsPerPage = 0;
             }
 
             // Ruler close
@@ -632,7 +653,11 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     }
 
     private boolean isNextPage(int rowCount, int pageIndex) {
-        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - MAX_ROW_HEADER_IN_PAGE > MAX_ROW_IN_PAGE;
+        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - MAX_ROW_HEADER_IN_PAGE > 60;
+    }
+
+    private boolean isEndOfPage(int rowCount, int pageIndex) {
+        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - MAX_ROW_HEADER_IN_PAGE > MAX_ROW_IN_PAGE - 2;
     }
 
     /**
@@ -643,10 +668,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private boolean isEven(int number) {
         return number % 2 == 0;
-    }
-
-    private boolean isEndOfPage(int rowCount, int pageIndex) {
-        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - MAX_ROW_HEADER_IN_PAGE > MAX_ROW_IN_PAGE - 2;
     }
 
     private String minuteToTime(Integer totalMinute) {
@@ -687,6 +708,19 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
     private void drawRectangle(ShapeCollection shapes, int row, int column, int width, int left, Color color, boolean displayActual, Integer zOrderIndex) throws Exception {
         Shape shape = shapes.addShape(MsoDrawingType.RECTANGLE, row, displayActual ? 12 : 4, column, left, displayActual ? 8 : 25, width);
+        shape.setPrintable(true);
+        shape.getFill().setFillType(FillType.SOLID);
+        shape.getFill().getSolidFill().setColor(color);
+        shape.getLine().setWeight(0);
+        shape.getLine().setFillType(FillType.SOLID);
+        shape.getLine().getSolidFill().setColor(Color.getBlack());
+        if (zOrderIndex != null) {
+            shape.setZOrderPosition(zOrderIndex);
+        }
+    }
+
+    private void drawSample(ShapeCollection shapes, int row, int column, int width, Color color, Integer zOrderIndex) throws Exception {
+        Shape shape = shapes.addShape(MsoDrawingType.RECTANGLE, row, 7, column, 0, 25, width);
         shape.setPrintable(true);
         shape.getFill().setFillType(FillType.SOLID);
         shape.getFill().getSolidFill().setColor(color);
