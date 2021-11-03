@@ -360,7 +360,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     err.columnKey = error.date;
                 }
                 _.forEach(results, (result: ImportResultDetail) => {
-                    if (result.employeeId === err.id) {
+                    if (result.employeeId === err.id && result.ymd === err.columnKey) {
                         if ([6, 7].includes(result.status) && err.index != null) {
                             errors.push(err);
                         }
