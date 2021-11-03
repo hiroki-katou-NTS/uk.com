@@ -256,7 +256,7 @@ module nts.uk.at.view.kmk013.b_ref {
 
                 self.itemListB3_8 = ko.observableArray([
                     new BoxModel(0, nts.uk.resource.getText('KMK013_255')),
-                    new BoxModel(1, nts.uk.resource.getText('KMK013_256'))
+                    new BoxModel(1, nts.uk.resource.getText('KMK013_574'))
                 ]);
                 self.selectedIdB3_8 = ko.observable(0);
                 self.enableB3_8 = ko.observable(true);
