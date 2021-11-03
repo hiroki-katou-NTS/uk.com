@@ -5433,7 +5433,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let param3 = {
                                 typeDialog: 15,
 								param: {
-							 		taskFrameNo: workFrameNoSelection
+									itemId: self.attendenceId
 								}
                             };
                             service.findAllCodeName(param3).done((data: any) => {
