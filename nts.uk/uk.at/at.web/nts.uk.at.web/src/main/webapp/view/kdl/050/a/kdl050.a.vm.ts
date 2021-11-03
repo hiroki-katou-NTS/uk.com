@@ -13,7 +13,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         isCreate: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            self.year = ko.observable(nts.uk.ui.windows.getShared('KSM004_C_PARAM').yearMonth);
+            self.year = ko.observable(nts.uk.ui.windows.getShared('KDL050_A_PARAM').yearMonth);
             self.year.subscribe((newValue) => {
                 self.findPublicHolidayByYear(newValue);
                 self.selectHolidayByIndex(0);
@@ -28,9 +28,9 @@ module nts.uk.at.view.ksm004.c.viewmodel {
                 self.findPublicHoliday(value);
             });
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'date', hidden: true },
-                { headerText: nts.uk.resource.getText("KSM004_23"), key: 'displayDate', width: 85 },
-                { headerText: nts.uk.resource.getText("KSM004_24"), key: 'holidayName', width: 240, formatter: _.escape }
+                { headerText: nts.uk.resource.getText("KDL050_7"), key: 'date', hidden: true },
+                { headerText: nts.uk.resource.getText("KDL050_7"), key: 'displayDate', width: 85 },
+                { headerText: nts.uk.resource.getText("KDL050_8"), key: 'holidayName', width: 240, formatter: _.escape }
             ]);
             // Holiday Details
             self.selectedPublicHoliday = ko.observable(new PublicHolidayObs("", ""));
