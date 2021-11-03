@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
@@ -24,6 +25,7 @@ import nts.uk.screen.at.app.kdw013.h.CreateAchievementRegistrationParam;
 import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
 import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
+import nts.uk.screen.at.app.query.kdp.kdps01.c.ItemValueDto;
 import nts.uk.screen.at.ws.kdw.kdw013.SelectWorkItemParam;
 import nts.uk.screen.at.ws.kdw.kdw013.StartWorkInputPanelDto;
 
@@ -85,8 +87,8 @@ public class KDW013BCHWebService {
 
 	@POST
 	@Path("h/save")
-	public void saveH(KDW013HSaveCommand command) {
-		createAchievementRegistrationParam.registerAchievements(
+	public List<ItemValue> saveH(KDW013HSaveCommand command) {
+		return createAchievementRegistrationParam.registerAchievements(
 				command.empTarget, 
 				command.targetDate, 
 				command.items.stream().map(c-> ItemValueCommand.toDomain(c)).collect(Collectors.toList()));

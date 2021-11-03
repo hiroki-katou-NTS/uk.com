@@ -318,8 +318,10 @@ module nts.uk.at.view.kdw013.h {
 					targetDate: moment(self.params.date), //対象日
 					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
-				ajax(paths.save, param).done(() => {
+				ajax(paths.save, param).done((data: IItemValue[]) => {
+					console.log(data);
 					info({ messageId: 'Msg_15' });
+					
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
 				}).always(() => {
@@ -379,6 +381,13 @@ module nts.uk.at.view.kdw013.h {
 			this.fixed = itemValue.fixed;
 			
 		}
+		updateValue(itemValue: IItemValue){
+			this.value(itemValue.value);
+			this.valueBeforeChange = itemValue.value;
+			this.valueType = itemValue.valueType;
+			this.layoutCode = itemValue.layoutCode;
+			this.fixed = itemValue.fixed;
+		}
 		toDataSave() {
 			return {
 				itemId: this.itemId,
@@ -389,6 +398,9 @@ module nts.uk.at.view.kdw013.h {
 			};
 		}
 		isChange(): boolean {
+			if(this.valueBeforeChange == null && this.value() == ''){
+				return false;
+			}
 			return this.value() != this.valueBeforeChange;
 		}
 	}
