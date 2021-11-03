@@ -1395,7 +1395,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-							x -> x.getAttendanceItemName())); // 9s
+							x -> x.getDisplayName())); // 9s
 			
 			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
 			for(DPItemValue value : dpItems) {
