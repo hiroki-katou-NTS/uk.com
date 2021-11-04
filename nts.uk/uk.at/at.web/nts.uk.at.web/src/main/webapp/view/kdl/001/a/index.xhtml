@@ -92,7 +92,7 @@
           <div class="setting-zone">
             <div class="flex valign-center ml-10">
               <label id="A2_22">#{i18n.getText('KDL001_25')}</label>
-              <a id="A2_23" class="hyperlink ml-10" href="#" data-bind="enable: isAttendanceRole">#{i18n.getText('KDL001_26')}</a>
+              <a id="A2_23" class="hyperlink ml-10" href="#" data-bind="visible: isAttendanceRole">#{i18n.getText('KDL001_26')}</a>
               <button id="A2_24" class="ml-10" data-bind="ntsHelpButton: { textId: 'KDL001_27', position: 'right top' }">?</button>
             </div>
             <div class="query-zone">
@@ -186,7 +186,8 @@
         <div id="A6_1" class="popup-area">
           <div class="flex valign-center">
             <div id="A6_2" class="mr-10" data-bind="ntsFormLabel: { constraint: 'WorkHoursFilterConditionName' }">#{i18n.getText('KDL001_28')}</div>
-            <button id="A6_6" class="proceed" data-bind="click: executeSaveKeywords">#{i18n.getText('KDL001_30')}</button>
+            <button id="A6_6" class="proceed" 
+            data-bind="click: executeSaveKeywords, enable: !nts.uk.ui.errors.hasError()">#{i18n.getText('KDL001_30')}</button>
             <label id="A6_3">#{i18n.getText('KDL001_29')}</label>
           </div>
           <div data-bind="foreach: keywords">
