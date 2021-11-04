@@ -90,10 +90,15 @@ public class WorkspaceSql {
 
 	private void createTable(String tableName) {
 		TemporaryTable.createTable(jdbcProxy, database, tableName, b -> {
-			b = b.column(ROW_NO.name, ROW_NO.type)
+			// 正準化時にうまれる項目を主キーに指定できない（編集時にはNULLである）ので、一旦ROW_NOを固定で主キーとする
+			// 必要なら主キーではなくインデックスにすることを検討する
+			b = b.columnPK(ROW_NO.name, ROW_NO.type)
 					.column(CONTRACT_CD.name, CONTRACT_CD.type)
 					.column(CID.name, CID.type);
-			for (WorkspaceItem item : workspace.getAllItemsSortedByItemNo()){
+			for (WorkspaceItem item : workspace.getItemsPk()){
+				b = b.column(item.getName(), item.getDataTypeConfig());
+			}
+			for (WorkspaceItem item : workspace.getItemsNotPk()){
 				b = b.column(item.getName(), item.getDataTypeConfig());
 			}
 		});
