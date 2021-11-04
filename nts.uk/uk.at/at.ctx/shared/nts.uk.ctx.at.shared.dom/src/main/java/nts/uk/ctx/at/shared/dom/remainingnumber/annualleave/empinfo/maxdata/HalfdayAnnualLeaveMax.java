@@ -109,12 +109,9 @@ public class HalfdayAnnualLeaveMax {
 	 * @return 残回数
 	 */
 	private RemainingTimes calcRemainTimes(AnnualNumberDay maxTimesIn, UsedTimes usedTimesIn) {
-		int remainTimesTmp = maxTimesIn.v() - usedTimesIn.v();
-		if (remainTimesTmp  < 0) {
-			return new RemainingTimes(0);
-		} else {
-			return new RemainingTimes(remainTimesTmp);
-		}
+
+		return new RemainingTimes(maxTimesIn.v() - usedTimesIn.v());
+
 	}
 
 	public void updateMaxTimes(AnnualNumberDay maxTimes) {

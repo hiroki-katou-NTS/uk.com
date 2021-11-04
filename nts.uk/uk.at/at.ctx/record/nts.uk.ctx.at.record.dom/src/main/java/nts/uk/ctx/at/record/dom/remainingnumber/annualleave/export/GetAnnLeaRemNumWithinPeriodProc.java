@@ -230,9 +230,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		grantHdTblSetOpt = require.grantHdTblSet(companyId, grantTableCode);
 		lengthServiceTblsOpt = Optional.ofNullable(require.lengthServiceTbl(companyId, grantTableCode));
 
-		// 年休付与残数データ　取得
-		List<AnnualLeaveGrantRemainingData> grantRemainingDatas;
-		grantRemainingDatas = require.annualLeaveGrantRemainingData(employeeId);
+
 
 		// 日別実績の運用開始設定　取得
 		Optional<OperationStartSetDailyPerform> operationStartSetOpt = Optional.empty();
@@ -323,7 +321,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 年休集計期間を作成
 		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
-				nextAnnualLeaveGrantList, period.get(), grantRemainingDatas);
+				nextAnnualLeaveGrantList, period.get(), annualLeaveInfo.getGrantRemainingDataList());
 
 		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
@@ -657,7 +655,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		}
 
 		// 年休情報残数を更新
-		returnInfo.updateRemainingNumber(GrantBeforeAfterAtr.BEFORE_GRANT);
+		returnInfo.updateRemainingNumber(GrantBeforeAfterAtr.BEFORE_GRANT, aggrPeriod.end());
 
 		// 年休情報を返す
 		return returnInfo;

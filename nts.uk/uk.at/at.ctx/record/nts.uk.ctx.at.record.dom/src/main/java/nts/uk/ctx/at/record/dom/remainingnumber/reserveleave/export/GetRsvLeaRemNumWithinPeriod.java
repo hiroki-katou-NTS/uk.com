@@ -258,13 +258,12 @@ public class GetRsvLeaRemNumWithinPeriod {
 					false, // isGetNextMonthData 翌月管理データ取得フラグ 現在未使用,
 					true, // isCalcAttendanceRate 出勤率計算フラグ 現在未使用,
 					param.getIsOverWrite(), // 上書きフラグ
-					Optional.empty(), // tempAnnDataforOverWriteList
-										// 上書き用の暫定年休管理データ なし,
+					Optional.empty(), // tempAnnDataforOverWriteList// 上書き用の暫定年休管理データ なし,
 					param.getForOverWriteList(), // 上書き用の暫定積休管理データ
 					Optional.of(false), // 不足分付与残数データ出力区分
 					Optional.of(true), // 集計開始日を締め開始日とする （締め開始日を確認しない）
-					null, // 前回の年休の集計結果
-					null, // 前回の積立年休の集計結果
+					Optional.empty(), // 前回の年休の集計結果
+					Optional.empty(), // 前回の積立年休の集計結果
 					companySets, // 月別集計で必要な会社別設定
 					Optional.empty(), // 月別集計で必要な社員別設定
 					monthlyCalcDailys, // 月の計算中の日別実績データ

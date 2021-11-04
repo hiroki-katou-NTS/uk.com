@@ -2,11 +2,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 
 /**
  * 時間年休上限
@@ -118,12 +116,7 @@ public class TimeAnnualLeaveMax {
 	 * @return 残時間
 	 */
 	private LeaveRemainingTime calcRemainMinutess(MaxMinutes maxMinutesIn, LeaveUsedTime usedMinutesIn) {
-		int leaveRemainingTimeTmp = maxMinutesIn.v() - usedMinutesIn.v();
-		if (leaveRemainingTimeTmp  < 0) {
-			return new LeaveRemainingTime(0);
-		} else {
-			return new LeaveRemainingTime(leaveRemainingTimeTmp);
-		}
+		return new LeaveRemainingTime(maxMinutesIn.v() - usedMinutesIn.v());
 	}
 
 }
