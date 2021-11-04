@@ -386,6 +386,9 @@ module nts.uk.ui.at.kdw013.calendar {
             display: flex;
         }
         .favIcon{ float:right }
+        .favIcon:hover{
+                background-color: rgb(229, 242, 255);
+        }
 `;
 
     @handler({
@@ -2040,9 +2043,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     return undefined;
                 },
                 dayHeaderDidMount : (arg, createElement) => {                    
-                    
-                   $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon' ></i>`);
-                   setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 20, height: 20 } }); }, 300);
+                    let className = 'fav-' + $(arg.el).find('.fc-scrollgrid-sync-inner').parent().attr('data-date');
+                    $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon ` + className + `' ></i>`);
+                   setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 25, height: 25 } }); }, 300);
                 }
                 ,
                 viewDidMount: ({ el, view }) => {
@@ -2060,19 +2063,57 @@ module nts.uk.ui.at.kdw013.calendar {
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => {
+                                    $days.on('mousedown', (evt: JQueryEvent) => {
+                                        if ($(evt.target).closest('.fc-col-header-cell.fc-day .favIcon').length > 0) {
+                                                    const className =  evt.target.classList[1];
+                                                        $(".popup-area-g").ntsPopup({
+                                                            trigger: '.' + className,
+                                                            position: {
+                                                                my: "left top",
+                                                                at: "left bottom",
+                                                                of: '.' + className
+                                                            },
+                                                            showOnStart: false,
+                                                            dismissible: true
+                                                        });
+                                        }
+                                    });
                                     $days
                                         // select day event
                                         .on('click', (evt: JQueryEvent) => {
-                                            const target = $(evt.target).closest('.fc-col-header-cell.fc-day').get(0) as HTMLElement;
+                                            
+                                            if ($(evt.target).closest('.fc-col-header-cell.fc-day .favIcon').length > 0) {
+                                                const date =  evt.target.classList[1].replace("fav-", "");
+                                                let eventInDay = _.chain(vm.params.screenA.events())
+                                                    .filter((evn) => { return moment(date).isSame(evn.start, 'days'); })
+                                                    .filter((evn) => { return !evn.extendedProps.isTimeBreak})
+                                                    .sortBy('end')
+                                                    .value();
+                                                
+                                                let taskBlocks = _.map(eventInDay, e => {
+                                                    let taskContents = []
+                                                    _.forEach(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => {
+                                                        _.forEach(td.taskItemValues, ti => {
+                                                            taskContents.push({ frameNo: td.supNo, taskContent: { itemId: ti.itemId, taskCode: ti.value } });
+                                                        });
+                                                    });
+                                                    return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
+                                                });
+                                                vm.params.screenA.taskBlocks(taskBlocks);
+                                            } else {
+                                                
+                                                const target = $(evt.target).closest('.fc-col-header-cell.fc-day').get(0) as HTMLElement;
 
-                                            if (target && target.tagName === 'TH' && target.dataset['date']) {
-                                                const date = moment.utc(target.dataset['date'], 'YYYY-MM-DD').toDate();
+                                                if (target && target.tagName === 'TH' && target.dataset['date']) {
+                                                    const date = moment.utc(target.dataset['date'], 'YYYY-MM-DD').toDate();
 
-                                                if (_.isDate(date) && ko.isObservable(initialDate)) {
-                                                    initialDate(date);
+                                                    if (_.isDate(date) && ko.isObservable(initialDate)) {
+                                                        initialDate(date);
+                                                    }
                                                 }
                                             }
                                         });
+                                    
                                 })
                                 .then(() => {
                                     // binding sum of work time within same day
