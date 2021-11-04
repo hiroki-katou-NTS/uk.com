@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -39,7 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkRecord {
 
-	public static Pair<RCReflectStatusResult, Optional<AtomTask>> process(Require require, ContractCode contractCode, String cid, ApplicationShare application,
+	public static Pair<RCReflectStatusResult, Optional<AtomTask>> process(Require require, String cid, ApplicationShare application,
 			GeneralDate date, RCReflectStatusResult reflectStatus, GeneralDateTime reflectTime) {
 
 		// [input.申請.打刻申請モード]をチェック
@@ -49,7 +48,7 @@ public class ReflectApplicationWorkRecord {
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			// レコーダイメージ申請の対象日を取得する
 			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require,
-					contractCode, cid, (AppRecordImageShare) application);
+					cid, (AppRecordImageShare) application);
 			if (dateOpt.getLeft().isPresent()) {
 				dateTarget = dateOpt.getLeft().get();
 				stamp = dateOpt.getRight();

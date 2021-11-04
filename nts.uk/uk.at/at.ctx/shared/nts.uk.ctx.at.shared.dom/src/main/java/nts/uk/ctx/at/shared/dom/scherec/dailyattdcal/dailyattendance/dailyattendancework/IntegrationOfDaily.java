@@ -377,28 +377,4 @@ public class IntegrationOfDaily {
 		this.remarks = daily.getRemarks();
 		this.snapshot = daily.getSnapshot();
 	}
-	
-	//日別実績のディフォルトを作成する
-	public static IntegrationOfDaily createDefault(String sid, GeneralDate dateData) {
-		return new IntegrationOfDaily(
-				sid,
-				dateData,
-				null, 
-				null, 
-				null,
-				Optional.empty(), 
-				new ArrayList<>(), 
-				Optional.empty(), 
-				new BreakTimeOfDailyAttd(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				new ArrayList<>(),
-				Optional.empty(),
-				new ArrayList<>(),
-				Optional.empty());
-	}
 }

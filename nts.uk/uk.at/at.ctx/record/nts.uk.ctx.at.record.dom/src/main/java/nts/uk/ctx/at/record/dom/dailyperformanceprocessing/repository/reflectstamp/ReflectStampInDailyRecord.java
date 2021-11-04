@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.InfoReflectDestStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService;
@@ -26,16 +26,16 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectStampInDailyRecord {
 
-	public static Optional<StampDataReflectResult> reflect(Require require, ContractCode contractCode,
+	public static Optional<StampDataReflectResult> reflect(Require require,
 			Stamp stamp) {
 		// $打刻の反映先情報
-		Optional<InfoReflectDestStamp> reflectDateAndEmpID = ReflectDataStampDailyService.getJudgment(require,
-				contractCode, stamp);
+		Optional<InfoReflectDestStamp> reflectDateAndEmpID = ReflectDataStampDailyService.getJudgment(require, stamp);
 		// <>$打刻の反映先情報.isPresent()
 		if (!reflectDateAndEmpID.isPresent())
 			return Optional.empty();
-		Optional<ReflectStampDailyAttdOutput> stampDailyAttdOutput = require.createDailyDomAndReflectStamp(reflectDateAndEmpID.get().getCid(),
-				reflectDateAndEmpID.get().getSid(), reflectDateAndEmpID.get().getDate(), stamp);
+		Optional<ReflectStampDailyAttdOutput> stampDailyAttdOutput = TemporarilyReflectStampDailyAttd
+				.createDailyDomAndReflectStamp(require, reflectDateAndEmpID.get().getCid(),
+						reflectDateAndEmpID.get().getSid(), reflectDateAndEmpID.get().getDate(), stamp);
 
 		if (!stampDailyAttdOutput.isPresent())
 			return Optional.empty();

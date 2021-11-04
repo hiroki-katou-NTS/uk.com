@@ -20,9 +20,10 @@ import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
 import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.ReflectStampDailyAttdOutput;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -50,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -57,6 +59,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -143,6 +150,12 @@ public class RegisterSmartPhoneStampCommandHandler
     
 	@Inject
     private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	
+	@Inject
+	private DailyRecordShareFinder dailyRecordShareFinder;
+	
+	@Inject
+	private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterSmartPhoneStampCommand> context) {
@@ -156,7 +169,7 @@ public class RegisterSmartPhoneStampCommandHandler
 				stampCardRepo, employeeManageRCAdapter, dailyRecordAdUpService, getMngInfoFromEmpIDListAdapter,
 				iGetInfoForLogin, loginUserContextManager, calcService, closureRepo, closureEmploymentRepo,
 				shareEmploymentAdapter, attendanceItemConvertFactory, iCorrectionAttendanceRule,
-				interimRemainDataMngRegisterDateChange);
+				interimRemainDataMngRegisterDateChange, dailyRecordShareFinder, timeReflectFromWorkinfo);
 
 		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(require, AppContexts.user().companyId(),
 				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
@@ -243,6 +256,10 @@ public class RegisterSmartPhoneStampCommandHandler
 	    private ICorrectionAttendanceRule iCorrectionAttendanceRule;
 	    
 	    private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	    
+		private DailyRecordShareFinder dailyRecordShareFinder;
+		
+		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -397,12 +414,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		}
 
 		@Override
-		public Optional<ReflectStampDailyAttdOutput> createDailyDomAndReflectStamp(String cid, String employeeId,
-				GeneralDate date, Stamp stamp) {
-			return temporarilyReflectStampDailyAttd.createDailyDomAndReflectStamp(cid, employeeId, date, stamp);
-		}
-
-		@Override
 		public DailyRecordToAttendanceItemConverter createDailyConverter() {
 			return attendanceItemConvertFactory.createDailyConverter();
 		}
@@ -421,6 +432,30 @@ public class RegisterSmartPhoneStampCommandHandler
 		@Override
 		public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
 			interimRemainDataMngRegisterDateChange.registerDateChange(cid, sid, lstDate);
+		}
+		
+		@Override
+		public Optional<IntegrationOfDaily> find(String employeeId, GeneralDate date) {
+			return dailyRecordShareFinder.find(employeeId, date);
+		}
+
+		@Override
+		public Optional<OutputCreateDailyOneDay> createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+				ExecutionTypeDaily executionType) {
+			return createDailyResults.createDailyResult(companyId, employeeId, ymd, executionType);
+		}
+
+		@Override
+		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation) {
+			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+		}
+
+		@Override
+		public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp,
+				StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily,
+				ChangeDailyAttendance changeDailyAtt) {
+			return temporarilyReflectStampDailyAttd.reflectStamp(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 	}
 

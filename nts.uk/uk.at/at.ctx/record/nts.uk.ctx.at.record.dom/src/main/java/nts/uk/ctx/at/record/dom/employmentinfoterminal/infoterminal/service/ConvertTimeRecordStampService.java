@@ -72,7 +72,7 @@ public class ConvertTimeRecordStampService {
 			return Optional
 					.of(new StampDataReflectResult(Optional.empty(), stampReflectResult.orElse(AtomTask.none())));
 		
-		return createDailyData(require, contractCode, stamp.get().getKey(), stampReflectResult.get());
+		return createDailyData(require, stamp.get().getKey(), stampReflectResult.get());
 	}
 
 	//打刻を作成する
@@ -108,11 +108,10 @@ public class ConvertTimeRecordStampService {
 	}
 
 	//日別実績を処理する
-	private static Optional<StampDataReflectResult> createDailyData(Require require,
-			ContractCode contractCode, Stamp stamp, AtomTask atomTask) {
+	private static Optional<StampDataReflectResult> createDailyData(Require require, Stamp stamp, AtomTask atomTask) {
 
 		// $反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)
-		Optional<InfoReflectDestStamp> infoReflectDestStamp = ReflectDataStampDailyService.getJudgment(require, contractCode, 
+		Optional<InfoReflectDestStamp> infoReflectDestStamp = ReflectDataStampDailyService.getJudgment(require, 
 				stamp);
 		if (infoReflectDestStamp.isPresent()) {
 			//チェック日が当月以降かどうかを確認する
@@ -120,7 +119,7 @@ public class ConvertTimeRecordStampService {
 				return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
 			}
 			
-			Optional<StampDataReflectResult> stampDataResult = ReflectStampInDailyRecord.reflect(require, contractCode, stamp);
+			Optional<StampDataReflectResult> stampDataResult = ReflectStampInDailyRecord.reflect(require, stamp);
 			if(!stampDataResult.isPresent()) {
 				return Optional.of(new StampDataReflectResult(Optional.of(infoReflectDestStamp.get().getDate()), atomTask));
 			}
