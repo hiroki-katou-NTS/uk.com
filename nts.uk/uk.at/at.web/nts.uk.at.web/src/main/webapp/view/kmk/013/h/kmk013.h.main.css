@@ -17,3 +17,27 @@
   font-size: 0.9em;
   margin-bottom: 10px;
 }
+
+.usage-settings {
+  margin-left: 50px;
+}
+
+.usage-settings > * {
+  margin-right: 20px;
+}
+
+.usage-settings > label {
+  margin-right: 10px !important;
+}
+
+#H10_3, #H11_3 {
+  width: 10px;
+}
+
+#H10_5 {
+  width: 75px;
+}
+
+#H11_5 {
+  width: 40px;
+}

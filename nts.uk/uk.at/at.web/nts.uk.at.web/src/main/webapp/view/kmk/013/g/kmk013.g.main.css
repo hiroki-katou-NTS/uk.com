@@ -1,37 +1,11 @@
-.goback {
-	margin-right: 35px;
+.setting-label {
+  width: 100px;
 }
 
-.form-label {
-	margin-left: 20px;
+#G4_2 {
+  width: 100px;
 }
 
-.child-lb {
-	margin: 0px 20px 0px 40px;
-	display: inline-block;
-	min-width: 168px;
-}
-
-.td-content {
-	height: 40px;
-}
-
-.nts-switch-button {
-	width: 70px;
-}
-
-/*new UI*/
-.switchbox-wrappers {
-	display: inline-block;
-}
-
-.switchbox-wrappers .radio-wrapper span {
-	width: 70px;
-	text-align: center;
-}
-
-.control-group .child-lb {
-	margin-left: 40px;
-	margin-right: 20px;
-	width: 170px;
+#G3_2, #G3_4 {
+  width: 80px;
 }
