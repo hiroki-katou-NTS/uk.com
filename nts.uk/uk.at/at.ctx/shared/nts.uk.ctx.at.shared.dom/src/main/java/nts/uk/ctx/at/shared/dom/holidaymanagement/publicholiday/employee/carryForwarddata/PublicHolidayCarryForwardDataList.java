@@ -43,7 +43,7 @@ public class PublicHolidayCarryForwardDataList {
 	public PublicHolidayCarryForwardDataList getExpiredList(GeneralDate criteriaDate){
 		
 		return new PublicHolidayCarryForwardDataList(publicHolidayCarryForwardData.stream()
-				.filter(x -> x.getYmd().beforeOrEquals(criteriaDate))
+				.filter(x -> x.getDeadline().beforeOrEquals(criteriaDate))
 				.collect(Collectors.toList()));
 	}
 	
@@ -66,7 +66,7 @@ public class PublicHolidayCarryForwardDataList {
 	private PublicHolidayCarryForwardDataList getNotExpiredList(GeneralDate criteriaDate){
 		
 		return new PublicHolidayCarryForwardDataList(publicHolidayCarryForwardData.stream()
-				.filter(x -> x.getYmd().after(criteriaDate))
+				.filter(x -> x.getDeadline().after(criteriaDate))
 				.collect(Collectors.toList()));
 	}
 	
