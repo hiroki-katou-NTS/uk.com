@@ -21,4 +21,5 @@ public class TaskItemDto {
 	private String startDate;
 	private String endDate;
 	private List<Integer> listFrameNoUseAtr;
+	private List<String> listFrameName;
 }

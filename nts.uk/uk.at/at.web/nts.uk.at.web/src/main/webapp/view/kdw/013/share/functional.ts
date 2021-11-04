@@ -85,13 +85,12 @@ module nts.uk.ui.at.kdw013.share {
 
     export const formatTime = (value: number, format: 'Clock_Short_HM' | 'Time_Short_HM' | 'Time_Short_HM') => byId(format, value);
 
-    export const getTasks = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {
-        const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
-        const task1 = _.find(tasks,{ 'taskFrameNo': 1, 'code': workCD1 });
-        const task2 = _.find(tasks,{ 'taskFrameNo': 2, 'code': workCD2 });
-        const task3 = _.find(tasks,{ 'taskFrameNo': 3, 'code': workCD3 });
-        const task4 = _.find(tasks,{ 'taskFrameNo': 4, 'code': workCD4 });
-        const task5 = _.find(tasks,{ 'taskFrameNo': 5, 'code': workCD5 });
+    export const getTasks = (wg:a.WorkGroupDto, tasks: c.TaskDto[]) => {
+        const task1 = _.find(tasks,{ 'taskFrameNo': 1, 'code': wg.workCD1 });
+        const task2 = _.find(tasks,{ 'taskFrameNo': 2, 'code': wg.workCD2 });
+        const task3 = _.find(tasks,{ 'taskFrameNo': 3, 'code': wg.workCD3 });
+        const task4 = _.find(tasks,{ 'taskFrameNo': 4, 'code': wg.workCD4 });
+        const task5 = _.find(tasks,{ 'taskFrameNo': 5, 'code': wg.workCD5 });
 
         return [task1, task2, task3, task4, task5];
     };
@@ -127,4 +126,10 @@ module nts.uk.ui.at.kdw013.share {
 
         return '';
     };
+    
+    export const getBackgroundColor = (code, tasks) => {
+        let task = _.find(tasks, x=> x.taskFrameNo == 1 && x.code == code);
+        
+        return _.get(task, 'displayInfo.color') || '';
+    }
 }

@@ -106,4 +106,11 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 		
 		return new OuenWorkTimeOfDailyAttendance(processingTimeSheet.getWorkNo(), attendanceTime, movementTime, amount);
 	}
+
+	public void update(OuenWorkTimeOfDailyAttendance inputTime) {
+		this.workTime = inputTime.getWorkTime();
+		this.moveTime = inputTime.getMoveTime();
+		this.amount = inputTime.getAmount();
+		this.priceUnit = inputTime.getPriceUnit();
+	}
 }

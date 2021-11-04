@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.manhourrecordusesetting;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,11 +15,14 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.Elap
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSetting;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManHourRecordReferenceSettingRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ReferenceRange;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,6 +37,9 @@ public class ManHourRecordUseSettingFinder {
 	
 	@Inject
 	ManHourRecordReferenceSettingRepository manHourRecordReferenceSettingRepository;
+	
+	@Inject
+	ManHrInputUsageSettingRepository manHrInputUsageSettingRepository;
 	
 	public ErrorAlarmWorkRecordDto getErrorAlarmWorkRecord() {
 		String companyId = AppContexts.user().companyId();
@@ -68,7 +73,7 @@ public class ManHourRecordUseSettingFinder {
 					companyId, "T001", 1, 1, true, 0);
 			erAlAttendanceItemCondition.setCountableTarget(Arrays.asList(559), 
 					Arrays.asList(1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701));
-			erAlAttendanceItemCondition.setCompareRange(7, new CheckedTimeDuration(0), new CheckedTimeDuration(0));
+			erAlAttendanceItemCondition.setCompareRange(RangeCompareType.BETWEEN_RANGE_CLOSED.value, new CheckedTimeDuration(-1), new CheckedTimeDuration(1));
 			
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Arrays.asList(erAlAttendanceItemCondition);
 			
@@ -123,6 +128,12 @@ public class ManHourRecordUseSettingFinder {
 		ManHourRecordReferenceSetting manHourRecordReferenceSetting = manHourRecordReferenceSettingOp.get();
 		//取得したドメインを返す
 		return ManHourRecordReferenceSettingDto.fromDomain(manHourRecordReferenceSetting);
+	}
+	
+	public int getArt() {
+		String cId = AppContexts.user().companyId();
+		Optional<ManHrInputUsageSetting> manHrInputUsageSetting = manHrInputUsageSettingRepository.get(cId);
+		return manHrInputUsageSetting.map(m -> m.getUsrAtr().value).orElse(1);
 	}
 
 }

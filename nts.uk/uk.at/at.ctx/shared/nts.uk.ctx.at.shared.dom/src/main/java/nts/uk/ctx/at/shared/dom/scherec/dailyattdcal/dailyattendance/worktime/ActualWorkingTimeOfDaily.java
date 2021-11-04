@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -44,6 +46,8 @@ import nts.uk.shr.com.context.AppContexts;
  * @author nampt 日別実績の勤務実績時間 (old)
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ActualWorkingTimeOfDaily {
 
 	// 割増時間

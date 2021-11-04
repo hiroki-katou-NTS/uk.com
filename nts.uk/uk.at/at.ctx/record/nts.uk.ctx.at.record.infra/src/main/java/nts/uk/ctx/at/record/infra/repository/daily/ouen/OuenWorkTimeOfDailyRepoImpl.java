@@ -23,6 +23,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTime;
+import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimePK;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
@@ -278,6 +279,11 @@ public class OuenWorkTimeOfDailyRepoImpl extends JpaRepository implements OuenWo
 		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
 												   .setParameter("ymd", ymd)
 												   .executeUpdate();
+	}
+
+	@Override
+	public void removePK(String employeeId, GeneralDate today, int i) {
+		this.commandProxy().remove(KrcdtDayOuenTime.class, new KrcdtDayOuenTimePK(employeeId, today, i));
 	}
 
 }
