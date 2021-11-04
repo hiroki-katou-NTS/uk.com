@@ -63,17 +63,12 @@ module nts.uk.ui.at.ksu002.b {
             const vm = this;
         }
 
-        outPut() {
-            const vm = this;
-        }
-
         close() {
             let vm = this;
             let shareData = {
                 isTotalDisplay: vm.model.isTotalDisplay()
-            }
+            };
             vm.$window.storage("ksu002B_old", shareData).then(() => {
-                vm.$window.close();
             })
         }
 
