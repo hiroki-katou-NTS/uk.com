@@ -61,7 +61,7 @@ public class CreateAchievementRegistrationParam {
     /**
      * @name 実績内容を登録する
      */
-    public List<ItemValue> registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items){
+    public void registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items){
     	
     	//call ScreenQuery 実績登録パラメータを作成する
     	// chưa có mô tả param truyền vào.
@@ -71,11 +71,10 @@ public class CreateAchievementRegistrationParam {
     	//QA: 120067 -  đang hỏi anh thanhNX - Anh thanhNX trả lời là hàm DailyModifyRCommandFacade.insertItemDomain()
     	//Vì param 「過去修正モード」"Mode sửa quá khứ " là đang thiết kế nên vẫn chưa có source code.
 		dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
-    	//日別実績データを取得する
-    	return this.getIntegrationOfDaily(empTarget, targetDate, items);
     }
     
-    public List<ItemValue> getIntegrationOfDaily(String empTarget, GeneralDate targetDate, List<ItemValue> items){
+    //日別実績データを取得する
+    public List<ItemValue> getIntegrationOfDaily(String empTarget, GeneralDate targetDate, List<Integer> items){
     	// 1:get()
     	List<IntegrationOfDaily> integrationOfDailys = integrationOfDailyGetter.getIntegrationOfDaily(empTarget, new DatePeriod(targetDate, targetDate));
     	Optional<IntegrationOfDaily> integrationOfDaily = integrationOfDailys.stream().filter(c->c.getYmd().equals(targetDate)).findFirst();
@@ -83,7 +82,7 @@ public class CreateAchievementRegistrationParam {
     	// 2:<call> ItemValueに変換する
     	DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter = attendanceItemConvertFactory.createDailyConverter();
     	dailyRecordToAttendanceItemConverter.setData(integrationOfDaily.get());															
-    	return dailyRecordToAttendanceItemConverter.convert(items.stream().map(c->c.getItemId()).collect(Collectors.toList()));
+    	return dailyRecordToAttendanceItemConverter.convert(items);
     }
     
     /**

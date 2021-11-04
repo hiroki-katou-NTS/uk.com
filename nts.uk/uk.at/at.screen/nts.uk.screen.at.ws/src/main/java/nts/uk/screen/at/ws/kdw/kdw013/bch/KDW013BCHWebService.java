@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -25,7 +26,6 @@ import nts.uk.screen.at.app.kdw013.h.CreateAchievementRegistrationParam;
 import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
 import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
-import nts.uk.screen.at.app.query.kdp.kdps01.c.ItemValueDto;
 import nts.uk.screen.at.ws.kdw.kdw013.SelectWorkItemParam;
 import nts.uk.screen.at.ws.kdw.kdw013.StartWorkInputPanelDto;
 
@@ -87,13 +87,18 @@ public class KDW013BCHWebService {
 
 	@POST
 	@Path("h/save")
-	public List<ItemValue> saveH(KDW013HSaveCommand command) {
-		return createAchievementRegistrationParam.registerAchievements(
+	public void saveH(KDW013HSaveCommand command) {
+		createAchievementRegistrationParam.registerAchievements(
 				command.empTarget, 
 				command.targetDate, 
 				command.items.stream().map(c-> ItemValueCommand.toDomain(c)).collect(Collectors.toList()));
 	}
 	
+	@POST
+	@Path("h/reloadData")
+	public List<ItemValue> reloadData(EmployeeIdDateItemIds param) {
+		return createAchievementRegistrationParam.getIntegrationOfDaily(param.empTarget, param.targetDate, param.itemIds);
+	}
 }
 @NoArgsConstructor
 @Data
@@ -114,6 +119,14 @@ class WorkPlaceId {
 class EmployeeIdDate {
 	public String employeeId;
 	public GeneralDate date;
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+class EmployeeIdDateItemIds extends ParamH {
+	public String empTarget;
+	public GeneralDate targetDate;
 }
 
 @NoArgsConstructor

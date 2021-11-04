@@ -13,7 +13,8 @@ module nts.uk.at.view.kdw013.h {
 			start: "screen/at/kdw013/h/start",
 			save: "screen/at/kdw013/h/save",
 			getWorkPlaceId: "screen/at/kdw013/h/getWorkPlaceId",
-			getWorkType: "screen/at/kdw013/h/getWorkType"
+			getWorkType: "screen/at/kdw013/h/getWorkType",
+			reload: "screen/at/kdw013/h/reloadData"
 		}
 		export class ScreenModel {
 			itemId28: ItemValue;
@@ -318,10 +319,45 @@ module nts.uk.at.view.kdw013.h {
 					targetDate: moment(self.params.date), //対象日
 					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
-				ajax(paths.save, param).done((data: IItemValue[]) => {
-					console.log(data);
+				ajax(paths.save, param).done(() => {
 					info({ messageId: 'Msg_15' });
+					self.reLoadData();
+				}).fail(function(res: any) {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					block.clear();
+				});
+			}
+			
+			reLoadData(){
+				let self = this;
+				block.invisible();
+				let param = {
+					empTarget: self.params.employeeId, //対象社員
+					targetDate: moment(self.params.date), //対象日
+					itemIds: _.map(self.params.displayAttItems, (i) => i.attendanceItemId) //勤怠項目リスト 
+				};
+				param.itemIds.push(28, 29);
+				ajax(paths.reload, param).done((data: IItemValue[]) => {
+					console.log(data);
+					self.itemId28.value(_.find(data, i => i.itemId == 28).value);
+					let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
+					if (workType){
+						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
+					} else {
+						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
+					}
+					self.itemId29.value(_.find(data, i => i.itemId == 29).value);
+					let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
+					if (workTime) {
+						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
+					} else {
+						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
+					}
 					
+					_.forEach(self.itemOptions, (item) => {
+						item.value(_.find(data, i => i.itemId == item.itemId).value);
+					});
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
 				}).always(() => {
