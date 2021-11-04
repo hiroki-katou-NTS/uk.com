@@ -5444,7 +5444,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 this.annualDay = "";
             if (this.dispAnnualDay) {
                 if (annualLeave.timeRemain) {
-                    let timeString = nts.uk.time.format.byId("Clock_Short_HM", annualLeave.timeRemain);
+                    let timeString = nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain);
                     if (annualLeave.annualLeaveRemain != null) {
                         this.annualDay = getText("KDW003_132", [annualLeave.annualLeaveRemain, timeString]);
                         if (annualLeave.annualLeaveRemain < 0)

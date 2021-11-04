@@ -211,11 +211,21 @@ export class Ccg008AComponent extends Vue {
     
         // yearlyHoliday
         let yearlyHld = item.yearlyHoliday;
-        if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
-            results.push({
-                name:'KTG029_23', 
-                value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), yearlyHld.nextTimeInfo.hours.hours + ':' + yearlyHld.nextTimeInfo.hours.min])
-            }); 
+        if (yearlyHld && yearlyHld.nextTimeInfo) {
+            let timeRemain = (yearlyHld.nextTimeInfo.hours.hours) * 60 + yearlyHld.nextTimeInfo.hours.min;
+            if (yearlyHld && !yearlyHld.calculationMethod && vacationSetting.annualManage) {
+                    if (timeRemain) {
+                        results.push({
+                            name:'KTG029_23', 
+                            value: vm.$i18n('CCGS08_37', [yearlyHld.nextTimeInfo.day.toString(), vm.getFormatTime(timeRemain)])
+                        }); 
+                    } else {
+                        results.push({
+                            name:'KTG029_23', 
+                            value: vm.$i18n('CCGS08_36', [yearlyHld.nextTimeInfo.day.toString()])
+                        });
+                    }
+                }
         }
         // next grantDate
         if (vacationSetting.annualManage) {
@@ -249,6 +259,8 @@ export class Ccg008AComponent extends Vue {
                 let timeDisp = vm.$dt.timedr(item.remainAlternationNoDay);
                 if (timeDisp.startsWith('0')) {
                     results.push({name:'代休残数', value: timeDisp.substr(1, timeDisp.length)});
+                } else if (timeDisp.startsWith('-0')) {
+                    results.push({name:'代休残数', value: timeDisp.slice(0, 1) + timeDisp.slice(2)});
                 } else {
                     results.push({name:'代休残数', value: timeDisp});
                 }
@@ -264,23 +276,42 @@ export class Ccg008AComponent extends Vue {
         // 子看護管理区分
         if (!!item.childRemainNo && vacationSetting.childCaremanage) {
             const {before, after, showAfter} = item.childRemainNo;
-            results.push({
-                name: 'CCGS08_26',
-                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]) : vm.$i18n('CCGS08_36', [String(before)]),
-                isFormatNew: true
-                
-            });
+            if (after) {
+                results.push({
+                    name: 'CCGS08_26',
+                    value: vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]),
+                    isFormatNew: true
+                    
+                });
+            } else {
+                results.push({
+                    name: 'CCGS08_26',
+                    value: vm.$i18n('CCGS08_36', [String(before)]),
+                    isFormatNew: true
+                    
+                });
+            }
         } 
 
         // 介護管理区分
         if (!!item.careLeaveNo && vacationSetting.nursingManage) {
             const {before, after, showAfter} = item.careLeaveNo;
-            results.push({
-                name: 'CCGS08_27',
-                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]) : vm.$i18n('CCGS08_36', [String(before)]),
-                isFormatNew: true
-                
-            });
+
+            if (after) {
+                results.push({
+                    name: 'CCGS08_27',
+                    value: vm.$i18n('CCGS08_37', [String(before), String(vm.getFormatTime(after))]),
+                    isFormatNew: true
+                    
+                });
+            } else {
+                results.push({
+                    name: 'CCGS08_27',
+                    value: vm.$i18n('CCGS08_36', [String(before)]),
+                    isFormatNew: true
+                    
+                });
+            }
         }
 
 
@@ -317,6 +348,8 @@ export class Ccg008AComponent extends Vue {
             let timeStr: string = self.$dt.timedr(time);
             if (timeStr.startsWith('0')) {
                 return timeStr.substr(1, timeStr.length);
+            } else if (timeStr.startsWith('-0')) {
+                return timeStr.slice(0, 1) + timeStr.slice(2);
             } else {
                 return timeStr;
             }

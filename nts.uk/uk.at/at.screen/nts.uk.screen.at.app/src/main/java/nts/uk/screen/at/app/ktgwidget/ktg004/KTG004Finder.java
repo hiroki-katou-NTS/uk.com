@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServicePr
 import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
@@ -326,17 +326,17 @@ public class KTG004Finder {
 				longTermCareManagement && checkDispHolidayType.getNursingCareLeaveManagement().getLongTermCareManagement().equals(ManageDistinct.YES) ? ManageDistinct.YES : ManageDistinct.NO);
 		if(numberOfRemain != null) {
 			//積立年休残日数
-		    remainNumber.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearDayRemain(), new AttendanceTime(numberOfRemain.getYearHourRemain())));
+		    remainNumber.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearDayRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getYearHourRemain())));
 			//代休残数
-		    remainNumber.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubDayRemain(), new AttendanceTime(numberOfRemain.getSubHdHourRemain())));
+		    remainNumber.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubDayRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getSubHdHourRemain())));
 			//年休残数
 		    remainNumber.setNumberAccumulatedAnnualLeave(numberOfRemain.getLastYearRemain());
 			//振休残日数
 		    remainNumber.setRemainingHolidays(numberOfRemain.getVacaRemain());
 			//子の看護残数
-		    remainNumber.setNursingRemainingNumberOfChildren(new RemainingDaysAndTimeDto(numberOfRemain.getChildNursingDayRemain(), new AttendanceTime(numberOfRemain.getChildNursingHourRemain())));
+		    remainNumber.setNursingRemainingNumberOfChildren(new RemainingDaysAndTimeDto(numberOfRemain.getChildNursingDayRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getChildNursingHourRemain())));
 			//介護残数
-		    remainNumber.setLongTermCareRemainingNumber(new RemainingDaysAndTimeDto(numberOfRemain.getNursingRemain(), new AttendanceTime(numberOfRemain.getNursingHourRemain())));
+		    remainNumber.setLongTermCareRemainingNumber(new RemainingDaysAndTimeDto(numberOfRemain.getNursingRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getNursingHourRemain())));
 			// 付与年月日
 		    remainNumber.setGrantDate(numberOfRemain.getGrantDate());
 			// 付与日数

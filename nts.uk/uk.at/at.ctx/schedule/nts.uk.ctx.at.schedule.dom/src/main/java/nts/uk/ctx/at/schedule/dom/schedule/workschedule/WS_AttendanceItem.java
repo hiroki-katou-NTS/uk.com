@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import lombok.val;
 
 public enum WS_AttendanceItem {
 	
@@ -78,32 +77,30 @@ public enum WS_AttendanceItem {
 	 * @return
 	 */
 	public static boolean isBreakTime(int attendanceId) {
-		val enumValue = WS_AttendanceItem.valueOf(attendanceId);
-		switch (enumValue) {
-		case StartBreakTime1:
-		case StartBreakTime2:
-		case StartBreakTime3:
-		case StartBreakTime4:
-		case StartBreakTime5:
-		case StartBreakTime6:
-		case StartBreakTime7:
-		case StartBreakTime8:
-		case StartBreakTime9:
-		case StartBreakTime10:
-		case EndBreakTime1:
-		case EndBreakTime2:
-		case EndBreakTime3:
-		case EndBreakTime4:
-		case EndBreakTime5:
-		case EndBreakTime6:
-		case EndBreakTime7:
-		case EndBreakTime8:
-		case EndBreakTime9:
-		case EndBreakTime10:
-			return true;
-		default:
-			return false;
-		}
+		
+		List<Integer> breakTimeIdList = Arrays.asList(
+				WS_AttendanceItem.StartBreakTime1.ID,
+				WS_AttendanceItem.StartBreakTime2.ID,
+				WS_AttendanceItem.StartBreakTime3.ID,
+				WS_AttendanceItem.StartBreakTime4.ID,
+				WS_AttendanceItem.StartBreakTime5.ID,
+				WS_AttendanceItem.StartBreakTime6.ID,
+				WS_AttendanceItem.StartBreakTime7.ID,
+				WS_AttendanceItem.StartBreakTime8.ID,
+				WS_AttendanceItem.StartBreakTime9.ID,
+				WS_AttendanceItem.StartBreakTime10.ID,
+				WS_AttendanceItem.EndBreakTime1.ID,
+				WS_AttendanceItem.EndBreakTime2.ID,
+				WS_AttendanceItem.EndBreakTime3.ID,
+				WS_AttendanceItem.EndBreakTime4.ID,
+				WS_AttendanceItem.EndBreakTime5.ID,
+				WS_AttendanceItem.EndBreakTime6.ID,
+				WS_AttendanceItem.EndBreakTime7.ID,
+				WS_AttendanceItem.EndBreakTime8.ID,
+				WS_AttendanceItem.EndBreakTime9.ID,
+				WS_AttendanceItem.EndBreakTime10.ID); 
+		
+		return breakTimeIdList.contains(attendanceId);
 	}
 	
 	public static List<WS_AttendanceItem> getBreakTimeItemWithSize(int breakTimeSize) {
