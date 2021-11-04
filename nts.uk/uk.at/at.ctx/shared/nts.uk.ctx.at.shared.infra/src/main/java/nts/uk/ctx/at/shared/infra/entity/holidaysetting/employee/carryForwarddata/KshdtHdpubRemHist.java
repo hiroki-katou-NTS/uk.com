@@ -52,7 +52,7 @@ public class KshdtHdpubRemHist extends ContractCompanyUkJpaEntity implements Ser
 		this.pk.yearMonth = domain.getHistYearMonth().v();
 		this.pk.closureId = domain.getClosureId().value;
 		this.pk.tagetmonth = domain.getYearMonth().v();
-		this.deadline = domain.getYmd();
+		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 	}
@@ -68,7 +68,7 @@ public class KshdtHdpubRemHist extends ContractCompanyUkJpaEntity implements Ser
 		this.pk.isLastDay = domain.getClosureDate().getLastDayOfMonth() ? 1: 0;
 		this.pk.tagetmonth = domain.getYearMonth().v();
 		this.remainmngid = 0;
-		this.deadline = domain.getYmd();
+		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 	}

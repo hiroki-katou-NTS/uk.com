@@ -57,7 +57,7 @@ public class KshdtHdpubRem extends ContractCompanyUkJpaEntity {
 
 		this.pk.employeeId = domain.getEmployeeId();
 		this.pk.tagetmonth = domain.getYearMonth().v();
-		this.deadline = domain.getYmd();
+		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 
@@ -70,7 +70,7 @@ public class KshdtHdpubRem extends ContractCompanyUkJpaEntity {
 		this.pk.employeeId = domain.getEmployeeId();
 		this.pk.tagetmonth = domain.getYearMonth().v();
 		this.remainmngid = 0;
-		this.deadline = domain.getYmd();
+		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 

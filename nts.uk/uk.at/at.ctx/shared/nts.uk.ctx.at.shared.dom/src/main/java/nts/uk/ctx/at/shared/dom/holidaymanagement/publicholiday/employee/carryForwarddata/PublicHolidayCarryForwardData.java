@@ -38,7 +38,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 	/*
 	 * 期限日
 	 */
-	private GeneralDate ymd;
+	private GeneralDate deadline;
 	
 	/*
 	 * 繰越数
@@ -55,7 +55,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 		return new PublicHolidayCarryForwardData(
 				this.employeeId,
 				this.yearMonth,
-				this.ymd,
+				this.deadline,
 				this.numberCarriedForward,
 				this.grantRemainRegisterType);
 	}
@@ -64,7 +64,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 	public static PublicHolidayCarryForwardData createFromJavaType(
 			String employeeId,
 			int yearMonth,
-			GeneralDate ymd,
+			GeneralDate deadline,
 			double numberCarriedForward,
 			int  grantRemainRegisterType
 			) {
@@ -73,7 +73,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 
 		domain.employeeId = employeeId;
 		domain.yearMonth = new YearMonth(yearMonth);
-		domain.ymd = ymd;
+		domain.deadline = deadline;
 		domain.numberCarriedForward = new LeaveRemainingDayNumber(numberCarriedForward);
 		domain.grantRemainRegisterType = EnumAdaptor.valueOf(grantRemainRegisterType, GrantRemainRegisterType.class);
 
@@ -120,7 +120,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 			return new PublicHolidayCarryForwardData(
 					this.employeeId,
 					this.yearMonth,
-					this.ymd,
+					this.deadline,
 					new LeaveRemainingDayNumber(this.numberCarriedForward.v() - getOffsetDays(remainingData).v()),
 					this.grantRemainRegisterType);
 		}
@@ -129,7 +129,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 			return new PublicHolidayCarryForwardData(
 					this.employeeId,
 					this.yearMonth,
-					this.ymd,
+					this.deadline,
 					new LeaveRemainingDayNumber(this.numberCarriedForward.v() + getOffsetDays(remainingData).v()),
 					this.grantRemainRegisterType);
 		}
