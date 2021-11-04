@@ -26,12 +26,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         // select tab M
         selectedCode: KnockoutObservable<number> = ko.observable(0);
-        tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
+        tabMs: KnockoutObservableArray<TabM> = ko.observableArray([new TabM(this.$i18n('KAF002_29'), true, true),
                           new TabM(this.$i18n('KAF002_31'), true, true),
                           new TabM(this.$i18n('KAF002_76'), true, true),
                           new TabM(this.$i18n('KAF002_32'), true, true),
                           new TabM(this.$i18n('KAF002_33'), true, true),
-                          new TabM(this.$i18n('KAF002_34'), false, true)];
+                          new TabM(this.$i18n('KAF002_34'), false, true)]);
 
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);

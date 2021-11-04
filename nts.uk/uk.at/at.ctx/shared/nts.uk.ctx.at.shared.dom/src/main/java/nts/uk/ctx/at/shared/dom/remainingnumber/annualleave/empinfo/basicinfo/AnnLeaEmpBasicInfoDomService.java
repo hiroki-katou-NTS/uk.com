@@ -110,7 +110,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		int remainingHours = remainingMinutes / 60;
 		remainingMinutes -= remainingHours * 60;
 
-		return annLeaveRemainNumber.getDays() + "日と　" + remainingHours + ":" + convertWithMinutes(remainingMinutes);
+		return annLeaveRemainNumber.getDays() + "日と" + remainingHours + ":" + convertWithMinutes(remainingMinutes);
 	}
 
 	public Map<String, String> calculateAnnLeaNumWithFormat(String cid, Map<String, List<AnnualLeaveGrantRemainingData>> annualLeaveGrantDataLst) {

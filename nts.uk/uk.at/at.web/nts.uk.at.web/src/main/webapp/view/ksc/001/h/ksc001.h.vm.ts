@@ -148,33 +148,34 @@ module nts.uk.at.view.ksc001.h {
                     str.push(getText("KSC001_74"));
                 } else {//実施区分= 再作成
                     str.push(getText("KSC001_75"));
-                }
-                if (!data.reTargetAtr) {
-                    str.push(getText("KSC001_37") + getText("KSC001_89"));
-                } else {
-                    str.push(getText("KSC001_37") + getText("KSC001_90"));
-                }
-                if (data.transfer) {
-                    str.push("　" + getText("KSC001_38") + getText("KSC001_91"));
-                }
-                if (data.leaveOfAbsence) {
-                    str.push("　" + getText("KSC001_38") + getText("KSC001_92"));
-                }
-                if (data.shortWorkingHours) {
-                    str.push("　" + getText("KSC001_38") + getText("KSC001_93"));
-                }
-                if (data.changedWorkingConditions) {
-                    str.push("　" + getText("KSC001_38") + getText("KSC001_94"));
-                }
-                if (data.reOverwriteConfirmed || data.reOverwriteRevised) {
-                    str.push(getText("KSC001_37") + getText("KSC001_104"));
-                    if (data.reOverwriteConfirmed) {
-                        str.push("　" + getText("KSC001_38") + getText("KSC001_105"));
+                    if (!data.reTargetAtr) {
+                        str.push(getText("KSC001_37") + getText("KSC001_89"));
+                    } else {
+                        str.push(getText("KSC001_37") + getText("KSC001_90"));
+                        if (data.transfer) {
+                            str.push("　" + getText("KSC001_38") + getText("KSC001_91"));
+                        }
+                        if (data.leaveOfAbsence) {
+                            str.push("　" + getText("KSC001_38") + getText("KSC001_92"));
+                        }
+                        if (data.shortWorkingHours) {
+                            str.push("　" + getText("KSC001_38") + getText("KSC001_93"));
+                        }
+                        if (data.changedWorkingConditions) {
+                            str.push("　" + getText("KSC001_38") + getText("KSC001_94"));
+                        }
                     }
-                    if (data.reOverwriteRevised) {
-                        str.push("　" + getText("KSC001_38") + getText("KSC001_106"));
+                    if (data.reOverwriteConfirmed || data.reOverwriteRevised) {
+                        str.push(getText("KSC001_37") + getText("KSC001_104"));
+                        if (data.reOverwriteConfirmed) {
+                            str.push("　" + getText("KSC001_38") + getText("KSC001_105"));
+                        }
+                        if (data.reOverwriteRevised) {
+                            str.push("　" + getText("KSC001_38") + getText("KSC001_106"));
+                        }
                     }
                 }
+
                 return str;
             }
 
