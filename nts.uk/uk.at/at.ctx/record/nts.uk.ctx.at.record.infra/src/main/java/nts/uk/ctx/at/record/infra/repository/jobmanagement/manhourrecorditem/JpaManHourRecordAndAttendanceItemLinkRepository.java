@@ -23,7 +23,7 @@ public class JpaManHourRecordAndAttendanceItemLinkRepository extends JpaReposito
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT l FROM KrcmtManHrItemLink l";
 	private static final String SELECT_BY_CID = SELECT_ALL_QUERY_STRING + " WHERE l.pk.cId = :cId";
 	private static final String SELECT_BY_CID_AND_ITEM = SELECT_BY_CID + " AND l.pk.manHrItemId IN :items";
-	private static final String SELECT_BY_CID_AND_ATT_ITEM = SELECT_BY_CID + " AND l.pk.attItemId = :attItem";
+	private static final String SELECT_BY_CID_AND_ATT_ITEM = SELECT_BY_CID + " AND l.attItemId = :attItem";
 
 	@Override
 	public void insert(ManHourRecordAndAttendanceItemLink link) {
