@@ -8,7 +8,9 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
                         <div class="text-note limited-label" data-bind="text: note"></div>
                     </div>
-                    <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
+                    <!-- ko if: $component.showHIcon(day.date) -->
+                        <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
+                    <!-- /ko -->
                 </td>
                 <!-- /ko -->
                 <style rel="stylesheet">
@@ -51,6 +53,19 @@ module nts.uk.ui.at.kdw013.eventheadear {
             // fix display on ie
             vm.$el.removeAttribute('style');
         }
+        
+        showHIcon(date) {
+            const vm = this;
+            const data = ko.unwrap(vm.params.screenA.$datas);
+
+            if (!data || !date) {
+                return false;
+            }
+
+            return !!_.find(_.get(data, 'convertRes', []), cv => { return moment(cv.ymd).isSame(moment(date), 'days'); });
+
+        }
+        
         openHDialog(day) {
             const vm = this;
             vm.params.setting();
@@ -63,19 +78,14 @@ module nts.uk.ui.at.kdw013.eventheadear {
            
             
             let param = {
-                //対象社員
                 employeeId: vm.$user.employeeId,
-                //対象日 
                 date: day.date,
-                //日別実績(Work) 
                 IntegrationOfDaily,
-                //実績入力ダイアログ表示項目一覧
                 displayAttItems,
-                //実績内容
-                itemValues: itemValues.manHrContents,
-                //日別実績のロック状態 Optional<日別実績のロック状態>
+                itemValues: _.get(itemValues,'manHrContents',[]),
                 lockInfos
-            }
+            };
+            
             vm.$window.shared('KDW013H', param);
             vm.$window.modal('at', '/view/kdw/013/h/index.xhtml').then(() => { });
         }

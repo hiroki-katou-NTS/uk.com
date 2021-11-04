@@ -90,7 +90,8 @@ module nts.uk.ui.at.kdw013.timeheader {
         formatTime(value: number | null, time) {
             const vm = this;
             const className = 'wrn-' + time.date;
-            let icon = `<i class='warningIcon ` + className + `'> </i>`;
+
+            let icon = vm.isHasWarning(time.date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
             
             setTimeout(()=> { 
                 ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '20px', width: 22, height: 22 }, click: () => { vm.OpenIDialog(vm, time); } }); 
@@ -106,6 +107,31 @@ module nts.uk.ui.at.kdw013.timeheader {
 
 
             return timeString + icon;
+        }
+        
+        isHasWarning(date) {
+            const vm = this;
+            const datas = ko.unwrap(vm.params.screenA.$datas);
+
+            if (!datas) {
+                return false;
+            }
+
+            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []) id=> { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+            const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+            if (!id || !ouenTimeSheet.length) {
+                return false;
+            }
+
+            for (let i = 0; i < ouenTimeSheet.length; i++) {
+                if (_.get(ouenTimeSheet[i], 'timeSheet.start.timeWithDay', null) == null || _.get(ouenTimeSheet[i], 'timeSheet.end.timeWithDay', null) == null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
         
         

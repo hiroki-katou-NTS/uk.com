@@ -532,15 +532,27 @@ module nts.uk.ui.at.kdw013.a {
                 read: () => {
                     const datas = ko.unwrap(vm.$datas);
                     const employee = ko.unwrap(vm.employee);
+                    const dateRanges = () => {
+                        const dates: Date[] = [];
+                        const begin = moment(start);
+
+                        while (begin.isBefore(end, 'day')) {
+                            dates.push(begin.toDate());
+
+                            begin.add(1, 'day');
+                        }
+
+                        return dates;
+                    };
 
                     // need update by employId if: mode=1
                     const employeeId = employee || vm.$user.employeeId;
 
                     if (datas) {
-                        const { lstWorkRecordDetailDto } = datas;
+                            
 
                         return _
-                            .chain(lstWorkRecordDetailDto)
+                            .chain(dateRanges())
                             // .orderBy(['date'])
                             .filter(({ employeeId }) => employeeId === employeeId)
                             .map(({
@@ -550,12 +562,13 @@ module nts.uk.ui.at.kdw013.a {
                                 const events: string[] = [];
                                 const date = moment(strDate, DATE_FORMAT).toDate();
                                 const { breakHours, end, start, totalWorkingHours } = actualContent;
-
+                                manHrContents
                                 if (start) {
                                     const { timeWithDay } = start;
 
                                     if (_.isNumber(timeWithDay)) {
-                                        events.push(vm.$i18n('KDW013_21', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                        //PC3_2
+                                        events.push(vm.$i18n('KDW013_67', [formatTime(timeWithDay, 'Time_Short_HM')]));
                                     }
                                 }
 
@@ -563,7 +576,8 @@ module nts.uk.ui.at.kdw013.a {
                                     const { timeWithDay } = end;
 
                                     if (_.isNumber(timeWithDay)) {
-                                        events.push(vm.$i18n('KDW013_22', [formatTime(timeWithDay, 'Time_Short_HM')]));
+                                        //PC3_4
+                                        events.push(vm.$i18n('KDW013_68', [formatTime(timeWithDay, 'Time_Short_HM')]));
                                     }
                                 }
 

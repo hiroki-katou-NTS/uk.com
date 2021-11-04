@@ -568,7 +568,7 @@ module nts.uk.ui.at.kdw013.calendar {
     const defaultPopupData = (): PopupData => ({
         event: ko.observable(null),
         setting: {
-            firstDay: ko.observable(0),
+            firstDay: ko.observable(1),
             scrollTime: ko.observable(420),
             slotDuration: ko.observable(30),
             initialView : ko.observable('oneDay')
@@ -659,9 +659,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     $settings: $component.params.$settings,
                     screenA:$component.params.screenA
                 "></div>
-            
-
-
         </div>
         <div class="fc-calendar"></div>
         <style>${DEFAULT_STYLES}</style>
@@ -2042,10 +2039,13 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     return undefined;
                 },
-                dayHeaderDidMount : (arg, createElement) => {                    
-                    let className = 'fav-' + $(arg.el).find('.fc-scrollgrid-sync-inner').parent().attr('data-date');
-                    $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon ` + className + `' ></i>`);
-                   setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 25, height: 25 } }); }, 300);
+                dayHeaderDidMount : (arg, createElement) => {
+                    if(vm.params.editable()){
+                        let className = 'fav-' + $(arg.el).find('.fc-scrollgrid-sync-inner').parent().attr('data-date');
+                        
+                            $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon ` + className + `' ></i>`);
+                            setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 25, height: 25 } }); }, 300);
+                    }
                 }
                 ,
                 viewDidMount: ({ el, view }) => {
