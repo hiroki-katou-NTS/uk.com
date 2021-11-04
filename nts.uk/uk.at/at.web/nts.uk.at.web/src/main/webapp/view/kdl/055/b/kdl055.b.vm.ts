@@ -74,11 +74,18 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 if ($('#grid')) {
                     try {
                         let errors = $('#grid').mGrid('errors');
-                        if (errors.length > 0) {
+                        let dataSource: any[] = $("#grid").mGrid("dataSource");
+                        let states = _.filter(vm.gridOptions.features, {'name': 'CellStyles'})[0].states.filter(x => x.columnKey != 'nameHeader').map(x => x.state);                  
+
+                        if (errors.length > 0 || _.filter(states, x => !_.includes(x, 'mgrid-disable')).length === 0 || dataSource.length === 0) {
                             this.isEnableRegister(false);
-                            this.isEnableOpenKDL053(true);
                         } else {
                             this.isEnableRegister(true);
+                        }
+                        
+                        if (errors.length > 0) {
+                            this.isEnableOpenKDL053(true);
+                        } else {
                             this.isEnableOpenKDL053(false);
                         }
                     } catch (error) {
