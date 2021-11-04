@@ -3098,28 +3098,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (!self.hasEmployee || self.hasErrorBuss) return;
             if (!nts.uk.ui.errors.hasError()) {
-                let lstEmployee = [];
+                let lstEmployee: any[] = [];
                 if (self.displayFormat() === 0) {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    setShared("KDL014A-PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        employeeID: lstEmployee[0].code
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "0", 
+                        listEmp: [lstEmployee[0].id]
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
                 } else {
                     lstEmployee = self.lstEmployee().map((data) => {
-                        return data.code;
+                        return data.id;
                     });
-                    setShared("KDL014B_PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        lstEmployee: lstEmployee
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "1", 
+                        listEmp: lstEmployee
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
                 }
