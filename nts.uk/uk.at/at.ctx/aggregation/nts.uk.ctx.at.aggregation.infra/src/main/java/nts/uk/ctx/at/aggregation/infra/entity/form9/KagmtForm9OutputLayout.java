@@ -313,6 +313,7 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
                 Optional.of(new OutputCell(entity.coverCellPrintingPerIod))
         );
 
+
         Form9NursingTable nursingTable = Form9NursingTable.create(
                 new OutputColumn(entity.nurseColName),
                 new OutputColumn(entity.nurseBodyStartCol),
