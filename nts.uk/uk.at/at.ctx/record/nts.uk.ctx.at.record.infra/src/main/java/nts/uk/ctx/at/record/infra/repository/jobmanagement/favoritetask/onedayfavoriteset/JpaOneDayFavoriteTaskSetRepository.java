@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.jobmanagement.favoritetask.onedayfavoriteset;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset.Tas
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDaySet;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDaySetItem;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDaySetTs;
+import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDaySetItemPk;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -37,6 +40,51 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 	@Override
 	public void insert(OneDayFavoriteSet set) {
 		this.commandProxy().insert(new KrcdtTaskFavDaySet(set));
+
+		Map<Integer, List<TaskContent>> contentMap = new HashMap<>();
+
+		for (int i = 1; i < 21; i++) {
+
+			List<TaskContent> contents = new ArrayList<>();
+
+			for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
+
+				for (TaskContentForEachSupportFrame frame : content.getTaskContents()) {
+
+					if (frame.getFrameNo().v() == i) {
+						contents.add(frame.getTaskContent());
+					}
+				}
+			}
+			contentMap.put(i, contents);
+		}
+
+		for (Map.Entry<Integer, List<TaskContent>> entry : contentMap.entrySet()) {
+
+			List<TaskContent> taskContents = entry.getValue();
+			
+			if (!taskContents.isEmpty()) {
+				String taskCd1 = taskContents.stream().filter(m -> m.getItemId() == 4).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+				String taskCd2 = taskContents.stream().filter(m -> m.getItemId() == 5).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+				String taskCd3 = taskContents.stream().filter(m -> m.getItemId() == 6).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+				String taskCd4 = taskContents.stream().filter(m -> m.getItemId() == 7).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+				String taskCd5 = taskContents.stream().filter(m -> m.getItemId() == 8).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+
+				for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
+					this.commandProxy()
+							.insert(new KrcdtTaskFavDaySetItem(
+									new KrcdtTaskFavDaySetItemPk(set.getFavId(), entry.getKey(), content.getStartTime().v()), taskCd1,
+									taskCd2, taskCd3, taskCd4, taskCd5));
+				}
+			}
+		
+		}
+
+		for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
+			this.commandProxy().insert(
+					new KrcdtTaskFavDaySetTs(set.getFavId(), content.getStartTime().v(), content.getEndTime().v()));
+		}
+
 	}
 
 	@Override
