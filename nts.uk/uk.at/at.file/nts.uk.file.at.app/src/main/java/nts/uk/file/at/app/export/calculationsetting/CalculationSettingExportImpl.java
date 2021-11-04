@@ -15,6 +15,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceAttendanceItemFinder;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.midnight.MidnightTimeSheetRepo;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsCondition;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
@@ -162,6 +164,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 
 	@Inject
     private ZeroTimeRepository zeroTimeRepo;
+	
+	@Inject
+	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepository;
 
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {
@@ -1208,8 +1213,10 @@ public class CalculationSettingExportImpl implements MasterListData {
         Optional<TemporaryWorkUseManage> optTempWorkUse = tempWorkRepo.findByCid(companyId);
 		Optional<ManageWorkTemporary> optTempWorkManage = tempWorkManageRepo.findByCID(companyId);
 		Optional<OutManage> optOutManage = outManageRepository.findByID(companyId);
+		Optional<CreatingDailyResultsCondition> optCreatingDailyResultsCondition = 
+				this.creatingDailyResultsConditionRepository.findByCid(companyId);
         List<MasterData> data = new ArrayList<>();
-        for (int row = 0; row < 10; row++) {
+        for (int row = 0; row < 11; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
                 String value = "";
@@ -1225,33 +1232,42 @@ public class CalculationSettingExportImpl implements MasterListData {
                         value = stampReflectionMng.get().getActualStampOfPriorityClass().value == 1
                                 ? TextResource.localize("KMK013_301")
                                 : TextResource.localize("KMK013_300");
-                } else if (row == 2){
+                } else if (row == 2) {
+                	if (col == 0) {
+                		value = TextResource.localize("KMK013_575");
+                	} else if (col == 2) {
+                		value = optCreatingDailyResultsCondition
+                				.map(val -> val.getIsCreatingFutureDay().isUse()).orElse(false)
+                					? TextResource.localize("KMK013_577")
+                							: TextResource.localize("KMK013_576");
+                	}
+                } else if (row == 3){
                     if (col == 0) value = TextResource.localize("KMK013_281");
                     else if (col == 2 && stampReflectionMng.isPresent())
                         value = stampReflectionMng.get().getAutoStampForFutureDayClass().value == 1
                                 ? TextResource.localize("KMK013_283")
                                 : TextResource.localize("KMK013_284");
-                } else if (row == 3){
+                } else if (row == 4){
                     if (col == 0) value = TextResource.localize("KMK013_294");
                     else if (col == 1) value = TextResource.localize("KMK013_507");
                     else if (stampReflectionMng.isPresent())
                         value = stampReflectionMng.get().getGoBackOutCorrectionClass().value == 1
                                 ? TextResource.localize("KMK013_209")
                                 : TextResource.localize("KMK013_210");
-                } else if (row == 4){
+                } else if (row == 5){
                     if (col == 0) value = TextResource.localize("KMK013_508");
                     else if (col == 1) value = TextResource.localize("KMK013_509");
                     else if (stampReflectionMng.isPresent())
                         value = stampReflectionMng.get().getReflectWorkingTimeClass().value == 1
                                 ? TextResource.localize("KMK013_209")
                                 : TextResource.localize("KMK013_210");
-                } else if (row == 5) {
+                } else if (row == 6) {
                     if (col == 0) value = TextResource.localize("KMK013_302");
                     else if (col == 2 && stampReflectionMng.isPresent())
                         value = stampReflectionMng.get().getBreakSwitchClass().value == 1
                                 ? TextResource.localize("KMK013_305")
                                 : TextResource.localize("KMK013_304");
-                } else if (row == 6) {
+                } else if (row == 7) {
                 	if (col == 0) {
                 		value = TextResource.localize("KMK013_289");
                 	} else if (col == 1) {
@@ -1260,13 +1276,13 @@ public class CalculationSettingExportImpl implements MasterListData {
                 		value = optOutManage.map(val -> val.getMaxUsage().v()).orElse(0)
                 				+ TextResource.localize("KMK013_471");
                 	}
-                } else if (row == 7) {
+                } else if (row == 8) {
                 	if (col == 1) {
                 		value = TextResource.localize("KMK013_292");
                 	} else if (col == 2) {
                 		value = optOutManage.map(val -> val.getInitValueReasonGoOut().nameId).orElse("");
                 	}
-                } else if (row == 8) {
+                } else if (row == 9) {
                 	if (col == 0) {
                 		value = TextResource.localize("KMK013_220");
                 	} else if (col == 1) {
