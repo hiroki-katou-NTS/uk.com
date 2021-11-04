@@ -44,7 +44,7 @@
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIdH3_2,
-											enable: true}"/>
+											enable: true}" tabindex="3" />
 				</div>
 				<div class="control-group">
 					<!-- H8_1 -->
@@ -59,8 +59,19 @@
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIdH8_2,
-											enable: true}"/>
+											enable: true}" tabindex="4" />
 				</div>
+        <div class="control-group">
+          <div id="H4_5" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_575')}</div> 
+          <div id="H4_6" class="style-radio control-setting" data-bind="ntsRadioBoxGroup: {
+            name: '#[KMK013_575]',
+            options: itemListH4_6,
+            optionsValue: 'id',
+            optionsText: 'name',
+            value: selectedIdH4_6,
+            enable: true
+          }" tabindex="5"></div>
+        </div>
 				<div class="control-group">
 					<!-- H4_1 -->
 					<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_281')}</div>
@@ -74,7 +85,7 @@
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIdH4_2,
-											enable: true}"/>
+											enable: true}" tabindex="6"/>
 				</div>
 				<div class="control-group">
 					<!-- H7_1 -->
@@ -82,7 +93,7 @@
 					<!-- H7_2 -->
 					<!-- H7_3 -->
 					<!-- H7_4 -->
-					<div class="control-setting" data-bind="ntsCheckBox: { checked: selectedIdH7_2 }">#{i18n.getText('KMK013_507')}</div>
+					<div class="control-setting" data-bind="ntsCheckBox: { checked: selectedIdH7_2 }" tabindex="7">#{i18n.getText('KMK013_507')}</div>
 				</div>
 				<div class="control-group">
 					<!-- H5_1 -->
@@ -90,7 +101,7 @@
 					<!-- H5_2 -->
 					<!-- H5_3 -->
 					<!-- H5_4 -->
-					<div class="control-setting" data-bind="ntsCheckBox: { checked: selectedIdH5_2 }">#{i18n.getText('KMK013_509')}</div>
+					<div class="control-setting" data-bind="ntsCheckBox: { checked: selectedIdH5_2 }" tabindex="8">#{i18n.getText('KMK013_509')}</div>
 				</div>
 				<div class="control-group">
 					<!-- H9_1 -->
@@ -106,7 +117,7 @@
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedIdH9_2,
-											enable: true}"/>
+											enable: true}" tabindex="9"/>
 				</div>
         <div class="control-group">
           <div id="H10_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK013_289')}</div>

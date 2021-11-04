@@ -9,6 +9,8 @@ module nts.uk.at.view.kmk013.h {
             loadGoOutManage: "at/shared/workrecord/goout/find",
             regTmpWorkMng: "at/record/workrecord/temporarywork/save",
             regGoOutManage: "at/shared/workrecord/goout/save",
+            getCreatingDailyResultsCondition: "at/record/createDailyResultsCondtion/get",
+            saveCreatingFutureDay: "at/record/createDailyResultsCondtion/save/{0}"
         };
         
         export function findByCompanyId(): JQueryPromise<any> {
@@ -40,12 +42,20 @@ module nts.uk.at.view.kmk013.h {
             return dfd.promise();
         }
 
-      export function saveTempWorkManage(data: any) {
+      export function saveTempWorkManage(data: any): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.regTmpWorkMng, data);
       }
 
-      export function saveGoOutManage(data: any) {
+      export function saveGoOutManage(data: any): JQueryPromise<any> {
         return nts.uk.request.ajax(paths.regGoOutManage, data);
+      }
+      
+      export function getCreatingDailyResultsCondition(): JQueryPromise<boolean> {
+        return nts.uk.request.ajax(paths.getCreatingDailyResultsCondition);
+      }
+
+      export function saveCreatingFutureDay(value: number): JQueryPromise<any> {
+        return nts.uk.request.ajax(nts.uk.text.format(paths.saveCreatingFutureDay, value));
       }
     }
 }
