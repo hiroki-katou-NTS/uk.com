@@ -23,7 +23,7 @@ public class RemainingTimes extends IntegerPrimitiveValue<RemainingTimes> implem
 	protected Integer reviseRawValue(Integer rawValue) {
 		if (rawValue == null) return super.reviseRawValue(rawValue);
 		if (rawValue > 99) rawValue = 99;
-		if (rawValue < 0) rawValue = 0;
+		if (rawValue < -99) rawValue = -99;
 		return super.reviseRawValue(rawValue);
 	}
 	

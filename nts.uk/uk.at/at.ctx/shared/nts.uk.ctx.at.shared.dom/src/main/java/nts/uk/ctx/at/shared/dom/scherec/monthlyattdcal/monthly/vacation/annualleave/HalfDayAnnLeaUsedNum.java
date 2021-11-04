@@ -39,7 +39,7 @@ public class HalfDayAnnLeaUsedNum implements Cloneable, SerializableWithOptional
 		this.timesAfterGrant = Optional.empty();
 	}
 	
-	//[C-1] 更新時に作成する
+	//[C-1] 作成する
 	public  HalfDayAnnLeaUsedNum(UsedTimes timesBeforeGrant, Optional<UsedTimes> timesAfterGrant){
 		this.times = totalUsed(timesBeforeGrant, timesAfterGrant);
 		this.timesBeforeGrant = timesBeforeGrant;

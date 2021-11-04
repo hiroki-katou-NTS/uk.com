@@ -116,12 +116,7 @@ public class TimeAnnualLeaveMax {
 	 * @return 残時間
 	 */
 	private LeaveRemainingTime calcRemainMinutess(MaxMinutes maxMinutesIn, LeaveUsedTime usedMinutesIn) {
-		int leaveRemainingTimeTmp = maxMinutesIn.v() - usedMinutesIn.v();
-		if (leaveRemainingTimeTmp  < 0) {
-			return new LeaveRemainingTime(0);
-		} else {
-			return new LeaveRemainingTime(leaveRemainingTimeTmp);
-		}
+		return new LeaveRemainingTime(maxMinutesIn.v() - usedMinutesIn.v());
 	}
 
 }

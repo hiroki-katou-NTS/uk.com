@@ -172,10 +172,10 @@ public class AnnualLeaveRemaining implements Cloneable {
 		
 		//未消化数　更新する
 		if(this.annualLeaveUndigestNumber.isPresent()){
-			this.annualLeaveUndigestNumber = Optional.of(this.annualLeaveUndigestNumber.get().update(remainingDataList, endDay));
+			this.annualLeaveUndigestNumber = Optional.of(this.annualLeaveUndigestNumber.get().calcUndigestNumber(remainingDataList, endDay));
 		}else{
 			AnnualLeaveUndigestNumber UndigestNumber = new AnnualLeaveUndigestNumber();
-			this.annualLeaveUndigestNumber = Optional.of(UndigestNumber.update(remainingDataList, endDay));
+			this.annualLeaveUndigestNumber = Optional.of(UndigestNumber.calcUndigestNumber(remainingDataList, endDay));
 		}
 	}
 
