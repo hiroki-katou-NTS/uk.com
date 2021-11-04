@@ -99,7 +99,7 @@ public class CreateStampDataForEmployeesService {
 		//return 打刻入力結果#打刻入力結果($打刻反映結果, $打刻カード作成結果.永続化処理)
 
 		return new TimeStampInputResult(stampDataResultOpt
-				.map(m -> new StampDataReflectResult(m.getReflectDate(), AtomTask.bundle(taskLst))).orElse(null),
+				.map(m -> new StampDataReflectResult(m.getReflectDate(), AtomTask.bundle(taskLst))).get(),
 				stampResult.getAtomTask());
 	}
 
