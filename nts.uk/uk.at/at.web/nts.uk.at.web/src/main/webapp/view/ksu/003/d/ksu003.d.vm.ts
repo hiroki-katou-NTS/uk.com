@@ -62,7 +62,7 @@ module nts.uk.at.view.ksu003.d {
             };
             vm.selectedGraphStartTime = ko.observable('0');
             vm.selectedGraphVacationDisplay = ko.observable(1);
-            vm.selectedWorkDisplay = ko.observable(1);
+            vm.selectedWorkDisplay = ko.observable(2);
             vm.selected2WorkDisplay = ko.observable(1);
             vm.selectedTotalTimeDisplay = ko.observable(1);
             vm.selectedTotalAmountDisplay = ko.observable(1);
