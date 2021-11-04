@@ -3,14 +3,11 @@ module nts.uk.at.kdl013.a {
     import setShared = nts.uk.ui.windows.setShared;
     import getText = nts.uk.resource.getText;
 
-    const PATH = {
-        GET_POSSIBLE_ATTENDANCE_ITEM: "at/record/divergencetime/setting/AttendanceDivergenceName",
-        GET_ALL_ATTENDANCE_ITEM: "at/record/businesstype/attendanceItem/getAttendanceItems",
+    const PATH = {        
         GET_ALL_TASK_BY_ATTENDANCE_AND_DATE: "at/record/task/management/supplementinfo/getByAtdIdAndDate"
     }
     @bean()
     class Kdl013aViewModel extends ko.ViewModel {
-
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any> = ko.observableArray([]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -52,8 +49,8 @@ module nts.uk.at.kdl013.a {
         register(): void {
             let self = this;
             if (self.currentCodeList().length == 0) {
-                nts.uk.ui.dialog.alert(nts.uk.resource.getMessage('Msg_78'));
-                setShared('KDL013ParamsReturn', '');
+                setShared('KDL013ParamsReturn', self.currentCodeList());
+                self.$dialog.error({ messageId: 'Msg_2305' });
             } else {
                 setShared('KDL013ParamsReturn', self.currentCodeList());
                 nts.uk.ui.windows.close();

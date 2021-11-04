@@ -1,10 +1,10 @@
 module nts.uk.at.kdl013.a.test {    
 
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     const PATH = {
         GET_POSSIBLE_ATTENDANCE_ITEM: "at/record/divergencetime/setting/AttendanceDivergenceName",
-        GET_ALL_ATTENDANCE_ITEM: "at/record/businesstype/attendanceItem/getAttendanceItems",
-        GET_ALL_TASK_BY_ATTENDANCE_AND_DATE: "at/record/task/management/supplementinfo/getByAtdIdAndDate"
+        GET_ALL_ATTENDANCE_ITEM: "at/record/businesstype/attendanceItem/getAttendanceItems"
     }
 
     @bean()
@@ -34,18 +34,18 @@ module nts.uk.at.kdl013.a.test {
             let request = {
                 atdId: self.selectedCode(),
                 baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                selectedCode: 1
+                selectedCode: ""
             }
 
-            
-            // request.errorRegistrationList = errorRegistrationList;
             setShared('KDL013Params', {
                 atdId: self.selectedCode(),
                 baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                selectedCode: 1
+                selectedCode: ""
             });
-            // self.currentScreen = nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml');
-            self.$window.modal('at', '/view/kdl/013/a/index.xhtml', request);
+           
+            self.$window.modal('at', '/view/kdl/013/a/index.xhtml', request).then(() =>{
+                let temp = getShared('KDL013ParamsReturn');
+            });
             
         }
     }
