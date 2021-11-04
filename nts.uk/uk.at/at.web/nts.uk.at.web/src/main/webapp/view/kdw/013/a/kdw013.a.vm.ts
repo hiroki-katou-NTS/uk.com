@@ -531,7 +531,10 @@ module nts.uk.ui.at.kdw013.a {
             vm.attendanceTimes = ko.computed({
                 read: () => {
                     const datas = ko.unwrap(vm.$datas);
+                    const setting = ko.unwrap(vm.$settings);
+                    
                     const employee = ko.unwrap(vm.employee);
+                    const { start,end } = ko.unwrap(vm.dateRange);
                     const dateRanges = () => {
                         const dates: Date[] = [];
                         const begin = moment(start);
@@ -549,47 +552,41 @@ module nts.uk.ui.at.kdw013.a {
                     const employeeId = employee || vm.$user.employeeId;
 
                     if (datas) {
-                            
+                        
+                      return   _.chain(dateRanges())
+                            .map(date => {
+                                let events: string[] = [];
+                                let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); } )
+                                const workTypes = _.get(setting, 'workTypes');
+                                let wkTypeCd = _.get(_.find(_.get(convert, 'manHrContents', []), hr => { return hr.itemId == 28 }),'value');
+                                    
+                                if (wkTypeCd) {
 
-                        return _
-                            .chain(dateRanges())
-                            // .orderBy(['date'])
-                            .filter(({ employeeId }) => employeeId === employeeId)
-                            .map(({
-                                date: strDate,
-                                actualContent,
-                            }) => {
-                                const events: string[] = [];
-                                const date = moment(strDate, DATE_FORMAT).toDate();
-                                const { breakHours, end, start, totalWorkingHours } = actualContent;
-                                manHrContents
-                                if (start) {
-                                    const { timeWithDay } = start;
+                                    let name = _.get(_.find(workTypes, wt => { return wt.workTypeCode == wkTypeCd }), 'name');
 
-                                    if (_.isNumber(timeWithDay)) {
-                                        //PC3_2
-                                        events.push(vm.$i18n('KDW013_67', [formatTime(timeWithDay, 'Time_Short_HM')]));
-                                    }
+                                    //PC3_2 PC3_3
+                                    events.push(vm.$i18n('KDW013_67') +' '+ wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')));
                                 }
+                                
+//
+//                                if (end) {
+//                                    const { timeWithDay } = end;
+//
+//                                    if (_.isNumber(timeWithDay)) {
+//                                        //PC3_4
+//                                        events.push(vm.$i18n('KDW013_68', [formatTime(timeWithDay, 'Time_Short_HM')]));
+//                                    }
+//                                }
+//
+//                                if (_.isNumber(breakHours)) {
+//                                    events.push(vm.$i18n('KDW013_23', [formatTime(breakHours, 'Time_Short_HM')]));
+//                                }
+//
+//                                if (_.isNumber(totalWorkingHours)) {
+//                                    events.push(vm.$i18n('KDW013_24', [formatTime(totalWorkingHours, 'Time_Short_HM')]));
+//                                }
 
-                                if (end) {
-                                    const { timeWithDay } = end;
-
-                                    if (_.isNumber(timeWithDay)) {
-                                        //PC3_4
-                                        events.push(vm.$i18n('KDW013_68', [formatTime(timeWithDay, 'Time_Short_HM')]));
-                                    }
-                                }
-
-                                if (_.isNumber(breakHours)) {
-                                    events.push(vm.$i18n('KDW013_23', [formatTime(breakHours, 'Time_Short_HM')]));
-                                }
-
-                                if (_.isNumber(totalWorkingHours)) {
-                                    events.push(vm.$i18n('KDW013_24', [formatTime(totalWorkingHours, 'Time_Short_HM')]));
-                                }
-
-                                return { date, events, };
+                                return { date, events };
                             })
                             .value();
                     }
@@ -836,7 +833,7 @@ module nts.uk.ui.at.kdw013.a {
             }).filter(d => { return d.changed }).map(d => moment(d.date).format(DATE_TIME_FORMAT)).value();
     
     
-            let workDetails = vm.createWorkDetails(dateRanges()); 
+            let workDetails = vm.createWorkDetails(dateRanges());
     
             let manHrlst = vm.getManHrlst(dateRanges());
 
@@ -851,8 +848,7 @@ module nts.uk.ui.at.kdw013.a {
                 mode,
                 workDetails
             };
-    
-    
+
             console.log(command);
             vm                .$blockui('grayout')                 //作業を登録する                .then(() => vm.$ajax('at', API.REGISTER, command))                .then((response: RegisterWorkContentDto) => {                    vm.dataChanged(false);                    if (response) {                            const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {                            return vm.$dialog                                .info({ messageId: 'Msg_15' })                                .then(() => lstOvertimeLeaveTime)                                .then(() => {vm.dataChanged(false);                                            vm.reLoad();                                })                        } else {                            let errors = lstErrorMessageInfo.map(x => {                                return {                                    message: x.messageError,                                    messageId: x.resourceID,                                    supplements: {}                                };                            });                            nts.uk.ui.dialog.bundledErrors({ errors });                        }                    }                    return $                        .Deferred()                        .resolve()                        .then(() => null);                })                .fail((response: ErrorMessage) => {                    const { messageId, parameterIds } = response;                    return vm.$dialog                         Msg_2066, Msg_2080                        .error({ messageId, messageParams: parameterIds })                        .then(() => null);                })                .then((data: OvertimeLeaveTime[] | null) => {                    if (data && data.length) {                        vm.openDialogCaculationResult(data);                    }                })                .always(() => vm.$blockui('clear'));
         }
