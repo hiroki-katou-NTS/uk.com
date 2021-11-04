@@ -6,6 +6,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 社員Adapter
@@ -40,5 +41,7 @@ public interface EmployeeAdapter {
      */
     // <<Public>> 社員の情報を取得する
     public List<EmployeeInformationImport> find(EmployeeInformationQueryDto param);
+
+    Optional<EmployeeCodeAndDisplayNameImport> getEmployeeCodeAndNameByEmployeeId(String employeeId);
 
 }

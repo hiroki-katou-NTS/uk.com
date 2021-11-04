@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ac.employee;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.EmployeeCodeAndDisplayNameImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeInformationQueryDto;
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.PositionImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.WorkplaceImport;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.query.pub.employee.EmployeeInformationExport;
@@ -38,7 +40,7 @@ public class EmployeeShareAdapterImpl implements EmployeeAdapter {
     private SyEmployeePub employeePub;
 
     @Inject
-    EmployeeInformationPub employeeInformationPub;
+    private EmployeeInformationPub employeeInformationPub;
 
 
     /**
@@ -93,6 +95,12 @@ public class EmployeeShareAdapterImpl implements EmployeeAdapter {
                 .toGetWorkplace(param.isToGetWorkplace())
                 .build();
         return employeeInformationPub.find(query).stream().map(item -> toImport(item)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<EmployeeCodeAndDisplayNameImport> getEmployeeCodeAndNameByEmployeeId(String employeeId) {
+        EmployeeBasicExport empInfo = employeePub.getEmpBasicBySId(employeeId);
+        return Optional.ofNullable(new EmployeeCodeAndDisplayNameImport(empInfo.getEmployeeId(), empInfo.getEmployeeCode(), empInfo.getBusinessName()));
     }
 
     private EmployeeInformationImport toImport(EmployeeInformationExport item) {
