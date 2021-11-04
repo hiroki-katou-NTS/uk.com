@@ -11,6 +11,9 @@ module nts.uk.ui.at.kdw013.timeheader {
                          float: right;
                          cursor: pointer;
                         }
+                    .warningIcon:hover {
+                         background-color: rgb(229, 242, 255);
+                        }
                 </style>
                 `
     })
@@ -50,7 +53,7 @@ module nts.uk.ui.at.kdw013.timeheader {
         }
         
         regisPopup(time) {
-            const className =  time.date;
+            const className =  'wrn-'+time.date;
             $(".popup-area-i").ntsPopup({
                 trigger: '.' + className,
                 position: {
@@ -65,24 +68,18 @@ module nts.uk.ui.at.kdw013.timeheader {
         
         OpenIDialog(vm, time) {
             let screenA = vm.params.screenA;
-            let {$settings} = screenA;
+            let {$settings, $datas} = screenA;
                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
-
-                // 作業リスト
-                screenA.taskDtos();
-                let eventInDay = _.chain(screenA.events())
-                    .filter((evn) => { return moment(time).isSame(evn.start, 'days'); })
-                    .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
-                    .sortBy('end')
-                    .value();
-                _.map(eventInDay, evn => { return { workNo: _.get(evn, 'extendedProps.taskBlock.taskDetails[0].supNo') 
-                                                    }; });
-                screenA.events()
-                // 日別勤怠の応援作業時間
-                screenA.ouenWorkTimes();
+                
+                let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []) id=> moment(id.ymd).isSame(moment(time.date), 'days'));
+                 // 作業リスト
+                screenA.taskDtos($settings().tasks);
 
                 // 日別勤怠の応援作業時間帯
-                screenA.ouenWorkTimeSheets();
+                screenA.ouenWorkTimeSheets(_.get(iod,'ouenTimeSheet'));
+                
+                // 日別勤怠の応援作業時間
+                screenA.ouenWorkTimes(_.get(iod,'ouenTime'));
 
                 //対象日
                 screenA.targetDate(moment(time.date).toDate());
@@ -92,11 +89,11 @@ module nts.uk.ui.at.kdw013.timeheader {
 
         formatTime(value: number | null, time) {
             const vm = this;
-            const className =  time.date;
+            const className = 'wrn-' + time.date;
             let icon = `<i class='warningIcon ` + className + `'> </i>`;
             
             setTimeout(()=> { 
-                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '20px', width: 20, height: 20 }, click: () => { vm.OpenIDialog(vm, time); } }); 
+                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '20px', width: 22, height: 22 }, click: () => { vm.OpenIDialog(vm, time); } }); 
                 $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
             }, 300);
             if (!value) {
