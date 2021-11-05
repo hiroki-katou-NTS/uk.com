@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
@@ -122,42 +123,26 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 				converter,
 				recordReGetClass);
 		
-		//編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
-		List<Integer> editIds = integrationOfDaily.getEditState().stream()
-				.map(editState -> editState.getAttendanceItemId())
-				.distinct()
-				.collect(Collectors.toList());
+		//手修正を戻す前
+		OuenAttendanceTimeEachTimeSheet beforeEdit = OuenAttendanceTimeEachTimeSheet.createAllZero();
+		Optional<PersonCostCalculation> personCost = recordReGetClass.getCompanyCommonSetting().getPersonnelCostSetting().get(integrationOfDaily.getYmd());
 		
-		//応援の勤怠項目ID
-		List<Integer> supportIds =AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SUPPORT_TIME);
-		
-		//編集状態のある応援の勤怠項目ID
-		List<Integer> editSuppuortIds = editIds.stream().filter(e -> supportIds.contains(e)).collect(Collectors.toList());
-		
-		if (!editSuppuortIds.isEmpty()) {
-			List<ItemValue> itemValueList = Collections.emptyList();
-			DailyRecordToAttendanceItemConverter beforDailyRecordDto = converter.setData(integrationOfDaily);
-			itemValueList = beforDailyRecordDto.convert(editSuppuortIds);
-			DailyRecordToAttendanceItemConverter afterDailyRecordDto = converter.setData(copyIntegrationOfDaily);
-			afterDailyRecordDto.merge(itemValueList);
-			
-			// 手修正された項目の値を計算前に戻す
-			copyIntegrationOfDaily = afterDailyRecordDto.toDomain();
-			// マイナスの乖離時間を0にする
-			AttendanceTimeOfDailyAttendance.divergenceMinusValueToZero(copyIntegrationOfDaily);
+		if(result.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			beforeEdit = create(result.getAttendanceTimeOfDailyPerformance().get(), personCost);
+			result.getOuenTime().clear();
+			result.getOuenTime().add(OuenWorkTimeOfDailyAttendance.create(
+					ouenWorkTimeSheet.getWorkNo(),
+					beforeEdit,
+					OuenMovementTimeEachTimeSheet.createAllZero(),
+					AttendanceAmountDaily.ZERO));
 		}
-		// 手修正後の再計算(2回目)
-		result = AttendanceTimeOfDailyAttendance.secondReCalcForSuport(
-				recordReGetClass.getCompanyCommonSetting(),
-				copyIntegrationOfDaily,
+		//応援のみ手修正を戻す
+		result = revertSupportOnly(converter, integrationOfDaily, result);
+		//手修正後の再計算(2回目)
+		return OuenAttendanceTimeEachTimeSheet.secondReCalc(
+				personCost,
+				result,
 				ouenWorkTimeSheet.getWorkNo());
-		
-		if(!result.getAttendanceTimeOfDailyPerformance().isPresent())
-			return OuenAttendanceTimeEachTimeSheet.createAllZero();
-		
-		//項目移送
-		return create(result.getAttendanceTimeOfDailyPerformance().get(),
-				recordReGetClass.getCompanyCommonSetting().getPersonnelCostSetting().get(integrationOfDaily.getYmd()));
 	}
 	
 	/**
@@ -195,5 +180,76 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 				personCost.map(p -> p.getRoundingSetting().roundWorkTimeAmount(withinAmount)).orElse(new AttendanceAmountDaily(withinAmount.intValue())),
 				MedicalCareTimeEachTimeSheet.createAllZero(),//様式9が未実装の為、全て0
 				attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance());
+	}
+	
+	/**
+	 * 応援のみ手修正を戻す
+	 * @param converter コンバーター
+	 * @param beforeCalc 計算前の日別勤怠(Work)
+	 * @param afterCalc 計算後の日別勤怠(Work)
+	 * @return 手修正を戻した日別勤怠(Work)
+	 */
+	private static IntegrationOfDaily revertSupportOnly(DailyRecordToAttendanceItemConverter converter, IntegrationOfDaily beforeCalc, IntegrationOfDaily afterCalc) {
+		//編集状態を取得（日別実績の編集状態が持つ勤怠項目IDのみのList作成）
+		List<Integer> editIds = beforeCalc.getEditState().stream()
+				.map(editState -> editState.getAttendanceItemId())
+				.distinct()
+				.collect(Collectors.toList());
+		
+		//応援の勤怠項目ID
+		List<Integer> supportIds =AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SUPPORT_TIME);
+		
+		//編集状態のある応援の勤怠項目ID
+		List<Integer> editSuppuortIds = editIds.stream().filter(e -> supportIds.contains(e)).collect(Collectors.toList());
+		
+		if (!editSuppuortIds.isEmpty()) {
+			List<ItemValue> itemValueList = Collections.emptyList();
+			DailyRecordToAttendanceItemConverter beforeDailyRecordDto = converter.setData(beforeCalc);
+			itemValueList = beforeDailyRecordDto.convert(editSuppuortIds);
+			DailyRecordToAttendanceItemConverter afterDailyRecordDto = converter.setData(afterCalc);
+			afterDailyRecordDto.merge(itemValueList);
+			
+			// 手修正された項目の値を計算前に戻す
+			afterCalc = afterDailyRecordDto.toDomain();
+			// マイナスの乖離時間を0にする
+			AttendanceTimeOfDailyAttendance.divergenceMinusValueToZero(afterCalc);
+		}
+		return afterCalc;
+	}
+	
+	/**
+	 * 手修正後の再計算（応援用、2回目）
+	 * @param companyCommonSet 会社別設定管理
+	 * @param personDailySet 社員設定管理
+	 * @param calcResult 手修正後の日別勤怠(Work)
+	 * @return 日別勤怠(Work)
+	 */
+	private static OuenAttendanceTimeEachTimeSheet secondReCalc(Optional<PersonCostCalculation> personCost, IntegrationOfDaily calcResult, SupportFrameNo supportNo) {
+		Optional<OuenWorkTimeOfDailyAttendance> support = calcResult.getOuenTime().stream()
+				.filter(o -> o.getWorkNo().equals(supportNo))
+				.findFirst();
+		if(!support.isPresent()) {
+			return OuenAttendanceTimeEachTimeSheet.createAllZero();
+		}
+		//割増金額、合計
+		PremiumTimeOfDailyPerformance old = support.get().getWorkTime().getPremiumTime();
+		PremiumTimeOfDailyPerformance reCalc = old.reCalc(personCost);
+		
+		//単価
+		WorkingHoursUnitPrice unitPrice = WorkingHoursUnitPrice.ZERO;
+		if(calcResult.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			unitPrice = calcResult.getAttendanceTimeOfDailyPerformance().get()
+					.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getUnitPrice();
+		}
+		//所定内時間金額
+		BigDecimal withinAmount = support.get().getWorkTime().getWithinTime().hourWithDecimal().multiply(BigDecimal.valueOf(unitPrice.v()));
+		
+		return OuenAttendanceTimeEachTimeSheet.create(
+				support.get().getWorkTime().getTotalTime(),
+				support.get().getWorkTime().getBreakTime(),
+				support.get().getWorkTime().getWithinTime(),
+				personCost.map(p -> p.getRoundingSetting().roundWorkTimeAmount(withinAmount)).orElse(new AttendanceAmountDaily(withinAmount.intValue())),
+				support.get().getWorkTime().getMedicalTime(),
+				reCalc);
 	}
 }

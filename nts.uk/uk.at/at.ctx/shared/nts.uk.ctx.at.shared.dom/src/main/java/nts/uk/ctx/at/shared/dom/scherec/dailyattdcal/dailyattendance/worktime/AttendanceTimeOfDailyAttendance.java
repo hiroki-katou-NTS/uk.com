@@ -32,8 +32,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.La
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportWorkTimeOfDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
@@ -582,44 +580,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		}
 		// 割増時間
 		PremiumTimeOfDailyPerformance old = attendanceTime.get().getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance();
-		PremiumTimeOfDailyPerformance reCalc = old.reCalc(companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
-		
-		ActualWorkingTimeOfDaily reCreateActual = ActualWorkingTimeOfDaily.of(
-				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
-				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
-				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
-				calcResult.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
-				new DivergenceTimeOfDaily(new ArrayList<>()),
-				reCalc);
-
-		AttendanceTimeOfDailyAttendance reCreateAttendanceTime = new AttendanceTimeOfDailyAttendance(
-				calcResult.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
-				reCreateActual,
-				calcResult.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
-				AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO,
-				calcResult.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
-		
-		calcResult.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
-		
-		return calcResult;
-	}
-
-	/**
-	 * 手修正後の再計算（応援用、2回目）
-	 * @param companyCommonSet 会社別設定管理
-	 * @param personDailySet 社員設定管理
-	 * @param calcResult 手修正後の日別勤怠(Work)
-	 * @return 日別勤怠(Work)
-	 */
-	public static IntegrationOfDaily secondReCalcForSuport(ManagePerCompanySet companyCommonSet, IntegrationOfDaily calcResult, SupportFrameNo supportNo) {
-		Optional<OuenWorkTimeOfDailyAttendance> support = calcResult.getOuenTime().stream()
-				.filter(o -> o.getWorkNo().equals(supportNo))
-				.findFirst();
-		if(!support.isPresent()) {
-			return calcResult;
-		}
-		// 割増時間
-		PremiumTimeOfDailyPerformance old = support.get().getWorkTime().getPremiumTime();
 		PremiumTimeOfDailyPerformance reCalc = old.reCalc(companyCommonSet.getPersonnelCostSetting().get(calcResult.getYmd()));
 		
 		ActualWorkingTimeOfDaily reCreateActual = ActualWorkingTimeOfDaily.of(

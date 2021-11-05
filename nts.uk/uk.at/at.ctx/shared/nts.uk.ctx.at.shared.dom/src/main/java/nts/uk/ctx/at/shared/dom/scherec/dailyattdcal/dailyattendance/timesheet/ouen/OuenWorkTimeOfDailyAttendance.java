@@ -111,6 +111,5 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 		this.workTime = inputTime.getWorkTime();
 		this.moveTime = inputTime.getMoveTime();
 		this.amount = inputTime.getAmount();
-		this.priceUnit = inputTime.getPriceUnit();
 	}
 }

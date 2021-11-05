@@ -39,6 +39,7 @@ public class PremiumTime {
 		this.premiumTimeNo = premiumTimeNo;
 		this.premitumTime = premitumTime;
 		this.premiumAmount = premiumAmount;
+		this.unitPrice = WorkingHoursUnitPrice.ZERO;
 	}
 	
 	/**

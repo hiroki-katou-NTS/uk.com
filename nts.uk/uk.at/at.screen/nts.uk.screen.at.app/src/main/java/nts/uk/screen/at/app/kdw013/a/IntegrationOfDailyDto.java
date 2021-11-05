@@ -136,7 +136,7 @@ public class IntegrationOfDailyDto {
 //		result.setAnyItemValue(domain.getAnyItemValue().map(x -> AnyItemValueOfDailyAttdDto.fromDomain(x)).orElse(null));
 //		result.setPcLogOnInfo(PCLogOnInfoOfDailyAttdDto.fromDomain(domain.getPcLogOnInfo()));
 		result.setRemarks(domain.getRemarks().stream().map(x-> RemarksOfDailyAttdDto.fromDomain(x)).collect(Collectors.toList()));
-		result.setOuenTime(domain.getOuenTime().stream().map(ot-> OuenWorkTimeOfDailyAttendanceDto.valueOf(ot)).collect(Collectors.toList()));
+		result.setOuenTime(domain.getOuenTime().stream().map(ot-> OuenWorkTimeOfDailyAttendanceDto.toDto(ot)).collect(Collectors.toList()));
 		result.setOuenTimeSheet(domain.getOuenTimeSheet().stream().map(os-> OuenWorkTimeSheetOfDailyAttendanceDto.fromDomain(os)).collect(Collectors.toList()));
 		result.setSnapshot(domain.getSnapshot().map(x -> SnapshotDto.from(domain.getEmployeeId(), domain.getYmd(), x))
 				.orElse(null));

@@ -139,8 +139,7 @@ public class PremiumTimeOfDailyPerformDto implements ItemConst, AttendanceItemDa
 	
 	public PremiumTimeOfDailyPerformance toDomain() {
 		return new PremiumTimeOfDailyPerformance(
-				ConvertHelper.mapTo(premiumTimes,
-						c -> new PremiumTime(ExtraTimeItemNo.valueOf(c.getNo()), toAttendanceTime(c.getPremitumTime()), toAttendanceAmountDaily(c.getPremiumAmount()))),
+				ConvertHelper.mapTo(premiumTimes, c -> c.toDomain()),
 				toAttendanceAmountDaily(this.totalAmount),
 				toAttendanceTime(this.totalTime));
 	}
