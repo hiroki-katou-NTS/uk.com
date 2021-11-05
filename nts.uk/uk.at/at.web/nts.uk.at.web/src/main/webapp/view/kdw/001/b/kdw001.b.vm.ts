@@ -430,12 +430,15 @@ module nts.uk.at.view.kdw001.b {
 
                     if (!self.dailyCreatedCheck() && !self.dailyCalCheck() && !self.approvalResultCheck() && self.monthCountCheck()) {
                       self.dScreenmodel.isCreatingFutureDay(true);
+                      $("#wizard").ntsWizard("next");
+                      $('#button113').focus();
                     } else {
-                      self.isCreatingFutureDay().then(result => self.dScreenmodel.isCreatingFutureDay(result));
+                      self.isCreatingFutureDay().then(result => {
+                        self.dScreenmodel.isCreatingFutureDay(result);
+                        $("#wizard").ntsWizard("next");
+                        $('#button113').focus();
+                      });
                     }
-    
-                    $("#wizard").ntsWizard("next");
-                     $('#button113').focus();
                 }
                     self.params.startMonthResult = self.monthResoult.startMonth;
                     self.params.endMonthResult = self.monthResoult.endMonth;
