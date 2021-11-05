@@ -3,7 +3,7 @@
  */
 package nts.uk.screen.at.app.command.ksu008B;
 
-import lombok.experimental.var;
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
@@ -31,7 +31,7 @@ public class WorkScheduleSameKsu008BHandler extends CommandHandler<WorkScheduleS
     protected void handle(CommandHandlerContext<WorkScheduleSaveKsu008BCommand> commandHandlerContext) {
         String loginCompany = AppContexts.user().companyId();
         WorkScheduleSaveKsu008BCommand command = commandHandlerContext.getCommand();
-        var form9Layout = form9LayoutRepository.get(loginCompany, new Form9Code(command.getForm9Code()));
+        val form9Layout = form9LayoutRepository.get(loginCompany, new Form9Code(command.getForm9Code()));
         if (form9Layout.isPresent()) {
             form9LayoutRepository.updateUseAttrOfSystemLayout(
                     loginCompany,

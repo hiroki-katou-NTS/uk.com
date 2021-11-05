@@ -3,21 +3,11 @@
  */
 package nts.uk.screen.at.app.command.ksu008B;
 
-import lombok.experimental.var;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.aggregation.dom.form9.DetailSettingOfForm9;
-import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
-import nts.uk.ctx.at.aggregation.dom.form9.Form9Cover;
-import nts.uk.ctx.at.aggregation.dom.form9.Form9Layout;
-import nts.uk.ctx.at.aggregation.dom.form9.Form9LayoutRepository;
-import nts.uk.ctx.at.aggregation.dom.form9.Form9Name;
-import nts.uk.ctx.at.aggregation.dom.form9.Form9NursingAideTable;
-import nts.uk.ctx.at.aggregation.dom.form9.Form9NursingTable;
-import nts.uk.ctx.at.aggregation.dom.form9.OnePageDisplayNumerOfPeople;
-import nts.uk.ctx.at.aggregation.dom.form9.OutputColumn;
-import nts.uk.ctx.at.aggregation.dom.form9.OutputRow;
+import nts.uk.ctx.at.aggregation.dom.form9.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.OutputCell;
 
@@ -43,7 +33,7 @@ public class OutPutLayoutRegisterKsu008BHandler extends CommandHandler<OutPutLay
     protected void handle(CommandHandlerContext<OutPutLayoutRegisterKsu008BCommand> commandHandlerContext) {
         String loginCompany = AppContexts.user().companyId();
         OutPutLayoutRegisterKsu008BCommand command = commandHandlerContext.getCommand();
-        var form9Layout = form9LayoutRepository.get(loginCompany, new Form9Code(command.getCode()));
+        val form9Layout = form9LayoutRepository.get(loginCompany, new Form9Code(command.getCode()));
         if (form9Layout.isPresent()) {
             throw new BusinessException("Msg_3");
         }
