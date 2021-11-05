@@ -348,7 +348,18 @@ public class ScreenQueryWorkPlaceCheckFile {
             
             
             List<GeneralDate> ymdList = rawData.getYmdList();
-            DatePeriod period = ymdList.isEmpty() ? null : new DatePeriod( ymdList.get(0), ymdList.get( ymdList.size() - 1 ) );
+            if ( ymdList.isEmpty() ) {
+                affCompanyHistByEmployeeCache = null;
+                employmentPeriodCache = null;
+                workCondItemWithPeriodCache = null;
+                empHisCache = null;
+                empLeaveWorkPeriodCache = null;
+                workScheExistedCache = null;
+                workScheConfirmAtrMap = null;
+                return;
+            }
+
+            DatePeriod period = new DatePeriod( ymdList.get(0), ymdList.get( ymdList.size() - 1 ) );
             
             List<EmpEnrollPeriodImport> affCompanyHists =  comHisAdapter.getEnrollmentPeriod(employeeIds, period);
             Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
