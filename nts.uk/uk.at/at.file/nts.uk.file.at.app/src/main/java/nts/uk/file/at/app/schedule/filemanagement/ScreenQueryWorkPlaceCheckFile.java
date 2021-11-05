@@ -2,7 +2,6 @@ package nts.uk.file.at.app.schedule.filemanagement;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.val;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.MapCache;
@@ -291,6 +289,8 @@ public class ScreenQueryWorkPlaceCheckFile {
         
         private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
         
+        private final KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empHisCache;
+        
         private final MapCache<String, SetupType> basicScheduleCache;
 
         private final MapCache<WorkTimeCode, FixedWorkSetting> fixedWorkSettingCache;
@@ -303,7 +303,9 @@ public class ScreenQueryWorkPlaceCheckFile {
         
         private final List<ShiftMaster> shiftMasterCache;
         
-//        private final NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
+        private final MapCache<String, WorkType> workTypeCache;
+        
+        private final MapCache<String, WorkTimeSetting> workTimeSettingCache;
         
         private final Map<String, String> empEmployeeCache;
         
@@ -320,6 +322,10 @@ public class ScreenQueryWorkPlaceCheckFile {
         public RequireImp(List<String> employeeCodes, List<String> importCodes, DatePeriod period) {
             
             shiftMasterCache = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
+            
+            workTypeCache = MapCache.incremental(item -> workTypeRepo.findByPK(AppContexts.user().companyId(), item));
+            
+            workTimeSettingCache = MapCache.incremental(item -> workTimeSettingRepository.findByCode(AppContexts.user().companyId(), item));
             
             empEmployeeCache = empEmployeeAdapter.getEmployeeIDListByCode(AppContexts.user().companyId(), employeeCodes);
             
@@ -343,11 +349,6 @@ public class ScreenQueryWorkPlaceCheckFile {
             
             predetemineTimeSettingCache = MapCache.incremental(item -> predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), item.v()));
             
-//            workScheduleCache = NestedMapCache.preloadedAll(
-//                    workScheduleRepository.getList(employeeIds, period).stream(), 
-//                    schedule -> schedule.getEmployeeID(), 
-//                    schedule -> schedule.getYmd());
-            
             List<EmpEnrollPeriodImport> affCompanyHists =  comHisAdapter.getEnrollmentPeriod(employeeIds, period);
             Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
             affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(createEntries1(data2));
@@ -359,6 +360,10 @@ public class ScreenQueryWorkPlaceCheckFile {
             List<WorkingConditionItemWithPeriod> listData = workingConditionRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), employeeIds, period);
             Map<String, List<WorkingConditionItemWithPeriod>> data6 = listData.stream().collect(Collectors.groupingBy(item ->item.getWorkingConditionItem().getEmployeeId()));
             workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries5(data6));
+            
+            List<EmployeeLeaveJobPeriodImport> listEmpPeriod = empHisAdapter.getLeaveBySpecifyingPeriod(employeeIds, period);
+            Map<String, List<EmployeeLeaveJobPeriodImport>> data7 = listEmpPeriod.stream().collect(Collectors.groupingBy(item -> item.getEmpID()));
+            empHisCache = KeyDateHistoryCache.loaded(createEntries7(data7));
             
             List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  leaHisAdapter.getHolidayPeriod(employeeIds, period);
             Map<String, List<EmpLeaveWorkPeriodImport>> data5 = empLeaveWorkPeriods.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
@@ -392,6 +397,15 @@ public class ScreenQueryWorkPlaceCheckFile {
             data.forEach( (k,v) -> {
                 List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
                 rs.put(k, s);
+            });
+            return rs;
+        }
+        
+        private Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> createEntries7(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
+            Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
+            data.forEach( (k, v) -> {
+                List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> sEntries = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(), i)).collect(Collectors.toList());
+                rs.put(k, sEntries);
             });
             return rs;
         }
@@ -489,10 +503,6 @@ public class ScreenQueryWorkPlaceCheckFile {
 
         @Override
         public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String employeeId, GeneralDate date) {
-//            val result = comHisAdapter.getEnrollmentPeriod(Arrays.asList(employeeId), new DatePeriod(date, date));
-//            if (result.isEmpty())
-//                return Optional.empty();
-//            return Optional.of(result.get(0));
             Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(employeeId, date);
             return data;
         }
@@ -505,11 +515,13 @@ public class ScreenQueryWorkPlaceCheckFile {
 
         @Override
         public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(String employeeId, GeneralDate date) {
-            val result = empHisAdapter.getLeaveBySpecifyingPeriod(Arrays.asList(employeeId),
-                    new DatePeriod(date, date));
-            if (result.isEmpty())
-                return Optional.empty();
-            return Optional.of(result.get(0));
+//            val result = empHisAdapter.getLeaveBySpecifyingPeriod(Arrays.asList(employeeId),
+//                    new DatePeriod(date, date));
+//            if (result.isEmpty())
+//                return Optional.empty();
+//            return Optional.of(result.get(0));
+            Optional<EmployeeLeaveJobPeriodImport> data =empHisCache.get(employeeId, date);
+            return data;
         }
 
         @Override
@@ -526,12 +538,12 @@ public class ScreenQueryWorkPlaceCheckFile {
 
         @Override
         public Optional<WorkType> getWorkType(String workTypeCd) {
-            return workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCd);
+            return workTypeCache.get(workTypeCd);
         }
 
         @Override
         public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-            return workTimeSettingRepository.findByCode(AppContexts.user().companyId(), workTimeCode);
+            return workTimeSettingCache.get(workTimeCode);
         }
 
         @Override

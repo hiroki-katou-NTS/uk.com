@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.MapCache;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -121,6 +122,9 @@ public class ScheduleRegisterCommandHandler {
 
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
+    
+    @Inject
+    private ManagedParallelWithContext parallel;
 
     public List<RegisterWorkScheduleOutput> register(ScheduleRegisterCommand command) {
         List<RegisterWorkScheduleOutput> outputs = new ArrayList<RegisterWorkScheduleOutput>();
@@ -133,58 +137,57 @@ public class ScheduleRegisterCommandHandler {
         RequireImp requireImp = new RequireImp(importCodes, employeeList, period);
         // 1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
         ScheduleRegister sr =  command.toDomain();
-        List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = 
-        		sr.getTargets()
-        		  .stream()
-        		  .map(x -> CreateWorkScheduleByImportCode.create(
-        				   requireImp, 
-		                    x.getEmployeeId(), 
-		                    x.getDate(), 
-		                    x.getImportCode(), 
-		                    sr.isOverWrite())
-				  ).collect(Collectors.toList());
-
-        // 2: List<勤務予定の登録処理結果> : anyMatch $.エラーがあるか == true 社員IDを指定して社員を取得する(List<社員ID>)
-        List<String> employeeIds = new ArrayList<String>();
-        resultOfRegisteringWorkSchedule.stream().forEach(x -> {
-            if (x.isHasError()) {
-                employeeIds.add(x.getErrorInformation().get(0).getEmployeeId());
-            }
-        });
-        List<EmployeeImport> employeeImports = empEmployeeAdapter.findByEmpId(employeeIds);
-        employeeImports.stream().forEach(x -> {
-            List<ResultOfRegisteringWorkSchedule> results = resultOfRegisteringWorkSchedule.stream()
-                    .filter(y -> y.isHasError() ? y.getErrorInformation().get(0).getEmployeeId().equals(x.getEmployeeId()) : y.isHasError()).collect(Collectors.toList());
-            results.forEach(result -> {
-               outputs.add(new RegisterWorkScheduleOutput(
-                       x.getEmployeeCode(),
-                       x.getEmployeeName(), 
-                       result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
-                       result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
-                       result.getErrorInformation().get(0).getErrorMessage()));
+        
+        Map<String, List<ScheduleRegisterTarget>> mapTargetBySid = sr.getTargets().stream().
+                collect(Collectors.groupingBy(target -> target.getEmployeeId()));
+        List<List<ScheduleRegisterTarget>> listTargetBySid = mapTargetBySid.entrySet().stream().map(x -> x.getValue())
+                .collect(Collectors.toList());
+        this.parallel.forEach(listTargetBySid, targets -> {
+            List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = 
+                    targets
+                    .stream()
+                    .map(x -> CreateWorkScheduleByImportCode.create(
+                            requireImp, 
+                            x.getEmployeeId(), 
+                            x.getDate(), 
+                            x.getImportCode(), 
+                            sr.isOverWrite())
+                            ).collect(Collectors.toList());
+            // 2: List<勤務予定の登録処理結果> : anyMatch $.エラーがあるか == true 社員IDを指定して社員を取得する(List<社員ID>)
+            List<String> employeeIds = new ArrayList<String>();
+            resultOfRegisteringWorkSchedule.stream().forEach(x -> {
+                if (x.isHasError()) {
+                    employeeIds.add(x.getErrorInformation().get(0).getEmployeeId());
+                }
+            });
+            List<EmployeeImport> employeeImports = empEmployeeAdapter.findByEmpId(employeeIds);
+            employeeImports.stream().forEach(x -> {
+                List<ResultOfRegisteringWorkSchedule> results = resultOfRegisteringWorkSchedule.stream()
+                        .filter(y -> y.isHasError() ? y.getErrorInformation().get(0).getEmployeeId().equals(x.getEmployeeId()) : y.isHasError()).collect(Collectors.toList());
+                results.forEach(result -> {
+                    outputs.add(new RegisterWorkScheduleOutput(
+                            x.getEmployeeCode(),
+                            x.getEmployeeName(), 
+                            result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
+                            result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
+                                    result.getErrorInformation().get(0).getErrorMessage()));
+                });
             });
             
-//            RegisterWorkScheduleOutput output = new RegisterWorkScheduleOutput(
-//                    x.getEmployeeCode(),
-//                    x.getEmployeeName(),
-//                    result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
-//                    result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
-//                    result.getErrorInformation().get(0).getErrorMessage());
-//
-//            outputs.add(output);
-        });
-
-        if (outputs.size() > 0) {
-            return outputs;
-        }
-        // 3: <<call>>
-        resultOfRegisteringWorkSchedule.forEach(result -> {
-            Optional<AtomTask> atomTaskOpt = result.getAtomTask();
-
-            if (atomTaskOpt.isPresent()) {
-                atomTaskOpt.get().run();
+            if (outputs.size() > 0) {
+                return;
             }
+            // 3: <<call>>
+            resultOfRegisteringWorkSchedule.forEach(result -> {
+                Optional<AtomTask> atomTaskOpt = result.getAtomTask();
+                
+                if (atomTaskOpt.isPresent()) {
+                    atomTaskOpt.get().run();
+                }
+            });
         });
+        
+
 
         return outputs;
     }
