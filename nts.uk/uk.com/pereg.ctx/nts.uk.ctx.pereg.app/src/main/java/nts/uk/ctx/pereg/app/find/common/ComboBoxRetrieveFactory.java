@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -319,14 +320,28 @@ public class ComboBoxRetrieveFactory {
 					}
 				}
 				
-				List<String> workTimeCodeList = workTimeSettingRepo.findByCompanyId(companyId).stream()
-		                .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
-		                .map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
-						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
-								workTimeSetting.getWorktimeCode() + JP_SPACE
-										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
-						.collect(Collectors.toList());
+				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId)
+						.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
+				
+				 List<WorkTimeSetting> wktimeSets = workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList);
+				 
+				 List<ComboBoxObject> result = workTimeCodeList.stream().map(code -> {
+					 
+					 Optional<WorkTimeSetting> wktimeSet = wktimeSets.stream().filter(ts -> ts.getWorktimeCode().v().equals(code)).findFirst();
+					 
+					 if(wktimeSet.isPresent()) {
+						 return new ComboBoxObject(code, 
+								 code + JP_SPACE
+								 + wktimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v());
+					 } else {
+						 Map<String, String> mapName = this.workTimeSettingRepo.getCodeNameByListWorkTimeCd(companyId, Arrays.asList(code));
+						 
+						 return new ComboBoxObject(code, 
+								 code + JP_SPACE + mapName.get(code) == null ? TextResource.localize("CPS001_107") : mapName.get(code));
+					 }
+				 }).collect(Collectors.toList());
+				 
+				 return result;
 
 			}
 
