@@ -4,12 +4,14 @@ module nts.uk.ui.at.kdw013.timeheader {
         template:
         `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.params.timesSet, as: 'time' } -->
-                    <td class="fc-day" data-bind="html: $component.formatTime(time.value,time), attr: { 'data-date': time.date }"></td>
+                    <td class="fc-day" style='position: relative;' data-bind="html: $component.formatTime(time.value,time), attr: { 'data-date': time.date }"></td>
                 <!-- /ko -->
                 <style rel="stylesheet">
-                    .warningIcon{
-                         float: right;
-                         cursor: pointer;
+                    .warningIcon {
+                            cursor: pointer;
+                            position: absolute;
+                            left: calc(100% - 16px);
+                            bottom: calc(100% - 19px);
                         }
                     .warningIcon:hover {
                          background-color: rgb(229, 242, 255);
@@ -94,7 +96,7 @@ module nts.uk.ui.at.kdw013.timeheader {
             let icon = vm.isHasWarning(time.date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
             
             setTimeout(()=> { 
-                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '20px', width: 22, height: 22 }, click: () => { vm.OpenIDialog(vm, time); } }); 
+                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { vm.OpenIDialog(vm, time); } }); 
                 $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
             }, 300);
             if (!value) {

@@ -46,8 +46,9 @@ public class StartProcess {
 		result.setManHourInput(manHourInput);
 
 		// 2. call($勤怠項目リスト)
-		AttendanceItemMasterInformationDto itemMasterInfo = this.getWorkDataMasterInformation
-				.getAttendanceItemMasterInformation(collectItemList(manHourInput.getManHrInputDisplayFormat()));
+		List<Integer> attIds = collectItemList(manHourInput.getManHrInputDisplayFormat());
+		attIds.add(28);
+		AttendanceItemMasterInformationDto itemMasterInfo = this.getWorkDataMasterInformation.getAttendanceItemMasterInformation(attIds);
 
 		result.setItemMasterInfo(itemMasterInfo);
 
@@ -70,7 +71,7 @@ public class StartProcess {
 	private List<Integer> collectItemList(Optional<ManHrInputDisplayFormat> ManHrOpt) {
 
 		return ManHrOpt.map(manHr -> manHr.getRecordColumnDisplayItems().stream().map(di -> di.getAttendanceItemId())
-				.collect(Collectors.toList())).orElse(Collections.EMPTY_LIST);
+				.collect(Collectors.toList())).orElse(Collections.emptyList());
 	}
 
 }

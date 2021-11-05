@@ -3,13 +3,22 @@ module nts.uk.ui.at.kdw013.eventheadear {
         name: 'fc-event-header',
         template:
         `<td data-bind="i18n: 'KDW013_20'"></td>
+                               
+
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
-                    <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
-                        <div class="text-note limited-label" data-bind="text: note"></div>
+                    <div style="display: flex;"> 
+                        <div style='text-align: left;display: inline-grid;' data-bind="foreach: { data: day.events, as: 'note' }">
+                            <div class="text-note" data-bind="text: note.title"></div>
+                        </div>
+                        <div style='text-align: left;display: inline-grid;margin-left: 5px;min-width: calc(100% - 65px);' data-bind="foreach: { data: day.events, as: 'note' }">
+                            <div class="text-note limited-label" data-bind="text: note.text"></div>
+                        </div>
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->
+                    <div style="min-height: 20px;">     
                         <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
+                    </div>
                     <!-- /ko -->
                 </td>
                 <!-- /ko -->

@@ -184,10 +184,13 @@ public class GetWorkDataMasterInformation {
     	//List<勤務種類>
     	List<WorkType> workTypes = new ArrayList<>();
     	//「日次の勤怠項目.属性 = コード AND 日次の勤怠項目.マスタの種類 = 勤務種類」がある
-    	if(dailyAttendanceItem.stream().filter(c-> c.getDailyAttendanceAtr().value == DailyAttendanceAtr.Code.value && c.getMasterType().isPresent() && c.getMasterType().get().value == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value).findFirst().isPresent()) {
-        	//<<Public>> 勤務種類をすべて取得する
-    		workTypes = workTypeRepository.findByCompanyId(loginUser.companyId());
-    	}
+		dailyAttendanceItem.stream()
+				.filter(ai -> ai.getDailyAttendanceAtr().equals(DailyAttendanceAtr.Code))
+				.filter(ai -> ai.getMasterType().isPresent() &&  ai.getMasterType().get().equals(TypesMasterRelatedDailyAttendanceItem.WORK_TYPE))
+				.findFirst().ifPresent(ai -> {
+					// <<Public>> 勤務種類をすべて取得する
+					workTypes.addAll(workTypeRepository.findByCompanyId(loginUser.companyId()));
+				});
     	
     	//List<就業時間帯の設定>
     	List<WorkTimeSetting> workTimeSettings = new ArrayList<>();

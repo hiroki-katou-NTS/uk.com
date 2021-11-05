@@ -557,34 +557,38 @@ module nts.uk.ui.at.kdw013.a {
                             .map(date => {
                                 let events: string[] = [];
                                 let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); } )
+                                let manHrContents = _.get(convert, 'manHrContents', []);
+                                let attItemName = _.get(setting, 'attItemName', []);
                                 const workTypes = _.get(setting, 'workTypes');
-                                let wkTypeCd = _.get(_.find(_.get(convert, 'manHrContents', []), hr => { return hr.itemId == 28 }),'value');
+                                
+                                let wkTypeCd = _.get(_.find(manHrContents, hr => { return hr.itemId == 28 }), 'value');
                                     
                                 if (wkTypeCd) {
-
+                                    
                                     let name = _.get(_.find(workTypes, wt => { return wt.workTypeCode == wkTypeCd }), 'name');
-
                                     //PC3_2 PC3_3
-                                    events.push(vm.$i18n('KDW013_67') +' '+ wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')));
+                                    events.push({ title: vm.$i18n('KDW013_67'), text: wkTypeCd + ' ' + (name ? name : vm.$i18n('KDW013_40')) });
                                 }
-                                
-//
-//                                if (end) {
-//                                    const { timeWithDay } = end;
-//
-//                                    if (_.isNumber(timeWithDay)) {
-//                                        //PC3_4
-//                                        events.push(vm.$i18n('KDW013_68', [formatTime(timeWithDay, 'Time_Short_HM')]));
-//                                    }
-//                                }
-//
-//                                if (_.isNumber(breakHours)) {
-//                                    events.push(vm.$i18n('KDW013_23', [formatTime(breakHours, 'Time_Short_HM')]));
-//                                }
-//
-//                                if (_.isNumber(totalWorkingHours)) {
-//                                    events.push(vm.$i18n('KDW013_24', [formatTime(totalWorkingHours, 'Time_Short_HM')]));
-//                                }
+
+                                let start = _.get(_.find(manHrContents, hr => { return hr.itemId == 31 }), 'value');
+                                let end = _.get(_.find(manHrContents, hr => { return hr.itemId == 34 }), 'value');
+
+                                if (start && end) {
+                                    //PC3_4 PC3_5
+                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [formatTime(start, 'Time_Short_HM'), formatTime(end, 'Time_Short_HM')]) });
+                                }
+
+                                let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
+
+                                _.forEach(rdis, rdi => {
+
+                                    let value = _.get(_.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId }), 'value');
+                                    //PC3_6 PC3_7
+                                    if (!_.isNil(value)) {
+                                        events.push({ title: rdi.displayName, text: (formatTime(value, 'Time_Short_HM') || '') });
+                                    }
+
+                                });
 
                                 return { date, events };
                             })

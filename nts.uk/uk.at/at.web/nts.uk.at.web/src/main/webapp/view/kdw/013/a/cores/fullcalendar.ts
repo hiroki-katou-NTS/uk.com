@@ -279,6 +279,9 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-day-sun .fc-col-header-cell-cushion {
             color: #FF2D2D;
         }
+        .fc-container .fc-col-header-cell{
+            position: relative;
+        }
         .fc-container .fc-event-title h4 {
             margin: 0;
             padding: 0;
@@ -371,7 +374,8 @@ module nts.uk.ui.at.kdw013.calendar {
             left: 0% !important;
         }
         .fc-current-day-button{
-            width: 70px;
+            width: 60px;
+            height: 25px;
         }
         .fc-preview-day-button,
         .fc-next-day-button{
@@ -385,7 +389,11 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-toolbar-chunk{
             display: flex;
         }
-        .favIcon{ float:right }
+        .favIcon{
+            position: absolute;
+            left: calc(100% - 20px);
+            bottom: calc(100% - 20px);
+        }
         .favIcon:hover{
                 background-color: rgb(229, 242, 255);
         }
@@ -2044,7 +2052,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         let className = 'fav-' + $(arg.el).find('.fc-scrollgrid-sync-inner').parent().attr('data-date');
                         
                             $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon ` + className + `' ></i>`);
-                            setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 25, height: 25 } }); }, 300);
+                            setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '16px', width: 16, height: 16 } }); }, 300);
                     }
                 }
                 ,
