@@ -926,6 +926,14 @@ public class DailyPerformanceCorrectionProcessor {
 						}
 					} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
 						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
+						if (groupType != null && groupType == TypeLink.DOWORK.value) {
+							Double valueConvert = Double.parseDouble(value);
+							cellDatas.add(new DPCellDataDto(anyChar, valueConvert.equals(0.0) ? false : true, attendanceAtrAsString, DPText.TYPE_LABEL));
+						} else
+							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					} else if(attendanceAtr == DailyAttendanceAtr.NumbericValue.value){
+						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
@@ -1671,13 +1679,16 @@ public class DailyPerformanceCorrectionProcessor {
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
 				} else {
-					/*
+					/* 
 					 * 時間 - thoi gian hh:mm 5, 回数: so lan 2, 金額 : so tien 3, 日数:
 					 * so ngay -
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
-					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+					if (dPItem.getAttendanceAtr().intValue() == DailyAttendanceAtr.NumberOfTime.value && dPItem.getTypeGroup().intValue() == TypeLink.DOWORK.value)
+						columnSetting = new ColumnSetting(key.getKey().isEmpty() ? "" : key.getKey(), false);
+					else
+						columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
 				}
 			}
 			result.getColumnSettings().add(columnSetting);
