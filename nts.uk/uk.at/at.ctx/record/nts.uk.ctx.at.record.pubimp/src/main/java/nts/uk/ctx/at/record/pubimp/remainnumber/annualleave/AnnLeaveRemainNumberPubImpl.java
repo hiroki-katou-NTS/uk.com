@@ -429,7 +429,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 		Double annualLeaveGrantDay = 0.00;
 		for (AnnualLeaveGrantExport annualLeaveGrantExport : annualLeaveGrantExports){
 			// 処理中の「年休付与残数データ．期限日」と「基準日」を比較
-			if (annualLeaveGrantExport.getDeadline().afterOrEquals(date)){
+			if (annualLeaveGrantExport.getDeadline().afterOrEquals(date) || annualLeaveGrantExport.getRemainDays() < 0){
 				// 基準日時点年休残数‥年休残日数に加算
 				annualLeaveGrantDay += annualLeaveGrantExport.getRemainDays();
 			}
