@@ -32,33 +32,34 @@
             />
         </div>
         <div id="contents-area" class="kdr-003">
-            <div id="CCG001" tabindex="-1">
-            </div>
-            <div class="pull-left fixed-flex-layout-left">
-                <div class="employees-list">
-                    <div tabindex="2" id="kcp005" class="panel panel-frame">
+            <div class="container">
+                <div id="CCG001" tabindex="-1">
+                </div>
+                <div class="pull-left fixed-flex-layout-left">
+                    <div class="employees-list">
+                        <div tabindex="2" id="kcp005" class="panel panel-frame">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="pull-left fixed-flex-layout-right">
-                <div class="panel panel-frame">
-                    <div class="panel-row">
-                        <div class="row-left" style="width: 300px;">
-                            <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KDR003_110')">
+                <div class="pull-left fixed-flex-layout-right">
+                    <div class="panel panel-frame">
+                        <div class="panel-row">
+                            <div class="row-left" style="width: 300px;">
+                                <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KDR003_110')">
+                                </div>
+                            </div>
+                            <div class="row-right">
+                                <div class="radios-group" style="width: 300px;">
+                                    <div tabindex="3"
+                                         data-bind="ntsCheckBox: { checked: moreSubstituteHolidaysThanHolidays }"
+                                    >#{i18n.getText('KDR003_10')}</div>
+                                    <div tabindex="4"
+                                         data-bind="ntsCheckBox: { checked: moreHolidaysThanSubstituteHolidays }"
+                                    >#{i18n.getText('KDR003_11')}</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row-right">
-                            <div class="radios-group" style="width: 300px;">
-                                <div tabindex="3"
-                                     data-bind="ntsCheckBox: { checked: moreSubstituteHolidaysThanHolidays }"
-                                >#{i18n.getText('KDR003_10')}</div>
-                                <div tabindex="4"
-                                     data-bind="ntsCheckBox: { checked: moreHolidaysThanSubstituteHolidays }"
-                                >#{i18n.getText('KDR003_11')}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-row valign-center" style="display: flex;">
+                        <div class="panel-row valign-center" style="display: flex;">
                             <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KDR003_12')">
                             </div>
                             <div tabindex="5" style="display: inline-flex;"
@@ -72,9 +73,9 @@
                                             optionsText: 'name',
                                             value: howToPrintDate}">
 
+                            </div>
                         </div>
-                    </div>
-                    <div class="panel-row valign-center" style="display: flex">
+                        <div class="panel-row valign-center" style="display: flex">
                             <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KDR003_15')">
                             </div>
                             <div tabindex="6" style="display: inline-flex;"
@@ -89,6 +90,7 @@
                                             optionsText: 'name',
                                             value: pageBreakSpecification}">
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>

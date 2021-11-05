@@ -71,4 +71,7 @@
 .panel-row .form-label {
     width: 220px;
 }
+.panel.panel-frame{
+    height: 505px;
+}
 
