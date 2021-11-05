@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ * アルゴリズム「就業時間帯名称を取得する」を実行する
  * @author chungnt
  *
  */

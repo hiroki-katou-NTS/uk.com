@@ -1977,17 +1977,17 @@ module nts.custombinding {
                                                     let childDataKDL001: any = getShared('kml001selectedTimes')
 
                                                     if (childData) {
-                                                        // Set name workTime after select workTime in dilog KDL003
+                                                        // Set name workTime after select workTime in dialog KDL003
                                                         if (childData.selectedWorkTimeCode === cbv) {
                                                             def.textValue(cbv + space_character_JP + childData.selectedWorkTimeName);
                                                         }
-                                                        // Set name workTime after select workTime in dilog KDL001
+                                                        // Set name workTime after select workTime in dialog KDL001
                                                     } else if (childDataKDL001 && childDataKDL001.length > 0) {
                                                         if (childDataKDL001[0].selectedWorkTimeCode === cbv) {
                                                             def.textValue(cbv + space_character_JP + childDataKDL001[0].selectedWorkTimeName);
                                                         }
                                                     } else {
-                                                        // Lấy name workTime tròng trường hợp workTime được chọn không được setting.
+                                                        // Lấy name workTime trong trường hợp workTime được chọn không được setting ở màn hình KMK017.
                                                         if (def.defValue) {
                                                             if (def.itemCode === 'IS00131' || def.itemCode === 'IS00140' || def.itemCode === 'IS00194' || def.itemCode === 'IS00203' ||
                                                                 def.itemCode === 'IS00212' || def.itemCode === 'IS00221' || def.itemCode === 'IS00230' || def.itemCode === 'IS00239' ||

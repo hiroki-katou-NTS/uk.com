@@ -320,29 +320,19 @@ public class ComboBoxRetrieveFactory {
 					}
 				}
 				
+				// Get all workTime installed at Kmk017
 				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId)
 						.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-				
-				 List<WorkTimeSetting> wktimeSets = workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList);
-				 
-				 List<ComboBoxObject> result = workTimeCodeList.stream().map(code -> {
-					 
-					 Optional<WorkTimeSetting> wktimeSet = wktimeSets.stream().filter(ts -> ts.getWorktimeCode().v().equals(code)).findFirst();
-					 
-					 if(wktimeSet.isPresent()) {
-						 return new ComboBoxObject(code, 
-								 code + JP_SPACE
-								 + wktimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v());
-					 } else {
-						 Map<String, String> mapName = this.workTimeSettingRepo.getCodeNameByListWorkTimeCd(companyId, Arrays.asList(code));
-						 
-						 return new ComboBoxObject(code, 
-								 code + JP_SPACE + mapName.get(code) == null ? TextResource.localize("CPS001_107") : mapName.get(code));
-					 }
-				 }).collect(Collectors.toList());
-				 
-				 return result;
 
+				// Lấy tên tương ứng của WorkTime được cài đặt ở màn Kmk017
+				// tương ứng với list workTimeCodeList được lấy từ step trước
+				// đó.
+				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
+						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
+								workTimeSetting.getWorktimeCode() + JP_SPACE
+										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
+						.collect(Collectors.toList());
+					
 			}
 
 		case "M00010":
