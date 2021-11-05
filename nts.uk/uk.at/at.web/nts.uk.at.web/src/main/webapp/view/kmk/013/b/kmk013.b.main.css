@@ -197,6 +197,11 @@ table.table-right th, table.table-right td {
   margin-left: 0px !important;
 }
 
+#B4_8 {
+  font-size: 0.9em;
+  white-space: pre;
+}
+
 #B4_9 {
   margin-left: 20px;
 }
