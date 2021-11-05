@@ -1,9 +1,6 @@
 package nts.uk.ctx.exio.app.input.setting;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -64,6 +61,7 @@ public class ExternalImportSettingDto {
 				domain.getCsvFileInfo().getBaseCsvFileId().orElse(""),
 				domainSetting.getAssembly().getMapping().getMappings().stream()
 					.map(m -> ExternalImportLayoutDto.fromDomain(require, domainSetting.getDomainId(), m))
+					.sorted(Comparator.comparing(ExternalImportLayoutDto::getItemNo))
 					.collect(Collectors.toList()));
 	}
 
