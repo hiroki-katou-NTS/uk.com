@@ -46,7 +46,7 @@ module nts.uk.at.view.kdw001.d {
               self.isDisplayCheckbox = ko.observable(false); 
               self.isCheckbox = ko.observable(false);                  
               self.ifCallScreenBToD = ko.observable(false); 
-              self.isCreatingFutureDay = ko.observable(false);
+              self.isCreatingFutureDay = ko.observable(true);
                 
                 //Get screenName value from a screen
                 __viewContext.transferred.ifPresent(data => {
