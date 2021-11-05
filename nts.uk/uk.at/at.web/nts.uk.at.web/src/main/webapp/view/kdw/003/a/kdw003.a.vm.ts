@@ -2886,7 +2886,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 setShared("errorValidate", errorValidateScreeen);
                 setShared("messageKdw003a", (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? null : messageAlert);
                 self.openedScreenB = true;
-                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1270, height : 530} : {width : 900, height : 550}
+                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1260, height : 530} : {width : 900, height : 560}
                 self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml", dialogSize).onClosed(() =>{
                      self.openedScreenB = false;
                      dfd.resolve();
@@ -5433,7 +5433,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let param3 = {
                                 typeDialog: 15,
 								param: {
-							 		taskFrameNo: workFrameNoSelection
+									itemId: self.attendenceId
 								}
                             };
                             service.findAllCodeName(param3).done((data: any) => {
