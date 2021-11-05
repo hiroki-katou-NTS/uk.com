@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.schedule.app.query.schedule.shift.management.shifttable.GetHolidaysByPeriod;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadlineRepository;
+import nts.uk.ctx.at.schedule.dom.importschedule.CapturedRawData;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportResult;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportResultDetail;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportStatus;
@@ -168,15 +169,8 @@ public class ScreenQueryWorkPlaceCheckFile {
         // 1: 取り込む(Require, 取り込み内容)
         long startImport = System.currentTimeMillis();
         System.out.println("Start import");
-        List<GeneralDate> listDateData = data.getContents().stream()
-                .map(content -> GeneralDate.fromString(content.getYmd(), "yyyy/MM/dd"))
-                .distinct().sorted().collect(Collectors.toList());
-        DatePeriod period = listDateData.size() == 0 ? null :
-            new DatePeriod(listDateData.get(0), listDateData.get(listDateData.size() - 1));
-        ImportResult importResult = WorkScheduleImportService.importFrom(
-                new RequireImp(data.getContents().stream().map(x -> x.getEmployeeCode()).distinct().collect(Collectors.toList()), 
-                        data.getContents().stream().map(x -> x.getImportCode()).distinct().collect(Collectors.toList()), period), 
-                        data.toDomain());
+        CapturedRawData rawData = data.toDomain();
+        ImportResult importResult = WorkScheduleImportService.importFrom( new RequireImp( rawData ), rawData );
         long endImport = System.currentTimeMillis();
         System.out.println("Time Import File: " + (endImport - startImport));
 
@@ -319,7 +313,10 @@ public class ScreenQueryWorkPlaceCheckFile {
         
         private final Map<EmployeeAndYmd, ConfirmedATR> workScheConfirmAtrMap;
         
-        public RequireImp(List<String> employeeCodes, List<String> importCodes, DatePeriod period) {
+        public RequireImp(CapturedRawData rawData) {
+
+            List<String> employeeCodes = rawData.getEmployeeCodes();
+            List<String> importCodes = rawData.getContents().stream().map( e -> e.getImportCode().v() ).distinct().collect(Collectors.toList());
             
             shiftMasterCache = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
             
@@ -348,6 +345,10 @@ public class ScreenQueryWorkPlaceCheckFile {
             flexWorkSettingCache = MapCache.incremental(item -> flexWorkSettingRepository.find(AppContexts.user().companyId(), item.v()));
             
             predetemineTimeSettingCache = MapCache.incremental(item -> predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), item.v()));
+            
+            
+            List<GeneralDate> ymdList = rawData.getYmdList();
+            DatePeriod period = ymdList.isEmpty() ? null : new DatePeriod( ymdList.get(0), ymdList.get( ymdList.size() - 1 ) );
             
             List<EmpEnrollPeriodImport> affCompanyHists =  comHisAdapter.getEnrollmentPeriod(employeeIds, period);
             Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
