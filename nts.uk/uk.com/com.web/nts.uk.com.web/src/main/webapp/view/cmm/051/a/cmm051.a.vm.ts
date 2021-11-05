@@ -12,12 +12,13 @@ module nts.uk.com.view.cmm051.a {
     import errors = nts.uk.ui.errors;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
     const API = {
         findAllWkpManager: "at/auth/workplace/manager/findAll/",
         saveWkpManager: "at/auth/workplace/manager/save/",
         deleteWkpManager: "at/auth/workplace/manager/remove/",
         getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/",
-        getDataInit:"com/screen/cmm051/get-data-init"
+        getDataInit: "com/screen/cmm051/get-data-init"
     };
     const SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY = 'SHARE_IN_DIALOG_ADD_UPDATE_HISTORY';
 
@@ -27,7 +28,7 @@ module nts.uk.com.view.cmm051.a {
         // KCP010
         kcp010Model: kcp010.viewmodel.ScreenModel;
         ntsHeaderColumns: KnockoutObservableArray<any> = ko.observableArray([]);
-        historyId : KnockoutObservable<any> = ko.observable("1");
+        historyId: KnockoutObservable<any> = ko.observable("1");
         // Screen mode
         isNewMode: KnockoutObservable<boolean>;
         //Date Range Picker
@@ -57,10 +58,14 @@ module nts.uk.com.view.cmm051.a {
         listEmployee: KnockoutObservableArray<any> = ko.observableArray([]);
         dateHistoryList: KnockoutObservableArray<any> = ko.observableArray([]);
         workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
-        mode:KnockoutObservable<number>= ko.observable(1);
-        workplaceCode: KnockoutObservable<string>= ko.observable("");
-        workplaceName: KnockoutObservable<string>= ko.observable("");
+        workPlaceList: KnockoutObservableArray<string> = ko.observableArray([]);
+        mode: KnockoutObservable<number>;
+        workplaceCode: KnockoutObservable<string> = ko.observable("");
+        workplaceName: KnockoutObservable<string> = ko.observable("");
         selectedCode: KnockoutObservable<string>;
+        wplaceSelectedId: KnockoutObservable<string>;
+        columns: KnockoutObservableArray<NtsGridListColumn>;
+
         constructor(params: any) {
             super();
             let vm = this;
@@ -70,50 +75,66 @@ module nts.uk.com.view.cmm051.a {
                 targetBtnText: nts.uk.resource.getText("KCP010_3"),
                 tabIndex: 4
             };
-            let listDatePeriod : any = [];
+            let listDatePeriod: any = [];
 
-            for (let i = 0; i <10;i++){
+            for (let i = 0; i < 10; i++) {
                 listDatePeriod.push({
                     id: i,
                     display: "AAAAAAAAAA"
                 })
             }
             vm.dateHistoryList(listDatePeriod);
-            vm.initScreen();
+            vm.mode.subscribe((mode)=>{
+                vm.initScreen(mode);
+            });
+            vm.mode(Mode.WPL);
             vm.isNewMode = ko.observable(false);
             vm.ntsHeaderColumns = ko.observableArray([
-                { headerText: '', key: 'code', hidden: true },
-                { headerText: '', key: 'display', formatter: _.escape }
+                {headerText: '', key: 'code', hidden: true},
+                {headerText: '', key: 'display', formatter: _.escape}
+            ]);
+            vm.columns = ko.observableArray([
+                {headerText: '', key: 'id', hidden: true},
+                {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 100},
+                {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 300}
             ]);
         }
-        initScreen(){
+
+        initScreen(mode: number) {
             let vm = this;
-            let workplaceManagerList : any[] = [];
-            let listEmployee : any[] = [] ;
-            let personList : any[] = [] ;
-            block.invisible();
-            vm.$ajax('com', API.getDataInit).done((data)=>{
-                if(!isNullOrUndefined(data)){
-                    vm.workplaceCode(data.workplaceInfoImport.workplaceCode);
-                    vm.workplaceName(data.workplaceInfoImport.workplaceName);
-                    workplaceManagerList = data.employeeInformation.workplaceManagerList;
-                    listEmployee = data.employeeInformation.listEmployee;
-                    personList = data.employeeInformation.personList;
-                    vm.setData(workplaceManagerList,listEmployee,personList);
-                }
-            }).always(()=>{
-                block.clear();
-            }).fail(()=>{
-            })
+            if(mode == Mode.WPL){
+                let workplaceManagerList: any[] = [];
+                let listEmployee: any[] = [];
+                let personList: any[] = [];
+                block.invisible();
+                vm.$ajax('com', API.getDataInit).done((data) => {
+                    if (!isNullOrUndefined(data)) {
+                        vm.workplaceCode(data.workplaceInfoImport.workplaceCode);
+                        vm.workplaceName(data.workplaceInfoImport.workplaceName);
+                        workplaceManagerList = data.employeeInformation.workplaceManagerList;
+                        listEmployee = data.employeeInformation.listEmployee;
+                        personList = data.employeeInformation.personList;
+                        vm.setData(workplaceManagerList, listEmployee, personList);
+                    }
+                }).always(() => {
+                    block.clear();
+                }).fail(() => {
+                })
+            }
+            if(mode == Mode.EMPLOYMENT){
+
+            }
+
         }
-        setData(workplaceManagerList : any[],listEmployee : any[] ,personList : any[]) :void{
+
+        setData(workplaceManagerList: any[], listEmployee: any[], personList: any[]): void {
             let vm = this;
-            let emps : any = [];
-            if(!isNullOrEmpty(personList) && !isNullOrEmpty(listEmployee)){
-                for (let i =0;i<listEmployee.length;i++){
-                    let  em = listEmployee[i];
-                    let info  = _.find(personList,(e)=>e.pid == em.personId);
-                    if(!isNullOrUndefined(info)){
+            let emps: any = [];
+            if (!isNullOrEmpty(personList) && !isNullOrEmpty(listEmployee)) {
+                for (let i = 0; i < listEmployee.length; i++) {
+                    let em = listEmployee[i];
+                    let info = _.find(personList, (e) => e.pid == em.personId);
+                    if (!isNullOrUndefined(info)) {
                         emps.push({
                             id: em.employeeId,
                             code: em.employeeCode,
@@ -123,12 +144,13 @@ module nts.uk.com.view.cmm051.a {
 
                 }
                 vm.employInfors(emps);
-                if(!isNullOrEmpty(emps)){
+                if (!isNullOrEmpty(emps)) {
                     vm.multiSelectedCode(emps[0].code);
                 }
                 vm.KCP005_load();
             }
         }
+
         KCP005_load() {
             let vm = this;
             vm.baseDate = ko.observable(new Date());
@@ -172,6 +194,7 @@ module nts.uk.com.view.cmm051.a {
             dfd.resolve();
             return dfd.promise();
         }
+
         mounted() {
             let vm = this;
             vm.multiSelectedCode.subscribe((e) => {
@@ -284,27 +307,30 @@ module nts.uk.com.view.cmm051.a {
                 }
             );
         }
-        openDialogA32(){
+
+        openDialogA32() {
             let vm = this;
             let mode = vm.mode();
-            if(mode == 1){
+            if (mode == 1) {
                 vm.openDialogCDL009()
-            }else if(mode ==0){
+            } else if (mode == 0) {
                 vm.openCDL008Dialog()
             }
 
         }
-        openDialogA62(){
+
+        openDialogA62() {
             let vm = this;
             let mode = vm.mode();
-            if(mode == 1){
+            if (mode == 1) {
                 vm.openCDL008Dialog()
-            }else if(mode ==0){
+            } else if (mode == 0) {
                 vm.openDialogCDL009()
 
             }
 
         }
+
         // 社員選択 button
         openDialogCDL009() {
             let vm = this;
@@ -359,6 +385,7 @@ module nts.uk.com.view.cmm051.a {
 
             return command;
         }
+
         /**
          * Screen D - openAddHistoryDialog
          */
@@ -368,11 +395,12 @@ module nts.uk.com.view.cmm051.a {
                 isCreate: true,
                 isUpdate: false
             };
-            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY,dataToScreenB);
+            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY, dataToScreenB);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
 
             });
         }
+
         /**
          * Screen E - openUpdateHistoryDialog
          */
@@ -382,20 +410,22 @@ module nts.uk.com.view.cmm051.a {
                 isCreate: false,
                 isUpdate: true
             };
-            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY,dataToScreenB);
+            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY, dataToScreenB);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
 
             });
         }
+
         public removeHistory(): void {
             let _self = this;
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
-                    .ifYes(() => {
-                        nts.uk.ui.block.grayout();
-                    })
-                    .ifNo(() => {
-                    });
+            nts.uk.ui.dialog.confirm({messageId: "Msg_18"})
+                .ifYes(() => {
+                    nts.uk.ui.block.grayout();
+                })
+                .ifNo(() => {
+                });
         }
+
         openCDL008Dialog(): void {
             const vm = this;
             const inputCDL008: any = {
@@ -420,6 +450,7 @@ module nts.uk.com.view.cmm051.a {
         }
 
     }
+
     enum SystemType {
         PERSONAL_INFORMATION = 1,
         EMPLOYMENT = 2,
@@ -427,10 +458,12 @@ module nts.uk.com.view.cmm051.a {
         HUMAN_RESOURCES = 4,
         ADMINISTRATOR = 5
     }
+
     enum StartMode {
         WORKPLACE = 0,
         DEPARTMENT = 1
     }
+
     /**
      * Interface ComponentOption of KCP010
      */
@@ -473,11 +506,17 @@ module nts.uk.com.view.cmm051.a {
         code: string;
         isAlreadySetting: boolean;
     }
+
     export class ListType {
         static EMPLOYMENT = 1;
         static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+    }
+
+    export class Mode {
+        static EMPLOYMENT = 0;
+        static WPL = 1;
     }
 
 }

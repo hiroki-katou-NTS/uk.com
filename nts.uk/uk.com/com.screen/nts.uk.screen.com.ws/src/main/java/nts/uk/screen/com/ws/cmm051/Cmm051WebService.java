@@ -29,7 +29,7 @@ public class Cmm051WebService extends WebService {
 
     @Path("get-wpl-manager")
     @POST
-    public List<WorkplaceManager> getListWplMn(WplParamDto param){
+    public List<WorkplaceManagerDto> getListWplMn(WplParamDto param){
         return getWorkplaceManagerScreenQuery.getListWplInfo(param.getWorkplaceId(),param.getSid());
     }
 

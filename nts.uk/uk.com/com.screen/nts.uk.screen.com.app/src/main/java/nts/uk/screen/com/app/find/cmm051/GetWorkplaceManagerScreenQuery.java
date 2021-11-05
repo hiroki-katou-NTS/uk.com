@@ -7,6 +7,7 @@ import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Screen query: UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM051_職場管理者の登録.A:職場管理者の登録.メニュー別OCD.職場管理者を取得する
@@ -18,8 +19,9 @@ public class GetWorkplaceManagerScreenQuery {
     @Inject
     private WorkplaceManagerRepository workplaceManagerRepository;
 
-    public List<WorkplaceManager> getListWplInfo(String workplaceId, String sid) {
+    public List<WorkplaceManagerDto> getListWplInfo(String workplaceId, String sid) {
         return workplaceManagerRepository
-                .getWkpManagerByWorkplaceIdAndSid(workplaceId, sid);
+                .getWkpManagerByWorkplaceIdAndSid(workplaceId, sid).stream()
+                .map(WorkplaceManagerDto::new).collect(Collectors.toList());
     }
 }
