@@ -201,7 +201,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                                 request.employeeIds.push(item.sid);
                             }
                         }
-                        request.isRegistered = 0;
+                        request.isRegistered = 1;
                         request.dispItemCol = true;
                         if (!vm.isOpenKDL053) {
                             vm.$window.modeless('at', '/view/kdl/053/a/index.xhtml', request).then(() => {
