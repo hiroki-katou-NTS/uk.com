@@ -2,6 +2,14 @@
   width: 100px;
 }
 
+.control-group.valign-center {
+  margin-left: 20px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
 #G4_2 {
   width: 100px;
 }
