@@ -393,6 +393,28 @@ public class WorkInformation implements Serializable{
 		Optional<WorkStyle> workStyle = this.getWorkStyle(require);
 		return workStyle.isPresent() && !(workStyle.get() == WorkStyle.ONE_DAY_REST);
 	}
+	
+	/**
+	 * 直行であるか
+	 * @param require
+	 * @return
+	 */
+	public boolean isGoStraight(Require require) {
+		val workType = require.getWorkType( this.workTypeCode.v() );
+		
+		return workType.isPresent() && workType.get().isAttendanceTimeAutoSet();
+	}
+	
+	/**
+	 * 直帰であるか
+	 * @param require
+	 * @return
+	 */
+	public boolean isBackStraight(Require require) {
+		val workType = require.getWorkType( this.workTypeCode.v() );
+		
+		return workType.isPresent() && workType.get().isLeaveTimeAutoSet();
+	}
 
 	public static interface Require
 		extends	WorkTimeSetting.Require
