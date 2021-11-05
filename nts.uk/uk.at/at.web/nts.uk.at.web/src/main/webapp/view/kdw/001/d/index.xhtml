@@ -42,7 +42,9 @@
 			<div class="label" data-bind= "text: periodDate, visible: showPeriodTime" ></div>
 		</div>
     <br></br>
-    <label id="D1_7" data-bind="hidden: isCreatingFutureDay">#{i18n.getText('KDW001_125')}</label>
+    <com:ko-if bind="!isCreatingFutureDay()">
+      <label id="D1_7">#{i18n.getText('KDW001_125')}</label>
+    </com:ko-if>
     <br></br>
 		<div id="label19" data-bind="ntsFormLabel: {}">#{i18n.getText('KDW001_20')}</div>
 		
