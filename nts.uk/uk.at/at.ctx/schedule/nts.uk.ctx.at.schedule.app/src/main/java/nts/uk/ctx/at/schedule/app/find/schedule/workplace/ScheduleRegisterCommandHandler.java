@@ -135,14 +135,15 @@ public class ScheduleRegisterCommandHandler {
                 .distinct().sorted().collect(Collectors.toList());
         DatePeriod period = dates.size() > 0 ? new DatePeriod(dates.get(0), dates.get(dates.size() - 1)) : null;
         RequireImp requireImp = new RequireImp(importCodes, employeeList, period);
-        // 1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
         ScheduleRegister sr =  command.toDomain();
         
         Map<String, List<ScheduleRegisterTarget>> mapTargetBySid = sr.getTargets().stream().
                 collect(Collectors.groupingBy(target -> target.getEmployeeId()));
         List<List<ScheduleRegisterTarget>> listTargetBySid = mapTargetBySid.entrySet().stream().map(x -> x.getValue())
                 .collect(Collectors.toList());
+        List<String> employeeIds = new ArrayList<String>();
         this.parallel.forEach(listTargetBySid, targets -> {
+            // 1.1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
             List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = 
                     targets
                     .stream()
@@ -153,8 +154,21 @@ public class ScheduleRegisterCommandHandler {
                             x.getImportCode(), 
                             sr.isOverWrite())
                             ).collect(Collectors.toList());
+            
+            // 1.2: <call>
+            if (outputs.size() > 0) {
+                return;
+            }
+            resultOfRegisteringWorkSchedule.stream().filter(result -> !result.isHasError()).collect(Collectors.toList())
+            .forEach(result -> {
+                Optional<AtomTask> atomTaskOpt = result.getAtomTask();
+                
+                if (atomTaskOpt.isPresent()) {
+                    atomTaskOpt.get().run();
+                }
+            });
+            
             // 2: List<勤務予定の登録処理結果> : anyMatch $.エラーがあるか == true 社員IDを指定して社員を取得する(List<社員ID>)
-            List<String> employeeIds = new ArrayList<String>();
             resultOfRegisteringWorkSchedule.stream().forEach(x -> {
                 if (x.isHasError()) {
                     employeeIds.add(x.getErrorInformation().get(0).getEmployeeId());
@@ -172,18 +186,6 @@ public class ScheduleRegisterCommandHandler {
                             result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
                                     result.getErrorInformation().get(0).getErrorMessage()));
                 });
-            });
-            
-            if (outputs.size() > 0) {
-                return;
-            }
-            // 3: <<call>>
-            resultOfRegisteringWorkSchedule.forEach(result -> {
-                Optional<AtomTask> atomTaskOpt = result.getAtomTask();
-                
-                if (atomTaskOpt.isPresent()) {
-                    atomTaskOpt.get().run();
-                }
             });
         });
         
