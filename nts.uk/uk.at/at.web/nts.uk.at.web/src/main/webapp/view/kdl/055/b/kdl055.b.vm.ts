@@ -169,7 +169,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         let errors: any[] = [];
             
                         _.forEach(res, (errorItem) => {
-                            let err: any = { columnKey: 'nameHeader', id: null, index: null, message: errorItem.errorMessage };
+                            let err: any = { columnKey: 'nameHeader', id: null, index: null, message: errorItem.errorMessage, isErrorGrid: true };
                             
                             if (errorItem.employeeCode) {
                                 for (let i = 0; i < vm.data.listPersonEmp.length; i++) {
