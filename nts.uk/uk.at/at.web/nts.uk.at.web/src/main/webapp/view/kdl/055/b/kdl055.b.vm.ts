@@ -13,6 +13,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         filename: KnockoutObservable<string> = ko.observable(null);
         gridOptions: any = { dataSource: [], columns: [], features: [], ntsControls: [] };
         data: CaptureDataOutput = null;
+        errorList: any[] = [];
         isOpenKDL053: boolean = false;
         isEnableRegister: KnockoutObservable<boolean> = ko.observable(true);
         isEnableOpenKDL053: KnockoutObservable<boolean> = ko.observable(false);
@@ -83,7 +84,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                             this.isEnableRegister(true);
                         }
                         
-                        if (errors.length > 0) {
+                        if (vm.errorList.length > 0) {
                             this.isEnableOpenKDL053(true);
                         } else {
                             this.isEnableOpenKDL053(false);
@@ -145,6 +146,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 if (res) {
                     // reset list data fail
                     vm.data.mappingErrorList = [];
+                    vm.errorList = [];
 
                     if (res.length > 0) {
                         let request: any = {};
@@ -157,6 +159,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
                             let error: MappingErrorOutput = {employeeCode: errorItem.employeeCode, employeeName: errorItem.employeename, date: errorItem.date, errorMessage: errorItem.errorMessage};
                             vm.data.mappingErrorList.push(error);
+                            vm.errorList.push(error);
                             vm.$blockui("hide");
 
                         });
@@ -189,13 +192,13 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                         // open KDL053
                         request.employeeIds = _.map(vm.data.listPersonEmp, (item) => item.employeeId);
                         let empList = vm.data.listPersonEmp;
-                        for (let i = 0; i < vm.data.mappingErrorList.length; i++) {
-                            let empFilter = _.filter(empList, {'employeeCode': vm.data.mappingErrorList[i].employeeCode});
+                        for (let i = 0; i < vm.errorList.length; i++) {
+                            let empFilter = _.filter(empList, {'employeeCode': vm.errorList[i].employeeCode});
                             let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
 
-                            let item: any = {id: i, sid: empId, scd: vm.data.mappingErrorList[i].employeeCode == null ? '' : vm.data.mappingErrorList[i].employeeCode, 
-                                empName: vm.data.mappingErrorList[i].employeeName == null ? '' : vm.data.mappingErrorList[i].employeeName, 
-                                date: vm.data.mappingErrorList[i].date == null ? '' : vm.data.mappingErrorList[i].date, attendanceItemId: null, errorMessage: vm.data.mappingErrorList[i].errorMessage};
+                            let item: any = {id: i, sid: empId, scd: vm.errorList[i].employeeCode == null ? '' : vm.errorList[i].employeeCode, 
+                                empName: vm.errorList[i].employeeName == null ? '' : vm.errorList[i].employeeName, 
+                                date: vm.errorList[i].date == null ? '' : vm.errorList[i].date, attendanceItemId: null, errorMessage: vm.errorList[i].errorMessage};
                             request.errorRegistrationList.push(item);
                             if (!request.employeeIds.includes(item.sid)) {
                                 request.employeeIds.push(item.sid);
@@ -228,20 +231,48 @@ module nts.uk.at.view.kdl055.b.viewmodel {
         openKDL053() {
             const vm = this;
 
-            let errorList = $('#grid').mGrid('errors');
+            let errorListGrid = $('#grid').mGrid('errors');
+            let errorList = vm.errorList;
             let empList = vm.data.listPersonEmp;
             let empIds: any[] = [];
             let request: any = {};
             request.errorRegistrationList = [];
 
+            // remove error from grid to errorList
+            let errorListFilter = errorList.filter(x => x.isErrorGrid);
+            errorListFilter.forEach(err => {
+                err.employeeId = _.filter(vm.data.listPersonEmp, x => x.employeeCode === err.employeeCode)[0].employeeId;
+                if (_.filter(errorListGrid, x => (x.rowId === err.employeeId && x.columnKey === err.date)).length === 0) {
+                    errorList = _.filter(errorList, x => !(x.employeeId === err.employeeId && x.date === err.date));
+                }
+            });
+
+            // add error from grid to errorList
+            errorListGrid.forEach(err => {
+                if (_.filter(errorListFilter, x => (x.employeeId === err.rowId && x.date === err.columnKey)).length === 0) {
+                    let emp = _.filter(vm.data.listPersonEmp, x => x.employeeId === err.rowId)[0];
+                    let item = {
+                        date: err.columnKey, 
+                        employeeCode: emp.employeeCode, 
+                        employeeName: emp.businessName, 
+                        errorMessage: err.message, 
+                        isErrorGrid: true
+                    }
+                    errorList.push(item);
+                }
+            })
+
+            vm.errorList = errorList;
+
+            // add item from error list to param open KDL053
             for (let i = errorList.length - 1; i >= 0; i--) {
-                let empId = errorList[i].rowId;
+                let empCode = errorList[i].employeeCode;
+                let empFilter = _.filter(empList, {'employeeCode': empCode});
+                let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
                 empIds.push(empId);
-                let empFilter = _.filter(empList, {'employeeId': empId});
-                let empCode = empFilter.length > 0 ? empFilter[0].employeeCode : '';
                 let empname = empFilter.length > 0 ? empFilter[0].businessName : '';
-                let item: any = {id: errorList[i].index, sid: empId, scd: empCode, empName: empname, 
-                            date: errorList[i].columnKey, attendanceItemId: null, errorMessage: errorList[i].message};
+                let item: any = {id: i, sid: empId, scd: empCode, empName: empname, 
+                            date: errorList[i].date, attendanceItemId: null, errorMessage: errorList[i].errorMessage};
                 request.errorRegistrationList.push(item);
                 if (!empIds.includes(item.sid)) {
                     empIds.push(item.sid);
@@ -345,11 +376,13 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             console.log('5');
 
             let mappingErrorList = param.mappingErrorList;
+            vm.errorList = mappingErrorList;
+            vm.errorList.map(error => error.isErrorGrid = false);
             let errors: any[] = [];
             let results = vm.data.importResult.results;
             let listPersonEmp = vm.sortListEmpInfo(param.listPersonEmp, param.importResult.orderOfEmployees);
             
-            _.forEach(mappingErrorList, (error: MappingErrorOutput) => {
+            _.forEach(vm.errorList, (error: MappingErrorOutput) => {
                 let err: any = { columnKey: 'nameHeader', id: null, index: null, message: error.errorMessage };
                 
                 if (error.employeeCode) {
@@ -370,6 +403,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                     if (result.employeeId === err.id && result.ymd === err.columnKey) {
                         if ([6, 7].includes(result.status) && err.index != null) {
                             errors.push(err);
+                            error.isErrorGrid = true;
                         }
                     }
                 });
@@ -377,19 +411,19 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
             $("#grid").mGrid("setErrors", errors);
 
-            if (mappingErrorList.length > 0) {
+            if (vm.errorList.length > 0) {
                 let request: any = {};
                 request.employeeIds = _.map(param.listPersonEmp, (item) => item.employeeId);
                 request.errorRegistrationList = [];
-                for (let i = 0; i < mappingErrorList.length; i++) {
+                for (let i = 0; i < vm.errorList.length; i++) {
                     let empList = vm.data.listPersonEmp;
-                    let empFilter = _.filter(empList, {'employeeCode': mappingErrorList[i].employeeCode});
+                    let empFilter = _.filter(empList, {'employeeCode': vm.errorList[i].employeeCode});
                     let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
 
 
-                    let item: any = {id: i, sid: empId, scd: mappingErrorList[i].employeeCode == null ? '' : mappingErrorList[i].employeeCode, 
-                        empName: mappingErrorList[i].employeeName == null ? '' : mappingErrorList[i].employeeName, 
-                        date: mappingErrorList[i].date == null ? '' : mappingErrorList[i].date, attendanceItemId: null, errorMessage: mappingErrorList[i].errorMessage};
+                    let item: any = {id: i, sid: empId, scd: vm.errorList[i].employeeCode == null ? '' : vm.errorList[i].employeeCode, 
+                        empName: vm.errorList[i].employeeName == null ? '' : vm.errorList[i].employeeName, 
+                        date: vm.errorList[i].date == null ? '' : vm.errorList[i].date, attendanceItemId: null, errorMessage: vm.errorList[i].errorMessage};
                     request.errorRegistrationList.push(item);
                     if (!request.employeeIds.includes(item.sid)) {
                         request.employeeIds.push(item.sid);
