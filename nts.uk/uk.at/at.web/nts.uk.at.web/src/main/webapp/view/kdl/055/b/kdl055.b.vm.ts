@@ -159,6 +159,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
                             let error: MappingErrorOutput = {employeeCode: errorItem.employeeCode, employeeName: errorItem.employeename, date: errorItem.date, errorMessage: errorItem.errorMessage};
                             vm.data.mappingErrorList.push(error);
+                            error.isErrorGrid = true;
                             vm.errorList.push(error);
                             vm.$blockui("hide");
 
