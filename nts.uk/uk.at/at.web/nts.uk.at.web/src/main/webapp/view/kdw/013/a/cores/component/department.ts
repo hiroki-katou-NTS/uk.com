@@ -30,6 +30,7 @@ module nts.uk.ui.at.kdw013.department {
         mode: KnockoutObservable<boolean>;
         employee: KnockoutObservable<string>;
         $settings: KnockoutObservable<a.StartProcessDto | null>;
+        screenA: nts.uk.ui.at.kdw013.a.ViewModel;
 };
 
 @component({
@@ -186,9 +187,10 @@ constructor(private params: EmployeeDepartmentParams) {
 
 OpenKDialog(){
     const vm = this;
-    vm.$window.modal('at', '/view/kdw/013/k/index.xhtml', { date: moment().toDate() }).then(() => {
-
-
+    
+    vm.$window.modal('at', '/view/kdw/013/k/index.xhtml', { date: vm.params.screenA.inputDate() || vm.$date.now() }).then((result) => {
+        if (result)
+            vm.params.screenA.inputDate(result);
     });
 }
 

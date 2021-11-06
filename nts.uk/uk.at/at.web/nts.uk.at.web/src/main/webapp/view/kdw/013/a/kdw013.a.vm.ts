@@ -15,7 +15,7 @@ module nts.uk.ui.at.kdw013.a {
         DECLARE_APPLICATION = 4
 
     };
-
+    const BREAKTIME_COLOR = '#ff99ff';
     const { formatTime, setTimeOfDate, getTimeOfDate, getTask, getBackground, getTitles } = share;
     const { randomId } = nts.uk.util;
 
@@ -117,7 +117,9 @@ module nts.uk.ui.at.kdw013.a {
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
-
+        //biến này để phục vụ việc lấy data khi thay đổi ở màn K  
+        inputDate: KnockoutObservable<Date> = ko.observable();
+    
         employee: KnockoutObservable<string> = ko.observable('');
 
         confirmers!: KnockoutComputed<calendar.Employee[]>;
@@ -217,33 +219,33 @@ module nts.uk.ui.at.kdw013.a {
                         
                         
                         let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
-                        
-                        _.forEach(_.get(ld, 'breakTime.breakTimeSheets',[]), bt => {
-                            frameNos.push(bt.no);
-                            events.push(
-                                {
-                                    start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
-                                    end: setTimeOfDate(moment(ld.ymd).toDate(), bt.end),
-                                    title: vm.$i18n('KDW013_79'),
-                                    backgroundColor: '#fbb3fb',
-                                    textColor: '',
-                                    extendedProps: {
-                                        no: bt.no,
-                                        breakTime: bt.breakTime,
-                                        id: randomId(),
-                                        status: 'normal' as any,
-                                        isTimeBreak: true,
-                                        isChanged: false,
-                                        taskBlock: {
-                                            manHrContents,
-                                            taskDetails: []
-                                        }
-                                    } as any
-                                }
+                        if (ko.unwrap(vm.isShowBreakTime)) {
+                            _.forEach(_.get(ld, 'breakTime.breakTimeSheets', []), bt => {
+                                frameNos.push(bt.no);
+                                events.push(
+                                    {
+                                        start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
+                                        end: setTimeOfDate(moment(ld.ymd).toDate(), bt.end),
+                                        title: vm.$i18n('KDW013_79'),
+                                        backgroundColor: BREAKTIME_COLOR,
+                                        textColor: '',
+                                        extendedProps: {
+                                            no: bt.no,
+                                            breakTime: bt.breakTime,
+                                            id: randomId(),
+                                            status: 'normal' as any,
+                                            isTimeBreak: true,
+                                            isChanged: false,
+                                            taskBlock: {
+                                                manHrContents,
+                                                taskDetails: []
+                                            }
+                                        } as any
+                                    }
 
-                            );
-                        });
-                        
+                                );
+                            });
+                        }
                         _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
                             const {taskDetails, caltimeSpan} = tb;
                             const ts = _.find(_.get(ld, 'ouenTimeSheet', []), ot => ot.workNo == _.get(taskDetails[0], 'supNo', null));
@@ -401,6 +403,10 @@ module nts.uk.ui.at.kdw013.a {
                 // URLの値元に画面モードを判定する
                 vm.editable(mode === '0');
             }
+            
+            vm.inputDate.subscribe((date)=>{
+                vm.reLoad();
+            });
 
             ko.computed({
                 read: () => {
@@ -585,7 +591,7 @@ module nts.uk.ui.at.kdw013.a {
                                     let value = _.get(_.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId }), 'value');
                                     //PC3_6 PC3_7
                                     if (!_.isNil(value)) {
-                                        events.push({ title: rdi.displayName, text: (formatTime(value, 'Time_Short_HM') || '') });
+                                        events.push({ title: rdi.displayName, text: !_.isNaN(Number(value)) ? (formatTime(value, 'Time_Short_HM')) : value });
                                     }
 
                                 });
@@ -598,11 +604,11 @@ module nts.uk.ui.at.kdw013.a {
                     return [] as calendar.AttendanceTime[];
                 }
             }).extend({ rateLimit: 500 });
-
+            let inputDate = ko.unwrap(vm.inputDate);
             // get settings Msg_1960
             vm
                 .$blockui('grayout')
-                .then(() => vm.$ajax('at', API.START))
+                .then(() => vm.$ajax('at', API.START, { inputDate }))
                 .fail(function(error) {
                     vm.$dialog.error({ messageId: error.messageId });
                 })
@@ -686,9 +692,10 @@ module nts.uk.ui.at.kdw013.a {
 
         reLoad(){
             const vm = this;
+            let inputDate = ko.unwrap(vm.inputDate);
             vm
                 .$blockui('grayout')
-                .then(() => vm.$ajax('at', API.START))
+                .then(() => vm.$ajax('at', API.START, { inputDate }))
                 .fail(function(error) {
                     vm.$dialog.error({ messageId: error.messageId });
                 })

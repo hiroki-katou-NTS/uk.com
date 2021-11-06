@@ -69,7 +69,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
     const CM2KBC = /([a-z0-9]|(?=[A-Z]))([A-Z])/g;
     const toKebabCase = (s: string) => s.replace(CM2KBC, '$1-$2').toLowerCase();
-
+    const BREAKTIME_COLOR = '#ff99ff';
     const GROUP_ID = 'groupId';
     const BORDER_COLOR = 'borderColor';
     const BLACK = '#000';
@@ -374,8 +374,7 @@ module nts.uk.ui.at.kdw013.calendar {
             left: 0% !important;
         }
         .fc-current-day-button{
-            width: 60px;
-            height: 25px;
+            width: 72px;
         }
         .fc-preview-day-button,
         .fc-next-day-button{
@@ -644,7 +643,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     mode: $component.params.editable,
                     employee: $component.params.employee,
                     initialDate: $component.params.initialDate,
-                    $settings: $component.params.$settings
+                    $settings: $component.params.$settings,
+                    screenA:$component.params.screenA
                 "></div>
             <div class="fc-employees confirmer" data-bind="
                     kdw013-approveds: 'kdw013-approveds',
@@ -1244,30 +1244,24 @@ module nts.uk.ui.at.kdw013.calendar {
                 });
 
             isShowBreakTime.subscribe(value => {
-                    let currentDate = vm.params.initialDate();
-                    let breakEventInDay = _.chain(vm.calendar.getEvents())
-                            .filter((evn) => { return moment(evn.start).isSame(moment(currentDate), 'days'); })
-                            .filter((evn) => { return evn.extendedProps.isTimeBreak == true })
-                            .value();
                     if(!value){
-                       _.forEach(breakEventInDay, e => e.remove());
-                        mutatedEvents();
-                        return;
-                    }
-                    if (breakEventInDay.length) {
+                        events(_.chain(events())
+                            .filter((evn) => { return evn.extendedProps.isTimeBreak == false })
+                            .value());
+
+                        updateEvents();
                         return;
                     }
                     let data =  ko.unwrap(vm.params.$datas);
                     const {estimateZones} = data;
                     
                     _.forEach(estimateZones, etz => {
-                        if (moment(etz.ymd).isSame(moment(currentDate), 'days')) {
                             const {breakTimeSheets} = etz;
                             _.forEach(breakTimeSheets, bts => {
-                                let start = moment(currentDate).set('hour', bts.start / 60).set('minute', bts.start % 60).toDate();
-                                let end = moment(currentDate).set('hour', bts.end / 60).set('minute', bts.end % 60).toDate();
+                                let start = moment(etz.ymd).set('hour', bts.start / 60).set('minute', bts.start % 60).toDate();
+                                let end = moment(etz.ymd).set('hour', bts.end / 60).set('minute', bts.end % 60).toDate();
                                 
-                                let { manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(currentDate), 'days'));
+                                let { manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(etz.ymd), 'days'));
                                 const {no, breakTime} = bts;
                                 events.push({
                                     id: randomId(),
@@ -1275,7 +1269,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     start,
                                     end,
                                     textColor: '',
-                                    backgroundColor: '#fbb3fb',
+                                    backgroundColor: BREAKTIME_COLOR,
                                     extendedProps: {
                                         no,
                                         breakTime,
@@ -1289,7 +1283,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     } as any
                                 });
                             });
-                        }
+                        
                     });
                 
                 updateEvents();
@@ -2095,6 +2089,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 let eventInDay = _.chain(vm.params.screenA.events())
                                                     .filter((evn) => { return moment(date).isSame(evn.start, 'days'); })
                                                     .filter((evn) => { return !evn.extendedProps.isTimeBreak})
+                                                    .filter((evn) => { return evn.start && evn.end })
+                                                    .filter((evn) => { return getTimeOfDate(evn.start) && (evn.end) })
                                                     .sortBy('end')
                                                     .value();
                                                 
@@ -2892,17 +2888,33 @@ module nts.uk.ui.at.kdw013.calendar {
                         _.forEach(eventInDay, e => e.remove());
                         // add event   
                         _.each( _.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
-                            let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60);
-                            let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60);
+                            let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60).toDate();
+                            let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60).toDate();
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
                             let [first] = task.taskContents;
                             let wg = {
-                                workCD1: _.get(extendedProps, 'task.taskContents[0].taskContent.taskCode', null),
-                                workCD2: _.get(extendedProps, 'task.taskContents[1].taskContent.taskCode', null),
-                                workCD3: _.get(extendedProps, 'task.taskContents[2].taskContent.taskCode', null),
-                                workCD4: _.get(extendedProps, 'task.taskContents[3].taskContent.taskCode', null),
-                                workCD5: _.get(extendedProps, 'task.taskContents[4].taskContent.taskCode', null),
+                                workCD1: _.get(task, 'taskContents[0].taskContent.taskCode', null),
+                                workCD2: _.get(task, 'taskContents[1].taskContent.taskCode', null),
+                                workCD3: _.get(task, 'taskContents[2].taskContent.taskCode', null),
+                                workCD4: _.get(task, 'taskContents[3].taskContent.taskCode', null),
+                                workCD5: _.get(task, 'taskContents[4].taskContent.taskCode', null),
                             }
+                            let taskDetails = []
+                            _.forEach(_.get(task, 'taskContents'), tc => {
+                                let td = _.find(taskDetails, ['supNo', tc.frameNo]);
+                                let taskdetail = { itemId: _.get(tc, 'taskContent.itemId'), value: _.get(tc, 'taskContent.taskCode') };
+                                if (td) {
+                                    td.taskItemValues.push(taskdetail);
+                                } else {
+                                    taskDetails.push({ supNo: tc.frameNo, taskItemValues: [taskdetail] });
+                                }
+                            });
+                            //map item start , end between
+                            _.forEach(taskDetails, td => {
+                                td.taskItemValues.push({ itemId: 1, value: task.startTime });
+                                td.taskItemValues.push({ itemId: 2, value: task.endTime });
+                                td.taskItemValues.push({ itemId: 3, value: task.endTime - task.startTime });
+                            });
                             events.push({
                                 title: getTitles(wg, vm.params.$settings().tasks),
                                 start : timeStart,
@@ -2921,12 +2933,12 @@ module nts.uk.ui.at.kdw013.calendar {
                                 //年月日
                                 period: { start: timeStart, end: timeEnd },
                                 //現在の応援勤務枠
-                                frameNos:[],
+                                frameNos:_.map(taskDetails, td => td.supNo),
                                 //工数実績作業ブロック
                                 taskBlock: {
                                     caltimeSpan: { start: timeStart, end: timeEnd },
 
-                                    taskDetails: [{ supNo: first.frameNo, taskItemValues: vm.getTaskValues() }]
+                                    taskDetails
                                 },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),

@@ -7,6 +7,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmCommand;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmationCommandHandler;
@@ -91,8 +95,8 @@ public class KDW013WebService {
 	// 初期起動処理
 	@POST
 	@Path("a/start")
-	public StartProcessDto startProcess() {
-		return startProcess.startProcess();
+	public StartProcessDto startProcess(StartParam param) {
+		return startProcess.startProcess(param.getInputDate());
 	}
 
 	// 日付を変更する
@@ -195,5 +199,13 @@ public class KDW013WebService {
 	public void updateSupportTimezone(UpdateAttendanceTimeZoneBySupportWorkCommand command) {
 		updateAttendanceTimeZoneBySupportWork.update(command);
 	}
+
+}
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+class StartParam {
+	// 基準日
+	private GeneralDate inputDate;
 
 }

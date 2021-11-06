@@ -8,11 +8,11 @@ module nts.uk.ui.at.kdw013.eventheadear {
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
                     <div style="display: flex;"> 
-                        <div style='text-align: left;display: inline-grid;' data-bind="foreach: { data: day.events, as: 'note' }">
+                        <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
                             <div class="text-note" data-bind="text: note.title"></div>
                         </div>
-                        <div style='text-align: left;display: inline-grid;margin-left: 5px;min-width: calc(100% - 65px);' data-bind="foreach: { data: day.events, as: 'note' }">
-                            <div class="text-note limited-label" data-bind="text: note.text"></div>
+                        <div style='text-align: left;margin-left: 5px;width: calc(100% - 70px);' data-bind="foreach: { data: day.events, as: 'note' }">
+                            <div style='display: block;' class="text-note limited-label" data-bind="text: note.text"></div>
                         </div>
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->

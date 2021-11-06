@@ -126,7 +126,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             //A:1日作業セットを削除する   
             vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/delete_oneday_task_set', { favId: id }))
                 .done(() => {
-                    vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+                    vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
                         vm.params.screenA.reLoad();
                     });
                 }).always(() => vm.$blockui('clear'));
