@@ -494,6 +494,9 @@ module nts.uk.ui.at.kdw013.c {
 			.taskDetails table tr:first-child td>div{
    				margin-top: 10px;
 			}
+			.edit-event .header .btn-error{
+				position: absolute;
+			}
         </style>
         `;
 
@@ -584,6 +587,10 @@ module nts.uk.ui.at.kdw013.c {
             };
 			data.subscribe((event: FullCalendar.EventApi| null) => {
 				if (event) {
+					nts.uk.ui.errors.clearAll();
+					setTimeout(() => {
+						jQuery('#functions-area .btn-error').appendTo('.edit-event .header');									
+					}, 500);
                     const {extendedProps, start} = event as any as calendar.EventRaw;
                     let {displayManHrRecordItems, taskBlock, employeeId} = extendedProps;
 					vm.frameNos(extendedProps.frameNos);
@@ -683,6 +690,9 @@ module nts.uk.ui.at.kdw013.c {
                             .then((v: 'yes' | 'no') => {
                                 if (v === 'yes') {
 									$(vm.$el).find('.nts-input').ntsError("clear");
+									setTimeout(() => {
+										jQuery('.edit-event .header .btn-error').appendTo('#functions-area');									
+									}, 100);
                                     vm.params.close("yes");
                                 }
                             });
@@ -693,11 +703,17 @@ module nts.uk.ui.at.kdw013.c {
                                 .then((v: 'yes' | 'no') => {
                                     if (v === 'yes') {
 										$(vm.$el).find('.nts-input').ntsError("clear");
+										setTimeout(() => {
+											jQuery('.edit-event .header .btn-error').appendTo('#functions-area');									
+										}, 100);
                                          params.close();
                                     }
                                 });
                         } else {
 							$(vm.$el).find('.nts-input').ntsError("clear");
+							setTimeout(() => {
+								jQuery('.edit-event .header .btn-error').appendTo('#functions-area');									
+							}, 100);
                             params.close();
                         }
                     }
