@@ -2255,7 +2255,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId, period,
                         Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog.getIsCalWhenLock().orElse(false));
                 //暫定データの登録
-                this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
+//                this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
             } catch (Exception e) {
 				if (DeadLock.isSQLDeadLock(e)) {
 					throw e;
