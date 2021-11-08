@@ -1311,26 +1311,24 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         remain = (convertToTime(statusHolidayItem.getRemainTimes()));
                     }
                     cells.get(firstRow, 10 + totalMonth).setValue(occurrence);
-                    cells.get(firstRow + 1, 10 + totalMonth)
-                            .setValue(use);
+                    cells.get(firstRow + 1, 10 + totalMonth).setValue(use);
                     if (isShow41) {
                         cells.get(firstRow + 2, 10 + totalMonth)
                                 .setValue(unUsed);
-                        if (isTime && statusHolidayItem.getUnUsedTimes() != null && statusHolidayItem.getUnUsedTimes() > 0) {
+                        if (statusHolidayItem.getUnUsedTimes() != null && statusHolidayItem.getUnUsedTimes() > 0) {
                             setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
                         }
-                        if (!isTime && statusHolidayItem.getUnUsedDays() != null && statusHolidayItem.getUnUsedDays() > 0) {
+                        if (statusHolidayItem.getUnUsedTimes() == null && statusHolidayItem.getUnUsedDays() != null && statusHolidayItem.getUnUsedDays() > 0) {
                             setForegroundRed(cells.get(firstRow + 2, 10 + totalMonth));
                         }
                     }
                     if (isShow51) {
                         cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth)
                                 .setValue(remain);
-                        if (isTime && statusHolidayItem.getRemainTimes() != null && statusHolidayItem.getRemainTimes() < 0) {
+                        if ( statusHolidayItem.getRemainTimes() != null && statusHolidayItem.getRemainTimes() < 0) {
                             setForegroundRed(cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth));
                         }
-
-                        if (!isTime && statusHolidayItem.getRemainDays() != null && statusHolidayItem.getRemainDays() < 0) {
+                        if (statusHolidayItem.getRemainTimes() == null && statusHolidayItem.getRemainDays() != null && statusHolidayItem.getRemainDays() < 0) {
                             setForegroundRed(cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth));
                         }
                     }
