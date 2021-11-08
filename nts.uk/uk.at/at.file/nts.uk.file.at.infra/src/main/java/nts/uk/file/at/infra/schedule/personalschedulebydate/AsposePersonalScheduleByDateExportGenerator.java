@@ -231,7 +231,9 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 else
                     cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
             else
-                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (elementsPerPage == 29 ? 49 : 9), rowCount, 2);
+                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 || elementsPerPage == 0 ? 13 : elementsPerPage == 29 ? 55 : 15) : (elementsPerPage == 29 ? 49 : 9), rowCount, 2);
+//                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (elementsPerPage == 29 ? 49 : 9), rowCount, 2);
+
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
 
             // C1_2 + C1_3
