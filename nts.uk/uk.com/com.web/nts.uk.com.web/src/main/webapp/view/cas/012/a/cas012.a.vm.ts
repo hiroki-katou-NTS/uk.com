@@ -109,16 +109,9 @@ module nts.uk.com.view.cas012.a {
             vm.alreadySettingPersonal = ko.observableArray([]);
             vm.columns = ko.observableArray([
                 {headerText: '', key: 'id', hidden: true},
-                {headerText: nts.uk.resource.getText("CAS012_35"), key: 'employeeCodeAndName', width: 252},
-                {headerText: nts.uk.resource.getText("CAS012_32"), key: 'period', width: 203},
-                {headerText: nts.uk.resource.getText("CAS012_36"), key: 'companyCode', width: 90}
-            ]);
-
-            vm.columnsIndividual = ko.observableArray([
-                {headerText: '', key: 'userId', hidden: true},
-                {headerText: nts.uk.resource.getText("CAS012_15"), key: 'loginId', width: 120},
-                {headerText: nts.uk.resource.getText("CAS012_16"), key: 'name', width: 120},
-                {headerText: nts.uk.resource.getText("CAS012_17"), key: 'datePeriod', width: 210},
+                {headerText: nts.uk.resource.getText("CAS012_11"), key: 'employeeCodeAndName', width: 252},
+                {headerText: nts.uk.resource.getText("CAS012_12"), key: 'period', width: 203},
+                {headerText: nts.uk.resource.getText("CAS012_13"), key: 'companyCode', width: 90}
             ]);
             //A41
 
