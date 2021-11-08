@@ -2039,8 +2039,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     return undefined;
                 },
-                dayHeaderDidMount : (arg, createElement) => {
-                   $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon' data-bind="ntsIcon: { no: 2, width: 20, height: 20 }" ></i>`);
+                dayHeaderDidMount : (arg, createElement) => {                    
+                    
+                   $($(arg.el).find('.fc-scrollgrid-sync-inner')[0]).append(`<i class='favIcon' ></i>`);
                    setTimeout(function() { ko.applyBindingsToNode($('.favIcon'), { ntsIcon: { no: 229, size: '20px', width: 20, height: 20 } }); }, 300);
                 }
                 ,
@@ -2229,10 +2230,6 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // get all event with border is black
                     const seletions = () => _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
-
-                    if (event.extendedProps.isTimeBreak) {
-                        return;
-                    }
                     
                     // single select
                     if (!shift) {
@@ -2250,9 +2247,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         } else {
                             vm.$view('view');
                         }
-
-                        popupData.event(event);
-
+                        if (!event.extendedProps.isTimeBreak) {
+                            popupData.event(event);
+                        }
                         // update exclude-times
                         const sameDayEvent = _
                             .chain(vm.calendar.getEvents())
@@ -2262,8 +2259,11 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         popupData.excludeTimes(sameDayEvent);
 
-                        // show popup on edit mode
-                        popupPosition.event(el);
+                        if (!event.extendedProps.isTimeBreak) {
+                            // show popup on edit mode
+                            popupPosition.event(el);
+
+                        }
 
                         // update mouse pointer
                         const { screenX, screenY } = jsEvent;
@@ -3217,12 +3217,12 @@ module nts.uk.ui.at.kdw013.calendar {
             });
 
             // test item
-            _.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
+            //_.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
         }
         
 
         
-
+        
        
 
         public getFrameNo(events){
@@ -3798,7 +3798,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     const tg = evt.target as HTMLElement;
                     //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
-                    if ($(tg).closest('#master-content').length > 0 && !$(tg).closest('.fc-ckb-break-time').length > 0)
+                    let clickOnMaster = $(tg).closest('#master-content').length > 0 ;
+                    let notClickOnbreakTime = !$(tg).closest('.fc-ckb-break-time').length > 0;
+                    
+                    if (clickOnMaster  && notClickOnbreakTime)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {

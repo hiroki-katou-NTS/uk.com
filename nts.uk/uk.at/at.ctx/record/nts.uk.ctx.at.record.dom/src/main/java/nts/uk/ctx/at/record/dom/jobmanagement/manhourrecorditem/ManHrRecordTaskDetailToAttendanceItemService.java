@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.crypto.spec.IvParameterSpec;
+
+import org.apache.commons.codec.binary.StringUtils;
+
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 /**
@@ -26,15 +30,9 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 	 */
 	public static List<ItemValue> convert(Require require, List<ItemValue> attItems,
 			List<ManHrTaskDetail> taskDetails) {
-		// $対象作業詳細 = 作業リスト：flatMap $.工数項目リスト
-		List<TaskItemValue> taskItemValues = taskDetails.stream().flatMap(m -> m.getTaskItemValues().stream())
-				.collect(Collectors.toList());
-
-		// $対象項目リスト = $対象作業詳細：ｍap $.工数実績項目ID distinct
-		List<Integer> itemLst = taskItemValues.stream().map(m -> m.getItemId()).distinct().collect(Collectors.toList());
 
 		// $紐付け設定 = require.紐付け設定を取得する($対象項目リスト)
-		List<ManHourRecordAndAttendanceItemLink> setting = require.get(itemLst);
+		List<ManHourRecordAndAttendanceItemLink> setting = require.get();
 
 		// $更新後のItemValue = List.Empty
 		List<ItemValue> result = new ArrayList<>();
@@ -54,15 +52,28 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 			// $対象勤怠項目 = 勤怠項目リスト：find $.itemId == $.勤怠項目ID
 			// $対象勤怠項目.value($値)
 
-			Optional<ItemValue> itemValueOpt = attItems.stream().filter(f -> f.getItemId() == link.getAttendanceItemId())
-					.findAny();
-
-			if (itemValueOpt.isPresent() && taskItem.isPresent()) {
-				ItemValue itemValue = itemValueOpt.get();
-				itemValue.value(taskItem.get().getValue());
-
+			Optional<ItemValue> itemValueOpt = attItems.stream().filter(f -> f.getItemId() == link.getAttendanceItemId()).findAny();
+			
+			if (!taskItem.isPresent()) {
+				// $対象勤怠項目.value(null)
 				// $更新後のItemValue.Add($対象勤怠項目)
-				result.add(itemValue);
+				itemValueOpt.ifPresent(x -> {
+					if (x.getValue() != null && !x.getValue().equals("0") && !x.getValue().equals("")) {
+						x.value(null);
+						result.add(x);
+					}
+				});
+			} else {
+				if (itemValueOpt.isPresent()) {
+						
+					if (!StringUtils.equals(itemValueOpt.get().getValue(), taskItem.get().getValue())) {
+						// if $対象勤怠項目.value <> $値														
+						//$対象勤怠項目.value($値)															
+						//$更新後のItemValue.Add($対象勤怠項目)
+						itemValueOpt.get().value(taskItem.get().getValue());
+						result.add(itemValueOpt.get());
+					}
+				}
 			}
 		}
 
@@ -72,8 +83,8 @@ public class ManHrRecordTaskDetailToAttendanceItemService {
 	// ■Require
 	public static interface Require {
 		// [R-1] 紐付け設定を取得する
-		// 工数実績項目と勤怠項目の紐付けRepository.Get*(会社ID,工数実績項目リスト)
-		List<ManHourRecordAndAttendanceItemLink> get(List<Integer> items);
+		// 工数実績項目と勤怠項目の紐付けRepository.Get*(会社ID)
+		List<ManHourRecordAndAttendanceItemLink> get();
 	}
 
 }

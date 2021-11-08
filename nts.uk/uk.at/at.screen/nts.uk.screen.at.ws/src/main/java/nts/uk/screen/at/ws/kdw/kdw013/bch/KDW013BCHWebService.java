@@ -17,7 +17,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.screen.at.app.kdw013.a.IntegrationOfDailyCommand;
 import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
@@ -90,8 +89,7 @@ public class KDW013BCHWebService {
 		createAchievementRegistrationParam.registerAchievements(
 				command.empTarget, 
 				command.targetDate, 
-				command.items.stream().map(c-> ItemValueCommand.toDomain(c)).collect(Collectors.toList()), 
-				IntegrationOfDailyCommand.toDomain(command.integrationOfDaily));
+				command.items.stream().map(c-> ItemValueCommand.toDomain(c)).collect(Collectors.toList()));
 	}
 	
 }

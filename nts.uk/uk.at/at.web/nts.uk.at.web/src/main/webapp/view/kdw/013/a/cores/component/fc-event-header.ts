@@ -64,15 +64,15 @@ module nts.uk.ui.at.kdw013.eventheadear {
             
             let param = {
                 //対象社員
-                sid: vm.$user.employeeId,
+                employeeId: vm.$user.employeeId,
                 //対象日 
-                date: day,
+                date: day.date,
                 //日別実績(Work) 
                 IntegrationOfDaily,
                 //実績入力ダイアログ表示項目一覧
                 displayAttItems,
                 //実績内容
-                itemValues,
+                itemValues: itemValues.manHrContents,
                 //日別実績のロック状態 Optional<日別実績のロック状態>
                 lockInfos
             }

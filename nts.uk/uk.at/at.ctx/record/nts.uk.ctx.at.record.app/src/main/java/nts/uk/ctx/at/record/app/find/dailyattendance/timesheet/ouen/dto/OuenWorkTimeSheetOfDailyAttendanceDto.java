@@ -177,8 +177,7 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	@Override
 	public OuenWorkTimeSheetOfDailyAttendance toDomain(String employeeId, GeneralDate date) {
 		WorkContent workContent = null;
-		if (this.workContent != null && this.workContent.getWorkOpt() != null && this.workContent.getWorkplace() != null
-				&& this.workContent.getWorkSuppInfo() != null) {
+		if (this.workContent != null) {
 			workContent = this.workContent.domain();
 		} else {
 			workContent = WorkContent.create( 

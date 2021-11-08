@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
 @AllArgsConstructor
 public class ManHrTaskDetail extends DomainObject {
 	
-	/** 作業項目値*/
+	/** 工数項目リスト*/
 	private List<TaskItemValue> taskItemValues;
 	
 	/** 応援勤務枠No*/

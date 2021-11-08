@@ -43,11 +43,11 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" class="proceed" data-bind="click: registration, enable: $root.errors.isEmpty">#{i18n.getText('KDW013_1')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: registration, enable: !block() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('KDW013_1')}</button>
 				<button data-bind="click:closeDialog">#{i18n.getText('KDW013_37')}</button>
 			</div>
 			<div id="contents-area">
-				<div class="error" data-bind=" ">#{i18n.getText('KDW013_52')}</div>
+				<div class="error" data-bind="text: errorLable"></div>
 				<table class="basic-items">
 					<colgroup>
 						<col width="105px"/>
@@ -200,7 +200,7 @@
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px',
+											option: {width: '255px',
 													unitID: 'TIMES'
 												}
 											}" />

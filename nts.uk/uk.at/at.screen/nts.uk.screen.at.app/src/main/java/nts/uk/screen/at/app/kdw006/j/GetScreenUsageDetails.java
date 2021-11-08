@@ -3,12 +3,15 @@ package nts.uk.screen.at.app.kdw006.j;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,6 +34,9 @@ public class GetScreenUsageDetails {
 
 	@Inject
 	private AcquireManHourRecordItems acquireManHourRecordItems;
+
+	@Inject
+	private AtItemNameAdapter atItemNameAdapter;
 
 	public GetScreenUsageDetailsDto get() {
 		GetScreenUsageDetailsDto result = new GetScreenUsageDetailsDto();
@@ -56,6 +62,16 @@ public class GetScreenUsageDetails {
 		hourRecordItemsDtos.forEach(f -> {
 			if (f.getUseAtr() == 1) {
 				hourRecordItemsDtoOuts.add(f);
+			}
+		});
+
+		// 勤怠項目に対応する名称を生成する
+		List<AttItemName> dailyAttItem = atItemNameAdapter.getNameOfDailyAttendanceItem(attendents);
+		
+		dailyItem.stream().forEach(f -> {
+			Optional<AttItemName> exist = dailyAttItem.stream().filter(a -> a.getAttendanceItemId() == f.getAttendanceItemId()).findFirst();
+			if (exist.isPresent()) {
+				f.changeName(exist.get().getDisplayName(), exist.get().getAttendanceItemName());
 			}
 		});
 
