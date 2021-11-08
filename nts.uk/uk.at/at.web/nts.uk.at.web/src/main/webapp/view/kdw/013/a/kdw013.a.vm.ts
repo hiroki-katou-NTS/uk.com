@@ -282,46 +282,6 @@ module nts.uk.ui.at.kdw013.a {
                                 }
                             });
                         });
-                        
-                        _.forEach(_.get(ld, 'ouenTimeSheet', []), ts => {
-                            let {timeSheet, workContent, workNo} = ts;
-                            let start = _.get(timeSheet, 'start.timeWithDay');
-                            let end = _.get(timeSheet, 'end.timeWithDay');
-                            let work = _.get(workContent, 'work');
-                            let {taskList} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
-                            let task = _.find(taskList, t => t.supNo == workNo);  
-                            frameNos.push(vm.getFrameNo(events));
-                            
-                            if (!start && !end) {
-                                events.push({
-                                    taskFrameUsageSetting: ko.unwrap((vm.$settings)),
-                                    period: { start, end },
-                                    displayManHrRecordItems: _.get(ko.unwrap((vm.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
-                                    employeeId: vm.employee() || vm.$user.employeeId,
-                                    start: setTimeOfDate(moment(ld.ymd).toDate(), start),
-                                    end: setTimeOfDate(moment(ld.ymd).toDate(), end),
-                                    title: work ? getTitles(work, tasks) : '',
-                                    backgroundColor: work ? getBackground(work, tasks) : '',
-                                    textColor: '',
-                                    extendedProps: {
-                                        frameNo: vm.getFrameNo(events),
-                                        frameNos,
-                                        id: randomId(),
-                                        isTimeBreak: false,
-                                        isChanged: false,
-                                        status: 'update' as any,
-                                        taskBlock: {
-                                            caltimeSpan: { start, end },
-                                            taskDetails: [{ supNo: workNo, taskItemValues: task.taskItemValues }]
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                        
-                        
-                        
-                        
                     });
 
                     vm.events(events);
