@@ -24,6 +24,10 @@ import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentHandler;
 import nts.uk.screen.at.app.kdw013.a.StartProcess;
 import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
+import nts.uk.screen.at.app.kdw013.a.favorite.task.GetFavTask;
+import nts.uk.screen.at.app.kdw013.a.favorite.oneday.FavOneDayDto;
+import nts.uk.screen.at.app.kdw013.a.favorite.oneday.GetFavOneDay;
+import nts.uk.screen.at.app.kdw013.a.favorite.task.FavTaskDto;
 import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteCommand;
 import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteForOneDayCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteCommand;
@@ -91,6 +95,24 @@ public class KDW013WebService {
 	
 	@Inject
 	private UpdateAttendanceTimeZoneBySupportWork updateAttendanceTimeZoneBySupportWork;
+	
+	@Inject
+	private GetFavTask getFavTask;
+	
+	@Inject
+	private GetFavOneDay getFavOneDay;
+	
+	@POST
+	@Path("a/get-fav-task")
+	public FavTaskDto getFavTask() {
+		return getFavTask.get();
+	}
+	
+	@POST
+	@Path("a/get-fav-one-day")
+	public FavOneDayDto getFavOneDay() {
+		return getFavOneDay.get();
+	}
 	
 	// 初期起動処理
 	@POST

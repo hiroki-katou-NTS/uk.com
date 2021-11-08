@@ -125,7 +125,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/delete_task_set', { favId: id }))
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
-                            vm.params.screenA.reLoad();
+                            vm.params.screenA.reloadTaskFav();
                         });
                     }).always(() => vm.$blockui('clear'));
                 
