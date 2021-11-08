@@ -23,8 +23,8 @@ public class Cmf001fSaveCommand {
 		List<ImportingItemMapping> mappings = this.items.stream()
 				.map(mapping -> new ImportingItemMapping(
 						mapping.getItemNo(),
-						Optional.ofNullable(mapping.getCsvItemNo()),
-						Optional.ofNullable(mapping.getFixedValue()).map(v -> StringifiedValue.of(v))))
+						mapping.isFixedValue() ? Optional.empty() : Optional.ofNullable(mapping.getCsvItemNo()),
+						mapping.isFixedValue() ? Optional.ofNullable(mapping.getFixedValue()).map(v -> StringifiedValue.of(v)) : Optional.empty()))
 				.collect(Collectors.toList());
 				
 		return new DomainImportSetting(
