@@ -37,6 +37,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -52,10 +53,6 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     private static final String TEMPLATE_FILE = "report/KSU002B.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 37;
     private final String SPACE = "　";
-    private final String COLON = "　：　";
-    private static final String PGID = "KNR001";
-    private static final String PG = "就業情報端末の登録";
-    private static final String SHEET_NAME = "マスタリスト";
     private static final String COMPANY_ERROR = "Company is not found!!!!";
 
     private final int BG_COLOR_SPECIFIC_DAY = Integer.parseInt("ffc0cb", 16);
@@ -232,6 +229,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         WorkStyle workStyle = EnumAdaptor.valueOf(holidayClass, WorkStyle.class);
         if (holidayMap.containsKey(colNO) || workStyle.value == WorkStyle.ONE_DAY_REST.value) {
             cells.get(rowCount, col).setValue(l1P1);
+            val holidayName = holidayMap.getOrDefault(colNO, "");
+            cells.get(rowCount, col).setValue(l1P1 + "   " + holidayName);
             cells.get(secondLieOfCalender, col).setValue(l2P1);
             Cell cell = cells.get(secondLieOfCalender, col);
             setTextColorRed(cell);
