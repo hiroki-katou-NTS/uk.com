@@ -157,6 +157,9 @@ public class ImportingMapping {
 			getByItemNo(itemNo).get().setCsvColumnNo(-1);
 			resetCsvColumnNoByOrder();
 		}
+		else {
+			getByItemNo(itemNo).get().setFixedValue(null);
+		}
 	}
 
 	/**
