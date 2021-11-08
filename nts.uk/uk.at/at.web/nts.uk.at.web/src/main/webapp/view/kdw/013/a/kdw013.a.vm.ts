@@ -724,7 +724,7 @@ module nts.uk.ui.at.kdw013.a {
                         });
         
         
-                    vm.$settings(response);
+                    vm.$settings(new StartProcess(response));
                 })
                 .always(() => vm.$blockui('clear'));
         }
