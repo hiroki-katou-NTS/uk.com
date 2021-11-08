@@ -1,20 +1,36 @@
 module nts.uk.at.ksu008.c {
-    const API = {};
+    const API = {
+        duplicate: "screen/at/ksu/008/form9/duplicate"
+    };
 
     @bean()
     export class ViewModel extends ko.ViewModel {
 
-        model: Model = new Model();
+        sourceCode: KnockoutObservable<string>;
+        sourceName: KnockoutObservable<string>;
+        destinationCode: KnockoutObservable<string>;
+        destinationName: KnockoutObservable<string>;
+        isOverwrite: KnockoutObservable<boolean>;
 
         constructor() {
             super();
-            const self = this;
+            const vm = this;
+            // vm.sourceCode = ko.observable("Sample001");
+            // vm.sourceName = ko.observable("dest name12336647899999999ee");
+            vm.destinationCode = ko.observable("");
+            vm.destinationName = ko.observable("");
+            vm.isOverwrite = ko.observable(false);
 
         }
 
         created() {
             const vm = this;
-            _.extend(window, {vm});
+            vm.$window.shared("dataShareKsu008C").done((data: any) => {
+                if (data) {
+                    vm.sourceCode(data.sourceCode);
+                    vm.sourceName(data.sourceName);
+                }
+            });
 
         }
 
@@ -22,27 +38,39 @@ module nts.uk.at.ksu008.c {
             const vm = this;
         }
 
+        duplicate(): void {
+            let vm = this;
+            let command: IDuplicateItemOutputSettingInfoCommand = {
+                originalCode: vm.sourceCode(),
+                destinationCode: vm.destinationCode(),
+                destinationName: vm.destinationName(),
+                isOverwrite: vm.isOverwrite()
+            };
+
+            vm.$ajax(API.duplicate, command).then(data => {
+                vm.$dialog.info({messageId: 'Msg_15'});
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
         closeDialog(): void {
-            nts.uk.ui.windows.close();
+            let vm = this;
+            vm.$window.close();
         }
 
     }
 
-    class Model {
-        sourceCode: any;
-        sourceName: any;
-        destinationCode: any;
-        destinationName: any;
-        isOverRight:KnockoutObservable<boolean>;
+    export interface IDuplicateItemOutputSettingInfoCommand {
+        originalCode: string;
 
-        constructor() {
-            var self = this
-            self.sourceCode = ko.observable("Sample001");
-            self.sourceName = ko.observable("dest name12336647899999999eeeeeeeeeeeeee");
-            self.destinationCode = ko.observable("dest001");
-            self.destinationName = ko.observable("dest name12336647899999999");
-            self.isOverRight=ko.observable(false);
-        }
+        destinationCode: string;
+
+        destinationName: string;
+
+        isOverwrite: boolean;
     }
 }
 

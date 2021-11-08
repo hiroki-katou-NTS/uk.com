@@ -37,11 +37,11 @@
                 </div>
                 <!--C1_3-->
                 <div class="cell valign-top third-col">
-                    <div class="label" data-bind="text:model.sourceCode"></div>
+                    <div class="label" data-bind="text:sourceCode"></div>
                 </div>
                 <!--C1_4-->
                 <div class="cell valign-top">
-                    <div class="label" data-bind="text:model.sourceName"></div>
+                    <div class="label" data-bind="text:sourceName"></div>
                 </div>
             </div>
 
@@ -57,14 +57,14 @@
                 <!--C2_3-->
                 <div class="cell valign-top third-col">
                     <input tabindex="1" data-bind="ntsTextEditor: {
-                                value: model.destinationCode,
+                                value: destinationCode,
                                 constraint: 'Form9Code',
                                 name:'#[KSU008_150]'} "/>
                 </div>
                 <!--C1_4-->
                 <div class="cell valign-top">
                     <input id="C1_4" tabindex="2" data-bind="ntsTextEditor: {
-                                value: model.destinationName,
+                                value: destinationName,
                                 constraint: 'Form9Name',
                                 name:'#[KSU008_151]'} "/>
                 </div>
@@ -75,11 +75,11 @@
             <!--C3_1-->
             <div class="table" style="width: 100%;margin-bottom: 20px">
                 <div class="cell valign-center">
-                    <div tabindex="3" data-bind="ntsCheckBox: { checked: model.isOverRight, style: 'warnpanel'}">#{i18n.getText('KSU008_152')}</div>
+                    <div tabindex="3" data-bind="ntsCheckBox: { checked: isOverwrite, style: 'warnpanel'}">#{i18n.getText('KSU008_152')}</div>
                 </div>
             </div>
             <!--C3_2-->
-            <button tabindex="4" style="width: 150px" class="proceed x-large" data-bind="">#{i18n.getText('KSU008_153')}</button>
+            <button tabindex="4" style="width: 150px" class="proceed x-large" data-bind="click: duplicate">#{i18n.getText('KSU008_153')}</button>
             <!--C3_3-->
             <button tabindex="5"  data-bind="click:closeDialog">#{i18n.getText('KSU008_154')}</button>
         </div>

@@ -1,4 +1,6 @@
 module nts.uk.at.ksu008.b {
+    import setShared = nts.uk.ui.windows.setShared;
+
     const API = {};
 
     @bean()
@@ -11,7 +13,7 @@ module nts.uk.at.ksu008.b {
         selectedRuleCode: any;
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
+        currentCode: KnockoutObservable<any> = ko.observable("");
         currentCodeList: KnockoutObservableArray<any>;
 
         fileName: KnockoutObservable<string>;
@@ -73,6 +75,11 @@ module nts.uk.at.ksu008.b {
         openKsu008C() {
             let vm = this;
             vm.$blockui("invisible");
+            let data = {
+                sourceCode: vm.currentCode(),
+                sourceName: "Waiting..."    // TODO: filter lấy name theo Code (đợi màn B xong)
+            };
+            setShared('dataShareKsu008C', data);
             vm.$window.modal('/view/ksu/008/c/index.xhtml')
                 .then((result: any) => {
                     vm.$blockui("clear");

@@ -34,34 +34,31 @@
             <div class="table custom-table">
                 <!--D1_2-->
                 <div class="cell valign-top first-col">
-                    <div class="label" data-bind="text:model.d12"></div>
+                    <div class="label" data-bind="text:d12"></div>
                 </div>
                 <!--D1_3-->
                 <div class="cell valign-top first-col">
                     <div style="top: 4px;height: 36px" tabindex="8" id="combo-box" data-bind="ntsComboBox: {
                                             name: '#[KSU008_156]',
-                                            options: comBOItemList,
+                                            options: roundingUnit,
                                             optionsValue: 'code',
-                                            visibleItemsCount: 2,
-                                            value: model.selectedCode,
+                                            visibleItemsCount: 5,
+                                            value: selectedRoundUnit,
                                             optionsText: 'name',
-                                            editable: true,
                                             enable: true,
                                             required: true,
-                                            selectFirstIfNull: true,
                                             columns: [
-                                                { prop: 'code'},
-                                                { prop: 'name'},
-	                                       ]}"></div>
+		                                        { prop: 'name', length: 10 }
+                                            ]}"></div>
                 </div>
                 <!--D1_3-->
                 <div class="cell valign-top third-col">
                     <div data-bind="ntsRadioBoxGroup: {
                             name: '#[KSU008_157]',
-                            options: itemList,
+                            options: roundingMode,
                             optionsValue: 'id',
                             optionsText: 'name',
-                            value: model.selectedId,
+                            value: selectedRoundMode,
                             enable: true}"></div>
                 </div>
             </div>
@@ -73,14 +70,14 @@
                 <div class="table custom-table">
                     <!--D2_2-->
                     <div class="cell valign-top first-col">
-                        <div tabindex="3" data-bind="ntsCheckBox: { checked: model.d22Checked }">#{i18n.getText('KSU008_159')}</div>
+                        <div tabindex="3" data-bind="ntsCheckBox: { checked: isAttrBlankIfZero }">#{i18n.getText('KSU008_159')}</div>
                     </div>
                 </div>
             </div>
         </div>
         <div id="functions-area-bottom" tabindex="-1">
             <!--D3_1-->
-            <button tabindex="4" style="width: 150px" class="proceed x-large" data-bind="">#{i18n.getText('KSU008_160')}</button>
+            <button tabindex="4" style="width: 150px" class="proceed x-large" data-bind="click:update">#{i18n.getText('KSU008_160')}</button>
             <!--D3_2-->
             <button tabindex="5"  data-bind="click:closeDialog">#{i18n.getText('KSU008_161')}</button>
         </div>
