@@ -93,7 +93,7 @@
     padding-left: 20px;
 }
 .date-list{
-    margin-top: -20px;
+    margin-top: 20px;
 }
 .wp-code {
     width: 120px;
@@ -101,6 +101,25 @@
     margin-top: 5px;
 }
 .wp-name{
-    width: 120px;
+    width: 170px;
     margin-top: 5px;
+}
+.a_6{
+    margin-top: 5px;
+    height: 45px;
+    display: flex;
+}
+.a10{
+    margin-top: 5px;
+    height: 45px;
+    display: flex;
+}
+.a_62{
+    margin-left: 12px;
+}
+.wkp_list{
+    margin: 20px
+}
+#kcp005{
+    width: 430px;
 }

@@ -59,11 +59,16 @@ module nts.uk.com.view.cmm051.a {
         dateHistoryList: KnockoutObservableArray<any> = ko.observableArray([]);
         workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
         workPlaceList: KnockoutObservableArray<string> = ko.observableArray([]);
-        mode: KnockoutObservable<number>;
+        mode: KnockoutObservable<number> = ko.observable(1);
+        //A8
         workplaceCode: KnockoutObservable<string> = ko.observable("");
         workplaceName: KnockoutObservable<string> = ko.observable("");
+        //A3
+        employeeCode: KnockoutObservable<string> = ko.observable("");
+        employeeName: KnockoutObservable<string> = ko.observable("");
+
         selectedCode: KnockoutObservable<string>;
-        wplaceSelectedId: KnockoutObservable<string>;
+        wplaceSelectedId: KnockoutObservable<string> = ko.observable("");
         columns: KnockoutObservableArray<NtsGridListColumn>;
 
         constructor(params: any) {
@@ -75,19 +80,8 @@ module nts.uk.com.view.cmm051.a {
                 targetBtnText: nts.uk.resource.getText("KCP010_3"),
                 tabIndex: 4
             };
-            let listDatePeriod: any = [];
 
-            for (let i = 0; i < 10; i++) {
-                listDatePeriod.push({
-                    id: i,
-                    display: "AAAAAAAAAA"
-                })
-            }
-            vm.dateHistoryList(listDatePeriod);
-            vm.mode.subscribe((mode)=>{
-                vm.initScreen(mode);
-            });
-            vm.mode(Mode.WPL);
+            vm.initScreen(Mode.WPL);
             vm.isNewMode = ko.observable(false);
             vm.ntsHeaderColumns = ko.observableArray([
                 {headerText: '', key: 'code', hidden: true},
@@ -106,6 +100,7 @@ module nts.uk.com.view.cmm051.a {
                 let workplaceManagerList: any[] = [];
                 let listEmployee: any[] = [];
                 let personList: any[] = [];
+
                 block.invisible();
                 vm.$ajax('com', API.getDataInit).done((data) => {
                     if (!isNullOrUndefined(data)) {
@@ -114,7 +109,7 @@ module nts.uk.com.view.cmm051.a {
                         workplaceManagerList = data.employeeInformation.workplaceManagerList;
                         listEmployee = data.employeeInformation.listEmployee;
                         personList = data.employeeInformation.personList;
-                        vm.setData(workplaceManagerList, listEmployee, personList);
+                        vm.setData(mode,workplaceManagerList, listEmployee, personList);
                     }
                 }).always(() => {
                     block.clear();
@@ -126,29 +121,48 @@ module nts.uk.com.view.cmm051.a {
             }
 
         }
-
-        setData(workplaceManagerList: any[], listEmployee: any[], personList: any[]): void {
+        setData(mode : any,workplaceManagerList: any[], listEmployee: any[], personList: any[]): void {
             let vm = this;
-            let emps: any = [];
-            if (!isNullOrEmpty(personList) && !isNullOrEmpty(listEmployee)) {
-                for (let i = 0; i < listEmployee.length; i++) {
-                    let em = listEmployee[i];
-                    let info = _.find(personList, (e) => e.pid == em.personId);
-                    if (!isNullOrUndefined(info)) {
-                        emps.push({
-                            id: em.employeeId,
-                            code: em.employeeCode,
-                            name: info.businessName,
-                        });
+            if(mode ==Mode.WPL){
+                let emps: any = [];
+                let listDatePeriod: any = [];
+                if (!isNullOrEmpty(personList) && !isNullOrEmpty(listEmployee)) {
+                    for (let i = 0; i < listEmployee.length; i++) {
+                        let em = listEmployee[i];
+                        let info = _.find(personList, (e) => e.pid == em.personId);
+                        if (!isNullOrUndefined(info)) {
+                            emps.push({
+                                id: em.employeeId,
+                                code: em.employeeCode,
+                                name: info.businessName,
+                            });
+                        }
+
                     }
 
+                    vm.employInfors(emps);
+                    if (!isNullOrEmpty(emps)) {
+                        vm.multiSelectedCode(emps[0].code);
+                    }
+                    vm.KCP005_load();
                 }
-                vm.employInfors(emps);
-                if (!isNullOrEmpty(emps)) {
-                    vm.multiSelectedCode(emps[0].code);
+                if(!isNullOrEmpty(workplaceManagerList)){
+                    for (let i = 0; i < workplaceManagerList.length; i++) {
+                        let wpl = workplaceManagerList[i];
+                        let id=  wpl.workplaceManagerId;
+                        let  display =  wpl.startDate + " - " +wpl.endDate;
+                        listDatePeriod.push({
+                            id: id,
+                            display: display
+                        })
+                    }
                 }
-                vm.KCP005_load();
+                vm.dateHistoryList(listDatePeriod);
             }
+            if(mode == Mode.EMPLOYMENT){
+
+            }
+
         }
 
         KCP005_load() {
@@ -197,9 +211,21 @@ module nts.uk.com.view.cmm051.a {
 
         mounted() {
             let vm = this;
+            vm.mode.subscribe((mode)=>{
+                console.log("MODE :" +mode);
+                vm.initScreen(mode);
+            });
             vm.multiSelectedCode.subscribe((e) => {
+                let eminfo = _.find(vm.employInfors(),(i)=>i.code == e);
+                if(!isNullOrUndefined(eminfo)){
+                    vm.employeeCode(eminfo.code);
+                    vm.employeeName(eminfo.name)
+                }
+            });
+            vm.wplaceSelectedId.subscribe((e)=>{
 
             });
+
         }
 
         private getWkpManagerList(wkpId: string, savedWkpMngId: string): JQueryPromise<void> {
@@ -312,9 +338,9 @@ module nts.uk.com.view.cmm051.a {
             let vm = this;
             let mode = vm.mode();
             if (mode == 1) {
-                vm.openDialogCDL009()
-            } else if (mode == 0) {
                 vm.openCDL008Dialog()
+            } else if (mode == 0) {
+                vm.openDialogCDL009()
             }
 
         }
@@ -323,10 +349,9 @@ module nts.uk.com.view.cmm051.a {
             let vm = this;
             let mode = vm.mode();
             if (mode == 1) {
-                vm.openCDL008Dialog()
-            } else if (mode == 0) {
                 vm.openDialogCDL009()
-
+            } else if (mode == 0) {
+                vm.openCDL008Dialog()
             }
 
         }

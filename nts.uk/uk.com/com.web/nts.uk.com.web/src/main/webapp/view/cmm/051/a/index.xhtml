@@ -30,56 +30,60 @@
             <button class="proceed" data-bind="click: saveWkpManager"
                     tabindex="2">#{i18n.getText('CMM044_3')}</button>
             <button class="danger"
-                    data-bind="click: delWkpManager, enable: !isNewMode()"
+                    data-bind="click: delWkpManager"
                     tabindex="3">#{i18n.getText('CMM044_6')}</button>
         </div>
         <div id="contents-area">
-          <div class="container cmm-054">
-              <div tabindex="4" class="panel-row">
-                  <div class="row-left">
-                      <!-- A2_2 -->
-                      <div class="label"
-                           data-bind="ntsFormLabel: {}, text: $i18n('CMM051_38')">
-                      </div>
-                  </div>
-                  <div class="row-right row-switch-button">
-                      <div tabindex="10" data-bind="ntsSwitchButton: {
+            <div class="container cmm-054">
+                <div tabindex="4" class="panel-row">
+                    <div class="row-left">
+                        <!-- A2_2 -->
+                        <div class="label"
+                             data-bind="ntsFormLabel: {}, text: $i18n('CMM051_38')">
+                        </div>
+                    </div>
+                    <div class="row-right row-switch-button">
+                        <div tabindex="10" data-bind="ntsSwitchButton: {
                     name: $i18n('CMM051_38'),
                     options: [
-                      { code: 1, name: $i18n('CMM051_39')},
-                      { code: 0, name: $i18n('CMM051_40')}
+                      { id: 1, name: $i18n('CMM051_39')},
+                      { id: 0, name: $i18n('CMM051_40')}
                     ],
-                    optionsValue: 'code',
-                    value:mode,
+                    optionsValue: 'id',
+                    value: mode,
                     optionsText: 'name'}">
-                      </div>
-                  </div>
-              </div>
-              <div data-bind="if : mode == 1" class="valign-center control-group a_3">
-                  <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
-                  <button tabindex="5" class="" data-bind="click: openDialogA32">#{i18n.getText('CMM051_42')}</button>
-                  <label class="ntsControl limited-label wp-code" data-bind="text: workplaceCode()  "> </label>
-                  <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
-              </div>
-
-              <div data-bind="if: mode == 0" class="valign-center control-group a_3">
-                  <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
-                  <button tabindex="5" class="" data-bind="click: openDialogA32">#{i18n.getText('CMM051_47')}</button>
-                  <label class="ntsControl limited-label wp-code" data-bind="text: workplaceCode()  "> </label>
-                  <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
-              </div>
-
-              <div id="left-content">
-                  <div data-bind="if: mode == 1" id="kcp005" tabindex="6">
-                  </div>
-                  <div data-bind="if: mode == 0">
-                      <table id="role_set_grid"
-                             data-bind="ntsGridList: {
-	                                            name:'#[CMM051_43]',
+                        </div>
+                    </div>
+                </div>
+                <div data-bind="if: mode() == 1" >
+                    <div class="valign-center control-group a_3">
+                        <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
+                        <button tabindex="5" class="" data-bind="click: openDialogA32">#{i18n.getText('CMM051_47')}</button>
+                        <label class="ntsControl limited-label wp-code" data-bind="text: workplaceCode()  "> </label>
+                        <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
+                    </div>
+                </div>
+                <div data-bind="if: mode() == 0">
+                    <div  class="valign-center control-group a_3">
+                        <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
+                        <button tabindex="5" class="" data-bind="click: openDialogA32">#{i18n.getText('CMM051_42')}</button>
+                        <label class="ntsControl limited-label wp-code" data-bind="text: employeeCode()  "> </label>
+                        <label class="ntsControl limited-label wp-name" data-bind="text: employeeName()"> </label>
+                    </div>
+                </div>
+                <div id="left-content">
+                    <div data-bind="if: mode() == 1" class="kcp005">
+                        <div id="kcp005" tabindex="6">
+                        </div>
+                    </div>
+                    <div data-bind="if: mode() == 0" class="wkp_list">
+                        <table id="wkp_list"
+                               data-bind="ntsGridList: {
+	                                            name:'#[CMM051_49]',
 	                                            width: 545,
 	                                            rows: 10,
 	                                            options: workPlaceList,
-	                                            optionsValue: wplaceSelectedId,
+	                                            optionsValue: 'workPlaceId',
 	                                            primaryKey: 'id',
 	                                            columns: columns,
 	                                            multiple: false,
@@ -87,33 +91,47 @@
 	                                            showNumbering:false,
 	                                            selectFirstIfNull: false,
 	                                            enable: true}">
-                      </table>
-                  </div>
-              </div>
-              <div id="right-content">
-                  <!--A6-1-->
-                  <div class="">
-                      <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
-                      <button tabindex="7" class="" data-bind="click: openDialogA62">#{i18n.getText('CMM051_47')}</button>
-                      <label class="ntsControl limited-label" data-bind="text:   "> </label>
-                      <label class="ntsControl limited-label" data-bind="text:  "> </label>
-                  </div>
-                  <!--A7_1-->
-                  <div class="date-list">
-                      <table class="table_content">
-                          <colgroup>
-                              <col width="85px" />
-                              <col width="270px" />
-                              <col width="*" />
-                          </colgroup>
+                        </table>
+                    </div>
+                </div>
+                <div id="right-content">
+                    <!--A10-1-->
+                    <div data-bind="if: mode() == 1">
+                        <div  class="a_6">
+                            <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
+                            <button tabindex="7" class=" a_62"
+                                    data-bind="click: openDialogA62 ">#{i18n.getText('CMM051_47')}</button>
+                            <label class="ntsControl limited-label wp-code" data-bind="text: employeeCode()  "> </label>
+                            <label class="ntsControl limited-label wp-name" data-bind="text: employeeName() "> </label>
+                        </div>
+                    </div>
 
-                          <tr>
-                              <td style="vertical-align: top;">
-                                  <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM013_5')}</div>
-                              </td>
-                              <td tabindex="8">
-                                  <div id="list-box" tabindex="7"
-                                       data-bind="ntsListBox: {
+                    <div data-bind="if: mode() == 0">
+                        <!--A6-->
+                        <div  class="a_10">
+                            <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
+                            <button tabindex="7" class=" a_62"
+                                    data-bind="click: openDialogA62">#{i18n.getText('CMM051_42')}</button>
+                            <label class="ntsControl limited-label wp-code" data-bind="text:   workplaceCode()"> </label>
+                            <label class="ntsControl limited-label wp-name" data-bind="text:  workplaceName()"> </label>
+                        </div>
+                    </div>
+
+                    <!--A7_1-->
+                    <div class="date-list">
+                        <table class="table_content">
+                            <colgroup>
+                                <col width="85px"/>
+                                <col width="270px"/>
+                                <col width="*"/>
+                            </colgroup>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM051_48')}</div>
+                                </td>
+                                <td tabindex="8">
+                                    <div id="list-box" tabindex="7"
+                                         data-bind="ntsListBox: {
 									name: '#[CMM051_49]',
 									options: dateHistoryList,
 									optionsValue: 'id',
@@ -124,34 +142,34 @@
 									columns: [
 										{ key: 'display', length: 15 }
 									]}">
-                                  </div>
-                              </td>
-                              <td style="vertical-align: top;">
-                                  <div>
-                                      <button tabindex="9"
-                                              data-bind="click: openAddHistoryDialog"
-                                              class="history-button">#{i18n.getText('CMM051_50')}</button>
-                                  </div>
-                                  <div>
-                                      <button tabindex="10"
-                                              data-bind="click: openUpdateHistoryDialog"
-                                              class="history-button">#{i18n.getText('CMM051_51')}</button>
-                                  </div>
-                                  <div>
-                                      <button tabindex="11"
-                                              data-bind="click: removeHistory"
-                                              class="history-button danger">#{i18n.getText('CMM051_52')}</button>
-                                  </div>
-                              </td>
-                          </tr>
+                                    </div>
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <div>
+                                        <button tabindex="9"
+                                                data-bind="click: openAddHistoryDialog"
+                                                class="history-button">#{i18n.getText('CMM051_50')}</button>
+                                    </div>
+                                    <div>
+                                        <button tabindex="10"
+                                                data-bind="click: openUpdateHistoryDialog"
+                                                class="history-button">#{i18n.getText('CMM051_51')}</button>
+                                    </div>
+                                    <div>
+                                        <button tabindex="11"
+                                                data-bind="click: removeHistory"
+                                                class="history-button danger">#{i18n.getText('CMM051_52')}</button>
+                                    </div>
+                                </td>
+                            </tr>
 
 
-                      </table>
-                  </div>
+                        </table>
+                    </div>
 
 
-              </div>
-          </div>
+                </div>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

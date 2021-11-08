@@ -9,6 +9,7 @@ import org.omg.CORBA.Object;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +29,18 @@ public class GetListEmployeeInformationScreenQuery {
 
     public EmployeeInformationDto getLisEmployeeInfo(String workplaceId){
         EmployeeInformationDto rs  = new EmployeeInformationDto();
+        Comparator<WorkplaceManagerDto> comparator  = new Comparator<WorkplaceManagerDto>() {
+            @Override
+            public int compare(WorkplaceManagerDto o1, WorkplaceManagerDto o2) {
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            }
+        };
         List<WorkplaceManagerDto> workplaceManagerList = workplaceManagerRepository
                 .getWkpManagerListByWkpId(workplaceId)
-                .stream().map(WorkplaceManagerDto::new).collect(Collectors.toList());
-        List<String> sids = workplaceManagerList.stream().map(WorkplaceManagerDto::getEmployeeId).distinct().collect(Collectors.toList());
+                .stream().map(WorkplaceManagerDto::new).sorted(comparator).collect(Collectors.toList());
+
+        List<String> sids = workplaceManagerList.stream()
+                .map(WorkplaceManagerDto::getEmployeeId).distinct().collect(Collectors.toList());
         List<EmployeeDataMngInfoDto> listEmployee = employeeDataMngInfoRepository.findByListEmployeeId(sids)
                 .stream().map(EmployeeDataMngInfoDto::toDto).collect(Collectors.toList());
         List<String> listPersonId = listEmployee.stream().map(EmployeeDataMngInfoDto::getPersonId)
