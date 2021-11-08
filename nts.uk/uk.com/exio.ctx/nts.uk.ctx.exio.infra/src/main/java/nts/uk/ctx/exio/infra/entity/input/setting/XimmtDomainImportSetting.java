@@ -4,12 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,6 +39,7 @@ public class XimmtDomainImportSetting extends ContractUkJpaEntity implements Ser
 	private int importingMode;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="domainSetting", orphanRemoval = true)
+	@OrderBy(value = "pk.itemNo asc")
 	public List<XimmtItemMapping> mappings;
 	
 	@Override
