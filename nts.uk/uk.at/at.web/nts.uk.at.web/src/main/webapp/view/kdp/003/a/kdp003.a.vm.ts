@@ -1129,11 +1129,7 @@ module nts.uk.at.kdp003.a {
 																		cardNumberSupport: null,
 																		workPlaceId: vm.workPlaceId,
 																		workLocationCD: vm.worklocationCode,
-																		workTimeCode: '',
-																		overtimeDeclaration: {
-																			overTime: 0,
-																			overLateNightTime: 0
-																		}
+																		workTimeCode: null
 																	}
 																}).then(() => {
 																	const { stampResultDisplay } = fingerStampSetting;
@@ -1187,10 +1183,6 @@ module nts.uk.at.kdp003.a {
 																								workPlaceId: vm.workPlaceId,
 																								workLocationCD: vm.worklocationCode,
 																								workTimeCode: null,
-																								overtimeDeclaration: {
-																									overTime: 0,
-																									overLateNightTime: 0
-																								},
 																								workGroup
 																							}
 																						}).then(() => {
@@ -1241,11 +1233,7 @@ module nts.uk.at.kdp003.a {
 																						cardNumberSupport: null,
 																						workPlaceId: vm.workPlaceId,
 																						workLocationCD: vm.worklocationCode,
-																						workTimeCode: null,
-																						overtimeDeclaration: {
-																							overTime: 0,
-																							overLateNightTime: 0
-																						}
+																						workTimeCode: null
 																					}
 																				}).then(() => {
 																					const { stampResultDisplay } = fingerStampSetting;
@@ -1319,10 +1307,6 @@ module nts.uk.at.kdp003.a {
 																					workPlaceId: vm.workPlaceId,
 																					workLocationCD: vm.worklocationCode,
 																					workTimeCode: null,
-																					overtimeDeclaration: {
-																						overTime: 0,
-																						overLateNightTime: 0
-																					},
 																					workGroup
 																				}
 																			}).done(() => {
@@ -1369,10 +1353,6 @@ module nts.uk.at.kdp003.a {
 																			workPlaceId: vm.workPlaceId,
 																			workLocationCD: vm.worklocationCode,
 																			workTimeCode: null,
-																			overtimeDeclaration: {
-																				overTime: 0,
-																				overLateNightTime: 0
-																			},
 																			workGroup
 																		}
 																	})
@@ -1427,11 +1407,7 @@ module nts.uk.at.kdp003.a {
 													cardNumberSupport: null,
 													workPlaceId: vm.workPlaceId,
 													workLocationCD: vm.worklocationCode,
-													workTimeCode: null,
-													overtimeDeclaration: {
-														overTime: 0,
-														overLateNightTime: 0
-													}
+													workTimeCode: null
 												}
 											}).then(() => {
 												const { stampResultDisplay } = fingerStampSetting;
