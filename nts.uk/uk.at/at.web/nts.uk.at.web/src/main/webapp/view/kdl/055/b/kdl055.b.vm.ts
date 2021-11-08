@@ -237,7 +237,7 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             const vm = this;
 
             let errorListGrid = $('#grid').mGrid('errors');
-            let errorList = vm.errorList;
+            let errorList = vm.errorList.map(err => {err.date = err.date ? err.date : ''; return err;}).map(err => {err.employeeName = err.employeeName ? err.employeeName : ''; return err;});
             let empList = vm.data.listPersonEmp;
             let empIds: any[] = [];
             let request: any = {};
@@ -257,9 +257,9 @@ module nts.uk.at.view.kdl055.b.viewmodel {
                 if (_.filter(errorListFilter, x => (x.employeeId === err.rowId && x.date === err.columnKey)).length === 0) {
                     let emp = _.filter(vm.data.listPersonEmp, x => x.employeeId === err.rowId)[0];
                     let item = {
-                        date: err.columnKey, 
+                        date: err.columnKey ? err.columnKey : '', 
                         employeeCode: emp.employeeCode, 
-                        employeeName: emp.businessName, 
+                        employeeName: emp.businessName ? emp.businessName : '', 
                         errorMessage: err.message, 
                         isErrorGrid: true
                     }
