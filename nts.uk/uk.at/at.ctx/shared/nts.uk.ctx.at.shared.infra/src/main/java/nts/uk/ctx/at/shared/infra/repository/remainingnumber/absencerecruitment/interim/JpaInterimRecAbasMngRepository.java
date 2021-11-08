@@ -101,6 +101,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 			+ " WHERE c.recAbsPk.absenceMngID IN :absenceMngIds"
 			+ " AND c.absenceMngAtr = :absenceMngAtr";
 
+
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
 		return this.queryProxy().find(recId, KrcdtInterimRecMng.class)

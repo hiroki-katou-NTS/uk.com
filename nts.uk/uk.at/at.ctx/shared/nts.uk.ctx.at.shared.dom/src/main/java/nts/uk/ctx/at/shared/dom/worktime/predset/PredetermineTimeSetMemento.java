@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
+
 /**
  * The Interface PredetermineTimeSetMemento.
  */

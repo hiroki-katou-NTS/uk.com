@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
 
 /**
  * @author anhnm
@@ -16,5 +16,5 @@ public interface RemainChildCareCheck {
      * @param param
      * @return
      */
-    List<EmployeeMonthlyPerError> checkRemainChildCare(RemainChildCareCheckParam param);
+    List<ChildCareNurseErrors> checkRemainChildCare(RemainChildCareCheckParam param);
 }

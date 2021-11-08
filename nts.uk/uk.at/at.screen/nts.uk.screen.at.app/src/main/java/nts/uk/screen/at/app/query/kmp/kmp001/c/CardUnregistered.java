@@ -67,19 +67,14 @@ public class CardUnregistered {
 	}
 
 	private String getNameWork(String companyID, StampInfoDisp disp) {
-		List<Stamp> stamps = disp.getStamp();
+		Optional<Stamp> stamps = disp.getStamp();
 		List<String> nameWorks = new ArrayList<>();
 		
-		if (!stamps.isEmpty()) {
-			for (int i = 0; i < stamps.size(); i++) {
-				if (!stamps.get(i).getRefActualResults().getWorkInforStamp().isPresent() || !stamps.get(i).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
-					continue;
-				}
-				Optional<WorkLocation> work = workLocationRepo.findByCode(companyID,
-						stamps.get(i).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v());
-				if(work.isPresent()) {
-					nameWorks.add(work.get().getWorkLocationName().v());
-				}
+		if (stamps.isPresent()) {
+			Optional<WorkLocation> work = workLocationRepo.findByCode(companyID,
+					stamps.get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v());
+			if(work.isPresent()) {
+				nameWorks.add(work.get().getWorkLocationName().v());
 			}
 		}
 		

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,11 +15,13 @@ import javax.persistence.OptimisticLockException;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
@@ -26,6 +29,9 @@ import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.AchievementAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.GetPeriodCanProcesse;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.IgnoreFlagDuringLock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.CheckProcessed;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.OutputCheckProcessed;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.StatusOutput;
@@ -35,6 +41,8 @@ import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
@@ -44,6 +52,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
@@ -61,6 +71,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -140,6 +151,21 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	
 	@Inject
 	private RecordDomRequireService requireService;
+	
+	@Inject
+	private ClosureStatusManagementRepository closureStatusManagementRepo;
+
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+
+	@Inject
+	private ClosureRepository closureRepository;
+
+	@Inject
+	private ActualLockRepository actualLockRepository;
+	
+	@Inject
+	private ShareEmploymentAdapter employmentAdapterShare;
 	/**
 	 * 社員の日別実績を計算
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -159,40 +185,64 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 		Optional<IdentityProcessUseSet> iPUSOptTemp = identityProcessUseRepository.findByKey(cid);
 		Optional<ApprovalProcessingUseSetting> approvalSetTemp = approvalSettingRepo.findByCompanyId(cid);
+		
+		
 		this.parallel.forEach(employeeIds, employeeId -> {
+			// Imported（就業）「所属雇用履歴」を取得する (Lấy dữ liệu)
+			List<EmploymentHistShareImport> listEmploymentHis = this.employmentAdapterShare.findByEmployeeIdOrderByStartDate(employeeId);
 
-			Optional<EmpCalAndSumExeLog> log = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
-			if(!log.isPresent()) {
-				counter.accept(ProcessState.INTERRUPTION);
-				return;
-			}
-			else {
-				val executionStatus = log.get().getExecutionStatus();
-				if(executionStatus.isPresent() && executionStatus.get().isStartInterruption()) {
+			GetPeriodCanProcesseRequireImpl require = new GetPeriodCanProcesseRequireImpl(closureStatusManagementRepo,
+					closureEmploymentRepo, closureRepository, actualLockRepository);
+			//実績処理できる期間を取得する
+			List<DatePeriod> listPeriod = GetPeriodCanProcesse.get(require, employeeId, datePeriod,
+					listEmploymentHis.stream().map(c -> convert(c)).collect(Collectors.toList()),
+					isCalWhenLock !=null && isCalWhenLock.booleanValue() ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK,
+					AchievementAtr.DAILY);
+			for(DatePeriod newPeriod : listPeriod) {
+				//ドメインモデル「就業計算と集計実行ログ」を取得し、実行状況を確認する
+				Optional<EmpCalAndSumExeLog> log = empCalAndSumExeLogRepository.getByEmpCalAndSumExecLogID(empCalAndSumExecLogID);
+				if(!log.isPresent()) {
 					counter.accept(ProcessState.INTERRUPTION);
+					break;
+				}
+				else {
+					val executionStatus = log.get().getExecutionStatus();
+					if(executionStatus.isPresent() && executionStatus.get().isStartInterruption()) {
+						counter.accept(ProcessState.INTERRUPTION);
+						break;
+					}
+				}
+				
+				ManageProcessAndCalcStateResult afterCalcRecord =null;
+				Pair<Integer, ManageProcessAndCalcStateResult> result = null;
+				result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, false,isCalWhenLock);
+				
+				if(result.getLeft() == 1) {  //co loi haita
+					result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
+					if(result.getLeft() == 1) { 
+						isHappendOptimistLockError.add(true);
+					}
+				}
+				
+				if(result.getLeft() == 0 || result.getLeft() == 2) { 
+					counter.accept(ProcessState.SUCCESS);
+					targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
 					return;
 				}
+				
+				//暫定データの登録
+                this.interimData.registerDateChange(cid, employeeId, newPeriod.datesBetween());
 			}
 			
-			ManageProcessAndCalcStateResult afterCalcRecord =null;
-			Pair<Integer, ManageProcessAndCalcStateResult> result = null;
-			result = runWhenOptimistLockError(cid, employeeId, datePeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, false,isCalWhenLock);
 			
-			if(result.getLeft() == 1) {  //co loi haita
-				result = runWhenOptimistLockError(cid, employeeId, datePeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
-				if(result.getLeft() == 1) { 
-					isHappendOptimistLockError.add(true);
-				}
-			}
-			
-			if(result.getLeft() == 0 || result.getLeft() == 2) { 
-				counter.accept(ProcessState.SUCCESS);
-				targetPersonRepository.updateWithContent(employeeId, empCalAndSumExecLogID, 1, 0);
-				return;
-			}
 		});
 		return isHappendOptimistLockError;
 	}
+	
+	private EmploymentHistoryImported convert(EmploymentHistShareImport employmentHistShareImport) {
+		return new EmploymentHistoryImported(employmentHistShareImport.getEmployeeId(), employmentHistShareImport.getEmploymentCode(), employmentHistShareImport.getPeriod());
+	}
+	
 	private Pair<Integer, ManageProcessAndCalcStateResult> runWhenOptimistLockError(String cid, String employeeId,
 			DatePeriod datePeriod, ExecutionType reCalcAtr, String empCalAndSumExecLogID,
 			ManageProcessAndCalcStateResult afterCalcRecord, Optional<IdentityProcessUseSet> iPUSOptTemp,
@@ -248,7 +298,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			try {
 				// updater record
 				updateRecord(stateInfo.integrationOfDaily);
-				clearConfirmApproval(stateInfo.integrationOfDaily, iPUSOptTemp, approvalSetTemp);
+				//エラーで本人確認と上司承認を解除する
+				clearConfirmApproval(stateInfo.integrationOfDaily);
+				//計算状態の更新
 				upDateCalcState(stateInfo);
 			} catch (Exception ex) {
 				boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class)
@@ -279,9 +331,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param iPUSOptTemp
 	 * @param approvalSetTemp
 	 */
-	private void clearConfirmApproval(IntegrationOfDaily integrationOfDaily,
-			Optional<IdentityProcessUseSet> iPUSOptTemp, Optional<ApprovalProcessingUseSetting> approvalSetTemp) {
-		dailyRecordAdUpService.removeConfirmApproval(Arrays.asList(integrationOfDaily), iPUSOptTemp, approvalSetTemp);
+	private void clearConfirmApproval(IntegrationOfDaily integrationOfDaily) {
+		dailyRecordAdUpService.removeConfirmApproval(Arrays.asList(integrationOfDaily));
 	}
 
 
@@ -344,73 +395,91 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 
 	@SuppressWarnings("rawtypes")
 	public ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter,String executeLogId,Boolean isCalWhenLock ) {
-		//実績取得
-		List<IntegrationOfDaily> createList = createIntegrationList(Arrays.asList(employeeId),datePeriod);
-		//実績が無かった時用のカウントアップ
-		if(createList.isEmpty()) 
-			return ProcessState.SUCCESS; 
-		String cid = AppContexts.user().companyId();
-		Optional<IdentityProcessUseSet> iPUSOptTemp = identityProcessUseRepository.findByKey(cid);
-		Optional<ApprovalProcessingUseSetting> approvalSetTemp = approvalSettingRepo.findByCompanyId(cid);
 		
-		//締め一覧取得
-		List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId),datePeriod);
 		
-		ManagePerCompanySet companySet =  commonCompanySettingForCalc.getCompanySetting(); 
-		//計算処理
-		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList,executeLogId);
-		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(cid, employeeId);
-		boolean checkNextEmp =false;
-		val cacheCarrier = new CacheCarrier();
-		//データ更新
-		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
-			// 締めIDを取得する
-			if(checkNextEmp) {
-				continue;
-			}
-			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(stateInfo.getIntegrationOfDaily().getYmd(), listEmploymentHis);
-			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY) continue;
-			if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
-				checkNextEmp = true;
-				continue;
-			}
-						LockStatus lockStatus = LockStatus.UNLOCK;
-						if(isCalWhenLock ==null || isCalWhenLock == false) {
-							Closure closureData = ClosureService.getClosureDataByEmployee(
-									requireService.createRequire(), new CacheCarrier(),
-									employeeId, stateInfo.getIntegrationOfDaily().getYmd());
-							//アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
-							//実績ロックされているか判定する
-							lockStatus = lockStatusService.getDetermineActualLocked(cid, 
-									stateInfo.getIntegrationOfDaily().getYmd(),  closureData.getClosureId().value, PerformanceType.DAILY);
-						}
-						if(lockStatus == LockStatus.LOCK) {
-							continue;
-						}
-			try {
-				//実績登録
-				updateRecord(stateInfo.integrationOfDaily); 
-				clearConfirmApproval(stateInfo.getIntegrationOfDaily(),iPUSOptTemp,approvalSetTemp);
-				upDateCalcState(stateInfo);
-				
-			} catch (Exception ex) {
-				boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-				if (!isOptimisticLock) {
-					throw ex;
+		// Imported（就業）「所属雇用履歴」を取得する (Lấy dữ liệu)
+		List<EmploymentHistShareImport> listEmploymentHisShare = this.employmentAdapterShare.findByEmployeeIdOrderByStartDate(employeeId);
+		//実績処理できる期間を取得する
+		GetPeriodCanProcesseRequireImpl require = new GetPeriodCanProcesseRequireImpl(closureStatusManagementRepo,
+				closureEmploymentRepo, closureRepository, actualLockRepository);
+		
+		List<DatePeriod> listPeriod = GetPeriodCanProcesse.get(require, employeeId, datePeriod,
+				listEmploymentHisShare.stream().map(c -> convert(c)).collect(Collectors.toList()),
+				isCalWhenLock ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK,
+				AchievementAtr.DAILY);
+		for(DatePeriod newPeriod : listPeriod) {
+			//実績取得
+			List<IntegrationOfDaily> createList = createIntegrationList(Arrays.asList(employeeId),newPeriod);
+			//実績が無かった時用のカウントアップ
+			if(createList.isEmpty()) 
+				return ProcessState.SUCCESS; 
+			String cid = AppContexts.user().companyId();
+			
+			//締め一覧取得
+			List<ClosureStatusManagement> closureList = getClosureList(Arrays.asList(employeeId),newPeriod);
+			
+			ManagePerCompanySet companySet =  commonCompanySettingForCalc.getCompanySetting(); 
+			//計算処理
+			val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList,executeLogId);
+			List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(cid, employeeId);
+			boolean checkNextEmp =false;
+			val cacheCarrier = new CacheCarrier();
+			//データ更新
+			for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
+				// 締めIDを取得する
+				if(checkNextEmp) {
+					continue;
 				}
-				ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, executeLogId,
-						new ErrMessageResource("024"), EnumAdaptor.valueOf(1, ExecutionContent.class), 
-						stateInfo.getIntegrationOfDaily().getYmd(),
-						new ErrMessageContent(TextResource.localize("Msg_1541")));
-				this.errMessageInfoRepository.add(employmentErrMes);
-				
+				OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(stateInfo.getIntegrationOfDaily().getYmd(), listEmploymentHis);
+				if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY) continue;
+				if(outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
+					checkNextEmp = true;
+					continue;
+				}
+							LockStatus lockStatus = LockStatus.UNLOCK;
+							if(isCalWhenLock ==null || isCalWhenLock == false) {
+								Closure closureData = ClosureService.getClosureDataByEmployee(
+										requireService.createRequire(), new CacheCarrier(),
+										employeeId, stateInfo.getIntegrationOfDaily().getYmd());
+								//アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
+								//実績ロックされているか判定する
+								lockStatus = lockStatusService.getDetermineActualLocked(cid, 
+										stateInfo.getIntegrationOfDaily().getYmd(),  closureData.getClosureId().value, PerformanceType.DAILY);
+							}
+							if(lockStatus == LockStatus.LOCK) {
+								continue;
+							}
+				try {
+					//実績登録
+					updateRecord(stateInfo.integrationOfDaily); 
+					//エラーで本人確認と上司承認を解除する
+					clearConfirmApproval(stateInfo.getIntegrationOfDaily());
+					//計算状態の更新
+					upDateCalcState(stateInfo);
+					
+				} catch (Exception ex) {
+					boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
+					if (!isOptimisticLock) {
+						throw ex;
+					}
+					ErrMessageInfo employmentErrMes = new ErrMessageInfo(employeeId, executeLogId,
+							new ErrMessageResource("024"), EnumAdaptor.valueOf(1, ExecutionContent.class), 
+							stateInfo.getIntegrationOfDaily().getYmd(),
+							new ErrMessageContent(TextResource.localize("Msg_1541")));
+					this.errMessageInfoRepository.add(employmentErrMes);
+					
+				}
 			}
+			if(afterCalcRecord.ps == ProcessState.INTERRUPTION ) {
+				return  ProcessState.INTERRUPTION;
+			}
+			//暫定データの登録
+            this.interimData.registerDateChange(cid, employeeId, newPeriod.datesBetween());
 		}
-//		//計算状態更新
-//		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
-//			upDateCalcState(stateInfo);
-//		}
-		return afterCalcRecord.getPs();
+		
+		
+		
+		return ProcessState.SUCCESS; 
 	}
 
 	/**
@@ -433,6 +502,53 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 */
 	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime, Optional<AnyItemValueOfDaily> anyItem){
 		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem);	
+	}
+	
+	@AllArgsConstructor
+	private class GetPeriodCanProcesseRequireImpl implements GetPeriodCanProcesse.Require {
+		@Inject
+		private ClosureStatusManagementRepository closureStatusManagementRepo;
+
+		@Inject
+		private ClosureEmploymentRepository closureEmploymentRepo;
+
+		@Inject
+		private ClosureRepository closureRepository;
+
+		@Inject
+		private ActualLockRepository actualLockRepository;
+
+		@Override
+		public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
+			// 指定した年月の期間を算出する
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+					ClosureService.createRequireM1(closureRepository, closureEmploymentRepo), closureId, processYm);
+			return datePeriodClosure;
+		}
+
+		@Override
+		public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
+			return closureStatusManagementRepo.getAllByEmpId(employeeId);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> findByEmploymentCD(String employmentCode) {
+			String companyId = AppContexts.user().companyId();
+			return closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode);
+		}
+
+		@Override
+		public Optional<ActualLock> findById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return actualLockRepository.findById(companyId, closureId);
+		}
+
+		@Override
+		public Closure findClosureById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return closureRepository.findById(companyId, closureId).get();
+		}
+
 	}
 	
 	

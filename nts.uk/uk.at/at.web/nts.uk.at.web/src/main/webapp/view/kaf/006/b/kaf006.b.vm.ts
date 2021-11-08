@@ -1369,7 +1369,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 		checkCondition19(data: any) {
 			const vm = this;
-			if (vm.selectedType() === 6 && vm.data && vm.data.vacationApplicationReflect) {
+			if (vm.data && vm.data.vacationApplicationReflect) {
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.superHoliday60H === 1 
 					&& vm.data.remainVacationInfo.overtime60hManagement.overrest60HManagement === 1) {
 						vm.condition19Over60(true);
@@ -1392,16 +1392,14 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.annualTime(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement === 1) {
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
 						vm.condition19ChildNursing(true);
 					} else {
 						vm.condition19ChildNursing(false);
 						vm.childNursing(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement === 1) {
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
 						vm.condition19Nursing(true);
 					} else {
 						vm.condition19Nursing(false);

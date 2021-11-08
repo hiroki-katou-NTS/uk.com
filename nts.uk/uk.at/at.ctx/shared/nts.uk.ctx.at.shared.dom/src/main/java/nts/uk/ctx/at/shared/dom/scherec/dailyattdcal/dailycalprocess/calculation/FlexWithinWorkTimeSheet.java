@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateDecisionClock;
@@ -34,6 +35,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -520,27 +523,25 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	/**
 	 * コア内外の外出時間の計算
 	 * @param isWithin コア内外区分（true=コア内、false=コア外）
+	 * @param conditionAtr 控除種別区分
 	 * @param dedAtr 控除区分
 	 * @param roundAtr 丸め区分
 	 * @return 外出時間
 	 */
 	public AttendanceTime calcOutingTimeInFlex(
 			boolean isWithin,
+			ConditionAtr conditionAtr,
 			DeductionAtr dedAtr,
 			TimeSheetRoundingAtr roundAtr) {
 		
 		// コアタイムとの重複を判断して時間帯を作成
 		List<WithinWorkTimeFrame> targetFrameList = this.createSpanDuplicatedWithCoreTime(isWithin);
-		// 控除時間の計算（私用外出）
-		AttendanceTime privateGoOutTime = ActualWorkTimeSheetListService.calcDeductionTime(
-				ConditionAtr.PrivateGoOut, dedAtr, roundAtr,
-				targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()));
-		// 控除時間の計算（有償外出）
-		AttendanceTime compGoOutTime = ActualWorkTimeSheetListService.calcDeductionTime(
-				ConditionAtr.CompesationGoOut, dedAtr, roundAtr,
+		// 控除時間の計算
+		AttendanceTime goOutTime = ActualWorkTimeSheetListService.calcDeductionTime(
+				conditionAtr, dedAtr, roundAtr,
 				targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()));
 		// 外出時間を返す
-		return new AttendanceTime(privateGoOutTime.valueAsMinutes() + compGoOutTime.valueAsMinutes());
+		return goOutTime;
 	}
 
 	/**
@@ -856,5 +857,27 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		}
 		// 最後に確認した「就業時間内時間枠.時間帯.開始」を返す
 		return Optional.of(sortLateOrder.get(sortLateOrder.size()-1).getTimeSheet().getStart());
+	}
+	
+	/**
+	 * コア内の外出時間帯を控除する
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param deductionTimeSheet 控除時間帯
+	 * @return 控除時間帯
+	 */
+	public static DeductionTimeSheet deductGoOutSheetWithinCore(
+			IntegrationOfWorkTime integrationOfWorkTime,
+			DeductionTimeSheet deductionTimeSheet){
+		
+		if (!integrationOfWorkTime.getFlexWorkSetting().isPresent()) return deductionTimeSheet;
+		// フレックス勤務設定
+		FlexWorkSetting flexWorkSet = integrationOfWorkTime.getFlexWorkSetting().get();
+		if (flexWorkSet.isDeductGoOutWithinCoreFromWorkTime()) return deductionTimeSheet;
+		TimeSheet coreTimeSetting = flexWorkSet.getCoreTimeSetting().getCoreTimeSheet();
+		// コアタイム時間帯
+		TimeSpanForDailyCalc coreTimeSheet = new TimeSpanForDailyCalc(
+				coreTimeSetting.getStartTime(), coreTimeSetting.getEndTime());
+		return deductionTimeSheet.exceptTimeSheet(
+				DeductionAtr.Deduction, DeductionClassification.GO_OUT, coreTimeSheet);
 	}
 }

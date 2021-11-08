@@ -800,7 +800,7 @@ module cps003 {
             },
             CS00036_IS00375: (v, id) => {
                 let $grid = $("#grid");
-                _.forEach(['IS00376', 'IS00377', 'IS00378', 'IS00379'], code => {
+                _.forEach(['IS00376', 'IS00377', 'IS00378', 'IS00379', 'IS01101'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
@@ -809,7 +809,7 @@ module cps003 {
             },
             CS00036_IS00380: (v, id) => {
                 let $grid = $("#grid");
-                _.forEach(['IS00381', 'IS00382', 'IS00383', 'IS00384'], code => {
+                _.forEach(['IS00381', 'IS00382', 'IS00383', 'IS00384', 'IS01102'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
@@ -2418,7 +2418,8 @@ module cps003 {
                                 selectedWorkTypeCode: g.workType && data.value,
                                 // getRelatedItemList: getItemList of column
                                 workTimeCodes: g.workTime && _.map(data.relatedItemList(g.workTime), x => x.optionValue),
-                                selectedWorkTimeCode: g.workTime && data.rowValue[g.workTime]
+                                selectedWorkTimeCode: g.workTime && data.rowValue[g.workTime],
+                                showNone: false
                             }, true);
         
                             modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -2469,7 +2470,8 @@ module cps003 {
                                 workTypeCodes: g.workType && _.map(data.relatedItemList(g.workType), x => x.optionValue),
                                 selectedWorkTypeCode: g.workType && data.rowValue[g.workType],
                                 workTimeCodes: g.workTime && _.map(data.itemList, x => x.optionValue),
-                                selectedWorkTimeCode: g.workTime && data.value
+                                selectedWorkTimeCode: g.workTime && data.value,
+                                showNone: false
                             }, true);
 
                             modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -2495,6 +2497,7 @@ module cps003 {
                                 }
                             });
                         } else {
+                            setShared("kdl00showNoSelectionRow", !required);
                             setShared("kml001multiSelectMode", false);
                             setShared("kml001selectedCodeList", _.isNil(data.value) ? [] : [data.value]);
                             setShared("kml001isSelection", true);

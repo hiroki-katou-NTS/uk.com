@@ -36,9 +36,11 @@ public class GetHolidayWorkAndTransferOrder {
 				return getOrderForCertainTime(reverse);
 			}
 			
+			/** 指定した時間を代休とする時 */
 			return getOrderForSpecifiedTime(reverse);
 		}).orElseGet(() -> {
 			
+			/** 指定した時間を代休とする時 */
 			return getOrderForSpecifiedTime(reverse);
 		});
 	}
@@ -46,10 +48,12 @@ public class GetHolidayWorkAndTransferOrder {
 	// 一定時間を超えたら代休とする時
 	private static List<HolidayWorkAndTransferAtr> getOrderForCertainTime(boolean reverse) {
 		/**　逆時系列用か */
-		if (reverse){
+		if (reverse) {
+			/** ○終了状態：振替→休出で処理する */
 			return Arrays.asList(HolidayWorkAndTransferAtr.TRANSFER, HolidayWorkAndTransferAtr.HOLIDAY_WORK);
 		}
 		else {
+			/** ○終了状態：休出→振替で処理する */
 			return Arrays.asList(HolidayWorkAndTransferAtr.HOLIDAY_WORK, HolidayWorkAndTransferAtr.TRANSFER);
 		}
 	}
@@ -57,9 +61,11 @@ public class GetHolidayWorkAndTransferOrder {
 	// 指定した時間を代休とする時
 	private static List<HolidayWorkAndTransferAtr> getOrderForSpecifiedTime(boolean reverse) {
 		/**　逆時系列用か */
-		if (reverse){
+		if (reverse) {
+			/** ○終了状態：休出→振替で処理する */
 			return Arrays.asList(HolidayWorkAndTransferAtr.HOLIDAY_WORK, HolidayWorkAndTransferAtr.TRANSFER);
 		} else {
+			/** ○終了状態：振替→休出で処理する */
 			return Arrays.asList(HolidayWorkAndTransferAtr.TRANSFER, HolidayWorkAndTransferAtr.HOLIDAY_WORK);
 		}
 	}

@@ -350,7 +350,7 @@ public class HolidayShipmentScreenAFinder {
 		Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService.findWorkConditionByEmployee(this.createImp(), employeeId, baseDate);
 		
 		//取得した労働条件項目．区分別勤務．平日時．就業時間帯コードは、INPUT．就業時間帯の設定の一覧に存在するかチェックする(Check xem 'Item điều kiện lao đông.Work by classification. Weekday time.WorktimeCode đã lấy' có tồn tại ở trong INPUT.WorktimeSettingList hay không?)
-		Optional<String> workTime = workingConditionItem.isPresent()?workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()): Optional.empty();
+		Optional<String> workTime = workingConditionItem.isPresent()?workingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().map(x -> x.v()): Optional.empty();
 		if(workTime.isPresent() && workTimeLst.stream().map(c->c.getWorktimeCode().v()).filter(c->c.equals(workTime.get())).findAny().isPresent()) {
 			//振出申請起動時の表示情報．初期選択就業時間帯=取得した労働条件項目．区分別勤務．平日時．就業時間帯コード(DisplayInfo khi khoi dong don xin lam bu. InitialSelectionWorktime =  Item điều kiện lao đông.Work by classification. Weekday time.WorktimeCode da lay)
 			result.setWorkTime(workTime.get());

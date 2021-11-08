@@ -164,8 +164,6 @@ module nts.uk.at.view.kdp002.a {
                                 sid: __viewContext.user.employeeId,
                                 date: view.$date.now()
                             }
-
-                            service.createDaily(param);
                             if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
                                 vm.openScreenC(btn, layout);
                             } else {

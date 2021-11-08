@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CNV001A コンバート表の登録</title>
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="../../../../lib/nittsu/ui/style/stylesheets/base.css">
+<link rel="stylesheet" type="text/css" href="cnv001.a.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="cnv001.a.js"></script>
+</head>
+
+<body>
+<div id="messageDialog" title="">
+	<label id="lblMessage"></label>
+</div>
+<div id="master-wrapper" data-bind="with: content">
+	<div id="header">
+		<div id="menu-header">
+			<div id="logo-area" class="cf"><div id="logo"><img src="/nts.uk.cnv.web/master/images/kinjirou.png"></div></div>
+			<div id="nav-area" class="cf"></div>
+			<div id="pg-area" class="cf">
+				<div id="pg-name" class="title">CNV001A コンバート表の登録</div>
+			</div>
+		</div>
+	</div>
+	<div id="master-content">
+		<div id="functions-area">
+			<button id="btnRegistRecord" class="large proceed">登録</button>
+			<button id="btnNewRecord" class="large">新規</button>
+			<button id="btnDeleteRecord" class="large danger">削除</button>
+		</div>
+			<table style="height:400px;">
+			<tr>
+				<td>
+					<!-- カテゴリ選択 -->
+					<div class="control-group">
+						<div class="form-label required">
+							<label>カテゴリ：</label>
+						</div>
+						<span class="nts-editor-wrapped ntsControl">
+							<select id="selCategory" style="width:250px;" class="nts-editor nts-input">
+								<option>-- 未選択 --</option>
+							</select>
+						</span>
+					</div>
+				</td>
+				<td></td>
+				<td>
+					<div class="control-group">
+						<div class="form-label required">
+							<label>UKテーブル名：</label>
+						</div>
+						<span class="nts-editor-wrapped ntsControl">
+							<select id="selTable" style="width:250px;" class="nts-editor nts-input" disabled="disabled">
+							</select>
+						</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="fixed-flex-layout-left bg-green cf">
+						<fieldset>
+						<legend>レコード一覧</legend>
+						<table>
+							<tr>
+								<td>
+									<select id="selRecords" size="12">
+									</select>
+								</td>
+								<td style="vertical-align:top; width:45px;">
+									<button id="toUp" class="small" style="margin-bottom: 10px;">▲</button>
+									<button id="toDown" class="small">▼</button>
+								</td>
+							</tr>
+						</table>
+						</fieldset>
+					</div>
+				</td>
+				<td style="width:20px;"></td>
+				<td style="vertical-align:top;">
+					<table>
+						<tr>
+							<td colspan=2>
+								<div class="form-label required">
+									<label>移送元：</label>
+								</div>
+								<div class="bg-green" style="width:880px">
+									<table>
+										<tr>
+											<td rowspan=7>
+												<fieldset>
+												<select id="selSources" style="width:300px;" size=8>
+												</select>
+												</fieldset>
+											</td>
+											<td rowspan=7 style="vertical-align:middle; width:100px;">
+												<button id="btnAddSource" class="proceed" style="margin-bottom: 10px;">登録</button>
+												<button id="btnDelSource" class="danger" style="margin-bottom: 10px;">削除</button>
+												<button id="btnClear">クリア</button>
+											</td>
+											<td>
+												<div class="form-label broken required">
+													<label>ERPテーブル名：</label>
+													<i>全角25文字</i>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<select id="selErpTables" style="width:220px;" class="nts-editor nts-input">
+														<option>-- 未選択 --</option>
+													</select>
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label broken">
+													<label>Where条件：</label>
+													<i>全角100文字</i>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtWhereCondition" style="width:280px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">日付列名：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtDateColumnName" style="width:200px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">開始日列名：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtStartDateColumnName" style="width:200px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">終了日列名：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtEndDateColumnName" style="width:200px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label">
+													<label title="※コンバート対象を期間指定する際の条件に使用します">日付列の型：</label>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<select id="selDateType" class="nts-editor nts-input">
+														<option value="">-- 未選択 --</option>
+														<option value="DATE">日付or時刻</option>
+														<option value="DECIMAL">数値or区切りなし文字列(YYYYMMDD)</option>
+														<option value="STRING">文字列(YYYY/MM/DD)</option>
+													</select>
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="form-label broken">
+													<label>memo：</label>
+													<i>全角25文字</i>
+												</div>
+											</td>
+											<td>
+												<span class="nts-editor-wrapped ntsControl">
+													<input type="text" id="txtMemo" style="width:280px;" class="nts-editor nts-input reset-element">
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="control-group">
+									<div class="form-label broken">
+										<label>レコード説明：</label>
+										<i>全角25文字</i>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtRecordName" class="nts-editor nts-input"/>
+									</span>
+								</div>
+							</td>
+							<td>
+								<div class="control-group">
+									<div class="form-label broken">
+										<label>レコードWhere条件：</label>
+										<i>半角200文字</i>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="text" id="txtRecordCondition" class="nts-editor nts-input"/>
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<div class="control-group">
+									<div class="form-label">
+										<label>集約設定：</label>
+									</div>
+									<span class="nts-editor-wrapped ntsControl">
+										<input type="checkbox" id="chkRemoveDuplicate" class="nts-editor nts-input">重複レコードを削除する</input>
+									</span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<div class="form-label required">
+									<label>列の移送設定：</label>
+								</div>
+								<button id="btnInputDetail" class="large">設定画面を開く</button>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			</table>
+	</div>
+</div>
+</body>
+</html>

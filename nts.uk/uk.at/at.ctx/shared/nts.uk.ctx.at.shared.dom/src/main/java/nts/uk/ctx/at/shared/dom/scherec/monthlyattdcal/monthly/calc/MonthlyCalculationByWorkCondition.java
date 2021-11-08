@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +89,19 @@ public class MonthlyCalculationByWorkCondition {
 				MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, dailyRecords, cacheCarrier,
 				companySets, employeeSets, wc, calcPeriod);
 	}
+	
+	public static List<MonthlyCalculation> calcMonthClones(RequireM3 require, String cid, List<String> sid, 
+			List<IntegrationOfDaily> dailyRecords, YearMonth ym, GeneralDate baseDate,
+			List<WorkingConditionItem> wc, DatePeriod calcPeriod) {
+		
+		val cacheCarrier = new CacheCarrier();
+		val companySets = require.monAggrCompanySettings(cid);
+		val employeeSets = require.monAggrEmployeeSettingsClones(cacheCarrier, cid, sid, calcPeriod);
+		
+		return calcMonthClones(require, cid, sid, ym, baseDate, Optional.empty(), Optional.empty(),
+				MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, dailyRecords, cacheCarrier,
+				companySets, employeeSets, wc, calcPeriod);
+	}
 
 	private static MonthlyCalculation calcMonth(RequireM2 require, String cid, String sid,
 			YearMonth ym, GeneralDate baseDate, Optional<AttendanceDaysMonth> annualLeaveDeductDays, 
@@ -120,12 +134,60 @@ public class MonthlyCalculationByWorkCondition {
 		return monthCalc;
 	}
 	
+	private static List<MonthlyCalculation> calcMonthClones(RequireM2 require, String cid, List<String> sid,
+			YearMonth ym, GeneralDate baseDate, Optional<AttendanceDaysMonth> annualLeaveDeductDays, 
+			Optional<AttendanceTimeMonth> absenceDeductTime,
+			MonthlyAggregateAtr aggrAtr, List<IntegrationOfDaily> dailyRecords,
+			CacheCarrier cacheCarrier, MonAggrCompanySettings companySets,
+			List<MonAggrEmployeeSettings> employeeSets, List<WorkingConditionItem> workingConditionItems, DatePeriod calcPeriod) {
+		
+		List<MonthlyCalculation> result = new ArrayList<MonthlyCalculation>();
+		
+		val monthlyCalcDailys = MonthlyCalculatingDailys.createClones(require, sid, calcPeriod, dailyRecords, workingConditionItems);
+		
+		val closureMap = ClosureService.getClosureDataByEmployeeClones(require, cacheCarrier, sid, baseDate);
+		
+		val unitSetting = require.usageUnitSetting(cid);
+		for (val closure : closureMap.entrySet()) {
+			
+			val startWeekNo = (baseDate.day() / 7) + 1;
+			val closureDate = closure.getValue().getClosureHistories().get(0).getClosureDate();
+			
+			Optional<WorkingConditionItem> workingConditionItem = workingConditionItems.stream().filter(c->c.getEmployeeId().equals(closure.getKey())).findAny();
+			Optional<MonAggrEmployeeSettings> employeeSet = employeeSets.stream().filter(c->c.getEmployeeId().equals(closure.getKey())).findAny();
+			
+			if(workingConditionItem.isPresent() && employeeSet.isPresent()) {
+				MonthlyCalculation monthCalc = new MonthlyCalculation();
+				monthCalc.prepareAggregationClones(require, cacheCarrier, cid, closure.getKey(), ym,
+						closure.getValue().getClosureId(), closureDate, calcPeriod, workingConditionItem.get(),
+						startWeekNo, companySets, employeeSet.get(), monthlyCalcDailys.get(closure.getKey()), new MonthlyOldDatas(), unitSetting);
+				
+				/** ○処理中の労働制を確認する */
+				if (workingConditionItem.get().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
+					
+					monthCalc.aggregate(require, cacheCarrier, calcPeriod, aggrAtr, 
+							annualLeaveDeductDays, absenceDeductTime, Optional.empty());
+				} else {
+					monthCalc.aggregate(require, cacheCarrier, calcPeriod, aggrAtr, 
+							Optional.empty(), Optional.empty(), Optional.empty());
+				}
+				
+				result.add(monthCalc);
+			}
+		}
+		
+		return result;
+	}
+	
 	public static interface RequireM3 extends RequireM2 {
 
 		MonAggrCompanySettings monAggrCompanySettings(String cid);
 		
 		MonAggrEmployeeSettings monAggrEmployeeSettings(CacheCarrier cacheCarrier, 
 				String companyId, String employeeId, DatePeriod period);
+		
+		List<MonAggrEmployeeSettings> monAggrEmployeeSettingsClones(CacheCarrier cacheCarrier, 
+				String companyId, List<String> employeeId, DatePeriod period);
 	}
 	
 	public static interface RequireM2 extends MonthlyCalculatingDailys.RequireM4,

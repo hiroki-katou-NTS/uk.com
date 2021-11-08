@@ -69,7 +69,6 @@ module ccg013.a.viewmodel {
                     webmenu.webMenuCode(res.webMenuCode);
                     webmenu.webMenuName(res.webMenuName);
                     webmenu.defaultMenu(res.defaultMenu);
-                    self.isDefaultMenu(!!res.defaultMenu);
                     service.findStandardMenuList().done((menuNames: Array<any>) => {
                         webmenu.menuBars.removeAll();
                         _.each(_.orderBy(res.menuBars, 'displayOrder', 'asc'), x => {
@@ -142,7 +141,6 @@ module ccg013.a.viewmodel {
 
                 });
             }).fail(function (error) {
-                self.isDefaultMenu(true);
                 //                nts.uk.ui.dialog.alertError(error.message);
                 nts.uk.ui.dialog.info({ messageId: error.messageId }).then(function () {
                 });
@@ -176,7 +174,6 @@ module ccg013.a.viewmodel {
                         });               
                     }).fail(function (error) {
                         self.isCreated(false);
-                        self.isDefaultMenu(true);
                         nts.uk.ui.dialog.alertError(error.message);
                     });
                 });

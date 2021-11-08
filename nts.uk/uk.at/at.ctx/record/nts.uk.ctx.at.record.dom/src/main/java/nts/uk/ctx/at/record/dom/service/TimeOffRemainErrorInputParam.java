@@ -50,13 +50,5 @@ public class TimeOffRemainErrorInputParam {
 	 * 月別実績（Work）
 	 */
 	private Optional<AttendanceTimeOfMonthly> optMonthlyData;
-	/** 
-	 * 子の看護チェック区分
-	 */
-    private Optional<Boolean> chkChildNursing;
-    /** 
-     * 介護チェック区分
-     */
-    private Optional<Boolean> chkLongTermCare;
 	
 }

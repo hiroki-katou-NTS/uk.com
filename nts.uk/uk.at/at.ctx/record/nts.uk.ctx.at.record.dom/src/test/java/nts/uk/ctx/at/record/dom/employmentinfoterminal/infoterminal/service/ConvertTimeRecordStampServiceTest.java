@@ -90,31 +90,6 @@ public class ConvertTimeRecordStampServiceTest {
 	}
 
 	@Test
-	public void testEmpInfoTerNoPresentSetting() {
-		StampReceptionData dataNR = new StampDataBuilder("1", "A", "1", "A", "200303", "01").time("0101")
-				.overTimeHours("1101").midnightTime("1201").build();
-
-		Optional<EmpInfoTerminal> empInfoTer = Optional
-				.of(new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
-						new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
-						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
-								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
-								.build());
-		new Expectations() {
-			{
-				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = empInfoTer;
-
-			}
-		};
-
-		Optional<StampDataReflectResult> resultActual = ConvertTimeRecordStampService
-				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual).isEmpty();
-
-	}
-
-	@Test
 	public void testExistHistory() {
 		StampReceptionData dataNR = new StampDataBuilder("1", "A", "1", "A", "200303", "01").time("0101")
 				.overTimeHours("1101").midnightTime("1201").build();
@@ -131,9 +106,6 @@ public class ConvertTimeRecordStampServiceTest {
 			{
 				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = empInfoTer;
-
-				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = timeRecordReqSetting;
 
 				require.getStampRecord((ContractCode) any, (StampNumber) any, (GeneralDateTime) any);
 				result = stampRecord;
@@ -159,10 +131,6 @@ public class ConvertTimeRecordStampServiceTest {
 			{
 				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = empInfoTer;
-
-				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = timeRecordReqSetting;
-
 			}
 		};
 
@@ -184,9 +152,6 @@ public class ConvertTimeRecordStampServiceTest {
 			{
 				require.getEmpInfoTerminal((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = empInfoTer;
-
-				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
-				result = timeRecordReqSetting;
 
 				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
 				result = Optional.empty();

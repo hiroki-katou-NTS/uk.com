@@ -33,7 +33,7 @@ public class CreateDefaultCompanyService {
 			require.saveDefaultCompany(company);
 		});
 	}
-	
+
 	public static interface Require{
 		void saveDefaultCompany (Company company);
 	}

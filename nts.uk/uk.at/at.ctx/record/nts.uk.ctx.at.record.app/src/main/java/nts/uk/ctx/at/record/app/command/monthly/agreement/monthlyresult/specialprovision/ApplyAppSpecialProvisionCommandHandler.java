@@ -289,6 +289,11 @@ public class ApplyAppSpecialProvisionCommandHandler
             return agreementOperationSettingRepository.find(AppContexts.user().companyId());
         }
 
+		@Override
+		public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
+			return this.require.workingConditionItemClones(employeeId, baseDate);
+		}
+
     }
 
     @AllArgsConstructor
@@ -310,6 +315,11 @@ public class ApplyAppSpecialProvisionCommandHandler
         @Override
         public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
             return this.require.workingConditionItem(employeeId, baseDate);
+        }
+        
+        @Override
+        public List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate) {
+            return this.require.workingConditionItemClones(employeeId, baseDate);
         }
 
         @Override

@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
@@ -83,10 +84,10 @@ public class StampServiceImpl implements StampDomainService {
 					if (x.getStampDateTime().year()==date.year()&& x.getStampDateTime().month() == date.month() && x.getStampDateTime().day() == date.day()
 							&& attendanceClock >= stampRange.getStart().v().intValue()
 							&& attendanceClock <= stampRange.getEnd().v().intValue()
-							&& x.isReflectedCategory() == false) {//打刻．反映済み区分　=　false
+							&& x.getImprintReflectionStatus().isReflectedCategory() == false) {//打刻．反映済み区分　=　false
 						lstStampOutput.add(x);
 					}
-					lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.isReflectedCategory()));
+					lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.getImprintReflectionStatus().isReflectedCategory()));
 				}
             	listStamp = listStamp.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
             	listStamp.sort(Comparator.comparing(Stamp::getStampDateTime));
@@ -102,7 +103,7 @@ public class StampServiceImpl implements StampDomainService {
 						&& attendanceClock <= stampRange.getEnd().v().intValue()) {
 					lstStampOutput.add(x);
 				}
-				lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.isReflectedCategory()));
+				lstStampOutput.addAll(findStempItemNext(listStamp, date.addDays(1), stampRange, x.getImprintReflectionStatus().isReflectedCategory()));
 			};
 			lstStampOutput = lstStampOutput.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
 			lstStampOutput.sort(Comparator.comparing(Stamp::getStampDateTime));
@@ -125,7 +126,8 @@ public class StampServiceImpl implements StampDomainService {
 
 	@Override
 	public List<Stamp> handleDataNew(StampReflectRangeOutput s, GeneralDate date,
-			String employeeId, String companyId, EmbossingExecutionFlag flag) {
+			String employeeId, String companyId, EmbossingExecutionFlag flag,CacheCarrier carrier) {
+		List<Stamp> listStampHasReflected = carrier.get("listStamp");
 		List<Stamp> listStamp = new ArrayList<>();
 		// ドメインモデル「打刻カード」を取得する
 		List<StampCard> lstStampCard = stampCardRepository.getListStampCard(employeeId);
@@ -145,9 +147,20 @@ public class StampServiceImpl implements StampDomainService {
 		} else {
 			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()), start, end)
 					.stream()
-					.filter(c -> !c.isReflectedCategory()).collect(Collectors.toList());
+					.filter(c -> !c.getImprintReflectionStatus().isReflectedCategory()).collect(Collectors.toList());
 		}
 		listStamp.stream().sorted(Comparator.comparing(Stamp::getStampDateTime)).collect(Collectors.toList());
+		List<Stamp> listRemove = new ArrayList<>();
+		for(Stamp stamp :listStamp) {
+			for(Stamp stampRf :listStampHasReflected) {
+				if(stamp.getStampDateTime().equals(stampRf.getStampDateTime()) && 
+						stampRf.getType().getChangeClockArt()== stamp.getType().getChangeClockArt()
+						&& stampRf.getCardNumber().equals(stamp.getCardNumber())) {
+					listRemove.add(stamp);
+				}
+			}
+		}
+		listStamp.removeAll(listRemove);
 		return listStamp;
 	}
 }

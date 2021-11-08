@@ -46,6 +46,11 @@ public class PersonalDayOfWeek extends DomainObject {
 	// 日曜日
 	private Optional<SingleDaySchedule> sunday;
 
+	/**
+	 * 	[1] 該当の単一日勤務予定を取得する
+	 * @param baseDate
+	 * @return
+	 */
 	public Optional<SingleDaySchedule> getSingleDaySchedule(GeneralDate baseDate){
 		DayOfWeek day = baseDate.localDate().getDayOfWeek();
 		switch (day) {
@@ -124,6 +129,18 @@ public class PersonalDayOfWeek extends DomainObject {
 		this.friday = friday;
 		this.saturday = saturday;
 		this.sunday = sunday;
+	}
+	
+	/**
+	 * 	[2] 曜日別勤務が全然設定されていないか
+	 */
+	public boolean checkWorkInWeek() {
+		if (this.monday.isPresent() || this.tuesday.isPresent() || this.wednesday.isPresent()
+				|| this.thursday.isPresent() || this.friday.isPresent() || this.saturday.isPresent()
+				|| this.sunday.isPresent()) {
+			return false;
+		}
+		return true;
 	}
 	
 	

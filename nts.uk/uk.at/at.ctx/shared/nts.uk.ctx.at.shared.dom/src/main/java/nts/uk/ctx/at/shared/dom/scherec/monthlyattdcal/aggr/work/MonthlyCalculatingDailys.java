@@ -142,6 +142,28 @@ public class MonthlyCalculatingDailys {
 		result.loadDataCommon(require, employeeId, period);
 		return result;
 	}
+	
+	private static Map<String, MonthlyCalculatingDailys> loadClones(RequireM4 require, List<String> employeeId, DatePeriod period) {
+		Map<String, MonthlyCalculatingDailys> results = new HashMap<String, MonthlyCalculatingDailys>();
+
+		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
+		DatePeriod findPeriod = new DatePeriod(period.start().addMonths(-1), period.end().addDays(31));
+
+		// 日別実績の勤怠時間
+		val attendanceTimeOfDailyLists = require.dailyAttendanceTimesclones(employeeId, findPeriod);
+		
+		for (val attendanceTimeOfDailyList : attendanceTimeOfDailyLists.entrySet()) {
+			MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
+			for (val attendanceTimeOfDaily : attendanceTimeOfDailyList.getValue().entrySet()){
+				result.attendanceTimeOfDailyMap.putIfAbsent(attendanceTimeOfDaily.getKey(), attendanceTimeOfDaily.getValue());
+			}
+			// 共通処理
+			result.loadDataCommon(require, attendanceTimeOfDailyList.getKey(), period);
+			results.put(attendanceTimeOfDailyList.getKey(), result);
+		}
+		
+		return results;
+	}
 
 	/**
 	 * データ取得
@@ -274,6 +296,32 @@ public class MonthlyCalculatingDailys {
 		return correctExamDayTime(result, workingConditionItem);
 
 	}
+	
+	public static Map<String, MonthlyCalculatingDailys> createClones(RequireM4 require, List<String> sid,
+			DatePeriod period, List<IntegrationOfDaily> dailyWorks,
+			List<WorkingConditionItem> workingConditionItems) {
+
+		Map<String, MonthlyCalculatingDailys> data = new HashMap<String, MonthlyCalculatingDailys>();
+
+		if (dailyWorks.isEmpty()) {
+
+			data = MonthlyCalculatingDailys.loadClones(require, sid, period);
+		} else {
+			for (String id : sid) {
+				data.put(id, createFrom(dailyWorks.stream().filter(c->c.getEmployeeId().equals(id)).collect(Collectors.toList())));
+			}
+		}
+		Map<String, MonthlyCalculatingDailys> results = new HashMap<String, MonthlyCalculatingDailys>();
+		for (val result : data.entrySet()) {
+			Optional<WorkingConditionItem> workingConditionItem = workingConditionItems.stream().filter(c->c.getEmployeeId().equals(result.getKey())).findAny();
+			if(workingConditionItem.isPresent()) {
+				results.put(result.getKey(), correctExamDayTime(result.getValue(), workingConditionItem.get()));
+			}
+		}
+
+		return results;
+
+	}
 
 	private static MonthlyCalculatingDailys createFrom(List<IntegrationOfDaily> dailyWorks) {
 		// 期間内の全データ読み込み
@@ -342,7 +390,7 @@ public class MonthlyCalculatingDailys {
 		}
 		return result;
 	}
-
+	
 	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily,
 			MonAggrEmployeeSettings settings){
 
@@ -625,6 +673,8 @@ public class MonthlyCalculatingDailys {
 	public static interface RequireM3 extends RequireM2 {
 
 		Map<GeneralDate, AttendanceTimeOfDailyAttendance> dailyAttendanceTimes(String employeeId, DatePeriod datePeriod);
+		
+		Map<String, Map<GeneralDate, AttendanceTimeOfDailyAttendance>> dailyAttendanceTimesclones(List<String> employeeId, DatePeriod datePeriod);
 	}
 
 	public static interface RequireM2 {

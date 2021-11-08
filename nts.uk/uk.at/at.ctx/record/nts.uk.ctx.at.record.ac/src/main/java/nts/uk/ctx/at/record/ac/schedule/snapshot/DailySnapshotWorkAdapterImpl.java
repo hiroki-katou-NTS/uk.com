@@ -81,4 +81,9 @@ public class DailySnapshotWorkAdapterImpl implements DailySnapshotWorkAdapter {
 		
 		return snapshotPub.find(sid, ymd).stream().map(c -> convert(c)).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<DailySnapshotWorkImport> find(List<String> sid, DatePeriod ymd) {
+		return snapshotPub.find(sid, ymd).stream().map(c -> convert(c)).collect(Collectors.toList());
+	}
 }
