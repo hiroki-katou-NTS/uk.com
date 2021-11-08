@@ -2,6 +2,7 @@ package nts.uk.screen.com.app.find.cas012;
 
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
@@ -24,7 +25,11 @@ public class GetListOfCompaniesScreenQuery {
     private CompanyRepository repo;
 
     public List<CompanyImport> getListCompany() {
-        val contractCode = AppContexts.user().contractCode();
+        val user = AppContexts.user();
+        val contractCode = user.contractCode();
+        if (!user.roles().have().companyAdmin()){
+            throw  new BusinessException("Msg_1103");
+        }
         return repo.getAllCompany(contractCode).stream()
                 .map(e -> new CompanyImport(
                         e.getCompanyCode().v(),
