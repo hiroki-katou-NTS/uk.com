@@ -39,10 +39,13 @@ module nts.uk.ui.at.kdw013.a {
         // POPUP F
         // 作業お気に入り登録を起動する
         START_F: '/screen/at/kdw013/f/start_task_fav_register',
+        
+        GET_FAV_TASK: '/screen/at/kdw013/a/get-fav-task',
         // 作業お気に入りを新規追加する
         ADD_FAV_TASK_F: '/screen/at/kdw013/f/create_task_fav',
         // 作業お気に入り名称を変更する
         UPDATE_TASK_NAME_F: '/screen/at/kdw013/f/update_task_name',
+        GET_FAV_ONE_DAY: '/screen/at/kdw013/a/get-fav-one-day',
         // POPUP G
         // 1日作業お気に入り登録を起動する
         START_G: '/screen/at/kdw013/g/start_task_fav_register',
@@ -162,6 +165,8 @@ module nts.uk.ui.at.kdw013.a {
 
         //対象日
         targetDate: KnockoutObservable<Date> =  ko.observable();
+    
+        fullCalendar : KnockoutObservable<FullCalendarComponent> = ko.observable();
 
         constructor() {
             super();
@@ -277,7 +282,6 @@ module nts.uk.ui.at.kdw013.a {
                                 }
                             });
                         });
-                        
                         
                         _.forEach(_.get(ld, 'ouenTimeSheet', []), ts => {
                             let {timeSheet, workContent, workNo} = ts;
@@ -1060,7 +1064,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-                            vm.reLoad();    
+                            vm.reloadTaskFav();    
                         }); 
                     }).fail((error: any) => {
                         vm.$dialog.error(error);
@@ -1073,6 +1077,18 @@ module nts.uk.ui.at.kdw013.a {
                 }
             });
 
+        }
+        reloadTaskFav(){
+            const vm = this;
+    
+            vm
+                .$blockui('grayout')
+                .then(() => vm.$ajax('at', API.GET_FAV_TASK).done(data => {
+                    vm.$settings().favTaskItems = data.favTaskItems;
+                    vm.$settings().favTaskDisplayOrders = data.favTaskDisplayOrders;
+                    vm.fullCalendar().computedTaskDragItems(ko.unwrap(vm.$datas), ko.unwrap(vm.$settings));
+                }))
+                .always(() => vm.$blockui('clear'));
         }
 
         // Popup G:
@@ -1101,7 +1117,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-                            vm.reLoad();    
+                            vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
                         vm.$dialog.error(error);
@@ -1114,6 +1130,19 @@ module nts.uk.ui.at.kdw013.a {
                 }
             });
 
+        }
+
+        reloadOneDayFav(){
+            const vm = this;
+    
+            vm
+                .$blockui('grayout')
+                .then(() => vm.$ajax('at', API.GET_FAV_ONE_DAY).done(data => {
+                    vm.$settings().oneDayFavSets = data.oneDayFavSets;
+                    vm.$settings().oneDayFavTaskDisplayOrders = data.oneDayFavTaskDisplayOrders;
+                    vm.fullCalendar().computedOnedayDragItems(ko.unwrap(vm.$datas), ko.unwrap(vm.$settings));
+                }))
+                .always(() => vm.$blockui('clear'));
         }
 
         addOneDayFavTask(){
@@ -1132,7 +1161,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-                            vm.reLoad();    
+                            vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
                         vm.$dialog.error(error);

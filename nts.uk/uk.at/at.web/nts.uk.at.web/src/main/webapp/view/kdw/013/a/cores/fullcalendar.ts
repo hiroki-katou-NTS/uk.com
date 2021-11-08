@@ -883,6 +883,112 @@ module nts.uk.ui.at.kdw013.calendar {
     
         }
 
+        computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
+                const vm =this;
+                if (datas && settings) {
+                    const { workGroupDtos } = datas;
+                    const { tasks ,favTaskItems ,favTaskDisplayOrder } = settings;
+
+                    if (favTaskItems && tasks && favTaskDisplayOrder) {
+                        
+                        if (tasks && tasks.length) {
+                            let taskOrders = _.get(favTaskDisplayOrder, 'displayOrders', []);
+                            const draggers: EventRaw[] = 
+                                _.chain(taskOrders)
+                                .sortBy([(o) => { return o.order; }])
+                                .filter((o) => {
+                                        const task = _.find(favTaskItems, ['favoriteId', o.favId]);
+                                        return !_.isEmpty(_.get(task, 'favoriteContents'));
+                                    })
+                                .map((o) => {
+                                    const task = _.find(favTaskItems, ['favoriteId', o.favId]);
+                                    const relateId = randomId();
+                                    const  [first] = task.favoriteContents;
+                                    return {
+                                        start: new Date(),
+                                        end: new Date(),
+                                        title: task.taskName,
+                                        backgroundColor: getBackgroundColor(first.taskCode, tasks),
+                                        textColor: '',
+                                        extendedProps: {
+                                            favId: task.favoriteId,
+                                            relateId,
+                                            status: 'new',
+                                            remarks: '',
+                                            dropInfo: {
+                                                favoriteContents: task.favoriteContents
+                                            }
+                                            
+                                        } as any
+                                    };
+                                })
+                                .filter((m) => !!m)
+                                .value();
+
+                            // update dragger items
+                            vm.taskDragItems(draggers);
+
+                            return;
+                        }
+                    }
+                }
+
+                vm.taskDragItems([]);
+            }
+
+            computedOnedayDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
+                const vm =this;
+                if (datas && settings) {
+                    const { workGroupDtos } = datas;
+                    const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrder} = settings;
+
+                    if (oneDayFavSets && tasks && oneDayFavTaskDisplayOrder) {
+                        
+                        if (tasks && tasks.length) {
+                            let dos = _.get(oneDayFavTaskDisplayOrder, 'displayOrders', []);
+                            const draggers: EventRaw[] = 
+                                _.chain(dos)
+                                .sortBy([(o) => { return o.order; }])
+                                    .filter((o) => {
+                                        const oneDay = _.find(oneDayFavSets, ['favId', o.favId]);
+                                        return !_.isEmpty(_.get(oneDay, 'taskBlockDetailContents'));
+                                    })
+                                .map((o) => {
+                                    const oneDay = _.find(oneDayFavSets, ['favId', o.favId]);
+                                    const relateId = randomId();
+                                    const  [first] = oneDay.taskBlockDetailContents;
+                                    return {
+                                        start: new Date(),
+                                        end: new Date(),
+                                        title: oneDay.taskName,
+                                        backgroundColor: getBackgroundColor(first.taskContents[0].taskContent.taskCode, tasks),
+                                        textColor: '',
+                                        extendedProps: {
+                                            favId: oneDay.favId,
+                                            relateId,
+                                            status: 'new',
+                                            remarks: '',
+                                            dropInfo: {
+                                                taskBlockDetailContents: oneDay.taskBlockDetailContents
+                                            }
+                                            
+                                        } as any
+                                    };
+                                })
+                                .filter((m) => !!m)
+                                .value();
+
+                            // update dragger items
+                            vm.onedayDragItems(draggers);
+
+                            return;
+                        }
+                    }
+                }
+
+                vm.onedayDragItems([]);
+            }
+
         enableBreakTime(){
             let vm = this;
             let data = ko.unwrap(vm.params.$datas);
@@ -895,6 +1001,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
         public mounted() {
             const vm = this;
+            vm.params.screenA.fullCalendar(vm);
             const {
                 params,
                 dataEvent,
@@ -1098,109 +1205,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
-            const computedTaskDragItems = (datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null) => {
-                if (datas && settings) {
-                    const { workGroupDtos } = datas;
-                    const { tasks ,favTaskItems ,favTaskDisplayOrder } = settings;
-
-                    if (favTaskItems && tasks && favTaskDisplayOrder) {
-                        
-                        if (tasks && tasks.length) {
-                            let taskOrders = _.get(favTaskDisplayOrder, 'displayOrders', []);
-                            const draggers: EventRaw[] = 
-                                _.chain(taskOrders)
-                                .sortBy([(o) => { return o.order; }])
-                                .filter((o) => {
-                                        const task = _.find(favTaskItems, ['favoriteId', o.favId]);
-                                        return !_.isEmpty(_.get(task, 'favoriteContents'));
-                                    })
-                                .map((o) => {
-                                    const task = _.find(favTaskItems, ['favoriteId', o.favId]);
-                                    const relateId = randomId();
-                                    const  [first] = task.favoriteContents;
-                                    return {
-                                        start: new Date(),
-                                        end: new Date(),
-                                        title: task.taskName,
-                                        backgroundColor: getBackgroundColor(first.taskCode, tasks),
-                                        textColor: '',
-                                        extendedProps: {
-                                            favId: task.favoriteId,
-                                            relateId,
-                                            status: 'new',
-                                            remarks: '',
-                                            dropInfo: {
-                                                favoriteContents: task.favoriteContents
-                                            }
-                                            
-                                        } as any
-                                    };
-                                })
-                                .filter((m) => !!m)
-                                .value();
-
-                            // update dragger items
-                            vm.taskDragItems(draggers);
-
-                            return;
-                        }
-                    }
-                }
-
-                vm.taskDragItems([]);
-            }
-
-            const computedOnedayDragItems = (datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null) => {
-                if (datas && settings) {
-                    const { workGroupDtos } = datas;
-                    const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrder} = settings;
-
-                    if (oneDayFavSets && tasks && oneDayFavTaskDisplayOrder) {
-                        
-                        if (tasks && tasks.length) {
-                            let dos = _.get(oneDayFavTaskDisplayOrder, 'displayOrders', []);
-                            const draggers: EventRaw[] = 
-                                _.chain(dos)
-                                .sortBy([(o) => { return o.order; }])
-                                    .filter((o) => {
-                                        const oneDay = _.find(oneDayFavSets, ['favId', o.favId]);
-                                        return !_.isEmpty(_.get(oneDay, 'taskBlockDetailContents'));
-                                    })
-                                .map((o) => {
-                                    const oneDay = _.find(oneDayFavSets, ['favId', o.favId]);
-                                    const relateId = randomId();
-                                    const  [first] = oneDay.taskBlockDetailContents;
-                                    return {
-                                        start: new Date(),
-                                        end: new Date(),
-                                        title: oneDay.taskName,
-                                        backgroundColor: getBackgroundColor(first.taskContents[0].taskContent.taskCode, tasks),
-                                        textColor: '',
-                                        extendedProps: {
-                                            favId: oneDay.favId,
-                                            relateId,
-                                            status: 'new',
-                                            remarks: '',
-                                            dropInfo: {
-                                                taskBlockDetailContents: oneDay.taskBlockDetailContents
-                                            }
-                                            
-                                        } as any
-                                    };
-                                })
-                                .filter((m) => !!m)
-                                .value();
-
-                            // update dragger items
-                            vm.onedayDragItems(draggers);
-
-                            return;
-                        }
-                    }
-                }
-
-                vm.onedayDragItems([]);
-            }
+       
 
             dataEvent.alt
                 .subscribe((c) => $el.attr('alt', +c));
@@ -1239,8 +1244,8 @@ module nts.uk.ui.at.kdw013.calendar {
             // update drag item
             $datas
                 .subscribe((data: a.ChangeDateDto | null) => {
-                    computedOnedayDragItems(data, ko.unwrap($settings));
-                    computedTaskDragItems(data, ko.unwrap($settings));
+                    vm.computedOnedayDragItems(data, ko.unwrap($settings));
+                    vm.computedTaskDragItems(data, ko.unwrap($settings));
                 });
 
             isShowBreakTime.subscribe(value => {
@@ -1292,8 +1297,8 @@ module nts.uk.ui.at.kdw013.calendar {
             // update drag item
             $settings
                 .subscribe((settings: a.StartProcessDto | null) => {
-                    computedOnedayDragItems(ko.unwrap($datas), settings);
-                    computedTaskDragItems(ko.unwrap($datas), settings);
+                    vm.computedOnedayDragItems(ko.unwrap($datas), settings);
+                    vm.computedTaskDragItems(ko.unwrap($datas), settings);
                 });
             //update initialView to storage
             initialView.subscribe(view => {
@@ -2101,6 +2106,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                                             taskContents.push({ frameNo: td.supNo, taskContent: { itemId: ti.itemId, taskCode: ti.value } });
                                                         });
                                                     });
+                                                    vm.params.screenA.oneDayFavTaskName('');
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
                                                 });
                                                 vm.params.screenA.taskBlocks(taskBlocks);
@@ -2883,6 +2889,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         let eventInDay = _.chain(vm.calendar.getEvents())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .filter((evn) => { return !evn.extendedProps.isTimeBreak})
                             .sortBy('end')
                             .value();
                         _.forEach(eventInDay, e => e.remove());
