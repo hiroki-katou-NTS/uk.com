@@ -10,6 +10,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
@@ -167,6 +169,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 @Slf4j
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandler<ExecuteProcessExecutionCommand> {
 
 	public static int MAX_DELAY_PARALLEL = 0;
@@ -2219,8 +2222,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
 						dailyCreateLog.getIsCalWhenLock().orElse(false));
 				// 暫定データの登録
-				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
-						period.datesBetween());
+//				this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId,
+//						period.datesBetween());
 			} catch (Exception e) {
 				if (DeadLock.isSQLDeadLock(e)) {
 					throw e;
