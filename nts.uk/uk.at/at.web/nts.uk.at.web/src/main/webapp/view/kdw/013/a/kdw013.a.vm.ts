@@ -634,6 +634,8 @@ module nts.uk.ui.at.kdw013.a {
                                 vm.scrollTime(value.scrollTime || 420);
                                 vm.slotDuration(value.slotDuration || 30);
                             }
+                            
+                            vm.$settings(new StartProcess(response));
                         });
 
 
