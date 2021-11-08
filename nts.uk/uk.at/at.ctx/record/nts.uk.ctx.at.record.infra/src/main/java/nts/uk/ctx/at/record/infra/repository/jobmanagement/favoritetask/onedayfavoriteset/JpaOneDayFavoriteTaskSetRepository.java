@@ -36,6 +36,10 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE s.sId = :sId";
 	private static final String SELECT_BY_FAID = SELECT_ALL_QUERY_STRING + " WHERE s.favId = :favId";
 	private static final String SELECT_BY_FAVID_AND_SID = SELECT_BY_FAID + " AND s.sId = :sId";
+	
+	private static final String DELETE_SET_TS = "SELECT ts FROM KrcdtTaskFavDaySetTs ts WHERE ts.pk.favId = :favId";
+	private static final String DELETE_SET_ITEM = "SELECT i FROM KrcdtTaskFavDaySetItem i WHERE i.pk.favId = :favId";
+	
 
 	@Override
 	public void insert(OneDayFavoriteSet set) {
@@ -104,6 +108,27 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 		if (setEntity.isPresent()) {
 			this.commandProxy().remove(setEntity.get());
 		}
+		
+		List<KrcdtTaskFavDaySetTs> taskFavDaySetTsList = this.queryProxy().query(DELETE_SET_TS, KrcdtTaskFavDaySetTs.class)
+				.setParameter("favId", favId)
+				.getList();
+		
+		if (!taskFavDaySetTsList.isEmpty()) {
+			for (KrcdtTaskFavDaySetTs ts : taskFavDaySetTsList) {
+				this.commandProxy().remove(ts);
+			}
+		}
+		
+		List<KrcdtTaskFavDaySetItem> taskFavDaySetItemList = this.queryProxy().query(DELETE_SET_ITEM, KrcdtTaskFavDaySetItem.class)
+				.setParameter("favId", favId)
+				.getList();
+		
+		if (!taskFavDaySetItemList.isEmpty()) {
+			for (KrcdtTaskFavDaySetItem item : taskFavDaySetItemList) {
+				this.commandProxy().remove(item);
+			}
+		}
+		
 	}
 
 	@Override
