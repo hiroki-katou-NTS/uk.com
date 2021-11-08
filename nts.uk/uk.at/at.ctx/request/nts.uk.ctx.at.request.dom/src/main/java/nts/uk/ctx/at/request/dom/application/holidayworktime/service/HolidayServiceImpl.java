@@ -255,8 +255,8 @@ public class HolidayServiceImpl implements HolidayService {
 				companyId, 
 				hdWorkDispInfoWithDateOutput.getInitWorkType().orElse(null), 
 				hdWorkDispInfoWithDateOutput.getInitWorkTime().orElse(null), 
-				hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp1(), 
-				hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp1(), 
+				hdWorkDispInfoWithDateOutput.getWorkHours()==null ? Optional.empty() : hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp1(), 
+				hdWorkDispInfoWithDateOutput.getWorkHours()==null ? Optional.empty() : hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp1(), 
 				achievementDetail);
 		// 勤務内容.休憩時間帯を再セットする
 		appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().setBreakTimeZoneSettingList(Optional.ofNullable(breakTimeZoneSettingList));
