@@ -189,6 +189,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.startStampMethod = dataUpdate.startStampMethod;
 		entityOld.endStampMethod = dataUpdate.endStampMethod;
 		entityOld.workplaceId      = dataUpdate.workplaceId;
+		entityOld.krcdtDayTsSupSupplInfo = dataUpdate.krcdtDayTsSupSupplInfo;
 	}
 
 	@Override
