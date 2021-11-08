@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.shared.dom.scherec.optitem;
 
-import lombok.Value;
-
+import java.math.BigDecimal;
 import java.util.Optional;
+
+import lombok.Value;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 日別実績の入力単位
@@ -18,4 +20,46 @@ public class DailyResultInputUnit {
 
     // 金額項目の入力単位
     private Optional<AmountItemInputUnit> amountItemInputUnit;
+    
+    /**
+     * 入力単位チェック
+     * @param value
+     * @param optionalItemAtr
+     * @return
+     */
+    public ValueCheckResult checkInputUnit(BigDecimal value, OptionalItemAtr optionalItemAtr) {
+		
+    	double resultEnum = 0.0;
+    	switch(optionalItemAtr) {
+    	case TIME:
+    		resultEnum = timeItemInputUnit.get().valueEnum();
+    		break;
+    	case NUMBER:
+    		resultEnum = numberItemInputUnit.get().valueEnum();
+    		break;
+    	default: //金額
+    		resultEnum = amountItemInputUnit.get().valueEnum();
+    	}
+    	
+    	if(value.doubleValue()%resultEnum ==0) {
+    		return new ValueCheckResult(true, Optional.empty());
+    	}
+    	String valueError = value+"";
+    	if(optionalItemAtr == OptionalItemAtr.TIME) {
+    		valueError = convertTime(value.intValue());
+    	}
+    	String errorContens = TextResource.localize("Msg_2290",valueError);
+    	return new ValueCheckResult(false, Optional.of(errorContens));
+	}
+    
+    private String convertTime(Integer time) {
+		if (time == null) {
+			return "";
+		}
+		String m = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60) : 0 + String.valueOf(time % 60);
+		String timeString = String.valueOf(time / 60) + ":" + m;
+		return timeString;
+	}
+    
+    
 }

@@ -5455,7 +5455,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     break;
 				case 19 :
 				// KDL013 - WORK_SUPPLEMENT_OPT(19,"作業補足選択肢");
-				let dfd19 : any = $.Deferred(), baseDate : any = null;
+                let dfd19 = $.Deferred();
+				let baseDate : any = null;
 				let rowSelect: any = _.find(selfParent.dailyPerfomanceData(), item => item.id==self.rowId().substring(1));
 				
 				if(rowSelect){
@@ -5468,9 +5469,35 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         selectedCode: self.selectedCode()
                  	}, true);
 
-				modal('/view/kdl/013/index.xhtml').onClosed(function(): any {
-					let data = nts.uk.ui.windows.getShared('KDL013ParamsReturn');
+				modal('/view/kdl/013/a/index.xhtml').onClosed(function(): any {
+					let returnData = nts.uk.ui.windows.getShared('KDL013ParamsReturn');
+                    if (returnData !== undefined && returnData != "") {
+                        let dataKDL: any;
+                        let param3 = {
+                            typeDialog: 19,
+                            param: {
+                                itemId: item.id ,
+                                date: moment(baseDate).utc().toISOString()
+                            }
+                        };
+                        service.findAllCodeName(param3).done((data: any) => {
+                            let codeName = _.find(data, (item: any) => {
+                                return item.code == returnData;
+                            });
+                            self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
+                            dfd19.resolve();
+                        });
+                    }
+                    else {
+                        if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                        __viewContext.vm.clickCounter.clickLinkGrid = false;
+                        nts.uk.ui.block.clear();
+                        dfd19.resolve();
+                    }
+					__viewContext.vm.clickCounter.clickLinkGrid = false;
+                    nts.uk.ui.block.clear();
 				});
+                dfd19.promise();
 				break;
             }
             nts.uk.ui.block.clear();

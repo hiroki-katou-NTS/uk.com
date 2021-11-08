@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -396,4 +395,35 @@ public class OptionalItem extends AggregateRoot {
 //      int index = str.indexOf(".");
 //      return str.substring(index + 1).length();
 //   	}
+    
+    /**
+     * 入力値が正しいか
+     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).任意項目.関数アルゴリズム.任意項目.<<Public>> 入力値が正しいか
+     * @param inputValue
+     * @return
+     */
+    public CheckValueInputCorrectOuput checkInputValueCorrect(BigDecimal inputValue) {
+    	CheckValueInputCorrectOuput data = this.inputControlSetting.checkValueInputCorrect(inputValue, this.performanceAtr, this.optionalItemAtr);
+		return data;
+	}
+
+	public OptionalItem(CompanyId companyId, OptionalItemNo optionalItemNo, OptionalItemName optionalItemName,
+			OptionalItemUsageAtr usageAtr, EmpConditionAtr empConditionAtr, PerformanceAtr performanceAtr,
+			OptionalItemAtr optionalItemAtr, InputControlSetting inputControlSetting, Optional<UnitOfOptionalItem> unit,
+			CalculationClassification calcAtr, Optional<NoteOptionalItem> note,
+			Optional<DescritionOptionalItem> description) {
+		super();
+		this.companyId = companyId;
+		this.optionalItemNo = optionalItemNo;
+		this.optionalItemName = optionalItemName;
+		this.usageAtr = usageAtr;
+		this.empConditionAtr = empConditionAtr;
+		this.performanceAtr = performanceAtr;
+		this.optionalItemAtr = optionalItemAtr;
+		this.inputControlSetting = inputControlSetting;
+		this.unit = unit;
+		this.calcAtr = calcAtr;
+		this.note = note;
+		this.description = description;
+	}
 }

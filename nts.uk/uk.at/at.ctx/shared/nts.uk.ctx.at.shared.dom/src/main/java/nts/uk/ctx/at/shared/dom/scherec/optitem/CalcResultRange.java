@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * The Class CalculationResultRange.
@@ -184,5 +185,90 @@ public class CalcResultRange extends DomainObject {
 			}
 			return c;
 		}).orElse(BigDecimal.ZERO);
+	}
+	
+	/**
+	 * 入力範囲チェック
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).任意項目.関数アルゴリズム.計算結果の範囲.<<Public>>入力範囲チェック.入力範囲チェック
+	 * 
+	 * @param inputValue      入力値
+	 * @param performanceAtr  実績区分
+	 * @param optionalItemAtr 任意項目の属性
+	 * @return
+	 */
+	public ValueCheckResult checkInputRange(BigDecimal inputValue, PerformanceAtr performanceAtr,
+			OptionalItemAtr optionalItemAtr) {
+		//「@上限値チェック」と「@下限値チェック」の内容を確認する
+		//上限値チェック = 設定する || 下限値チェック = 設定する
+		if(this.upperLimit == CalcRangeCheck.SET || this.lowerLimit == CalcRangeCheck.SET  ) {
+			//上限値、下限値を取得
+			ControlRangeValue controlRangeValue = this.getUpperLimit(performanceAtr, optionalItemAtr);
+			//入力範囲チェック
+			boolean checkRange = controlRangeValue.checkInputRange(inputValue);
+			//チェック結果
+			if(!checkRange) {
+				//入力範囲エラーメッセージ作成する
+				String errorContent = this.createInputRangeErrorMsg(controlRangeValue);
+				return new ValueCheckResult(false, Optional.of(errorContent));
+			}
+		}
+		return new ValueCheckResult(true, Optional.empty());
+	}
+	
+	/**
+	 * 入力範囲エラーメッセージ作成する
+	 * @param controlRangeValue  制御範囲値
+	 */
+	public String createInputRangeErrorMsg(ControlRangeValue controlRangeValue) {
+		//@上限値チェック = 設定する && @下限値チェック = 設定しない
+		if(this.upperLimit == CalcRangeCheck.SET && this.lowerLimit == CalcRangeCheck.NOT_SET) {
+			return TextResource.localize("Msg_2293",String.valueOf(controlRangeValue.getUpperLimit().get().doubleValue()));
+		}
+		//@上限値チェック = 設定しない && @下限値チェック = 設定する
+		if (this.upperLimit == CalcRangeCheck.NOT_SET && this.lowerLimit == CalcRangeCheck.SET) {
+			return TextResource.localize("Msg_2292", String.valueOf(controlRangeValue.getLowerLimit().get().doubleValue()));
+		}
+		// @上限値チェック = 設定する && @下限値チェック = 設定する
+		return TextResource.localize("Msg_2291", String.valueOf(controlRangeValue.getLowerLimit().get().doubleValue()),
+				String.valueOf(controlRangeValue.getUpperLimit().get().doubleValue()));
+	}
+
+	/**
+	 * 上限値を取得
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).任意項目.関数アルゴリズム.計算結果の範囲.上限下限チェック.上限値、下限値を取得
+	 */
+	public ControlRangeValue getUpperLimit(PerformanceAtr performanceAtr,OptionalItemAtr optionalItemAtr) {
+		switch(optionalItemAtr) {
+		case TIME:
+			return this.timeRange.map(range -> {
+				
+				return new ControlRangeValue(range.getUpper(performanceAtr),
+						range.getLower(performanceAtr));
+			}).orElse(new ControlRangeValue(Optional.empty(),Optional.empty()));
+			
+		case NUMBER:
+			return this.numberRange.map(range -> {
+				
+				return new ControlRangeValue(range.getUpper(performanceAtr),
+						range.getLower(performanceAtr));
+			}).orElse(new ControlRangeValue(Optional.empty(),Optional.empty()));
+			
+		default: //金額
+			return this.amountRange.map(range -> {
+				
+				return new ControlRangeValue(range.getUpper(performanceAtr),
+						range.getLower(performanceAtr));
+			}).orElse(new ControlRangeValue(Optional.empty(),Optional.empty()));
+		}
+	}
+
+	public CalcResultRange(CalcRangeCheck upperLimit, CalcRangeCheck lowerLimit, Optional<NumberRange> numberRange,
+			Optional<TimeRange> timeRange, Optional<AmountRange> amountRange) {
+		super();
+		this.upperLimit = upperLimit;
+		this.lowerLimit = lowerLimit;
+		this.numberRange = numberRange;
+		this.timeRange = timeRange;
+		this.amountRange = amountRange;
 	}
 }
