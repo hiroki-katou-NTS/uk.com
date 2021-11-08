@@ -98,7 +98,7 @@ public class ExternalImportSettingDto {
 			}
 		}
 		return layouts.stream()
-				.map(l -> new ImportingItemMapping(l.itemNo, null, null))
+				.map(l -> new ImportingItemMapping(l.itemNo, true, Optional.empty(), Optional.empty()))
 				.collect(Collectors.toList());
 	}
 	
@@ -139,12 +139,11 @@ public class ExternalImportSettingDto {
 	
 	private static String checkImportSource(ImportingItemMapping mapping) {
 		val optCsvColumnNo = mapping.getCsvColumnNo();
-		val optFixedValue = mapping.getFixedValue();
-		if(optCsvColumnNo.isPresent()){
-			return "CSV";
-		}
-		else if(optFixedValue.isPresent()){
+		if(mapping.isFixedValue()){
 			return "固定値";
+		}
+		else if(optCsvColumnNo.isPresent()){
+			return "CSV";
 		}
 		else {
 			return "未設定";

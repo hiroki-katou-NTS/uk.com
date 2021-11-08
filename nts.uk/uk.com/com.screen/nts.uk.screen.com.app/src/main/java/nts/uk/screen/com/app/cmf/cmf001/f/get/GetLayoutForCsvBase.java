@@ -128,7 +128,7 @@ public class GetLayoutForCsvBase {
 						importableItems.get(i.getItemNo()).get(0),
 						query.getSettingCode(),
 						query.getImportingDomainId(),
-						new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue()),
+						new ImportingItemMapping(i.getItemNo(), i.isFixedValue(),i.getCsvColumnNo(), i.getFixedValue()),
 						( i.getCsvColumnNo().isPresent()
 								? csvData.get( i.getCsvColumnNo().get() - 1).get(1)
 								: "")

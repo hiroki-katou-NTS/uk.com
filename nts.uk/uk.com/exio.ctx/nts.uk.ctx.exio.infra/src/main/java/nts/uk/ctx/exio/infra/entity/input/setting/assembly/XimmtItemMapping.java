@@ -34,7 +34,11 @@ public class XimmtItemMapping extends ContractUkJpaEntity implements Serializabl
 	
 	@EmbeddedId
 	private XimmtItemMappingPK pk;
-	
+
+	/* CSV列番号 */
+	@Column(name = "IS_FIXED_VALUE")
+	private boolean isFixedValue;
+
 	/* CSV列番号 */
 	@Column(name = "CSV_COLUMN_NO")
 	private Integer csvColumnNo;
@@ -53,9 +57,10 @@ public class XimmtItemMapping extends ContractUkJpaEntity implements Serializabl
 	
 	public static final JpaEntityMapper<XimmtItemMapping> MAPPER = new JpaEntityMapper<>(XimmtItemMapping.class);
 	
-	public XimmtItemMapping(XimmtItemMappingPK pk, Integer csvColumnNo, String fixedValue) {
+	public XimmtItemMapping(XimmtItemMappingPK pk, boolean isFixedValue, Integer csvColumnNo, String fixedValue) {
 		super();
 		this.pk = pk;
+		this.isFixedValue = isFixedValue;
 		this.csvColumnNo = csvColumnNo;
 		this.fixedValue = fixedValue;
 	}
@@ -68,6 +73,7 @@ public class XimmtItemMapping extends ContractUkJpaEntity implements Serializabl
 	public ImportingItemMapping toDomain(){
 		return new ImportingItemMapping(
 				pk.getItemNo(),
+				isFixedValue,
 				Optional.ofNullable(csvColumnNo),
 				Optional.ofNullable(fixedValue).map(StringifiedValue::of));
 	}
