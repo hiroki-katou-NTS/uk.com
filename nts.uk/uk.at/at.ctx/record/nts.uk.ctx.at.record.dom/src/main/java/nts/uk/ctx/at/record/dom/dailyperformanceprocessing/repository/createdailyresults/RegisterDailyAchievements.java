@@ -62,20 +62,22 @@ public class RegisterDailyAchievements {
 		for (IntegrationOfDaily iod : listIntegrationOfDaily) {
 			
 			transactionService.execute(() -> {
-				
-				erByDate.get(iod.getYmd()).forEach(errorMessageInfo -> {
-					
-					// 日別実績の作成エラー処理
-					errorHandlingCreateDailyResults.executeCreateError(companyId, errorMessageInfo.getEmployeeID(),
-							errorMessageInfo.getProcessDate(), empCalAndSumExecLogId.orElse(null), 
-							errorMessageInfo.getExecutionContent(), errorMessageInfo.getResourceID(), 
-							errorMessageInfo.getMessageError());
-				});
-				
+				if (erByDate.containsKey(iod.getYmd())) {
+					erByDate.get(iod.getYmd()).forEach(errorMessageInfo -> {
+						
+						// 日別実績の作成エラー処理
+						errorHandlingCreateDailyResults.executeCreateError(companyId, errorMessageInfo.getEmployeeID(),
+								errorMessageInfo.getProcessDate(), empCalAndSumExecLogId.orElse(null), 
+								errorMessageInfo.getExecutionContent(), errorMessageInfo.getResourceID(), 
+								errorMessageInfo.getMessageError());
+					});
+				}
 				// ドメインモデル「打刻」を更新する (Update 「打刻」)
-				stampByDate.get(iod.getYmd()).forEach(stampItem -> {
-					this.stampDakokuRepository.update(stampItem);
-				});
+				if (stampByDate.containsKey(iod.getYmd())) {
+					stampByDate.get(iod.getYmd()).forEach(stampItem -> {
+						this.stampDakokuRepository.update(stampItem);
+					});
+				}
 				
 				// エラーで本人確認と上司承認を解除する
 				dailyRecordAdUpService.removeConfirmApproval(Arrays.asList(iod));
