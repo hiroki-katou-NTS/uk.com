@@ -47,22 +47,22 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 
 		Map<Integer, List<TaskContent>> contentMap = new HashMap<>();
 
-		for (int i = 1; i < 21; i++) {
+		for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
 
 			List<TaskContent> contents = new ArrayList<>();
-
-			for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
-
-				for (TaskContentForEachSupportFrame frame : content.getTaskContents()) {
-
-					if (frame.getFrameNo().v() == i) {
+			for (TaskContentForEachSupportFrame frame : content.getTaskContents()) {
+				
+				if (frame.getTaskContent().getItemId() >= 4 && frame.getTaskContent().getItemId() <= 8) {
+					if (!contentMap.containsKey(frame.getFrameNo().v())) {
 						contents.add(frame.getTaskContent());
+						contentMap.put(frame.getFrameNo().v(), contents);
+					} else {
+						contentMap.get(frame.getFrameNo().v()).add(frame.getTaskContent());
 					}
 				}
 			}
-			contentMap.put(i, contents);
 		}
-
+		
 		for (Map.Entry<Integer, List<TaskContent>> entry : contentMap.entrySet()) {
 
 			List<TaskContent> taskContents = entry.getValue();
@@ -74,15 +74,22 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 				String taskCd4 = taskContents.stream().filter(m -> m.getItemId() == 7).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
 				String taskCd5 = taskContents.stream().filter(m -> m.getItemId() == 8).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
 
-				for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
-					this.commandProxy()
-							.insert(new KrcdtTaskFavDaySetItem(
-									new KrcdtTaskFavDaySetItemPk(set.getFavId(), entry.getKey(), content.getStartTime().v()), taskCd1,
-									taskCd2, taskCd3, taskCd4, taskCd5));
-				}
+				set.getTaskBlockDetailContents().stream()
+						.filter(x -> x.getTaskContents().stream()
+								.filter(tc -> tc.getFrameNo().v().equals(entry.getKey())).findFirst().isPresent())
+						.findFirst()
+						.ifPresent(x -> {
+								this.commandProxy()
+								.insert(new KrcdtTaskFavDaySetItem(
+												new KrcdtTaskFavDaySetItemPk(set.getFavId(), entry.getKey(),
+												x.getStartTime().v()), taskCd1,
+												taskCd2, taskCd3, taskCd4, taskCd5));
+					
+				});
 			}
 		
 		}
+		
 
 		for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
 			this.commandProxy().insert(
