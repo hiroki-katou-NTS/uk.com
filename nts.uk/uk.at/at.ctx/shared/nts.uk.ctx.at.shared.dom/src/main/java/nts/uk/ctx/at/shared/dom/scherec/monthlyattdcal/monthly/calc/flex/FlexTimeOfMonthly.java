@@ -363,7 +363,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			procDate = procDate.addDays(1);
 		}
 		
-		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, new ArrayList<>());
+		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
 	}
 	
 	/**
@@ -2186,6 +2186,14 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		return new AttendanceTimeMonth(this.flexExcessTime.v() +
 				this.flexCarryforwardTime.getFlexCarryforwardWorkTime().v());
+	}
+	
+	/** フレックス時間の再計算 */
+	public void recalcFlexTime() {
+		
+		/**　フレックス時間を計算する　*/
+		val flexTime = this.flexExcessTime.valueAsMinutes() - this.flexShortageTime.valueAsMinutes();
+		this.flexTime.getFlexTime().setTime(new AttendanceTimeMonthWithMinus(flexTime));
 	}
 	
 	/**
