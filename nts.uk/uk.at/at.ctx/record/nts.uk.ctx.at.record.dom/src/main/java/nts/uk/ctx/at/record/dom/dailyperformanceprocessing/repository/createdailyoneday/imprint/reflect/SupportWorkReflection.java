@@ -14,6 +14,8 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
+import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.GetSupportDataJudgedSameDS;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
@@ -39,6 +41,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.operationsettings.TaskOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -55,9 +59,31 @@ public class SupportWorkReflection {
 
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
+	
+	@Inject
+	private ManHrInputUsageSettingRepository manHrInputUsageSettingRepo;
+	
+	@Inject
+	private TaskOperationSettingRepository taskOperationSettingRepo;
 
 	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
+		
+		/** 工数入力の利用設定を取得する */
+		val manHrInputUsageSet = manHrInputUsageSettingRepo.get(cid);
+		
+		val require = new ManHrInputUsageSetting.Require() {
+			
+			@Override
+			public Optional<TaskOperationSetting> taskOperationSetting(String cid) {
+				return taskOperationSettingRepo.getTasksOperationSetting(cid);
+			}
+		};
+		
+		/** 作業実績の補正処理を行っても良いか判断する */
+		if (!manHrInputUsageSet.map(c -> c.decideCanCorrectTaskRecord(require)).orElse(false)) 
+			/** 反映状態＝反映失敗を返す */		
+			return ReflectionAtr.REFLECT_FAIL;
 
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
 		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);

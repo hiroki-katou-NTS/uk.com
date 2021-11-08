@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -256,12 +257,27 @@ public class DataDialogWithTypeProcessor {
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
 			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
 					.createError(ErrorTypeWorkType.NO_GROUP.code);
-		case 19:
-			// KCP001
-			codeName = this.getWorkSupOption(param.getDate(), param.getItemId()).getCodeNames().stream()
+		
+		case 15:
+			// KDL012
+			int workFrameNo = 0;
+			for(Entry<Integer, List<Integer>> entry : DailyPerformanceCorrectionProcessor.WORK_FRAME_MAP.entrySet()) {
+				if(entry.getValue().contains(param.getItemId())) {
+					workFrameNo = entry.getKey();
+					break;
+				}
+			}
+			codeName = this.getWorkWithFrameNo(companyId, workFrameNo).getCodeNames().stream()
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
 			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
 					.createError(ErrorTypeWorkType.NO_GROUP.code);
+		case 19:
+			// KDL013
+			codeName = this.getWorkSupOption(param.getDate(), param.getItemId()).getCodeNames().stream()
+				.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
+	
 		default:
 			return null;
 		}
@@ -307,7 +323,14 @@ public class DataDialogWithTypeProcessor {
 			
 		case 15:
 			// KDL012
-			return this.getWorkWithFrameNo(companyId, param.getTaskFrameNo()).getCodeNames();
+			int workFrameNo = 0;
+			for(Entry<Integer, List<Integer>> entry : DailyPerformanceCorrectionProcessor.WORK_FRAME_MAP.entrySet()) {
+				if(entry.getValue().contains(param.getItemId())) {
+					workFrameNo = entry.getKey();
+					break;
+				}
+			}
+			return this.getWorkWithFrameNo(companyId, workFrameNo).getCodeNames();
 		case 19:
 			// KDL013
 			return this.getWorkSupOption(param.getDate(), param.getItemId()).getCodeNames();

@@ -198,10 +198,9 @@ mounted() {
         .find('[data-bind]')
         .removeAttr('data-bind');
     
-    vm.event = (evt, vm) => {
+       vm.event = (evt, vm) => {
         const vm = this;
         const tg = evt.target as HTMLElement;
-         evt.preventDefault();
         if ($(tg).closest('.department h3').length > 0 && $(tg).is('i')) {
             vm.OpenKDialog();
             evt.preventDefault();

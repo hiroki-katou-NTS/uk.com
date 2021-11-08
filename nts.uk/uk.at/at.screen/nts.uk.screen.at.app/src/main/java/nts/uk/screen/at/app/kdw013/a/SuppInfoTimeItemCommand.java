@@ -17,7 +17,8 @@ public class SuppInfoTimeItemCommand {
 
 	public SuppInfoTimeItem toDomain() {
 
-		return new SuppInfoTimeItem(new SuppInfoNo(this.getSuppInfoNo()), new AttendanceTime(this.getAttTime()));
+		return new SuppInfoTimeItem(new SuppInfoNo(this.getSuppInfoNo()),
+				this.getAttTime() == null ? null : new AttendanceTime(this.getAttTime()));
 	}
 
 }

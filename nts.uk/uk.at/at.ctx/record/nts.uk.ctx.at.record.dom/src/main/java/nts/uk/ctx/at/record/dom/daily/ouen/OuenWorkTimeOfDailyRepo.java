@@ -25,4 +25,6 @@ public interface OuenWorkTimeOfDailyRepo {
 	public void remove(String sid, GeneralDate ymd);
 
 	public void delete(OuenWorkTimeOfDaily domain);
+
+	public void removePK(String employeeId, GeneralDate today, int i);
 }

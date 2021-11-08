@@ -24,7 +24,7 @@ public class WorkDetailCommand {
 		return lstWorkDetailsParamCommand.stream()
 				.map(wdp -> new TaskTimeZoneCommand(
 						new TimeSpanForCalcCommand(wdp.getTimeZone().getStart(), wdp.getTimeZone().getEnd()),
-						wdp.getSupportFrameNo()))
+						wdp.getSupportFrameNos()))
 				.collect(Collectors.toList());
 	}
 

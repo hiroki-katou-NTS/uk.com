@@ -16,6 +16,9 @@ public class SuppInfoNumItemCommand {
 	private Integer suppNumValue;
 
 	public SuppInfoNumItem toDomain() {
-		return new SuppInfoNumItem(new SuppInfoNo(this.getSuppInfoNo()), new SuppNumValue(this.getSuppNumValue()));
+		return new SuppInfoNumItem(
+									new SuppInfoNo(this.getSuppInfoNo()),
+									this.getSuppNumValue() == null ? null : new SuppNumValue(this.getSuppNumValue())
+											);
 	}
 }

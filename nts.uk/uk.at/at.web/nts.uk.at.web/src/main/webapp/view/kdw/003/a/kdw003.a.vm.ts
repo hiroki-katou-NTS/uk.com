@@ -2889,7 +2889,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 setShared("errorValidate", errorValidateScreeen);
                 setShared("messageKdw003a", (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? null : messageAlert);
                 self.openedScreenB = true;
-                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1270, height : 530} : {width : 900, height : 550}
+                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1260, height : 530} : {width : 900, height : 560}
                 self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml", dialogSize).onClosed(() =>{
                      self.openedScreenB = false;
                      dfd.resolve();
@@ -3101,28 +3101,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (!self.hasEmployee || self.hasErrorBuss) return;
             if (!nts.uk.ui.errors.hasError()) {
-                let lstEmployee = [];
+                let lstEmployee: any[] = [];
                 if (self.displayFormat() === 0) {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    setShared("KDL014A-PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        employeeID: lstEmployee[0].code
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "0", 
+                        listEmp: [lstEmployee[0].id]
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
                 } else {
                     lstEmployee = self.lstEmployee().map((data) => {
-                        return data.code;
+                        return data.id;
                     });
-                    setShared("KDL014B_PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        lstEmployee: lstEmployee
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "1", 
+                        listEmp: lstEmployee
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
                 }
@@ -5433,7 +5437,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let param3 = {
                                 typeDialog: 15,
 								param: {
-							 		taskFrameNo: workFrameNoSelection
+									itemId: self.attendenceId
 								}
                             };
                             service.findAllCodeName(param3).done((data: any) => {
