@@ -55,7 +55,7 @@ public class ConfirmSetSpecifiTimeZone {
 			return new ConfirmSetSpecifiResult();
 		}
 		// 1日半日出勤・1日休日系の判定
-		Optional<WorkType> worktype = getWorkTypeService.getWorkType(workInformation.getRecordInfo().getWorkTimeCode().v());
+		Optional<WorkType> worktype = getWorkTypeService.getWorkType(workInformation.getRecordInfo().getWorkTypeCode().v());
 		if (!worktype.isPresent())
 			return new ConfirmSetSpecifiResult();
 		AttendanceHolidayAttr attHolidayAttr = worktype.get().chechAttendanceDay().toAttendanceHolidayAttr();
