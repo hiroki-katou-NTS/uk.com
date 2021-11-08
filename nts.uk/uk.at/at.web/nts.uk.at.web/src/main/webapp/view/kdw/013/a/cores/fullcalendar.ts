@@ -884,15 +884,15 @@ module nts.uk.ui.at.kdw013.calendar {
     
         }
 
-        computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
+        computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcess | null){
                 const vm =this;
                 if (datas && settings) {
-                    const { tasks ,favTaskItems ,favTaskDisplayOrder } = settings;
+                    const { tasks ,favTaskItems ,favTaskDisplayOrders } = settings;
 
-                    if (favTaskItems && tasks && favTaskDisplayOrder) {
+                    if (favTaskItems && tasks && favTaskDisplayOrders) {
                         
                         if (tasks && tasks.length) {
-                            let taskOrders = _.get(favTaskDisplayOrder, 'displayOrders', []);
+                            let taskOrders = _.get(favTaskDisplayOrders, 'displayOrders', []);
                             const draggers: EventRaw[] = 
                                 _.chain(taskOrders)
                                 .sortBy([(o) => { return o.order; }])
@@ -940,12 +940,12 @@ module nts.uk.ui.at.kdw013.calendar {
                 const vm =this;
                 if (datas && settings) {
                     const { workGroupDtos } = datas;
-                    const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrder} = settings;
+                    const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrders} = settings;
 
-                    if (oneDayFavSets && tasks && oneDayFavTaskDisplayOrder) {
+                    if (oneDayFavSets && tasks && oneDayFavTaskDisplayOrders) {
                         
                         if (tasks && tasks.length) {
-                            let dos = _.get(oneDayFavTaskDisplayOrder, 'displayOrders', []);
+                            let dos = _.get(oneDayFavTaskDisplayOrders, 'displayOrders', []);
                             const draggers: EventRaw[] = 
                                 _.chain(dos)
                                 .sortBy([(o) => { return o.order; }])

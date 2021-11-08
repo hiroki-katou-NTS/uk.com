@@ -63,6 +63,53 @@ module nts.uk.ui.at.kdw013.a {
         employeeId: '',
         refDate: ''
     })
+    
+    export class StartProcess {
+        attItemName: Array<any>;
+        dailyAttendanceItem: Array<any>;
+        divergenceReasonInputMethods: Array<any>;
+        divergenceTimeRoots: Array<any>;
+        employeeInfos: Array<any>;
+        favTaskDisplayOrders: any
+        favTaskItems: Array<any>;
+        lstEmployeeInfo: Array<any>;
+        manHrInputDisplayFormat: any
+        oneDayFavSets: Array<any>;
+        oneDayFavTaskDisplayOrders: any;
+        taskFrameUsageSetting: any;
+        tasks: Array<any>;
+        workTimeSettings: Array<any>;
+        workTypes: Array<any>;
+        workplaceInfos: Array<any>;
+
+        constructor(data) {
+            this.attItemName = data.attItemName;
+            this.dailyAttendanceItem = data.dailyAttendanceItem;
+            this.divergenceReasonInputMethods = data.divergenceReasonInputMethods;
+            this.divergenceTimeRoots = data.divergenceTimeRoots;
+            this.employeeInfos = data.employeeInfos;
+            this.favTaskDisplayOrders = data.favTaskDisplayOrders;
+            this.favTaskItems = data.favTaskItems;
+            this.lstEmployeeInfo = data.lstEmployeeInfo;
+            this.manHrInputDisplayFormat = data.manHrInputDisplayFormat;
+            this.oneDayFavSets = data.oneDayFavSets;
+            this.oneDayFavTaskDisplayOrders = data.oneDayFavTaskDisplayOrders;
+            this.taskFrameUsageSetting = data.taskFrameUsageSetting;
+            this.tasks = data.tasks;
+            this.workTimeSettings = data.workTimeSettings;
+            this.workTypes = data.workTypes;
+            this.workplaceInfos = data.workplaceInfos;
+        }
+
+        updateFavTask(data) {
+            this.favTaskDisplayOrders = data.favTaskDisplayOrders;
+            this.favTaskItems = data.favTaskItems;
+        }
+        updateFavOneday(data) {
+            this.oneDayFavSets = data.oneDayFavSets;
+            this.oneDayFavTaskDisplayOrders = data.oneDayFavTaskDisplayOrders;
+        }
+    }
 
     @handler({
         bindingName: 'kdw-toggle',
@@ -133,7 +180,7 @@ module nts.uk.ui.at.kdw013.a {
         $datas: KnockoutObservable<ChangeDateDto | null> = ko.observable(null);
 
         // settings (first load data)
-        $settings: KnockoutObservable<StartProcessDto | null> = ko.observable(null);
+        $settings: KnockoutObservable<StartProcess | null> = ko.observable(null);
     
         dataChanged: KnockoutObservable<boolean> = ko.observable(false);
         favTaskName: KnockoutObservable<string> = ko.observable('');
@@ -590,7 +637,7 @@ module nts.uk.ui.at.kdw013.a {
                         });
 
 
-                    vm.$settings(response);
+                    vm.$settings(new StartProcess(response));
                 })
                 .always(() => vm.$blockui('clear'));
 
@@ -1044,8 +1091,7 @@ module nts.uk.ui.at.kdw013.a {
             vm
                 .$blockui('grayout')
                 .then(() => vm.$ajax('at', API.GET_FAV_TASK).done(data => {
-                    vm.$settings().favTaskItems = data.favTaskItems;
-                    vm.$settings().favTaskDisplayOrders = data.favTaskDisplayOrders;
+                    vm.$settings().updateFavTask(data);
                     vm.fullCalendar().computedTaskDragItems(ko.unwrap(vm.$datas), ko.unwrap(vm.$settings));
                 }))
                 .always(() => vm.$blockui('clear'));
@@ -1098,8 +1144,7 @@ module nts.uk.ui.at.kdw013.a {
             vm
                 .$blockui('grayout')
                 .then(() => vm.$ajax('at', API.GET_FAV_ONE_DAY).done(data => {
-                    vm.$settings().oneDayFavSets = data.oneDayFavSets;
-                    vm.$settings().oneDayFavTaskDisplayOrders = data.oneDayFavTaskDisplayOrders;
+                    vm.$settings().updateFavOneday(data);
                     vm.fullCalendar().computedOnedayDragItems(ko.unwrap(vm.$datas), ko.unwrap(vm.$settings));
                 }))
                 .always(() => vm.$blockui('clear'));
