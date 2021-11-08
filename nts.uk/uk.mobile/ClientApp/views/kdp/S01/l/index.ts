@@ -60,21 +60,6 @@ export class KdpS01LComponent extends Vue {
         let vm = this;
 
         vm.reloadData();
-
-        _.delay(function () {
-            let btnFunctions = vm.$refs.functionBtns as HTMLButtonElement[],
-                btnDefault = vm.$refs.functionBtn as HTMLButtonElement;
-
-            if (!!btnFunctions && btnFunctions.length) {
-                btnFunctions[0].focus();
-            } else {
-                if (!!btnDefault) {
-                    btnDefault.focus();
-                }
-            }
-
-        }, 300);
-
     }
 
     public reloadData() {
@@ -145,7 +130,6 @@ export class KdpS01LComponent extends Vue {
         vm.selectedCode = code;
         vm.framePosition = 0;
         let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo + 1, upperFrameWorkCode: vm.selectedCode};
-
         vm.$mask('show');
         vm.$http.post('at', API.GET_EMPLOYEE_TASKS, param).then((result: any) => {
             vm.$mask('hide');
@@ -163,10 +147,16 @@ export class KdpS01LComponent extends Vue {
                     vm.frameName = vm.getFrameName(vm.frameNo);
                     vm.taskArray = _.chunk(result.data.task, 6);
                     vm.reloadData();
+                    vm.taskNameCd = '';
                 }
 
             }
         });
+
+        setTimeout(function () {
+            document.getElementsByTagName('input')[0].focus();
+        }, 200);
+
     }
 
     public onClickSearch() {
@@ -207,7 +197,7 @@ export class KdpS01LComponent extends Vue {
                 vm.reload(0);
                 vm.framePosition = 0;
                 vm.reloadData();
-                
+
             });
 
         }
@@ -276,7 +266,9 @@ export class KdpS01LComponent extends Vue {
         }
 
         vm.wordCodeMap.set(vm.frameNo, null);
-
+        setTimeout(function () {
+            document.getElementsByTagName('input')[0].focus();
+        }, 200);
         
     }
 
