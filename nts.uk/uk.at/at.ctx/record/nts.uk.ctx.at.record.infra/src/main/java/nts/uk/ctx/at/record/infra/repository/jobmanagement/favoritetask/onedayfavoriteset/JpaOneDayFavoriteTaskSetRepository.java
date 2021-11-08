@@ -69,10 +69,10 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 			
 			if (!taskContents.isEmpty()) {
 				String taskCd1 = taskContents.stream().filter(m -> m.getItemId() == 4).findAny().map(m -> m.getTaskCode().v()).orElse(null);
-				String taskCd2 = taskContents.stream().filter(m -> m.getItemId() == 5).findAny().map(m -> m.getTaskCode().v()).orElse(null);
-				String taskCd3 = taskContents.stream().filter(m -> m.getItemId() == 6).findAny().map(m -> m.getTaskCode().v()).orElse(null);
-				String taskCd4 = taskContents.stream().filter(m -> m.getItemId() == 7).findAny().map(m -> m.getTaskCode().v()).orElse(null);
-				String taskCd5 = taskContents.stream().filter(m -> m.getItemId() == 8).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+				String taskCd2 = taskContents.stream().filter(m -> m.getItemId() == 5).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+				String taskCd3 = taskContents.stream().filter(m -> m.getItemId() == 6).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+				String taskCd4 = taskContents.stream().filter(m -> m.getItemId() == 7).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+				String taskCd5 = taskContents.stream().filter(m -> m.getItemId() == 8).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
 
 				for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
 					this.commandProxy()
