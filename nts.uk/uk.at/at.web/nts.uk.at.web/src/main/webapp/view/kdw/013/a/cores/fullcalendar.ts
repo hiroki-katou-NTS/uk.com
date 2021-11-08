@@ -2871,7 +2871,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 taskBlock: {
                                     caltimeSpan: { start,  end },
 
-                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 0 : vm.getFrameNo(eventInDay), taskItemValues }]
+                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 1 : vm.getFrameNo(eventInDay), taskItemValues }]
                                 },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
@@ -3289,7 +3289,7 @@ module nts.uk.ui.at.kdw013.calendar {
         public getFrameNo(events){
                 let maxNo = 20;
                 let resultNo;
-                for (let i = 0; i < maxNo; i++) {
+                for (let i = 1; i < maxNo; i++) {
                     let event = _.find(events, e => _.get(e, 'extendedProps.frameNo', 0) == i);
 
                     if (!event) {
