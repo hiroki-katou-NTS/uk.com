@@ -1251,7 +1251,7 @@ module nts.uk.ui.at.kdw013.calendar {
             isShowBreakTime.subscribe(value => {
                     if(!value){
                         events(_.chain(events())
-                            .filter((evn) => { return evn.extendedProps.isTimeBreak == false })
+                            .filter((evn) => { return !evn.extendedProps.isTimeBreak })
                             .value());
 
                         updateEvents();
@@ -2864,6 +2864,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 extendedProps: {
                                 ...extendedProps,
                                 id: randomId(),
+                                isTimeBreak:false,
                                 status: 'update',
                                 //作業枠利用設定
                                 taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
@@ -2886,13 +2887,12 @@ module nts.uk.ui.at.kdw013.calendar {
                     }else {
                         //drop by day
                         //remove event in day
-                        let eventInDay = _.chain(vm.calendar.getEvents())
-                            .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                        events(_.chain(events())
+                            .filter((evn) => { return !moment(start).isSame(evn.start, 'days') || (moment(start).isSame(evn.start, 'days') && evn.extendedProps.isTimeBreak) })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
-                            .filter((evn) => { return !evn.extendedProps.isTimeBreak})
-                            .sortBy('end')
-                            .value();
-                        _.forEach(eventInDay, e => e.remove());
+                            .value());
+                        
+                        
                         // add event   
                         _.each( _.get(extendedProps, 'dropInfo.taskBlockDetailContents', []), task => {
                             let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60).toDate();
@@ -2932,6 +2932,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 ...extendedProps,
                                 id: randomId(),
                                 status: 'update',
+                                isTimeBreak:false,
                                 isChanged: true,
                                 //作業枠利用設定
                                 taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
@@ -2951,7 +2952,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
                             } as any
                         });
+                        
                         });
+                        updateEvents();
                     }
                 },
                 datesSet: ({ start, end }) => {
@@ -3297,7 +3300,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 let maxNo = 20;
                 let resultNo;
                 for (let i = 1; i < maxNo; i++) {
-                    let event = _.find(events, e => _.get(e, 'extendedProps.frameNo', 0) == i);
+                    let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
 
                     if (!event) {
                         resultNo = i;
