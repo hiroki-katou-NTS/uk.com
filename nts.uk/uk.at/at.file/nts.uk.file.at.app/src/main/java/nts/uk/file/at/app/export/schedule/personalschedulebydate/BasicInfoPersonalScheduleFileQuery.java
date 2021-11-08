@@ -123,8 +123,15 @@ public class BasicInfoPersonalScheduleFileQuery {
         List<EmployeeInformationImport> employeeInfoList = this.employeeInfoAdapter
                 .getEmployeeInfo(new EmployeeInformationQueryDtoImport(sortedEmployeeIds, baseDate, false, false, false,
                         false, false, false));
+        List<EmployeeInformationImport> sortedEmployeeInfoList = new ArrayList<>();
+        for (int i = 0; i < sortedEmployeeIds.size(); i++) {
+            String employee = sortedEmployeeIds.get(i);
+            Optional<EmployeeInformationImport> empInfo = employeeInfoList.stream().filter(x -> x.getEmployeeId().equals(employee)).findFirst();
+            empInfo.ifPresent(sortedEmployeeInfoList::add);
+        }
 
-        return new BasicInfoPersonalScheduleDto(companyInfo, displayInfoOrganization, dateInfo, employeeInfoList);
+
+        return new BasicInfoPersonalScheduleDto(companyInfo, displayInfoOrganization, dateInfo, sortedEmployeeInfoList);
     }
 
     @AllArgsConstructor

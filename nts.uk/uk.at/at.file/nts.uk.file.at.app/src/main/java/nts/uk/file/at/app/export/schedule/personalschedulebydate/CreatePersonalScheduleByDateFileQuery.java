@@ -77,7 +77,7 @@ public class CreatePersonalScheduleByDateFileQuery {
                 basicInformation.getCompanyInfo(),
                 basicInformation.getDisplayInfoOrganization(),
                 basicInformation.getDateInformation(),
-                basicInformation.getEmployeeInfoList().stream().sorted(Comparator.comparing(EmployeeInformationImport::getEmployeeCode)).collect(Collectors.toList()),
+                basicInformation.getEmployeeInfoList(),
                 employeeWorkScheduleResultList,
                 null);
     }
