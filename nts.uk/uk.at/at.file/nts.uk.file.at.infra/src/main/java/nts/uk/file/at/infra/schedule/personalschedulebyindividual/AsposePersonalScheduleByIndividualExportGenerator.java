@@ -232,6 +232,10 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             val holidayName = holidayMap.getOrDefault(colNO, "");
             cells.get(rowCount, col).setValue(l1P1 + "   " + holidayName);
             cells.get(secondLieOfCalender, col).setValue(l2P1);
+            cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
+            if (StringUtils.isNotEmpty(l3P1) && StringUtils.isNotEmpty(l3P2)) {
+                cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
+            }
             Cell cell = cells.get(secondLieOfCalender, col);
             setTextColorRed(cell);
             cell = cells.get(secondLieOfCalender, col + 3);
