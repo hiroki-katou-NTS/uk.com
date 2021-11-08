@@ -623,7 +623,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 components: $component.params.components,
                 exclude-times: $component.popupData.excludeTimes,
                 mouse-pointer: $component.dataEvent.pointer,
-                $settings: $component.params.$settings
+                $settings: $component.params.$settings,
+                screenA:$component.params.screenA
             "></div>
         <div data-bind="
                 fc-setting: $component.popupData.setting,
@@ -886,7 +887,6 @@ module nts.uk.ui.at.kdw013.calendar {
         computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
                 const vm =this;
                 if (datas && settings) {
-                    const { workGroupDtos } = datas;
                     const { tasks ,favTaskItems ,favTaskDisplayOrder } = settings;
 
                     if (favTaskItems && tasks && favTaskDisplayOrder) {
@@ -2927,7 +2927,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 start : timeStart,
                                 end : timeEnd,
                                 textColor,
-                                backgroundColor,
+                                backgroundColor: getBackgroundColor(wg.workCD1, vm.params.$settings().tasks),
                                 extendedProps: {
                                 ...extendedProps,
                                 id: randomId(),
@@ -3603,8 +3603,9 @@ module nts.uk.ui.at.kdw013.calendar {
                 const excludeTimes = allBindingsAccessor.get('exclude-times');
                 const mousePointer = allBindingsAccessor.get('mouse-pointer');
                 const $settings = allBindingsAccessor.get('$settings');
+                const screenA = allBindingsAccessor.get('screenA');
 
-                const component = { name, params: { data, position, components, mode, view, mutated, excludeTimes, mousePointer, $settings } };
+                const component = { name, params: { data, position, components, mode, view, mutated, excludeTimes, mousePointer, $settings ,screenA } };
 
                 element.removeAttribute('data-bind');
                 element.classList.add('fc-popup-editor');
@@ -3679,7 +3680,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     // mock data
                     const $share = ko.observable(null);
 
-                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, $settings, $share } } });
+                    ko.applyBindingsToNode($view, { component: { name: components.view, params: { update, remove, close, data, mode, $settings, $share, screenA: params.screenA  } } });
                     ko.applyBindingsToNode($edit, { component: { name: components.editor, params: { remove, close, data, mode, view, position, excludeTimes, $settings, $share } } });
                 }
 
