@@ -364,7 +364,7 @@ module nts.uk.ui.at.kdw013.b {
                     vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-                                
+                                vm.params.screenA.reloadTaskFav();
                         }); 
                     }).fail((error: any) => {
                         vm.$dialog.error(error);

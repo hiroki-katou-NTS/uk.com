@@ -110,7 +110,7 @@ public class IntegrationOfDailyDto {
 	/** 日別勤怠の応援作業時間 */
 	private List<OuenWorkTimeOfDailyAttendanceDto> ouenTime = new ArrayList<>();
 
-	/** 応援時刻: 日別勤怠の応援作業時間帯 */
+	/** 応援時間帯: 日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendanceDto> ouenTimeSheet = new ArrayList<>();
 
 	private SnapshotDto snapshot;

@@ -13,8 +13,10 @@ import javax.ws.rs.core.MediaType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
@@ -92,6 +94,11 @@ public class KDW013BCHWebService {
 				command.items.stream().map(c-> ItemValueCommand.toDomain(c)).collect(Collectors.toList()));
 	}
 	
+	@POST
+	@Path("h/reloadData")
+	public List<ItemValue> reloadData(EmployeeIdDateItemIds param) {
+		return createAchievementRegistrationParam.getIntegrationOfDaily(param.empTarget, param.targetDate, param.itemIds);
+	}
 }
 @NoArgsConstructor
 @Data
@@ -112,6 +119,14 @@ class WorkPlaceId {
 class EmployeeIdDate {
 	public String employeeId;
 	public GeneralDate date;
+}
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+class EmployeeIdDateItemIds extends ParamH {
+	public String empTarget;
+	public GeneralDate targetDate;
 }
 
 @NoArgsConstructor
