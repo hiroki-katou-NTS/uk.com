@@ -287,99 +287,10 @@ module nts.uk.ui.at.ksu002.a {
 			vm.achievement
 				.subscribe((arch) => {
 					const { IMPRINT } = EDIT_STATE;
-//					const { begin, finish } = vm.baseDate();
-					
-//					const command = {
-//						listSid: [vm.$user.employeeId],
-//						startDate: moment(begin).format('YYYY/MM/DD'),
-//						endDate: moment(finish).format('YYYY/MM/DD')
-//					};
-					
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-//					if (arch === ACHIEVEMENT.NO) {
 						vm.loadData();
 						return;
-//					}
-//					$.Deferred()
-//						.resolve(true)
-//						.then(() => vm.$blockui('grayout'))
-//						// fc
-//						.then(() => vm.getPlansResultsData(true))
-//						.then((response: Achievement[]) => {
-//							if (response.length === 0) {
-//								return;
-//							}
-//
-//							_.each(schedules, (sc) => {
-//								const { data } = sc;
-//								const { $raw } = data;
-//								const exist = _.find(response, (d: Achievement & { date: string; }) => moment(d.date, 'YYYY/MM/DD').isSame(sc.date, 'date'));
-//
-//								if (!exist) {
-//									$raw.achievements = null;
-//								} else {
-//									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
-//
-//									$raw.achievements = {
-//										endTime,
-//										startTime,
-//										workTimeCode,
-//										workTimeName,
-//										workTypeCode,
-//										workTypeName
-//									};
-//								}
-//							});
-//						})
-//						.then(() => {
-//							// reset data
-//							_.each(schedules, (sc) => {
-//								const { data } = sc;
-//								const { $raw, wtype, wtime, value } = data;
-//								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
-//
-//								// UI-4-1 実績表示を「する」に選択する
-//								// UI-4-2 実績表示を「しない」に選択する
-//								if (!!$raw.achievements) {
-//									const {
-//										workTypeCode,
-//										workTypeName,
-//										workTimeCode,
-//										workTimeName,
-//										startTime,
-//										endTime,
-//									} = $raw.achievements;
-//									
-//									wtype.code(workTypeCode || null);
-//									wtype.name(workTypeName || null);
-//
-//									wtime.code(workTimeCode || null);
-//									wtime.name(workTimeName || null);
-//
-//									value.begin(startTime);
-//									value.finish(endTime);
-//
-//									data.confirmed($raw.confirmed);
-//									data.achievement(null);
-//									data.classification($raw.workHolidayCls);
-//									data.need2Work($raw.needToWork);
-//
-//									data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
-//									data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
-//
-//									data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
-//									data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
-//								}
-//
-//								// state of achievement (both data & switch select)
-//								data.achievement(!!$raw.achievements);
-//							});
-//
-//							// reset state of memento
-//							vm.schedules.reset();
-//						})
-//						.always(() => vm.$blockui('clear'));
 				});
 		}
 		
@@ -394,19 +305,6 @@ module nts.uk.ui.at.ksu002.a {
 		
 		loadData(){
 			let vm = this;	
-			//vm.getPlansResultsData();
-			
-//			const command = {
-//				listSid: [vm.$user.employeeId],
-//				startDate: moment(vm.dr.begin).format('YYYY/MM/DD'),
-//				endDate: moment(vm.dr.finish).format('YYYY/MM/DD'),
-//				actualData: vm.achievement() === ACHIEVEMENT.YES
-//			};
-
-//			if(vm.achievement() === ACHIEVEMENT.YES){
-//				vm.achievement(vm.achievement());
-//				return;
-//			}
 			
 			vm.$errors('clear')
 				.then(() => vm.$blockui('grayout'))
@@ -626,11 +524,14 @@ module nts.uk.ui.at.ksu002.a {
                 employeeCode: vm.startupProcessingInformation().employeeCode,//社員コード
                 employeeName: vm.startupProcessingInformation().businessName,//社員名
                 targetDate: moment(vm.yearMonth(), 'YYYYMMDD').format('YYYY/MM/DD'),//対象年月
-                startDay: vm.dayStartWeek()//起算曜日
+                startDay: 0//起算曜日
             }
-            vm.$window.storage("ksu002B_params", shareData).then(() => {
-                nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
-            });
+			vm.$window.storage("KSU002.USER_DATA").done(data => {
+				shareData.startDay = data.fdate;
+				vm.$window.storage("ksu002B_params", shareData).then(() => {
+		            nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
+		        });				
+			});
 		}
 		// UI-8: Undo-Redoの処理
 		undoOrRedo(action: 'undo' | 'redo') {
