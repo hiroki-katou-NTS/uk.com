@@ -170,7 +170,7 @@ public class WorkInformation implements Serializable{
 				}
 				break;
 			default:		// 不要
-				if ( this.workTimeCode.isPresent() ) {
+				if ( this.workTimeCode.isPresent() && this.workTimeCode.get().v().length() > 0) {
 					// @就業時間帯コードが設定されている→就業時間帯が不要なのに設定されている
 					return ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY;
 				} else {
