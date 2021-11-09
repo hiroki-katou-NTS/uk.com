@@ -82,7 +82,8 @@ public class StartManHourInputScreenQuery {
 		
 		// 7. 「作業枠利用設定．枠設定．利用区分」 = する　がない
 		
-		if (taskFrameUsageSetting.getFrameSettingList().stream().filter(x -> x.getUseAtr().equals(UseAtr.USE))
+		if (taskFrameUsageSetting == null || taskFrameUsageSetting.getFrameSettingList().stream()
+				.filter(x -> x.getUseAtr().equals(UseAtr.USE))
 				.collect(Collectors.toList()).isEmpty()) {
 			throw new BusinessException("Msg_1960");
 		}

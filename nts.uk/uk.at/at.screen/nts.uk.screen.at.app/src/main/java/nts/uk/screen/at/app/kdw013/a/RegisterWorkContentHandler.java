@@ -5,12 +5,10 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommandHandler;
 import nts.uk.screen.at.app.kdw013.query.CreateDpItemQuery;
@@ -54,11 +52,8 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 
 		//throw business
 		// 2. 修正した実績を登録する
-		DataResultAfterIU dataResult = this.dailyModifyRCommandFacade.insertItemDomain(dataParent);
-		
-		if (!dataResult.getMessageAlert().equals("Msg_15")) {
-			throw new BusinessException(dataResult.getMessageAlert());
-		}
+
+		result.setDataResult(this.dailyModifyRCommandFacade.insertItemDomain(dataParent));
 		
 		// 3. 作業時間帯グループを登録する
 		
