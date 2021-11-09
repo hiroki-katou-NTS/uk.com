@@ -47,8 +47,8 @@ public class ReflectApplicationWorkRecord {
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			// レコーダイメージ申請の対象日を取得する
-			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require, cid, 
-					(AppRecordImageShare) application);
+			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require,
+					cid, (AppRecordImageShare) application);
 			if (dateOpt.getLeft().isPresent()) {
 				dateTarget = dateOpt.getLeft().get();
 				stamp = dateOpt.getRight();
