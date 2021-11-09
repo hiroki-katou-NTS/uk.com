@@ -524,10 +524,12 @@ module nts.uk.ui.at.ksu002.a {
                 employeeCode: vm.startupProcessingInformation().employeeCode,//社員コード
                 employeeName: vm.startupProcessingInformation().businessName,//社員名
                 targetDate: moment(vm.yearMonth(), 'YYYYMMDD').format('YYYY/MM/DD'),//対象年月
-                startDay: 0//起算曜日
+                startDay: 0, //起算曜日
+                isStartingDayOfWeek: false
             }
 			vm.$window.storage("KSU002.USER_DATA").done(data => {
 				shareData.startDay = data.fdate;
+				shareData.isStartingDayOfWeek = vm.dayStartWeek() === data.fdate;
 				vm.$window.storage("ksu002B_params", shareData).then(() => {
 		            nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
 		        });				

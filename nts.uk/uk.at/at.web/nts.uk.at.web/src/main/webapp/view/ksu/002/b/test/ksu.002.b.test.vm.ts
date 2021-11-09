@@ -60,7 +60,8 @@ module nts.uk.ui.at.ksu002.b.test {
                 employeeCode: vm.empCode(),
                 employeeName: vm.empName(),
                 targetDate: vm.targetDate().substring(0,10).replace(new RegExp('-', 'g'), '/'),
-                startDay: vm.startDay()
+                startDay: vm.startDay(),
+                isStartingDayOfWeek: false
             }
             vm.$window.storage("ksu002B_params", shareData).then(() => {
                 vm.$window.modal('/view/ksu/002/b/index.xhtml').then(() => {

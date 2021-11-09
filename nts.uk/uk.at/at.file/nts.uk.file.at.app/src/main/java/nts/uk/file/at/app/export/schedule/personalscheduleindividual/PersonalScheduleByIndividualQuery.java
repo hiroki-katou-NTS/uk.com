@@ -39,4 +39,9 @@ public class PersonalScheduleByIndividualQuery {
      * 週合計判定
      */
     private boolean isTotalDisplay;
+
+    /**
+     * 起算曜日か
+     */
+    private boolean isStartingDay;
 }

@@ -11,6 +11,7 @@ module nts.uk.ui.at.ksu002.b {
         model: Model = new Model();
         roundingRules: KnockoutObservableArray<any>;
         datePeriod: any;
+        enableTotal : KnockoutObservable<boolean>;
 
         constructor() {
             super();
@@ -20,6 +21,7 @@ module nts.uk.ui.at.ksu002.b {
                 {code: true, name: vm.$i18n('KSU002_55')}
             ]);
             vm.datePeriod = ko.observable("");
+            vm.enableTotal = ko.observable(false);
         }
 
         created() {
@@ -33,15 +35,11 @@ module nts.uk.ui.at.ksu002.b {
                 vm.model.targetDate(data.targetDate);
                 vm.model.startDay(data.startDay);
                 vm.datePeriod(vm.getDatePeriod());
+                vm.enableTotal(data.isStartingDayOfWeek);
             });
-            vm.$window.storage("ksu002B_old").done((data) => {
-                if (_.has(data, 'isTotalDisplay')) {
-                    vm.model.isTotalDisplay(data.isTotalDisplay);
-                    setTimeout(function () {
-                        $('#B4_2 input:radio:checked').focus();
-                    }, 500);
-                }
-            });
+
+            vm.loadTotalDislay();
+
             /*  $(document).ready(function () {
                   setTimeout(function () {
                      // $('#B4_2').children(":first").children(":first").focus();
@@ -61,6 +59,20 @@ module nts.uk.ui.at.ksu002.b {
 
         mounted() {
             const vm = this;
+        }
+
+        loadTotalDislay(): void {
+            let vm = this;
+            vm.$window.storage("ksu002B_old").then((data) => {
+                if (ko.unwrap(vm.enableTotal())) {
+                    if (_.has(data, 'isTotalDisplay')) {
+                        vm.model.isTotalDisplay(data.isTotalDisplay);
+                        setTimeout(function () {
+                            $('#B4_2 input:radio:checked').focus();
+                        }, 500);
+                    }
+                }
+            });
         }
 
         close() {
