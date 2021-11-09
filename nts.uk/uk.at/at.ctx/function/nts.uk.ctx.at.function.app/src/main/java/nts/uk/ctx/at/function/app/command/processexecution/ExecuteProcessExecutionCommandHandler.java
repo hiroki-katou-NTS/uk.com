@@ -757,7 +757,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 		calculateSchedulePeriod, listEmp, companyId, execItemCd);
 
                 try {
-                    this.executeService.handle(scheduleCommand, Optional.empty());
+                    this.executeService.handle(scheduleCommand, Optional.of(context.asAsync()));
                     if (scheduleCommand.getIsExForKBT()) {
                         // 再実行の場合にExceptionが発生したかどうかを確認する。
 						if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
@@ -821,7 +821,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
 									.setPeriod(new DatePeriod(targetStartDate, targetEndDate));
 							try {
-								this.executeService.handle(scheduleCreatorExecutionOneEmp, Optional.empty());
+								this.executeService.handle(scheduleCreatorExecutionOneEmp, Optional.of(context.asAsync()));
 								if (scheduleCreatorExecutionOneEmp.getIsExForKBT()) {
 									// 再実行の場合にExceptionが発生したかどうかを確認する。
 									if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {

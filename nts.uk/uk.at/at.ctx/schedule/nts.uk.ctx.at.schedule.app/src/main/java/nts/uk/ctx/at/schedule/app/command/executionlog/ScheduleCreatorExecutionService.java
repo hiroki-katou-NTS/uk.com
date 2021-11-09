@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
@@ -83,6 +85,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ScheduleCreatorExecutionService {
 	@Inject
 	private ManagedParallelWithContext parallel;
@@ -225,8 +228,8 @@ public class ScheduleCreatorExecutionService {
 	// 休業
 	public static final int HOLIDAY = 3;
 
-	public void handle(ScheduleCreatorExecutionCommand command,
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask) {
+	@SuppressWarnings("rawtypes")
+	public void handle(ScheduleCreatorExecutionCommand command, Optional<AsyncCommandHandlerContext> asyncTask) {
 		System.out.println("Run batch service !");
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -279,7 +282,7 @@ public class ScheduleCreatorExecutionService {
 	 */
 	private void registerPersonalSchedule(ScheduleCreatorExecutionCommand command,
 			ScheduleExecutionLog scheduleExecutionLog, 
-			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask,
+			@SuppressWarnings("rawtypes") Optional<AsyncCommandHandlerContext> asyncTask,
 			String companyId) {
 
 		String exeId = command.getExecutionId();
