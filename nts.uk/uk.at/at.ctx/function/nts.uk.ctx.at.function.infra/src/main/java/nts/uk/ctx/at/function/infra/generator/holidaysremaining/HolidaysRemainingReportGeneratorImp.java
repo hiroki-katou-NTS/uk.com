@@ -1283,33 +1283,24 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     // 代休残数
                     // I5_3 代休_残数_日数
                     String remain = "";
-
-                    if (statusHolidayItem.getOccurrenceTimes() == null) {
+                    if (statusHolidayItem.getRemainTimes() == null) {
                         occurrence = statusHolidayItem.getOccurrenceDays() == null || statusHolidayItem.getOccurrenceDays() == 0 ? "" :
                                 df.format(statusHolidayItem.getOccurrenceDays().doubleValue());
+                        use = statusHolidayItem.getUseDays() == null || statusHolidayItem.getUseDays() == 0 ? "" :
+                                df.format(statusHolidayItem.getUseDays().doubleValue());
+                        unUsed = statusHolidayItem.getUnUsedDays() == null || statusHolidayItem.getUnUsedDays() == 0 ? "" :
+                                df.format(statusHolidayItem.getUnUsedDays().doubleValue());
+                        remain = statusHolidayItem.getRemainDays() == null ? "" : df.format(statusHolidayItem.getRemainDays().doubleValue());
                     } else {
                         occurrence = (statusHolidayItem.getOccurrenceTimes() == 0 ? "" :
                                 convertToTime(statusHolidayItem.getOccurrenceTimes()));
-                    }
-                    if (statusHolidayItem.getUseTimes() == null) {
-                        use = statusHolidayItem.getUseDays() == null || statusHolidayItem.getUseDays() == 0 ? "" :
-                                df.format(statusHolidayItem.getUseDays().doubleValue());
-                    } else {
                         use = (statusHolidayItem.getUseTimes() == 0 ? "" : convertToTime(statusHolidayItem.getUseTimes()));
-                    }
 
-                    if (statusHolidayItem.getUnUsedTimes() == null) {
-                        unUsed = statusHolidayItem.getUnUsedDays() == null || statusHolidayItem.getUnUsedDays() == 0 ? "" :
-                                df.format(statusHolidayItem.getUnUsedDays().doubleValue());
-                    } else {
                         unUsed = (statusHolidayItem.getUnUsedTimes() == 0 ? "" :
                                 convertToTime(statusHolidayItem.getUnUsedTimes()));
-                    }
-                    if (statusHolidayItem.getRemainTimes() == null) {
-                        remain = statusHolidayItem.getRemainDays() == null ? "" : df.format(statusHolidayItem.getRemainDays().doubleValue());
-                    } else {
                         remain = (convertToTime(statusHolidayItem.getRemainTimes()));
                     }
+
                     cells.get(firstRow, 10 + totalMonth).setValue(occurrence);
                     cells.get(firstRow + 1, 10 + totalMonth).setValue(use);
                     if (isShow41) {
