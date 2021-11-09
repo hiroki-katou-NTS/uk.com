@@ -1213,6 +1213,7 @@ public class CalculationSettingExportImpl implements MasterListData {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
                 String value = "";
+                ColumnTextAlign align = ColumnTextAlign.LEFT;
                 if (row == 0){
                     if (col == 0) value = TextResource.localize("KMK013_277");
                     else if (col == 2 && stampReflectionMng.isPresent())
@@ -1259,6 +1260,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                 	} else if (col == 2) {
                 		value = optOutManage.map(val -> val.getMaxUsage().v()).orElse(0)
                 				+ TextResource.localize("KMK013_471");
+                		align = ColumnTextAlign.RIGHT;
                 	}
                 } else if (row == 7) {
                 	if (col == 1) {
@@ -1275,6 +1277,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                 		if (optTempWorkUse.isPresent() && optTempWorkUse.get().getUseClassification().isUse()) {
                 			value = optTempWorkManage.map(val -> val.getMaxUsage().v()).orElse(0)
                     				+ TextResource.localize("KMK013_471");
+                			align = ColumnTextAlign.RIGHT;
                 		} else {
                 			value = "";
                 		}
@@ -1286,6 +1289,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                 		if (optTempWorkUse.isPresent() && optTempWorkUse.get().getUseClassification().isUse()) {
                 			value = optTempWorkManage.map(val -> this.formatTime(val.getTimeTreatTemporarySame().v()))
                 					.orElse("00:00");
+                			align = ColumnTextAlign.RIGHT;
                 		} else {
                 			value = "";
                 		}
@@ -1296,7 +1300,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                         MasterCellData.builder()
                                 .columnId(col + "")
                                 .value(value)
-                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .style(MasterCellStyle.build().horizontalAlign(align))
                                 .build());
             }
             data.add(MasterData.builder().rowData(rowData).build());
