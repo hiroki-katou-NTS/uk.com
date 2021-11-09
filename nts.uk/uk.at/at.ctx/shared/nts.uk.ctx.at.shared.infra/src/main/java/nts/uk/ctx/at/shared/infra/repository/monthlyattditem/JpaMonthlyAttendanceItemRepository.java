@@ -74,7 +74,6 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 
 		// Get results
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
-				.filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624)
 				.collect(Collectors.toList());
 	}
 
@@ -107,7 +106,6 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 
 		// Get results
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
-				.filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624)
 				.collect(Collectors.toList());
 	}
 
@@ -139,8 +137,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 								  .setParameter("companyId", companyId)
 								  .getList(f -> toDomain(f)));
 		});
-		return resultList
-				.stream().filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+		return resultList;
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -182,8 +179,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 				resultList.addAll(query.getList(f -> toDomain(f)));
 			});
 		});
-		return resultList
-				.stream().filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+		return resultList;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -252,8 +248,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 								  .setParameter("companyId", companyId)
 								  .getList(f -> toDomain(f)));
 		});
-		return resultList
-				.stream().filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+		return resultList;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -262,8 +257,7 @@ public class JpaMonthlyAttendanceItemRepository extends JpaRepository implements
 		Optional<KrcmtMonAttendanceItem> entity = this.queryProxy()
 				.find(new KrcmtMonAttendanceItemPK(companyId, attendanceItemId), KrcmtMonAttendanceItem.class);
 		if (entity.isPresent()) {
-			return Optional.of(toDomain(entity.get()))
-					.filter(KrcmtMonAttendanceItem::FILTER_NOSAI_0624);
+			return Optional.of(toDomain(entity.get()));
 		} else {
 			return Optional.empty();
 		}

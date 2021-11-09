@@ -3,8 +3,6 @@
  */
 package nts.uk.screen.at.infra.dailyperformance.correction;
 
-import static java.util.stream.Collectors.*;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
@@ -930,8 +928,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		String companyId = AppContexts.user().companyId();
 		List<KrcmtDailyAttendanceItem> entities = this.queryProxy()
 				.query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("lstItem", lstAttendanceItem).getList()
-			.stream().filter(KrcmtDailyAttendanceItem::FILTER_NOSAI_0624).collect(toList());
+				.setParameter("lstItem", lstAttendanceItem).getList();
 		return entities.stream().map(i -> {
 			return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
 					i.displayNumber, i.userCanSet == 1 ? true : false, i.nameLineFeedPosition, i.dailyAttendanceAtr,

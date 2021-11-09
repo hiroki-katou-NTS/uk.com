@@ -182,8 +182,7 @@ public class JpaMonthlyPerformanceScreenRepo extends JpaRepository implements Mo
 			}
 		});
 		
-		return data
-				.stream().filter(d -> KrcmtMonAttendanceItem.FILTER_NOSAI_0624(d.getAttendanceItemId())).collect(toList());
+		return data;
 	}
 
 	@Override

@@ -916,13 +916,16 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	@Override
 	public List<WorkingConditionItem> getWorkingConditionItemByLstEmpIDAndDate(String companyID, GeneralDate ymd,
-			List<String> empID) {
-		List<WorkingConditionItem> workSchedules = this.queryProxy()
+			List<String> empIDs) {
+		List<WorkingConditionItem> workSchedules = new ArrayList<WorkingConditionItem>();
+		CollectionUtil.split(empIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empID -> {
+			workSchedules.addAll(this.queryProxy()
 				.query(SELECT_BY_LIST_ID_AND_DATE, KshmtWorkcondHistItem.class)
 				.setParameter("cid", companyID)
 				.setParameter("ymds", ymd)
 				.setParameter("empID", empID)
-				.getList(c -> c.toDomain());
+				.getList(c -> c.toDomain()));
+		});
 		return workSchedules;
 	}
 
