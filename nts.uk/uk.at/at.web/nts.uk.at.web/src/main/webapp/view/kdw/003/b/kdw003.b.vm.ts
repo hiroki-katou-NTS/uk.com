@@ -135,7 +135,7 @@ module nts.uk.at.view.kdw003.b {
 					employeeCode_width = 120,
 					employeeName_width = 150,
 					date_width = 95,
-					message_width = 880 - 120;
+					message_width = 860 - 120;
 				if(self.diplayFormat() != 0) {
 					message_width = message_width - employeeCode_width - employeeName_width;
 				}
@@ -194,7 +194,7 @@ module nts.uk.at.view.kdw003.b {
 							employeeCode_width = 120,
 							employeeName_width = 150,
 							date_width = 95,
-							message_width = 1240 - 45 - 60 - 120 - 170 - 55;
+							message_width = 1220 - 45 - 60 - 120 - 170 - 55;
 						if(self.diplayFormat() != 0) {
 							message_width = message_width - employeeCode_width - employeeName_width;
 						}
