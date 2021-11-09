@@ -131,7 +131,7 @@ public class GetLayout {
 						require,
 						query.getSettingCode(),
 						query.getImportingDomainId(),
-						new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue())))
+						new ImportingItemMapping(i.getItemNo(), i.isFixedValue(), i.getCsvColumnNo(), i.getFixedValue())))
 				.collect(Collectors.toList());
 	}
 	

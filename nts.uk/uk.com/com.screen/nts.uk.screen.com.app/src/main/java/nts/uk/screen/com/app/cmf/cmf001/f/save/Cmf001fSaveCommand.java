@@ -21,11 +21,12 @@ public class Cmf001fSaveCommand {
 
 	public DomainImportSetting toDomain() {
 		List<ImportingItemMapping> mappings = this.items.stream()
-				.map(mapping -> new ImportingItemMapping(
-						mapping.getItemNo(),
-						mapping.isFixedValue() ? Optional.empty() : Optional.ofNullable(mapping.getCsvItemNo()),
-						mapping.isFixedValue() ? Optional.ofNullable(mapping.getFixedValue()).map(v -> StringifiedValue.of(v)) : Optional.empty()))
-				.collect(Collectors.toList());
+			.map(mapping -> new ImportingItemMapping(
+				mapping.getItemNo(),
+				mapping.isFixedValue(),
+				mapping.isFixedValue() ? Optional.empty() : Optional.ofNullable(mapping.getCsvItemNo()),
+				mapping.isFixedValue() ? Optional.ofNullable(mapping.getFixedValue()).map(v -> StringifiedValue.of(v)) : Optional.empty()))
+			.collect(Collectors.toList());
 				
 		return new DomainImportSetting(
 					ImportingDomainId.valueOf(this.domainId),
