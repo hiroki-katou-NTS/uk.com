@@ -278,7 +278,12 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 				daily.setOuenTimeSheet(x.getOuenTimeSheet());
 			});
 			
-			
+			OuenWorkTimeOfDaily OuenTime = ouenWorkTimeOfDailyRepo.find(employeeId, attendanceTime.getYmd()); 
+
+			if (OuenTime != null) {
+				daily.setOuenTime(OuenTime.getOuenTimes());
+			}
+
 			returnList.add(daily);
 		}
 		return returnList;
@@ -413,14 +418,7 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 			ouenSheets.stream().filter(x -> x.getYmd().equals(ymd) && x.getEmpId().equals(attendanceTime.getEmployeeId())).findFirst().ifPresent(x -> {
 				daily.setOuenTimeSheet(x.getOuenTimeSheet());
 			});
-			
-			
-			OuenWorkTimeOfDaily OuenTime = ouenWorkTimeOfDailyRepo.find(employeeId, attendanceTime.getYmd()); 
-
-			if (OuenTime != null) {
-				daily.setOuenTime(OuenTime.getOuenTimes());
-			}
-			
+						
 			returnList.add(daily);
 		}
 		return returnList;
