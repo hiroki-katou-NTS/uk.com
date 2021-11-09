@@ -53,12 +53,11 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     private static final String TEMPLATE_FILE = "report/KSU002B.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 37;
     private final String SPACE = "　";
-    private static final String COMPANY_ERROR = "Company is not found!!!!";
 
     private final int BG_COLOR_SPECIFIC_DAY = Integer.parseInt("ffc0cb", 16);
     private final int TEXT_COLOR_SUNDAY = Integer.parseInt("ff0000", 16);
     private static final String PRINT_AREA = "A1:AN";
-    private static final int MAX_ROW_IN_PAGE = 33;
+    private static final int MAX_ROW_IN_PAGE = 30;
 
     @Inject
     private StandardMenuRepository standardMenuRepo;
@@ -226,22 +225,27 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         if (holidayClass == null) {
             holidayClass = 0;
         }
-        WorkStyle workStyle = EnumAdaptor.valueOf(holidayClass, WorkStyle.class);
-        if (holidayMap.containsKey(colNO) || workStyle.value == WorkStyle.ONE_DAY_REST.value) {
-            cells.get(rowCount, col).setValue(l1P1);
-            val holidayName = holidayMap.getOrDefault(colNO, "");
-            cells.get(rowCount, col).setValue(l1P1 + "   " + holidayName);
-            cells.get(secondLieOfCalender, col).setValue(l2P1);
-            cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
-            if (StringUtils.isNotEmpty(l3P1) && StringUtils.isNotEmpty(l3P2)) {
-                cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
+//        WorkStyle workStyle = EnumAdaptor.valueOf(holidayClass, WorkStyle.class);
+//        if (holidayMap.containsKey(colNO) || workStyle.value == WorkStyle.ONE_DAY_REST.value) {
+//            cells.get(rowCount, col).setValue(l1P1);
+//            val holidayName = holidayMap.getOrDefault(colNO, "");
+//            cells.get(rowCount, col).setValue(l1P1 + "   " + holidayName);
+//            cells.get(secondLieOfCalender, col).setValue(l2P1);
+//            cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
+//            if (StringUtils.isNotEmpty(l3P1) && StringUtils.isNotEmpty(l3P2)) {
+//                cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
+//            }
+//            Cell cell = cells.get(secondLieOfCalender, col);
+//            setTextColorRed(cell);
+//            cell = cells.get(secondLieOfCalender, col + 3);
+//            setTextColorRed(cell);
+//        } else {
+            if (holidayMap.containsKey(colNO)) {
+                val holidayName = holidayMap.getOrDefault(colNO, "");
+                cells.get(rowCount, col).setValue(l1P1 + "   " + holidayName);
+            } else {
+                cells.get(rowCount, col).setValue(l1P1 + "   " + l1P2);
             }
-            Cell cell = cells.get(secondLieOfCalender, col);
-            setTextColorRed(cell);
-            cell = cells.get(secondLieOfCalender, col + 3);
-            setTextColorRed(cell);
-        } else {
-            cells.get(rowCount, col).setValue(l1P1 + "   " + l1P2);
             cells.get(secondLieOfCalender, col).setValue(l2P1);
             cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
             if (l3P1 != null && l3P2 != null) {
@@ -253,7 +257,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 );
                 setHolidayClassColor(cellsClass, holidayClass);
             }
-        }
+//        }
         if (Objects.nonNull(dateInformation) && datePeriod.contains(dateInformation.getYmd())) {
             cellsWhile.addAll(
                     Arrays.asList(cells.get(secondLieOfCalender, col),
@@ -287,7 +291,6 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         style.setPattern(BackgroundType.SOLID);
         style.setForegroundColor(color);
         cell.setStyle(style);
-        System.out.println("[Valid Fill Color]: " + style.getForegroundColor());
     }
 
     private void setHolidayClassColor(List<Cell> cellsClass, int HolidayClass) {
@@ -533,7 +536,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private boolean isNextPage(int rowCount, int pageIndex) {
-        return (rowCount - (30 * pageIndex)) > 30;
+        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) > MAX_ROW_IN_PAGE;
     }
 
     int getInit(List<DateInformation> dateInfolist) {
