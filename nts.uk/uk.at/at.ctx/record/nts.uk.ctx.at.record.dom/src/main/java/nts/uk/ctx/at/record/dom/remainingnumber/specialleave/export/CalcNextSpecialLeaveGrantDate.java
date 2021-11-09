@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.GrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
@@ -522,7 +523,7 @@ public class CalcNextSpecialLeaveGrantDate {
 								= specialLeaveBasicInfoOpt.get().getGrantSetting().getGrantDays();
 							if ( grantNumberOpt.isPresent() ){
 								int grantDays = grantNumberOpt.get().v();
-								nextSpecialLeaveGrant.setGrantDays(new GrantDays((double)grantDays));
+								nextSpecialLeaveGrant.setGrantDays(new LeaveGrantDayNumber((double)grantDays));
 							}
 						}
 						// 「特別休暇基本情報．適用設定＝所定の条件を適用する」　の場合
@@ -551,7 +552,7 @@ public class CalcNextSpecialLeaveGrantDate {
 									}
 								}
 							}
-							nextSpecialLeaveGrant.setGrantDays(new GrantDays(tmpGrantDays));
+							nextSpecialLeaveGrant.setGrantDays(new LeaveGrantDayNumber(tmpGrantDays));
 						}
 
 						// 回数←期間中に付与された回数
@@ -929,7 +930,7 @@ public class CalcNextSpecialLeaveGrantDate {
 				//　「テーブル以降付与日数.付与日数」
 				NextSpecialLeaveGrant outPut = new NextSpecialLeaveGrant();
 				outPut.setGrantDate(grantDate);
-				outPut.setGrantDays(new GrantDays(grantDays));
+				outPut.setGrantDays(new LeaveGrantDayNumber(grantDays));
 				outPut.setTimes(new GrantNum(count));
 				lstOutput.add(outPut);
 			}

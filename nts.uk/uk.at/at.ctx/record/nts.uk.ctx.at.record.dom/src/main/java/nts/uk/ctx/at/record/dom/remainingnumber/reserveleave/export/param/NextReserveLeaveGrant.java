@@ -1,7 +1,20 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
+import java.math.BigDecimal;
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedPercent;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 
 /**
@@ -14,7 +27,7 @@ public class NextReserveLeaveGrant {
 	/** 付与年月日 */
 	private GeneralDate grantYmd;
 	/** 付与日数 */
-	private ReserveLeaveGrantDayNumber grantDays;
+	private LeaveGrantDayNumber grantDays;
 	/** 使用期限日 */
 	private GeneralDate deadline;
 	
@@ -24,7 +37,7 @@ public class NextReserveLeaveGrant {
 	public NextReserveLeaveGrant(){
 		
 		this.grantYmd = GeneralDate.today();
-		this.grantDays = new ReserveLeaveGrantDayNumber(0.0);
+		this.grantDays = new LeaveGrantDayNumber(0.0);
 		this.deadline = GeneralDate.max();
 	}
 	
@@ -36,7 +49,7 @@ public class NextReserveLeaveGrant {
 	 * @return 次回積立年休付与
 	 */
 	public static NextReserveLeaveGrant of(
-			GeneralDate grantYmd, ReserveLeaveGrantDayNumber grantDays, GeneralDate deadline){
+			GeneralDate grantYmd, LeaveGrantDayNumber grantDays, GeneralDate deadline){
 		
 		NextReserveLeaveGrant domain = new NextReserveLeaveGrant();
 		domain.grantYmd = grantYmd;
@@ -44,4 +57,41 @@ public class NextReserveLeaveGrant {
 		domain.deadline = deadline;
 		return domain;
 	}
+	
+	/**
+	 * 積立年休付与残数データを作成
+	 * @param employeeId
+	 * @return
+	 */
+	public ReserveLeaveGrantRemainingData toReserveLeaveGrantRemainingData(String employeeId) {
+		return new ReserveLeaveGrantRemainingData(employeeId, this.getGrantYmd(),
+				this.getDeadline(), LeaveExpirationStatus.AVAILABLE, GrantRemainRegisterType.MONTH_CLOSE,
+				this.toLeaveNumberInfo());
+	}
+	
+	private LeaveNumberInfo toLeaveNumberInfo() {
+		return new LeaveNumberInfo(toLeaveGrantNumber(), new LeaveUsedNumber(), toLeaveRemainingNumber(),
+				new LeaveUsedPercent(new BigDecimal(0)));
+	}
+	
+	private LeaveGrantNumber toLeaveGrantNumber() {
+		return LeaveGrantNumber.of(this.grantDays, Optional.empty());
+	}
+	
+	private LeaveRemainingNumber toLeaveRemainingNumber() {
+		return LeaveRemainingNumber.of(new LeaveRemainingDayNumber(this.getGrantDays().v()), Optional.empty());
+	}
+
+	/**
+	 * 積立年休付与情報を作成
+	 * @param grantInfo
+	 * @return
+	 */
+	public Optional<ReserveLeaveGrantInfo> toReserveLeaveGrantInfo(Optional<ReserveLeaveGrantInfo> grantInfo){
+		double infoDays = 0.0;
+		if (grantInfo.isPresent()) infoDays = grantInfo.get().getGrantDays().v();
+		return Optional.of(ReserveLeaveGrantInfo.of(
+				new ReserveLeaveGrantDayNumber(infoDays + this.grantDays.v())));
+	}
+
 }

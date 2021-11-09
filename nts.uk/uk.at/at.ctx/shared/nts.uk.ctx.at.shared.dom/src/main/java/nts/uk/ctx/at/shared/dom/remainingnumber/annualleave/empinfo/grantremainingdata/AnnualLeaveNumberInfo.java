@@ -22,32 +22,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 //@AllArgsConstructor
 public class AnnualLeaveNumberInfo extends LeaveNumberInfo implements Serializable {
 
-//	/**
-//	 * 付与数
-//	 */
-//	private AnnualLeaveGrantNumber grantNumber;
-//
-//	/**
-//	 * 使用数
-//	 */
-//	private AnnualLeaveUsedNumber usedNumber;
-//
-//	/**
-//	 * 残数
-//	 */
-//	@Setter
-//	private AnnualLeaveRemainingNumber remainingNumber;
-
-//	/**
-//	 * 使用率
-//	 */
-//	private AnnualLeaveUsedPercent usedPercent;
 
 	public AnnualLeaveNumberInfo(){
 		this.grantNumber = AnnualLeaveGrantNumber.createFromJavaType(0.0, null);
 		this.usedNumber = AnnualLeaveUsedNumber.createFromJavaType(0.0, null, null);
 		this.remainingNumber = AnnualLeaveRemainingNumber.createFromJavaType(0.0, null);
 		this.usedPercent = new AnnualLeaveUsedPercent(new BigDecimal(0));
+	}
+	
+	public AnnualLeaveNumberInfo (LeaveNumberInfo info){
+		super(info);
 	}
 	
 	public AnnualLeaveNumberInfo(double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,

@@ -253,7 +253,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberServiceTest {
 	private List<LeaveGrantRemainingData> leaveGrantRemainingData(double days, Integer minutes, double usedays, Integer useminutes, double stowageDays, double numberOverDays, double remdays, Integer remminutes, Integer timeOver, BigDecimal usedPercent) {
 		List<LeaveGrantRemainingData> list = new ArrayList<>();
 		list.add(
-				LeaveGrantRemainingData.of("0001", "900001",GeneralDate.ymd(2020, 10, 16) , GeneralDate.ymd(2020, 10, 16), LeaveExpirationStatus.AVAILABLE, GrantRemainRegisterType.MONTH_CLOSE,
+				LeaveGrantRemainingData.of( "900001",GeneralDate.ymd(2020, 10, 16) , GeneralDate.ymd(2020, 10, 16), LeaveExpirationStatus.AVAILABLE, GrantRemainRegisterType.MONTH_CLOSE,
 						details(days, minutes, usedays, useminutes, stowageDays, numberOverDays, remdays, remminutes, timeOver, usedPercent)));
 		return list;
 	}
