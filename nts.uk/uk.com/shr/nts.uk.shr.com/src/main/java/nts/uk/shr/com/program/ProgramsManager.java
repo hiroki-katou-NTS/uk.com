@@ -3861,6 +3861,8 @@ public class ProgramsManager {
 										    		, ProgramIdConsts.KWR008C
 										    		, "KWR008_100"
 										    		, "/view/kwr/008/c/index.xhtml");
+    public static final Program CMM029A = new Program(WebAppId.COM, ProgramIdConsts.CMM029A, "CMM029_1", 
+    		"/view/cmm/029/a/index.xhtml");
 
     /**
      * All programs map.

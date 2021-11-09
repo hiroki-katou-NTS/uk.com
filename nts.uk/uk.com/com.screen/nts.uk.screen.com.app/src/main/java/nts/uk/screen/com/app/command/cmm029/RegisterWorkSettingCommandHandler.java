@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepositor
 import nts.uk.screen.com.app.find.cmm029.DisplayDataDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM029_機能の選択.A : 機能の選択.メニュー別OCD.勤務の設定機能を登録する.勤務の設定機能を登録する
@@ -83,7 +82,7 @@ public class RegisterWorkSettingCommandHandler extends CommandHandler<RegisterFu
 				this.aggDeformedLaborSettingRepository.insert(domain);
 			}
 		});
-		
+
 		this.findDisplayData(datas, "CMM029_17").ifPresent(data -> {
 			// 3. 取得する(会社ID＝Input. 会社ID)
 			Optional<WorkManagementMultiple> optManageMulti = this.workManagementMultipleRepository.findByCode(cid);
@@ -96,7 +95,7 @@ public class RegisterWorkSettingCommandHandler extends CommandHandler<RegisterFu
 				this.workManagementMultipleRepository.insert(domain);
 			}
 		});
-		
+
 		this.findDisplayData(datas, "CMM029_18").ifPresent(data -> {
 			// 4. 取得する(会社ID＝Input. 会社ID)
 			Optional<TemporaryWorkUseManage> optTempWorkUse = this.tempWorkUseManageRepository.findByCid(cid);
@@ -108,18 +107,18 @@ public class RegisterWorkSettingCommandHandler extends CommandHandler<RegisterFu
 				this.tempWorkUseManageRepository.insert(domain);
 			}
 		});
-		
+
 		this.findDisplayData(datas, "CMM029_19").ifPresent(data -> {
 			// 5. 取得する(会社ID＝Input. 会社ID)
 			Optional<ManageEntryExit> optEntryExit = this.manageEntryExitRepository.findByID(cid);
 			// 5.1. <call>
 			ManageEntryExit domain = new ManageEntryExit(new ManageEntryExitGetMemento() {
-				
+
 				@Override
 				public NotUseAtr getUseCls() {
 					return NotUseAtr.valueOf(data.isUseAtr());
 				}
-				
+
 				@Override
 				public String getCompanyID() {
 					return cid;
@@ -134,8 +133,7 @@ public class RegisterWorkSettingCommandHandler extends CommandHandler<RegisterFu
 	}
 
 	private Optional<DisplayDataDto> findDisplayData(List<DisplayDataDto> datas, String programId) {
-		return datas.stream().filter(
-				data -> data.getProgramId().equals(TextResource.localize(programId)) && data.getSystem() == SYSTEM_TYPE)
+		return datas.stream().filter(data -> data.getProgramId().equals(programId) && data.getSystem() == SYSTEM_TYPE)
 				.findFirst();
 	}
 }

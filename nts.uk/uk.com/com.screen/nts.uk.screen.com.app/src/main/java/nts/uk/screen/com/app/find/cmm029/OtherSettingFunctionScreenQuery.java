@@ -36,7 +36,7 @@ public class OtherSettingFunctionScreenQuery extends AbstractFunctionScreenQuery
 				.getTasksOperationSetting(cid);
 		datas.add(DisplayDataDto
 				.builder().system(SYSTEM_TYPE).programId("CMM029_42").taskOperationMethod(optTaskOperationSetting
-						.map(TaskOperationSetting::getTaskOperationMethod).orElse(TaskOperationMethod.DO_NOT_USE))
+						.map(data -> data.getTaskOperationMethod().value).orElse(TaskOperationMethod.DO_NOT_USE.value))
 				.build());
 		return datas;
 	}

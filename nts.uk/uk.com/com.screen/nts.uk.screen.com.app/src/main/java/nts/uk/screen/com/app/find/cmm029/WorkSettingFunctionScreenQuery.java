@@ -54,23 +54,23 @@ public class WorkSettingFunctionScreenQuery extends AbstractFunctionScreenQuery 
 		List<DisplayDataDto> datas = new ArrayList<>();
 		// 2. フレックス勤務の設定を取得する(会社ID＝Input. 会社ID)
 		Optional<FlexWorkSet> optFlexWorkSet = this.flexWorkSettingRepository.find(cid);
-		datas.add(DisplayDataDto.builder().programId("CMM029_15")
+		datas.add(DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_15")
 				.useAtr(optFlexWorkSet.map(data -> data.getUseFlexWorkSetting().isUse()).orElse(false)).build());
 		// 3. 変形労働の集計設定を取得する(会社ID＝Input. 会社ID)
 		Optional<AggDeformedLaborSetting> optLaborSetting = this.aggDeformedLaborSettingRepository.findByCid(cid);
-		datas.add(DisplayDataDto.builder().programId("CMM029_16")
+		datas.add(DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_16")
 				.useAtr(optLaborSetting.map(data -> data.getUseDeformedLabor().isUse()).orElse(false)).build());
 		// 4. 複数回勤務管理を取得する(会社ID＝Input. 会社ID)
 		Optional<WorkManagementMultiple> optManageMulti = this.workManagementMultipleRepository.findByCode(cid);
-		datas.add(DisplayDataDto.builder().programId("CMM029_17")
+		datas.add(DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_17")
 				.useAtr(optManageMulti.map(data -> data.getUseATR().equals(UseATR.use)).orElse(false)).build());
 		// 5. 臨時勤務利用管理を取得する(会社ID＝Input. 会社ID)
 		Optional<TemporaryWorkUseManage> optTempWorkUse = this.tempWorkUseManageRepository.findByCid(cid);
-		datas.add(DisplayDataDto.builder().programId("CMM029_18")
+		datas.add(DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_18")
 				.useAtr(optTempWorkUse.map(data -> data.getUseClassification().isUse()).orElse(false)).build());
 		// 6. 入退門管理を取得する(会社ID＝Input. 会社ID)
 		Optional<ManageEntryExit> optEntryExit = this.manageEntryExitRepository.findByID(cid);
-		datas.add(DisplayDataDto.builder().programId("CMM029_19")
+		datas.add(DisplayDataDto.builder().system(SYSTEM_TYPE).programId("CMM029_19")
 				.useAtr(optEntryExit.map(data -> data.getUseClassification().isUse()).orElse(false)).build());
 		return datas;
 	}
