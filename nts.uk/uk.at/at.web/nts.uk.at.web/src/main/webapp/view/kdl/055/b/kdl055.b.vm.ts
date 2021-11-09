@@ -237,7 +237,10 @@ module nts.uk.at.view.kdl055.b.viewmodel {
             const vm = this;
 
             let errorListGrid = $('#grid').mGrid('errors');
-            let errorList = vm.errorList.map(err => {err.date = err.date ? err.date : ''; return err;}).map(err => {err.employeeName = err.employeeName ? err.employeeName : ''; return err;});
+            let errorList = vm.errorList
+                .map(err => {err.date = err.date ? err.date : ''; return err;})
+                .map(err => {err.employeeCode = err.employeeCode ? err.employeeCode : ''; return err;})
+                .map(err => {err.employeeName = err.employeeName ? err.employeeName : ''; return err;});
             let empList = vm.data.listPersonEmp;
             let empIds: any[] = [];
             let request: any = {};
