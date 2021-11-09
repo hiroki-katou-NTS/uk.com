@@ -333,7 +333,7 @@ module nts.uk.at.view.kml002.k {
             }          
                 
            
-            if(self.itemMonthly().amount1()){
+            if(!_.isNull(self.itemMonthly().amount1())){
                 months.push({ "frameNo": 1, "amount": parseInt(self.itemMonthly().amount1()) });
             }
             if(self.itemMonthly().amount2()){
@@ -349,7 +349,7 @@ module nts.uk.at.view.kml002.k {
                 months.push({ "frameNo": 5, "amount": parseInt(self.itemMonthly().amount5()) });
             }
 
-            if(self.itemAnnual().amount1()){
+            if(!_.isNull(self.itemAnnual().amount1())){
                 years.push({ "frameNo": 1, "amount": parseInt(self.itemAnnual().amount1()) });
             }
 
@@ -588,14 +588,14 @@ module nts.uk.at.view.kml002.k {
             const self = this;            
             let command:any = {}, months: Array<ItemAmountModel> = [], 
             years: Array<ItemAmountModel> = [];
-            
+
             self.checkDataScreenK(self.itemMonthlyScreenK() ,self.itemAnnualScreenK());
 
             if (self.validateAllScreenK()) {
                 return;
             }
 
-            if(self.itemMonthlyScreenK().amount1()){
+            if(!_.isNull(self.itemMonthlyScreenK().amount1())){
                 months.push({ "frameNo": 1, "amount": parseInt(self.itemMonthlyScreenK().amount1()) });
             }
             if(self.itemMonthlyScreenK().amount2()){
@@ -611,7 +611,7 @@ module nts.uk.at.view.kml002.k {
                 months.push({ "frameNo": 5, "amount": parseInt(self.itemMonthlyScreenK().amount5()) });
             }
 
-            if(self.itemAnnualScreenK().amount1()){
+            if(!_.isNull(self.itemAnnualScreenK().amount1())){
                 years.push({ "frameNo": 1, "amount": parseInt(self.itemAnnualScreenK().amount1()) });
             }
 
