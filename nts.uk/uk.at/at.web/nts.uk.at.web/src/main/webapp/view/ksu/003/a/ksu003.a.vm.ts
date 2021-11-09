@@ -4344,16 +4344,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			if (type === "WorkTimeName")
 				checkOpen2 = _.filter(self.lstDis, (x: any) => { return x.empId === empId && x.worktimeName == true });
-
+			let dataWorkType = [];
 			if (checkOpen.length < 1 && checkOpen2.length < 1) {
-				
+				dataWorkType.push(...self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList);
 				if (workTypeCode != "") {
-					self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList.push(workTypeCode);
+					dataWorkType.push(workTypeCode);
 				}
 				
 				let param = {
 					disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.displayWorkTypeControl,
-					disAbleWkTypeCodeLst : self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList
+					disAbleWkTypeCodeLst : dataWorkType
 				}
 				setShared('paramKsu003Kdl003', param);
 				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
