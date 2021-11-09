@@ -69,7 +69,7 @@ public class CreateDailyOneDay {
 
         	//日別実績を作成する 
 			OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
-					executionType, employeeGeneralInfoImport, periodInMasterList, Optional.empty());
+					executionType, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
         	listErrorMessageInfo.addAll(outputCreate.getListErrorMessageInfo());
         	integrationOfDaily = Optional.of(outputCreate.getIntegrationOfDaily());
         	changeDailyAtt = new ChangeDailyAttendance(true, true, true, isEditSateBefore, ScheduleRecordClassifi.RECORD, false);
