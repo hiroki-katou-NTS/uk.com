@@ -249,3 +249,7 @@
 .tabs-panel.has-content {
 	overflow: visible;
 }
+
+.nts-help-button-image {
+  width: 370px !important;
+}
