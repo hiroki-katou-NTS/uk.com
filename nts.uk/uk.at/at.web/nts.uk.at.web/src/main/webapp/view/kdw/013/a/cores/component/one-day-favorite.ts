@@ -50,10 +50,12 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                     <label data-bind="i18n: 'KDW013_76'"></label>
                 </h3>
                 <div class='fc-events fc-oneday-events'>
-                    <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
+                    <ul id='one-day-fav' data-bind="foreach: { data: $component.params.items, as: 'item' }">
                         <li class="title" data-bind="attr: {
                             'data-id': _.get(item.extendedProps, 'relateId', ''),
-                            'data-color': item.backgroundColor
+                            'data-color': item.backgroundColor,
+                            'data-order': _.get(item.extendedProps, 'order', ''),
+                            'data-favId': _.get(item.extendedProps, 'favId', '')
                         }">
                             <div data-bind="style: {
                                 'background-color': item.backgroundColor

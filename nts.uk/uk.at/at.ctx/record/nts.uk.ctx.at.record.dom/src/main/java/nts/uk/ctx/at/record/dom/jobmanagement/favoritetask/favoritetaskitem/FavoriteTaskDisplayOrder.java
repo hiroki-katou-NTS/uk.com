@@ -103,30 +103,30 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	 * @param beforeOrder 変更前の表示順
 	 * @param afterOrder  変更後の表示順
 	 */
-	public void changeOrder(String reorderedId, int frontOrder, int backOrder) {
-		if (frontOrder == backOrder) {
+	public void changeOrder(String reorderedId, int beforeOrder, int afterOrder) {
+		if (beforeOrder == afterOrder) {
 			return;
 		}
 
-		if (frontOrder > backOrder) {
+		if (beforeOrder > afterOrder) {
 			for (FavoriteDisplayOrder o : this.displayOrders) {
-				if (o.getOrder() < frontOrder && o.getOrder() >= backOrder) {
+				if (o.getOrder() < beforeOrder && o.getOrder() >= afterOrder) {
 					o.shiftBackOrder();
 				}
 			}
 		}
 
-		if (frontOrder < backOrder) {
+		if (beforeOrder < afterOrder) {
 			for (FavoriteDisplayOrder o : this.displayOrders) {
-				if (o.getOrder() > frontOrder && o.getOrder() <= backOrder) {
+				if (o.getOrder() > beforeOrder && o.getOrder() <= afterOrder) {
 					o.shiftFrontOrder();
 				}
 			}
 		}
 
 		for (FavoriteDisplayOrder o : this.displayOrders) {
-			if (o.getFavId() == reorderedId) {
-				o.changeDisplayOrder(backOrder);
+			if (o.getFavId().equals(reorderedId)) {
+				o.changeDisplayOrder(afterOrder);
 			}
 		}
 

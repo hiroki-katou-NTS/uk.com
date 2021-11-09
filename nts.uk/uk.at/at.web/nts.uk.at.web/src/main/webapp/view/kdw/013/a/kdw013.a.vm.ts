@@ -423,8 +423,7 @@ module nts.uk.ui.at.kdw013.a {
                 read: () => {
                     const employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
                     const date = ko.unwrap(vm.initialDate);
-                    const dateRange = ko.unwrap(vm.dateRange);
-                    const { start, end } = dateRange;
+                    const { start, end } = ko.unwrap(vm.dateRange);
                     const setting = ko.unwrap(vm.$settings);
 
                     if (!employeeId || !setting) {

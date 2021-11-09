@@ -913,6 +913,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                         extendedProps: {
                                             favId: task.favoriteId,
                                             relateId,
+                                            order: o.order,
                                             status: 'new',
                                             remarks: '',
                                             dropInfo: {
@@ -927,7 +928,25 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.taskDragItems(draggers);
+                            $('#task-fav').sortable({
+                                axis: "y",
+                                update: function( event, ui ) {
+                                        let rows = $(event.target).find('li.title');
+                                        let sortedList = [];
+                                        for (let i = 1; i <= rows.length; i++) {
+                                            let element = rows[i - 1];
+                                            sortedList.push({ favId: $(element).attr("data-favId"), order: i });
+                                        }
+                                    
+                                        let item = _.find(sortedList, [ 'favId', $(ui.item).attr('data-favId')]);
 
+                                        let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
+                                        vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_task_dis_order', command))
+                                                .done(() => {
+                                                    vm.params.screenA.reloadTaskFav();
+                                                }).always(() => vm.$blockui('clear'));
+                                }
+                            });
                             return;
                         }
                     }
@@ -968,6 +987,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             relateId,
                                             status: 'new',
                                             remarks: '',
+                                            order: o.order,
                                             dropInfo: {
                                                 taskBlockDetailContents: oneDay.taskBlockDetailContents
                                             }
@@ -980,12 +1000,31 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.onedayDragItems(draggers);
+                            $('#one-day-fav').sortable({
+                                axis: "y",
+                                update: function( event, ui ) {
+                                        let rows = $(event.target).find('li.title');
+                                        let sortedList = [];
+                                        for (let i = 1; i <= rows.length; i++) {
+                                            let element = rows[i - 1];
+                                            sortedList.push({ favId: $(element).attr("data-favId"), order: i });
+                                        }
+                                    
+                                        let item = _.find(sortedList,['favId', $(ui.item).attr('data-favId')]);
 
+                                        let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
+
+                                        vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_one_day_dis_order', command))
+                                                .done(() => {
+                                                    vm.params.screenA.reloadOneDayFav();
+                                                }).always(() => vm.$blockui('clear'));
+                                }
+                            });
                             return;
                         }
                     }
                 }
-
+                
                 vm.onedayDragItems([]);
             }
 

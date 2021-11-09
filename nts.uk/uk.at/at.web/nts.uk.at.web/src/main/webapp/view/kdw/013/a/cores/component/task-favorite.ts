@@ -49,10 +49,12 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                     <label data-bind="i18n: 'KDW013_75'"></label>
                 </h3>
                 <div class='fc-events fc-task-events'>
-                    <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
+                    <ul id='task-fav' data-bind="foreach: { data: $component.params.items, as: 'item' }">
                         <li class="title" data-bind="attr: {
                             'data-id': _.get(item.extendedProps, 'relateId', ''),
-                            'data-color': item.backgroundColor
+                            'data-color': item.backgroundColor,
+                            'data-order': _.get(item.extendedProps, 'order', ''),
+                            'data-favId': _.get(item.extendedProps, 'favId', '')
                         }">
                             <div data-bind="style: {
                                 'background-color': item.backgroundColor

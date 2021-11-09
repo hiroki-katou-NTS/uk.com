@@ -14,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.AddWorkRecodConfirmationCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.DeleteWorkResultConfirmCommand;
 import nts.uk.screen.at.app.kdw013.a.AddWorkRecordConfirmationCommandHandler;
+import nts.uk.screen.at.app.kdw013.a.ChangeFavOneDayDisplayOrder;
+import nts.uk.screen.at.app.kdw013.a.ChangeFavTaskDisplayOrder;
 import nts.uk.screen.at.app.kdw013.a.ConfirmerDto;
 import nts.uk.screen.at.app.kdw013.a.DeleteOneDayTaskSet;
 import nts.uk.screen.at.app.kdw013.a.DeleteTaskSet;
@@ -24,10 +26,11 @@ import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentDto;
 import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentHandler;
 import nts.uk.screen.at.app.kdw013.a.StartProcess;
 import nts.uk.screen.at.app.kdw013.a.StartProcessDto;
-import nts.uk.screen.at.app.kdw013.a.favorite.task.GetFavTask;
 import nts.uk.screen.at.app.kdw013.a.favorite.oneday.FavOneDayDto;
 import nts.uk.screen.at.app.kdw013.a.favorite.oneday.GetFavOneDay;
 import nts.uk.screen.at.app.kdw013.a.favorite.task.FavTaskDto;
+import nts.uk.screen.at.app.kdw013.a.favorite.task.GetFavTask;
+import nts.uk.screen.at.app.kdw013.command.ChangeDisplayOrderCommand;
 import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteCommand;
 import nts.uk.screen.at.app.kdw013.command.DeleteFavoriteForOneDayCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterFavoriteCommand;
@@ -102,6 +105,12 @@ public class KDW013WebService {
 	@Inject
 	private GetFavOneDay getFavOneDay;
 	
+	@Inject
+	private ChangeFavTaskDisplayOrder changeFavTaskOrder;
+	
+	@Inject
+	private ChangeFavOneDayDisplayOrder changeFavOneDayOrder;
+	
 	@POST
 	@Path("a/get-fav-task")
 	public FavTaskDto getFavTask() {
@@ -161,9 +170,15 @@ public class KDW013WebService {
 	// A:お気に入り作業の順番を変更する
 	@POST
 	@Path("a/update_task_dis_order")
-	public void updateTaskDisplayOrder(UpdateFavNameCommand command) {
-		updateFavName.updateFavName(command);
-		
+	public void updateTaskDisplayOrder(ChangeDisplayOrderCommand command) {
+		this.changeFavTaskOrder.changeDisplayOrder(command);
+	}
+	
+	// A:1日作業セットの順番を変更する
+	@POST
+	@Path("a/update_one_day_dis_order")
+	public void updateOneDayDisplayOrder(ChangeDisplayOrderCommand command) {
+		changeFavOneDayOrder.changeDisplayOrder(command);
 	}
 	
 	// A: お気に入り作業を削除する

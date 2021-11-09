@@ -73,7 +73,7 @@ module nts.uk.ui.at.kdw013.timeheader {
             let {$settings, $datas} = screenA;
                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
                 
-                let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []) id=> moment(id.ymd).isSame(moment(time.date), 'days'));
+                let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(time.date), 'days') });
                  // 作業リスト
                 screenA.taskDtos($settings().tasks);
 
@@ -119,7 +119,7 @@ module nts.uk.ui.at.kdw013.timeheader {
                 return false;
             }
 
-            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []) id=> { return moment(id.ymd).isSame(moment(date), 'days'); });
+            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id=> { return moment(id.ymd).isSame(moment(date), 'days'); });
 
             const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
 
