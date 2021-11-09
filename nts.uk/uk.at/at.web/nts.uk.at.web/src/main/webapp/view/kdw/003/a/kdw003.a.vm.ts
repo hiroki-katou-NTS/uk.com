@@ -3012,6 +3012,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.receiveData(data);
                                 self.extraction();
                                 self.displayNumberZero();
+								self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                                 nts.uk.ui.block.clear();
                             });
                         }).fail(function(error) {
@@ -4352,7 +4353,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (header.group[0].constraint == undefined) delete header.group[0].constraint;
                         delete header.group[1].constraint;
                         delete header.group[0].group;
-                        delete header.key;
+                        // delete header.key;
                         delete header.dataType;
                         // delete header.width;
                         delete header.ntsControl;
@@ -4392,10 +4393,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             delete header.group[0].ntsControl;
                         }
                         delete header.group[1].group;
+						header.key = _.replace(header.headerText, '<br/>', '');
+						header.headerText = '<div style="max-height: 20px;">' + header.headerText + '</div>';
                     } else {
                         delete header.group;
                     }
-					header.headerText = '<div style="max-height: 20px;">' + header.headerText + '</div>';
                 } else {
 					header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
 				}
@@ -4453,19 +4455,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
                            // headerText = header.headerText.split(" ")[0];
-                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, false);
+                            $("#dpGrid").mGrid("headerText", header.key, '<div style="max-height: 40px;">' + header.headerText + '</div>', false);
                         }
                     } else {
-                        if (self.showHeaderNumber()) {
-                            headerText =  '<div style="max-height: 20px;">' + "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName + '</div>';
-							let keyHeader = _.replace(header.headerText, '<div style="max-height: 20px;">', '');
-							keyHeader = _.replace(keyHeader, '</div>', '');
-                            $("#dpGrid").mGrid("headerText", keyHeader, headerText, true);
-                        } else {
-                          //  headerText = header.headerText.split(" ")[0];
-                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
-                            $("#dpGrid").mGrid("headerText", headerText, header.headerText, true);
-                        }
+						if(header.group[1].key.substring(4, header.group[1].key.length)=='924') {
+							console.log("924");
+						}
+						if(!nts.uk.util.isNullOrUndefined(self.showHeaderNumber())) {
+	                        if (self.showHeaderNumber()) {
+	                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
+								// let keyHeader = _.replace(header.headerText, '<div style="max-height: 20px;">', '');
+								// keyHeader = _.replace(keyHeader, '</div>', '');	
+	                            $("#dpGrid").mGrid("headerText", header.key, '<div style="max-height: 20px;">' + headerText + '</div>', true);
+								header.key = _.replace(headerText, '<br/>', '');
+	                        } else {
+                       		//  headerText = header.headerText.split(" ")[0];
+	                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
+	                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, true);
+								let keyHeader = _.replace(header.headerText, '<div style="max-height: 20px;">', '');
+								keyHeader = _.replace(keyHeader, '</div>', '');
+								keyHeader = _.replace(keyHeader, '<br/>', '');
+								header.key = keyHeader;
+	                        }
+						}
                     }
                 }
             });
