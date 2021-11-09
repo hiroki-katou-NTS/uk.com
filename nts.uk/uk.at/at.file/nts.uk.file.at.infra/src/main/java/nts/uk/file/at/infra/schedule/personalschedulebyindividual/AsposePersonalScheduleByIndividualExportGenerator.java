@@ -822,13 +822,14 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             return "";
         }
         val inforDto = workInforDto.get();
-        if (inforDto.getWorkTypeCode().isPresent() &&
-                (inforDto.getWorkTypeName().isPresent() && inforDto.getWorkTypeName().get().isEmpty())) {
-            return inforDto.getWorkTypeCode().get() + "" + getText("KSU002_79");
-        }
-        if (inforDto.getWorkTypeCode().isPresent() &&
-                (inforDto.getWorkTypeName().isPresent() && !inforDto.getWorkTypeName().get().isEmpty())) {
-            return inforDto.getWorkTypeName().get();
+        if (inforDto.getWorkTypeCode().isPresent()) {
+            if (inforDto.getWorkTypeName().isPresent()) {
+                if (StringUtils.isNotEmpty(inforDto.getWorkTypeName().get())) {
+                    return inforDto.getWorkTypeName().get();
+                }
+            } else {
+                return inforDto.getWorkTypeCode().get() + getText("KSU002_31");
+            }
         }
         return "";
     }
@@ -838,12 +839,14 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             return "";
         }
         val inforDto = workInforDto.get();
-        if (inforDto.getWorkingHoursCode().isPresent() &&
-                (inforDto.getWorkingHoursCode().isPresent() && inforDto.getWorkingHoursName().get().isEmpty())) {
-            return inforDto.getWorkingHoursCode().get() + "" + getText("KSU002_79");
-        }
-        if ((inforDto.getWorkingHoursCode().isPresent() && !inforDto.getWorkingHoursCode().get().isEmpty())) {
-            return inforDto.getWorkingHoursName().get();
+        if (inforDto.getWorkingHoursCode().isPresent()) {
+            if (inforDto.getWorkingHoursName().isPresent()) {
+                if (StringUtils.isNotEmpty(inforDto.getWorkingHoursName().get())) {
+                    return inforDto.getWorkingHoursName().get();
+                }
+            } else {
+                return inforDto.getWorkingHoursCode().get() + getText("KSU002_31");
+            }
         }
         return "";
     }
