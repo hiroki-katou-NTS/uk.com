@@ -1325,7 +1325,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     if (isShow51) {
                         cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth)
                                 .setValue(remain);
-                        if ( statusHolidayItem.getRemainTimes() != null && statusHolidayItem.getRemainTimes() < 0) {
+                        if (statusHolidayItem.getRemainTimes() != null && statusHolidayItem.getRemainTimes() < 0) {
                             setForegroundRed(cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth));
                         }
                         if (statusHolidayItem.getRemainTimes() == null && statusHolidayItem.getRemainDays() != null && statusHolidayItem.getRemainDays() < 0) {
@@ -1404,20 +1404,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             }
                         }
                         if (!isTime) {
-                            if (statusHolidayItem.getRemainTime() == null) {
-                                remain = statusHolidayItem.getRemainDay() == null ? "" : df.format(statusHolidayItem.getRemainDay().v());
-                                cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth)
-                                        .setValue(remain);
-                                if (statusHolidayItem.getRemainDay() != null && statusHolidayItem.getRemainDay().v() < 0) {
-                                    setForegroundRed(cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth));
-                                }
-                            } else {
-                                remain = (convertToTime(statusHolidayItem.getRemainTime().v()));
-                                cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth)
-                                        .setValue(remain);
-                                if (!isTime && statusHolidayItem.getRemainDay() != null && statusHolidayItem.getRemainDay().v() < 0) {
-                                    setForegroundRed(cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth));
-                                }
+                            remain = statusHolidayItem.getRemainDay() == null ? "" : df.format(statusHolidayItem.getRemainDay().v());
+                            cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth)
+                                    .setValue(remain);
+                            if (statusHolidayItem.getRemainDay() != null && statusHolidayItem.getRemainDay().v() < 0) {
+                                setForegroundRed(cells.get(firstRow + (isShow41 ? 3 : 2), 10 + totalMonth));
                             }
                         }
                     }
