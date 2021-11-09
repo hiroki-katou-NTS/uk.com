@@ -1,12 +1,22 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.export;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedPercent;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ErrorFlg;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 
 /**
@@ -21,7 +31,7 @@ public class NextSpecialLeaveGrant {
 	/** 付与年月日 */
 	private GeneralDate grantDate;
 	/** 付与日数 */
-	private GrantDays grantDays;
+	private LeaveGrantDayNumber grantDays;
 	/** 付与回数 */
 	private GrantNum times;
 	/** 期限日 */
@@ -37,18 +47,41 @@ public class NextSpecialLeaveGrant {
 	 */
 	public NextSpecialLeaveGrant(){
 		this.grantDate = GeneralDate.today();
-		this.grantDays = new GrantDays(0.0);
+		this.grantDays = new LeaveGrantDayNumber(0.0);
 		this.times = new GrantNum(0);
 		this.deadLine = GeneralDate.max();
 		this.errorFlg = Optional.empty();
 	}
 	
-//	/**
-//	 * コンストラクタ
-//	 */
-//	public NextSpecialLeaveGrant(GeneralDate grantDateIn, GrantDays grantDaysIn){
-//		
-//		this.grantDate = grantDateIn;
-//		this.grantDays = grantDaysIn;
-//	}
+	/**
+	 * 特別休暇付与残数データを作成
+	 * @param employeeId
+	 * @param code
+	 * @return
+	 */
+	public SpecialLeaveGrantRemainingData toSpecialLeaveGrantRemainingData(String employeeId, int code){
+		return new SpecialLeaveGrantRemainingData(
+				employeeId,
+				this.getGrantDate(),
+				this.getDeadLine(),
+				LeaveExpirationStatus.AVAILABLE,
+				GrantRemainRegisterType.MONTH_CLOSE,
+				toLeaveNumberInfo(),
+				code
+				);
+		
+	}
+	
+	private LeaveNumberInfo toLeaveNumberInfo() {
+		return new LeaveNumberInfo(toLeaveGrantNumber(), new LeaveUsedNumber(), toLeaveRemainingNumber(),
+				new LeaveUsedPercent(new BigDecimal(0)));
+	}
+	
+	private LeaveGrantNumber toLeaveGrantNumber() {
+		return LeaveGrantNumber.of(this.grantDays, Optional.empty());
+	}
+	
+	private LeaveRemainingNumber toLeaveRemainingNumber() {
+		return LeaveRemainingNumber.of(new LeaveRemainingDayNumber(this.grantDays.v()), Optional.empty());
+	}
 }

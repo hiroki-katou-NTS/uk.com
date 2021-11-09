@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
@@ -22,7 +21,6 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantReferenceDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantProc.RequireM1;
 
 /**
  * Improve Performance for KDM002
@@ -102,7 +100,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 				if (!grantHdTblOpt.isPresent())
 					continue;
 				val grantHdTbl = grantHdTblOpt.get();
-				nextAnnualLeaveGrant.setGrantDays(Finally.of(grantHdTbl.getGrantDays()));
+				nextAnnualLeaveGrant.setGrantDays(Finally.of(grantHdTbl.getGrantDays().toLeaveGrantDayNumber()));
 				nextAnnualLeaveGrant.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
 				nextAnnualLeaveGrant.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
 			}
