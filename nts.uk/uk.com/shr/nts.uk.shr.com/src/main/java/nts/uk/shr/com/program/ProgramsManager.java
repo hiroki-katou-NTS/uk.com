@@ -2084,6 +2084,9 @@ public class ProgramsManager {
     
     public static final Program KMF002G = new Program(WebAppId.AT, ProgramIdConsts.KMF002G, "KMF002_94",
             "/view/kmf/002/g/index.xhtml");
+    
+    public static final Program KMF002H = new Program(WebAppId.AT, ProgramIdConsts.KMF002H, "KMF002_116",
+            "/view/kmf/002/h/index.xhtml");
 
     public static final Program KMF002M = new Program(WebAppId.AT, ProgramIdConsts.KMF002M, "KMF002_95",
             "/view/kmf/002/m/index.xhtml");
