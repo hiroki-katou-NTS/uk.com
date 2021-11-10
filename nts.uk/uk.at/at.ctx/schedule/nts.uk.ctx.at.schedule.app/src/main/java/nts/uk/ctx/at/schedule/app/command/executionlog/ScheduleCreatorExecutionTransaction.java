@@ -54,8 +54,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecomm
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ProcessingStatus;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatus;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
@@ -80,6 +78,8 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistory
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
+import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -359,8 +359,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 		// 「社員の在職状態」から該当社員、該当日の在職状態を取得する
 		// EA修正履歴 No2716
-		List<ScheManaStatuTempo> listEmploymentInfo = masterCache.getListManaStatuTempo();
-		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
+		List<EmployeeWorkingStatus> listEmploymentInfo = masterCache.getListManaStatuTempo();
+		Optional<EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
 
 		if (listEmploymentInfo != null) {
 			optEmploymentInfo = listEmploymentInfo.stream()
@@ -369,16 +369,16 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 在籍してない　OR　取得できない
 		// status employment equal RETIREMENT (退職)
 		if (!optEmploymentInfo.isPresent()
-				|| optEmploymentInfo.get().getScheManaStatus().value == ScheManaStatus.NOT_ENROLLED.value) {
+				|| optEmploymentInfo.get().getWorkingStatus().value == WorkingStatus.NOT_ENROLLED.value) {
 
 			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝Null, 勤務予定＝Null, 処理状態＝処理終了する
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
 					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
 		}
-		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
+		EmployeeWorkingStatus employmentInfo = optEmploymentInfo.get();
 		// 「予定管理しない」 - fix bug 113922
-		if ( employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
+		if ( employmentInfo.getWorkingStatus() == WorkingStatus.DO_NOT_MANAGE_SCHEDULE) {
 
 			// return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝Null 勤務予定＝Null 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
@@ -893,7 +893,7 @@ public class ScheduleCreatorExecutionTransaction {
 			return new PrepareWorkOutput(results.get(dateInPeriod), null, null, Optional.empty());
 		}
 		;
-		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
+		Optional<EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
 		if (!masterCache.getListManaStatuTempo().isEmpty()) { // lấy dữ liệu theo ngày
 			optEmploymentInfo = masterCache.getListManaStatuTempo().stream()
 					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
@@ -902,8 +902,8 @@ public class ScheduleCreatorExecutionTransaction {
 		// 社員の在職状態を確認する
 		// if 休職中、休業中
 		// if 休職中
-		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE || 
-				optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) {
+		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || 
+				optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
 		prepareWorkOutput = this.getWorkInfoLeave(command, creator, domain,
 			 targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 		return prepareWorkOutput;
@@ -912,7 +912,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 		// if 予定管理する
 		PrepareWorkOutput workOutput = new PrepareWorkOutput(null, null, null, Optional.empty());
-		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.SCHEDULE_MANAGEMENT) {
+		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.SCHEDULE_MANAGEMENT) {
 			// 入力パラメータ「作成方法区分」を確認する
 			// 入力パラメータ「作成方法区分」を確認する
 			// if 個人スケジュールコピー
@@ -1056,8 +1056,8 @@ public class ScheduleCreatorExecutionTransaction {
 					return preWork;
 				}
 				
-				List<ScheManaStatuTempo> listEmploymentInfo = masterCache.getListManaStatuTempo();
-				Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
+				List<EmployeeWorkingStatus> listEmploymentInfo = masterCache.getListManaStatuTempo();
+				Optional<EmployeeWorkingStatus> optEmploymentInfo = Optional.empty();
 
 				if (listEmploymentInfo != null) {
 					optEmploymentInfo = listEmploymentInfo.stream()
@@ -1066,14 +1066,14 @@ public class ScheduleCreatorExecutionTransaction {
 				
 				List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
 						DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-						optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE ? 12 : 13);
+						optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13);
 				
-				if ((optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE || optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) 
+				if ((optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) 
 						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
 					lstWorkType = workTypeRepository.findHolidayWorkTypeClo(command.getCompanyId(),
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-							//ScheManaStatus.ON_LEAVE = WorkTypeClassification.LeaveOfAbsence, ScheManaStatus.CLOSED = WorkTypeClassification.Closure
-							optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE ? 12 : 13, 
+							//WorkingStatus.ON_LEAVE = WorkTypeClassification.LeaveOfAbsence, WorkingStatus.CLOSED = WorkTypeClassification.Closure
+							optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13, 
 							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2); // CloseAtr
 				}
 				
