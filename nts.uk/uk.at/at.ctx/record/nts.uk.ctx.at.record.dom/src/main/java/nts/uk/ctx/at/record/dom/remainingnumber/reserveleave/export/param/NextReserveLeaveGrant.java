@@ -8,10 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedPercent;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
@@ -69,18 +66,15 @@ public class NextReserveLeaveGrant {
 				this.toLeaveNumberInfo());
 	}
 	
+	/**
+	 * 休暇数情報作成
+	 * @return
+	 */
 	private LeaveNumberInfo toLeaveNumberInfo() {
-		return new LeaveNumberInfo(toLeaveGrantNumber(), new LeaveUsedNumber(), toLeaveRemainingNumber(),
-				new LeaveUsedPercent(new BigDecimal(0)));
+		return new LeaveNumberInfo(this.getGrantDays().toLeaveGrantNumber(), new LeaveUsedNumber(),
+				this.getGrantDays().toLeaveRemainingNumber(), new LeaveUsedPercent(new BigDecimal(0)));
 	}
 	
-	private LeaveGrantNumber toLeaveGrantNumber() {
-		return LeaveGrantNumber.of(this.grantDays, Optional.empty());
-	}
-	
-	private LeaveRemainingNumber toLeaveRemainingNumber() {
-		return LeaveRemainingNumber.of(new LeaveRemainingDayNumber(this.getGrantDays().v()), Optional.empty());
-	}
 
 	/**
 	 * 積立年休付与情報を作成
