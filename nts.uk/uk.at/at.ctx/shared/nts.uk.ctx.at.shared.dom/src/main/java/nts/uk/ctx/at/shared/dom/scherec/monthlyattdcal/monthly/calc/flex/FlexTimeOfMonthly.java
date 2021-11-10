@@ -715,7 +715,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		AttendanceTimeMonthWithMinus totalFlexTime = this.flexTime.getTimeSeriesTotalFlexTime(period, false);
 		
 		// フレックス対象時間を集計する
-		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(period, aggregateTotalWorkingTime, Optional.empty());
+		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(period, aggregateTotalWorkingTime, PremiumAtr.PREMIUM);
 		
 		// 週平均超過時間を計算する
 		this.calcExcessWeekAveTime(require, yearMonth, period, closureId, aggregateAtr, flexTargetTime, settingsByFlex);
@@ -804,7 +804,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		{
 			// フレックス時間の計算（原則集計）
 			// フレックス対象時間を集計する
-			val flexTargetTime = this.aggregateFlexTargetTime(datePeriod, aggregateTotalWorkingTime, Optional.empty());
+			val flexTargetTime = this.aggregateFlexTargetTime(datePeriod, aggregateTotalWorkingTime, PremiumAtr.PREMIUM);
 
 			// 繰越時間相殺前を求める
 			val carryforwardTimeBeforeOffset = flexTargetTime.minusMinutes(compensatoryLeaveAfterDudection.valueAsMinutes());
@@ -921,7 +921,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			AttendanceTimeMonthWithMinus prescribed) {
 		
 		// フレックス対象時間を集計する
-		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(period, aggregateTotalWorkingTime, Optional.empty());
+		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(period, aggregateTotalWorkingTime, PremiumAtr.PREMIUM);
 		
 		// 週平均超過時間を計算する
 		this.calcExcessWeekAveTime(require, yearMonth, period, closureId, aggregateAtr, flexTargetTime, settingsByFlex);
@@ -945,7 +945,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 * @return フレックス対象時間
 	 */
 	private AttendanceTimeMonthWithMinus aggregateFlexTargetTime(DatePeriod datePeriod,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime, Optional<PremiumAtr> premiumAtr){
+			AggregateTotalWorkingTime aggregateTotalWorkingTime, PremiumAtr premiumAtr){
 		
 		AttendanceTimeMonthWithMinus flexTargetTime = new AttendanceTimeMonthWithMinus(0);
 		
@@ -955,7 +955,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			// 加算しない
 			
 			// 加算設定　取得　（割増用）
-			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, premiumAtr.orElse(PremiumAtr.PREMIUM), this.holidayAdditionMap);
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, premiumAtr, this.holidayAdditionMap);
 			if (addSet.getErrorInfo().isPresent()){
 				this.errorInfos.add(addSet.getErrorInfo().get());
 			}
@@ -1947,7 +1947,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		if (flexAggregateMethod == FlexAggregateMethod.PRINCIPLE){
 			
 			/** フレックス時間発生するかを確認する */
-			if (this.checkIsFlexTimeOccur()){
+			if (this.checkIsFlexTimeOccur(settingsByFlex.getFlexAggrSet())){
 				
 				// 設定上の所定労働時間を確認する
 				// 所定労働時間を求める(代休使用控除する)
@@ -1965,7 +1965,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				
 				// フレックス対象時間を集計する　→　所定労働時間
 				int predMinutes = this.aggregateFlexTargetTime(datePeriod, 
-						aggregateTotalWorkingTime, Optional.of(PremiumAtr.WHEN_SHORTAGE)).v();
+						aggregateTotalWorkingTime, PremiumAtr.WHEN_SHORTAGE).v();
 				if (predMinutes < 0) predMinutes = 0;
 				
 				// 所定労働時間を返す　（呼び出し元で就業時間に入れる）
@@ -1977,10 +1977,10 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	}
 	
 	/** フレックス時間発生するかを確認する */
-	private boolean checkIsFlexTimeOccur() {
+	public boolean checkIsFlexTimeOccur(FlexMonthWorkTimeAggrSet flexAggrSet) {
 		
 		/** 複数月かを確認する */
-		if (this.flexAggrSet.getInsufficSet().getSettlePeriod() == SettlePeriod.SINGLE_MONTH) {
+		if (flexAggrSet.getInsufficSet().getSettlePeriod() == SettlePeriod.SINGLE_MONTH) {
 			/** ○「フレ超過時間」 OR 「フレ繰越勤務時間」に値が入っているか確認する */
 			if (this.flexExcessTime.greaterThan(0) ||
 					this.flexCarryforwardTime.getFlexCarryforwardWorkTime().greaterThan(0)) {
