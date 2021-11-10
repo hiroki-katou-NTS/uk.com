@@ -4397,6 +4397,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 						header.headerText = '<div style="max-height: 20px;">' + header.headerText + '</div>';
                     } else {
                         delete header.group;
+						header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
                     }
                 } else {
 					header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
@@ -4451,26 +4452,23 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
                     if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
-                            headerText = '<div style="max-height: 40px;">' + "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName + '</div>';
-                            $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+							let id = header.key.substring(1, header.key.length);
+							if(_.isNaN(_.toNumber(id))) {
+								headerText = '<div style="max-height: 40px;">' + header.attendanceName + '</div>';
+							} else {
+								headerText = '<div style="max-height: 40px;">' + "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName + '</div>';
+							}
+							$("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
-                           // headerText = header.headerText.split(" ")[0];
                             $("#dpGrid").mGrid("headerText", header.key, '<div style="max-height: 40px;">' + header.headerText + '</div>', false);
                         }
                     } else {
-						if(header.group[1].key.substring(4, header.group[1].key.length)=='924') {
-							console.log("924");
-						}
 						if(!nts.uk.util.isNullOrUndefined(self.showHeaderNumber())) {
 	                        if (self.showHeaderNumber()) {
 	                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
-								// let keyHeader = _.replace(header.headerText, '<div style="max-height: 20px;">', '');
-								// keyHeader = _.replace(keyHeader, '</div>', '');	
 	                            $("#dpGrid").mGrid("headerText", header.key, '<div style="max-height: 20px;">' + headerText + '</div>', true);
 								header.key = _.replace(headerText, '<br/>', '');
 	                        } else {
-                       		//  headerText = header.headerText.split(" ")[0];
-	                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
 	                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, true);
 								let keyHeader = _.replace(header.headerText, '<div style="max-height: 20px;">', '');
 								keyHeader = _.replace(keyHeader, '</div>', '');
@@ -4479,7 +4477,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 	                        }
 						}
                     }
-                }
+                } else {
+					header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
+				}
             });
         }
 
