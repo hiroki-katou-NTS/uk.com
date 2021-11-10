@@ -1,188 +1,216 @@
 module nts.uk.at.ksu008.a {
-    const API = {};
+    import Moment = moment.Moment;
+    const API = {
+        init: "screen/at/ksu008/a/get-used-info",
+        exportExcel: "at/file/form9/report/export-excel"
+    };
 
     @bean()
     export class ViewModel extends ko.ViewModel {
-
         options: any;
-        treeGrid: any;
-        componentName: KnockoutObservable<string> = ko.observable('workplace-group');
-
-        multiple: KnockoutObservable<boolean> = ko.observable(false);
-        showBaseDate: KnockoutObservable<boolean> = ko.observable(false);
-        date: KnockoutObservable<string> = ko.observable(new Date().toISOString());
-        unit: KnockoutObservable<number> = ko.observable(0);
-
-        selectedWkpId: KnockoutObservable<string> = ko.observable(null);
-        selectedWkpGroupId: KnockoutObservable<string> = ko.observable(null);
-
-        selectedWkpIds: KnockoutObservableArray<string> = ko.observableArray([]);
         selectedWkpGroupIds: KnockoutObservableArray<string> = ko.observableArray([]);
 
-        result: KnockoutObservable<string> = ko.observable('');
+        targetPeriod: KnockoutObservable<number>;
+        periodStart: KnockoutObservable<string>;
+        periodEnd: KnockoutComputed<Moment>;
+        displayPeriod: KnockoutComputed<string>;
 
-        itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
-        dateTime: KnockoutObservable<string>;
-        model: Model = new Model();
-        comBOItemList: KnockoutObservableArray<ItemModel>;
-        comA731: KnockoutObservableArray<ItemModel>;
+        comboItemList: KnockoutObservableArray<any>;
         selectedCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isEditable: KnockoutObservable<boolean>;
 
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-        cssRangerYMD: KnockoutObservable<any>;
+        printTarget: KnockoutObservable<number>;
+
+        deductionDateFromDeliveryTime: KnockoutObservable<boolean>;
+        deductionDateFromDeliveryTimeTarget: KnockoutObservable<number>;
+        deductionDateFromDeliveryTimeColor: KnockoutObservable<string>;
+
+        workingHours: KnockoutObservable<boolean>;
+        workingHoursTarget: KnockoutObservable<number>;
+        workingHoursScheduleColor: KnockoutObservable<string>;
+        workingHoursRecordColor: KnockoutObservable<string>;
 
         constructor() {
             super();
             const self = this;
-            self.initKCP011();
-            self.multiple.subscribe(value => {
-                self.initKCP011();
-                self.componentName.valueHasMutated();
-            });
-            self.unit.subscribe(value => {
-                if (value == 1 && $("#workplace-group-pannel input.ntsSearchBox").width() == 0)
-                    $("#workplace-group-pannel input.ntsSearchBox").css("width", "auto");
-            });
-
-            self.itemList = ko.observableArray([
-                new BoxModel(1, self.$i18n("KSU008_9")), //A3_2_1
-                new BoxModel(2, self.$i18n("KSU008_10")),//A3_2_2
-            ]);
-            self.selectedId = ko.observable(1);
-            self.enable = ko.observable(true);
-
-            self.dateTime = ko.observable(new Date().toISOString());
-            self.dateTime.subscribe((data) => {
-                if (!data) {
-                    self.dateTime(new Date().toISOString());
-                }
-            });
-            //TODO A5_2_1,A5_2_2,A5_2_3
-            self.comBOItemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-            ]);
-
-            self.comA731 = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当')
-            ]);
-
-            self.selectedCode = ko.observable('1');
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
-
-            self.roundingRules = ko.observableArray([
-                {code: 1, name: self.$i18n("KSU008_18")},//A6_2_1
-                {code: 2, name: self.$i18n("KSU008_19")},//A6_2_2
-                {code: 3, name: self.$i18n("KSU008_20")}//A6_2_3
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-
-            let data = {
-                2000: {
-                    1: [{11: "round-green"}, {12: "round-orange"}, {15: "rect-pink"}],
-                    3: [{1: "round-green"}, {2: "round-purple"}, 3]
-                },
-                2002: {
-                    1: [{11: "round-green"}, {12: "round-green"}, {15: "round-green"}],
-                    3: [{1: "round-green"}, {2: "round-green"}, {3: "round-green"}]
-                }
+            self.options = {
+                currentIds: self.selectedWkpGroupIds,
+                multiple: true,
+                tabindex: 3,
+                isAlreadySetting: false,
+                showEmptyItem: false,
+                showPanel: false,
+                rows: 5,
+                selectedMode: 1
             };
-            self.cssRangerYMD = ko.observable(data);
 
-        }
+            self.targetPeriod = ko.observable(0);
+            self.periodStart = ko.observable(moment.utc().startOf('month').toISOString());
+            self.periodEnd = ko.computed(() => {
+                if (self.periodStart() && moment.utc(self.periodStart()).isValid()) {
+                    if (self.targetPeriod() == 0) {
+                        return moment.utc(self.periodStart()).add(1, "month").add(-1, "day");
+                    } else {
+                        return moment.utc(self.periodStart()).add(27, "day");
+                    }
+                } else return null;
+            });
+            self.displayPeriod = ko.computed(() => {
+                if (self.periodStart() && self.periodEnd() && moment.utc(self.periodStart()).isSameOrAfter(moment.utc("01/01/1900")) && moment.utc(self.periodStart()).isSameOrBefore(moment.utc("12/31/9999")))
+                    return self.$i18n("KSU008_171", [moment.utc(self.periodStart()).format("YYYY/MM/DD") + "～" + self.periodEnd().format("YYYY/MM/DD")]);
+                else return "";
+            });
 
-        setDefault() {
-            var self = this;
-            nts.uk.util.value.reset($("#combo-box, #A_SEL_001"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
+            self.comboItemList = ko.observableArray([]);
+            self.selectedCode = ko.observable('1');
+
+            self.printTarget = ko.observable(0);
+
+            self.deductionDateFromDeliveryTime = ko.observable(false);
+            self.deductionDateFromDeliveryTimeTarget = ko.observable(1);
+            self.deductionDateFromDeliveryTimeColor = ko.observable("#ffff00");
+
+            self.workingHours = ko.observable(false);
+            self.workingHoursTarget = ko.observable(0);
+            self.workingHoursScheduleColor = ko.observable("#00ff00");
+            self.workingHoursRecordColor = ko.observable("#0000ff");
         }
 
         created() {
             const vm = this;
-            _.extend(window, {vm});
+            nts.uk.characteristics.restore("KSU008Data").done((data: any) => {
+                if (data) {
+                    vm.targetPeriod(data.targetPeriod);
+                    vm.periodStart(data.periodStart);
+                    vm.selectedCode(data.itemCode);
+                    vm.printTarget(data.printTarget);
+                    vm.selectedWkpGroupIds(data.workplaceGroupIds || []);
 
+                    vm.deductionDateFromDeliveryTime(data.colorSetting.deductionDate.use);
+                    vm.deductionDateFromDeliveryTimeTarget(data.colorSetting.deductionDate.target);
+                    vm.deductionDateFromDeliveryTimeColor(data.colorSetting.deductionDate.color);
+
+                    vm.workingHours(data.colorSetting.workingHours.use);
+                    vm.workingHoursTarget(data.colorSetting.workingHours.target);
+                    vm.workingHoursScheduleColor(data.colorSetting.workingHours.scheduleColor);
+                    vm.workingHoursRecordColor(data.colorSetting.workingHours.recordColor);
+                }
+            });
+            vm.getAllSetting().then(() => {
+                if (vm.comboItemList().length == 0) $("#A5_3").focus();
+                else $("#A1_1").focus();
+            });
         }
 
-        mounted() {
+        getAllSetting(code?: string) {
+            const vm = this, dfd = $.Deferred();
+            vm.$blockui("show");
+            vm.$ajax(API.init).done(settings => {
+                const data = settings || [];
+                data.forEach(i => {
+                    i.type = i.systemFixed ? vm.$i18n('KSU008_37') : vm.$i18n('KSU008_38');
+                });
+                vm.comboItemList(data);
+                if (code) vm.selectedCode(code);
+                dfd.resolve();
+            }).fail(error => {
+                vm.$dialog.error(error);
+                dfd.reject();
+            }).always(() => {
+                vm.$blockui("hide");
+            });
+            return dfd.promise();
+        }
+
+        prevPeriodStart() {
             const vm = this;
+            if (vm.periodStart() && moment.utc(vm.periodStart()).isValid()) {
+                if (vm.targetPeriod() == 0) {
+                    vm.periodStart(moment.utc(vm.periodStart()).add(-1, "month").toISOString());
+                } else {
+                    vm.periodStart(moment.utc(vm.periodStart()).add(-28, "day").toISOString());
+                }
+            }
+        }
+
+        nextPeriodStart() {
+            const vm = this;
+            if (vm.periodEnd()) vm.periodStart(vm.periodEnd().add(1, "day").toISOString());
         }
 
         openKsu008B() {
             let vm = this;
-            vm.$blockui("invisible");
-            vm.$window.modal('/view/ksu/008/b/index.xhtml')
-                .then((result: any) => {
-                    vm.$blockui("clear");
-                });
+            const selectedSetting = _.find(vm.comboItemList(), i => i.code == vm.selectedCode());
+            vm.$window.modal('/view/ksu/008/b/index.xhtml', {isSystemFixed: selectedSetting ? selectedSetting.systemFixed : true, layoutCode: vm.selectedCode()}).then((result: any) => {
+                vm.getAllSetting(result.code);
+            });
         }
 
         openKsu008D() {
             let vm = this;
             vm.$blockui("invisible");
-            vm.$window.modal('/view/ksu/008/d/index.xhtml')
-                .then((result: any) => {
-                    vm.$blockui("clear");
-                });
+            vm.$window.modal('/view/ksu/008/d/index.xhtml').then((result: any) => {
+                vm.$blockui("clear");
+            });
         }
 
-        initKCP011() {
-            const self = this;
-            self.options = {
-                currentIds: self.selectedWkpGroupIds,
-                multiple: true,
-                tabindex: 2,
-                isAlreadySetting: false,
-                showEmptyItem: false,
-                reloadData: ko.observable(''),
-                height: 373,
-                selectedMode: 1
+        exportExcel() {
+            const vm = this;
+            if (vm.selectedWkpGroupIds().length == 0) {
+                vm.$dialog.error({messageId: "Msg_218", messageParams: [vm.$i18n("KSU011_6")]});
+                return;
+            }
+            if (vm.periodEnd() && !vm.periodEnd().isBetween(moment.utc("01/01/1900"), moment.utc("12/31/9999"))) {
+                vm.$dialog.error({messageId: "Msg_2316"});
+                return;
+            }
+            vm.$blockui("grayout");
+            const exportQuery = {
+                startDate: vm.periodStart(),
+                endDate: vm.periodEnd().toISOString(),
+                wkpGroupList: vm.selectedWkpGroupIds().map(i => ({id: i, code: null, name: null})),
+                code: vm.selectedCode(),
+                acquireTarget: vm.printTarget(),
+                colorSetting: {
+                    deliveryTimeDeductionDate: {
+                        use: vm.deductionDateFromDeliveryTime(),
+                        displayTarget: vm.deductionDateFromDeliveryTimeTarget(),
+                        color: vm.deductionDateFromDeliveryTimeColor()
+                    },
+                    workingHours: {
+                        use: vm.workingHours(),
+                        displayTarget: vm.workingHoursTarget(),
+                        scheduleColor: vm.workingHoursScheduleColor(),
+                        actualColor: vm.workingHoursRecordColor()
+                    }
+                }
             };
-        }
-
-    }
-
-    class BoxModel {
-        id: number;
-        name: string;
-
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
-    }
-
-    class Model {
-        dispPeriod: KnockoutObservable<any>;
-        a733: KnockoutObservable<string>;
-        a744: KnockoutObservable<string>;
-        a746: KnockoutObservable<string>;
-
-        constructor() {
-            var self = this
-            self.dispPeriod = ko.observable('31/12/1994~31/12/2021')
-            self.a733 = ko.observable('#ffff00');
-            self.a744 = ko.observable('#00ff00');
-            self.a746 = ko.observable('#0000ff');
-        }
-    }
-
-    class ItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+            nts.uk.request.exportFile(API.exportExcel, exportQuery).done(() => {
+                nts.uk.characteristics.save("KSU008Data", {
+                    targetPeriod: vm.targetPeriod(),
+                    periodStart: vm.periodStart(),
+                    itemCode: vm.selectedCode(),
+                    printTarget: vm.printTarget(),
+                    workplaceGroupIds: vm.selectedWkpGroupIds(),
+                    colorSetting: {
+                        deductionDate: {
+                            use: vm.deductionDateFromDeliveryTime(),
+                            target: vm.deductionDateFromDeliveryTimeTarget(),
+                            color: vm.deductionDateFromDeliveryTimeColor()
+                        },
+                        workingHours: {
+                            use: vm.workingHours(),
+                            target: vm.workingHoursTarget(),
+                            scheduleColor: vm.workingHoursScheduleColor(),
+                            recordColor: vm.workingHoursRecordColor()
+                        }
+                    }
+                });
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
     }
+
 }
-
-

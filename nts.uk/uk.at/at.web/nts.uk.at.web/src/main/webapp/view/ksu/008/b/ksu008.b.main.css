@@ -1,68 +1,60 @@
-.mergin-top {
-    margin-top: 15px;
+.left-panel, .right-panel {
+    padding-top: 5px;
 }
 
-.panel, .table_row {
-    border: 2px solid #ece3e3;
+.left-panel #single-list td {
+    height: 24px;
 }
 
-
-
-table tr td:nth-child(1), .custom_col_bg {
-    background-color: #BFEA60;
-    border-left: 0.5px solid #c2a0a0;;
+.right-panel .form-label:not(.has-help) {
+    width: 166px;
 }
 
-.custom_col_bg {
-    border-right: 0.5px solid #c2a0a0;
+.right-panel .form-label.has-help {
+    width: initial;
 }
 
-table tr td:nth-child(1) {
-    border-right: 0.5px solid #c2a0a0;
+.right-panel .nts-fixed-table {
+    display: inline-block;
 }
 
-.border-right {
-    border-right: 0.5px solid #c2a0a0;
+.right-panel .ui-widget-header  {
+    background-color: #CFF1A5;
 }
 
-.border-left {
-    border-left: 0.5px solid #c2a0a0;
+#B6_1-table .fixed-table-first-row {
+    border-top-width: 2px!important;
 }
 
-.td-coom {
-    width: 150px;
+#B7_2-table .yellow-header {
+    background-color: #f2e481;
+}
+
+#B7_2-table .vertical-header {
+    white-space: initial;
+    padding: 0 12px;
     text-align: center;
 }
 
-.padding-5 {
-    padding: 5px;
+#B6_1-table input, #B7_2-table input {
+    width: 60px!important;
 }
 
-.padding15_left {
-    padding-left: 20px;
+#B7_2-table .nts-editor-wrapped {
+    width: initial!important;
 }
 
-.first-customsell {
-    width: 150px;
-    text-align: left;
+#file-upload .nts-editor.nts-input {
+    width: 290px;
 }
 
-table tr {
-    border: 0.5px solid #c2a0a0;;
+.icon-78{
+    background:url('/nts.uk.com.web/view/ccg/025/component/icon78.png');
+    width: 18px;
+    height: 18px;
+    background-size: 20px 20px;
 }
 
-table tr td {
-    padding: 5px;
-}
-
-.border-right-none {
-    border-right: none;
-}
-
-.width-120 {
-    width: 120px;
-}
-
-.bg-yellow {
-    background-color: #f2e481;
+#single-list tr td:last-child {
+    text-align: center;
 }

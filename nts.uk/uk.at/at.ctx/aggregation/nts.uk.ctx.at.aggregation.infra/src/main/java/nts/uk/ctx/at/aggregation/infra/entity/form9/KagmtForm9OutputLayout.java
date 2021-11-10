@@ -2,6 +2,7 @@ package nts.uk.ctx.at.aggregation.infra.entity.form9;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.aggregation.dom.form9.DetailSettingOfForm9;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Cover;
@@ -267,86 +268,86 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
                 layout.getName().v(),
                 layout.isUse(),
                 layout.isSystemFixed(),
-                layout.getTemplateFileId().isPresent() ? layout.getTemplateFileId().get() : null,
-                cover.getCellYear().isPresent() ? cover.getCellYear().get().v() : null,
-                cover.getCellMonth().isPresent() ? cover.getCellMonth().get().v() : null,
-                cover.getCellStartTime().isPresent() ? cover.getCellStartTime().get().v() : null,
-                cover.getCellEndTime().isPresent() ? cover.getCellEndTime().get().v() : null,
-                cover.getCellTitle().isPresent() ? cover.getCellTitle().get().v() : null,
-                cover.getCellPrintPeriod().isPresent() ? cover.getCellPrintPeriod().get().v() : null,
+                layout.getTemplateFileId().orElse(null),
+                cover.getCellYear().map(PrimitiveValueBase::v).orElse(null),
+                cover.getCellMonth().map(PrimitiveValueBase::v).orElse(null),
+                cover.getCellStartTime().map(PrimitiveValueBase::v).orElse(null),
+                cover.getCellEndTime().map(PrimitiveValueBase::v).orElse(null),
+                cover.getCellTitle().map(PrimitiveValueBase::v).orElse(null),
+                cover.getCellPrintPeriod().map(PrimitiveValueBase::v).orElse(null),
                 nurseDetailSetting.getMaxNumerOfPeople().v(),
                 nurseDetailSetting.getBodyStartRow().v(),
-                null, //TODO map to col
+                nursingTable.getDay1StartColumn().v(),
                 nurseDetailSetting.getRowDate().v(),
                 nurseDetailSetting.getRowDayOfWeek().v(),
-                nursingTable.getDay1StartColumn().v(),
-                nursingTable.getLicense().isPresent() ? nursingTable.getLicense().get().v() : null,
-                nursingTable.getHospitalWardName().isPresent() ? nursingTable.getHospitalWardName().get().v() : null,
-                nursingTable.getFullTime().isPresent() ? nursingTable.getFullTime().get().v() : null,
-                nursingTable.getShortTime().isPresent() ? nursingTable.getShortTime().get().v() : null,
-                nursingTable.getPartTime().isPresent() ? nursingTable.getPartTime().get().v() : null,
-                nursingTable.getConcurrentPost().isPresent() ? nursingTable.getConcurrentPost().get().v() : null,
-                nursingTable.getNightShiftOnly().isPresent() ? nursingTable.getNightShiftOnly().get().v() : null,
+                nursingTable.getFullName().v(),
+                nursingTable.getLicense().map(PrimitiveValueBase::v).orElse(null),
+                nursingTable.getHospitalWardName().map(PrimitiveValueBase::v).orElse(null),
+                nursingTable.getFullTime().map(PrimitiveValueBase::v).orElse(null),
+                nursingTable.getShortTime().map(PrimitiveValueBase::v).orElse(null),
+                nursingTable.getPartTime().map(PrimitiveValueBase::v).orElse(null),
+                nursingTable.getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
+                nursingTable.getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null),
                 nursingAideDetailSetting.getMaxNumerOfPeople().v(),
                 nursingAideDetailSetting.getBodyStartRow().v(),
-                null, //TODO map to col
+                nursingAideTable.getDay1StartColumn().v(),
                 nursingAideDetailSetting.getRowDate().v(),
                 nursingAideDetailSetting.getRowDayOfWeek().v(),
-                nursingAideTable.getDay1StartColumn().v(),
-                nursingAideTable.getHospitalWardName().isPresent() ? nursingAideTable.getHospitalWardName().get().v() : null,
-                nursingAideTable.getFullTime().isPresent() ? nursingAideTable.getFullTime().get().v() : null,
-                nursingAideTable.getShortTime().isPresent() ? nursingAideTable.getShortTime().get().v() : null,
-                nursingAideTable.getPartTime().isPresent() ? nursingAideTable.getPartTime().get().v() : null,
-                nursingAideTable.getConcurrentPost().isPresent() ? nursingAideTable.getConcurrentPost().get().v() : null,
-                nursingAideTable.getOfficeWork().isPresent() ? nursingAideTable.getOfficeWork().get().v() : null,
-                nursingAideTable.getNightShiftOnly().isPresent() ? nursingAideTable.getNightShiftOnly().get().v() : null
+                nursingAideTable.getFullName().v(),
+                nursingAideTable.getHospitalWardName().map(PrimitiveValueBase::v).orElse(null),
+                nursingAideTable.getFullTime().map(PrimitiveValueBase::v).orElse(null),
+                nursingAideTable.getShortTime().map(PrimitiveValueBase::v).orElse(null),
+                nursingAideTable.getPartTime().map(PrimitiveValueBase::v).orElse(null),
+                nursingAideTable.getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
+                nursingAideTable.getOfficeWork().map(PrimitiveValueBase::v).orElse(null),
+                nursingAideTable.getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null)
         );
     }
 
     public static Form9Layout toDomain(KagmtForm9OutputLayout entity) {
-        Form9Cover cover = Form9Cover.create(
-                Optional.of(new OutputCell(entity.coverCellYear)),
-                Optional.of(new OutputCell(entity.coverCellMonth)),
-                Optional.of(new OutputCell(entity.coverCellNightShiftStart)),
-                Optional.of(new OutputCell(entity.coverCellNightShiftEnd)),
-                Optional.of(new OutputCell(entity.coverCellTitle)),
-                Optional.of(new OutputCell(entity.coverCellPrintingPerIod))
+        Form9Cover cover = new Form9Cover(
+                entity.coverCellYear == null ? Optional.empty() : Optional.of(new OutputCell(entity.coverCellYear)),
+                entity.coverCellMonth == null ? Optional.empty() : Optional.of(new OutputCell(entity.coverCellMonth)),
+                entity.coverCellNightShiftStart == null ? Optional.empty() : Optional.of(new OutputCell(entity.coverCellNightShiftStart)),
+                entity.coverCellNightShiftEnd == null ? Optional.empty() : Optional.of(new OutputCell(entity.coverCellNightShiftEnd)),
+                entity.coverCellTitle == null ? Optional.empty() : Optional.of(new OutputCell(entity.coverCellTitle)),
+                entity.coverCellPrintingPerIod == null ? Optional.empty() : Optional.of(new OutputCell(entity.coverCellPrintingPerIod))
         );
-
-
-        Form9NursingTable nursingTable = Form9NursingTable.create(
+        Form9NursingTable nursingTable = new Form9NursingTable(
                 new OutputColumn(entity.nurseColName),
                 new OutputColumn(entity.nurseBodyStartCol),
-                DetailSettingOfForm9.create(new OutputRow(entity.nursebodyStartRow),
+                new DetailSettingOfForm9(
+                        new OutputRow(entity.nursebodyStartRow),
                         new OnePageDisplayNumerOfPeople(entity.nurseMaxNumberOfPeople),
                         new OutputRow(entity.nurseRowDate),
                         new OutputRow(entity.nurseRowDayOfWeek)
                 ),
-                Optional.of(new OutputColumn(entity.nurseColLicense)),
-                Optional.of(new OutputColumn(entity.nurseColHospitalWard)),
-                Optional.of(new OutputColumn(entity.nurseColWorkstyleFullTime)),
-                Optional.of(new OutputColumn(entity.nurseColWorkstyleShortTime)),
-                Optional.of(new OutputColumn(entity.nurseColWorkstylePartTime)),
-                Optional.of(new OutputColumn(entity.nurseColWorkstyleConpost)),
-                Optional.of(new OutputColumn(entity.nurseColNightShiftOnly))
+                entity.nurseColLicense == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nurseColLicense)),
+                entity.nurseColHospitalWard == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nurseColHospitalWard)),
+                entity.nurseColWorkstyleFullTime == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nurseColWorkstyleFullTime)),
+                entity.nurseColWorkstyleShortTime == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nurseColWorkstyleShortTime)),
+                entity.nurseColWorkstylePartTime == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nurseColWorkstylePartTime)),
+                entity.nurseColWorkstyleConpost == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nurseColWorkstyleConpost)),
+                entity.nurseColNightShiftOnly == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nurseColNightShiftOnly))
         );
-        Form9NursingAideTable nursingAideTable = Form9NursingAideTable.create(
+        Form9NursingAideTable nursingAideTable = new Form9NursingAideTable(
                 new OutputColumn(entity.nuringAideColName),
                 new OutputColumn(entity.nuringAideBodyStartCol),
-                DetailSettingOfForm9.create(new OutputRow(entity.nuringAideBodyStartRow),
+                new DetailSettingOfForm9(
+                        new OutputRow(entity.nuringAideBodyStartRow),
                         new OnePageDisplayNumerOfPeople(entity.nuringAideMaxNumberOfpeople),
                         new OutputRow(entity.nuringAideRowDate),
                         new OutputRow(entity.nuringAideRowDateOfWeek)
                 ),
-                Optional.of(new OutputColumn(entity.nurseColLicense)),
-                Optional.of(new OutputColumn(entity.nuringAideColHospitalWard)),
-                Optional.of(new OutputColumn(entity.nuringAideColWorkStyleFullTime)),
-                Optional.of(new OutputColumn(entity.nuringAideColWorkStyleShortTime)),
-                Optional.of(new OutputColumn(entity.nuringAideColWorkStylePartTime)),
-                Optional.of(new OutputColumn(entity.nuringAideColWorkStyleConPost)),
-                Optional.of(new OutputColumn(entity.nuringAideColNightShiftOnly))
+                entity.nuringAideColHospitalWard == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nuringAideColHospitalWard)),
+                entity.nuringAideColWorkStyleFullTime == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nuringAideColWorkStyleFullTime)),
+                entity.nuringAideColWorkStyleShortTime == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nuringAideColWorkStyleShortTime)),
+                entity.nuringAideColWorkStylePartTime == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nuringAideColWorkStylePartTime)),
+                entity.nuringAideColRoleIsOfficeWork == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nuringAideColRoleIsOfficeWork)),
+                entity.nuringAideColWorkStyleConPost == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nuringAideColWorkStyleConPost)),
+                entity.nuringAideColNightShiftOnly == null ? Optional.empty() : Optional.of(new OutputColumn(entity.nuringAideColNightShiftOnly))
         );
-        return Form9Layout.create(
+        return new Form9Layout(
                 new Form9Code(entity.pk.code),
                 new Form9Name(entity.name),
                 entity.isFixed,
@@ -354,7 +355,7 @@ public class KagmtForm9OutputLayout extends ContractUkJpaEntity implements Seria
                 cover,
                 nursingTable,
                 nursingAideTable,
-                Optional.of(entity.templateFileId)
+                Optional.ofNullable(entity.templateFileId)
         );
     }
 }

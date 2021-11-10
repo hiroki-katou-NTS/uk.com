@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.ksu008.a;
 
+import nts.arc.primitive.PrimitiveValueBase;
+import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Layout;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9LayoutRepository;
 import nts.uk.screen.at.app.ksu008.a.dto.DetailSettingOfForm9Dto;
@@ -38,12 +40,12 @@ public class GetOutPutItemForKsu008B {
                         x.isSystemFixed(),
                         x.isUse(),
                         new Form9CoverDto(
-                                x.getCover().getCellYear().isPresent() ? x.getCover().getCellYear().get().v() : null,
-                                x.getCover().getCellMonth().isPresent() ? x.getCover().getCellMonth().get().v() : null,
-                                x.getCover().getCellStartTime().isPresent() ? x.getCover().getCellStartTime().get().v() : null,
-                                x.getCover().getCellEndTime().isPresent() ? x.getCover().getCellEndTime().get().v() : null,
-                                x.getCover().getCellTitle().isPresent() ? x.getCover().getCellTitle().get().v() : null,
-                                x.getCover().getCellPrintPeriod().isPresent() ? x.getCover().getCellPrintPeriod().get().v() : null
+                                x.getCover().getCellYear().map(PrimitiveValueBase::v).orElse(null),
+                                x.getCover().getCellMonth().map(PrimitiveValueBase::v).orElse(null),
+                                x.getCover().getCellStartTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getCover().getCellEndTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getCover().getCellTitle().map(PrimitiveValueBase::v).orElse(null),
+                                x.getCover().getCellPrintPeriod().map(PrimitiveValueBase::v).orElse(null)
                         ),
                         new Form9NursingTableDto(
                                 x.getNursingTable().getFullName().v(),
@@ -54,13 +56,13 @@ public class GetOutPutItemForKsu008B {
                                         x.getNursingTable().getDetailSetting().getRowDate().v(),
                                         x.getNursingTable().getDetailSetting().getRowDayOfWeek().v()
                                 ),
-                                x.getNursingTable().getLicense().isPresent() ? x.getNursingTable().getLicense().get().v() : null,
-                                x.getNursingTable().getHospitalWardName().isPresent() ? x.getNursingTable().getHospitalWardName().get().v() : null,
-                                x.getNursingTable().getFullTime().isPresent() ? x.getNursingTable().getFullTime().get().v() : null,
-                                x.getNursingTable().getShortTime().isPresent() ? x.getNursingTable().getShortTime().get().v() : null,
-                                x.getNursingTable().getPartTime().isPresent() ? x.getNursingTable().getPartTime().get().v() : null,
-                                x.getNursingTable().getConcurrentPost().isPresent() ? x.getNursingTable().getConcurrentPost().get().v() : null,
-                                x.getNursingTable().getNightShiftOnly().isPresent() ? x.getNursingTable().getNightShiftOnly().get().v() : null
+                                x.getNursingTable().getLicense().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingTable().getHospitalWardName().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingTable().getFullTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingTable().getShortTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingTable().getPartTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingTable().getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingTable().getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null)
                         ),
                         new Form9NursingAideTableDto(
                                 x.getNursingAideTable().getFullName().v(),
@@ -71,16 +73,68 @@ public class GetOutPutItemForKsu008B {
                                         x.getNursingAideTable().getDetailSetting().getRowDate().v(),
                                         x.getNursingAideTable().getDetailSetting().getRowDayOfWeek().v()
                                 ),
-                                x.getNursingAideTable().getHospitalWardName().isPresent() ? x.getNursingAideTable().getHospitalWardName().get().v() : null,
-                                x.getNursingAideTable().getFullTime().isPresent() ? x.getNursingAideTable().getFullTime().get().v() : null,
-                                x.getNursingAideTable().getShortTime().isPresent() ? x.getNursingAideTable().getShortTime().get().v() : null,
-                                x.getNursingAideTable().getPartTime().isPresent() ? x.getNursingAideTable().getPartTime().get().v() : null,
-                                x.getNursingAideTable().getOfficeWork().isPresent() ? x.getNursingAideTable().getOfficeWork().get().v() : null,
-                                x.getNursingAideTable().getConcurrentPost().isPresent() ? x.getNursingAideTable().getConcurrentPost().get().v() : null,
-                                x.getNursingAideTable().getNightShiftOnly().isPresent() ? x.getNursingAideTable().getNightShiftOnly().get().v() : null
+                                x.getNursingAideTable().getHospitalWardName().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingAideTable().getFullTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingAideTable().getShortTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingAideTable().getPartTime().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingAideTable().getOfficeWork().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingAideTable().getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
+                                x.getNursingAideTable().getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null)
                         ),
-                        x.getTemplateFileId().isPresent() ? x.getTemplateFileId().get() : null
+                        x.getTemplateFileId().orElse(null)
                 )
         ).collect(Collectors.toList());
+    }
+
+    public Form9LayoutDto get(String code) {
+        return form9LayoutRepository.get(AppContexts.user().companyId(), new Form9Code(code)).map(x -> new Form9LayoutDto(
+                x.getCode().v(),
+                x.getName().v(),
+                x.isSystemFixed(),
+                x.isUse(),
+                new Form9CoverDto(
+                        x.getCover().getCellYear().map(PrimitiveValueBase::v).orElse(null),
+                        x.getCover().getCellMonth().map(PrimitiveValueBase::v).orElse(null),
+                        x.getCover().getCellStartTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getCover().getCellEndTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getCover().getCellTitle().map(PrimitiveValueBase::v).orElse(null),
+                        x.getCover().getCellPrintPeriod().map(PrimitiveValueBase::v).orElse(null)
+                ),
+                new Form9NursingTableDto(
+                        x.getNursingTable().getFullName().v(),
+                        x.getNursingTable().getDay1StartColumn().v(),
+                        new DetailSettingOfForm9Dto(
+                                x.getNursingTable().getDetailSetting().getBodyStartRow().v(),
+                                x.getNursingTable().getDetailSetting().getMaxNumerOfPeople().v(),
+                                x.getNursingTable().getDetailSetting().getRowDate().v(),
+                                x.getNursingTable().getDetailSetting().getRowDayOfWeek().v()
+                        ),
+                        x.getNursingTable().getLicense().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingTable().getHospitalWardName().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingTable().getFullTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingTable().getShortTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingTable().getPartTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingTable().getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingTable().getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null)
+                ),
+                new Form9NursingAideTableDto(
+                        x.getNursingAideTable().getFullName().v(),
+                        x.getNursingAideTable().getDay1StartColumn().v(),
+                        new DetailSettingOfForm9Dto(
+                                x.getNursingAideTable().getDetailSetting().getBodyStartRow().v(),
+                                x.getNursingAideTable().getDetailSetting().getMaxNumerOfPeople().v(),
+                                x.getNursingAideTable().getDetailSetting().getRowDate().v(),
+                                x.getNursingAideTable().getDetailSetting().getRowDayOfWeek().v()
+                        ),
+                        x.getNursingAideTable().getHospitalWardName().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingAideTable().getFullTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingAideTable().getShortTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingAideTable().getPartTime().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingAideTable().getOfficeWork().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingAideTable().getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
+                        x.getNursingAideTable().getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null)
+                ),
+                x.getTemplateFileId().orElse(null)
+        )).orElse(null);
     }
 }

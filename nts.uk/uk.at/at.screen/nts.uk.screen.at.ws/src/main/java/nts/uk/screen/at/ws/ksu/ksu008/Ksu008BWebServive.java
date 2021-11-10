@@ -67,8 +67,14 @@ public class Ksu008BWebServive {
     }
 
     @POST
-    @Path("get-item/{isSystemFixed}")
+    @Path("get-layouts/{isSystemFixed}")
     public List<Form9LayoutDto> getItemList(@PathParam("isSystemFixed") boolean isSystemFixed) {
         return getOutPutItemForKsu008B.get(isSystemFixed);
+    }
+
+    @POST
+    @Path("get-layout/{code}")
+    public Form9LayoutDto getItemList(@PathParam("code") String code) {
+        return getOutPutItemForKsu008B.get(code);
     }
 }

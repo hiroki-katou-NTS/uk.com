@@ -1038,6 +1038,18 @@ public class ProgramsManager {
             "/view/ksu/005/c/index.xhtml");
 
     /**
+     * KSU008
+     */
+    public static final Program KSU008A = new Program(WebAppId.AT, ProgramIdConsts.KSU008A, "KSU008_1",
+            "/view/ksu/008/a/index.xhtml");
+    public static final Program KSU008B = new Program(WebAppId.AT, ProgramIdConsts.KSU008B, "KSU008_2",
+            "/view/ksu/008/b/index.xhtml");
+    public static final Program KSU008C = new Program(WebAppId.AT, ProgramIdConsts.KSU008C, "KSU008_3",
+            "/view/ksu/008/c/index.xhtml");
+    public static final Program KSU008D = new Program(WebAppId.AT, ProgramIdConsts.KSU008D, "KSU008_4",
+            "/view/ksu/008/d/index.xhtml");
+
+    /**
      * KML002A
      */
     public static final Program KML002A = new Program(WebAppId.AT, ProgramIdConsts.KML002A, "KML002_1",
