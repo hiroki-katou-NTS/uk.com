@@ -565,7 +565,7 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			TimeSpanForDailyCalc oneDayOfRange,
-			TimeLeavingOfDailyAttd attendanceLeaveWork,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			List<LateTimeSheet> lateTimeSheet,
 			boolean correctWithEndTime,
@@ -840,8 +840,10 @@ public class CalculationRangeOfOneDay {
 			WithinWorkTimeSheet creatingWithinWorkTimeSheet,
 			boolean correctWithEndTime){
 		
-		if(!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
-		
+		if (integrationOfDaily.getAttendanceLeave()
+				.map(x -> x.getTimeLeavingWorks().stream().allMatch(y -> !y.existsTimeWithDay())).orElse(true))
+			return new ArrayList<>();
+
 		//出勤時刻を予定開始時刻にする
 		this.setScheduleStartTimeForFlow(
 				integrationOfDaily.getWorkInformation(),
@@ -898,7 +900,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
-				timeLeavingForCorrect,
+				Optional.of(timeLeavingForCorrect),
 				this.predetermineTimeSetForCalc,
 				lateTimeSheet, correctWithEndTime, betweenWorkTimeSheets,
 				companyCommonSetting,
@@ -922,7 +924,7 @@ public class CalculationRangeOfOneDay {
 		return deductionTimeSheetCalcAfter.getForDeductionTimeZoneList();
 	}
 	
-	/** 休憩が固定の場合は控除時間帯を取得する */
+	/** 休憩が固定の場合は控除時間帯を取得する (補正処理から呼ばれる)*/
 	public List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFixed(WorkType workType,
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily,
 			ManagePerCompanySet companyCommonSetting,
@@ -934,17 +936,15 @@ public class CalculationRangeOfOneDay {
 		}
 		
 		/** 控除時間帯の取得 */
-		if (!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
 						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
-						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc, 
+						integrationOfDaily.getAttendanceLeave(), this.predetermineTimeSetForCalc, 
 						new ArrayList<>(), correctWithEndTime, Optional.empty(),
 						companyCommonSetting, personDailySetting)
 				.getForDeductionTimeZoneList();
 		
 		/** 休憩が固定かどうかを判断する */
 		if (workTime.isFixBreak(workType)) {
-
 			return deductionTimeSheet;
 		}
 		
