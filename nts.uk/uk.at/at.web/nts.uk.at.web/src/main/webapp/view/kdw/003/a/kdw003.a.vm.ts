@@ -4068,7 +4068,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
                     if (screen == undefined) screen = 1905;
                     let transfer = {
-                        appDate: dataShare.date,
+                        baseDate: dataShare.date,
                         uiType: 1,
                         employeeIDs: [],
                         stampRequestMode: 1,
