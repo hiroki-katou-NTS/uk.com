@@ -29,7 +29,7 @@ module nts.uk.at.kdl013.a {
 
         loadData(): void {
             let self = this;
-            self.dataSoure.push(new ItemModel("", getText("KDL013_2")));
+            self.dataSoure.push(new ItemModel("", getText("KDL013_7")));
             self.currentCodeList(self.dataShare.selectedCode);
             self.$blockui("invisible");
             
