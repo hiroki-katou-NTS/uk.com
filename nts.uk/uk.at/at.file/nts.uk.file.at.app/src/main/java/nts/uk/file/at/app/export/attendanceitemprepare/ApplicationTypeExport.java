@@ -27,8 +27,6 @@ public enum ApplicationTypeExport {
 	LEAVE_TIME_APPLICATION(7, "休出時間申請"),
 	/**	打刻申請 */
 	STAMP_APPLICATION(8, "打刻申請"),
-	/**	打刻申請（レコーダイメージ） */
-	REGISTER_TIME_CARD_IMAGE(9, "打刻申請（レコーダイメージ）"),
 	/**	時間休暇申請 */
 	ANNUAL_HD_APPLICATION(10, "時間休暇申請"),
 	/**	遅刻早退取消申請 */
@@ -36,7 +34,7 @@ public enum ApplicationTypeExport {
 	/**	振休振出申請 */
 	COMPLEMENT_LEAVE_APPLICATION(12, "振休振出申請"),
 	/**	任意申請 */
-	OPTIONAL_APPLICATION(13, "任意申請");
+	OPTIONAL_APPLICATION(13, "任意項目申請");
 	
 	public int value;
 

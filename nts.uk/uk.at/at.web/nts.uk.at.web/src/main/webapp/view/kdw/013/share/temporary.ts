@@ -388,6 +388,7 @@ module nts.uk.ui.at.kdw013 {
 		value: KnockoutObservable<string>;
 		//options only use C screen
 		options: KnockoutObservableArray<c.DropdownItem | any> = ko.observableArray([]);
+		primitiveValue: string;
 		constructor(taskItemValues: ITaskItemValue, name?: string, type?: number) {
 			this.itemId = taskItemValues.itemId;
 			this.value = ko.observable(taskItemValues.value);

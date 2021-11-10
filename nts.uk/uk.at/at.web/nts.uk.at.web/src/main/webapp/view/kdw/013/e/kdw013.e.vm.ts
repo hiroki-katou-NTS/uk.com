@@ -56,7 +56,7 @@ module nts.uk.ui.at.kdw013.e {
 
             if (param) {
                 vm.taskDtos(param.taskDtos);
-                vm.ouenWorkTime(_.filter(param.ouenWorkTimes, (t : OuenWorkTimeOfDailyAttendance) => { return t.workNo == param.workNo })[0]);
+                vm.ouenWorkTime(_.filter(param.ouenWorkTimes, (t : OuenWorkTimeOfDailyAttendance) => { return t.no == param.workNo })[0]);
                 vm.ouenWorkTimeSheet(_.filter(param.ouenWorkTimeSheets, (ts : OuenWorkTimeSheetOfDailyAttendance) => { return ts.workNo == param.workNo })[0]);
                 vm.taskSettings(param.taskSettings);
                 vm.date(param.date);

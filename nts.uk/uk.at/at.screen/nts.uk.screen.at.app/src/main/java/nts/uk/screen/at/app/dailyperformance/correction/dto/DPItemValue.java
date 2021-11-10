@@ -78,11 +78,11 @@ public class DPItemValue {
 	 */
 	public DPItemValue(String targetEmployee, GeneralDate targetDate, ItemValue item) {
 		super();
-		this.rowId = targetEmployee + targetDate.toString("YYYYMMDD");
-		this.columnKey = targetEmployee + targetDate.toString("YYYYMMDD") + item.getItemId();
+		this.rowId = targetEmployee + targetDate.toString("yyyyMMdd");
+		this.columnKey = targetEmployee + targetDate.toString("yyyyMMdd") + item.getItemId();
 		this.itemId = item.getItemId();
 		this.value = item.getValue();
-		this.valueType = item.getValueType().name;
+		this.valueType = item.getValueType() == null ? null : item.getValueType().name;
 		this.layoutCode = item.getLayoutCode();
 		this.employeeId = targetEmployee;
 		this.date = targetDate;

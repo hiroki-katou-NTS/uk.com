@@ -5,6 +5,8 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
     })
     export class Kdw013OneDayEventBindingHandler implements KnockoutBindingHandler {
         init = (element: HTMLElement, componentName: () => string, allBindingsAccessor: KnockoutAllBindingsAccessor, __: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } => {
+            
+            
             const name = componentName();
             const mode = allBindingsAccessor.get('mode');
             const items = allBindingsAccessor.get('items');
@@ -12,7 +14,20 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             const screenA = allBindingsAccessor.get('screenA');      
             const params = { mode, items, screenA };
 
-            ko.applyBindingsToNode(element, { component: { name, params } });
+            const subscribe = (mode: boolean) => {
+
+                if (!mode) {
+                    ko.cleanNode(element);
+
+                    element.innerHTML = '';
+                } else {
+                    ko.applyBindingsToNode(element, { component: { name, params } });
+                }
+            };
+
+            mode.subscribe(subscribe);
+
+            subscribe(mode());
 
             return { controlsDescendantBindings: true };
             
@@ -35,10 +50,12 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                     <label data-bind="i18n: 'KDW013_76'"></label>
                 </h3>
                 <div class='fc-events fc-oneday-events'>
-                    <ul data-bind="foreach: { data: $component.params.items, as: 'item' }">
+                    <ul id='one-day-fav' data-bind="foreach: { data: $component.params.items, as: 'item' }">
                         <li class="title" data-bind="attr: {
                             'data-id': _.get(item.extendedProps, 'relateId', ''),
-                            'data-color': item.backgroundColor
+                            'data-color': item.backgroundColor,
+                            'data-order': _.get(item.extendedProps, 'order', ''),
+                            'data-favId': _.get(item.extendedProps, 'favId', '')
                         }">
                             <div data-bind="style: {
                                 'background-color': item.backgroundColor
@@ -111,8 +128,8 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             //A:1日作業セットを削除する   
             vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/delete_oneday_task_set', { favId: id }))
                 .done(() => {
-                    vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-                        vm.params.screenA.reLoad();
+                    vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
+                        vm.params.screenA.reloadOneDayFav();
                     });
                 }).always(() => vm.$blockui('clear'));
             

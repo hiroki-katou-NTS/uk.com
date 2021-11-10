@@ -38,5 +38,11 @@ public interface OneDayFavoriteTaskDisplayOrderRepository {
 	 * @return
 	 */
 	Optional<OneDayFavoriteTaskDisplayOrder> get(String employeeId);
+	
+	/**
+	 * 
+	 * @param favId
+	 */
+	void deleteByFavId(String favId);
 
 }
