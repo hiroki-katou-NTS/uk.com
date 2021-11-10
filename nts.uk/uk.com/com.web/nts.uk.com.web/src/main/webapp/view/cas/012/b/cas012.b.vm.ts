@@ -84,11 +84,11 @@ module nts.uk.com.view.cas012.b {
             let vm = this,
                 dfd = $.Deferred();
             block.invisible();
+            let emps : any = [];
+            let job : any = [];
             let _path = format(API.getEmployeeList,cid);
             vm.$ajax('com',_path ).done((data) => {
                 if(!isNullOrEmpty(data)){
-                    let emps : any = [];
-                    let job : any = [];
                     for (let i =0; i<data.length;i++) {
                         let item = data[i];
                         emps.push({
@@ -102,12 +102,11 @@ module nts.uk.com.view.cas012.b {
                             content: item.jobTitleName
                         })
                     }
-                    vm.optionalColumnDatasource(job);
-                    vm.employInfors(emps);
-                    vm.listEmployee(data);
-                }else {
-                    block.clear()
+
                 }
+                vm.optionalColumnDatasource(job);
+                vm.employInfors(emps);
+                vm.listEmployee(data);
             }).always(()=>{
                 block.clear()
             }).fail(()=>{
