@@ -918,14 +918,14 @@ module nts.uk.at.view.ksm004.a {
             /*
                 open Dialog D, set param = {yearMonth} 
             */
-            openDialogC() {
+            openDialogKdl050() {
                 nts.uk.ui.block.invisible()
                 var self = this;
-                nts.uk.ui.windows.setShared('KSM004_C_PARAM', 
+                nts.uk.ui.windows.setShared('KDL050_A_PARAM', 
                 {
                     yearMonth: self.yearMonthPicked().toString().substring(0,4)
                 });
-                nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                nts.uk.ui.windows.sub.modal("/view/kdl/050/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
 					self.yearMonthPicked.valueHasMutated();
 //                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
