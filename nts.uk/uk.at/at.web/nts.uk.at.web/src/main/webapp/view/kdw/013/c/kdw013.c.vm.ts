@@ -1134,8 +1134,9 @@ module nts.uk.ui.at.kdw013.c {
                     if (selected) {
                         title.push(selected.name);
                     }
-				}
-            });
+				}            });
+            
+             
             return title.join("\n");
         }               
 		
