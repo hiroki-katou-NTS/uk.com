@@ -152,7 +152,6 @@ import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -252,8 +251,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
     private CreateExtraProcessService createExtraProcessService;
     @Inject
     private ExecAlarmListProcessingService execAlarmListProcessingService;
-    @Inject
-    private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
     @Inject
     private RecordWorkInfoFunAdapter recordWorkInfoFunAdapter;
     @Inject
@@ -1230,14 +1227,22 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                     }
                                 }
                             } catch (RuntimeException ex) {
-                                if (ex instanceof CreateDailyException) {
-                                    //create error
-                                    isHasCreateDailyException = true;
+                                if (!DeadLock.isSQLDeadLock(ex)) {
+                                	if (ex instanceof CreateDailyException) {
+                                        //create error
+                                        isHasCreateDailyException = true;
+                                    } else if (ex instanceof DailyCalculateException) {
+                                        //calculation error
+                                        isHasDailyCalculateException = true;
+                                    } else {
+                            			ex.printStackTrace();
+                                        isHasCreateDailyException = true;
+                                        isHasDailyCalculateException = true;
+                                    }
+                                    errorMessage = "Msg_1339";
                                 } else {
-                                    //calculation error
-                                    isHasDailyCalculateException = true;
+                        			ex.printStackTrace();
                                 }
-                                errorMessage = "Msg_1339";
                             }
                         }
                     }
@@ -2174,6 +2179,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             } else if (analyzer.findByClass(DailyCalculateException.class).isPresent()) {
                 throw new DailyCalculateException(e);
             }
+            throw e;
         }
 
         if (!listIsInterrupt.isEmpty()) {
@@ -2254,14 +2260,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             try {
                 processState = this.dailyCalculationEmployeeService.calculateForOnePerson(employeeId, period,
                         Optional.empty(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(), dailyCreateLog.getIsCalWhenLock().orElse(false));
-                //暫定データの登録
-//                this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
             } catch (Exception e) {
 				if (DeadLock.isSQLDeadLock(e)) {
 					throw e;
 				}
-                //暫定データの登録
-                this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, employeeId, period.datesBetween());
                 throw new DailyCalculateException(e);
             }
 
@@ -2302,6 +2304,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                     Optional.empty());
             processState1 = (status.getProcessState().value == 0 ? ProcessState.INTERRUPTION : ProcessState.SUCCESS);
         } catch (Exception e) {
+			if (DeadLock.isSQLDeadLock(e)) {
+				throw e;
+			}
             throw new CreateDailyException(e);
         }
 		log.info("更新処理自動実行_日別実績の作成_END_" + procExec.getExecItemCode() + "_" + GeneralDateTime.now());
@@ -2311,13 +2316,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             // 社員の日別実績を計算
             ProcessState2 = this.dailyCalculationEmployeeService.calculateForOnePerson(empId, period, Optional.empty(),
                     empCalAndSumExeLogId, dailyCreateLog.getIsCalWhenLock().orElse(false));
-            //暫定データの登録
-            this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, empId, period.datesBetween());
 		log.info("更新処理自動実行_日別実績の計算_END_" + procExec.getExecItemCode() + "_" + GeneralDateTime.now());
         } catch (Exception e) {
             //暫定データの登録
-            this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, empId, period.datesBetween());
-            throw new DailyCalculateException(e);
+			if (DeadLock.isSQLDeadLock(e)) {
+				throw e;
+			}
+            throw new DailyCalculateException(e); 
         }
 
         // 社員の申請を反映 cua chi du

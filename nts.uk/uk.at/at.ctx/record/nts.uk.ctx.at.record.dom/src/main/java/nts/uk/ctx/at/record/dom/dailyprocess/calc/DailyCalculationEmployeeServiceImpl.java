@@ -217,12 +217,11 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					}
 				}
 				
-				ManageProcessAndCalcStateResult afterCalcRecord =null;
 				Pair<Integer, ManageProcessAndCalcStateResult> result = null;
-				result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, false,isCalWhenLock);
+				result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, iPUSOptTemp, approvalSetTemp, false,isCalWhenLock);
 				
 				if(result.getLeft() == 1) {  //co loi haita
-					result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
+					result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
 					if(result.getLeft() == 1) { 
 						optimistLock = true;
 					}
@@ -250,7 +249,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	
 	private Pair<Integer, ManageProcessAndCalcStateResult> runWhenOptimistLockError(String cid, String employeeId,
 			DatePeriod datePeriod, ExecutionType reCalcAtr, String empCalAndSumExecLogID,
-			ManageProcessAndCalcStateResult afterCalcRecord, Optional<IdentityProcessUseSet> iPUSOptTemp,
+			Optional<IdentityProcessUseSet> iPUSOptTemp,
 			Optional<ApprovalProcessingUseSetting> approvalSetTemp,boolean runOptimistLock,Boolean IsCalWhenLock) {
 		//if check = 0 : createListNew : null
 		//if check = 1 : has error optimistic lock (lan 1)
@@ -262,13 +261,13 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		List<IntegrationOfDaily> createListNew = integrationGetter.getIntegrationOfDaily(employeeId, datePeriod);
 		if (createListNew.isEmpty()) {
 			check = 0;
-			return Pair.of(check, afterCalcRecord);
+			return Pair.of(check, new ManageProcessAndCalcStateResult(ProcessState.SUCCESS, new ArrayList<>()));
 		}
 
 		// 締め一覧取得
 		List<ClosureStatusManagement> closureListNew = getClosureList(Arrays.asList(employeeId), datePeriod);
 
-		afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createListNew, closureListNew,
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createListNew, closureListNew,
 				reCalcAtr, empCalAndSumExecLogID);
 		
 		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(cid, employeeId);
@@ -302,6 +301,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			}
 			try {
 				transactionService.execute(() -> {
+					val key = Pair.of(stateInfo.integrationOfDaily.getEmployeeId(), stateInfo.integrationOfDaily.getYmd());
+					if (afterCalcRecord.getAtomTasks().containsKey(key)) {
+						afterCalcRecord.getAtomTasks().get(key).run();
+					}
 					//実績登録
 					updateRecord(stateInfo.integrationOfDaily); 
 					//エラーで本人確認と上司承認を解除する
@@ -398,7 +401,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		return closureStatusManagementRepository.getByIdListAndDatePeriod(employeeId, datePeriod);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter,String executeLogId,boolean isCalWhenLock ) {
 		
 		
@@ -456,6 +458,10 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				try {
 					
 					transactionService.execute(() -> {
+						val key = Pair.of(stateInfo.integrationOfDaily.getEmployeeId(), stateInfo.integrationOfDaily.getYmd());
+						if (afterCalcRecord.getAtomTasks().containsKey(key)) {
+							afterCalcRecord.getAtomTasks().get(key).run();
+						}
 						//実績登録
 						updateRecord(stateInfo.integrationOfDaily); 
 						//エラーで本人確認と上司承認を解除する
