@@ -104,7 +104,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 				.setParameter("contractCode", contractCode)
 				.setParameter("companyId", companyId)
 				.setParameter("eralCheckIds", eralCheckIds)
-				.setParameter("useAtr", isUse)
+				.setParameter("useAtr", BooleanUtils.toInteger(isUse))
 				.getList();
         List<ExtractionCondScheduleDay> domain = new ArrayList<>();
     	for(KscdtScheAnyCondDay item: entities) {
