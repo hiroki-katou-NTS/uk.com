@@ -1627,8 +1627,12 @@ public class ProgramIdConsts {
 	public static final String KDL052B = "KDL052B";
 	
 	/** KDL053 */
-	public static final String KDL053 = "KDL053";	
-	
+	public static final String KDL053 = "KDL053";
+
+	/** KDL055 */
+	public static final String KDL055A = "KDL055A";
+	public static final String KDL055B = "KDL055B";
+
 	/**
 	 * CMM024
 	 */

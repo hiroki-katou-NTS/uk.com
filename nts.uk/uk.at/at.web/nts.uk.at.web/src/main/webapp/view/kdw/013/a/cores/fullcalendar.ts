@@ -184,13 +184,6 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-sidebar .fc-employees>ul>li>div {
             line-height: 16px;
         }
-        .fc-container .fc-sidebar .fc-events>ul>li>div:first-child {
-            float: left;
-            width: 22px;
-            height: 22px;
-            margin-right: 3px;
-            border-radius: 50%;
-        }
         .fc-container .fc-sidebar .fc-employees>ul>li>div:first-child {
             float: left;
             min-width: 70px;
@@ -390,7 +383,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .favIcon{
             position: absolute;
-            left: calc(100% - 20px);
+            left: calc(100% - 22px);
             bottom: calc(100% - 20px);
         }
         .favIcon:hover{
@@ -2129,6 +2122,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                         .on('click', (evt: JQueryEvent) => {
                                             
                                             if ($(evt.target).closest('.fc-col-header-cell.fc-day .favIcon').length > 0) {
+                                                //click mở màn G
                                                 const date =  evt.target.classList[1].replace("fav-", "");
                                                 let eventInDay = _.chain(vm.params.screenA.events())
                                                     .filter((evn) => { return moment(date).isSame(evn.start, 'days'); })
@@ -2145,6 +2139,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                                             taskContents.push({ frameNo: td.supNo, taskContent: { itemId: ti.itemId, taskCode: ti.value } });
                                                         });
                                                     });
+                                                    setTimeout(() => { $('.input-g').focus(); }, 100);
+                                                    
+                                                    //set lại phần update để nó không bị ảnh hưởng
+                                                    vm.params.screenA.oneDayFavoriteSet(null);
                                                     vm.params.screenA.oneDayFavTaskName('');
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
                                                 });
