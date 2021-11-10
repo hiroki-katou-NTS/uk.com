@@ -88,7 +88,7 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	
 	private static CanonicalItemList getFixedItems() {
 		return new CanonicalItemList()
-			.add(Items.SID, IdentifierUtil.randomUniqueId().toString())
+			.add(Items.ID, IdentifierUtil.randomUniqueId().toString())
 			.add(Items.登録種別, 0)
 			.add(Items.積み崩し日数, new BigDecimal(0.0))
 			.add(Items.上限超過消滅日数, new BigDecimal(0.0))
