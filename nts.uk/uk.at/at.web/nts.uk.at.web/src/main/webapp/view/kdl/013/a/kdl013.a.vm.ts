@@ -21,7 +21,7 @@ module nts.uk.at.kdl013.a {
 
             self.columns = ko.observableArray([
                 { headerText: getText("KDL013_3"), prop: 'code', width: 90 },
-                { headerText: getText("KDL013_3"), prop: 'name', width: 200, formatter: _.escape }
+                { headerText: getText("KDL013_4"), prop: 'name', width: 200, formatter: _.escape }
             ]);
             self.loadData();
             _.defer(() => { $(".ntsSearchBox").focus(); });
