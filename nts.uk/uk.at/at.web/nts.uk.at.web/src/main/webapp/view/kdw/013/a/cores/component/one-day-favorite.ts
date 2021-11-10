@@ -151,6 +151,10 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                 // お気に入り内容
                 taskBlockDetailContents: item.extendedProps.dropInfo.taskBlockDetailContents
             });
+			setTimeout(() => {
+				$('.input-g').focus();
+			}, 100)
+			
         }
     }
 
