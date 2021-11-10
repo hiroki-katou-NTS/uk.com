@@ -52,6 +52,7 @@ module nts.uk.at.view.kdw006.i.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            const vm = new ko.ViewModel();
             self.$blockui("grayout");
 
             $.when(self.init()).done(() => {
@@ -64,12 +65,25 @@ module nts.uk.at.view.kdw006.i.viewmodel {
             self.useAtrTask.subscribe(() => {
                 if (ko.unwrap(self.useAtrTask) == 1) {
                     self.enableSwich(true);
-                    $("#I1_1").attr('disabled','disabled');
+                    $("#I1_1").attr('disabled', 'disabled');
                 } else {
                     self.enableSwich(false);
-                    $("#I1_1").attr('disabled','disabled');
+                    $("#I1_1").attr('disabled', 'disabled');
+                    if (!ko.unwrap(self.time)) {
+                        $('#I4_7').ntsError('clear');
+                        self.time(1);
+                    }
                 }
-            })
+            });
+
+            self.useAtr.subscribe(() => {
+                if (ko.unwrap(self.useAtr) == 0) {  
+                    if (!ko.unwrap(self.time)) {
+                        $('#I4_7').ntsError('clear');
+                        self.time(1);
+                    }
+                }
+            });
 
             return dfd.promise();
         }
@@ -109,6 +123,10 @@ module nts.uk.at.view.kdw006.i.viewmodel {
         register() {
             let self = this;
 
+            if (!ko.unwrap(self.time)) {
+                $('#I4_7').ntsError('clear');
+                self.time(1);
+            }
             let command: ManHourRecordUseSettingDto = self.toRegisterCommand();
             self.$blockui("grayout");
             self.$validate().then((valid: boolean) => {

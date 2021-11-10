@@ -37,6 +37,9 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -80,6 +83,12 @@ public class GetWorkDataMasterInformation {
     
     @Inject
     private ManHourRecordAndAttendanceItemLinkRepository manHourRecordAndAttendanceItemLinkRepo;
+    
+    @Inject
+    private DailyPerformanceScreenRepo dailyPerformanceScreenRepo;
+    
+    @Inject
+    private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
     
     /**
      * @name 作業データマスタ情報を取得する
@@ -175,10 +184,13 @@ public class GetWorkDataMasterInformation {
     	//List<勤務種類>
     	List<WorkType> workTypes = new ArrayList<>();
     	//「日次の勤怠項目.属性 = コード AND 日次の勤怠項目.マスタの種類 = 勤務種類」がある
-    	if(dailyAttendanceItem.stream().filter(c-> c.getDailyAttendanceAtr().value == DailyAttendanceAtr.Code.value && c.getMasterType().isPresent() && c.getMasterType().get().value == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value).findFirst().isPresent()) {
-        	//<<Public>> 勤務種類をすべて取得する
-    		workTypes = workTypeRepository.findByCompanyId(loginUser.companyId());
-    	}
+		dailyAttendanceItem.stream()
+				.filter(ai -> ai.getDailyAttendanceAtr().equals(DailyAttendanceAtr.Code))
+				.filter(ai -> ai.getMasterType().isPresent() &&  ai.getMasterType().get().equals(TypesMasterRelatedDailyAttendanceItem.WORK_TYPE))
+				.findFirst().ifPresent(ai -> {
+					// <<Public>> 勤務種類をすべて取得する
+					workTypes.addAll(workTypeRepository.findByCompanyId(loginUser.companyId()));
+				});
     	
     	//List<就業時間帯の設定>
     	List<WorkTimeSetting> workTimeSettings = new ArrayList<>();
@@ -248,4 +260,23 @@ public class GetWorkDataMasterInformation {
 			return null;
 		}
     }
+    
+	/** @name 変更可能な勤務種類を取得する */
+    public List<String> getChangeableWorkType(String employeeId, GeneralDate date, Optional<String> code) {
+    	LoginUserContext loginUser = AppContexts.user();
+    	if(!code.isPresent())
+    		return dataDialogWithTypeProcessor.getDutyTypeAll(loginUser.companyId()).getCodeNames().stream().map(c->c.getCode()).collect(Collectors.toList());
+    	
+    	//call 社員と基準日から雇用履歴項目を取得する
+    	AffEmploymentHistoryDto aff = dailyPerformanceScreenRepo.getAffEmploymentHistory(loginUser.companyId(), employeeId, date);
+    	
+    	//call 変更可能な勤務種類を検索する (ko tồn tại)
+		return dataDialogWithTypeProcessor.getDutyType(
+				loginUser.companyId(),
+				code.get(),
+				aff == null? "" : aff.getEmploymentCode()
+				).getCodeNames().stream().map(c->c.getCode()).collect(Collectors.toList());
+    	
+    }
+    
 }

@@ -18,6 +18,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Co
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ModeData;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
@@ -49,20 +52,37 @@ public class CreateAchievementRegistrationParam {
     @Inject
     private DailyModifyRCommandFacade dailyModifyRCommandFacade;
     
+    @Inject 
+    private IntegrationOfDailyGetter integrationOfDailyGetter;
+    
+    @Inject
+    private AttendanceItemConvertFactory attendanceItemConvertFactory;
+    
     /**
      * @name 実績内容を登録する
      */
-    public void registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items, IntegrationOfDaily integrationOfDaily){
+    public void registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items){
     	
     	//call ScreenQuery 実績登録パラメータを作成する
     	// chưa có mô tả param truyền vào.
-    	DPItemParent DPItemParent = this.create(empTarget, targetDate, items, integrationOfDaily);
+    	DPItemParent DPItemParent = this.create(empTarget, targetDate, items);
     	
     	//Call 修正した実績を登録する
     	//QA: 120067 -  đang hỏi anh thanhNX - Anh thanhNX trả lời là hàm DailyModifyRCommandFacade.insertItemDomain()
     	//Vì param 「過去修正モード」"Mode sửa quá khứ " là đang thiết kế nên vẫn chưa có source code.
-    	dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
+		dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
+    }
+    
+    //日別実績データを取得する
+    public List<ItemValue> getIntegrationOfDaily(String empTarget, GeneralDate targetDate, List<Integer> items){
+    	// 1:get()
+    	List<IntegrationOfDaily> integrationOfDailys = integrationOfDailyGetter.getIntegrationOfDaily(empTarget, new DatePeriod(targetDate, targetDate));
+    	Optional<IntegrationOfDaily> integrationOfDaily = integrationOfDailys.stream().filter(c->c.getYmd().equals(targetDate)).findFirst();
     	
+    	// 2:<call> ItemValueに変換する
+    	DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter = attendanceItemConvertFactory.createDailyConverter();
+    	dailyRecordToAttendanceItemConverter.setData(integrationOfDaily.get());															
+    	return dailyRecordToAttendanceItemConverter.convert(items);
     }
     
     /**
@@ -82,7 +102,7 @@ public class CreateAchievementRegistrationParam {
      * @param integrationOfDaily 日別実績(Work)
      * @return
      */
-    public DPItemParent create(String empTarget, GeneralDate targetDate, List<ItemValue> items, IntegrationOfDaily integrationOfDaily){
+    public DPItemParent create(String empTarget, GeneralDate targetDate, List<ItemValue> items){
     	LoginUserContext loginUserContext = AppContexts.user();
     	
     	//DPItemValueを作成する
@@ -97,6 +117,10 @@ public class CreateAchievementRegistrationParam {
     	//approvalConfirmCacheを作成する
     	ApprovalConfirmCache approvalConfirmCache = new ApprovalConfirmCache(loginUserContext.employeeId(), Arrays.asList(empTarget), new DatePeriod(targetDate, targetDate), 0, lstConfirm, lstApproval);
     	
+    	//「日別勤怠(Work)」を取得する
+    	List<IntegrationOfDaily> integrationOfDailys = integrationOfDailyGetter.getIntegrationOfDaily(empTarget, new DatePeriod(targetDate, targetDate));
+    	Optional<IntegrationOfDaily> integrationOfDaily = integrationOfDailys.stream().filter(c->c.getYmd().equals(targetDate)).findFirst();
+    	
     	//DPItemParentを作成する
     	return new DPItemParent(
     			0, 
@@ -107,9 +131,9 @@ public class CreateAchievementRegistrationParam {
     			new DateRange(targetDate, targetDate), 
     			null, 
     			null, 
-    			Arrays.asList(DailyRecordDto.from(integrationOfDaily)), 
-    			Arrays.asList(DailyRecordDto.from(integrationOfDaily)), 
-    			Arrays.asList(DailyRecordDto.from(integrationOfDaily)), 
+    			Arrays.asList(DailyRecordDto.from(integrationOfDaily.get()).clone()), 
+    			Arrays.asList(DailyRecordDto.from(integrationOfDaily.get()).clone()), 
+    			Arrays.asList(DailyRecordDto.from(integrationOfDaily.get()).clone()), 
     			false, 
     			new ArrayList<>(), 
     			new HashMap<>(), 
@@ -119,7 +143,7 @@ public class CreateAchievementRegistrationParam {
     			new ArrayList<>(), 
     			false, 
     			false, 
-    			false, 
+    			true, 
     			approvalConfirmCache, 
     			Optional.empty(), 
     			null);

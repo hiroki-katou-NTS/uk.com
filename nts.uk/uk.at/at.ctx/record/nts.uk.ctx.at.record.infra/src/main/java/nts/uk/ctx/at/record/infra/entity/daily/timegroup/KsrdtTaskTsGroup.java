@@ -11,10 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
-import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeZone;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -43,16 +41,9 @@ public class KsrdtTaskTsGroup extends ContractUkJpaEntity implements Serializabl
 		return this.pk;
 	}
 
-	public KsrdtTaskTsGroup(TaskTimeZone timezone, String sId, GeneralDate date) {
-		this.pk = new KsrdtTaskTsGroupPk(sId, date, timezone.getCaltimeSpan().start(), timezone.getSupNo().v());
+	public KsrdtTaskTsGroup(String sId, GeneralDate date, TimeSpanForCalc caltimeSpan, SupportFrameNo sn) {
+		this.pk = new KsrdtTaskTsGroupPk(sId, date, caltimeSpan.start(), sn.v());
 		this.cid = AppContexts.user().companyId();
-		this.endClock = timezone.getCaltimeSpan().end();
-	}
-
-	public TaskTimeZone toDomain() {
-
-		return new TaskTimeZone(
-				new TimeSpanForCalc(new TimeWithDayAttr(this.pk.startClock), new TimeWithDayAttr(this.endClock)),
-				new SupportFrameNo(this.pk.subNo));
+		this.endClock = caltimeSpan.end();
 	}
 }

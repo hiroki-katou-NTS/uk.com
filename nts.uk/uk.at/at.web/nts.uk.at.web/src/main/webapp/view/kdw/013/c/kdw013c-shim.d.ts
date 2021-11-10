@@ -147,6 +147,15 @@ module nts.uk.ui.at.kdw013 {
 	
 		/* 名称の改行位置*/
 		 nameLineFeedPosition: number;
+		
+		/* マスタの種類 */
+		masterType: number;
+
+		/* 怠項目のPrimitiveValue */
+		primitiveValue: number;
+
+		/* 表示名称 */
+		displayName: string;
 	}
 	
 	export type ManHourRecordAndAttendanceItemLinkDto = {

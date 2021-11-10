@@ -71,6 +71,12 @@ public class DeleteFavoriteCommandHandler extends CommandHandler<DeleteFavoriteC
 		public void update(FavoriteTaskDisplayOrder favoriteTaskDisplayOrder) {
 			orderRepo.update(favoriteTaskDisplayOrder);
 		}
+
+		@Override
+		public void deleteByFavId(String favoriteId) {
+			orderRepo.deleteByFavId(favoriteId);
+			
+		}
 		
 	}
 

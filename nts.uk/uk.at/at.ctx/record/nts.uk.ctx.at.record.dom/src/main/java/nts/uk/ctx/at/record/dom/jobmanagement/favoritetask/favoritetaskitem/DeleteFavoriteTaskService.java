@@ -14,7 +14,7 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 public class DeleteFavoriteTaskService {
-
+	
 //■Public
 	/**
 	 * [1] 追加する
@@ -44,6 +44,7 @@ public class DeleteFavoriteTaskService {
 				atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
 			} else {
 				atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
+				require.deleteByFavId(favoriteId);
 			}
 		}
 	
@@ -68,5 +69,7 @@ public class DeleteFavoriteTaskService {
 		// [R-4] 表示順を更新する
 		// お気に入り作業の表示順Repository.Update(お気に入り作業の表示順)
 		void update(FavoriteTaskDisplayOrder favoriteTaskDisplayOrder);
+		
+		void deleteByFavId(String favoriteId);
 	}
 }

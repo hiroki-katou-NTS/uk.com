@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.screen.at.app.kdw013.a.IntegrationOfDailyCommand;
 import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
 
 @NoArgsConstructor
@@ -20,6 +19,4 @@ public class KDW013HSaveCommand {
 	public GeneralDate targetDate;
 	//修正内容	=>	List<itemvalue>	
 	public List<ItemValueCommand> items;
-	//日別実績(Work)								
-	public IntegrationOfDailyCommand integrationOfDaily;
 }

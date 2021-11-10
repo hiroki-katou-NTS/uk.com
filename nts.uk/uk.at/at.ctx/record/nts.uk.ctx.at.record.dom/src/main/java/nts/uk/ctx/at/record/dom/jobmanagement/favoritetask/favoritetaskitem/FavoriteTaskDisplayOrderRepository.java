@@ -33,4 +33,10 @@ public interface FavoriteTaskDisplayOrderRepository {
 	 * @return お気に入り表示順
 	 */
 	Optional<FavoriteTaskDisplayOrder> get(String employeeId);
+	
+	/**
+	 * 
+	 * @param favoriteId お気に入りID
+	 */
+	void deleteByFavId(String favoriteId);
 }

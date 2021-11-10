@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.worklocation.WorkLocationDto;
-import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemDto;
+import nts.uk.screen.at.app.kdw006.j.DailyAttendanceItemDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 
 /**

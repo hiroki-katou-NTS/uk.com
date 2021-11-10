@@ -14,7 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
@@ -23,7 +22,7 @@ import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
  * @author tutt
  *
  */
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TASK_FAV_DAY_SET_TS")
@@ -50,4 +49,9 @@ public class KrcdtTaskFavDaySetTs extends ContractCompanyUkJpaEntity implements 
 		return this.pk;
 	}
 
+	public KrcdtTaskFavDaySetTs(String favId, int startClock, int endClock) {
+		super();
+		this.pk = new KrcdtTaskFavDaySetTsPk(favId, startClock);
+		this.endClock = endClock;
+	}
 }

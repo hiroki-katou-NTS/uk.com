@@ -8,7 +8,6 @@ import lombok.Data;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.NumberOfDaySuspensionDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.WorkInformationDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.ScheduleTimeSheetDto;
 
 /**
  * 
@@ -39,6 +38,8 @@ public class WorkInfoOfDailyAttendanceDto {
 
 	// 振休振出として扱う日数
 	private NumberOfDaySuspensionDto numberDaySuspension;
+	
+	private long ver; 
 
 	public static WorkInfoOfDailyAttendanceDto toDto(WorkInfoOfDailyAttendance domain) {
 		return new WorkInfoOfDailyAttendanceDto(WorkInformationDto.fromDomain(domain.getRecordInfo()),
@@ -48,7 +49,8 @@ public class WorkInfoOfDailyAttendanceDto {
 						.collect(Collectors.toList()),
 				domain.getNumberDaySuspension().isPresent()
 						? NumberOfDaySuspensionDto.from(domain.getNumberDaySuspension().get())
-						: null);
+						: null,
+						domain.getVer());
 	}
 
 }
