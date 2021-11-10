@@ -1293,8 +1293,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	public Map<String, String> getNamesByCodes(List<String> itemCodes) {
 		Map<String, String> mapValues = new HashMap<String, String>();
 		String NATIV_SQL = String.join(" ", "SELECT DISTINCT it.ITEM_CD, it.ITEM_NAME",
-				"FROM [dbo].[PPEMT_ITEM] it",
-				"LEFT JOIN [dbo].[PPEMT_CTG] ctg", 
+				"FROM PPEMT_ITEM it",
+				"LEFT JOIN PPEMT_CTG ctg", 
 				"ON it.PER_INFO_CTG_ID = ctg.PER_INFO_CTG_ID",
 				"WHERE ctg.CID = '{cid}' AND it.ITEM_CD LIKE 'IS%' AND ITEM_CD IN ('{iids}')"); //IS00020', 'IS00279', 'IS00253
 		
