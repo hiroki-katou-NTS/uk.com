@@ -135,7 +135,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
-				self.setLayout(infoData.itemNoList);
+				self.layoutItemNoList(infoData.itemNoList);
 				self.isNewMode(false);
 				self.checkError();
 			});

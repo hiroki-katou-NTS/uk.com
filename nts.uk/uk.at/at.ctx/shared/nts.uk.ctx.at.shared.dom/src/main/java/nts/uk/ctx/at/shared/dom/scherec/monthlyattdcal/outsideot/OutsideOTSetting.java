@@ -21,8 +21,12 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
@@ -397,6 +401,46 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});
+	}
+	
+	/** clones from 36協定対象時間を取得 */
+	public Map<String, AgreementTimeBreakdown> getTargetTimeClones(RequireM1 require, String cid, 
+			List<MonthlyCalculation> monthlyCalculations) {
+		
+		val breakdownMap = new HashMap<String, AgreementTimeBreakdown>();
+		/** 月別実績の丸め設定を取得 */
+		val roundSet = require.monthRoundingSet(cid);
+		
+		/** 内訳項目に設定されている勤怠項目IDを全て取得 */
+		val breakdownItems = getBreakDownItemIds();
+		
+		for (MonthlyCalculation monthlyCalculation : monthlyCalculations) {
+			val breakdown = new AgreementTimeBreakdown();
+			
+			/** 休出枠一覧を取得する */
+			val workDayOffFrames = getWorkDayOffFrame(monthlyCalculation);
+			
+			/** ○法定内休出の勤怠項目IDを全て取得 */
+			val holiWorkItems = getLegalHolidayWorkItems(workDayOffFrames);
+			
+			if(breakdownItems.isEmpty() && holiWorkItems.isEmpty()) {
+				breakdownMap.put(monthlyCalculation.getEmployeeId(), breakdown);
+				continue;
+			}
+			
+			/** 対象項目の時間を求める */
+			getBreakDownTimes(require, monthlyCalculation, breakdown, roundSet, breakdownItems);
+			
+			/** 法定内休出時間を取得する */
+			getHolidayWorkTime(require, roundSet, getDailyRecords(monthlyCalculation), 
+					breakdown, holiWorkItems, workDayOffFrames);
+			
+			/** ○36協定上限時間内訳を返す */
+			breakdownMap.put(monthlyCalculation.getEmployeeId(), breakdown);
+		}
+		
+		return breakdownMap;
+		
 	}
 
 	/** 内訳項目に設定されている勤怠項目IDを全て取得 */

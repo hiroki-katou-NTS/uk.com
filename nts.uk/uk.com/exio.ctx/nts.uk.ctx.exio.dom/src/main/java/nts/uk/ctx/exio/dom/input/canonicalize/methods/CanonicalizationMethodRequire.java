@@ -28,6 +28,9 @@ public interface CanonicalizationMethodRequire extends
 	/** 受け入れた編集済みデータから特定のCSV行番号のものを返す */
 	Optional<RevisedDataRecord> getRevisedDataRecordByRowNo(ExecutionContext context, int rowNo);
 	
+	/** 受け入れた編集済みデータをすべて返す */
+	List<RevisedDataRecord> getAllRevisedDataRecords(ExecutionContext context);
+	
 	/** 受け入れた編集済みデータから特定の項目Noの値が条件に合致するものを返す */
 	List<RevisedDataRecord> getRevisedDataRecordWhere(ExecutionContext context, int itemNoCondition, String conditionString);
 	

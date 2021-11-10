@@ -119,7 +119,7 @@ public class TransferCanonicalData {
 				conversionTable.getEndDateColumnName(),
 				conversionTable.getWhereList(),
 				conversionTable.getConversionMap().stream().filter(filterColumn).collect(toList()),
-				false
+				conversionTable.isRemoveDuplicate()
 			);
 		
 		if(convertCodeType == ConversionCodeType.INSERT) {
