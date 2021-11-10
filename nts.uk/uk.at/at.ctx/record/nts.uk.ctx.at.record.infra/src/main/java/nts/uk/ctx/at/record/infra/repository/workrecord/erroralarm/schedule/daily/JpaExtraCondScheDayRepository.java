@@ -32,6 +32,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.schedule.daily.Ks
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -229,7 +230,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			removeCheckCondition(contractCode, companyId, entity.pk.checkId, entity.pk.sortBy);
 		}
 		
-		entity.useAtr = domain.isUse();
+		entity.useAtr = BooleanUtils.toInteger(domain.isUse());
 		entity.condName = domain.getName().v();
 		entity.message = domain.getErrorAlarmMessage() != null && domain.getErrorAlarmMessage().isPresent() ? domain.getErrorAlarmMessage().get().v() : null;
 		entity.checkType = domain.getCheckItemType().value;
