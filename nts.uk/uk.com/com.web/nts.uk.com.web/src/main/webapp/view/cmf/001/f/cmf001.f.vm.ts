@@ -61,17 +61,18 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 			self.startPage();
 			
 			self.selectedDomainId.subscribe((value) => {
-				self.canEditDetail(self.selectedDomainId() !== null);
 				if (value) {
 					var info = $.grep(self.domainInfoList(), function (di) {
 						return di.domainId == self.selectedDomainId();
 					});
 					if (info.length !== 0){
 						self.setDomain(info[0]);
+						self.canEditDetail(info[0].resistered);
 						return;
 					}
 				}
 				self.layoutItemNoList([]);
+				self.canEditDetail(false);
 			})
 	
 			self.layoutItemNoList.subscribe((value) => {
@@ -122,7 +123,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				});
 				let importDomainInfoList = $.map(res.domains, d => {
 					let target = $.grep(__viewContext.enums.ImportingDomainId, (domain) => domain.value === d.domainId)[0];
-					return new DomainInfo(d.domainId, d.itemNoList);
+					return new DomainInfo(d.domainId, d.itemNoList, true);
 				});
 				self.domainList(importDomains);
 				self.domainInfoList(importDomainInfoList);
@@ -248,7 +249,7 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	            });
 			}
 		}
-		
+
 		uploadCsv() {
 			let self = this;
 		}
@@ -271,8 +272,10 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 				itemNoList: []};
 			ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition)
 			.done((itemNoList: number[]) => {
-				self.domainInfoList.push(new DomainInfo(self.importDomain(), itemNoList));
+				self.domainInfoList.push(new DomainInfo(self.importDomain(), itemNoList), false);
+				self.selectedDomainId(self.importDomain());
 				self.importDomain(null);
+
 			});
 		}
 		
@@ -354,11 +357,11 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	}
 
 	export class ImportDomain {
-		domainId: string;
+		domainId: number;
 		name: string;
 		deletable: boolean;
 	
-		constructor(domainId: string, name: string, deletable: boolean) {
+		constructor(domainId: number, name: string, deletable: boolean) {
 				this.domainId = domainId;
 				this.name = name;
 				this.deletable = deletable;
@@ -368,14 +371,16 @@ module nts.uk.com.view.cmf001.f.viewmodel {
 	export class DomainInfo {
 		domainId: number;
 		itemNoList: Array<number>;
+		resistered: boolean;
 		
-		constructor(domainId: number, itemNoList: Array<number>) {
+		constructor(domainId: number, itemNoList: Array<number>, resistered: boolean) {
 			this.domainId = domainId;
 			this.itemNoList = itemNoList;
+			this.resistered = resistered;
 		}
 	
 		static new(){
-			return new DomainInfo(null, [])
+			return new DomainInfo(null, [], false)
 		}
 	}
 	
