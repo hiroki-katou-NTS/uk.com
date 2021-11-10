@@ -376,8 +376,6 @@ module nts.uk.ui.at.kdw013.b {
                     vm.$blockui("clear");
                 }
             });
-
-               
         }
 
         remove() {

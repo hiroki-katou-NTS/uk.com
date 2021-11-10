@@ -10,7 +10,7 @@ module nts.uk.ui.at.kdw013.timeheader {
                     .warningIcon {
                             cursor: pointer;
                             position: absolute;
-                            left: calc(100% - 16px);
+                            left: calc(100% - 22px);
                             bottom: calc(100% - 19px);
                         }
                     .warningIcon:hover {

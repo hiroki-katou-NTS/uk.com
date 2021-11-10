@@ -70,6 +70,13 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 </div>
             </div>
             <style rel="stylesheet">
+               .fc-task-events .fc-events>ul>li>div:first-child {
+                    float: left;
+                    width: 22px;
+                    height: 22px;
+                    margin-right: 3px;
+                    border-radius: 50%;
+                }
                 .fc-container .fc-task-events .edit-popup{
                     visibility: hidden;
                     position: fixed;
