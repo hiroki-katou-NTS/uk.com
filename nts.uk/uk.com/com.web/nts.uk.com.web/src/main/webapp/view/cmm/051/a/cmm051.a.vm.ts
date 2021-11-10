@@ -18,9 +18,12 @@ module nts.uk.com.view.cmm051.a {
         saveWkpManager: "at/auth/workplace/manager/save/",
         deleteWkpManager: "at/auth/workplace/manager/remove/",
         getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/",
-        getDataInit: "com/screen/cmm051/get-data-init"
+
+        getDataInit: "com/screen/cmm051/get-data-init",
+        getListEmpByWpid: "com/screen/cmm051/get-employee-list-by-wplid",
+        getListEmpInf: "com/screen/cmm051/get-data-init/employee-mode"
+
     };
-    const SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY = 'SHARE_IN_DIALOG_ADD_UPDATE_HISTORY';
 
     @bean()
     class ViewModel extends ko.ViewModel {
@@ -70,6 +73,7 @@ module nts.uk.com.view.cmm051.a {
         selectedCode: KnockoutObservable<string>;
         wplaceSelectedId: KnockoutObservable<string> = ko.observable("");
         columns: KnockoutObservableArray<NtsGridListColumn>;
+        count : number ;
 
         constructor(params: any) {
             super();
@@ -80,7 +84,7 @@ module nts.uk.com.view.cmm051.a {
                 targetBtnText: nts.uk.resource.getText("KCP010_3"),
                 tabIndex: 4
             };
-
+            vm.count = 1;
             vm.initScreen(Mode.WPL);
             vm.isNewMode = ko.observable(false);
             vm.ntsHeaderColumns = ko.observableArray([
@@ -96,7 +100,7 @@ module nts.uk.com.view.cmm051.a {
 
         initScreen(mode: number) {
             let vm = this;
-            if(mode == Mode.WPL){
+            if (mode == Mode.WPL) {
                 let workplaceManagerList: any[] = [];
                 let listEmployee: any[] = [];
                 let personList: any[] = [];
@@ -104,26 +108,28 @@ module nts.uk.com.view.cmm051.a {
                 block.invisible();
                 vm.$ajax('com', API.getDataInit).done((data) => {
                     if (!isNullOrUndefined(data)) {
-                        vm.workplaceCode(data.workplaceInfoImport.workplaceCode);
-                        vm.workplaceName(data.workplaceInfoImport.workplaceName);
+                        if (!isNullOrUndefined(data.workplaceInfoImport)) {
+                            vm.workplaceCode(data.workplaceInfoImport.workplaceCode);
+                            vm.workplaceName(data.workplaceInfoImport.workplaceName);
+                        }
                         workplaceManagerList = data.employeeInformation.workplaceManagerList;
                         listEmployee = data.employeeInformation.listEmployee;
                         personList = data.employeeInformation.personList;
-                        vm.setData(mode,workplaceManagerList, listEmployee, personList);
+                        vm.setData(mode, workplaceManagerList, listEmployee, personList);
                     }
                 }).always(() => {
                     block.clear();
                 }).fail(() => {
                 })
             }
-            if(mode == Mode.EMPLOYMENT){
+            if (mode == Mode.EMPLOYMENT) {
 
             }
-
         }
-        setData(mode : any,workplaceManagerList: any[], listEmployee: any[], personList: any[]): void {
+
+        setData(mode: any, workplaceManagerList: any[], listEmployee: any[], personList: any[]): void {
             let vm = this;
-            if(mode ==Mode.WPL){
+            if (mode == Mode.WPL) {
                 let emps: any = [];
                 let listDatePeriod: any = [];
                 if (!isNullOrEmpty(personList) && !isNullOrEmpty(listEmployee)) {
@@ -139,29 +145,36 @@ module nts.uk.com.view.cmm051.a {
                         }
 
                     }
-
-                    vm.employInfors(emps);
-                    if (!isNullOrEmpty(emps)) {
-                        vm.multiSelectedCode(emps[0].code);
-                    }
-                    vm.KCP005_load();
                 }
-                if(!isNullOrEmpty(workplaceManagerList)){
+                if (!isNullOrEmpty(workplaceManagerList)) {
                     for (let i = 0; i < workplaceManagerList.length; i++) {
                         let wpl = workplaceManagerList[i];
-                        let id=  wpl.workplaceManagerId;
-                        let  display =  wpl.startDate + " - " +wpl.endDate;
+                        let id = wpl.workplaceManagerId;
+                        let display = wpl.startDate + " - " + wpl.endDate;
                         listDatePeriod.push({
                             id: id,
-                            display: display
+                            display: display,
+                            startDate: wpl.startDate,
+                            endDate: wpl.endDate
                         })
                     }
+
                 }
                 vm.dateHistoryList(listDatePeriod);
+                if (!isNullOrEmpty(listDatePeriod)) {
+                    vm.historyId(listDatePeriod[0].id)
+                }
+
+                vm.employInfors(emps);
+                vm.KCP005_load();
+                if (!isNullOrEmpty(emps)) {
+                    vm.multiSelectedCode(emps[0].code);
+                }
             }
-            if(mode == Mode.EMPLOYMENT){
+            if (mode == Mode.EMPLOYMENT) {
 
             }
+
 
         }
 
@@ -211,18 +224,18 @@ module nts.uk.com.view.cmm051.a {
 
         mounted() {
             let vm = this;
-            vm.mode.subscribe((mode)=>{
-                console.log("MODE :" +mode);
+            vm.mode.subscribe((mode) => {
+                console.log("MODE :" + mode);
                 vm.initScreen(mode);
             });
             vm.multiSelectedCode.subscribe((e) => {
-                let eminfo = _.find(vm.employInfors(),(i)=>i.code == e);
-                if(!isNullOrUndefined(eminfo)){
+                let eminfo = _.find(vm.employInfors(), (i) => i.code == e);
+                if (!isNullOrUndefined(eminfo)) {
                     vm.employeeCode(eminfo.code);
                     vm.employeeName(eminfo.name)
                 }
             });
-            vm.wplaceSelectedId.subscribe((e)=>{
+            vm.wplaceSelectedId.subscribe((e) => {
 
             });
 
@@ -235,20 +248,18 @@ module nts.uk.com.view.cmm051.a {
             return dfd.promise();
         }
 
-        private initWkpManager() {
+        private initManager() {
             let vm = this;
             nts.uk.ui.errors.clearAll();
             if (vm.isNewMode() == true) {
-                vm.dateValue({});
-                vm.component.roleId('');
-                vm.component.roleId.valueHasMutated();
+                vm.dateHistoryList([]);
+                vm.employeeCode("");
+                vm.employeeName("")
             } else {
                 vm.dateValue({startDate: vm.selectedWkpManager().startDate, endDate: vm.selectedWkpManager().endDate});
                 vm.component.roleId(vm.selectedWpkManagerId());
             }
-            setTimeout(function () {
-                $(".ntsStartDatePicker").focus();
-            }, 100);
+
         }
 
         /**
@@ -260,7 +271,7 @@ module nts.uk.com.view.cmm051.a {
             nts.uk.ui.errors.clearAll();
             vm.isNewMode(true);
             vm.selectedCode('');
-            vm.initWkpManager();
+            vm.initManager();
         }
 
         // 登録 button
@@ -334,7 +345,7 @@ module nts.uk.com.view.cmm051.a {
             );
         }
 
-        openDialogA32() {
+        openDialogA3282() {
             let vm = this;
             let mode = vm.mode();
             if (mode == 1) {
@@ -345,7 +356,7 @@ module nts.uk.com.view.cmm051.a {
 
         }
 
-        openDialogA62() {
+        openDialogA62102() {
             let vm = this;
             let mode = vm.mode();
             if (mode == 1) {
@@ -363,21 +374,48 @@ module nts.uk.com.view.cmm051.a {
             setShared('CDL009Params', {
                 isMultiSelect: false,
                 baseDate: moment(new Date()).toDate(),
+                selectedCode: vm.multiSelectedCode(),
                 target: 1
             }, true);
 
             modal("/view/cdl/009/a/index.xhtml").onClosed(function () {
-                var isCancel = getShared('CDL009Cancel');
+                let isCancel = getShared('CDL009Cancel');
                 if (isCancel) {
                     return;
                 }
-                var employeeId = getShared('CDL009Output');
-                vm.getEmployeeInfo(employeeId);
+                let employeeId = getShared('CDL009Output');
+                let sids: any[] = [];
+                if (!isNullOrUndefined(employeeId)) {
+                    sids.push(employeeId);
+                    vm.getEmployeeInfo(sids);
+                }
             });
         }
 
-        private getEmployeeInfo(empId: string) {
+        private getEmployeeInfo(empId: string[]) {
             let vm = this;
+            if (!isNullOrEmpty(empId)) {
+                let param: any = {
+                    "employIds": empId
+                };
+                block.invisible();
+                vm.$ajax("com", API.getListEmpInf, param).done((data) => {
+                    if (!isNullOrUndefined(data)) {
+                        let eminfos = data.listEmployee;
+                        let personList: any[] = data.personList;
+                        if (!isNullOrEmpty(eminfos) && !isNullOrEmpty(personList)) {
+                            let eminfo = eminfos[0];
+                            let info = _.find(personList, (e) => e.pid == eminfo.personId);
+                            vm.employeeCode(eminfo.employeeCode);
+                            vm.employeeName(info.businessName)
+                        }
+                    }
+                }).always(() => {
+                    block.clear();
+                }).fail(() => {
+
+                })
+            }
         }
 
         /**
@@ -415,14 +453,39 @@ module nts.uk.com.view.cmm051.a {
          * Screen D - openAddHistoryDialog
          */
         public openAddHistoryDialog() {
-            let _self = this;
+            let vm = this;
+            let id = vm.historyId();
+            let info = _.find(vm.dateHistoryList(), (e) => e.id == id);
+            let startDate: any = "";
+            let endDate: any = "";
+            if (!isNullOrUndefined(info)) {
+                startDate = info.startDate;
+                endDate = info.endDate;
+            }
             let dataToScreenB = {
                 isCreate: true,
-                isUpdate: false
+                isUpdate: false,
+                startDate: startDate,
+                endDate: endDate
             };
-            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY, dataToScreenB);
+            let i =   vm.count;
+            nts.uk.ui.windows.setShared("dataToScreenB", dataToScreenB);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
-
+                let prams = getShared('dataToScreenA');
+                let display = prams.startDate + " - " + prams.endDate;
+                let idNew ="idNew" + i;
+                    let hist = {
+                    id: idNew,
+                    display: display,
+                    startDate: prams.startDate,
+                    endDate: prams.endDate
+                };
+                let hists: any[] = vm.dateHistoryList();
+                hists.push(hist);
+                vm.dateHistoryList(hists);
+                vm.historyId(idNew);
+                i++;
+                vm.count = i;
             });
         }
 
@@ -430,14 +493,40 @@ module nts.uk.com.view.cmm051.a {
          * Screen E - openUpdateHistoryDialog
          */
         public openUpdateHistoryDialog() {
-            let _self = this;
+            let vm = this;
+            let id = vm.historyId();
+            let info = _.find(vm.dateHistoryList(), (e) => e.id == id);
+            let startDate: any = "";
+            let endDate: any = "";
+            if (!isNullOrUndefined(info)) {
+                startDate = info.startDate;
+                endDate = info.endDate;
+            }
             let dataToScreenB = {
                 isCreate: false,
-                isUpdate: true
+                isUpdate: true,
+                startDate: startDate,
+                endDate: endDate
             };
-            nts.uk.ui.windows.setShared(SHARE_IN_DIALOG_ADD_OR_UPDATE_HISTORY, dataToScreenB);
+            nts.uk.ui.windows.setShared("dataToScreenB", dataToScreenB);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
-
+                let prams = getShared('dataToScreenA');
+                if (!isNullOrUndefined(prams)) {
+                    let hists: any[] = vm.dateHistoryList();
+                    let id = vm.historyId();
+                    let index = _.findIndex(hists, (e) => e.id == id);
+                    if (index > 0) {
+                        let display = prams.startDate + " - " + prams.endDate;
+                        let hist = {
+                            id: id,
+                            display: display,
+                            startDate: prams.startDate,
+                            endDate: prams.endDate
+                        };
+                        hists[index] = hist;
+                        vm.dateHistoryList(hists);
+                    }
+                }
             });
         }
 
@@ -454,14 +543,14 @@ module nts.uk.com.view.cmm051.a {
         openCDL008Dialog(): void {
             const vm = this;
             const inputCDL008: any = {
-                startMode: StartMode.WORKPLACE,
-                isMultiple: true,
-                showNoSelection: false,
-                selectedCodes: vm.workPlaceIdList(),
-                isShowBaseDate: true,
+                startMode: StartMode.WORKPLACE,//  起動モード : 職場 (WORKPLACE = 0)
+                isMultiple: false,////選択モード : 単一選択
+                showNoSelection: false,// //未選択表示 : 非表示
+                selectedCodes: vm.workplaceCode(),
+                isShowBaseDate: true,//基準日表示区分 : 表示
                 baseDate: moment.utc().toISOString(),
-                selectedSystemType: SystemType.EMPLOYMENT,
-                isrestrictionOfReferenceRange: true
+                selectedSystemType: SystemType.EMPLOYMENT,// //システム区分 : 就業
+                isrestrictionOfReferenceRange: true//参照範囲の絞込: する
             };
             setShared('inputCDL008', inputCDL008);
             modal('/view/cdl/008/a/index.xhtml').onClosed(() => {
@@ -469,11 +558,29 @@ module nts.uk.com.view.cmm051.a {
                 if (isCancel) {
                     return;
                 }
-                vm.workPlaceIdList(getShared('outputCDL008'));
+                let wid = getShared('outputCDL008');
+                let workplaceInfor = getShared('workplaceInfor');
+                if (!isNullOrUndefined(wid) && !isNullOrEmpty(workplaceInfor)) {
+                    vm.workplaceCode(workplaceInfor[0].code);
+                    vm.workplaceName(workplaceInfor[0].name);
+                    let wplParam: any = {
+                        "workPlaceId": wid
+                    }, workplaceManagerList = [], listEmployee = [], personList = [], mode = vm.mode();
+                    block.invisible();
 
+                    vm.$ajax('com', API.getListEmpByWpid, wplParam).done((data) => {
+                        if (!isNullOrEmpty(data)) {
+                            workplaceManagerList = data.workplaceManagerList;
+                            listEmployee = data.listEmployee;
+                            personList = data.personList;
+                            vm.setData(mode, workplaceManagerList, listEmployee, personList);
+                        }
+                    }).always(() => {
+                        block.clear();
+                    }).fail()
+                }
             });
         }
-
     }
 
     enum SystemType {

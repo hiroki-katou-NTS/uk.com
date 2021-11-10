@@ -1,7 +1,8 @@
 package nts.uk.screen.com.ws.cmm051;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
+import nts.uk.screen.com.app.find.cas012.WplParam;
+import nts.uk.screen.com.app.find.cas012.SidParam;
 import nts.uk.screen.com.app.find.cmm051.*;
 
 import javax.inject.Inject;
@@ -21,6 +22,9 @@ public class Cmm051WebService extends WebService {
     @Inject
     private GetEmployeeInfoAndWorkplaceInfoScreenQuery employeeModeScreenQuery;
 
+    @Inject
+    private GetListEmployeeInformationScreenQuery employeeInformationScreenQuery;
+
     @Path("get-data-init")
     @POST
     public Cmm051InitDto getDataInit(){
@@ -35,7 +39,14 @@ public class Cmm051WebService extends WebService {
 
     @Path("get-data-init/employee-mode")
     @POST
-    public EmployeeInfoAndWorkplaceInfoDto getListInformation(List<String> sids){
-       return employeeModeScreenQuery.getListInformation(sids);
+    public EmployeeInfoAndWorkplaceInfoDto getListInformation(SidParam param){
+       return employeeModeScreenQuery.getListInformation(param.getEmployIds());
     }
+
+    @Path("get-employee-list-by-wplid")
+    @POST
+    public EmployeeInformationDto getListInformation(WplParam param){
+       return employeeInformationScreenQuery.getLisEmployeeInfo(param.getWorkPlaceId());
+    }
+
 }

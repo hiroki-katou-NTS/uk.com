@@ -10,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class GetList0fWorkplaceInformationScreenQuery {
         List<String> wplIds = workplaceManagerList.stream()
                 .map(WorkplaceManager::getWorkplaceId).distinct().collect(Collectors.toList());
         if (wplIds.isEmpty())
-            return null;
+            return new ArrayList<WorkplaceInforParam>();
         val baseDate = GeneralDate.today();
         val cid = AppContexts.user().companyId();
         return workplaceExportService.getWorkplaceInforFromWkpIds(cid,wplIds,baseDate);

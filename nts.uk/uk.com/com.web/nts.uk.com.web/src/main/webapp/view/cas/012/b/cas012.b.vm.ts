@@ -121,17 +121,15 @@ module nts.uk.com.view.cas012.b {
                 dataFromScreenA: any = nts.uk.ui.windows.getShared("cid_from_a");
             if(!isNullOrUndefined(dataFromScreenA)){
                 let companys : ItemModel[] = [];
-                let cid = dataFromScreenA.cid;
                 let listCompany = dataFromScreenA.listCompany;
                 for (let i =0; i<listCompany.length;i++) {
                     let item = listCompany[i];
                     companys.push( new ItemModel(item.companyCode,item.companyName,item.companyId) )
                 }
                 vm.listCompany(companys);
-                if(isNullOrUndefined(cid) || cid == ""){
-                    cid = vm.loginCid();
+                if(!isNullOrEmpty(companys)){
+                    vm.companyId(companys[0].id);
                 }
-                vm.companyId(cid);
             }
         }
         KCP005_load() {

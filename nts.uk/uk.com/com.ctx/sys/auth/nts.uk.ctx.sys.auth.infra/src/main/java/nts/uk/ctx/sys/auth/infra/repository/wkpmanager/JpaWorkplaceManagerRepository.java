@@ -272,7 +272,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	@Override
 	public List<WorkplaceManager> getWkpManagerListBySid(String sid) {
 		String FIND_BY_SID = " SELECT wm FROM SacmtWkpManager wm "
-				+ " AND wm.employeeId = :sid ";
+				+ " WHERE wm.employeeId = :sid ";
 		return this.queryProxy().query(FIND_BY_SID,SacmtWkpManager.class)
 				.setParameter("sid",sid)
 				.getList(SacmtWkpManager::toDomain);

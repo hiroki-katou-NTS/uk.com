@@ -32,7 +32,7 @@ public class GetListEmployeeInformationScreenQuery {
         Comparator<WorkplaceManagerDto> comparator  = new Comparator<WorkplaceManagerDto>() {
             @Override
             public int compare(WorkplaceManagerDto o1, WorkplaceManagerDto o2) {
-                return o1.getStartDate().compareTo(o2.getStartDate());
+                return o2.getStartDate().compareTo(o1.getStartDate());
             }
         };
         List<WorkplaceManagerDto> workplaceManagerList = workplaceManagerRepository

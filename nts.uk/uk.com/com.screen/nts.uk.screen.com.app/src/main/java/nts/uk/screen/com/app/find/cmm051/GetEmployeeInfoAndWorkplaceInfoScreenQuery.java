@@ -41,7 +41,11 @@ public class GetEmployeeInfoAndWorkplaceInfoScreenQuery {
                         e.getBirthDate()
                 )).collect(Collectors.toList());
         for (val e : listEmployee) {
-            workplaceInfo.addAll(workplaceInformationScreenQuery.getListWplInfo(e.getEmployeeId()));
+            val wpls = workplaceInformationScreenQuery.getListWplInfo(e.getEmployeeId());
+            if(wpls.isEmpty()){
+                continue;
+            }
+            workplaceInfo.addAll(wpls);
         }
         return new EmployeeInfoAndWorkplaceInfoDto(workplaceInfo, listEmployee, personList);
     }
