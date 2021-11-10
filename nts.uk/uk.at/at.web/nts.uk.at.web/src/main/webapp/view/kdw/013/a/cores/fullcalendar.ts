@@ -279,6 +279,9 @@ module nts.uk.ui.at.kdw013.calendar {
             margin: 0;
             padding: 0;
         }
+        .fc-container .fc-event-title pre{
+            white-space: pre-wrap;
+        }
         .fc-container .fc-event-description {
             margin-top: 10px;
         }
@@ -938,6 +941,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 .done(() => {
                                                     vm.params.screenA.reloadTaskFav();
                                                 }).always(() => vm.$blockui('clear'));
+                                },
+                                out: function(event, ui) {
+                                    $("#task-fav").sortable("cancel");
                                 }
                             });
                             return;
@@ -1011,6 +1017,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 .done(() => {
                                                     vm.params.screenA.reloadOneDayFav();
                                                 }).always(() => vm.$blockui('clear'));
+                                },
+                                out: function(event, ui) {
+                                    $("#one-day-fav").sortable("cancel");
                                 }
                             });
                             return;
@@ -2892,8 +2901,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         taskItemValues.push({ itemId: 1, value: startMinutes });
                         taskItemValues.push({ itemId: 2, value: endMinutes });
                         taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
+                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : vm.getFrameNo(eventInDay), taskItemValues }];
                             events.push({
-                                title: getTitles(wg, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks),
                                 start,
                                 end,
                                 textColor,
@@ -2915,7 +2925,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 taskBlock: {
                                     caltimeSpan: { start,  end },
 
-                                    taskDetails: [{ supNo: _.isEmpty(eventInDay) ? 1 : vm.getFrameNo(eventInDay), taskItemValues }]
+                                    taskDetails
                                 },
                                 //作業内容入力ダイアログ表示項目一覧
                                 displayManHrRecordItems: _.get(ko.unwrap((vm.params.$settings)), 'manHrInputDisplayFormat.displayManHrRecordItems', []),
@@ -2960,7 +2970,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 td.taskItemValues.push({ itemId: 3, value: task.endTime - task.startTime });
                             });
                             events.push({
-                                title: getTitles(wg, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks),
                                 start : timeStart,
                                 end : timeEnd,
                                 textColor,

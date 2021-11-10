@@ -312,7 +312,7 @@ module nts.uk.ui.at.kdw013.a {
                                 employeeId: vm.employee() || vm.$user.employeeId,
                                 start: setTimeOfDate(moment(ld.ymd).toDate(), start),
                                 end: setTimeOfDate(moment(ld.ymd).toDate(), end),
-                                title: work ? getTitles(work, tasks) : '',
+                                title: work ? getTitles(taskDetails, tasks) : '',
                                 backgroundColor: work ? getBackground(work, tasks) : '',
                                 textColor: '',
                                 extendedProps: {
@@ -524,17 +524,16 @@ module nts.uk.ui.at.kdw013.a {
 
                     if (datas) {
 
-                        const { lstWorkRecordDetailDto } = datas;
+                        const { estimateZones } = datas;
 
                         return _
-                            .chain(lstWorkRecordDetailDto)
-                            .filter(({actualContent}) => { return !!actualContent.start.timeWithDay || !!actualContent.end.timeWithDay })
-                            .map(({actualContent, date}) => {
-                                const {start, end} = actualContent;
+                            .chain(estimateZones)
+                            .filter(({startTime, endTime}) => { return !!startTime && !!endTime })
+                            .map(({startTime, endTime, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(date),
-                                    start: start.timeWithDay,
-                                    end: end.timeWithDay
+                                    dayOfWeek: vm.getDOW(ymd),
+                                    start: startTime,
+                                    end: endTime
                                 };
                             }).value();
 
@@ -760,7 +759,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         equipmentInput(){
-            console.log('equipmentInput click');
+            vm.$jump('at', '/view/oew/001/a/index.xhtml', param).then(() => {});
         }
 
         getChangedDates(dates){
