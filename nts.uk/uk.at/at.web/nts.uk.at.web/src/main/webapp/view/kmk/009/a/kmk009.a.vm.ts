@@ -96,6 +96,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     self.attendanceModel.attendanceItemName('');
                     return;
                 }
+				self.attendanceModel.update(null, null);
                 self.enableSave(true);
                 self.enableSwitch(true);
                 //self.enableAtdBtn(true);
