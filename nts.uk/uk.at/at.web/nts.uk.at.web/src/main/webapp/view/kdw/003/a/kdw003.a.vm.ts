@@ -3113,6 +3113,19 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
+                } else if (self.displayFormat() === 1) {
+                    lstEmployee = self.lstEmployee().map((data) => {
+                        return data.id;
+                    });
+                    let param = {
+                        startDate: moment(self.selectedDate()).utc().toISOString(), 
+                        endDate: moment(self.selectedDate()).utc().toISOString(), 
+                        mode: "1", 
+                        listEmp: lstEmployee
+                    };
+                    setShared("KDL014-PARAM", param);
+                    modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
+                    });
                 } else {
                     lstEmployee = self.lstEmployee().map((data) => {
                         return data.id;
