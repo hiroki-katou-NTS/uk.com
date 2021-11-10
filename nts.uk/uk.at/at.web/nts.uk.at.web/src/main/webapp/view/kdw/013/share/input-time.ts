@@ -110,8 +110,6 @@ module nts.uk.ui.at.kdw013.share {
 
             ko.applyBindingsToNode(element, { 'input-time-raw': binding }, bindingContext);
 
-            element.removeAttribute('data-bind');
-
             return { controlsDescendantBindings: true };
         }
     }
