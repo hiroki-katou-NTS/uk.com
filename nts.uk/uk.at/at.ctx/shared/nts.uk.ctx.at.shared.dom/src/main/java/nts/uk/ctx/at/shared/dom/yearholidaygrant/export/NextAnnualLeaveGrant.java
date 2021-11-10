@@ -89,6 +89,10 @@ public class NextAnnualLeaveGrant {
 				this.toAnnualLeaveNumberInfo(), this.toAnnualLeaveConditionInfo());
 	}
 
+	/**
+	 * 年休付与条件情報を作成
+	 * @return
+	 */
 	private Optional<AnnualLeaveConditionInfo> toAnnualLeaveConditionInfo() {
 		if (!this.existsConditionInfo())
 			return Optional.empty();
@@ -97,39 +101,76 @@ public class NextAnnualLeaveGrant {
 				this.getWorkingDaysOrZero()));
 	}
 
+	/**
+	 * 付与条件情報が存在するか
+	 * @return
+	 */
 	private boolean existsConditionInfo() {
 		return this.getPrescribedDays().isPresent() || this.getDeductedDays().isPresent()
 				|| this.getWorkingDays().isPresent();
 	}
 
+	/**
+	 * 年休明細を作成
+	 * @return
+	 */
 	private AnnualLeaveNumberInfo toAnnualLeaveNumberInfo() {
 		return new AnnualLeaveNumberInfo(this.toLeaveNumberInfo());
 	}
 
+	/**
+	 * 休暇数情報を作成
+	 * @return
+	 */
 	private LeaveNumberInfo toLeaveNumberInfo() {
 		return new LeaveNumberInfo(toLeaveGrantNumber(), new LeaveUsedNumber(), toLeaveRemainingNumber(),
 				new LeaveUsedPercent(new BigDecimal(0)));
 	}
 
+	/**
+	 * 所定日数を取得
+	 * @return
+	 */
 	private YearlyDays getPrescribedDaysOrZero() {
 		return this.getPrescribedDays().map(c -> c).orElse(new YearlyDays(0.0));
 	}
 
+	/**
+	 * 控除日数を取得
+	 * @return
+	 */
 	private YearlyDays getDeductedDaysOrZero() {
 		return this.getDeductedDays().map(c -> c).orElse(new YearlyDays(0.0));
 	}
 
+	/**
+	 * 労働日数を取得
+	 * @return
+	 */
 	private YearlyDays getWorkingDaysOrZero() {
 		return this.getWorkingDays().map(c -> c).orElse(new YearlyDays(0.0));
 	}
 	
+	/**
+	 * 出勤率を取得
+	 * @return
+	 */
 	private AttendanceRate getAttendanceRateOrZero() {
 		return this.getAttendanceRate().map(c -> c).orElse(new AttendanceRate(0.0));
 	}
+	
+	/**
+	 * 休暇付与数を作成
+	 * @return
+	 */
 	private LeaveGrantNumber toLeaveGrantNumber() {
 		return LeaveGrantNumber.of(getLeaveGrantDayNumber(), Optional.empty());
 	}
 
+	/**
+	 * 付与日数を取得
+	 * @return
+	 */
 	private LeaveGrantDayNumber getLeaveGrantDayNumber() {
 		if (this.getGrantDays().isPresent()) {
 			return this.getGrantDays().get();
@@ -138,10 +179,18 @@ public class NextAnnualLeaveGrant {
 		}
 	}
 
+	/**
+	 * 休暇残数を作成
+	 * @return
+	 */
 	private LeaveRemainingNumber toLeaveRemainingNumber() {
 		return LeaveRemainingNumber.of(toLeaveRemainingDayNumber(), Optional.empty());
 	}
 
+	/**
+	 * 月別休暇残日数を作成
+	 * @return
+	 */
 	private LeaveRemainingDayNumber toLeaveRemainingDayNumber() {
 		if (this.getGrantDays().isPresent()) {
 			return new LeaveRemainingDayNumber(this.getGrantDays().get().v());
