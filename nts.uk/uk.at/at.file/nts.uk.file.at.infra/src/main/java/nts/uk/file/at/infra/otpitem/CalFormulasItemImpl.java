@@ -455,7 +455,7 @@ public class CalFormulasItemImpl extends JpaRepository implements CalFormulasIte
         // A6_30
         data.put(CalFormulasItemColumn.KMK002_132, MasterCellData.builder()
                 .columnId(CalFormulasItemColumn.KMK002_132)
-                .value(object[30] != null && ((Boolean) object[30]) ? "○" : "")
+                .value(object[30] != null && ((BigDecimal) object[30]).intValue() == 1 ? "○" : "")
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         // A6_5

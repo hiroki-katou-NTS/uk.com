@@ -122,7 +122,7 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 		}
 
 		for (FavoriteDisplayOrder o : this.displayOrders) {
-			if (o.getFavId() == reorderedId) {
+			if (o.getFavId().equals(reorderedId)) {
 				o.changeDisplayOrder(backOrder);
 			}
 		}

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @Data
 @NoArgsConstructor
 // 勤務時刻情報
-public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate{
+public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate {
 
 	@Setter
 	// 時刻変更理由
@@ -26,12 +27,12 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = CLOCK)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private Integer timeWithDay;
-	
+
 	@Override
 	protected WorkTimeInformationDto clone() {
 		return new WorkTimeInformationDto(reasonTimeChange, timeWithDay);
 	}
-	
+
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
@@ -41,7 +42,7 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 			return Optional.empty();
 		}
 	}
-	
+
 	@Override
 	public void set(String path, ItemValue value) {
 		switch (path) {
@@ -52,7 +53,7 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 			break;
 		}
 	}
-	
+
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
@@ -68,5 +69,10 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 		super();
 		this.reasonTimeChange = reasonTimeChange;
 		this.timeWithDay = timeWithDay;
+	}
+
+	public static WorkTimeInformationDto fromDomain(WorkTimeInformation domain) {
+
+		return new WorkTimeInformationDto(ReasonTimeChangeDto.fromDomain(domain.getReasonTimeChange()), domain.getTimeWithDay().map(x-> x.v()).orElse(null));
 	}
 }

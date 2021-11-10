@@ -17,16 +17,37 @@
 			
 			<com:ValidatorScript>
 				nts.uk.shr.com.time.AttendanceClock
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
+                nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus
+                nts.uk.ctx.at.record.dom.daily.WorkTimes
+                nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+                nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD
+                nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode
+                nts.uk.ctx.bs.employee.dom.classification.ClassificationCode
+                nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleCode
+                nts.uk.shr.com.primitive.WorkplaceCode
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode
+                nts.uk.shr.com.time.TimeWithDayAttr
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppNumValue
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkSuppComment
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode
 			</com:ValidatorScript>
+			<com:EnumScript>
+				nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily
+			</com:EnumScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" class="proceed" data-bind="click: registration">#{i18n.getText('KDW013_1')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: registration, enable: !block() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('KDW013_1')}</button>
 				<button data-bind="click:closeDialog">#{i18n.getText('KDW013_37')}</button>
 			</div>
 			<div id="contents-area">
-				<div class="error" data-bind="text: 'test lable'"></div>
+				<div class="error" data-bind="text: errorLable"></div>
 				<table class="basic-items">
 					<colgroup>
 						<col width="105px"/>
@@ -170,14 +191,19 @@
 								</td>
                             </tr>
                         </com:ko-if>
-                        <com:ko-if bind="(type == 2 || type == 9) &amp;&amp; use">
+                        <com:ko-if bind="type == 2 &amp;&amp; use">
 							<tr>
                                 <td data-bind="text: lable"></td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px'}}" />
+											option: {width: '255px',
+													unitID: 'TIMES'
+												}
+											}" />
 									</div>
 								</td>
                             </tr>
@@ -188,6 +214,8 @@
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
 											option: {
 												width: '223px', 
@@ -206,6 +234,8 @@
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
 											mode: 'time',
 											inputFormat: 'time',
@@ -220,8 +250,8 @@
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeWithDayEditor: { 
-											name: 'Time With Day', 
-											constraint:'TimeWithDayAttr', 
+											name: lable,
+											constraint: primitiveValue, 
 											value: value, 
 											option: {
 												width: '233px',
@@ -237,6 +267,22 @@
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTextEditor: {
+											name: lable,
+											constraint: primitiveValue, 
+											value: value,
+											option: {width: '233px'}}" />
+									</div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+                        <com:ko-if bind="type == 9 &amp;&amp; use">
+							<tr>
+                                <td data-bind="text: lable"></td>
+                                <td>
+									<div class="ntsControl fix">
+										<input data-bind="ntsNumberEditor: {
+											name: lable,
+											constraint: primitiveValue, 
 											value: value,
 											option: {width: '233px'}}" />
 									</div>

@@ -75,7 +75,6 @@ module nts.uk.at.view.kdw007.a.viewmodel {
             { code: 6, name: getText("Enum_ApplicationType_GO_RETURN_DIRECTLY_APPLICATION") }, // GO_RETURN_DIRECTLY_APPLICATION
             { code: 7, name: getText("Enum_ApplicationType_LEAVE_TIME_APPLICATION") }, // LEAVE_TIME_APPLICATION
             { code: 8, name: getText("Enum_ApplicationType_STAMP_APPLICATION") }, // STAMP_APPLICATION
-            { code: 9, name: getText("Enum_ApplicationType_REGISTER_TIME_CARD_IMAGE") }, // REGISTER_TIME_CARD_IMAGE
             { code: 10, name: getText("Enum_ApplicationType_ANNUAL_HD_APPLICATION") }, // ANNUAL_HD_APPLICATION
             { code: 11, name: getText("Enum_ApplicationType_EARLY_LEAVE_CANCEL_APPLICATION") }, // EARLY_LEAVE_CANCEL_APPLICATION
             { code: 12, name: getText("Enum_ApplicationType_COMPLEMENT_LEAVE_APPLICATION") }, // COMPLEMENT_LEAVE_APPLICATION

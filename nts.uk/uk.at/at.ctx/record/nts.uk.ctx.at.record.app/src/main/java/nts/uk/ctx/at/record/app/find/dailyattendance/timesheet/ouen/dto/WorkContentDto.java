@@ -31,10 +31,10 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	
 	/** 作業: 作業グループ */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = WORKGROUP)
-	private Optional<WorkGroupDto> workOpt;
+	private Optional<WorkGroupDto> workOpt = Optional.empty();
 
 	/** 作業補足情報 */
-	private Optional<WorkSuppInfoDto> workSuppInfo;
+	private Optional<WorkSuppInfoDto> workSuppInfo = Optional.empty();
 	
 	public static WorkContentDto from(WorkContent domain) {
 		if (domain == null) return null;
@@ -48,8 +48,8 @@ public class WorkContentDto implements  ItemConst, AttendanceItemDataGate {
 	public WorkContent domain() {
 		return WorkContent.create(
 				workplace == null ? WorkplaceOfWorkEachOuen.create(new WorkplaceId(""), null) : workplace.domain(), 
-				Optional.of(workOpt.get().domain()),
-				Optional.of(workSuppInfo.get().domain())); 
+				Optional.ofNullable((workOpt != null && workOpt.isPresent())?workOpt.get().domain():null),
+				Optional.ofNullable((workSuppInfo != null && workSuppInfo.isPresent())?workSuppInfo.get().domain():null)); 
 	} 
 	
 	@Override

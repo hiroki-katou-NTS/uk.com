@@ -85,12 +85,12 @@ module nts.uk.ui.at.kdw013.share {
 
     export const formatTime = (value: number, format: 'Clock_Short_HM' | 'Time_Short_HM' | 'Time_Short_HM') => byId(format, value);
 
-    export const getTasks = (cds: [], tasks: c.TaskDto[]) => {
-        const task1 = _.find(tasks,{ 'taskFrameNo': 1, 'code': cds[0] });
-        const task2 = _.find(tasks,{ 'taskFrameNo': 2, 'code': cds[1] });
-        const task3 = _.find(tasks,{ 'taskFrameNo': 3, 'code': cds[2] });
-        const task4 = _.find(tasks,{ 'taskFrameNo': 4, 'code': cds[3] });
-        const task5 = _.find(tasks,{ 'taskFrameNo': 5, 'code': cds[4] });
+    export const getTasks = (wg:a.WorkGroupDto, tasks: c.TaskDto[]) => {
+        const task1 = _.find(tasks,{ 'taskFrameNo': 1, 'code': wg.workCD1 });
+        const task2 = _.find(tasks,{ 'taskFrameNo': 2, 'code': wg.workCD2 });
+        const task3 = _.find(tasks,{ 'taskFrameNo': 3, 'code': wg.workCD3 });
+        const task4 = _.find(tasks,{ 'taskFrameNo': 4, 'code': wg.workCD4 });
+        const task5 = _.find(tasks,{ 'taskFrameNo': 5, 'code': wg.workCD5 });
 
         return [task1, task2, task3, task4, task5];
     };
@@ -101,9 +101,9 @@ module nts.uk.ui.at.kdw013.share {
         return task5 || task4 || task3 || task2 || task1;
     };
 
-    export const getTitles = (cds: [string], tasks: c.TaskDto[], character?) => {
+    export const getTitles = (wg: a.WorkGroupDto, tasks: c.TaskDto[], character?) => {
 
-        let taskNames = _.chain(getTasks(cds, tasks))
+        let taskNames = _.chain(getTasks(wg, tasks))
             .filter((item) => { return item })
             .map((item) => {
                 return item.displayInfo.taskName;
