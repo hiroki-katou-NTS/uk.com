@@ -37,7 +37,7 @@ module nts.uk.ui.at.kdw013.b {
                     <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
 					<!-- ko if: dataSources().length == 1 -->
-						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12"></button>
+						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12, click:$component.openFDialog"></button>
 					<!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
@@ -205,6 +205,10 @@ module nts.uk.ui.at.kdw013.b {
                 dismissible: true
             })			
 		}
+    
+        openFDialog(){
+             setTimeout(() => { $('.input-f-b').focus(); }, 100);
+        }
 
         mounted() {
             const vm = this;
