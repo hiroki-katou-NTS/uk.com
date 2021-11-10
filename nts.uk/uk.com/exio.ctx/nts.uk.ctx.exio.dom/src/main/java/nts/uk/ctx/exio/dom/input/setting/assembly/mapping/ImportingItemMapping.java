@@ -74,15 +74,17 @@ public class ImportingItemMapping {
 	}
 
 	public void setCsvColumnNo(int columnNo) {
-		isFixedValue = false;
-		csvColumnNo = Optional.of(columnNo);
+		csvColumnNo = Optional.ofNullable(columnNo);
 		fixedValue = Optional.empty();
+		isFixedValue = !csvColumnNo.isPresent();
 	}
 
 	public void setFixedValue(StringifiedValue value) {
-		isFixedValue = true;
-		fixedValue = Optional.of(value);
-		csvColumnNo = Optional.empty();
+		fixedValue = Optional.ofNullable(value);
+		if(fixedValue.isPresent()) {
+			csvColumnNo = Optional.empty();
+			isFixedValue = true;
+		}
 	}
 
 	public Either<ItemError, DataItem> assemble(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
