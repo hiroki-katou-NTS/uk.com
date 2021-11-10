@@ -146,17 +146,17 @@
                                 <td style="vertical-align: top;">
                                     <div>
                                         <button tabindex="9"
-                                                data-bind="click: openAddHistoryDialog"
+                                                data-bind="click: openAddHistoryDialog, enable : isNewModeHist"
                                                 class="history-button">#{i18n.getText('CMM051_50')}</button>
                                     </div>
                                     <div>
                                         <button tabindex="10"
-                                                data-bind="click: openUpdateHistoryDialog"
+                                                data-bind="click: openUpdateHistoryDialog, enable : isUpdateModeHist"
                                                 class="history-button">#{i18n.getText('CMM051_51')}</button>
                                     </div>
                                     <div>
                                         <button tabindex="11"
-                                                data-bind="click: removeHistory"
+                                                data-bind="click: removeHistory,enable : isDeleteModeHist"
                                                 class="history-button danger">#{i18n.getText('CMM051_52')}</button>
                                     </div>
                                 </td>

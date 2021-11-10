@@ -34,6 +34,10 @@ module nts.uk.com.view.cmm051.a {
         historyId: KnockoutObservable<any> = ko.observable("1");
         // Screen mode
         isNewMode: KnockoutObservable<boolean>;
+        isNewModeHist: KnockoutObservable<boolean> = ko.observable(true);
+        isUpdateModeHist: KnockoutObservable<boolean>  = ko.observable(true);
+        isDeleteModeHist: KnockoutObservable<boolean>  = ko.observable(true);
+
         //Date Range Picker
         dateValue: KnockoutObservable<any> = ko.observable("");
         selectedWkpId: KnockoutObservable<string>;
@@ -238,9 +242,19 @@ module nts.uk.com.view.cmm051.a {
             vm.wplaceSelectedId.subscribe((e) => {
 
             });
-
+            vm.historyId.subscribe((id)=>{
+                let index = _.findIndex(vm.dateHistoryList(),(i)=>i.id == id);
+                if(index >0){
+                    vm.isDeleteModeHist(false);
+                    vm.isUpdateModeHist(false);
+                    vm.isNewModeHist(false);
+                }else {
+                    vm.isDeleteModeHist(true);
+                    vm.isUpdateModeHist(true);
+                    vm.isNewModeHist(true);
+                }
+            })
         }
-
         private getWkpManagerList(wkpId: string, savedWkpMngId: string): JQueryPromise<void> {
             let vm = this;
             let dfd = $.Deferred<void>();
@@ -270,6 +284,9 @@ module nts.uk.com.view.cmm051.a {
             let vm = this;
             nts.uk.ui.errors.clearAll();
             vm.isNewMode(true);
+            vm.isUpdateModeHist(true);
+            vm.isDeleteModeHist(true);
+            vm.isNewModeHist(true);
             vm.selectedCode('');
             vm.initManager();
         }
@@ -471,6 +488,8 @@ module nts.uk.com.view.cmm051.a {
             let i =   vm.count;
             nts.uk.ui.windows.setShared("dataToScreenB", dataToScreenB);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
+                vm.isNewModeHist(false);
+                vm.isDeleteModeHist(false);
                 let prams = getShared('dataToScreenA');
                 let display = prams.startDate + " - " + prams.endDate;
                 let idNew ="idNew" + i;
