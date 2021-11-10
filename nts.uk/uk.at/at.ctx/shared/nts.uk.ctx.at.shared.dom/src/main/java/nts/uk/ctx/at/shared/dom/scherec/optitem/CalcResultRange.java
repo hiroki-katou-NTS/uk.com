@@ -208,7 +208,7 @@ public class CalcResultRange extends DomainObject {
 			//チェック結果
 			if(!checkRange) {
 				//入力範囲エラーメッセージ作成する
-				String errorContent = this.createInputRangeErrorMsg(controlRangeValue);
+				String errorContent = this.createInputRangeErrorMsg(controlRangeValue, optionalItemAtr);
 				return new ValueCheckResult(false, Optional.of(errorContent));
 			}
 		}
@@ -219,18 +219,35 @@ public class CalcResultRange extends DomainObject {
 	 * 入力範囲エラーメッセージ作成する
 	 * @param controlRangeValue  制御範囲値
 	 */
-	public String createInputRangeErrorMsg(ControlRangeValue controlRangeValue) {
+	public String createInputRangeErrorMsg(ControlRangeValue controlRangeValue,OptionalItemAtr optionalItemAtr) {
+		String upperLimit =""; 
+		String lowerLimit = ""; 
+		if(optionalItemAtr == OptionalItemAtr.TIME) {
+			if(this.upperLimit == CalcRangeCheck.SET) {
+				upperLimit = convertTime(controlRangeValue.getUpperLimit().get().intValue());
+			}
+			if(this.lowerLimit == CalcRangeCheck.SET) {
+				lowerLimit = convertTime(controlRangeValue.getLowerLimit().get().intValue());
+			}
+		}else {
+			if(this.upperLimit == CalcRangeCheck.SET) {
+				upperLimit = String.valueOf(controlRangeValue.getUpperLimit().get().doubleValue());
+			}
+			if(this.lowerLimit == CalcRangeCheck.SET) {
+				lowerLimit = String.valueOf(controlRangeValue.getLowerLimit().get().doubleValue());
+			}
+		}
 		//@上限値チェック = 設定する && @下限値チェック = 設定しない
 		if(this.upperLimit == CalcRangeCheck.SET && this.lowerLimit == CalcRangeCheck.NOT_SET) {
-			return TextResource.localize("Msg_2293",String.valueOf(controlRangeValue.getUpperLimit().get().doubleValue()));
+			return TextResource.localize("Msg_2293",upperLimit);
 		}
 		//@上限値チェック = 設定しない && @下限値チェック = 設定する
 		if (this.upperLimit == CalcRangeCheck.NOT_SET && this.lowerLimit == CalcRangeCheck.SET) {
-			return TextResource.localize("Msg_2292", String.valueOf(controlRangeValue.getLowerLimit().get().doubleValue()));
+			return TextResource.localize("Msg_2292", lowerLimit);
 		}
 		// @上限値チェック = 設定する && @下限値チェック = 設定する
-		return TextResource.localize("Msg_2291", String.valueOf(controlRangeValue.getLowerLimit().get().doubleValue()),
-				String.valueOf(controlRangeValue.getUpperLimit().get().doubleValue()));
+		return TextResource.localize("Msg_2291", lowerLimit,
+				upperLimit);
 	}
 
 	/**
@@ -260,6 +277,15 @@ public class CalcResultRange extends DomainObject {
 						range.getLower(performanceAtr));
 			}).orElse(new ControlRangeValue(Optional.empty(),Optional.empty()));
 		}
+	}
+	
+	private String convertTime(Integer time) {
+		if (time == null) {
+			return "";
+		}
+		String m = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60) : 0 + String.valueOf(time % 60);
+		String timeString = String.valueOf(time / 60) + ":" + m;
+		return timeString;
 	}
 
 	public CalcResultRange(CalcRangeCheck upperLimit, CalcRangeCheck lowerLimit, Optional<NumberRange> numberRange,

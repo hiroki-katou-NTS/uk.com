@@ -43,7 +43,7 @@ public class CalcResultRangeTest {
             }
         };
 		
-		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue);
+		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue,OptionalItemAtr.AMOUNT);
 		assertThat(result).isEqualTo(TextResource.localize("Msg_2293","8.0"));
 	}
 	
@@ -63,7 +63,7 @@ public class CalcResultRangeTest {
             }
         };
 		
-		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue);
+		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue,OptionalItemAtr.AMOUNT);
 		assertThat(result).isEqualTo(TextResource.localize("Msg_2292","4.0"));
 	}
 	
@@ -83,7 +83,7 @@ public class CalcResultRangeTest {
             }
         };
 		
-		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue);
+		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue,OptionalItemAtr.AMOUNT);
 		assertThat(result).isEqualTo(TextResource.localize("Msg_2291","4.0","8.0"));
 	}
 	

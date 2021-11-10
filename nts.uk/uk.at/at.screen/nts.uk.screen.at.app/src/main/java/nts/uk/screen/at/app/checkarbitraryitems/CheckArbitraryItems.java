@@ -46,7 +46,7 @@ public class CheckArbitraryItems {
 		// loc chua item can check
 		List<DPItemValue> itemCanCheck = items.stream().filter(x -> listAttendaceItem.contains(x.getItemId()))
 				.collect(Collectors.toList());
-		if(result.isEmpty()) {
+		if(itemCanCheck.isEmpty()) {
 			return result;
 		}
 		List<Integer> listItemId = itemCanCheck.stream().map(c->c.getItemId()).collect(Collectors.toList());
@@ -62,8 +62,8 @@ public class CheckArbitraryItems {
 				if(!checkError.isCheckResult()) {
 					//返ってきた「入力値チェック結果.エラー内容」を全て表示する
 					for(String error :checkError.getErrorContent()) {
-						dPItemValue.setMessage(error);
-						result.add(dPItemValue);
+						DPItemValue newobj = dPItemValue.createNewError(error);
+						result.add(newobj);
 					}
 				}
 			}

@@ -47,6 +47,7 @@ module nts.uk.at.view.kdw003.b {
                      let i: number = 0;
                     _.each(errorValidate, value => {
                         data.push({
+							idRandom: nts.uk.util.randomId(),
                             id: i++,
                             date: value.date,
                             employeeCode: value.employeeCode,
@@ -143,7 +144,7 @@ module nts.uk.at.view.kdw003.b {
 					message_width = message_width - date_width;
 				}
                 $("#grid").igGrid({
-                    primaryKey: "id",
+                    primaryKey: "idRandom",
                     height: 400,
                     dataSource: self.lstError(),
                     autoGenerateColumns: false,
@@ -151,6 +152,7 @@ module nts.uk.at.view.kdw003.b {
                     dataSourceType: "json",
                     autoCommit: true,
                     columns: [
+						{ key: "idRandom", width: "130px", hidden: true, dataType: "string" },	
                         { key: "id", width: "130px", hidden: true, dataType: "number" },
                         { key: "employeeCode", width: employeeCode_width, headerText: getText('KDW003_32'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },
                         { key: "employeeName", width: employeeName_width, headerText: getText('KDW003_33'), dataType: "string", hidden:self.diplayFormat() == 0 ? true : false },

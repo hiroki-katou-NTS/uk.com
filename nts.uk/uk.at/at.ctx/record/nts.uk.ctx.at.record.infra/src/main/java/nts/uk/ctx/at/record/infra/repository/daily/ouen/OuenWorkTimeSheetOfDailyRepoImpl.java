@@ -137,9 +137,9 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 					commandProxy().remove(entityOld.get());
 				} else {
 					updateData(entityOld.get(), i);
-					commandProxy().update(entityOld.get());
+//					commandProxy().update(entityOld.get());
 				}
-				this.getEntityManager().flush();
+//				this.getEntityManager().flush();
 			}
 		});
 	}

@@ -2797,7 +2797,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let itemOtherInGroup = CHECK_INPUT[value.itemId + ""];
                     let itemGroup = self.itemInputName[Number(itemOtherInGroup)];
                     let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup;
-                    object.message = nts.uk.resource.getMessage(value.message, [object.itemName, nameGroup]);
+					if(_.includes(value.message,'_')){
+                    	object.message = nts.uk.resource.getMessage(value.message, [object.itemName, nameGroup]);
+					}
                     errorValidateScreeen.push(object);
                 });
 

@@ -92,9 +92,9 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 	
 	@OneToOne
 	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-		@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false),
-		@JoinColumn(name = "SUP_NO", referencedColumnName = "SUP_NO", insertable = false, updatable = false)})
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = true, updatable = false),
+		@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = true, updatable = false),
+		@JoinColumn(name = "SUP_NO", referencedColumnName = "SUP_NO", insertable = true, updatable = false)})
 	public KrcdtDayOuenTimeSheet krcdtDayOuenTimeSheet;
 	
 	@Override
