@@ -87,6 +87,8 @@ public interface StampCardRepository {
 
 	void delete(String stampCardId);
 	
+	void deleteByTenantCode(String tenantCode);
+	
 	void deleteBySid(String sid);
 	
 	/**

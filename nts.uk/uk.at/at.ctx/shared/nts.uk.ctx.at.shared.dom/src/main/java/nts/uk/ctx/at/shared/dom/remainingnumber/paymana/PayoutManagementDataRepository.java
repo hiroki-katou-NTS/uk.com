@@ -41,6 +41,8 @@ public interface PayoutManagementDataRepository {
 	
 	void delete(String payoutId);
 	
+	void deleteAllByEmployeeId(String employeeId);
+	
 	void update(PayoutManagementData domain);
 	
 	Optional<PayoutManagementData> findByID(String ID);

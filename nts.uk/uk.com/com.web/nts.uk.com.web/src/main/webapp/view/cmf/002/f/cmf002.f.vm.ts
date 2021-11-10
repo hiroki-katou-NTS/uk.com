@@ -57,17 +57,14 @@ module nts.uk.com.view.cmf002.f.viewmodel {
                             : item.itemName;
                         item.itemName = itemName;
                         return item;
-                    })
-                    let listcategoryItemData = _.map(data, x => {
-                        x.itemNo = x.itemNo.toString();
-                        return x;
                     });
+                    let listcategoryItemData = _.sortBy(data, ['itemNo']);
                     self.categoryItemList(listcategoryItemData);
                     self.selectedItemType.subscribe(code => {
                         if (code == 10) {
-                            self.categoryItemList(data);
+                            self.categoryItemList(listcategoryItemData);
                         } else {
-                            self.categoryItemList(_.filter(data, ['itemType', code]));
+                            self.categoryItemList(_.filter(listcategoryItemData, ['itemType', code]));
                         }
                     });
                 }

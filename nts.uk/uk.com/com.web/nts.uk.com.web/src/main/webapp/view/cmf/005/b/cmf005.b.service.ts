@@ -8,7 +8,8 @@ module nts.uk.com.view.cmf005.b {
       getSystemDate: "ctx/sys/assist/app/getSystemDate",
       screenDisplayProcess: "ctx/sys/assist/autosetting/screenDelDisplayProcessing",
       patternSettingSelect: "ctx/sys/assist/autosetting/delPatternSettingSelect",
-      addMalSet: "ctx/sys/assist/app/addMalSet"
+      addMalSet: "ctx/sys/assist/app/addMalSet",
+      getClosurePeriod: "com/screen/closurePeriod/get",
     }
 
     export function getSystemDate(): JQueryPromise<any> {
@@ -25,6 +26,10 @@ module nts.uk.com.view.cmf005.b {
 
     export function addMalSet(param: any): JQueryPromise<any> {
       return nts.uk.request.ajax('com', paths.addMalSet, param);
+    }
+
+    export function getClosurePeriod(): JQueryPromise<any> {
+      return ajax('com', paths.getClosurePeriod);
     }
   }
 }

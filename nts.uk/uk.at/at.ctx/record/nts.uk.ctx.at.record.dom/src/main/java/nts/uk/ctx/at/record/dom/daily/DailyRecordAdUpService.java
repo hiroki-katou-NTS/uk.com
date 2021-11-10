@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.daily;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -94,6 +93,9 @@ public interface DailyRecordAdUpService {
 	 * @param lstPairRemove  List<Pair<employeeId, date>>
 	 * @param hasRemoveError has remove error
 	 */
+	public default void adUpEmpError(List<EmployeeDailyPerError> errors, List<Pair<String, GeneralDate>> lstPairRemove) {
+		adUpEmpError(errors, lstPairRemove, true);
+	}
 	public void adUpEmpError(List<EmployeeDailyPerError> errors, List<Pair<String, GeneralDate>> lstPairRemove,
 			boolean hasRemoveError);
 
@@ -107,11 +109,7 @@ public interface DailyRecordAdUpService {
 	 */
 	public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily);
 
-	default void addAllDomain(IntegrationOfDaily domain) {
-		addAllDomain(domain, false);
-	}
-	
-	default void addAllDomain(IntegrationOfDaily domain, boolean remove) {
+	public default void addAllDomain(IntegrationOfDaily domain) {
 
 		// ドメインモデル「日別実績の勤務情報」を更新する
 		adUpWorkInfo(
@@ -167,7 +165,7 @@ public interface DailyRecordAdUpService {
 		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
 		//adUpSupportTime(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTimeSheet());
 
-		adUpEmpError(domain.getEmployeeError(), remove ? Arrays.asList(Pair.of(domain.getEmployeeId(), domain.getYmd())) : new ArrayList<>(), remove);
+		adUpEmpError(domain.getEmployeeError(),  Arrays.asList(Pair.of(domain.getEmployeeId(), domain.getYmd())));
 
 		adTimeAndAnyItemAdUp(Arrays.asList(domain));
 	}

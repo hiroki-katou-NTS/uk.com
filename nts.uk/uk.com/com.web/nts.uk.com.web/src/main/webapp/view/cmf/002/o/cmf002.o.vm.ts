@@ -62,7 +62,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             var self = this;
             //起動する
             self.stepList = [
-                { content: '.step-1' },
+                // { content: '.step-1' },
                 { content: '.step-2' },
                 { content: '.step-3' },
                 { content: '.step-4' }
@@ -147,7 +147,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
-                    $('#ex_output_wizard').ntsWizard("next");
+                    // $('#ex_output_wizard').ntsWizard("next");
                     $("#grd_Condition_container").focus();
 
                     block.clear();
@@ -155,7 +155,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
             }).fail(res => {
                 self.mode(MODE.NO);
-                $('#ex_output_wizard').ntsWizard("next");
+                // $('#ex_output_wizard').ntsWizard("next");
                 alertError(res);
                 block.clear();
             });
@@ -203,12 +203,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                     {
                         let data: ExOutCtgDto = res;
                         if (data.categorySet == model.CATEGORY_SETTING.DATA_TYPE) {
-                            $('#ex_output_wizard').ntsWizard("goto", 2);
+                            $('#ex_output_wizard').ntsWizard("goto", 1);
                             self.isPNextToR(false);
                             self.loadScreenQ();
                         }
                         else {
-                            $('#ex_output_wizard').ntsWizard("goto", 3);
+                            $('#ex_output_wizard').ntsWizard("goto", 2);
                             self.isPNextToR(true);
                             self.initScreenR();
                         }
@@ -235,10 +235,10 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
             if (self.isPNextToR()) {
                 // back To P
-                $('#ex_output_wizard').ntsWizard("goto", 1);
+                $('#ex_output_wizard').ntsWizard("goto", 0);
             } else {
                 // back To Q
-                $('#ex_output_wizard').ntsWizard("goto", 2);
+                $('#ex_output_wizard').ntsWizard("goto", 1);
             }
         }
 
@@ -316,7 +316,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
                 setShared("CMF002_R_PARAMS", params);
                 nts.uk.ui.windows.sub.modal("/view/cmf/002/s/index.xhtml").onClosed(() => {
-                    $('#ex_output_wizard').ntsWizard("goto", 1);
+                    $('#ex_output_wizard').ntsWizard("goto", 0);
                 });
             }).fail(res => {
                 block.clear();

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -27,8 +26,8 @@ public class StampInfoDispTest {
 		StampNumber stampNumber = new StampNumber("stampNumber"); //dummy
 		GeneralDateTime stampDatetime = GeneralDateTime.now();//dummy
 		String stampAtr = "abc";//dummy
-		List<Stamp> stamps = Arrays.asList(StampHelper.getStampDefault());// dummy
-		StampInfoDisp stampInfoDisp = new StampInfoDisp(stampNumber, stampDatetime, stampAtr, stamps);
+		Optional<Stamp> stamp = Optional.of(StampHelper.getStampDefault());// dummy
+		StampInfoDisp stampInfoDisp = new StampInfoDisp(stampNumber, stampDatetime, stampAtr, stamp);
 		NtsAssert.invokeGetters(stampInfoDisp);
 	}
 }

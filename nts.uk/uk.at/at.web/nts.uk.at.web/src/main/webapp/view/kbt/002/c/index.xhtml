@@ -84,13 +84,13 @@
                 </td>
                 <td>
                   <!-- C2_4 -->
-                  <input tabindex="3" class="date-picker" style="width: 60px;" id="startTime" data-bind="ntsTimeEditor: {value: startTime,
-                    inputFormat: 'time',
+                  <input tabindex="3" class="date-picker" style="width: 60px;" id="startTime" data-bind="ntsTimeWithDayEditor: {value: startTime,
                     required: true,
                     enable: !$parent.cloudCreationFlag(),
-                    mode: 'time',
                     name: '#[KBT002_56]',
-                    constraint: 'StartTime'}" />
+                    constraint: 'StartTime',
+                    option: {timeWithDay: false}
+                  }" />
                 </td>
               </tr>
             </table>
@@ -262,14 +262,14 @@
                 </td>
                 <td>
                   <!-- C2_6 -->
-                  <input tabindex="27" style="width: 60px;" class="date-picker" id="endTime" data-bind="ntsTimeEditor: {
+                  <input tabindex="7" style="width: 60px;" class="date-picker" id="endTime" data-bind="ntsTimeWithDayEditor: {
                     name: '#[KBT002_58]',
                     value: endTime,
-                    inputFormat: 'time',
-                    enable: endTimeCls() == 1 &amp;&amp; !$parent.cloudCreationFlag(),
+                    enable: endTimeCls() == 1,
                     required: endTimeCls() == 1,
-                    mode: 'time',
-                    constraint: 'EndTime'}" />
+                    constraint: 'EndTime',
+                    option: {timeWithDay: false}
+                  }" />
                 </td>
               </tr>
               <tr class="row-line">

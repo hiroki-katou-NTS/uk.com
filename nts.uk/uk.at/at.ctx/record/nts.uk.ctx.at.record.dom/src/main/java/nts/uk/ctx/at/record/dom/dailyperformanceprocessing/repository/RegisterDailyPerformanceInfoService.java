@@ -210,8 +210,7 @@ public class RegisterDailyPerformanceInfoService {
 				List<EmployeeDailyPerError> errors = stampOutput.getEmployeeDailyPerErrorList().stream()
 						.filter(x -> x != null).collect(Collectors.toList());
 				dailyRecordAdUpService.adUpEmpError(stampOutput.getEmployeeDailyPerErrorList(),
-						errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()),
-						true);
+						errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()));
 //				for(EmployeeDailyPerError dailyPerError : stampOutput.getEmployeeDailyPerErrorList()){
 //					if (dailyPerError != null) {
 //						this.createEmployeeDailyPerError.createEmployeeError(dailyPerError);

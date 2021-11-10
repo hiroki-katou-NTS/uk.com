@@ -356,6 +356,8 @@ public class SpecialLeaveInfo implements Cloneable {
 					0,
 					0.0, 0,
 					0.0,
+					0.0,
+					0,
 					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(), // 付与日数
 					0,
 					0.0, specialLeaveCode);

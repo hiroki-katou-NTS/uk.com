@@ -505,7 +505,7 @@ module nts.uk.at.view.kwr005.a {
                   let yearInit = null;
                   //システム日付の月　＜　期首月　
 
-                  if (_.toInteger(result.startMonth) > _.toInteger(processingDate.getMonth())) {
+                  if (_.toInteger(result.startMonth) > _.toInteger(processingDate.getMonth()+1)) {
                       yearInit = processingDate.getFullYear() -1;
                   } else { //システム日付の月　＞=　期首月　
                       yearInit = processingDate.getFullYear();

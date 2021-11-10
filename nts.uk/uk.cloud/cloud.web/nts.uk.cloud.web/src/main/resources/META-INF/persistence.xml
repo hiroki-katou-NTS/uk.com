@@ -33,6 +33,8 @@
 		<jar-file>lib/nts.uk.ctx.pereg.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.exio.infra.jar</jar-file>
 		<jar-file>lib/nts.uk.ctx.pr.shared.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.cloud.operate.infra</jar-file>
+		<jar-file>lib/nts.uk.cnv.core.jar</jar-file>
 
 		<class>nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter</class>
 		<class>nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter</class>

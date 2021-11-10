@@ -23,7 +23,7 @@ public class KTG001WebService_ver4 {
 	@POST
 	@Path("display")
 	public ApprovedDataWidgetStartDto checkDisplay(KTG001Param param) {
-		return this.queryProcessor.getApprovedDataWidgetStart(param.getYm(), param.getClosureId());
+		return this.queryProcessor.getApprovedDataWidgetStart(param.getYm());
 	}
 	
 	@POST
