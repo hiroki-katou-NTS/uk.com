@@ -36,7 +36,11 @@ public class StartProcess {
 	@Inject
 	private GetFavoriteTask getFavoriteTask;
 
-	public StartProcessDto startProcess() {
+	public StartProcessDto startProcess(GeneralDate inputDate) {
+		
+		if (inputDate == null) {
+			inputDate = GeneralDate.today();
+		}
 		
 		StartProcessDto result = new StartProcessDto();
 
@@ -53,7 +57,7 @@ public class StartProcess {
 		result.setItemMasterInfo(itemMasterInfo);
 
 		// 3. 画面モード = 確認モード <call>(システム日付) 参照可能職場・社員を取得する
-		GetRefWorkplaceAndEmployeeDto refWork = this.GetRefWorkplaceAndEmployee.get(GeneralDate.today());
+		GetRefWorkplaceAndEmployeeDto refWork = this.GetRefWorkplaceAndEmployee.get(inputDate);
 
 		result.setRefWork(refWork);
 

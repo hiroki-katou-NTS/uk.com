@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 
 /**
  * 
@@ -16,5 +17,7 @@ public class RegisterWorkContentDto {
 
 	// List<残業休出時間>
 	private List<OvertimeLeaveTimeDto> lstOvertimeLeaveTime;
+	
+	private DataResultAfterIU dataResult;
 	
 }

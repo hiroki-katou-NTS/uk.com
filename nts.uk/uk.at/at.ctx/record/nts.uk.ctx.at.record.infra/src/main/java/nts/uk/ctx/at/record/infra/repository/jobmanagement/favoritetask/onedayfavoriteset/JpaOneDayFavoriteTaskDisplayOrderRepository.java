@@ -65,7 +65,7 @@ public class JpaOneDayFavoriteTaskDisplayOrderRepository extends JpaRepository i
 	@Override
 	public void deleteByFavId(String favId) {
 		Optional<KrcdtTaskFavDayDispOrder> entityOpt = this.queryProxy()
-				.query(SELECT_BY_SID, KrcdtTaskFavDayDispOrder.class).setParameter("favId", favId).getSingle();
+				.query(SELECT_BY_FAVID, KrcdtTaskFavDayDispOrder.class).setParameter("favId", favId).getSingle();
 		
 		if (entityOpt.isPresent()) {
 			this.commandProxy().remove(entityOpt.get());

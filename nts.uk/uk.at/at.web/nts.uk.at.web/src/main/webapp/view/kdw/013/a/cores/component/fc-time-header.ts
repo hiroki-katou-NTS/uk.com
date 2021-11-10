@@ -4,13 +4,13 @@ module nts.uk.ui.at.kdw013.timeheader {
         template:
         `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.params.timesSet, as: 'time' } -->
-                    <td class="fc-day" style='position: relative;' data-bind="html: $component.formatTime(time.value,time), attr: { 'data-date': time.date }"></td>
+                    <td class="fc-day" style='position: relative;' data-bind="html: $component.formatTime(time), attr: { 'data-date': time.date }"></td>
                 <!-- /ko -->
                 <style rel="stylesheet">
                     .warningIcon {
                             cursor: pointer;
                             position: absolute;
-                            left: calc(100% - 16px);
+                            left: calc(100% - 22px);
                             bottom: calc(100% - 19px);
                         }
                     .warningIcon:hover {
@@ -73,7 +73,7 @@ module nts.uk.ui.at.kdw013.timeheader {
             let {$settings, $datas} = screenA;
                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
                 
-                let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []) id=> moment(id.ymd).isSame(moment(time.date), 'days'));
+                let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(time.date), 'days') });
                  // 作業リスト
                 screenA.taskDtos($settings().tasks);
 
@@ -89,26 +89,51 @@ module nts.uk.ui.at.kdw013.timeheader {
         
         
 
-        formatTime(value: number | null, time) {
+        formatTime(time) {
             const vm = this;
+            
+            if (!time) {
+                return '&nbsp;';
+            }
             const className = 'wrn-' + time.date;
 
             let icon = vm.isHasWarning(time.date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+            
+            if (vm.isNoCvrTaskList(time.date)) {
+                return '&nbsp;' + icon;
+            }
             
             setTimeout(()=> { 
                 ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { vm.OpenIDialog(vm, time); } }); 
                 $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
             }, 300);
-            if (!value) {
-                return '&nbsp;' + icon;
-            }
-
-            const hour = Math.floor(value / 60);
-            const minute = Math.floor(value % 60);
-            let timeString = `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
+            
+            let timeString = vm.getTimeString(time.date);
 
 
-            return timeString + icon;
+            return (timeString != null ? nts.uk.time.format.byId("Clock_Short_HM", timeString) : '') + icon;
+        }
+        
+        getTimeString(date){
+            const vm = this;
+            const datas = ko.unwrap(vm.params.screenA.$datas);
+            let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); });
+            let listItems = [1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701, 1745, 1789, 1833, 1877, 1921, 1965, 2009, 2053, 2097, 2141];
+            let sumList = [];
+            _.forEach(_.get(convert, 'manHrContents', []), hrc => {
+                if (listItems.indexOf(hrc.itemId) != -1 && !!hrc.value) {
+                    sumList.push(hrc.value);
+                }
+            });
+            return _.sum(_.map(sumList, s => Number(s)));
+        }
+        
+        isNoCvrTaskList(date) {
+            const vm = this;
+            const datas = ko.unwrap(vm.params.screenA.$datas);
+
+            let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); });
+            return !_.get(convert, 'taskList');
         }
         
         isHasWarning(date) {
@@ -119,7 +144,7 @@ module nts.uk.ui.at.kdw013.timeheader {
                 return false;
             }
 
-            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []) id=> { return moment(id.ymd).isSame(moment(date), 'days'); });
+            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id=> { return moment(id.ymd).isSame(moment(date), 'days'); });
 
             const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
 
