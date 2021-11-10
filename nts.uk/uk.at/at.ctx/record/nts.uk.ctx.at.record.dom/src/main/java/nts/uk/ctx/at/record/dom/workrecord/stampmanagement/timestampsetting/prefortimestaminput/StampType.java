@@ -155,12 +155,6 @@ public class StampType implements DomainValue, Cloneable{
 		return false;
 	}
 	
-	@Override
-	public StampType clone() {
-		return new StampType(changeHalfDay, goOutArt.map(x -> GoingOutReason.valueOf(x.value)),
-				SetPreClockArt.valueOf(setPreClockArt.value), ChangeClockArt.valueOf(changeClockArt.value),
-				ChangeCalArt.valueOf(changeCalArt.value));
-	}
 	/**
 	 * 休日出勤に変更するか
 	 * @param require
@@ -195,4 +189,10 @@ public class StampType implements DomainValue, Cloneable{
 		Optional<WorkType> findByPK(String workTypeCd);
 	}
 
+	@Override
+	public StampType clone() {
+		return new StampType(changeHalfDay, goOutArt.map(x -> GoingOutReason.valueOf(x.value)),
+				SetPreClockArt.valueOf(setPreClockArt.value), ChangeClockArt.valueOf(changeClockArt.value),
+				ChangeCalArt.valueOf(changeCalArt.value));
+	}
 }

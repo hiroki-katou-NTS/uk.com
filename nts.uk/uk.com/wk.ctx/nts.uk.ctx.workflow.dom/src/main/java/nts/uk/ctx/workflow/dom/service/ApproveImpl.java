@@ -82,6 +82,7 @@ public class ApproveImpl implements ApproveService {
 			}
 			boolean breakLoop = false;
 			// ドメインモデル「承認フェーズインスタンス」．「承認枠」1～5ループする(loop xử lý domain「承認フェーズインスタンス」．「承認枠」1～5)
+			approvalPhaseState.getListApprovalFrame().sort(Comparator.comparing(ApprovalFrame::getFrameOrder));
 			for(ApprovalFrame approvalFrame : approvalPhaseState.getListApprovalFrame()) {
 				for(ApproverInfor approverInfor : approvalFrame.getLstApproverInfo()) {
 					// 承認者情報．承認区分をチェック
@@ -134,9 +135,6 @@ public class ApproveImpl implements ApproveService {
 					if(breakLoop) {
 						break;
 					}
-				}
-				if(breakLoop) {
-					break;
 				}
 			}
 			// アルゴリズム「指定する承認フェーズの承認が完了したか」を実行する(thực hiện thuật toán 「」)

@@ -23,9 +23,7 @@ public class SendTimeRecordSettingService {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
-		if (!requestSetting.isPresent())
-			return Optional.empty();
-		return Optional.of(convert(requestSetting.get()));
+		return Optional.of(requestSetting.map(x -> convert(x)).orElse(SendTimeRecordSetting.createDefault()));
 	}
 
 	// [pvt-1] 変換

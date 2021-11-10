@@ -81,7 +81,7 @@ public class TempRemainCreateEachData {
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				RemainType.ANNUAL,
 				new WorkTypeCode(inforData.getWorkTypeRemainInfor(workTypeClass).get().getWorkTypeCode()),
-				new LeaveUsedNumber(occUseDetail.get().getDays(), null, null),
+				new LeaveUsedNumber(occUseDetail.get().getDays(), null, null, null, null),
 				Optional.empty());
 		mngData.getRecAbsData().add(annualMng);
 
@@ -437,7 +437,7 @@ public class TempRemainCreateEachData {
 				WorkTypeRemainInfor.getCreateData(),
 				RemainType.ANNUAL,
 				new WorkTypeCode(WorkTypeRemainInfor.getWorkTypeCode()),
-				new LeaveUsedNumber(0d, usageTimeDetail.getTimes(), 0d),
+				new LeaveUsedNumber(0d, usageTimeDetail.getTimes(), 0d, null, null),
 				Optional.of(DigestionHourlyTimeType.of(true, Optional.empty())));
 
 	}
@@ -638,7 +638,7 @@ public class TempRemainCreateEachData {
 					vac.getCreateData(),
 					RemainType.ANNUAL,
 					new WorkTypeCode(vac.getWorkTypeCode()),
-					new LeaveUsedNumber(0d, vac.getTotalTimes(), null),
+					new LeaveUsedNumber(0d, vac.getTotalTimes(), null, null, null),
 					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 		});

@@ -70,11 +70,12 @@ public class OutingTimeSheet extends DomainObject {
 																			  new ArrayList<>(),
 																			  new ArrayList<>(),
 																			  WorkingBreakTimeAtr.NOTWORKING,
-																			  Finally.of(this.reasonForGoOut),
+																			  Finally.of(this.reasonForGoOut == null ? GoingOutReason.PRIVATE : this.reasonForGoOut),
 																			  Finally.empty(),
 																			  Optional.empty(),
 																			  DeductionClassification.GO_OUT,
-																			  Optional.empty()
+																			  Optional.empty(),
+																			  false
 																			  );
 	}
 	
@@ -137,5 +138,22 @@ public class OutingTimeSheet extends DomainObject {
 //				new AttendanceTime(0), 
 				reason,
 				Optional.of(WorkStamp.createDefault()));
+	}
+	
+	public boolean leakageCheck() {
+		Optional<TimeWithDayAttr> goOutTimeAtr = getGoOutWithTimeDay();
+		Optional<TimeWithDayAttr> goComeBack = getComeBackWithTimeDay();
+
+		return (goOutTimeAtr.isPresent() && goComeBack.isPresent())
+				|| (!goOutTimeAtr.isPresent() && !goComeBack.isPresent());
+
+	}
+
+	public Optional<TimeWithDayAttr> getGoOutWithTimeDay() {
+		return this.getGoOut().flatMap(x -> x.getWithTimeDay());
+	}
+
+	public Optional<TimeWithDayAttr> getComeBackWithTimeDay() {
+		return this.getComeBack().flatMap(x -> x.getWithTimeDay());
 	}
 }

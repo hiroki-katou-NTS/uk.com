@@ -113,7 +113,7 @@ module nts.uk.at.view.kwr004.b {
         vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
         vm.shareParam.itemNameLine.displayInputCategory = 1;
         vm.shareParam.itemNameLine.name = vm.attendanceItemName();
-        vm.shareParam.attribute.selectionCategory = 2;
+        vm.shareParam.attribute.selectionCategory = 1;
         vm.shareParam.attribute.selected = vm.comboSelected();
         vm.shareParam.selectedTime = vm.tableSelected();
 
@@ -689,8 +689,8 @@ module nts.uk.at.view.kwr004.b {
           vm.settingListItemsDetails()[index].selectionItem(findAttendanceName.attendanceItemName);
           if (row.isChecked()) $('#textName' + row.id).focus();
         } else {
-          vm.settingListItemsDetails()[index].itemAttribute(-1);
-          vm.settingListItemsDetails()[index].name(null);
+          //vm.settingListItemsDetails()[index].itemAttribute(-1);
+          //vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
           vm.settingListItemsDetails()[index].selectedTime = -1;
@@ -741,8 +741,8 @@ module nts.uk.at.view.kwr004.b {
             if (row.isChecked()) $('#textName' + row.id).focus();
           }
         } else {
-          vm.settingListItemsDetails()[index].itemAttribute(-1);
-          vm.settingListItemsDetails()[index].name(null);
+          //vm.settingListItemsDetails()[index].itemAttribute(-1);
+         // vm.settingListItemsDetails()[index].name(null);
           vm.settingListItemsDetails()[index].selectionItem(null);
           vm.settingListItemsDetails()[index].selectedTimeList([]);
           vm.settingListItemsDetails()[index].selectedTime = -1;
@@ -950,6 +950,7 @@ module nts.uk.at.view.kwr004.b {
     dailyAttributes: KnockoutObservableArray<any> = ko.observableArray([]);
     type: boolean = false;
     independentCalcClassicProgrammaticChange: boolean = false;
+    itemAttributeProgrammaticChange: boolean = false;
     constructor(
       id?: number,
       name?: string,
@@ -973,28 +974,51 @@ module nts.uk.at.view.kwr004.b {
       this.type = type;
       this.selectedTime = selectedTime;
 
-      this.independentCalcClassic.subscribe((oldValue) => {
-        if (!this.independentCalcClassicProgrammaticChange && !_.isEmpty(this.selectionItem())) {
+      this.itemAttribute.subscribe((oldValue) => {
+        if (!this.itemAttributeProgrammaticChange && !_.isEmpty(this.selectionItem())) {
             const oldSelectedTimeList = this.selectedTimeList();
             const oldSelectionItem = this.selectionItem();
             const oldSelectedTime = this.selectedTime;
+            const oldDedependentCalcClassic = this.independentCalcClassic();
             const oldDailyAttributes = this.dailyAttributes();
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_2088" }).ifYes(()=>{
                 // if yes do nothing
             }).ifNo(()=>{
                 // if no reset value
-                this.independentCalcClassicProgrammaticChange = true;
-                this.independentCalcClassic(oldValue);
+                this.itemAttributeProgrammaticChange = true;
+                this.itemAttribute(oldValue);
+                this.independentCalcClassic(oldDedependentCalcClassic);
                 this.selectedTimeList(oldSelectedTimeList);
                 this.selectionItem(oldSelectionItem);
                 this.selectedTime = oldSelectedTime;
                 this.dailyAttributes(oldDailyAttributes);
             });
         } else {
-          this.independentCalcClassicProgrammaticChange = false;
+          this.itemAttributeProgrammaticChange = false;
         }
       }, null, "beforeChange");
 
+        this.independentCalcClassic.subscribe((oldValue) => {
+            if (!this.independentCalcClassicProgrammaticChange && !_.isEmpty(this.selectionItem())) {
+                const oldSelectedTimeList = this.selectedTimeList();
+                const oldSelectionItem = this.selectionItem();
+                const oldSelectedTime = this.selectedTime;
+                const oldDailyAttributes = this.dailyAttributes();
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+                    // if yes do nothing
+                }).ifNo(()=>{
+                    // if no reset value
+                    this.independentCalcClassicProgrammaticChange = true;
+                    this.independentCalcClassic(oldValue);
+                    this.selectedTimeList(oldSelectedTimeList);
+                    this.selectionItem(oldSelectionItem);
+                    this.selectedTime = oldSelectedTime;
+                    this.dailyAttributes(oldDailyAttributes);
+                });
+            } else {
+                this.independentCalcClassicProgrammaticChange = false;
+            }
+        }, null, "beforeChange");
 
     }
   }

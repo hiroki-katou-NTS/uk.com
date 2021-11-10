@@ -153,13 +153,14 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 					);
 					
 				self.numberOfSubstituteHoliday(
-					param.numberOfSubstituteHoliday.time == ZERO_TIME
-					?
-					getText('KTG004_15', [param.numberOfSubstituteHoliday.day])
-					:
-					getText('KTG004_28', [param.numberOfSubstituteHoliday.day, param.numberOfSubstituteHoliday.time])
-					);
-					
+					// param.numberOfSubstituteHoliday.time == ZERO_TIME
+					// ?
+					// getText('KTG004_15', [param.numberOfSubstituteHoliday.day])
+					// :
+					// getText('KTG004_28', [param.numberOfSubstituteHoliday.day, param.numberOfSubstituteHoliday.time])
+					// );
+					this.getRemainSubHoliday(param.numberOfSubstituteHoliday.day, param.numberOfSubstituteHoliday.time, param.numberOfSubstituteHoliday.subHolidayTimeManage)
+				);
 				self.remainingHolidays(getText('KTG004_15', [param.remainingHolidays]));
 				
 				self.nursingRemainingNumberOfChildren(
@@ -182,6 +183,26 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 				
 			}
 		}
+
+		public getRemainSubHoliday(day: any, time: any, manage: any) {
+            let output = "";
+            let timeString = nts.uk.time.format.byId("Time_Short_HM", time);
+            let dayString = getText('KTG004_15', [day.toString()]);
+            if (time) {
+                output = timeString;
+            } else if (day) {
+                output = dayString;
+            } else {
+                if (manage) {
+                    output = timeString; 
+                } else {
+                    output = dayString;
+                }
+            }
+
+			alert(output);
+            return output;
+        }
 	}
 	class SpecialHolidaysRemainings {
 		//特別休暇コード

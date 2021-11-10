@@ -140,7 +140,13 @@ public class UserInformationScreenQuery {
         Boolean isInCharge = this.Rq50.getWhetherLoginerCharge(AppContexts.user().roles()).isEmployeeCharge();
 
         //SQ3 - Handle ユーザ情報の使用方法.Empty
-        if (settingInformationDto.getCompanyId() == null) {
+        if (
+        		!userInfoUseMethod.isPresent()
+        		|| (userInfoUseMethod.get().getUseOfProfile().isNotUse()
+	        		&& userInfoUseMethod.get().getUseOfNotice().isNotUse()
+	        		&& userInfoUseMethod.get().getUseOfPassword().isNotUse()
+	        		&& userInfoUseMethod.get().getUseOfLanguage().isNotUse())
+        ) {
             if (isInCharge) {
                 throw new BusinessException("Msg_1775");
             } else {

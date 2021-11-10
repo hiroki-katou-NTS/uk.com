@@ -69,7 +69,7 @@ public class ExacExeResultLogCommand {
 	/**
 	 * 結果状態
 	 */
-	private int resultStatus;
+	private Integer resultStatus;
 
 	/**
 	 * 処理終了日時

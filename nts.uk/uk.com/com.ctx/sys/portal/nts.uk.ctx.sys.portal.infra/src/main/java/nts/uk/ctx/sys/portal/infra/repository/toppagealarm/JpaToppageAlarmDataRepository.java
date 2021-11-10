@@ -17,7 +17,6 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.NotificationId;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtTopAlarmSubSya;
-import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtTopAlarmSubSyaPK;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarm;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarmPK;
 
@@ -141,11 +140,12 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	
 		if (oldEntity.isPresent()) {
 			
-			List<SptdtTopAlarmSubSya> listSubSids = SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids());
+			List<SptdtTopAlarmSubSya> listSubSids = SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids(),
+					domain.getPatternCode().map(AlarmListPatternCode::v).orElse(""));
 
 			//delete subSids
-			List<SptdtTopAlarmSubSyaPK> listPk = listSubSids.stream().map(sub -> sub.getPk()).collect(Collectors.toList());
-			this.commandProxy().removeAll(SptdtTopAlarmSubSya.class, listPk);
+			oldEntity.get().getSubSids().clear();
+			this.commandProxy().update(oldEntity.get());
 			this.getEntityManager().flush();
 			
 			oldEntity.get().setPatternCode(domain.getPatternCode().map(AlarmListPatternCode::v).orElse(null));
