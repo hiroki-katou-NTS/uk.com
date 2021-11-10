@@ -45,8 +45,7 @@ module nts.uk.at.kdl013.a.test {
            
             self.$window.modal('at', '/view/kdl/013/a/index.xhtml', request).then(() =>{
                 let temp = getShared('KDL013ParamsReturn');
-            });
-            
+            });            
         }
     }
 

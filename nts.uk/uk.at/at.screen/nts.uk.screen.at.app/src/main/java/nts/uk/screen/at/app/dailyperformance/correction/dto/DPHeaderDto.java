@@ -186,11 +186,20 @@ public class DPHeaderDto {
 			}
 			//dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.NumberOfTime.value) {
-			dto.setGrant(true);
-			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+			if (item.getTypeGroup() != null &&  item.getTypeGroup() == TypeLink.DOWORK.value) {
+				dto.setDataType("boolean");
+				dto.setNtsControl("Checkbox");
+				dto.setInputProcess(null);
+			} else {
+				dto.setGrant(true);
+				dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+			}
 		} else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 			dto.setConstraint(new Constraint("TimeWithDay", false, ""));
 		} else if(attendanceAtr == DailyAttendanceAtr.Charater.value){
+			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+		} else if (attendanceAtr == DailyAttendanceAtr.NumbericValue.value) {
+			dto.setGrant(true);
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		}
 		return dto;
