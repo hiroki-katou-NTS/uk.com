@@ -97,7 +97,7 @@ public class GetRemainNumberConfirmInfo {
 					//逐次休暇の紐付け情報を絞り込む
 					boolean checkExist = false;
 					for(SeqVacationAssociationInfo svai :lstSeqVacation) {
-						if(detail.getDateOccur().getDayoffDate().isPresent() && svai.getDateOfUse().equals(detail.getDateOccur().getDayoffDate().get())) {
+						if(!unit && detail.getDateOccur().getDayoffDate().isPresent() && svai.getDateOfUse().equals(detail.getDateOccur().getDayoffDate().get())) {
 							checkExist = true;
 							//データをセットする
 							detailedInfo.setDigestionCount(TextResource.localize("KDL005_27", svai.getDayNumberUsed().v().toString()));
@@ -251,7 +251,7 @@ public class GetRemainNumberConfirmInfo {
 							.findFirst();
 
 					// 残数詳細情報の消化をセットする
-					if (seqVacationFil.isPresent()) {
+					if (seqVacationFil.isPresent() && !unit) {
 						// 残数詳細情報．消化日状態
 						detailedInfo.setDigestionDateStatus(TextResource.localize("KDL005_49"));
 						// 残数詳細情報．消化数
