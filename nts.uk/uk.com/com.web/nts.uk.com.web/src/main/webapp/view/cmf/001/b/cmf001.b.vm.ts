@@ -65,14 +65,18 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 			self.startPage();
 
+			// 受入設定の変更検知
 			self.selectedCode.subscribe((value) => {
 				if (value) {
+					// 選択した場合、更新モードへ
 					self.updateMode();
 				} else {
+					// 選択解除した場合、新規モードへ
 					self.newMode();
 				}
 			})
 
+			self.importDomain.extend({notify: 'always'})
 			self.importDomain.subscribe((value) => {
 				if (value) {
 					let condition = {
@@ -137,7 +141,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
-				self.layoutItemNoList(infoData.domains[0].itemNoList);
 				self.isNewMode(false);
 				self.checkError();
 			});
@@ -158,7 +161,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.csvFileId=info.csvFileId;
 
 			self.importDomain(info.domains[0].domainId);
-			self.layoutItemNoList(info.domains[0].itemNoList);
 		}
 
 		setLayout(itemNoList: number[]){

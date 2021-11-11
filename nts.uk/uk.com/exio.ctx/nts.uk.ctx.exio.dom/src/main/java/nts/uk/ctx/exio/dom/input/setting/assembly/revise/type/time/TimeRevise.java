@@ -15,7 +15,7 @@ import nts.gul.util.Either;
  */
 @AllArgsConstructor
 @Getter
-public class TimeRevise implements ReviseValue {
+public abstract class TimeRevise implements ReviseValue {
 	
 	/** 時分 */
 	private HourlySegment hourly;
@@ -44,7 +44,7 @@ public class TimeRevise implements ReviseValue {
 		
 		if (baseNumber.get() == TimeBaseNumber.SEXAGESIMAL) {
 			// 60進数は、区切り文字を用いて時分→分変換
-			return delimiter.get().toMinutes(target)
+			return toMinutes(target)
 					.map(i -> (long) (int) i);
 		} else {
 			// 10進数は、分に変換して端数処理
@@ -53,4 +53,11 @@ public class TimeRevise implements ReviseValue {
 					.map(min -> (long) rounding.get().round(min));
 		}
 	}
+
+	/**
+	 * ６０進表示を分の値に変換する処理
+	 * @param target
+	 * @return
+	 */
+	protected abstract Either<ErrorMessage, Integer> toMinutes(String target);
 }
