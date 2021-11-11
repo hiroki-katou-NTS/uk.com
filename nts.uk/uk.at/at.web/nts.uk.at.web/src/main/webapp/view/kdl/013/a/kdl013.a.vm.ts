@@ -52,7 +52,7 @@ module nts.uk.at.kdl013.a {
             if (self.currentCodeList().length == 0) {            
                 self.$dialog.error({ messageId: 'Msg_2305' });
             } else {
-                setShared('KDL013ParamsReturn', self.currentCodeList());
+                setShared('KDL013ParamsReturn', self.currentCodeList()[0] == " " ? "" : self.currentCodeList());
                 nts.uk.ui.windows.close();
             }
         }
