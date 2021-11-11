@@ -35,7 +35,7 @@ module nts.uk.com.view.cmm051.a {
         ntsHeaderColumns: KnockoutObservableArray<any> = ko.observableArray([]);
         historyId: KnockoutObservable<any> = ko.observable("1");
         // Screen mode
-        isNewMode: KnockoutObservable<boolean>;
+        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         isNewModeHist: KnockoutObservable<boolean> = ko.observable(true);
         isUpdateModeHist: KnockoutObservable<boolean> = ko.observable(true);
         isDeleteModeHist: KnockoutObservable<boolean> = ko.observable(true);
@@ -85,9 +85,9 @@ module nts.uk.com.view.cmm051.a {
         columns: KnockoutObservableArray<NtsGridListColumn>;
         count: number;
         idAddOrUpdate: KnockoutObservable<string> = ko.observable(null);
-        startDate :KnockoutObservable<any> = ko.observable(null);
-        endDate   :KnockoutObservable<any> = ko.observable(null);
-        idDelete : KnockoutObservable<any> = ko.observable(null);
+        startDate: KnockoutObservable<any> = ko.observable(null);
+        endDate: KnockoutObservable<any> = ko.observable(null);
+        idDelete: KnockoutObservable<any> = ko.observable(null);
 
         constructor(params: any) {
             super();
@@ -99,8 +99,7 @@ module nts.uk.com.view.cmm051.a {
                 tabIndex: 4
             };
             vm.count = 1;
-            vm.initScreen(Mode.WPL,null);
-            vm.isNewMode = ko.observable(false);
+            vm.initScreen(Mode.WPL, null);
             vm.ntsHeaderColumns = ko.observableArray([
                 {headerText: '', key: 'code', hidden: true},
                 {headerText: '', key: 'display', formatter: _.escape}
@@ -110,9 +109,10 @@ module nts.uk.com.view.cmm051.a {
                 {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 100},
                 {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 300}
             ]);
+            vm.KCP005_load();
         }
 
-        initScreen(mode: number,sid:string) {
+        initScreen(mode: number, sid: string) {
             let vm = this;
             if (mode == Mode.WPL) {
                 let workplaceManagerList: any[] = [];
@@ -130,8 +130,11 @@ module nts.uk.com.view.cmm051.a {
                         workplaceManagerList = data.employeeInformation.workplaceManagerList;
                         listEmployee = data.employeeInformation.listEmployee;
                         personList = data.employeeInformation.personList;
-                        vm.setData(mode, workplaceManagerList, listEmployee, personList,sid);
+                        vm.setData(mode, workplaceManagerList, listEmployee, personList, sid);
                     }
+                    vm.isNewModeHist(true);
+
+
                 }).always(() => {
                     block.clear();
                 }).fail((error) => {
@@ -145,10 +148,12 @@ module nts.uk.com.view.cmm051.a {
 
             }
         }
+
         backToTopPage() {
             nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
         }
-        setData(mode: any, workplaceManagerList: any[], listEmployee: any[], personList: any[],sid:string): void {
+
+        setData(mode: any, workplaceManagerList: any[], listEmployee: any[], personList: any[], sid: string): void {
             let vm = this;
             if (mode == Mode.WPL) {
                 let emps: any = [];
@@ -170,23 +175,24 @@ module nts.uk.com.view.cmm051.a {
                 vm.dateHistoryListFull(workplaceManagerList);
                 let info = _.find(vm.employInfors(), (e) => e.id == sid);
 
-                if(!isNullOrUndefined(info)){
+                if (!isNullOrUndefined(info)) {
                     vm.multiSelectedCode(info.code);
-                }else {
+                    vm.setDataHist(info.id, vm.dateHistoryListFull());
+                } else {
                     if (!isNullOrEmpty(emps)) {
                         vm.multiSelectedCode(emps[0].code);
                     }
                 }
-                vm.KCP005_load();
             }
             if (mode == Mode.EMPLOYMENT) {
             }
 
         }
-        setDataHist(sid: string,workplaceManagerList :any[]):void {
+
+        setDataHist(sid: string, workplaceManagerList: any[]): void {
             let vm = this;
             let listDatePeriod: any[] = [];
-            let listHist :any[] = _.filter(workplaceManagerList, (e) => e.employeeId == sid);
+            let listHist: any[] = _.filter(workplaceManagerList, (e) => e.employeeId == sid);
             if (!isNullOrEmpty(workplaceManagerList)) {
                 for (let i = 0; i < listHist.length; i++) {
                     let wpl = listHist[i];
@@ -241,24 +247,14 @@ module nts.uk.com.view.cmm051.a {
 
         // Start page
         created() {
-            let vm = this;
-            var dfd = $.Deferred();
-            // CCG026
-            vm.component = new ccg.component.viewmodel.ComponentModel({
-                classification: 1,
-                maxRow: 5
-            });
-            vm.component.startPage().done(() => {
-            });
-            dfd.resolve();
-            return dfd.promise();
+
         }
 
         mounted() {
             let vm = this;
             vm.mode.subscribe((mode) => {
                 console.log("MODE :" + mode);
-                vm.initScreen(mode,null);
+                vm.initScreen(mode, null);
             });
             vm.multiSelectedCode.subscribe((e) => {
                 let eminfo = _.find(vm.employInfors(), (i) => i.code == e);
@@ -267,8 +263,8 @@ module nts.uk.com.view.cmm051.a {
                     vm.employeeName(eminfo.name);
                     vm.isDelete(true);
                     vm.employeeMnSelectedId(eminfo.id);
-                    vm.setDataHist(eminfo.id,vm.dateHistoryListFull());
-                }else {
+                    vm.setDataHist(eminfo.id, vm.dateHistoryListFull());
+                } else {
                     vm.employeeCode("");
                     vm.employeeName("")
                 }
@@ -281,15 +277,18 @@ module nts.uk.com.view.cmm051.a {
                 let idAddOrUpdate = vm.idAddOrUpdate();
                 if (!isNullOrUndefined(idAddOrUpdate)) {
                     if (id == idAddOrUpdate) {
-                        if (vm.isClicked()) {
-                            vm.isNewModeHist(false);
-                            vm.isDeleteModeHist(false);
-                            vm.isUpdateModeHist(true);
-                        }
+                        vm.isNewModeHist(false);
+                        vm.isDeleteModeHist(false);
+                        vm.isUpdateModeHist(true);
                     } else {
                         vm.isNewModeHist(false);
                         vm.isDeleteModeHist(false);
                         vm.isUpdateModeHist(false);
+                    }
+                    if( id != idAddOrUpdate && !vm.isNewMode()){
+                        vm.isNewModeHist(true);
+                        vm.isDeleteModeHist(true);
+                        vm.isUpdateModeHist(true);
                     }
                 }
             })
@@ -337,13 +336,13 @@ module nts.uk.com.view.cmm051.a {
                 let command = {
                     "workPlaceId": workplaceId,
                     "sid": sid,
-                    "startDate":startDate,
-                    "endDate":endDate
+                    "startDate": startDate,
+                    "endDate": endDate
                 };
                 block.invisible();
-                if(vm.isNewMode()){
+                if (vm.isNewMode()) {
                     vm.$ajax("com", API.addWkpManager, command).done(() => {
-                            vm.initScreen(mode,sid);
+                            vm.initScreen(mode, sid);
                             vm.isNewMode(false);
                         }
                     ).always(() => {
@@ -352,14 +351,14 @@ module nts.uk.com.view.cmm051.a {
                         nts.uk.ui.block.clear();
                         vm.showMessageError(res);
                     })
-                }else {
+                } else {
                     let commandHist = {
-                        "wkpManagerId":vm.historyId(),
-                        "startDate":startDate,
-                        "endDate":endDate
+                        "wkpManagerId": vm.historyId(),
+                        "startDate": startDate,
+                        "endDate": endDate
                     };
                     vm.$ajax("com", API.addHistWkpManager, commandHist).done(() => {
-                            vm.initScreen(mode,sid);
+                            vm.initScreen(mode, sid);
                             vm.isNewMode(false);
                         }
                     ).always(() => {
@@ -371,6 +370,7 @@ module nts.uk.com.view.cmm051.a {
                 }
             }
         }
+
         /**
          * validate
          */
@@ -408,14 +408,14 @@ module nts.uk.com.view.cmm051.a {
                         };
                         block.invisible();
                         vm.$ajax("com", API.deleteWkpManager, command).done(() => {
-                                let indexRemove = _.findIndex(vm.employInfors(),(e)=>e.id == sid);
+                                let indexRemove = _.findIndex(vm.employInfors(), (e) => e.id == sid);
                                 let emif: any = "";
-                                if(indexRemove == (vm.employInfors().length -1 )){
-                                    emif =  vm.employInfors()[indexRemove - 1].id;
-                                }else {
-                                    emif =  vm.employInfors()[indexRemove + 1].id;
+                                if (indexRemove == (vm.employInfors().length - 1)) {
+                                    emif = vm.employInfors()[indexRemove - 1].id;
+                                } else {
+                                    emif = vm.employInfors()[indexRemove + 1].id;
                                 }
-                                vm.initScreen(mode,emif);
+                                vm.initScreen(mode, emif);
                             }
                         ).always(() => {
                             block.clear();
@@ -555,29 +555,31 @@ module nts.uk.com.view.cmm051.a {
             };
             nts.uk.ui.windows.setShared("dataToScreenB", dataToScreenB);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {
-                vm.isNewMode(true);
-                vm.isClicked(true);
-                vm.isNewModeHist(false);
-                vm.isUpdateModeHist(true);
-                vm.isDeleteModeHist(false);
                 let prams = getShared('dataToScreenA');
-                let display = prams.startDate + " - " + prams.endDate;
-                vm.startDate(prams.startDate);
-                vm.endDate(prams.endDate);
-                let idNew = "idNew";
-                vm.idAddOrUpdate(idNew);
-                let hist = {
-                    id: idNew,
-                    sid : "",
-                    display: display,
-                    startDate: prams.startDate,
-                    endDate: prams.endDate
-                };
-                let hists: any[] = vm.dateHistoryList();
-                hists.push(hist);
-                hists = _.orderBy(hists, ['startDate'], ['desc']);
-                vm.dateHistoryList(hists);
-                vm.historyId(idNew);
+                if (!isNullOrUndefined(prams)) {
+                    vm.isNewMode(true);
+                    vm.isNewModeHist(false);
+                    vm.isUpdateModeHist(true);
+                    vm.isDeleteModeHist(false);
+
+                    let display = prams.startDate + " - " + prams.endDate;
+                    vm.startDate(prams.startDate);
+                    vm.endDate(prams.endDate);
+                    let idNew = "idNew";
+                    vm.idAddOrUpdate(idNew);
+                    let hist = {
+                        id: idNew,
+                        sid: "",
+                        display: display,
+                        startDate: prams.startDate,
+                        endDate: prams.endDate
+                    };
+                    let hists: any[] = vm.dateHistoryList();
+                    hists.push(hist);
+                    hists = _.orderBy(hists, ['startDate'], ['desc']);
+                    vm.dateHistoryList(hists);
+                    vm.historyId(idNew);
+                }
             });
         }
 
@@ -603,34 +605,41 @@ module nts.uk.com.view.cmm051.a {
             nts.uk.ui.windows.setShared("dataToScreenC", dataToScreenC);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/c/index.xhtml').onClosed(() => {
                 let prams = getShared('dataToScreenA');
-                vm.isNewMode(false);
                 if (!isNullOrUndefined(prams)) {
-                    let hists: any[] = vm.dateHistoryList();
+                    vm.isClicked(true);
                     let id = vm.historyId();
-                    let index = _.findIndex(hists, (e) => e.id == id);
-                    if (index >= 0) {
-                        let display = prams.startDate + " - " + prams.endDate;
-                        vm.startDate(prams.startDate);
-                        vm.endDate(prams.endDate);
-                        let hist = {
-                            id: id,
-                            sid: hists[index].sid,
-                            display: display,
-                            startDate: prams.startDate,
-                            endDate: prams.endDate
-                        };
-                        hists[index] = hist;
-                        hists = _.orderBy(hists, ['startDate'], ['desc']);
-                        vm.dateHistoryList(hists);
-                        vm.isNewModeHist(false);
-                        if (!vm.isNewMode()) {
-                            vm.isDeleteModeHist(true);
-                        }
-                        if (id == vm.idAddOrUpdate()) {
-                            vm.isDeleteModeHist(false);
-                        }
-                        vm.idAddOrUpdate(id);
+                    if (id == "idNew") {
+                        vm.isNewMode(true);
+                    } else {
+                        vm.isNewMode(false);
+                    }
+                    if (!isNullOrUndefined(prams)) {
+                        let hists: any[] = vm.dateHistoryList();
+                        let index = _.findIndex(hists, (e) => e.id == id);
+                        if (index >= 0) {
+                            let display = prams.startDate + " - " + prams.endDate;
+                            vm.startDate(prams.startDate);
+                            vm.endDate(prams.endDate);
+                            let hist = {
+                                id: id,
+                                sid: hists[index].sid,
+                                display: display,
+                                startDate: prams.startDate,
+                                endDate: prams.endDate
+                            };
+                            hists[index] = hist;
+                            hists = _.orderBy(hists, ['startDate'], ['desc']);
+                            vm.dateHistoryList(hists);
+                            vm.isNewModeHist(false);
+                            if (!vm.isNewMode()) {
+                                vm.isDeleteModeHist(true);
+                            }
+                            if (id == vm.idAddOrUpdate()) {
+                                vm.isDeleteModeHist(false);
+                            }
+                            vm.idAddOrUpdate(id);
 
+                        }
                     }
                 }
             });
@@ -641,14 +650,21 @@ module nts.uk.com.view.cmm051.a {
             nts.uk.ui.dialog.confirm({messageId: "Msg_18"})
                 .ifYes(() => {
                     let id = vm.historyId();
-                    if(!isNullOrUndefined(id)){
+                    if (!isNullOrUndefined(id)) {
                         block.invisible();
                         let command = {
-                            "wkpManagerId":id
+                            "wkpManagerId": id
                         };
                         vm.$ajax("com", API.deleteWkpHist, command).done(() => {
-                            let info = _.find(vm.dateHistoryList(), (e) => e.id == id);
-                                vm.initScreen(vm.mode(),info.sid);
+                                let indexRemove = _.findIndex(vm.dateHistoryList(), (e) => e.id == id);
+                                let idHist: any = "";
+                                if ((indexRemove ==0) ||((indexRemove+1) < vm.dateHistoryList().length)) {
+                                    idHist = vm.dateHistoryList()[indexRemove + 1].id;
+                                } else {
+                                    idHist = vm.dateHistoryList()[indexRemove - 1].id;
+                                }
+                                vm.dateHistoryList().splice(indexRemove, 1);
+                                vm.historyId(idHist);
                                 vm.isNewMode(false);
                             }
                         ).always(() => {
@@ -697,11 +713,11 @@ module nts.uk.com.view.cmm051.a {
                             workplaceManagerList = data.workplaceManagerList;
                             listEmployee = data.listEmployee;
                             personList = data.personList;
-                            vm.setData(mode, workplaceManagerList, listEmployee, personList,null);
+                            vm.setData(mode, workplaceManagerList, listEmployee, personList, null);
                         }
                     }).always(() => {
                         block.clear();
-                    }).fail((res)=>{
+                    }).fail((res) => {
                         nts.uk.ui.block.clear();
                         vm.showMessageError(res);
                     })
