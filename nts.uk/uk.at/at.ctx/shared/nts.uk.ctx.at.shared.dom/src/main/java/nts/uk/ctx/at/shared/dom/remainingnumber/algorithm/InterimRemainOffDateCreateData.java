@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.OccurrenceUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.SpecialHolidayUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.TranferTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationUsageTimeDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
@@ -159,7 +159,7 @@ public class InterimRemainOffDateCreateData {
 		// 時間年休使用時間の空のリストを作成
 		List<VacationTimeInfor> timeInfos = new ArrayList<VacationTimeInfor>();
 		// 予定から時間休暇使用時間を作成する
-		List<VacationTimeInforNew> scheLstVacationTimeInfor = detailData.getScheData()
+		List<VacationTimeUseInfor> scheLstVacationTimeInfor = detailData.getScheData()
 				.map(x -> x.getLstVacationTimeInfor()).orElse(Collections.emptyList());
 
 		List<VacationTimeInfor> scheTimeInfos = createVacationUsageTime(require, cid, CreateAtr.SCHEDULE,
@@ -169,7 +169,7 @@ public class InterimRemainOffDateCreateData {
 
 		// 実績から時間休暇使用時間を作成する
 
-		List<VacationTimeInforNew> recordLstVacationTimeInfor = detailData.getRecordData()
+		List<VacationTimeUseInfor> recordLstVacationTimeInfor = detailData.getRecordData()
 				.map(x -> x.getLstVacationTimeInfor()).orElse(Collections.emptyList());
 
 		List<VacationTimeInfor> recordTimeInfos = createVacationUsageTime(require, cid, CreateAtr.RECORD,
@@ -208,7 +208,7 @@ public class InterimRemainOffDateCreateData {
 					CreateAtr createAtr = x.getPrePosAtr().equals(PrePostAtr.PREDICT) ? CreateAtr.APPBEFORE
 							: CreateAtr.APPAFTER;
 
-					List<VacationTimeInforNew> appLstVacationTimeInfor = x.getVacationTimes();
+					List<VacationTimeUseInfor> appLstVacationTimeInfor = x.getVacationTimes();
 					// 時間休暇使用時間を作成
 					timeInfos.addAll(createVacationUsageTime(require, cid, createAtr, appLstVacationTimeInfor,
 							x.getWorkTypeCode().map(wktype -> wktype).orElse("DMY")));
@@ -313,7 +313,7 @@ public class InterimRemainOffDateCreateData {
 	 * @param cid
 	 *            会社ID
 	 */
-	private static List<VacationTimeInfor> createVacationUsageTime(RequireM8 require, String cid, CreateAtr createAtr, List<VacationTimeInforNew> vacationTimes, String workTypeCode) {
+	private static List<VacationTimeInfor> createVacationUsageTime(RequireM8 require, String cid, CreateAtr createAtr, List<VacationTimeUseInfor> vacationTimes, String workTypeCode) {
 
 		List<VacationTimeInfor> result = new ArrayList<VacationTimeInfor>();
 		//時間休暇使用時間を作成
@@ -336,7 +336,7 @@ public class InterimRemainOffDateCreateData {
 		return result;
 	}
 
-	private static AttendanceTime getUseTime(VacationTimeInforNew vacationTime, HolidayType holidayType) {
+	private static AttendanceTime getUseTime(VacationTimeUseInfor vacationTime, HolidayType holidayType) {
 		switch (holidayType) {
 		/** 年休 */
 		case ANNUAL:
@@ -375,7 +375,7 @@ public class InterimRemainOffDateCreateData {
 	 * @return
 	 */
 	private static VacationTimeInfor SetVacationUsageTime(RequireM8 require, String cid,
-			VacationTimeInforNew vacationTime, CreateAtr createAtr, HolidayType type, AttendanceTime useTime,
+			VacationTimeUseInfor vacationTime, CreateAtr createAtr, HolidayType type, AttendanceTime useTime,
 			Optional<SpecialHdFrameNo> specialNo, String workTypeCode) {
 
 		if (useTime.v() <= 0) {

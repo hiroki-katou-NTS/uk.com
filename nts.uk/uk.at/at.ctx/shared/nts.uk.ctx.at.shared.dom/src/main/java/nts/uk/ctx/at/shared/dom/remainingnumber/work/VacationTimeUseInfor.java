@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VacationTimeInforNew {
+public class VacationTimeUseInfor {
 	/**
 	 * 時間休種類
 	 */
@@ -58,11 +58,11 @@ public class VacationTimeInforNew {
 	 */
 	private Optional<SpecialHdFrameNo> spcVacationFrameNo;
 	
-	public static VacationTimeInforNew fromLateDomain(LateTimeOfDaily domain, AppTimeType appTimeType) {
+	public static VacationTimeUseInfor fromLateDomain(LateTimeOfDaily domain, AppTimeType appTimeType) {
 		
 		TimevacationUseTimeOfDaily timeUse = domain.getTimePaidUseTime();
 		
-		return VacationTimeInforNew.builder()
+		return VacationTimeUseInfor.builder()
 				//時間休暇使用情報．時間休暇種類 ← 時間休暇申請詳細．詳細．時間休暇種類
 				.timeType(appTimeType)
 				//時間休暇使用情報．時間年休使用時間 ← 時間休暇申請詳細．詳細．申請時間．時間年休使用時間
@@ -82,11 +82,11 @@ public class VacationTimeInforNew {
 				.build();
 	}
 
-	public static VacationTimeInforNew fromEarlyDomain(LeaveEarlyTimeOfDaily domain, AppTimeType appTimeType) {
+	public static VacationTimeUseInfor fromEarlyDomain(LeaveEarlyTimeOfDaily domain, AppTimeType appTimeType) {
 		
 		TimevacationUseTimeOfDaily timeUse = domain.getTimePaidUseTime();
 		
-		return VacationTimeInforNew.builder()
+		return VacationTimeUseInfor.builder()
 				.timeType(appTimeType)
 				.nenkyuTime(timeUse.getTimeAnnualLeaveUseTime())
 				.kyukaTime(timeUse.getTimeCompensatoryLeaveUseTime())
@@ -98,11 +98,11 @@ public class VacationTimeInforNew {
 				.build();
 	}
 
-	public static VacationTimeInforNew fromOutDomain(OutingTimeOfDaily domain, AppTimeType appTimeType) {
+	public static VacationTimeUseInfor fromOutDomain(OutingTimeOfDaily domain, AppTimeType appTimeType) {
 		
 		TimevacationUseTimeOfDaily timeUse = domain.getTimeVacationUseOfDaily();
 		
-		return VacationTimeInforNew.builder()
+		return VacationTimeUseInfor.builder()
 				.timeType(appTimeType)
 				.nenkyuTime(timeUse.getTimeAnnualLeaveUseTime())
 				.kyukaTime(timeUse.getTimeCompensatoryLeaveUseTime())

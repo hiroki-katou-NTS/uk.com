@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
+package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
@@ -28,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
  */
 public class TranferHdWorkCompensatory {
 
-	public static IntegrationOfDaily process(Require require, String cid, IntegrationOfDaily dailyRecord) {
+	public static IntegrationOfDaily process(Require require, String cid, IntegrationOfDaily dailyRecord, List<OvertimeHdHourTransfer>timeAfterReflectApp) {
 
 		Optional<WorkType> workTypeOpt = require.getWorkType(dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		if (!workTypeOpt.isPresent() || workTypeOpt.get().getWorkTypeSetList().stream()
@@ -47,8 +46,7 @@ public class TranferHdWorkCompensatory {
 		IntegrationOfDaily dailyRecordNew = CreateWorkMaxTimeZone.process(require, cid, dailyRecord);
 		
 		MaximumTimeZone maxTimeZone = new MaximumTimeZone();
-		List<OvertimeHourTransfer> maxTime = new ArrayList<>();
-		List<OvertimeHourTransfer> timeAfterReflectApp = new ArrayList<>();
+		List<OvertimeHdHourTransfer> maxTime = new ArrayList<>();
 		if (!dailyRecordNew.getAttendanceTimeOfDailyPerformance().isPresent()
 				|| !dailyRecordNew.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
@@ -68,24 +66,13 @@ public class TranferHdWorkCompensatory {
 	
 		//計算日別勤怠(work）から休出枠時間（List）の内容を移送して、[最大の時間]を作成する
 		maxTime.addAll(IntStream.range(0, hdTimeWork.getHolidayWorkFrameTimeSheet().size()).boxed().map(indx -> {
-			return new OvertimeHourTransfer(indx,
+			return new OvertimeHdHourTransfer(indx,
 					hdTimeWork.getHolidayWorkFrameTimeSheet().get(indx).getHdTimeCalc(),
 					hdTimeWork.getHolidayWorkFrameTimeSheet().get(indx).getTranferTimeCalc());
 		}).collect(Collectors.toList()));
 
-		// input.日別勤怠(work）から休出枠時間（List）の内容を移送し、[申請を反映させた後の時間]へセットする
-		timeAfterReflectApp.addAll(dailyRecord.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get()
-				.getHolidayWorkFrameTime().stream().map(x -> {
-					return new OvertimeHourTransfer(x.getHolidayFrameNo().v(),
-							x.getHolidayWorkTime().isPresent() ? x.getHolidayWorkTime().get().getTime()
-									: new AttendanceTime(0),
-							x.getTransferTime().isPresent() ? x.getTransferTime().get().getTime()
-									: new AttendanceTime(0));
-				}).collect(Collectors.toList()));
-		
 		// 代休振替処理
-		List<OvertimeHourTransfer> lstMaxTime = SubstituteTransferProcess.process(require, cid,
+		List<OvertimeHdHourTransfer> lstMaxTime = SubstituteTransferProcess.process(require, cid,
 				dailyRecordNew.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(x -> x.v()),
 				CompensatoryOccurrenceDivision.WorkDayOffTime, maxTimeZone, maxTime, timeAfterReflectApp);
 

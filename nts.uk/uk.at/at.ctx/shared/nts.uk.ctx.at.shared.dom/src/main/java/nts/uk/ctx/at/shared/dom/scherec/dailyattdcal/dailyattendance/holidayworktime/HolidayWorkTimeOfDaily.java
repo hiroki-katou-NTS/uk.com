@@ -13,6 +13,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.SubsTransferProcessMode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
@@ -471,5 +472,17 @@ public class HolidayWorkTimeOfDaily implements Cloneable{
 				holidayMidNightWorkClone, holidayTimeSpentAtWorkClone);
 	}
 	
-	
+	// 休日出勤時間の代休振替を呼ぶかどうか
+	public boolean tranferHdWorkCompenCall(SubsTransferProcessMode processMode) {
+		int sumHdTime = this.holidayWorkFrameTime.stream().filter(x -> x.getHolidayWorkTime().isPresent())
+				.collect(Collectors.summingInt(x -> x.getHolidayWorkTime().get().getTime().v()));
+		int sumHdTranferTime = this.holidayWorkFrameTime.stream().filter(x -> x.getTransferTime().isPresent())
+				.collect(Collectors.summingInt(x -> x.getTransferTime().get().getTime().v()));
+		int sumApp = this.holidayWorkFrameTime.stream().filter(x -> x.getBeforeApplicationTime().isPresent())
+				.collect(Collectors.summingInt(x -> x.getBeforeApplicationTime().get().v()));
+		if ((sumHdTime + sumHdTranferTime) <= 0 && processMode == SubsTransferProcessMode.DAILY && sumApp > 0) {
+			return true;
+		}
+		return false;
+	}
 }

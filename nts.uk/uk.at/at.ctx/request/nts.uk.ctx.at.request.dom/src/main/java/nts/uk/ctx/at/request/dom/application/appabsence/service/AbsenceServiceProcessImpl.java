@@ -127,7 +127,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -2559,7 +2559,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 EnumAdaptor.valueOf(application.getAppType().value, ApplicationType.class), 
                 Optional.ofNullable(workTypeCode), 
                 Optional.ofNullable(workTimeCode), 
-                new ArrayList<VacationTimeInforNew>(), 
+                new ArrayList<VacationTimeUseInfor>(), 
                 Optional.empty(), 
                 Optional.empty(), 
                 application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
+package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 @AllArgsConstructor
 @Getter
 @Setter
-public class OvertimeHourTransfer {
+public class OvertimeHdHourTransfer {
 
 	// 枠NO
 	private int no;
