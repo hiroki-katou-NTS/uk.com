@@ -861,12 +861,8 @@ module nts.uk.ui.at.kdw013.c {
 						item++;
 					});
 				});
-                setTimeout(() => {
-//					flag(!flag());
-				}, item);
 				setTimeout(() => {
 					resetHeight();
-//					flag(!flag());
 				}, 1);
             });
 			vm.caltimeSpanView.start.subscribe(() => {
@@ -879,7 +875,7 @@ module nts.uk.ui.at.kdw013.c {
 		
 		calTimeRange(): void{
 			let vm = this;
-			if(_.isNumber(vm.caltimeSpanView.start()) && _.isNumber(vm.caltimeSpanView.end())){
+			if(vm.taskDetailsView().length == 1 && _.isNumber(vm.caltimeSpanView.start()) && _.isNumber(vm.caltimeSpanView.end())){
 				vm.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start()));
 			}else{
 				vm.caltimeSpanView.range('');
@@ -998,9 +994,6 @@ module nts.uk.ui.at.kdw013.c {
                 if(item.itemId == 3) {
                     item.use = showInputTime;
 					item.lable(getText("KDW013_25"));
-					item.value.subscribe(() => {
-//	                    vm.flag(!vm.flag());
-                	});
 				}else if(item.itemId == 4) {
                     if (first) {
                         vm.setLableUse(item, first);
@@ -1011,9 +1004,6 @@ module nts.uk.ui.at.kdw013.c {
 	                    if (value) {
                             vm.setWorkList(5, 2, value);
                         }
-						setTimeout(() => {
-//                        	vm.flag(!vm.flag());
-						}, 1);
                 	});
 				}else if(item.itemId == 5){
                     if (second) {
@@ -1197,14 +1187,16 @@ module nts.uk.ui.at.kdw013.c {
                     if (selected) {
                         title.push(selected.name);
                     }
-				}            
+				}
             });
+			let result = title.join("/");
+
 			let timeRange = _.find(vm.taskItemValues(), i => i.itemId == 3);
             if(timeRange && timeRange.value() && timeRange.value() != '') {
-                title.push(getText('KDW013_25') + number2String(parseInt(timeRange.value())));
+                result = result + "\n" + getText('KDW013_25') + number2String(parseInt(timeRange.value()));
 			}
              
-            return title.join("\n");
+            return result;
         }               
 		
 		isChangedItemValues(): boolean{
