@@ -301,6 +301,7 @@ module nts.uk.at.view.kdp010.h {
 					self.isDel(true);
 					self.currentSelectLayout(self.selectedLayout());
 					info({ messageId: "Msg_15" }).then(() => {
+						self.dataKdpH = undefined;
 						$(document).ready(function() {
 							$('#combobox').focus();
 						});
