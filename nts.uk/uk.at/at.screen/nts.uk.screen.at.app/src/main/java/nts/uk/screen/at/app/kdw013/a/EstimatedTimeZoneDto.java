@@ -8,9 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.BreakTimeSheetDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.screen.at.app.kdw013.query.EstimatedTimeZone;
-import nts.uk.screen.at.app.kmk.kmk017.worktimeworkplace.TimezoneUseDto;
 
 /**
  * 
@@ -34,23 +32,13 @@ public class EstimatedTimeZoneDto {
 
 	private List<BreakTimeSheetDto> breakTimeSheets;
 
-	// List<計算用時間帯>
-
-	private List<TimezoneUseDto> timezones;
-
-	// List<時間帯>
-
-	private List<TimeSpanForCalcDto> itemSpans;
-
 	public static EstimatedTimeZoneDto fromDomain(EstimatedTimeZone et) {
 
 		return new EstimatedTimeZoneDto(
 						et.getYmd(), 
 						et.getStartTime() == null ? null : et.getStartTime().v(), 
 						et.getEndTime()	== null ? null : et.getEndTime().v(),
-						et.getBreakTimeSheets().stream().map(bt -> new BreakTimeSheetDto(bt.getStartTime().v(), bt.getEndTime().v(),bt.getBreakTime().v(), bt.getBreakFrameNo().v())).collect(Collectors.toList()),
-						et.getTimezones().stream().map(tz -> TimezoneUseDto.fromDomain(tz)).collect(Collectors.toList()),
-						et.getItemSpans().stream().map(ip-> new TimeSpanForCalcDto(ip.getStart().v(), ip.getEnd().v())).collect(Collectors.toList())
+						et.getBreakTimeSheets().stream().map(bt -> new BreakTimeSheetDto(bt.getStartTime().v(), bt.getEndTime().v(),bt.getBreakTime().v(), bt.getBreakFrameNo().v())).collect(Collectors.toList())
 						);
 	}
 }

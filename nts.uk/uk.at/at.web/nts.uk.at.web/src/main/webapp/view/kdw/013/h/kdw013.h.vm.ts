@@ -61,10 +61,16 @@ module nts.uk.at.view.kdw013.h {
 				let self = this;
 				let dfd = $.Deferred();
 				self.breakTimeBase.push(this.itemId157_159, this.itemId163_165);
-				self.breakTimeOptions.push(this.itemId169_171, this.itemId181_183,
-					this.itemId187_189, this.itemId193_195,
-					this.itemId199_201, this.itemId205_207,
-					this.itemId205_207, this.itemId211_213);
+				self.breakTimeOptions.push(
+					this.itemId169_171, 
+					this.itemId175_177, 
+					this.itemId181_183, 
+					this.itemId187_189, 
+					this.itemId193_195,
+					this.itemId199_201, 
+					this.itemId205_207, 
+					this.itemId211_213
+				);
 				block.invisible();
 				let param = _.map(self.params.displayAttItems, i => i.attendanceItemId);
 				param.push(28, 29);

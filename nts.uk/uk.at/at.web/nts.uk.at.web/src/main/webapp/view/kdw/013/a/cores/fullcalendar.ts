@@ -2148,13 +2148,14 @@ module nts.uk.ui.at.kdw013.calendar {
                                                             taskContents.push({ frameNo: td.supNo, taskContent: { itemId: ti.itemId, taskCode: ti.value } });
                                                         });
                                                     });
-                                                    setTimeout(() => { $('.input-g').focus(); }, 100);
-                                                    
-                                                    //set lại phần update để nó không bị ảnh hưởng
-                                                    vm.params.screenA.oneDayFavoriteSet(null);
-                                                    vm.params.screenA.oneDayFavTaskName('');
+                                                   
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
                                                 });
+                                                setTimeout(() => { $('.input-g').focus(); }, 100);
+
+                                                //set lại phần update để nó không bị ảnh hưởng
+                                                vm.params.screenA.oneDayFavoriteSet(null);
+                                                vm.params.screenA.oneDayFavTaskName('');
                                                 vm.params.screenA.taskBlocks(taskBlocks);
                                             } else {
                                                 
