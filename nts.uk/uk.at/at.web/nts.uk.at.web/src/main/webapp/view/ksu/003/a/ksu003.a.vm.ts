@@ -4910,7 +4910,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                     workplaceId: self.dataFromA().workplaceId,
                     workplaceGroupId: self.dataFromA().workplaceGroupId,
                 },
-                employeeIds: _.map(self.lstEmpId, (x: any) => { return x.empId }),
+                employeeIds: _.map(self.localStore().lstEmpIdSort, (x: any) => { return x.empId }),
                 targetPeriod: {
                     startDate: self.dataFromA().daySelect,
                     endDate: self.dataFromA().daySelect
