@@ -24,7 +24,7 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 	@Setter
 	// 時刻
 	@AttendanceItemLayout(layout = LAYOUT_U, jpPropertyName = CLOCK)
-	@AttendanceItemValue(type = ValueType.ATTR)
+	@AttendanceItemValue(type = ValueType.CLOCK)
 	private Integer timeWithDay;
 	
 	@Override
@@ -36,7 +36,7 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
 		case CLOCK:
-			return Optional.of(ItemValue.builder().value(timeWithDay).valueType(ValueType.ATTR));
+			return Optional.of(ItemValue.builder().value(timeWithDay).valueType(ValueType.CLOCK));
 		default:
 			return Optional.empty();
 		}
