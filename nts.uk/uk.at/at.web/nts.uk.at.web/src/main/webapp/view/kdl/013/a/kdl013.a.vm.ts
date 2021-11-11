@@ -29,14 +29,15 @@ module nts.uk.at.kdl013.a {
 
         loadData(): void {
             let self = this;
-            self.dataSoure.push(new ItemModel("", getText("KDL013_7")));
-            self.currentCodeList(self.dataShare.selectedCode);
+            self.dataSoure.push(new ItemModel(" ", getText("KDL013_7")));
+            self.currentCodeList( (!_.isUndefined(self.dataShare.selectedCode) && (self.dataShare.selectedCode.length > 0))  ? self.dataShare.selectedCode : " ");
             self.$blockui("invisible");
             
             self.$ajax(PATH.GET_ALL_TASK_BY_ATTENDANCE_AND_DATE, self.dataShare ).done((lstItem: Array<any>) => {
                 let data = _.map(lstItem, item => { return new ItemModel(item.code, item.name) });
                 self.dataSoure = self.dataSoure.concat(_.sortBy(data, ['code']));
-                self.items(self.dataSoure)
+                self.items(self.dataSoure);
+                $(".ntsSearchBox").focus();               
             }).fail((res) => {
                 self.$dialog.alert({ messageId: res.messageId }).then(() => {
                     self.closeDialog();
@@ -48,8 +49,7 @@ module nts.uk.at.kdl013.a {
 
         register(): void {
             let self = this;
-            if (self.currentCodeList().length == 0) {
-                setShared('KDL013ParamsReturn', self.currentCodeList());
+            if (self.currentCodeList().length == 0) {            
                 self.$dialog.error({ messageId: 'Msg_2305' });
             } else {
                 setShared('KDL013ParamsReturn', self.currentCodeList());
