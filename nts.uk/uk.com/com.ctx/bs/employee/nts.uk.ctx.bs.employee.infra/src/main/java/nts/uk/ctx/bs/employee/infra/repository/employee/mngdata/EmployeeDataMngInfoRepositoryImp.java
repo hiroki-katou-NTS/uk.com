@@ -96,7 +96,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String GET_ALL_BY_CID = " SELECT e FROM BsymtEmployeeDataMngInfo e WHERE e.companyId = :cid AND e.delStatus = 1 ORDER BY  e.employeeCode ASC";
 
 	private static final String SELECT_BY_EMP_CODE = String.join(" ", SELECT_NO_PARAM,
-			"WHERE TRIM(e.employeeCode) = :empcode AND e.companyId = :cid AND e.delStatus = 0");
+			"WHERE e.employeeCode = :empcode AND e.companyId = :cid AND e.delStatus = 0");
 
 	// duongtv start code
 	/** The select by list emp code. */
