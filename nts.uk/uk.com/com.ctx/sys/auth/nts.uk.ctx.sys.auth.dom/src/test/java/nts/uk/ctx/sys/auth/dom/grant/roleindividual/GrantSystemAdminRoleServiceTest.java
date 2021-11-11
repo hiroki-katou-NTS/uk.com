@@ -827,7 +827,7 @@ public class GrantSystemAdminRoleServiceTest {
 				,	require, "userID_1", Optional.empty());
 		
 		//Assert
-		assertThat( result ).isTrue();
+		assertThat( result ).isFalse();
 		
 	}
 	

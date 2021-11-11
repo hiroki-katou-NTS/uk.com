@@ -108,7 +108,7 @@ public class GrantSystemAdminRoleService {
 			validPeriods.add( validPeriod.get() );
 		}
 		
-		if( validPeriods.isEmpty() ) return true;
+		if( validPeriods.isEmpty() ) return false;
 		
 		val checkTargetPeriod = new DatePeriod( GeneralDate.today(), GeneralDate.ymd(9999, 12, 31) );
 		
