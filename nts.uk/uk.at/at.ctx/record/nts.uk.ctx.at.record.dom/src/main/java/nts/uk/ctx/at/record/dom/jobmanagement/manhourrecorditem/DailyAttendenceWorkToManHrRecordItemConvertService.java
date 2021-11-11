@@ -2,16 +2,12 @@ package nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
-
-import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -28,9 +24,6 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.Attendance
 @Stateless
 public class DailyAttendenceWorkToManHrRecordItemConvertService {
 
-	@Inject
-	private AttendanceItemConvertFactory attendanceItemConvertFactory;
-
 	/**
 	 * ■Public 日別勤怠(Work)からList<ItemValue>と工数実績項目に変換する [1] 変換する
 	 * 
@@ -39,12 +32,12 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 	 * @param itemIds List<工数実績項目ID>
 	 * @return 工数実績変換結果
 	 */
-	public ManHrRecordConvertResult convert(Require require, IntegrationOfDaily inteDaiy, List<Integer> itemIds) {
+	public static ManHrRecordConvertResult convert(Require require, IntegrationOfDaily inteDaiy, List<Integer> itemIds) {
 
 		// $勤怠項目値 = 日別勤怠(Work)からList<ItemValue>に変換する
 		// 1.クラスを生成
 		// AttendanceItemConvertFactory.createDailyConverter()
-		DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter();
+		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 
 		// 2.データをセットする
 		// DailyRecordToAttendanceItemConverter.setData(日別勤怠(Work))
@@ -104,6 +97,9 @@ public class DailyAttendenceWorkToManHrRecordItemConvertService {
 		// [R-1] 紐付け設定を取得する
 		// 工数実績項目と勤怠項目の紐付けRepository.Get*(会社ID,工数実績項目リスト)
 		List<ManHourRecordAndAttendanceItemLink> get(List<Integer> items);
+		
+		// クラスを生成
+		DailyRecordToAttendanceItemConverter createDailyConverter();
 	}
 
 }
