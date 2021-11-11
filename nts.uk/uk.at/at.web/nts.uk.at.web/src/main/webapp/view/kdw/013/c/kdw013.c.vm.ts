@@ -1172,9 +1172,7 @@ module nts.uk.ui.at.kdw013.c {
             const vm = this;
             const title: string[] = [];
             _.each(vm.taskItemValues(), (item: TaskItemValue) => {
-                if(item.itemId == 3 && item.value() && item.value() != '') {
-                    title.push(number2String(parseInt(item.value())));
-				}else if(item.itemId == 4 && item.value() != '') {
+                if(item.itemId == 4 && item.value() != '') {
                     const selected = _.find(ko.unwrap(item.options), ({ id }) => item.value() === id);
                     if (selected) {
                         title.push(selected.name);
