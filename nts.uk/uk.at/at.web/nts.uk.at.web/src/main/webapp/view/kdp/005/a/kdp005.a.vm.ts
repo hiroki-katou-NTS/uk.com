@@ -529,31 +529,66 @@ module nts.uk.at.view.kdp005.a {
 								}
 							}
 						}
-					});
 
+						vm.$window.storage(KDP005_SAVE_DATA)
+							.then((dataStorage: any) => {
 
-				vm.$window.storage(KDP005_SAVE_DATA)
-					.then((dataStorage: any) => {
+								service.getEmployeeWorkByStamping({ sid: employeeId, workFrameNo: 1, upperFrameWorkCode: '' })
+									.then((data: any) => {
+										if (data.task.length === 0) {
+											if (showViewL) {
+												showViewL = false;
+											}
+										}
+										let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
+										if (dataStorage.selectedWP.length > 1 && button.supportWplset == 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
+											vm.$window.modal('at', DIALOG.M, { screen: 'KDP005', employeeId: employeeId })
+												.then((result: string) => {
 
-						service.getEmployeeWorkByStamping({ sid: employeeId, workFrameNo: 1, upperFrameWorkCode: '' })
-							.then((data: any) => {
-								if (data.task.length === 0) {
-									if (showViewL) {
-										showViewL = false;
-									}
-								}
-								let btnType = checkType(button.changeClockArt, button.changeCalArt, button.setPreClockArt, button.changeHalfDay, button.btnReservationArt);
-								if (dataStorage.selectedWP.length > 1 && button.supportWplset == 1 && self.supportUse() === true && _.includes([14, 15, 16, 17, 18], btnType)) {
-									vm.$window.modal('at', DIALOG.M, { screen: 'KDP005', employeeId: employeeId })
-										.then((result: string) => {
+													if (result) {
+														if (result.notification !== null) {
+															self.workPlaceId = result;
 
-											if (result) {
-												if (result.notification !== null) {
-													self.workPlaceId = result;
+															if (showViewL) {
+																vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
+																	.then((data: any) => {
+																		let registerdata = {
+																			stampedCardNumber: stampedCardNumber,
+																			datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+																			stampButton: {
+																				pageNo: layout.pageNo,
+																				buttonPositionNo: button.btnPositionNo
+																			},
+																			refActualResult: {
+																				cardNumberSupport: null,
+																				workPlaceId: self.workPlaceId,
+																				workLocationCD: self.worklocationCode,
+																				workTimeCode: null,
+																				overtimeDeclaration: null,
+																				workGroup: data
+																			}
+																		};
+																		service.addCheckCard(registerdata).done((res) => {
 
-													if (showViewL) {
-														vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
-															.then((data: any) => {
+																			//phat nhac
+																			if (source) {
+																				let audio = new Audio(source);
+																				audio.play();
+																			}
+
+																			if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+																				self.openScreenC(button, layout, employeeIdRegister);
+																			} else {
+																				self.openScreenB(button, layout, employeeIdRegister);
+																			}
+																		}).fail((res) => {
+																			dialog.alertError({ messageId: res.messageId });
+																		}).always(() => {
+																			//					self.getStampToSuppress();
+																			block.clear();
+																		});
+																	})
+															} else {
 																let registerdata = {
 																	stampedCardNumber: stampedCardNumber,
 																	datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
@@ -566,8 +601,7 @@ module nts.uk.at.view.kdp005.a {
 																		workPlaceId: self.workPlaceId,
 																		workLocationCD: self.worklocationCode,
 																		workTimeCode: null,
-																		overtimeDeclaration: null,
-																		workGroup: data
+																		overtimeDeclaration: null
 																	}
 																};
 																service.addCheckCard(registerdata).done((res) => {
@@ -586,11 +620,23 @@ module nts.uk.at.view.kdp005.a {
 																}).fail((res) => {
 																	dialog.alertError({ messageId: res.messageId });
 																}).always(() => {
-																	//					self.getStampToSuppress();
 																	block.clear();
 																});
-															})
-													} else {
+															}
+														}
+													}
+
+												});
+										} else {
+											if (dataStorage.selectedWP.length = 1) {
+												if (self.workPlaceId !== '') {
+													self.workPlaceId = dataStorage.selectedWP[0];
+												}
+											}
+
+											if (showViewL) {
+												vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
+													.then((data: any) => {
 														let registerdata = {
 															stampedCardNumber: stampedCardNumber,
 															datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
@@ -603,7 +649,8 @@ module nts.uk.at.view.kdp005.a {
 																workPlaceId: self.workPlaceId,
 																workLocationCD: self.worklocationCode,
 																workTimeCode: null,
-																overtimeDeclaration: null
+																overtimeDeclaration: null,
+																workGroup: data
 															}
 														};
 														service.addCheckCard(registerdata).done((res) => {
@@ -624,21 +671,8 @@ module nts.uk.at.view.kdp005.a {
 														}).always(() => {
 															block.clear();
 														});
-													}
-												}
-											}
-
-										});
-								} else {
-									if (dataStorage.selectedWP.length = 1) {
-										if (self.workPlaceId !== '') {
-											self.workPlaceId = dataStorage.selectedWP[0];
-										}
-									}
-
-									if (showViewL) {
-										vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
-											.then((data: any) => {
+													})
+											} else {
 												let registerdata = {
 													stampedCardNumber: stampedCardNumber,
 													datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
@@ -651,10 +685,10 @@ module nts.uk.at.view.kdp005.a {
 														workPlaceId: self.workPlaceId,
 														workLocationCD: self.worklocationCode,
 														workTimeCode: null,
-														overtimeDeclaration: null,
-														workGroup: data
+														overtimeDeclaration: null
 													}
 												};
+
 												service.addCheckCard(registerdata).done((res) => {
 
 													//phat nhac
@@ -673,45 +707,10 @@ module nts.uk.at.view.kdp005.a {
 												}).always(() => {
 													block.clear();
 												});
-											})
-									} else {
-										let registerdata = {
-											stampedCardNumber: stampedCardNumber,
-											datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-											stampButton: {
-												pageNo: layout.pageNo,
-												buttonPositionNo: button.btnPositionNo
-											},
-											refActualResult: {
-												cardNumberSupport: null,
-												workPlaceId: self.workPlaceId,
-												workLocationCD: self.worklocationCode,
-												workTimeCode: null,
-												overtimeDeclaration: null
 											}
-										};
-
-										service.addCheckCard(registerdata).done((res) => {
-
-											//phat nhac
-											if (source) {
-												let audio = new Audio(source);
-												audio.play();
-											}
-
-											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-												self.openScreenC(button, layout, employeeIdRegister);
-											} else {
-												self.openScreenB(button, layout, employeeIdRegister);
-											}
-										}).fail((res) => {
-											dialog.alertError({ messageId: res.messageId });
-										}).always(() => {
-											block.clear();
-										});
-									}
-								}
-							})
+										}
+									})
+							});
 					});
 			}
 
