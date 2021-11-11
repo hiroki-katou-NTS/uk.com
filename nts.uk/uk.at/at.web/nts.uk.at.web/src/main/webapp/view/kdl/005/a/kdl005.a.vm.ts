@@ -83,7 +83,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 215 ,formatter: function (digestionDate : any, record : any) {
 					let htmlStatus = record.digestionDateStatus.toString().length == 1 ? "<div style='margin-left: 10px;display: flex;'><div style='width: 25px;' >" : "<div style='margin-left: 5px;display: flex;'><div style='width: 31px;' >";
                     if (record.digestionDateStatus.toString().length == 0) {
-						htmlStatus = "<div style='margin-left: 5px;display: flex;'><div style='width: 20px;' >";
+						htmlStatus = "<div style='margin-left: 15px;display: flex;'><div style='width: 20px;' >";
 					}
 					return htmlStatus +record.digestionDateStatus.toString()+"</div> <div style='width: 155px;float:right;'> " + digestionDate + " </div></div>";   
                 } }
