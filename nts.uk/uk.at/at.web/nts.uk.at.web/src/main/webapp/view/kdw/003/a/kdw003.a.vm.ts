@@ -2797,7 +2797,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let itemOtherInGroup = CHECK_INPUT[value.itemId + ""];
                     let itemGroup = self.itemInputName[Number(itemOtherInGroup)];
                     let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup;
-                    object.message = nts.uk.resource.getMessage(value.message, [object.itemName, nameGroup]);
+					if(_.includes(value.message,'_')){
+                    	object.message = nts.uk.resource.getMessage(value.message, [object.itemName, nameGroup]);
+					}
                     errorValidateScreeen.push(object);
                 });
 
@@ -2889,7 +2891,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 setShared("errorValidate", errorValidateScreeen);
                 setShared("messageKdw003a", (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? null : messageAlert);
                 self.openedScreenB = true;
-                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1270, height : 530} : {width : 900, height : 550}
+                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1260, height : 530} : {width : 900, height : 560}
                 self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml", dialogSize).onClosed(() =>{
                      self.openedScreenB = false;
                      dfd.resolve();
@@ -3101,28 +3103,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (!self.hasEmployee || self.hasErrorBuss) return;
             if (!nts.uk.ui.errors.hasError()) {
-                let lstEmployee = [];
+                let lstEmployee: any[] = [];
                 if (self.displayFormat() === 0) {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    setShared("KDL014A-PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        employeeID: lstEmployee[0].code
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "0", 
+                        listEmp: [lstEmployee[0].id]
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
                 } else {
                     lstEmployee = self.lstEmployee().map((data) => {
-                        return data.code;
+                        return data.id;
                     });
-                    setShared("KDL014B_PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        lstEmployee: lstEmployee
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "1", 
+                        listEmp: lstEmployee
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
                 }
@@ -5433,7 +5439,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let param3 = {
                                 typeDialog: 15,
 								param: {
-							 		taskFrameNo: workFrameNoSelection
+									itemId: self.attendenceId
 								}
                             };
                             service.findAllCodeName(param3).done((data: any) => {
@@ -5455,7 +5461,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     break;
 				case 19 :
 				// KDL013 - WORK_SUPPLEMENT_OPT(19,"作業補足選択肢");
-				let dfd19 : any = $.Deferred(), baseDate : any = null;
+                let dfd19 = $.Deferred();
+				let baseDate : any = null;
 				let rowSelect: any = _.find(selfParent.dailyPerfomanceData(), item => item.id==self.rowId().substring(1));
 				
 				if(rowSelect){
@@ -5468,9 +5475,35 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         selectedCode: self.selectedCode()
                  	}, true);
 
-				modal('/view/kdl/013/index.xhtml').onClosed(function(): any {
-					let data = nts.uk.ui.windows.getShared('KDL013ParamsReturn');
+				modal('/view/kdl/013/a/index.xhtml').onClosed(function(): any {
+					let returnData = nts.uk.ui.windows.getShared('KDL013ParamsReturn');
+                    if (returnData !== undefined && returnData != "") {
+                        let dataKDL: any;
+                        let param3 = {
+                            typeDialog: 19,
+                            param: {
+                                itemId: item.id ,
+                                date: moment(baseDate).utc().toISOString()
+                            }
+                        };
+                        service.findAllCodeName(param3).done((data: any) => {
+                            let codeName = _.find(data, (item: any) => {
+                                return item.code == returnData;
+                            });
+                            self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
+                            dfd19.resolve();
+                        });
+                    }
+                    else {
+                        if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                        __viewContext.vm.clickCounter.clickLinkGrid = false;
+                        nts.uk.ui.block.clear();
+                        dfd19.resolve();
+                    }
+					__viewContext.vm.clickCounter.clickLinkGrid = false;
+                    nts.uk.ui.block.clear();
 				});
+                dfd19.promise();
 				break;
             }
             nts.uk.ui.block.clear();

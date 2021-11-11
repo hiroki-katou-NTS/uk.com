@@ -18,6 +18,6 @@ public class SuppInfoSelectionItemCommand {
 	public SuppInfoSelectionItem toDomain() {
 
 		return new SuppInfoSelectionItem(new SuppInfoNo(this.getSuppInfoSelectionNo()),
-				new ChoiceCode(this.getChoiceCode()));
+				this.getChoiceCode()==null?null: new ChoiceCode(this.getChoiceCode()));
 	}
 }

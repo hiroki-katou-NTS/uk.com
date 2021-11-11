@@ -81,13 +81,14 @@ public class CreateDpItemQuery {
 					manHourRepo);
 
 			// 1. 変換する(@Require, ItemValue, 工数実績作業詳細) 勤怠項目リスト
-			List<ItemValue> taskItems =  ManHrRecordTaskDetailToAttendanceItemService.convert(require, collectManHrContents(manHrlst), collectTaskLists(manHrlst));
+			List<ItemValue> taskItems = ManHrRecordTaskDetailToAttendanceItemService.convert(require,
+					manhr.getManHrContents(), manhr.getTaskList());
 			
 			// 2 .休憩時間帯を勤怠項目に変換する
 			List<ItemValue> itemVals = ConvertBreakTimeToAttendanceTtems(manhr, integrationOfDailys);
 			
 			// 3. call 値が変更している休憩項目のみ抽出する
-			List<ItemValue> itemChangeds = extraItemsChangeds(collectManHrContents(manHrlst), itemVals);
+			List<ItemValue> itemChangeds = extraItemsChangeds(manhr.getManHrContents(), itemVals);
 			
 			// 4. DPItemValueを作成する
 			
@@ -256,15 +257,6 @@ public class CreateDpItemQuery {
 		return converter.convert(itemIds);
 	}
 
-	private List<ManHrTaskDetail> collectTaskLists(List<ManHrRecordConvertResult> manHrlst) {
-		
-		return manHrlst.stream()
-				.filter(x -> !x.getTaskList().isEmpty())
-				.flatMap(x -> x.getTaskList().stream())
-				.collect(Collectors.toList());
-
-	}
-
 	private List<ItemValue> collectManHrContents(List<ManHrRecordConvertResult> manHrlst) {
 		
 		return manHrlst.stream()
@@ -280,8 +272,8 @@ public class CreateDpItemQuery {
 		private ManHourRecordAndAttendanceItemLinkRepository manHourRepo;
 
 		@Override
-		public List<ManHourRecordAndAttendanceItemLink> get(List<Integer> items) {
-			return this.manHourRepo.get(AppContexts.user().companyId(), items);
+		public List<ManHourRecordAndAttendanceItemLink> get() {
+			return this.manHourRepo.get(AppContexts.user().companyId());
 		}
 
 	}
