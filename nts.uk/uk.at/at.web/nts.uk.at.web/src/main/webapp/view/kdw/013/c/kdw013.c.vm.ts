@@ -943,7 +943,7 @@ module nts.uk.ui.at.kdw013.c {
                 titles.push(task.getTitles());
             });
 			if(titles.length == 1){
-				titles[0] = number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start())+ '\n' + titles[0];
+				titles[0] = titles[0] + '\n' + getText('KDW013_25') + number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start());
 			}
             return titles.join("\n\n");
         }
@@ -1199,8 +1199,12 @@ module nts.uk.ui.at.kdw013.c {
                     if (selected) {
                         title.push(selected.name);
                     }
-				}            });
-            
+				}            
+            });
+			let timeRange = _.find(vm.taskItemValues(), i => i.itemId == 3);
+            if(timeRange && timeRange.value() && timeRange.value() != '') {
+                title.push(getText('KDW013_25') + number2String(parseInt(timeRange.value())));
+			}
              
             return title.join("\n");
         }               
