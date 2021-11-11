@@ -923,9 +923,12 @@ module nts.uk.ui.at.kdw013.c {
 						item++;
 					});
 				});
-				setTimeout(() => {
+				let interval = setInterval(function () {
 					resetHeight();
-				}, 1);
+                });	
+				setTimeout(() => {
+					clearInterval(interval);
+				}, 1000);
             });
         }
 		
