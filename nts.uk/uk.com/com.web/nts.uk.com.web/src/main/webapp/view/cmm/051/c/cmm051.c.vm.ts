@@ -1,4 +1,4 @@
-module nts.uk.com.view.cmm051.b {
+module nts.uk.com.view.cmm051.c {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
@@ -10,20 +10,21 @@ module nts.uk.com.view.cmm051.b {
         startDate: KnockoutObservable<any> = ko.observable(moment());
         endDate: KnockoutObservable<any> = ko.observable(moment());
         required: KnockoutObservable<boolean>;
-        isCreate: boolean = false;
+        isUpdate: boolean = false;
 
         constructor() {
             super();
             let vm = this;
             vm.required = ko.observable(true);
-            let prams = getShared('dataToScreenB');
+
+            let prams = getShared('dataToScreenC');
             if (!isNullOrUndefined(prams)) {
-                vm.isCreate = prams.isCreate;
-                if (vm.isCreate) {
+                vm.isUpdate = prams.isUpdate;
+                if (vm.isUpdate) {
                     vm.periodDate(
                         {
-                            startDate: vm.startDate(),
-                            endDate: vm.endDate()
+                            startDate: prams.startDate,
+                            endDate: prams.endDate
                         });
                 }
             }

@@ -26,15 +26,14 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button class="add" data-bind="click: createWkpManager" tabindex="1">#{i18n.getText('CMM044_2')}</button>
-            <button class="proceed" data-bind="click: saveWkpManager"
-                    tabindex="2">#{i18n.getText('CMM044_3')}</button>
-            <button class="danger"
-                    data-bind="click: delWkpManager"
-                    tabindex="3">#{i18n.getText('CMM044_6')}</button>
+            <button class="add" data-bind="click: createWkpManager, enable: $root.errors.isEmpty()" tabindex="1">#{i18n.getText('CMM051_1')}</button>
+            <button class="proceed" data-bind="click: saveWkpManager, enable: $root.errors.isEmpty() "
+                    tabindex="2">#{i18n.getText('CMM051_2')}</button>
+            <button class="danger" data-bind="click: remove, enable: isDelete() &amp;&amp; $root.errors.isEmpty"
+                    tabindex="3">#{i18n.getText('CMM051_3')}</button>
         </div>
         <div id="contents-area">
-            <div class="container cmm-054">
+            <div class="container cmm-051" style="width:1270px;">
                 <div tabindex="4" class="panel-row">
                     <div class="row-left">
                         <!-- A2_2 -->
@@ -67,8 +66,8 @@
                     <div  class="valign-center control-group a_3">
                         <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
                         <button tabindex="5" class="" data-bind="click: openDialogA3282, enable: isNewMode()">#{i18n.getText('CMM051_42')}</button>
-                        <label class="ntsControl limited-label wp-code" data-bind="text: employeeCode()  "> </label>
-                        <label class="ntsControl limited-label wp-name" data-bind="text: employeeName()"> </label>
+                        <label class="ntsControl limited-label wp-code " data-bind="text: employeeCode()  "> </label>
+                        <label class="ntsControl limited-label wp-name " data-bind="text: employeeName()"> </label>
                     </div>
                 </div>
                 <div id="left-content">
@@ -80,7 +79,7 @@
                         <table id="wkp_list"
                                data-bind="ntsGridList: {
 	                                            name:'#[CMM051_49]',
-	                                            width: 545,
+	                                            width: 450,
 	                                            rows: 10,
 	                                            options: workPlaceList,
 	                                            optionsValue: 'workPlaceId',
@@ -111,8 +110,8 @@
                             <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
                             <button tabindex="7" class=" a_62"
                                     data-bind="click: openDialogA62102, enable: isNewMode()">#{i18n.getText('CMM051_42')}</button>
-                            <label class="ntsControl limited-label wp-code" data-bind="text:   workplaceCode()"> </label>
-                            <label class="ntsControl limited-label wp-name" data-bind="text:  workplaceName()"> </label>
+                            <label class="ntsControl limited-label wp-code code" data-bind="text:   workplaceCode()"> </label>
+                            <label class="ntsControl limited-label wp-name name" data-bind="text:  workplaceName()"> </label>
                         </div>
                     </div>
 

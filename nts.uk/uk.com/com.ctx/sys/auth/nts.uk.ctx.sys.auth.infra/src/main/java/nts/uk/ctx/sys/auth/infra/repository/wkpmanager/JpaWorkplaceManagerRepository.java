@@ -98,7 +98,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	
 	@Override
 	public Optional<WorkplaceManager> getWorkplaceManagerByID(String id) {
-		return this.queryProxy().find(id,SacmtWkpManager.class).map(SacmtWkpManager::toDomain);
+		return this.queryProxy().find(new SacmtWorkplaceManagerPK(id),SacmtWkpManager.class).map(SacmtWkpManager::toDomain);
 	}
 
 	/**

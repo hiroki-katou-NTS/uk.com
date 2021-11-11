@@ -22,7 +22,7 @@
 }
 
 #right-content {
-    margin-left: 5px;
+    margin-left: 100px;
     width: 572px;
     float: left;
 }
@@ -81,30 +81,40 @@
 .panel-row {
     border-bottom: 1px solid #b1b1b1;
     display: flex;
-    min-height: 45px
+    min-height: 36px;
+    margin-top: -5px
+;
 }
 
 .a_3 {
     margin-top: 5px;
-    height: 45px;
+    height: 30px;
     display: flex;
 }
-.cmm-054{
+.cmm-051{
     padding-left: 20px;
 }
 .date-list{
     margin-top: 20px;
 }
 .wp-code {
-    width: 120px;
+    width: 145px;
     margin-left: 10px;
     margin-top: 5px;
 }
 .wp-name{
-    width: 170px;
+    width: 410px;
     margin-top: 5px;
 }
 .a_6{
+    width: 600px;
+    margin-top: 5px;
+    height: 45px;
+    display: flex;
+}
+
+.a_10{
+    width: 600px;
     margin-top: 5px;
     height: 45px;
     display: flex;
@@ -122,4 +132,10 @@
 }
 #kcp005{
     width: 430px;
+}
+.code{
+    margin-bottom: -10px;
+}
+.name{
+    margin-bottom: -10px;
 }
