@@ -48,7 +48,7 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 			this.storedFileInfoRepository.add(newFileInfo);
 			return newFileId;
 		}
-		return null;
+		return "";
 	}
 
 	@Override

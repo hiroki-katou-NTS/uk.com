@@ -71,7 +71,7 @@ public class CopyFileCommandHandler extends CommandHandlerWithResult<CopyFileCom
 						&& imageSetting.getFileId().isPresent()) {
 					String fileId = imageSetting.getFileId().get();
 					imageSetting.setFileId(Optional.ofNullable(this.createFlowMenuFileService.copyFile(fileId)));
-					fileMap.put(fileId, imageSetting.getFileId().orElse(null));
+					fileMap.put(fileId, imageSetting.getFileId().orElse(""));
 				}
 			}
 			// Copy フローメニューレイアウト fileId
