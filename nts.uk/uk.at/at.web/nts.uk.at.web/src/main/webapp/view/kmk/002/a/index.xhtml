@@ -373,7 +373,7 @@
                                                       value: calcResultRange.timeInputUnit,
                                                       optionsText: 'localizedName',
                                                       editable: false,
-                                                      enable: usageAtr() === 1 &amp;&amp; selectedClac() == 0 &amp;&amp; performanceAtr() == 1 &amp;&amp; $parents[1].langJP(),
+                                                      enable: usageAtr() === 1 &amp;&amp; selectedClac() == 0 &amp;&amp; performanceAtr() == 1 &amp;&amp; !enableUnit() &amp;&amp; $parents[1].langJP(),
                                                       columns: [
                                                          { prop: 'localizedName', length: 2 },
                                                       ]}">
@@ -397,7 +397,7 @@
                                                       value: calcResultRange.numberInputUnit,
                                                       optionsText: 'localizedName',
                                                       editable: false,
-                                                      enable: usageAtr() === 1 &amp;&amp; selectedClac() == 0 &amp;&amp; performanceAtr() == 1 &amp;&amp; $parents[1].langJP(),
+                                                      enable: usageAtr() === 1 &amp;&amp; selectedClac() == 0 &amp;&amp; performanceAtr() == 1 &amp;&amp; !enableUnit() &amp;&amp; $parents[1].langJP(),
                                                       columns: [
                                                          { prop: 'localizedName', length: 2 },
                                                       ]}">
@@ -422,7 +422,7 @@
                                                       value: calcResultRange.amountInputUnit,
                                                       optionsText: 'localizedName',
                                                       editable: false,
-                                                      enable: usageAtr() === 1 &amp;&amp; selectedClac() == 0 &amp;&amp; performanceAtr() == 1 &amp;&amp; $parents[1].langJP(),
+                                                      enable: usageAtr() === 1 &amp;&amp; selectedClac() == 0 &amp;&amp; performanceAtr() == 1 &amp;&amp; !enableUnit() &amp;&amp; $parents[1].langJP(),
                                                       columns: [
                                                          { prop: 'localizedName', length: 2 },
                                                       ]}">

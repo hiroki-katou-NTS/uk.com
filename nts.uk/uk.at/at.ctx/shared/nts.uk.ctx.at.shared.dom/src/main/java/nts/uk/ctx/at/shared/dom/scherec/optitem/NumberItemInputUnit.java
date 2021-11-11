@@ -7,17 +7,51 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum NumberItemInputUnit {
-    // 0:0.01回
-    ONE_HUNDREDTH(0),
+	// 0:0.01回
+	ONE_HUNDREDTH(0),
 
-    // 1:0.1回
-    ONE_TENTH(1),
+	// 1:0.1回
+	ONE_TENTH(1),
 
-    // 2:0.5回
-    ONE_HALF(2),
+	// 2:0.5回
+	ONE_HALF(2),
 
-    // 3:1回
-    ONE(3);
+	// 3:1回
+	ONE(3);
 
-    public int value;
+	public int value;
+
+	private final static NumberItemInputUnit[] values = NumberItemInputUnit.values();
+
+	public static NumberItemInputUnit valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (NumberItemInputUnit val : NumberItemInputUnit.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+		// Not found.
+		return null;
+	}
+
+	/**
+	 * Enum値を返す
+	 */
+	public double valueEnum() {
+		switch (this) {
+		case ONE_HUNDREDTH:
+			return 0.01;
+		case ONE_TENTH:
+			return 0.1;
+		case ONE_HALF:
+			return 0.5;
+		default:
+			return 1.0;
+		}
+	}
 }

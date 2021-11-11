@@ -23,4 +23,29 @@ public enum AmountItemInputUnit {
     TEN_THOUSAND(4);
 
     public int value;
+    
+    private final static AmountItemInputUnit[] values = AmountItemInputUnit.values();
+    
+    public static AmountItemInputUnit valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (AmountItemInputUnit val : AmountItemInputUnit.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+		// Not found.
+		return null;
+	}
+    
+    /**
+     * Enum値を返す
+     */
+    public double valueEnum() {
+		return Math.pow(10,this.value);
+	}
 }

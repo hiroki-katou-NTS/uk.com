@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Employ
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.screen.at.app.checkarbitraryitems.CheckArbitraryItems;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyResCommandFacade;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
@@ -54,6 +55,9 @@ public class ProcessDailyCalc {
 	
 	@Inject
 	private OptionalItemRepository optionalMasterRepo;
+	
+	@Inject
+	private CheckArbitraryItems checkArbitraryItems;
 
 	private Map<Pair<String, GeneralDate>, ResultReturnDCUpdateData> checkBeforeCalc(DailyCalcParam param,
 			List<DailyRecordDto> dailyEdits) {
@@ -91,8 +95,11 @@ public class ProcessDailyCalc {
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
 			// 開始終了時刻順序不正チェック
 			List<DPItemValue> itemInputsPlus = validatorDataDaily.checkInputDataPlus(itemCovert, itemValues);
+			// 任意項目の入力チェック
+			List<DPItemValue> checkInputOptionlItems = checkArbitraryItems.check(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);
 			itemInputErors.addAll(itemInputsPlus);
+			itemInputErors.addAll(checkInputOptionlItems);
 			itemInputWorkType = lstNotFoundWorkType.stream().filter(
 					wt -> wt.getEmployeeId().equals(x.getKey().getLeft()) && wt.getDate().equals(x.getKey().getRight()))
 					.collect(Collectors.toList());

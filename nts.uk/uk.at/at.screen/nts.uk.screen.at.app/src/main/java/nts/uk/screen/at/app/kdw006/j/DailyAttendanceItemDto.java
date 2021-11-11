@@ -59,5 +59,10 @@ public class DailyAttendanceItemDto {
 		this.primitiveValue = dailyAttendanceItem.getPrimitiveValue().map(c->c.value).orElse(null);
 		this.displayName = dailyAttendanceItem.getDisplayName().map(c->c.v()).orElse(null);
 	}
-	
+
+	public void changeName (String displayName, String attendanceName) {
+		this.displayName = displayName;
+		this.attendanceName = attendanceName;
+	}
+
 }
