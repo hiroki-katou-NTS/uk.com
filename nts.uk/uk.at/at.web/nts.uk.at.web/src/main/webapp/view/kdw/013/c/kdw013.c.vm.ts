@@ -229,7 +229,7 @@ module nts.uk.ui.at.kdw013.c {
                         <td data-bind="i18n: 'KDW013_27'"></td>
                         <td class="caltimeSpanView">
                             <div class="ntsControl">
-								<input data-bind="ntsTimeEditor: {
+								<input id="kdw013CStart" data-bind="ntsTimeEditor: {
 									name: nts.uk.resource.getText('KDW013_14'),
 									value: taskBlocks.caltimeSpanView.start,
 									constraint: 'AttendanceTime', 
@@ -240,7 +240,7 @@ module nts.uk.ui.at.kdw013.c {
 									option: {width: '40px'}
 									}" />
 								<span data-bind="text: nts.uk.resource.getText('KDW013_30')"></span>
-								<input data-bind="ntsTimeEditor: {
+								<input id="kdw013CEnd" data-bind="ntsTimeEditor: {
 									name: nts.uk.resource.getText('KDW013_31'),
 									value: taskBlocks.caltimeSpanView.end,
 									constraint: 'AttendanceTime', 
@@ -559,8 +559,7 @@ module nts.uk.ui.at.kdw013.c {
 					caltimeSpan: {start: null, end: null}, 
 					taskDetails: []
 				}, 
-                __viewContext.user.employeeId,
-//                this.flag,
+                __viewContext.user.employeeId,      
 				this.showInputTime,
 			);
 		frameNos:KnockoutObservableArray<number> = ko.observableArray([]);
@@ -577,15 +576,8 @@ module nts.uk.ui.at.kdw013.c {
             super();
 
             const vm = this;
-        
-            vm.taskFrameSettings.subscribe((t: a.TaskFrameSettingDto[]) => vm.taskBlocks.updateSetting(t));
 
-//            this.flag.subscribe(() => {
-//                vm.checkError();
-//            });
-			this.range.subscribe(() => {
-                //$('.inputRange').trigger('validate');
-            });
+            vm.taskFrameSettings.subscribe((t: a.TaskFrameSettingDto[]) => vm.taskBlocks.updateSetting(t));
 
 			this.taskBlocks.caltimeSpanView.start.subscribe(()=>{
 				
@@ -602,11 +594,81 @@ module nts.uk.ui.at.kdw013.c {
 				}, 1000);
             });
 
+            vm.taskBlocks.caltimeSpanView.start.subscribe(() => {
+				vm.calTimeRange();
+                vm.validateRange();
+			});
+			vm.taskBlocks.caltimeSpanView.end.subscribe(() => {
+				vm.calTimeRange();
+                vm.validateRange();
+			});
+
 			$(window).resize(function () {
 				resetHeight();
 			});
 			
         }
+
+        calTimeRange(): void{
+			let vm = this;
+			if(vm.taskBlocks.taskDetailsView().length == 1 && _.isNumber(vm.taskBlocks.caltimeSpanView.start()) && _.isNumber(vm.taskBlocks.caltimeSpanView.end())){
+				vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start()));
+			}else{
+				vm.taskBlocks.caltimeSpanView.range('');
+			}
+		}
+
+        validateRange(){
+            let vm = this;
+            if($('#kdw013CStart').ntsError('hasError') || $('#kdw013CEnd').ntsError('hasError')){
+                return;
+            }
+
+            const msg2164 = !!_.chain(vm.params.excludeTimes())
+                .filter(({ endTime, startTime }) => {
+                    const start = vm.taskBlocks.caltimeSpanView.start();
+                    const end = vm.taskBlocks.caltimeSpanView.end();
+                    // inside other event
+                    if (start > startTime && start < endTime) {
+                        return true;
+                    }
+                    // inside other event
+                    if (end > startTime && end < endTime) {
+                        return true;
+                    }
+                    // overlap start time of other event
+                    if (start < startTime && end > startTime) {
+                        return true;
+                    }
+                    // overlap end time of other event
+                    if (start < endTime && end > endTime) {
+                        return true;
+                    }
+                    return false;
+                })
+                .size()
+                .value();
+            const start = vm.taskBlocks.caltimeSpanView.start();
+            const end = vm.taskBlocks.caltimeSpanView.end();
+            if(_.isNumber(start) && _.isNumber(end)){
+                if (start >= end) {
+					$('#kdw013CStart').ntsError('clear');
+					$('#kdw013CEnd').ntsError('clear');
+                    setTimeout(() => {
+                        $('#kdw013CStart').ntsError('set', {messageId:"Msg_1400"});
+                        $('#kdw013CEnd').ntsError('set', {messageId:"Msg_1400"});
+                    }, 100);
+                }else if(msg2164){
+					$('#kdw013CStart').ntsError('clear');
+					$('#kdw013CEnd').ntsError('clear');
+                    setTimeout(() => {
+                        $('#kdw013CStart').ntsError('set', {messageId:"Msg_2164"});
+                        $('#kdw013CEnd').ntsError('set', {messageId:"Msg_2164"});
+                    }, 100);
+                }
+            }
+        }
+        
 
 		// update popup size
         updatePopupSize(){
@@ -865,23 +927,8 @@ module nts.uk.ui.at.kdw013.c {
 					resetHeight();
 				}, 1);
             });
-			vm.caltimeSpanView.start.subscribe(() => {
-				vm.calTimeRange();
-			});
-			vm.caltimeSpanView.end.subscribe(() => {
-				vm.calTimeRange();
-			});
         }
 		
-		calTimeRange(): void{
-			let vm = this;
-			if(vm.taskDetailsView().length == 1 && _.isNumber(vm.caltimeSpanView.start()) && _.isNumber(vm.caltimeSpanView.end())){
-				vm.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start()));
-			}else{
-				vm.caltimeSpanView.range('');
-			}
-		}
-        
         update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, setting: a.TaskFrameSettingDto[]) {
 			const vm = this;
 			vm.setting = setting;
@@ -918,19 +965,20 @@ module nts.uk.ui.at.kdw013.c {
 
 		isChangedTime(): boolean{
 			const vm = this;
-			if(vm.caltimeSpanView.start() == getTimeOfDate(vm.caltimeSpan.start) && 
-				vm.caltimeSpanView.end() == getTimeOfDate(vm.caltimeSpan.end))
+			if(vm.caltimeSpanView.start() != (_.isDate(vm.caltimeSpan.start) ? getTimeOfDate(vm.caltimeSpan.start): vm.caltimeSpan.start) 
+			|| vm.caltimeSpanView.end() != (_.isDate(vm.caltimeSpan.end) ? getTimeOfDate(vm.caltimeSpan.end) : vm.caltimeSpan.end))
 				return true;
 			return false;
 		}
 		isChangeTasks():boolean{
             const vm = this;
-            _.each(vm.taskDetailsView(), (taskDetail: ManHrTaskDetailView) => {
+			let result: boolean = false;
+            _.forEach(vm.taskDetailsView(), (taskDetail: ManHrTaskDetailView) => {
                 if(taskDetail.isChangedItemValues()){
-                    return true;
+                    result = true;
                 }
             })
-			return false;
+			return result;
         }
         getTitles(): string{
             const vm = this;
@@ -1201,13 +1249,18 @@ module nts.uk.ui.at.kdw013.c {
 		
 		isChangedItemValues(): boolean{
 			const vm = this;
-			_.each(vm.taskItemValues(), (itemValue: TaskItemValue)=>{
+			let result: boolean = false;
+			_.forEach(vm.taskItemValues(), (itemValue: TaskItemValue)=>{
 				const item = _.find(vm.itemBeforChange, (i) => {return i.itemId == itemValue.itemId});
-				if(item.value != itemValue.value()){
-					return true;
+				let i = item.value;
+				let v = itemValue.value();
+				if(i == '') i = null;
+				if(v == '') v = null;
+				if(i != v){
+					result = true;
 				}	
 			});
-			return false;
+			return result;
 		}
 		isErorr(): boolean{
 			const vm = this;
