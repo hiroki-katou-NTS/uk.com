@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -33,12 +31,4 @@ public class EstimatedTimeZone {
 	// 休憩時間帯
 
 	private List<BreakTimeSheet> breakTimeSheets = new ArrayList<BreakTimeSheet>();
-
-	// List<計算用時間帯>
-
-	private List<TimezoneUse> timezones = new ArrayList<TimezoneUse>();
-
-	// List<時間帯>
-
-	private List<TimeSpanForCalc> itemSpans = new ArrayList<TimeSpanForCalc>();
 }

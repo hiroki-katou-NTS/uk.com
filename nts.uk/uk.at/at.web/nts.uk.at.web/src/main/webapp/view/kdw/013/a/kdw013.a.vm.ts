@@ -152,8 +152,6 @@ module nts.uk.ui.at.kdw013.a {
 
         events: KnockoutObservableArray<calendar.EventApi> = ko.observableArray([]);
 
-        breakTime= ko.observableArray([]);
-
         businessHours= ko.observableArray([]);
 
         weekends: KnockoutObservable<boolean> = ko.observable(true);
@@ -499,15 +497,14 @@ module nts.uk.ui.at.kdw013.a {
 
                     if (datas) {
 
-                        const { lstWorkRecordDetailDto } = datas;
+                        const { estimateZones } = datas;
 
                         return _
-                            .chain(lstWorkRecordDetailDto)
-                            .filter(({actualContent}) => { return !!actualContent.breakTimeSheets.length })
-                            .map(({actualContent, date}) => {
-                                const {breakTimeSheets} = actualContent;
+                            .chain(estimateZones)
+                            .filter(({breakTimeSheets}) => { return !!breakTimeSheets.length })
+                            .map(({breakTimeSheets, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(date),
+                                    dayOfWeek: vm.getDOW(ymd),
                                     breakTimes: _.map(breakTimeSheets, ({start, end}) => { return { start, end }; })
                                 };
                             }).value();
@@ -759,7 +756,7 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         equipmentInput(){
-            vm.$jump('at', '/view/oew/001/a/index.xhtml', param).then(() => {});
+            vm.$jump('com', '/view/oew/001/a/index.xhtml', param).then(() => {});
         }
 
         getChangedDates(dates){
