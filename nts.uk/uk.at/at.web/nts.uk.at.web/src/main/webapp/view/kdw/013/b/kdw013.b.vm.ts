@@ -332,12 +332,29 @@ module nts.uk.ui.at.kdw013.b {
 							}
 						}
 					}else{
-						items.push({key: infor.name, value:  item.value() });	
+						items.push({key: infor.name, value:  vm.formatDataShow(item) });	
 					}
 				}
 			});
 			
 			return {items : items};
+		}
+		
+		formatDataShow(item: TaskItemValue):string {
+			if(item.type == 0){
+				return item.value();	
+			}else if(item.type == 2){
+				
+			}else if(item.type == 3){
+				
+			}else if(item.type == 5){
+				return number2String(parseInt(item.value()));
+			}else if(item.type == 6){
+				return number2String(parseInt(item.value()));
+			}else if(item.type == 7 || item.type == 9){
+				return item.value();
+			}
+			return item.value();
 		}
 
         setTaskData(setting: a.TaskFrameSettingDto, value: string, option: TaskDto[]):KeyValue{
