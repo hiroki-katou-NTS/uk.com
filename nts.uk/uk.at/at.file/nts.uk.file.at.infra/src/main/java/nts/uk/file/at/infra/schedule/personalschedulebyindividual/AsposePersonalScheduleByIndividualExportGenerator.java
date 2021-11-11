@@ -225,21 +225,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         if (holidayClass == null) {
             holidayClass = 0;
         }
-//        WorkStyle workStyle = EnumAdaptor.valueOf(holidayClass, WorkStyle.class);
-//        if (holidayMap.containsKey(colNO) || workStyle.value == WorkStyle.ONE_DAY_REST.value) {
-//            cells.get(rowCount, col).setValue(l1P1);
-//            val holidayName = holidayMap.getOrDefault(colNO, "");
-//            cells.get(rowCount, col).setValue(l1P1 + "   " + holidayName);
-//            cells.get(secondLieOfCalender, col).setValue(l2P1);
-//            cells.get(secondLieOfCalender, col + 3).setValue(l2P2);
-//            if (StringUtils.isNotEmpty(l3P1) && StringUtils.isNotEmpty(l3P2)) {
-//                cells.get(thirdLieOfCalender, col).setValue(l3P1 + " " + divider + " " + l3P2);
-//            }
-//            Cell cell = cells.get(secondLieOfCalender, col);
-//            setTextColorRed(cell);
-//            cell = cells.get(secondLieOfCalender, col + 3);
-//            setTextColorRed(cell);
-//        } else {
+
             if (holidayMap.containsKey(colNO)) {
                 val holidayName = holidayMap.getOrDefault(colNO, "");
                 cells.get(rowCount, col).setValue(l1P1 + "   " + holidayName);
@@ -257,7 +243,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
                 );
                 setHolidayClassColor(cellsClass, holidayClass);
             }
-//        }
+
         if (Objects.nonNull(dateInformation) && datePeriod.contains(dateInformation.getYmd())) {
             cellsWhile.addAll(
                     Arrays.asList(cells.get(secondLieOfCalender, col),
@@ -822,13 +808,13 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             return "";
         }
         val inforDto = workInforDto.get();
-        if (inforDto.getWorkTypeCode().isPresent()) {
+        if (inforDto.getWorkTypeCode().isPresent() && StringUtils.isNotEmpty(inforDto.getWorkTypeCode().get())) {
             if (inforDto.getWorkTypeName().isPresent()) {
                 if (StringUtils.isNotEmpty(inforDto.getWorkTypeName().get())) {
                     return inforDto.getWorkTypeName().get();
+                } else {
+                    return inforDto.getWorkTypeCode().get() + getText("KSU002_31");
                 }
-            } else {
-                return inforDto.getWorkTypeCode().get() + getText("KSU002_31");
             }
         }
         return "";
@@ -839,13 +825,13 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
             return "";
         }
         val inforDto = workInforDto.get();
-        if (inforDto.getWorkingHoursCode().isPresent()) {
+        if (inforDto.getWorkingHoursCode().isPresent() && StringUtils.isNotEmpty(inforDto.getWorkingHoursCode().get())) {
             if (inforDto.getWorkingHoursName().isPresent()) {
                 if (StringUtils.isNotEmpty(inforDto.getWorkingHoursName().get())) {
                     return inforDto.getWorkingHoursName().get();
+                } else {
+                    return inforDto.getWorkingHoursCode().get() + getText("KSU002_31");
                 }
-            } else {
-                return inforDto.getWorkingHoursCode().get() + getText("KSU002_31");
             }
         }
         return "";
