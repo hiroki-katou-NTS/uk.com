@@ -796,4 +796,39 @@ public class GrantSystemAdminRoleServiceTest {
 		assertThat( result ).isFalse();
 	}
 	
+	/**
+	 * target: isAlwaysASystemAdmin
+	 * pattern: 有効期間リストがない
+	 * excepted: true
+	 */
+	@Test
+	public void testIsAlwaysASystemAdmin_validPeriod_empty() {
+		
+		val grantRole_1 = RoleIndividualGrantHelper.createGrantInfoOfSystemMananger( "userID_1" );
+		val grantRoles = Arrays.asList( grantRole_1 );
+		
+		//システム日付:	2021/10/05
+		new MockUp< GeneralDate >() {
+			@Mock
+			public GeneralDate today() {
+				return  GeneralDate.ymd( 2021, 10, 05 );
+			}
+		};
+		
+		new Expectations( ) {
+			{
+				require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER);
+				result = grantRoles;
+			}
+		};
+		
+		//Act
+		boolean result = NtsAssert.Invoke.staticMethod(	GrantSystemAdminRoleService.class, "isAlwaysASystemAdmin"
+				,	require, "userID_1", Optional.empty());
+		
+		//Assert
+		assertThat( result ).isTrue();
+		
+	}
+	
 }

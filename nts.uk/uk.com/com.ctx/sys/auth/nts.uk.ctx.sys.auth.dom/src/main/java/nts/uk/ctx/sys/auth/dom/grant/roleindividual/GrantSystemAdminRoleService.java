@@ -97,12 +97,9 @@ public class GrantSystemAdminRoleService {
 	private static boolean isAlwaysASystemAdmin( Require require
 			,	String userId
 			,	Optional<DatePeriod> validPeriod ) {
-		
-		List<RoleIndividualGrant> roleIndividualGrants = require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER ).stream()
+				
+		val validPeriods = require.getGrantInfoByRoleType( RoleType.SYSTEM_MANAGER ).stream()
 				.filter( role -> !role.getUserId().equals( userId ) )
-				.collect( Collectors.toList() );
-		
-		val validPeriods = roleIndividualGrants.stream()
 				.map( role -> role.getCorrectedValidPeriodByUserInfo( require ) )
 				.flatMap( OptionalUtil::stream )
 				.collect( Collectors.toList() );
@@ -110,6 +107,8 @@ public class GrantSystemAdminRoleService {
 		if( validPeriod.isPresent() ) {
 			validPeriods.add( validPeriod.get() );
 		}
+		
+		if( validPeriods.isEmpty() ) return true;
 		
 		val checkTargetPeriod = new DatePeriod( GeneralDate.today(), GeneralDate.ymd(9999, 12, 31) );
 		
