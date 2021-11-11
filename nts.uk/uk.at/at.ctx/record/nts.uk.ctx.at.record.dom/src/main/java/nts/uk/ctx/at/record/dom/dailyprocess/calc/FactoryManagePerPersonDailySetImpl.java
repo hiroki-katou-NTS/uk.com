@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
@@ -154,7 +155,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			AddSetting addSetting = this.getAddSetting(
 					companyId,
 					hollidayAdditonRepository.findByCompanyId(companyId),
-					nowWorkingItem.getLaborSystem());
+					nowWorkingItem);
 	
 			/*加給*/
 			Optional<BonusPaySettingCode> bpCode = daily.getAffiliationInfor().getBonusPaySettingCode();
@@ -199,13 +200,19 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 
 	/**
 	 * @param map 各加算設定
-	 * @param workingSystem 労働制
+	 * @param workingItem 労働条件項目
 	 * @return 加算設定
 	 */
-	private AddSetting getAddSetting(String companyID, Map<String, AggregateRoot> map, WorkingSystem workingSystem) {
+	private AddSetting getAddSetting(String companyID, Map<String, AggregateRoot> map, WorkingConditionItem workingItem) {
 		
-		switch(workingSystem) {
+		switch(workingItem.getLaborSystem()) {
 		case REGULAR_WORK:
+			if(workingItem.getHourlyPaymentAtr().isHourlyPay()) {
+				AggregateRoot hourlyPaymentAdditionSet = map.get("hourlyPaymentAdditionSet");
+				return hourlyPaymentAdditionSet != null
+						?(HourlyPaymentAdditionSet) hourlyPaymentAdditionSet
+						: new HourlyPaymentAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+			}
 			AggregateRoot workRegularAdditionSet = map.get("regularWork");
 			return workRegularAdditionSet != null
 					?(WorkRegularAdditionSet) workRegularAdditionSet
