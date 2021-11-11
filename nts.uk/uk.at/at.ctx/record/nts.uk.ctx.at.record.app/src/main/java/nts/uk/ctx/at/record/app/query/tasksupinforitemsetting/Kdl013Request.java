@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.taskmanagement.supplementinfo;
+package nts.uk.ctx.at.record.app.query.tasksupinforitemsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

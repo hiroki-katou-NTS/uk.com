@@ -34,13 +34,13 @@ module nts.uk.at.kdl013.a.test {
             let request = {
                 atdId: self.selectedCode(),
                 baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                selectedCode: ""
+                // selectedCode: ""
             }
 
             setShared('KDL013Params', {
                 atdId: self.selectedCode(),
                 baseDate: moment(new Date()).format("YYYY/MM/DD"),
-                selectedCode: ""
+                // selectedCode: " "
             });
            
             self.$window.modal('at', '/view/kdl/013/a/index.xhtml', request).then(() =>{
