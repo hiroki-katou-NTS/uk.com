@@ -799,7 +799,7 @@ public class GrantSystemAdminRoleServiceTest {
 	/**
 	 * target: isAlwaysASystemAdmin
 	 * pattern: 有効期間リストがない
-	 * excepted: true
+	 * excepted: false
 	 */
 	@Test
 	public void testIsAlwaysASystemAdmin_validPeriod_empty() {
