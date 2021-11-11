@@ -8,6 +8,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.*;
 import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.AllArgsConstructor;
@@ -31,11 +32,6 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.Padding;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingLength;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.StringRevise;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.HourlySegment;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase10Rounding;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase60Delimiter;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBaseNumber;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeRevise;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -148,12 +144,24 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 			entity.dateFormat = r.getDateFormat().value;
 		}
 		
-		else if (reviseValue instanceof TimeRevise) {
-			val r = (TimeRevise) reviseValue;
+		else if (reviseValue instanceof TimeDurationRevise) {
+			val r = (TimeDurationRevise) reviseValue;
 			
 			// TIME_POINTでもDURATIONでもどちらでも良い。どちらにせよTimeReviseとしてtoDomainされるので問題ない。
 			entity.itemType = ItemType.TIME_DURATION.value;
 			
+			entity.hourly = r.getHourly().value;
+			entity.baseNumber = r.getBaseNumber().map(e -> e.value).orElse(null);
+			entity.delimiter = r.getDelimiter().map(e -> e.value).orElse(null);
+			entity.rounding = r.getRounding().map(e -> e.value).orElse(null);
+		}
+
+		else if (reviseValue instanceof TimePointRevise) {
+			val r = (TimePointRevise) reviseValue;
+
+			// TIME_POINTでもDURATIONでもどちらでも良い。どちらにせよTimeReviseとしてtoDomainされるので問題ない。
+			entity.itemType = ItemType.TIME_POINT.value;
+
 			entity.hourly = r.getHourly().value;
 			entity.baseNumber = r.getBaseNumber().map(e -> e.value).orElse(null);
 			entity.delimiter = r.getDelimiter().map(e -> e.value).orElse(null);
@@ -194,8 +202,13 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 				return new DateRevise(
 						EnumAdaptor.valueOf(dateFormat, ExternalImportDateFormat.class));
 			case TIME_POINT:
+				return new TimePointRevise(
+						EnumAdaptor.valueOf(hourly, HourlySegment.class),
+						EnumAdaptor.optionalOf(baseNumber, TimeBaseNumber.class),
+						EnumAdaptor.optionalOf(delimiter, TimeBase60Delimiter.class),
+						EnumAdaptor.optionalOf(rounding, TimeBase10Rounding.class));
 			case TIME_DURATION:
-				return new TimeRevise(
+				return new TimeDurationRevise(
 						EnumAdaptor.valueOf(hourly, HourlySegment.class),
 						EnumAdaptor.optionalOf(baseNumber, TimeBaseNumber.class),
 						EnumAdaptor.optionalOf(delimiter, TimeBase60Delimiter.class),
