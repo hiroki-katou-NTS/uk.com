@@ -3270,15 +3270,19 @@ module nts.uk.ui.at.kdw013.calendar {
                                 for (let j = 0; j < breakOfDay.breakTimes.length; j++) {
                                     const brTime = breakOfDay.breakTimes[j];
                                     const brBeforeTime = breakOfDay.breakTimes[j - 1];
+                                    let end = cbh.end;
+                                    let start = cbh.start;
+                                    if (brTime.start > cbh.end) { end = 1440 };
+                                    if (brTime.start < cbh.start) { start = 0 };
                                     bhs.push({
                                         daysOfWeek: [cbh.dayOfWeek],
-                                        startTime: !brBeforeTime ? formatTime(cbh.start, false) : formatTime(brBeforeTime.end, false),
+                                        startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
                                         endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
                                     },
                                         {
                                             daysOfWeek: [cbh.dayOfWeek],
                                             startTime: formatTime(brTime.end, false),
-                                            endTime: formatTime(cbh.end, false)
+                                            endTime: formatTime(end, false)
                                         }
                                     );
                                 }

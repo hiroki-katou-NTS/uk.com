@@ -88,7 +88,7 @@ public class GetEstimatedTimeZones {
 				});
 
 				wh.stream().mapToInt(x -> x.getTimeZone().getEndTime().v()).max().ifPresent(max -> {
-					startTime.add(max);
+					endTime.add(max);
 				});
 			});
 			
