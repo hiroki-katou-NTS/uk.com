@@ -31,7 +31,10 @@ module nts.uk.at.view.ksu011.c.viewmodel {
                     }));
                 vm.itemsSwap(_.sortBy(items, ["no"]));
                 const selectedNos = params.totalNos || [];
-                vm.currentCodeListSwap(items.filter(i => selectedNos.indexOf(i.no) >= 0));
+                selectedNos.forEach((no: number) => {
+                    const item = _.find(items, i => i.no == no);
+                    if (item) vm.currentCodeListSwap.push(item);
+                });
             });
         }
 

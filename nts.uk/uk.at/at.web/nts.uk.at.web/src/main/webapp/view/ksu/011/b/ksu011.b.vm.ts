@@ -32,6 +32,7 @@ module nts.uk.at.view.ksu011.b.viewmodel {
         supporterRecordPrintMethod: KnockoutObservable<number>;
 
         newMode: KnockoutObservable<boolean>;
+        screenUpdated: boolean = false;
 
         constructor() {
             super();
@@ -185,6 +186,7 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                     };
                     vm.$blockui("show");
                     vm.$ajax(API.registerSetting, command).done(() => {
+                        vm.screenUpdated = true;
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                             vm.getAllSetting(command.code);
                         });
@@ -203,6 +205,7 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                 if (result == 'yes') {
                     vm.$blockui("show");
                     vm.$ajax("at", API.deleteSetting, vm.selectedOutputItemCode()).done(() => {
+                        vm.screenUpdated = true;
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             const index = _.findIndex(vm.outputItems(), i => i.code == vm.selectedOutputItemCode());
                             let nextCode = null;
@@ -224,13 +227,16 @@ module nts.uk.at.view.ksu011.b.viewmodel {
             const vm = this;
             const setting = _.find(vm.outputItems(), i => i.code == vm.selectedOutputItemCode());
             vm.$window.modal("/view/ksu/011/d/index.xhtml", {sourceCode: setting.code, sourceName: setting.name}).then((newCode) => {
-                if (newCode) vm.getAllSetting(newCode);
+                if (newCode) {
+                    vm.screenUpdated = true;
+                    vm.getAllSetting(newCode);
+                }
             });
         }
 
         closeDialog() {
             const vm = this;
-            vm.$window.close({itemCode: vm.selectedOutputItemCode()});
+            vm.$window.close(vm.screenUpdated ? {itemCode: vm.selectedOutputItemCode()} : null);
         }
 
         openDialogC(target: string) {
