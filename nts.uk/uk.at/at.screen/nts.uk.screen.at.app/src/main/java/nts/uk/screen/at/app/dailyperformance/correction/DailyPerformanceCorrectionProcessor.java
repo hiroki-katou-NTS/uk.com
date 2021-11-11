@@ -43,6 +43,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoChoiceDetailsQuery;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoItemAndSelectInforQueryDto;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.DateProcessedRecord;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.InitSwitchSetAdapter;
@@ -249,6 +251,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject 
 	private RecordDomRequireService requireService;
+	
+	@Inject
+	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -690,6 +695,9 @@ public class DailyPerformanceCorrectionProcessor {
 		Integer cellEdit;
 		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
+				if(item.getId()==2266) {
+					System.out.println(2266);
+				}
 				//DPAttendanceItem dpAttenItem1 = mapDP.get(item.getId());
 				String itemIdAsString = item.getId().toString();
 				// int a = 1;
@@ -804,7 +812,7 @@ public class DailyPerformanceCorrectionProcessor {
 								cellDatas.add(new DPCellDataDto(mergeString(DPText.CODE, itemIdAsString), "",
 										attendanceAtrAsString, DPText.TYPE_LABEL));
 								value = NAME_EMPTY;
-							}
+							} 
 						} else {
 							if (groupType != null) {
 								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
@@ -829,6 +837,17 @@ public class DailyPerformanceCorrectionProcessor {
 									}
 									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
 									value = codeNameTaskMap.containsKey(value+"|"+frameNo) ? codeNameTaskMap.get(value+"|"+frameNo).getName() : NAME_NOT_FOUND;
+								}else if(groupType == TypeLink.WORK_SUP_OPTION.value) {
+									List<TaskSupInfoItemAndSelectInforQueryDto> listName = taskSupInfoChoiceDetailsQuery.get(data.getDate(), item.getId());
+									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
+									String valueName = NAME_NOT_FOUND;
+									for(TaskSupInfoItemAndSelectInforQueryDto temp : listName) {
+										if(temp.getCode().equals(value)) {
+											valueName = temp.getName();
+											break;
+										}
+									}
+									value = valueName;
 								} else {
 									cellDatas.add(
 											new DPCellDataDto(codeColKey, value, attendanceAtrAsString, DPText.TYPE_LABEL));
@@ -928,7 +947,7 @@ public class DailyPerformanceCorrectionProcessor {
 						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
 						if (groupType != null && groupType == TypeLink.DOWORK.value) {
-							Double valueConvert = Double.parseDouble(value);
+							Double valueConvert = Double.parseDouble(value == "" ? "0.0" : value);
 							cellDatas.add(new DPCellDataDto(anyChar, valueConvert.equals(0.0) ? false : true, attendanceAtrAsString, DPText.TYPE_LABEL));
 						} else
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
@@ -1403,7 +1422,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-							x -> x.getDisplayName())); // 9s
+							x -> x.getAttendanceItemName())); // 9s
 			
 			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
 			for(DPItemValue value : dpItems) {

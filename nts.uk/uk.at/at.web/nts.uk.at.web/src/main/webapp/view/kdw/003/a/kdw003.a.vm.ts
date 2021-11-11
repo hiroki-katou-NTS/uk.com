@@ -5470,7 +5470,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				};
 				
 				setShared('KDL013Params', {
-                        baseDate: baseDate,
+                        baseDate: moment(baseDate).format("YYYY/MM/DD"),
 						atdId : item.id,
                         selectedCode: self.selectedCode()
                  	}, true);
