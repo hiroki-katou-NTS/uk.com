@@ -980,7 +980,8 @@ module nts.uk.ui.at.kdw013.c {
             _.each(vm.taskDetailsView(), (task: ManHrTaskDetailView) => {
                 titles.push(task.getTitles());
             });
-			if(titles.length == 1){
+			let timeRange = _.find(vm.taskDetailsView()[0].taskItemValues(), i => i.itemId == 3);
+			if(titles.length == 1 && timeRange && (timeRange.value() == null || timeRange.value() == '')){
 				titles[0] = titles[0] + '\n' + getText('KDW013_25') + number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start());
 			}
             return titles.join("\n\n");
