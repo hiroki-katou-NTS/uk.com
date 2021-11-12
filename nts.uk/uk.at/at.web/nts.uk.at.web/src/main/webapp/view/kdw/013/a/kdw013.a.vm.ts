@@ -350,35 +350,11 @@ module nts.uk.ui.at.kdw013.a {
             vm.$toggle = {
                 save: ko.computed({
                     read: () => {
-                        const $settings = ko.unwrap(vm.$settings);
+                        const event = ko.unwrap(vm.events);
                         
                         if (!vm.dataChanged()) {
                             return false;
                         }
-
-                        if (!$settings) {
-                            return true;
-                        }
-
-                        const { startManHourInputResultDto } = $settings;
-
-                        if (!startManHourInputResultDto) {
-                            return true;
-                        }
-
-                        const { taskFrameUsageSetting } = startManHourInputResultDto;
-
-                        if (!taskFrameUsageSetting) {
-
-                            return true;
-                        }
-                        
-
-//                        const { frameSettingList } = taskFrameUsageSetting;
-
-//                        if (frameSettingList && frameSettingList.length) {
-//                            return !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 2 && useAtr === 1);
-//                        }
 
                         return true;
                     }
@@ -846,6 +822,8 @@ module nts.uk.ui.at.kdw013.a {
                 return dates;
             };
     
+            let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.itemId });
+    
             let employeeId = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
@@ -868,7 +846,8 @@ module nts.uk.ui.at.kdw013.a {
                 manHrlst,
                 integrationOfDailys,
                 mode,
-                workDetails
+                workDetails,
+                itemIds
             };
 
             console.log(command);
