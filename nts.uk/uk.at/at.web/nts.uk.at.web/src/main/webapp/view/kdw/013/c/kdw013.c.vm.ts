@@ -217,7 +217,7 @@ module nts.uk.ui.at.kdw013.c {
             <div class="header">
                 <div data-bind="i18n: 'KDW013_26'"></div>
                 <div class="actions">
-                    <button class="close" tabindex="-1" data-bind="click: $component.close, icon: 202, size: 12"></button>
+                    <button class="close" tabindex="1" data-bind="click: $component.close, icon: 202, size: 12"></button>
                 </div>
             </div>
 			<table class="timePeriod">
