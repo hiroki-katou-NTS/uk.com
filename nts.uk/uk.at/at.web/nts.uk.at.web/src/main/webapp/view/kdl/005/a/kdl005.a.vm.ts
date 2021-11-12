@@ -3,6 +3,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 		date: KnockoutObservable<any>;
 		empList: KnockoutObservableArray<string> = ko.observableArray([]);
 		dataHoliday: KnockoutObservable<any> = ko.observable();
+		dataEmpImport : any = [];
 
 		//_____KCP005________
 		listComponentOption: any = [];
@@ -184,6 +185,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			};
 			service.getHolidaySub(param).done((data: any) => {
 				self.dataHoliday(data);
+				self.dataEmpImport = data.empImport;
 				if (data.remainNumConfirmDto != null) {
 					self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
 					self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
@@ -208,7 +210,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			if (_.isNil(self.dataHoliday())) return;
 			self.holidayData([]);
 			if (self.dataHoliday().remainNumConfirmDto == null || (self.dataHoliday().remainNumConfirmDto != null && !_.includes(self.dataHoliday().remainNumConfirmDto.employeeId.slice(-12), value))) {
-				let sid = _.filter(self.dataHoliday().empImport, (x : any) => {
+				let sid = _.filter(self.dataEmpImport, (x : any) => {
 					return _.isEqual(x.employeeCode, value);
 				});
 				
