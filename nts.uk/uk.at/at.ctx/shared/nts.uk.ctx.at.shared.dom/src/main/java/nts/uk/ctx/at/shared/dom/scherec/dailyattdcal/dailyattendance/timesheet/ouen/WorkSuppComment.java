@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
@@ -10,8 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author tutt
  *
  */
-@StringMaxLength(100)
-@StringCharType(CharType.ANY_HALF_WIDTH)
+@StringMaxLength(400)
 public class WorkSuppComment extends StringPrimitiveValue<WorkSuppComment> {
 	
 	/** The Constant serialVersionUID. */
