@@ -50,22 +50,25 @@ public class JpaScheduleDailyTableRepository extends JpaRepository implements Sc
                         }
                     }
                     entity.personCounters.clear();
+                    entity.workplaceCounters.clear();
+                    entity.wkpMoveDispAtr = domain.getItemSetting().getTransferDisplay().value;
+                    entity.supporterOutputAtrSche = domain.getItemSetting().getSupporterSchedulePrintMethod().value;
+                    entity.supporterOutputAtrRec = domain.getItemSetting().getSupporterDailyDataPrintMethod().value;
+                    this.commandProxy().update(entity);
+                    this.getEntityManager().flush();
+
                     for (int i = 0; i < domain.getItemSetting().getPersonalCounter().size(); i++) {
                         KagmtRptScherecTallyByperson tmp = new KagmtRptScherecTallyByperson();
                         tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i);
                         tmp.totalTimesNo = domain.getItemSetting().getPersonalCounter().get(i);
                         entity.personCounters.add(tmp);
                     }
-                    entity.workplaceCounters.clear();
                     for (int i = 0; i < domain.getItemSetting().getWorkplaceCounter().size(); i++) {
                         KagmtRptScherecTallyBywkp tmp = new KagmtRptScherecTallyBywkp();
                         tmp.pk = new KagmtRptScherecSignStampPk(entity.pk.companyId, entity.pk.code, i);
                         tmp.totalTimesNo = domain.getItemSetting().getWorkplaceCounter().get(i);
                         entity.workplaceCounters.add(tmp);
                     }
-                    entity.wkpMoveDispAtr = domain.getItemSetting().getTransferDisplay().value;
-                    entity.supporterOutputAtrSche = domain.getItemSetting().getSupporterSchedulePrintMethod().value;
-                    entity.supporterOutputAtrRec = domain.getItemSetting().getSupporterDailyDataPrintMethod().value;
                     this.commandProxy().update(entity);
                 });
     }

@@ -104,7 +104,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                 periodEnd: vm.periodEnd().toISOString(),
                 outputItemCode: vm.selectedOutputItemCode(),
                 printTarget: vm.printTarget(),
-                displayBothWhenDiffOnly: vm.displayBothWhenDiffOnly()
+                displayBothWhenDiffOnly: vm.printTarget() == 2 && vm.displayBothWhenDiffOnly()
             };
             nts.uk.request.exportFile(API.exportExcel, exportQuery).done(() => {
                 nts.uk.characteristics.save("KSU011Data", {
