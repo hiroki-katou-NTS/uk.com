@@ -387,6 +387,10 @@ module nts.uk.at.view.kml002.k {
 
         checkDataScreenH(itemHandling: Array<ItemHandlingModel>, itemMonthly: ItemMonthly, itemAnnual: ItemAnnual): void {
             let self = this;
+            if(_.isNull(itemHandling[0].backgroundColor) || itemHandling[0].backgroundColor == ''){
+                $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});
+                self.enableRegisterBtn(false);            }
+            
             if(_.isNull(itemHandling[1].backgroundColor) || itemHandling[1].backgroundColor == ''){
                 $('#colorpicker2').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_160")]}); 
                 self.enableRegisterBtn(false);
