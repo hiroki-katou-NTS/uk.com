@@ -884,7 +884,8 @@ module nts.uk.ui.at.kdw013.a {
                         .then(() => lstOvertimeLeaveTime)
                         .then(() => {
                             vm.dataChanged(false);
-                            vm.reLoad();
+                            //trigger reload data
+                            vm.dateRange.valueHasMutated();
                         });
 
                     return $
