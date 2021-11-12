@@ -39,7 +39,7 @@ public class WorkplaceOfWorkEachOuenDto implements ItemConst, AttendanceItemData
 		if (domain == null )
 			return null;
 		
-		return new WorkplaceOfWorkEachOuenDto(domain.getWorkplaceId().v(), domain.getWorkLocationCD().map(c -> c.v()).orElse(null));
+		return new WorkplaceOfWorkEachOuenDto(domain.getWorkplaceId() == null ? null : domain.getWorkplaceId().v(), domain.getWorkLocationCD().map(c -> c.v()).orElse(null));
 	}
 
 	public WorkplaceOfWorkEachOuen domain() {
