@@ -4,12 +4,17 @@ module nts.uk.ui.at.kdw013.timeheader {
         template:
         `<td data-bind="i18n: 'KDW013_25'"></td>
                 <!-- ko foreach: { data: $component.params.timesSet, as: 'time' } -->
-                    <td class="fc-day" data-bind="html: $component.formatTime(time.value,time), attr: { 'data-date': time.date }"></td>
+                    <td class="fc-day" style='position: relative;' data-bind="html: $component.formatTime(time), attr: { 'data-date': time.date }"></td>
                 <!-- /ko -->
                 <style rel="stylesheet">
-                    .warningIcon{
-                         float: right;
-                         cursor: pointer;
+                    .warningIcon {
+                            cursor: pointer;
+                            position: absolute;
+                            left: calc(100% - 22px);
+                            bottom: calc(100% - 19px);
+                        }
+                    .warningIcon:hover {
+                         background-color: rgb(229, 242, 255);
                         }
                 </style>
                 `
@@ -50,7 +55,7 @@ module nts.uk.ui.at.kdw013.timeheader {
         }
         
         regisPopup(time) {
-            const className =  time.date;
+            const className =  'wrn-'+time.date;
             $(".popup-area-i").ntsPopup({
                 trigger: '.' + className,
                 position: {
@@ -65,50 +70,95 @@ module nts.uk.ui.at.kdw013.timeheader {
         
         OpenIDialog(vm, time) {
             let screenA = vm.params.screenA;
-            let {$settings} = screenA;
+            let {$settings, $datas} = screenA;
                 screenA.taskSettings(_.get($settings(), 'taskFrameUsageSetting.frameSettingList', []));
-
-                // 作業リスト
-                screenA.taskDtos();
-                let eventInDay = _.chain(screenA.events())
-                    .filter((evn) => { return moment(time).isSame(evn.start, 'days'); })
-                    .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
-                    .sortBy('end')
-                    .value();
-                _.map(eventInDay, evn => { return { workNo: _.get(evn, 'extendedProps.taskBlock.taskDetails[0].supNo') 
-                                                    }; });
-                screenA.events()
-                // 日別勤怠の応援作業時間
-                screenA.ouenWorkTimes();
+                
+                let iod = _.find(_.get($datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(time.date), 'days') });
+                 // 作業リスト
+                screenA.taskDtos($settings().tasks);
 
                 // 日別勤怠の応援作業時間帯
-                screenA.ouenWorkTimeSheets();
+                screenA.ouenWorkTimeSheets(_.get(iod,'ouenTimeSheet'));
+                
+                // 日別勤怠の応援作業時間
+                screenA.ouenWorkTimes(_.get(iod,'ouenTime'));
 
                 //対象日
-                screenA.targetDate(moment(time).toDate());
+                screenA.targetDate(moment(time.date).toDate());
         }
         
         
 
-        formatTime(value: number | null, time) {
+        formatTime(time) {
             const vm = this;
-            const className =  time.date;
-            let icon = `<i class='warningIcon ` + className + `'> </i>`;
             
-            setTimeout(()=> { 
-                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '20px', width: 20, height: 20 }, click: () => { vm.OpenIDialog(vm, time); } }); 
-                $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
-            }, 300);
-            if (!value) {
+            if (!time) {
+                return '&nbsp;';
+            }
+            const className = 'wrn-' + time.date;
+
+            let icon = vm.isHasWarning(time.date) ? `<i class='warningIcon ` + className + `'> </i>` : '';
+            
+            if (vm.isNoCvrTaskList(time.date)) {
                 return '&nbsp;' + icon;
             }
+            
+            setTimeout(()=> { 
+                ko.applyBindingsToNode($('.' + className).not('.img-icon'), { ntsIcon: { no: 228, size: '16px', width: 16, height: 16 }, click: () => { vm.OpenIDialog(vm, time); } }); 
+                $('.' + className).on('mousedown', () => { vm.regisPopup(time); });
+            }, 300);
+            
+            let timeString = vm.getTimeString(time.date);
 
-            const hour = Math.floor(value / 60);
-            const minute = Math.floor(value % 60);
-            let timeString = `${hour}:${_.padStart(`${minute}`, 2, '0')}`;
 
+            return (timeString != null ? nts.uk.time.format.byId("Clock_Short_HM", timeString) : '') + icon;
+        }
+        
+        getTimeString(date){
+            const vm = this;
+            const datas = ko.unwrap(vm.params.screenA.$datas);
+            let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); });
+            let listItems = [1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701, 1745, 1789, 1833, 1877, 1921, 1965, 2009, 2053, 2097, 2141];
+            let sumList = [];
+            _.forEach(_.get(convert, 'manHrContents', []), hrc => {
+                if (listItems.indexOf(hrc.itemId) != -1 && !!hrc.value) {
+                    sumList.push(hrc.value);
+                }
+            });
+            return _.sum(_.map(sumList, s => Number(s)));
+        }
+        
+        isNoCvrTaskList(date) {
+            const vm = this;
+            const datas = ko.unwrap(vm.params.screenA.$datas);
 
-            return timeString + icon;
+            let convert = _.find(_.get(datas, 'convertRes', []), cvr => { return moment(cvr.ymd).isSame(moment(date), 'days'); });
+            return !_.get(convert, 'taskList');
+        }
+        
+        isHasWarning(date) {
+            const vm = this;
+            const datas = ko.unwrap(vm.params.screenA.$datas);
+
+            if (!datas) {
+                return false;
+            }
+
+            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id=> { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+            const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+            if (!id || !ouenTimeSheet.length) {
+                return false;
+            }
+
+            for (let i = 0; i < ouenTimeSheet.length; i++) {
+                if (_.get(ouenTimeSheet[i], 'timeSheet.start.timeWithDay', null) == null || _.get(ouenTimeSheet[i], 'timeSheet.end.timeWithDay', null) == null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
         
         

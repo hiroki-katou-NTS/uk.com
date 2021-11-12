@@ -253,7 +253,7 @@ public class DailyPerformanceCorrectionProcessor {
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DPText.DATE_FORMAT);
-	private static final Map<Integer, List<Integer>> WORK_FRAME_MAP = new HashMap<Integer, List<Integer>>()
+	public static final Map<Integer, List<Integer>> WORK_FRAME_MAP = new HashMap<Integer, List<Integer>>()
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -266,7 +266,7 @@ public class DailyPerformanceCorrectionProcessor {
 	    }
 	};
 	
-	private static final Map<Integer, List<Integer>> SUPPORT_FRAME_MAP = new HashMap<Integer, List<Integer>>()
+	public static final Map<Integer, List<Integer>> SUPPORT_FRAME_MAP = new HashMap<Integer, List<Integer>>()
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -1678,6 +1678,8 @@ public class DailyPerformanceCorrectionProcessor {
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					
+					if (dPItem.getAttendanceAtr() != 5 && dPItem.getPrimitive() != 15)
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
 				}
 			}

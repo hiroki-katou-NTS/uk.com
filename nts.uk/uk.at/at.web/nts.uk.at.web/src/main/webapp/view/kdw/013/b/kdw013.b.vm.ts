@@ -36,7 +36,9 @@ module nts.uk.ui.at.kdw013.b {
                 <div class="actions">
                     <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
-					<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12"></button>
+					<!-- ko if: dataSources().length == 1 -->
+						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12, click:$component.openFDialog"></button>
+					<!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
                 </div>
             </div>
@@ -74,7 +76,7 @@ module nts.uk.ui.at.kdw013.b {
                 <!-- F3_1 -->
                 <label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
                 <input
-                class="nameInput"
+                class="input-f-b"
                 tabindex="1"
                 id="KDW013_71"
                 data-bind="ntsTextEditor: {
@@ -147,6 +149,7 @@ module nts.uk.ui.at.kdw013.b {
             .popup-area-f-from-b {
                 padding: 20px !important;
                 text-align: right;
+                width: 244px;
             }
             .pb10 {
                 padding-bottom: 10px !important;
@@ -186,7 +189,12 @@ module nts.uk.ui.at.kdw013.b {
             const vm = this
 
             // Init popup
-            $(".popup-area-f-from-b").ntsPopup({
+        	vm.initPopup();    
+
+        }
+
+		initPopup(){
+			$(".popup-area-f-from-b").ntsPopup({
                 trigger: ".popupButton-f-from-b",
                 position: {
                     my: "left top",
@@ -195,8 +203,11 @@ module nts.uk.ui.at.kdw013.b {
                 },
                 showOnStart: false,
                 dismissible: true
-            })
-
+            })			
+		}
+    
+        openFDialog(){
+             setTimeout(() => { $('.input-f-b').focus(); }, 100);
         }
 
         mounted() {
@@ -210,6 +221,7 @@ module nts.uk.ui.at.kdw013.b {
                     const event = ko.unwrap(data);
 
                     if (event && event.extendedProps.status == "update") {
+                        vm.favTaskName('');
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
 						const startTime = getTimeOfDate(start);
                         const endTime = getTimeOfDate(end);
@@ -234,10 +246,14 @@ module nts.uk.ui.at.kdw013.b {
 							vm.dataSources(taskDetails);
 							setTimeout(() => {
 								vm.updatePopupSize();
+								// Init popup
+        						vm.initPopup();
 							}, 150);
 						}).always(() => block.clear());
                     } else {
                         vm.dataSources(taskDetails);
+						// Init popup
+						vm.initPopup();
                     }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
@@ -316,12 +332,29 @@ module nts.uk.ui.at.kdw013.b {
 							}
 						}
 					}else{
-						items.push({key: infor.name, value:  item.value() });	
+						items.push({key: infor.name, value:  vm.formatDataShow(item) });	
 					}
 				}
 			});
 			
 			return {items : items};
+		}
+		
+		formatDataShow(item: TaskItemValue):string {
+			if(item.type == 0){
+				return item.value();	
+			}else if(item.type == 2){
+				
+			}else if(item.type == 3){
+				
+			}else if(item.type == 5){
+				return number2String(parseInt(item.value()));
+			}else if(item.type == 6){
+				return number2String(parseInt(item.value()));
+			}else if(item.type == 7 || item.type == 9){
+				return item.value();
+			}
+			return item.value();
 		}
 
         setTaskData(setting: a.TaskFrameSettingDto, value: string, option: TaskDto[]):KeyValue{
@@ -341,25 +374,29 @@ module nts.uk.ui.at.kdw013.b {
         addFavTask() {
             const vm = this;
 
-            //_.forEach(vm.itemValues(), v => {
-
-                // vm.taskContents().push({
-                //     itemId: v.itemId,
-                //     taskCode: v.value.toString()
-                // })
-
-            //});
-
             const registerFavoriteCommand : RegisterFavoriteCommand = {
                 taskName: vm.favTaskName(),
                 contents: vm.taskContents
             }
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
-            }).always(() => vm.$blockui('clear'));
-               
+            vm.$blockui('show');
+            vm.$validate(".input-f-b").then((valid: boolean) => {
+				if (valid) {
+                    vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+                                vm.params.screenA.reloadTaskFav();
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
         }
 
         remove() {

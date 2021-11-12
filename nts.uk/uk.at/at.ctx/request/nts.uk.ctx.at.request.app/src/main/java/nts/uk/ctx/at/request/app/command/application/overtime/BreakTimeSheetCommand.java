@@ -7,22 +7,22 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class BreakTimeSheetCommand {
 	//休憩枠NO
-	public Integer breakFrameNo;
+	public Integer no;
 	
 	//開始 - 勤怠打刻(実打刻付き)
-	public Integer startTime;
+	public Integer start;
 	
 	//終了 - 勤怠打刻(実打刻付き)
-	public Integer endTime;
+	public Integer end;
 	
 	/** 休憩時間: 勤怠時間 */
 	public Integer breakTime;
 	
 	public BreakTimeSheet toDomain() {
 		return new BreakTimeSheet(
-				new BreakFrameNo(breakFrameNo),
-				new TimeWithDayAttr(startTime),
-				new TimeWithDayAttr(endTime),
+				new BreakFrameNo(no),
+				new TimeWithDayAttr(start),
+				new TimeWithDayAttr(end),
 				new AttendanceTime(breakTime));
 	}
 }

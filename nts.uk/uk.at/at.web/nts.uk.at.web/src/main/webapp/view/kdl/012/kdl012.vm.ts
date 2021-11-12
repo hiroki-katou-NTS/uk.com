@@ -25,7 +25,9 @@ module nts.uk.at.view.kdl012 {
         referenceDate: KnockoutObservable<string> = ko.observable();
         workFrameNoSelection: KnockoutObservable<number> = ko.observable(null);
         listHeight: KnockoutComputed<number>;
-
+        sid: KnockoutObservable<number> = ko.observable(null);                        
+        taskCode: KnockoutObservable<number> = ko.observable(null);
+        
         constructor(params: ParamModel) {
             super();
             const vm = this;
@@ -40,6 +42,8 @@ module nts.uk.at.view.kdl012 {
                 vm.selectionCodeList(object.selectionCodeList);
                 vm.currentCodeList(object.selectionCodeList); //初期選択コードリスト
                 vm.currentCode(_.isEmpty(object.selectionCodeList) ? null : object.selectionCodeList[0]);
+                vm.sid(object.sid);
+                vm.taskCode(object.taskCode);
             }
 
             if (vm.isShowExpireDate()) {
@@ -144,7 +148,7 @@ module nts.uk.at.view.kdl012 {
             const vm = this;
             vm.$blockui('show');
             let date = moment(vm.referenceDate()).format("YYYY/MM/DD");
-            let param : RequestModel = {baseDate: date, taskFrameNo: vm.workFrameNoSelection()};
+            let param : RequestModel = {baseDate: date, taskFrameNo: vm.workFrameNoSelection(), sid: vm.sid(), taskCode: vm.taskCode() };
             vm.$ajax(PATH.getTaskMaster, param).done((data: Array<ItemModel>) => {
                 let result: Array<ItemModel> = [];
                 if (data) {
@@ -184,7 +188,9 @@ module nts.uk.at.view.kdl012 {
 
     interface RequestModel {
         baseDate: string;
-        taskFrameNo: number
+        taskFrameNo: number;
+        sid: string;//社員ID                         
+        taskCode: string;
     }
 
     class ParamModel {
@@ -194,15 +200,19 @@ module nts.uk.at.view.kdl012 {
         workFrameNoSelection: number;
         selectionCodeList: string[];
         currentCodeList: string[];
+        sid: string;//社員ID                         
+        taskCode: string; //上位枠作業コード
 
         constructor(isMultiple: boolean, showExpireDate: boolean, referenceDate: string, workFrameNoSelection: number,
-                    selectionCodeList?: string[], currentCodeList?: string[]) {
+                    selectionCodeList?: string[], currentCodeList?: string[], sid?: string, taskCode?: string) {
             this.isMultiple = isMultiple;
             this.showExpireDate = showExpireDate;
             this.referenceDate = referenceDate;
             this.workFrameNoSelection = workFrameNoSelection;
             this.selectionCodeList = selectionCodeList;
             this.currentCodeList = currentCodeList;
+            this.sid = sid;
+            this.taskCode = taskCode;
         }
     }
 }

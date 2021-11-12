@@ -35,6 +35,7 @@ public class ItemValue implements Cloneable {
 	@Getter
 	private String pathLink;
 	
+	@Getter
 	private boolean isFixed;
 	
 	private ItemValue(int itemId, String path){

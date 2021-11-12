@@ -116,44 +116,44 @@ public class DPHeaderDto {
 		if (attendanceAtr == DailyAttendanceAtr.Code.value) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
-			DPHeaderDto dtoG = new DPHeaderDto("コード", "コード", "Code" + keyId, "String", String.valueOf(withChild) + "px",
+			DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">コード</div>", "<div style=\"max-height: 20px;\">コード</div>", "Code" + keyId, "String", String.valueOf(withChild) + "px",
 					"", false, "", "code_"+"Name"+ keyId, "search", false, false, inputProcess(Integer.parseInt(keyId)));
 			dtoG.setConstraint(new Constraint("Primitive", isRequired(item), getPrimitiveAllName(item)));
 			dtoG.setColor(dto.getColor());
 			groups.add(dtoG);
-			groups.add(new DPHeaderDto("名称", "名称", "Name" + keyId, "String", String.valueOf(withChild) + "px", dto.getColor(),
+			groups.add(new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "String", String.valueOf(withChild) + "px", dto.getColor(),
 					false, "Link2", false, false, "center-align", null));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value && item.getTypeGroup() != null) {
 			List<DPHeaderDto> groups = new ArrayList<>();
 			int withChild = Integer.parseInt(width.substring(0, width.length() - 2)) / 2;
-			groups.add(new DPHeaderDto("NO", "NO", "NO" + keyId, "number", String.valueOf(withChild) + "px", dto.getColor(), false,
+			groups.add(new DPHeaderDto("<div style=\"max-height: 20px;\">NO</div>", "<div style=\"max-height: 20px;\">NO</div>", "NO" + keyId, "number", String.valueOf(withChild) + "px", dto.getColor(), false,
 					"", "comboCode_"+"Name"+ keyId, "", false, false, inputProcess(Integer.parseInt(keyId))));
 			if (item.getTypeGroup() == TypeLink.CALC.value) {
 				if(!DPText.ITEM_COMBOBOX_CALC.contains(Integer.parseInt(keyId))){
-					DPHeaderDto dtoG = new DPHeaderDto("名称", "名称", "Name" + keyId, "number",
+					DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
 							String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false, "center-align", null);
 					groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 					groups.add(dtoG);
 				}else{
-					DPHeaderDto dtoG = new DPHeaderDto("名称", "名称", "Name" + keyId, "number",
+					DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
 							String.valueOf(withChild) + "px", "", false, "ComboItemsCompact", false, false, "center-align", null);
 					groups.get(0).setConstraint(new Constraint("Integer", true, Arrays.asList(0, 2)));
 					groups.add(dtoG);
 				}
 			}else if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
-				DPHeaderDto dtoG = new DPHeaderDto("名称", "名称", "Name" + keyId, "number",
+				DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
 						String.valueOf(withChild) + "px", "", false, "ComboboxReason", false, false, "center-align", null);
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "3"));
 			}else if (item.getTypeGroup() == TypeLink.DOWORK.value) {
-				DPHeaderDto dtoG = new DPHeaderDto("名称", "名称", "Name" + keyId, "number",
+				DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
 						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork" + "Name" + keyId, false, false, "center-align", null);
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "1"));
 			}else if (item.getTypeGroup() == TypeLink.TIME_LIMIT.value) {
-				DPHeaderDto dtoG = new DPHeaderDto("名称", "名称", "Name" + keyId, "number",
+				DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
 						String.valueOf(withChild) + "px", "", false, "ComboboxTimeLimit", false, false, "center-align", null);
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
@@ -216,13 +216,19 @@ public class DPHeaderDto {
 	}
 
 	public void setHeaderText(DPAttendanceItem param) {
-	
 		if (param.getLineBreakPosition() != null && param.getLineBreakPosition() > 0 && param.getName() != null) {
 			String displayText = Strings.isNotBlank(param.getDisplayName()) ? param.getDisplayName() : param.getName();
-			val length = displayText.length() > param.getLineBreakPosition() ?  param.getLineBreakPosition() :  displayText.length(); 
-			this.headerText = displayText.substring(0, length) + "<br/>" + displayText.substring(length, displayText.length());
-			val length2 = param.getName().length() > param.getLineBreakPosition() ?  param.getLineBreakPosition() :  param.getName().length(); 
-			this.attendanceName = param.getName().substring(0, length2) + "<br/>" + param.getName().substring(length2, param.getName().length());
+			if(displayText.length() > param.getLineBreakPosition()) {
+				this.headerText = displayText.substring(0, param.getLineBreakPosition()) + "<br/>" + displayText.substring(param.getLineBreakPosition(), displayText.length());
+			} else {
+				this.headerText = displayText;
+			}
+			if(param.getName().length() > param.getLineBreakPosition()) {
+				this.attendanceName = param.getName().substring(0, param.getLineBreakPosition()) + "<br/>" + param.getName().substring(param.getLineBreakPosition(), param.getName().length());
+			} else {
+				this.attendanceName = param.getName();
+			}
+			
 		} else {
 			String displayText = Strings.isNotBlank(param.getDisplayName()) ? param.getDisplayName() : param.getName();
 			this.headerText = displayText != null ? displayText : "";

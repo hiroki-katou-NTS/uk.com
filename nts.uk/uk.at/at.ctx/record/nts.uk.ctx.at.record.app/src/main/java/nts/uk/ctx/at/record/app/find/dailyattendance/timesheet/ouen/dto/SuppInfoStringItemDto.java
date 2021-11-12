@@ -38,7 +38,7 @@ public class SuppInfoStringItemDto implements  ItemConst, AttendanceItemDataGate
 	public static SuppInfoStringItemDto from(SuppInfoCommentItem domain) {
 		if (domain == null) return null;
 		
-		return new SuppInfoStringItemDto(domain.getSuppInfoNo().v(), domain.getWorkSuppComment().v(), false);
+		return new SuppInfoStringItemDto(domain.getSuppInfoNo().v(), domain.getWorkSuppComment()==null ? null: domain.getWorkSuppComment().v(), false);
 	}
 
 	public SuppInfoCommentItem toComment() {
@@ -48,7 +48,7 @@ public class SuppInfoStringItemDto implements  ItemConst, AttendanceItemDataGate
 	public static SuppInfoStringItemDto from(SuppInfoSelectionItem domain) {
 		if (domain == null) return null;
 		
-		return new SuppInfoStringItemDto(domain.getSuppInfoSelectionNo().v(), domain.getChoiceCode().v(), true);
+		return new SuppInfoStringItemDto(domain.getSuppInfoSelectionNo().v(),domain.getChoiceCode() ==null ?null: domain.getChoiceCode().v(), true);
 	}
 
 	public SuppInfoSelectionItem toSelect() {

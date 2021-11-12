@@ -22,6 +22,7 @@ public class JpaOneDayFavoriteTaskDisplayOrderRepository extends JpaRepository i
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT o FROM KrcdtTaskFavDayDispOrder o";
 	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE o.sId = :sId";
+	private static final String SELECT_BY_FAVID = SELECT_ALL_QUERY_STRING + " WHERE o.favId = :favId";
 	
 	@Override
 	public void insert(OneDayFavoriteTaskDisplayOrder order) {
@@ -59,6 +60,16 @@ public class JpaOneDayFavoriteTaskDisplayOrderRepository extends JpaRepository i
 		}
 
 		return Optional.of(new OneDayFavoriteTaskDisplayOrder(employeeId, displayOrders));
+	}
+
+	@Override
+	public void deleteByFavId(String favId) {
+		Optional<KrcdtTaskFavDayDispOrder> entityOpt = this.queryProxy()
+				.query(SELECT_BY_FAVID, KrcdtTaskFavDayDispOrder.class).setParameter("favId", favId).getSingle();
+		
+		if (entityOpt.isPresent()) {
+			this.commandProxy().remove(entityOpt.get());
+		}
 	}
 
 }
