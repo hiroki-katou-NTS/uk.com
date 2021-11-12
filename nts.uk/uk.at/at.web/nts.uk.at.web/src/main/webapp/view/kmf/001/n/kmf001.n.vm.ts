@@ -18,6 +18,8 @@ module nts.uk.at.view.kmf001.n {
       vm.$ajax(API.findOne).then((result: WorkDaysNumberOnLeaveCountDto) => {
         const isCounting = !!_.includes(result.countedLeaveList, LEAVE_TYPE);
         vm.selectedManageDistinct(isCounting ? 1 : 0);
+        // Fix tabindex
+        vm.$nextTick(() => $("#N1_4").attr("tabindex", 1));
       }).always(() => vm.$blockui("clear"));
     }
 
