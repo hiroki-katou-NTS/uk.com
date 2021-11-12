@@ -209,20 +209,24 @@ module nts.uk.ui.at.kdw013.b {
                     at: "left bottom",
                     of: ".popupButton-f-from-b"
                 },
-                showOnStart: false
+                showOnStart: false,
+  				dismissible: false
             })			
 		}
     
         openFDialog(){
             setTimeout(() => { $('.input-f-b').focus(); }, 100);
+
 			nts.uk.ui.errors.clearAll();
 			setTimeout(() => {
 				jQuery('button.btn-error.small.danger').appendTo('.popup-area-f-from-b .textEditor.pb10');									
-			}, 100);			
-        }
+			}, 100);
+		}
 
 		closeFDialog() {
 			$(".popup-area-f-from-b").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			jQuery('button.btn-error.small.danger').appendTo('#functions-area');
 		}
 
         mounted() {
@@ -236,6 +240,7 @@ module nts.uk.ui.at.kdw013.b {
                     const event = ko.unwrap(data);
 
                     if (event && event.extendedProps.status == "update") {
+						nts.uk.ui.errors.clearAll();
                         vm.favTaskName('');
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
 						const startTime = getTimeOfDate(start);
@@ -397,6 +402,7 @@ module nts.uk.ui.at.kdw013.b {
             vm.$blockui('show');
             vm.$validate(".input-f-b").then((valid: boolean) => {
 				if (valid) {
+					nts.uk.ui.errors.clearAll();
                     vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{

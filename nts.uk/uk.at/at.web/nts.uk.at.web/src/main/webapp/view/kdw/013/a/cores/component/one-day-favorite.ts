@@ -113,7 +113,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                     of: ".popupButton-g"
                 },
                 showOnStart: false,
-                dismissible: true
+                dismissible: false
             });
         }
 

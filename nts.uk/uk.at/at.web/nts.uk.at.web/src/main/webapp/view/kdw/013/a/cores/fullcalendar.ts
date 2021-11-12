@@ -2122,7 +2122,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                                                 of: '.' + className
                                                             },
                                                             showOnStart: false,
-                                                            dismissible: true
+                                                            dismissible: false
                                                         });
                                         }
                                     });

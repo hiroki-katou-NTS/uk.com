@@ -619,7 +619,8 @@ module nts.uk.ui.at.kdw013.a {
                     at: "left bottom",
                     of: ".popupButton-f"
                 },
-                showOnStart: false
+                showOnStart: false,
+ 				dismissible: false
             });
 
             $(".popup-area-g").ntsPopup({
@@ -629,7 +630,8 @@ module nts.uk.ui.at.kdw013.a {
                     at: "left bottom",
                     of: ".popupButton-g"
                 },
-                showOnStart: false
+                showOnStart: false,
+				dismissible: false
             });
 
             $(".popup-area-i").ntsPopup({
