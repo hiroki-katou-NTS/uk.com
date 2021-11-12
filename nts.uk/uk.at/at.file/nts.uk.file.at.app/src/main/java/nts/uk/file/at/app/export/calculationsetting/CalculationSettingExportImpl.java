@@ -66,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
 import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.workrule.specific.TimeOffVacationPriorityOrder;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
@@ -1282,7 +1283,8 @@ public class CalculationSettingExportImpl implements MasterListData {
                 	if (col == 1) {
                 		value = TextResource.localize("KMK013_292");
                 	} else if (col == 2) {
-                		value = optOutManage.map(val -> val.getInitValueReasonGoOut().nameId).orElse("");
+                		value = optOutManage.map(val -> val.getInitValueReasonGoOut().nameId)
+                				.orElse(GoingOutReason.PRIVATE.nameId);
                 	}
                 } else if (row == 9) {
                 	if (col == 0) {
