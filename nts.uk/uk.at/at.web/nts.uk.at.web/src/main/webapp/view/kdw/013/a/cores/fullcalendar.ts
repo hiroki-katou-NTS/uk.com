@@ -1747,7 +1747,7 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const updateEvents = () => {
                 const sltds = vm.selectedEvents;
-                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
+                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ));
                 const data = ko.unwrap(params.$datas);
                 const startDate =  moment(_.get(data,'workStartDate'));
                 let events = ko.unwrap<EventRaw[]>(params.events);
@@ -1918,7 +1918,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 dayHeaders: true,
                 allDaySlot: false,
                 slotEventOverlap: false,
-                eventOverlap: false,
+                eventOverlap: true,
                 selectOverlap: false,
                 eventLimit: true,
                 views: {
@@ -2500,26 +2500,6 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.revertEvent(arg.oldEvent , $caches);
                         }
                         
-                        let businessHours = vm.calendar.getOption('businessHours');
-                    
-                        let dow = moment(start).day();
-
-                        if (businessHours) {
-                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow)});
-
-                            if (setting) {
-                                let format = 'hh:mm:ss',
-                                    startTime = moment(start, format),
-                                    endTime = moment(end, format),
-                                    beforeTime = moment(setting.startTime, format),
-                                    afterTime = moment(setting.endTime, format);
-                                if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime) ) {
-                                    vm.revertEvent(arg.oldEvent , $caches);
-                                }
-                            }
-
-                        }
-                        
                         return;
                     }
                   
@@ -2676,25 +2656,25 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         
                         //validate businessHours 
-                        
-                        let businessHours = vm.calendar.getOption('businessHours');
-
-                        let dow = moment(start).day();
-
-                        if (businessHours) {
-                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow) });
-
-                            let format = 'hh:mm:ss',
-                                startTime = moment(start, format),
-                                endTime = moment(end, format),
-                                beforeTime = moment(setting.startTime, format),
-                                afterTime = moment(setting.endTime, format);
-                            if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime)) {
-                                 vm.revertEvent(arg.oldEvent , $caches);
-                            }
-
-                            return;
-                        }
+//                        
+//                        let businessHours = vm.calendar.getOption('businessHours');
+//
+//                        let dow = moment(start).day();
+//
+//                        if (businessHours) {
+//                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow) });
+//
+//                            let format = 'hh:mm:ss',
+//                                startTime = moment(start, format),
+//                                endTime = moment(end, format),
+//                                beforeTime = moment(setting.startTime, format),
+//                                afterTime = moment(setting.endTime, format);
+//                            if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime)) {
+//                                 vm.revertEvent(arg.oldEvent , $caches);
+//                            }
+//
+//                            return;
+//                        }
                         return;
                     }
                     
@@ -3067,8 +3047,15 @@ module nts.uk.ui.at.kdw013.calendar {
                         $next.removeAttr('disabled');
                     }
                 },
+                eventClassNames: (arg) =>{
+                    if (arg.event.extendedProps.isTimeBreak) {
+                        return 'time-break';
+                    }
+                    return '';
+                },
                 eventDidMount: ({ el, event }) => {
                     el.setAttribute('event-id', event.id);
+                    $(".fc-timegrid-event-harness:has('.time-break')").css('z-index', 10);
                 },
                 windowResize: () => {
                     // update height
@@ -3270,15 +3257,19 @@ module nts.uk.ui.at.kdw013.calendar {
                                 for (let j = 0; j < breakOfDay.breakTimes.length; j++) {
                                     const brTime = breakOfDay.breakTimes[j];
                                     const brBeforeTime = breakOfDay.breakTimes[j - 1];
+                                    let end = cbh.end;
+                                    let start = cbh.start;
+                                    if (brTime.start > cbh.end) { end = 1440 };
+                                    if (brTime.start < cbh.start) { start = 0 };
                                     bhs.push({
                                         daysOfWeek: [cbh.dayOfWeek],
-                                        startTime: !brBeforeTime ? formatTime(cbh.start, false) : formatTime(brBeforeTime.end, false),
+                                        startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
                                         endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
                                     },
                                         {
                                             daysOfWeek: [cbh.dayOfWeek],
                                             startTime: formatTime(brTime.end, false),
-                                            endTime: formatTime(cbh.end, false)
+                                            endTime: formatTime(end, false)
                                         }
                                     );
                                 }

@@ -217,7 +217,7 @@ module nts.uk.ui.at.kdw013.c {
             <div class="header">
                 <div data-bind="i18n: 'KDW013_26'"></div>
                 <div class="actions">
-                    <button class="close" tabindex="-1" data-bind="click: $component.close, icon: 202, size: 12"></button>
+                    <button class="close" tabindex="1" data-bind="click: $component.close, icon: 202, size: 12"></button>
                 </div>
             </div>
 			<table class="timePeriod">
@@ -596,11 +596,11 @@ module nts.uk.ui.at.kdw013.c {
 
             vm.taskBlocks.caltimeSpanView.start.subscribe(() => {
 				vm.calTimeRange();
-                vm.validateRange();
+                vm.validateRange($('#kdw013CStart'), $('#kdw013CEnd'));
 			});
 			vm.taskBlocks.caltimeSpanView.end.subscribe(() => {
 				vm.calTimeRange();
-                vm.validateRange();
+                vm.validateRange($('#kdw013CEnd'), $('#kdw013CStart'));
 			});
 
 			$(window).resize(function () {
@@ -611,65 +611,56 @@ module nts.uk.ui.at.kdw013.c {
 
         calTimeRange(): void{
 			let vm = this;
-			if(vm.taskBlocks.taskDetailsView().length == 1 && _.isNumber(vm.taskBlocks.caltimeSpanView.start()) && _.isNumber(vm.taskBlocks.caltimeSpanView.end())){
-				vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start()));
+			const start = vm.taskBlocks.caltimeSpanView.start();
+    		const end = vm.taskBlocks.caltimeSpanView.end();
+			if(vm.taskBlocks.taskDetailsView().length == 1 && _.isNumber(start) && _.isNumber(end) && end > start){
+				vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(end - start));
 			}else{
 				vm.taskBlocks.caltimeSpanView.range('');
 			}
 		}
 
-        validateRange(){
+        validateRange(selector: JQuery, startOrEnd: JQuery){
             let vm = this;
-            if($('#kdw013CStart').ntsError('hasError') || $('#kdw013CEnd').ntsError('hasError')){
-                return;
-            }
-
-            const msg2164 = !!_.chain(vm.params.excludeTimes())
-                .filter(({ endTime, startTime }) => {
-                    const start = vm.taskBlocks.caltimeSpanView.start();
-                    const end = vm.taskBlocks.caltimeSpanView.end();
-                    // inside other event
-                    if (start > startTime && start < endTime) {
-                        return true;
-                    }
-                    // inside other event
-                    if (end > startTime && end < endTime) {
-                        return true;
-                    }
-                    // overlap start time of other event
-                    if (start < startTime && end > startTime) {
-                        return true;
-                    }
-                    // overlap end time of other event
-                    if (start < endTime && end > endTime) {
-                        return true;
-                    }
-                    return false;
-                })
-                .size()
-                .value();
-            const start = vm.taskBlocks.caltimeSpanView.start();
-            const end = vm.taskBlocks.caltimeSpanView.end();
-            if(_.isNumber(start) && _.isNumber(end)){
-                if (start >= end) {
-					$('#kdw013CStart').ntsError('clear');
-					$('#kdw013CEnd').ntsError('clear');
-                    setTimeout(() => {
-                        $('#kdw013CStart').ntsError('set', {messageId:"Msg_1400"});
-                        $('#kdw013CEnd').ntsError('set', {messageId:"Msg_1400"});
-                    }, 100);
-                }else if(msg2164){
-					$('#kdw013CStart').ntsError('clear');
-					$('#kdw013CEnd').ntsError('clear');
-                    setTimeout(() => {
-                        $('#kdw013CStart').ntsError('set', {messageId:"Msg_2164"});
-                        $('#kdw013CEnd').ntsError('set', {messageId:"Msg_2164"});
-                    }, 100);
-                }
-            }
+			setTimeout(() => {
+				const start = vm.taskBlocks.caltimeSpanView.start();
+        		const end = vm.taskBlocks.caltimeSpanView.end();
+				if(!selector.ntsError('hasError') && _.isNumber(start) && _.isNumber(end)){
+	                if (start >= end) {
+                        selector.ntsError('set', {messageId:"Msg_1400"});
+						if(startOrEnd.ntsError('hasError')){
+							startOrEnd.ntsError('clear')
+							setTimeout(() => {
+								startOrEnd.ntsError('set', {messageId:"Msg_1400"});
+							}, 50);
+						}else{
+							startOrEnd.ntsError('set', {messageId:"Msg_1400"});
+						}
+						return;
+	                }else{
+						startOrEnd.ntsError('clear');
+					}
+					setTimeout(() => {
+						let startElement = $('#kdw013CStart');
+						let endElement = $('#kdw013CEnd');
+						_.forEach(vm.params.excludeTimes(), ({endTime, startTime}) => {
+		                    if (start <= startTime && endTime <= end && !startElement.ntsError('hasError') && !endElement.ntsError('hasError')) {
+		                        startElement.ntsError('set', {messageId:"Msg_2164"});
+								endElement.ntsError('set', {messageId:"Msg_2164"});
+		                    }else{
+								if (startTime < start && start < endTime && !startElement.ntsError('hasError')) {
+		                        	startElement.ntsError('set', {messageId:"Msg_2164"});
+			                    }
+			                    if (startTime < end && end < endTime && !endElement.ntsError('hasError')) {
+			                        endElement.ntsError('set', {messageId:"Msg_2164"});
+			                    }				
+							}
+						});
+					}, 50);
+	            }		
+			}, 50);
         }
         
-
 		// update popup size
         updatePopupSize(){
 			const vm = this;
@@ -923,9 +914,12 @@ module nts.uk.ui.at.kdw013.c {
 						item++;
 					});
 				});
-				setTimeout(() => {
+				let interval = setInterval(function () {
 					resetHeight();
-				}, 1);
+                });	
+				setTimeout(() => {
+					clearInterval(interval);
+				}, 1000);
             });
         }
 		
