@@ -319,7 +319,7 @@ module nts.uk.at.view.kdw013.h {
 
 				console.log(data);
 				
-				block.invisible();
+				block.grayout();
 				let param = {
 					empTarget: self.params.employeeId, //対象社員
 					targetDate: new Date(self.params.date), //対象日
@@ -337,7 +337,7 @@ module nts.uk.at.view.kdw013.h {
 			
 			reLoadData(){
 				let self = this;
-				block.invisible();
+				block.grayout();
 				let param = {
 					empTarget: self.params.employeeId, //対象社員
 					targetDate: new Date(self.params.date), //対象日
