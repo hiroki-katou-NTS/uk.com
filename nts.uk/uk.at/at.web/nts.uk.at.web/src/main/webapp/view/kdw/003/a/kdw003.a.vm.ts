@@ -2722,7 +2722,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return String(data.key) === value.columnKey;
                         }
                     })
-                    object.itemName = (item == undefined) ? "" : item.headerText;
+                    object.itemName = (item == undefined) ? "" : item.headerText.replace("<br/>", "");
                     errorValidateScreeen.push(object);
                 });
             } else {
@@ -2735,7 +2735,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let item = _.find(self.optionalHeader, (data) => {
                         return String(data.key) === value.columnKey;
                     })
-                    object.itemName = (item == undefined) ? "" : item.headerText;
+                    object.itemName = (item == undefined) ? "" : item.headerText.replace("<br/>", "");
                     errorValidateScreeen.push(object);
                 });
             }
@@ -2765,7 +2765,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return String(data.group[0].key) === value.columnKey;
                         }
                     })
-                    object.itemName = (item == undefined) ? "" : item.headerText;
+                    object.itemName = (item == undefined) ? "" : item.headerText.replace("<br/>", "");
                     errorValidateScreeen.push(object);
                 });
 
@@ -2777,7 +2777,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let item = _.find(self.optionalHeader, (data) => {
                         return String(data.key) === "A" + value.itemId;
                     })
-                    object.itemName = (item == undefined) ? "" : item.headerText;
+                    object.itemName = (item == undefined) ? "" : item.headerText.replace("<br/>", "");
                     errorValidateScreeen.push(object);
                 });
 
@@ -2790,7 +2790,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let item = _.find(self.optionalHeader, (data) => {
                         return String(data.key) === "A" + value.itemId;
                     })
-                    object.itemName = (item == undefined) ? "" : item.headerText;
+                    object.itemName = (item == undefined) ? "" : item.headerText.replace("<br/>", "");
                     let itemOtherInGroup = CHECK_INPUT[value.itemId + ""];
                     let itemGroup = self.itemInputName[Number(itemOtherInGroup)];
                     let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup;
@@ -2820,7 +2820,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return String(data.key) === "A" + value.itemId;
                         }
                     })
-                    object.itemName = (item == undefined) ? "" : item.headerText;
+                    object.itemName = (item == undefined) ? "" : item.headerText.replace("<br/>", "");
                     errorValidateScreeen.push(object);
                 });
 
@@ -2837,7 +2837,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             return data.key != undefined && String(data.key) === "A" + value.itemId;
                         }
                     })
-                    object.itemName = (item == undefined) ? "" : item.headerText;
+                    object.itemName = (item == undefined) ? "" : item.headerText.replace("<br/>", "");
                     object.message = nts.uk.resource.getMessage("Msg_1298", [object.itemName, value.value])
                     errorValidateScreeen.push(object);
                 });
