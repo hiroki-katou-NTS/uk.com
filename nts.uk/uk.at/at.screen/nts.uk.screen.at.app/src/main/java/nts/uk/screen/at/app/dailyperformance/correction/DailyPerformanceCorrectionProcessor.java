@@ -1678,6 +1678,8 @@ public class DailyPerformanceCorrectionProcessor {
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					
+					if (dPItem.getAttendanceAtr() != 5 && dPItem.getPrimitive() != 15)
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
 				}
 			}
