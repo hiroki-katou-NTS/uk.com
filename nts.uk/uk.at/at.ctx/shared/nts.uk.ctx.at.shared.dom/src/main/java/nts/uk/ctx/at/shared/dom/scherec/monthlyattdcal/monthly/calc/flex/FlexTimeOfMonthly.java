@@ -1980,7 +1980,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	public boolean checkIsFlexTimeOccur(FlexMonthWorkTimeAggrSet flexAggrSet) {
 		
 		/** 複数月かを確認する */
-		if (flexAggrSet.getInsufficSet().getSettlePeriod() == SettlePeriod.SINGLE_MONTH) {
+		if (!flexAggrSet.isMultiMonthSettlePeriod()) {
 			/** ○「フレ超過時間」 OR 「フレ繰越勤務時間」に値が入っているか確認する */
 			if (this.flexExcessTime.greaterThan(0) ||
 					this.flexCarryforwardTime.getFlexCarryforwardWorkTime().greaterThan(0)) {
