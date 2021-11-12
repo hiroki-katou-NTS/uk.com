@@ -208,9 +208,9 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			if (_.isNil(self.dataHoliday())) return;
 			self.holidayData([]);
 			if (self.dataHoliday().remainNumConfirmDto == null || (self.dataHoliday().remainNumConfirmDto != null && !_.includes(self.dataHoliday().remainNumConfirmDto.employeeId.slice(-12), value))) {
-				let sid = _.map(_.filter(self.paramData, (o: any) => _.isEqual(o.slice(-12), value)), (z: any) => {
+				let sid = self.paramData.length > 1 ? _.map(_.filter(self.paramData, (o: any) =>  _.includes(o.slice(-12), value.trim())), (z: any) => {
 					return z;
-				})
+				}) : self.paramData;
 				let param = {
 					employeeIds: sid,
 					baseDate: ""
@@ -235,7 +235,13 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 					let id = _.filter($("div > div > div > div"), (x: any) => {
 							return _.includes(x.id, "container") && !_.includes(x.id, "single-list");
 					})
-					$("#" + id[0].id).attr('tabindex', -1);
+					
+					if (id.length > 0){
+						if (id[0].id != "")
+						$("#" + id[0].id).attr('tabindex', -1);
+					}
+					
+					
 					if (self.checkSolid != 0) {
 						$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
 					}
