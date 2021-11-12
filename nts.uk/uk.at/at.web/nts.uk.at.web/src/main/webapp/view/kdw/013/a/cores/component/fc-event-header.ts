@@ -87,7 +87,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
            
             
             let param = {
-                employeeId: vm.$user.employeeId,
+                employeeId: vm.params.screenA.editable() ? vm.$user.employeeId : vm.params.screenA.employee(),
                 date: day.date,
                 IntegrationOfDaily,
                 displayAttItems,
