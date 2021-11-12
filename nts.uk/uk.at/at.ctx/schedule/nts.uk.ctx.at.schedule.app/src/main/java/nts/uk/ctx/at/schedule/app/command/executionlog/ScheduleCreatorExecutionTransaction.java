@@ -16,10 +16,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSettingByClassificationGetterCommand;
@@ -228,9 +227,8 @@ public class ScheduleCreatorExecutionTransaction {
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, String companyId, String exeId,
 			DatePeriod period, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
-			final nts.arc.layer.app.command.AsyncCommandHandlerContext<nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand> asyncTask,
 			Object companySetting, ScheduleCreator scheduleCreator, CacheCarrier carrier) {
 		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
 
@@ -250,7 +248,7 @@ public class ScheduleCreatorExecutionTransaction {
 				this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
 			}
 			// 勤務予定作成する ↓
-			this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
+			this.createSchedule(command, scheduleExecutionLog, asyncTask, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
 			// ----------↑
 
@@ -263,7 +261,7 @@ public class ScheduleCreatorExecutionTransaction {
 	}
 
 	private void createSchedule(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod period,
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, DatePeriod period,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule, Object companySetting,
 			ScheduleCreator scheduleCreator, RegistrationListDateSchedule registrationListDateSchedule,
 			ScheduleCreateContent content, CacheCarrier carrier) {
@@ -273,13 +271,11 @@ public class ScheduleCreatorExecutionTransaction {
 		// 中断フラグを確認する
 		if (content.getImplementAtr().value == ImplementAtr.CREATE_WORK_SCHEDULE.value
 				&& scheduleExecutionLog.getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
-			val asyncTask = context.asAsync();
 
 			// ドメインモデル「スケジュール作成実行ログ」を更新する (update)
-			this.updateStatusScheduleExecutionLog(context.getCommand().getScheduleExecutionLog(),
-					CompletionStatus.INTERRUPTION);
+			this.updateStatusScheduleExecutionLog(command.getScheduleExecutionLog(), CompletionStatus.INTERRUPTION);
 
-			asyncTask.finishedAsCancelled();
+			asyncTask.ifPresent(c -> c.finishedAsCancelled());
 
 			return;
 		} else {
@@ -287,7 +283,7 @@ public class ScheduleCreatorExecutionTransaction {
 			command.setCompanySetting(companySetting);
 			// 勤務予定を作成する - return : ・勤務予定一覧 ・エラー一覧
 			OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
-					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
+					scheduleExecutionLog, asyncTask, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
 			List<GeneralDate> dates = result.listWorkSchedule.stream().map(x -> x.getYmd())
 					.collect(Collectors.toList());
@@ -330,6 +326,7 @@ public class ScheduleCreatorExecutionTransaction {
 		String companyId = AppContexts.user().companyId();
 		// 勤務予定ドメインを削除する
 		workScheduleRepository.delete(employeeId, period);
+
 	}
 
 	/**
@@ -337,7 +334,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private OutputCreateSchedule createScheduleBasedPersonWithMultiThread(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, DatePeriod targetPeriod,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			RegistrationListDateSchedule registrationListDateSchedule, CacheCarrier carrier) {
 

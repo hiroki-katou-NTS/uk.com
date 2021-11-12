@@ -840,8 +840,10 @@ public class CalculationRangeOfOneDay {
 			WithinWorkTimeSheet creatingWithinWorkTimeSheet,
 			boolean correctWithEndTime){
 		
-		if(!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
-		
+		if (integrationOfDaily.getAttendanceLeave()
+				.map(x -> x.getTimeLeavingWorks().stream().allMatch(y -> !y.existsTimeWithDay())).orElse(true))
+			return new ArrayList<>();
+
 		//出勤時刻を予定開始時刻にする
 		this.setScheduleStartTimeForFlow(
 				integrationOfDaily.getWorkInformation(),
