@@ -224,12 +224,24 @@ module nts.uk.at.view.kmk006.j {
             const recordColumnDisplayItems = [];
 
             if (ko.unwrap(vm.value1)) {
+                if (ko.unwrap(vm.textInput1) === "") {
+                    vm.$dialog.info({messageId: 'Msg_3239'})
+                    return;
+                }
                 recordColumnDisplayItems.push({ order: 1, attendanceItemId: ko.unwrap(vm.value1).toString(), displayName: ko.unwrap(vm.textInput1) });
             }
             if (ko.unwrap(vm.value2)) {
+                if (ko.unwrap(vm.textInput2) === "") {
+                    vm.$dialog.info({messageId: 'Msg_3239'})
+                    return;
+                }
                 recordColumnDisplayItems.push({ order: 2, attendanceItemId: ko.unwrap(vm.value2).toString(), displayName: ko.unwrap(vm.textInput2) });
             }
             if (ko.unwrap(vm.value3)) {
+                if (ko.unwrap(vm.textInput3) === "") {
+                    vm.$dialog.info({messageId: 'Msg_3239'})
+                    return;
+                }
                 recordColumnDisplayItems.push({ order: 3, attendanceItemId: ko.unwrap(vm.value3).toString(), displayName: ko.unwrap(vm.textInput3) });
             }
 
