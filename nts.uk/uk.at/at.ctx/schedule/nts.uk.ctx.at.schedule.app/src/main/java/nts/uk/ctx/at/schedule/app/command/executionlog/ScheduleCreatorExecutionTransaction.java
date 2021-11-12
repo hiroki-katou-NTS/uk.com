@@ -358,7 +358,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// Output。処理状態を確認する (call to method 勤務予定反映する)
 			OutputCreateScheduleOneDate createScheduleOneDate = this.reflectWorkSchedule(employeesTempo, command,
-					creator, domain, context, targetPeriod, dateInPeriod, masterCache, listBasicSchedule,
+					creator, domain, targetPeriod, dateInPeriod, masterCache, listBasicSchedule,
 					dateRegistedEmpSche, carrier);
 			switch (createScheduleOneDate.getProcessingStatus()) {
 			case NEXT_DAY:// 次の日へ
@@ -422,15 +422,14 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private OutputCreateScheduleOneDate reflectWorkSchedule(ParamEmployeesTempo employeesTempo,
 			ScheduleCreatorExecutionCommand command, ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
-			GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
+			DatePeriod targetPeriod,GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche, CacheCarrier carrier) {
 
 		OutputCreateScheduleOneDate createScheduleOneDate = new OutputCreateScheduleOneDate();
 		IntegrationOfDaily integrationOfDaily = null;
 		// 日のデータを用意する
 		DataProcessingStatusResult result = this.createScheduleBasedPersonOneDate_New(employeesTempo, command, creator,
-				domain, context, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche);
+				domain, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche);
 		// Output。処理状態を確認する
 		// if 以外
 		if (result.getProcessingStatus().value != ProcessingStatus.NORMAL_PROCESS.value) {
@@ -481,7 +480,7 @@ public class ScheduleCreatorExecutionTransaction {
 			// 勤務情報・勤務時間を用意する ↓
 			Map<GeneralDate, WorkInformation> results = new HashMap<>();
 			PrepareWorkOutput prepareWorkOutput = this.getListTimeZone(employeesTempo, command, creator, domain,
-					context, targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, results,
+					targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, results,
 					carrier);
 
 			// Outputを確認する
@@ -639,8 +638,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private DataProcessingStatusResult createScheduleBasedPersonOneDate_New(ParamEmployeesTempo employeesTempo,
 			ScheduleCreatorExecutionCommand command, ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, GeneralDate dateInPeriod,
-			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
+			GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche) {
 
 		String CID = AppContexts.user().companyId();
@@ -749,11 +747,10 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	public PrepareWorkOutput getListTimeZone(ParamEmployeesTempo employeesTempo,
 			ScheduleCreatorExecutionCommand command, ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
-			GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
+			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche, Map<GeneralDate, WorkInformation> results, CacheCarrier carrier) {
 		// 勤務情報を取得する ↓
-		PrepareWorkOutput output = this.getWorkInfo(employeesTempo, command, creator, domain, context, targetPeriod,
+		PrepareWorkOutput output = this.getWorkInfo(employeesTempo, command, creator, domain, targetPeriod,
 				dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, results, carrier);
 
 		// Outputを確認する
@@ -810,8 +807,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 * 勤務情報を取得する
 	 */
 	public PrepareWorkOutput getWorkInfo(ParamEmployeesTempo employeesTempo, ScheduleCreatorExecutionCommand command,
-			ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
+			ScheduleCreator creator, ScheduleExecutionLog domain, DatePeriod targetPeriod,
 			GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche, Map<GeneralDate, WorkInformation> results, CacheCarrier carrier) {
 		PrepareWorkOutput prepareWorkOutput = null;
@@ -833,7 +829,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 休職中、休業中
 		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE
 				|| optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) {
-			prepareWorkOutput = this.getWorkInfoLeave(employeesTempo, command, creator, domain, context, targetPeriod,
+			prepareWorkOutput = this.getWorkInfoLeave(employeesTempo, command, creator, domain, targetPeriod,
 					dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 		}
 
@@ -892,8 +888,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	public PrepareWorkOutput getWorkInfoLeave(ParamEmployeesTempo employeesTempo,
 			ScheduleCreatorExecutionCommand command, ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
-			GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
+			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche, CacheCarrier carrier) {
 		// if 休職中、休業中
 		// 入力パラメータ「作成方法区分」を確認する
