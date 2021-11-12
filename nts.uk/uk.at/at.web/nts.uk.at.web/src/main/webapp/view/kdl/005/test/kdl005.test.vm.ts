@@ -38,7 +38,7 @@ module nts.uk.at.view.kdl005.test.viewmodel {
 			self.disableSelection = ko.observable(false);
 
 			_.forEach(data, (a: any, ind : number) => {
-				self.employeeList.push({ id: a, code: a.slice(24), name: a, workplaceName: 'HN' })
+				self.employeeList.push({ id: a, code: "00000000000" + (ind+1), name: a, workplaceName: 'HN' })
 			});
 
 			self.listComponentOption = {
