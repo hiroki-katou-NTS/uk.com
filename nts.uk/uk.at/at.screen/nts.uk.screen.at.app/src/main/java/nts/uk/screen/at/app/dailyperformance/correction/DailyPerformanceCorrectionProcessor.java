@@ -1394,7 +1394,8 @@ public class DailyPerformanceCorrectionProcessor {
 			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
 			
 			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
-					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
+					.stream().collect(Collectors.toMap(
+							x -> x.getAttendanceItemId(),
 							x -> x.getDisplayName())); // 9s
 			
 			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
@@ -1677,6 +1678,8 @@ public class DailyPerformanceCorrectionProcessor {
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					
+					if (dPItem.getAttendanceAtr() != 5 && dPItem.getPrimitive() != 15)
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
 				}
 			}
