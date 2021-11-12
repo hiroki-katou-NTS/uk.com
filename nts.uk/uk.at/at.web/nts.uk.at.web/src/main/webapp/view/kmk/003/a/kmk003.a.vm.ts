@@ -1723,8 +1723,9 @@ module nts.uk.at.view.kmk003.a {
 
             updatePeriod(startDateClock: number, rangeTimeDay: number) {
               const vm = this;
-              if (vm.isNewMode()) {
+              if (vm.addMode()) {
                 const model = vm.fixedWorkSetting.offdayWorkTimezone.lstWorkTimezone();
+                if (model.length > 1) return;
                 const timezone = model[0].timezone;
                 timezone.start(startDateClock);
                 timezone.end(startDateClock + rangeTimeDay);
