@@ -98,6 +98,7 @@ module nts.uk.at.view.ksu001.k.a {
                             _.each(data, item => {
                                 dataList.push(new ItemModel(item.code, item.name));                                
                             });
+                            self.itemList(dataList);
                             self.characteristics.code = res.code;
                             self.characteristics.name = res.name;
                             self.characteristics.comments = self.comments();
@@ -114,8 +115,9 @@ module nts.uk.at.view.ksu001.k.a {
                                 self.closeDialog();
                             });
                         }
+                    } else {
+                        self.itemList(dataList);
                     }
-                    self.itemList(dataList);
                     $('#exportExcel').focus();
                 }).always(() => {
                     self.$blockui("hide");
