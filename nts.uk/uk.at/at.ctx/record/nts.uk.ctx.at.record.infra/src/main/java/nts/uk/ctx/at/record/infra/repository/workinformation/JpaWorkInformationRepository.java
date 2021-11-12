@@ -323,7 +323,6 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 			}
 		}
 		this.commandProxy().update(data);
-		this.getEntityManager().flush();
 //		this.commandProxy().update(data.scheduleTimes);
 
 	}
