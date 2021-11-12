@@ -30,25 +30,29 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 	private FileStorage fileStorage;
 
 	@Override
-	public String copyFile(String fileId) throws IOException {
-		// Get original file information
-		Optional<StoredFileInfo> optFileInfo = this.storedFileInfoRepository.find(fileId);
-		if (optFileInfo.isPresent()) {
-			StoredFileInfo fileInfo = optFileInfo.get();
-			// Copy file info, change to new fileId
-			StoredFileInfo newFileInfo = StoredFileInfo.createNew(fileInfo.getOriginalName(), fileInfo.getFileType(),
-					fileInfo.getMimeType(), fileInfo.getOriginalSize());
-			String newFileId = newFileInfo.getId();
-			// Copy physical file
-			File file = Paths.get(DATA_STORE_PATH + "//" + fileId).toFile();
-			File newFile = new File(DATA_STORE_PATH + "//" + newFileId);
-			newFile.createNewFile();
-			FileUtils.copyFile(file, newFile, false);
-			// Persist
-			this.storedFileInfoRepository.add(newFileInfo);
-			return newFileId;
+	public String copyFile(String fileId) {
+		try {
+			// Get original file information
+			Optional<StoredFileInfo> optFileInfo = this.storedFileInfoRepository.find(fileId);
+			if (optFileInfo.isPresent()) {
+				StoredFileInfo fileInfo = optFileInfo.get();
+				// Copy file info, change to new fileId
+				StoredFileInfo newFileInfo = StoredFileInfo.createNew(fileInfo.getOriginalName(), fileInfo.getFileType(),
+						fileInfo.getMimeType(), fileInfo.getOriginalSize());
+				String newFileId = newFileInfo.getId();
+				// Copy physical file
+				File file = Paths.get(DATA_STORE_PATH + "//" + fileId).toFile();
+				File newFile = new File(DATA_STORE_PATH + "//" + newFileId);
+				newFile.createNewFile();
+				FileUtils.copyFile(file, newFile, false);
+				// Persist
+				this.storedFileInfoRepository.add(newFileInfo);
+				return newFileId;
+			}
+			return "";
+		} catch (IOException e) {
+			return "";
 		}
-		return "";
 	}
 
 	@Override
