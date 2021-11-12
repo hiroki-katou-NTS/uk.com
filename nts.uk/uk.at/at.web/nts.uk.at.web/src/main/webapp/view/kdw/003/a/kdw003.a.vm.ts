@@ -4770,7 +4770,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
             };
-            setShared('KDL009_DATA', param);
+            setShared('KDL009_DATA', param.employeeIds);
             if (param.employeeIds.length > 1) {
                 modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650})
             } else {
