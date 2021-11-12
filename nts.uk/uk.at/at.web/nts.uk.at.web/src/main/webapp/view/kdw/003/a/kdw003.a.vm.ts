@@ -2886,7 +2886,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 setShared("errorValidate", errorValidateScreeen);
                 setShared("messageKdw003a", (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? null : messageAlert);
                 self.openedScreenB = true;
-                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1270, height : 530} : {width : 900, height : 550}
+                let dialogSize = (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? {width : 1260, height : 530} : {width : 900, height : 560}
                 self.dialogShow = nts.uk.ui.windows.sub.modeless("/view/kdw/003/b/index.xhtml", dialogSize).onClosed(() =>{
                      self.openedScreenB = false;
                      dfd.resolve();
@@ -3012,6 +3012,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.receiveData(data);
                                 self.extraction();
                                 self.displayNumberZero();
+								self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
                                 nts.uk.ui.block.clear();
                             });
                         }).fail(function(error) {
@@ -3098,28 +3099,45 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             if (!self.hasEmployee || self.hasErrorBuss) return;
             if (!nts.uk.ui.errors.hasError()) {
-                let lstEmployee = [];
+                let lstEmployee: any[] = [];
                 if (self.displayFormat() === 0) {
                     lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
                         return employee.id === self.selectedEmployee();
                     }));
-                    setShared("KDL014A-PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        employeeID: lstEmployee[0].code
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "0", 
+                        listEmp: [lstEmployee[0].id]
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
+                } else if (self.displayFormat() === 1) {
+                    lstEmployee = self.lstEmployee().map((data) => {
+                        return data.id;
+                    });
+                    let param = {
+                        startDate: moment(self.selectedDate()).utc().toISOString(), 
+                        endDate: moment(self.selectedDate()).utc().toISOString(), 
+                        mode: "1", 
+                        listEmp: lstEmployee
+                    };
+                    setShared("KDL014-PARAM", param);
+                    modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
+                    });
                 } else {
                     lstEmployee = self.lstEmployee().map((data) => {
-                        return data.code;
+                        return data.id;
                     });
-                    setShared("KDL014B_PARAM", {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        endDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                        lstEmployee: lstEmployee
-                    });
+                    let param = {
+                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
+                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        mode: "1", 
+                        listEmp: lstEmployee
+                    };
+                    setShared("KDL014-PARAM", param);
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
                 }
@@ -4063,7 +4081,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let screen = nts.uk.ui.windows.getShared("shareToKdw003a");
                     if (screen == undefined) screen = 1905;
                     let transfer = {
-                        appDate: dataShare.date,
+                        baseDate: dataShare.date,
                         uiType: 1,
                         employeeIDs: [],
                         stampRequestMode: 1,
@@ -4348,7 +4366,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (header.group[0].constraint == undefined) delete header.group[0].constraint;
                         delete header.group[1].constraint;
                         delete header.group[0].group;
-                        delete header.key;
+                        // delete header.key;
                         delete header.dataType;
                         // delete header.width;
                         delete header.ntsControl;
@@ -4388,10 +4406,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             delete header.group[0].ntsControl;
                         }
                         delete header.group[1].group;
+						header.key = _.replace(header.headerText, '<br/>', '');
+						header.headerText = '<div style="max-height: 20px;">' + header.headerText + '</div>';
                     } else {
                         delete header.group;
+						header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
                     }
-                }
+                } else {
+					header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
+				}
                 tempList.push(header);
             });
             self.headersGrid = tempList;
@@ -4442,23 +4465,34 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
                     if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
-                            headerText = "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName ;
-                            $("#dpGrid").mGrid("headerText", header.key, headerText, false);
+							let id = header.key.substring(1, header.key.length);
+							if(_.isNaN(_.toNumber(id))) {
+								headerText = '<div style="max-height: 40px;">' + header.attendanceName + '</div>';
+							} else {
+								headerText = '<div style="max-height: 40px;">' + "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName + '</div>';
+							}
+							$("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
-                           // headerText = header.headerText.split(" ")[0];
-                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, false);
+                            $("#dpGrid").mGrid("headerText", header.key, '<div style="max-height: 40px;">' + header.headerText + '</div>', false);
                         }
                     } else {
-                        if (self.showHeaderNumber()) {
-                            headerText =  "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
-                            $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
-                        } else {
-                          //  headerText = header.headerText.split(" ")[0];
-                            headerText = header.attendanceName;
-                            $("#dpGrid").mGrid("headerText", "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + headerText, header.headerText, true);
-                        }
+						if(!nts.uk.util.isNullOrUndefined(self.showHeaderNumber())) {
+	                        if (self.showHeaderNumber()) {
+	                            headerText = "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
+	                            $("#dpGrid").mGrid("headerText", header.key, '<div style="max-height: 20px;">' + headerText + '</div>', true);
+								header.key = _.replace(headerText, '<br/>', '');
+	                        } else {
+	                            $("#dpGrid").mGrid("headerText", header.key, header.headerText, true);
+								let keyHeader = _.replace(header.headerText, '<div style="max-height: 20px;">', '');
+								keyHeader = _.replace(keyHeader, '</div>', '');
+								keyHeader = _.replace(keyHeader, '<br/>', '');
+								header.key = keyHeader;
+	                        }
+						}
                     }
-                }
+                } else {
+					header.headerText = '<div style="max-height: 40px;">' + header.headerText + '</div>';
+				}
             });
         }
 
@@ -5424,7 +5458,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             let param3 = {
                                 typeDialog: 15,
 								param: {
-							 		taskFrameNo: workFrameNoSelection
+									itemId: self.attendenceId
 								}
                             };
                             service.findAllCodeName(param3).done((data: any) => {

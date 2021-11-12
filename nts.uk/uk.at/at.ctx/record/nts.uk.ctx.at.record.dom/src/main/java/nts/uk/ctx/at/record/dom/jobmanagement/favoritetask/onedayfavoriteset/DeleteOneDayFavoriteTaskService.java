@@ -13,7 +13,7 @@ import nts.arc.task.tran.AtomTask;
  * @name UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.1日お気に入りセット.お気に入り作業を削除する
  */
 public class DeleteOneDayFavoriteTaskService {
-
+	
 	public static AtomTask create(Require require, String employeeId, String favoriteId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
@@ -35,6 +35,7 @@ public class DeleteOneDayFavoriteTaskService {
 				atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
 			} else {
 				atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
+				require.deleteByFavId(favoriteId);
 			}
 		}
 		
@@ -58,6 +59,8 @@ public class DeleteOneDayFavoriteTaskService {
 		// [R-4] 表示順を更新する
 		// 1日お気に入り作業の表示順Repository.Update(1日お気に入り作業の表示順)
 		void update(OneDayFavoriteTaskDisplayOrder favoriteTaskDisplayOrder);
+		
+		void deleteByFavId(String favoriteId);
 	}
 
 }

@@ -36,7 +36,11 @@ public class StartProcess {
 	@Inject
 	private GetFavoriteTask getFavoriteTask;
 
-	public StartProcessDto startProcess() {
+	public StartProcessDto startProcess(GeneralDate inputDate) {
+		
+		if (inputDate == null) {
+			inputDate = GeneralDate.today();
+		}
 		
 		StartProcessDto result = new StartProcessDto();
 
@@ -46,13 +50,14 @@ public class StartProcess {
 		result.setManHourInput(manHourInput);
 
 		// 2. call($勤怠項目リスト)
-		AttendanceItemMasterInformationDto itemMasterInfo = this.getWorkDataMasterInformation
-				.getAttendanceItemMasterInformation(collectItemList(manHourInput.getManHrInputDisplayFormat()));
+		List<Integer> attIds = collectItemList(manHourInput.getManHrInputDisplayFormat());
+		attIds.add(28);
+		AttendanceItemMasterInformationDto itemMasterInfo = this.getWorkDataMasterInformation.getAttendanceItemMasterInformation(attIds);
 
 		result.setItemMasterInfo(itemMasterInfo);
 
 		// 3. 画面モード = 確認モード <call>(システム日付) 参照可能職場・社員を取得する
-		GetRefWorkplaceAndEmployeeDto refWork = this.GetRefWorkplaceAndEmployee.get(GeneralDate.today());
+		GetRefWorkplaceAndEmployeeDto refWork = this.GetRefWorkplaceAndEmployee.get(inputDate);
 
 		result.setRefWork(refWork);
 
@@ -70,7 +75,7 @@ public class StartProcess {
 	private List<Integer> collectItemList(Optional<ManHrInputDisplayFormat> ManHrOpt) {
 
 		return ManHrOpt.map(manHr -> manHr.getRecordColumnDisplayItems().stream().map(di -> di.getAttendanceItemId())
-				.collect(Collectors.toList())).orElse(Collections.EMPTY_LIST);
+				.collect(Collectors.toList())).orElse(Collections.emptyList());
 	}
 
 }

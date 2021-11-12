@@ -28,7 +28,9 @@ public class OuenWorkTimeSheetOfDailyAttendanceCommand {
 	public TimeSheetOfAttendanceEachOuenSheetCommand timeSheet;
 
 	public OuenWorkTimeSheetOfDailyAttendance toDomain() {
-		return OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(this.workNo), this.workContent.toDomain(),
+		return OuenWorkTimeSheetOfDailyAttendance.create(
+				SupportFrameNo.of(this.workNo), 
+				this.workContent.toDomain(),
 				this.timeSheet.toDomain(), Optional.empty());
 	}
 }

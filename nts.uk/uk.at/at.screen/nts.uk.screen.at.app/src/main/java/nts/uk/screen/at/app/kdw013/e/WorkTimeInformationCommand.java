@@ -16,10 +16,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @NoArgsConstructor
 public class WorkTimeInformationCommand {
 	
+	private ReasonTimeChangeCommand reasonTimeChange;
+
 	// 時刻
 	public Integer timeWithDay;
-	
+
 	public static WorkTimeInformation toDomain(WorkTimeInformationCommand command) {
-		return new WorkTimeInformation(null, new TimeWithDayAttr(command.timeWithDay));
+		return new WorkTimeInformation(
+				command.getReasonTimeChange().toDomain(),
+				command.timeWithDay == null ? null : new TimeWithDayAttr(command.timeWithDay));
 	}
 }
