@@ -740,10 +740,10 @@ module nts.uk.ui.at.kdw013.a {
             let vm = this;
             const $events = ko.unwrap(vm.events);
            return _.chain(dates).map(date => {
-                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'day') });
-                const data = _.find(vm.$datas().lstWorkRecordDetailDto, (e) => { return moment(e.date).isSame(date, 'day') });
+                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') });
+                const data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days') });
 
-                if (events.length != _.size(_.get(data, 'lstWorkDetailsParamDto'))) {
+                if (events.length != _.size(_.get(data, 'taskBlocks'))) {
                     return { date: date, changed: true };
                 }
                 

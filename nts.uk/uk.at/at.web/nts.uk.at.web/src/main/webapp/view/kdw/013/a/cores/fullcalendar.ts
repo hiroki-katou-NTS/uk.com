@@ -3047,9 +3047,15 @@ module nts.uk.ui.at.kdw013.calendar {
                         $next.removeAttr('disabled');
                     }
                 },
+                eventClassNames: (arg) =>{
+                    if (arg.event.extendedProps.isTimeBreak) {
+                        return 'time-break';
+                    }
+                    return '';
+                },
                 eventDidMount: ({ el, event }) => {
                     el.setAttribute('event-id', event.id);
-                    
+                    $(".fc-timegrid-event-harness:has('.time-break')").css('z-index', 10);
                 },
                 windowResize: () => {
                     // update height
