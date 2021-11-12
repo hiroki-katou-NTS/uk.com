@@ -109,9 +109,10 @@
                     </div>
                     <div class="control-group valign-center">
                         <!-- B4_1-->
-                        <div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KSU008_44')}</div>
+                        <div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('KSU008_46')}</div>
                         <!-- B4_2-->
-                        <div style="display: inline-flex;"
+                        <div id="B4_2"
+                             style="display: inline-flex;"
                              data-bind="ntsSwitchButton: {
                                             name: '#[KSU008_47]',
                                             options: [
@@ -296,7 +297,7 @@
                                     <!-- B7_7_3-->
                                     <span class="label">#{i18n.getText('KSU008_82')}</span>
                                 </td>
-                                <td></td>
+                                <td class="diagonalCross"></td>
                             </tr>
                             <tr>
                                 <!-- B7_8_1-->
@@ -459,7 +460,7 @@
                             <tr>
                                 <!-- B7_14_1-->
                                 <td class="ui-widget-header">#{i18n.getText('KSU008_113')}</td>
-                                <td></td>
+                                <td class="diagonalCross"></td>
                                 <td>
                                     <!-- B7_14_4-->
                                     <input data-bind="ntsTextEditor: {

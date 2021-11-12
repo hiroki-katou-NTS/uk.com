@@ -40,7 +40,8 @@ module nts.uk.at.ksu008.a {
                 showEmptyItem: false,
                 showPanel: false,
                 rows: 5,
-                selectedMode: 1
+                selectedMode: 1,
+                itemList: self.checkWorkplaceGroups.bind(self)
             };
 
             self.targetPeriod = ko.observable(0);
@@ -101,13 +102,18 @@ module nts.uk.at.ksu008.a {
             });
         }
 
+        checkWorkplaceGroups(data: Array<any>) {
+            const vm = this;
+            if (_.isEmpty(data)) vm.$dialog.alert({messageId: "Msg_1929"});
+        }
+
         getAllSetting(code?: string) {
             const vm = this, dfd = $.Deferred();
             vm.$blockui("show");
             vm.$ajax(API.init).done(settings => {
                 const data = settings || [];
                 data.forEach(i => {
-                    i.type = i.systemFixed ? vm.$i18n('KSU008_37') : vm.$i18n('KSU008_38');
+                    i.type = i.systemFixed ? "" : vm.$i18n('KSU008_170');
                 });
                 vm.comboItemList(data);
                 if (code) vm.selectedCode(code);

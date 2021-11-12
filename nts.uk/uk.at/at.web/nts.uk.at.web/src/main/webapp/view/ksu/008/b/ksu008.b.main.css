@@ -58,3 +58,21 @@
 #single-list tr td:last-child {
     text-align: center;
 }
+
+#B6_1-table td span.label {
+    padding-left: 20px;
+}
+
+#B7_2-table td span.label {
+    padding-left: 35px;
+}
+
+#B7_2-table tr:nth-child(11) td span.label,
+#B7_2-table tr:nth-child(13) td span.label,
+#B7_2-table tr:nth-child(14) td span.label {
+    padding-left: 20px;
+}
+
+.diagonalCross {
+    background: linear-gradient(to top left, #fff calc(50% - 1px), #ccc , #fff calc(50% + 1px))
+}
