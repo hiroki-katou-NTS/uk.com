@@ -989,7 +989,7 @@ public class ToppageStartupProcessMobFinder {
         }
 		
 		AnnualLeaveRemainingNumberImport remainingNumber = reNumAnnLeaReferenceDate.getAnnualLeaveRemainNumberExport();
-		yearDays = remainingNumber == null ? 0 : remainingNumber.getAnnualLeaveGrantDay();
+		//yearDays = remainingNumber == null ? 0 : remainingNumber.getAnnualLeaveGrantDay(); comment tạm, để deploy, cần hỏi lại vào thứ 2
 		yearlyHoliday.setNextTimeInfo(new YearlyHolidayInfo(yearDays,
 				new TimeOT(yearHours / 60,
 				        yearHours % 60),
