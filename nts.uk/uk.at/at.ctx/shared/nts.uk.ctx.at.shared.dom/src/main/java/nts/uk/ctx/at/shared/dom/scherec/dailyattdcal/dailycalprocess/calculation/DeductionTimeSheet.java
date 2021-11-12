@@ -65,7 +65,7 @@ public class DeductionTimeSheet {
 	private final List<ShortWorkingTimeSheet> shortTimeSheets;
 	
 	/**
-	 * 控除時間帯の作成
+	 * 控除時間帯の作成(補正処理用の固定休憩の処理)
 	 * @param dedAtr 控除区分
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfWorkTime 統合就業時間帯
@@ -83,7 +83,7 @@ public class DeductionTimeSheet {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			TimeSpanForDailyCalc oneDayOfRange,
-			TimeLeavingOfDailyAttd attendanceLeaveWork,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting) {
@@ -269,7 +269,7 @@ public class DeductionTimeSheet {
 		
 		/** 短時間勤務時間帯を取得 */
 		sheetList.addAll(getShortTimeWorkSheet(
-				integrationOfWorkTime, integrationOfDaily, attendanceLeaveWork, deductionAtr, todayWorkType,
+				integrationOfWorkTime, integrationOfDaily, Optional.of(attendanceLeaveWork), deductionAtr, todayWorkType,
 				companyCommonSetting, personCommonSetting));
 		
 		/** ソート処理 */
@@ -361,7 +361,7 @@ public class DeductionTimeSheet {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			TimeSpanForDailyCalc oneDayOfRange,
-			TimeLeavingOfDailyAttd attendanceLeaveWork,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork,
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personCommonSetting) {
 		
@@ -421,7 +421,7 @@ public class DeductionTimeSheet {
 	private static List<TimeSheetOfDeductionItem> getShortTimeWorkSheet(
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
-			TimeLeavingOfDailyAttd attendanceLeaveWork,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork,
 			DeductionAtr dedAtr,
 			WorkType todayWorkType,
 			ManagePerCompanySet companyCommonSetting,
@@ -459,7 +459,7 @@ public class DeductionTimeSheet {
 			DeductionAtr dedAtr,
 			CalcOfShortTimeWork calcOfShortTimeWork,
 			WorkTimezoneCommonSet commonSet,
-			TimeLeavingOfDailyAttd attendanceLeaveWork){
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork){
 		
 		List<TimeSpanForDailyCalc> results = new ArrayList<>();
 	
@@ -488,8 +488,13 @@ public class DeductionTimeSheet {
 			break;
 		case WITHOUT_ATTENDANCE_LEAVE:
 			// 出退勤時刻と重複していない時間帯の取得
-			results.addAll(attendanceLeaveWork.getNotDuplicateSpan(
-					new TimeSpanForDailyCalc(shortTimeWorkSheet.getStartTime(), shortTimeWorkSheet.getEndTime())));
+			if(attendanceLeaveWork.isPresent()) {
+				results.addAll(attendanceLeaveWork.get().getNotDuplicateSpan(
+						new TimeSpanForDailyCalc(shortTimeWorkSheet.getStartTime(), shortTimeWorkSheet.getEndTime())));
+			}else {
+				results.add(new TimeSpanForDailyCalc(shortTimeWorkSheet.getStartTime(), shortTimeWorkSheet.getEndTime()));
+			}
+			
 			break;
 		}
 		// 結果を返す
@@ -504,7 +509,7 @@ public class DeductionTimeSheet {
 	 * @return 控除項目の時間帯
 	 */
 	private static TimeSheetOfDeductionItem createDeductTimeForShortTime(
-			TimeLeavingOfDailyAttd attendanceLeaveWork,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork,
 			ShortWorkingTimeSheet sts,
 			TimeSpanForDailyCalc timeSpan) {
 		
@@ -516,7 +521,7 @@ public class DeductionTimeSheet {
 				WorkingBreakTimeAtr.NOTWORKING,
 				Finally.empty(),
 				Finally.empty(),
-				decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
+				Optional.of(decisionShortTimeAtr(attendanceLeaveWork.map(x -> x.getTimeLeavingWorks()).orElse(new ArrayList<>()), sts)),
 				DeductionClassification.CHILD_CARE,
 				Optional.of(sts.getChildCareAttr()),
 				false);
@@ -696,7 +701,7 @@ public class DeductionTimeSheet {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			TimeSpanForDailyCalc oneDayOfRange,
-			TimeLeavingOfDailyAttd attendanceLeaveWork,
+			Optional<TimeLeavingOfDailyAttd> attendanceLeaveWork,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
 			List<LateTimeSheet> lateTimeSheet,
 			CalculationRangeOfOneDay calcRange,
@@ -728,13 +733,14 @@ public class DeductionTimeSheet {
 					companyCommonSetting,
 					personCommonSetting);
 		} else {// 流動休憩の場合
-			
+
+			if (!attendanceLeaveWork.isPresent())
+				return new ArrayList<>();
 			/** シフトから計算 */
-			return createDedctionTimeSheetFlow(
-					dedAtr, todayWorkType, integrationOfWorkTime, integrationOfDaily,
-					oneDayOfRange, lateTimeSheet, predetermineTimeSetForCalc, calcRange, 
-					correctWithEndTime, betweenWorkTimeSheets, companyCommonSetting, personCommonSetting);
-			
+			return createDedctionTimeSheetFlow(dedAtr, todayWorkType, integrationOfWorkTime, integrationOfDaily,
+					oneDayOfRange, lateTimeSheet, predetermineTimeSetForCalc, calcRange, correctWithEndTime,
+					betweenWorkTimeSheets, companyCommonSetting, personCommonSetting);
+
 		}
 	}
 	
@@ -758,7 +764,7 @@ public class DeductionTimeSheet {
 		/** △控除時間帯の取得 */
 		if (!dailyRecord.getAttendanceLeave().isPresent()) return Collections.emptyList();
 		val deductionTimeSheet = collectDeductionTimesForCorrect(deductionAtr, workType, workTime,
-				dailyRecord, oneDayOfRange, dailyRecord.getAttendanceLeave().get(),
+				dailyRecord, oneDayOfRange, dailyRecord.getAttendanceLeave(),
 				companyCommonSetting, personCommonSetting);
 		
 		/** パラメータ。勤務間を控除時間帯に入れる */
@@ -913,8 +919,8 @@ public class DeductionTimeSheet {
 	 * @param shortTimeSheet 短時間勤務時間帯
 	 * @return
 	 */
-	public static Optional<ShortTimeSheetAtr> decisionShortTimeAtr(List<TimeLeavingWork> timeLeaves, ShortWorkingTimeSheet shortTimeSheet) {
-		Optional<ShortTimeSheetAtr> returnEnum = Optional.empty(); 
+	public static ShortTimeSheetAtr decisionShortTimeAtr(List<TimeLeavingWork> timeLeaves, ShortWorkingTimeSheet shortTimeSheet) {
+
 		//if(shortTimeSheet.getStartTime() == null || shortTimeSheet.getEndTime() == null) return returnEnum; 
 		for(TimeLeavingWork tlw : timeLeaves) {
 			TimeSpanForDailyCalc shortTimeSpan = new TimeSpanForDailyCalc(shortTimeSheet.getStartTime(), shortTimeSheet.getEndTime());
@@ -922,16 +928,16 @@ public class DeductionTimeSheet {
 			//短時間.開始 <= 出勤 <= 短時間.終了
 			if(tlw.getTimespan().getStart().greaterThan(shortTimeSheet.getEndTime())
 			 ||shortTimeSpan.contains(tlw.getTimespan().getStart())) {
-				returnEnum = Optional.of(ShortTimeSheetAtr.BEFORE_ATTENDANCE);
+				return ShortTimeSheetAtr.BEFORE_ATTENDANCE;
 			}
 			//退勤 <= 短時間.開始
 			//短時間.開始 <= 退勤 <= 短時間.終了
 			else if(shortTimeSheet.getStartTime().greaterThan(tlw.getTimespan().getEnd())
 				  ||shortTimeSpan.contains(tlw.getTimespan().getEnd())) {
-				returnEnum = Optional.of(ShortTimeSheetAtr.AFTER_LEAVING);
+				return ShortTimeSheetAtr.AFTER_LEAVING;
 			}
 		}
-		return returnEnum;
+		return ShortTimeSheetAtr.WORKING_TIME;
 	}
 
 	/**
