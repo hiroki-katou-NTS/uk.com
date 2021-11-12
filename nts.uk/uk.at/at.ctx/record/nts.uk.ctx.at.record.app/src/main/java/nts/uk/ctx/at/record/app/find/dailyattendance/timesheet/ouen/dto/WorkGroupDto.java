@@ -53,7 +53,12 @@ public class WorkGroupDto  implements ItemConst, AttendanceItemDataGate{
 	public static WorkGroupDto from(WorkGroup domain) {
 		if (domain == null) return null;
 		
-		return new WorkGroupDto(domain.getWorkCD1().v(), 
+		if (domain.getWorkCD1() == null 
+				&& !domain.getWorkCD2().isPresent() && !domain.getWorkCD3().isPresent()
+				&& !domain.getWorkCD4().isPresent() && !domain.getWorkCD5().isPresent())
+			return null;
+		
+		return new WorkGroupDto(domain.getWorkCD1() == null ? "" : domain.getWorkCD1().v(), 
 								domain.getWorkCD2().map(c -> c.v()).orElse(null), 
 								domain.getWorkCD3().map(c -> c.v()).orElse(null), 
 								domain.getWorkCD4().map(c -> c.v()).orElse(null), 
