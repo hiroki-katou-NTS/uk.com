@@ -14,8 +14,8 @@ public class ChangeDisplayOrderCommand {
 
 	private String reorderedId;
 
-	private int frontOrder;
+	private int beforeOrder;
 
-	private int backOrder;
+	private int afterOrder;
 
 }

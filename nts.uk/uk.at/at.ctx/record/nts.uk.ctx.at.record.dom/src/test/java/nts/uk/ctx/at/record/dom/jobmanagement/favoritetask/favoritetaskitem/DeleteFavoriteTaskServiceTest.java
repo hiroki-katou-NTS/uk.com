@@ -46,8 +46,7 @@ public class DeleteFavoriteTaskServiceTest {
 				require.delete(employeeId, favoriteId);
 			}
 		};
-		DeleteFavoriteTaskService service = new DeleteFavoriteTaskService();
-		AtomTask result = service.create(require, employeeId, favoriteId);
+		AtomTask result = DeleteFavoriteTaskService.create(require, employeeId, favoriteId);
 		NtsAssert.atomTask(() -> result, any -> require.update(object));
 	}
 
@@ -69,8 +68,7 @@ public class DeleteFavoriteTaskServiceTest {
 				require.delete(employeeId, favoriteId);
 			}
 		};
-		DeleteFavoriteTaskService service = new DeleteFavoriteTaskService();
-		AtomTask result = service.create(require, employeeId, favoriteId);
+		AtomTask result = DeleteFavoriteTaskService.create(require, employeeId, favoriteId);
 		NtsAssert.atomTask(() -> result, any -> require.delete(employeeId));
 	}
 	
@@ -86,8 +84,7 @@ public class DeleteFavoriteTaskServiceTest {
 				result = Optional.empty();
 			}
 		};
-		DeleteFavoriteTaskService service = new DeleteFavoriteTaskService();
-		AtomTask result = service.create(require, employeeId, favoriteId);
+		AtomTask result = DeleteFavoriteTaskService.create(require, employeeId, favoriteId);
 		NtsAssert.atomTask(() -> result, any -> require.delete(employeeId, favoriteId));
 	}
 }

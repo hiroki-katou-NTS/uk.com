@@ -85,12 +85,12 @@ module nts.uk.ui.at.kdw013.share {
 
     export const formatTime = (value: number, format: 'Clock_Short_HM' | 'Time_Short_HM' | 'Time_Short_HM') => byId(format, value);
 
-    export const getTasks = (cds: [], tasks: c.TaskDto[]) => {
-        const task1 = _.find(tasks,{ 'taskFrameNo': 1, 'code': cds[0] });
-        const task2 = _.find(tasks,{ 'taskFrameNo': 2, 'code': cds[1] });
-        const task3 = _.find(tasks,{ 'taskFrameNo': 3, 'code': cds[2] });
-        const task4 = _.find(tasks,{ 'taskFrameNo': 4, 'code': cds[3] });
-        const task5 = _.find(tasks,{ 'taskFrameNo': 5, 'code': cds[4] });
+    export const getTasks = (wg:a.WorkGroupDto, tasks: c.TaskDto[]) => {
+        const task1 = _.find(tasks,{ 'taskFrameNo': 1, 'code': wg.workCD1 });
+        const task2 = _.find(tasks,{ 'taskFrameNo': 2, 'code': wg.workCD2 });
+        const task3 = _.find(tasks,{ 'taskFrameNo': 3, 'code': wg.workCD3 });
+        const task4 = _.find(tasks,{ 'taskFrameNo': 4, 'code': wg.workCD4 });
+        const task5 = _.find(tasks,{ 'taskFrameNo': 5, 'code': wg.workCD5 });
 
         return [task1, task2, task3, task4, task5];
     };
@@ -101,16 +101,32 @@ module nts.uk.ui.at.kdw013.share {
         return task5 || task4 || task3 || task2 || task1;
     };
 
-    export const getTitles = (cds: [string], tasks: c.TaskDto[], character?) => {
+    export const getTitles = (taskDetails, tasks: c.TaskDto[], character?) => {
+        
+        let result = '';
+        _.forEach(taskDetails, td => {
 
-        let taskNames = _.chain(getTasks(cds, tasks))
-            .filter((item) => { return item })
-            .map((item) => {
-                return item.displayInfo.taskName;
-            }).value();
+            let taskNames = _.chain(getTasks(createWG(td.taskItemValues), tasks))
+                .filter((item) => { return item })
+                .map((item) => {
+                    return item.displayInfo.taskName;
+                }).value();
+            let workTime = nts.uk.resource.getText('KDW013_25') + formatTime(_.get(_.find(td.taskItemValues, ti => ti.itemId == 3), 'value', null), 'Time_Short_HM');
+            let taskWorkText = taskNames.join(character ? character : "/") + "\n" + workTime;
+            result = result + taskWorkText + "\n\n";
+        });
 
-        return taskNames.join(character ? character : "\n");
+        return result;
 
+    };
+    
+    export const createWG = (taskItemValues) => {
+        let workCD1 = _.get(_.find(taskItemValues, ti => ti.itemId == 4), 'value', null);
+        let workCD2 = _.get(_.find(taskItemValues, ti => ti.itemId == 5), 'value', null);
+        let workCD3 = _.get(_.find(taskItemValues, ti => ti.itemId == 6), 'value', null);
+        let workCD4 = _.get(_.find(taskItemValues, ti => ti.itemId == 7), 'value', null);
+        let workCD5 = _.get(_.find(taskItemValues, ti => ti.itemId == 8), 'value', null);
+        return { workCD1, workCD2, workCD3, workCD4, workCD5 };
     };
 
     export const getBackground = (wg: a.WorkGroupDto, tasks: c.TaskDto[]) => {

@@ -29,8 +29,8 @@ public class TimeSheetOfAttendanceEachOuenSheetCommand {
 
 	public TimeSheetOfAttendanceEachOuenSheet toDomain() {
 		return TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.workNo),
-				Optional.of(WorkTimeInformationCommand.toDomain(this.start)),
-				Optional.of(WorkTimeInformationCommand.toDomain(this.end)));
+				Optional.ofNullable(this.start == null ? null : WorkTimeInformationCommand.toDomain(this.start)),
+				Optional.ofNullable(this.end == null ? null : WorkTimeInformationCommand.toDomain(this.end)));
 	}
 
 }

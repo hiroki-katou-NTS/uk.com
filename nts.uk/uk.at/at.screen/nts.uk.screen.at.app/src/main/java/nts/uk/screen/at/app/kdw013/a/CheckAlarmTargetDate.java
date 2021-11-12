@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.kdw013.a;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,13 +32,15 @@ public class CheckAlarmTargetDate {
 	@Inject
 	private EmployeeDailyPerErrorRepository employeeDailyPerErrorRepository;
 
-	public void checkAlarm(String sId, List<GeneralDate> dates) {
+	public List<BusinessException> checkAlarm(String sId, List<GeneralDate> dates) {
 		String companyId = AppContexts.user().companyId();
 
 		// イン会社ID,対象社員,対象日リスト,'T001'
 		List<String> des = this.employeeDailyPerErrorRepository.findList(companyId, sId).stream()
 				.filter(x -> dates.contains(x.getDate()) && x.getErrorAlarmWorkRecordCode().v().equals("T001"))
 				.map(x -> x.getDate().toString("yyyy/MM/dd")).collect(Collectors.toList());
+		
+		List<BusinessException> error = new ArrayList<BusinessException>();
 
 		if (!des.isEmpty()) {
 			// ログイン会社ID,'T001'
@@ -51,13 +54,14 @@ public class CheckAlarmTargetDate {
 					String dateStr = String.join(",", des);
 
 					// アラームメッセージ（Msg_2081）を返す
-					throw new BusinessException("Msg_2081", dateStr, displayMessage);
-
+					error.add(new BusinessException("Msg_2081", dateStr, displayMessage));
 				});
 
 			});
 
 		}
+		
+		return error;
 
 	}
 }

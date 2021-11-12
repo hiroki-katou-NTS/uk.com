@@ -12,13 +12,13 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHrRecordConve
 @AllArgsConstructor
 public class ManHrRecordConvertResultCommand {
 	/** 年月日 */
-	private final GeneralDate ymd;
+	private GeneralDate ymd;
 
 	/** 作業リスト */
-	private final List<ManHrTaskDetailCommand> taskList;
+	private List<ManHrTaskDetailCommand> taskList;
 
 	/** 実績内容 */
-	private final List<ItemValueCommand> manHrContents;
+	private List<ItemValueCommand> manHrContents;
 
 	public static ManHrRecordConvertResult toDomain(ManHrRecordConvertResultCommand mh) {
 		

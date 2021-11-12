@@ -42,33 +42,36 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		RegisterWorkContentCommand command = context.getCommand();
 		
+		
+		
 		RegisterWorkContentDto result = new RegisterWorkContentDto();
 		// 1. 実績登録パラメータを作成する
 
 		DPItemParent dataParent = createDpItemQuery.CreateDpItem(command.getEmployeeId(), command.getChangedDates(),
 				command.getManHrlst(), command.getIntegrationOfDailys());
 
+		//throw business
 		// 2. 修正した実績を登録する
-		this.dailyModifyRCommandFacade.insertItemDomain(dataParent);
+
+		result.setDataResult(this.dailyModifyRCommandFacade.insertItemDomain(dataParent));
 		
-		// 6. 作業時間帯グループを登録する
+		// 3. 作業時間帯グループを登録する
 		
 		command.getWorkDetails().forEach(wd -> {
 
-			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(),
-					wd.toTimeZones());
+			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(), wd.toTimeZones());
 
 			this.handler.handle(cmd);
 		});
 
-		// 3. アラーム発生対象日を確認する
+		// 4. アラーム発生対象日を確認する
 
 		checkAlarmTargetDate.checkAlarm(command.getEmployeeId(), command.getChangedDates());
 		
 		
 		if(command.getMode() == 1){
 			
-			// 4.残業申請・休出時間申請の対象時間を取得する
+			// 5.残業申請・休出時間申請の対象時間を取得する
 			
 			List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(),
 					command.getChangedDates());
@@ -77,7 +80,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 			
 		}
 		
-		// 5. List<残業休出時間>.isPresent check dưới client
+		// 6. List<残業休出時間>.isPresent check dưới client
 
 		return result;
 	}

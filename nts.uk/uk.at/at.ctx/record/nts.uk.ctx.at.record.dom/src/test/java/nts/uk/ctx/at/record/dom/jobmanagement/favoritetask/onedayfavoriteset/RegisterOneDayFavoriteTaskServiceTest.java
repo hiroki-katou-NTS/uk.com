@@ -47,7 +47,7 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 				new ArrayList<>());
 
 		NtsAssert.atomTask(() -> result, any -> require
-				.insert(new OneDayFavoriteSet("employeeId", new FavoriteTaskName("name"), new ArrayList<>())));
+				.insert(new OneDayFavoriteSet("employeeId", "favId1", new FavoriteTaskName("name"), new ArrayList<>())));
 	}
 	
 	@Test
@@ -63,6 +63,6 @@ public class RegisterOneDayFavoriteTaskServiceTest {
 				new ArrayList<>());
 
 		NtsAssert.atomTask(() -> result, any -> require
-				.insert(new OneDayFavoriteSet("employeeId", new FavoriteTaskName("name"), new ArrayList<>())));
+				.insert(new OneDayFavoriteSet("employeeId", "favId1", new FavoriteTaskName("name"), new ArrayList<>())));
 	}
 }

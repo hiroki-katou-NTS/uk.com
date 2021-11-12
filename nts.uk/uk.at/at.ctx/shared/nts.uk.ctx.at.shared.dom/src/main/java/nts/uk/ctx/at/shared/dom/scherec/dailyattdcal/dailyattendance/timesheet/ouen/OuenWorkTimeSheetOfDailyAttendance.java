@@ -22,7 +22,7 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 	/** 作業時間入力フラグ*/
 	private Optional<Boolean> inputFlag;
 
-	private OuenWorkTimeSheetOfDailyAttendance(SupportFrameNo workNo, WorkContent workContent, 
+	public OuenWorkTimeSheetOfDailyAttendance(SupportFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet, Optional<Boolean> inputFlag) {
 		super();
 		this.workNo = workNo;

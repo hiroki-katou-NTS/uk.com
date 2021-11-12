@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLink;
-import nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem.DailyAttendanceItemDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.screen.at.app.kdw006.j.DailyAttendanceItemDto;
 
 /**
  * @author thanhpv
@@ -24,7 +24,7 @@ public class ManHourRecordAttendanceItemLinkAttendanceItemsDto {
 	public ManHourRecordAttendanceItemLinkAttendanceItemsDto(List<DailyAttendanceItem> attendanceItems,
 			List<ManHourRecordAndAttendanceItemLink> manHourRecordAndAttendanceItemLink) {
 		super();
-		this.attendanceItems = attendanceItems.stream().map(c->DailyAttendanceItemDto.fromDomain(c)).collect(Collectors.toList());
+		this.attendanceItems = attendanceItems.stream().map(c->new DailyAttendanceItemDto(c)).collect(Collectors.toList());
 		this.manHourRecordAndAttendanceItemLink = manHourRecordAndAttendanceItemLink.stream().map(c -> new ManHourRecordAndAttendanceItemLinkDto(c)).collect(Collectors.toList());
 	} 
 }

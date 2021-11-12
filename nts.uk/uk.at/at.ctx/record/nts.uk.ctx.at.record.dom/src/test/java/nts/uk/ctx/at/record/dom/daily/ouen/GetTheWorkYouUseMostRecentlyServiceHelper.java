@@ -33,29 +33,29 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 		String empId = "empId";
 		GeneralDate ymd = GeneralDate.today();	
 
-		for (int i = 1; i < 100; i++) {
-			ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(i), WorkContent.create(
-					WorkplaceOfWorkEachOuen.create(new WorkplaceId("WorkplaceId"), new WorkLocationCD("000" + i)),
-					Optional.of(WorkGroup.create(new WorkCode("00000" + i), Optional.of(new WorkCode("00000" + i)),
-							Optional.of(new WorkCode("00000" + i)), Optional.of(new WorkCode("00000" + i)),
-							Optional.of(new WorkCode("00000" + i)))),
-					Optional.of(new WorkinputRemarks("DUMMY"))),
-					TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(i),
-							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(500))),
-							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080))))));
-		}
-		
-		for (int i = 10; i < 21; i++) {
-			ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(i), WorkContent.create(
-					WorkplaceOfWorkEachOuen.create(new WorkplaceId("WorkplaceId"), new WorkLocationCD("000" + i)),
-					Optional.of(WorkGroup.create(new WorkCode("00000" + i), Optional.of(new WorkCode("00000" + i)),
-							Optional.of(new WorkCode("00000" + i)), Optional.of(new WorkCode("00000" + i)),
-							Optional.of(new WorkCode("00000" + i)))),
-					Optional.of(new WorkinputRemarks("DUMMY"))),
-					TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(i),
-							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(500))),
-							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080))))));
-		}
+//		for (int i = 1; i < 100; i++) {
+//			ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(i), WorkContent.create(
+//					WorkplaceOfWorkEachOuen.create(new WorkplaceId("WorkplaceId"), new WorkLocationCD("000" + i)),
+//					Optional.of(WorkGroup.create(new WorkCode("00000" + i), Optional.of(new WorkCode("00000" + i)),
+//							Optional.of(new WorkCode("00000" + i)), Optional.of(new WorkCode("00000" + i)),
+//							Optional.of(new WorkCode("00000" + i)))),
+//					Optional.of(new WorkinputRemarks("DUMMY"))),
+//					TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(i),
+//							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(500))),
+//							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080))))));
+//		}
+//		
+//		for (int i = 10; i < 21; i++) {
+//			ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(i), WorkContent.create(
+//					WorkplaceOfWorkEachOuen.create(new WorkplaceId("WorkplaceId"), new WorkLocationCD("000" + i)),
+//					Optional.of(WorkGroup.create(new WorkCode("00000" + i), Optional.of(new WorkCode("00000" + i)),
+//							Optional.of(new WorkCode("00000" + i)), Optional.of(new WorkCode("00000" + i)),
+//							Optional.of(new WorkCode("00000" + i)))),
+//					Optional.of(new WorkinputRemarks("DUMMY"))),
+//					TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(i),
+//							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(500))),
+//							Optional.of(WorkTimeInformation.createByAutomaticSet(new TimeWithDayAttr(1080))))));
+//		}
 
 		OuenWorkTimeSheetOfDaily daily = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenTimeSheet);
 

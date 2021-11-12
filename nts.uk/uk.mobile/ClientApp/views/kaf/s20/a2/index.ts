@@ -1,11 +1,10 @@
-import { component, Prop, Watch } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import * as _ from 'lodash';
 import { IParams, IOptionalItemAppSet, OptionalItemApplication, optionalItems, IControlOfAttendanceItemsDto, IOptionalItemDto } from '../a/define';
 import { KafS00AComponent } from '../../s00/a';
-import { KafS00BComponent, ScreenMode } from '../../s00/b';
+import { KafS00BComponent } from '../../s00/b';
 import { KafS00CComponent } from '../../s00/c';
-import { AppType, KafS00ShrComponent } from '../../s00/shr';
-import { IAppDispInfoStartupOutput, IApplication, IRes } from '../../s04/a/define';
+import { AppType, Application, KafS00ShrComponent } from '../../s00/shr';
 import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 import {KafS20AmountInputComponent, KafS20NumberInputComponent, KafS20TimeInputComponent} from '../components';
 
@@ -27,10 +26,11 @@ import {KafS20AmountInputComponent, KafS20NumberInputComponent, KafS20TimeInputC
 })
 export class KafS20A2Component extends KafS00ShrComponent {
     public title: string = 'KafS20A2';
-    public appDispInfoStartupOutput: IAppDispInfoStartupOutput | null = null;
-    public application: IApplication;
+    public application: Application;
     public optionalItemApplication: OptionalItemApplication[] = [];
     public isValidateAll: boolean = true;
+    public user: any = null;
+
     @Prop({ default: () => true })
     public mode: boolean;
 
@@ -40,68 +40,18 @@ export class KafS20A2Component extends KafS00ShrComponent {
     @Prop({default : () => {}})
     public params: IParams;
 
-    @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
-    public appDispInfoStartupOutputWatcher(value: IAppDispInfoStartupOutput | null) {
-        const vm = this;
-        vm.$auth.user.then((user: any) => {
-            if (value) {
-                vm.updateKaf000_A_Params(user);
-                vm.updateKaf000_B_Params(vm.mode);
-                vm.updateKaf000_C_Params(vm.mode);
-                if (vm.mode) {
-                    vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
-                }
-            }
-        });
-    }
-
-    public beforeCreate() {
-        const vm = this;
-
-        vm.$auth.user.then((user: any) => {
-            vm.application = {
-                appDate: '',
-                appID: '',
-                appType: AppType.OPTIONAL_ITEM_APPLICATION,
-                employeeID: user.employeeId,
-                enteredPerson: user.employeeId,
-                inputDate: '',
-                opAppEndDate: '',
-                opAppReason: '',
-                opAppStandardReasonCD: '',
-                opAppStartDate: '',
-                opReversionReason: null,
-                opStampRequestMode: null,
-                prePostAtr: 0,
-                reflectionStatus: null,
-                version: null,
-            };
-        });
-    }
-
     public created() {
         const vm = this;
-        vm.initService();
-    }
-
-    public initService() {
-        const vm = this;
-        const { OPTIONAL_ITEM_APPLICATION } = AppType;
-
-        Object.assign(window, { vm });
-
-        //mode edit
         if (vm.params) {
-            vm.optionalItemApplication = [];
             vm.mode = false;
-            const { params } = vm;
-            const { appDetail } = params;
-            const { application } = appDetail;
-            const { optionalItems } = application;
+            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+            vm.application = vm.appDispInfoStartupOutput.appDetailScreenInfo.application;
+            vm.optionalItemApplication = [];
 
-            appDetail.optionalItems.forEach((optionalItem: any) => {
+            const { optionalItems } = vm.params.appDetail.application;
+
+            vm.params.appDetail.optionalItems.forEach((optionalItem: any) => {
                 let item = _.find(optionalItems, {itemNo: optionalItem.optionalItemNo});
-                // let controlAttendance = _.find(appDetail.controlOfAttendanceItems, {itemDailyID: optionalItem.optionalItemNo + 640});
                 const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, dispOrder, inputCheck } = optionalItem;
                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
 
@@ -128,48 +78,40 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 });
             });
             vm.optionalItemApplication.sort((a, b) => a.dispOrder - b.dispOrder);
+        } else {
+            vm.application = vm.createApplicationInsert(AppType.OPTIONAL_ITEM_APPLICATION);
         }
+        vm.initService();
+    }
 
+    public initService() {
+        const vm = this;
+        vm.$mask('show');
         vm.$auth.user.then((user: any) => {
+            vm.user = user;
         }).then(() => {
-            return vm.loadCommonSetting(OPTIONAL_ITEM_APPLICATION);
+            return vm.mode ? vm.loadCommonSetting(AppType.OPTIONAL_ITEM_APPLICATION) : true;
         }).then((loadData: any) => {
-            if (loadData && vm.mode) {
-                vm.$mask('show');
-                let settingNoItems = vm.settingItems.settingItems.map((settingNoItem) => {
+            if (loadData) {
+                vm.updateKaf000_A_Params(vm.user);
+                vm.updateKaf000_B_Params(vm.mode);
+                vm.updateKaf000_C_Params(vm.mode);
+                if (vm.mode) {
+                    vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
 
-                    return settingNoItem.no;
-                });
-
-                let params = {
-                    optionalItemNos: settingNoItems,
-                };
-                // const firstreq = vm.$http.post('at', API.getControlAttendance, params);
-                // const seconreq = vm.$http.post('at', API.getListItemNo, params);
-
-                // Promise.all([firstreq, seconreq])
-                vm.$http.post('at', API.getListItemNo, params)
-                    .then((res: any) => {
-                        vm.$mask('hide');
-
-                        // let controlAttendances: IControlOfAttendanceItemsDto[] = res[0].data;
+                    let settingNoItems = vm.settingItems.settingItems.map((settingNoItem) => settingNoItem.no);
+                    let params = {
+                        optionalItemNos: settingNoItems,
+                    };
+                    vm.$http.post('at', API.getListItemNo, params).then((res: any) => {
                         let optionalNoItems: IOptionalItemDto[] = res.data;
-
                         settingNoItems.forEach((itemNo: number) => {
-                            let optionalItem = optionalNoItems.find((optionalItem) => {
-
-                                return optionalItem.optionalItemNo == itemNo;
-                            });
-                            // let controlAttendance = controlAttendances.find((controlAttendance) => {
-                            //     return itemNo == controlAttendance.itemDailyID - 640;
-                            // });
-
-                            const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, inputCheck } = optionalItem;
-                            const { lowerCheck, upperCheck, amountRange, numberRange, timeRange } = calcResultRange;
-                            const { dailyAmountRange } = amountRange;
-
-                            const { dailyNumberRange } = numberRange;
-                            const { dailyTimeRange } = timeRange;
+                            let optionalItem = optionalNoItems.find((optionalItem) => optionalItem.optionalItemNo == itemNo);
+                            const {calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, inputCheck} = optionalItem;
+                            const {lowerCheck, upperCheck, amountRange, numberRange, timeRange} = calcResultRange;
+                            const {dailyAmountRange} = amountRange;
+                            const {dailyNumberRange} = numberRange;
+                            const {dailyTimeRange} = timeRange;
 
                             vm.optionalItemApplication.push({
                                 lowerCheck,
@@ -193,12 +135,14 @@ export class KafS20A2Component extends KafS00ShrComponent {
                                 inputCheckbox: inputCheck
                             });
                         });
-
-                        vm.$updateValidator();
-
+                        vm.$mask('hide');
                     }).catch((error) => {
                         vm.handleErrorMessage(error);
+                        vm.$mask('hide');
                     });
+                }
+            } else {
+                vm.$mask('hide');
             }
         });
     }
@@ -294,7 +238,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         };
         vm.$mask('show');
 
-        vm.$http.post('at', API.register, params).then((res: IRes) => {
+        vm.$http.post('at', API.register, params).then((res: any) => {
             vm.$mask('hide');
             vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
             vm.$emit('nextToStep3', res);
@@ -315,7 +259,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         const { application } = appDetailScreenInfo;
 
         application.opAppReason = vm.application.opAppReason;
-        application.opReversionReason = vm.application.opReversionReason;
+        // application.opReversionReason = vm.application.opReversionReason;
         application.opAppStandardReasonCD = vm.application.opAppStandardReasonCD;
         let optionalItems: optionalItems[] = [];
         vm.optionalItemApplication.forEach((item) => {
