@@ -56,7 +56,11 @@ module nts.uk.at.ksu008.a {
                 } else return null;
             });
             self.displayPeriod = ko.computed(() => {
-                if (self.periodStart() && self.periodEnd() && moment.utc(self.periodStart()).isSameOrAfter(moment.utc("01/01/1900")) && moment.utc(self.periodStart()).isSameOrBefore(moment.utc("12/31/9999")))
+                if (self.periodStart() && self.periodEnd()
+                    && moment.utc(self.periodStart()).isSameOrAfter(moment.utc("01/01/1900"))
+                    && moment.utc(self.periodStart()).isSameOrBefore(moment.utc("12/31/9999"))
+                    && self.periodEnd().isSameOrAfter(moment.utc("01/01/1900"))
+                    && self.periodEnd().isSameOrBefore(moment.utc("12/31/9999")))
                     return self.$i18n("KSU008_171", [moment.utc(self.periodStart()).format("YYYY/MM/DD") + "～" + self.periodEnd().format("YYYY/MM/DD")]);
                 else return "";
             });
@@ -165,7 +169,7 @@ module nts.uk.at.ksu008.a {
                 vm.$dialog.error({messageId: "Msg_218", messageParams: [vm.$i18n("KSU011_6")]});
                 return;
             }
-            if (vm.periodEnd() && !vm.periodEnd().isBetween(moment.utc("01/01/1900"), moment.utc("12/31/9999"))) {
+            if (vm.periodEnd() && (vm.periodEnd().isBefore(moment.utc("01/01/1900")) || vm.periodEnd().isAfter(moment.utc("12/31/9999")))) {
                 vm.$dialog.error({messageId: "Msg_2316"});
                 return;
             }
