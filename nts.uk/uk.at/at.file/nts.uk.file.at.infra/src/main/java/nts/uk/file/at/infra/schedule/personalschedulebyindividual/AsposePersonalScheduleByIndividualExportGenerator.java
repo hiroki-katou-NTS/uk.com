@@ -223,7 +223,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         List<Cell> cellsClass = new ArrayList<>();
         List<Cell> cellsWhile = new ArrayList<>();
         if (holidayClass == null) {
-            holidayClass = 0;
+            holidayClass = 3;
         }
 
             if (holidayMap.containsKey(colNO)) {
