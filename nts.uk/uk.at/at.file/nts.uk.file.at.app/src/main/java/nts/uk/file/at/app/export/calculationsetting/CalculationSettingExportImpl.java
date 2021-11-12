@@ -1274,7 +1274,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                 	} else if (col == 1) {
                 		value = TextResource.localize("KMK013_290");
                 	} else if (col == 2) {
-                		value = optOutManage.map(val -> val.getMaxUsage().v()).orElse(0)
+                		value = optOutManage.map(val -> val.getMaxUsage().v()).orElse(3)
                 				+ TextResource.localize("KMK013_471");
                 		align = ColumnTextAlign.RIGHT;
                 	}
