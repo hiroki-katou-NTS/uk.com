@@ -68,6 +68,8 @@ module nts.uk.ui.at.kdw013.b {
 			</div>
         </div>
         <div class="popup-area-f-from-b">
+			<!-- F1_2 -->
+ 			<button class="closeF" data-bind="click: closeFDialog, icon: 202, size: 12"></button>
             <!-- F2_1 -->
             <div class= "pb10 align-left" data-bind="i18n: 'KDW013_70'"></div>
 
@@ -147,7 +149,7 @@ module nts.uk.ui.at.kdw013.b {
 				margin-bottom: 5px;
 			}
             .popup-area-f-from-b {
-                padding: 20px !important;
+                padding: 10px !important;
                 text-align: right;
                 width: 244px;
             }
@@ -163,6 +165,12 @@ module nts.uk.ui.at.kdw013.b {
             .pr10 {
                 padding-right: 10px;
             }
+			.closeF {
+			    box-shadow: none;
+			    border: none;
+			    border-radius: 50%;
+				width: 30px;
+			}
         </style>
         `;
 
@@ -201,14 +209,21 @@ module nts.uk.ui.at.kdw013.b {
                     at: "left bottom",
                     of: ".popupButton-f-from-b"
                 },
-                showOnStart: false,
-                dismissible: true
+                showOnStart: false
             })			
 		}
     
         openFDialog(){
-             setTimeout(() => { $('.input-f-b').focus(); }, 100);
+            setTimeout(() => { $('.input-f-b').focus(); }, 100);
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('.popup-area-f-from-b .textEditor.pb10');									
+			}, 100);			
         }
+
+		closeFDialog() {
+			$(".popup-area-f-from-b").ntsPopup('hide');
+		}
 
         mounted() {
             const vm = this;
