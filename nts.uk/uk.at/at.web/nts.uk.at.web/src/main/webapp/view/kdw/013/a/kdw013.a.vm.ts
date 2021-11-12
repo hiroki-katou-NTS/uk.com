@@ -350,35 +350,11 @@ module nts.uk.ui.at.kdw013.a {
             vm.$toggle = {
                 save: ko.computed({
                     read: () => {
-                        const $settings = ko.unwrap(vm.$settings);
+                        const event = ko.unwrap(vm.events);
                         
                         if (!vm.dataChanged()) {
                             return false;
                         }
-
-                        if (!$settings) {
-                            return true;
-                        }
-
-                        const { startManHourInputResultDto } = $settings;
-
-                        if (!startManHourInputResultDto) {
-                            return true;
-                        }
-
-                        const { taskFrameUsageSetting } = startManHourInputResultDto;
-
-                        if (!taskFrameUsageSetting) {
-
-                            return true;
-                        }
-                        
-
-//                        const { frameSettingList } = taskFrameUsageSetting;
-
-//                        if (frameSettingList && frameSettingList.length) {
-//                            return !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 2 && useAtr === 1);
-//                        }
 
                         return true;
                     }
@@ -762,10 +738,10 @@ module nts.uk.ui.at.kdw013.a {
             let vm = this;
             const $events = ko.unwrap(vm.events);
            return _.chain(dates).map(date => {
-                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'day') });
-                const data = _.find(vm.$datas().lstWorkRecordDetailDto, (e) => { return moment(e.date).isSame(date, 'day') });
+                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') });
+                const data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days') });
 
-                if (events.length != _.size(_.get(data, 'lstWorkDetailsParamDto'))) {
+                if (events.length != _.size(_.get(data, 'taskBlocks'))) {
                     return { date: date, changed: true };
                 }
                 
@@ -844,6 +820,8 @@ module nts.uk.ui.at.kdw013.a {
                 return dates;
             };
     
+            let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.itemId });
+    
             let employeeId = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
@@ -866,11 +844,45 @@ module nts.uk.ui.at.kdw013.a {
                 manHrlst,
                 integrationOfDailys,
                 mode,
-                workDetails
+                workDetails,
+                itemIds
             };
 
             console.log(command);
-            vm                .$blockui('grayout')                 //作業を登録する                .then(() => vm.$ajax('at', API.REGISTER, command))                .then((response: RegisterWorkContentDto) => {                    vm.dataChanged(false);                    if (response) {                            const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {                            return vm.$dialog                                .info({ messageId: dataResult.messageAlert })                                .then(() => lstOvertimeLeaveTime)                                .then(() => {vm.dataChanged(false);                                            vm.reLoad();                                })                        } else {                            let errors = lstErrorMessageInfo.map(x => {                                return {                                    message: x.messageError,                                    messageId: x.resourceID,                                    supplements: {}                                };                            });                            nts.uk.ui.dialog.bundledErrors({ errors });                        }                    }                    return $                        .Deferred()                        .resolve()                        .then(() => null);                })                .fail((response: ErrorMessage) => {                    const { messageId, parameterIds } = response;                    return vm.$dialog                        .error({ messageId, messageParams: parameterIds })                        .then(() => null);                })                .then((data: OvertimeLeaveTime[] | null) => {                    if (data && data.length) {                        vm.openDialogCaculationResult(data);                    }                })                .always(() => vm.$blockui('clear'));
+            vm
+                .$blockui('grayout')
+                //作業を登録する
+                .then(() => vm.$ajax('at', API.REGISTER, command))
+                .then((response: RegisterWorkContentDto) => {
+                    const { dataResult, lstOvertimeLeaveTime } = response;
+
+                    return vm.$dialog
+                        .info({ messageId: dataResult.messageAlert })
+                        .then(() => lstOvertimeLeaveTime)
+                        .then(() => {
+                            vm.dataChanged(false);
+                            //trigger reload data
+                            vm.dateRange.valueHasMutated();
+                        });
+
+                    return $
+                        .Deferred()
+                        .resolve()
+                        .then(() => null);
+                })
+                .fail((response: ErrorMessage) => {
+                    const { messageId, parameterIds } = response;
+
+                    return vm.$dialog
+                        .error({ messageId, messageParams: parameterIds })
+                        .then(() => null);
+                })
+                .then((data: OvertimeLeaveTime[] | null) => {
+                    if (data && data.length) {
+                        vm.openDialogCaculationResult(data);
+                    }
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         // 日付を変更する

@@ -319,10 +319,10 @@ module nts.uk.at.view.kdw013.h {
 
 				console.log(data);
 				
-				block.invisible();
+				block.grayout();
 				let param = {
 					empTarget: self.params.employeeId, //対象社員
-					targetDate: moment(self.params.date), //対象日
+					targetDate: new Date(self.params.date), //対象日
 					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
 				ajax(paths.save, param).done(() => {
@@ -337,10 +337,10 @@ module nts.uk.at.view.kdw013.h {
 			
 			reLoadData(){
 				let self = this;
-				block.invisible();
+				block.grayout();
 				let param = {
 					empTarget: self.params.employeeId, //対象社員
-					targetDate: moment(self.params.date), //対象日
+					targetDate: new Date(self.params.date), //対象日
 					itemIds: _.map(self.params.displayAttItems, (i) => i.attendanceItemId) //勤怠項目リスト 
 				};
 				param.itemIds.push(28, 29);

@@ -39,6 +39,9 @@ public class RegisterWorkContentCommand {
 	/** 変更対象日 */
 	private List<GeneralDate> changedDates;
 	
+	// 対象項目リスト
+	private List<Integer> itemIds;
+	
 	
 	public List<ManHrRecordConvertResult> getManHrlst(){
 		
