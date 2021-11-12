@@ -208,13 +208,17 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			if (_.isNil(self.dataHoliday())) return;
 			self.holidayData([]);
 			if (self.dataHoliday().remainNumConfirmDto == null || (self.dataHoliday().remainNumConfirmDto != null && !_.includes(self.dataHoliday().remainNumConfirmDto.employeeId.slice(-12), value))) {
-				let sid = self.paramData.length > 1 ? _.map(_.filter(self.paramData, (o: any) =>  _.includes(o.slice(-12), value.trim())), (z: any) => {
-					return z;
-				}) : self.paramData;
+				let index = _.findIndex(self.employeeList(), x => {
+					return _.isEqual(x.code, value);
+				})
+				
+				let sid = [self.paramData[index]];
 				let param = {
 					employeeIds: sid,
 					baseDate: ""
 				};
+				
+				
 				service.getHolidaySub(param).done((data: any) => {
 					self.dataHoliday(data);
 
