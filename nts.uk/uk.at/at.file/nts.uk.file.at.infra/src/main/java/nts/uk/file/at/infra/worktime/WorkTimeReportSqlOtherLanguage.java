@@ -1138,22 +1138,6 @@ public class WorkTimeReportSqlOtherLanguage {
 		sqlNormal.append(" 			THEN ?isNotUpdStartTimeText");
 		sqlNormal.append(" 		 ELSE NULL");
 		sqlNormal.append(" 	END,");
-		// R1_162 外出.外出丸め設定.同じ枠内での丸め設定
-		sqlNormal.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlNormal.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlNormal.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlNormal.append(" 		 ELSE NULL");
-		sqlNormal.append(" 	END,");
-		// R1_163 外出.外出丸め設定.枠を跨る場合の丸め設定
-		sqlNormal.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlNormal.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlNormal.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlNormal.append(" 		 ELSE NULL");
-		sqlNormal.append(" 	END,");
 		// R1_164 外出.私用・組合外出時間.就業時間帯
 		sqlNormal.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
 		sqlNormal.append(
@@ -2878,22 +2862,6 @@ public class WorkTimeReportSqlOtherLanguage {
 				" 			THEN IIF(FLOW_RT_SET1.FIX_REST_TIME = ?isFalse AND FLOW_RT_SET1.USE_REST_AFTER_SET = ?isTrue AND FLOW_RT_SET1.AFTER_REST_TIME IS NOT NULL, ");
 		sqlFlow.append(" 					CONCAT(CAST(FLOW_RT_SET1.AFTER_REST_TIME AS INTEGER)/60, ':',");
 		sqlFlow.append(" 						FORMAT(CAST(FLOW_RT_SET1.AFTER_REST_TIME AS INTEGER)%60,'0#')), NULL)");
-		sqlFlow.append(" 		 ELSE NULL");
-		sqlFlow.append(" 	END,");
-		// R2_143 外出.外出丸め設定.同じ枠内での丸め設定
-		sqlFlow.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlow.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlow.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlFlow.append(" 		 ELSE NULL");
-		sqlFlow.append(" 	END,");
-		// R2_144 外出.外出丸め設定.枠を跨る場合の丸め設定
-		sqlFlow.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlow.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlow.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
 		sqlFlow.append(" 		 ELSE NULL");
 		sqlFlow.append(" 	END,");
 		// R2_145 外出.私用・組合外出時間.就業時間帯
@@ -4634,22 +4602,6 @@ public class WorkTimeReportSqlOtherLanguage {
 		sqlFlex.append(" 					CONCAT(CAST(FLEX_OD_RT_SET.AFTER_REST_TIME AS INTEGER)/60, ':',");
 		sqlFlex.append(
 				" 						FORMAT(CAST(FLEX_OD_RT_SET.AFTER_REST_TIME AS INTEGER)%60,'0#')), NULL)");
-		sqlFlex.append(" 		 ELSE NULL");
-		sqlFlex.append(" 	END,");
-		// R3_184 外出.外出丸め設定.同じ枠内での丸め設定
-		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlex.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlex.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_SAME_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
-		sqlFlex.append(" 		 ELSE NULL");
-		sqlFlex.append(" 	END,");
-		// R3_185 外出.外出丸め設定.枠を跨る場合の丸め設定
-		sqlFlex.append(" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode THEN NULL");
-		sqlFlex.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isTrue THEN ?roudingAfterTotalText");
-		sqlFlex.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND WORKTIME_GO_OUT_SET.ROUNDING_CROSS_FRAME = ?isFalse THEN ?roudingAfterEachTimePeriodText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_186 外出.私用・組合外出時間.就業時間帯

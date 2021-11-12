@@ -112,7 +112,7 @@ module a8 {
             _self.listRoundingMethods = ko.observableArray([
                 { value: 0, localizedName: nts.uk.resource.getText("KMK003_334") },
                 { value: 1, localizedName: nts.uk.resource.getText("KMK003_335") },
-                { value: 2, localizedName: nts.uk.resource.getText("KMK003_335") },
+                { value: 2, localizedName: nts.uk.resource.getText("KMK003_336") },
             ]);          
             //_self.listRoundingBreakTimezone(_self.settingEnum.roundingBreakTimezone);  
             
