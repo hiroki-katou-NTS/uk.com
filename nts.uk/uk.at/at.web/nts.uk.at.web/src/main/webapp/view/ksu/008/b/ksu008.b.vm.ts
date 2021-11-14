@@ -112,7 +112,7 @@ module nts.uk.at.ksu008.b {
                                 self.enableDownloadTemplate(false);
                             }
                             _.defer(() => {
-                                $("#B3_3").focus();
+                                self.layoutType() == 1 ? $("#B4_2").focus() : $("#B3_3").focus();
                             });
                         } else {
                             self.currentCode(null);

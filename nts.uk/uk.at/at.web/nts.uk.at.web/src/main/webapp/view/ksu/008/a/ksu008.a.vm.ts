@@ -40,7 +40,8 @@ module nts.uk.at.ksu008.a {
                 showEmptyItem: false,
                 showPanel: false,
                 rows: 5,
-                selectedMode: 1
+                selectedMode: 1,
+                itemList: self.checkWorkplaceGroups.bind(self)
             };
 
             self.targetPeriod = ko.observable(0);
@@ -55,7 +56,11 @@ module nts.uk.at.ksu008.a {
                 } else return null;
             });
             self.displayPeriod = ko.computed(() => {
-                if (self.periodStart() && self.periodEnd() && moment.utc(self.periodStart()).isSameOrAfter(moment.utc("01/01/1900")) && moment.utc(self.periodStart()).isSameOrBefore(moment.utc("12/31/9999")))
+                if (self.periodStart() && self.periodEnd()
+                    && moment.utc(self.periodStart()).isSameOrAfter(moment.utc("01/01/1900"))
+                    && moment.utc(self.periodStart()).isSameOrBefore(moment.utc("12/31/9999"))
+                    && self.periodEnd().isSameOrAfter(moment.utc("01/01/1900"))
+                    && self.periodEnd().isSameOrBefore(moment.utc("12/31/9999")))
                     return self.$i18n("KSU008_171", [moment.utc(self.periodStart()).format("YYYY/MM/DD") + "～" + self.periodEnd().format("YYYY/MM/DD")]);
                 else return "";
             });
@@ -101,13 +106,18 @@ module nts.uk.at.ksu008.a {
             });
         }
 
+        checkWorkplaceGroups(data: Array<any>) {
+            const vm = this;
+            if (_.isEmpty(data)) vm.$dialog.alert({messageId: "Msg_1929"});
+        }
+
         getAllSetting(code?: string) {
             const vm = this, dfd = $.Deferred();
             vm.$blockui("show");
             vm.$ajax(API.init).done(settings => {
                 const data = settings || [];
                 data.forEach(i => {
-                    i.type = i.systemFixed ? vm.$i18n('KSU008_37') : vm.$i18n('KSU008_38');
+                    i.type = i.systemFixed ? "" : vm.$i18n('KSU008_170');
                 });
                 vm.comboItemList(data);
                 if (code) vm.selectedCode(code);
@@ -159,7 +169,7 @@ module nts.uk.at.ksu008.a {
                 vm.$dialog.error({messageId: "Msg_218", messageParams: [vm.$i18n("KSU011_6")]});
                 return;
             }
-            if (vm.periodEnd() && !vm.periodEnd().isBetween(moment.utc("01/01/1900"), moment.utc("12/31/9999"))) {
+            if (vm.periodEnd() && (vm.periodEnd().isBefore(moment.utc("01/01/1900")) || vm.periodEnd().isAfter(moment.utc("12/31/9999")))) {
                 vm.$dialog.error({messageId: "Msg_2316"});
                 return;
             }
