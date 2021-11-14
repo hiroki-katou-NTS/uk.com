@@ -3,6 +3,7 @@ package nts.uk.file.at.app.export.form9;
 import lombok.val;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
+import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Layout;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9LayoutRepository;
@@ -23,6 +24,9 @@ public class GetOutputLayoutInfoFileQuery {
 
     @Inject
     private FileStorage fileStorage;
+
+    @Inject
+    private StoredFileInfoRepository storedFileInfoRepo;
 
     public Form9LayoutFileNameDto get(String cid, String code) {
         val form9Layout = form9LayoutRepo.get(cid, new Form9Code(code)).orElse(null);

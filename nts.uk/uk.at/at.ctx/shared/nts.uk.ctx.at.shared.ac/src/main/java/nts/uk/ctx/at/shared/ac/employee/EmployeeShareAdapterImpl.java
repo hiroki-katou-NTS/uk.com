@@ -100,7 +100,7 @@ public class EmployeeShareAdapterImpl implements EmployeeAdapter {
     @Override
     public Optional<EmployeeCodeAndDisplayNameImport> getEmployeeCodeAndNameByEmployeeId(String employeeId) {
         EmployeeBasicExport empInfo = employeePub.getEmpBasicBySId(employeeId);
-        return Optional.ofNullable(new EmployeeCodeAndDisplayNameImport(empInfo.getEmployeeId(), empInfo.getEmployeeCode(), empInfo.getBusinessName()));
+        return Optional.of(new EmployeeCodeAndDisplayNameImport(empInfo.getEmployeeId(), empInfo.getEmployeeCode(), empInfo.getBusinessName()));
     }
 
     private EmployeeInformationImport toImport(EmployeeInformationExport item) {

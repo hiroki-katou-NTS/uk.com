@@ -39,11 +39,11 @@ module nts.uk.at.ksu008.d {
         created() {
             const vm = this;
             _.extend(window, {vm});
-
         }
 
         mounted() {
             const vm = this;
+            $('#combo-box').focus();
         }
 
         initData(): JQueryPromise<any> {

@@ -102,7 +102,8 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
                 new RequireMedicalTimeImpl(workScheduleAdapter, dailyRecordAdapter),
                 employeeIds,
                 period,
-                EnumAdaptor.valueOf(acquireTarget, ScheRecGettingAtr.class));
+                acquireTarget == 0 ? ScheRecGettingAtr.ONLY_SCHEDULE : acquireTarget == 1 ? ScheRecGettingAtr.ONLY_RECORD :
+                        acquireTarget == 2 ? ScheRecGettingAtr.SCHEDULE_WITH_RECORD : null); // TODO: EnumAdaptor.valueOf(acquireTarget, ScheRecGettingAtr.class) not working
 
         // 4. Create dto
         return new DisplayInfoRelatedToWorkplaceGroupDto(
@@ -143,7 +144,7 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
 
         @Override
         public Optional<EmployeeCodeAndDisplayNameImport> getPersonEmployeeBasicInfo(String employeeId) {
-            return employeeShareAdap.getEmployeeCodeAndNameByEmployeeId(employeeId);  // TODO: Adapter này tự bổ sung
+            return employeeShareAdap.getEmployeeCodeAndNameByEmployeeId(employeeId);
         }
 
         @Override

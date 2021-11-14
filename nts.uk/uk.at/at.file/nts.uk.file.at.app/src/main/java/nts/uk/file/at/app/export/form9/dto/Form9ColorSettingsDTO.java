@@ -2,9 +2,11 @@ package nts.uk.file.at.app.export.form9.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 /**
  * 様式９の色設定
  */

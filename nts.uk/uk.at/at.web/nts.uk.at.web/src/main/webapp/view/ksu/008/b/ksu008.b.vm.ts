@@ -1,5 +1,6 @@
 module nts.uk.at.ksu008.b {
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
     const API = {
         getAll: "screen/at/ksu008/b/get-layouts/",
@@ -258,7 +259,12 @@ module nts.uk.at.ksu008.b {
                 sourceName: vm.layoutName()
             };
             setShared('dataShareKsu008C', data);
-            vm.$window.modal('/view/ksu/008/c/index.xhtml').then((result: any) => {
+            vm.$window.modal('/view/ksu/008/c/index.xhtml').then((data: any) => {
+                // let result = getShared('dataShareKsu008B');
+                // if (!_.isNil(result)) {
+                //     vm.getAllLayoutSetting(vm.layoutType() == 0, result.destinationCode);
+                // }
+                vm.layoutType(0);
                 vm.$blockui("clear");
             });
         }

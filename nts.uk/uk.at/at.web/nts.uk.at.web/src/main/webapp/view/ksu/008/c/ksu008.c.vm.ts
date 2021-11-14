@@ -1,4 +1,6 @@
 module nts.uk.at.ksu008.c {
+    import setShared = nts.uk.ui.windows.setShared;
+
     const API = {
         duplicate: "screen/at/ksu/008/form9/duplicate"
     };
@@ -15,8 +17,8 @@ module nts.uk.at.ksu008.c {
         constructor() {
             super();
             const vm = this;
-            // vm.sourceCode = ko.observable("Sample001");
-            // vm.sourceName = ko.observable("dest name12336647899999999ee");
+            vm.sourceCode = ko.observable("");
+            vm.sourceName = ko.observable("");
             vm.destinationCode = ko.observable("");
             vm.destinationName = ko.observable("");
             vm.isOverwrite = ko.observable(false);
@@ -26,16 +28,14 @@ module nts.uk.at.ksu008.c {
         created() {
             const vm = this;
             vm.$window.shared("dataShareKsu008C").done((data: any) => {
-                if (data) {
-                    vm.sourceCode(data.sourceCode);
-                    vm.sourceName(data.sourceName);
-                }
+                vm.sourceCode(data.sourceCode);
+                vm.sourceName(data.sourceName);
             });
-
         }
 
         mounted() {
             const vm = this;
+            $("#C2_3").focus();
         }
 
         duplicate(): void {
@@ -48,7 +48,13 @@ module nts.uk.at.ksu008.c {
             };
 
             vm.$ajax(API.duplicate, command).then(data => {
-                vm.$dialog.info({messageId: 'Msg_15'});
+                let result = {
+                    destinationCode: vm.destinationCode()
+                };
+                setShared('dataShareKsu008B', result);
+                vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                    vm.closeDialog();
+                });
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {

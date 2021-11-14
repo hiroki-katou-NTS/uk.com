@@ -7,6 +7,7 @@ import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFile;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
+import nts.arc.system.ServerSystemProperties;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.aggregation.dom.form9.*;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,9 +17,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Optional;
 
 /**
@@ -28,6 +27,7 @@ import java.util.Optional;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DuplicateItemOutputSettingInfoCommandHandler extends CommandHandler<DuplicateItemOutputSettingInfoCommand> {
+
     @Inject
     private Form9LayoutRepository form9Repo;
 
@@ -48,7 +48,6 @@ public class DuplicateItemOutputSettingInfoCommandHandler extends CommandHandler
 
         // 2. 複製する(Require, 様式９の出力レイアウト, 様式９のコード, 様式９の名称, boolean)
         // require, 複製元, Input.先コード, Input.先名称 ,Input.上書きするか
-//        RequireImpl require = new RequireImpl();
         AtomTask atomTask = CopyForm9LayoutService.copy(
                 new CopyForm9LayoutService.Require() {
                     @Override
@@ -58,7 +57,7 @@ public class DuplicateItemOutputSettingInfoCommandHandler extends CommandHandler
 
                     @Override
                     public StoredFileInfo saveFile(String fileName) {
-                        InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
+                        InputStream is = this.getClass().getClassLoader().getResourceAsStream("/report/form9/"+ fileName);
                         ApplicationTemporaryFile tempFile = fileFactory.createTempFile();
                         OutputStream os = tempFile.createOutputStream();
                         try {
@@ -97,43 +96,4 @@ public class DuplicateItemOutputSettingInfoCommandHandler extends CommandHandler
         // 3. Transaction
         transaction.execute(atomTask);
     }
-
-//    private class RequireImpl implements CopyForm9LayoutService.Require {
-//        @Override
-//        public Optional<StoredFileInfo> getInfo(String fileId) {
-//            return fileStorage.getInfo(fileId);
-//        }
-//
-//        @Override
-//        public StoredFileInfo saveFile(String fileName) {
-//            InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
-//            ApplicationTemporaryFile tempFile = fileFactory.createTempFile();
-//            OutputStream os = tempFile.createOutputStream();
-//            try {
-//                IOUtils.copy(is, os);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            StoredFileInfo fileInfo = fileStorage.store(tempFile.getPath(), fileName, "excelFile");
-//            tempFile.dispose();
-//
-//            return fileInfo;
-//        }
-//
-//        @Override
-//        public Optional<Form9Layout> getForm9Layout(Form9Code form9Code) {
-//            return form9Repo.get(AppContexts.user().companyId(), form9Code);
-//        }
-//
-//        @Override
-//        public void insertForm9Layout(Form9Layout layout) {
-//            form9Repo.insertLayoutOfUser(AppContexts.user().companyId(), layout);
-//        }
-//
-//        @Override
-//        public void deleteForm9Layout(Form9Code form9Code) {
-//            form9Repo.deleteLayoutOfUser(AppContexts.user().companyId(), form9Code);
-//        }
-//    }
 }

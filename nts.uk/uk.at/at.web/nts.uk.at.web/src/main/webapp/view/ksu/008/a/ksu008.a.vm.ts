@@ -167,7 +167,7 @@ module nts.uk.at.ksu008.a {
             const exportQuery = {
                 startDate: vm.periodStart(),
                 endDate: vm.periodEnd().toISOString(),
-                wkpGroupList: vm.selectedWkpGroupIds().map(i => ({id: i, code: null, name: null})),
+                wkpGroupList: vm.selectedWkpGroupIds().map(i => ({id: i, code: "TODO", name: "TODO"})),
                 code: vm.selectedCode(),
                 acquireTarget: vm.printTarget(),
                 colorSetting: {

@@ -1,8 +1,10 @@
 package nts.uk.file.at.app.export.form9;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.file.at.app.export.form9.dto.DisplayInfoRelatedToWorkplaceGroupDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -44,7 +46,7 @@ public class CreateForm9FileQuery {
 
 //        List<DisplayInfoRelatedToWorkplaceGroupDto> wkpGroupOutputResults = new ArrayList<>();
 //        query.getWkpGroupList().forEach(wkpGroup -> {
-//            DisplayInfoRelatedToWorkplaceGroupDto data = wkpGroupRelationshipInfoQuery.get(wkpGroup, period, query.getAcquireTarget());
+//            DisplayInfoRelatedToWorkplaceGroupDto data = wkpGroupInfoQuery.get(wkpGroup, period, query.getAcquireTarget());
 //            wkpGroupOutputResults.add(data);
 //        });
 
