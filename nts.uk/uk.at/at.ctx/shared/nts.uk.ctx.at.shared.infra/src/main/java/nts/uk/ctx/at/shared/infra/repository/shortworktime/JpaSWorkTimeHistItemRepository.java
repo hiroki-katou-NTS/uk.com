@@ -19,7 +19,9 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItemPK_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem_;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.GeneralHistoryItem;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 import javax.enterprise.context.RequestScoped;
@@ -32,6 +34,7 @@ import javax.transaction.Transactional;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -287,18 +290,27 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
      */
     @Override
     public Optional<ShortWorkTimeHistoryItem> findByEmployeeIdAndDate(String employeeId, GeneralDate baseDate) {
-        List<KshmtShorttimeHistItem> results = this.queryProxy().query(SELECT_BY_EMP_DATE, KshmtShorttimeHistItem.class)
-                .setParameter("employeeId", employeeId)
-                .setParameter("strYmd", baseDate)
-                .setParameter("endYmd", baseDate)
-                .getList();
-        if (!results.isEmpty()) {
-            return Optional.empty();
+        List<DateHistoryItem> resultHist = new ArrayList<>();
+        String sql = "SELECT * FROM KSHMT_SHORTTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID = ?";
+        try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+            stmt.setString(1, AppContexts.user().companyId());
+            stmt.setDate(2, Date.valueOf(baseDate.localDate()));
+            stmt.setDate(3, Date.valueOf(baseDate.localDate()));
+            stmt.setString(4, employeeId);
+
+            Optional<DateHistoryItem> histOpt = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
+                return new DateHistoryItem(rec.getString("HIST_ID"),
+                        new DatePeriod(rec.getGeneralDate("STR_YMD"), rec.getGeneralDate("END_YMD")));
+            });
+            histOpt.ifPresent(resultHist::add);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        return results
-                .stream()
-                .map(entity -> new ShortWorkTimeHistoryItem(new JpaSWorkTimeHistItemGetMemento(entity)))
-                .findFirst();
+
+        if (resultHist.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(findByHistIds(resultHist.stream().map(GeneralHistoryItem::identifier).distinct().collect(Collectors.toList())).get(0));
     }
 
     private final static String SELECT_BY_EMP_LIST_DATE = new StringBuilder("SELECT item FROM KshmtShorttimeHistItem item ")
@@ -318,17 +330,32 @@ public class JpaSWorkTimeHistItemRepository extends JpaRepository implements SWo
      */
     @Override
     public List<ShortWorkTimeHistoryItem> findByEmployeeIdListAndDate(List<String> employeeIdList, GeneralDate baseDate) {
-        List<KshmtShorttimeHistItem> results = this.queryProxy().query(SELECT_BY_EMP_LIST_DATE, KshmtShorttimeHistItem.class)
-                .setParameter("employeeIdList", employeeIdList)
-                .setParameter("strYmd", baseDate)
-                .setParameter("endYmd", baseDate)
-                .getList();
-        if (!results.isEmpty()) {
+        List<DateHistoryItem> resultHist = new ArrayList<>();
+        CollectionUtil.split(employeeIdList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+            String sql = "SELECT * FROM KSHMT_SHORTTIME_HIST WHERE CID = ? AND  STR_YMD <= ? AND END_YMD >= ? AND SID IN ("
+                    + NtsStatement.In.createParamsString(subList) + ")";
+
+            try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+                stmt.setString(1, AppContexts.user().companyId());
+                stmt.setDate(2, Date.valueOf(baseDate.localDate()));
+                stmt.setDate(3, Date.valueOf(baseDate.localDate()));
+                for (int i = 0; i < subList.size(); i++) {
+                    stmt.setString(4 + i, subList.get(i));
+                }
+
+                List<DateHistoryItem> lstObj = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+                    return new DateHistoryItem(rec.getString("HIST_ID"),
+                            new DatePeriod(rec.getGeneralDate("STR_YMD"), rec.getGeneralDate("END_YMD")));
+                });
+                resultHist.addAll(lstObj);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        if (resultHist.isEmpty())
             return Collections.emptyList();
-        }
-        return results
-                .stream()
-                .map(entity -> new ShortWorkTimeHistoryItem(new JpaSWorkTimeHistItemGetMemento(entity)))
-                .collect(Collectors.toList());
+
+        return findByHistIds(resultHist.stream().map(GeneralHistoryItem::identifier).distinct().collect(Collectors.toList()));
     }
 }
