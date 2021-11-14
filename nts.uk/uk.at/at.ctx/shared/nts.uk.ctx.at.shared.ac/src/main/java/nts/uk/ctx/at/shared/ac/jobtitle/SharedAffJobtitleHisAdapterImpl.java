@@ -51,7 +51,7 @@ public class SharedAffJobtitleHisAdapterImpl implements SharedAffJobtitleHisAdap
 				export.getJobTitleID(), 
 				dateRange, 
 				export.getJobTitleName(),
-				null//TODO dev add jobtileCode
+				export.getJobTitleCode() //TODO dev add jobtileCode
 				);
 	}
 
