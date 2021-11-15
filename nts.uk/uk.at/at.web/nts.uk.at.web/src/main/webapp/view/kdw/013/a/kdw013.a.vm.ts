@@ -342,7 +342,12 @@ module nts.uk.ui.at.kdw013.a {
 
                 });
     
-            vm.events.subscribe((datas) => vm.dataChanged(true));
+            vm.events.subscribe((datas) => {
+                
+
+                vm.dataChanged(true);
+
+            });
 
             vm.$settings
                 .subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
