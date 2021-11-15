@@ -632,6 +632,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let timePlaceList = stampRecord ? stampRecord.workingTime : null;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 0, 'stampFrameNo': i, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(timePlaceList, item => {
                         if (item.frameNo == i) {
@@ -639,6 +641,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -654,6 +658,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let extraordinaryTime = stampRecord ? stampRecord.extraordinaryTime : null;
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 1, 'stampFrameNo': i - 2, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(extraordinaryTime, item => {
                         if (item.frameNo + 2 == i) {
@@ -661,6 +667,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
@@ -679,6 +687,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let outingTime = stampRecord ? stampRecord.outingTime : null;
             for ( let i = 1; i < 11; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
+                let errStartFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 0 });
+                let errEndFilter = _.filter(self.errorList(), { 'timeStampAppEnum': 2, 'stampFrameNo': i, 'startEndClassification': 1 });
                 if (!self.isPreAtr()) {
                     _.forEach(outingTime, item => {
                         if (item.frameNo == i) {
@@ -686,6 +696,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                             dataObject.opEndTime = item.opEndTime;
                             dataObject.opWorkLocationCD = item.opWorkLocationCD;
                             dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                            dataObject.errorStart = errStartFilter.length > 0;
+                            dataObject.errorEnd = errEndFilter.length > 0;
                         }
                     });
                     
