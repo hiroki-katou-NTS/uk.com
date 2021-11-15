@@ -36,7 +36,7 @@ module nts.uk.ui.at.kdw013.b {
                 <div class="actions">
                     <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
-					<!-- ko if: dataSources().length == 1 -->
+					<!-- ko if: dataSources().length == 1 && inputMode() == '0' -->
 						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12, click:$component.openFDialog"></button>
 					<!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
@@ -191,15 +191,32 @@ module nts.uk.ui.at.kdw013.b {
         // F画面: add new 
         taskContents: TaskContentDto[] = [];
 
+		inputMode: KnockoutObservable<string> = ko.observable('0');
+
 		position: any;
         constructor(public params: Params) {
             super();
             const vm = this
 
             // Init popup
-        	vm.initPopup();    
+        	vm.initPopup();  
+			vm.getInputMode();  
 
         }
+
+		getInputMode() {
+			$.urlParam = function (name) {
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (results == null) {
+					return '0';
+				}
+				else {
+					return decodeURI(results[1]) || 0;
+				}
+			}
+			const vm = this;
+			vm.inputMode($.urlParam('mode'));
+		}
 
 		initPopup(){
 			$(".popup-area-f-from-b").ntsPopup({
