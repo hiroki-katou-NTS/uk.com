@@ -225,21 +225,21 @@ module nts.uk.at.view.kmk006.j {
 
             if (ko.unwrap(vm.value1)) {
                 if (ko.unwrap(vm.textInput1) === "") {
-                    vm.$dialog.info({messageId: 'Msg_3239'})
+                    vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_312')]})
                     return;
                 }
                 recordColumnDisplayItems.push({ order: 1, attendanceItemId: ko.unwrap(vm.value1).toString(), displayName: ko.unwrap(vm.textInput1) });
             }
             if (ko.unwrap(vm.value2)) {
                 if (ko.unwrap(vm.textInput2) === "") {
-                    vm.$dialog.info({messageId: 'Msg_3239'})
+                    vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_313')]})
                     return;
                 }
                 recordColumnDisplayItems.push({ order: 2, attendanceItemId: ko.unwrap(vm.value2).toString(), displayName: ko.unwrap(vm.textInput2) });
             }
             if (ko.unwrap(vm.value3)) {
                 if (ko.unwrap(vm.textInput3) === "") {
-                    vm.$dialog.info({messageId: 'Msg_3239'})
+                    vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_314')]})
                     return;
                 }
                 recordColumnDisplayItems.push({ order: 3, attendanceItemId: ko.unwrap(vm.value3).toString(), displayName: ko.unwrap(vm.textInput3) });
@@ -300,7 +300,8 @@ module nts.uk.at.view.kmk006.j {
                                 .then(() => {
                                     vm.$ajax('at', API.ADD_OR_UPDATE, param)
                                         .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                                        .then(() => vm.reloadData())
+                                        // .then(() => vm.reloadData())
+                                        .then(() => location.reload())
                                 })
                                 .always(() => vm.$blockui('clear'));
                         }
