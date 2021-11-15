@@ -292,27 +292,36 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
     }
 
     private void printCommonContent(Cells cells, int row, HolidayConfirmationTableContent content, boolean holidayMng) {
-        cells.get(row, COLUMN_ER).setValue(content.getHolidayAcquisitionInfo().get().isError() ? "ER" : null);
         cells.get(row, COLUMN_EMP).setValue(content.getEmployeeCode() + "　" + content.getEmployeeName());
+        if (!content.getHolidayAcquisitionInfo().isPresent()) return;
+        cells.get(row, COLUMN_ER).setValue(content.getHolidayAcquisitionInfo().get().isError() ? "ER" : null);
         if (holidayMng) {
+            Style negativeStyle = cells.get(row, COLUMN_CARRY_FORWARD).getStyle();
+            negativeStyle.getFont().setColor(Color.getRed());
+
             cells.get(row, COLUMN_CARRY_FORWARD).setValue(String.format("%.1f", content.getHolidayAcquisitionInfo().get().getCarryForwardNumber()));
+            if (content.getHolidayAcquisitionInfo().get().getCarryForwardNumber() < 0) {
+                cells.get(row, COLUMN_CARRY_FORWARD).setStyle(negativeStyle);
+            }
+
             cells.get(row, COLUMN_OCCURRENCE).setValue(String.format("%.1f", content.getHolidayAcquisitionInfo().get().getOccurrencesNumber()));
+            if (content.getHolidayAcquisitionInfo().get().getOccurrencesNumber() < 0) {
+                cells.get(row, COLUMN_OCCURRENCE).setStyle(negativeStyle);
+            }
+
             cells.get(row, COLUMN_USED).setValue(String.format("%.1f", content.getHolidayAcquisitionInfo().get().getUsedNumber()));
+            if (content.getHolidayAcquisitionInfo().get().getUsedNumber() < 0) {
+                cells.get(row, COLUMN_USED).setStyle(negativeStyle);
+            }
 
             cells.get(row, COLUMN_REMAINING).setValue(String.format("%.1f", content.getHolidayAcquisitionInfo().get().getRemainingNumber()));
             if (content.getHolidayAcquisitionInfo().get().getRemainingNumber() < 0) {
-                Style remainingStyle = cells.get(row, COLUMN_REMAINING).getStyle();
-                Font remainingFont = remainingStyle.getFont();
-                remainingFont.setColor(Color.getRed());
-                cells.get(row, COLUMN_REMAINING).setStyle(remainingStyle);
+                cells.get(row, COLUMN_REMAINING).setStyle(negativeStyle);
             }
 
             cells.get(row, COLUMN_UNDIGESTED).setValue(String.format("%.1f", content.getHolidayAcquisitionInfo().get().getUndigestedNumber()));
             if (content.getHolidayAcquisitionInfo().get().getUndigestedNumber() != 0) {
-                Style remainingStyle = cells.get(row, COLUMN_UNDIGESTED).getStyle();
-                Font remainingFont = remainingStyle.getFont();
-                remainingFont.setColor(Color.getRed());
-                cells.get(row, COLUMN_UNDIGESTED).setStyle(remainingStyle);
+                cells.get(row, COLUMN_UNDIGESTED).setStyle(negativeStyle);
             }
         }
     }

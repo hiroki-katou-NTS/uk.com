@@ -376,12 +376,18 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             }
             if (mngUnit != null && mngUnit == 2) {
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(carry == null ? "" : convertToTime(carry.intValue()));
+                if(carry!=null && carry <0){
+                    setForegroundRed(cells.get(row, COLUMN_CARRY_FORWARD));
+                }
                 cells.get(row, COLUMN_OCCURRENCE).setValue(occ == null ? "" : convertToTime(occ.intValue()));
                 cells.get(row, COLUMN_USED).setValue(numofUse == null ? "" : convertToTime(numofUse.intValue()));
                 cells.get(row, COLUMN_REMAINING).setValue(numberOfRemaining == null ? "" : convertToTime(numberOfRemaining.intValue()));
                 cells.get(row, COLUMN_UNDIGESTED).setValue(undeterminedNumber == null ? "" : convertToTime(undeterminedNumber.intValue()));
             } else if (mngUnit != null && mngUnit == 1) {
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(carry == null ? "" : String.format("%.1f", carry));
+                if(carry!=null && carry <0){
+                    setForegroundRed(cells.get(row, COLUMN_CARRY_FORWARD));
+                }
                 cells.get(row, COLUMN_OCCURRENCE).setValue(occ == null ? "" : String.format("%.1f", occ));
 
                 cells.get(row, COLUMN_USED).setValue(numofUse == null ? "" : String.format("%.1f", numofUse));
@@ -608,5 +614,10 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             }
         }
         details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+    }
+    private void setForegroundRed(Cell cell) {
+        Style style = cell.getStyle();
+        style.getFont().setColor(Color.getRed());
+        cell.setStyle(style);
     }
 }
