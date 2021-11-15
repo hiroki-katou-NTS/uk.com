@@ -260,11 +260,10 @@ module nts.uk.at.ksu008.b {
             };
             setShared('dataShareKsu008C', data);
             vm.$window.modal('/view/ksu/008/c/index.xhtml').then((data: any) => {
-                // let result = getShared('dataShareKsu008B');
-                // if (!_.isNil(result)) {
-                //     vm.getAllLayoutSetting(vm.layoutType() == 0, result.destinationCode);
-                // }
-                vm.layoutType(0);
+                if (!_.isNil(data)) {
+                    vm.getAllLayoutSetting(vm.layoutType() == 0, data.destinationCode);
+                    vm.layoutType(0);
+                }
                 vm.$blockui("clear");
             });
         }

@@ -1,6 +1,4 @@
 module nts.uk.at.ksu008.c {
-    import setShared = nts.uk.ui.windows.setShared;
-
     const API = {
         duplicate: "screen/at/ksu/008/form9/duplicate"
     };
@@ -51,9 +49,8 @@ module nts.uk.at.ksu008.c {
                 let result = {
                     destinationCode: vm.destinationCode()
                 };
-                setShared('dataShareKsu008B', result);
                 vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                    vm.closeDialog();
+                    vm.$window.close(result);
                 });
             }).fail(error => {
                 vm.$dialog.error(error);
