@@ -261,7 +261,7 @@ module nts.uk.ui.at.kdw013.b {
 						block.grayout();
 			            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
 							_.forEach(taskBlock.taskDetails, taskDetail =>{
-								taskDetails.push(vm.setlableValueItems(taskDetail,data));
+								taskDetails.push(vm.setlableValueItems(taskDetail,data, extendedProps.displayManHrRecordItems));
 							});
 							vm.dataSources(taskDetails);
 							setTimeout(() => {
@@ -285,7 +285,7 @@ module nts.uk.ui.at.kdw013.b {
 //            vm.position.valueHasMutated();
         }
     
-		setlableValueItems(taskDetail: IManHrTaskDetail, data: StartWorkInputPanelDto): TaskDetailB {
+		setlableValueItems(taskDetail: IManHrTaskDetail, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[]): TaskDetailB {
 			let vm = this;
 			let items: KeyValue[] = [];
 
@@ -324,15 +324,12 @@ module nts.uk.ui.at.kdw013.b {
 				}
             }
 			// cho vao day de sap xep
-			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data);
-			
-			//loai bo item co dinh
-			_.remove(manHrTaskDetail.taskItemValues(), (i: ITaskItemValue) => i.itemId < 9);			
+			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data, displayManHrRecordItem);
 			
 			_.forEach(manHrTaskDetail.taskItemValues(), (item: TaskItemValue) => {
 				
 				let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, i => i.itemId == item.itemId);
-				if(infor && infor.useAtr == 1 && item.value() != null && item.value() != ''){
+				if(infor && infor.useAtr == 1 && item.value() != null && item.value() != '' && item.itemId > 8){
 					if(item.itemId == 9){
 						// work plate
 						let workLocation = _.find(data.workLocation, w => w.workLocationCD == item.value());

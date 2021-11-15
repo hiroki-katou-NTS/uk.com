@@ -332,7 +332,7 @@ module nts.uk.ui.at.kdw013 {
 	export class ManHrTaskDetail {
 		supNo: number;
 		taskItemValues: KnockoutObservableArray<TaskItemValue>;
-		constructor(manHrTaskDetail: IManHrTaskDetail, data?: StartWorkInputPanelDto) {
+		constructor(manHrTaskDetail: IManHrTaskDetail, data?: StartWorkInputPanelDto, displayManHrRecordItem?: DisplayManHrRecordItem[]) {
 			let vm = this;
 			vm.supNo = manHrTaskDetail.supNo;
 			if(!vm.supNo){
@@ -346,29 +346,23 @@ module nts.uk.ui.at.kdw013 {
 			});
 			
 			//sap xep
-			if (data) {
+			if (displayManHrRecordItem && data) {
 				// sap xep item co dinh
 				let taskItemValues: TaskItemValue[] = 
-				_.map(
-					_.sortBy(
-						_.filter(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => { 
-							return i.itemId <= 8 
+				_.map(_.sortBy(_.filter(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => { 
+							return i.itemId < 9 
 						}),
 					['itemId']), 
 				(t: ITaskItemValue) => new TaskItemValue(t));
 				
 				// sap xep thu tu item tuy y
-				let manHourRecordAndAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto[] = _.filter(data.manHourRecordAndAttendanceItemLink, (l: ManHourRecordAndAttendanceItemLinkDto) => l.frameNo == vm.supNo);
-				_.forEach(_.sortBy(data.attendanceItems, ['displayNumber']), (attendanceItem: DailyAttendanceItemDto) => {
-					let itemAttendanceItemLink: ManHourRecordAndAttendanceItemLinkDto = _.find(manHourRecordAndAttendanceItemLink, (link: ManHourRecordAndAttendanceItemLinkDto) => {
-						return link.attendanceItemId == attendanceItem.attendanceItemId;
-					});
-					if (itemAttendanceItemLink) {
-						let item: ITaskItemValue = _.find(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId == itemAttendanceItemLink.itemId);
-						if(item){
-							let t: TaskItemValue = new TaskItemValue(item, '', attendanceItem.dailyAttendanceAtr);
-							taskItemValues.push(t);
-						}
+				_.forEach(_.sortBy(displayManHrRecordItem, ['order']), (itemOrder: DisplayManHrRecordItem) => {
+					let itemLink = _.find(data.manHourRecordAndAttendanceItemLink, link => link.frameNo == vm.supNo && link.itemId == itemOrder.itemId);
+					let attendanceItem = _.find(data.attendanceItems, i => i.attendanceItemId == itemLink.attendanceItemId);
+					let item: ITaskItemValue = _.find(manHrTaskDetail.taskItemValues, (i: ITaskItemValue) => i.itemId == itemOrder.itemId);
+					if(item){
+						let t: TaskItemValue = new TaskItemValue(item, '', attendanceItem.dailyAttendanceAtr);
+						taskItemValues.push(t);
 					}
 				});
 				vm.taskItemValues = ko.observableArray(taskItemValues);
