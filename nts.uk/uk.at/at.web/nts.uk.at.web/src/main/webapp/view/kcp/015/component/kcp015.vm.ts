@@ -196,7 +196,7 @@ module nts.uk.ui.at.kcp015.shared {
                 baseDate: baseDate
             };
 
-            nts.uk.ui.windows.setShared('KDL005_DATA', param);
+            nts.uk.ui.windows.setShared('KDL005_DATA', empIds);
             $('#A1_10_1').ntsPopup('hide');
             if (empIds.length > 1) {
                 nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1160, height: 640 });
