@@ -875,6 +875,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.isNurseTime = false;
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                    self.errorList(res.errorListOptional);
                     let dataSources = self.bindReload()
                     let reflect = self.data.appStampReflectOptional;
                     let attendenceCommon = self.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
