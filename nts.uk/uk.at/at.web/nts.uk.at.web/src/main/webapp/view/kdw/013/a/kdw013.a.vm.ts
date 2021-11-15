@@ -620,7 +620,7 @@ module nts.uk.ui.at.kdw013.a {
                     of: ".popupButton-f"
                 },
                 showOnStart: false,
-                dismissible: true
+ 				dismissible: false
             });
 
             $(".popup-area-g").ntsPopup({
@@ -631,7 +631,7 @@ module nts.uk.ui.at.kdw013.a {
                     of: ".popupButton-g"
                 },
                 showOnStart: false,
-                dismissible: true
+				dismissible: false
             });
 
             $(".popup-area-i").ntsPopup({
@@ -1257,6 +1257,14 @@ module nts.uk.ui.at.kdw013.a {
 		
             vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
         }
+
+		closeFDialog() {
+			$(".popup-area-f").ntsPopup('hide');
+		}
+		
+		closeGDialog() {
+			$(".popup-area-g").ntsPopup('hide');
+		}
     }
 
     

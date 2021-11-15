@@ -68,6 +68,8 @@ module nts.uk.ui.at.kdw013.b {
 			</div>
         </div>
         <div class="popup-area-f-from-b">
+			<!-- F1_2 -->
+ 			<button class="closeF" data-bind="click: closeFDialog, icon: 202, size: 12"></button>
             <!-- F2_1 -->
             <div class= "pb10 align-left" data-bind="i18n: 'KDW013_70'"></div>
 
@@ -147,7 +149,7 @@ module nts.uk.ui.at.kdw013.b {
 				margin-bottom: 5px;
 			}
             .popup-area-f-from-b {
-                padding: 20px !important;
+                padding: 10px !important;
                 text-align: right;
                 width: 244px;
             }
@@ -163,6 +165,12 @@ module nts.uk.ui.at.kdw013.b {
             .pr10 {
                 padding-right: 10px;
             }
+			.closeF {
+			    box-shadow: none;
+			    border: none;
+			    border-radius: 50%;
+				width: 30px;
+			}
         </style>
         `;
 
@@ -202,13 +210,24 @@ module nts.uk.ui.at.kdw013.b {
                     of: ".popupButton-f-from-b"
                 },
                 showOnStart: false,
-                dismissible: true
+  				dismissible: false
             })			
 		}
     
         openFDialog(){
-             setTimeout(() => { $('.input-f-b').focus(); }, 100);
-        }
+            setTimeout(() => { $('.input-f-b').focus(); }, 100);
+
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('.popup-area-f-from-b .textEditor.pb10');									
+			}, 100);
+		}
+
+		closeFDialog() {
+			$(".popup-area-f-from-b").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			jQuery('button.btn-error.small.danger').appendTo('#functions-area');
+		}
 
         mounted() {
             const vm = this;
@@ -221,6 +240,7 @@ module nts.uk.ui.at.kdw013.b {
                     const event = ko.unwrap(data);
 
                     if (event && event.extendedProps.status == "update") {
+						nts.uk.ui.errors.clearAll();
                         vm.favTaskName('');
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
 						const startTime = getTimeOfDate(start);
@@ -387,6 +407,7 @@ module nts.uk.ui.at.kdw013.b {
             vm.$blockui('show');
             vm.$validate(".input-f-b").then((valid: boolean) => {
 				if (valid) {
+					nts.uk.ui.errors.clearAll();
                     vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{

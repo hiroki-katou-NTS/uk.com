@@ -123,7 +123,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                         of: ".popupButton-f"
                     },
                     showOnStart: false,
-                    dismissible: true
+                    dismissible: false
                 });
             }
             
