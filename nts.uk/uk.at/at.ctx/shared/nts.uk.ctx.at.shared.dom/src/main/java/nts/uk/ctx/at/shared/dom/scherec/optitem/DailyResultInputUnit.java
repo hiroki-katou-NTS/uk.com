@@ -44,22 +44,8 @@ public class DailyResultInputUnit {
     	if(value.doubleValue()%resultEnum ==0) {
     		return new ValueCheckResult(true, Optional.empty());
     	}
-    	String valueError = value+"";
-    	if(optionalItemAtr == OptionalItemAtr.TIME) {
-    		valueError = convertTime(value.intValue());
-    	}
-    	String errorContens = TextResource.localize("Msg_2290",valueError);
+    	String errorContens = TextResource.localize("Msg_2290",String.valueOf(resultEnum));
     	return new ValueCheckResult(false, Optional.of(errorContens));
 	}
-    
-    private String convertTime(Integer time) {
-		if (time == null) {
-			return "";
-		}
-		String m = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60) : 0 + String.valueOf(time % 60);
-		String timeString = String.valueOf(time / 60) + ":" + m;
-		return timeString;
-	}
-    
     
 }

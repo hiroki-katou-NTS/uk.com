@@ -27,65 +27,6 @@ public class CalcResultRangeTest {
 		NtsAssert.invokeGetters(calcResultRange);
 	}
 	
-	/**
-	 * @上限値チェック = 設定する && @下限値チェック = 設定しない
-	 */
-	@Test
-	public void testCreateInputRangeErrorMsg_1(@Mocked final TextResource tr) {
-		Optional<TimeRange> timeRange = Optional.empty();
-		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.SET, CalcRangeCheck.NOT_SET, Optional.empty(), timeRange,Optional.empty());
-		ControlRangeValue controlRangeValue = new ControlRangeValue(Optional.of(new BigDecimal(8.0)), Optional.empty());
-		
-		new Expectations() {
-            {
-            	TextResource.localize("Msg_2293","8.0");
-            	result =  "8.0以下の値で入力してください。";
-            }
-        };
-		
-		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue,OptionalItemAtr.AMOUNT);
-		assertThat(result).isEqualTo(TextResource.localize("Msg_2293","8.0"));
-	}
-	
-	/**
-	 * @上限値チェック = 設定しない && @下限値チェック = 設定する
-	 */
-	@Test
-	public void testCreateInputRangeErrorMsg_2(@Mocked final TextResource tr) {
-		Optional<TimeRange> timeRange = Optional.empty();
-		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.NOT_SET, CalcRangeCheck.SET, Optional.empty(), timeRange,Optional.empty());
-		ControlRangeValue controlRangeValue = new ControlRangeValue(Optional.empty(), Optional.of(new BigDecimal(4.0)));
-		
-		new Expectations() {
-            {
-            	TextResource.localize("Msg_2292","4.0");
-            	result =  "4.0以上の値で入力してください。";
-            }
-        };
-		
-		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue,OptionalItemAtr.AMOUNT);
-		assertThat(result).isEqualTo(TextResource.localize("Msg_2292","4.0"));
-	}
-	
-	/**
-	 * @上限値チェック = 設定する && @下限値チェック = 設定する
-	 */
-	@Test
-	public void testCreateInputRangeErrorMsg_3(@Mocked final TextResource tr) {
-		Optional<TimeRange> timeRange = Optional.empty();
-		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.SET, CalcRangeCheck.SET, Optional.empty(), timeRange,Optional.empty());
-		ControlRangeValue controlRangeValue = new ControlRangeValue(Optional.of(new BigDecimal(8.0)), Optional.of(new BigDecimal(4.0)));
-		
-		new Expectations() {
-            {
-            	TextResource.localize("Msg_2291","4.0","8.0");
-            	result =  "4.0～8.0の範囲以内で入力してください。";
-            }
-        };
-		
-		String result = calcResultRange.createInputRangeErrorMsg(controlRangeValue,OptionalItemAtr.AMOUNT);
-		assertThat(result).isEqualTo(TextResource.localize("Msg_2291","4.0","8.0"));
-	}
 	
 	/**
 	 * 時間範囲 is empty
@@ -248,7 +189,7 @@ public class CalcResultRangeTest {
 	 */
 	@Test
 	public void testCheckInputRange_2() {
-		DailyAmountRange dailyAmountRange = new DailyAmountRange(888,666);
+		DailyAmountRange dailyAmountRange = new DailyAmountRange(888,null);
 		AmountRange amountRange = new AmountRange(Optional.of(dailyAmountRange), Optional.empty());
 		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.SET, CalcRangeCheck.NOT_SET, Optional.empty(), Optional.empty(),Optional.of(amountRange));
 		PerformanceAtr performanceAtr = PerformanceAtr.DAILY_PERFORMANCE;
@@ -267,7 +208,7 @@ public class CalcResultRangeTest {
 	 */
 	@Test
 	public void testCheckInputRange_3(@Mocked final TextResource tr) {
-		DailyAmountRange dailyAmountRange = new DailyAmountRange(888,666);
+		DailyAmountRange dailyAmountRange = new DailyAmountRange(888,null);
 		AmountRange amountRange = new AmountRange(Optional.of(dailyAmountRange), Optional.empty());
 		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.SET, CalcRangeCheck.NOT_SET, Optional.empty(), Optional.empty(),Optional.of(amountRange));
 		PerformanceAtr performanceAtr = PerformanceAtr.DAILY_PERFORMANCE;
@@ -292,7 +233,7 @@ public class CalcResultRangeTest {
 	 */
 	@Test
 	public void testCheckInputRange_4() {
-		DailyAmountRange dailyAmountRange = new DailyAmountRange(888,666);
+		DailyAmountRange dailyAmountRange = new DailyAmountRange(null,666);
 		AmountRange amountRange = new AmountRange(Optional.of(dailyAmountRange), Optional.empty());
 		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.NOT_SET, CalcRangeCheck.SET, Optional.empty(), Optional.empty(),Optional.of(amountRange));
 		PerformanceAtr performanceAtr = PerformanceAtr.DAILY_PERFORMANCE;
@@ -311,12 +252,12 @@ public class CalcResultRangeTest {
 	 */
 	@Test
 	public void testCheckInputRange_5(@Mocked final TextResource tr) {
-		DailyAmountRange dailyAmountRange = new DailyAmountRange(888,666);
+		DailyAmountRange dailyAmountRange = new DailyAmountRange(null,666);
 		AmountRange amountRange = new AmountRange(Optional.of(dailyAmountRange), Optional.empty());
 		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.NOT_SET, CalcRangeCheck.SET, Optional.empty(), Optional.empty(),Optional.of(amountRange));
 		PerformanceAtr performanceAtr = PerformanceAtr.DAILY_PERFORMANCE;
 		OptionalItemAtr optionalItemAtr = OptionalItemAtr.AMOUNT;
-		BigDecimal inputValue = new BigDecimal(900);
+		BigDecimal inputValue = new BigDecimal(500);
 		new Expectations() {
             {
             	TextResource.localize("Msg_2292","666.0");
@@ -371,5 +312,85 @@ public class CalcResultRangeTest {
 		assertThat(result.isCheckResult()).isFalse();
 		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2291","666.0","888.0"));
 	}
+	
+	
+	/**
+	 * 上限値チェック = 設定する  && 下限値チェック = 設定する
+	 * 実績区分 == 日別実績
+	 * 任意項目の属性 == 時間
+	 * 入力範囲チェック return false (Msg_2291)
+	 */
+	@Test
+	public void testtestCreateInputRangeErrorMsg_1(@Mocked final TextResource tr) {
+		DailyTimeRange dailyTimeRange = new DailyTimeRange(1080, 600);
+		MonthlyTimeRange monthlyTimeRange = new MonthlyTimeRange(1020, 540);
+		TimeRange timeRange = new TimeRange(Optional.of(dailyTimeRange), Optional.of(monthlyTimeRange));
+		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.SET, CalcRangeCheck.SET, Optional.empty(),Optional.of(timeRange), Optional.empty());
+		PerformanceAtr performanceAtr = PerformanceAtr.DAILY_PERFORMANCE;
+		OptionalItemAtr optionalItemAtr = OptionalItemAtr.TIME;
+		BigDecimal inputValue = new BigDecimal(599);
+		new Expectations() {
+            {
+            	TextResource.localize("Msg_2291","10:00","18:00");
+            	result =  "10:00～18:00の範囲以内で入力してください。";
+            }
+        };
+		ValueCheckResult result = calcResultRange.checkInputRange(inputValue, performanceAtr, optionalItemAtr);
+		assertThat(result.isCheckResult()).isFalse();
+		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2291","10:00","18:00"));
+	}
+	
+	/**
+	 * 上限値チェック = 設定しない  && 下限値チェック = 設定する
+	 * 実績区分 == 日別実績
+	 * 任意項目の属性 == 時間
+	 * 入力範囲チェック return false (Msg_2292)
+	 */
+	@Test
+	public void testtestCreateInputRangeErrorMsg_2(@Mocked final TextResource tr) {
+		DailyTimeRange dailyTimeRange = new DailyTimeRange(null, 600);
+		MonthlyTimeRange monthlyTimeRange = new MonthlyTimeRange(null, 540);
+		TimeRange timeRange = new TimeRange(Optional.of(dailyTimeRange), Optional.of(monthlyTimeRange));
+		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.NOT_SET, CalcRangeCheck.SET, Optional.empty(),Optional.of(timeRange), Optional.empty());
+		PerformanceAtr performanceAtr = PerformanceAtr.DAILY_PERFORMANCE;
+		OptionalItemAtr optionalItemAtr = OptionalItemAtr.TIME;
+		BigDecimal inputValue = new BigDecimal(599);
+		new Expectations() {
+            {
+            	TextResource.localize("Msg_2292","10:00");
+            	result =  "10:00以上の値で入力してください。";
+            }
+        };
+		ValueCheckResult result = calcResultRange.checkInputRange(inputValue, performanceAtr, optionalItemAtr);
+		assertThat(result.isCheckResult()).isFalse();
+		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2292","10:00"));
+	}
+	
+	/**
+	 * 上限値チェック = 設定する  && 下限値チェック = 設定しない
+	 * 実績区分 == 日別実績
+	 * 任意項目の属性 == 時間
+	 * 入力範囲チェック return false (Msg_2293)
+	 */
+	@Test
+	public void testtestCreateInputRangeErrorMsg_3(@Mocked final TextResource tr) {
+		DailyTimeRange dailyTimeRange = new DailyTimeRange(1080, null);
+		MonthlyTimeRange monthlyTimeRange = new MonthlyTimeRange(1080, null);
+		TimeRange timeRange = new TimeRange(Optional.of(dailyTimeRange), Optional.of(monthlyTimeRange));
+		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.SET, CalcRangeCheck.NOT_SET, Optional.empty(),Optional.of(timeRange), Optional.empty());
+		PerformanceAtr performanceAtr = PerformanceAtr.DAILY_PERFORMANCE;
+		OptionalItemAtr optionalItemAtr = OptionalItemAtr.TIME;
+		BigDecimal inputValue = new BigDecimal(1200);
+		new Expectations() {
+            {
+            	TextResource.localize("Msg_2293","18:00");
+            	result =  "18:00以下の値で入力してください。";
+            }
+        };
+		ValueCheckResult result = calcResultRange.checkInputRange(inputValue, performanceAtr, optionalItemAtr);
+		assertThat(result.isCheckResult()).isFalse();
+		assertThat(result.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2293","18:00"));
+	}
+	
 	
 }
