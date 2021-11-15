@@ -1322,6 +1322,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                         id: randomId(),
                                         status: 'normal',
                                         isTimeBreak: true,
+                                        isChanged: true,
                                         taskBlock: {
                                             manHrContents,
                                             taskDetails: []
@@ -1768,6 +1769,11 @@ module nts.uk.ui.at.kdw013.calendar {
                 };
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
+                //set editable
+                _.forEach(events, e => {
+                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak);
+                });
+                
                 
                 
                 const isDuplicated = _.uniqBy(events, 'extendedProps.supportFrameNo').length < events.length;
@@ -1803,7 +1809,6 @@ module nts.uk.ui.at.kdw013.calendar {
                         end: formatDate(_.get(e,'end')),
                         [GROUP_ID]: isSelected(e) ? SELECTED : '',
                         [BORDER_COLOR]: isSelected(e) ? BLACK : TRANSPARENT,
-                        editable: getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak),
                         extendedProps: {
                             ...e.extendedProps,
                             status: e.extendedProps.status || 'normal'
@@ -3583,7 +3588,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 const starts = selecteds.map(({ start }) => formatDate(start));
 
                                 if (ko.isObservable(vm.params.events)) {
-                                    vm.params.events.remove((e: EventRaw) => (!e.extendedProps.isTimeBreak && starts.indexOf(formatDate(e.start)) !== -1) );
+                                    vm.params.events.remove((e: EventRaw) => (e.editable && starts.indexOf(formatDate(e.start)) !== -1));
                                 }
                                 dataEvent.delete(false);
                                 popupPosition.event(null);
