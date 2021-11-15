@@ -119,8 +119,8 @@ module nts.uk.ui.at.kdw013.b {
                 border-radius: 50%;
                 width: 30px;
             }
-            .detail-event .header .actions button:focus {
-                background-color:#f7f7f7;
+            .detail-event .header .actions button:focus, .detail-event .header .actions button:hover {
+                background-color:#dddddd;
                 margin: 0;
                 padding: 0;
                 box-shadow: none;
