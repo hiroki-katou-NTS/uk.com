@@ -32,7 +32,7 @@ public class CaseSpecExeContentDto {
 	 * 日別作成の設定情報
 	 */
 
-	private SettingInforForDailyCreationDto dailyCreationSetInfo;
+	private CalExeSettingInforDto dailyCreationSetInfo;
 	/**
 	 * 日別計算の設定情報
 	 */
@@ -51,7 +51,7 @@ public class CaseSpecExeContentDto {
 				domain.getReflectApprovalSetInfo().isPresent()
 						? SetInforReflAprResultDto.fromDomain(domain.getReflectApprovalSetInfo().get()) : null,
 				domain.getDailyCreationSetInfo().isPresent()
-						? SettingInforForDailyCreationDto.fromDomain(domain.getDailyCreationSetInfo().get()) : null,
+						? CalExeSettingInforDto.fromDomain(domain.getDailyCreationSetInfo().get()) : null,
 				domain.getDailyCalSetInfo().isPresent()
 						? CalExeSettingInforDto.fromDomain(domain.getDailyCalSetInfo().get()) : null,
 				domain.getMonlyAggregationSetInfo().isPresent()

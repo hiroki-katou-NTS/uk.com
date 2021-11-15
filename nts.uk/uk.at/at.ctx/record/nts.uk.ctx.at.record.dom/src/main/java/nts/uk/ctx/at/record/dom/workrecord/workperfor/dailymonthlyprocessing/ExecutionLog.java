@@ -70,8 +70,8 @@ public class ExecutionLog extends AggregateRoot {
 	}
 	
 	/** 日別作成の設定情報 */
-	private Optional<SettingInforForDailyCreation> dailyCreationSetInfo;
-	public void setDailyCreationSetInfo(SettingInforForDailyCreation dailyCreationSetInfo) {
+	private Optional<CalExeSettingInfor> dailyCreationSetInfo;
+	public void setDailyCreationSetInfo(CalExeSettingInfor dailyCreationSetInfo) {
 		this.dailyCreationSetInfo = Optional.of(dailyCreationSetInfo);
 	}
 	

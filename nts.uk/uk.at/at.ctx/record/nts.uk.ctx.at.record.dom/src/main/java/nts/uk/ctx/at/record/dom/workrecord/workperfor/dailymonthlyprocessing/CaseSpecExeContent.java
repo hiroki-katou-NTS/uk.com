@@ -53,7 +53,7 @@ public class CaseSpecExeContent extends AggregateRoot {
 	 * 日別作成の設定情報
 	 */
 	@Setter
-	private Optional<SettingInforForDailyCreation> dailyCreationSetInfo;
+	private Optional<CalExeSettingInfor> dailyCreationSetInfo;
 	/**
 	 * 日別計算の設定情報
 	 */
