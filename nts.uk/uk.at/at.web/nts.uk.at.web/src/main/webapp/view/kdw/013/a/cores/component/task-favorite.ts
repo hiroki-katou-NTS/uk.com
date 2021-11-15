@@ -123,7 +123,7 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                         of: ".popupButton-f"
                     },
                     showOnStart: false,
-                    dismissible: true
+                    dismissible: false
                 });
             }
             
@@ -160,6 +160,11 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                 });
 			setTimeout(() => {
 				$('.input-f').focus();
+			}, 100)
+			
+			setTimeout(() => {
+				nts.uk.ui.errors.clearAll();
+				jQuery('button.btn-error.small.danger').appendTo('.popup-area-f .textEditor.pb10');
 			}, 100)
             }
         }

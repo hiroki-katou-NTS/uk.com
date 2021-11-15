@@ -3,14 +3,15 @@
 }
 
 .popup-area-f {
-	padding: 20px !important;
+	padding: 10px !important;
 	text-align: right;
 	width: 244px;
 }
 
 .popup-area-g  {
-	padding: 20px !important;
+	padding: 10px !important;
 	text-align: right;
+	width: 244px;
 }
 
 .popup-area-i{
@@ -77,4 +78,11 @@
 
 #name-i {
 	width: 232px;
+}
+
+.closeG {
+	 box-shadow: none;
+	 border: none;
+	 border-radius: 50%;
+	 width: 30px;
 }

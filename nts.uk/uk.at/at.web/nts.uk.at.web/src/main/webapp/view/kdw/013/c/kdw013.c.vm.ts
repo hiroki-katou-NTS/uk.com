@@ -707,7 +707,7 @@ module nts.uk.ui.at.kdw013.c {
 
 					block.grayout();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
-		            	vm.taskBlocks.update(taskBlock, employeeId, data, vm.taskFrameSettings());
+		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings());
 						setTimeout(() => {
 							vm.updatePopupSize();
 						}, 150);
@@ -896,12 +896,13 @@ module nts.uk.ui.at.kdw013.c {
 		employeeId: string = '';
 		setting: a.TaskFrameSettingDto[] = [];
 		data: StartWorkInputPanelDto = null;
+		displayManHrRecordItem: DisplayManHrRecordItem[] = null;
 		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private showInputTime: KnockoutObservable<boolean>) {
 			super(taskBlocks);
 			const vm = this;
 			vm.employeeId = employeeId;
 			vm.taskDetailsView = ko.observableArray(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, showInputTime, vm.data, []))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, employeeId, showInputTime, vm.data, [], vm.displayManHrRecordItem))
 			);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
                 vm.caltimeSpanView.start(getTimeOfDate(taskBlocks.caltimeSpan.start));
@@ -923,14 +924,15 @@ module nts.uk.ui.at.kdw013.c {
             });
         }
 		
-        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, setting: a.TaskFrameSettingDto[]) {
+        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[], setting: a.TaskFrameSettingDto[]) {
 			const vm = this;
 			vm.setting = setting;
 			vm.data = data;
+			vm.displayManHrRecordItem = displayManHrRecordItem;
 			vm.employeeId = employeeId;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, setting))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, setting, vm.displayManHrRecordItem))
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
@@ -954,7 +956,7 @@ module nts.uk.ui.at.kdw013.c {
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: '' });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: supNo, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting));
+			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
 		}
 
 		isChangedTime(): boolean{
@@ -980,7 +982,8 @@ module nts.uk.ui.at.kdw013.c {
             _.each(vm.taskDetailsView(), (task: ManHrTaskDetailView) => {
                 titles.push(task.getTitles());
             });
-			if(titles.length == 1){
+			let timeRange = _.find(vm.taskDetailsView()[0].taskItemValues(), i => i.itemId == 3);
+			if(titles.length == 1 && timeRange && (timeRange.value() == null || timeRange.value() == '')){
 				titles[0] = titles[0] + '\n' + getText('KDW013_25') + number2String(vm.caltimeSpanView.end() - vm.caltimeSpanView.start());
 			}
             return titles.join("\n\n");
@@ -1024,8 +1027,8 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
-		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[]) {
-			super(manHrTaskDetail, data);
+		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[], displayManHrRecordItem: DisplayManHrRecordItem[]) {
+			super(manHrTaskDetail, data, displayManHrRecordItem);
 			const vm = this;
 			vm.itemBeforChange = manHrTaskDetail.taskItemValues;
 			vm.employeeId = employeeId;

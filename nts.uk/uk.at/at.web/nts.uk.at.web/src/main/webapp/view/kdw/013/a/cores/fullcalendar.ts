@@ -1292,7 +1292,7 @@ module nts.uk.ui.at.kdw013.calendar {
             isShowBreakTime.subscribe(value => {
                     if(!value){
                         events(_.chain(events())
-                            .filter((evn) => { return !evn.extendedProps.isTimeBreak })
+                            .filter((evn) => { return !evn.extendedProps.isTimeBreak ||  (evn.extendedProps.isTimeBreak && evn.editable == false) })
                             .value());
 
                         updateEvents();
@@ -1322,6 +1322,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                         id: randomId(),
                                         status: 'normal',
                                         isTimeBreak: true,
+                                        isChanged: true,
                                         taskBlock: {
                                             manHrContents,
                                             taskDetails: []
@@ -1749,8 +1750,31 @@ module nts.uk.ui.at.kdw013.calendar {
                 const sltds = vm.selectedEvents;
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ));
                 const data = ko.unwrap(params.$datas);
-                const startDate =  moment(_.get(data,'workStartDate'));
+                
+                const isLock = (lockStatus) => {
+                    if (_.get(lockStatus, 'lockDailyResult', 1) == 0) { return true; }
+                    if (_.get(lockStatus, 'lockWpl', 1) == 0) { return true; }
+                    if (_.get(lockStatus, 'lockApprovalMontｈ', 1) == 0) { return true; }
+                    if (_.get(lockStatus, 'lockConfirmMonth', 1) == 0) { return true; }
+                    if (_.get(lockStatus, 'lockApprovalDay', 1) == 0) { return true; }
+                    if (_.get(lockStatus, 'lockConfirmDay', 1) == 0) { return true; }
+                    if (_.get(lockStatus, 'lockPast', 1) == 0) { return true; }
+                    return false;
+                }
+               
+                const getEditable = (date, isTimeBreak) => {
+                    const startDate = moment(_.get(data, 'workStartDate'));
+                    let lockStatus = _.find(_.get(data, 'lockInfos'), li => { return moment(li.date).isSame(moment(date), 'days'); });
+                    return startDate.isAfter(date) ? false : (isLock(lockStatus) && isTimeBreak) ? false : true;
+                };
                 let events = ko.unwrap<EventRaw[]>(params.events);
+                
+                //set editable
+                _.forEach(events, e => {
+                    e.editable = getEditable(formatDate(_.get(e, 'start')), e.extendedProps.isTimeBreak);
+                });
+                
+                
                 
                 const isDuplicated = _.uniqBy(events, 'extendedProps.supportFrameNo').length < events.length;
                 if (isDuplicated) {
@@ -1785,7 +1809,6 @@ module nts.uk.ui.at.kdw013.calendar {
                         end: formatDate(_.get(e,'end')),
                         [GROUP_ID]: isSelected(e) ? SELECTED : '',
                         [BORDER_COLOR]: isSelected(e) ? BLACK : TRANSPARENT,
-                        editable: startDate.isAfter(formatDate(_.get(e, 'start')) ) ? false : true,
                         extendedProps: {
                             ...e.extendedProps,
                             status: e.extendedProps.status || 'normal'
@@ -2122,7 +2145,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                                                 of: '.' + className
                                                             },
                                                             showOnStart: false,
-                                                            dismissible: true
+                                                            dismissible: false
                                                         });
                                         }
                                     });
@@ -2152,6 +2175,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
                                                 });
                                                 setTimeout(() => { $('.input-g').focus(); }, 100);
+												setTimeout(() => {
+													nts.uk.ui.errors.clearAll();
+													jQuery('button.btn-error.small.danger').appendTo('.popup-area-g .textEditor.pb10');
+												}, 100)
 
                                                 //set lại phần update để nó không bị ảnh hưởng
                                                 vm.params.screenA.oneDayFavoriteSet(null);
@@ -2403,7 +2430,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             e.setProp(GROUP_ID, SELECTED);
                         });
                     }
-                    $('#edit').focus();
+                    //$('#edit').focus();
                 }
                 ,
                 eventDragStart: (arg: EventDragStartArg) => {
@@ -3565,7 +3592,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 const starts = selecteds.map(({ start }) => formatDate(start));
 
                                 if (ko.isObservable(vm.params.events)) {
-                                    vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
+                                    vm.params.events.remove((e: EventRaw) => (e.editable && starts.indexOf(formatDate(e.start)) !== -1));
                                 }
                                 dataEvent.delete(false);
                                 popupPosition.event(null);

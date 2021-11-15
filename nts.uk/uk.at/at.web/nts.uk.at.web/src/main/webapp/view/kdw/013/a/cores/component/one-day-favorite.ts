@@ -113,7 +113,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                     of: ".popupButton-g"
                 },
                 showOnStart: false,
-                dismissible: true
+                dismissible: false
             });
         }
 
@@ -153,6 +153,11 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
             });
 			setTimeout(() => {
 				$('.input-g').focus();
+			}, 100)
+			
+			setTimeout(() => {
+				nts.uk.ui.errors.clearAll();
+				jQuery('button.btn-error.small.danger').appendTo('.popup-area-g .textEditor.pb10');
 			}, 100)
 			
         }

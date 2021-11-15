@@ -21,6 +21,7 @@ module nts.uk.ui.at.kdw013.a {
 
     const DATE_FORMAT = 'YYYY-MM-DD';
     const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:00.000\\Z';
+	const TIME_FORMAT = 'HH:mm';
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add_confirm',
@@ -620,7 +621,7 @@ module nts.uk.ui.at.kdw013.a {
                     of: ".popupButton-f"
                 },
                 showOnStart: false,
-                dismissible: true
+ 				dismissible: false
             });
 
             $(".popup-area-g").ntsPopup({
@@ -631,7 +632,7 @@ module nts.uk.ui.at.kdw013.a {
                     of: ".popupButton-g"
                 },
                 showOnStart: false,
-                dismissible: true
+				dismissible: false
             });
 
             $(".popup-area-i").ntsPopup({
@@ -1077,6 +1078,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeFDialog();
                             vm.reloadTaskFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1129,6 +1131,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeGDialog();
                             vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1172,6 +1175,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeGDialog();
                             vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1236,7 +1240,7 @@ module nts.uk.ui.at.kdw013.a {
                         warnings.push({
                             workNo: wt.no,
                             name: taskNames,
-                            time: wt.workTime.totalTime
+                            time: formatTime(wt.workTime.totalTime, 'Time_Short_HM')
                         });
                     }
                 });
@@ -1257,6 +1261,22 @@ module nts.uk.ui.at.kdw013.a {
 		
             vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
         }
+
+		closeFDialog() {
+			$(".popup-area-f").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+			}, 100);
+		}
+		
+		closeGDialog() {
+			$(".popup-area-g").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+			}, 100);
+		}
     }
 
     
