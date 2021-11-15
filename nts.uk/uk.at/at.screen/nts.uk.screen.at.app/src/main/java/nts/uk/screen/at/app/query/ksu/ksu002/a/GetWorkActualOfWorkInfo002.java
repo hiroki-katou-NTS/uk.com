@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInforBase;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.EditStateOfDailyAttdDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
@@ -66,7 +67,7 @@ public class GetWorkActualOfWorkInfo002 {
 
 
 	public List<WorkScheduleWorkInforDto> getDataActualOfWorkInfo(DisplayInWorkInfoInput param) {
-		
+
 		List<WorkScheduleWorkInforDto> result = new ArrayList<>();
 
 		// step 1
@@ -91,27 +92,27 @@ public class GetWorkActualOfWorkInfo002 {
 					GetDateInfoDuringThePeriodInput param1 = new GetDateInfoDuringThePeriodInput();
 					param1.setGeneralDate(m.getDate());
 					param1.setSids(sids);
-					
+
 					EditStateOfDailyAttdDto workTypeEditStatus = null;
 					if (m.workTypeEditStatus != null) {
 						workTypeEditStatus = new EditStateOfDailyAttdDto(m.workTypeEditStatus.getAttendanceItemId(), m.workTypeEditStatus.getEditStateSetting());
 					}
-					
+
 					EditStateOfDailyAttdDto workTimeEditStatus = null;
 					if (m.workTimeEditStatus != null) {
 						workTimeEditStatus = new EditStateOfDailyAttdDto(m.workTimeEditStatus.getAttendanceItemId(), m.workTimeEditStatus.getEditStateSetting());
 					}
-					
+
 					EditStateOfDailyAttdDto startTimeEditState = null;
 					if (m.startTimeEditState != null) {
 						startTimeEditState = new EditStateOfDailyAttdDto(m.startTimeEditState.getAttendanceItemId(), m.startTimeEditState.getEditStateSetting());
 					}
-					
+
 					EditStateOfDailyAttdDto endTimeEditState = null;
 					if (m.endTimeEditState != null) {
 						endTimeEditState = new EditStateOfDailyAttdDto(m.endTimeEditState.getAttendanceItemId(), m.endTimeEditState.getEditStateSetting());
 					}
-					
+
 					WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
 							.employeeId(m.getEmployeeId())
 							.date(m.getDate())
@@ -135,10 +136,10 @@ public class GetWorkActualOfWorkInfo002 {
 							.build();
 					return dto;
 				}).collect(Collectors.toList());
-		
+
 		return result;
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireDailyImpl implements GetDailyRecordByScheduleManagementService.Require {
 
@@ -179,7 +180,7 @@ public class GetWorkActualOfWorkInfo002 {
 			Map<String, List<WorkingConditionItemWithPeriod>> data6 = listData.stream().collect(Collectors.groupingBy(item ->item.getWorkingConditionItem().getEmployeeId()));
 			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries5(data6));
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -188,7 +189,7 @@ public class GetWorkActualOfWorkInfo002 {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -197,7 +198,7 @@ public class GetWorkActualOfWorkInfo002 {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -206,7 +207,7 @@ public class GetWorkActualOfWorkInfo002 {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -215,7 +216,7 @@ public class GetWorkActualOfWorkInfo002 {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
 			Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -264,6 +265,12 @@ public class GetWorkActualOfWorkInfo002 {
 			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
 			return data;
 		}
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
 	}
-	
+
 }

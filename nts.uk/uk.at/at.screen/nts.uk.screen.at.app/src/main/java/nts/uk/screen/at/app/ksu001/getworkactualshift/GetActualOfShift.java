@@ -36,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftParam;
@@ -86,7 +87,7 @@ public class GetActualOfShift {
 		mapShiftMasterWithWorkStyle.forEach((k,v)-> {
 			ShiftMasterMapWithWorkStyle shift = new ShiftMasterMapWithWorkStyle(k, v.isPresent() ? v.get().value + "" : null);
 			listShiftMaster.add(shift);
-			
+
 		});
 		return new ScheduleOfShiftResult(rs.listWorkScheduleShift, listShiftMaster);
 	}
@@ -145,7 +146,7 @@ public class GetActualOfShift {
 
 			System.out.println("thoi gian get data để lưu vào Cache" + ((System.nanoTime() - start1 )/1000000) + "ms");
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -154,7 +155,7 @@ public class GetActualOfShift {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -163,7 +164,7 @@ public class GetActualOfShift {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -172,7 +173,7 @@ public class GetActualOfShift {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -181,7 +182,7 @@ public class GetActualOfShift {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
 			Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -229,6 +230,12 @@ public class GetActualOfShift {
 		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
 			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
 			return data;
+		}
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 	}
 }

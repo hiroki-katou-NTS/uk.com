@@ -267,11 +267,11 @@ public class WorkScheduleImportServiceTest {
 			result = referableEmployees;
 		}};
 
-		// 予定管理状態
+		// 就業状態
 		importSeeds.entrySet().stream()
 			.filter( seed -> seed.getValue().isPresent() )
 			.forEach( seed -> {
-				val scheMngStatus = Helper.createScheMngStatus( seed.getKey().getEmployeeId(), seed.getKey().getYmd(), seed.getValue().get() );
+				val scheMngStatus = Helper.createEmployeeWorkingStatus( seed.getKey().getEmployeeId(), seed.getKey().getYmd(), seed.getValue().get() );
 				new Expectations( EmployeeWorkingStatus.class ) {{
 					EmployeeWorkingStatus.create( require, seed.getKey().getEmployeeId().v(), seed.getKey().getYmd() );
 					result = scheMngStatus;
@@ -629,13 +629,13 @@ public class WorkScheduleImportServiceTest {
 			result = referableEmployees;
 		}};
 
-		/* 予定管理状態 */
+		/* 就業状態 */
 		new MockUp<EmployeeWorkingStatus>() {
 			@Mock EmployeeWorkingStatus create(@SuppressWarnings("unused") EmployeeWorkingStatus.Require require, String employeeID, GeneralDate date) {
 				val importSeed = importSeeds.stream()
 						.filter( seed -> seed.getEmployeeId().orElse(new EmployeeId("")).v().equals(employeeID) && seed.getYmd().equals(date) )
 						.findFirst().get();
-				return Helper.createScheMngStatus( importSeed.getEmployeeId().get(), importSeed.getYmd(), importSeed.getScheMngStatus().get() );
+				return Helper.createEmployeeWorkingStatus( importSeed.getEmployeeId().get(), importSeed.getYmd(), importSeed.getScheMngStatus().get() );
 			}
 		};
 
@@ -728,14 +728,14 @@ public class WorkScheduleImportServiceTest {
 	private static class Helper {
 
 		/**
-		 * 社員の予定管理状態を作成する
+		 * 社員の就業状態を作成する
 		 * @param employeeId 社員ID
 		 * @param date 年月日
 		 * @param status 予定管理状態
 		 * @return
 		 */
-		public static EmployeeWorkingStatus createScheMngStatus(EmployeeId employeeId, GeneralDate date, WorkingStatus status) {
-			return new EmployeeWorkingStatus( employeeId.v(), date, status, Optional.empty(), Optional.empty() );
+		public static EmployeeWorkingStatus createEmployeeWorkingStatus(EmployeeId employeeId, GeneralDate date, WorkingStatus status) {
+			return new EmployeeWorkingStatus( employeeId.v(), date, status, Optional.empty(), Optional.empty(), Optional.empty() );
 		}
 
 		/**

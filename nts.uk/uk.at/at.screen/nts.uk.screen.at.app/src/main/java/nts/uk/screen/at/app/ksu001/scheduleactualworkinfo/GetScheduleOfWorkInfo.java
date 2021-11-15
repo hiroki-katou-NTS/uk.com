@@ -33,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.DisplayInWorkInfoParam;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
@@ -59,8 +60,8 @@ public class GetScheduleOfWorkInfo {
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 	@Inject
-	private CreateWorkScheduleWorkInfor createWorkScheduleWorkInfor;	
-	
+	private CreateWorkScheduleWorkInfor createWorkScheduleWorkInfor;
+
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(DisplayInWorkInfoParam param) {
 
 		// step 1 start
@@ -106,7 +107,7 @@ public class GetScheduleOfWorkInfo {
 			Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
 			affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(createEntries1(data2));
 			System.out.println("thoi gian get data affCompanyHistByEmp " + ((System.nanoTime() - start2 )/1000000) + "ms");
-			
+
 			long start3 = System.nanoTime();
 			List<EmploymentPeriodImported> listEmploymentPeriodImported = employmentHisScheduleAdapter.getEmploymentPeriod(empIdList, period);
 			Map<String, List<EmploymentPeriodImported>> data3 = listEmploymentPeriodImported.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
@@ -133,7 +134,7 @@ public class GetScheduleOfWorkInfo {
 
 			System.out.println("thoi gian get data để lưu vào Cache " + ((System.nanoTime() - start1 )/1000000) + "ms");
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -142,7 +143,7 @@ public class GetScheduleOfWorkInfo {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -151,7 +152,7 @@ public class GetScheduleOfWorkInfo {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -160,7 +161,7 @@ public class GetScheduleOfWorkInfo {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -169,7 +170,7 @@ public class GetScheduleOfWorkInfo {
 			});
 			return rs;
 		}
-		
+
 		private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
 			Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
@@ -178,7 +179,7 @@ public class GetScheduleOfWorkInfo {
 			});
 			return rs;
 		}
-		
+
 		@Override
 		public Optional<WorkSchedule> get(String employeeId, GeneralDate date) {
 			Optional<WorkSchedule> result = workScheduleCache.get(employeeId, date);
@@ -213,6 +214,12 @@ public class GetScheduleOfWorkInfo {
 		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
 			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
 			return data;
+		}
+
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 	}
 
