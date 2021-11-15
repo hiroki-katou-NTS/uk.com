@@ -3587,7 +3587,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 const starts = selecteds.map(({ start }) => formatDate(start));
 
                                 if (ko.isObservable(vm.params.events)) {
-                                    vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
+                                    vm.params.events.remove((e: EventRaw) => (!e.extendedProps.isTimeBreak && starts.indexOf(formatDate(e.start)) !== -1) );
                                 }
                                 dataEvent.delete(false);
                                 popupPosition.event(null);
