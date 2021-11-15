@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardHistory;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
@@ -24,13 +23,6 @@ public class KshdtHdpubRemHist extends ContractCompanyUkJpaEntity implements Ser
 	/* 主キー */
 	@EmbeddedId
 	protected KshdtHdpubRemHistPK pk;
-	
-	@Column(name = "ID")
-	private int remainmngid;
-	
-	/** 期限日 */
-	@Column(name = "DEADLINE")
-	private GeneralDate deadline;
 	
 	/** 登録種別 */
 	@Column(name = "REGISTER_TYPE")
@@ -51,8 +43,6 @@ public class KshdtHdpubRemHist extends ContractCompanyUkJpaEntity implements Ser
 		this.pk.sid = domain.getEmployeeId();
 		this.pk.yearMonth = domain.getHistYearMonth().v();
 		this.pk.closureId = domain.getClosureId().value;
-		this.pk.tagetmonth = domain.getYearMonth().v();
-		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 	}
@@ -66,9 +56,6 @@ public class KshdtHdpubRemHist extends ContractCompanyUkJpaEntity implements Ser
 		this.pk.closureId = domain.getClosureId().value;
 		this.pk.closeDay =domain.getClosureDate().getClosureDay().v();
 		this.pk.isLastDay = domain.getClosureDate().getLastDayOfMonth() ? 1: 0;
-		this.pk.tagetmonth = domain.getYearMonth().v();
-		this.remainmngid = 0;
-		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 	}

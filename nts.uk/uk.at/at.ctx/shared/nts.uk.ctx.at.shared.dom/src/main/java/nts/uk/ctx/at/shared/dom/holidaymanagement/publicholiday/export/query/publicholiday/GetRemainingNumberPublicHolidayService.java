@@ -12,7 +12,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardDataList;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.AggrResultOfPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
@@ -20,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pub
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
@@ -66,23 +67,22 @@ public class GetRemainingNumberPublicHolidayService {
 		// 公休設定を確認する
 
 		if (!publicHolidaySetting.isPresent()) {
-			return new AggrResultOfPublicHoliday();
+			return new AggrResultOfPublicHoliday(employeeId);
 		}
 
 		if (!publicHolidaySetting.get().isManagePublicHoliday()) {
-			return new AggrResultOfPublicHoliday();
+			return new AggrResultOfPublicHoliday(employeeId);
 		}
 		// 集計期間WORKを作成
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = publicHolidaySetting.get()
 				.createAggregatePeriodWork(employeeId, yearMonth, criteriaDate, cacheCarrier, require);
 
 		if (aggregatePublicHolidayWork.isEmpty()) {
-			return new AggrResultOfPublicHoliday();
+			return new AggrResultOfPublicHoliday(employeeId);
 		}
 
 		// 繰越データを取得する
-		PublicHolidayCarryForwardDataList carryForwardDataList = new PublicHolidayCarryForwardDataList(
-				require.publicHolidayCarryForwardData(employeeId));
+		PublicHolidayCarryForwardData carryForwardData = getPublicHolidayCarryForwardData(employeeId, require);
 
 		// 暫定公休管理データを取得する
 		List<TempPublicHolidayManagement> tempPublicHolidayManagement = getTempPublicHolidayManagement(employeeId,
@@ -98,26 +98,26 @@ public class GetRemainingNumberPublicHolidayService {
 
 			// 公休消化情報を作成する
 			PublicHolidayDigestionInformation afterDigestion = publicHolidayWork
-					.createDigestionInformation(carryForwardDataList, tempPublicHolidayManagement);
+					.createDigestionInformation(carryForwardData, tempPublicHolidayManagement);
 
 			// 公休取得数エラーチェック
-			Optional<PublicHolidayErrors> Errors = publicHolidayWork.errorCheck(carryForwardDataList,
+			Optional<PublicHolidayErrors> Errors = publicHolidayWork.errorCheck(carryForwardData,
 					tempPublicHolidayManagement);
 
 			// 公休繰越情報を作成
 			PublicHolidayCarryForwardInformation publicHolidayCarryForwardInformation = publicHolidayWork
-					.calculateCarriedForwardInformation(carryForwardDataList, tempPublicHolidayManagement);
+					.calculateCarriedForwardInformation(companyId, employeeId,
+							criteriaDate,tempPublicHolidayManagement, carryForwardData, cacheCarrier, require);
 
 			// 公休繰越データを更新
-			carryForwardDataList = publicHolidayWork.updatePublicHolidayCarryForwardDataList(companyId, employeeId,
-					tempPublicHolidayManagement, carryForwardDataList, require);
+			carryForwardData = publicHolidayWork.createCarryForwardDataForAggregationPeriod(companyId, employeeId,
+					criteriaDate,tempPublicHolidayManagement, carryForwardData, cacheCarrier, require);
 
 			publicHolidayInformation.add(new PublicHolidayInformation(publicHolidayWork.getYearMonth(), afterDigestion,
 					publicHolidayCarryForwardInformation, Errors));
 
 		}
-		return new AggrResultOfPublicHoliday(publicHolidayInformation,
-				carryForwardDataList.publicHolidayCarryForwardData);
+		return new AggrResultOfPublicHoliday(publicHolidayInformation,carryForwardData);
 
 	}
 
@@ -134,7 +134,7 @@ public class GetRemainingNumberPublicHolidayService {
 	 * @param require
 	 * @return TempPublicHolidayManagement
 	 */
-	public static List<TempPublicHolidayManagement> getTempPublicHolidayManagement(String employeeId, DatePeriod period,
+	private static List<TempPublicHolidayManagement> getTempPublicHolidayManagement(String employeeId, DatePeriod period,
 			Optional<Boolean> isOverWrite, List<TempPublicHolidayManagement> tempPublicHolidayforOverWriteList,
 			InterimRemainMngMode performReferenceAtr, Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite, RequireM5 require) {
@@ -162,6 +162,24 @@ public class GetRemainingNumberPublicHolidayService {
 
 		return interimDate;
 	}
+	/**
+	 * 社員の繰越データ取得する
+	 * @param employeeId
+	 * @param require
+	 * @return
+	 */
+	private static PublicHolidayCarryForwardData getPublicHolidayCarryForwardData(String employeeId, RequireM4 require) {
+
+		Optional<PublicHolidayCarryForwardData> carryForwardDataOpt = require.publicHolidayCarryForwardData(employeeId);
+
+		if (!carryForwardDataOpt.isPresent()) {
+			return new PublicHolidayCarryForwardData(employeeId,
+					new LeaveRemainingDayNumber(0.0), GrantRemainRegisterType.MONTH_CLOSE);
+		}
+		return carryForwardDataOpt.get();
+	}
+	
+	
 
 	public static interface RequireM1 extends RequireM3, RequireM4, RequireM5, RequireM6, RequireM7 {
 		// 公休設定を取得する（会社ID）
@@ -181,7 +199,7 @@ public class GetRemainingNumberPublicHolidayService {
 
 	public static interface RequireM4 {
 		// 公休繰越データを取得する（社員ID）
-		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId);
+	 	Optional<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId);
 	}
 
 	public static interface RequireM5 {

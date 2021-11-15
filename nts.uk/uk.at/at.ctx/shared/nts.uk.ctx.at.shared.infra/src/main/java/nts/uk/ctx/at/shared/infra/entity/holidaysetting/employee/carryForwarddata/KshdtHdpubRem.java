@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
@@ -29,12 +28,6 @@ public class KshdtHdpubRem extends ContractCompanyUkJpaEntity {
 	@EmbeddedId
 	protected KshdtHdpubRemPK pk;
 	
-	@Column(name = "ID")
-	private int remainmngid;
-	
-	/* 期限日 */
-	@Column(name = "DEADLINE")
-	private GeneralDate deadline;
 	
 	/* 登録種別 */
 	@Column(name = "REGISTER_TYPE")
@@ -56,8 +49,6 @@ public class KshdtHdpubRem extends ContractCompanyUkJpaEntity {
 	public void fromDomainForUpdate(PublicHolidayCarryForwardData domain){
 
 		this.pk.employeeId = domain.getEmployeeId();
-		this.pk.tagetmonth = domain.getYearMonth().v();
-		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 
@@ -68,9 +59,6 @@ public class KshdtHdpubRem extends ContractCompanyUkJpaEntity {
 		KshdtHdpubRemPK pk = new KshdtHdpubRemPK();
 		this.pk = pk;
 		this.pk.employeeId = domain.getEmployeeId();
-		this.pk.tagetmonth = domain.getYearMonth().v();
-		this.remainmngid = 0;
-		this.deadline = domain.getDeadline();
 		this.registerType  = domain.getGrantRemainRegisterType().value;
 		this.carriedforward = domain.getNumberCarriedForward().v();
 
