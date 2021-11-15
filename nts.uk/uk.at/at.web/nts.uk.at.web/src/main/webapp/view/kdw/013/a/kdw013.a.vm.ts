@@ -21,6 +21,7 @@ module nts.uk.ui.at.kdw013.a {
 
     const DATE_FORMAT = 'YYYY-MM-DD';
     const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:00.000\\Z';
+	const TIME_FORMAT = 'HH:mm';
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add_confirm',
@@ -1239,7 +1240,7 @@ module nts.uk.ui.at.kdw013.a {
                         warnings.push({
                             workNo: wt.no,
                             name: taskNames,
-                            time: wt.workTime.totalTime
+                            time: formatTime(wt.workTime.totalTime, 'Time_Short_HM')
                         });
                     }
                 });
