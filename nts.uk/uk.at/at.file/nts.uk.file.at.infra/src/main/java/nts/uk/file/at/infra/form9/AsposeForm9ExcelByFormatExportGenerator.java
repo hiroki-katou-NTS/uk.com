@@ -100,7 +100,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
 
                 Worksheet worksheet = worksheets.get(i);
-                worksheet.setName(wkpGroupInfo.getWkpGroupCode() + wkpGroupInfo.getWkpGroupName() + i); //TODO
+                worksheet.setName(wkpGroupInfo.getWkpGroupCode() + wkpGroupInfo.getWkpGroupName());
 
                 this.pageSetting(worksheet);
                 this.printHeader(worksheet, dataSource, query, wkpGroupInfo.getWkpGroupId());
