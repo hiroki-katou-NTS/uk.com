@@ -57,12 +57,11 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
         }
 
         public static openKDL020(param: any) {
-            setShared('KDL020A_PARAM', param);
-            if(param.employeeIds.length > 1 ) {
-                modal("/view/kdl/020/a/multi.xhtml");
-            } else {
-                modal("/view/kdl/020/a/single.xhtml");
-            }
+			setShared('KDL020_DATA', param.employeeIds);
+			if (param.employeeIds.length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
         }
 
         public static openKDL051(param: any) {
@@ -103,8 +102,11 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
         }
 
         public static openKDL029(param: any) {
-            setShared('KDL029_PARAM', param);
-            modal('/view/kdl/029/a/index.xhtml');
+			setShared('KDL029_DATA', param.employeeIds);
+			if (param.employeeIds.length > 1)
+				modal("/view/kdl/029/a/index.xhtml",{  width: 1060, height: 600 });
+			else
+				modal("/view/kdl/029/a/index.xhtml",{  width: 710, height: 600 });
         }
     }
 

@@ -239,12 +239,11 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
             };
-            setShared('KDL020A_PARAM', data);
-            if(data.employeeIds.length > 1 ) {
-                modal("/view/kdl/020/a/multi.xhtml");
-            } else {
-                modal("/view/kdl/020/a/single.xhtml");
-            }
+			setShared('KDL020_DATA', data.employeeIds);
+			if (data.employeeIds.length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
         }
 
         openKDL051() {
