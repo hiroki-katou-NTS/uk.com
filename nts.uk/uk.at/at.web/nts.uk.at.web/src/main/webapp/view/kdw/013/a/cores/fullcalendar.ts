@@ -2437,7 +2437,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             e.setProp(GROUP_ID, SELECTED);
                         });
                     }
-                    $('#edit').focus();
+                    //$('#edit').focus();
                 }
                 ,
                 eventDragStart: (arg: EventDragStartArg) => {

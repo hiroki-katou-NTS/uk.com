@@ -36,7 +36,7 @@ module nts.uk.ui.at.kdw013.b {
                 <div class="actions">
                     <button id='edit' data-bind="click: $component.params.update, icon: 204, size: 12"></button>
                     <button data-bind="click: $component.remove, icon: 203, size: 12"></button>
-					<!-- ko if: dataSources().length == 1 -->
+					<!-- ko if: dataSources().length == 1 && inputMode() == '0' -->
 						<button class="popupButton-f-from-b" data-bind="icon: 229, size: 12, click:$component.openFDialog"></button>
 					<!-- /ko -->
                     <button data-bind="click: $component.params.close, icon: 202, size: 12"></button>
@@ -119,8 +119,8 @@ module nts.uk.ui.at.kdw013.b {
                 border-radius: 50%;
                 width: 30px;
             }
-            .detail-event .header .actions button:focus {
-                background-color:#f7f7f7;
+            .detail-event .header .actions button:focus, .detail-event .header .actions button:hover {
+                background-color:#dddddd;
                 margin: 0;
                 padding: 0;
                 box-shadow: none;
@@ -191,15 +191,32 @@ module nts.uk.ui.at.kdw013.b {
         // F画面: add new 
         taskContents: TaskContentDto[] = [];
 
+		inputMode: KnockoutObservable<string> = ko.observable('0');
+
 		position: any;
         constructor(public params: Params) {
             super();
             const vm = this
 
             // Init popup
-        	vm.initPopup();    
+        	vm.initPopup();  
+			vm.getInputMode();  
 
         }
+
+		getInputMode() {
+			$.urlParam = function (name) {
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (results == null) {
+					return '0';
+				}
+				else {
+					return decodeURI(results[1]) || 0;
+				}
+			}
+			const vm = this;
+			vm.inputMode($.urlParam('mode'));
+		}
 
 		initPopup(){
 			$(".popup-area-f-from-b").ntsPopup({
@@ -259,7 +276,7 @@ module nts.uk.ui.at.kdw013.b {
 						block.grayout();
 			            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
 							_.forEach(taskBlock.taskDetails, taskDetail =>{
-								taskDetails.push(vm.setlableValueItems(taskDetail,data));
+								taskDetails.push(vm.setlableValueItems(taskDetail,data, extendedProps.displayManHrRecordItems));
 							});
 							vm.dataSources(taskDetails);
 							setTimeout(() => {
@@ -283,7 +300,7 @@ module nts.uk.ui.at.kdw013.b {
 //            vm.position.valueHasMutated();
         }
     
-		setlableValueItems(taskDetail: IManHrTaskDetail, data: StartWorkInputPanelDto): TaskDetailB {
+		setlableValueItems(taskDetail: IManHrTaskDetail, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[]): TaskDetailB {
 			let vm = this;
 			let items: KeyValue[] = [];
 
@@ -322,15 +339,12 @@ module nts.uk.ui.at.kdw013.b {
 				}
             }
 			// cho vao day de sap xep
-			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data);
-			
-			//loai bo item co dinh
-			_.remove(manHrTaskDetail.taskItemValues(), (i: ITaskItemValue) => i.itemId < 9);			
+			let manHrTaskDetail = new ManHrTaskDetail(taskDetail, data, displayManHrRecordItem);
 			
 			_.forEach(manHrTaskDetail.taskItemValues(), (item: TaskItemValue) => {
 				
 				let infor : ManHourRecordItemDto = _.find(data.manHourRecordItems, i => i.itemId == item.itemId);
-				if(infor && infor.useAtr == 1 && item.value() != null && item.value() != ''){
+				if(infor && infor.useAtr == 1 && item.value() != null && item.value() != '' && item.itemId > 8){
 					if(item.itemId == 9){
 						// work plate
 						let workLocation = _.find(data.workLocation, w => w.workLocationCD == item.value());
