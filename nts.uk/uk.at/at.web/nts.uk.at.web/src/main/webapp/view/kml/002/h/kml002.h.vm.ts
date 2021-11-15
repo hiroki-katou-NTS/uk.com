@@ -89,12 +89,16 @@ module nts.uk.at.view.kml002.k {
                 self.clearError();     
                 self.enableRegisterBtn(true);                   
                 val.backgroundColor1.subscribe((color) => {
-                    $('#colorpicker1').ntsError('clear');
-                    self.enableRegisterBtn(true); 
-                    if (!color || color =='') {
-                        $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});    
-                        self.enableRegisterBtn(false);
-                    }
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true);   
+                    // $('#colorpicker1').ntsError('clear');
+                    // self.enableRegisterBtn(true); 
+                    // if (!color || color =='') {
+                    //     $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});    
+                    //     self.enableRegisterBtn(false);
+                    // }
                 }) ;
                  val.backgroundColor2.subscribe((color) => {
                     self.clearError();
