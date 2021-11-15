@@ -2,9 +2,7 @@ package nts.uk.file.at.infra.form9;
 
 import com.aspose.cells.*;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.storage.FileStorage;
-import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
@@ -14,7 +12,6 @@ import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.clock.ClockHourMinute;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecAtr;
-import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.aggregation.dom.form9.*;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
@@ -34,12 +31,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -83,7 +78,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                     .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU008_1"));
 
             AsposeCellsReportContext reportContext = null;
-            if (dataSource.getForm9Layout().isSystemFixed()) {
+            if (dataSource.getForm9Layout().isSystemFixed() && StringUtils.isNotEmpty(dataSource.getFileName())) {
                 reportContext = createContext(SYSTEM_TEMPLATE_PATH + dataSource.getFileName());
             } else {
                 if (dataSource.getForm9Layout().getTemplateFileId().isPresent()) {
@@ -104,7 +99,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 }
 
                 Worksheet worksheet = worksheets.get(i);
-                worksheet.setName(wkpGroupInfo.getWkpGroupCode() + wkpGroupInfo.getWkpGroupName());
+                worksheet.setName(wkpGroupInfo.getWkpGroupCode() + "　" + wkpGroupInfo.getWkpGroupName());
 
                 this.pageSetting(worksheet);
                 this.printHeader(worksheet, dataSource, query, wkpGroupInfo.getWkpGroupId());
@@ -277,7 +272,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(empInfo.isNightShiftOnly() ? 1 : EMPTY);
             }
 
-//          int rowC2 = dataSource.getForm9Layout().getNursingTable().getDetailSetting().getBodyStartRow().v();  // Row C2 == Row C1
             String columnStartC2 = dataSource.getForm9Layout().getNursingTable().getDay1StartColumn().v();
             Map<GeneralDate, MedicalTimeOfEmployee> medicalTimeOfEmpMap = wkpGroupInfoOpt.get().getMedicalTimeOfEmpMap().entrySet().stream()
                     .filter(x -> x.getKey().getEmployeeId().equals(empInfo.getEmployeeId()))
@@ -341,7 +335,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isNightShiftOnly() ? 1 : EMPTY);
             }
 
-//            int rowE2 = dataSource.getForm9Layout().getNursingAideTable().getDetailSetting().getBodyStartRow().v();
             String columnStartE2 = dataSource.getForm9Layout().getNursingAideTable().getDay1StartColumn().v();
             Map<GeneralDate, MedicalTimeOfEmployee> medicalTimeOfEmpMap = wkpGroupInfoOpt.get().getMedicalTimeOfEmpMap().entrySet().stream()
                     .filter(x -> x.getKey().getEmployeeId().equals(nursingAideEmpInfo.getEmployeeId()))
@@ -373,7 +366,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                     this.setTextColor(cells.get(cell.getRowIndex(), columnStart), Color.fromArgb(Integer.parseInt(colorDayShift.getTextColor(), 16)));
                 }
                 if (StringUtils.isNotEmpty(colorDayShift.getBgColor())) {
-                    this.setBgColor(cells.get(cell.getRowIndex(), columnStart), Color.fromArgb(Integer.parseInt(colorDayShift.getTextColor(), 16)));
+                    this.setBgColor(cells.get(cell.getRowIndex(), columnStart), Color.fromArgb(Integer.parseInt(colorDayShift.getBgColor(), 16)));
                 }
             }
 
@@ -385,7 +378,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                     this.setTextColor(cells.get(cell.getRowIndex() + 1, columnStart), Color.fromArgb(Integer.parseInt(color.getTextColor(), 16)));
                 }
                 if (StringUtils.isNotEmpty(color.getBgColor())) {
-                    this.setBgColor(cells.get(cell.getRowIndex() + 1, columnStart), Color.fromArgb(Integer.parseInt(color.getTextColor(), 16)));
+                    this.setBgColor(cells.get(cell.getRowIndex() + 1, columnStart), Color.fromArgb(Integer.parseInt(color.getBgColor(), 16)));
                 }
             }
 
@@ -397,7 +390,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                     this.setTextColor(cells.get(cell.getRowIndex() + 1, columnStart), Color.fromArgb(Integer.parseInt(color.getTextColor(), 16)));
                 }
                 if (StringUtils.isNotEmpty(color.getBgColor())) {
-                    this.setBgColor(cells.get(cell.getRowIndex() + 1, columnStart), Color.fromArgb(Integer.parseInt(color.getTextColor(), 16)));
+                    this.setBgColor(cells.get(cell.getRowIndex() + 1, columnStart), Color.fromArgb(Integer.parseInt(color.getBgColor(), 16)));
                 }
             }
 
@@ -429,14 +422,14 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
             if (colorSetting.getWorkingHours().getDisplayTarget() == Form9DisplayTarget.TEXT_COLOR.value) {
                 if (scheRec == ScheRecAtr.SCHEDULE)
                     cellTextColor = colorSetting.getWorkingHours().getScheduleColor().replace("#", "");
-                else
+                if (scheRec == ScheRecAtr.RECORD)
                     cellTextColor = colorSetting.getWorkingHours().getActualColor().replace("#", "");
             }
 
             if (colorSetting.getWorkingHours().getDisplayTarget() == Form9DisplayTarget.BACKGROUND_COLOR.value) {
                 if (scheRec == ScheRecAtr.SCHEDULE)
                     cellBgColor = colorSetting.getWorkingHours().getScheduleColor().replace("#", "");
-                else
+                if (scheRec == ScheRecAtr.RECORD)
                     cellBgColor = colorSetting.getWorkingHours().getActualColor().replace("#", "");
             }
         }
@@ -541,7 +534,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
 
     private void setBgColor(Cell cell, Color color) {
         Style style = cell.getStyle();
-//        style.setPattern(BackgroundType.SOLID);
+        style.setPattern(BackgroundType.SOLID);
         style.setForegroundColor(color);
         cell.setStyle(style);
     }

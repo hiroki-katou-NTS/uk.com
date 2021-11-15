@@ -261,7 +261,9 @@ module nts.uk.at.ksu008.b {
             setShared('dataShareKsu008C', data);
             vm.$window.modal('/view/ksu/008/c/index.xhtml').then((data: any) => {
                 if (!_.isNil(data)) {
-                    vm.getAllLayoutSetting(vm.layoutType() == 1, data.destinationCode);
+                    // Focus on code just created
+                    vm.getAllLayoutSetting(vm.layoutType() == 0, data.destinationCode);
+                    vm.layoutType(0);
                 }
                 vm.$blockui("clear");
             });

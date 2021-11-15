@@ -201,12 +201,12 @@ module nts.uk.at.ksu008.a {
                 acquireTarget: vm.printTarget(),
                 colorSetting: {
                     deliveryTimeDeductionDate: {
-                        use: vm.deductionDateFromDeliveryTime(),
+                        isUse: vm.deductionDateFromDeliveryTime(),
                         displayTarget: vm.deductionDateFromDeliveryTimeTarget(),
                         color: vm.deductionDateFromDeliveryTimeColor()
                     },
                     workingHours: {
-                        use: vm.workingHours(),
+                        isUse: vm.workingHours(),
                         displayTarget: vm.workingHoursTarget(),
                         scheduleColor: vm.workingHoursScheduleColor(),
                         actualColor: vm.workingHoursRecordColor()

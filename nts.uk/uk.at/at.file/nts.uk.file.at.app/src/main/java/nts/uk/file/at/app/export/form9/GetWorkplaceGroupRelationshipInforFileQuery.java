@@ -2,7 +2,6 @@ package nts.uk.file.at.app.export.form9;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -34,7 +33,10 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -103,7 +105,7 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
                 employeeIds,
                 period,
                 acquireTarget == 0 ? ScheRecGettingAtr.ONLY_SCHEDULE : acquireTarget == 1 ? ScheRecGettingAtr.ONLY_RECORD :
-                        acquireTarget == 2 ? ScheRecGettingAtr.SCHEDULE_WITH_RECORD : null); // TODO: EnumAdaptor.valueOf(acquireTarget, ScheRecGettingAtr.class) not working
+                        acquireTarget == 2 ? ScheRecGettingAtr.SCHEDULE_WITH_RECORD : null);
 
         // 4. Create dto
         return new DisplayInfoRelatedToWorkplaceGroupDto(
@@ -149,12 +151,12 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
 
         @Override
         public Optional<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(String employeeId, GeneralDate baseDate) {
-            return empMedicalWorkStyleHisRepo.get(employeeId, baseDate); //TODO
+            return empMedicalWorkStyleHisRepo.get(employeeId, baseDate);
         }
 
         @Override
         public Optional<ShortWorkTimeHistoryItem> getShortWorkTimeHistoryItem(String employeeId, GeneralDate baseDate) {
-            return sWorkTimeHistItemRepo.findByEmployeeIdAndDate(employeeId, baseDate); //TODO
+            return sWorkTimeHistItemRepo.findByEmployeeIdAndDate(employeeId, baseDate);
         }
 
         @Override
