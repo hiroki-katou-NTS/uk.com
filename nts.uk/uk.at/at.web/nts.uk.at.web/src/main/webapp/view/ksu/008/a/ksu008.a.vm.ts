@@ -8,6 +8,7 @@ module nts.uk.at.ksu008.a {
     @bean()
     export class ViewModel extends ko.ViewModel {
         options: any;
+        workplaceGroupList: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedWkpGroupIds: KnockoutObservableArray<string> = ko.observableArray([]);
 
         targetPeriod: KnockoutObservable<number>;
@@ -108,6 +109,7 @@ module nts.uk.at.ksu008.a {
 
         checkWorkplaceGroups(data: Array<any>) {
             const vm = this;
+            vm.workplaceGroupList(data || []);
             if (_.isEmpty(data)) vm.$dialog.alert({messageId: "Msg_1929"});
         }
 
@@ -177,7 +179,7 @@ module nts.uk.at.ksu008.a {
             const exportQuery = {
                 startDate: vm.periodStart(),
                 endDate: vm.periodEnd().toISOString(),
-                wkpGroupList: vm.selectedWkpGroupIds().map(i => ({id: i, code: "TODO", name: "TODO"})),
+                wkpGroupList: vm.workplaceGroupList().filter(i => vm.selectedWkpGroupIds().indexOf(i.id) >= 0),
                 code: vm.selectedCode(),
                 acquireTarget: vm.printTarget(),
                 colorSetting: {
