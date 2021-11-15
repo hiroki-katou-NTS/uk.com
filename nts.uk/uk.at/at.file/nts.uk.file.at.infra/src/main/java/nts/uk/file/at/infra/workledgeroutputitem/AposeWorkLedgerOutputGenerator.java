@@ -14,6 +14,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -28,10 +29,10 @@ import java.util.Locale;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR005_template.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR005_v4.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
-    private static final int NUMBER_ROW_OF_PAGE = 50;
+    private static final int NUMBER_ROW_OF_PAGE = 53;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WorkLedgerExportDataSource dataSource) {
@@ -59,17 +60,14 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
+        pageSetup.setHeader(0, "&7&\"ＭＳ ゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"ＭＳ ゴシック,Bold\""
                 + dataSource.getTitle());
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&7&\"MS MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+        pageSetup.setHeader(2, "&7&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
-        pageSetup.setFitToPagesTall(0);
-        pageSetup.setFitToPagesWide(0);
-        pageSetup.setZoom(100);
         pageSetup.setCenterHorizontally(true);
     }
 
@@ -80,12 +78,6 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         int itemOnePage = 0;
         Cells cells = worksheet.getCells();
         for (int i = 0; i < listContent.size(); i++) {
-            val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
-            val content = listContent.get(i);
-            cells.copyRow(cells, 0, count);
-            cells.copyRow(cells, 1, count + 1);
-            cells.copyRow(cells, 2, count + 2);
-            cells.clearContents(count, 0, cells.getMaxRow(), 15);
             if (i >= 1) {
                 itemOnePage = 0;
                 pageBreaks.add(count);
@@ -93,15 +85,28 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                     setBottomBorderStyle(cells.get(count -1, index));
                 }
             }
-            cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+            val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
+            val content = listContent.get(i);
+            val wplCode  = StringUtils.deleteWhitespace(content.getWorkplaceCode());
+            val emCode  = StringUtils.deleteWhitespace(content.getEmployeeCode());
+            cells.copyRow(cells, 0, count);
+            cells.copyRow(cells, 1, count + 1);
+            cells.copyRow(cells, 2, count + 2);
+            cells.clearContents(count, 0, cells.getMaxRow(), 15);
+
+            cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + wplCode + "　" + content.getWorkplaceName());
             cells.merge(count, 6, 1, 3, true, true);
-            cells.get(count, 6).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
-                    this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
-                    this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
+            val date = TextResource.localize(TextResource.localize("KWR005_303")) +
+                    this.toYearMonthString(dataSource.getYearMonthPeriod().start()) +"　"+ TextResource.localize("KWR005_305") +"　"+
+                    this.toYearMonthString(dataSource.getYearMonthPeriod().end());
+            cells.get(count, 6).setValue(date);
             Style styleTime =   cells.get(count, 6).getStyle();
-            styleTime.setHorizontalAlignment(ColumnTextAlign.CENTER.value);
+            styleTime.setHorizontalAlignment(TextAlignmentType.CENTER);
+            styleTime.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+
             cells.get(count, 6).setStyle(styleTime);
-            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + content.getEmployeeCode()+ "　" + content.getEmployeeName());
+
+            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + emCode+ "　" + content.getEmployeeName());
             // print date
             printDate(worksheet, count + 2, yearMonths);
             count += 3;
@@ -119,12 +124,15 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                     cells.copyRow(cells, 1, count + 1);
                     cells.copyRow(cells, 2, count + 2);
                     cells.clearContents(count, 0, cells.getMaxRow(), 15);
-                    cells.get(count, 6).setValue(TextResource.localize("KWR005_303") +
-                            this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
-                            this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
+                    cells.merge(count, 6, 1, 3, true, true);
+                    cells.get(count, 6).setValue(date);
+                    Style styleTime2 =   cells.get(count, 6).getStyle();
+                    styleTime2.setHorizontalAlignment(TextAlignmentType.CENTER);
+                    styleTime2.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+                    cells.get(count, 6).setStyle(styleTime2);
 
-                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + content.getEmployeeCode() + "　" + content.getEmployeeName());
+                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + wplCode + "　" + content.getWorkplaceName());
+                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + emCode + "　" + content.getEmployeeName());
 
                     printDate(worksheet, count + 2, yearMonths);
                     count += 3;
@@ -169,8 +177,6 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 count++;
             }
         }
-        PageSetup pageSetup = worksheet.getPageSetup();
-        pageSetup.setPrintArea(PRINT_AREA + count);
         for (int index = 0; index < 15; index++) {
             setBottomBorderStyle(cells.get(count -1, index));
         }
@@ -179,7 +185,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
     }
     private void setBottomBorderStyle(Cell cell) {
         Style style = cell.getStyle();
-        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         cell.setStyle(style);
     }
     private void printDate(Worksheet worksheet, int rowCount, List<YearMonth> yearMonths) {

@@ -640,7 +640,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		
 		/** 補正で修正された可能性がある項目：　休憩、出退勤、応援時間帯のIDを取得する */
 		val itemChangeByCorrection = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME, 
-				DailyDomainGroup.SUPPORT_TIMESHEET, DailyDomainGroup.ATTENDACE_LEAVE);
+				DailyDomainGroup.SUPPORT_TIMESHEET, DailyDomainGroup.ATTENDACE_LEAVE, DailyDomainGroup.SHORT_TIME);
 		
 		converter.setData(command.toDomain());
 		val newValues = converter.convert(itemChangeByCorrection);

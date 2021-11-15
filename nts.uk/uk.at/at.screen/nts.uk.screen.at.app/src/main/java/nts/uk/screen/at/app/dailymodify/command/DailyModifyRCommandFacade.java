@@ -383,9 +383,11 @@ public class DailyModifyRCommandFacade {
 			if (dataParent.isCheckDailyChange() || flagTempCalc) {
 				//勤怠ルールの補正処理
 				//2021/03/19 - 日別修正から補正処理を実行する対応
-				val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
 				List<DailyRecordDto> dtoOldTemp = dailyOlds;
 				dailyEdits = dailyEdits.stream().map(x -> {
+					val changeSetting = ChangeDailyAttendance.createChangeDailyAtt(dataParent.getItemValues().stream()
+							.filter(y -> y.getEmployeeId().equals(x.getEmployeeId()) && y.getDate().equals(x.getDate()))
+							.map(y -> y.getItemId()).collect(Collectors.toList()), ScheduleRecordClassifi.RECORD);
 					val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
 							correctDaiAttRequireImpl.createRequire(), x.toDomain(x.getEmployeeId(), x.getDate()),
 							changeSetting);
@@ -763,12 +765,6 @@ public class DailyModifyRCommandFacade {
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
 		boolean onlyErrorOld = true;
-		boolean chkChildNursing = lstItemEdits.stream()
-		    .filter(x -> (x.getItemId() == 759 || x.getItemId() == 760 || x.getItemId() == 761 || x.getItemId() == 762))
-		    .findFirst().isPresent();
-		boolean chkLongTermCare = lstItemEdits.stream()
-	            .filter(x -> (x.getItemId() == 763 || x.getItemId() == 764 || x.getItemId() == 765 || x.getItemId() == 766))
-	            .findFirst().isPresent();
 		for (String emp : employeeIds) {
 			// employeeIds.stream().forEach(emp -> {
 			List<IntegrationOfDaily> domainDailyEditAll = dailyDtoEditAll.stream()
@@ -794,8 +790,7 @@ public class DailyModifyRCommandFacade {
 					TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 							new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
 							new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false,
-							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime(), 
-							Optional.of(chkChildNursing), Optional.of(chkLongTermCare));
+							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime());
 					// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 					lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				}
@@ -807,7 +802,7 @@ public class DailyModifyRCommandFacade {
 				TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 						new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
 						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false, lstAttendanceTimeData,
-						lstWorkInfor, optMonthlyData, Optional.of(chkChildNursing), Optional.of(chkLongTermCare));
+						lstWorkInfor, optMonthlyData);
 				lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 			}

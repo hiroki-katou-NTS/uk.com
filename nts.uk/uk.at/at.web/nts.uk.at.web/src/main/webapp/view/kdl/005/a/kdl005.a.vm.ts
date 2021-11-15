@@ -34,6 +34,9 @@ module nts.uk.at.view.kdl005.a {
             hint04: KnockoutObservable<string> = ko.observable("");
             expirationDateText: KnockoutObservable<string> = ko.observable("");
 
+            // 119848
+            isManageTime: boolean;
+
             created(params: any) {
                 const vm = this;
                 vm.kdl005Data = nts.uk.ui.windows.getShared("KDL005_DATA");
@@ -113,6 +116,8 @@ module nts.uk.at.view.kdl005.a {
                         }
                     })
                     .always(() => vm.$blockui('clear'));
+
+                    service.findComLeaveSetting().then((result: any) => vm.isManageTime = result.compensatoryDigestiveTimeUnit.isManageByTime === 1);
             }
 
             // 社員リストの先頭を選択
@@ -262,6 +267,7 @@ module nts.uk.at.view.kdl005.a {
             }
 
             private convertDetailDtoToModel(item: RemainNumberDetailDto): RemainNumberDetailModel {
+                const vm = this;
                 let digestionDateText: string = item.digestionDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.digestionDate]) : '';
                 let occurrenceDateText: string = item.occurrenceDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.occurrenceDate]) : '';
                 // 代休残数.休出代休残数詳細.管理データ状態区分をチェック
@@ -281,7 +287,7 @@ module nts.uk.at.view.kdl005.a {
                 if (item.occurrenceNumber === 0.5) {
                     occurrenceNumberText = nts.uk.resource.getText("KDL005_27", [item.occurrenceNumber]);
                 }
-                if (item.occurrenceHour) {
+                if (item.occurrenceHour && vm.isManageTime) {
                     occurrenceNumberText += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", item.occurrenceHour)}`;
                 }
 
@@ -289,7 +295,7 @@ module nts.uk.at.view.kdl005.a {
                 if (item.digestionNumber === 0.5) {
                     digestionNumberText = nts.uk.resource.getText("KDL005_27", [item.digestionNumber]);
                 }
-                if (item.digestionHour) {
+                if (item.digestionHour && vm.isManageTime) {
                     digestionNumberText += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", item.digestionHour)}`;
                 }
                 return new RemainNumberDetailModel({
@@ -315,43 +321,43 @@ module nts.uk.at.view.kdl005.a {
                 const numberFormat = new nts.uk.ui.option.NumberEditorOption({ decimallength: 1 });
 
                 let carryForwardDay = nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]);
-                if (data.carryForwardHour) {
+                if (data.carryForwardHour && vm.isManageTime) {
                     carryForwardDay += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", data.carryForwardHour)}`;
                 }
                 vm.value01(carryForwardDay);
 
                 let occurrenceDay = nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]);
-                if (data.occurrenceHour) {
+                if (data.occurrenceHour && vm.isManageTime) {
                     occurrenceDay += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", data.occurrenceHour)}`;
                 }
                 vm.value02(occurrenceDay);
 
                 let scheduleOccurrencedDay = nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]);
-                if (data.scheduleOccurrencedHour) {
+                if (data.scheduleOccurrencedHour && vm.isManageTime) {
                     scheduleOccurrencedDay += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", data.scheduleOccurrencedHour)}`;
                 }
                 vm.hint02(scheduleOccurrencedDay);
 
                 let usageDay = nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]);
-                if (data.usageHour) {
+                if (data.usageHour && vm.isManageTime) {
                     usageDay += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", data.usageHour)}`;
                 }
                 vm.value03(usageDay);
 
                 let scheduledUsageDay = nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]);
-                if (data.scheduledUsageHour) {
+                if (data.scheduledUsageHour && vm.isManageTime) {
                     scheduledUsageDay += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", data.scheduledUsageHour)}`;
                 }
                 vm.hint03(scheduledUsageDay);
 
                 let remainingDay = nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]);
-                if (data.remainingHour) {
+                if (data.remainingHour && vm.isManageTime) {
                     remainingDay += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", data.remainingHour)}`;
                 }
                 vm.value04(remainingDay);
 
                 let scheduledRemainingDay = nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]);
-                if (data.scheduledRemainingHour) {
+                if (data.scheduledRemainingHour && vm.isManageTime) {
                     scheduledRemainingDay += `　${(nts.uk.time as any).format.byId("Clock_Short_HM", data.scheduledRemainingHour)}`;
                 }
                 vm.hint04(scheduledRemainingDay);

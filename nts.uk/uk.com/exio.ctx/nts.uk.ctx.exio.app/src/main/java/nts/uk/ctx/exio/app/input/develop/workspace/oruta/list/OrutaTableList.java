@@ -1,0 +1,12 @@
+package nts.uk.ctx.exio.app.input.develop.workspace.oruta.list;
+
+import java.util.List;
+
+import lombok.Value;
+
+@Value
+public class OrutaTableList {
+
+	String lastAlterId;
+	List<OrutaTableListItem> tables;
+}

@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +29,9 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.GetRemainingNumberPublicHolidayService;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.AggrResultOfPublicHoliday;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -54,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM16;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM4;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM5;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM6;
@@ -64,6 +70,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanyS
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AttendanceDaysMonthToTal;
@@ -79,6 +86,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.D
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.RemainDataTimesMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
@@ -125,12 +133,6 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	/** 暫定残数データ上書きフラグ */
 	private boolean isOverWriteRemain;
 
-	//あとでrequire経由に修正すること
-	@Inject
-	private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
-
-	@Inject
-	private GetRemainingNumberCareService getRemainingNumberCareService;
 
 	@Inject
 	private RecordDomRequireService requireService;
@@ -196,7 +198,13 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		this.careRemain(cacheCarrier, period, interimRemainMngMode);
 
 		ConcurrentStopwatches.stop("12460:介護：");
+		ConcurrentStopwatches.start("12470:公休：");
+		
+		//公休
+		this.publicHolidayRemain(require, cacheCarrier, period, interimRemainMngMode);
 
+		ConcurrentStopwatches.stop("12470:公休：");
+		
 		return this.aggregateResult;
 	}
 
@@ -563,7 +571,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 
 		//残数処理
 		AggrResultOfChildCareNurse result =
-				getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+				GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
 					companyId,
 					employeeId,
 					period,
@@ -605,7 +613,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 
 		//残数処理
 		AggrResultOfChildCareNurse result =
-				getRemainingNumberCareService.getCareRemNumWithinPeriod(
+				GetRemainingNumberCareService.getCareRemNumWithinPeriod(
 					companyId,
 					employeeId,
 					period,
@@ -632,6 +640,55 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				this.closureId, this.closureDate, result.getChildCareNurseErrors()));
 
 		// 集計結果を前回集計結果に引き継ぐ
+	}
+	
+	//公休
+	
+	public void publicHolidayRemain(RequireM16 require, CacheCarrier cacheCarrier, DatePeriod period,
+			InterimRemainMngMode interimRemainMngMode){
+		
+		//暫定残数データを公休に絞り込む
+		List<TempPublicHolidayManagement> overWriteList = new ArrayList<>();
+		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
+			dailyInterimRemainMng.getPublicHolidayData().forEach(c->overWriteList.add(c));
+		}
+
+			
+		AggrResultOfPublicHoliday result = 
+				GetRemainingNumberPublicHolidayService.getPublicHolidayRemNumWithinPeriod(
+						companyId,
+						employeeId, 
+						Arrays.asList(yearMonth),
+						period.end(),
+						interimRemainMngMode, 
+						Optional.of(true), 
+						overWriteList, 
+						Optional.of(CreateAtr.RECORD),
+						Optional.of(period),
+						cacheCarrier, 
+						require);
+		
+		// 月別残数データを作成
+		PublicHolidayRemNumEachMonth publicLeaRemNum = result.createPublicHolidayRemainData(
+				this.employeeId, this.yearMonth,
+				this.closureId, this.closureDate);
+		// 月別残数データを更新
+		this.aggregateResult.getPublicRemainList().add(publicLeaRemNum);
+		
+		// 月別残数エラー一覧を作成する
+		Optional<EmployeeMonthlyPerError> error = CreatePerErrorsFromLeaveErrors.fromPublicLeave(
+				this.employeeId, 
+				this.yearMonth,
+				this.closureId, 
+				this.closureDate, 
+				result.publicHolidayInformation.stream()
+					.filter(x ->x.getYearMonth().equals(yearMonth))
+					.findFirst()
+					.flatMap(x -> x.getPublicHolidayErrors())
+				);
+		if(error.isPresent()){
+			this.aggregateResult.getPerErrors().add(error.get());
+		}
 	}
 
 	/**

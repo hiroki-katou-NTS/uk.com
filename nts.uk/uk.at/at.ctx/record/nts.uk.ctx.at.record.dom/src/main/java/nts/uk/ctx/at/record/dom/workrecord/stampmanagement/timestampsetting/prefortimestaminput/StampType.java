@@ -195,5 +195,4 @@ public class StampType implements DomainValue, Cloneable{
 				SetPreClockArt.valueOf(setPreClockArt.value), ChangeClockArt.valueOf(changeClockArt.value),
 				ChangeCalArt.valueOf(changeCalArt.value));
 	}
-
 }

@@ -177,14 +177,74 @@ subprojects {
         compile group: 'nts.arc', name: 'nts.arc', version: version
 
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: version
-		
+
 		// OneLogin Java SAML Toolkit
 		compile group: 'com.onelogin', name: 'java-saml', version: '2.5.0'
 		compile group: 'com.onelogin', name: 'java-saml-core', version: '2.5.0'
-		
+
 		// SAMLに使用
 		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
         compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
+
+		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-multipart-provider', version: '3.1.2.Final'
+		compileOnly group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '3.1.2.Final'
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.dom') {
+
+	repositories {
+		// use local repository
+		flatDir {
+			dirs localRepo
+	 	}
+	}
+	dependencies {
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.app') {
+
+	repositories {
+		// use local repository
+		flatDir {
+			dirs localRepo
+	 	}
+	}
+
+	dependencies {
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version)
+		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.dom', version: version)
+
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.dom')
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.infra') {
+
+	repositories {
+		// use local repository
+		flatDir {
+			dirs localRepo
+	 	}
+	}
+	dependencies {
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.dom')
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.ws') {
+
+	repositories {
+		// use local repository
+		flatDir {
+			dirs localRepo
+	 	}
+	}
+	dependencies {
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.app')
 	}
 }
 
@@ -205,7 +265,7 @@ project (':cloud.web:nts.uk.cloud.web') {
 		compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
 
 		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
-		//runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
+		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
 
 		// https://mvnrepository.com/artifact/jcifs/jcifs
 		runtime group: 'jcifs', name: 'jcifs', version: '1.3.17'
@@ -218,37 +278,23 @@ project (':cloud.web:nts.uk.cloud.web') {
 
 		//runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
 
-		runtime group: 'shr', name: 'nts.uk.shr.com', version: version
-		runtime group: 'shr', name: 'nts.uk.shr.find', version: version
+		runtime group: 'com.shr', name: 'nts.uk.shr.find', version: version
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: version
 
 		// implement eraAdapter
-		runtime group: 'com.basic', name: 'nts.uk.ctx.basic.app', version: version
-		runtime group: 'com.basic', name: 'nts.uk.ctx.basic.dom', version: version
-		runtime group: 'com.basic', name: 'nts.uk.ctx.basic.infra', version: version
-		runtime group: 'com.basic', name: 'nts.uk.ctx.basic.pub', version: version
-		runtime group: 'com.basic', name: 'nts.uk.ctx.basic.pubimp', version: version
-		runtime group: 'com.basic', name: 'nts.uk.ctx.basic.ac', version: version
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: version)
 
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: version)
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: version)
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: version)
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: version)
-		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: version)
-
-		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
-		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pubimp', version: version)
-		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.ac', version: version)
-		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.app', version: version)
-		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.dom', version: version)
-		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.infra', version: version)
-
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.ac', version: version)
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: version)
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: version)
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: version)
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pub', version: version)
-		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pubimp', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.infra', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: version)
 
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.ac', version: version)
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.app', version: version)
@@ -256,6 +302,20 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: version)
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
 		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pubimp', version: version)
+
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.app', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.infra', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pub', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pubimp', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.ac', version: version)
+
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.app', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.dom', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.infra', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pubimp', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.ac', version: version)
 
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: version)
 		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: version)
@@ -271,48 +331,6 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pubimp', version: version)
 		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.ac', version: version)
 
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: version)
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: version)
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: version)
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: version)
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: version)
-
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: version)
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: version)
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: version)
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: version)
-		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: version)
-
-		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.app', version: version)
-		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.dom', version: version)
-		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.infra', version: version)
-		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
-		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pubimp', version: version)
-		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.ac', version: version)
-
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: version)
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: version)
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.infra', version: version)
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: version)
-		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: version)
-
-		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version)
-		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.app', version: version)
-		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.infra', version: version)
-		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pub', version: version)
-		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pubimp', version: version)
-		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.ac', version: version)
-
-		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.app', version: version)
-		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.dom', version: version)
-		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.infra', version: version)
-		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pub', version: version)
-		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pubimp', version: version)
-		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.ac', version: version)
-
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: version)
@@ -320,25 +338,12 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.pubimp', version: version)
 
-		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
-		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
-
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: version
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: version
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: version
-		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: version
-
-		runtime group: 'at.screen', name: 'nts.uk.screen.at.app', version: version
-		runtime group: 'at.screen', name: 'nts.uk.screen.at.infra', version: version
-
-		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.ac', version: version
-		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: version
-		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: version
-		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: version
-		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
-		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pubimp', version: version
+		runtime(group: 'com.exio.ctx', name: 'nts.uk.ctx.exio.app', version: version)
+		runtime(group: 'com.exio.ctx', name: 'nts.uk.ctx.exio.dom', version: version)
+		runtime(group: 'com.exio.ctx', name: 'nts.uk.ctx.exio.infra', version: version)
+		runtime(group: 'com.exio.ctx', name: 'nts.uk.ctx.exio.pub', version: version)
+		runtime(group: 'com.exio.ctx', name: 'nts.uk.ctx.exio.pubimp', version: version)
+		runtime(group: 'com.exio.ctx', name: 'nts.uk.ctx.exio.ac', version: version)
 
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: version
@@ -347,12 +352,55 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
 		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
 
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
+
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.ac', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.app', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.dom', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.infra', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.pub', version: version)
+		runtime(group: 'com.office', name: 'nts.uk.ctx.office.pubimp', version: version)
+
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.ac', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pub', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pubimp', version: version)
+
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: version)
+
+
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: version)
+
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
 		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pubimp', version: version
+
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.ac', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pubimp', version: version
 
 		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.ac', version: version
 		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: version
@@ -361,19 +409,26 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: version
 		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pubimp', version: version
 
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: version
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
-		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: version
 
-		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.ac', version: version
-		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.app', version: version
-		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.dom', version: version
-		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.infra', version: version
-		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
-		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pubimp', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.ac', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.app', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.dom', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.infra', version: version)
+
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.app', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.dom', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.infra', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pub', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pubimp', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.ac', version: version)
 
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: version
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
@@ -391,10 +446,24 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
 		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
 
-		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.app', version: version)
+		runtime group: 'at.screen', name: 'nts.uk.screen.at.app', version: version
+		runtime group: 'at.screen', name: 'nts.uk.screen.at.infra', version: version
+
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.ac', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.infra', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pub', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pubimp', version: version
+
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.ac', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.app', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.dom', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.infra', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
+		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
+
 		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.dom', version: version)
-		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.ac', version: version)
-		runtime(group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.ws', version: version)
 
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.ac')
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.app')
@@ -419,7 +488,6 @@ project (':cloud.web:nts.uk.cloud.web') {
 		} else {
 			commandLine 'tsc'
 		}
-		
 	}
 }
 

@@ -37,7 +37,7 @@ public class CompanyInforFinder {
 		adddto.setAdd_2(add.get().getAdd_2().v());
 		adddto.setAddKana_1(add.get().getAddKana_1().v());
 		adddto.setAddKana_2(add.get().getAddKana_2().v());
-		adddto.setPostCd(add.get().getPostCd().v());
+		adddto.setPostCd(add.get().getPostCd() != null ? add.get().getPostCd().v() : "");
 		adddto.setPhoneNum(add.get().getPhoneNum().v());
 		return adddto;
 	}

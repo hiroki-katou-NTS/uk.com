@@ -9,6 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ReflectAppDestination;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.BreakApplication;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.ReflectFlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.reflectbreak.ReflectApplicationTime;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
@@ -62,6 +63,11 @@ public class BeforeOtWorkAppReflect {
 			// 残業時間の反映
 			ReflectApplicationTime.process(overTimeApp.getApplicationTime().getApplicationTime(), dailyApp,
 					Optional.of(ReflectAppDestination.RECORD));
+		}
+		
+		// 事前フレックス時間を反映する
+		if(overTimeApp.getApplicationTime().getFlexOverTime().isPresent()) {
+			ReflectFlexTime.beforeReflectFlex(dailyApp, overTimeApp.getApplicationTime().getFlexOverTime().get());
 		}
 
 		// 休憩の申請反映

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -20,6 +21,13 @@ public interface CompanyMonthDaySettingRepository {
 	 */
 	Optional<CompanyMonthDaySetting> findByYear(CompanyId companyId, Year year);
 		
+	/**
+	 * 検索　年リスト
+	 * @param companyId
+	 * @param year
+	 * @return
+	 */
+	List<CompanyMonthDaySetting> findByYears(CompanyId companyId, List<Year> year);
 	
 	/**
 	 * Adds the.

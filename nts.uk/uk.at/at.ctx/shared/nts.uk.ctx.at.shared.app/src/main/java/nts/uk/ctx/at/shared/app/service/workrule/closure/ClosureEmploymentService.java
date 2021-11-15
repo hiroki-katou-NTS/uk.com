@@ -186,6 +186,22 @@ public class ClosureEmploymentService {
 					String employeeId, GeneralDate baseDate) {
 				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
 			}
+
+			@Override
+			public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+				return closureEmpRepo.findListEmployment(companyID, employmentCD);
+			}
+
+			@Override
+			public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+				return closureRepository.findByListId(companyId, closureId);
+			}
+
+			@Override
+			public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+					GeneralDate baseDate) {
+				return shrEmpAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+			}
 		};
 	}
 }

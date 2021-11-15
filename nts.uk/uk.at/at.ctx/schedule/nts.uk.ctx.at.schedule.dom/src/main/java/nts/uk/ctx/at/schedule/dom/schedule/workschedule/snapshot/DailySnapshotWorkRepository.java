@@ -12,6 +12,8 @@ public interface DailySnapshotWorkRepository {
 
 	List<DailySnapshotWork> find(String sid, DatePeriod ymd);
 	
+	List<DailySnapshotWork> find(List<String> sid, DatePeriod ymd);
+	
 	void save(DailySnapshotWork snapshot);
 	
 	void update(DailySnapshotWork snapshot);

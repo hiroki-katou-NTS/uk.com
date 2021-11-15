@@ -46,23 +46,28 @@ public class StdAcceptCondSetWebService extends WebService {
 	}
 
 	@POST
+	@Path("getAllStdAcceptCondSet")
+	public List<StdAcceptCondSetDto> getAllStdAcceptCondSet() {
+		return this.stdAcceptCondSetFind.getAllStdAcceptCondSet();
+	}
+	
+
+	@POST
 	@Path("getStdAcceptCondSetBySysType/{systemType}")
 	public List<StdAcceptCondSetDto> getStdAcceptCondSetBySysType(@PathParam("systemType") int systemType) {
 		return this.stdAcceptCondSetFind.getStdAcceptCondSetBySysType(systemType);
 	}
 
 	@POST
-	@Path("checkExistCode/{sysType}/{condCode}")
-	public boolean getConditionBySystemType(@PathParam("sysType") int systemType,
-			@PathParam("condCode") String conditionCode) {
-		return stdAcceptCondSetFind.isCodeExist(systemType, conditionCode);
+	@Path("checkExistCode/{condCode}")
+	public boolean getConditionBySystemType(@PathParam("condCode") String conditionCode) {
+		return stdAcceptCondSetFind.isCodeExist(conditionCode);
 	}
 
 	@POST
-	@Path("getOneStdCondSet/{sysType}/{condCode}")
-	public StdAcceptCondSetDto getConditionBySystemTypeAndCode(@PathParam("sysType") int systemType,
-			@PathParam("condCode") String conditionCode) {
-		return stdAcceptCondSetFind.getStdAccCondSet(systemType, conditionCode);
+	@Path("getOneStdCondSet/{condCode}")
+	public StdAcceptCondSetDto getConditionBySystemTypeAndCode(@PathParam("condCode") String conditionCode) {
+		return stdAcceptCondSetFind.getStdAccCondSet(conditionCode);
 	}
 
 	@POST
@@ -70,7 +75,7 @@ public class StdAcceptCondSetWebService extends WebService {
 	public void registerStandardCondition(StdAcceptCondSetCommand command) {
 		if (command.getAction() == 0) {
 			this.addStdAccCondSetHandler.handle(command);
-		} else {
+		}else {
 			this.updateStdAccCondSetHandler.handle(command);
 		}
 	}
@@ -95,7 +100,7 @@ public class StdAcceptCondSetWebService extends WebService {
 	 */
 	@POST
 	@Path("getCategoryItemData/{categoryId}")
-	public List<ExAcpCtgItemDatDto> getCategoryItemData(@PathParam("categoryId") String categoryId) {
+	public List<ExAcpCtgItemDatDto> getCategoryItemData(@PathParam("categoryId") int categoryId) {
 		return stdAcceptCondSetFind.getCategoryItemData(categoryId);
 	}
 
@@ -105,8 +110,8 @@ public class StdAcceptCondSetWebService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getAllCategory")
-	public List<ExAcpCategoryDto> getAllCategory() {
-		return stdAcceptCondSetFind.getAllCategory();
+	@Path("getAllCategoryBystem/{systemType}")
+	public List<ExAcpCategoryDto> getAllCategoryBystem(@PathParam("systemType") int systemType) {
+		return stdAcceptCondSetFind.getCategoryBySystem(systemType);
 	}
 }

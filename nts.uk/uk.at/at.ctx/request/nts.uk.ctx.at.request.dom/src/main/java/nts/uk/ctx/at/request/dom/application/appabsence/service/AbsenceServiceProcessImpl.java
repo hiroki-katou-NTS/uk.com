@@ -22,8 +22,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
-import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TempChildCareNurseManagementImport;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberChildCareAdapter;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.GetRemainingNumberNursingAdapter;
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
@@ -327,6 +328,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     private GetRemainingNumberCareAdapter getRemainingNumberCareAdapter;
     
     @Inject
+    private GetRemainingNumberChildCareAdapter getRemainingNumberChildCareAdapter;
+    
+    @Inject
+    private GetRemainingNumberNursingAdapter getRemainingNumberNursingAdapter;
+    
+    @Inject
     private InterimRemainDataMngCheckRegisterRequest remainDataCheckRegister;
     
     @Inject
@@ -376,6 +383,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     
     @Inject
     private AnnualHolidayManagementAdapter annualHolidayManagementAdapter;
+    
+    @Inject
+	private LeaveComDayOffManaRepository leaveComDayOffManaRepository;
+	
+	@Inject
+	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 
@@ -809,16 +822,19 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// 「子看護管理区分」を確認する
 		if (childNursingManagement.equals(ManageDistinct.YES)) {
 		    // [NO.206]期間中の子の看護休暇残数を取得
-		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
-		            employeeID, 
-		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-		            InterimRemainMngMode.OTHER, 
-		            baseDate, 
-		            Optional.of(false), 
-		            Optional.empty(), 
-		            Optional.empty(), 
-		            Optional.empty(), 
-		            Optional.empty());
+//		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
+//		            employeeID, 
+//		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//		            InterimRemainMngMode.OTHER, 
+//		            baseDate, 
+//		            Optional.of(false), 
+//		            Optional.empty(), 
+//		            Optional.empty(), 
+//		            Optional.empty(), 
+//		            Optional.empty());
+		    // 基準日時点の子の看護残数を取得する
+		    ChildCareNursePeriodImport childNursePeriod = getRemainingNumberChildCareAdapter
+		            .getRemainingNumberChildCare(companyID, employeeID, GeneralDate.today());
 		    
 		    childNursingDayRemain = childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays();
 		    if (childNursePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent()) {
@@ -829,17 +845,21 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		// 「介護管理区分」を確認する
 		if (longTermCareManagement.equals(ManageDistinct.YES)) {
 		    // [NO.207]期間中の介護休暇残数を取得
-		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
-		            companyID, 
-		            employeeID, 
-		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-		            InterimRemainMngMode.OTHER, 
-		            baseDate, 
-		            Optional.of(false), 
-		            new ArrayList<TempChildCareNurseManagementImport>(),
-                    Optional.empty(), 
-                    Optional.empty(), 
-                    Optional.empty());
+//		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
+//		            companyID, 
+//		            employeeID, 
+//		            new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//		            InterimRemainMngMode.OTHER, 
+//		            baseDate, 
+//		            Optional.of(false), 
+//		            new ArrayList<TempChildCareNurseManagementImport>(),
+//                    Optional.empty(), 
+//                    Optional.empty(), 
+//                    Optional.empty());
+		    
+		    // 基準日時点の介護残数を取得する
+		    ChildCareNursePeriodImport longtermCarePeriod = getRemainingNumberNursingAdapter
+		            .getRemainingNumberNursing(companyID, employeeID, GeneralDate.today());
 		    
 		    nursingRemain = longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedDays();
 		    if (longtermCarePeriod.getStartdateDays().getThisYear().getRemainingNumber().getUsedTime().isPresent()) {
@@ -1051,7 +1071,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		            appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 		            appDates.isEmpty() ? Optional.empty() : Optional.of(GeneralDate.fromString(appDates.get(0), FORMAT_DATE)),
 		            workTypeCD,
-		            appAbsenceStartInfoOutput.getSelectedWorkTimeCD(),
+		            appAbsenceStartInfoOutput.isWorkTimeChange() ? appAbsenceStartInfoOutput.getSelectedWorkTimeCD() : Optional.empty(),
 		            Optional.empty(),
 		            Optional.empty(),
 		            Optional.empty());
@@ -1954,26 +1974,26 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
         if (!leaveComDayOffMana.isEmpty()) {
+            // ドメインモデル「休出代休紐付け管理」を削除する
+            this.leaveComDayOffManaRepo.deleteByDigestTarget(
+                    leaveComDayOffMana.get(0).getSid(), 
+                    leaveComDayOffMana.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
+            
             for (LeaveComDayOffManagement leaveMana : leaveComDayOffMana) {
-                // ドメインモデル「休出代休紐付け管理」を削除する
-                this.leaveComDayOffManaRepo.deleteByDigestTarget(
-                        leaveMana.getSid(), 
-                        leaveMana.getAssocialInfo().getDateOfUse(), 
-                        TargetSelectionAtr.REQUEST);
-                
                 // ドメインモデル「休出代休紐付け管理」を登録する
                 this.leaveComDayOffManaRepo.add(leaveMana);
             }
         }
 
         if (!payoutSubofHDManagements.isEmpty()) {
+            // ドメインモデル「振出振休紐付け管理」を削除する
+            this.payoutHdManaRepo.deleteByDigestTarget(
+                    payoutSubofHDManagements.get(0).getSid(), 
+                    payoutSubofHDManagements.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
+            
             for (PayoutSubofHDManagement payoutHdMana : payoutSubofHDManagements) {
-                // ドメインモデル「振出振休紐付け管理」を削除する
-                this.payoutHdManaRepo.deleteByDigestTarget(
-                        payoutHdMana.getSid(), 
-                        payoutHdMana.getAssocialInfo().getDateOfUse(), 
-                        TargetSelectionAtr.REQUEST);
-                
                 // ドメインモデル「振出振休紐付け管理」を登録する
                 this.payoutHdManaRepo.add(payoutHdMana);
             }
@@ -2003,6 +2023,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         appAbsenceStartInfoOutput.setHdAppSet(holidayRequestSetOutput.getHdAppSet());
         appAbsenceStartInfoOutput.setVacationAppReflect(holidayRequestSetOutput.getVacationAppReflect());
         appAbsenceStartInfoOutput.setRemainVacationInfo(remainVacationInfo);
+        appAbsenceStartInfoOutput.setWorkTimeChange(applyForLeave.isPresent() ? applyForLeave.get().getReflectFreeTimeApp().getWorkChangeUse().isUse() : false);
 
         // 勤務種類・就業時間帯情報を取得する
         appAbsenceStartInfoOutput = this.getWorkTypeWorkTimeInfo(companyID, applyForLeave.isPresent() ? applyForLeave.get() : null, appAbsenceStartInfoOutput);
@@ -2161,7 +2182,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput(), 
                 Arrays.asList(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
                 Optional.of(timeDigestionParam), 
-                false);
+                false, 
+                Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
+                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 
         // 休暇申請登録時チェック処理
         List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates);
@@ -2181,6 +2204,17 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
         // ドメインモデル「休暇申請」を更新する
         this.applyForLeaveRepository.update(applyForLeave, companyID, application.getAppID());
+        
+        // ドメインモデル「休出代休紐付け管理」を取得する
+		List<LeaveComDayOffManagement> leaveComDayOffManagementLst = leaveComDayOffManaRepository.getBycomDayOffID(application.getEmployeeID(), application.getAppDate().getApplicationDate())
+				.stream().filter(x -> x.getAssocialInfo().getTargetSelectionAtr()==TargetSelectionAtr.REQUEST).collect(Collectors.toList());
+		// ドメインモデル「振出振休紐付け管理」を取得する
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLst = payoutSubofHDManaRepository.getBySubId(application.getEmployeeID(), application.getAppDate().getApplicationDate())
+				.stream().filter(x -> x.getAssocialInfo().getTargetSelectionAtr()==TargetSelectionAtr.REQUEST).collect(Collectors.toList());
+		// 休暇発生日リストに追加する
+		List<GeneralDate> holidayLst = new ArrayList<>();
+		holidayLst.addAll(leaveComDayOffManagementLst.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList()));
+		holidayLst.addAll(payoutSubofHDManagementLst.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList()));
 
         // 休暇紐付け管理を更新する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
@@ -2199,6 +2233,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         List<GeneralDate> listHolidayDates = holidayAppDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
 
         listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
+        
+        listDates.addAll(holidayLst);
 
         // 暫定データの登録
         this.interimRemainDataMngRegisterDateChange.registerDateChange(companyID, applyForLeave.getApplication().getEmployeeID(), listDates);

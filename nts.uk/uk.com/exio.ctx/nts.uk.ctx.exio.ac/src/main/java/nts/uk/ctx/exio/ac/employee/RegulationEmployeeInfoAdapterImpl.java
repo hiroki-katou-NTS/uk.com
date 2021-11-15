@@ -1,11 +1,14 @@
 package nts.uk.ctx.exio.ac.employee;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
+import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.EmployeeInforExoImport;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.RegulationInfoEmployeeImport;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.RegulationInfoEmployeeQueryImport;
@@ -18,6 +21,8 @@ public class RegulationEmployeeInfoAdapterImpl implements RegulationInfoEmployee
 	
 	@Inject
 	private RegulationInfoEmployeePub pub;
+	@Inject
+	private EmployeeInfoPub empPub;
 
 	@Override
 	public List<RegulationInfoEmployeeImport> findEmployees(RegulationInfoEmployeeQueryImport importQuery) {
@@ -70,6 +75,13 @@ public class RegulationEmployeeInfoAdapterImpl implements RegulationInfoEmployee
 				.workplaceId(export.getWorkplaceId())
 				.workplaceName(export.getWorkplaceName())
 				.build();
+	}
+
+	@Override
+	public Optional<EmployeeInforExoImport> getEmployeeInforByCid(String cid, String sid) {
+		Optional<EmployeeInforExoImport> result = empPub.getEmployeeInfo(cid, sid)
+				.map(x -> new EmployeeInforExoImport(x.getCompanyId(), x.getEmployeeId(), x.getPersonId(), x.getEmployeeCode()));
+		return result;
 	}
 
 }

@@ -71,6 +71,8 @@ public class AddSpeLeaGrant17CommandHandler
 				command.getNumberDayUse() != null ? command.getNumberDayUse().doubleValue() : 0,
 				command.getTimeUse() != null ? command.getTimeUse().intValue() : null,
 				null,
+				command.getNumberDaysOver() != null ? command.getNumberDaysOver().doubleValue() : null, 
+				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
 				command.getNumberDayRemain() != null ? command.getNumberDayRemain().doubleValue() : 0,
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
 				0.0,

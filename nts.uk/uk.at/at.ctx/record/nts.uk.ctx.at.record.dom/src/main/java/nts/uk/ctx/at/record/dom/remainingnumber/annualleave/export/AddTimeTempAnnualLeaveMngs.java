@@ -53,7 +53,7 @@ public class AddTimeTempAnnualLeaveMngs {
 						RemainType.ANNUAL, 		//		残数種類　←年休
 						RemainAtr.SINGLE,			//		残数分類　←単一
 						new WorkTypeCode("1"), 	//		勤務種類 = 1
-						new LeaveUsedNumber(0d, diff, null), 		//		年休使用数．時間　←求めた使用数
+						new LeaveUsedNumber(0d, diff, null, null, null), 		//		年休使用数．時間　←求めた使用数
 						Optional.ofNullable(DigestionHourlyTimeType.of(true, Optional.of(AppTimeType.OFFWORK)))
 					));	//		時間休暇種類．時間消化区分 = 1
 			});

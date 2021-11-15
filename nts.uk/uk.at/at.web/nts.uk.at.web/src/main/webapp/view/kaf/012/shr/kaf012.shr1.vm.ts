@@ -24,13 +24,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             <!-- ko if: display3() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
                 <div data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
-                <a class="hyperlink" href="" data-bind="text: childNursingRemaining, click: openKDL051"></a>
+                <span data-bind="text: childNursingRemaining"></span>
             </div>
             <!-- /ko -->
             <!-- ko if: display4() -->
             <div class="row-underline"  style="display: flex; justify-content: space-between">
                 <div data-bind="text: $i18n('Com_CareHoliday')"></div>
-                <a class="hyperlink" href="" data-bind="text: nursingRemaining, click: openKDL052"></a>
+                <span data-bind="text: nursingRemaining"></span>
             </div>
             <!-- /ko -->
             <!-- ko if: display5() -->
