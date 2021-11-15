@@ -7,6 +7,7 @@ import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
+import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.system.ServerSystemProperties;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
@@ -34,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -69,6 +71,8 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
     @Inject
     private FileStorage fileStorage;
 
+    @Inject
+    private StoredFileStreamService fileStreamService;
 
     @Override
     public void generate(FileGeneratorContext context, Form9ExcelByFormatDataSource dataSource, Form9ExcelByFormatQuery query) {
@@ -78,16 +82,16 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
             val menuDisplayName = menus.stream().filter(i -> i.getSystem().value == 1 && i.getMenuAtr() == MenuAtr.Menu && i.getProgramId().equals("KSU003"))
                     .findFirst().map(i -> i.getDisplayName().v()).orElse(TextResource.localize("KSU008_1"));
 
-            String templatePath = "";
+            AsposeCellsReportContext reportContext = null;
             if (dataSource.getForm9Layout().isSystemFixed()) {
-                templatePath = SYSTEM_TEMPLATE_PATH + dataSource.getFileName();
+                reportContext = createContext(SYSTEM_TEMPLATE_PATH + dataSource.getFileName());
             } else {
                 if (dataSource.getForm9Layout().getTemplateFileId().isPresent()) {
-                    File file = Paths.get(USER_TEMPLATE_PATH + "//" + dataSource.getForm9Layout().getTemplateFileId().get()).toFile();
+                    InputStream inputStream = this.fileStreamService.takeOutFromFileId(dataSource.getForm9Layout().getTemplateFileId().get());
+                    reportContext = new AsposeCellsReportContext(inputStream);
                 }
             }
-
-            AsposeCellsReportContext reportContext = createContext(templatePath);
+            if (reportContext == null) return;
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
 
@@ -509,22 +513,6 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 rounded = value.round(new MathContext(roundingUnit.value + 1, RoundingMode.HALF_UP));
         }
         return rounded;
-    }
-
-    private int roundUp(int num, int multipleOf) {
-        int temp = num % multipleOf;
-        if (temp < 0)
-            temp = multipleOf + temp;
-        if (temp == 0)
-            return num;
-        return num + multipleOf - temp;
-    }
-
-    private int roundDown(int num, int multipleOf) {
-        double result = num / multipleOf;
-        result = Math.floor(result);
-        result *= multipleOf;
-        return (int) result;
     }
 
     private String convertNumberToTime(Integer totalMinute) {
