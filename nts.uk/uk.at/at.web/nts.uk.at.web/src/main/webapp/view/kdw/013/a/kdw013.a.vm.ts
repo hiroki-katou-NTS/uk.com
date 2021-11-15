@@ -1077,6 +1077,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeFDialog();
                             vm.reloadTaskFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1129,6 +1130,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeGDialog();
                             vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1172,6 +1174,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeGDialog();
                             vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1260,10 +1263,18 @@ module nts.uk.ui.at.kdw013.a {
 
 		closeFDialog() {
 			$(".popup-area-f").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+			}, 100);
 		}
 		
 		closeGDialog() {
 			$(".popup-area-g").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+			}, 100);
 		}
     }
 

@@ -225,8 +225,6 @@ module nts.uk.ui.at.kdw013.b {
 
 		closeFDialog() {
 			$(".popup-area-f-from-b").ntsPopup('hide');
-			nts.uk.ui.errors.clearAll();
-			jQuery('button.btn-error.small.danger').appendTo('#functions-area');
 		}
 
         mounted() {
@@ -352,7 +350,7 @@ module nts.uk.ui.at.kdw013.b {
 							}
 						}
 					}else{
-						items.push({key: infor.name, value:  vm.formatDataShow(item) });	
+						items.push({key: infor.name, value:  vm.formatDataShow(item, data) });	
 					}
 				}
 			});
@@ -360,9 +358,14 @@ module nts.uk.ui.at.kdw013.b {
 			return {items : items};
 		}
 		
-		formatDataShow(item: TaskItemValue):string {
+		formatDataShow(item: TaskItemValue, data: StartWorkInputPanelDto):string {
 			if(item.type == 0){
-				return item.value();	
+				let optionValue = _.find(data.taskSupInfoChoicesDetails, t => t.itemId == item.itemId && t.code == item.value());
+				if(optionValue){
+					return item.value() + ' ' + optionValue.name;	
+				}else{
+					return item.value() + ' ' + getText('KDW013_40');
+				}
 			}else if(item.type == 2){
 				
 			}else if(item.type == 3){
@@ -406,6 +409,7 @@ module nts.uk.ui.at.kdw013.b {
                     vm.$ajax('at', API.ADD_FAV_TASK_F, registerFavoriteCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+								vm.closeFDialog();
                                 vm.params.screenA.reloadTaskFav();
                         }); 
                     }).fail((error: any) => {

@@ -2175,6 +2175,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
                                                 });
                                                 setTimeout(() => { $('.input-g').focus(); }, 100);
+												setTimeout(() => {
+													nts.uk.ui.errors.clearAll();
+													jQuery('button.btn-error.small.danger').appendTo('.popup-area-g .textEditor.pb10');
+												}, 100)
 
                                                 //set lại phần update để nó không bị ảnh hưởng
                                                 vm.params.screenA.oneDayFavoriteSet(null);

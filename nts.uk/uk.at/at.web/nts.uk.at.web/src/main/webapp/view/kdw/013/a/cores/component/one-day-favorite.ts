@@ -155,6 +155,11 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
 				$('.input-g').focus();
 			}, 100)
 			
+			setTimeout(() => {
+				nts.uk.ui.errors.clearAll();
+				jQuery('button.btn-error.small.danger').appendTo('.popup-area-g .textEditor.pb10');
+			}, 100)
+			
         }
     }
 
