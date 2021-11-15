@@ -79,6 +79,22 @@ module nts.uk.at.ksu008.a {
             self.workingHoursTarget = ko.observable(0);
             self.workingHoursScheduleColor = ko.observable("#00ff00");
             self.workingHoursRecordColor = ko.observable("#0000ff");
+
+            self.deductionDateFromDeliveryTimeTarget.subscribe(value => {
+                if (value == 0) {
+                    if (self.workingHoursTarget() != 1) self.workingHoursTarget(1);
+                } else {
+                    if (self.workingHoursTarget() != 0) self.workingHoursTarget(0);
+                }
+            });
+
+            self.workingHoursTarget.subscribe(value => {
+                if (value == 0) {
+                    if (self.deductionDateFromDeliveryTimeTarget() != 1) self.deductionDateFromDeliveryTimeTarget(1);
+                } else {
+                    if (self.deductionDateFromDeliveryTimeTarget() != 0) self.deductionDateFromDeliveryTimeTarget(0);
+                }
+            });
         }
 
         created() {
@@ -154,6 +170,7 @@ module nts.uk.at.ksu008.a {
             const selectedSetting = _.find(vm.comboItemList(), i => i.code == vm.selectedCode());
             vm.$window.modal('/view/ksu/008/b/index.xhtml', {isSystemFixed: selectedSetting ? selectedSetting.systemFixed : true, layoutCode: vm.selectedCode()}).then((result: any) => {
                 vm.getAllSetting(result.code);
+                $("#A1_1").focus();
             });
         }
 
