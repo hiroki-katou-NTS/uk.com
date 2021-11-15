@@ -1679,8 +1679,13 @@ public class DailyPerformanceCorrectionProcessor {
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
 					
-					if (dPItem.getAttendanceAtr() != 5 && dPItem.getPrimitive() != 15)
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+					
+					if (dPItem.getAttendanceAtr() != null && dPItem.getAttendanceAtr() == 5) {
+						if (dPItem.getPrimitive() != null && dPItem.getPrimitive() == 15) {
+							columnSetting = new ColumnSetting(key.getKey(), false);
+						}
+					}
 				}
 			}
 			result.getColumnSettings().add(columnSetting);
