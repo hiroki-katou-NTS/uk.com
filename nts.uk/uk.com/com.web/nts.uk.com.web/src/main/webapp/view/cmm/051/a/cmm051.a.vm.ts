@@ -4,8 +4,6 @@ module nts.uk.com.view.cmm051.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import FunctionPermission = base.FunctionPermission;
-    import WorkplaceManager = base.WorkplaceManager;
     import ccg = nts.uk.com.view.ccg026;
     import model = nts.uk.com.view.ccg026.component.model;
     import block = nts.uk.ui.block;
@@ -23,8 +21,8 @@ module nts.uk.com.view.cmm051.a {
 
         getDataInit: "com/screen/cmm051/get-data-init",
         getListEmpByWpid: "com/screen/cmm051/get-employee-list-by-wplid",
-        getListEmpInf: "com/screen/cmm051/get-data-init/employee-mode"
-
+        getListEmpInf: "com/screen/cmm051/get-data-init/employee-mode",
+        getListHist: "com/screen/cmm051/get-wpl-manager"
 
     };
 
@@ -32,27 +30,23 @@ module nts.uk.com.view.cmm051.a {
     class ViewModel extends ko.ViewModel {
         langId: KnockoutObservable<string> = ko.observable('ja');
         ntsHeaderColumns: KnockoutObservableArray<any> = ko.observableArray([]);
-        historyId: KnockoutObservable<any> = ko.observable("1");
+        historyId: KnockoutObservable<any> = ko.observable(null);
         // Screen mode
         isNewMode: KnockoutObservable<boolean> = ko.observable(false);
         isNewModeHist: KnockoutObservable<boolean> = ko.observable(true);
         isUpdateModeHist: KnockoutObservable<boolean> = ko.observable(true);
         isDeleteModeHist: KnockoutObservable<boolean> = ko.observable(true);
         isClicked: KnockoutObservable<boolean> = ko.observable(false);
-        isDelete: KnockoutObservable<boolean> = ko.observable(false);
+        isDelete: KnockoutObservable<boolean> = ko.observable(true);
         //Date Range Picker
         dateValue: KnockoutObservable<any> = ko.observable("");
         selectedWkpId: KnockoutObservable<string>;
         selectedWpkManagerId: KnockoutObservable<string>;
-        selectedWkpManager: KnockoutObservable<WorkplaceManager>;
         wkpManagerTree: any;
         headers: any;
-        // CCG026
-        component: ccg.component.viewmodel.ComponentModel;
-        listPermission: KnockoutObservableArray<FunctionPermission>;
+
         // start declare KCP005
         listComponentOption: any;
-        multiSelectedCode: KnockoutObservable<string> = ko.observable("");
         isShowAlreadySet: KnockoutObservable<boolean>;
         alreadySettingPersonal: KnockoutObservableArray<any>;
         isDialog: KnockoutObservable<boolean>;
@@ -73,30 +67,25 @@ module nts.uk.com.view.cmm051.a {
         //A8
         workplaceCode: KnockoutObservable<string> = ko.observable("");
         workplaceName: KnockoutObservable<string> = ko.observable("");
-        wplaceMnSelectedId: KnockoutObservable<string> = ko.observable("");
-        employeeMnSelectedId: KnockoutObservable<string> = ko.observable("");
         //A3
-        employeeCode: KnockoutObservable<string> = ko.observable("");
+        employeeCode: KnockoutObservable<string> = ko.observable(null);
         employeeName: KnockoutObservable<string> = ko.observable("");
 
-        selectedCode: KnockoutObservable<string>;
-        wplaceSelectedId: KnockoutObservable<string> = ko.observable("");
+        selectedEmCode: KnockoutObservable<string> = ko.observable(null);
         columns: KnockoutObservableArray<NtsGridListColumn>;
         count: number;
         idAddOrUpdate: KnockoutObservable<string> = ko.observable(null);
         startDate: KnockoutObservable<any> = ko.observable(null);
         endDate: KnockoutObservable<any> = ko.observable(null);
-        idDelete: KnockoutObservable<any> = ko.observable(null);
-        workPlaceId: KnockoutObservable<any> = ko.observable("");
-        employeeId: KnockoutObservable<any> = ko.observable("");
-
+        workPlaceId: KnockoutObservable<any> = ko.observable(null);
+        employeeId: KnockoutObservable<any> = ko.observable(null);
 
         constructor(params: any) {
             super();
             let vm = this;
             vm.selectedWkpId = ko.observable('');
             vm.count = 1;
-            vm.initScreen(Mode.WPL, null, null);
+            vm.setDataDefaultMode();
             vm.ntsHeaderColumns = ko.observableArray([
                 {headerText: '', key: 'code', hidden: true},
                 {headerText: '', key: 'display', formatter: _.escape}
@@ -106,33 +95,33 @@ module nts.uk.com.view.cmm051.a {
                 {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 150},
                 {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 300}
             ]);
+
         }
 
-        initScreen(mode: number, sid: string, wplId: string) {
+        setDataDefaultMode() {
             let vm = this;
             let workplaceManagerList: any[] = [];
             let listEmployee: any[] = [];
             let personList: any[] = [];
-            if (mode == Mode.WPL) {
-                vm.KCP005_load();
-            }
+            vm.KCP005_load();
             block.invisible();
             vm.$ajax('com', API.getDataInit).done((data) => {
                 if (!isNullOrUndefined(data)) {
                     if (!isNullOrUndefined(data.workplaceInfoImport)) {
-                        if (mode == Mode.WPL) {
-                            vm.wplaceMnSelectedId(data.workplaceInfoImport.workplaceId);
-                            vm.workplaceCode(data.workplaceInfoImport.workplaceCode);
-                            vm.workplaceName(data.workplaceInfoImport.workplaceName);
-                        }
+                        vm.workPlaceId(data.workplaceInfoImport.workplaceId);
+                        vm.workplaceCode(data.workplaceInfoImport.workplaceCode);
+                        vm.workplaceName(data.workplaceInfoImport.workplaceName);
                     }
                     workplaceManagerList = data.employeeInformation.workplaceManagerList;
                     listEmployee = data.employeeInformation.listEmployee;
                     personList = data.employeeInformation.personList;
-                    vm.setData(mode, workplaceManagerList, listEmployee, personList, sid, wplId);
-
+                    vm.setData(workplaceManagerList, listEmployee, personList, vm.employeeId(), vm.workPlaceId(), vm.historyId());
+                    vm.isDelete(true);
+                    vm.isNewModeHist(true);
+                } else {
+                    vm.isDelete(false);
                 }
-                vm.isNewModeHist(true);
+
             }).always(() => {
                 block.clear();
             }).fail((error) => {
@@ -141,14 +130,30 @@ module nts.uk.com.view.cmm051.a {
                     vm.backToTopPage();
                 });
             });
-            if (mode == Mode.EMPLOYMENT) {
-                let empId: string[] = [];
-                if (isNullOrUndefined(sid)) {
-                    vm.backToTopPage();
-                } else {
-                    empId.push(sid);
-                    vm.getEmployeeInfo(empId);
-                }
+        }
+
+        initScreen(mode: number, sid: string, wplId: string, histId: string) {
+            let vm = this;
+            if (!isNullOrUndefined(sid) && !isNullOrUndefined(wplId)) {
+                let param = {
+                    workplaceId: wplId,
+                    sid: sid
+                };
+                block.invisible();
+                vm.$ajax("com", API.getListHist, param).done((data) => {
+                    if (!isNullOrUndefined(data)) {
+                        vm.dateHistoryListFull(data);
+                        vm.setDataHist(vm.employeeId(), vm.dateHistoryListFull(), histId, wplId);
+                    }
+                    vm.isNewModeHist(true);
+                }).always(() => {
+                    block.clear();
+                }).fail((error) => {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alertError({messageId: error.messageId}).then(() => {
+                        vm.backToTopPage();
+                    });
+                });
             }
 
         }
@@ -157,8 +162,15 @@ module nts.uk.com.view.cmm051.a {
             nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
         }
 
-        setData(mode: any, workplaceManagerList: any[], listEmployee: any[], personList: any[], sid: string, wplId: string): void {
+        setData(workplaceManagerList: any[],
+                listEmployee: any[],
+                personList: any[],
+                sid: string,
+                wplId: string,
+                histId: string): void {
+
             let vm = this;
+            let mode = vm.mode();
             vm.dateHistoryListFull(workplaceManagerList);
             if (mode == Mode.WPL) {
                 let emps: any = [];
@@ -176,40 +188,42 @@ module nts.uk.com.view.cmm051.a {
 
                     }
                 }
+                if (isNullOrEmpty(emps)) {
+                    vm.employeeCode("");
+                    vm.employeeName("");
+                }
                 vm.employInfors(emps);
-
                 let info = _.find(vm.employInfors(), (e) => e.id == sid);
-                if (!isNullOrUndefined(info)) {
-                    vm.multiSelectedCode(info.code);
-                    vm.setDataHist(info.id, vm.dateHistoryListFull());
+                if (isNullOrUndefined(info)) {
+                    if (!isNullOrEmpty(emps))
+                        vm.selectedEmCode(emps[0].code);
                 } else {
-                    if (!isNullOrEmpty(emps)) {
-                        vm.multiSelectedCode(emps[0].code);
-                        vm.multiSelectedCode.valueHasMutated();
-                    }
+                    vm.selectedEmCode(info.code);
                 }
             }
             if (mode == Mode.EMPLOYMENT) {
-                let wpls: any[] = [];
                 let info = _.find(vm.workPlaceList(), (e) => e.id == wplId);
                 if (!isNullOrUndefined(info)) {
                     vm.workPlaceId(info.id);
                 } else {
                     if (!isNullOrEmpty(vm.workPlaceList())) {
-                        vm.workPlaceId(vm.workPlaceList()[0].id);
-                        vm.workPlaceId.valueHasMutated();
+                        if (!vm.isNewMode()) {
+                            vm.workPlaceId(vm.workPlaceList()[0].id);
+                            vm.workPlaceId.valueHasMutated();
+                        }
                     }
                 }
-                vm.setDataHist(vm.employeeId(), vm.dateHistoryListFull());
             }
 
         }
 
-        setDataHist(sid: string, workplaceManagerList: any[]): void {
+        setDataHist(sid: string, workplaceManagerList: any[], histId: string, wplId: string): void {
             let vm = this;
             let listDatePeriod: any[] = [];
-            let listHist: any[] = _.filter(workplaceManagerList, (e) => e.employeeId == sid);
+            let listHist: any[] = [];
             if (!isNullOrEmpty(workplaceManagerList)) {
+                listHist = _.filter(workplaceManagerList, (e) => e.workplaceId == wplId && e.employeeId == sid);
+
                 for (let i = 0; i < listHist.length; i++) {
                     let wpl = listHist[i];
                     let id = wpl.workplaceManagerId;
@@ -223,9 +237,19 @@ module nts.uk.com.view.cmm051.a {
                     })
                 }
             }
+            listDatePeriod = _.orderBy(listDatePeriod, ['startDate'], ['desc']);
             vm.dateHistoryList(listDatePeriod);
             if (!isNullOrEmpty(listDatePeriod)) {
-                vm.historyId(listDatePeriod[0].id);
+                let hist = _.find(vm.dateHistoryList(), (e) => e.id == histId);
+                if (isNullOrUndefined(hist)) {
+                    vm.historyId(listDatePeriod[0].id);
+                    vm.startDate(listDatePeriod[0].startDate);
+                    vm.endDate(listDatePeriod[0].endDate);
+                } else {
+                    vm.historyId(hist.id);
+                    vm.startDate(hist.startDate);
+                    vm.endDate(hist.endDate);
+                }
                 vm.isNewModeHist(true);
                 vm.isUpdateModeHist(true);
                 vm.isDeleteModeHist(true);
@@ -243,14 +267,13 @@ module nts.uk.com.view.cmm051.a {
             vm.isShowWorkPlaceName = ko.observable(false);
             vm.isShowSelectAllButton = ko.observable(false);
             vm.disableSelection = ko.observable(false);
-            vm.selectedCode = ko.observable("");
             vm.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
                 listType: ListType.EMPLOYEE,
                 employeeInputList: vm.employInfors,
                 selectType: SelectType.SELECT_ALL,
-                selectedCode: vm.multiSelectedCode,
+                selectedCode: vm.selectedEmCode,
                 isDialog: false,
                 alreadySettingList: vm.alreadySettingPersonal,
                 isShowSelectAllButton: false,
@@ -275,7 +298,8 @@ module nts.uk.com.view.cmm051.a {
                     vm.employeeName("");
                     vm.workplaceCode("");
                     vm.workplaceName("");
-                    vm.initScreen(mode, null, null);
+                    vm.selectedEmCode(null);
+                    vm.setDataDefaultMode();
                 } else if (mode == Mode.EMPLOYMENT) {
                     vm.employeeCode("");
                     vm.employeeName("");
@@ -283,42 +307,56 @@ module nts.uk.com.view.cmm051.a {
                     vm.workplaceName("");
                     let sidLogin = vm.$user.employeeId;
                     vm.employeeId(sidLogin);
-                    vm.initScreen(mode, sidLogin, null);
+                    let sid: any[] = [];
+                    sid.push(sidLogin);
+                    vm.getEmployeeInfo(sid,vm.workPlaceId())
                 }
             });
-            if (vm.mode() == Mode.WPL) {
-                vm.multiSelectedCode.subscribe((e) => {
+            vm.selectedEmCode.subscribe((e) => {
+                if (!isNullOrUndefined(e)) {
                     let eminfo = _.find(vm.employInfors(), (i) => i.code == e);
                     if (!isNullOrUndefined(eminfo)) {
-                        vm.employeeCode(eminfo.code);
                         vm.employeeName(eminfo.name);
-                        vm.isDelete(true);
-                        vm.employeeMnSelectedId(eminfo.id);
-                        vm.setDataHist(eminfo.id, vm.dateHistoryListFull());
+                        vm.employeeCode(e);
+                        vm.employeeId(eminfo.id);
                     } else {
                         vm.employeeCode("");
                         vm.employeeName("")
                     }
-
-                });
-            }
-            vm.workPlaceId.subscribe((e) => {
-                if (vm.mode() == Mode.EMPLOYMENT) {
-                    console.log(e);
-                    if (!isNullOrUndefined(e)) {
-                        vm.wplaceMnSelectedId(e);
-                        let wp = _.find(vm.workPlaceList(), (q) => e == q.id);
-                        if (!isNullOrUndefined(wp)) {
-                            vm.workplaceCode(wp.code);
-                            vm.workplaceName(wp.name)
-                            vm.setDataHist(vm.employeeId(), vm.dateHistoryListFull());
-                        }
-                    }
                 }
+            });
 
+
+            vm.employeeId.subscribe((e) => {
+                let eminfo = _.find(vm.employInfors(), (i) => i.id == e);
+                if (!isNullOrUndefined(eminfo)) {
+                    vm.employeeName(eminfo.name);
+                    vm.employeeCode(eminfo.code);
+                    vm.isDelete(true);
+                } else {
+                    vm.employeeCode("");
+                    vm.employeeName("")
+                }
+                vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId())
+            });
+            vm.workPlaceId.subscribe((e) => {
+                if (!isNullOrUndefined(e)) {
+                    let info = _.find(vm.workPlaceList(), (i) => i.id == e);
+                    if (!isNullOrEmpty(info)) {
+                        vm.workplaceName(info.name);
+                        vm.workplaceCode(info.code);
+                        vm.isDelete(true);
+                    }
+                    vm.initScreen(vm.mode(), vm.employeeId(), e, vm.historyId())
+                }
             });
             vm.historyId.subscribe((id) => {
                 let idAddOrUpdate = vm.idAddOrUpdate();
+                let hist = _.find(vm.dateHistoryList(), (e) => e.id == id);
+                if (!isNullOrUndefined(hist)) {
+                    vm.startDate(hist.startDate);
+                    vm.endDate(hist.endDate);
+                }
                 if (!isNullOrUndefined(idAddOrUpdate)) {
                     if (id == idAddOrUpdate) {
                         vm.isNewModeHist(false);
@@ -344,7 +382,7 @@ module nts.uk.com.view.cmm051.a {
             if (vm.isNewMode() == true) {
                 vm.dateHistoryList([]);
                 vm.employeeCode("");
-                vm.employeeName("")
+                vm.employeeName("");
                 vm.workplaceCode("");
                 vm.workplaceName("")
             }
@@ -360,9 +398,11 @@ module nts.uk.com.view.cmm051.a {
             vm.isNewMode(true);
             vm.isUpdateModeHist(false);
             vm.isDeleteModeHist(false);
+            vm.workPlaceList([]);
+            vm.employInfors([]);
             vm.isNewModeHist(true);
             vm.isDelete(false);
-            vm.selectedCode('');
+            vm.selectedEmCode('');
             vm.initManager();
         }
 
@@ -374,8 +414,8 @@ module nts.uk.com.view.cmm051.a {
             if (!vm.validate()) {
                 return;
             }
-            let workplaceId = vm.wplaceMnSelectedId();
-            let sid = vm.employeeMnSelectedId();
+            let workplaceId = vm.workPlaceId();
+            let sid = vm.employeeId();
             let startDate = nts.uk.time.parseMoment(vm.startDate()).format();
             let endDate = nts.uk.time.parseMoment(vm.endDate()).format();
             let command = {
@@ -387,8 +427,16 @@ module nts.uk.com.view.cmm051.a {
             block.invisible();
             if (vm.isNewMode()) {
                 vm.$ajax("com", API.addWkpManager, command).done(() => {
-                        vm.initScreen(mode, sid, workplaceId);
+                        vm.initScreen(mode, sid, workplaceId, null);
+                        if (mode == Mode.WPL) {
+                            vm.getListWpl(workplaceId);
+                        } else {
+                            let sids: any[] = [];
+                            sids.push(vm.employeeId());
+                            vm.getEmployeeInfo(sids, workplaceId);
+                        }
                         vm.isNewMode(false);
+                        vm.isDelete(true);
                     }
                 ).always(() => {
                     block.clear();
@@ -403,8 +451,9 @@ module nts.uk.com.view.cmm051.a {
                     "endDate": endDate
                 };
                 vm.$ajax("com", API.addHistWkpManager, commandHist).done(() => {
-                        vm.initScreen(mode, sid, workplaceId);
+                        vm.initScreen(mode, sid, workplaceId, vm.historyId());
                         vm.isNewMode(false);
+                        vm.isDelete(true);
                     }
                 ).always(() => {
                     block.clear();
@@ -442,35 +491,50 @@ module nts.uk.com.view.cmm051.a {
         remove() {
             let vm = this;
             let mode = vm.mode();
-            if (mode == Mode.WPL) {
-                // show message confirm
-                nts.uk.ui.dialog.confirm({messageId: 'Msg_18'}).ifYes(() => {
-                        let workplaceId = vm.wplaceMnSelectedId();
-                        let sid = vm.employeeMnSelectedId();
-                        let command = {
-                            "workplaceId": workplaceId,
-                            "sid": sid
-                        };
-                        block.invisible();
-                        vm.$ajax("com", API.deleteWkpManager, command).done(() => {
-                                let indexRemove = _.findIndex(vm.employInfors(), (e) => e.id == sid);
-                                let emif: any = "";
+
+            // show message confirm
+            nts.uk.ui.dialog.confirm({messageId: 'Msg_18'}).ifYes(() => {
+                    let workplaceId = vm.workPlaceId();
+                    let command = {
+                        "workplaceId": workplaceId,
+                        "sid": vm.employeeId()
+                    };
+                    block.invisible();
+                    vm.$ajax("com", API.deleteWkpManager, command).done(() => {
+                            if (mode == Mode.WPL) {
+                                let indexRemove = _.findIndex(vm.employInfors(), (e) => e.id == vm.employeeId());
+                                let emifId: any = "";
                                 if (indexRemove == (vm.employInfors().length - 1)) {
-                                    emif = vm.employInfors()[indexRemove - 1].id;
+                                    emifId = vm.employInfors()[indexRemove - 1].id;
                                 } else {
-                                    emif = vm.employInfors()[indexRemove + 1].id;
+                                    emifId = vm.employInfors()[indexRemove + 1].id;
                                 }
-                                vm.initScreen(mode, emif, workplaceId);
+                                vm.employeeId(emifId);
+                                vm.getListWpl(workplaceId);
+                            } else {
+                                let indexRemoveWP = _.findIndex(vm.workPlaceList(), (e) => e.id == vm.workPlaceId());
+                                let wpId: any = null;
+                                if (indexRemoveWP == (vm.workPlaceList().length - 1)) {
+                                    wpId = vm.workPlaceList()[indexRemoveWP - 1].id;
+                                } else {
+                                    wpId = vm.workPlaceList()[indexRemoveWP + 1].id;
+                                }
+                                vm.workPlaceId(wpId);
+                                let sids: any[] = [];
+                                sids.push(vm.employeeId());
+                                vm.getEmployeeInfo(sids, wpId);
                             }
-                        ).always(() => {
-                            block.clear();
-                        }).fail((res) => {
-                            nts.uk.ui.block.clear();
-                            vm.showMessageError(res);
-                        })
-                    }
-                )
-            }
+                            vm.initScreen(mode, vm.employeeId(), vm.workPlaceId(), vm.historyId());
+                        }
+                    ).always(() => {
+                        block.clear();
+                    }).fail((res) => {
+                        nts.uk.ui.block.clear();
+                        vm.showMessageError(res);
+                    })
+                }
+            )
+
         }
 
         openDialogA3282() {
@@ -502,7 +566,7 @@ module nts.uk.com.view.cmm051.a {
             setShared('CDL009Params', {
                 isMultiSelect: false,
                 baseDate: moment(new Date()).toDate(),
-                selectedCode: vm.multiSelectedCode(),
+                selectedEmCode: vm.employeeId(),
                 target: 1
             }, true);
 
@@ -513,16 +577,15 @@ module nts.uk.com.view.cmm051.a {
                 }
                 let employeeId = getShared('CDL009Output');
                 vm.employeeId(employeeId);
-                vm.employeeMnSelectedId(employeeId);
                 let sids: any[] = [];
                 if (!isNullOrUndefined(employeeId)) {
                     sids.push(employeeId);
-                    vm.getEmployeeInfo(sids);
+                    vm.getEmployeeInfo(sids, vm.workPlaceId());
                 }
             });
         }
 
-        private getEmployeeInfo(empId: string[]) {
+        private getEmployeeInfo(empId: string[], wplId: string) {
             let vm = this;
             if (!isNullOrEmpty(empId)) {
                 let param: any = {
@@ -549,11 +612,10 @@ module nts.uk.com.view.cmm051.a {
                                 let info = _.find(personList, (e) => e.pid == eminfo.personId);
                                 vm.employeeCode(eminfo.employeeCode);
                                 vm.employeeName(info.businessName);
-                                vm.employeeMnSelectedId(eminfo.employeeId)
                             }
                             let wplIf: any[] = [];
 
-                            if (!isNullOrUndefined(wpl)) {
+                            if (!isNullOrEmpty(wpl)) {
                                 for (let i = 0; i < wpl.length; i++) {
                                     let item = wpl[i];
                                     wplIf.push({
@@ -566,13 +628,24 @@ module nts.uk.com.view.cmm051.a {
                                 vm.workplaceName("");
                                 vm.workplaceCode("");
                                 vm.workPlaceId("");
+                                vm.dateHistoryList([]);
+                                vm.workPlaceList([]);
                             }
                             vm.workPlaceList(wplIf);
                             if (!isNullOrEmpty(vm.workPlaceList())) {
-                                vm.workPlaceId(vm.workPlaceList()[0].id);
-                                vm.workPlaceId.valueHasMutated();
+                                let wp = _.find(vm.workPlaceList(), (i) => i.id == wplId)
+                                if (isNullOrUndefined(wp)) {
+                                    vm.workPlaceId(vm.workPlaceList()[0].id);
+                                    vm.workPlaceId.valueHasMutated();
+                                } else {
+                                    vm.workPlaceId(wplId);
+                                }
+
                             }
                         }
+                    } else {
+                        vm.dateHistoryList([]);
+                        vm.workPlaceList([]);
                     }
                 }).always(() => {
                     block.clear();
@@ -593,25 +666,6 @@ module nts.uk.com.view.cmm051.a {
             if (res.businessException) {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
             }
-        }
-
-        /**
-         * toJsonObject
-         */
-        private toJsonObject(): any {
-            let vm = this;
-
-            // to JsObject
-            let command: any = {};
-            command.newMode = vm.isNewMode();
-            command.startDate = new Date(vm.dateValue().startDate);
-            command.endDate = new Date(vm.dateValue().endDate);
-            command.employeeId = vm.selectedWkpManager().employeeId;
-            command.wkpId = vm.selectedWkpId();
-            command.wkpManagerId = vm.selectedWkpManager().wkpManagerId;
-            command.roleList = vm.listPermission();
-
-            return command;
         }
 
         /**
@@ -765,7 +819,7 @@ module nts.uk.com.view.cmm051.a {
                 startMode: StartMode.WORKPLACE,//  起動モード : 職場 (WORKPLACE = 0)
                 isMultiple: false,////選択モード : 単一選択
                 showNoSelection: false,// //未選択表示 : 非表示
-                selectedCodes: vm.workplaceCode(),
+                selectedEmCodes: vm.workplaceCode(),
                 isShowBaseDate: true,//基準日表示区分 : 表示
                 baseDate: moment.utc().toISOString(),
                 selectedSystemType: SystemType.EMPLOYMENT,// //システム区分 : 就業
@@ -780,31 +834,41 @@ module nts.uk.com.view.cmm051.a {
                 let wid = getShared('outputCDL008');
                 let workplaceInfor = getShared('workplaceInfor');
                 if (!isNullOrUndefined(wid) && !isNullOrEmpty(workplaceInfor)) {
-                    vm.wplaceMnSelectedId(workplaceInfor[0].id);
+                    vm.workPlaceId(workplaceInfor[0].id);
                     vm.workplaceCode(workplaceInfor[0].code);
                     vm.workplaceName(workplaceInfor[0].name);
-                    let wplParam: any = {
-                        "workPlaceId": wid
-                    }, workplaceManagerList = [], listEmployee = [], personList = [], mode = vm.mode();
-                    block.invisible();
-
-                    vm.$ajax('com', API.getListEmpByWpid, wplParam).done((data) => {
-                        if (!isNullOrEmpty(data)) {
-                            workplaceManagerList = data.workplaceManagerList;
-                            listEmployee = data.listEmployee;
-                            personList = data.personList;
-                            vm.setData(mode, workplaceManagerList, listEmployee, personList, null, null);
-                        }
-                    }).always(() => {
-                        block.clear();
-                    }).fail((res) => {
-                        nts.uk.ui.block.clear();
-                        vm.showMessageError(res);
-                    })
+                    vm.getListWpl(wid);
                 }
             });
         }
+
+        getListWpl(wid: string): void {
+            let vm = this;
+            let wplParam: any = {
+                "workPlaceId": wid
+            }, workplaceManagerList = [], listEmployee = [], personList = [], mode = vm.mode();
+            block.invisible();
+            vm.$ajax('com', API.getListEmpByWpid, wplParam).done((data) => {
+                if (!isNullOrEmpty(data)) {
+                    workplaceManagerList = data.workplaceManagerList;
+                    listEmployee = data.listEmployee;
+                    personList = data.personList;
+                    vm.setData(workplaceManagerList, listEmployee, personList, vm.employeeId(), vm.workPlaceId(), null);
+                } else {
+                    vm.dateHistoryList([]);
+                    vm.workPlaceList([]);
+                }
+            }).always(() => {
+                block.clear();
+            }).fail((res) => {
+                nts.uk.ui.block.clear();
+                vm.showMessageError(res);
+            })
+        }
+
+
     }
+
 
     enum SystemType {
         PERSONAL_INFORMATION = 1,
@@ -819,30 +883,6 @@ module nts.uk.com.view.cmm051.a {
         DEPARTMENT = 1
     }
 
-    /**
-     * Interface ComponentOption of KCP010
-     */
-    export interface ComponentOption {
-        targetBtnText: string;
-        tabIndex: number;
-    }
-
-    class Node {
-        wkpManagerId: string;
-        code: string;
-        name: string;
-        nodeText: string;
-        childs: any;
-
-        constructor(code: string, name: string, childs: Array<WorkplaceManager>, parentId: string) {
-            var vm = this;
-            vm.wkpManagerId = parentId;
-            vm.code = code;
-            vm.name = name;
-            vm.nodeText = vm.code + ' ' + vm.name;
-            vm.childs = childs;
-        }
-    }
 
     export interface UnitModel {
         code: string;
