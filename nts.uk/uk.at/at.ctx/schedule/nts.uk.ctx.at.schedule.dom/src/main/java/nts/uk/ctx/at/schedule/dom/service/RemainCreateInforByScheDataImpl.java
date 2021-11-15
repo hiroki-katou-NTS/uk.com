@@ -118,8 +118,8 @@ public class RemainCreateInforByScheDataImpl implements RemainCreateInforByScheD
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode);
 		}
 
 		@Override

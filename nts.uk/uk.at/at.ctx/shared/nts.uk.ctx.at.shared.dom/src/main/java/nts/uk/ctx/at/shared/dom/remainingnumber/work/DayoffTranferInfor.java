@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 /**
  * 代休振替情報
@@ -62,4 +63,12 @@ public class DayoffTranferInfor {
 		return afterData;
 	}
 
+	public CreateAtr getCreateAtr() {
+		if(this.getTranferBreakTime().isPresent())
+			return this.getTranferBreakTime().get().getCreateAtr();
+		if(this.getTranferOverTime().isPresent())
+			return this.getTranferOverTime().get().getCreateAtr();
+		
+		throw new BusinessException("DayoffTranferInfor createAtr error");
+	}
 }

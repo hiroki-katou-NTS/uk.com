@@ -637,4 +637,15 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		
 		return Optional.empty();
 	}
+	
+	public boolean isSubstituteHolidayOccurs() {
+		WorkStyle style = this.checkWorkDay();
+		if(style.equals(WorkStyle.ONE_DAY_REST))
+			return false;
+		
+		if(this.isHolidayWork())
+			return this.getWorkTypeSet().getGenSubHodiday().isCheck();
+		
+		return true;
+	}
 }

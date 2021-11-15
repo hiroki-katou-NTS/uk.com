@@ -97,7 +97,7 @@ public class RemainCreateInforByRecordDataImpl implements RemainCreateInforByRec
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 

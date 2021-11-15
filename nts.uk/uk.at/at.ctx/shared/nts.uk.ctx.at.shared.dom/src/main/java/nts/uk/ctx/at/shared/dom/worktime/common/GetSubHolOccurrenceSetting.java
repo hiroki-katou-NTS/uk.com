@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.Optional;
 
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -19,9 +20,20 @@ public class GetSubHolOccurrenceSetting {
 
 	public static Optional<SubHolTransferSet> process(Require require, String cid, Optional<String> workTimeCode,
 			CompensatoryOccurrenceDivision originAtr) {
+		
+		val comLeavSet = require.findCompensatoryLeaveComSet(cid);
+		
+		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)){
+			if (comLeavSet == null)
+				return Optional.empty();
+			
+				if(comLeavSet.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.NO)
+					return Optional.empty();
+		}
+		
 		Optional<WorkTimezoneCommonSet> commonset = Optional.empty();
 		if (workTimeCode.isPresent()) {
-			Optional<WorkTimeSetting> workTimeSet = require.getWorkTime(workTimeCode.get());
+			Optional<WorkTimeSetting> workTimeSet = require.getWorkTime(cid, workTimeCode.get());
 			commonset = workTimeSet.map(x -> {
 				WorkSetting workSetting = x.getWorkSetting(require);
 				if (workSetting instanceof FlowWorkSetting) {
@@ -43,7 +55,6 @@ public class GetSubHolOccurrenceSetting {
 					.filter(x -> x.getOriginAtr() == originAtr).map(x -> x.getSubHolTimeSet()).findFirst();
 		}
 		
-		val comLeavSet = require.findCompensatoryLeaveComSet(cid);
 		if (comLeavSet == null)
 			return Optional.empty();
 		SubHolTransferSet result = comLeavSet.getCompensatoryOccurrenceSetting().stream()
@@ -55,7 +66,7 @@ public class GetSubHolOccurrenceSetting {
 	public static interface Require extends WorkTimeSetting.Require{
 
 		//WorkTimeSettingRepository.findByCode
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode);
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode);
 		
 		// CompensLeaveComSetRepository
 		CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId);

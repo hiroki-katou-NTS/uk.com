@@ -36,8 +36,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
@@ -99,6 +101,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -247,6 +250,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	private CheckCareService checkCareService;
 
 	private WorkingConditionItemService workingConditionItemService;
+	
+	private SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
 	public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
 			CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
@@ -279,7 +284,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 			SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, LengthServiceRepository lengthServiceRepo,
 			GrantYearHolidayRepository grantYearHolidayRepo, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
 			LeaveComDayOffManaRepository leaveComDayOffManaRepo, CheckCareService checkChildCareService,
-			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData
+			WorkingConditionItemService workingConditionItemService, RemainCreateInforByRecordData remainCreateInforByRecordData,
+			SysEmploymentHisAdapter sysEmploymentHisAdapter
 			) {
 		this.comSubstVacationRepo = comSubstVacationRepo;
 		this.compensLeaveComSetRepo = compensLeaveComSetRepo;
@@ -335,6 +341,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.checkCareService = checkChildCareService;
 		this.workingConditionItemService = workingConditionItemService;
 		this.remainCreateInforByRecordData = remainCreateInforByRecordData;
+		this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
 	}
 
 	@Override
@@ -765,5 +772,45 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
         return this.workingConditionItemService.getHolidayWorkScheduleNew(companyId, employeeId, baseDate, workTypeCode,
                 workingDayCategory);
     }
+
+	@Override
+	public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+		return workTimeSettingRepo.findByCode(cid, workTimeCode);
+	}
+
+	@Override
+	public CompensatoryLeaveComSetting findCompensatoryLeaveComSet(String companyId) {
+		return compensLeaveComSetRepo.find(companyId);
+	}
+
+	@Override
+	public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
+		return fixedWorkSettingRepo.findByKey(AppContexts.user().companyId(), code.v()).orElse(null);
+	}
+
+	@Override
+	public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
+		return flowWorkSettingRepo.find(AppContexts.user().companyId(), code.v()).orElse(null);
+	}
+
+	@Override
+	public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
+		return flexWorkSettingRepo.find(AppContexts.user().companyId(), code.v()).orElse(null);
+	}
+
+	@Override
+	public Optional<SEmpHistoryImport> getEmploymentHis(String employeeId, GeneralDate baseDate) {
+		return sysEmploymentHisAdapter.findSEmpHistBySid(AppContexts.user().companyId(), employeeId, baseDate);
+	}
+	
+	@Override
+	public Optional<CompensatoryLeaveComSetting> getCmpLeaveComSet(String companyId){
+		return Optional.ofNullable(this.compensLeaveComSetRepo.find(companyId));
+	}
+	
+	@Override
+	public Optional<CompensatoryLeaveEmSetting> getCmpLeaveEmpSet(String companyId, String employmentCode){
+		return Optional.ofNullable(this.compensLeaveEmSetRepo.find(companyId, employmentCode));
+	}
 
 }

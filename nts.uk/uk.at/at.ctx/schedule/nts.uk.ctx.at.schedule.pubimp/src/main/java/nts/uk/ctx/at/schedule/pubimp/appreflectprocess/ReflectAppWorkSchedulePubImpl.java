@@ -274,6 +274,11 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		}
+		
+		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 			return service.checkNeededOfWorkTimeSetting(workTypeCode);
 		}

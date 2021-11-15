@@ -1,13 +1,14 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 /**
  * 残数作成元情報
@@ -26,11 +27,11 @@ public class InforFormerRemainData {
 	/** 時間代休を利用する */
 	private boolean dayOffTimeIsUse;
 	/** 勤務種類別 */
-	private List<WorkTypeRemainInfor> workTypeRemain;
+	private Optional<WorkTypeRemainInfor> workTypeRemain;
 	/** 時間休暇 */
 	private List<VacationTimeInfor> vactionTime;
 	/** 代休振替 */
-	private List<DayoffTranferInfor> dayOffTranfer;
+	private Optional<DayoffTranferInfor> dayOffTranfer;
 	/** 会社別休暇管理設定 */
 	private CompanyHolidayMngSetting companyHolidaySetting;
 	/** 雇用別休暇管理設定 */
@@ -42,38 +43,21 @@ public class InforFormerRemainData {
 	 * @return
 	 */
 	public Optional<OccurrenceUseDetail> getOccurrenceUseDetail(WorkTypeClassification workTypeClass) {
+		
+		if(!this.getWorkTypeRemain().isPresent())
+			return Optional.empty();
+		
 		//勤務種類別残数情報をチェックする
-		Optional<WorkTypeRemainInfor> optWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
-				.filter(x -> x.getOccurrenceDetailData().stream().filter(od -> od.getWorkTypeAtr().equals(workTypeClass)&& od.isUseAtr() && od.getDays() > 0).findFirst().isPresent()).findFirst();
-		if(!optWorkTypeRemainInfor.isPresent()) {
-			return Optional.empty();
-		}
-		List<OccurrenceUseDetail> lstOccurrenceUseDetail = optWorkTypeRemainInfor.get().getOccurrenceDetailData();
-		List<OccurrenceUseDetail> lstTmp = lstOccurrenceUseDetail.stream()
-				.filter(a ->a.getWorkTypeAtr().equals(workTypeClass) && a.isUseAtr() && a.getDays() > 0)
-				.collect(Collectors.toList());
-		if(!lstTmp.isEmpty()) {
-			return Optional.of(lstTmp.get(0));
-		} else {
-			return Optional.empty();
-		}
+		return this.getWorkTypeRemain().get().getOccurrenceDetailData().stream()
+				.filter(od -> od.getWorkTypeAtr().equals(workTypeClass)&& od.isUseAtr() && od.getDays() > 0).findFirst();
 	}
 	
-	public WorkTypeRemainInfor getWorkTypeRemainInforByOd(WorkTypeClassification workTypeClass) {
-		Optional<WorkTypeRemainInfor> optWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
-				.filter(x -> x.getOccurrenceDetailData().stream()
-						.filter(od -> od.getWorkTypeAtr().equals(workTypeClass) && od.isUseAtr() && od.getDays() > 0)
-						.findFirst().isPresent())
-				.findFirst();
-		return optWorkTypeRemainInfor.get();
-	}
-	
-	public Optional<WorkTypeRemainInfor> getWorkTypeRemainInfor(WorkTypeClassification workTypeClass) {
-		List<WorkTypeRemainInfor> lstWorkTypeRemainInfor = this.getWorkTypeRemain().stream()
-				.filter(x -> x.getWorkTypeClass().equals(workTypeClass)).collect(Collectors.toList());
-		if(lstWorkTypeRemainInfor.isEmpty()) {
-			return Optional.empty();
-		}
-		return Optional.of(lstWorkTypeRemainInfor.get(0));
+	public CreateAtr getCreateAtr() {
+		if(this.getWorkTypeRemain().isPresent())
+			return this.getWorkTypeRemain().get().getCreateData();
+		if(this.getDayOffTranfer().isPresent())
+			return this.getDayOffTranfer().get().getCreateAtr();
+		
+		throw new BusinessException("InforFormerRemainData CreateAtr error");
 	}
 }
