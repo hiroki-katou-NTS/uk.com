@@ -758,6 +758,7 @@ public class CreateDailyResultDomainServiceNew {
 		}
 	}
 
+	//マスターデータを取得する
 	public Optional<EmployeeGeneralAndPeriodMaster> getMasterData(String companyId, String employeeId,
 			DatePeriod periodTime) {
 

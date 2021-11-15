@@ -97,7 +97,7 @@ public class BreakTimeSheetGetter {
 			break;
 		case FLOW: /** 流動 */
 			if(workTimeSet.isFixBreak(workType)) {
-				oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily,
+				deductionTimeSheet =  oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily,
 						companyCommonSetting, personDailySetting, correctWithEndTime);
 			}
 			else {
