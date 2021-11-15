@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -9,7 +10,6 @@ import nts.arc.time.clock.ClockHourMinute;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 	締め時刻別の弁当メニュー
@@ -66,7 +66,8 @@ public class BentoMenuByClosingTime {
 	 * @param orderDate 注文日
 	 * @return
 	 */
-	public static BentoMenuByClosingTime createForCurrent(String roleID, ReservationSetting reservationSetting, List<Bento> bentoLst, boolean orderAtr, GeneralDate orderDate) {
+	public static BentoMenuByClosingTime createForCurrent(String roleID, ReservationSetting reservationSetting, List<Bento> bentoLst, 
+			Map<ReservationClosingTimeFrame, Boolean> orderAtr, GeneralDate orderDate) {
 		ClockHourMinute reservationTime = ClockHourMinute.now();
 		List<ReservationRecTimeZone> reservationRecTimeZoneLst = reservationSetting.getReservationRecTimeZoneLst();
 		
@@ -83,7 +84,7 @@ public class BentoMenuByClosingTime {
 					reservationTime, 
 					1, 
 					orderDate, 
-					orderAtr, 
+					orderAtr.get(ReservationClosingTimeFrame.FRAME1)!=null?orderAtr.get(ReservationClosingTimeFrame.FRAME1):false, 
 					reservationRecTimeZone1);
 		}
 		if(reservationRecTimeZone2!=null) {
@@ -93,7 +94,7 @@ public class BentoMenuByClosingTime {
 					reservationTime, 
 					2, 
 					orderDate, 
-					orderAtr, 
+					orderAtr.get(ReservationClosingTimeFrame.FRAME2)!=null?orderAtr.get(ReservationClosingTimeFrame.FRAME2):false, 
 					reservationRecTimeZone2);
 		}
 		

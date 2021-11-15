@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -36,12 +38,13 @@ public class BentoMenuByClosingTimeTest {
 						ContentChangeDeadline.ALLWAY_FIXABLE, 
 						ContentChangeDeadlineDay.ONE, 
 						ReservationOrderMngAtr.CAN_MANAGE, 
-						new ArrayList<>()), 
+						Arrays.asList("roleID")), 
 				new Achievements(AchievementMethod.ALL_DATA), 
 				Arrays.asList(ReserRecTimeZone.ReserFrame1), 
 				true);
 		List<Bento> bentoLst = Collections.emptyList();
-		boolean orderAtr = false;
+		Map<ReservationClosingTimeFrame, Boolean> orderAtr = new HashMap<>();
+		orderAtr.put(ReservationClosingTimeFrame.FRAME1, true);
 		GeneralDate orderDate = GeneralDate.today();
 		
 		BentoMenuByClosingTime target = BentoMenuByClosingTime.createForCurrent(roleID, reservationSetting, bentoLst, orderAtr, orderDate);
@@ -61,12 +64,13 @@ public class BentoMenuByClosingTimeTest {
 						ContentChangeDeadline.ALLWAY_FIXABLE, 
 						ContentChangeDeadlineDay.ONE, 
 						ReservationOrderMngAtr.CAN_MANAGE, 
-						new ArrayList<>()), 
+						Arrays.asList("roleID")), 
 				new Achievements(AchievementMethod.ALL_DATA), 
 				Arrays.asList(ReserRecTimeZone.ReserFrame2), 
 				true);
 		List<Bento> bentoLst = Collections.emptyList();
-		boolean orderAtr = false;
+		Map<ReservationClosingTimeFrame, Boolean> orderAtr = new HashMap<>();
+		orderAtr.put(ReservationClosingTimeFrame.FRAME2, true);
 		GeneralDate orderDate = GeneralDate.today();
 		
 		BentoMenuByClosingTime target = BentoMenuByClosingTime.createForCurrent(roleID, reservationSetting, bentoLst, orderAtr, orderDate);
@@ -86,12 +90,14 @@ public class BentoMenuByClosingTimeTest {
 						ContentChangeDeadline.ALLWAY_FIXABLE, 
 						ContentChangeDeadlineDay.ONE, 
 						ReservationOrderMngAtr.CAN_MANAGE, 
-						new ArrayList<>()), 
+						Arrays.asList("roleID")), 
 				new Achievements(AchievementMethod.ALL_DATA), 
 				Arrays.asList(ReserRecTimeZone.ReserFrame1, ReserRecTimeZone.ReserFrame2), 
 				true);
 		List<Bento> bentoLst = Collections.emptyList();
-		boolean orderAtr = false;
+		Map<ReservationClosingTimeFrame, Boolean> orderAtr = new HashMap<>();
+		orderAtr.put(ReservationClosingTimeFrame.FRAME1, true);
+		orderAtr.put(ReservationClosingTimeFrame.FRAME2, true);
 		GeneralDate orderDate = GeneralDate.today();
 		
 		BentoMenuByClosingTime target = BentoMenuByClosingTime.createForCurrent(roleID, reservationSetting, bentoLst, orderAtr, orderDate);
@@ -111,12 +117,12 @@ public class BentoMenuByClosingTimeTest {
 						ContentChangeDeadline.ALLWAY_FIXABLE, 
 						ContentChangeDeadlineDay.ONE, 
 						ReservationOrderMngAtr.CAN_MANAGE, 
-						new ArrayList<>()), 
+						Arrays.asList("roleID")), 
 				new Achievements(AchievementMethod.ALL_DATA), 
 				Collections.emptyList(), 
 				true);
 		List<Bento> bentoLst = Collections.emptyList();
-		boolean orderAtr = false;
+		Map<ReservationClosingTimeFrame, Boolean> orderAtr = new HashMap<>();
 		GeneralDate orderDate = GeneralDate.today();
 		
 		BentoMenuByClosingTime target = BentoMenuByClosingTime.createForCurrent(roleID, reservationSetting, bentoLst, orderAtr, orderDate);
