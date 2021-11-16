@@ -26,6 +26,7 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
@@ -263,7 +264,7 @@ public class WorkScheduleImportServiceTest {
 
 		new Expectations( GetEmpCanReferService.class ) {{
 			// 参照可能社員の取得
-			GetEmpCanReferService.getAll(require, (GeneralDate)any, anyString);
+			GetEmpCanReferService.getAll(require, (String)any, (GeneralDate)any, (DatePeriod)any);
 			result = referableEmployees;
 		}};
 
@@ -625,7 +626,7 @@ public class WorkScheduleImportServiceTest {
 		/* 参照可能社員 */
 		new Expectations( GetEmpCanReferService.class ) {{
 			// 参照可能社員の取得
-			GetEmpCanReferService.getAll(require, (GeneralDate)any, anyString);
+			GetEmpCanReferService.getAll(require, (String)any, (GeneralDate)any, (DatePeriod)any);
 			result = referableEmployees;
 		}};
 

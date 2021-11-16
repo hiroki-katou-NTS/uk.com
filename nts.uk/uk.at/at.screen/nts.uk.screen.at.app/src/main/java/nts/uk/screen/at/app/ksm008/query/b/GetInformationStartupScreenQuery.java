@@ -15,6 +15,7 @@ import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
@@ -89,7 +90,7 @@ public class GetInformationStartupScreenQuery {
                 regulInfoEmpPub));
 
         // 2. 取得する(Require, 年月日, 社員ID, 対象組織識別情報)
-        List<String> sids = GetEmpCanReferService.getByOrg(requireGetEmpBySpecrOrg, baseDate, sid, targeOrg);
+        List<String> sids = GetEmpCanReferService.getByOrg(requireGetEmpBySpecrOrg, sid, baseDate, DatePeriod.oneDay(baseDate), targeOrg);
 
         ConcurrentStopwatches.printAll();
 
@@ -149,19 +150,19 @@ public class GetInformationStartupScreenQuery {
 
         @Override
         public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
-            List<String> data = workplaceGroupAdapter.getReferableEmp( date, empId, workplaceGroupID);
+            List<String> data = workplaceGroupAdapter.getReferableEmp(empId, date, DatePeriod.oneDay(date), workplaceGroupID);
             return data;
         }
-        
+
         @Override
         public List<String> sortEmployee(List<String> lstmployeeId, EmployeeSearchCallSystemType sysAtr, Integer sortOrderNo,
                                          GeneralDate referenceDate, Integer nameType) {
-        	
+
             List<String> data = regulInfoEmpAdap.sortEmployee(
-            		AppContexts.user().companyId(), 
-            		lstmployeeId, 
-            		sysAtr.value, 
-            		sortOrderNo, 
+            		AppContexts.user().companyId(),
+            		lstmployeeId,
+            		sysAtr.value,
+            		sortOrderNo,
             		nameType,
                     GeneralDateTime.fromString(referenceDate.toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT));
             return data;
@@ -169,7 +170,7 @@ public class GetInformationStartupScreenQuery {
 
         @Override
         public String getRoleID() {
-        	
+
             return AppContexts.user().roles().forAttendance();
         }
 

@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
@@ -114,7 +115,7 @@ public class WorkScheduleImportService {
 
 		/* 参照範囲チェック */
 		// 参照可能な社員を取得する
-		val referableEmployees = GetEmpCanReferService.getAll(require, GeneralDate.today(), require.getOwnEmployeeId().v());
+		val referableEmployees = GetEmpCanReferService.getAll(require, require.getOwnEmployeeId().v(), GeneralDate.today(), DatePeriod.oneDay(GeneralDate.today()));
 		// 参照可否でグループ化
 		// [Key] true: 参照範囲内(正常) / false: 参照範囲外(エラー)
 		val referableStatus = interimResult.getUncheckedResults().stream()
