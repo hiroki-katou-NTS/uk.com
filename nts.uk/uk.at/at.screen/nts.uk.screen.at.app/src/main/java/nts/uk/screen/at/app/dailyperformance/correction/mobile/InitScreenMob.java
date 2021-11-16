@@ -831,7 +831,7 @@ public class InitScreenMob {
 						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
 						if (groupType != null && groupType == TypeLink.DOWORK.value) {
-							Double valueConvert = Double.parseDouble(value);
+							Double valueConvert = Double.parseDouble(value == "" ? "0.0" : value);
 							cellDatas.add(new DPCellDataDto(anyChar, valueConvert.equals(0.0) ? false : true, attendanceAtrAsString, DPText.TYPE_LABEL));
 						} else
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
