@@ -42,8 +42,13 @@ module nts.uk.at.ksu008.c {
                 originalCode: vm.sourceCode(),
                 destinationCode: vm.destinationCode(),
                 destinationName: vm.destinationName(),
-                isOverwrite: vm.isOverwrite()
+                overwrite: vm.isOverwrite()
             };
+            if(_.isEqual(vm.destinationCode(), vm.sourceCode())){
+                vm.$dialog.error({ messageId: 'Msg_355' });
+                vm.$blockui("clear");
+                return;
+            }
 
             vm.$ajax(API.duplicate, command).then(data => {
                 let result = {
@@ -66,14 +71,14 @@ module nts.uk.at.ksu008.c {
 
     }
 
-    export interface IDuplicateItemOutputSettingInfoCommand {
+    interface IDuplicateItemOutputSettingInfoCommand {
         originalCode: string;
 
         destinationCode: string;
 
         destinationName: string;
 
-        isOverwrite: boolean;
+        overwrite: boolean;
     }
 }
 
