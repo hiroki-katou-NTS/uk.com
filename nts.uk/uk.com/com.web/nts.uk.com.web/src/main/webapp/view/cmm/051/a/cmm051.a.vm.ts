@@ -301,15 +301,16 @@ module nts.uk.com.view.cmm051.a {
                     vm.selectedEmCode(null);
                     vm.setDataDefaultMode();
                 } else if (mode == Mode.EMPLOYMENT) {
+                    vm.employeeId(null);
+                    vm.selectedEmCode(null);
                     vm.employeeCode("");
                     vm.employeeName("");
                     vm.workplaceCode("");
                     vm.workplaceName("");
                     let sidLogin = vm.$user.employeeId;
-                    vm.employeeId(sidLogin);
                     let sid: any[] = [];
                     sid.push(sidLogin);
-                    vm.getEmployeeInfo(sid,vm.workPlaceId())
+                    vm.getEmployeeInfo(sid,null)
                 }
             });
             vm.selectedEmCode.subscribe((e) => {
@@ -328,16 +329,18 @@ module nts.uk.com.view.cmm051.a {
 
 
             vm.employeeId.subscribe((e) => {
-                let eminfo = _.find(vm.employInfors(), (i) => i.id == e);
-                if (!isNullOrUndefined(eminfo)) {
-                    vm.employeeName(eminfo.name);
-                    vm.employeeCode(eminfo.code);
-                    vm.isDelete(true);
-                } else {
-                    vm.employeeCode("");
-                    vm.employeeName("")
+                if(!isNullOrUndefined(e)){
+                    let eminfo = _.find(vm.employInfors(), (i) => i.id == e);
+                    if (!isNullOrUndefined(eminfo)) {
+                        vm.employeeName(eminfo.name);
+                        vm.employeeCode(eminfo.code);
+                        vm.isDelete(true);
+                    } else {
+                        vm.employeeCode("");
+                        vm.employeeName("")
+                    }
+                    vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId())
                 }
-                vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId())
             });
             vm.workPlaceId.subscribe((e) => {
                 if (!isNullOrUndefined(e)) {
@@ -601,46 +604,50 @@ module nts.uk.com.view.cmm051.a {
                             if (!isNullOrEmpty(eminfos) && !isNullOrEmpty(personList)) {
                                 let eminfo = eminfos[0];
                                 let info = _.find(personList, (e) => e.pid == eminfo.personId);
+                                vm.employeeId(eminfo.id);
                                 vm.employeeCode(eminfo.employeeCode);
                                 vm.employeeName(info.businessName);
 
                             }
                         }
                         if (vm.mode() == Mode.EMPLOYMENT) {
-                            let eminfo = _.find(eminfos, (e) => e.employeeId == empId);
-                            if (!isNullOrUndefined(eminfo)) {
-                                let info = _.find(personList, (e) => e.pid == eminfo.personId);
-                                vm.employeeCode(eminfo.employeeCode);
-                                vm.employeeName(info.businessName);
-                            }
-                            let wplIf: any[] = [];
-
-                            if (!isNullOrEmpty(wpl)) {
-                                for (let i = 0; i < wpl.length; i++) {
-                                    let item = wpl[i];
-                                    wplIf.push({
-                                        id: item.workplaceId,
-                                        code: item.workplaceCode,
-                                        name: item.workplaceName
-                                    })
+                            if(!isNullOrEmpty(empId)){
+                                let eInfor = _.find(eminfos, (e) => e.employeeId == empId[0]);
+                                if (!isNullOrUndefined(eInfor)) {
+                                    let per = _.find(personList, (e) => e.pid == eInfor.personId);
+                                    vm.employeeId(eInfor.employeeId);
+                                    vm.employeeCode(eInfor.employeeCode);
+                                    vm.employeeName(per.businessName);
                                 }
-                            } else {
-                                vm.workplaceName("");
-                                vm.workplaceCode("");
-                                vm.workPlaceId("");
-                                vm.dateHistoryList([]);
-                                vm.workPlaceList([]);
-                            }
-                            vm.workPlaceList(wplIf);
-                            if (!isNullOrEmpty(vm.workPlaceList())) {
-                                let wp = _.find(vm.workPlaceList(), (i) => i.id == wplId)
-                                if (isNullOrUndefined(wp)) {
-                                    vm.workPlaceId(vm.workPlaceList()[0].id);
-                                    vm.workPlaceId.valueHasMutated();
+                                let wplIf: any[] = [];
+
+                                if (!isNullOrEmpty(wpl)) {
+                                    for (let i = 0; i < wpl.length; i++) {
+                                        let item = wpl[i];
+                                        wplIf.push({
+                                            id: item.workplaceId,
+                                            code: item.workplaceCode,
+                                            name: item.workplaceName
+                                        })
+                                    }
                                 } else {
-                                    vm.workPlaceId(wplId);
+                                    vm.workplaceName("");
+                                    vm.workplaceCode("");
+                                    vm.workPlaceId("");
+                                    vm.dateHistoryList([]);
+                                    vm.workPlaceList([]);
                                 }
+                                vm.workPlaceList(wplIf);
+                                if (!isNullOrEmpty(vm.workPlaceList())) {
+                                    let wp = _.find(vm.workPlaceList(), (i) => i.id == wplId)
+                                    if (isNullOrUndefined(wp)) {
+                                        vm.workPlaceId(vm.workPlaceList()[0].id);
+                                        vm.workPlaceId.valueHasMutated();
+                                    } else {
+                                        vm.workPlaceId(wplId);
+                                    }
 
+                                }
                             }
                         }
                     } else {

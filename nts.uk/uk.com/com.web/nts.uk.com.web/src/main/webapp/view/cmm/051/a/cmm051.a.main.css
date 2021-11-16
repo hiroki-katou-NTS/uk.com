@@ -22,7 +22,6 @@
 }
 
 #right-content {
-    margin-left: 100px;
     width: 572px;
     float: left;
 }
@@ -129,9 +128,6 @@
 }
 .wkp_list{
     margin: 20px
-}
-#kcp005{
-    width: 430px;
 }
 .code{
     margin-bottom: -10px;
