@@ -20,6 +20,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -166,6 +167,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	
 	@Inject
 	private ShareEmploymentAdapter employmentAdapterShare;
+	
+	@Inject
+	private TransactionService transactionService;
 	/**
 	 * 社員の日別実績を計算
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -175,7 +179,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param empCalAndSumExecLogID 就業計算と集計実行ログID
 	 * @param executionType 実行種別　（通常、再実行）
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
 	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public List<Boolean> calculate(List<String> employeeIds,DatePeriod datePeriod, Consumer<ProcessState> counter,ExecutionType reCalcAtr, String empCalAndSumExecLogID ,boolean isCalWhenLock) {
@@ -214,19 +217,18 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					}
 				}
 				
-				ManageProcessAndCalcStateResult afterCalcRecord =null;
 				Pair<Integer, ManageProcessAndCalcStateResult> result = null;
-				result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, false,isCalWhenLock);
+				result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, iPUSOptTemp, approvalSetTemp, false,isCalWhenLock);
 				
 				if(result.getLeft() == 1) {  //co loi haita
-					result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, afterCalcRecord, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
+					result = runWhenOptimistLockError(cid, employeeId, newPeriod, reCalcAtr, empCalAndSumExecLogID, iPUSOptTemp, approvalSetTemp, true,isCalWhenLock);
 					if(result.getLeft() == 1) { 
 						optimistLock = true;
 					}
 				}
 				
 				//暫定データの登録
-                this.interimData.registerDateChange(cid, employeeId, newPeriod.datesBetween());
+//                this.interimData.registerDateChange(cid, employeeId, newPeriod.datesBetween());
 			}
 			
 			if (!optimistLock) {
@@ -247,7 +249,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	
 	private Pair<Integer, ManageProcessAndCalcStateResult> runWhenOptimistLockError(String cid, String employeeId,
 			DatePeriod datePeriod, ExecutionType reCalcAtr, String empCalAndSumExecLogID,
-			ManageProcessAndCalcStateResult afterCalcRecord, Optional<IdentityProcessUseSet> iPUSOptTemp,
+			Optional<IdentityProcessUseSet> iPUSOptTemp,
 			Optional<ApprovalProcessingUseSetting> approvalSetTemp,boolean runOptimistLock,Boolean IsCalWhenLock) {
 		//if check = 0 : createListNew : null
 		//if check = 1 : has error optimistic lock (lan 1)
@@ -259,13 +261,13 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		List<IntegrationOfDaily> createListNew = integrationGetter.getIntegrationOfDaily(employeeId, datePeriod);
 		if (createListNew.isEmpty()) {
 			check = 0;
-			return Pair.of(check, afterCalcRecord);
+			return Pair.of(check, new ManageProcessAndCalcStateResult(ProcessState.SUCCESS, new ArrayList<>()));
 		}
 
 		// 締め一覧取得
 		List<ClosureStatusManagement> closureListNew = getClosureList(Arrays.asList(employeeId), datePeriod);
 
-		afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createListNew, closureListNew,
+		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForManageState(createListNew, closureListNew,
 				reCalcAtr, empCalAndSumExecLogID);
 		
 		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(cid, employeeId);
@@ -298,12 +300,20 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				continue;
 			}
 			try {
-				// updater record
-				updateRecord(stateInfo.integrationOfDaily);
-				//エラーで本人確認と上司承認を解除する
-				clearConfirmApproval(stateInfo.integrationOfDaily);
-				//計算状態の更新
-				upDateCalcState(stateInfo);
+				transactionService.execute(() -> {
+					val key = Pair.of(stateInfo.integrationOfDaily.getEmployeeId(), stateInfo.integrationOfDaily.getYmd());
+					if (afterCalcRecord.getAtomTasks().containsKey(key)) {
+						afterCalcRecord.getAtomTasks().get(key).run();
+					}
+					//実績登録
+					updateRecord(stateInfo.integrationOfDaily); 
+					//エラーで本人確認と上司承認を解除する
+					clearConfirmApproval(stateInfo.integrationOfDaily);
+					//計算状態の更新
+					upDateCalcState(stateInfo);
+					//暫定データの登録
+		            this.interimData.registerDateChange(cid, employeeId, Arrays.asList(stateInfo.integrationOfDaily.getYmd()));
+				});
 			} catch (Exception ex) {
 				boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class)
 						.isPresent();
@@ -320,9 +330,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				}
 			}
 		}
-		// 暫定データの登録
-		// đoạn thêm này tôi không chắc chắn lắm vì tôi đối chiếu thiết kế EA không giống lắm. Nhưng test thì thấy chạy được theo yêu cầu của bug 118478
-		this.interimData.registerDateChange(cid, employeeId, datePeriod.datesBetween());
 		return Pair.of(check, afterCalcRecord);
 	}
 	
@@ -336,7 +343,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private void clearConfirmApproval(IntegrationOfDaily integrationOfDaily) {
 		dailyRecordAdUpService.removeConfirmApproval(Arrays.asList(integrationOfDaily));
 	}
-
 
 	private void updateRecord(IntegrationOfDaily value) {
  		// データ更新
@@ -395,7 +401,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		return closureStatusManagementRepository.getByIdListAndDatePeriod(employeeId, datePeriod);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod,Optional<Consumer<ProcessState>> counter,String executeLogId,boolean isCalWhenLock ) {
 		
 		
@@ -425,7 +430,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList,executeLogId);
 			List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(cid, employeeId);
 			boolean checkNextEmp =false;
-			val cacheCarrier = new CacheCarrier();
 			//データ更新
 			for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
 				// 締めIDを取得する
@@ -452,12 +456,21 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 								continue;
 							}
 				try {
-					//実績登録
-					updateRecord(stateInfo.integrationOfDaily); 
-					//エラーで本人確認と上司承認を解除する
-					clearConfirmApproval(stateInfo.getIntegrationOfDaily());
-					//計算状態の更新
-					upDateCalcState(stateInfo);
+					
+					transactionService.execute(() -> {
+						val key = Pair.of(stateInfo.integrationOfDaily.getEmployeeId(), stateInfo.integrationOfDaily.getYmd());
+						if (afterCalcRecord.getAtomTasks().containsKey(key)) {
+							afterCalcRecord.getAtomTasks().get(key).run();
+						}
+						//実績登録
+						updateRecord(stateInfo.integrationOfDaily); 
+						//エラーで本人確認と上司承認を解除する
+						clearConfirmApproval(stateInfo.integrationOfDaily);
+						//計算状態の更新
+						upDateCalcState(stateInfo);
+						//暫定データの登録
+			            this.interimData.registerDateChange(cid, employeeId, Arrays.asList(stateInfo.integrationOfDaily.getYmd()));
+					});
 					
 				} catch (Exception ex) {
 					boolean isOptimisticLock = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
@@ -475,11 +488,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			if(afterCalcRecord.ps == ProcessState.INTERRUPTION ) {
 				return  ProcessState.INTERRUPTION;
 			}
-			//暫定データの登録
-            this.interimData.registerDateChange(cid, employeeId, newPeriod.datesBetween());
 		}
-		
-		
 		
 		return ProcessState.SUCCESS; 
 	}
