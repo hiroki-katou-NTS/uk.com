@@ -708,7 +708,7 @@ module nts.uk.ui.at.kdw013.c {
 
 					block.grayout();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
-		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings());
+		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings(), start);
 						setTimeout(() => {
 							vm.updatePopupSize();
 						}, 150);
@@ -898,6 +898,7 @@ module nts.uk.ui.at.kdw013.c {
 		setting: a.TaskFrameSettingDto[] = [];
 		data: StartWorkInputPanelDto = null;
 		displayManHrRecordItem: DisplayManHrRecordItem[] = null;
+		start: Date;
 		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private showInputTime: KnockoutObservable<boolean>) {
 			super(taskBlocks);
 			const vm = this;
@@ -925,15 +926,16 @@ module nts.uk.ui.at.kdw013.c {
             });
         }
 		
-        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[], setting: a.TaskFrameSettingDto[]) {
+        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[], setting: a.TaskFrameSettingDto[], start: Date) {
 			const vm = this;
 			vm.setting = setting;
 			vm.data = data;
 			vm.displayManHrRecordItem = displayManHrRecordItem;
 			vm.employeeId = employeeId;
+			vm.start = start;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, setting, vm.displayManHrRecordItem))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, start, vm.employeeId, vm.showInputTime, vm.data, setting, vm.displayManHrRecordItem))
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
@@ -957,7 +959,7 @@ module nts.uk.ui.at.kdw013.c {
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: '' });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: supNo, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
+			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
 		}
 
 		isChangedTime(): boolean{
