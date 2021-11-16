@@ -1905,22 +1905,11 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public void deleteReserveLeaveGrantRemainHistoryData(String employeeId, YearMonth ym, ClosureId closureId,
-				ClosureDate closureDate) {
-			rsvLeaveGrantRemainHistRepo.delete(employeeId, ym, closureId, closureDate);
-		}
-
-		@Override
 		public void addOrUpdateReserveLeaveGrantRemainHistoryData(ReserveLeaveGrantRemainHistoryData domain,
 				String cid) {
 			rsvLeaveGrantRemainHistRepo.addOrUpdate(domain, cid);
 		}
-
-		@Override
-		public void deleteReserveLeaveGrantTimeRemainHistoryData(String employeeId, GeneralDate date) {
-			rsvLeaveGrantTimeRemainHistRepo.deleteAfterDate(employeeId, date);
-		}
-
+		
 		@Override
 		public void addOrUpdateReserveLeaveGrantTimeRemainHistoryData(ReserveLeaveGrantTimeRemainHistoryData domain) {
 			rsvLeaveGrantTimeRemainHistRepo.addOrUpdate(domain);
@@ -1935,11 +1924,6 @@ public class RecordDomRequireService {
 		public List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId,
 				GeneralDate grantDate) {
 			return rervLeaGrantRemDataRepo.find(employeeId, grantDate);
-		}
-
-		@Override
-		public void deleteReserveLeaveGrantRemainingData(String employeeId, GeneralDate date) {
-			rervLeaGrantRemDataRepo.deleteAfterDate(employeeId, date);
 		}
 
 		@Override
@@ -1963,11 +1947,6 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public void deleteSubstitutionOfHDManagementDataAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
-			substitutionOfHDManaDataRepo.deleteAfter(sid, unknownDateFlag, target);
-		}
-
-		@Override
 		public Optional<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String Id) {
 			return substitutionOfHDManaDataRepo.findByID(Id);
 		}
@@ -1983,18 +1962,8 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public void deletePayoutManagementDataAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
-			payoutManagementDataRepo.deleteAfter(sid, unknownDateFlag, target);
-		}
-
-		@Override
 		public Optional<PayoutManagementData> payoutManagementData(String Id) {
 			return payoutManagementDataRepo.findByID(Id);
-		}
-
-		@Override
-		public void deleteCompensatoryDayOffManaDataAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
-			comDayOffManaDataRepo.deleteAfter(sid, unknownDateFlag, target);
 		}
 
 		@Override
@@ -2025,11 +1994,6 @@ public class RecordDomRequireService {
 		@Override
 		public void createLeaveManagementData(LeaveManagementData leaveMng) {
 			leaveManaDataRepo.create(leaveMng);
-		}
-
-		@Override
-		public void deleteLeaveManagementDataAfter(String sid, boolean unknownDateFlag, GeneralDate target) {
-			leaveManaDataRepo.deleteAfter(sid, unknownDateFlag, target);;
 		}
 
 		@Override

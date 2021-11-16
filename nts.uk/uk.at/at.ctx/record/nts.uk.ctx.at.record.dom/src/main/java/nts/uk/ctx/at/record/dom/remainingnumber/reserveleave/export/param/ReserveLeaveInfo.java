@@ -14,7 +14,6 @@ import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
@@ -23,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
@@ -34,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.EmptYearlyRetentionSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.CalcDeadlineForGrantDate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.export.GetUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
 
@@ -310,29 +307,17 @@ public class ReserveLeaveInfo implements Cloneable {
 			return aggrResult;
 
 		// 付与日から期限日を計算
-		if (!aggrPeriodWork.getGrantWork().getReserveLeaveGrant().isPresent())
-			return aggrResult;
-		val reserveLeaveGrant = aggrPeriodWork.getGrantWork().getReserveLeaveGrant().get();
-		val grantDate = reserveLeaveGrant.getGrantYmd();
-		val upperLimitSet = GetUpperLimitSetting.algorithm(require, cacheCarrier, companyId);
-		val deadline = CalcDeadlineForGrantDate.algorithm(grantDate, upperLimitSet);
-
-		// 付与日数を取得
-		double grantDays = reserveLeaveGrant.getGrantDays().v();
+		if (!aggrPeriodWork.getGrantWork().getReserveLeaveGrant().isPresent()) return aggrResult;
 
 		// 「積立年休付与残数データ」を作成する
-		val newRemainData = ReserveLeaveGrantRemainingData.createFromJavaType("", employeeId, grantDate, deadline,
-				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value, grantDays, 0.0, null,
-				grantDays);
+		val newRemainData = aggrPeriodWork.getGrantWork().getReserveLeaveGrant().get().toReserveLeaveGrantRemainingData(employeeId);
+
 
 		// 作成した「積立年休付与残数データ」を付与残数データリストに追加
 		this.grantRemainingList.add(newRemainData);
 
 		// 付与情報に付与時の情報をセット
-		double infoDays = 0.0;
-		if (this.grantInfo.isPresent())
-			infoDays = this.grantInfo.get().getGrantDays().v();
-		this.grantInfo = Optional.of(ReserveLeaveGrantInfo.of(new ReserveLeaveGrantDayNumber(infoDays + grantDays)));
+		this.grantInfo = aggrPeriodWork.getGrantWork().getReserveLeaveGrant().get().toReserveLeaveGrantInfo(grantInfo);
 
 		// 付与前付与後を判断する
 		GrantBeforeAfterAtr grantPeriodAtr = aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
@@ -564,8 +549,8 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 合計した「年休使用数」「年休残数」から年休付与残数を作成
 
 		// 最初の1件目を取得
-		ReserveLeaveGrantRemainingData dummyReserveLeaveGrantRemainingData = dummyRemainingList.stream().findFirst()
-				.get();
+		ReserveLeaveGrantRemainingData reserveLeaveGrantRemainingData
+		= ReserveLeaveGrantRemainingData.of(dummyRemainingList.stream().findFirst().get());
 
 		AnnualLeaveNumberInfo leaveNumberInfo = new AnnualLeaveNumberInfo();
 		// 明細．残数 ← 合計した「年休残数」
@@ -573,11 +558,8 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 明細．使用数 ← 合計した「年休使用数」
 		leaveNumberInfo.setUsedNumber(leaveUsedNumberTotal);
 
-		ReserveLeaveGrantRemainingData reserveLeaveGrantRemainingData = ReserveLeaveGrantRemainingData.of(
-				dummyReserveLeaveGrantRemainingData.getLeaveID(), dummyReserveLeaveGrantRemainingData.getEmployeeId(),
-				dummyReserveLeaveGrantRemainingData.getGrantDate(), dummyReserveLeaveGrantRemainingData.getDeadline(),
-				dummyReserveLeaveGrantRemainingData.getExpirationStatus(),
-				dummyReserveLeaveGrantRemainingData.getRegisterType(), leaveNumberInfo);
+		reserveLeaveGrantRemainingData.setDetails(leaveNumberInfo);
+		
 
 		return Optional.of(reserveLeaveGrantRemainingData);
 	}

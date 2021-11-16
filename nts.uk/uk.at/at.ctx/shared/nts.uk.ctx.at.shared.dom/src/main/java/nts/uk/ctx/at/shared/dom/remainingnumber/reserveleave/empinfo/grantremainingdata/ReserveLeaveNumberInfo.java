@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Getter
 public class ReserveLeaveNumberInfo extends LeaveNumberInfo implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
 	public ReserveLeaveNumberInfo(
