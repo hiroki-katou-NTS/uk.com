@@ -227,7 +227,6 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
             self.periodDateValue.subscribe((data)=>{
              let   periodStartDate =  moment.utc(self.periodDateValue().startDate, "YYYY/MM/DD").toISOString();
-             console.log(periodStartDate);
             });
             self.closureId.subscribe((closureId) => {
                 let cl = _.find(self.closureLists(), {'closureId': closureId});
