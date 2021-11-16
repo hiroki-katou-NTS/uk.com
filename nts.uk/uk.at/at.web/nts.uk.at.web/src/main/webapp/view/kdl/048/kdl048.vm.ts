@@ -225,9 +225,11 @@ module nts.uk.at.view.kdl048.screenModel {
 
     onClickOk() {
       const vm = this;
-      $("#A3_2").trigger("validate");
+      if (vm.itemNameLine().displayInputCategory === 2) {
+        $("#A3_2").trigger("validate");
+      }
       _.defer(() => {
-        if (!$("#A3_2").ntsError("hasError") ||vm.attendanceRecordName() === "") {
+        if (!$("#A3_2").ntsError("hasError") || vm.attendanceRecordName() === "") {
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == ２：入力可能
           if (vm.itemNameLine().displayFlag && vm.itemNameLine().displayInputCategory === 2) {
             // shared with value of A3_2, A5_2, A9_2_1, A9_2_2

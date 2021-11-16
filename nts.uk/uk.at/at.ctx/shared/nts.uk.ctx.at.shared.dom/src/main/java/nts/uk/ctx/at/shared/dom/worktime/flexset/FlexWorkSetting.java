@@ -25,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.*;
@@ -415,4 +417,14 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
                 .count() == 1;
         return onlyOneAllDay && onlyOneAM && onlyOnePM;
     }
+	
+	/**
+	 * コア内の外出を就業時間から控除するか判断する
+	 * @return 控除するかどうか（true:控除する、false:控除しない）
+	 */
+	public boolean isDeductGoOutWithinCoreFromWorkTime(){
+		if (this.coreTimeSetting.isUseTimeSheet() == false) return true;
+		if (this.coreTimeSetting.getGoOutCalc().getRemoveFromWorkTime() == NotUseAtr.USE) return true;
+		return false;
+	}
 }

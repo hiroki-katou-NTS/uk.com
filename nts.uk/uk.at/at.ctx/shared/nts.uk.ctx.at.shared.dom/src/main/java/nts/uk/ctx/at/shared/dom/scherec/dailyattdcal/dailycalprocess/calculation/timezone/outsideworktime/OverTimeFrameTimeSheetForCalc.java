@@ -9,13 +9,11 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
@@ -26,12 +24,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfEachPremiumHalfWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ActualWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -43,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -63,7 +58,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 残業枠時間帯(WORK)
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
@@ -307,6 +301,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 * @param predetermineTimeSetForCalc 計算用所定時間設定
 	 * @param overTimeWorkFrameTimeSheetList 計算用所定時間設定（個人平日時）
 	 * @param createdWithinWorkTimeSheet 就業時間内時間帯
+	 * @param deductTimeSheet 控除時間帯
 	 * @return 残業枠時間帯(WORK)(List)
 	 */
 	public static List<OverTimeFrameTimeSheetForCalc> diciaionCalcStatutory(
@@ -318,38 +313,35 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
 			WithinWorkTimeSheet createdWithinWorkTimeSheet) {
+		
+		// 労働条件項目の確認
+		WorkingConditionItem conditionItem = personDailySetting.getPersonInfo();
+		
 		if(integrationOfWorkTime.isLegalInternalTime()) {
 			/*振替処理   法定内基準時間を計算する*/
 			AttendanceTime workTime = new AttendanceTime(0);
 			if(createdWithinWorkTimeSheet != null){
 				workTime = WithinStatutoryTimeOfDaily.calcActualWorkTime(
 						createdWithinWorkTimeSheet,
+						integrationOfDaily,
+						Optional.of(integrationOfWorkTime),
 						VacationClass.createAllZero(),
 						todayWorkType,
 						integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
 						personDailySetting.getAddSetting(),
 						companyCommonSetting.getHolidayAdditionPerCompany().get(),
-						personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-						CalcMethodOfNoWorkingDayForCalc.isCalculateFlexTime,
-						Optional.of(new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(
-								new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
-								new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay)))),
-						Optional.of(integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr()),
-						Optional.of(integrationOfWorkTime.getCode()),
-						new AttendanceTime(2880), //事前フレ
-						integrationOfWorkTime.getCoreTimeSetting(),
+						Optional.of(SettingOfFlexWork.defaultValue()),
+						new AttendanceTime(2880),	//事前フレ
 						predetermineTimeSetForCalc,
-						Finally.of(AttendanceTime.ZERO),
 						personDailySetting.getDailyUnit(),
 						Optional.of(integrationOfWorkTime.getCommonSetting()),
-						personDailySetting.getPersonInfo(),
+						conditionItem,
 						Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
-						Optional.of(new DeductLeaveEarly(0, 1)),
-						NotUseAtr.NOT_USE,
-						integrationOfDaily.getAttendanceLeave());
+						NotUseAtr.NOT_USE);
 			}
-		
-			AttendanceTime ableRangeTime = new AttendanceTime(personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
+			// 法定内残業に出来る時間を計算する　（法定労働時間－実働労働時間）
+			AttendanceTime ableRangeTime = new AttendanceTime(
+					personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
 			
 			HolidayCalculation holidayCalculation = integrationOfWorkTime.getCommonSetting().getHolidayCalculation();
 			if(ableRangeTime.greaterThan(0))
@@ -762,27 +754,6 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	}
 	
 	/**
-	 * 残業枠時間帯への割当
-	 * @param remainingTime 未割り当て時間
-	 * @param flowWorkTimezoneSetting 流動勤務時間帯設定
-	 * @param autoCalcSet 残業時間の自動計算設定
-	 */
-	public AttendanceTime allocateToOverTimeFrame(
-			AttendanceTime remainingTime,
-			FlowWorkTimezoneSetting flowWorkTimezoneSetting,
-			AutoCalOvertimeSetting autoCalcSet) {
-		
-		//割り当て可能な時間を計算
-		AttendanceTime allocateTime = this.calcAllocationTime(remainingTime, flowWorkTimezoneSetting, autoCalcSet);
-		
-		//割当時間をセット
-		this.setTimeVacationOverflowTime(Optional.of(allocateTime));
-		
-		//未割り当て時間を減算
-		return remainingTime.minusMinutes(allocateTime.valueAsMinutes());
-	}
-	
-	/**
 	 * 割当が可能な時間を計算
 	 * @param remainingTime 未割り当て時間
 	 * @param flowWorkTimezoneSetting 流動勤務時間帯設定
@@ -839,38 +810,4 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				Optional.empty(),
 				Optional.empty());
 	}
-	
-	/**
-	 * 残業枠時間帯への割当
-	 * @param lastFrame 残業枠時間帯への割当
-	 * @param timeVacationAdditionRemainingTime
-	 * @param flowWorkTimezoneSetting
-	 * @return 未割り当て時間
-	 */
-	public AttendanceTime allocateOverflowTimeVacation(
-			boolean lastFrame,	
-			AttendanceTime timeVacationAdditionRemainingTime,
-			FlowWorkTimezoneSetting flowWorkTimezoneSetting) {
-		
-		//割り当てる時間
-		AttendanceTime allocateTime = AttendanceTime.ZERO;
-		
-		if(lastFrame) {
-			allocateTime = timeVacationAdditionRemainingTime;
-		}
-		else{
-			//割当可能な時間を計算
-			AttendanceTime limitTime =
-				flowWorkTimezoneSetting.getMatchWorkNoOverTimeWorkSheet(this.overTimeWorkSheetNo.v()+1).get()
-				.getFlowTimeSetting().getElapsedTime().minusMinutes(
-						flowWorkTimezoneSetting.getMatchWorkNoOverTimeWorkSheet(this.overTimeWorkSheetNo.v()).get()
-						.getFlowTimeSetting().getElapsedTime().valueAsMinutes());
-		
-			allocateTime = limitTime.lessThan(timeVacationAdditionRemainingTime) ? limitTime : timeVacationAdditionRemainingTime;
-		}
-		
-		this.setTimeVacationOverflowTime(Optional.of(allocateTime));
-		return timeVacationAdditionRemainingTime.minusMinutes(allocateTime.valueAsMinutes());
-	}
-	
 }

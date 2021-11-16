@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 
+import java.util.Map;
+
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -36,7 +39,9 @@ public interface OverTimeRegisterService {
 			AppOverTime appOverTime,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Boolean mailServerSet,
-			AppTypeSetting appTypeSetting);
+			AppTypeSetting appTypeSetting,
+			Map<String, ApprovalRootContentImport_New> approvalRootContentMap
+			);
 	/**
 	 * Refactor5 02_更新登録
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.B：残業申請（詳細・照会）.アルゴリズム.02_更新登録

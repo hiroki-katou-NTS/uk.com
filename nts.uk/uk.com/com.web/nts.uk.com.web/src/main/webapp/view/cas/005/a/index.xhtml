@@ -46,7 +46,7 @@
 					<button tabindex="3" class="danger"
 						data-bind="click : deleteButton , enable : isDelete">#{i18n.getText('CAS005_12')}</button>
 					<!-- A1_004 -->
-					<button tabindex="4" data-bind="click : openDialogC ">#{i18n.getText('CAS005_13')}</button>
+					<button tabindex="4" data-bind="click : openDialogC , visible : canOpenDialogC ">#{i18n.getText('CAS005_13')}</button>
 					<!-- A1_005 -->
 					<button tabindex="5"
 						data-bind="click : openDialogB , enable : isCopy	 ">#{i18n.getText('CAS005_14')}</button>

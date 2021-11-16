@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -49,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepositor
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
+import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
@@ -88,7 +91,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -120,6 +122,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @AllArgsConstructor
 public class RequireImp implements RemainNumberTempRequireService.Require {
@@ -231,17 +234,17 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 
 	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
 
-	private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<String, Optional<FlowWorkSetting>>();
+	private Map<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new ConcurrentHashMap<String, Optional<FlowWorkSetting>>();
 
-	private HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new HashMap<String, Optional<FlexWorkSetting>>();
+	private Map<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new ConcurrentHashMap<String, Optional<FlexWorkSetting>>();
 
-	private HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new HashMap<String, Optional<FixedWorkSetting>>();
+	private Map<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new ConcurrentHashMap<String, Optional<FixedWorkSetting>>();
 
-	private HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap = new HashMap<String, Optional<WorkTimeSetting>>();
+	private Map<String, Optional<WorkTimeSetting>>  workTimeSetMap = new ConcurrentHashMap<String, Optional<WorkTimeSetting>>();
 
-	private HashMap<String, Optional<WorkType>>  workTypeMap = new HashMap<String, Optional<WorkType>>();
+	private Map<String, Optional<WorkType>>  workTypeMap = new ConcurrentHashMap<String, Optional<WorkType>>();
 
-	private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>();
+	private Map<Integer, Optional<Closure>> closureMap = new ConcurrentHashMap<Integer, Optional<Closure>>();
 
 	private CheckCareService checkCareService;
 
@@ -645,25 +648,20 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum) {
 		return grantYearHolidayRepo.find(companyId, conditionNo, yearHolidayCode, grantNum);
 	}
-
+	
 	@Override
-	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd, double unOffseDays) {
-		return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
+	public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
+		return payoutSubofHDManaRepo.getOccDigetByListSid(sid, date);
 	}
 
 	@Override
-	public List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate) {
-		return payoutSubofHDManaRepo.getBySubId(sid, digestDate);
+	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
+		return substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid);
 	}
 
 	@Override
-	public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state) {
-		return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
-	}
-
-	@Override
-	public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
-		return payoutSubofHDManaRepo.getByPayoutId(sid, occDate);
+	public List<PayoutManagementData> getPayoutMana(String sid) {
+		return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
 	}
 
 	@Override
@@ -697,26 +695,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId, GeneralDate startDateAggr) {
-		return comDayOffManaDataRepo.getBySidYmd(companyId, employeeId, startDateAggr);
-	}
-
-	@Override
-	public List<LeaveComDayOffManagement> getBycomDayOffID(String sid, GeneralDate digestDate) {
-		return leaveComDayOffManaRepo.getBycomDayOffID(sid, digestDate);
-	}
-
-	@Override
-	public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
-		return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
-	}
-
-	@Override
-	public List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate) {
-		return leaveComDayOffManaRepo.getByLeaveID(sid, occDate);
-	}
-
-	@Override
 	public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
 		return compensLeaveEmSetRepo.find(companyId, employmentCode);
 	}
@@ -727,13 +705,28 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+	public List<LeaveComDayOffManagement> getDigestOccByListComId(String sid, DatePeriod period) {
+		return leaveComDayOffManaRepo.getDigestOccByListComId(sid, period);
+	}
+
+	@Override
+	public List<InterimDayOffMng> getTempDayOffBySidPeriod(String sid, DatePeriod period) {
 		return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
 	}
 
 	@Override
-	public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
+	public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid) {
+		return comDayOffManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
+	}
+
+	@Override
+	public List<InterimBreakMng> getTempBreakBySidPeriod(String sid, DatePeriod period) {
 		return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+	}
+
+	@Override
+	public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid) {
+		return leaveManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
 	}
 
 	@Override
@@ -742,7 +735,7 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate,
+	public Optional<WorkInformation> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate,
 			String workTypeCode) {
 		return this.workingConditionItemService.getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
 	}
@@ -751,4 +744,33 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public List<RecordRemainCreateInfor> lstResultFromRecord(String sid, List<DailyResult> dailyResults) {
 		return remainCreateInforByRecordData.lstResultFromRecord(sid, dailyResults);
 	}
+
+	@Override
+	public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+		return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
+	}
+
+	@Override
+	public List<ClosureEmployment> employmentClosureClones(String companyID, List<String> employmentCD) {
+		return closureEmploymentRepo.findListEmployment(companyID, employmentCD);
+	}
+
+	@Override
+	public List<Closure> closureClones(String companyId, List<Integer> closureId) {
+		return closureRepo.findByListId(companyId, closureId);
+	}
+
+	@Override
+	public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
+			GeneralDate baseDate) {
+		return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+	}
+	
+    @Override
+    public Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId,
+            GeneralDate baseDate, String workTypeCode, WorkingDayCategory workingDayCategory) {
+        return this.workingConditionItemService.getHolidayWorkScheduleNew(companyId, employeeId, baseDate, workTypeCode,
+                workingDayCategory);
+    }
+
 }

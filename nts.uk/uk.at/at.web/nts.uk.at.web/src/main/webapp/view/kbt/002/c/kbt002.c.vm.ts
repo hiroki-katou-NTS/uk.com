@@ -82,10 +82,6 @@ module nts.uk.at.view.kbt002.c {
       }
     }
 
-    mounted() {
-      $("#C7_2").focus();
-    }
-
     getExecSetting() {
       const vm = this;
       vm.$blockui('grayout')

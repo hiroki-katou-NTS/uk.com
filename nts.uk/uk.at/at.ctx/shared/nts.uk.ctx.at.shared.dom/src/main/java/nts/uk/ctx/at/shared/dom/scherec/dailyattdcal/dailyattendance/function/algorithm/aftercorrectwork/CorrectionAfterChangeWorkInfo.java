@@ -37,8 +37,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 public class CorrectionAfterChangeWorkInfo {
 
 	@Inject
-	private CorrectionShortWorkingHour correctShortWorkingHour;
-	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSettingRepo;
@@ -74,14 +72,11 @@ public class CorrectionAfterChangeWorkInfo {
 		/** 勤務回数の補正 */
 		AttendanceTimesCorrector.correct(require, domainDaily);
 		
-		// 短時間勤務の補正
-		IntegrationOfDaily domainCorrect = correctShortWorkingHour.correct(companyId, domainDaily);
-		
 		// fix 111738
 		// remove TODO: ドメインモデル「予実反映」を取得 - mock new domain
 		//  remove 予実反映処理の補正
 		
-		return domainCorrect;
+		return domainDaily;
 	}
 	
 	private Require createRequire(String companyId) {

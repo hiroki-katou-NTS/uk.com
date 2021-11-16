@@ -83,17 +83,12 @@
 									<div style="display: inline;" data-bind="text: name"></div>
 
 									<div style="display: inline; float: right;"><a class="hyperlink"
-																				   data-bind="click: $parent.openKDL009, text: content"></a>
+																				   data-bind="click: function() { $parent.openKDL009() }, text: content"></a>
 									</div>
 								</div>
 							</div>
 
 						</div>
-
-						<com:ko-if
-							bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">
-									<span style="margin-left: -8px" data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
-						</com:ko-if>
 					</div>
 
 

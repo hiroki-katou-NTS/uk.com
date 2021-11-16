@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -27,9 +28,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationUsageTimeDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
+import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
@@ -68,10 +69,6 @@ public class InterimRemainOffDateCreateData {
 
 		//時間休暇使用時間を作成
 		formerRemainData = createUsageHolidayTimes(require, cid, sid, baseDate, detailData, formerRemainData);
-
-		if (formerRemainData.getWorkTypeRemain().isEmpty()) {
-			return null;
-		}
 
 		//残数作成元情報から暫定残数管理データを作成する
 		DailyInterimRemainMngData createDataInterimRemain = createDataInterimRemain(require, formerRemainData);
@@ -760,11 +757,13 @@ public class InterimRemainOffDateCreateData {
 		// 所定時間を取得
 		Integer predTime = WorkTimeIsFluidWork.getTimeByWorkTimeTypeCode(require, workTimeCode, wkTypeCd);
 		// 取得した時間を設定
-		result.getOccurrenceDetailData().forEach(x -> {
+		List<OccurrenceUseDetail> occurrenceDetailData = result.getOccurrenceDetailData();
+		occurrenceDetailData.forEach(x -> {
 			if (x.getWorkTypeAtr().equals(WorkTypeClassification.SubstituteHoliday)) {
 				x.setSubstituteHolidayTime(Optional.ofNullable(new AttendanceTime(predTime)));
 			}
 		});
+		result.setOccurrenceDetailData(occurrenceDetailData);
 	}
 
 	/**
@@ -786,8 +785,8 @@ public class InterimRemainOffDateCreateData {
 		}
 		// 出勤時の勤務情報を取得する
 
-		return require.getHolidayWorkSchedule(cid, sid, ymd, wkTypeCd)
-				.map(x -> x.getWorkTimeCode().map(wktime -> wktime.v()).orElse(null)).orElse(null);
+		return require.getHolidayWorkScheduleNew(cid, sid, ymd, wkTypeCd,WorkingDayCategory.workingDay)
+				.map(x -> x.getWorkTimeCodeNotNull().map(y->y.v()).orElse(null)).orElse(null);
 
 	}
 
@@ -1063,12 +1062,12 @@ public class InterimRemainOffDateCreateData {
 	 */
 	public static DailyInterimRemainMngData createDataInterimRemain(RequireM6 require, InforFormerRemainData inforData) {
 		DailyInterimRemainMngData outputData = new DailyInterimRemainMngData(inforData.getYmd(), Optional.empty(), new ArrayList<>(), Optional.empty(),
-				new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
+				new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), new ArrayList<>(),new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
 
 		List<OccurrenceUseDetail> occList = inforData.getWorkTypeRemain().stream().map(x -> x.getOccurrenceDetailData())
 				.flatMap(List::stream).collect(Collectors.toList());
 
-		occList.forEach(x -> {
+		occList.stream().filter(x -> x.getDays() > 0).forEach(x -> {
 			WorkTypeClassification wkCls = x.getWorkTypeAtr();
 
 			switch (wkCls) {
@@ -1518,6 +1517,7 @@ public class InterimRemainOffDateCreateData {
 			if (x.getWorkTypeAtr().equals(workTypeClass)) {
 				OccurrenceUseDetail useDetail = new OccurrenceUseDetail(days, true, x.getWorkTypeAtr());
 				useDetail.setVacationUsageTimeDetails(x.getVacationUsageTimeDetails());
+				useDetail.setSubstituteHolidayTime(x.getSubstituteHolidayTime());
 				return useDetail;
 			}
 			return x;
@@ -1627,7 +1627,10 @@ public class InterimRemainOffDateCreateData {
 
 		CheckCareResult checkCare(WorkTypeSet wkSet, String cid);
 
-		Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
+		Optional<WorkInformation> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
+		
+		Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode, WorkingDayCategory workingDayCategory);
+		
 	}
 
 	public static interface RequireM7 extends RequireM1, RequireM3 {

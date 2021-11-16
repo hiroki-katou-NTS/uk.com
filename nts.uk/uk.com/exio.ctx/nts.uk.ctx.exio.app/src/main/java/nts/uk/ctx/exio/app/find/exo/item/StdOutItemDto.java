@@ -68,7 +68,7 @@ public class StdOutItemDto {
 				domain.getCategoryItems().stream().map(item -> {
 					String categoryItemName = "";
 					Optional<CtgItemData> ctgItemData = ctgItemDataDomain.stream()
-							.filter(x -> x.getCategoryId().v() == item.getCategoryId().v()
+							.filter(x -> x.getCategoryId().v().intValue() == item.getCategoryId().v().intValue()
 									&& x.getItemNo().v() == item.getItemNo().v())
 							.findFirst();
 					if (ctgItemData.isPresent()) {

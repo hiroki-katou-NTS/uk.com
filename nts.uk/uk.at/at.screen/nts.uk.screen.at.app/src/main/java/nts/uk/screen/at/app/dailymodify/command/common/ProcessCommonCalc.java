@@ -64,13 +64,23 @@ public class ProcessCommonCalc {
 			List<ItemValue> niv = getFrom(news, o.getKey());
 			if (!CollectionUtil.isEmpty(niv)) {
 				if (niv.stream().anyMatch(c -> o.getValue().stream()
-						.filter(oi -> c.valueAsObjet() != null && c.equals(oi)).findFirst().isPresent())) {
+						.filter(oi -> checkChangeItem(oi, c)).findFirst().isPresent())) {
 					editedDate.add(o.getKey());
 				}
 			}
 		});
 		return editedDate;
 	}
+
+    private static boolean checkChangeItem(ItemValue old, ItemValue edit) {
+        if (old.valueAsObjet() == null && edit.valueAsObjet() == null) {
+            return false;
+        }
+        if (old.valueAsObjet() != null && edit.valueAsObjet() != null) {
+            return !old.equals(edit);
+        }
+        return true;
+    }
 
 	public static Map<Pair<String, GeneralDate>, List<ItemValue>> mapTo(List<DailyModifyResult> source) {
 		return source.stream()

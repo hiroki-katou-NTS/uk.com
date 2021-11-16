@@ -27,9 +27,9 @@ public class GetNextAnnualLeaveGrant {
 	 * @return 次回年休付与リスト
 	 */
 	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier,
-			String companyId, String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate,
+			String companyId, String employeeId, String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate,
 			DatePeriod period, boolean isSingleDay) {
-		return algorithm(require, cacheCarrier, companyId, grantTableCode, entryDate, criteriaDate, 
+		return algorithm(require, cacheCarrier, companyId, employeeId, grantTableCode, entryDate, criteriaDate,
 				period, isSingleDay, Optional.empty(), Optional.empty());
 	}
 
@@ -47,25 +47,28 @@ public class GetNextAnnualLeaveGrant {
 	 * @param closureStartDate 締め開始日
 	 * @return 次回年休付与リスト
 	 */
-	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
-			String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period, 
+	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId,
+			String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period,
 			boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls) {
-		
-		return algorithm(require, cacheCarrier, companyId, grantTableCode, entryDate, criteriaDate, period, 
+
+		return algorithm(require, cacheCarrier, companyId, employeeId, grantTableCode, entryDate, criteriaDate, period,
 						isSingleDay,grantHdTblSet, lengthServiceTbls, Optional.empty());
 	}
 
-	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
-		String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period, 
+	public static List<NextAnnualLeaveGrant> algorithm(
+		RequireM1 require, CacheCarrier cacheCarrier,
+		String companyId, String employeeId,
+		String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period,
 		boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls,
 		Optional<GeneralDate> closureStartDate) {
-	
-		return GetNextAnnualLeaveGrantProc.algorithm(require, cacheCarrier, 
-														companyId, grantTableCode, entryDate, criteriaDate, period, 
+
+		return GetNextAnnualLeaveGrantProc.algorithm(require, cacheCarrier,
+														companyId, employeeId, grantTableCode, entryDate, criteriaDate, period,
 														isSingleDay,grantHdTblSet, lengthServiceTbls, closureStartDate);
 	}
-	
+
 	public static interface RequireM1 extends GetNextAnnualLeaveGrantProc.RequireM1{
-		
+
 	}
 }

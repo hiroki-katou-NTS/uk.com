@@ -42,12 +42,6 @@ public class KrcdtWekTimeDvgc extends ContractUkJpaEntity implements Serializabl
 	/** 乖離時間 */
 	@Column(name = "DIVERGENCE_TIME")
 	public int divergenceTime;
-	/** 控除時間 */
-	@Column(name = "DEDUCTION_TIME")
-	public int deductionTime;
-	/** 控除後乖離時間 */
-	@Column(name = "DVRGEN_TIME_AFT_DEDU")
-	public int divergenceTimeAfterDeduction;
 
 	/** マッチング：週別実績の勤怠時間 */
 	@ManyToOne
@@ -78,8 +72,6 @@ public class KrcdtWekTimeDvgc extends ContractUkJpaEntity implements Serializabl
 		return AggregateDivergenceTime.of(
 				this.PK.divergenceTimeNo,
 				new AttendanceTimeMonth(this.divergenceTime),
-				new AttendanceTimeMonth(this.deductionTime),
-				new AttendanceTimeMonth(this.divergenceTimeAfterDeduction),
 				EnumAdaptor.valueOf(this.divergenceAtr, DivergenceAtrOfMonthly.class));
 	}
 	
@@ -109,7 +101,5 @@ public class KrcdtWekTimeDvgc extends ContractUkJpaEntity implements Serializabl
 		
 		this.divergenceAtr = domain.getDivergenceAtr().value;
 		this.divergenceTime = domain.getDivergenceTime().v();
-		this.deductionTime = domain.getDeductionTime().v();
-		this.divergenceTimeAfterDeduction = domain.getDivergenceTimeAfterDeduction().v();
 	}
 }

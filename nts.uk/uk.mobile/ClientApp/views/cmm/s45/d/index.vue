@@ -31,8 +31,7 @@
           <div class="col-9">
             <span class="ml-1">{{ appState.getNote | i18n }}</span>
             <br />
-            <span class="uk-text-blue" v-on:click="reverseApproval" v-bind:class="appState.appStatus == 3 || appState.appStatus == 4">
-              {{'CMMS45_20' | i18n}}
+            <span class="uk-text-blue" v-on:click="reverseApproval">{{'CMMS45_20' | i18n}}
               <i class="uk-text-blue"
                 v-bind:class="{ 'fas fa-chevron-down': !showApproval, 'fas fa-chevron-up': showApproval}"
               ></i>
@@ -129,6 +128,7 @@
             <div class="row ml-2 mr-2 pt-1 pb-1" style="word-break: break-word">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
           </div>
         </div>
+        <div class="pl-3 pr-3 mb-2 uk-bg-orange" v-if="displayCancelLabel">{{'CMMS45_93' | i18n}}</div>
       </div> 
     </div>
     <!-- D3_1 -->
@@ -145,7 +145,8 @@
     <div v-if="appType!=10" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
     <div v-if="appType!=10" class="row content-div border-top uk-border-light-gray">
       <div class="col-12">
-        <div class="row">{{ appDate | i18n }} {{ appTypeName }} {{'CMMS45_24' | i18n(prePost)}}</div>
+        <div v-if="opAppStartDate == opAppEndDate" class="row">{{ appDate | i18n }} {{ appTypeName }} {{'CMMS45_24' | i18n(prePost)}}</div>
+        <div v-if="opAppStartDate != opAppEndDate" class="row">{{ opAppStartDate | | date('MM/DD (ddd)') }}～{{ opAppEndDate | | date('MM/DD (ddd)') }} {{ appTypeName }} {{'CMMS45_24' | i18n(prePost)}}</div>
         <div class="row uk-text-dark-gray child-font-size">{{'CMMS45_25' | i18n(inputDate)}}</div>
       </div>
     </div>

@@ -21,13 +21,16 @@ import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDail
 import nts.uk.ctx.at.record.pub.monthly.GetMonthlyRecordPub;
 import nts.uk.ctx.at.record.pub.monthly.MonthlyRecordValuesExport;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.CheckDispHolidayType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.NumberOfRemainOutput;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -79,6 +82,9 @@ public class KTG004Finder {
 	
 	@Inject
 	private AbsenceServiceProcess absenceServiceProcess;
+	
+	@Inject
+	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	
 	/** 起動する */
 	public WorkStatusSettingDto getApprovedDataWidgetStart() {
@@ -166,12 +172,12 @@ public class KTG004Finder {
 			//Get work status data - 勤務状況のデータを取得する
 			result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
 			//Get the number of vacations left - 休暇残数を取得する
-			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
+			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()).getRemainingNumberInforDto());
 		}else {
 			//Get work status data - 勤務状況のデータを取得する
 			result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay()));
 			//Get the number of vacations left - 休暇残数を取得する
-			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay()));
+			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay()).getRemainingNumberInforDto());
 		}
 		
 		//Determine if the login person is the person in charge - ログイン者が担当者か判断する
@@ -273,9 +279,9 @@ public class KTG004Finder {
 	 * @param closingThisMonth 当月の締め情報
 	 * @return 対象社員の残数情報
 	 */
-	public RemainingNumberInforDto getTheNumberOfVacationsLeft(String cid, String employeeId, List<ItemsSettingDto> itemsSetting, CurrentClosingPeriod closingThisMonth) {
+	public GetVacationLeftOutput getTheNumberOfVacationsLeft(String cid, String employeeId, List<ItemsSettingDto> itemsSetting, CurrentClosingPeriod closingThisMonth) {
 		
-		RemainingNumberInforDto result = new RemainingNumberInforDto();
+		RemainingNumberInforDto remainNumber = new RemainingNumberInforDto();
 		//年休管理区分
 		boolean yearManage = false;  
 		//代休管理区分
@@ -303,29 +309,74 @@ public class KTG004Finder {
 				longTermCareManagement = item.isDisplayType();
 			}
 		}
+		// 14.休暇種類表示チェック
+		CheckDispHolidayType checkDispHolidayType = absenceServiceProcess.checkDisplayAppHdType(cid, employeeId, GeneralDate.today());
+		
 		//残数取得する
 		NumberOfRemainOutput numberOfRemain = absenceServiceProcess.getNumberOfRemaining(
 				cid, 
 				employeeId, 
 				GeneralDate.today(), 
-				yearManage ? ManageDistinct.YES : ManageDistinct.NO, 
-				subVacaManage ? ManageDistinct.YES : ManageDistinct.NO, 
-				subHdManage ? ManageDistinct.YES : ManageDistinct.NO, 
-				retentionManage ? ManageDistinct.YES : ManageDistinct.NO, 
+				yearManage && checkDispHolidayType.getAnnAnualLeaveManagement().getAnnualLeaveManageDistinct().equals(ManageDistinct.YES) ? ManageDistinct.YES : ManageDistinct.NO, 
+				subVacaManage && checkDispHolidayType.getAccumulatedRestManagement().getAccumulatedManage().equals(ManageDistinct.YES) ? ManageDistinct.YES : ManageDistinct.NO, 
+				subHdManage && checkDispHolidayType.getSubstituteLeaveManagement().getSubstituteLeaveManagement().equals(ManageDistinct.YES) ? ManageDistinct.YES : ManageDistinct.NO, 
+				retentionManage && checkDispHolidayType.getHolidayManagement().getHolidayManagement().equals(ManageDistinct.YES) ? ManageDistinct.YES : ManageDistinct.NO, 
 				ManageDistinct.NO, 
-				childNursingManagement ? ManageDistinct.YES : ManageDistinct.NO, 
-				longTermCareManagement ? ManageDistinct.YES : ManageDistinct.NO);
+				childNursingManagement && checkDispHolidayType.getNursingCareLeaveManagement().getChildNursingManagement().equals(ManageDistinct.YES) ? ManageDistinct.YES : ManageDistinct.NO, 
+				longTermCareManagement && checkDispHolidayType.getNursingCareLeaveManagement().getLongTermCareManagement().equals(ManageDistinct.YES) ? ManageDistinct.YES : ManageDistinct.NO);
 		if(numberOfRemain != null) {
-			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
-			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
-			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
-			result.setRemainingHolidays(numberOfRemain.getSubVacaRemain());
+			//積立年休残日数
+		    remainNumber.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearDayRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getYearHourRemain())));
+			//代休残数
+		    remainNumber.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubDayRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getSubHdHourRemain())));
+			//年休残数
+		    remainNumber.setNumberAccumulatedAnnualLeave(numberOfRemain.getLastYearRemain());
+			//振休残日数
+		    remainNumber.setRemainingHolidays(numberOfRemain.getVacaRemain());
+			//子の看護残数
+		    remainNumber.setNursingRemainingNumberOfChildren(new RemainingDaysAndTimeDto(numberOfRemain.getChildNursingDayRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getChildNursingHourRemain())));
+			//介護残数
+		    remainNumber.setLongTermCareRemainingNumber(new RemainingDaysAndTimeDto(numberOfRemain.getNursingRemain(), new AttendanceTimeOfExistMinus(numberOfRemain.getNursingHourRemain())));
+			// 付与年月日
+		    remainNumber.setGrantDate(numberOfRemain.getGrantDate());
+			// 付与日数
+		    remainNumber.setGrantDays(numberOfRemain.getGrantDays());
+			
+		}
+		
+		if (subHdManage) {
+		    CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(cid);
+		    if (compensatoryLeaveComSetting != null) {
+		        remainNumber.setSubHolidayTimeManage(compensatoryLeaveComSetting.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
+		    }
 		}
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])
-		result.setSpecialHolidaysRemainings(getTheNumberOfVacationsLeft.remnantRepresentation(cid, employeeId, new DatePeriod(closingThisMonth.getStartDate(), closingThisMonth.getStartDate().addYears(1).addDays(-1))));
+		remainNumber.setSpecialHolidaysRemainings(getTheNumberOfVacationsLeft.remnantRepresentation(cid, employeeId, new DatePeriod(closingThisMonth.getStartDate(), closingThisMonth.getStartDate().addYears(1).addDays(-1))));
 		
-		return result;
+		/*
+    		年休残数管理する　＝　年休管理.年休管理区分
+    		積立年休残数管理する　＝　積休管理.積休管理区分
+    		代休残数管理する　＝　代休管理.代休管理区分
+    		代休時間残数管理する　＝　代休管理.時間代休管理区分
+    		振休残数管理する　＝　振休管理.振休管理区分
+    		公休残数管理する　＝　false
+    		子の看護残数管理する　＝　介護看護休暇管理.子の看護管理区分
+    		介護残数管理する　＝　介護看護休暇管理.介護管理区分
+    		60H超休残数管理する　＝　60H超休管理.60H超休管理区分 
+		*/
+		VacationSetting setting = new VacationSetting(
+		        checkDispHolidayType.getOvertime60hManagement().getOverrest60HManagement().equals(ManageDistinct.YES), 
+		        checkDispHolidayType.getNursingCareLeaveManagement().getLongTermCareManagement().equals(ManageDistinct.YES), 
+		        false, 
+		        checkDispHolidayType.getNursingCareLeaveManagement().getChildNursingManagement().equals(ManageDistinct.YES), 
+		        checkDispHolidayType.getHolidayManagement().getHolidayManagement().equals(ManageDistinct.YES), 
+		        checkDispHolidayType.getAccumulatedRestManagement().getAccumulatedManage().equals(ManageDistinct.YES), 
+		        checkDispHolidayType.getSubstituteLeaveManagement().getSubstituteLeaveManagement().equals(ManageDistinct.YES), 
+		        checkDispHolidayType.getSubstituteLeaveManagement().getTimeAllowanceManagement().equals(ManageDistinct.YES), 
+		        checkDispHolidayType.getAnnAnualLeaveManagement().getAnnualLeaveManageDistinct().equals(ManageDistinct.YES));
+		
+		return new GetVacationLeftOutput(remainNumber, setting);
 		
 	}
 	

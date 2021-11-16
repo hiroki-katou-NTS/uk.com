@@ -44,7 +44,7 @@ public class ObtainAppReflectResultProcess {
 		for (Application app : lstApp) {
 			/// 申請反映結果を取得
 			Optional<IntegrationOfDaily> dailyResult = require
-					.getAppReflectResult(cid, ConvertApplicationToShare.toAppliction(app), baseDate, optDaily);
+					.getAppReflectResult(cid, ConvertApplicationToShare.toAppliction(app, baseDate), baseDate, optDaily);
 			if (dailyResult.isPresent()) {
 				optDaily = dailyResult;
 			}
@@ -57,12 +57,7 @@ public class ObtainAppReflectResultProcess {
 
 	// ドメインモデル「申請」を取得する// Get domain 「申請」
 	private static List<Application> getListApp(Require require, String cid, String employeeId, GeneralDate baseDate) {
-		List<Integer> lstApptype = new ArrayList<>();
-		lstApptype.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
-		lstApptype.add(ApplicationType.BUSINESS_TRIP_APPLICATION.value);
-		lstApptype.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
-		lstApptype.add(ApplicationType.STAMP_APPLICATION.value);
-		lstApptype.add(ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		List<Integer> lstApptype = Arrays.asList(ApplicationType.values()).stream().map(x -> x.value).collect(Collectors.toList());
 
 		List<Integer> lstRecordStatus = new ArrayList<>();
 		List<Integer> lstScheStatus = new ArrayList<>();

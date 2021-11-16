@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.LeaveOccurrDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
-import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
 
 /**
  * @author ThanhNX
@@ -27,8 +26,8 @@ public class OffsetChronologicalOrder {
 	};
 
 	// 時系列順で相殺する
-	public static Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> process(Require require, String employeeId,
-			List<TimeLapseVacationSetting> lstTimeLap, List<AccumulationAbsenceDetail> lstAccAbse,
+	public static Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> process(String employeeId,
+			boolean managerTimeCate, List<AccumulationAbsenceDetail> lstAccAbse,
 			TypeOffsetJudgment typeJudgment) {
 		Optional<DayOffError> error = Optional.empty();
 		List<SeqVacationAssociationInfo> lstSeqVacation = new ArrayList<>();
@@ -43,24 +42,24 @@ public class OffsetChronologicalOrder {
 		// 「逐次発生の休暇明細」(消化)でループする
 		for (AccumulationAbsenceDetail accAbsence : lstAccdigest) {
 
-			if (!accAbsence.getDateOccur().getDayoffDate().isPresent())
-				continue;
+//			if (!accAbsence.getDateOccur().getDayoffDate().isPresent())
+//				continue;
 
 			// 逐次発生の休暇明細（消化）.年月日が期間に含まれる逐次発生の休暇設定を取得
-			TimeLapseVacationSetting timeLapSet = lstTimeLap.stream()
-					.filter(x -> accAbsence.getDateOccur().getDayoffDate().get().afterOrEquals(x.getPeriod().start())
-							&& accAbsence.getDateOccur().getDayoffDate().get().beforeOrEquals(x.getPeriod().end()))
-					.findFirst().orElse(null);
-			if (timeLapSet == null)
-				continue;
+//			TimeLapseVacationSetting timeLapSet = lstTimeLap.stream()
+//					.filter(x -> accAbsence.getDateOccur().getDayoffDate().get().afterOrEquals(x.getPeriod().start())
+//							&& accAbsence.getDateOccur().getDayoffDate().get().beforeOrEquals(x.getPeriod().end()))
+//					.findFirst().orElse(null);
+//			if (timeLapSet == null)
+//				continue;
 			// ループ中の「逐次発生の休暇明細」（消化）．未相殺数をチェックする
-			if (checkUnbalNum(timeLapSet, accAbsence))
+			if (checkUnbalNum(managerTimeCate, accAbsence))
 				continue;
 
 			// 逐次発生の休暇明細（消化）.年月日が期間に含まれる逐次発生の休暇設定を取得
 			// 「逐次発生の休暇明細」(発生)でループする
 			for (AccumulationAbsenceDetail occur : lstAccOccur) {
-				Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> offsetJudgment = offsetJudgment(timeLapSet,
+				Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> offsetJudgment = offsetJudgment(managerTimeCate,
 						accAbsence, occur, typeJudgment);
 				if (offsetJudgment.getRight().isPresent())
 					lstSeqVacation.add(offsetJudgment.getRight().get());
@@ -70,7 +69,7 @@ public class OffsetChronologicalOrder {
 				}
 				else {
 					// 「逐次発生の休暇明細」（消化）.未相殺数 > 0
-					if (checkUnbalNum(timeLapSet, accAbsence)) {
+					if (checkUnbalNum(managerTimeCate, accAbsence)) {
 						break;
 					} else {
 						continue;
@@ -91,7 +90,7 @@ public class OffsetChronologicalOrder {
 
 	// 相殺判定
 	private static Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> offsetJudgment(
-			TimeLapseVacationSetting timeLapVacationSetting, AccumulationAbsenceDetail accdigest,
+			boolean managerTimeCate, AccumulationAbsenceDetail accdigest,
 			AccumulationAbsenceDetail occur, TypeOffsetJudgment typeJudgment) {
 
 		// 期限切れかをチェックする
@@ -102,28 +101,23 @@ public class OffsetChronologicalOrder {
 		}
 
 		// 逐次発生の休暇明細（発生）.休暇数をチェックする
-		if (checkUnbalNum(timeLapVacationSetting, occur)) {
+		if (checkUnbalNum(managerTimeCate, occur)) {
 			return Pair.of(OffsetJudgment.SUCCESS, Optional.empty());
 
 		}
 
-		if (!occur.getDateOccur().getDayoffDate().isPresent()) {
-			return Pair.of(OffsetJudgment.SUCCESS, Optional.empty());
-		}
-		// 先取りをできるか
-		if (!timeLapVacationSetting.isReceivAdvance()
-				&& accdigest.getDateOccur().getDayoffDate().get().before(occur.getDateOccur().getDayoffDate().get())) {
-			// 先取り制限エラーを代休集計結果.エラーメッセージに追加
-			return Pair.of(OffsetJudgment.ERROR, Optional.empty());
-		}
+		Optional<SeqVacationAssociationInfo> seqVacation = Optional.empty();
+		if (occur.getDateOccur().getDayoffDate().isPresent() && accdigest.getDateOccur().getDayoffDate().isPresent()) {
 
 		// 紐づけ登録処理
-		Optional<SeqVacationAssociationInfo> seqVacation = TypeRegistrationProcess.process(timeLapVacationSetting,
+		seqVacation = TypeRegistrationProcess.process(
 				occur.getDateOccur().getDayoffDate().get(), accdigest.getDateOccur().getDayoffDate().get(),
 				accdigest.getUnbalanceNumber().getDay(), typeJudgment);
+		
+		}
 
 		// 未相殺数を更新 in process 振休
-		UpdateUnbalancedNumber.updateUnbalanced(timeLapVacationSetting, accdigest, occur, typeJudgment);
+		UpdateUnbalancedNumber.updateUnbalanced(managerTimeCate, accdigest, occur, typeJudgment);
 
 		return Pair.of(OffsetJudgment.SUCCESS, seqVacation);
 
@@ -140,25 +134,20 @@ public class OffsetChronologicalOrder {
 
 	}
 
-	private static boolean checkUnbalNum(TimeLapseVacationSetting timeLapSet, AccumulationAbsenceDetail accAbsence) {
+	private static boolean checkUnbalNum(boolean managerTimeCate, AccumulationAbsenceDetail accAbsence) {
 
 		// 逐次発生休暇設定.時間管理区分 = true
 		// 逐次発生の休暇明細（消化）.未相殺数.時間 ＞０
 		// 逐次発生休暇設定.時間管理区分 = false
 		// 逐次発生の休暇明細（消化）.未相殺数.日数 ＞０
-		if ((!timeLapSet.getManagerTimeCate().isPresent() || !timeLapSet.getManagerTimeCate().get())
-				&& accAbsence.getUnbalanceNumber().getDay().v() <= 0) {
+		if (!managerTimeCate && accAbsence.getUnbalanceNumber().getDay().v() <= 0) {
 			return true;
-		} else if (timeLapSet.getManagerTimeCate().isPresent() && timeLapSet.getManagerTimeCate().get()
+		} else if (managerTimeCate
 				&& (!accAbsence.getUnbalanceNumber().getTime().isPresent()
 						|| accAbsence.getUnbalanceNumber().getTime().get().v() <= 0)) {
 			return true;
 		}
 		return false;
-
-	}
-
-	public static interface Require {
 
 	}
 }

@@ -27,12 +27,14 @@ public class SendOvertimeNameService {
 		
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
-		if (!requestSetting.isPresent() || !requestSetting.get().isOverTimeHoliday())
+		if (!requestSetting.isPresent())
 			return Optional.empty();
 
-		List<OvertimeWorkFrame> lstOvertime = require.getAllOvertimeWorkFrame(requestSetting.get().getCompanyId().v());
+		List<OvertimeWorkFrame> lstOvertime = require.getAllOvertimeWorkFrame(requestSetting.get().getCompanyId().v())
+				.stream().filter(x -> x.isUse()).collect(Collectors.toList());
 
-		List<WorkdayoffFrame> lstWorkDay = require.getAllWorkdayoffFrame(requestSetting.get().getCompanyId().v());
+		List<WorkdayoffFrame> lstWorkDay = require.getAllWorkdayoffFrame(requestSetting.get().getCompanyId().v())
+				.stream().filter(x -> x.isUse()).collect(Collectors.toList());
 
 		return Optional.of(convert(lstOvertime, lstWorkDay));
 

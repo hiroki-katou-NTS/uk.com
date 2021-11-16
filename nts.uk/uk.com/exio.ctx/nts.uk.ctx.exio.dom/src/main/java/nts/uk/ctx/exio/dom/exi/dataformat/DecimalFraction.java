@@ -6,9 +6,17 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  *
  */
 public enum DecimalFraction {
-
+	/**
+	 * 切り捨て
+	 */
 	TRUNCATION(0, "TRUNCATION"),
+	/**
+	 * 切り上げ
+	 */
 	ROUND_UP(1, "ROUND_UP"),
+	/**
+	 * 四捨五入
+	 */
 	DOWN_4_UP_5(2, "DOWN4_UP_5");
 
 	

@@ -58,7 +58,8 @@ public class IntegrationOfMonthlyGetterImpl implements IntegrationOfMonthlyGette
 				anyItem, agreementTime, remain.map(c -> c.getAnnLeaRemNumEachMonth()), remain.map(c -> c.getRsvLeaRemNumEachMonth()),
 				remain.map(c -> c.getAbsenceLeaveRemainData()), remain.map(c -> c.getMonthlyDayoffRemainData()), 
 				remain.map(c -> c.getSpecialHolidayRemainData()).orElse(new ArrayList<>()), weekTime, new ArrayList<>(), 
-				remarks, remain.map(c -> c.getMonCareHdRemain()), remain.map(c -> c.getMonChildHdRemain()), editState);
+				remarks, remain.map(c -> c.getMonCareHdRemain()), remain.map(c -> c.getMonChildHdRemain())
+				, remain.map(c -> c.getMonPublicHoliday()), editState);
 	}
 
 }

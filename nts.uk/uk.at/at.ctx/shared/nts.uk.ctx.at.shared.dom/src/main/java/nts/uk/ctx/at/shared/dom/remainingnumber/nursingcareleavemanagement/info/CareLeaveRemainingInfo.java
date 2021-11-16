@@ -58,7 +58,7 @@ public class CareLeaveRemainingInfo extends NursingCareLeaveRemainingInfo  imple
 		return new CareLeaveRemainingInfo(sId,
 				NursingCategory.Nursing,
 				useClassification == 1,
-				UpperLimitSetting.FAMILY_INFO,
+				UpperLimitSetting.PER_INFO_EVERY_YEAR,
 				maxDayForThisFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForThisFiscalYear))
 				: Optional.empty(),
 				maxDayForNextFiscalYear != null ? Optional.of(new ChildCareNurseUpperLimit(maxDayForNextFiscalYear))

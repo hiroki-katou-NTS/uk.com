@@ -100,11 +100,11 @@ module nts.uk.at.view.kwr003.b {
         vm.shareParam.titleLine.layoutName = vm.attendanceName();
 
         const positionText = vm.position() === 1 ? "上" : "下";
-        vm.shareParam.titleLine.directText = vm.$i18n('KWR002_131') + vm.columnIndex() + vm.$i18n('KWR002_132') + positionText + vm.$i18n('KWR002_133');
+        vm.shareParam.titleLine.directText = "";
         vm.shareParam.itemNameLine.displayFlag = vm.isDisplayItemName();
-        vm.shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
+        vm.shareParam.itemNameLine.displayInputCategory = 1;
         vm.shareParam.itemNameLine.name = vm.attendanceItemName();
-        vm.shareParam.attribute.selectionCategory = vm.isEnableComboBox();
+        vm.shareParam.attribute.selectionCategory = 2;
         vm.shareParam.attribute.selected = vm.comboSelected();
         vm.shareParam.selectedTime = vm.tableSelected();
         vm.shareParam.attendanceItems = vm.diligenceProjects();
