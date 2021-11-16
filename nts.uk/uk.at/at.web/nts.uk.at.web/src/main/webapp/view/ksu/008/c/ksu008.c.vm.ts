@@ -20,19 +20,15 @@ module nts.uk.at.ksu008.c {
             vm.destinationCode = ko.observable("");
             vm.destinationName = ko.observable("");
             vm.isOverwrite = ko.observable(false);
-
         }
 
-        created() {
+        created(params: any) {
             const vm = this;
-            vm.$window.shared("dataShareKsu008C").done((data: any) => {
-                vm.sourceCode(data.sourceCode);
-                vm.sourceName(data.sourceName);
-            });
+            vm.sourceCode(params.sourceCode);
+            vm.sourceName(params.sourceName);
         }
 
         mounted() {
-            const vm = this;
             $("#C2_3").focus();
         }
 

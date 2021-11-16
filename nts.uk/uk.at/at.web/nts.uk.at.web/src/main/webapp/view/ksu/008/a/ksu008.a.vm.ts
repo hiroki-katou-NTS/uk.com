@@ -40,7 +40,7 @@ module nts.uk.at.ksu008.a {
                 isAlreadySetting: false,
                 showEmptyItem: false,
                 showPanel: false,
-                rows: 5,
+                rows: 12,
                 selectedMode: 1,
                 itemList: self.checkWorkplaceGroups.bind(self)
             };

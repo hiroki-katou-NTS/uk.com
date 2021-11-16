@@ -7,12 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>
-            var dialogSize = {
-                width : 900,
-                height :300
-            };
-        </script>
+        <script>var dialogSize = { width: 770, height: 260 };</script>
         <com:scriptfile set="IGNITE"/>
         <com:stylefile path="ksu008.c.main.css"/>
         <com:scriptfile path="ksu008.c.vm.js"/>
@@ -21,67 +16,54 @@
             nts.uk.ctx.at.aggregation.dom.form9.Form9Name
         </com:ValidatorScript>
     </ui:define>
-
-
     <ui:define name="content">
-
-        <div tabindex="-1" id="contents-area" style="padding: 0px 0px 0px 50px;">
-            <div class="table custom-table">
-                <!--C1_1-->
-                <div class="cell valign-top first-col">
-                    <div class="label">#{i18n.getText('KSU008_146')}</div>
-                </div>
-                <!--C1_2-->
-                <div class="cell valign-top second-col">
-                    <div class="top" data-bind="ntsFormLabel: {  }">#{i18n.getText('KSU008_147')}</div>
-                </div>
-                <!--C1_3-->
-                <div class="cell valign-top third-col">
-                    <div class="label" data-bind="text:sourceCode"></div>
-                </div>
-                <!--C1_4-->
-                <div class="cell valign-top">
-                    <div class="label" data-bind="text:sourceName"></div>
-                </div>
+        <div id="contents-area" style="padding-left: 20px;">
+            <div class="control-group valign-center">
+                <!--C1-1-->
+                <span class="label">#{i18n.getText('KSU008_146')}</span>
+                <!--C1-2-->
+                <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU008_147')} </div>
+                <!--C1-3-->
+                <span style="padding-left: 10px; width: 102px; display: inline-block;" data-bind="text: sourceCode"></span>
+                <!--C1-4-->
+                <span style="margin-left: 10px;" data-bind="text: sourceName"></span>
             </div>
-
-            <div class="table custom-table">
-                <!--C2_1-->
-                <div class="cell valign-top first-col">
-                    <div class="label">#{i18n.getText('KSU008_148')}</div>
-                </div>
-                <!--C2_2-->
-                <div class="cell valign-top second-col">
-                    <div class="top" data-bind="ntsFormLabel: { constraint: ['Form9Code','Form9Name'], enable: false,required:true }">#{i18n.getText('KSU008_149')}</div>
-                </div>
-                <!--C2_3-->
-                <div class="cell valign-top third-col">
-                    <input id="C2_3" tabindex="1" data-bind="ntsTextEditor: {
-                                value: destinationCode,
-                                constraint: 'Form9Code',
-                                name:'#[KSU008_150]'} "/>
-                </div>
-                <!--C1_4-->
-                <div class="cell valign-top">
-                    <input id="C1_4" tabindex="2" data-bind="ntsTextEditor: {
-                                value: destinationName,
-                                constraint: 'Form9Name',
-                                name:'#[KSU008_151]'} "/>
-                </div>
+            <div class="control-group valign-center">
+                <!--C2-1-->
+                <span class="label">#{i18n.getText('KSU008_148')}</span>
+                <!--C2-2-->
+                <div data-bind="ntsFormLabel:{required: true, constraint:['Form9Code', 'Form9Name']}">#{i18n.getText('KSU008_149')} </div>
+                <!--C2-3-->
+                <input tabindex="1"
+                       id="C2_3"
+                       data-bind="ntsTextEditor:{
+                                            name:'#[KSU008_150]',
+                                            required: true,
+                                            constraint: 'Form9Code',
+                                            value: destinationCode
+                                        }" />
+                <!--C2-4-->
+                <input tabindex="2"
+                       id="C2_4"
+                       data-bind="ntsTextEditor:{
+                                            name:'#[KSU008_151]',
+                                            required: true,
+                                            constraint: 'Form9Name',
+                                            value: destinationName
+                                        }" />
             </div>
-
         </div>
-        <div id="functions-area-bottom" tabindex="-1">
+        <div id="functions-area-bottom">
             <!--C3_1-->
-            <div class="table" style="width: 100%;margin-bottom: 20px">
+            <div class="table" style="width: 100%;margin-bottom: 10px">
                 <div class="cell valign-center">
                     <div tabindex="3" data-bind="ntsCheckBox: { checked: isOverwrite, style: 'warnpanel'}">#{i18n.getText('KSU008_152')}</div>
                 </div>
             </div>
             <!--C3_2-->
-            <button tabindex="4" style="width: 150px" class="proceed x-large" data-bind="click: duplicate">#{i18n.getText('KSU008_153')}</button>
+            <button tabindex="4" class="proceed x-large" data-bind="click: duplicate">#{i18n.getText('KSU008_153')}</button>
             <!--C3_3-->
-            <button tabindex="5"  data-bind="click:closeDialog">#{i18n.getText('KSU008_154')}</button>
+            <button tabindex="5" data-bind="click: closeDialog">#{i18n.getText('KSU008_154')}</button>
         </div>
     </ui:define>
 </ui:composition>

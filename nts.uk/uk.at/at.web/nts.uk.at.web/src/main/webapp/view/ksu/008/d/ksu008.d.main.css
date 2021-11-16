@@ -1,29 +1,4 @@
-
-.custom-table {
-    width: 100%;
+.panel-frame .control-group:nth-child(2) {
+    margin-bottom: 0;
     margin-left: 15px;
-}
-
-.first-col {
-    width: 13%;
-}
-
-.second-col {
-    width: 15%;
-}
-
-#C1_4 {
-    /*margin-left: 32px;*/
-}
-
-.top {
-    top: -4px;
-}
-
-.third-col {
-    width: 20%;
-}
-
-#combo-box {
-    width: 115px;
 }

@@ -1,5 +1,4 @@
 module nts.uk.at.ksu008.b {
-    import setShared = nts.uk.ui.windows.setShared;
 
     const API = {
         getAll: "screen/at/ksu008/b/get-layouts/",
@@ -244,31 +243,28 @@ module nts.uk.at.ksu008.b {
 
         openKsu008C() {
             let vm = this;
-            vm.$blockui("invisible");
             let data = {
                 sourceCode: vm.currentCode(),
                 sourceName: vm.layoutName()
             };
-            setShared('dataShareKsu008C', data);
-            vm.$window.modal('/view/ksu/008/c/index.xhtml').then((data: any) => {
-                if (!_.isNil(data)) {
+            vm.$window.modal('/view/ksu/008/c/index.xhtml', data).then((result: any) => {
+                if (!_.isNil(result)) {
                     // Focus on code just created
-                    vm.getAllLayoutSetting(vm.layoutType() == 0, data.destinationCode);
-                    vm.layoutType(0);
+                    vm.params = {layoutCode: result.destinationCode};
+                    vm.layoutType() == 0 ? vm.layoutType.valueHasMutated() : vm.layoutType(0);
                 }
-                vm.$blockui("clear");
             });
         }
 
         onFileChange() {
             const vm = this;
             vm.fileId(null);
+            vm.enableDownloadTemplate(false);
         }
 
         uploadFinished(fileInfo: any) {
             const vm = this;
             vm.fileId(fileInfo.id);
-            vm.enableDownloadTemplate(false);
             vm.$errors("clear", "#file-upload .browser-button");
         }
 
@@ -289,11 +285,11 @@ module nts.uk.at.ksu008.b {
                     }
                 );
             } else {
-                vm.$blockui("show");
+                // vm.$blockui("show");
                 nts.uk.request.specials.donwloadFile(vm.fileId()).fail(error => {
                     vm.$dialog.error(error);
                 }).always(() => {
-                    vm.$blockui("hide");
+                    // vm.$blockui("hide");
                 });
             }
         }
