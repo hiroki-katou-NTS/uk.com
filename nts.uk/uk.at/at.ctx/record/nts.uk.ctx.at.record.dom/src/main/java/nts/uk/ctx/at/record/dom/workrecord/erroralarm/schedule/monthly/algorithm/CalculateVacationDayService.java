@@ -168,15 +168,13 @@ public class CalculateVacationDayService {
 			Optional<PredetemineTimeSetting> predetemineTimeSettingOpt,
 			WorkInfoOfDailyAttendance workInfo) {
 		WorkDaysOfMonthly workDays = new WorkDaysOfMonthly();
-		WorkTypeDaysCountTable workTypeDaysCountTable = new WorkTypeDaysCountTable(
-				workType, new VacationAddSet(), Optional.empty());
 		
 		daily.ifPresent(d -> {
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailys = new HashMap<>();
 			Map<GeneralDate, TimeLeavingOfDailyAttd> timeLeavingOfDailys = new HashMap<>();
 			
-			d.getAttendanceTimeOfDailyPerformance().ifPresent(c -> attendanceTimeOfDailys.put(daily.get().getYmd(), c));
-			d.getAttendanceLeave().ifPresent(c -> timeLeavingOfDailys.put(daily.get().getYmd(), c));
+			d.getAttendanceTimeOfDailyPerformance().ifPresent(c -> attendanceTimeOfDailys.put(d.getYmd(), c));
+			d.getAttendanceLeave().ifPresent(c -> timeLeavingOfDailys.put(d.getYmd(), c));
 			
 			// 出勤状態を取得する
 			AttendanceStatusList attendanceStatusList = new AttendanceStatusList(attendanceTimeOfDailys, timeLeavingOfDailys);
@@ -193,11 +191,11 @@ public class CalculateVacationDayService {
 					workType,
 					d.getAttendanceTimeOfDailyPerformance().orElse(null),
 					d.getSpecDateAttr().orElse(null),
-					workTypeDaysCountTable,
+					new WorkTypeDaysCountTable(workType, new VacationAddSet(), Optional.empty()),
 					workInfo,
 					predetemineTimeSetting,
-					attendanceStatusList.isAttendanceDay(daily.get().getYmd()), //confirm with Du san
-					attendanceStatusList.isTwoTimesStampExists(daily.get().getYmd())); //confirm with Du san
+					attendanceStatusList.isAttendanceDay(d.getYmd()), //confirm with Du san
+					attendanceStatusList.isTwoTimesStampExists(d.getYmd())); //confirm with Du san
 		});
 
 		return getNumberOfDays(typeOfDay, workDays);
