@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.attdstatus.AttendanceStatusList;
@@ -171,40 +170,35 @@ public class CalculateVacationDayService {
 		WorkDaysOfMonthly workDays = new WorkDaysOfMonthly();
 		WorkTypeDaysCountTable workTypeDaysCountTable = new WorkTypeDaysCountTable(
 				workType, new VacationAddSet(), Optional.empty());
-		Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailys = new HashMap<>();
-		Map<GeneralDate, TimeLeavingOfDailyAttd> timeLeavingOfDailys = new HashMap<>();
-		daily.get().getAttendanceTimeOfDailyPerformance().ifPresent(c -> attendanceTimeOfDailys.put(daily.get().getYmd(), c));
-		daily.get().getAttendanceLeave().ifPresent(c -> timeLeavingOfDailys.put(daily.get().getYmd(), c));
-		// 出勤状態を取得する
-		AttendanceStatusList attendanceStatusList = new AttendanceStatusList(attendanceTimeOfDailys, timeLeavingOfDailys);
+		
+		daily.ifPresent(d -> {
+			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailys = new HashMap<>();
+			Map<GeneralDate, TimeLeavingOfDailyAttd> timeLeavingOfDailys = new HashMap<>();
+			
+			d.getAttendanceTimeOfDailyPerformance().ifPresent(c -> attendanceTimeOfDailys.put(daily.get().getYmd(), c));
+			d.getAttendanceLeave().ifPresent(c -> timeLeavingOfDailys.put(daily.get().getYmd(), c));
+			
+			// 出勤状態を取得する
+			AttendanceStatusList attendanceStatusList = new AttendanceStatusList(attendanceTimeOfDailys, timeLeavingOfDailys);
+			
+			val require = requireService.createRequire();
+			PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingOpt.isPresent() ? predetemineTimeSettingOpt.get() : null;
 
-		val require = requireService.createRequire();
-		PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingOpt.isPresent() ? predetemineTimeSettingOpt.get() : null;
-
-		AttendanceTimeOfDailyAttendance attendanceTimeOfDaily = null;
-		SpecificDateAttrOfDailyAttd specificDateAttrOfDaily = null;
-		if (daily.isPresent()) {
-			if (daily.get().getAttendanceTimeOfDailyPerformance().isPresent()) {
-				attendanceTimeOfDaily = daily.get().getAttendanceTimeOfDailyPerformance().get();
-			}
-
-			if (daily.get().getSpecDateAttr().isPresent()) {
-				specificDateAttrOfDaily = daily.get().getSpecDateAttr().get();
-			}
-		}
-
-		workDays.aggregate(
-				require, daily.get().getEmployeeId(), AppContexts.user().companyId(),
-				daily.get().getYmd(),
-				workingCondtionItem.getLaborSystem(),
-				workType,
-				attendanceTimeOfDaily,
-				specificDateAttrOfDaily,
-				workTypeDaysCountTable,
-				workInfo,
-				predetemineTimeSetting,
-				attendanceStatusList.isAttendanceDay(daily.get().getYmd()), //confirm with Du san
-				attendanceStatusList.isTwoTimesStampExists(daily.get().getYmd())); //confirm with Du san
+			workDays.aggregate(
+					require,
+					d.getEmployeeId(), 
+					AppContexts.user().companyId(),
+					d.getYmd(),
+					workingCondtionItem.getLaborSystem(),
+					workType,
+					d.getAttendanceTimeOfDailyPerformance().orElse(null),
+					d.getSpecDateAttr().orElse(null),
+					workTypeDaysCountTable,
+					workInfo,
+					predetemineTimeSetting,
+					attendanceStatusList.isAttendanceDay(daily.get().getYmd()), //confirm with Du san
+					attendanceStatusList.isTwoTimesStampExists(daily.get().getYmd())); //confirm with Du san
+		});
 
 		return getNumberOfDays(typeOfDay, workDays);
 	}
