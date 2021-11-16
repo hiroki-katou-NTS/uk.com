@@ -214,6 +214,8 @@ module nts.uk.ui.at.kdw013.a {
     
         fullCalendar : KnockoutObservable<FullCalendarComponent> = ko.observable();
 
+		popupTitle: KnockoutObservable<String> = ko.observable('');
+
         constructor() {
             super();
             const vm = this;
@@ -645,7 +647,6 @@ module nts.uk.ui.at.kdw013.a {
                 showOnStart: false,
                 dismissible: true
             });
-        
         }
 
             getFrameNo(events){

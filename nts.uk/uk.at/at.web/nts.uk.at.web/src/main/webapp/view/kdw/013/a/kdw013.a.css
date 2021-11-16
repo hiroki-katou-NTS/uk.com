@@ -11,7 +11,7 @@
 .popup-area-g  {
 	padding: 10px !important;
 	text-align: right;
-	width: 244px;
+	width: 261px;
 }
 
 .popup-area-i{
@@ -88,4 +88,8 @@
 	 border: none;
 	 border-radius: 50%;
 	 width: 30px;
+}
+
+.pr27 {
+	padding-right: 27px;
 }
