@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
@@ -104,7 +104,6 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
@@ -563,7 +562,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		
 		if (workInfo == null || workInfo.getRecordInfo() == null
 				|| workInfo.getRecordInfo().getWorkTimeCode() == null) {
-				return personCommonSetting.getPersonInfo().getWorkCategory().getWeekdayTime().getWorkTimeCode();
+				return personCommonSetting.getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
 		}
 		return Optional.of(workInfo.getRecordInfo().getWorkTimeCode());
 	}
@@ -643,12 +642,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				flexCalcMethod, bonusPayAutoCalcSet, eachCompanyTimeSet, divergenceTimeList,
 				calculateOfTotalConstraintTime, scheduleReGetClass, recordReGetClass,
 				recordReGetClass.getPersonDailySetting().getPersonInfo(),
-				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWeekdayTime().getWorkTimeCode(),
+				getPredByPersonInfo(recordReGetClass.getPersonDailySetting().getPersonInfo().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode(),
 						recordReGetClass.getCompanyCommonSetting().getShareContainer(), workType.get()),
-				recordReGetClass.getLeaveLateSet().isPresent() ? recordReGetClass.getLeaveLateSet().get()
-						: new DeductLeaveEarly(1, 1),
-				scheduleReGetClass.getLeaveLateSet().isPresent() ? scheduleReGetClass.getLeaveLateSet().get()
-						: new DeductLeaveEarly(1, 1),
 				converter, recordReGetClass.getCompanyCommonSetting(), personalSetting,
 				decisionWorkTimeCode(recordReGetClass.getIntegrationOfDaily().getWorkInformation(), recordReGetClass.getPersonDailySetting(), workType),
 				declareResult));

@@ -155,6 +155,7 @@ public class DumData {
                     Optional.of("patternName1"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             ),
             new TopPageAlarmImport(
@@ -166,6 +167,7 @@ public class DumData {
                     Optional.of("patternName2"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             ),
             new TopPageAlarmImport(
@@ -177,6 +179,7 @@ public class DumData {
                     Optional.of("patternName3"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             ),
             new TopPageAlarmImport(
@@ -188,6 +191,7 @@ public class DumData {
                     Optional.of("patternName4"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             ),
             new TopPageAlarmImport(
@@ -199,6 +203,7 @@ public class DumData {
                     Optional.of("patternName4"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             )
     );
@@ -302,6 +307,7 @@ public class DumData {
                     Optional.of("patternName1"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             ),
             new TopPageAlarmImport(
@@ -313,6 +319,7 @@ public class DumData {
                     Optional.of("patternName2"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             ),
             new TopPageAlarmImport(
@@ -324,6 +331,7 @@ public class DumData {
                     Optional.of("patternName2"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             )
     );
@@ -346,6 +354,7 @@ public class DumData {
                     Optional.of("patternName1"),
                     Optional.of("linkUrl"),
                     Optional.of("displayMessage"),
+                    new ArrayList<>(),
                     new ArrayList<>()
             )
     );

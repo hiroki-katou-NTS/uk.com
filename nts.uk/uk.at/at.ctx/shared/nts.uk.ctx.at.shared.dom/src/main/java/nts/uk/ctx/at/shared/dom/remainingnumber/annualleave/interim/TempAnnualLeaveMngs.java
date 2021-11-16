@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -65,6 +66,18 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 		this.usedNumber = usedNumber;
 		this.appTimeType = appTimeType;
 	}
-	
+
+	public boolean isHourlyTimeType(){
+		if(!this.getAppTimeType().isPresent())
+			return false;
+		return this.getAppTimeType().get().isHourlyTimeType();
+	}
+
+	public Optional<AppTimeType> getAppTimeTypeEnum(){
+		if(this.getAppTimeType().isPresent())
+			return this.getAppTimeType().get().getAppTimeType();
+		return Optional.empty();
+	}
+
 }
 

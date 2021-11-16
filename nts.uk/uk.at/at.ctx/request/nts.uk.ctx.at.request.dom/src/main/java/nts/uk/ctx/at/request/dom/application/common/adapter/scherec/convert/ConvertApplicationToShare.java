@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationForHolidays;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -28,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ReflectFreeTimeAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationDateShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
@@ -68,11 +70,11 @@ import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShar
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class ConvertApplicationToShare {
 
-	public static ApplicationShare toAppliction(Application application) {
-
+	public static ApplicationShare toOnlyAppliction(Application application) {
 		ApplicationShare appShare = new ApplicationShare(application.getVersion(), application.getAppID(),
 				PrePostAtrShare.valueOf(application.getPrePostAtr().value), application.getEmployeeID(),
 				ApplicationTypeShare.valueOf(application.getAppType().value),
@@ -87,10 +89,17 @@ public class ConvertApplicationToShare {
 		appShare.setOpAppEndDate(
 				application.getOpAppEndDate().map(x -> new ApplicationDateShare(x.getApplicationDate())));
 
-		return appDetail(appShare, application);
+		return appShare;
+	}
+	
+	public static ApplicationShare toAppliction(Application application, GeneralDate dateTarget) {
+
+		ApplicationShare appShare = toOnlyAppliction(application);
+
+		return appDetail(appShare, application, dateTarget);
 	}
 
-	private static ApplicationShare appDetail(ApplicationShare appShare, Application application) {
+	private static ApplicationShare appDetail(ApplicationShare appShare, Application application, GeneralDate dateTarget) {
 
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
@@ -123,14 +132,13 @@ public class ConvertApplicationToShare {
 
 		case BUSINESS_TRIP_APPLICATION:
 			BusinessTrip bussinessTrip = (BusinessTrip) application;
-
-			return new BusinessTripShare(
-					bussinessTrip.getInfos().stream()
-							.map(x -> new BusinessTripInfoShare(x.getWorkInformation(), x.getDate(),
-									x.getWorkingHours()))
-							.collect(Collectors.toList()),
-					bussinessTrip.getDepartureTime().map(x -> x.v()).orElse(null),
-					bussinessTrip.getReturnTime().map(x -> x.v()).orElse(null), appShare);
+			BusinessTripInfo info = bussinessTrip.getInfos().stream().filter(x -> x.getDate().equals(dateTarget))
+					.findFirst().orElse(null);
+			return new BusinessTripInfoShare(appShare, info.getWorkInformation(), info.getWorkingHours().stream()
+							.map(y -> new BusinessTripWorkTime(y.getWorkNo(),
+									y.getStartDate(),
+									y.getEndDate()))
+							.collect(Collectors.toList()));
 
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GoBackDirectly goBack = (GoBackDirectly) application;
@@ -141,14 +149,10 @@ public class ConvertApplicationToShare {
 			// AppHolidayWorkShare
 			AppHolidayWork appHolWork = (AppHolidayWork) application;
 
-			return new AppHolidayWorkShare(appShare, 
-					appHolWork.getWorkInformation(), 
-					converAppTime(appHolWork.getApplicationTime()),
-					appHolWork.getBackHomeAtr() == NotUseAtr.USE, 
-					appHolWork.getGoWorkAtr() == NotUseAtr.USE,
-					appHolWork.getBreakTimeList().orElse(new ArrayList<>()), 
-					appHolWork.getWorkingTimeList().orElse(new ArrayList<>())
-					);
+			return new AppHolidayWorkShare(appShare, appHolWork.getWorkInformation(),
+					converAppTime(appHolWork.getApplicationTime()), appHolWork.getBackHomeAtr() == NotUseAtr.USE,
+					appHolWork.getGoWorkAtr() == NotUseAtr.USE, appHolWork.getBreakTimeList().orElse(new ArrayList<>()),
+					appHolWork.getWorkingTimeList().orElse(new ArrayList<>()));
 
 		case STAMP_APPLICATION:
 			if (!application.getOpStampRequestMode().isPresent()
@@ -157,7 +161,8 @@ public class ConvertApplicationToShare {
 				AppStamp appStamp = (AppStamp) application;
 				return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
 					return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()), x.getTimeOfDay(),
-							x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr(), Optional.empty());//TODO: domain sinsei hasn't workplaceId
+							x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr(),
+							Optional.empty());// TODO: domain sinsei hasn't workplaceId
 				}).collect(Collectors.toList()), // 時刻
 
 						appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
@@ -226,7 +231,7 @@ public class ConvertApplicationToShare {
 			return new OptionalItemApplicationShare(optionalApp.getOptionalItems(), appShare);
 
 		default:
-			return null;
+			return appShare;
 		}
 	}
 

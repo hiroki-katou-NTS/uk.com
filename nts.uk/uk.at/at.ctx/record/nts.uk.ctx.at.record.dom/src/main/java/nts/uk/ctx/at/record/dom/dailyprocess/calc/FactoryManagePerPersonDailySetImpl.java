@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,12 +22,17 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimesheetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.SpecBPTimesheetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -68,6 +74,14 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	/*加給設定*/
 	@Inject
 	private BPSettingRepository bPSettingRepository;
+	
+	/*加給時間帯設定*/
+	@Inject
+	private BPTimesheetRepository bPTimesheetRepository;
+	
+	/* 特定日加給時間帯設定 */
+	@Inject
+	private SpecBPTimesheetRepository specBPTimesheetRepository;
 	
 	/* 所定時間帯 */
 	@Inject
@@ -141,22 +155,31 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			AddSetting addSetting = this.getAddSetting(
 					companyId,
 					hollidayAdditonRepository.findByCompanyId(companyId),
-					nowWorkingItem.getLaborSystem());
+					nowWorkingItem);
 	
 			/*加給*/
 			Optional<BonusPaySettingCode> bpCode = daily.getAffiliationInfor().getBonusPaySettingCode();
 			Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
 			if(bpCode.isPresent() && bpCode.get() != null ) {
 				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode.get());
+				List<BonusPayTimesheet> bonusPay = bPTimesheetRepository.getListTimesheet(companyId, bpCode.get());
+				List<SpecBonusPayTimesheet> specBonusPay = specBPTimesheetRepository.getListTimesheet(companyId, bpCode.get());
+				bonusPaySetting = bonusPaySetting.map(
+						b -> BonusPaySetting.createFromJavaType(
+								companyId,
+								b.getCode().toString(),
+								b.getName().toString(),
+								bonusPay,
+								specBonusPay));
 			}
 			
 			/**　勤務種類 */
-			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTypeCode().get().v())
+			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v())
 					.orElseThrow(() -> new RuntimeException("No WorkType"));
 		
 			/*平日時*/
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
-					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
+					nowWorkingItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
 			
 			/** 残業時間帯Require */
 			OverTimeSheet.TransProcRequire overTimeSheetRequire = new TransProcRequireImpl(
@@ -177,13 +200,19 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 
 	/**
 	 * @param map 各加算設定
-	 * @param workingSystem 労働制
+	 * @param workingItem 労働条件項目
 	 * @return 加算設定
 	 */
-	private AddSetting getAddSetting(String companyID, Map<String, AggregateRoot> map, WorkingSystem workingSystem) {
+	private AddSetting getAddSetting(String companyID, Map<String, AggregateRoot> map, WorkingConditionItem workingItem) {
 		
-		switch(workingSystem) {
+		switch(workingItem.getLaborSystem()) {
 		case REGULAR_WORK:
+			if(workingItem.getHourlyPaymentAtr().isHourlyPay()) {
+				AggregateRoot hourlyPaymentAdditionSet = map.get("hourlyPaymentAdditionSet");
+				return hourlyPaymentAdditionSet != null
+						?(HourlyPaymentAdditionSet) hourlyPaymentAdditionSet
+						: new HourlyPaymentAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+			}
 			AggregateRoot workRegularAdditionSet = map.get("regularWork");
 			return workRegularAdditionSet != null
 					?(WorkRegularAdditionSet) workRegularAdditionSet

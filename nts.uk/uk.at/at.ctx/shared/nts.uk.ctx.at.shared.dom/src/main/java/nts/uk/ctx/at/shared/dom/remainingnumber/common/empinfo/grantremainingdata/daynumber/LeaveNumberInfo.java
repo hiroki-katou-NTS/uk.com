@@ -130,9 +130,10 @@ public class LeaveNumberInfo implements Cloneable {
 
 	public LeaveNumberInfo(
 			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
-			Double stowageDays, double remainDays, Integer remainMinutes, double usedPercent) {
+			Double stowageDays, Double numberOverDays, Integer timeOver, 
+			double remainDays, Integer remainMinutes, double usedPercent) {
 		this.grantNumber = LeaveGrantNumber.createFromJavaType(grantDays, grantMinutes);
-		this.usedNumber = LeaveUsedNumber.createFromJavaType(usedDays, usedMinutes, stowageDays);
+		this.usedNumber = LeaveUsedNumber.createFromJavaType(usedDays, usedMinutes, stowageDays, numberOverDays, timeOver);
 		this.remainingNumber = LeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes);
 		this.usedPercent = new LeaveUsedPercent(new BigDecimal(0));
 		if (grantDays != 0){
@@ -146,18 +147,22 @@ public class LeaveNumberInfo implements Cloneable {
 		return this.remainingNumber.isShortageRemain();
 	}
 
-	/** 残数を補正する */ 
+	/** 残数を補正する */
 	public void correctRemainNumbers() {
-		
+
 		/** 残数がマイナスかを確認する */
 		if (this.isShortageRemain()) {
-			
+
 			/**　使用数を補正する　*/
 			this.remainingNumber = LeaveRemainingNumber.of(new LeaveRemainingDayNumber(0d), Optional.empty());
-			this.usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(this.grantNumber.days.v()), 
-												this.grantNumber.minutes.map(c -> new LeaveUsedTime(c.v())), 
-												Optional.empty(), 
+			this.usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(this.grantNumber.days.v()),
+												this.grantNumber.minutes.map(c -> new LeaveUsedTime(c.v())),
+												Optional.empty(),
 												Optional.empty());
 		}
+	}
+
+	public boolean isDummyData() {
+		return this.getGrantNumber().isZero();
 	}
 }

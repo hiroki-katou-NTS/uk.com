@@ -356,6 +356,8 @@ public class SpecialLeaveInfo implements Cloneable {
 					0,
 					0.0, 0,
 					0.0,
+					0.0,
+					0,
 					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(), // 付与日数
 					0,
 					0.0, specialLeaveCode);
@@ -581,7 +583,7 @@ public class SpecialLeaveInfo implements Cloneable {
 				}
 			}
 		}
-		resultInfo.setSpecialLeaveErrors(errors);
+		resultInfo.getSpecialLeaveErrors().addAll(errors);
 		return resultInfo;
 	}
 
@@ -597,7 +599,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			= this.getGrantRemainingDataList();
 		List<SpecialLeaveGrantRemainingData> dummyRemainingList
 			= remainingList.stream()
-				.filter(c -> c.isShortageRemain())
+				.filter(c -> c.isDummyData())
 				.collect(Collectors.toList());
 
 		if ( dummyRemainingList.size()==0 ) {
@@ -632,7 +634,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		// 特別休暇付与残数が残数不足の特別休暇付与残数をListから削除
 		List<SpecialLeaveGrantRemainingData> noDummyList
 			= this.getGrantRemainingDataList().stream()
-				.filter(c->!c.isShortageRemain())
+				.filter(c->!c.isDummyData())
 				.collect(Collectors.toList());
 		this.setGrantRemainingDataList(noDummyList);
 	}

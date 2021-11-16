@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf000.d.viewmodel {
         appDispInfoStartupOutput: any;
 		isAgentMode: boolean;
 		approvalRootDisp: KnockoutObservable<boolean>;
+		indexApprover: number = 0;
 		
         created(params: KAF000DParam) {
 			const vm = this;
@@ -113,6 +114,12 @@ module nts.uk.at.view.kaf000.d.viewmodel {
             }
            	return vm.$i18n("KAF000_9",[index+'']);
         }
+
+		getApproverLabelByIndex() {
+			const vm = this;
+			vm.indexApprover++;
+			return vm.$i18n("KAF000_9",[vm.indexApprover+'']);
+		}
 
 		getApprovalDateFormat(loopApprover) {
 			const vm = this;

@@ -50,6 +50,8 @@ module knr002.g {
             selectWorkTime: KnockoutObservable<boolean>;
             selectReservation: KnockoutObservable<boolean>;
 
+            managementSection: KnockoutObservable<boolean> = ko.observable(false);
+
             constructor(){
                 var self = this;
                 self.empInfoTerCode = ko.observable('');
@@ -117,6 +119,7 @@ module knr002.g {
                 self.empInfoTerName(getShared('KNR002G_empInfoTerName'));
                 self.modelEmpInfoTerName(getShared('KNR002G_modelEmpInfoTer'));
                 self.workLocationName(getShared('KNR002G_workLocationName'));
+                self.managementSection(getShared('KNR002G_managementSection'));
                 if(self.empInfoTerCode() === undefined || self.empInfoTerCode() === '' || self.empInfoTerCode().length <= 0){
                     self.empInfoTerCode('');
                     self.empInfoTerName('');
@@ -322,6 +325,19 @@ module knr002.g {
                             });              
                         }
                     } else self.selectReservation(false);
+                });
+            }
+
+            private call_L_Dialog(): void{
+                var self = this;
+                blockUI.invisible();
+                let data = {
+                    mode: 'individual',
+                    empInfoTerminalCode: self.empInfoTerCode()
+                }
+                setShared('dataShareL', data);
+                modal('/view/knr/002/l/index.xhtml', { title: 'L_Screen', }).onClosed(() => {
+                    blockUI.clear();
                 });
             }
             /**

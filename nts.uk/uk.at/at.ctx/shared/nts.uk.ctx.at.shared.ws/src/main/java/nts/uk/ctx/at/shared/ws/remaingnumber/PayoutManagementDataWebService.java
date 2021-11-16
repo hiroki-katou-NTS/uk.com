@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.ws.remaingnumber;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.SubOfHDPayoutMan
 import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.UpdatePayoutManagementDataCommandHandler;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutManagementDataFinder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.otherholiday.OtherHolidayInfoService;
 
 @Path("at/record/remainnumber")
 @Produces("application/json")
@@ -40,6 +42,9 @@ public class PayoutManagementDataWebService extends WebService{
 	
 	@Inject
 	private SubOfHDPayoutManaDataCommandHandler subOfHDPayoutManaDataCommandHandler;
+	
+	@Inject
+	private OtherHolidayInfoService otherHolidayInfoService;
 
 	@POST
 	@Path("save")
@@ -82,5 +87,17 @@ public class PayoutManagementDataWebService extends WebService{
 	@Path("getByIdAndUnUse/{empId}/{closureId}")
 	public List<PayoutManagementDataDto> findPayoutManaDataBySid(@PathParam("empId")String sid, @PathParam("closureId")int closureId) {
 		return this.finder.findPayoutManaDataBySid(sid, closureId);
+	}
+	
+	@Path("getRemainDays/{sid}")
+	@POST
+	public BigDecimal getRemainDays(@PathParam(value = "sid") String sid) {
+		return otherHolidayInfoService.getRemainDays(sid);
+	}
+
+	@Path("getRemainLeft/{sid}")
+	@POST
+	public BigDecimal getRemainLeft(@PathParam(value = "sid") String sid) {
+		return otherHolidayInfoService.getRemainLeft(sid);
 	}
 }

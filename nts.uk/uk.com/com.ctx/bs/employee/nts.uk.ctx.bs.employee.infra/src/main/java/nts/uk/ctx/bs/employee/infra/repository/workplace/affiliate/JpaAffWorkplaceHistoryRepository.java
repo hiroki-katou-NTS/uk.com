@@ -223,6 +223,42 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 	}
 	
 	@Override
+	public Map<GeneralDate, List<AffWorkplaceHistory>> findByEmployees(String companyId, List<String> employeeIds, List<GeneralDate> listdate) {
+		Map<GeneralDate, List<AffWorkplaceHistory>> result = new HashMap<GeneralDate, List<AffWorkplaceHistory>>();
+		if (CollectionUtil.isEmpty(employeeIds)) {
+			for (GeneralDate generalDate : listdate) {
+				result.put(generalDate, new ArrayList<>());
+			}
+			return result;
+		}
+
+		String query = "SELECT aw FROM BsymtAffiWorkplaceHist aw  WHERE aw.cid = :companyId AND aw.sid IN :employeeIds";
+		List<BsymtAffiWorkplaceHist> datatList = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			// Query.
+			datatList.addAll(this.queryProxy().query(query, BsymtAffiWorkplaceHist.class)
+					.setParameter("companyId", companyId)
+					.setParameter("employeeIds", subList)
+					.getList());
+		});
+		
+		for (GeneralDate date : listdate) {
+			List<BsymtAffiWorkplaceHist> list = datatList.stream().filter(c -> c.getStrDate().beforeOrEquals(date) && c.getEndDate().afterOrEquals(date)).collect(Collectors.toList());
+			// Group by his id.
+			Map<String, List<BsymtAffiWorkplaceHist>> resultMap = list.stream()
+					.collect(Collectors.groupingBy(BsymtAffiWorkplaceHist::getHisId));
+
+			// Convert to domain.
+			List<AffWorkplaceHistory> data = resultMap.keySet().stream().map(key -> {
+				return this.toDomainTemp(resultMap.get(key));
+			}).collect(Collectors.toList());
+			result.put(date, data);
+		}
+
+		return result;
+	}
+	
+	@Override
 	public List<AffWorkplaceHistory> findByEmployeesWithPeriod(List<String> employeeIds, DatePeriod period) {
 		if (CollectionUtil.isEmpty(employeeIds)) {
 			return new ArrayList<>();
@@ -562,11 +598,13 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 		String cid = AppContexts.user().companyId();
 		String INS_SQL = "INSERT INTO BSYMT_AFF_WKP_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " HIST_ID, SID, CID,"
+				+ " CONTRACT_CD, HIST_ID, SID, CID,"
 				+ " START_DATE, END_DATE)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, SID_VAL, CID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+				+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, CID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+		
+		String contractCode = AppContexts.user().contractCode();
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -588,6 +626,7 @@ public class JpaAffWorkplaceHistoryRepository extends JpaRepository implements A
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 			
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
 			sql = sql.replace("CID_VAL", "'" + cid + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getKey() + "'");

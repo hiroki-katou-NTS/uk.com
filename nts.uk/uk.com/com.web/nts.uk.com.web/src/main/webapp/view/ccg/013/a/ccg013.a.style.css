@@ -203,6 +203,10 @@ button.search-btn {
 	width: 134px;
 }
 
+#menubar-tabs ul li a i {
+	cursor: pointer;
+}
+
 .unsortable {
 	display: inline-block;
 	vertical-align: top;

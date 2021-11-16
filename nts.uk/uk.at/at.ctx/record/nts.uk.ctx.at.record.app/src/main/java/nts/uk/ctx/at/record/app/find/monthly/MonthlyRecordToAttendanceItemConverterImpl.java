@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
@@ -76,7 +77,8 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 										toSpecialHoliday(),
 										toRemarks(),
 										toMonCareHd(), 
-										toMonChildHd());
+										toMonChildHd(),
+										toMonPublicHoliday());
 	}
 	
 	@Override
@@ -310,6 +312,10 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 	public Optional<ChildcareRemNumEachMonth> toMonChildHd() {
 		
 		return Optional.ofNullable((ChildcareRemNumEachMonth) getDomain(ItemConst.MONTHLY_CHILD_CARE_HD_REMAIN_NAME));
+	}
+	
+	public Optional<PublicHolidayRemNumEachMonth> toMonPublicHoliday(){
+		return Optional.ofNullable((PublicHolidayRemNumEachMonth) getDomain(ItemConst.MONTHLY_PUBLIC_HOLIDAYREMAIN_NAME));
 	}
 
 	@Override

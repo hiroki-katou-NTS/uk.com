@@ -7,11 +7,13 @@ import java.util.Optional;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.OneDayReflectStatusOutput;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
@@ -92,14 +94,44 @@ public class ApplicationCancellationProcess {
 
 			// 1日分の取消処理]
 			CancelProcessOneDayOutput oneDayOut = processOneDay(require, cid, application, dateInProcess,
-					clsEmpOpt.get().getClosureId(), dbRegisterClassfi);
+					clsEmpOpt.get().getClosureId(), dbRegisterClassfi, empHist);
 			lstRemove.add(dateInProcess);
 			lstAtomtask.add(oneDayOut.getTask());
 			// 1日の反映状態を[対象日の反映状態]にセットする
 			application.getReflectionStatus().getListReflectionStatusOfDay().replaceAll(x -> {
 				if (x.getTargetDate().equals(dateInProcess)) {
+					//予定反映状態＝勤務予定の反映状態.反映状態
 					x.setScheReflectStatus(oneDayOut.getOneDayReflect().getStatusWorkSchedule().getReflectStatus());
+					//実績反映状態＝勤務実績の反映状態.反映状態
 					x.setActualReflectStatus(oneDayOut.getOneDayReflect().getStatusWorkRecord().getReflectStatus());
+					if (x.getOpUpdateStatusAppCancel().isPresent()) {
+						//申請取消の更新状態. 実績反映不可理由＝勤務実績の反映状態.日別実績反映不可理由
+						x.getOpUpdateStatusAppCancel().get().setOpReasonActualCantReflect(Optional.ofNullable(
+								oneDayOut.getOneDayReflect().getStatusWorkRecord().getReasonNotReflectWorkRecord()));
+						//申請取消の更新状態. 予定反映不可理由＝勤務予定の反映状態.予定反映不可理由
+						x.getOpUpdateStatusAppCancel().get().setOpReasonScheCantReflect(Optional.ofNullable(oneDayOut
+								.getOneDayReflect().getStatusWorkSchedule().getReasonNotReflectWorkSchedule()));
+					} else {
+						x.setOpUpdateStatusAppCancel(
+								Optional.of(new DailyAttendanceUpdateStatus(Optional.empty(), Optional.empty(),
+										Optional.ofNullable(oneDayOut.getOneDayReflect().getStatusWorkRecord()
+												.getReasonNotReflectWorkRecord()),
+										Optional.ofNullable(oneDayOut.getOneDayReflect().getStatusWorkSchedule()
+												.getReasonNotReflectWorkSchedule()))));
+					}
+
+					GeneralDateTime now = GeneralDateTime.now();
+					//勤務予定の反映状態.反映状態＝[取消済]の場合のみ
+					if (oneDayOut.getOneDayReflect().getStatusWorkSchedule()
+							.getReflectStatus() == ReflectedState.CANCELED) {
+						x.getOpUpdateStatusAppCancel().get().setOpScheReflectDateTime(Optional.of(now));
+					}
+
+					//　勤務実績の反映状態.反映状態＝[取消済]の場合のみ　
+					if (oneDayOut.getOneDayReflect().getStatusWorkRecord()
+							.getReflectStatus() == ReflectedState.CANCELED) {
+						x.getOpUpdateStatusAppCancel().get().setOpActualReflectDateTime(Optional.of(now));
+					}
 				}
 				return x;
 			});
@@ -124,7 +156,7 @@ public class ApplicationCancellationProcess {
 
 	// 1日分の取消処理
 	private static CancelProcessOneDayOutput processOneDay(Require require, String cid, Application app,
-			GeneralDate date, int closureId, NotUseAtr dbRegisterClassfi) {
+			GeneralDate date, int closureId, NotUseAtr dbRegisterClassfi, EmploymentHistShareImport empHist) {
 		// [対象日の反映状態]の内容を<output>1日の反映状態にセット
 		ReflectionStatusOfDay statusOfDay = app.getReflectionStatus().getListReflectionStatusOfDay().stream()
 				.filter(x -> x.getTargetDate().equals(date)).findFirst().orElse(null);
@@ -139,11 +171,11 @@ public class ApplicationCancellationProcess {
 						null));
 		// 勤務予定の取消処理
 		SCCancelProcessOneDayOutput scOutPut = SCApplicationCancellationProcess.processSchedule(require, cid, app, date,
-				closureId, oneDayReflect.getStatusWorkSchedule(), dbRegisterClassfi);
+				closureId, oneDayReflect.getStatusWorkSchedule(), dbRegisterClassfi, empHist);
 
 		// 勤務実績の取消処理
 		RCCancelProcessOneDayOutput rcOutPut = RCApplicationCancellationProcess.processRecord(require, cid, app, date,
-				closureId, oneDayReflect.getStatusWorkRecord(), dbRegisterClassfi);
+				closureId, oneDayReflect.getStatusWorkRecord(), dbRegisterClassfi, empHist);
 		AtomTask atomtask = AtomTask.of(scOutPut.getAtomTask()).then(rcOutPut.getAtomTask());
 
 		return new CancelProcessOneDayOutput(

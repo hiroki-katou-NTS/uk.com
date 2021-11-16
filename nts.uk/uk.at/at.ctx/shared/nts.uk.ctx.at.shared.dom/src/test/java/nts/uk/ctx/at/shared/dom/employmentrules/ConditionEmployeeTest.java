@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.AffiliationPeriodAndWorkplace;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeaveHolidayPeriod;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeavePeri
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.WorkPlaceHist;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -43,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -326,9 +327,8 @@ public class ConditionEmployeeTest {
 		}
 
 		@Override
-		public PersonalWorkCategory getWorkCategory() {
-			PersonalWorkCategoryGetMemento memento = new PersonalWorkCategoryGetMementoImpl();
-			return new PersonalWorkCategory(memento);
+		public WorkByIndividualWorkDay getWorkCategory() {
+			return new WorkByIndividualWorkDay(null, null);
 		}
 
 		@Override
@@ -347,12 +347,6 @@ public class ConditionEmployeeTest {
 		}
 
 		@Override
-		public PersonalDayOfWeek getWorkDayOfWeek() {
-			PersonalDayOfWeekGetMemento memento = new PersonalDayOfWeekGetMementoImpl();
-			return new PersonalDayOfWeek(memento);
-		}
-
-		@Override
 		public String getEmployeeId() {
 			return "EmployeeId";
 		}
@@ -368,14 +362,13 @@ public class ConditionEmployeeTest {
 					0,
 					new WorkScheduleBusCal(
 							WorkScheduleMasterReferenceAtr.CLASSIFICATION,
-							WorkScheduleMasterReferenceAtr.WORK_PLACE,
 							TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE),
 					new MonthlyPatternWorkScheduleCre(1)));
 		}
 
 		@Override
-		public Optional<BreakdownTimeDay> getHolidayAddTimeSet() {
-			return Optional.of( new BreakdownTimeDay(
+		public Optional<BreakDownTimeDay> getHolidayAddTimeSet() {
+			return Optional.of( new BreakDownTimeDay(
 					new AttendanceTime(280),
 					new AttendanceTime(240),
 					new AttendanceTime(240)
@@ -394,7 +387,6 @@ public class ConditionEmployeeTest {
 	}
 
 	private SingleDaySchedule dummySingleDaySchedule = new SingleDaySchedule(
-			"workTypeCode",
 			new ArrayList<TimeZone>(){{
 				add(new TimeZone(NotUseAtr.USE, 1, 2, 3));
 				add(new TimeZone(NotUseAtr.USE, 4, 5, 6));
@@ -410,33 +402,13 @@ public class ConditionEmployeeTest {
 		}
 
 		@Override
-		public SingleDaySchedule getHolidayTime() {
-			return dummySingleDaySchedule;
-		}
-
-		@Override
 		public SingleDaySchedule getWeekdayTime() {
 			return dummySingleDaySchedule;
 		}
 
 		@Override
-		public Optional<SingleDaySchedule> getPublicHolidayWork() {
-			return Optional.of(dummySingleDaySchedule);
-		}
-
-		@Override
-		public Optional<SingleDaySchedule> getInLawBreakTime() {
-			return Optional.of(dummySingleDaySchedule);
-		}
-
-		@Override
-		public Optional<SingleDaySchedule> getOutsideLawBreakTime() {
-			return Optional.of(dummySingleDaySchedule);
-		}
-
-		@Override
-		public Optional<SingleDaySchedule> getHolidayAttendanceTime() {
-			return Optional.of(dummySingleDaySchedule);
+		public PersonalDayOfWeek getDayOfWeek() {
+			return null;
 		}
 	}
 

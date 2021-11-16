@@ -1,11 +1,13 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm.service.createalarmdata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import nts.uk.ctx.sys.portal.dom.toppagealarm.AlarmClassification;
-import nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata.ToppageAlarmParam;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata.RegisterAlarmDataDs;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata.RegisterAlarmDataDs.RegisterAlarmDataRequire;
+import nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata.ToppageAlarmParam;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.service.updatealarmdata.UpdateAlarmDataDs;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.service.updatealarmdata.UpdateAlarmDataDs.UpdateAlarmDataRequire;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.service.updateautorunalarm.UpdateAutoRunAlarmDs;
@@ -33,7 +35,8 @@ public class CreateAlarmDataDs {
 			}
 			
 			if (delExInfo.getAlarmClassification() == AlarmClassification.ALARM_LIST) {
-				UpdateAlarmDataDs.create(rq2, cid, delExInfo.getSids(), delExInfo.getAlarmListParttenCode().orElse(""), delExInfo.getDisplayEmpClassfication().value);
+				UpdateAlarmDataDs.create(rq2, cid, delExInfo.getSids(), delExInfo.getAlarmListParttenCode().orElse(""), 
+						new ArrayList<>(), delExInfo.getDisplayEmpClassfication().value);
 			}
 		}
 		

@@ -61,6 +61,9 @@ public class ProcessExecutionWebService extends WebService {
 	
 	@Inject
 	private UpdateProcessAutoExecutionFinder updateProcessAutoExecutionFinder;
+	
+	@Inject
+	private DailyResultsLogParamFinder dailyResultsLogParamFinder;
 
 	/* Handler */
 
@@ -232,5 +235,11 @@ public class ProcessExecutionWebService extends WebService {
 	@Path("getSystemProperties")
 	public SystemPropertiesDto getSystemProperties() {
 		return new SystemPropertiesDto(AppContexts.optionLicense().customize().ootsuka(), UKServerSystemProperties.isCloud());
+	}
+	
+	@POST
+	@Path("getDailyResultsLogParam")
+	public DailyResultsLogParamDto getDailyResultsLogParam(String execId) {
+		return this.dailyResultsLogParamFinder.getParam(execId);
 	}
 }

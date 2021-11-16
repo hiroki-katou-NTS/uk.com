@@ -447,6 +447,10 @@ export interface RemainDaysHoliday {
     yearRemain: number;
     // 積休残数
     remainingHours: number;
+
+    subVacaHourRemain: number;
+
+    yearHourRemain: number;
 }
 
 export interface RemainVacationInfoDto {
@@ -500,6 +504,12 @@ export interface RemainVacationInfoDto {
 
     // 介護残時間
     nirsingHourRemain: number;
+
+    // 付与年月日
+    grantDate: string;
+    
+    // 付与日数
+   grantDays: number;
 }
 export enum ReflectWorkHourCondition {
     /** 反映しない. */
@@ -735,6 +745,9 @@ export interface AppAbsenceStartInfoDto {
 
     // 勤務種類マスタ未登録
     workTypeNotRegister: boolean;
+
+    // 就業時間帯を変更フラグ
+    workTimeChange: boolean;
 
     // 特別休暇表示情報
     specAbsenceDispInfo: SpecAbsenceDispInfoDto;

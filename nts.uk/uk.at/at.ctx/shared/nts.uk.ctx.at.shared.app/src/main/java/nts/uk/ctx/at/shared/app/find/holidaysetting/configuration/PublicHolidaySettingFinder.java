@@ -32,8 +32,10 @@ public class PublicHolidaySettingFinder {
 			dto.setCarryOverNumberOfPublicHdIsNegative(holidaySetting.get().getCarryOverNumberOfPublicHolidayIsNegative());
 			dto.setManagePublicHoliday(holidaySetting.get().getIsManagePublicHoliday());
 			dto.setPublicHdCarryOverDeadline(holidaySetting.get().getPublicHolidayCarryOverDeadline().value);
-			dto.setPublicHolidayPeriod(holidaySetting.get().getPublicHolidayPeriod().value);			
+			dto.setPublicHolidayPeriod(holidaySetting.get().getPublicHolidayPeriod().value);
+			return dto;
 		} 
-		return dto;
+		else {
+			return null;}
 	}
 }

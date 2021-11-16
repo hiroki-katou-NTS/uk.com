@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 
@@ -14,6 +15,13 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
  */
 @AllArgsConstructor
 public class StampRecord implements DomainAggregate {
+	
+	/**
+	 * 打刻記録ID // GUID
+	 */
+	@Getter
+	private final String stampRecordId;
+	
 	/**
 	 * 	契約コード
 	 */
@@ -39,5 +47,24 @@ public class StampRecord implements DomainAggregate {
 
 	public String retriveKey() {
 		return this.getStampNumber()+ this.getStampDateTime().toString();
+	}
+	
+	/**
+	 * 	[C-1] 新規作成
+	 * @param contractCode
+	 * @param stampNumber
+	 * @param stampDateTime
+	 * @param stampTypeDisplay
+	 */
+	public StampRecord (ContractCode contractCode, StampNumber stampNumber, GeneralDateTime stampDateTime,
+			StampTypeDisplay stampTypeDisplay) {
+		super();
+		//	新しいGUIDを作成する
+		this.stampRecordId = IdentifierUtil.randomUniqueId();
+		this.contractCode = contractCode;
+		this.stampNumber = stampNumber;
+		this.stampDateTime = stampDateTime;
+		this.stampTypeDisplay = stampTypeDisplay;
+		
 	}
 }

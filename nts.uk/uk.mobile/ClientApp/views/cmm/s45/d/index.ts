@@ -87,6 +87,9 @@ export class CmmS45DComponent extends Vue {
     public isLoadingComplete = false;
     public reasons: Array<Reason> = null;
 
+    public opAppStartDate: Date;
+    public opAppEndDate: Date;
+
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -169,6 +172,8 @@ export class CmmS45DComponent extends Vue {
             self.authorComment = appDetailScreenInfoDto.authorComment;
             self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
             self.appType = appDetailScreenInfoDto.application.appType;
+            self.opAppStartDate = appDetailScreenInfoDto.application.opAppStartDate;
+            self.opAppEndDate = appDetailScreenInfoDto.application.opAppEndDate;
             self.memo = '';
             if (!_.isEmpty(self.authorComment)) {
                 self.commentDis = true ;
@@ -565,6 +570,12 @@ export class CmmS45DComponent extends Vue {
         }
 
         return false;
+    }
+
+    get displayCancelLabel() {
+        const vm = this;
+
+        return vm.appState.reflectStatus == ReflectedState.CANCELED;
     }
 
     get applicant() {

@@ -32,8 +32,12 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 	@Override
 	public List<TempAnnualLeaveMngsExport> getTempAnnualLeaveData(String employeeId, LeaveUsedNumberExport usedNumber) {
 
-		LeaveUsedNumber usedNumberDom = LeaveUsedNumber.createFromJavaType(usedNumber.getDays(),
-				usedNumber.getMinutes().orElse(null), usedNumber.getStowageDays().orElse(null));
+		LeaveUsedNumber usedNumberDom = LeaveUsedNumber.createFromJavaType(
+				usedNumber.getDays(),
+				usedNumber.getMinutes().orElse(null), 
+				usedNumber.getStowageDays().orElse(null), 
+				usedNumber.leaveOverLimitNumber.map(c->c.numberOverDays).orElse(null), 
+				usedNumber.leaveOverLimitNumber.map(c->c.timeOver.orElse(null)).orElse(null));
 		return GetTempAnnualLeaveMngsFromUsedNumberService.tempAnnualLeaveMngs(employeeId, usedNumberDom).stream()
 				.map(x -> convert(x)).collect(Collectors.toList());
 	}

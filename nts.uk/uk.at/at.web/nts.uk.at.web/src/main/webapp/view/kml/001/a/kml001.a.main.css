@@ -209,9 +209,6 @@ td.valign-right {
 td input.premiumInput {
 	margin-left: 5px;
 }
-#dateRange-list_headers > thead {
-  display: none !important;
-}
 
 #premium-set-div .nts-fixed-table .nts-fixed-body-container {
 	overflow-y: scroll;

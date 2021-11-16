@@ -19,8 +19,8 @@ public enum TimeZoneScheduledMasterAtr {
 	PERSONAL_DAY_OF_WEEK(2, "Enum_TimeZoneScheduledMasterAtr_PersonalDayOfWeek", "個人曜日別"),
 
 	/** The personal work daily. */
-	// 個人勤務日別
-	PERSONAL_WORK_DAILY(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily", "個人勤務日別");
+	//平日時  (個人勤務日別 old)
+	WEEKDAYS(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily", "平日時");
 
 	/** The value. */
 	public final int value;

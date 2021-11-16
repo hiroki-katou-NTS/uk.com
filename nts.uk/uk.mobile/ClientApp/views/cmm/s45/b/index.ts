@@ -412,7 +412,7 @@ export class CmmS45BComponent extends Vue {
     private convertLstApp(lstApp: Array<ListOfApplication>) {
         const self = this;
         let lst = [];
-        lstApp.forEach((app: ListOfApplication) => {
+        lstApp.forEach((app: any) => {
             if (self.arrayAppType.indexOf(app.appType) >= 0) {
                 lst.push(new AppInfo({
                     id: app.appID,
@@ -423,12 +423,23 @@ export class CmmS45BComponent extends Vue {
                     reflectStatus: app.reflectionStatus,
                     appStatusNo: self.convertReflectToInt(app.reflectionStatus),
                     frameStatus: null,//this.getFrameStatus(app.appID),
-                    version: null
+                    version: null,
+                    opComplementLeaveApp: app.opComplementLeaveApp,
+                    opAppStartDate: app.opAppStartDate,
+                    opAppEndDate: app.opAppEndDate
+                    
                 }));
             }
         });
 
         return lst;
+    }
+
+    public isLinkApp(opComplementLeaveApp: any) {
+
+        const isLinkApp = _.get(opComplementLeaveApp, 'linkAppID');
+
+        return !_.isNil(isLinkApp);
     }
     public convertReflectToInt(value: string) {
         const self = this;

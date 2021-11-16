@@ -84,7 +84,10 @@ module a10 {
         
         private bindingNameByCode(code: string) {
             let _self = this;
-            if (!nts.uk.util.isNullOrUndefined(code) && (code != "") && (typeof code == 'string')) {
+            if (code == '000') {
+                _self.bonusPaySettingCode("");
+                _self.bonusPaySettingName("");
+            } else if (!nts.uk.util.isNullOrUndefined(code) && (code != "") && (typeof code == 'string')) {
                 //filter to get name by code
                 let itemPaySetting: Array<any> = _.filter(_self.lstBonusPaysetting(), item => item.code == code);
                 if (itemPaySetting.length > 0) {

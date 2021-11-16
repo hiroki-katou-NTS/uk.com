@@ -1,6 +1,6 @@
 module nts.uk.at.view.kaf005.shr.header.viewmodel {
 	const template = `
-<div data-bind="with: $parent, if: $parent.visibleModel.c6()">
+<div data-bind="with: $parent, visible: $parent.visibleModel.c6()">
 	<div style="padding: 20px 15px 0" data-bind="if: visibleModel.c6()">
 		<div class="cf valign-center"
 			data-bind="style: {padding: '10px 10px 10px 12px'}"
