@@ -129,15 +129,11 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		lstEntity.forEach(i -> {
 			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
-			if(!entityOld.isPresent()){
+			if (!entityOld.isPresent()) {
 				commandProxy().insert(i);
-			} else{
-				if (i.workCd1 == null) {
-					commandProxy().remove(entityOld.get());
-				} else {
-					updateData(entityOld.get(), i);
-					commandProxy().update(entityOld.get());
-				}
+			} else {
+				updateData(entityOld.get(), i);
+				commandProxy().update(entityOld.get());
 			}
 		});
 	}
