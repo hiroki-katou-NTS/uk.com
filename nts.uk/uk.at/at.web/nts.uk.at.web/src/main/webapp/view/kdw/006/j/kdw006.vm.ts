@@ -226,6 +226,9 @@ module nts.uk.at.view.kmk006.j {
             if (ko.unwrap(vm.value1)) {
                 if (ko.unwrap(vm.textInput1) === "") {
                     vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_312')]})
+                    .then(() => {
+                        $('.ip-nameItem1').focus();
+                    })
                     return;
                 }
                 recordColumnDisplayItems.push({ order: 1, attendanceItemId: ko.unwrap(vm.value1).toString(), displayName: ko.unwrap(vm.textInput1) });
@@ -233,6 +236,9 @@ module nts.uk.at.view.kmk006.j {
             if (ko.unwrap(vm.value2)) {
                 if (ko.unwrap(vm.textInput2) === "") {
                     vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_313')]})
+                    .then(() => {
+                        $('.ip-nameItem2').focus();
+                    })
                     return;
                 }
                 recordColumnDisplayItems.push({ order: 2, attendanceItemId: ko.unwrap(vm.value2).toString(), displayName: ko.unwrap(vm.textInput2) });
@@ -240,6 +246,9 @@ module nts.uk.at.view.kmk006.j {
             if (ko.unwrap(vm.value3)) {
                 if (ko.unwrap(vm.textInput3) === "") {
                     vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_314')]})
+                    .then(() => {
+                        $('.ip-nameItem3').focus();
+                    })
                     return;
                 }
                 recordColumnDisplayItems.push({ order: 3, attendanceItemId: ko.unwrap(vm.value3).toString(), displayName: ko.unwrap(vm.textInput3) });
