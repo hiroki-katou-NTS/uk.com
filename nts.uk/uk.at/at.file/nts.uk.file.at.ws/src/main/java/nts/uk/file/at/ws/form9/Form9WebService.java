@@ -9,7 +9,6 @@ import nts.uk.file.at.app.export.form9.SystemTemplateFinder;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.Map;
 
 @Path("at/file/form9/report")
 @Produces("application/json")
