@@ -30,21 +30,25 @@ public class DailyResultInputUnit {
     public ValueCheckResult checkInputUnit(BigDecimal value, OptionalItemAtr optionalItemAtr) {
 		
     	double resultEnum = 0.0;
+    	String valueDisplay ="";
     	switch(optionalItemAtr) {
     	case TIME:
     		resultEnum = timeItemInputUnit.get().valueEnum();
+    		valueDisplay = timeItemInputUnit.get().nameId;
     		break;
     	case NUMBER:
     		resultEnum = numberItemInputUnit.get().valueEnum();
+    		valueDisplay = numberItemInputUnit.get().nameId;
     		break;
     	default: //金額
     		resultEnum = amountItemInputUnit.get().valueEnum();
+    		valueDisplay = amountItemInputUnit.get().nameId;
     	}
     	
     	if(value.doubleValue()%resultEnum ==0) {
     		return new ValueCheckResult(true, Optional.empty());
     	}
-    	String errorContens = TextResource.localize("Msg_2290",String.valueOf(resultEnum));
+    	String errorContens = TextResource.localize("Msg_2290",valueDisplay);
     	return new ValueCheckResult(false, Optional.of(errorContens));
 	}
     

@@ -50,7 +50,7 @@ public class InputControlSettingTest {
 		OptionalItemAtr optionalItemAtr = OptionalItemAtr.AMOUNT;
 		BigDecimal inputValue = new BigDecimal(506);
 		
-		ValueCheckResult dailyResultInputUnitOutput = new ValueCheckResult(false, Optional.of("10.0の単位で入力してください。")); 
+		ValueCheckResult dailyResultInputUnitOutput = new ValueCheckResult(false, Optional.of("10の単位で入力してください。")); 
 		new MockUp<DailyResultInputUnit>() {
 			@Mock
 			public ValueCheckResult checkInputUnit(BigDecimal value, OptionalItemAtr optionalItemAtr) {
@@ -69,7 +69,7 @@ public class InputControlSettingTest {
 		
 		CheckValueInputCorrectOuput dataResult = inputControlSetting.checkValueInputCorrect(inputValue, performanceAtr, optionalItemAtr);
 		assertThat(dataResult.isCheckResult()).isFalse();
-		assertThat(dataResult.getErrorContent().get(0)).isEqualTo("10.0の単位で入力してください。");
+		assertThat(dataResult.getErrorContent().get(0)).isEqualTo("10の単位で入力してください。");
 		assertThat(dataResult.getErrorContent().get(1)).isEqualTo("666.0以上の値で入力してください。");
 	}
 	
@@ -183,7 +183,7 @@ public class InputControlSettingTest {
 	}
 	
 	/**
-	 * チェックボックスで入力する = false && INPUT「実績区分」 = 日別実績 && 「@日別実績の入力単位」.isPresent == true
+	 * チェックボックスで入力する = false && INPUT「実績区分」 = 日別実績 && 「@日別実績の入力単位」.isPresent == false
 	 * 任意項目の属性 = 金額
 	 * 入力範囲チェック error (not call)
 	 * 入力単位チェック error

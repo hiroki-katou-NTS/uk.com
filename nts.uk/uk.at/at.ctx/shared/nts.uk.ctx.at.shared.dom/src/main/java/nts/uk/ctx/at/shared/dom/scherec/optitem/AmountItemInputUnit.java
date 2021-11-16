@@ -8,21 +8,23 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum AmountItemInputUnit {
     // 0:1
-    ONE(0),
+    ONE(0,"1"),
 
     // 1:10
-    TEN(1),
+    TEN(1,"10"),
 
     // 2:100
-    ONE_HUNDRED(2),
+    ONE_HUNDRED(2,"100"),
 
     // 3:1000
-    ONE_THOUSAND(3),
+    ONE_THOUSAND(3,"1000"),
 
     // 4:10000
-    TEN_THOUSAND(4);
+    TEN_THOUSAND(4,"10000");
 
     public int value;
+    
+    public String nameId;
     
     private final static AmountItemInputUnit[] values = AmountItemInputUnit.values();
     

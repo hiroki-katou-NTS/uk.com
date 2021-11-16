@@ -8,24 +8,26 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum TimeItemInputUnit {
     //  0:1分
-    ONE_MINUTE(0),
+    ONE_MINUTE(0,"1分"),
 
     //  1:5分
-    FIVE_MINUTES(1),
+    FIVE_MINUTES(1,"5分"),
 
     //  2:10分
-    TEN_MINUTES(2),
+    TEN_MINUTES(2,"10分"),
 
     //  3:15分
-    FIFTEEN_MINUTES(3),
+    FIFTEEN_MINUTES(3,"15分"),
 
     //  4:30分
-    THIRTY_MINUTES(4),
+    THIRTY_MINUTES(4,"30分"),
 
     //  4:60分
-    SIXTY_MINUTES(5);
+    SIXTY_MINUTES(5,"60分");
 
     public int value;
+    
+    public String nameId;
     
     private final static TimeItemInputUnit[] values = TimeItemInputUnit.values();
 
