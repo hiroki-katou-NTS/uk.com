@@ -389,7 +389,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 			RequireM2 require){
 		
 		if((iscarryOverNumberOfPublicHoliday() && numberCarriedForward.lessThan(0.0)) || numberCarriedForward.greaterThan(0.0)){
-			if(createDeadline(require, cacheCarrier, employeeId, endDay,criteriaDate).after(criteriaDate) ){
+			if(createDeadline(require, cacheCarrier, employeeId, endDay,criteriaDate).after(endDay) ){
 				return true;
 			}
 		}
