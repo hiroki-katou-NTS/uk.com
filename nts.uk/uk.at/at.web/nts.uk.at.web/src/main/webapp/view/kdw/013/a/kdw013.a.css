@@ -89,7 +89,9 @@
 	 border-radius: 50%;
 	 width: 30px;
 }
-
+.show {
+	visibility: visible !important;
+}
 .pr27 {
 	padding-right: 27px;
 }
