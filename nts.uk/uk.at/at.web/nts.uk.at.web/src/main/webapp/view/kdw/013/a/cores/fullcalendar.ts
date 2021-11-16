@@ -2192,6 +2192,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 vm.params.screenA.oneDayFavTaskName('');
                                                 vm.params.screenA.taskBlocks(taskBlocks);
 												vm.params.screenA.popupTitle('KDW013_72');
+												vm.params.screenA.btnContent('KDW013_1');
                                             } else {
                                                 
                                                 const target = $(evt.target).closest('.fc-col-header-cell.fc-day').get(0) as HTMLElement;

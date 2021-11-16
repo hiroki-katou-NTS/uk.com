@@ -152,6 +152,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                 taskBlockDetailContents: item.extendedProps.dropInfo.taskBlockDetailContents
             });
 			vm.params.screenA.popupTitle('KDW013_96');
+			vm.params.screenA.btnContent('KDW013_43');
 			setTimeout(() => {
 				$('.input-g').focus();
 			}, 100)
