@@ -16,6 +16,9 @@
 
 .popup-area-i{
 	padding: 10px !important;
+	max-height: 517px;
+	text-overflow: ellipsis;
+	overflow: auto;
 }
 
 .pb10 {
@@ -85,4 +88,7 @@
 	 border: none;
 	 border-radius: 50%;
 	 width: 30px;
+}
+.show {
+	visibility: visible !important;
 }
