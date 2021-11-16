@@ -31,7 +31,7 @@ public class UpdateResvLeaCommandHandler extends CommandHandler<UpdateResvLeaRem
 				GrantRemainRegisterType.MANUAL.value, c.getGrantDays(), c.getUseDays(), c.getOverLimitDays(),
 				c.getRemainingDays());
 		
-		resvLeaRepo.update(data);
+		resvLeaRepo.updateWithGrantDate(data);
 
 	}
 

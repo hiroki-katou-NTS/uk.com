@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
@@ -29,37 +30,32 @@ public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 	 * @return 休暇付与残数データ　
 	 */
 	public static ReserveLeaveGrantRemainingData of(
-			String leavID,
-			String employeeId,
-			GeneralDate grantDate,
-			GeneralDate deadline,
-			LeaveExpirationStatus expirationStatus,
-			GrantRemainRegisterType registerType,
-			LeaveNumberInfo details) {
+			LeaveGrantRemainingData remaingData) {
 
-		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
-		domain.employeeId = employeeId;
-		domain.grantDate = grantDate;
-		domain.deadline = deadline;
-		domain.expirationStatus = expirationStatus;
-		domain.registerType = registerType;
-		domain.details = details;
-		return domain;
+		return new ReserveLeaveGrantRemainingData(
+				remaingData.getLeaveID(),
+				remaingData.getEmployeeId(),
+				remaingData.getGrantDate(),
+				remaingData.getDeadline(),
+				remaingData.getExpirationStatus(),
+				remaingData.getRegisterType(),
+				remaingData.getDetails()
+				);
 	}
 
 	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainDays) {
 
-		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
-		domain.leaveID = id;
-		domain.employeeId = employeeId;
-		domain.grantDate = grantDate;
-		domain.deadline = deadline;
-		domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-		domain.details = new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays);
-		return domain;
+		return new ReserveLeaveGrantRemainingData(
+				id,
+				employeeId,
+				grantDate,
+				deadline,
+				EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class),
+				EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class),
+				new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays)
+				);
 	}
 
 	/**
@@ -166,5 +162,33 @@ public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		return true;
 	}
 
+	/**
+	 * コンストラクタ
+	 * @param leaveID
+	 * @param employeeId
+	 * @param grantDate
+	 * @param deadline
+	 * @param expirationStatus
+	 * @param grantRemainRegisterType
+	 * @param details
+	 */
+	public ReserveLeaveGrantRemainingData(String leaveID,String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,LeaveNumberInfo details){
+		super(leaveID, employeeId, grantDate, deadline, expirationStatus,grantRemainRegisterType,details);
+	}
+	
+	/**
+	 * コンストラクタ
+	 * @param employeeId
+	 * @param grantDate
+	 * @param deadline
+	 * @param expirationStatus
+	 * @param grantRemainRegisterType
+	 * @param details
+	 */
+	public ReserveLeaveGrantRemainingData(String employeeId, GeneralDate grantDate, GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus, GrantRemainRegisterType grantRemainRegisterType,LeaveNumberInfo details){
+		super(IdentifierUtil.randomUniqueId(), employeeId, grantDate, deadline, expirationStatus,grantRemainRegisterType,details);
+	}
 
 }
