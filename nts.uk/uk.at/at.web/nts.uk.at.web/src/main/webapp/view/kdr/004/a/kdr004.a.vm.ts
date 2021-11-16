@@ -130,7 +130,9 @@ module nts.uk.at.view.kdr004.a {
                 maxRows: 20
             };
 
-            $('#kcp005').ntsListComponent(vm.listComponentOption)
+            $('#kcp005').ntsListComponent(vm.listComponentOption).then(() => {
+                $(".pull-left .panel-frame").height($("#kcp005").height());
+            });
         }
 
         /**
