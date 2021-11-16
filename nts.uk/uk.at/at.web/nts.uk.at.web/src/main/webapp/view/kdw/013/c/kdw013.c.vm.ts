@@ -296,8 +296,9 @@ module nts.uk.ui.at.kdw013.c {
 										visibleItemsCount: 10,
 										width : '255px',
 										columns: [
-											{ prop: 'code', length: 1 },
-											{ prop: 'name', length: 8 },
+											{ prop: 'code' },
+											{ prop: 'name' },
+											{ prop: 'taskNote' },
 										]}
                                     "></div></td>
                             </tr>
@@ -1140,15 +1141,15 @@ module nts.uk.ui.at.kdw013.c {
 		}
 		
 		convertWorkLocationList(option: {code: string, name: string}[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
-            const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_40'), $raw: null, selected: false }];
+            const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false }];
             if (code && code()) {
                 const taskSelected = _.find(option, { 'code': code() });
                 if (!taskSelected) {
-                    lst.push({ id: code(), code: code(), name: getText('KDW013_41'), selected: false, $raw: null });
+                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), taskNote: '', selected: false, $raw: null });
                 }
             }
             _.each(option, (t: {code: string, name: string}) => {
-                lst.push({ id: t.code, code: t.code, name: t.name , selected: false, $raw: null });
+                lst.push({ id: t.code, code: t.code, name: t.name ,  taskNote: '',selected: false, $raw: null });
             });
             return lst;
         }
@@ -1293,7 +1294,7 @@ module nts.uk.ui.at.kdw013.c {
             if (code && code()) {
                 const taskSelected = _.find(tasks, { 'code': code() });
                 if (!taskSelected) {
-                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), selected: false, $raw: null });
+                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), taskNote: '', selected: false, $raw: null });
                 }
             }
             _.each(tasks, (t: TaskDto) => {
@@ -1305,9 +1306,9 @@ module nts.uk.ui.at.kdw013.c {
 		mapper($raw: TaskDto | null): DropdownItem {
 			let vm = this;
 			if($raw == null){
-				return { id: '', code: '', name: getText('KDW013_41'), $raw: null, selected: false };
+				return { id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false };
 			}
-            return { id: $raw.code, code: $raw.code, name: vm.getName($raw.displayInfo) , selected: false, $raw: $raw };
+            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName , taskNote: $raw.displayInfo.taskNote, selected: false, $raw: $raw };
         }
 		getName(displayInfo: TaskDisplayInfoDto): string{
 			if(displayInfo.taskNote && displayInfo.taskNote!= ''){
@@ -1342,6 +1343,7 @@ module nts.uk.ui.at.kdw013.c {
         id: string;
         code: string;
         name: string;
+		taskNote: string;
         selected: boolean;
         $raw: any;
     };
