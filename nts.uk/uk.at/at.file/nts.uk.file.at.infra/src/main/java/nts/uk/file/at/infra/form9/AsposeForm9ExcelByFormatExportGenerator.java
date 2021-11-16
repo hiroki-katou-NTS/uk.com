@@ -34,6 +34,9 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -581,5 +584,9 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
         style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getEmpty());
         style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.NONE);
         cell.setStyle(style);
+    }
+
+    public InputStream getSystemTemplate(String fileName) {
+        return this.getResourceAsStream(SYSTEM_TEMPLATE_PATH + fileName);
     }
 }

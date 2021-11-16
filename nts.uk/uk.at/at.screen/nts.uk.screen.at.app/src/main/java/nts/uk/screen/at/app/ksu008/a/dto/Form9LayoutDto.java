@@ -48,4 +48,6 @@ public class Form9LayoutDto {
      * テンプレート
      **/
     private String templateFileId;
+
+    private String templateFileName;
 }

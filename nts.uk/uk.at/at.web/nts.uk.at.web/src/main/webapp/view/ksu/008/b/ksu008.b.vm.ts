@@ -1,13 +1,13 @@
 module nts.uk.at.ksu008.b {
     import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
 
     const API = {
         getAll: "screen/at/ksu008/b/get-layouts/",
         getOne: "screen/at/ksu008/b/get-layout/",
         registerData: "screen/at/ksu008/b/register",
         updateData: "screen/at/ksu008/b/update",
-        deleteData: "screen/at/ksu008/b/delete"
+        deleteData: "screen/at/ksu008/b/delete",
+        downloadSystemTemplate: "at/file/form9/report/download-system-template"
     };
 
     @bean()
@@ -89,7 +89,7 @@ module nts.uk.at.ksu008.b {
                             self.layoutCode(layout.code);
                             self.layoutName(layout.name);
                             self.useAtr(layout.use ? 1 : 0);
-                            self.fileName(null);
+                            self.fileName(layout.templateFileName);
                             self.fileId(layout.templateFileId);
                             self.cellYear(layout.cover.cellYear);
                             self.cellMonth(layout.cover.cellMonth);
@@ -101,16 +101,7 @@ module nts.uk.at.ksu008.b {
                             self.nursingAssistantColumnSetting.setData(layout.nursingAideTable);
                             self.nursingStaffDetailSetting.setData(layout.nursingTable.detailSetting);
                             self.nursingAssistantDetailSetting.setData(layout.nursingAideTable.detailSetting);
-                            if (layout.templateFileId) {
-                                self.enableDownloadTemplate(true);
-                                self.$ajax("/shr/infra/file/storage/infor/" + layout.templateFileId).done(fileInfo => {
-                                    self.fileName(fileInfo.originalName);
-                                }).fail(error => {
-                                    self.$dialog.error(error);
-                                });
-                            } else {
-                                self.enableDownloadTemplate(false);
-                            }
+                            self.enableDownloadTemplate(true);
                             _.defer(() => {
                                 self.layoutType() == 1 ? $("#B4_2").focus() : $("#B3_3").focus();
                             });
@@ -153,9 +144,6 @@ module nts.uk.at.ksu008.b {
             vm.layoutType(params.isSystemFixed ? 1 : 0);
             $("#B6_1-table").ntsFixedTable({});
             $("#B7_2-table").ntsFixedTable({});
-            _.defer(() => {
-                $("#file-upload .browser-button").attr('tabindex', 0);
-            });
         }
 
         getAllLayoutSetting(isSystemFixed: boolean, code?: string) {
@@ -176,6 +164,9 @@ module nts.uk.at.ksu008.b {
                 vm.$dialog.error(error);
             }).always(() => {
                 vm.$blockui("hide");
+                _.defer(() => {
+                    $("#file-upload .browser-button").attr('tabindex', 0);
+                });
             });
         }
 
@@ -188,7 +179,7 @@ module nts.uk.at.ksu008.b {
             const vm = this;
             vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
                 if (valid) {
-                    if (_.isEmpty(vm.fileId())) {
+                    if (vm.layoutType() == 0 && _.isEmpty(vm.fileId())) {
                         vm.$errors("#file-upload .browser-button", {messageId: "MsgB_2", messageParams: [vm.$i18n("KSU008_50")]});
                         return;
                     }
@@ -281,7 +272,28 @@ module nts.uk.at.ksu008.b {
 
         downloadTemplate() {
             const vm = this;
-            nts.uk.request.specials.donwloadFile(vm.fileId());
+            if (vm.layoutType() == 1) {
+                // vm.$blockui("show");
+                $.fileDownload(
+                    "/" + nts.uk.request.WEB_APP_NAME.at + "/webapi/" + API.downloadSystemTemplate + "/" + vm.currentCode(),
+                    {
+                        successCallback: function(url) {
+                            // vm.$blockui("hide");
+                        },
+                        failCallback: function(responseHtml, url, error) {
+                            vm.$dialog.error(error);
+                            // vm.$blockui("hide");
+                        }
+                    }
+                );
+            } else {
+                vm.$blockui("show");
+                nts.uk.request.specials.donwloadFile(vm.fileId()).fail(error => {
+                    vm.$dialog.error(error);
+                }).always(() => {
+                    vm.$blockui("hide");
+                });
+            }
         }
     }
 
@@ -300,6 +312,7 @@ module nts.uk.at.ksu008.b {
         nursingTable: any;
         systemFixed: boolean;
         templateFileId: string;
+        templateFileName: string;
         use: boolean;
     }
 

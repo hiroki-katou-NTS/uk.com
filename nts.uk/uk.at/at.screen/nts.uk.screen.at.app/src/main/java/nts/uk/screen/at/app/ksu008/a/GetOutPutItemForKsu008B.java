@@ -1,5 +1,7 @@
 package nts.uk.screen.at.app.ksu008.a;
 
+import nts.arc.layer.app.file.storage.StoredFileInfo;
+import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Layout;
@@ -15,6 +17,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -28,11 +31,24 @@ public class GetOutPutItemForKsu008B {
     @Inject
     private Form9LayoutRepository form9LayoutRepository;
 
+    @Inject
+    private StoredFileInfoRepository fileRepo;
+
     public List<Form9LayoutDto> get(boolean isSystemFixed) {
         List<Form9Layout> form9Layouts = form9LayoutRepository.getLayoutBySystemFixedAttr(AppContexts.user().companyId(), isSystemFixed);
         if (form9Layouts.isEmpty()) {
             return Collections.emptyList();
         }
+        Form9Layout.Require require = new Form9Layout.Require() {
+            @Override
+            public Optional<StoredFileInfo> getInfo(String fileId) {
+                return fileRepo.find(fileId);
+            }
+            @Override
+            public StoredFileInfo saveFile(String fileName) {
+                return null;
+            }
+        };
         return form9Layouts.stream().map(
                 x -> new Form9LayoutDto(
                         x.getCode().v(),
@@ -81,12 +97,23 @@ public class GetOutPutItemForKsu008B {
                                 x.getNursingAideTable().getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
                                 x.getNursingAideTable().getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null)
                         ),
-                        x.getTemplateFileId().orElse(null)
+                        x.getTemplateFileId().orElse(null),
+                        x.getFileName(require)
                 )
         ).collect(Collectors.toList());
     }
 
     public Form9LayoutDto get(String code) {
+        Form9Layout.Require require = new Form9Layout.Require() {
+            @Override
+            public Optional<StoredFileInfo> getInfo(String fileId) {
+                return fileRepo.find(fileId);
+            }
+            @Override
+            public StoredFileInfo saveFile(String fileName) {
+                return null;
+            }
+        };
         return form9LayoutRepository.get(AppContexts.user().companyId(), new Form9Code(code)).map(x -> new Form9LayoutDto(
                 x.getCode().v(),
                 x.getName().v(),
@@ -134,7 +161,8 @@ public class GetOutPutItemForKsu008B {
                         x.getNursingAideTable().getConcurrentPost().map(PrimitiveValueBase::v).orElse(null),
                         x.getNursingAideTable().getNightShiftOnly().map(PrimitiveValueBase::v).orElse(null)
                 ),
-                x.getTemplateFileId().orElse(null)
+                x.getTemplateFileId().orElse(null),
+                x.getFileName(require)
         )).orElse(null);
     }
 }
