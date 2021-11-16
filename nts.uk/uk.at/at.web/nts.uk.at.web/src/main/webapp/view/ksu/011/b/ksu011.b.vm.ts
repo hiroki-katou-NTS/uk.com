@@ -135,13 +135,25 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                     vm.columnName5(_.size(setting.titles) > 4 ? setting.titles[4] : null);
                     vm.columnName6(_.size(setting.titles) > 5 ? setting.titles[5] : null);
                     vm.personalCounter(setting.personalCounter || []);
-                    vm.readonlyText1(countItems.filter(i => vm.personalCounter().indexOf(i.totalCountNo) >= 0).map(i => i.totalTimesName).join("、"));
                     vm.workplaceCounter(setting.workplaceCounter || []);
-                    vm.readonlyText2(countItems.filter(i => vm.workplaceCounter().indexOf(i.totalCountNo) >= 0).map(i => i.totalTimesName).join("、"));
                     vm.comment(setting.comment);
                     vm.transferDisplay(setting.transferDisplay == 1);
                     vm.supporterSchedulePrintMethod(setting.supporterSchedulePrintMethod);
                     vm.supporterRecordPrintMethod(setting.supporterRecordPrintMethod);
+
+                    let pCountNames: Array<string> = [];
+                    vm.personalCounter().forEach((no: number) => {
+                        const item = _.find(countItems, i => i.totalCountNo == no);
+                        if (item) pCountNames.push(item.totalTimesName);
+                    });
+                    vm.readonlyText1(pCountNames.join("、"));
+
+                    let wCountNames: Array<string> = [];
+                    vm.workplaceCounter().forEach((no: number) => {
+                        const item = _.find(countItems, i => i.totalCountNo == no);
+                        if (item) wCountNames.push(item.totalTimesName);
+                    });
+                    vm.readonlyText2(wCountNames.join("、"));
                 } else {
                     vm.createNew();
                 }
