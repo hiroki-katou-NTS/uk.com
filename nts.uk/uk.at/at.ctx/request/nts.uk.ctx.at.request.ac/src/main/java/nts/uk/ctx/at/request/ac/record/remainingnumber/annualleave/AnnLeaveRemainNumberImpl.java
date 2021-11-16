@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumb
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveManageInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveRemainingNumberImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaveImport;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -32,6 +33,15 @@ public class AnnLeaveRemainNumberImpl implements AnnLeaveRemainNumberAdapter {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @Override
+    public ReNumAnnLeaveImport getReferDateAnnualLeaveRemain(String employeeID, GeneralDate date) {
+        ReNumAnnLeaReferenceDateExport reNum = this.annLeavePub.getReferDateAnnualLeaveRemainNumber(employeeID, date);
+        return new ReNumAnnLeaveImport(
+                reNum.getRemainingDays(), 
+                reNum.getRemainingTime());
+    }
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
