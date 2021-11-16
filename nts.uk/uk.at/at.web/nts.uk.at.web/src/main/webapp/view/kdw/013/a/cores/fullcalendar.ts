@@ -392,6 +392,9 @@ module nts.uk.ui.at.kdw013.calendar {
         .favIcon:hover{
                 background-color: rgb(229, 242, 255);
         }
+        .border-dashed{
+            border-style: dashed !important;    
+        }
 `;
 
     @handler({
@@ -2314,7 +2317,12 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
                 },
-                dayCellClassNames: (arg) => {
+                slotLabelClassNames: (arg) => {
+                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+                }
+                ,
+                slotLaneClassNames: (arg) => {
+                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
                 }
                 ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
