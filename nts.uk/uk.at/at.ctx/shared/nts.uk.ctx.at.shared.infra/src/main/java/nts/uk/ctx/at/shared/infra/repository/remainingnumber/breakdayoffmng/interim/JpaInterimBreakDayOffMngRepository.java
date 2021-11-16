@@ -543,7 +543,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		if(lstDate.isEmpty()) return new ArrayList<>();
 		return this.queryProxy().query("SELECT a FROM KrcdtInterimHdwkMng a " +
 				" WHERE a.pk.sid = :sid " +
-				"AND a.pk.ymd IN :sid ", KrcdtInterimHdwkMng.class)
+				"AND a.pk.ymd IN :ymd ", KrcdtInterimHdwkMng.class)
 				.setParameter("sid", sid)
 				.setParameter("ymd", lstDate)
 				.getList(i -> toDomainBreakMng(i));
@@ -554,7 +554,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		if(lstDate.isEmpty()) return new ArrayList<>();
 		return this.queryProxy().query("SELECT a FROM KrcmtInterimDayOffMng a " +
 				" WHERE a.pk.sid = :sid " +
-				"AND a.pk.ymd IN :sid ", KrcmtInterimDayOffMng.class)
+				"AND a.pk.ymd IN :ymd ", KrcmtInterimDayOffMng.class)
 				.setParameter("sid", sid)
 				.setParameter("ymd", lstDate)
 				.getList(i -> toDomainDayoffMng(i));

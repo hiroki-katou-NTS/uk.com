@@ -55,7 +55,7 @@ public class ErrorsTable {
 		
 		this.jdbcProxy.query(sql)
 			.paramInt("p1", error.getCsvRowNo())
-			.paramInt("p2", error.getDomainId().value)
+			.paramInt("p2", error.getDomainId() != null ? error.getDomainId().value : null)
 			.paramInt("p3", error.getItemNo())
 			.paramString("p4", error.getMessage())
 			.execute();

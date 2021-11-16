@@ -103,13 +103,11 @@ public class GetLayout {
 	private static List<ExternalImportLayoutDto> getAllImportables(GetLayout.Require require, GetLayoutParam query) {
 		
 		val importableItems = require.getImportableItems(query.getImportingDomainId());
-		
+
 		return importableItems.stream()
-				.map(i -> ExternalImportLayoutDto.fromDomain(
-						require,
-						query.getSettingCode(),
-						query.getImportingDomainId(),
-						ImportingItemMapping.noSetting(i.getItemNo())))
+				.map(t -> ExternalImportLayoutDto.fromDomain(
+						t,
+						ImportingItemMapping.noSetting(t.getItemNo())))
 				.collect(Collectors.toList());
 	}
 	
@@ -125,13 +123,22 @@ public class GetLayout {
 	
 	private List<ExternalImportLayoutDto> toLayouts(GetLayout.Require require, GetLayoutParam query,
 			List<ImportingItemMapping> mappings) {
-		
-		return mappings.stream()
-				.map(i -> ExternalImportLayoutDto.fromDomain(
-						require,
-						query.getSettingCode(),
-						query.getImportingDomainId(),
-						new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue())))
+		// 対象受入項目NO一覧
+		val targetItemNoList = mappings.stream()
+				.map(i -> i.getItemNo())
+				.collect(Collectors.toList());
+		// 対象受入項目の受入可能項目を取得
+		val importableItems = require.getImportableItems(query.getImportingDomainId());
+		val targetItems = importableItems.stream()
+				.filter(i -> targetItemNoList.contains(i.getItemNo()))
+				.collect(Collectors.toList());
+
+		return targetItems.stream()
+				.map(t -> ExternalImportLayoutDto.fromDomain(
+						t,
+						mappings.stream()
+								.filter(m -> m.getItemNo() == t.getItemNo())
+								.collect(Collectors.toList()).get(0)))
 				.collect(Collectors.toList());
 	}
 	

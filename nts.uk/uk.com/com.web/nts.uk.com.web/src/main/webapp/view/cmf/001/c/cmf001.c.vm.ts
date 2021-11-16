@@ -222,6 +222,19 @@ module nts.uk.com.cmf001.c {
                 } else {
                     mapping.revisingValue.codeConvert.convertDetailsText("");
                 }
+                if (!res.revisingValue || !res.revisingValue.timeHourlySegment){
+                    mapping.revisingValue.timeHourlySegment(1);
+                }
+                if (!res.revisingValue || !res.revisingValue.timeBaseNumber){
+                    mapping.revisingValue.timeBaseNumber(0);
+                }
+                if (!res.revisingValue || !res.revisingValue.timeDelimiter){
+                    mapping.revisingValue.timeRounding(0);
+                }
+                if (!res.revisingValue || !res.revisingValue.timeRounding){
+                    mapping.revisingValue.timeRounding(3);
+                }
+
             });
         }
 

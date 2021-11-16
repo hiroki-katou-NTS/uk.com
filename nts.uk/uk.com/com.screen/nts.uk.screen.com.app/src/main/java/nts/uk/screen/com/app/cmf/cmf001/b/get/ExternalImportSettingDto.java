@@ -90,7 +90,7 @@ public class ExternalImportSettingDto {
 		return new ExternalImportCsvFileInfo(
 				new ExternalImportRowNumber(itemNameRow),
 				new ExternalImportRowNumber(importStartRow),
-				 Optional.of(this.csvFileId));
+				 Optional.ofNullable(this.csvFileId));
 	}
 
 }

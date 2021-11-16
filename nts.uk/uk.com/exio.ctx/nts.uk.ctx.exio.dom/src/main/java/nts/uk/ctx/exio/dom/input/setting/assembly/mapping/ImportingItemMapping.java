@@ -26,6 +26,9 @@ public class ImportingItemMapping {
 	/** 項目NO */
 	private final int itemNo;
 
+	/** 固定値か？ **/
+	private boolean isFixedValue;
+
 	/** CSV列番号 */
 	private Optional<Integer> csvColumnNo;
 
@@ -33,15 +36,16 @@ public class ImportingItemMapping {
 	private Optional<StringifiedValue> fixedValue;
 
 	public static ImportingItemMapping noSetting(int itemNo) {
-		return new ImportingItemMapping(itemNo, Optional.empty(), Optional.empty());
+		return new ImportingItemMapping(itemNo, true, Optional.empty(), Optional.empty());
 	}
 
-	public ImportingItemMapping(int itemNo, Optional<Integer> csvColumnNo, Optional<StringifiedValue> fixedValue) {
+	public ImportingItemMapping(int itemNo, boolean isFixedValue, Optional<Integer> csvColumnNo, Optional<StringifiedValue> fixedValue) {
 
 		if (csvColumnNo.isPresent() && fixedValue.isPresent()) {
 			throw new RuntimeException("両方同時には設定できない");
 		}
 
+		this.isFixedValue = isFixedValue;
 		this.itemNo = itemNo;
 		this.csvColumnNo = csvColumnNo;
 		this.fixedValue = fixedValue;
@@ -56,26 +60,31 @@ public class ImportingItemMapping {
 	}
 
 	public boolean isCsvMapping() {
-		return csvColumnNo.isPresent();
+		return !isFixedValue;
 	}
 
 	public boolean isFixedValue() {
-		return fixedValue.isPresent();
+		return isFixedValue;
 	}
 
 	public void setNoSetting() {
+		isFixedValue = true;
 		csvColumnNo = Optional.empty();
 		fixedValue = Optional.empty();
 	}
 
 	public void setCsvColumnNo(int columnNo) {
-		csvColumnNo = Optional.of(columnNo);
+		csvColumnNo = Optional.ofNullable(columnNo);
 		fixedValue = Optional.empty();
+		isFixedValue = !csvColumnNo.isPresent();
 	}
 
 	public void setFixedValue(StringifiedValue value) {
-		fixedValue = Optional.of(value);
-		csvColumnNo = Optional.empty();
+		fixedValue = Optional.ofNullable(value);
+		if(fixedValue.isPresent()) {
+			csvColumnNo = Optional.empty();
+			isFixedValue = true;
+		}
 	}
 
 	public Either<ItemError, DataItem> assemble(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
