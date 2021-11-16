@@ -27,8 +27,6 @@ public class PublicHolidayCarryForwardHistory extends PublicHolidayCarryForwardD
 	public PublicHolidayCarryForwardHistory(
 			PublicHolidayCarryForwardData data, YearMonth yearMonth, ClosureId clousureId, ClosureDate closureDate){
 		super(	data.getEmployeeId(),
-				data.getYearMonth(),
-				data.getDeadline(),
 				data.getNumberCarriedForward(),
 				data.getGrantRemainRegisterType());
 		this.histYearMonth = yearMonth;
