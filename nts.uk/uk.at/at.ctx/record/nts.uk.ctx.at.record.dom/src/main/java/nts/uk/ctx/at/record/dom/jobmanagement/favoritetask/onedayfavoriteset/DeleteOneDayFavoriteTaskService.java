@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskDisplayOrder;
-import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.DeleteFavoriteTaskService.Require;
 
 /**
  * DS: お気に入り作業を削除する
@@ -15,7 +13,7 @@ import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.Dele
  * @name UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.作業管理.お気に入り作業.1日お気に入りセット.お気に入り作業を削除する
  */
 public class DeleteOneDayFavoriteTaskService {
-
+	
 	public static AtomTask create(Require require, String employeeId, String favoriteId) {
 		List<AtomTask> atomTasks = new ArrayList<>();
 
@@ -29,17 +27,19 @@ public class DeleteOneDayFavoriteTaskService {
 
 		// return Atom Task:
 		// $登録対象.add(require.お気に入りを削除する(社員ID, お気に入りID)
-		return AtomTask.of(() -> {
-			atomTasks.add(AtomTask.of(() -> require.delete(employeeId, favoriteId)));
+		
+		atomTasks.add(AtomTask.of(() -> require.delete(employeeId, favoriteId)));
 
-			if (favoriteTaskDisplayOrder.isPresent()) {
-				if (favoriteTaskDisplayOrder.get().getDisplayOrders().isEmpty()) {
-					atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
-				} else {
-					atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
-				}
+		if (favoriteTaskDisplayOrder.isPresent()) {
+			if (favoriteTaskDisplayOrder.get().getDisplayOrders().isEmpty()) {
+				atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
+			} else {
+				atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
+				require.deleteByFavId(favoriteId);
 			}
-		});
+		}
+		
+		return AtomTask.bundle(atomTasks);
 	}
 
 	// ■Require
@@ -59,6 +59,8 @@ public class DeleteOneDayFavoriteTaskService {
 		// [R-4] 表示順を更新する
 		// 1日お気に入り作業の表示順Repository.Update(1日お気に入り作業の表示順)
 		void update(OneDayFavoriteTaskDisplayOrder favoriteTaskDisplayOrder);
+		
+		void deleteByFavId(String favoriteId);
 	}
 
 }

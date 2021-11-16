@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 public class TaskContent implements DomainValue {
 	
 	/** 項目ID: 工数実績項目ID*/
-	private final int itemId;
+	private final int itemId; 
 	
 	/** 作業コード*/
 	private final WorkCode taskCode;

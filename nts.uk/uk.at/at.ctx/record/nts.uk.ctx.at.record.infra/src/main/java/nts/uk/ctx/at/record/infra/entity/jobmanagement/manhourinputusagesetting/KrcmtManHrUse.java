@@ -10,7 +10,6 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.jobmanagement.usagesetting.ManHrInputUsageSetting;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -40,12 +39,12 @@ public class KrcmtManHrUse extends ContractUkJpaEntity implements Serializable {
 	}
 
 	public KrcmtManHrUse(ManHrInputUsageSetting setting) {
-		this.cId = AppContexts.user().companyId();
+		this.cId = setting.getCid();
 		this.useAtr = setting.getUsrAtr().value;
 	}
 
 	public ManHrInputUsageSetting toDomain() {
-		return new ManHrInputUsageSetting(NotUseAtr.valueOf(this.useAtr));
+		return new ManHrInputUsageSetting(cId, NotUseAtr.valueOf(this.useAtr));
 	}
 
 }

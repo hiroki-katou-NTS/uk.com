@@ -9,6 +9,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.jobmanagement.displayformat.DisplayManHrRecordItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -33,5 +35,15 @@ public class KrcmtManHrFormatDialogTask extends ContractUkJpaEntity implements S
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+
+	public KrcmtManHrFormatDialogTask toEntity(DisplayManHrRecordItem domain) {
+		return new KrcmtManHrFormatDialogTask(
+				new KrcmtManHrFormatDialogTaskPk(domain.getItemId(), AppContexts.user().companyId()),
+				domain.getOrder());
+	}
+
+	public DisplayManHrRecordItem toDomain() {
+		return new DisplayManHrRecordItem(this.pk.manHrItemId, this.dispOrder);
 	}
 }

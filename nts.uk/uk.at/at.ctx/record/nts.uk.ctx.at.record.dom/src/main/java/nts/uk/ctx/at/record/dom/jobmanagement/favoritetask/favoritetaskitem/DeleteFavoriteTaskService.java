@@ -14,7 +14,7 @@ import nts.arc.task.tran.AtomTask;
  *
  */
 public class DeleteFavoriteTaskService {
-
+	
 //■Public
 	/**
 	 * [1] 追加する
@@ -37,17 +37,19 @@ public class DeleteFavoriteTaskService {
 
 		// return Atom Task:
 		// $登録対象.add(require.お気に入りを削除する(社員ID, お気に入りID)
-		return AtomTask.of(() -> {
-			atomTasks.add(AtomTask.of(() -> require.delete(employeeId, favoriteId)));
+		atomTasks.add(AtomTask.of(() -> require.delete(employeeId, favoriteId)));
 
-			if (favoriteTaskDisplayOrder.isPresent()) {
-				if (favoriteTaskDisplayOrder.get().getDisplayOrders().isEmpty()) {
-					atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
-				} else {
-					atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
-				}
+		if (favoriteTaskDisplayOrder.isPresent()) {
+			if (favoriteTaskDisplayOrder.get().getDisplayOrders().isEmpty()) {
+				atomTasks.add(AtomTask.of(() -> require.delete(employeeId)));
+			} else {
+				atomTasks.add(AtomTask.of(() -> require.update(favoriteTaskDisplayOrder.get())));
+				require.deleteByFavId(favoriteId);
 			}
-		});
+		}
+	
+		//return AtomTask.bundle($登録対象)
+		return AtomTask.bundle(atomTasks);
 	}
 
 // ■Require
@@ -67,5 +69,7 @@ public class DeleteFavoriteTaskService {
 		// [R-4] 表示順を更新する
 		// お気に入り作業の表示順Repository.Update(お気に入り作業の表示順)
 		void update(FavoriteTaskDisplayOrder favoriteTaskDisplayOrder);
+		
+		void deleteByFavId(String favoriteId);
 	}
 }

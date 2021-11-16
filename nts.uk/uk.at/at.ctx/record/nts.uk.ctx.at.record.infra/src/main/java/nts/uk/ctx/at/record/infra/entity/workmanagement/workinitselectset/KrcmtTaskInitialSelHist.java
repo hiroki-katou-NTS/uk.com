@@ -1,11 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.workmanagement.workinitselectset;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,14 +8,10 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskCode;
 import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSel;
 import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHist;
-import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskItem;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 @Entity
 @NoArgsConstructor

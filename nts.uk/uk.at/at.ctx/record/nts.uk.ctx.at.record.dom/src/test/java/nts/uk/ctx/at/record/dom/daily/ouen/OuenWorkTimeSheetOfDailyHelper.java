@@ -32,7 +32,7 @@ public class OuenWorkTimeSheetOfDailyHelper {
 				.create(new SupportFrameNo(1),
 						WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("workplaceId"),
 								new WorkLocationCD("WCD")), Optional.empty(), Optional.empty()),
-						TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()));
+						TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()), Optional.empty());
 		ouenTimeSheets.add(ouenTimeSheet);
 		return OuenWorkTimeSheetOfDaily.create("empId", GeneralDate.today(), ouenTimeSheets);
 	}
@@ -42,7 +42,7 @@ public class OuenWorkTimeSheetOfDailyHelper {
 		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(1),
 				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("DUMMY"), new WorkLocationCD("1")),
 						Optional.empty(), Optional.empty()),
-				null);
+				null, Optional.empty());
 
 		ouenTimeSheets.add(attendance);
 		ouenTimeSheets.add(attendance);
@@ -58,21 +58,21 @@ public class OuenWorkTimeSheetOfDailyHelper {
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()), Optional.empty()));
 		list.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(2),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId("Dummy"), new WorkLocationCD("Dummy")),
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty()), Optional.empty()));
 		list.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(3),
 				WorkContent.create(
 						WorkplaceOfWorkEachOuen.create(new WorkplaceId("Dummy"), new WorkLocationCD("Dummy")),
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(3), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(3), Optional.empty(), Optional.empty()), Optional.empty()));
 		
 		return list;
 	}
@@ -85,7 +85,7 @@ public class OuenWorkTimeSheetOfDailyHelper {
 						Optional.of(new WorkGroup(new WorkCode("Dummy"), Optional.empty(), Optional.empty(),
 								Optional.empty(), Optional.empty())),
 						Optional.empty()),
-				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty())));
+				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(2), Optional.empty(), Optional.empty()), Optional.empty()));
 		return list;
 	}
 }

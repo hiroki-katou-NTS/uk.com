@@ -565,12 +565,26 @@ public class DailyPerformanceCorrectionWebService {
 		return DPHeaderDto.getPrimitiveAll();
 	}
 	
-	@POST
+	@SuppressWarnings("unchecked")
+    @POST
 	@Path("findWplIDByCode")
 	public GetWkpIDOutput findWplIDByCode(GetWkpIDParam param) {
-	    return new GetWkpIDOutput(workplacePub.getWkpNewByCdDate(
-	            param.getCompanyId(), 
-	            param.getWkpCode(), 
-	            GeneralDate.fromString(param.baseDate, "yyyy/MM/dd")).orElse(null));
+	    val domain  = session.getAttribute("domainEdits");
+        List<DailyRecordDto> dailyEdits = new ArrayList<>();
+        if(domain == null){
+            dailyEdits = cloneListDto((List<DailyRecordDto>) session.getAttribute("domainOlds"));
+        }else{
+            dailyEdits = (List<DailyRecordDto>) domain;
+        }
+        
+        Optional<DailyRecordDto> dailyEditOpt = dailyEdits.stream().filter(x -> {
+            return x.getDate().toString("yyyy/MM/dd").equals(param.getBaseDate());
+        }).findFirst();
+        
+        return new GetWkpIDOutput(dailyEditOpt.map(x -> x.getAffiliationInfo().getWorkplaceID()).orElse(null));
+//	    return new GetWkpIDOutput(workplacePub.getWkpNewByCdDate(
+//	            param.getCompanyId(), 
+//	            param.getWkpCode(), 
+//	            GeneralDate.fromString(param.baseDate, "yyyy/MM/dd")).orElse(null));
 	}
 }

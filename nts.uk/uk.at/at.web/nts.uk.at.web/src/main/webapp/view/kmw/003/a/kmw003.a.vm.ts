@@ -414,6 +414,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.characteristics.save("cacheKMW003",self.monthlyParam());
             service.startScreen(self.monthlyParam()).done((data) => {
 				self.employmentConfirm = data.useSetingOutput.employmentConfirm;
+                if(self.employmentConfirm){
+                    let check = _.find(data.authorityDto, function(o) {
+                        return o.functionNo === 26;
+                    })
+                    if (check == null){
+                        self.employmentConfirm = false;
+                    } 
+                }
                 if (data.selectedClosure) {
                     let closureInfoArray = []
                     closureInfoArray = _.map(data.lstclosureInfoOuput, function(item: any) {
@@ -700,7 +708,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
 					{ colorCode: '#F69164', labelText: getText("KMW003_42") },
 					{ colorCode: '#FFFF99', labelText: getText("KMW003_43") },
 					{ colorCode: '#FF99CC', labelText: getText("KMW003_44") },
-					{ colorCode: '#eb9152', labelText: getText("KMW003_45") },
+					{ colorCode: '#ff0000', labelText: getText("KMW003_45") },
                     { colorCode: '#DDDDD2', labelText: getText("KMW003_33") },
                 ]
             };
@@ -1995,7 +2003,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.available_A1_9(self.checkAvailable(data, 12));
                 self.available_A1_11(self.checkAvailable(data, 12));
                 //A2_1
-                $('#ccg001').hide();
+                $('#ccg001').show();
             } else if (initMode == 2) {
                 $('#cbClosureInfo').show();
                 //A4_7

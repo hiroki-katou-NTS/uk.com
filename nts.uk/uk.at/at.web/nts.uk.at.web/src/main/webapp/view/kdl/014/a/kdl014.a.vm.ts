@@ -12,21 +12,34 @@ module nts.uk.at.view.kdl014.a {
         selectedItem = ko.observable( '' );
         listComponentOption: any;
         employeeInputList = ko.observableArray([]);
-        dataServer = [];
+        employeeInfoList = ko.observableArray([]);
+        dataServer: any[] = [];
         paramFromParent: ParamFromParent;
         display: boolean;
         height: number;
         
         constructor(){
             let self = this;
+            let tg: any[] = [];
             self.paramFromParent = getShared('KDL014-PARAM');
+            if (self.paramFromParent.mode == 0 && self.paramFromParent.listEmp.length > 0) {
+                let param = {
+                    start: new Date(self.paramFromParent.startDate), 
+                    end: new Date(self.paramFromParent.endDate), 
+                    mode: self.paramFromParent.mode, 
+                    listEmp: self.paramFromParent.listEmp
+                };
+                service.getEmployeeData(param).done(function(data) {
+                    if (data) {
+                        _.forEach(data, function(item) {
+                            tg.push({ id: item.employeeId, code: item.employeeCode, businessName: item.businessName, workplaceName: item.affiliationName, depName: '' });
+                        });
+                        self.employeeInfoList(_.orderBy(tg, ['code'], ['asc']));
+                    }
+                });
+            }
             
-            let tg = [];
-            _.forEach(self.paramFromParent.listEmp, function(item) {
-                tg.push({ id: item.employeeId, code: item.employeeCode, businessName: item.employeeName, workplaceName: item.affiliationName, depName: '' });
-            });
             
-            self.employeeInputList(_.orderBy(tg, ['code'], ['asc']));
             
             self.selectedItem.subscribe((newValue) => {
                 $(document).ready(function() {
@@ -58,10 +71,10 @@ module nts.uk.at.view.kdl014.a {
                     self.display = data.display;
             
                     if (self.paramFromParent.mode == 0) {
-                        self.selectedItem(self.employeeInputList()[0].id);
+                        self.selectedItem(self.employeeInfoList()[0].id);
                         self.bindComponent();
                     } else {
-                        let tg = [];
+                        let tg: any[] = [];
                         _.forEach(self.dataServer, function(item) {
                             if (self.display == false) {
                                 item.locationInfo = null;
@@ -95,7 +108,7 @@ module nts.uk.at.view.kdl014.a {
             $('#emp-component').ntsLoadListComponent({
                 systemReference: SystemType.EMPLOYMENT,
                 isDisplayOrganizationName: false,
-                employeeInputList: self.employeeInputList,
+                employeeInputList: self.employeeInfoList,
                 targetBtnText: getText('KCP009_3'),
                 selectedItem: self.selectedItem,
                 tabIndex: 1
@@ -232,7 +245,7 @@ module nts.uk.at.view.kdl014.a {
         startDate: string; //YYYY/MM/DD
         endDate: string; ////YYYY/MM/DD
         mode: number; //mode = 0 => Person, mode = 1 => Date
-        listEmp: EmployeeInfor[];//{employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570', employeeCode: '', employeeName: '', affiliationName: ''}
+        listEmp: string[];//employeeId: 'ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570'
     }
 
     interface EmployeeInfor {

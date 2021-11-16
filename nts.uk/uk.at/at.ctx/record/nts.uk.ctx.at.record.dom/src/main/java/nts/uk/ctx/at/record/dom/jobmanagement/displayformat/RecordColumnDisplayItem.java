@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.displayformat;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 
@@ -9,6 +10,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  *
  */
 @Getter
+@AllArgsConstructor
 public class RecordColumnDisplayItem implements DomainObject{
 	
 	//表示順

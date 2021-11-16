@@ -2,7 +2,10 @@ package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -19,7 +22,7 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	private final String employeeId;
 
 	/** 表示順 */
-	private List<FavoriteDisplayOrder> displayOrders;
+	private List<FavoriteDisplayOrder> displayOrders = new ArrayList<>();
 
 	/**
 	 * [C-0] お気に入り作業の表示順 (社員ID,表示順)
@@ -38,11 +41,11 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	 * 
 	 * @param employeeId 社員ID
 	 * @param favoriteId お気に入りID
+	 * 
 	 */
-	public FavoriteTaskDisplayOrder(String employeeId, String favoriteId) {
-		super();
-		this.employeeId = employeeId;
-		this.add(favoriteId);
+	public static FavoriteTaskDisplayOrder addNewFavTaskDisporder(String employeeId, String favId) {
+		
+		return new FavoriteTaskDisplayOrder(employeeId, Collections.singletonList(FavoriteDisplayOrder.addFirstDisorder(favId)));
 	}
 
 	/**
@@ -51,14 +54,16 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	 * 
 	 * @param favoriteId お気に入りID
 	 */
-	public void add(String favoriteId) {
-		for (FavoriteDisplayOrder o : this.displayOrders) {
-			// 表示順を後ろにずらす
-			o.shiftBackOrder();
-		}
+	public void add(String favId) {
+		//if (!this.displayOrders.isEmpty()) {
+			for (FavoriteDisplayOrder o : this.displayOrders) {
+				// 表示順を後ろにずらす
+				o.shiftBackOrder();
+			}
+		//}
 
 		// 表示順.追加する($新しいお気に入り)
-		this.displayOrders.add(new FavoriteDisplayOrder(favoriteId));
+		this.displayOrders.add(FavoriteDisplayOrder.addFirstDisorder(favId));
 
 		// 表示順：sort $.表示順 ASC
 		this.displayOrders.stream().sorted(Comparator.comparingInt(FavoriteDisplayOrder::getOrder))
@@ -73,20 +78,23 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	public void delete(String favoriteId) {
 		// $削除対象
 		// filter $.お気に入りID == お気に入りID
-		FavoriteDisplayOrder detetedObj = this.displayOrders.stream().filter(f -> f.getFavId() == favoriteId).findAny()
-				.get();
+		Optional<FavoriteDisplayOrder> detetedObj = this.displayOrders.stream().filter(f -> f.getFavId().equals(favoriteId)).findAny();
 
 		// filter $.表示順 > $削除対象.表示順
 		// $.表示順を前にずらす()
-		for (FavoriteDisplayOrder o : this.displayOrders) {
-			if (o.getOrder() > detetedObj.getOrder()) {
-				o.shiftFrontOrder();
+		
+		if (detetedObj.isPresent()) {
+			for (FavoriteDisplayOrder o : this.displayOrders) {
+				if (o.getOrder() > detetedObj.get().getOrder()) {
+					o.shiftFrontOrder();
+				}
 			}
-		}
 
-		// except $削除対象
-		this.displayOrders = this.displayOrders.stream().filter(f -> f.getFavId() != favoriteId)
-				.collect(Collectors.toList());
+			// except $削除対象
+			this.displayOrders = this.displayOrders.stream().filter(f -> !f.getFavId().equals(favoriteId))
+					.collect(Collectors.toList());
+		}
+		
 	}
 
 	/**
@@ -95,30 +103,30 @@ public class FavoriteTaskDisplayOrder extends AggregateRoot {
 	 * @param beforeOrder 変更前の表示順
 	 * @param afterOrder  変更後の表示順
 	 */
-	public void changeOrder(String reorderedId, int frontOrder, int backOrder) {
-		if (frontOrder == backOrder) {
+	public void changeOrder(String reorderedId, int beforeOrder, int afterOrder) {
+		if (beforeOrder == afterOrder) {
 			return;
 		}
 
-		if (frontOrder > backOrder) {
+		if (beforeOrder > afterOrder) {
 			for (FavoriteDisplayOrder o : this.displayOrders) {
-				if (o.getOrder() < frontOrder && o.getOrder() >= backOrder) {
+				if (o.getOrder() < beforeOrder && o.getOrder() >= afterOrder) {
 					o.shiftBackOrder();
 				}
 			}
 		}
 
-		if (frontOrder < backOrder) {
+		if (beforeOrder < afterOrder) {
 			for (FavoriteDisplayOrder o : this.displayOrders) {
-				if (o.getOrder() > frontOrder && o.getOrder() <= backOrder) {
+				if (o.getOrder() > beforeOrder && o.getOrder() <= afterOrder) {
 					o.shiftFrontOrder();
 				}
 			}
 		}
 
 		for (FavoriteDisplayOrder o : this.displayOrders) {
-			if (o.getFavId() == reorderedId) {
-				o.changeDisplayOrder(backOrder);
+			if (o.getFavId().equals(reorderedId)) {
+				o.changeDisplayOrder(afterOrder);
 			}
 		}
 

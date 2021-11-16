@@ -5,13 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.infra.entity.daily.timegroup.KsrdtTaskTsGroupPk;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
  * @name 日別時間帯別実績
@@ -22,44 +24,41 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_TS_SUP_SUPPL_INFO")
-public class KrcdtDayTsSupSupplInfo extends ContractUkJpaEntity implements Serializable {
+public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public KrcdtDayTsSupSupplInfoPk pk;
 
-	@Column(name = "CID")
-	public String cid;
-	
 	@Column(name = "SUPPL_INFO_TIME1")
-	public int supplInfoTime1;
+	public Integer supplInfoTime1;
 	
 	@Column(name = "SUPPL_INFO_TIME2")
-	public int supplInfoTime2;
+	public Integer supplInfoTime2;
 	
 	@Column(name = "SUPPL_INFO_TIME3")
-	public int supplInfoTime3;
+	public Integer supplInfoTime3;
 	
 	@Column(name = "SUPPL_INFO_TIME4")
-	public int supplInfoTime4;
+	public Integer supplInfoTime4;
 	
 	@Column(name = "SUPPL_INFO_TIME5")
-	public int supplInfoTime5;
+	public Integer supplInfoTime5;
 	
 	@Column(name = "SUPPL_INFO_NUMBER1")
-	public int supplInfoNumber1;
+	public Integer supplInfoNumber1;
 	
 	@Column(name = "SUPPL_INFO_NUMBER2")
-	public int supplInfoNumber2;
+	public Integer supplInfoNumber2;
 	
 	@Column(name = "SUPPL_INFO_NUMBER3")
-	public int supplInfoNumber3;
+	public Integer supplInfoNumber3;
 	
 	@Column(name = "SUPPL_INFO_NUMBER4")
-	public int supplInfoNumber4;
+	public Integer supplInfoNumber4;
 	
 	@Column(name = "SUPPL_INFO_NUMBER5")
-	public int supplInfoNumber5;
+	public Integer supplInfoNumber5;
 	
 	@Column(name = "SUPPL_INFO_COMMENT1")
 	public String supplInfoComment1;
@@ -90,6 +89,13 @@ public class KrcdtDayTsSupSupplInfo extends ContractUkJpaEntity implements Seria
 	
 	@Column(name = "SUPPL_INFO_CODE5")
 	public String supplInfoCode5;
+	
+	@OneToOne
+	@JoinColumns({
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false),
+		@JoinColumn(name = "SUP_NO", referencedColumnName = "SUP_NO", insertable = false, updatable = false)})
+	public KrcdtDayOuenTimeSheet krcdtDayOuenTimeSheet;
 	
 	@Override
 	protected Object getKey() {

@@ -2,17 +2,20 @@ package nts.uk.screen.at.app.kdw013.a;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
+import nts.uk.screen.at.app.kdw013.query.GetApplicationData;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
-import nts.uk.screen.at.app.kdw013.query.GetApplicationData;
 
 /**
  * UKDesign.UniversalK.就業.KDW_日別実績.KDW013_工数入力.A:工数入力.メニュー別OCD.残業申請・休出時間申請の対象時間を取得する
@@ -25,75 +28,85 @@ public class GetTargetTime {
 
 	@Inject
 	private GetApplicationData applicationData;
+	
+	@Inject
+	private ClosureEmploymentService closureEmploymentService;
+	
+	@Inject
+	private AttendanceTimeRepository attendanceTimeRepository;
 
 	/**
 	 * 
-	 * @param sid                    対象者
-	 * @param mode                   画面モード（入力モード(1)/確認モード(2)）
-	 * @param integrationOfDailyList List<日別勤怠(Work)>
+	 * @param sid                    対象社員
+	 * @param inputDates             対象日リスト
 	 * @return List<残業休出時間>
 	 */
-	public List<OvertimeLeaveTimeDto> get(String sid, int mode, List<IntegrationOfDaily> integrationOfDailyList) {
-		List<OvertimeLeaveTimeDto> overtimeLeaveTimes = new ArrayList<>();
+	public List<OvertimeLeaveTimeDto> get(String sid, List<GeneralDate> inputDates) {
+		
+		 List<OvertimeLeaveTimeDto> result = new ArrayList<>();
 
-		// 【条件】
-		// 日別勤怠(Work)．勤怠時間．勤務時間．総労働時間．所定外時間．残業時間.isPresent AND 画面モード = 入力モード
-		for (IntegrationOfDaily i : integrationOfDailyList) {
+		// 1.社員に対応する締め期間を取得する
+		DatePeriod period = this.closureEmploymentService.findClosurePeriod(sid, GeneralDate.today());
+		
+		//年月日リスト = 対象日リスト：filter $ >= 取得した「期間．開始日」
+		List<GeneralDate> dates = inputDates.stream().filter(x -> x.afterOrEquals(period.start()))
+				.collect(Collectors.toList());
+		
+		//2 .get (対象社員,年月日リスト)
+		
+		List<AttendanceTimeOfDailyPerformance> atts =  this.attendanceTimeRepository.find(sid, dates);
+		
+		atts.forEach(att -> {
+			
+			//日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．残業時間.isPresent
+			att.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().ifPresent(ot->{
+				//残業合計時間 = 「日別勤怠の残業時間．残業枠時間．振替時間．計算時間」 + 「日別勤怠の残業時間．残業枠時間．残業時間．計算時間」	
+						Integer totalOverTime = 
+								ot.getOverTimeWorkFrameTime().stream().mapToInt(ft -> ft.getTransferTime().getCalcTime().v()).sum() 
+								+ ot.getOverTimeWorkFrameTime().stream().mapToInt(ft -> ft.getOverTimeWork().getCalcTime().v()).sum();
+						
+						if (totalOverTime > 0) {
+							//3 . 残業合計時間 > 0
+							//取得する(社員ID, 申請種類, 年月日, 事前事後区分)
+							//申請者, 申請種類, 申請日, 事前事後区分
+							//対象者,申請種類.残業申請,日別勤怠(Work).年月日,事前事後区分.事後
+							List<Application> lstApplication = applicationData.get(sid,
+									ApplicationType.OVER_TIME_APPLICATION.value, att.getYmd(),
+									PrePostAtr.POSTERIOR.value);
+							// 3.1 List<申請> == isEmpty 日別勤怠(Work).年月日,残業休出区分.残業申請,残業合計時間 
+							if (lstApplication.isEmpty()) {
+								result.add(new OvertimeLeaveTimeDto(att.getYmd(), totalOverTime,
+										OverTimeLeaveType.OVER_TIME_APPLICATION.value));
+							}
+						}
+			});
+			//日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．休出時間.isPresent
+			att.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().ifPresent(ht->{
+				//休出合計時間 = 「日別勤怠の休出時間．休出枠時間．振替時間．計算時間」 + 「日別勤怠の休出時間．休出枠時間．休出時間．計算時間」	
+						Integer totalBreakTime = 
+								ht.getHolidayWorkFrameTime().stream().mapToInt(ft -> ft.getTransferTime().get().getCalcTime().v()).sum() 
+								+ ht.getHolidayWorkFrameTime().stream().mapToInt(ft -> ft.getHolidayWorkTime().get().getCalcTime().v()).sum();
+						
+						if (totalBreakTime > 0) {
+							// 休出合計時間 > 0
+							// 取得する(社員ID, 申請種類, 年月日, 事前事後区分)
+							// 申請者, 申請種類, 申請日, 事前事後区分
+							// 対象者,申請種類.休出時間申請,日別勤怠(Work).年月日,事前事後区分.事後
+							List<Application> lstApplication = applicationData.get(sid,
+									ApplicationType.HOLIDAY_WORK_APPLICATION.value, att.getYmd(),
+									PrePostAtr.POSTERIOR.value);
+							// 4.1 List<申請> == isEmpty
+							// 日別勤怠(Work).年月日,残業休出区分.休日出勤申請,休出合計時間
+							if (lstApplication.isEmpty()) {
+								result.add(new OvertimeLeaveTimeDto(att.getYmd(), totalBreakTime,
+										OverTimeLeaveType.HOLIDAY_WORK_APPLICATION.value));
+							}
+						}
+			});			
 
-			// 残業時間
-			// 1: <call>()
-			if (i.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent() && mode == 0) {
-				// 1.1: 残業合計時間の計算する(): 勤怠時間
-				OverTimeOfDaily overTimeWork = i.getAttendanceTimeOfDailyPerformance().get()
-						.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
-						.getOverTimeWork().get();
+		});
 
-				// 勤怠時間
-				int calOvertime = overTimeWork.calcTotalFrameTime();
-
-				// 1.2: [残業合計時間 > 0]:取得する(対象者,申請種類.残業申請,日別勤怠(Work).年月日,事前事後区分.事後):List<申請>
-				if (calOvertime > 0) {
-					List<Application> lstApplication = applicationData.get(sid,
-							ApplicationType.OVER_TIME_APPLICATION.value, i.getYmd(), PrePostAtr.POSTERIOR.value);
-
-					// 1.3: [List<申請>.isEmpty]:create(日別勤怠(Work).年月日,残業休出区分.残業申請,残業合計時間)
-					if (lstApplication.isEmpty()) {
-						overtimeLeaveTimes.add(new OvertimeLeaveTimeDto(i.getYmd(), calOvertime,
-								OverTimeLeaveType.OVER_TIME_APPLICATION.value));
-					}
-				}
-
-			}
-
-			// 休出時間
-			// 2: <call>()
-			if (i.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent() && mode == 0) {
-				// 2.1: 休出合計時間():勤怠時間
-				HolidayWorkTimeOfDaily holidayTime = i.getAttendanceTimeOfDailyPerformance().get()
-						.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
-						.getWorkHolidayTime().get();
-
-				// 勤怠時間
-				int calHolidayTime = holidayTime.calcTotalFrameTime();
-
-				// 2.2: [休出合計時間 > 0]:取得する(対象者,申請種類.休出時間申請,日別勤怠(Work).年月日,事前事後区分.事後): List<申請>
-				if (calHolidayTime > 0) {
-					List<Application> lstApplication = applicationData.get(sid,
-							ApplicationType.HOLIDAY_WORK_APPLICATION.value, i.getYmd(), PrePostAtr.POSTERIOR.value);
-
-					// 2.3: [List<申請>.isEmpty]:create(日別勤怠(Work).年月日,残業休出区分.休日出勤申請,休出合計時間)
-					if (lstApplication.isEmpty()) {
-						overtimeLeaveTimes.add(new OvertimeLeaveTimeDto(i.getYmd(), calHolidayTime,
-								OverTimeLeaveType.HOLIDAY_WORK_APPLICATION.value));
-					}
-				}
-
-			}
-		}
-
-		return overtimeLeaveTimes;
+		return result;
 	}
 
 }

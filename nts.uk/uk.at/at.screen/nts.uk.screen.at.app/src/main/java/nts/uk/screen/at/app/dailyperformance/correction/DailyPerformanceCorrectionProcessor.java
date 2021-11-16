@@ -253,7 +253,7 @@ public class DailyPerformanceCorrectionProcessor {
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DPText.DATE_FORMAT);
-	private static final Map<Integer, List<Integer>> WORK_FRAME_MAP = new HashMap<Integer, List<Integer>>()
+	public static final Map<Integer, List<Integer>> WORK_FRAME_MAP = new HashMap<Integer, List<Integer>>()
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -266,7 +266,7 @@ public class DailyPerformanceCorrectionProcessor {
 	    }
 	};
 	
-	private static final Map<Integer, List<Integer>> SUPPORT_FRAME_MAP = new HashMap<Integer, List<Integer>>()
+	public static final Map<Integer, List<Integer>> SUPPORT_FRAME_MAP = new HashMap<Integer, List<Integer>>()
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -1383,7 +1383,7 @@ public class DailyPerformanceCorrectionProcessor {
 											.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
 													? appMapDateSid.get(
 															value.getEmployeeId() + "|" + value.getProcessingDate())
-													: ""));
+													: "", errorSetting.getTypeAtr()));
 							rowId++;
 						}
 					}
@@ -1394,8 +1394,9 @@ public class DailyPerformanceCorrectionProcessor {
 			Set<Integer> itemIds = lstError.stream().flatMap(x -> x.getAttendanceItemId().stream()).collect(Collectors.toSet());
 			
 			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
-					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-							x -> x.getAttendanceItemName())); // 9s
+					.stream().collect(Collectors.toMap(
+							x -> x.getAttendanceItemId(),
+							x -> x.getDisplayName())); // 9s
 			
 			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
 			for(DPItemValue value : dpItems) {
@@ -1525,8 +1526,8 @@ public class DailyPerformanceCorrectionProcessor {
 									x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(),
 									x.getColumnWidth().intValue()))
 							.collect(Collectors.toList());
-					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).sorted().collect(Collectors.toList());
-					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().sorted().collect(Collectors.toList());
+					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
+					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
 
 				}
 			} else {
@@ -1569,7 +1570,7 @@ public class DailyPerformanceCorrectionProcessor {
 			String authorityDailyID =  AppContexts.user().roles().forAttendance(); 
 			if (lstFormat.size() > 0) {
 				lstDPBusinessTypeControl = this.repo.getListBusinessTypeControl(companyId, authorityDailyID,
-						lstAtdItemUnique, true).stream().sorted(Comparator.comparing(DPBusinessTypeControl::getAttendanceItemId)).collect(Collectors.toList());
+						lstAtdItemUnique, true);
 				if(lstDPBusinessTypeControl.isEmpty()) {
 					screenDto.setErrorInfomation(DCErrorInfomation.ITEM_HIDE_ALL.value);
 					return null;
@@ -1585,9 +1586,9 @@ public class DailyPerformanceCorrectionProcessor {
 					                              )
 					                      .collect(Collectors.toList()); 
 			result.setLstBusinessTypeCode(lstDPBusinessTypeControl);
-			result.setLstFormat(lstFormat.stream().sorted(Comparator.comparing(FormatDPCorrectionDto::getAttendanceItemId)).collect(Collectors.toList()));
+			result.setLstFormat(lstFormat);
 			result.setLstSheet(lstSheet);
-			result.setLstAtdItemUnique(lstAtdItemUnique.stream().sorted().collect(Collectors.toList()));
+			result.setLstAtdItemUnique(lstAtdItemUnique);
 			result.setBussiness(dailyPerformanceDto.getSettingUnit().value);
 		}
 		return result;
@@ -1677,7 +1678,14 @@ public class DailyPerformanceCorrectionProcessor {
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+					
+					if (dPItem.getAttendanceAtr() != null && dPItem.getAttendanceAtr() == 5) {
+						if (dPItem.getPrimitive() != null && dPItem.getPrimitive() == 15) {
+							columnSetting = new ColumnSetting(key.getKey(), false);
+						}
+					}
 				}
 			}
 			result.getColumnSettings().add(columnSetting);
