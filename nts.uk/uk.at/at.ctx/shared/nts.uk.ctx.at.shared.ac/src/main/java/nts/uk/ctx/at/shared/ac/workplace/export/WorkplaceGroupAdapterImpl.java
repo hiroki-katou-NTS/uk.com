@@ -15,12 +15,12 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapte
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.WorkplaceGroupPublish;
 
 /**
- * 職場グループImpl
+ * 職場グループAdapter (Implements)
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.組織管理.職場.Imported.職場グループAdapter
  * @author HieuLt
- *
  */
 @Stateless
-public class WorkPlaceGroupIml implements WorkplaceGroupAdapter {
+public class WorkplaceGroupAdapterImpl implements WorkplaceGroupAdapter {
 
 	@Inject private WorkplaceGroupPublish workplaceGroupPublish;
 
