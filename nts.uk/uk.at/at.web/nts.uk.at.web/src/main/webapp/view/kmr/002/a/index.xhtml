@@ -20,9 +20,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed large"
-					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMR002_16')}</button>
+					data-bind="click: register, enable: modeFuture() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR002_16')}</button>
 				<button class="large"
-					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMR002_4')}</button>
+					data-bind="click: print, enable: $root.errors.isEmpty">#{i18n.getText('KMR002_4')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="table" style="margin-left: 15px; margin-bottom: 10px;">
@@ -32,7 +32,7 @@
 					<div class="cell">
 						<div style="padding-left: 20px;" data-bind="ntsDatePicker: { 
 									name: '#[KMR002_17]',
-									value: ko.observable('') }">
+									value: date }">
 						</div>
 					</div>
 				</div>
@@ -40,25 +40,20 @@
 					<div class="cell">
 						<div data-bind="ntsSwitchButton: {
 									name: '#[KML001_72]',
-									options: ko.observableArray([
-			                                { prePostCode: 0, prePostName: '#{i18n.getText('KML001_73')}' },
-			                                { prePostCode: 1, prePostName: '#{i18n.getText('KML001_73')}' }
-			                                ]),
-									optionsValue: 'prePostCode',
-									optionsText: 'prePostName',
-									value: currentFrame,
-									enable: true,
+									options: frameOption,
+									optionsValue: 'frameNo',
+									optionsText: 'receptionHours.receptionName',
+									value: currentFrameNo,
+									enable: modeFuture,
 									required: true }">
 						</div>
 					</div>
 					<div class="cell" style="vertical-align: middle; padding-left: 20px;">
-						<span>8:30</span>
-						<span>#{i18n.getText('KMR002_19')}</span>
-						<span>17:30</span>
+						<span data-bind="text: timeLabel"></span>
 					</div>
 				</div>
 				<div class="table" style="margin-left: 15px; margin-bottom: 10px;">
-					<div class="cell" data-bind="if: currentFrame()==0">
+					<div class="cell" data-bind="if: currentFrameNo()==1">
 						<table>
 							<thead>
 								<tr>
@@ -75,24 +70,29 @@
 									<td style="text-align: right; padding-right: 5px; width: 85px;" data-bind="text: amount1"></td>
 									<td style="padding: 5px; width: 245px;">
 										<div style="display: inline-block; vertical-align: middle;">
-											<button class="button-radius" data-bind="click: decreaseCount">-</button>
+											<button class="button-radius" data-bind="click: decreaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">-</button>
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
 											<input style="width: 25px;" data-bind="ntsNumberEditor: {
 												value: bentoCount,
-												constraint: 'BentoReservationCount' }" />
+												constraint: 'BentoReservationCount',
+												enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() }" />
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
 											<span data-bind="text: unit"></span>
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
-											<button class="button-radius" data-bind="click: increaseCount">+</button>
+											<button class="button-radius" data-bind="click: increaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">+</button>
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
-											<button class="danger large" style="width: 70px;" data-bind="click: resetCount">#{i18n.getText('KMR002_26')}</button>
+											<button class="danger large" style="width: 70px;" 
+													data-bind="click: resetCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() &amp;&amp; enableResetCount()">#{i18n.getText('KMR002_26')}</button>
 										</div>
 									</td>
-									<td style="text-align: right; padding-right: 5px; width: 125px;" data-bind="text: sum"></td>
+									<td style="text-align: right; padding-right: 5px; width: 125px;" data-bind="text: sum()"></td>
 								</tr>
 							</tbody>
 							<tfoot>
@@ -110,7 +110,7 @@
 							</tfoot>
 						</table>
 					</div>
-					<div class="cell" data-bind="if: currentFrame()==1">
+					<div class="cell" data-bind="if: currentFrameNo()==2">
 						<table>
 							<thead>
 								<tr>
@@ -127,24 +127,29 @@
 									<td style="text-align: right; padding-right: 5px; width: 85px;" data-bind="text: amount1"></td>
 									<td style="padding: 5px; width: 245px;">
 										<div style="display: inline-block; vertical-align: middle;">
-											<button class="button-radius" data-bind="click: decreaseCount">-</button>
+											<button class="button-radius" data-bind="click: decreaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">-</button>
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
 											<input style="width: 25px;" data-bind="ntsNumberEditor: {
 												value: bentoCount,
-												constraint: 'BentoReservationCount' }" />
+												constraint: 'BentoReservationCount',
+												enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() }" />
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
 											<span data-bind="text: unit"></span>
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
-											<button class="button-radius" data-bind="click: increaseCount">+</button>
+											<button class="button-radius" data-bind="click: increaseCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder()">+</button>
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
-											<button class="danger large" style="width: 70px;" data-bind="click: resetCount">#{i18n.getText('KMR002_26')}</button>
+											<button class="danger large" style="width: 70px;" 
+													data-bind="click: resetCount, 
+													enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() &amp;&amp; enableResetCount()">#{i18n.getText('KMR002_26')}</button>
 										</div>
 									</td>
-									<td style="text-align: right; padding-right: 5px; width: 125px;" data-bind="text: sum"></td>
+									<td style="text-align: right; padding-right: 5px; width: 125px;" data-bind="text: sum()"></td>
 								</tr>
 							</tbody>
 							<tfoot>
