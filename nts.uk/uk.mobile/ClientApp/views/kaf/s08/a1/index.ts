@@ -94,11 +94,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             if (vm.mode) {
                 return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
             }
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> 204b7364b6d (kafs08: fix bug #120427)
             return true;
         }).then((loadData: any) => {
             if (loadData) {
