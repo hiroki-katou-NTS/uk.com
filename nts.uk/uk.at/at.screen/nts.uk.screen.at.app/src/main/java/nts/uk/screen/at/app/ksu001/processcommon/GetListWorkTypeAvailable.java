@@ -3,7 +3,6 @@
  */
 package nts.uk.screen.at.app.ksu001.processcommon;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +87,7 @@ public class GetListWorkTypeAvailable {
 		
 	}
 	
-	private WorkTypeInfomation convertOutput(WorkTypeDto x) {
+	private Optional<WorkTypeInfomation> convertOutput(WorkTypeDto x) {
 		// 就業時間帯の必須チェック
 		SetupType workTimeSetting = 
 				basicScheduleService.checkNeededOfWorkTimeSetting(x.getWorkTypeCode());
