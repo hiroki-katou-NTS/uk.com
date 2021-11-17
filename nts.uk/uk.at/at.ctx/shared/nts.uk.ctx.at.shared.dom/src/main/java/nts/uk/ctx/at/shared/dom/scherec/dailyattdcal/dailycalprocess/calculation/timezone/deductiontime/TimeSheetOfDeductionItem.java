@@ -889,4 +889,10 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		}
 		return clone;
 	}
+	
+	public TimeSheetOfDeductionItem reCreateOwn(TimeSpanForDailyCalc range) {
+		TimeSheetOfDeductionItem divideStartTime = this.reCreateOwn(range.getStart(), false);
+		TimeSheetOfDeductionItem correctAfterTimeSheet = divideStartTime.reCreateOwn(range.getEnd(), true);
+		return correctAfterTimeSheet;
+	}
 }
