@@ -4,9 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
@@ -22,32 +20,21 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 //@AllArgsConstructor
 public class AnnualLeaveNumberInfo extends LeaveNumberInfo implements Serializable {
 
-//	/**
-//	 * 付与数
-//	 */
-//	private AnnualLeaveGrantNumber grantNumber;
-//
-//	/**
-//	 * 使用数
-//	 */
-//	private AnnualLeaveUsedNumber usedNumber;
-//
-//	/**
-//	 * 残数
-//	 */
-//	@Setter
-//	private AnnualLeaveRemainingNumber remainingNumber;
 
-//	/**
-//	 * 使用率
-//	 */
-//	private AnnualLeaveUsedPercent usedPercent;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public AnnualLeaveNumberInfo(){
 		this.grantNumber = AnnualLeaveGrantNumber.createFromJavaType(0.0, null);
 		this.usedNumber = AnnualLeaveUsedNumber.createFromJavaType(0.0, null, null);
 		this.remainingNumber = AnnualLeaveRemainingNumber.createFromJavaType(0.0, null);
 		this.usedPercent = new AnnualLeaveUsedPercent(new BigDecimal(0));
+	}
+	
+	public AnnualLeaveNumberInfo (LeaveNumberInfo info){
+		super(info);
 	}
 	
 	public AnnualLeaveNumberInfo(double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes,
