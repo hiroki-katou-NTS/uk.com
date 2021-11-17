@@ -38,6 +38,7 @@ module nts.uk.at.ksu008.b {
         nursingAssistantDetailSetting: DetailSetting;
 
         enableDownloadTemplate: KnockoutObservable<boolean> = ko.observable(false);
+        updateStatus: boolean = false;
 
         params: any;
 
@@ -202,6 +203,7 @@ module nts.uk.at.ksu008.b {
                     };
                     vm.$ajax(vm.currentCode() == null ? API.registerData : API.updateData, command).done(() => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.updateStatus = true;
                             vm.getAllLayoutSetting(vm.layoutType() == 1, command.code);
                         });
                     }).fail(error => {
@@ -226,6 +228,7 @@ module nts.uk.at.ksu008.b {
                                 nextCode = currentIdx == vm.items().length - 1 ? vm.items()[currentIdx - 1].code : vm.items()[currentIdx + 1].code;
                             }
                             vm.getAllLayoutSetting(vm.layoutType() == 1, nextCode);
+                            vm.updateStatus = true;
                         });
                     }).fail(error => {
                         vm.$dialog.error(error);
@@ -238,7 +241,7 @@ module nts.uk.at.ksu008.b {
 
         closeDialog(): void {
             const vm = this;
-            vm.$window.close({code: vm.currentCode()});
+            vm.$window.close(vm.updateStatus ? {code: vm.currentCode()} : null);
         }
 
         openKsu008C() {
@@ -252,6 +255,7 @@ module nts.uk.at.ksu008.b {
                     // Focus on code just created
                     vm.params = {layoutCode: result.destinationCode};
                     vm.layoutType() == 0 ? vm.layoutType.valueHasMutated() : vm.layoutType(0);
+                    vm.updateStatus = true;
                 }
             });
         }
