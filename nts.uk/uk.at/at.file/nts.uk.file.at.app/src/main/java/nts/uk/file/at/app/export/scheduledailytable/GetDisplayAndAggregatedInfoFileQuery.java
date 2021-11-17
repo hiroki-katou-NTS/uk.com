@@ -136,6 +136,18 @@ public class GetDisplayAndAggregatedInfoFileQuery {
         totalNos.addAll(personalCounters);
         totalNos.addAll(workplaceCounters);
         List<TotalTimes> totalTimesList = totalTimesRepo.getTotalTimesDetailByListNo(companyId, new ArrayList<>(totalNos));
+        List<TotalTimes> personalTotalTimes = new ArrayList<>();
+        personalCounters.forEach(c -> {
+            totalTimesList.stream().filter(t -> t.getTotalCountNo() == c).findFirst().ifPresent(i -> {
+                personalTotalTimes.add(i);
+            });
+        });
+        List<TotalTimes> workplaceTotalTimes = new ArrayList<>();
+        workplaceCounters.forEach(c -> {
+            totalTimesList.stream().filter(t -> t.getTotalCountNo() == c).findFirst().ifPresent(i -> {
+                workplaceTotalTimes.add(i);
+            });
+        });
 
         List<ShiftMasterDto> shiftMasters = shiftMasterRepo.getAllByCid(companyId);
         List<WorkType> workTypes = workTypeRepo.findByCompanyId(companyId);
@@ -204,8 +216,8 @@ public class GetDisplayAndAggregatedInfoFileQuery {
                 personalCounterResult,
                 workplaceCounterResult,
                 shiftDisplayInfos,
-                totalTimesList.stream().filter(i -> personalCounters.contains(i.getTotalCountNo())).collect(Collectors.toList()),
-                totalTimesList.stream().filter(i -> workplaceCounters.contains(i.getTotalCountNo())).collect(Collectors.toList())
+                personalTotalTimes,
+                workplaceTotalTimes
         );
     }
 }

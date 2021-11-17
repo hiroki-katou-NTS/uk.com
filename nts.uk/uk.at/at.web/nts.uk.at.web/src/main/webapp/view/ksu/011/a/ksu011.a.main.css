@@ -8,8 +8,10 @@
 
 .right-panel .control-group {
     margin-top: 15px;
-    max-width: 714px;
-    min-width: 544px;
+}
+
+.right-panel .panel-frame {
+    width: 570px;
 }
 
 .switchbox-wrappers {

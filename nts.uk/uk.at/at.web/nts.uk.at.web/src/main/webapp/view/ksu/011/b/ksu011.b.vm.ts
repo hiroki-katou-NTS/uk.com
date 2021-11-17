@@ -32,6 +32,7 @@ module nts.uk.at.view.ksu011.b.viewmodel {
         supporterRecordPrintMethod: KnockoutObservable<number>;
 
         newMode: KnockoutObservable<boolean>;
+        screenUpdated: boolean = false;
 
         constructor() {
             super();
@@ -134,13 +135,25 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                     vm.columnName5(_.size(setting.titles) > 4 ? setting.titles[4] : null);
                     vm.columnName6(_.size(setting.titles) > 5 ? setting.titles[5] : null);
                     vm.personalCounter(setting.personalCounter || []);
-                    vm.readonlyText1(countItems.filter(i => vm.personalCounter().indexOf(i.totalCountNo) >= 0).map(i => i.totalTimesName).join("、"));
                     vm.workplaceCounter(setting.workplaceCounter || []);
-                    vm.readonlyText2(countItems.filter(i => vm.workplaceCounter().indexOf(i.totalCountNo) >= 0).map(i => i.totalTimesName).join("、"));
                     vm.comment(setting.comment);
                     vm.transferDisplay(setting.transferDisplay == 1);
                     vm.supporterSchedulePrintMethod(setting.supporterSchedulePrintMethod);
                     vm.supporterRecordPrintMethod(setting.supporterRecordPrintMethod);
+
+                    let pCountNames: Array<string> = [];
+                    vm.personalCounter().forEach((no: number) => {
+                        const item = _.find(countItems, i => i.totalCountNo == no);
+                        if (item) pCountNames.push(item.totalTimesName);
+                    });
+                    vm.readonlyText1(pCountNames.join("、"));
+
+                    let wCountNames: Array<string> = [];
+                    vm.workplaceCounter().forEach((no: number) => {
+                        const item = _.find(countItems, i => i.totalCountNo == no);
+                        if (item) wCountNames.push(item.totalTimesName);
+                    });
+                    vm.readonlyText2(wCountNames.join("、"));
                 } else {
                     vm.createNew();
                 }
@@ -185,6 +198,7 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                     };
                     vm.$blockui("show");
                     vm.$ajax(API.registerSetting, command).done(() => {
+                        vm.screenUpdated = true;
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                             vm.getAllSetting(command.code);
                         });
@@ -203,6 +217,7 @@ module nts.uk.at.view.ksu011.b.viewmodel {
                 if (result == 'yes') {
                     vm.$blockui("show");
                     vm.$ajax("at", API.deleteSetting, vm.selectedOutputItemCode()).done(() => {
+                        vm.screenUpdated = true;
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             const index = _.findIndex(vm.outputItems(), i => i.code == vm.selectedOutputItemCode());
                             let nextCode = null;
@@ -224,13 +239,16 @@ module nts.uk.at.view.ksu011.b.viewmodel {
             const vm = this;
             const setting = _.find(vm.outputItems(), i => i.code == vm.selectedOutputItemCode());
             vm.$window.modal("/view/ksu/011/d/index.xhtml", {sourceCode: setting.code, sourceName: setting.name}).then((newCode) => {
-                if (newCode) vm.getAllSetting(newCode);
+                if (newCode) {
+                    vm.screenUpdated = true;
+                    vm.getAllSetting(newCode);
+                }
             });
         }
 
         closeDialog() {
             const vm = this;
-            vm.$window.close({itemCode: vm.selectedOutputItemCode()});
+            vm.$window.close(vm.screenUpdated ? {itemCode: vm.selectedOutputItemCode()} : null);
         }
 
         openDialogC(target: string) {

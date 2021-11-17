@@ -43,7 +43,11 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                 } else return null;
             });
             vm.displayPeriod = ko.computed(() => {
-                if (vm.periodStart() && vm.periodEnd() && moment.utc(vm.periodStart()).isSameOrAfter(moment.utc("01/01/1900")) && moment.utc(vm.periodStart()).isSameOrBefore(moment.utc("12/31/9999")))
+                if (vm.periodStart() && vm.periodEnd()
+                    && moment.utc(vm.periodStart()).isSameOrAfter(moment.utc("01/01/1900"))
+                    && moment.utc(vm.periodStart()).isSameOrBefore(moment.utc("12/31/9999"))
+                    && vm.periodEnd().isSameOrAfter(moment.utc("01/01/1900"))
+                    && vm.periodEnd().isSameOrBefore(moment.utc("12/31/9999")))
                     return vm.$i18n("KSU011_79", [moment.utc(vm.periodStart()).format("YYYY/MM/DD") + "～" + vm.periodEnd().format("YYYY/MM/DD")]);
                 else return "";
             });
@@ -89,7 +93,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                 vm.$dialog.error({messageId: "Msg_218", messageParams: [vm.$i18n("KSU011_6")]});
                 return;
             }
-            if (vm.periodEnd() && !vm.periodEnd().isBetween(moment.utc("01/01/1900"), moment.utc("12/31/9999"))) {
+            if (vm.periodEnd() && (vm.periodEnd().isBefore(moment.utc("01/01/1900")) || vm.periodEnd().isAfter(moment.utc("12/31/9999")))) {
                 vm.$dialog.error({messageId: "Msg_2316"});
                 return;
             }
@@ -100,7 +104,7 @@ module nts.uk.at.view.ksu011.a.viewmodel {
                 periodEnd: vm.periodEnd().toISOString(),
                 outputItemCode: vm.selectedOutputItemCode(),
                 printTarget: vm.printTarget(),
-                displayBothWhenDiffOnly: vm.displayBothWhenDiffOnly()
+                displayBothWhenDiffOnly: vm.printTarget() == 2 && vm.displayBothWhenDiffOnly()
             };
             nts.uk.request.exportFile(API.exportExcel, exportQuery).done(() => {
                 nts.uk.characteristics.save("KSU011Data", {
@@ -137,7 +141,8 @@ module nts.uk.at.view.ksu011.a.viewmodel {
         openDialogB() {
             const vm = this;
             vm.$window.modal("/view/ksu/011/b/index.xhtml", {itemCode: vm.selectedOutputItemCode()}).then((data: any) => {
-                vm.getAllSetting(data.itemCode);
+                vm.$errors("clear");
+                if (data) vm.getAllSetting(data.itemCode);
             });
         }
     }
