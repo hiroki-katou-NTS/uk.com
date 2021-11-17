@@ -448,7 +448,7 @@ module nts.uk.at.view.kdw013.h {
 		end: ItemValue;
 		constructor(start: IItemValue, end: IItemValue, breakTimeNo?: number) {
 			this.start = new ItemValue(start, breakTimeNo ? getText('KDW013_88', [breakTimeNo]) : undefined);
-			this.end = new ItemValue(end, breakTimeNo ? getText('KDW013_89', [breakTimeNo]) : undefined);
+			this.end = new ItemValue(end, breakTimeNo ? getText('KDW013_89', [breakTimeNo, breakTimeNo]) : undefined);
 			this.end.value.subscribe(() => {
 			});
 		}
