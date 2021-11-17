@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.shift.businesscalendar.specificdate;
+package nts.uk.ctx.at.schedule.infra.repository.shift.specificdaysetting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,9 @@ import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KscmtSpecDateItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KsmstSpecificDateItemPK;
 
@@ -61,39 +62,11 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public List<SpecificDateItem> getSpecifiDateByUse(String companyId, int useAtr) {
+	public List<SpecificDateItem> getByUseAtr(String companyId, int useAtr) {
 		return this.queryProxy().query(GET_BY_USE, KscmtSpecDateItem.class).setParameter("companyId", companyId)
 				.setParameter("useAtr", useAtr).getList(x -> this.toBonusPaySettingDomain(x));
 	}
-
-	/**
-	 * update list Specific Date Item
-	 * @param lstSpecificDateItem
-	 */
-	@Override
-	public void updateSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
-		List<KscmtSpecDateItem> lstEntity = new ArrayList<>();
-		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
-			KscmtSpecDateItem b = toEntity(specificDateItem);
-			KscmtSpecDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KscmtSpecDateItem.class).get();
-			x.setUseAtr(b.useAtr);
-			x.setName(b.name);
-			lstEntity.add(x);
-		}
-		this.commandProxy().updateAll(lstEntity);
-	}
-	/**
-	 * add list Specific Date Item
-	 * @param lstSpecificDateItem
-	 */
-	@Override
-	public void addSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
-		List<KscmtSpecDateItem> lstEntity = new ArrayList<>();
-		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
-			lstEntity.add(toEntity(specificDateItem));
-		}
-		this.commandProxy().insertAll(lstEntity);
-	}
+    
 	/**
 	 * get list Specifi Date By List Code
 	 * @param companyId
@@ -111,6 +84,18 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 								  .getList(c->toBonusPaySettingDomain(c)));
 		});
 		return resultList;
+	}
+
+	@Override
+	public void update(SpecificDateItem domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public SpecificDateItem getBySpecificDateItemNo(String companyId, SpecificDateItemNo specificDateItemNo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
