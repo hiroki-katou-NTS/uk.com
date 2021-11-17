@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.OneDaySpecificItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.OneDaySpecificItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
 
 /**
  * 一日の特定日リストのUTコード

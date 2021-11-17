@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
 
 @Value
 public class CompanySpecificDateDto {

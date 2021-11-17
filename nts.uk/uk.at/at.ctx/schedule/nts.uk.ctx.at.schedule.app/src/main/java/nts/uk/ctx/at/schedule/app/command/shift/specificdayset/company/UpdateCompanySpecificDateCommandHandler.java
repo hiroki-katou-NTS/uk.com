@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List<UpdateCompanySpecificDateCommand>>{

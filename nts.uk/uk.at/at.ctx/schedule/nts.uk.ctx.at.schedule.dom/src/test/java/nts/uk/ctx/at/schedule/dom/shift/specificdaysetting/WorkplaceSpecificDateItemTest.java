@@ -7,9 +7,9 @@ import org.junit.Test;
 import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.OneDaySpecificItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.OneDaySpecificItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
 
 /**
  * 職場特定日設定のUTコード

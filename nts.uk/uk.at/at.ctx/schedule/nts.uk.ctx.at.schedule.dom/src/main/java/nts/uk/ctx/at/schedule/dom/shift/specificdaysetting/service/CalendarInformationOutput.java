@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.specificdayset.service;
+package nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.specificdayset.service;
+package nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.WorkplaceSpecificDateRepository;
 /**
  * 
  * @author Doan Duy Hung

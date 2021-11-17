@@ -9,10 +9,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.service.IWorkplaceSpecificDateSettingService;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.service.SpecificDateItemOutput;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.service.IWorkplaceSpecificDateSettingService;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.service.SpecificDateItemOutput;
 import nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate.SpecificDateItemExport;
 import nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate.WpSpecificDateSettingExport;
 import nts.uk.ctx.at.schedule.pub.shift.businesscalendar.specificdate.WpSpecificDateSettingPub;
