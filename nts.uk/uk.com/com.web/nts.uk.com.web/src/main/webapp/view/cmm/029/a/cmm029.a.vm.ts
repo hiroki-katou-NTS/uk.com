@@ -99,19 +99,9 @@ module nts.uk.com.view.cmm029.a {
       }
     }
 
-    public getDisplayDatasByTab(element: any): DisplayData[] {
+    public displayDataOf(programId: string): DisplayData {
       const vm = this;
-      const className = $(element.parentElement).attr("class");
-      if (className.indexOf("tab-content-1") > -1) {
-        return _.filter(vm.displayDatas(), data => _.includes(PROGRAM_ID_TAB_1, data.programId) && data.system === 1);
-      } else if (className.indexOf("tab-content-2") > -1) {
-        return _.filter(vm.displayDatas(), data => _.includes(PROGRAM_ID_TAB_2, data.programId) && data.system === 1);
-      } else if (className.indexOf("tab-content-3") > -1) {
-        return _.filter(vm.displayDatas(), data => _.includes(PROGRAM_ID_TAB_3, data.programId) && data.system === 1);
-      } else if (className.indexOf("tab-content-4") > -1) {
-        return _.filter(vm.displayDatas(), data => _.includes(PROGRAM_ID_TAB_4, data.programId) && data.system === 1);
-      }
-      return [];
+      return _.find(vm.displayDatas(), { programId: programId });
     }
   }
 
