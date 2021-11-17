@@ -1506,14 +1506,7 @@ public class DailyPerformanceCorrectionProcessor {
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
-
-					
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
-					
-					if (dPItem.getAttendanceAtr().intValue() == DailyAttendanceAtr.NumberOfTime.value) {
-						if (dPItem.getTypeGroup() != null && dPItem.getTypeGroup().intValue() == TypeLink.DOWORK.value)
-							columnSetting = new ColumnSetting(key.getKey().isEmpty() ? "" : key.getKey(), false);
-					}
 				}
 			}
 			result.getColumnSettings().add(columnSetting);
