@@ -126,6 +126,12 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
                 if (holiday.isSpecialHoliday()) {
                     remainNumberClassification.setChkSpecial(true);
                 }
+                if (holiday.isYearlyReserved()) {
+                    remainNumberClassification.setChkFundingAnnual(true);
+                }
+                if (holiday.isHoliday()) {
+                    remainNumberClassification.setChkPublicHoliday(true);
+                }
             });
         }
 

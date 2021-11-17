@@ -20,12 +20,12 @@ public class JpaCanonicalizedDataRecordRepository extends JpaRepository implemen
 	@Override
 	public void save(Require require, ExecutionContext context, CanonicalizedDataRecord record) {
 		
-		WorkspaceSql.create(require, context, jdbcProxy()).insert(record);
+		WorkspaceSql.create(require, context, jdbcProxy(), this.database().product()).insert(record);
 	}
 
 	@Override
 	public List<String> getAllEmployeeIds(Require require, ExecutionContext context) {
-		return WorkspaceSql.create(require, context, jdbcProxy())
+		return WorkspaceSql.create(require, context, jdbcProxy(), this.database().product())
 				.getAllEmployeeIdsOfCanonicalizedData();
 	}
 }

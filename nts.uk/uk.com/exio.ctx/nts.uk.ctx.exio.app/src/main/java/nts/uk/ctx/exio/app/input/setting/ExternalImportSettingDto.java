@@ -1,9 +1,6 @@
 package nts.uk.ctx.exio.app.input.setting;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -64,6 +61,7 @@ public class ExternalImportSettingDto {
 				domain.getCsvFileInfo().getBaseCsvFileId().orElse(""),
 				domainSetting.getAssembly().getMapping().getMappings().stream()
 					.map(m -> ExternalImportLayoutDto.fromDomain(require, domainSetting.getDomainId(), m))
+					.sorted(Comparator.comparing(ExternalImportLayoutDto::getItemNo))
 					.collect(Collectors.toList()));
 	}
 
@@ -98,7 +96,7 @@ public class ExternalImportSettingDto {
 			}
 		}
 		return layouts.stream()
-				.map(l -> new ImportingItemMapping(l.itemNo, null, null))
+				.map(l -> new ImportingItemMapping(l.itemNo, true, Optional.empty(), Optional.empty()))
 				.collect(Collectors.toList());
 	}
 	
@@ -139,12 +137,11 @@ public class ExternalImportSettingDto {
 	
 	private static String checkImportSource(ImportingItemMapping mapping) {
 		val optCsvColumnNo = mapping.getCsvColumnNo();
-		val optFixedValue = mapping.getFixedValue();
-		if(optCsvColumnNo.isPresent()){
-			return "CSV";
-		}
-		else if(optFixedValue.isPresent()){
+		if(mapping.isFixedValue()){
 			return "固定値";
+		}
+		else if(optCsvColumnNo.isPresent()){
+			return "CSV";
 		}
 		else {
 			return "未設定";

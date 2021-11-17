@@ -161,6 +161,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		List<XimmtItemMapping> mappings = domain.getAssembly().getMapping().getMappings().stream()
 		.map(m -> new XimmtItemMapping(
 				new XimmtItemMappingPK(cid, settingCode, domain.getDomainId().value, m.getItemNo()),
+				m.isFixedValue(),
 				m.getCsvColumnNo().orElse(null),
 				m.getFixedValue().map(fv -> fv.getValue()).orElse(null)
 		))
