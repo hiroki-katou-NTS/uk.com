@@ -447,15 +447,7 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
     }
 
     private String getTitleDisplay(Form9ExcelByFormatQuery query, DisplayInfoRelatedToWorkplaceGroupDto infoRelatedWkpGroup) {
-        String acquireText = "";
-        switch (query.getAcquireTarget()) {
-            case 0:
-                acquireText = getText("KSU008_18");
-            case 1:
-                acquireText = getText("KSU008_19");
-            case 2:
-                acquireText = getText("KSU008_20");
-        }
+        String acquireText = getText(query.getAcquireTarget() == 0 ? "KSU008_18" : query.getAcquireTarget() == 1 ?  "KSU008_19" : query.getAcquireTarget() == 2 ?  "KSU008_20" : "");
 
         return TextResource.localize("KSU008_180", String.valueOf(query.getStartDate().month()), acquireText,
                 infoRelatedWkpGroup.getWkpGroupCode(), infoRelatedWkpGroup.getWkpGroupName());
@@ -483,7 +475,9 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
     }
 
     private String convertClockToStr(ClockHourMinute clock) {
-        return String.valueOf(clock.hour()) + HOUR + clock.minute() + MINUTE;
+        String hour = clock.hour() >= 10 ? String.valueOf(clock.hour()) : "0" + clock.hour();
+        String minute = clock.minute() >= 10 ? String.valueOf(clock.minute()) : "0" + clock.minute();
+        return hour + HOUR + minute + MINUTE;
     }
 
     private String toYmdStr(GeneralDate value) {
