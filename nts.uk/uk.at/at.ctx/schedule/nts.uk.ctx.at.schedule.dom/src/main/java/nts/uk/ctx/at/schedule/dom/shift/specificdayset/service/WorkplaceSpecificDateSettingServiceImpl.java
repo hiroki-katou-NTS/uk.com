@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.shift.specificdayset.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,15 +11,14 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
 /**
  * 
  * @author Doan Duy Hung
@@ -43,10 +43,14 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 	@Override
 	public SpecificDateItemOutput workplaceSpecificDateSettingService(String companyID, String workPlaceID, GeneralDate date) {
 		List<SpecificDateItemNo> specificDateItemList = new ArrayList<SpecificDateItemNo>();
-		List<CompanySpecificDateItem> companySpecificDateItemList = companySpecificDateRepository.getComSpecByDateWithName(companyID, date, date);
-		if(!CollectionUtil.isEmpty(companySpecificDateItemList)){
-			List<Integer> numberList = companySpecificDateItemList.stream().map(x -> x.getSpecificDateItemNo().v()).collect(Collectors.toList());
-			numberList.stream().distinct();
+		Optional<CompanySpecificDateItem> companySpecificDateItemOpt = companySpecificDateRepository.get( companyID, date);
+		if(companySpecificDateItemOpt.isPresent()){
+			List<Integer> numberList = companySpecificDateItemOpt.get()
+							.getOneDaySpecificItem()
+							.getSpecificDayItems().stream()
+							.map(item -> item.v())
+							.collect(Collectors.toList());
+					
 			List<SpecificDateItem> currentList = specificDateItemRepository.getSpecifiDateByListCode(companyID, numberList);
 			specificDateItemList.addAll(currentList.stream().map(x -> x.getSpecificDateItemNo()).collect(Collectors.toList()));
 		}
@@ -54,13 +58,16 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 		// アルゴリズム「職場IDから上位職場を取得する」を実行する ( Acquire upper workplace from workplace ID )
 		List<String> workplaceIDList = scWorkplaceAdapter.findParentWpkIdsByWkpId(companyID, workPlaceID, date);
 		workplaceIDList.stream().forEach(workplace -> {
-			List<WorkplaceSpecificDateItem> workplaceSpecificDateItemList = workplaceSpecificDateRepository.getWpSpecByDateWithName(workplace, date, date);
-			workplaceSpecificDateItemList.stream().distinct();
-			workplaceSpecificDateItemList.forEach(item -> {
-				if(!specificDateItemList.contains(item.getSpecificDateItemNo())){
-					specificDateItemList.add(item.getSpecificDateItemNo());
-				}
-			});
+			Optional<WorkplaceSpecificDateItem> workplaceSpecificDateItemOpt = workplaceSpecificDateRepository.get( workplace, date );
+			if( workplaceSpecificDateItemOpt.isPresent() ) {
+				workplaceSpecificDateItemOpt.get().getOneDaySpecificItem().getSpecificDayItems().forEach(item -> {
+					if(!specificDateItemList.contains(item)){
+						specificDateItemList.add(item);
+					}
+				});
+				
+			}
+
 		});
 		return new SpecificDateItemOutput(date, specificDateItemList.stream().distinct().map(x -> x.v().intValue()).collect(Collectors.toList()));
 	}
@@ -69,21 +76,30 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 	public SpecificDateItemOutput findSpecDateSetByWkpLst(String companyID, List<String> workPlaceIDLst,
 			GeneralDate date) {
 		List<SpecificDateItemNo> specificDateItemList = new ArrayList<SpecificDateItemNo>();
-		List<CompanySpecificDateItem> companySpecificDateItemList = companySpecificDateRepository.getComSpecByDateWithName(companyID, date, date);
-		if(!CollectionUtil.isEmpty(companySpecificDateItemList)){
-			List<Integer> numberList = companySpecificDateItemList.stream().map(x -> x.getSpecificDateItemNo().v()).collect(Collectors.toList());
-			numberList.stream().distinct();
+		Optional<CompanySpecificDateItem> companySpecificDateItemOpt = companySpecificDateRepository.get(companyID, date);
+		if( !companySpecificDateItemOpt.isPresent() ){
+			List<Integer> numberList = companySpecificDateItemOpt.get()
+					.getOneDaySpecificItem()
+					.getSpecificDayItems().stream()
+					.map( item  -> item.v() )
+					.distinct()
+					.collect(Collectors.toList());
 			List<SpecificDateItem> currentList = specificDateItemRepository.getSpecifiDateByListCode(companyID, numberList);
 			specificDateItemList.addAll(currentList.stream().map(x -> x.getSpecificDateItemNo()).collect(Collectors.toList()));
 		}
+		
 		workPlaceIDLst.stream().forEach(workplace -> {
-			List<WorkplaceSpecificDateItem> workplaceSpecificDateItemList = workplaceSpecificDateRepository.getWpSpecByDateWithName(workplace, date, date);
-			workplaceSpecificDateItemList.stream().distinct();
-			workplaceSpecificDateItemList.forEach(item -> {
-				if(!specificDateItemList.contains(item.getSpecificDateItemNo())){
-					specificDateItemList.add(item.getSpecificDateItemNo());
-				}
-			});
+		 Optional<WorkplaceSpecificDateItem> workplaceSpecificDateItemOpt = workplaceSpecificDateRepository.get( workplace, date );
+			if( workplaceSpecificDateItemOpt.isPresent() ) {
+				workplaceSpecificDateItemOpt.get().getOneDaySpecificItem().getSpecificDayItems()
+				.stream().distinct()
+				.forEach(item -> {
+					if(!specificDateItemList.contains(item)){
+						specificDateItemList.add(item);
+					}
+				});
+				
+			}
 		});
 		return new SpecificDateItemOutput(date, specificDateItemList.stream().distinct().map(x -> x.v().intValue()).collect(Collectors.toList()));
 	}
