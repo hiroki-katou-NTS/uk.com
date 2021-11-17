@@ -34,29 +34,33 @@ module nts.uk.at.ksu008.c {
 
         duplicate(): void {
             let vm = this;
-            let command: IDuplicateItemOutputSettingInfoCommand = {
-                originalCode: vm.sourceCode(),
-                destinationCode: vm.destinationCode(),
-                destinationName: vm.destinationName(),
-                overwrite: vm.isOverwrite()
-            };
-            if(_.isEqual(vm.destinationCode(), vm.sourceCode())){
-                vm.$dialog.error({ messageId: 'Msg_355' });
-                vm.$blockui("clear");
-                return;
-            }
+            vm.$validate(".nts-input:not(:disabled)").then((valid: boolean) => {
+                if (valid) {
+                    let command: IDuplicateItemOutputSettingInfoCommand = {
+                        originalCode: vm.sourceCode(),
+                        destinationCode: vm.destinationCode(),
+                        destinationName: vm.destinationName(),
+                        overwrite: vm.isOverwrite()
+                    };
+                    if(_.isEqual(vm.destinationCode(), vm.sourceCode())){
+                        vm.$dialog.error({ messageId: 'Msg_355' });
+                        vm.$blockui("clear");
+                        return;
+                    }
 
-            vm.$ajax(API.duplicate, command).then(data => {
-                let result = {
-                    destinationCode: vm.destinationCode()
-                };
-                vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
-                    vm.$window.close(result);
-                });
-            }).fail(error => {
-                vm.$dialog.error(error);
-            }).always(() => {
-                vm.$blockui("clear");
+                    vm.$ajax(API.duplicate, command).then(data => {
+                        let result = {
+                            destinationCode: vm.destinationCode()
+                        };
+                        vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                            vm.$window.close(result);
+                        });
+                    }).fail(error => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("clear");
+                    });
+                }
             });
         }
 
