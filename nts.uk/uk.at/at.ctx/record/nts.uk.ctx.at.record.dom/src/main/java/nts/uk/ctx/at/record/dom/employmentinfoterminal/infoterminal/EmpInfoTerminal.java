@@ -126,9 +126,10 @@ public class EmpInfoTerminal implements DomainAggregate {
 			ReservationReceptionData reserv) {
 		Map<Integer, BentoReservationCount> bentoDetails = new HashMap<>();
 		bentoDetails.put(reserv.getBentoFrame(), new BentoReservationCount(Integer.parseInt(reserv.getQuantity())));
-		return BentoReserveService.reserve(require, new ReservationRegisterInfo(reserv.getIdNumber()),
-				new ReservationDate(reserv.getDateTime().toDate(), ReservationClosingTimeFrame.FRAME1),
-				reserv.getDateTime(), bentoDetails, Optional.empty());
+//		return BentoReserveService.reserve(require, new ReservationRegisterInfo(reserv.getIdNumber()),
+//				new ReservationDate(reserv.getDateTime().toDate(), ReservationClosingTimeFrame.FRAME1),
+//				reserv.getDateTime(), bentoDetails, Optional.empty());
+		return null;
 	}
 
 	public static class EmpInfoTerminalBuilder {

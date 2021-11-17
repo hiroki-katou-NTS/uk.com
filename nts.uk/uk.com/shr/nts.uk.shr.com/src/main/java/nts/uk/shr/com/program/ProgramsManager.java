@@ -2701,9 +2701,9 @@ public class ProgramsManager {
     /**
      * KMR001
      */
-    public static final Program KMR001A = new Program(WebAppId.AT, ProgramIdConsts.KMR001A, "KMR001_78",
+    public static final Program KMR001A = new Program(WebAppId.AT, ProgramIdConsts.KMR001A, "KMR001_1",
             "/view/kmr/001/a/index.xhtml");
-    public static final Program KMR001B = new Program(WebAppId.AT, ProgramIdConsts.KMR001B, "KMR001_1",
+    public static final Program KMR001B = new Program(WebAppId.AT, ProgramIdConsts.KMR001B, "KMR001_80",
             "/view/kmr/001/b/index.xhtml");
     public static final Program KMR001C = new Program(WebAppId.AT, ProgramIdConsts.KMR001C, "KMR001_2",
             "/view/kmr/001/c/index.xhtml");

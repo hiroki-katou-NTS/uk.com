@@ -5,3 +5,15 @@
 .sidebar-button{
     margin-left: 150px;
 }
+
+.col-1 {
+    width: 120px;
+}
+
+.m-0-20 {
+    margin: 0 20px;
+}
+
+.checkbox-group label {
+    display: block;
+}
