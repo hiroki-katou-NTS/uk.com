@@ -9,10 +9,56 @@ module nts.uk.at.view.kmr002.a.model {
     import block = nts.uk.ui.block;
     import service = nts.uk.at.view.kmr002.a.service;
     export class ScreenModel {
-		currentFrame: KnockoutObservable<number> = ko.observable(0);
-		bentoFrame1List: KnockoutObservableArray<Bento> = ko.observableArray([
-			new Bento(1, "bento1", 1000, 0, "数量")	
-		]);
+		modeFuture: KnockoutObservable<boolean> = ko.pureComputed(() => {
+			if(moment(this.date()).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
+				return false;
+			}
+			return true;
+		});
+		date: KnockoutObservable<any> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
+		frameOption: KnockoutObservableArray<any> = ko.observableArray([]);
+		currentFrameNo: KnockoutObservable<number> = ko.observable(null);
+		timeLabel: KnockoutObservable<string> = ko.pureComputed(() => {
+			if(this.currentFrameNo()) {
+				let currentFrame = _.find(this.frameOption(), (o: any) => o.frameNo == this.currentFrameNo());
+				if(currentFrame) {
+					let startTime = '',
+						endTime = '';
+					if(currentFrame.receptionHours.startTime) {
+						startTime = nts.uk.time.format.byId("Clock_Short_HM", currentFrame.receptionHours.startTime);
+					}
+					if(currentFrame.receptionHours.endTime) {
+						endTime = nts.uk.time.format.byId("Clock_Short_HM", currentFrame.receptionHours.endTime);
+					}
+					return startTime + getText('KMR002_19') + endTime;
+				}
+			}
+			return '';
+		});
+		canOrder: KnockoutObservable<boolean> = ko.pureComputed(() => {
+			let orderFrame1 = _.find(this.listOrder, o => o.reservationClosingTimeFrame==1);
+			if(orderFrame1) {
+				if(orderFrame1.ordered == false && this.currentFrameNo()==1 && this.bentoMenuByClosingTimeDto.reservationTime1) {
+					return true;
+				}				
+			} else {
+				if(this.currentFrameNo()==1 && this.bentoMenuByClosingTimeDto.reservationTime1) {
+					return true;
+				}
+			}
+			let orderFrame2 = _.find(this.listOrder, o => o.reservationClosingTimeFrame==2);
+			if(orderFrame2) {
+				if(orderFrame2.ordered == false && this.currentFrameNo()==2 && this.bentoMenuByClosingTimeDto.reservationTime2) {
+					return true;
+				}				
+			} else {
+				if(this.currentFrameNo()==2 && this.bentoMenuByClosingTimeDto.reservationTime2) {
+					return true;
+				}
+			}
+			return false;
+		});
+		bentoFrame1List: KnockoutObservableArray<Bento> = ko.observableArray([]);
 		countAllFrame1: KnockoutObservable<number> = ko.pureComputed(() => {
 			if(_.isEmpty(this.bentoFrame1List())) {
 				return 0;	
@@ -34,12 +80,10 @@ module nts.uk.at.view.kmr002.a.model {
 			if(_.isEmpty(this.bentoFrame1List())) {
 				return 0;	
 			}
-			let countAll = _.chain(this.bentoFrame1List()).map((item: Bento) => item.sum()).sum().value();
+			let countAll = _.chain(this.bentoFrame1List()).map((item: Bento) => item.sumFunction()).sum().value();
 			return countAll;
 		});
-		bentoFrame2List: KnockoutObservableArray<Bento> = ko.observableArray([
-			new Bento(2, "bento2", 2000, 0, "数量")
-		]);
+		bentoFrame2List: KnockoutObservableArray<Bento> = ko.observableArray([]);
 		countAllFrame2: KnockoutObservable<number> = ko.pureComputed(() => {
 			if(_.isEmpty(this.bentoFrame2List())) {
 				return 0;	
@@ -61,24 +105,135 @@ module nts.uk.at.view.kmr002.a.model {
 			if(_.isEmpty(this.bentoFrame2List())) {
 				return 0;	
 			}
-			let countAll = _.chain(this.bentoFrame2List()).map((item: Bento) => item.sum()).sum().value();
+			let countAll = _.chain(this.bentoFrame2List()).map((item: Bento) => item.sumFunction()).sum().value();
 			return countAll;
 		});
-
-        constructor() {
-            let self = this;
-        }
+		bentoMenuByClosingTimeDto: any = null;
+		listOrder: Array<any> = [];
 
         public startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred<any>();
-            dfd.resolve();
+			self.date.subscribe((value) => {
+				self.getData();	
+			});
+			dfd.resolve();
             return dfd.promise();
         }
 
-		register() {
-			
+		getData(): JQueryPromise<any> {
+			let self = this,
+                dfd = $.Deferred<any>(),
+				date = moment(self.date()).format("YYYY/MM/DD"),
+				param = { date }; 
+			nts.uk.ui.block.invisible();
+			service.startScreen(param).done((data: any) => {
+				self.bentoMenuByClosingTimeDto = data.bentoMenuByClosingTimeDto;
+				self.frameOption(data.bentoMenuByClosingTimeDto.reservationRecTimeZoneLst);
+				if(!_.isEmpty(self.frameOption())) {
+					self.currentFrameNo(_.head(self.frameOption()).frameNo);
+				}
+				let menu1: Array<Bento> = [];
+				_.forEach(data.bentoMenuByClosingTimeDto.menu1, (item: any) => {
+					let bentoCount = 0;
+					let frame1Item = _.find(data.listOrder, (o: any) => o.reservationClosingTimeFrame==1);
+					if(frame1Item) {
+						let reservationItem = _.find(frame1Item.listBentoReservationDetail, (o: any) => o.frameNo==item.frameNo);
+						if(reservationItem) {
+							bentoCount = reservationItem.bentoCount;
+						}
+					}
+					menu1.push(new Bento(item.frameNo, item.name, item.amount1, bentoCount, item.unit));
+				});
+				self.bentoFrame1List(menu1);
+				let menu2: Array<Bento> = [];
+				_.forEach(data.bentoMenuByClosingTimeDto.menu2, (item: any) => {
+					let bentoCount = 0;
+					let frame2Item = _.find(data.listOrder, (o: any) => o.reservationClosingTimeFrame==2);
+					if(frame2Item) {
+						let reservationItem = _.find(frame2Item.listBentoReservationDetail, (o: any) => o.frameNo==item.frameNo);
+						if(reservationItem) {
+							bentoCount = reservationItem.bentoCount;
+						}
+					}
+					menu2.push(new Bento(item.frameNo, item.name, item.amount1, bentoCount, item.unit));
+				});
+				self.bentoFrame2List(menu2);
+				if(_.isEmpty(data.listOrder)) {
+					self.listOrder = [];
+				} else {
+					self.listOrder = data.listOrder;
+				}
+				dfd.resolve();
+			}).fail((res: any) => {
+				error({ messageId: res.messageId }).then(() => {
+					uk.request.jumpToTopPage();
+				});
+				dfd.reject();
+			}).always(() => {
+				nts.uk.ui.block.clear();	
+			});
+            return dfd.promise();	
 		}
+
+		register() {
+			let self = this,
+				date = moment(self.date()).format("YYYY/MM/DD"),
+				details: Array<any> = [],
+				positiveCountLst1 = _.filter(self.bentoFrame1List(), (o) => o.bentoCount()>0),
+				positiveCountLst2 = _.filter(self.bentoFrame2List(), (o) => o.bentoCount()>0);
+			if(_.isEmpty(_.concat(positiveCountLst1, positiveCountLst2))) {
+				return error({ messageId: 'Msg_1605' });
+			}
+			_.forEach(positiveCountLst1, (item) => {
+				details.push({
+					closingTimeFrame: 1,
+					frameNo: item.frameNo(),
+					bentoCount: item.bentoCount()
+				})		
+			});
+			_.forEach(positiveCountLst2, (item) => {
+				details.push({
+					closingTimeFrame: 2,
+					frameNo: item.frameNo(),
+					bentoCount: item.bentoCount()
+				})		
+			});
+			let command = { date, details };
+			if(_.isEmpty(self.listOrder)) {
+				nts.uk.ui.block.invisible();
+				service.register(command).done(() => {
+					info({ messageId: "Msg_15" }).then(() => {
+						self.getData();
+					});	
+				}).fail((res: any) => {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					nts.uk.ui.block.clear();	
+				});
+			} else {
+				nts.uk.ui.block.invisible();
+				service.update(command).done(() => {
+					info({ messageId: "Msg_15" }).then(() => {
+						self.getData();	
+					});	
+				}).fail((res: any) => {
+					error({ messageId: res.messageId });
+				}).always(() => {
+					nts.uk.ui.block.clear();	
+				});
+			}	
+		}
+		
+		print(): void {
+            let self = this;
+            nts.uk.ui.block.invisible();
+            service.print().done().fail((res: any) => {
+                error({ messageId: res.messageId });
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            });
+        }
     }
 
 	export class Bento {
@@ -87,16 +242,12 @@ module nts.uk.at.view.kmr002.a.model {
 		amount1: KnockoutObservable<number>;
 		bentoCount: KnockoutObservable<number>;
 		unit: KnockoutObservable<string>;
-		sum: KnockoutObservable<number>;
 		constructor(frameNo: number, name: string, amount1: number, bentoCount: number, unit: string) {
 			this.frameNo = ko.observable(frameNo);
 			this.name = ko.observable(name);
 			this.amount1 = ko.observable(amount1);
 			this.bentoCount = ko.observable(bentoCount);
 			this.unit = ko.observable(unit);
-			this.sum = ko.pureComputed(() => {
-				return this.amount1() * _.toNumber(this.bentoCount());
-			});
 		}
 		
 		increaseCount() {
@@ -119,6 +270,22 @@ module nts.uk.at.view.kmr002.a.model {
 		
 		resetCount() {
 			this.bentoCount(0);
+		}
+		
+		sum() {
+			return ko.pureComputed(() => {
+				return this.sumFunction();
+			});
+		}
+		
+		sumFunction() {
+			return this.amount1() * _.toNumber(this.bentoCount());	
+		}
+		
+		enableResetCount() {
+			return ko.pureComputed(() => {
+				return this.bentoCount() > 0;	
+			});
 		}
 	}
 }

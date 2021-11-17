@@ -1,30 +1,39 @@
 package nts.uk.ctx.at.record.app.query.reservation;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 
-@Data
+@AllArgsConstructor
+@Getter
 public class BentoItemByClosingTimeDto {
-	private Integer frameNo;
-	
+	/**
+	 * 枠番
+	 */
+	private int frameNo;
+	/**
+	 * 弁当名
+	 */
 	private String name;
-	
-	private Integer amount1;
-	
-	public BentoItemByClosingTimeDto() {
-		super();
-	}
-
-
-
-	public BentoItemByClosingTimeDto(Integer frameNo, String name, Integer bentoAmount) {
-		super();
-		this.frameNo = frameNo;
-		this.name = name;
-		this.amount1 = bentoAmount;
-	}
+	/**
+	 * 金額１
+	 */
+	private int amount1;
+	/**
+	 * 金額２
+	 */
+	private int amount2;
+	/**
+	 * 単位
+	 */
+	private String unit;
 	
 	public static BentoItemByClosingTimeDto fromDomain(BentoItemByClosingTime domain) {
-		return new BentoItemByClosingTimeDto(domain.getFrameNo(), domain.getName().v(), domain.getAmount1().v());
+		return new BentoItemByClosingTimeDto(
+				domain.getFrameNo(), 
+				domain.getName().v(), 
+				domain.getAmount1().v(), 
+				domain.getAmount2().v(), 
+				domain.getUnit().v());
 	}
 }
