@@ -43,18 +43,22 @@ module nts.uk.at.view.cmf006.a {
                 roleType: vm.roleType(),
                 multiple: false,
                 isResize: false,
-                rows: 15,
+                rows: 10,
                 tabindex: 3
             });
             vm.fetchPermissionSettingList();
             vm.fetchRoleList();
         }
-
         created(params: any) {
             const vm = this;
-
             vm.roleId.subscribe((newValue) => {
-                if (!_.isEmpty(newValue)) vm.fetchAvailabilityPermission(newValue);
+                if (!_.isEmpty(newValue)){
+                    vm.fetchAvailabilityPermission(newValue);
+                }else {
+                    vm.resetPermission();
+                    vm.enableCopy(false);
+                    vm.enableSave(false);
+                }
             });
             vm.componentCcg025.currentCode.subscribe((roleId: any) => {
                 if (vm.listRole().length <= 0) vm.listRole(vm.componentCcg025.listRole());
@@ -122,9 +126,11 @@ module nts.uk.at.view.cmf006.a {
                 if (!_.isEmpty(data)) {
                     vm.mappingAvailabilityPermission(data);
                     vm.enableCopy(true);
+                    vm.enableSave(true);
                 } else {
                     vm.resetPermission();
                     vm.enableCopy(false);
+                    vm.enableSave(true)
                 }
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -198,6 +204,8 @@ module nts.uk.at.view.cmf006.a {
             vm.$ajax(fetch.register, command).then(data => {
                 vm.isUpdateMode(true);
                 vm.$dialog.info({messageId: 'Msg_15'});
+                vm.enableCopy(true);
+                vm.enableSave(true);
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {

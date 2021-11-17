@@ -718,9 +718,16 @@ public class CreateExOutTextService extends ExportService<Object> {
 				//　4-2．「外部出力カテゴリ．外部出期間区分」=【年月日】の場合
 				//　「出力条件項目名3（開始）　≧　処理期間.開始日付（yyyy/MM/dd）
 				//　　出力条件項目名4（終了）　≦　処理期間.終了日付（yyyy/MM/dd）」
+
 				//　4-3．「外部出力カテゴリ．外部出期間区分」=【基準日】の場合
 				//　「出力条件項目名3（開始）　≧　基準日（yyyy/MM/dd）
 				//　　出力条件項目名4（終了）　≦　基準日（yyyy/MM/dd）」
+				// Update to # 121029
+				// TH 4-3．「外部出力カテゴリ．外部出期間区分」=【基準日】
+				//「出力条件項目名3（開始）　≦　基準日（yyyy/MM/dd）
+				//　出力条件項目名4（終了）　≧　基準日（yyyy/MM/dd）」
+
+
 				if(outingPeriodClassific == OutingPeriodClassific.YEAR_MONTH){
 					subSqlStart.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
 					subSqlEtart.append(" DATEADD(MONTH, DATEDIFF(MONTH, 0, ");
@@ -735,8 +742,8 @@ public class CreateExOutTextService extends ExportService<Object> {
 					createWhereCondition(sql, startDateItemName, " >= ", START_DATE_PARAM);
 					createWhereCondition(sql, endDateItemName, " <= ", END_DATE_PARAM);
 			    }else if(outingPeriodClassific == OutingPeriodClassific.REFERENCE_DATE){
-					createWhereCondition(sql, startDateItemName, " >= ", BASE_DATE_PARAM);
-					createWhereCondition(sql, endDateItemName, " <= ", BASE_DATE_PARAM);
+					createWhereCondition(sql, startDateItemName, " <= ", BASE_DATE_PARAM);
+					createWhereCondition(sql, endDateItemName, " >= ", BASE_DATE_PARAM);
 				}
 			} else if (isDate) {
 				StringBuilder subSql = new StringBuilder();
