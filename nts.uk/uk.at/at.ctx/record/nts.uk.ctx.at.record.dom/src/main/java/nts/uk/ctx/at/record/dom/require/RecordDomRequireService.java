@@ -22,11 +22,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
-
 import nts.arc.time.calendar.period.YearMonthPeriod;
-
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationAdapter;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
@@ -255,6 +252,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltran
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.getprocessingdate.GetProcessingDate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.pastmonth.AggregatePastMonthsService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
@@ -756,6 +754,9 @@ public class RecordDomRequireService {
 	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
 	@Inject 
 	private ExecutionLogRepository executionLogRepo;
+	@Inject
+	private WorkingConditionRepository workingConditionRepository;
+	
   
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -765,7 +766,7 @@ public class RecordDomRequireService {
 		AgeementTimeCommonSettingService.RequireM1, CreateTempAnnLeaMngProc.RequireM3, AggregateSpecifiedDailys.RequireM1, ClosureService.RequireM6, ClosureService.RequireM5,
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1, ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2,
 		AgreementDomainService.RequireM5, AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1, GetExcessTimesYear.RequireM2, 
-		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, GetDaysForCalcAttdRate.RequireM2, MonthlyAggregateForEmployees.Require {
+		GetRemainingNumberPublicHolidayService.RequireM1, GetRemainingNumberChildCareNurseService.Require, GetDaysForCalcAttdRate.RequireM2, MonthlyAggregateForEmployees.Require, AggregatePastMonthsService.Require {
 
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 		
@@ -805,7 +806,7 @@ public class RecordDomRequireService {
 				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService, publicHolidaySettingRepo, publicHolidayManagementUsageUnitRepo,
 				companyMonthDaySettingRepo,tempPublicHolidayManagementRepo, publicHolidayCarryForwardDataRepo, employmentMonthDaySettingRepo, workplaceMonthDaySettingRepo,
 				employeeMonthDaySettingRepo, publicHolidayCarryForwardHistoryRepo, childCareUsedNumberRepo, careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
-				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo);
+				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo,workingConditionRepository);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -857,7 +858,7 @@ public class RecordDomRequireService {
 				PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo, EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo, WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
 				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
-				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo) {
+				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo,WorkingConditionRepository workingConditionRepository) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
 					interimRecAbasMngRepo, empSubstVacationRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter,
@@ -1002,6 +1003,7 @@ public class RecordDomRequireService {
 			this.tempCareManagementRepo = tempCareManagementRepo;
 			this.nursingLeaveSettingRepo = nursingLeaveSettingRepo;
 			this.executionLogRepo = executionLogRepo;
+			this.workingConditionRepository = workingConditionRepository;
 		}
 
 		private SuperHD60HConMedRepository superHD60HConMedRepo;
@@ -1272,6 +1274,8 @@ public class RecordDomRequireService {
 		private NursingLeaveSettingRepository nursingLeaveSettingRepo;
 		
 		private ExecutionLogRepository executionLogRepo;
+		
+		private WorkingConditionRepository workingConditionRepository;
 
 		HashMap<String,Optional<PredetemineTimeSetting>> predetemineTimeSetting = new HashMap<String, Optional<PredetemineTimeSetting>>();
 		HashMap<String, Optional<RegularLaborTimeEmp>> regularLaborTimeEmpMap = new HashMap<String, Optional<RegularLaborTimeEmp>>();
@@ -2966,6 +2970,12 @@ public class RecordDomRequireService {
 		public Map<String, BsEmploymentHistoryImport> employmentHistoryClones(String companyId, List<String> employeeId,
 				GeneralDate baseDate) {
 			return shareEmploymentAdapter.findEmpHistoryVer2(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public List<WorkingConditionItemWithPeriod> getWorkingConditionItemWithPeriod(String companyID,
+				List<String> lstEmpID, DatePeriod datePeriod) {
+			return workingConditionRepository.getWorkingConditionItemWithPeriod(companyID, lstEmpID, datePeriod);
 		}
 
 	}
