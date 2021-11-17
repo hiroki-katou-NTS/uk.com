@@ -98,18 +98,14 @@ public class FindAnnLeaUsedDaysFromPreviousToNextGrantDate {
 		
 		double total = annLeaRemNumEachMonthList.stream().mapToDouble(c -> {
 			//付与後の使用数を加算する
-			if (c.getClosurePeriod().contains(GrantPeriod.start())) {
+			if (c.getClosurePeriod().start().after(GrantPeriod.start()) && c.getClosurePeriod().end().beforeOrEquals(GrantPeriod.start())) {
 				return c.getAnnualLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt()
 						.flatMap(x -> x.getUsedDays()).map(x -> x.v()).orElse(0d);
 			}
 			//付与前の使用数を加算する
-			if(c.getClosurePeriod().contains(GrantPeriod.end())){
-				return c.getAnnualLeave().getUsedNumberInfo().getUsedNumberBeforeGrant()
-						.getUsedDays().map(x -> x.v()).orElse(0d);
-			}
-			//合計の使用数を加算する
-			return c.getAnnualLeave().getUsedNumberInfo().getUsedNumber()
+			return c.getAnnualLeave().getUsedNumberInfo().getUsedNumberBeforeGrant()
 					.getUsedDays().map(x -> x.v()).orElse(0d);
+
 		}).sum();
 		
 		return new AnnualLeaveUsedDayNumber(total);
