@@ -5,6 +5,7 @@ import nts.uk.ctx.at.aggregation.dom.form9.Form9Code;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9Layout;
 import nts.uk.ctx.at.aggregation.dom.form9.Form9LayoutRepository;
 import nts.uk.ctx.at.aggregation.infra.entity.form9.KagmtForm9OutputLayout;
+import nts.uk.ctx.at.aggregation.infra.entity.form9.KagmtForm9OutputLayoutPk;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -28,7 +29,6 @@ public class JpaForm9LayoutRepository extends JpaRepository implements Form9Layo
     private static final String FIND_BY_CID_IS_USE;
 
     private static final String FIND_BY_CID_CD_FIXED;
-
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -141,12 +141,11 @@ public class JpaForm9LayoutRepository extends JpaRepository implements Form9Layo
      */
     @Override
     public void deleteLayoutOfUser(String companyId, Form9Code code) {
-        List<KagmtForm9OutputLayout> result = this.queryProxy().query(FIND_BY_CID_CD_FIXED, KagmtForm9OutputLayout.class)
+        this.getEntityManager().createQuery("DELETE FROM KagmtForm9OutputLayout a WHERE a.pk.companyId = :companyId AND a.pk.code = :code ",
+                KagmtForm9OutputLayout.class)
                 .setParameter("companyId", companyId)
                 .setParameter("code", code.v())
-                .setParameter("isFixed", false)
-                .getList();
-        commandProxy().removeAll(result);
+                .executeUpdate();
     }
 
     /**

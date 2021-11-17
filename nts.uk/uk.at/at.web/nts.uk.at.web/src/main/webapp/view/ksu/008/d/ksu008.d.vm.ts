@@ -74,7 +74,9 @@ module nts.uk.at.ksu008.d {
             };
 
             vm.$ajax(API.update, command).then(data => {
-                vm.$dialog.info({messageId: 'Msg_15'});
+                vm.$dialog.info({messageId: 'Msg_15'}).then(function () {
+                    vm.$window.close();
+                });
             }).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {
