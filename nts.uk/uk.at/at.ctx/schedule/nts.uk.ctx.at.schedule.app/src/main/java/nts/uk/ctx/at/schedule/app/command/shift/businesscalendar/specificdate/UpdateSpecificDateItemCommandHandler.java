@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateSpecificDateItemCommandHandler extends CommandHandler<List<SpecificDateItemCommand>>{
@@ -50,12 +50,14 @@ public class UpdateSpecificDateItemCommandHandler extends CommandHandler<List<Sp
 				lstAdd.add(specificDateItem);
 			}
 		}
+		/**TODO dev fix
 		if(lstUpdate.size()>0){
 			repo.updateSpecificDateItem(lstUpdate);
 		}
 		if(lstAdd.size()>0){
 			repo.addSpecificDateItem(lstAdd);
 		}
+	*/
 	}
 
 

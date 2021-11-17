@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
 
 @Stateless
 public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<List<WorkplaceSpecificDateCommand>> {
@@ -25,7 +25,9 @@ public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<Li
 		for(WorkplaceSpecificDateCommand workplaceSpecificDateCommand :  context.getCommand()){
 			GeneralDate date = GeneralDate.fromString(workplaceSpecificDateCommand.getSpecificDate(), DATE_FORMAT);
 			List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
+			/** TODO dev fix
 			for(Integer specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
+				
 				listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
 						workplaceSpecificDateCommand.getWorkPlaceId(),
 						date,
@@ -34,6 +36,7 @@ public class InsertWorkplaceSpecificDateCommandHandler extends CommandHandler<Li
 				);
 			}
 			repo.InsertWpSpecDate(listInsert);
+			**/
 		}
 	}
 

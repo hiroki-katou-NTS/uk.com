@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
 
 @Stateless
 public class WorkplaceSpecificDateFinder {
@@ -24,6 +24,7 @@ public class WorkplaceSpecificDateFinder {
 		List<WokplaceSpecificDateDto> wokplaceSpecificDateDtos = new ArrayList<WokplaceSpecificDateDto>();
 		GeneralDate startDate = GeneralDate.fromString(wpSpecDate, DATE_FORMAT);
 		GeneralDate endDate = startDate.addMonths(1).addDays(-1);
+		/**TODO dev fix
 		List<WorkplaceSpecificDateItem> resultList = workplaceSpecDateRepo.getWpSpecByDateWithName(workplaceId, startDate, endDate);
 		
 		while(startDate.beforeOrEquals(endDate)) {	
@@ -38,6 +39,7 @@ public class WorkplaceSpecificDateFinder {
 			}
 			startDate = startDate.addDays(1);
 		}
+		*/
 		return wokplaceSpecificDateDtos;
 	}
 

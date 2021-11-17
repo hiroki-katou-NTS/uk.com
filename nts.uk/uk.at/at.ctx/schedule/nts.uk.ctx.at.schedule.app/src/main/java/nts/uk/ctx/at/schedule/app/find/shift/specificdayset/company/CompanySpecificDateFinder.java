@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.find.shift.specificdayset.company;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -21,10 +22,13 @@ public class CompanySpecificDateFinder {
 	public List<CompanySpecificDateDto> getComSpecByDate(String comSpecDate) {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate date = GeneralDate.fromString(comSpecDate, DATE_FORMAT);
+		/** TODO dev fix
 		return companySpecDateRepo.getComSpecByDate(companyId, date)
 				.stream()
 				.map(item -> CompanySpecificDateDto.fromDomain(item))
 				.collect(Collectors.toList());
+		*/
+		return Collections.emptyList();
 	}
 
 	// WITH name
@@ -32,9 +36,12 @@ public class CompanySpecificDateFinder {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate startDate = GeneralDate.fromString(comSpecDate, DATE_FORMAT);
 		GeneralDate endDate = startDate.addMonths(1).addDays(-1);
+		/**TODO dev fix
 		return companySpecDateRepo.getComSpecByDateWithName(companyId, startDate, endDate)
 				.stream()
 				.map(item -> CompanySpecificDateDto.fromDomain(item))
 				.collect(Collectors.toList());
+		*/
+		return Collections.emptyList();
 	}
 }

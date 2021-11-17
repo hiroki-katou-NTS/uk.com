@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -37,7 +37,7 @@ public class SpecificDateItemFinder {
 	 */
 	public List<SpecificDateItemDto> getSpecDateItemIsUse(int useAtr) {
 		String companyId = AppContexts.user().companyId();
-		List<SpecificDateItemDto> lst =  specificDateItemRepository.getSpecifiDateByUse(companyId, useAtr)
+		List<SpecificDateItemDto> lst =  specificDateItemRepository.getByUseAtr(companyId, useAtr)
 				.stream()
 				.map(c -> toSpecificDateItemDto(c))
 				.collect(Collectors.toList());

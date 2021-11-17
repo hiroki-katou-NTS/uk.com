@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -26,6 +26,7 @@ public class InsertCompanySpecificDateCommandHandler extends CommandHandler<List
 		
 		String companyId = AppContexts.user().companyId();
 		
+		/**TODO dev fix
 		List<CompanySpecificDateItem> listInsert = context.getCommand()
 				.stream()
 				.map(c -> CompanySpecificDateItem.createFromJavaType(
@@ -34,6 +35,7 @@ public class InsertCompanySpecificDateCommandHandler extends CommandHandler<List
 					c.getSpecificDateNo(),
 					"")).collect(Collectors.toList());
 		repo.InsertComSpecDate(listInsert);
+		**/
 	}
 
 }

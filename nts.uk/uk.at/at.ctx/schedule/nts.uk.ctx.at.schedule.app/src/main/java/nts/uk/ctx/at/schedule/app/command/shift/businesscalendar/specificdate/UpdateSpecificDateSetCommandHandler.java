@@ -12,10 +12,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSpecificDateSetCommand>{
@@ -154,6 +152,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 			if(setUpdate==1){
 				//既に設定されている内容は据え置き、追加で設定する - complement
 				//list item da co san trong db
+				/**TODO dev fix	
 				List<WorkplaceSpecificDateItem> lstOld = workplaceRepo.getWorkplaceSpecByDate(workplaceId, strDate);
 				List<WorkplaceSpecificDateItem> lstAdd = lstOld;
 				List<Integer> lstAddNew = new ArrayList<Integer>();
@@ -164,8 +163,10 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				}else{
 					List<WorkplaceSpecificDateItem>	a1 = new ArrayList<>();
 					
+					 * 
 					for (Integer timeItemId : lstTimeItemId) {
 						for (WorkplaceSpecificDateItem itemAdd : lstAdd) {
+							
 							if(timeItemId.equals(itemAdd.getSpecificDateItemNo().v())){
 								a1.add(itemAdd);
 							}
@@ -175,25 +176,31 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 						}
 						a1 = new ArrayList<>();
 					}
-				}
+				
 				List<WorkplaceSpecificDateItem> listwpSpec = new ArrayList<>();
 				for (Integer addNew : lstAddNew) {
-					listwpSpec.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId, strDate, addNew,""));
+					
+					listwpSpec.add( WorkplaceSpecificDateItem.createFromJavaType(workplaceId, strDate, addNew,"") );
+					 
 				}
 				//add item new in db
 				workplaceRepo.InsertWpSpecDate(listwpSpec);
+				**/
 			}else{
 				//既に設定されている内容をクリアし、今回選択したものだけを設定する - add new: xoa het caus cu, them moi
 				//delete setting old workplace
-				
+				/**TODO dev fix
 				workplaceRepo.deleteWorkplaceSpec(workplaceId, strDate);
 				//add new
 				List<WorkplaceSpecificDateItem> lstWorkplaceSpecificDate = new ArrayList<>();
 				
 				for (Integer timeItemId : lstTimeItemId) {
+					
 					lstWorkplaceSpecificDate.add(WorkplaceSpecificDateItem.createFromJavaType(workplaceId, strDate, timeItemId,""));
+					
 				}
 				workplaceRepo.InsertWpSpecDate(lstWorkplaceSpecificDate);
+				**/
 			}
 			date = date.addDays(1);
 		}
@@ -218,9 +225,11 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				continue;
 			}
 			if(setUpdate==1){
-				//既に設定されている内容は据え置き、追加で設定する - complement
-				//list item da co san trong db
+				/** TODO dev fix
+				既に設定されている内容は据え置き、追加で設定する - complement
+				list item da co san trong db
 				List<CompanySpecificDateItem> lstOld = companyRepo.getComSpecByDate(companyId, strDate);
+				List<CompanySpecificDateItem> lstOld = Collections.emptyList();
 				List<CompanySpecificDateItem> lstAdd = lstOld;
 				List<Integer> lstAddNew = new ArrayList<Integer>();
 				//find item not exist in db
@@ -230,7 +239,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 					List<CompanySpecificDateItem>	a1 = new ArrayList<>();
 					for (Integer timeItemId : lstTimeItemId) {
 						for (CompanySpecificDateItem itemAdd : lstAdd) {
-							if(timeItemId.equals(itemAdd.getSpecificDateItemNo().v())){
+						 	if(timeItemId.equals(itemAdd.getSpecificDateItemNo().v())){
 								a1.add(itemAdd);
 							}
 						}
@@ -243,7 +252,7 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				//get by list aa
 				List<CompanySpecificDateItem> listwpSpec = new ArrayList<>();
 				for (Integer addNew : lstAddNew) {
-					listwpSpec.add(CompanySpecificDateItem.createFromJavaType(companyId, strDate, addNew,""));
+					listwpSpec.add( new CompanySpecificDateItem( companyId, strDate, null ) );
 				}
 				//add item new in db
 				companyRepo.addListComSpecDate(listwpSpec);
@@ -253,11 +262,11 @@ public class UpdateSpecificDateSetCommandHandler extends CommandHandler<UpdateSp
 				companyRepo.deleteComSpecByDate(companyId, strDate);
 				//add new
 				List<CompanySpecificDateItem> lstComSpecificDate = new ArrayList<>();
-				
 				for (Integer timeItemId : lstTimeItemId) {
-					lstComSpecificDate.add(CompanySpecificDateItem.createFromJavaType(companyId, strDate, timeItemId,""));
+					lstComSpecificDate.add(.createFromJavaType(companyId, strDate, timeItemId,""));
 				}
 				companyRepo.addListComSpecDate(lstComSpecificDate);
+				**/
 			}
 			date = date.addDays(1);
 		}

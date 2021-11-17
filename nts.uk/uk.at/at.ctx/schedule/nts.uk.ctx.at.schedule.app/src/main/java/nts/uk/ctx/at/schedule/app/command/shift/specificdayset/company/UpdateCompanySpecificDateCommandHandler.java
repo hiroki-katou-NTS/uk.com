@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List<UpdateCompanySpecificDateCommand>>{
@@ -24,6 +24,7 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 	@Override
 	protected void handle(CommandHandlerContext<List<UpdateCompanySpecificDateCommand>> context) {
 		String companyId = AppContexts.user().companyId();
+		/**TODO dev fix
 		for(UpdateCompanySpecificDateCommand updateSpecificDateCommand :  context.getCommand()){
 			GeneralDate date = GeneralDate.fromString(updateSpecificDateCommand.getSpecificDate(), DATE_FORMAT);
 			if(updateSpecificDateCommand.isUpdate()) {
@@ -37,6 +38,7 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 							"empty")
 					);
 				}
+				TODO dev fix
 				companyRepo.InsertComSpecDate(listInsert);
 			} else {
 				List<CompanySpecificDateItem> listInsert = new ArrayList<CompanySpecificDateItem>();
@@ -51,6 +53,7 @@ public class UpdateCompanySpecificDateCommandHandler extends CommandHandler<List
 				companyRepo.InsertComSpecDate(listInsert);
 			}
 		}
+		**/
 		
 		
 		

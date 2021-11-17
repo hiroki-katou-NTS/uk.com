@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
 
 @Stateless
 public class UpdateWorkplaceSpecificDateCommandHandler extends CommandHandler<List<WorkplaceSpecificDateCommand>>{
@@ -25,8 +25,9 @@ public class UpdateWorkplaceSpecificDateCommandHandler extends CommandHandler<Li
 	protected void handle(CommandHandlerContext<List<WorkplaceSpecificDateCommand>> context) {
 		for(WorkplaceSpecificDateCommand workplaceSpecificDateCommand :  context.getCommand()){
 			GeneralDate date = GeneralDate.fromString(workplaceSpecificDateCommand.getSpecificDate(), DATE_FORMAT);
+			/**TODO dev fix
 			if(workplaceSpecificDateCommand.isUpdate()) {
-				repo.deleteWorkplaceSpec(workplaceSpecificDateCommand.getWorkPlaceId(), date);
+				repo.deleteByYmd(workplaceSpecificDateCommand.getWorkPlaceId(), date);
 				List<WorkplaceSpecificDateItem> listInsert = new ArrayList<WorkplaceSpecificDateItem>();
 				for(Integer specificDateNo : workplaceSpecificDateCommand.getSpecificDateItemNo()){
 					listInsert.add(WorkplaceSpecificDateItem.createFromJavaType(
@@ -49,6 +50,7 @@ public class UpdateWorkplaceSpecificDateCommandHandler extends CommandHandler<Li
 				}
 				repo.InsertWpSpecDate(listInsert);
 			}
+			**/
 		}
 	}
 

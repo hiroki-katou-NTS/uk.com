@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
 
 @Stateless
 public class DeleteWorkplaceSpecificDateCommandHandler extends CommandHandler<DeleteWorkplaceSpecificDateCommand> {
@@ -20,7 +20,9 @@ public class DeleteWorkplaceSpecificDateCommandHandler extends CommandHandler<De
 	protected void handle(CommandHandlerContext<DeleteWorkplaceSpecificDateCommand> context) {
 		GeneralDate startDate = GeneralDate.fromString(context.getCommand().getStartDate(), DATE_FORMAT);
 		GeneralDate endDate = GeneralDate.fromString(context.getCommand().getEndDate(), DATE_FORMAT);
+		/**TODO dev fix
 		repo.DeleteWpSpecDate(context.getCommand().getWorkPlaceId(), startDate, endDate);
+		**/
 	}
 
 }
