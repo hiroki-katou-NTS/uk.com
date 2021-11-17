@@ -8,7 +8,7 @@ public class OptionalItemTestHelper {
 
 	public static OptionalItem createDefault() {
 		CalcResultRange calcResultRange = new CalcResultRange(CalcRangeCheck.NOT_SET, CalcRangeCheck.NOT_SET, Optional.empty(), Optional.empty(),Optional.empty());
-		DailyResultInputUnit dailyResultInputUnit = new DailyResultInputUnit(Optional.of(TimeItemInputUnit.ONE_MINUTE),
+		DailyResultInputUnit dailyResultInputUnit = new DailyResultInputUnit(Optional.of(TimeItemInputUnit.TEN_MINUTES),
 				Optional.empty(), Optional.empty());
 		InputControlSetting inputControlSetting = new InputControlSetting(true, calcResultRange, Optional.of(dailyResultInputUnit));
 		OptionalItem optionalItem = new OptionalItem(

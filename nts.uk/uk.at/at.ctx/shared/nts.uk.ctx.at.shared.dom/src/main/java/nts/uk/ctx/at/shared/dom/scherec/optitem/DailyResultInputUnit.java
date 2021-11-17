@@ -30,36 +30,26 @@ public class DailyResultInputUnit {
     public ValueCheckResult checkInputUnit(BigDecimal value, OptionalItemAtr optionalItemAtr) {
 		
     	double resultEnum = 0.0;
+    	String valueDisplay ="";
     	switch(optionalItemAtr) {
     	case TIME:
     		resultEnum = timeItemInputUnit.get().valueEnum();
+    		valueDisplay = timeItemInputUnit.get().nameId;
     		break;
     	case NUMBER:
     		resultEnum = numberItemInputUnit.get().valueEnum();
+    		valueDisplay = numberItemInputUnit.get().nameId;
     		break;
     	default: //金額
     		resultEnum = amountItemInputUnit.get().valueEnum();
+    		valueDisplay = amountItemInputUnit.get().nameId;
     	}
     	
     	if(value.doubleValue()%resultEnum ==0) {
     		return new ValueCheckResult(true, Optional.empty());
     	}
-    	String valueError = value+"";
-    	if(optionalItemAtr == OptionalItemAtr.TIME) {
-    		valueError = convertTime(value.intValue());
-    	}
-    	String errorContens = TextResource.localize("Msg_2290",valueError);
+    	String errorContens = TextResource.localize("Msg_2290",valueDisplay);
     	return new ValueCheckResult(false, Optional.of(errorContens));
 	}
-    
-    private String convertTime(Integer time) {
-		if (time == null) {
-			return "";
-		}
-		String m = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60) : 0 + String.valueOf(time % 60);
-		String timeString = String.valueOf(time / 60) + ":" + m;
-		return timeString;
-	}
-    
     
 }

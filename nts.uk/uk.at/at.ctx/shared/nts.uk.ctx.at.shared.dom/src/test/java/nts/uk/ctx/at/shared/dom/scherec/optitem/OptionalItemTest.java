@@ -60,7 +60,7 @@ public class OptionalItemTest {
 		BigDecimal inputValue = new BigDecimal(69);
 
 		List<String> listErrors = new ArrayList<>();
-		listErrors.add("69.0の単位で入力してください。");
+		listErrors.add("10分の単位で入力してください。");
 		CheckValueInputCorrectOuput checkValueInputCorrectOuput = new CheckValueInputCorrectOuput(false, listErrors);
 		new MockUp<InputControlSetting>() {
 			@Mock
@@ -72,7 +72,7 @@ public class OptionalItemTest {
 
 		CheckValueInputCorrectOuput dataResult = optionalItem.checkInputValueCorrect(inputValue);
 		assertThat(dataResult.isCheckResult()).isFalse();
-		assertThat(dataResult.getErrorContent().get(0)).isEqualTo("69.0の単位で入力してください。");
+		assertThat(dataResult.getErrorContent().get(0)).isEqualTo("10分の単位で入力してください。");
 	}
 
 	/**
@@ -84,8 +84,8 @@ public class OptionalItemTest {
 		BigDecimal inputValue = new BigDecimal(69);
 
 		List<String> listErrors = new ArrayList<>();
-		listErrors.add("69.0の単位で入力してください。");
-		listErrors.add("66.0以上の値で入力してください。");
+		listErrors.add("10分の単位で入力してください。");
+		listErrors.add("70.0以上の値で入力してください。");
 		CheckValueInputCorrectOuput checkValueInputCorrectOuput = new CheckValueInputCorrectOuput(false, listErrors);
 		new MockUp<InputControlSetting>() {
 			@Mock
@@ -97,8 +97,8 @@ public class OptionalItemTest {
 
 		CheckValueInputCorrectOuput dataResult = optionalItem.checkInputValueCorrect(inputValue);
 		assertThat(dataResult.isCheckResult()).isFalse();
-		assertThat(dataResult.getErrorContent().get(0)).isEqualTo("69.0の単位で入力してください。");
-		assertThat(dataResult.getErrorContent().get(1)).isEqualTo("66.0以上の値で入力してください。");
+		assertThat(dataResult.getErrorContent().get(0)).isEqualTo("10分の単位で入力してください。");
+		assertThat(dataResult.getErrorContent().get(1)).isEqualTo("70.0以上の値で入力してください。");
 	}
 
 }

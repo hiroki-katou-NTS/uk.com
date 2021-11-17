@@ -8,18 +8,20 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum NumberItemInputUnit {
 	// 0:0.01回
-	ONE_HUNDREDTH(0),
+	ONE_HUNDREDTH(0,"0.01回"),
 
 	// 1:0.1回
-	ONE_TENTH(1),
+	ONE_TENTH(1,"0.1回"),
 
 	// 2:0.5回
-	ONE_HALF(2),
+	ONE_HALF(2,"0.5回"),
 
 	// 3:1回
-	ONE(3);
+	ONE(3,"1回");
 
 	public int value;
+	
+	public String nameId;
 
 	private final static NumberItemInputUnit[] values = NumberItemInputUnit.values();
 

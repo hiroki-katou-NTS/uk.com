@@ -59,15 +59,15 @@ public class DailyResultInputUnitTest {
 		
 		new Expectations() {
             {
-            	TextResource.localize("Msg_2290","15:34");
-            	result =  "15:34の単位で入力してください。";
+            	TextResource.localize("Msg_2290","30分");
+            	result =  "30分の単位で入力してください。";
             }
         };
 		
 		
 		ValueCheckResult dataResult = dailyResultInputUnit.checkInputUnit(inputValue, optionalItemAtr);
 		assertThat(dataResult.isCheckResult()).isFalse();
-		assertThat(dataResult.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2290","15:34"));
+		assertThat(dataResult.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2290","30分"));
 
 	}
 	
@@ -101,15 +101,15 @@ public class DailyResultInputUnitTest {
 
 		new Expectations() {
             {
-            	TextResource.localize("Msg_2290","3.6");
-            	result =  "3.6の単位で入力してください。";
+            	TextResource.localize("Msg_2290","0.5回");
+            	result =  "0.5回の単位で入力してください。";
             }
         };
 		
 		
 		ValueCheckResult dataResult = dailyResultInputUnit.checkInputUnit(inputValue, optionalItemAtr);
 		assertThat(dataResult.isCheckResult()).isFalse();
-		assertThat(dataResult.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2290","3.6"));
+		assertThat(dataResult.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2290","0.5回"));
 
 	}
 	
@@ -143,15 +143,15 @@ public class DailyResultInputUnitTest {
 
 		new Expectations() {
             {
-            	TextResource.localize("Msg_2290","566");
-            	result =  "566.0の単位で入力してください。";
+            	TextResource.localize("Msg_2290","100");
+            	result =  "100の単位で入力してください。";
             }
         };
 		
 		
 		ValueCheckResult dataResult = dailyResultInputUnit.checkInputUnit(inputValue, optionalItemAtr);
 		assertThat(dataResult.isCheckResult()).isFalse();
-		assertThat(dataResult.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2290","566"));
+		assertThat(dataResult.getErrorContent().get()).isEqualTo(TextResource.localize("Msg_2290","100"));
 
 	}
 

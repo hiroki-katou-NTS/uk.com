@@ -219,7 +219,7 @@ public class CalcResultRange extends DomainObject {
 	 * 入力範囲エラーメッセージ作成する
 	 * @param controlRangeValue  制御範囲値
 	 */
-	public String createInputRangeErrorMsg(ControlRangeValue controlRangeValue,OptionalItemAtr optionalItemAtr) {
+	private String createInputRangeErrorMsg(ControlRangeValue controlRangeValue,OptionalItemAtr optionalItemAtr) {
 		String upperLimit =""; 
 		String lowerLimit = ""; 
 		if(optionalItemAtr == OptionalItemAtr.TIME) {
@@ -255,26 +255,28 @@ public class CalcResultRange extends DomainObject {
 	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).任意項目.関数アルゴリズム.計算結果の範囲.上限下限チェック.上限値、下限値を取得
 	 */
 	public ControlRangeValue getUpperLimit(PerformanceAtr performanceAtr,OptionalItemAtr optionalItemAtr) {
+		boolean checkUpperCalcRange = this.getUpperLimit() == CalcRangeCheck.SET;
+		boolean checkLowerCalcRange = this.getLowerLimit() == CalcRangeCheck.SET;
 		switch(optionalItemAtr) {
 		case TIME:
 			return this.timeRange.map(range -> {
 				
-				return new ControlRangeValue(range.getUpper(performanceAtr),
-						range.getLower(performanceAtr));
+				return new ControlRangeValue( checkUpperCalcRange ? range.getUpper(performanceAtr) : Optional.empty(),
+						checkLowerCalcRange ? range.getLower(performanceAtr) : Optional.empty());
 			}).orElse(new ControlRangeValue(Optional.empty(),Optional.empty()));
 			
 		case NUMBER:
 			return this.numberRange.map(range -> {
 				
-				return new ControlRangeValue(range.getUpper(performanceAtr),
-						range.getLower(performanceAtr));
+				return new ControlRangeValue( checkUpperCalcRange ? range.getUpper(performanceAtr) : Optional.empty(),
+						checkLowerCalcRange ? range.getLower(performanceAtr) : Optional.empty());
 			}).orElse(new ControlRangeValue(Optional.empty(),Optional.empty()));
 			
 		default: //金額
 			return this.amountRange.map(range -> {
 				
-				return new ControlRangeValue(range.getUpper(performanceAtr),
-						range.getLower(performanceAtr));
+				return new ControlRangeValue( checkUpperCalcRange ? range.getUpper(performanceAtr) : Optional.empty(),
+						checkLowerCalcRange ? range.getLower(performanceAtr) : Optional.empty());
 			}).orElse(new ControlRangeValue(Optional.empty(),Optional.empty()));
 		}
 	}
