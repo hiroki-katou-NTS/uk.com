@@ -56,13 +56,13 @@ public class StartManHourInputScreenQuery {
 		// 2. 作業運用設定.isEmpty OR 作業運用設定.運用方法 = 利用しない
 
 		if (!opSettingOpt.isPresent()
-				|| opSettingOpt.map(x -> x.getTaskOperationMethod()).equals(TaskOperationMethod.DO_NOT_USE)) {
+				|| opSettingOpt.get().getTaskOperationMethod().equals(TaskOperationMethod.DO_NOT_USE)) {
 			throw new BusinessException("Msg_2122");
 		}
 
 		// 3. 作業運用設定.運用方法 = 予定で利用
 
-		if (opSettingOpt.map(x -> x.getTaskOperationMethod()).equals(TaskOperationMethod.USE_ON_SCHEDULE)) {
+		if (opSettingOpt.get().getTaskOperationMethod().equals(TaskOperationMethod.USE_ON_SCHEDULE)) {
 			throw new BusinessException("Msg_2253");
 		}
 
@@ -72,7 +72,7 @@ public class StartManHourInputScreenQuery {
 
 		// 5. 工数入力の利用設定.isEmpty OR 工数入力の利用設定.使用区分 = 使用しない
 
-		if (!manHrSettingOpt.isPresent() || manHrSettingOpt.map(x -> x.getUsrAtr()).equals(NotUseAtr.NOT_USE)) {
+		if (!manHrSettingOpt.isPresent() || manHrSettingOpt.get().getUsrAtr().equals(NotUseAtr.NOT_USE)) {
 			throw new BusinessException("Msg_2243");
 		}
 		

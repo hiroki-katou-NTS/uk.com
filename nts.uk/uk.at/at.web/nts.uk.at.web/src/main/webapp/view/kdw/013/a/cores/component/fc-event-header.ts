@@ -96,7 +96,9 @@ module nts.uk.ui.at.kdw013.eventheadear {
             };
             
             vm.$window.shared('KDW013H', param);
-            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml').then(() => { });
+            vm.$window.modal('at', '/view/kdw/013/h/index.xhtml').then(() => { 
+                vm.params.screenA.dateRange.valueHasMutated();
+            });
         }
     }
 

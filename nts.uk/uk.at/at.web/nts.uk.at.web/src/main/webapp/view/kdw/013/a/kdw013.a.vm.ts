@@ -346,12 +346,7 @@ module nts.uk.ui.at.kdw013.a {
 
                 });
     
-            vm.events.subscribe((datas) => {
-                
-
-                vm.dataChanged(true);
-
-            });
+            vm.events.subscribe((datas) => { vm.dataChanged(true);});
 
             vm.$settings
                 .subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
@@ -398,7 +393,7 @@ module nts.uk.ui.at.kdw013.a {
                 vm.editable(mode === '0');
             }
             
-            vm.inputDate.subscribe((date)=>{
+            vm.inputDate.subscribe((date) => {
                 vm.reLoad();
             });
 
@@ -600,8 +595,13 @@ module nts.uk.ui.at.kdw013.a {
             vm
                 .$blockui('grayout')
                 .then(() => vm.$ajax('at', API.START, { inputDate }))
-                .fail(function(error) {
-                    vm.$dialog.error({ messageId: error.messageId });
+                .fail((error) => {
+                    vm.$dialog.error({ messageId: error.messageId }).then(() => {
+                        let errors = ["Msg_2122", "Msg_2253", "Msg_2243", "Msg_1960", "Msg_1961"];
+                        if (errors.indexOf(error.messageId) != -1) {
+                            nts.uk.request.jumpToTopPage();
+                        }
+                    });
                 })
                 .then((response: StartProcessDto) => {
 
@@ -714,14 +714,14 @@ module nts.uk.ui.at.kdw013.a {
                 const start = moment(dateRange.start);
                 const end = moment(dateRange.end);
                 let range = end.diff(start, 'days');
-                let dates = [] ;
+                let dates = [];
                 for (let i = 0; i <= range; i++) {
                     dates.push(start.clone().add(i, 'days').format('YYYY/MM/DD'));
                 }
                 return _.indexOf(dates, date) + 1;
             }
-           
-                return 0;
+
+            return 0;
         }
 
         mounted() {
@@ -740,7 +740,8 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         equipmentInput(){
-            vm.$jump('com', '/view/oew/001/a/index.xhtml', param).then(() => {});
+            const vm = this;
+            vm.$jump.blank('com', '/view/oew/001/a/index.xhtml');
         }
 
         getChangedDates(dates){
@@ -846,7 +847,7 @@ module nts.uk.ui.at.kdw013.a {
             let manHrlst = vm.getManHrlst(dateRanges());
 
             let integrationOfDailys = vm.createIDaily(dateRanges());
-            
+
             const command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
                 changedDates,
                 editStateSetting,
