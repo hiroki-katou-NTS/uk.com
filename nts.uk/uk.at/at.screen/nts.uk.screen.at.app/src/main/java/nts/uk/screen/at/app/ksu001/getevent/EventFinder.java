@@ -21,13 +21,13 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRep
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
@@ -103,17 +103,13 @@ public class EventFinder {
 		private SpecificDateItemRepository specificDateItemRepo;
 
 		@Override
-		public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
-			List<WorkplaceSpecificDateItem> data = workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId,
-					specificDate);
-			return data;
+		public Optional<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
+			return workplaceSpecificDateRepo.get(workplaceId, specificDate);
 		}
 
 		@Override
-		public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
-			List<CompanySpecificDateItem> data = companySpecificDateRepo
-					.getComSpecByDate(AppContexts.user().companyId(), specificDate);
-			return data;
+		public Optional<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
+			return companySpecificDateRepo.get(AppContexts.user().companyId(), specificDate);
 		}
 
 		@Override

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.dom.shift.management;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +14,8 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
-import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation.Require;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation.Require;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 @RunWith(JMockit.class)
 public class DateInformationTest {
@@ -123,8 +118,8 @@ public class DateInformationTest {
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		val today = GeneralDate.today();
 		val companyEvent = DateInformationHelper.getCompanyEventDefault();
-		val copanySpecificDateItems = DateInformationHelper.getListDefaultByNumberItem(2);
-		val specDateItemNos = copanySpecificDateItems.stream().map(c->c.getSpecificDateItemNo()).collect(Collectors.toList());
+		val copanySpecificDateItems = DateInformationHelper.getDefaultByNumberItem(2);
+		val specDateItemNos = copanySpecificDateItems.getOneDaySpecificItem().getSpecificDayItems();
 		val pubHoliday =  PublicHoliday.createFromJavaType("cid", today, "holidayName");
 		
 		new Expectations() {
@@ -136,7 +131,7 @@ public class DateInformationTest {
 				result = Optional.of(companyEvent);
 				
 				require.getComSpecByDate(today);
-				result = copanySpecificDateItems;
+				result = Optional.of(copanySpecificDateItems);
 				
 				require.getSpecifiDateByListCode(specDateItemNos);
 			}
@@ -168,8 +163,8 @@ public class DateInformationTest {
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		val today = GeneralDate.today();
 		val companyEvent = DateInformationHelper.getCompanyEventDefault();
-		val companyDateItems = DateInformationHelper.getListDefaultByNumberItem(2);
-		val itemNos =companyDateItems.stream().map(c->c.getSpecificDateItemNo()).collect(Collectors.toList());
+		val companyDateItems = DateInformationHelper.getDefaultByNumberItem(2);
+		val itemNos =companyDateItems.getOneDaySpecificItem().getSpecificDayItems();
 		val dateItems = DateInformationHelper.getListSpecificDateItemByNumberItem(2);
 		val pubHoliday =  PublicHoliday.createFromJavaType("cid", today, "holidayName");
 		
@@ -182,7 +177,7 @@ public class DateInformationTest {
 				result = Optional.of(companyEvent);
 				
 				require.getComSpecByDate(today);
-				result = companyDateItems;
+				result = Optional.of(companyDateItems);
 				
 				require.getSpecifiDateByListCode(itemNos);
 				result = dateItems;
@@ -296,8 +291,8 @@ public class DateInformationTest {
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");
 		val today = GeneralDate.today();
 		val workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
-		val wkpSpecificDateItems =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
-		val dateItemNos = wkpSpecificDateItems.stream().map(c->c.getSpecificDateItemNo()).collect(Collectors.toList());
+		val wkpSpecificDateItems =  DateInformationHelper.getWorkplaceSpecificDateItemByNumber(2);
+		val dateItemNos = wkpSpecificDateItems.getOneDaySpecificItem().getSpecificDayItems();
 		val pubHoliday =  PublicHoliday.createFromJavaType("cid", today, "holidayName");
 		
 		new Expectations() {
@@ -309,7 +304,7 @@ public class DateInformationTest {
 				result = Optional.of(workplaceEvent);
 				
 				require.getWorkplaceSpecByDate(anyString, today);
-				result = wkpSpecificDateItems;
+				result = Optional.of(wkpSpecificDateItems);
 				
 				require.getSpecifiDateByListCode(dateItemNos);
 			}
@@ -338,8 +333,8 @@ public class DateInformationTest {
 		val targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId");;
 		val today = GeneralDate.today();
 		val workplaceEvent = WorkplaceEvent.createFromJavaType("workplaceId", GeneralDate.today(), "eventName");
-		val wkpSpecificDateItems =  DateInformationHelper.getListWorkplaceSpecificDateItemByNumber(2);
-		val dateItemNos = wkpSpecificDateItems.stream().map(c->c.getSpecificDateItemNo()).collect(Collectors.toList());
+		val wkpSpecificDateItems =  DateInformationHelper.getWorkplaceSpecificDateItemByNumber(2);
+		val dateItemNos = wkpSpecificDateItems.getOneDaySpecificItem().getSpecificDayItems();
 		val dateItems = DateInformationHelper.getListSpecificDateItemByNumberItem(2);
 		val pubHoliday =  PublicHoliday.createFromJavaType("cid", today, "holidayName");
 		
@@ -352,7 +347,7 @@ public class DateInformationTest {
 				result = Optional.of(workplaceEvent);
 				
 				require.getWorkplaceSpecByDate(anyString, today);
-				result = wkpSpecificDateItems;
+				result = Optional.of(wkpSpecificDateItems);
 				
 				require.getSpecifiDateByListCode(dateItemNos);
 				result = dateItems;
