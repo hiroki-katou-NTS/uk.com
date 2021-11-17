@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class CreateFutureDayCheckFinder {
+public class CreatingDailyResultsConditionFinder {
 
 	@Inject
 	private CreatingDailyResultsConditionRepository repository;
@@ -27,5 +27,14 @@ public class CreateFutureDayCheckFinder {
 		Optional<CreatingDailyResultsCondition> optDomain = this.repository.findByCid(cid);
 		// 「日別実績を作成するか判断する」を呼び出す
 		return optDomain.map(data -> data.isCreatingDailyResults(param.getEndDate())).orElse(false);
+	}
+	
+	/**
+	 * ドメインモデル「日別実績を作成する条件」を取得する
+	 */
+	public boolean getCreatingDailyResultsCondition() {
+		String cid = AppContexts.user().companyId();
+		return this.repository.findByCid(cid).map(data -> data.getIsCreatingFutureDay().isUse())
+				.orElse(false);
 	}
 }
