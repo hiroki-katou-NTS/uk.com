@@ -21,9 +21,9 @@
         <!-- PAGE CONTENT -->
         <ui:define name="content">
             <div id="contents-area">
-                <div tabindex="1" data-bind="text: $i18n('KDW013_60')"></div>
+                <div data-bind="text: $i18n('KDW013_60')"></div>
                 <div style="margin-left: 10px;" class="content">
-                    <div data-bind="ntsFormLabel: {text: $i18n('KDW013_61')}"></div>
+                    <div tabindex="1" data-bind="ntsFormLabel: {text: $i18n('KDW013_61')}"></div>
                     <div tabindex="2" class="data-input" data-bind="ntsDatePicker: {
                         name: '#[KDW013_61]', 
                         required: true, 
@@ -33,8 +33,8 @@
                 </div>
             </div>
             <div id="functions-area-bottom">
-                <button class="x-large proceed" tabindex="1" data-bind="text: $i18n('KDW013_43'), click: done"></button>
-                <button class="large" tabindex="2" data-bind="click: cancel, text: $i18n('KDW013_37')"></button>
+                <button class="x-large proceed" tabindex="3" data-bind="text: $i18n('KDW013_43'), click: done"></button>
+                <button class="large" tabindex="4" data-bind="click: cancel, text: $i18n('KDW013_37')"></button>
             </div>
         </ui:define>
     </ui:composition>
