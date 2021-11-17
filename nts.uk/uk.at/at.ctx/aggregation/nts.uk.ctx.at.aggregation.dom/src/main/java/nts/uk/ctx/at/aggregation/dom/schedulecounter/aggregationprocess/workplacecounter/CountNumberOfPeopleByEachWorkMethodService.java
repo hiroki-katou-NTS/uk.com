@@ -91,7 +91,7 @@ public class CountNumberOfPeopleByEachWorkMethodService {
 	 * @param changeWorkMethodProcess 勤務方法変換処理
 	 * @return
 	 */
-	public static <T> Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<T>> > countByWorkMethod(
+	private static <T> Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<T>> > countByWorkMethod(
 			Require require,
 			TargetOrgIdenInfor targetOrg,
 			DatePeriod period,
