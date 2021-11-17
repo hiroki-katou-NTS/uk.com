@@ -515,6 +515,51 @@ public class SpecialLeaveManagementService {
 			}
 
 		}
+		
+		
+		//次回特別休暇付与から消滅情報を作成
+		Comparator<NextSpecialLeaveGrant> comparatorNextSLGrant= 
+				  Comparator.comparing(NextSpecialLeaveGrant::getDeadLine).thenComparing(NextSpecialLeaveGrant::getGrantDate);
+		
+		// ソート処理 　期限日、付与日
+		List<NextSpecialLeaveGrant> sortedLstNextSLGrant
+			= nextSpecialLeaveGrantList.stream().sorted(comparatorNextSLGrant).collect(Collectors.toList());
+		
+		for( NextSpecialLeaveGrant c : sortedLstNextSLGrant ){
+
+			// 期限日
+			val deadline = c.getDeadLine();
+
+			// 期限日>=開始日 && 期限日<=終了日 が処理対象
+			if (!aggrPeriod.contains(deadline)) continue;
+
+			// 消滅情報WORKを作成
+			SpecialLeaveLapsedWork specialLeaveLapsedWork = new SpecialLeaveLapsedWork();
+			// 消滅情報WORK.期間の開始日に消滅するかどうか←true
+			specialLeaveLapsedWork.setLapsedAtr(true);
+
+			// 年月日←期限日の翌日
+			GeneralDate nextDayOfDeadLine = deadline;
+			if (deadline.before(GeneralDate.max())){
+				nextDayOfDeadLine = deadline.addDays(1);
+			}
+
+			// ※既に同じ年月日がある場合は、追加せずに消滅情報WORKのみセット
+			if ( dividedDayMap.containsKey(nextDayOfDeadLine)){
+				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
+					= dividedDayMap.get(nextDayOfDeadLine);
+				if ( specialLeaveDividedDayEachProcess != null ){
+					specialLeaveDividedDayEachProcess.setLapsedWork(specialLeaveLapsedWork);
+				}
+			} else {
+				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
+					= new SpecialLeaveDividedDayEachProcess(nextDayOfDeadLine);
+				specialLeaveDividedDayEachProcess.setLapsedWork(specialLeaveLapsedWork);
+				// リストへ追加
+				dividedDayMap.put(nextDayOfDeadLine, specialLeaveDividedDayEachProcess);
+			}
+
+		}
 
 
 		// 付与日で期間を区切る ----------------------------
