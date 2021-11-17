@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
+import nts.uk.ctx.at.shared.dom.worktype.algorithm.GetWorkTypeServiceShare;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeDto;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,7 +36,7 @@ public class GetListWorkTypeAvailable {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
-	private JudgeHdSystemOneDayService judgeHdSystemOneDayService;
+	private GetWorkTypeServiceShare getWorkTypeService;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -82,7 +82,8 @@ public class GetListWorkTypeAvailable {
 		
 		return workTypeDtos
 				.stream()
-				.map(x -> this.convertOutput(x))
+				.map(x -> this.convertOutput(x).orElse(null))
+				.filter(x -> x != null)
 				.collect(Collectors.toList());
 		
 	}
@@ -91,11 +92,12 @@ public class GetListWorkTypeAvailable {
 		// 就業時間帯の必須チェック
 		SetupType workTimeSetting = 
 				basicScheduleService.checkNeededOfWorkTimeSetting(x.getWorkTypeCode());
-	
+		Optional<WorkType> worktype = getWorkTypeService.getWorkType(x.getWorkTypeCode());
+		if(!worktype.isPresent())
+			return Optional.empty();		
 		// 1日半日出勤・1日休日系の判定 - (Thực hiện thuật toán [Kiểm tra hệ thống đi làm
 		// nửa ngày・ nghỉ cả ngày ])
-		AttendanceHolidayAttr attHdAtr = judgeHdSystemOneDayService.judgeHdOnDayWorkPer(x.getWorkTypeCode());
-	
-		return new WorkTypeInfomation(x, workTimeSetting.value, attHdAtr.value);
+		AttendanceHolidayAttr attHdAtr = worktype.get().chechAttendanceDay().toAttendanceHolidayAttr();
+		return Optional.of(new WorkTypeInfomation(x, workTimeSetting.value, attHdAtr.value));
 	}
 }
