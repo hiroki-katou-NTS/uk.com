@@ -18,6 +18,7 @@ import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.cloud.operate.dom.tenant.CreateDefaultCompany;
 import nts.uk.ctx.cloud.operate.dom.service.CreateInitialOptionsService;
 import nts.uk.ctx.cloud.operate.dom.tenant.CreateTenant;
+import nts.uk.ctx.sys.assist.app.command.mastercopy.MasterCopyDataCommandHanlder;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.shr.com.company.CompanyId;

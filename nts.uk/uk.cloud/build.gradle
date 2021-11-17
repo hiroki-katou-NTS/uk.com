@@ -178,6 +178,10 @@ subprojects {
 
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: version
 
+		// テナント作成時の初期値コピーで参照する
+		compile group: 'uk.com:com.ctx:sys:assist:nts.uk.ctx.sys.assist.app', name: 'nts.uk.ctx.sys.assist.app', version: version
+		compile group: 'uk.com:com.ctx:sys:assist:nts.uk.ctx.sys.assist.dom', name: 'nts.uk.ctx.sys.assist.dom', version: version
+
 		// OneLogin Java SAML Toolkit
 		compile group: 'com.onelogin', name: 'java-saml', version: '2.5.0'
 		compile group: 'com.onelogin', name: 'java-saml-core', version: '2.5.0'

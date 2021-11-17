@@ -126,9 +126,25 @@ module nts.uk.cloud.view.cld001.a {
                 command.optionCode = self.optionCode();
 				command.companyName = self.companyName();
                 service.registTenant(command).done(function() {
-
+                    nts.uk.ui.dialog.info({ messageId: "Msg_1148" }).then(function() {
+                        self.executionMasterCopyData();
+                    });
                 });
 
+            }
+
+            public executionMasterCopyData(): void {
+                var self = this;
+
+                nts.uk.ui.block.invisible();
+                service.executionMasterCopyData({
+                    tenantCode: self.tenantCode()
+                }).done(function(res: any) {
+                    nts.uk.ui.block.clear();
+                }).fail(function(res: any) {
+                    console.log(res);
+                    nts.uk.ui.block.clear();
+                });
             }
         }
     }
