@@ -224,13 +224,7 @@ module nts.uk.at.view.kmr002.a.model {
 		}
 		
 		print(): void {
-            let self = this;
-            nts.uk.ui.block.invisible();
-            service.print().done().fail((res: any) => {
-                error({ messageId: res.messageId });
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
+            nts.uk.request.jump("at", "/view/kmr/005/a/index.xhtml");
         }
     }
 
