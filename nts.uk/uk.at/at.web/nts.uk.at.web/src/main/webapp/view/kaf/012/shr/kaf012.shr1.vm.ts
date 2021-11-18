@@ -253,7 +253,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: new Date(vm.timeLeaveRemaining().remainingStart)
             };
-            setShared('KDL051A_PARAM', data);
+            setShared('KDL051A_PARAM', data.employeeIds);
             if(data.employeeIds.length > 1 ) {
                 nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 980, height: 570});
             } else {

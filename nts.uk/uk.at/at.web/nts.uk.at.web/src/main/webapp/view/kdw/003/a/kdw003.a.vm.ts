@@ -4808,7 +4808,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 employeeIds: [self.selectedEmployee()],
                 baseDate: new Date()
             }
-            setShared('KDL051A_PARAM', param);
+            setShared('KDL051A_PARAM', param.employeeIds);
             nts.uk.ui.windows.sub.modal("/view/kdl/051/a/index.xhtml",{width: 650, height: 530});
         }
 
