@@ -21,10 +21,10 @@ import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
 @AllArgsConstructor
 public class AttendanceByTimezoneDeletion implements DomainValue {
 
-	// 応援勤務枠NO
+	// 枠NO
 	private final SupportFrameNo supportFrameNo;
 
-	// 時間帯別勤怠の削除状態
+	// 状態
 	private final AttendanceDeletionStatusEnum deletionStatus;
 
 	/**		
@@ -52,6 +52,7 @@ public class AttendanceByTimezoneDeletion implements DomainValue {
 	public static interface Require {
 		// [R-1]  日別実績の応援作業別勤怠時間帯を削除する
 		// 日別実績の応援作業別勤怠時間帯Repository.削除する(社員ID, 年月日, 応援勤務枠NO)	
+		
 		
 		// [R-2] 編集状態を削除する
 		// 日別実績の編集状態Repository.削除する(社員ID, 年月日, List<勤怠項目ID>)

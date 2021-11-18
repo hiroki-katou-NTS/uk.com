@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 /**
- * 
+ * 時間帯別勤怠の削除
  * @author tutt
  *
  */
@@ -25,6 +25,7 @@ public class KrcdtDaySupDelete extends ContractCompanyUkJpaEntity implements Ser
 	@EmbeddedId
 	public KrcdtDaySupDeletePk pk;
 	
+	// 削除状態
 	@Column(name = "STATUS")
 	public int status;
 	
