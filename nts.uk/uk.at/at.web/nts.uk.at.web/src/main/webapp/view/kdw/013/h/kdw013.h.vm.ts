@@ -3,6 +3,7 @@ module nts.uk.at.view.kdw013.h {
 	import setShared = nts.uk.ui.windows.setShared;
 	import block = nts.uk.ui.block;
 	import error = nts.uk.ui.dialog.error;
+	import info = nts.uk.ui.dialog.info;
 	import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
@@ -390,18 +391,20 @@ module nts.uk.at.view.kdw013.h {
 					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
 				ajax(paths.save, param).done((data: any) => {
-					_.forEach(data.errorMap, errs => {
-						_.forEach(errs, err => {
-							errors.add({ 
-								message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
-								errorCode: err.message, 
-								$control: $('#'+err.itemId+''), 
-								location: null
+					if(data.messageAlert == 'Msg_15'){
+						info({ messageId: 'Msg_15' });
+						self.reLoadData();
+					}else{
+						_.forEach(data.errorMap, errs => {
+							_.forEach(errs, err => {
+								errors.add({ 
+									message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
+									errorCode: err.message, 
+									$control: $('#'+err.itemId+''), 
+									location: null
+								});
 							});
 						});
-					});
-					if(data.messageAlert == 'Msg_15'){
-						self.reLoadData();
 					}
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });

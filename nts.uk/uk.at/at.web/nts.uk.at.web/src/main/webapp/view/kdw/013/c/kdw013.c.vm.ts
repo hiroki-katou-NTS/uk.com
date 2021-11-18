@@ -238,7 +238,7 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '40px'}
+									option: {width: '50px'}
 									}" />
 								<span data-bind="text: nts.uk.resource.getText('KDW013_30')"></span>
 								<input id="kdw013CEnd" data-bind="ntsTimeEditor: {
@@ -249,9 +249,8 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '40px'}
+									option: {width: '50px'}
 									}" />
-								<span data-bind="visible: !showInputTime(), text: taskBlocks.caltimeSpanView.range"></span>
 							</div>
                         </td>
                     </tr>
@@ -278,7 +277,7 @@ module nts.uk.ui.at.kdw013.c {
 											inputFormat: 'time',
 											required: true,
 											enable: true,
-											option: {width: '40px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -473,7 +472,7 @@ module nts.uk.ui.at.kdw013.c {
 					<tr class="functional">
                         <td>
 							<span></span>
-							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails"></a>
+							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails, visible: frameNos().length < 20"></a>
                             <br />
 							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, enable: errors"></button>
                         </td>
@@ -873,7 +872,7 @@ module nts.uk.ui.at.kdw013.c {
                 .then((invalid: boolean) => {
                     if (!invalid) {
 						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
-							error({ messageId: "Msg_2217"});
+							error({ messageId: "Msg_2230"});
 							return;
 						}
                         if (event) {
