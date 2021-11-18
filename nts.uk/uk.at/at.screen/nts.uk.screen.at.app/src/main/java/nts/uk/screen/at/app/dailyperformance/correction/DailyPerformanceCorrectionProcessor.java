@@ -1681,10 +1681,9 @@ public class DailyPerformanceCorrectionProcessor {
 					
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
 					
-					if (dPItem.getAttendanceAtr() != null && dPItem.getAttendanceAtr() == 5) {
-						if (dPItem.getPrimitive() != null && dPItem.getPrimitive() == 15) {
-							columnSetting = new ColumnSetting(key.getKey(), false);
-						}
+					if (dPItem.getAttendanceAtr() != null && dPItem.getAttendanceAtr().intValue() == DailyAttendanceAtr.NumberOfTime.value) {
+						if (dPItem.getTypeGroup() != null && dPItem.getTypeGroup().intValue() == TypeLink.DOWORK.value)
+							columnSetting = new ColumnSetting(key.getKey().isEmpty() ? "" : key.getKey(), false);
 					}
 				}
 			}
