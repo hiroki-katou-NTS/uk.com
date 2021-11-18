@@ -459,6 +459,9 @@ project (':cloud.web:nts.uk.cloud.web') {
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.dom')
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.infra')
 		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.ws')
+
+		runtime group: 'nts.tenantlocator.client', name:'nts.tenantlocator.client', version:version
+		runtime group: 'nts.tenantlocator.common', name:'nts.tenantlocator.common', version:version
 	}
 
 	task tsc(type: Exec) {
