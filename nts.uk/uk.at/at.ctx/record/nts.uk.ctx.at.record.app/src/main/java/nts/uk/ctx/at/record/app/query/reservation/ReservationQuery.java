@@ -57,7 +57,9 @@ public class ReservationQuery {
 		}
 		// 3: 打刻カードを全て取得する
 		Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(Arrays.asList(employeeId));
-		if (!stampCards.containsKey(employeeId)) throw new BusinessException("Invalid Stamp Number");
+		if (!stampCards.containsKey(employeeId)) {
+			throw new BusinessException("Msg_3241");
+		}
 		StampNumber stampNumber = stampCards.get(employeeId);
 		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampNumber.toString());
 		// 4: 弁当予約を取得

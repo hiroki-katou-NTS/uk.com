@@ -166,9 +166,7 @@ module nts.uk.at.view.kmr002.a.model {
 				}
 				dfd.resolve();
 			}).fail((res: any) => {
-				error({ messageId: res.messageId }).then(() => {
-					uk.request.jumpToTopPage();
-				});
+				error({ messageId: res.messageId });
 				dfd.reject();
 			}).always(() => {
 				nts.uk.ui.block.clear();	
