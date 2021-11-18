@@ -3609,7 +3609,22 @@ module nts.uk.ui.at.kdw013.calendar {
                                 const starts = selecteds.map(({ start }) => formatDate(start));
 
                                 if (ko.isObservable(vm.params.events)) {
-                                    vm.params.events.remove((e: EventRaw) => (e.editable && starts.indexOf(formatDate(e.start)) !== -1));
+                                    vm.params.events.remove((e: EventRaw) => {
+                                        let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1;
+                                        
+                                        if (canRemove) {
+                                            let removeList = vm.params.screenA.removeList;
+                                            let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
+                                            let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                                            if (removeDate) {
+                                                removeDate.supNos.push(supNos);
+                                            } else {
+                                                removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
+                                            }
+                                        }
+
+                                        return canRemove;
+                                    });
                                 }
                                 dataEvent.delete(false);
                                 popupPosition.event(null);

@@ -161,7 +161,7 @@ module nts.uk.ui.at.kdw013.timeheader {
                 let taskDetails = _.get(taskBlocks[i], 'taskDetails', []);
 
                 for (let j = 0; j < taskDetails.length; j++) {
-                    if (!_.find(ouenTimeSheet, ['workNo', _.get(taskDetails[j], 'supNo')])) {
+                    if (_.find(ouenTimeSheet, ['workNo', _.get(taskDetails[j], 'supNo')])) {
                         return true;
                     }
                 }
