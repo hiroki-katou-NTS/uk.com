@@ -27,6 +27,7 @@ import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalConfirmCache;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
 import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
 import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
@@ -61,7 +62,7 @@ public class CreateAchievementRegistrationParam {
     /**
      * @name 実績内容を登録する
      */
-    public void registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items){
+    public DataResultAfterIU registerAchievements(String empTarget, GeneralDate targetDate, List<ItemValue> items){
     	
     	//call ScreenQuery 実績登録パラメータを作成する
     	// chưa có mô tả param truyền vào.
@@ -70,7 +71,7 @@ public class CreateAchievementRegistrationParam {
     	//Call 修正した実績を登録する
     	//QA: 120067 -  đang hỏi anh thanhNX - Anh thanhNX trả lời là hàm DailyModifyRCommandFacade.insertItemDomain()
     	//Vì param 「過去修正モード」"Mode sửa quá khứ " là đang thiết kế nên vẫn chưa có source code.
-		dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
+		return dailyModifyRCommandFacade.insertItemDomain(DPItemParent);
     }
     
     //日別実績データを取得する

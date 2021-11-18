@@ -28,9 +28,11 @@ import nts.uk.ctx.at.shared.app.query.worktime.worktimeset.WorkTimeSettingQuery;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -89,6 +91,9 @@ public class GetWorkDataMasterInformation {
     
     @Inject
     private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
+    
+    @Inject
+    private DailyAttdItemAuthRepository dailyAttdItemAuthRepository;
     
     /**
      * @name 作業データマスタ情報を取得する
@@ -177,6 +182,12 @@ public class GetWorkDataMasterInformation {
     	//List<勤怠項目>
     	List<AttItemName> attItemName = companyDailyItemService.getDailyItems(loginUser.companyId(), Optional.ofNullable(loginUser.roles().forAttendance()), itemIds, new ArrayList<>());
     	
+    	String roleId = loginUser.roles().forAttendance();
+    	Optional<DailyAttendanceItemAuthority> dailyAttendanceItemAuthority = Optional.empty();
+    	if(roleId != null) {
+    		dailyAttendanceItemAuthority = dailyAttdItemAuthRepository.getDailyAttdItemByAttItemId(loginUser.companyId(), roleId, itemIds);
+    	}
+    	
     	//日次の勤怠項目を取得する
     	//List<日次の勤怠項目>
     	List<DailyAttendanceItem> dailyAttendanceItem = dailyAttendanceItemRepo.findByADailyAttendanceItems(attItemName.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList()), loginUser.companyId());
@@ -217,7 +228,7 @@ public class GetWorkDataMasterInformation {
     		divergenceReasonInputMethods = divergenceReasonInputMethodI.getData(loginUser.companyId(), frames);
     	}
     	
-    	return new AttendanceItemMasterInformationDto(attItemName, dailyAttendanceItem, workTypes, workTimeSettings, divergenceTimeRoots, divergenceReasonInputMethods);
+    	return new AttendanceItemMasterInformationDto(attItemName, dailyAttendanceItem, workTypes, workTimeSettings, divergenceTimeRoots, divergenceReasonInputMethods, dailyAttendanceItemAuthority);
     }
     
     /**

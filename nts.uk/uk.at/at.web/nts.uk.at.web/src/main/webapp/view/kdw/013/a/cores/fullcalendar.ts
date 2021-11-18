@@ -3559,7 +3559,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event) {
                                 vm.checkEditDialog().done((v) => {
                                     if (v == 'yes') {
-										nts.uk.ui.errors.clearAll();
+										$('.edit-event .nts-input').ntsError('clear');
                                         popupPosition.event(null);
                                         popupPosition.setting(null);
                                     }
