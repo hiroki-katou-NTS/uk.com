@@ -244,30 +244,24 @@ module nts.uk.ui.at.kcp015.shared {
         // A1_10_4
         openKDL020() {
             let vm = this;
-            var param: any = {
-                employeeIds: vm.data.sids(),
-                baseDate: new Date()
-            };
-            setShared('KDL020A_PARAM', param );
             $('#A1_10_1').ntsPopup('hide');
-            if (param.employeeIds.length == 1) {
-                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/single.xhtml').onClosed(function(): any { });
-            } else {
-                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/multi.xhtml').onClosed(function(): any { });
-            }
+
+			setShared('KDL020_DATA', vm.data.sids());
+			if (vm.data.sids().length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 1040, height: 660 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/020/a/index.xhtml",{  width: 730, height: 660 });
         }
 
         // A1_10_5
         openKDL029() {
             let vm = this;
-            let param = {
-                employeeIds: vm.data.sids(),
-                baseDate: moment(new Date()).format("YYYY/MM/DD")
-            }
-            setShared('KDL029_PARAM', param);
             $('#A1_10_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml').onClosed(function(): any {
-            });
+			nts.uk.ui.windows.setShared('KDL029_DATA', vm.data.sids());
+			if (vm.data.sids().length > 1)
+				nts.uk.ui.windows.sub.modal("/view/kdl/029/a/index.xhtml",{  width: 1060, height: 600 });
+			else
+				nts.uk.ui.windows.sub.modal("/view/kdl/029/a/index.xhtml",{  width: 710, height: 600 });
         }
         
         openKDL017() {
