@@ -166,7 +166,7 @@ public class GetWorkplaceGroupRelationshipInforFileQuery {
 
         @Override
         public List<SharedAffJobTitleHisImport> getEmployeeJobTitle(GeneralDate baseDate, List<String> employeeIds) {
-            return affJobTitleAdapter.findAffJobTitleHisByListSid(employeeIds, baseDate);  //TODO: cần xem lại chỗ implement của Adapter
+            return affJobTitleAdapter.findAffJobTitleHisByListSid(employeeIds, baseDate);
         }
 
         @Override
