@@ -26,6 +26,8 @@ namespace Build4Cloud
 
             int datasourcesCount = int.Parse(args[0]);
 
+            var loader = new EntityManagerLoader(context.RootPath);
+            loader.CreateCloudEdition(datasourcesCount);
 
             foreach (var project in context.Projects)
             {
@@ -39,6 +41,7 @@ namespace Build4Cloud
                 xml.RestoreOriginalFile();
             }
 
+            loader.RestoreOriginalFile();
         }
 
         private static string FindRootPathFromCurrent()
