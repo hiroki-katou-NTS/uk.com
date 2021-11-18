@@ -2,8 +2,12 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
+import lombok.val;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
@@ -29,14 +33,6 @@ public class HolidayAcqManageByYMDTest {
 	}
 	
 	@Test
-	public void test_make4Weeks() {
-		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.today(), new FourWeekDays(4.0));
-		DatePeriod datePeriod = holidayAcqManageByYMD.make4Weeks(GeneralDate.ymd(2020, 11, 11), GeneralDate.ymd(2020, 11, 12));
-		assertThat(datePeriod).isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 11), GeneralDate.ymd(2020, 12, 8)));
-	}
-	
-	
-	@Test
 	public void test_getStartDateType() {
 		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.today(), new FourWeekDays(4.0));
 		StartDateClassification result = holidayAcqManageByYMD.getStartDateType();
@@ -45,50 +41,103 @@ public class HolidayAcqManageByYMDTest {
 	}
 	
 	@Test
-	public void test_getManagementPeriod() {
-		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2020, 11, 12), new FourWeekDays(4.0));
-		HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod(require, GeneralDate.ymd(2020, 11, 11));
+	public void testGetManagementPeriod() {
 		
-		assertThat(result.getHolidayDays().v()).isEqualTo(4.0);
-		assertThat(result.getPeriod())
-				.isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9)));
-	}
-
-	/**
-	 * 起算月日 = 1/1
-	 */
-	@Test
-	public void test_get28days() {
-		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2021, 1, 1), new FourWeekDays(4.0));
+		val holidayAcqManageByYMD = new HolidayAcqManageByYMD(	GeneralDate.ymd(2021, 4, 1)//起算日
+															,	new FourWeekDays(4.0)
+																);
 		
-		/**
-		 * ケース1	基準日 = 2021/1/1		期待値：2021/1/1 - 2021/1/28
-		 */
-		DatePeriod result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2021, 1, 1));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
-
-		/**
-		 * ケース2	基準日 = 2021/1/28	期待値：2021/1/1 - 2021/1/28
-		 */
-		result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2021, 1, 28));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
-
-		/**
-		 * ケース3	基準日 = 2021/1/29	期待値：2021/1/29 - 2021/2/25
-		 */
-		result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2021, 1, 29));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 29));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 2, 25));
-
-		/**
-		 * ケース4	基準日 = 2022/1/1		期待値：2021/12/31 - 2022/1/27
-		 */
-		result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2022, 1, 1));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 12, 31));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2022, 1, 27));
+		Map<GeneralDate, HolidayAcqManaPeriod> expected  = new HashMap<GeneralDate, HolidayAcqManaPeriod>() {
+			private static final long serialVersionUID = 1L;
+		{
+			
+			put(	GeneralDate.ymd(2021, 4, 1)
+					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)
+						);
+				
+				put(	GeneralDate.ymd(2021, 4, 28)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 4, 29)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 5, 26), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 5, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 5, 26), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 6, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 5, 27), GeneralDate.ymd(2021, 6, 23), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 7, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 6, 24), GeneralDate.ymd(2021, 7, 21), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 8, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 7, 22), GeneralDate.ymd(2021, 8, 18), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 9, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 8, 19), GeneralDate.ymd(2021, 9, 15), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 10, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 9, 16), GeneralDate.ymd(2021, 10, 13), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2021, 11, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 10, 14), GeneralDate.ymd(2021, 11, 10), 4.0)
+							);
+				
+				
+				put(	GeneralDate.ymd(2021, 12, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 11, 11), GeneralDate.ymd(2021, 12, 8), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2022, 1, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 12, 9), GeneralDate.ymd(2022, 1, 5), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2022, 2, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 1, 6), GeneralDate.ymd(2022, 2, 2), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2022, 3, 1)
+						,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0)
+							);
+				
+				put(	GeneralDate.ymd(2022, 4, 1)
+					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 31), GeneralDate.ymd(2022, 4, 27), 4.0)
+						);
+		}};
+							
+		expected.entrySet().forEach( entry -> {
+			//Act
+			HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod( require, entry.getKey() );
+			
+			//Assert
+			assertThat( result.getPeriod()).isEqualTo( entry.getValue().getPeriod() );
+			assertThat( result.getHolidayDays()).isEqualTo( entry.getValue().getHolidayDays() );
+		
+		});
 		
 	}
 	
+	public static class Helper {
+		
+		/**
+		 * 休日取得の管理期間を作成する
+		 * @param startDate 開始日
+		 * @param endDate 終了日
+		 * @param holidayDays 休日日数
+		 * @return
+		 */
+		public static HolidayAcqManaPeriod createHolidayAcqManaPeriod( GeneralDate startDate, GeneralDate endDate, Double holidayDays) {
+			
+			return new HolidayAcqManaPeriod( new DatePeriod( startDate, endDate), new FourWeekDays(holidayDays));
+		}
+		
+	}
 }
