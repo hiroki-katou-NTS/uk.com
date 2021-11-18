@@ -238,7 +238,7 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '40px'}
+									option: {width: '50px'}
 									}" />
 								<span data-bind="text: nts.uk.resource.getText('KDW013_30')"></span>
 								<input id="kdw013CEnd" data-bind="ntsTimeEditor: {
@@ -249,9 +249,8 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '40px'}
+									option: {width: '50px'}
 									}" />
-								<span data-bind="visible: !showInputTime(), text: taskBlocks.caltimeSpanView.range"></span>
 							</div>
                         </td>
                     </tr>
@@ -278,7 +277,7 @@ module nts.uk.ui.at.kdw013.c {
 											inputFormat: 'time',
 											required: true,
 											enable: true,
-											option: {width: '40px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
