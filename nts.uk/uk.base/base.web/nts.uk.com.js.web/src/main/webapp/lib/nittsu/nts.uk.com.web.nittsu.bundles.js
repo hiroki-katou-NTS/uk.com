@@ -40382,7 +40382,7 @@ var nts;
                             return;
                         }
                         if (baseID.length >= 500) {
-                            var oldSelectedID = _.map(getSelected($grid), "id"), shouldRemove = _.difference(oldSelectedID, selectedId), shouldSelect = _.difference(selectedId, oldSelectedID);
+                            var oldSelectedID = _.map(getSelected($grid), "id"), shouldRemove = _.difference(_.isArray(oldSelectedID) ? oldSelectedID : [oldSelectedID], selectedId), shouldSelect = _.difference(_.isArray(selectedId) ? selectedId : [selectedId], oldSelectedID);
                             /** When data source large (data source > 500 (?)):
                                     if new value for select = half of data source
                                         or removed selected value = 1/3 of data source,
