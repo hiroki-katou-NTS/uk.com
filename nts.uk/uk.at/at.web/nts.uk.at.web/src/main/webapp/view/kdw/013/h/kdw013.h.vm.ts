@@ -87,6 +87,9 @@ module nts.uk.at.view.kdw013.h {
 					self.setEnable();
 					console.log(data);
 					dfd.resolve();
+					$(document).ready(function() {
+		                $('.proceed').focus();
+		            });
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
 				}).always(() => {
@@ -384,7 +387,11 @@ module nts.uk.at.view.kdw013.h {
 					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
 				ajax(paths.save, param).done((data: any) => {
-					info({ messageId: data.messageAlert });
+					_.forEach(data.errorMap, errs => {
+						_.forEach(errs, err => {
+							info({ messageId: err.message, messageParams: [err.itemId]});
+						});
+					});
 					if(data.messageAlert == 'Msg_15'){
 						self.reLoadData();
 					}
