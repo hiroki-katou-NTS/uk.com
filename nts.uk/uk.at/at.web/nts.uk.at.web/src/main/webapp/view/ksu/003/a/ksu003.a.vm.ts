@@ -2069,6 +2069,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			ruler = extable.getChartRuler();
 
 			console.log(detailContent);
+			// 121227
 			self.getTaskInfo().done(() => {
 				self.initGantChart(self.dataOfGantChart, self.midDataGC);
 				self.selectedDisplayPeriod.valueHasMutated();
