@@ -158,14 +158,11 @@ module nts.uk.ui.at.kdw013.taskfavorite {
                     // お気に入り内容
                     favoriteContents: item.extendedProps.dropInfo.favoriteContents
                 });
-			setTimeout(() => {
-				$('.input-f').focus();
-			}, 100)
+				setTimeout(() => {
+					$('.input-f').focus();
+				}, 100)
 			
-			setTimeout(() => {
-				nts.uk.ui.errors.clearAll();
 				jQuery('button.btn-error.small.danger').appendTo('.popup-area-f .textEditor.pb10');
-			}, 100)
             }
         }
         
