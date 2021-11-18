@@ -14,9 +14,11 @@ import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.system.ServerSystemProperties;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileService;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FixedClassification;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService {
@@ -41,8 +43,9 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 						fileInfo.getMimeType(), fileInfo.getOriginalSize());
 				String newFileId = newFileInfo.getId();
 				// Copy physical file
-				File file = Paths.get(DATA_STORE_PATH + "//" + fileId).toFile();
-				File newFile = new File(DATA_STORE_PATH + "//" + newFileId);
+				File file = this.findFile(fileId);
+				File newFile = new File(DATA_STORE_PATH + "//" 
+						+ AppContexts.user().contractCode() + "//" + newFileId);
 				newFile.createNewFile();
 				FileUtils.copyFile(file, newFile, false);
 				// Persist
@@ -59,7 +62,8 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 	public void deleteUploadedFiles(FlowMenuLayout layout) {
 		layout.getFileAttachmentSettings().forEach(file -> this.fileStorage.delete(file.getFileId()));
 		layout.getImageSettings().forEach(image -> {
-			if (image.getIsFixed().equals(FixedClassification.RANDOM) && image.getFileId().isPresent()) {
+			if (image.getIsFixed().equals(FixedClassification.RANDOM) && image.getFileId().isPresent()
+					&& !StringUtil.isNullOrEmpty(image.getFileId().get(), true)) {
 				this.fileStorage.delete(image.getFileId().get());
 			}
 		});
@@ -73,4 +77,17 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 		}
 	}
 
+	/**
+	 * Find uploaded file from FileStorage folder
+	 * Included main folder and subfolder with contractCd
+	 * @param fileId
+	 * @return
+	 */
+	private File findFile(String fileId) {
+		File file = Paths.get(DATA_STORE_PATH, fileId).toFile();
+		if (!file.exists()) {
+			file = Paths.get(DATA_STORE_PATH, AppContexts.user().contractCode(), fileId).toFile();
+		}
+		return file;
+	}
 }
