@@ -89,12 +89,16 @@ module nts.uk.at.view.kml002.k {
                 self.clearError();     
                 self.enableRegisterBtn(true);                   
                 val.backgroundColor1.subscribe((color) => {
-                    $('#colorpicker1').ntsError('clear');
-                    self.enableRegisterBtn(true); 
-                    if (!color || color =='') {
-                        $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});    
-                        self.enableRegisterBtn(false);
-                    }
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true);   
+                    // $('#colorpicker1').ntsError('clear');
+                    // self.enableRegisterBtn(true); 
+                    // if (!color || color =='') {
+                    //     $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});    
+                    //     self.enableRegisterBtn(false);
+                    // }
                 }) ;
                  val.backgroundColor2.subscribe((color) => {
                     self.clearError();
@@ -387,6 +391,10 @@ module nts.uk.at.view.kml002.k {
 
         checkDataScreenH(itemHandling: Array<ItemHandlingModel>, itemMonthly: ItemMonthly, itemAnnual: ItemAnnual): void {
             let self = this;
+            if(_.isNull(itemHandling[0].backgroundColor) || itemHandling[0].backgroundColor == ''){
+                $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});
+                self.enableRegisterBtn(false);            }
+            
             if(_.isNull(itemHandling[1].backgroundColor) || itemHandling[1].backgroundColor == ''){
                 $('#colorpicker2').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_160")]}); 
                 self.enableRegisterBtn(false);
