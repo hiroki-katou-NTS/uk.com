@@ -252,6 +252,9 @@ module nts.uk.at.view.kdw013.h {
 			
 			getPrimitiveValue(primitiveValue: number): string {
 				if(primitiveValue){
+					if(primitiveValue == 56){
+						return 'AnyItemTime';
+					}
 					return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
 				}
 				return '';
