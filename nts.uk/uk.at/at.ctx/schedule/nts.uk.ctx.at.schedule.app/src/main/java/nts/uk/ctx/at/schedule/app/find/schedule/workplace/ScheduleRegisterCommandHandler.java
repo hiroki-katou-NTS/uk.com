@@ -156,9 +156,9 @@ public class ScheduleRegisterCommandHandler {
                             ).collect(Collectors.toList());
             
             // 1.2: <call>
-            if (outputs.size() > 0) {
-                return;
-            }
+//            if (outputs.size() > 0) {
+//                return;
+//            }
             resultOfRegisteringWorkSchedule.stream().filter(result -> !result.isHasError()).collect(Collectors.toList())
             .forEach(result -> {
                 Optional<AtomTask> atomTaskOpt = result.getAtomTask();

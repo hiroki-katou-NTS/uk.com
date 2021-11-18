@@ -171,26 +171,50 @@ module nts.uk.at.view.kdl055.b.viewmodel {
 
                         // set error list
                         let errors: any[] = [];
+                        let listPersonEmp = vm.sortListEmpInfo(vm.data.listPersonEmp, vm.data.importResult.orderOfEmployees);
             
-                        _.forEach(res, (errorItem) => {
-                            let err: any = { columnKey: 'nameHeader', id: null, index: null, message: errorItem.errorMessage, isErrorGrid: true };
+                        // _.forEach(res, (errorItem) => {
+                        //     let err: any = { columnKey: 'nameHeader', id: null, index: null, message: errorItem.errorMessage, isErrorGrid: true };
                             
-                            if (errorItem.employeeCode) {
-                                for (let i = 0; i < vm.data.listPersonEmp.length; i++) {
-                                    if (vm.data.listPersonEmp[i].employeeCode === errorItem.employeeCode) {
-                                        err.id = vm.data.listPersonEmp[i].employeeId;
+                        //     if (errorItem.employeeCode) {
+                        //         for (let i = 0; i < vm.data.listPersonEmp.length; i++) {
+                        //             if (vm.data.listPersonEmp[i].employeeCode === errorItem.employeeCode) {
+                        //                 err.id = vm.data.listPersonEmp[i].employeeId;
+                        //                 err.index = i;
+                        //             }
+                        //         }
+                        //     }
+                        //     if (errorItem.date) {
+                        //         err.columnKey = errorItem.date;
+                        //     }
+                            
+                        //     if (err.index != null) {
+                        //         errors.push(err);
+                        //     }
+                        // });
+
+                        for(let j = 0; j < res.length; j++) {
+                            let err: any = { columnKey: 'nameHeader', id: null, index: null, message: res[j].errorMessage, isErrorGrid: true };
+                            
+                            if (res[j].employeeCode) {
+                                let empFilter = _.filter(listPersonEmp, {'employeeCode': res[j].employeeCode});
+                                let empId = empFilter.length > 0 ? empFilter[0].employeeId : '';
+                                err.id = empId;
+                                for (let i = 0; i < listPersonEmp.length; i++) {
+                                    if (listPersonEmp[i].employeeCode === res[j].employeeCode) {
+                                        err.id = listPersonEmp[i].employeeId;
                                         err.index = i;
                                     }
                                 }
                             }
-                            if (errorItem.date) {
-                                err.columnKey = errorItem.date;
+                            if (res[j].date) {
+                                err.columnKey = res[j].date;
                             }
                             
                             if (err.index != null) {
                                 errors.push(err);
                             }
-                        });
+                        }
 
                         $("#grid").mGrid("setErrors", errors);
 
