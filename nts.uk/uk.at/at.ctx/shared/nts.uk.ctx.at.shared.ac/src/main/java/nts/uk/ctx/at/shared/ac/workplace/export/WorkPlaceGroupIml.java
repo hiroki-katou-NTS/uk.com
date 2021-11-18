@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceGroupExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.WorkplaceGroupPublish;
 
@@ -26,6 +29,9 @@ public class WorkPlaceGroupIml implements WorkplaceGroupAdapter{
 	
 	@Inject
 	private WorkplaceGroupPublish workplaceGroupPublish;
+	
+	@Inject
+	private WorkplacePub pub;
 	
 	@Override
 	public List<WorkplaceGroupImport> getbySpecWorkplaceGroupID(List<String> lstWorkplaceGroupID) {
@@ -79,6 +85,13 @@ public class WorkPlaceGroupIml implements WorkplaceGroupAdapter{
 		return result;
 	}
 
-	
+	@Override
+	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
+		val result =  pub.getAffWkpHistItemByEmpDate(employeeID, date);
+		String workPlaceId = "";
+		if (result != null)
+			workPlaceId = result.getWorkplaceId();
+		return workPlaceId;
+	}
 
 }
