@@ -2,11 +2,11 @@ module nts.uk.at.view.kdw013.h {
 	import getShared = nts.uk.ui.windows.getShared;
 	import setShared = nts.uk.ui.windows.setShared;
 	import block = nts.uk.ui.block;
-	import info = nts.uk.ui.dialog.info;
 	import error = nts.uk.ui.dialog.error;
 	import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
+	import getMessage = nts.uk.resource.getMessage;
 
 	export module viewmodel {
 		const paths: any = {
@@ -389,7 +389,12 @@ module nts.uk.at.view.kdw013.h {
 				ajax(paths.save, param).done((data: any) => {
 					_.forEach(data.errorMap, errs => {
 						_.forEach(errs, err => {
-							info({ messageId: err.message, messageParams: [err.itemId]});
+							errors.add({ 
+								message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
+								errorCode: err.message, 
+								$control: $('#'+err.itemId+''), 
+								location: null
+							});
 						});
 					});
 					if(data.messageAlert == 'Msg_15'){
@@ -400,6 +405,34 @@ module nts.uk.at.view.kdw013.h {
 				}).always(() => {
 					block.clear();
 				});
+			}
+			
+			getParamNameItemId(itemId: any): any[]{
+				if(itemId == 31 || itemId == 34){
+					return [getText('KDW013_84'), getText('KDW013_85')];
+				}else if(itemId == 157 || itemId == 159){
+					return [getText('KDW013_88', [1]), getText('KDW013_89', [1, 1])];
+				}else if(itemId == 163 || itemId == 165){
+					return [getText('KDW013_88', [2]), getText('KDW013_89', [2, 2])];
+				}else if(itemId == 169 || itemId == 171){
+					return [getText('KDW013_88', [3]), getText('KDW013_89', [3, 3])];
+				}else if(itemId == 175 || itemId == 177){
+					return [getText('KDW013_88', [4]), getText('KDW013_89', [4, 4])];
+				}else if(itemId == 181 || itemId == 183){
+					return [getText('KDW013_88', [5]), getText('KDW013_89', [5, 5])];
+				}else if(itemId == 187 || itemId == 189){
+					return [getText('KDW013_88', [6]), getText('KDW013_89', [6, 6])];
+				}else if(itemId == 193 || itemId == 195){
+					return [getText('KDW013_88', [7]), getText('KDW013_89', [7, 7])];
+				}else if(itemId == 199 || itemId == 201){
+					return [getText('KDW013_88', [8]), getText('KDW013_89', [8, 8])];
+				}else if(itemId == 205 || itemId == 207){
+					return [getText('KDW013_88', [9]), getText('KDW013_89', [9, 9])];
+				}else if(itemId == 211 || itemId == 213){
+					return [getText('KDW013_88', [10]), getText('KDW013_89', [10, 10])];
+				}
+				
+				return [itemId];
 			}
 			
 			reLoadData(){
