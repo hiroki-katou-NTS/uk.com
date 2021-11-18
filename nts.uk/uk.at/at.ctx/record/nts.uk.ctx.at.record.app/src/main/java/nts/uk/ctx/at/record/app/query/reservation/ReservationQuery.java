@@ -68,6 +68,9 @@ public class ReservationQuery {
 				new ReservationDate(date, EnumAdaptor.valueOf(1, ReservationClosingTimeFrame.class)));
 		// 5: 取得する
 		BentoMenu bentoMenu = bentoMenuRepo.getBentoMenu(companyId, date, Optional.empty());
+		if(bentoMenu==null) {
+			throw new BusinessException("Msg_1604");
+		}
 		// 6: create
 		Map<ReservationClosingTimeFrame, Boolean> orderAtr = new HashMap<>();
 		for(BentoReservation bentoReservation : bentoReservationLst) {
