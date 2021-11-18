@@ -16,10 +16,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -28,13 +27,10 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.BasicWorkSetting
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.CalculationCache;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicWorkSettingHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByClassGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByWorkplaceGeterCommand;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.classification.ExClassificationHistoryImported;
@@ -87,7 +83,6 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
@@ -135,12 +130,8 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
-import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
@@ -216,9 +207,6 @@ public class ScheduleCreatorExecutionTransaction {
 	private WorkMonthlySettingRepository workMonthlySettingRepository;
 
 	@Inject
-	private ScheCreExeWorkTimeHandler workTimeHandler;
-
-	@Inject
 	private WorkTypeRepository workTypeRepo;
 
 	@Inject
@@ -239,13 +227,9 @@ public class ScheduleCreatorExecutionTransaction {
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
 	
-	@Inject
-	private ScEmploymentStatusAdapter scEmploymentStatusAdapter;
-
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, String companyId, String exeId,
 			DatePeriod period, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
-			final nts.arc.layer.app.command.AsyncCommandHandlerContext<nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand> asyncTask,
 			Object companySetting, ScheduleCreator scheduleCreator, CacheCarrier carrier) {
 		RegistrationListDateSchedule registrationListDateSchedule = new RegistrationListDateSchedule(new ArrayList<>());
 
@@ -267,7 +251,7 @@ public class ScheduleCreatorExecutionTransaction {
 				this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
 			}
 			// 勤務予定作成する ↓
-			this.createSchedule(command, scheduleExecutionLog, context, period, masterCache, listBasicSchedule,
+			this.createSchedule(command, scheduleExecutionLog, asyncTask, period, masterCache, listBasicSchedule,
 					companySetting, scheduleCreator, registrationListDateSchedule, content, carrier);
 			// ----------↑
 
@@ -287,7 +271,7 @@ public class ScheduleCreatorExecutionTransaction {
 	}
 
 	private void createSchedule(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod period,
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, DatePeriod period,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule, Object companySetting,
 			ScheduleCreator scheduleCreator, RegistrationListDateSchedule registrationListDateSchedule,
 			ScheduleCreateContent content, CacheCarrier carrier) {
@@ -298,13 +282,11 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 中断
 		if (content.getImplementAtr().value == ImplementAtr.CREATE_WORK_SCHEDULE.value
 				&& scheduleExecutionLog.getCompletionStatus().value == CompletionStatus.INTERRUPTION.value) {
-			val asyncTask = context.asAsync();
 
 			// ドメインモデル「スケジュール作成実行ログ」を更新する (update)
-			this.updateStatusScheduleExecutionLog(context.getCommand().getScheduleExecutionLog(),
-					CompletionStatus.INTERRUPTION);
+			this.updateStatusScheduleExecutionLog(command.getScheduleExecutionLog(), CompletionStatus.INTERRUPTION);
 
-			asyncTask.finishedAsCancelled();
+			asyncTask.ifPresent(c -> c.finishedAsCancelled());
 
 			return;
 		} else {
@@ -315,7 +297,7 @@ public class ScheduleCreatorExecutionTransaction {
 			command.setCompanySetting(companySetting);
 			// 勤務予定を作成する - return : ・勤務予定一覧 ・エラー一覧
 			OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
-					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
+					scheduleExecutionLog, asyncTask, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
 			List<GeneralDate> dates = result.listWorkSchedule.stream().map(x -> x.getYmd()).collect(Collectors.toList());
 			// 勤務予定を登録する
@@ -369,7 +351,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private DataProcessingStatusResult createScheduleBasedPersonOneDate_New(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, GeneralDate dateInPeriod,
+			GeneralDate dateInPeriod,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche) {
 
@@ -515,7 +497,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private OutputCreateSchedule createScheduleBasedPersonWithMultiThread(ScheduleCreatorExecutionCommand command,
 			ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
+			Optional<AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>> asyncTask, DatePeriod targetPeriod,
 			CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			RegistrationListDateSchedule registrationListDateSchedule, CacheCarrier carrier) {
 
@@ -545,7 +527,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// Output。処理状態を確認する (call to method 勤務予定反映する)
 			OutputCreateScheduleOneDate createScheduleOneDate = this.reflectWorkSchedule(command, creator, domain,
-					context, targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
+					targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 			switch (createScheduleOneDate.getProcessingStatus()) {
 			case NEXT_DAY:// 次の日へ
 				break;
@@ -582,15 +564,14 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @return
 	 */
 	private OutputCreateScheduleOneDate reflectWorkSchedule(ScheduleCreatorExecutionCommand command,
-			ScheduleCreator creator, ScheduleExecutionLog domain,
-			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, DatePeriod targetPeriod,
+			ScheduleCreator creator, ScheduleExecutionLog domain, DatePeriod targetPeriod,
 			GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
 			DateRegistedEmpSche dateRegistedEmpSche, CacheCarrier carrier) {
 
 		OutputCreateScheduleOneDate createScheduleOneDate = new OutputCreateScheduleOneDate();
 		IntegrationOfDaily integrationOfDaily = null;
 		// 日のデータを用意する
-		DataProcessingStatusResult result = this.createScheduleBasedPersonOneDate_New(command, creator, domain, context,
+		DataProcessingStatusResult result = this.createScheduleBasedPersonOneDate_New(command, creator, domain,
 				dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche);
 		// Output。処理状態を確認する
 		// if 以外
@@ -641,7 +622,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// 勤務情報・勤務時間を用意する ↓
 			Map<GeneralDate, WorkInformation> results = new HashMap<>();
-			PrepareWorkOutput prepareWorkOutput = this.getListTimeZone(command, creator, domain, context, targetPeriod,
+			PrepareWorkOutput prepareWorkOutput = this.getListTimeZone(command, creator, domain, targetPeriod,
 					dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, results, carrier);
 
 			// Outputを確認する
@@ -820,12 +801,12 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @return
 	 */
 	public PrepareWorkOutput getListTimeZone(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
-			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
+			ScheduleExecutionLog domain,
 			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
 			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche,
 			Map<GeneralDate, WorkInformation> results, CacheCarrier carrier) {
 		// 勤務情報を取得する ↓
-		PrepareWorkOutput output = this.getWorkInfo(command, creator, domain, context, targetPeriod, dateInPeriod,
+		PrepareWorkOutput output = this.getWorkInfo(command, creator, domain, targetPeriod, dateInPeriod,
 				masterCache, listBasicSchedule, dateRegistedEmpSche, results, carrier);
 
 		// Outputを確認する
@@ -900,7 +881,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @return
 	 */
 	public PrepareWorkOutput getWorkInfo(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
-			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
+			ScheduleExecutionLog domain,
 			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
 			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche,
 			Map<GeneralDate, WorkInformation> results, CacheCarrier carrier) {
@@ -923,7 +904,7 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 休職中
 		if (optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || 
 				optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) {
-		prepareWorkOutput = this.getWorkInfoLeave(command, creator, domain, context,
+		prepareWorkOutput = this.getWorkInfoLeave(command, creator, domain,
 			 targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
 		return prepareWorkOutput;
 		}
@@ -1030,7 +1011,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @return
 	 */
 	public PrepareWorkOutput getWorkInfoLeave(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
-			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
+			ScheduleExecutionLog domain,
 			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
 			List<BasicSchedule> listBasicSchedule, DateRegistedEmpSche dateRegistedEmpSche, CacheCarrier carrier) {
 		// if 休職中、休業中
@@ -1085,7 +1066,7 @@ public class ScheduleCreatorExecutionTransaction {
 				
 				List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
 						DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-						optEmploymentInfo.get().getWorkingStatus().value);
+						optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE ? 12 : 13);
 				
 				if ((optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.ON_LEAVE || optEmploymentInfo.get().getWorkingStatus() == WorkingStatus.CLOSED) 
 						&& optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
@@ -1290,17 +1271,17 @@ public class ScheduleCreatorExecutionTransaction {
 			// パラメータ。作成参照先を確認する
 			if (command.getContent().getSpecifyCreation().getReferenceMaster().isPresent()) {
 				workplaceHistItem = convertEnum(command.getContent().getSpecifyCreation().getReferenceMaster().get());
-				Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache,
+				BasicWorkSetiingDto basicWorkSetting = this.getBasicWorkSetting(command, masterCache,
 						workplaceHistItem, dateInPeriod,
 						masterCache.getEmpGeneralInfo().getClassificationDto(),
 						masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
 				String workType = null;
 				String workTime = null;
-				if(basicWorkSetting.isPresent()) {
-					workType = basicWorkSetting.get().getWorktypeCode() == null ? null : basicWorkSetting.get().getWorktypeCode().v();
-					workTime = basicWorkSetting.get().getWorkingCode() == null ? null : basicWorkSetting.get().getWorkingCode().v();
+				if(basicWorkSetting.getBasicSet().isPresent()) {
+					workType = basicWorkSetting.getBasicSet().get().getWorktypeCode() == null ? null : basicWorkSetting.getBasicSet().get().getWorktypeCode().v();
+					workTime = basicWorkSetting.getBasicSet().get().getWorkingCode() == null ? null : basicWorkSetting.getBasicSet().get().getWorkingCode().v();
 				}
-				return new PrepareWorkOutput(new WorkInformation(workType, workTime), null, null, Optional.empty());
+				return new PrepareWorkOutput(new WorkInformation(workType, workTime), null, null, basicWorkSetting.getScheduleErrorLog());
 			}
 
 			// 営業日カレンダーで勤務予定作成する TQP
@@ -1309,28 +1290,28 @@ public class ScheduleCreatorExecutionTransaction {
 			// if(masterCache.getListWorkingConItem().isEmpty()) {
 
 			// xử lý 「基本勤務設定」を取得する(lấy thông tin 「基本勤務設定」)
-			Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache, workplaceHistItem,
+			BasicWorkSetiingDto basicWorkSetting = this.getBasicWorkSetting(command, masterCache, workplaceHistItem,
 					dateInPeriod, masterCache.getEmpGeneralInfo().getClassificationDto(),
 					masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
 			// fix bug 113909
-			if(!basicWorkSetting.isPresent())
-				return new PrepareWorkOutput(null, null, null, Optional.empty());
+			if(!basicWorkSetting.getBasicSet().isPresent())
+				return new PrepareWorkOutput(null, null, null, basicWorkSetting.getScheduleErrorLog());
 
 			// 勤務種類一覧から勤務種類を取得する
 			List<WorkType> lstWorkTypes = masterCache.getListWorkType();
 			Optional<WorkType> workType = lstWorkTypes.stream()
-					.filter(x -> x.getWorkTypeCode().v().equals(basicWorkSetting.get().getWorktypeCode().v())).findFirst();
+					.filter(x -> x.getWorkTypeCode().v().equals(basicWorkSetting.getBasicSet().get().getWorktypeCode().v())).findFirst();
 
 			// 「就業時間帯コード」を取得する
 			WorkingCode workTimeCode = this.getWorkingCode(command, masterCache, itemDto,
-					basicWorkSetting.isPresent() ? basicWorkSetting.get().getWorkingCode() : null,
+					basicWorkSetting.getBasicSet().isPresent() ? basicWorkSetting.getBasicSet().get().getWorkingCode() : null,
 					workType.isPresent() ? workType.get() : null, dateInPeriod, creator);
 
 			// 「勤務種類コード」、「就業時間帯コード」を返す
 			WorkInformation workInformation = new WorkInformation(workType.map(m -> m.getWorkTypeCode().v()).orElse(""),
 					workTimeCode == null ? null : workTimeCode.v());
 
-			return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
+			return new PrepareWorkOutput(workInformation, null, null, basicWorkSetting.getScheduleErrorLog());
 
 			// }
 			// else {
@@ -1508,12 +1489,12 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @param mapWorkplaceHist      特定期間の社員情報
 	 * @return
 	 */
-	private Optional<BasicWorkSetting> getBasicWorkSetting(ScheduleCreatorExecutionCommand command,
+	private BasicWorkSetiingDto getBasicWorkSetting(ScheduleCreatorExecutionCommand command,
 			CreateScheduleMasterCache masterSche, WorkScheduleMasterReferenceAtr workplaceHistItem,
 			GeneralDate dateInPeriod,
 			List<ExClassificationHistoryImported> mapClassificationHist,
 			List<ExWorkPlaceHistoryImported> mapWorkplaceHist, ScheduleCreator creator) {
-
+		BasicWorkSetiingDto settingDto = new BasicWorkSetiingDto(Optional.empty(), Optional.empty());
 		ScheduleErrorLogGeterCommand geterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 				command.getCompanyId(), dateInPeriod);
 		// điều kiện 会社の場合 - Đang để tạm ntn vì enum 営業日カレンダーの参照先 chưa được update
@@ -1531,14 +1512,20 @@ public class ScheduleCreatorExecutionTransaction {
 			} else {
 				// 取得できない
 				// ドメインモデル「スケジュール作成エラーログ」を登録する(đăng ký domain「スケジュール作成エラーログ」)
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_588");
-				return Optional.empty();
+				String errorContent = this.internationalization.localize("Msg_588", "#Msg_588").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			}
 
 			// if 取得できない
 			if (!optionalCompanyBasicWork.isPresent()) {
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
-				return Optional.empty();
+				String errorContent = this.internationalization.localize("Msg_589", "#Msg_589").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			}
 			BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
 					creator.getEmployeeId(), geterCommand, null,
@@ -1547,7 +1534,9 @@ public class ScheduleCreatorExecutionTransaction {
 					.getBasicWorkSettingByClassification(settingByClassification);
 			BasicWorkSetting setting = new BasicWorkSetting(basicWorkSetting.get().getWorktypeCode(),
 					basicWorkSetting.get().getWorkingCode(), basicWorkSetting.get().getWorkdayDivision());
-			return Optional.ofNullable(setting);
+			
+			settingDto.setBasicSet(Optional.ofNullable(setting));
+			return settingDto;
 
 		} else {
 			// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
@@ -1582,7 +1571,7 @@ public class ScheduleCreatorExecutionTransaction {
 								.getWorkdayDivisionByWkp(workdayDivisions);
 						// fix bug 113909
 						if(!workdayDivision.isPresent())
-							return Optional.empty();
+							return settingDto;
 						
 						// 「基本勤務設定」を取得する
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
@@ -1591,14 +1580,17 @@ public class ScheduleCreatorExecutionTransaction {
 								optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId(), null);
 
 						// 取得した「基本勤務設定」を返す
-						return basicWorkSettings;
+						settingDto.setBasicSet(basicWorkSettings);
+						return settingDto;
 					}
 				}
 				// add log error employee => 602
 				// 取得できない
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_602",
-						"#Com_Workplace");
-
+				String errorContent = this.internationalization.localize("Msg_602", "#Com_Workplace").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			} else {
 				// if 分類の場合
 				// xử lý 営業日カレンダーの参照先 is 分類
@@ -1622,22 +1614,25 @@ public class ScheduleCreatorExecutionTransaction {
 								.getWorkdayDivisionByClass(baseGetter);
 						// fix bug 113909
 						if(!workdayDivision.isPresent())
-							return Optional.empty();
+							return settingDto;
 						
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
 								dateInPeriod, creator, workdayDivision, workplaceHistItem, new ArrayList<>(), null,
 								optClassificationHistItem.get().getClassificationItems().get(0)
 										.getClassificationCode());
-						return basicWorkSettings;
+						settingDto.setBasicSet(basicWorkSettings);
+						return settingDto;
 					}
 				}
 				// add log error employee => 602
 				// 取得できない
-				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_602", "#Com_Class");
+				String errorContent = this.internationalization.localize("Msg_602", "#Com_Class").get();
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+						creator.getEmployeeId());
+				settingDto.setScheduleErrorLog(Optional.of(scheduleErrorLog));
+				return settingDto;
 			}
 		}
-		// return default optional
-		return Optional.empty();
 	}
 
 	/**
