@@ -795,7 +795,7 @@ public class ValidatorDataDailyRes {
 					if(itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")) {
 						return false;
 					}else {
-						val item = x.getAttendanceItemList().stream().filter(z -> !((errorSelect.getErrorDisplayItem() != null && z.intValue() == errorSelect.getErrorDisplayItem()) && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
+						val item = x.getAttendanceItemList().stream().filter(z -> !(z.equals(errorSelect.getErrorDisplayItem()) && itemValue != null && itemValue.getValue() != null && !itemValue.getValue().equals("")))
 								.collect(Collectors.toList());
 						if(!item.isEmpty()) {
 							x.setAttendanceItemList(item);
