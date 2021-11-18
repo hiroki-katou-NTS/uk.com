@@ -21,12 +21,15 @@ public class KrcdtDaySupDeletePk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	// 社員ID
 	@Column(name = "SID")
 	public String sId;
 	
+	// 年月日
 	@Column(name = "YMD")
 	public GeneralDate ymd;
 	
+	// 応援勤務枠NO
 	@Column(name = "NO")
 	public int supTaskNo;
 }
