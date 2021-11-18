@@ -78,6 +78,11 @@ public class CompensatoryLeaveComSetting extends AggregateRoot {
 	public boolean isManaged() {
 		return this.isManaged.equals(ManageDistinct.YES);
 	}
+	
+	//時間代休を管理するか判断する
+	public boolean isManagedTime() {
+		return isManaged() && this.compensatoryDigestiveTimeUnit.getIsManageByTime() == ManageDistinct.YES;
+	}
 
 	/**
 	 * Instantiates a new compensatory leave com setting.

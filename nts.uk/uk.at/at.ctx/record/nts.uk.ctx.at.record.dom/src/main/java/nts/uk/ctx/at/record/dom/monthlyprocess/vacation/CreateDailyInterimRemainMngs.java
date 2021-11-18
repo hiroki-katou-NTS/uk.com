@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCreateDataInputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData.RequireM4;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -83,7 +82,7 @@ public class CreateDailyInterimRemainMngs {
 
 
 		InterimRemainCreateDataInputPara inputPara = new InterimRemainCreateDataInputPara(cid,
-				sid, period, recordRemains, Collections.emptyList(), Collections.emptyList(), false);
+				sid, period, recordRemains, Collections.emptyList(), Collections.emptyList());
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, absSettingOpt, dayOffSetting);
 
 		/** 指定期間の暫定残数管理データを作成する */
