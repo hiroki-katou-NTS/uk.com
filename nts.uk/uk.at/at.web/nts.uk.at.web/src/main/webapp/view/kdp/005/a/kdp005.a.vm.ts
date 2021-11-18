@@ -121,6 +121,58 @@ module nts.uk.at.view.kdp005.a {
 					}
 				});
 
+				// Call step1: クラウド/オンプレの判断を行う
+				vm.$ajax("at", "at/record/stamp/finger/get-isCloud")
+					.then((data: boolean) => {
+						// Step2: 契約コードに関するlocalstrageに登録する
+						if (!data) {
+							vm.$window.storage("contractInfo", {
+								contractCode: "000000000000",
+								contractPassword: null
+							}).then(() => self.startScreen().then(() => dfd.resolve()));
+						} else {
+							// Step3: テナント認証する
+							vm.$window.storage("contractInfo")
+								.then((data: any) => {
+									if (!data) {
+										// Step4: CCG007_ログイン　A：契約認証を実行する
+										self.openDialogCCG007A().then(() => dfd.resolve())
+									} else {
+										vm.$ajax("at", "at/record/stamp/finger/get-authenticate",
+											{ contactCode: data.contractCode, password: data.contractPassword })
+											.then((isSuccess: boolean) => {
+												// Step4: CCG007_ログイン　A：契約認証を実行する
+												if (!isSuccess) {
+													self.openDialogCCG007A().then(() => dfd.resolve())
+												} else {
+													self.startScreen().then(() => dfd.resolve());
+												}
+											});
+									}
+								});
+						}
+					})
+
+				return dfd.promise();
+			}
+
+			openDialogCCG007A(): JQueryPromise<void> {
+				let dfd = $.Deferred<void>();
+				const self = this;
+				nts.uk.ui.windows.sub.modal("com", "/view/ccg/007/a/index.xhtml", {
+					height: 300,
+					width: 400,
+					title: nts.uk.resource.getText("CCG007_9"),
+					dialogClass: 'no-close'
+				}).onClosed(() => { self.startScreen().then(() => dfd.resolve()) });
+				return dfd.promise();
+			}
+
+			startScreen(): JQueryPromise<void> {
+				let self = this;
+				let dfd = $.Deferred<void>();
+				const vm = new ko.ViewModel();
+
 				self.getWorkPlacesInfo();
 				self.basyo().done(() => {
 					vm.$window.storage("contractInfo")
@@ -129,9 +181,13 @@ module nts.uk.at.view.kdp005.a {
 								service.getLogginSetting(data.contractCode).done((res) => {
 									self.listCompany = _.filter(res, 'icCardStamp');
 									if (self.listCompany.length == 0) {
-										self.errorMessage(getMessage("Msg_1527"));
-										self.isUsed(false);
-										dfd.resolve();
+										self.openDialogF({
+											mode: 'admin'
+										}).then(() => {
+											self.errorMessage(getMessage("Msg_1527"));
+											self.isUsed(false);
+											dfd.resolve();
+										})
 									} else {
 										self.btnChangeCompany(self.listCompany.length > 0);
 										characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
