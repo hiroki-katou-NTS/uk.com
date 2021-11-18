@@ -363,7 +363,7 @@ module nts.uk.ui.at.kdw013.c {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px',
+											option: {width: '50px',
 													unitID: 'TIMES'},
 										}" />
 									</div>
@@ -382,7 +382,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint: primitiveValue, 
 											value: value,
 											option: {
-												width: '223px', 
+												width: '50px', 
 												numberGroup: true, 
 												decimallength: 2, 
 												currencyformat: 'JPY',
@@ -406,7 +406,7 @@ module nts.uk.ui.at.kdw013.c {
 											value: value,
 											mode: 'time',
 											inputFormat: 'time',
-											option: {width: '233px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -425,7 +425,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint:'TimeWithDayAttr', 
 											value: value, 
 											option: {
-												width: '233px',
+												width: '50px',
 												timeWithDay: true
 											}
 										}" />
@@ -460,7 +460,7 @@ module nts.uk.ui.at.kdw013.c {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px'}}" />
+											option: {width: '50px'}}" />
 									</div>
 								</td>
                             </tr>
