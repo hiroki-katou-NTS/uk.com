@@ -5,3 +5,12 @@
 .top-content-tbl td {
 	padding: 5px;
 }
+
+.fixed-flex-layout
+{
+	display: inline-flex;
+}
+
+.fixed-flex-layout-left .fixed-flex-layout-right{
+	width: 700px;
+}
