@@ -22,7 +22,9 @@ module nts.uk.at.kdp003.a {
 		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
 		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
 		STAMP_SETTING_COMMON: 'at/record/stamp/settings_stamp_common',
-		getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping'
+		getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping',
+		getIsCloud: "at/record/stamp/finger/get-isCloud",
+		getAuthenticate: "at/record/stamp/finger/get-authenticate"
 
 	};
 
@@ -110,12 +112,85 @@ module nts.uk.at.kdp003.a {
 		created() {
 			const vm = this;
 
+			// Call step1: クラウド/オンプレの判断を行う
+			vm.$ajax("at", API.getIsCloud)
+				.then((data: boolean) => {
+					// Step2: 契約コードに関するlocalstrageに登録する
+					if (!data) {
+						vm.$window.storage("contractInfo", {
+							contractCode: "000000000000",
+							contractPassword: null
+						}).then(() => vm.getDataStartScreen());
+					} else {
+						// Step3: テナント認証する
+						vm.$window.storage("contractInfo")
+							.then((data: any) => {
+								if (!data) {
+									// Step4: CCG007_ログイン　A：契約認証を実行する
+									vm.openDialogCCG007A()
+								} else {
+									vm.$ajax(API.getAuthenticate, { contactCode: data.contractCode, password: data.contractPassword })
+										.then((isSuccess: boolean) => {
+											// Step4: CCG007_ログイン　A：契約認証を実行する
+											if (!isSuccess) {
+												vm.openDialogCCG007A()
+											} else {
+												vm.getDataStartScreen();
+											}
+										});
+								}
+							});
+					}
+				})
+
+			ko.computed({
+				read: () => {
+					const mes = ko.unwrap(vm.message);
+					const noti = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
+
+					var result = null;
+
+					if (mes === null) {
+						result = false;
+					}
+					if (noti) {
+						if (ko.unwrap(vm.fingerStampSetting).noticeSetDto.displayAtr == 1) {
+							result = true;
+						} else {
+							result = false;
+						}
+					} else {
+						result = false;
+					}
+
+					if (mes) {
+						result = null;
+					}
+
+					vm.showMessage(result);
+
+				}
+			})
+		}
+
+		mounted() {
+			const vm = this;
+		}
+
+		openDialogCCG007A() {
+			const vm = this;
+			nts.uk.ui.windows.sub.modal("com", "/view/ccg/007/a/index.xhtml", {
+				height: 300,
+				width: 400,
+				title: nts.uk.resource.getText("CCG007_9"),
+				dialogClass: 'no-close'
+			}).onClosed(() => { vm.getDataStartScreen() });
+		}
+
+		getDataStartScreen() {
+			const vm = this;
 			// show or hide stampHistoryButton
-			vm.message.subscribe((value) => {
-
-				vm.showClockButton.company(value === null);
-
-			});
+			vm.message.subscribe((value) => vm.showClockButton.company(value === null));
 
 			vm.$window.storage('contractInfo')
 				.done((data: any) => {
@@ -148,34 +223,7 @@ module nts.uk.at.kdp003.a {
 					});
 			});
 
-			ko.computed({
-				read: () => {
-					const mes = ko.unwrap(vm.message);
-					const noti = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
-
-					var result = null;
-
-					if (mes === null) {
-						result = false;
-					}
-					if (noti) {
-						if (ko.unwrap(vm.fingerStampSetting).noticeSetDto.displayAtr == 1) {
-							result = true;
-						} else {
-							result = false;
-						}
-					} else {
-						result = false;
-					}
-
-					if (mes) {
-						result = null;
-					}
-
-					vm.showMessage(result);
-
-				}
-			})
+			vm.mountedContent();
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
@@ -218,118 +266,10 @@ module nts.uk.at.kdp003.a {
 			}
 		}
 
-		shoNoti() {
-			const vm = this;
-
-			const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
-
-			vm.$window.modal(DIALOG.R, param);
-		}
-
-		settingNoti() {
-			const vm = this;
-
-			vm.$window.storage(KDP003_SAVE_DATA)
-				.then((data: undefined | StorageData) => {
-					if (data) {
-						const mode = 'notification';
-						const companyId = (data || {}).CID;
-
-						vm.$window.modal('at', DIALOG.F, { mode, companyId })
-							.then((output: string) => {
-								if (output === 'loginSuccess') {
-									vm.$window.modal('at', DIALOG.P)
-										.then(() => {
-											window.location.reload(false);
-										});
-								}
-							});
-					}
-				});
-		}
-
-		loadNotice(storage?: StorageData) {
-			const vm = this;
-			let startDate = vm.$date.now();
-			//startDate.setDate(startDate.getDate() - 3);
-			var wkpIds: string[];
-
-			if (storage) {
-				wkpIds = storage.WKPID;
-			} else {
-				vm.$window
-					.storage('loginKDP003')
-					.then((data: any) => {
-						if (data.WKPID.length > 0) {
-							wkpIds = data.WKPID;
-						}
-					})
-					.then(() => {
-						if (wkpIds && wkpIds.length > 0) {
-							const param = {
-								periodDto: {
-									startDate: startDate,
-									endDate: vm.$date.now()
-								},
-								wkpIds: wkpIds
-							}
-
-							vm.$ajax(API.NOTICE, param)
-								.done((data: IMessage) => {
-									vm.messageNoti(data);
-									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-										if (vm.totalOpenViewR === 0) {
-											setTimeout(() => {
-												const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
-
-												vm.totalOpenViewR++;
-												vm.$window.modal(DIALOG.R, param);
-												vm.showClockButton.setting(false);
-											}, 1000);
-										}
-									}
-								});
-						}
-					});
-			}
-
-			if (wkpIds && wkpIds.length > 0) {
-				const param = {
-					periodDto: {
-						startDate: startDate,
-						endDate: vm.$date.now()
-					},
-					wkpIds: wkpIds
-				}
-
-				vm.$blockui('invisible')
-					.then(() => {
-						vm.$ajax(API.NOTICE, param)
-							.done((data: IMessage) => {
-								vm.messageNoti(data);
-								if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-									if (vm.totalOpenViewR === 0) {
-										const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
-
-										vm.totalOpenViewR++;
-										vm.$window.modal(DIALOG.R, param);
-										vm.showClockButton.setting(false);
-									}
-								}
-							});
-					})
-					.always(() => {
-						vm.$blockui('clear');
-					});
-			}
-		}
-
-		mounted() {
+		mountedContent() {
 			const vm = this;
 			const { storage } = vm.$window;
-
 			$(window).trigger('resize');
-
 			var checkUsed: boolean | null;
 
 			vm.$ajax(API.confirmUseOfStampInput, { employeeId: null, stampMeans: 0 })
@@ -456,18 +396,6 @@ module nts.uk.at.kdp003.a {
 							check1527 = true;
 						}
 					}
-
-					// if (!check1527) {
-					// 	if (data.loginData !== undefined) {
-					// 		// if (data.loginData.notification == null) {
-					// 		// 	exest = true;
-					// 		// }
-
-					// 		if (data.loginData.result) {
-					// 			exest = false;
-					// 		}
-					// 	}
-					// }
 
 					// if dialog f return data (first login)
 
@@ -631,6 +559,112 @@ module nts.uk.at.kdp003.a {
 				.fail((message: { messageId: string }) => {
 					vm.message(message);
 				});
+		}
+
+		shoNoti() {
+			const vm = this;
+
+			const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+
+			vm.$window.modal(DIALOG.R, param);
+		}
+
+		settingNoti() {
+			const vm = this;
+
+			vm.$window.storage(KDP003_SAVE_DATA)
+				.then((data: undefined | StorageData) => {
+					if (data) {
+						const mode = 'notification';
+						const companyId = (data || {}).CID;
+
+						vm.$window.modal('at', DIALOG.F, { mode, companyId })
+							.then((output: string) => {
+								if (output === 'loginSuccess') {
+									vm.$window.modal('at', DIALOG.P)
+										.then(() => {
+											window.location.reload(false);
+										});
+								}
+							});
+					}
+				});
+		}
+
+		loadNotice(storage?: StorageData) {
+			const vm = this;
+			let startDate = vm.$date.now();
+			//startDate.setDate(startDate.getDate() - 3);
+			var wkpIds: string[];
+
+			if (storage) {
+				wkpIds = storage.WKPID;
+			} else {
+				vm.$window
+					.storage('loginKDP003')
+					.then((data: any) => {
+						if (data.WKPID.length > 0) {
+							wkpIds = data.WKPID;
+						}
+					})
+					.then(() => {
+						if (wkpIds && wkpIds.length > 0) {
+							const param = {
+								periodDto: {
+									startDate: startDate,
+									endDate: vm.$date.now()
+								},
+								wkpIds: wkpIds
+							}
+
+							vm.$ajax(API.NOTICE, param)
+								.done((data: IMessage) => {
+									vm.messageNoti(data);
+									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+										if (vm.totalOpenViewR === 0) {
+											setTimeout(() => {
+												const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+
+												vm.totalOpenViewR++;
+												vm.$window.modal(DIALOG.R, param);
+												vm.showClockButton.setting(false);
+											}, 1000);
+										}
+									}
+								});
+						}
+					});
+			}
+
+			if (wkpIds && wkpIds.length > 0) {
+				const param = {
+					periodDto: {
+						startDate: startDate,
+						endDate: vm.$date.now()
+					},
+					wkpIds: wkpIds
+				}
+
+				vm.$blockui('invisible')
+					.then(() => {
+						vm.$ajax(API.NOTICE, param)
+							.done((data: IMessage) => {
+								vm.messageNoti(data);
+								if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+									if (vm.totalOpenViewR === 0) {
+										const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+
+										vm.totalOpenViewR++;
+										vm.$window.modal(DIALOG.R, param);
+										vm.showClockButton.setting(false);
+									}
+								}
+							});
+					})
+					.always(() => {
+						vm.$blockui('clear');
+					});
+			}
 		}
 
 		// ※画面起動「※起動1」より再度実行(UI処理[A5])
@@ -1150,11 +1184,6 @@ module nts.uk.at.kdp003.a {
 
 																						vm.playAudio(btn.audioType);
 																						const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
-
-																						const param = {
-																							sid: employeeId,
-																							date: vm.$date.now()
-																						}
 
 																						if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
