@@ -872,7 +872,7 @@ module nts.uk.ui.at.kdw013.c {
                 .then((invalid: boolean) => {
                     if (!invalid) {
 						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
-							error({ messageId: "Msg_2217"});
+							error({ messageId: "Msg_2230"});
 							return;
 						}
                         if (event) {
