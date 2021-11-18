@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyCategoryFindDto;
 import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyCategoryFinder;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.shr.com.company.CompanyId;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +40,9 @@ public class CreateTenantWebService extends WebService{
 	@POST
 	@Path("regist")
 	public void registTenant(CreateTenantOnCloudCommand command) {
-		this.handler.handle(command);
+		onTenant(command.getTenanteCode(), () -> {
+			this.handler.handle(command);
+		});
 	}
 
 	@POST
@@ -51,6 +54,22 @@ public class CreateTenantWebService extends WebService{
 	@POST
 	@Path("mastercopy/execute")
 	public void executeMasterCopy(MasterCopyCommand command){
-		this.masterCopyHandler.handle(command);
+		onTenant(command.getTenantCode(), () -> {
+			this.masterCopyHandler.handle(command);
+		});
+	}
+
+	/**
+	 * TenantLocatorを要する処理を実行する
+	 * @param tenantCode
+	 * @param task
+	 */
+	private static void onTenant(String tenantCode, Runnable task) {
+		try {
+			TenantLocatorService.connect(tenantCode);
+			task.run();
+		} finally {
+			TenantLocatorService.disconnect();
+		}
 	}
 }
