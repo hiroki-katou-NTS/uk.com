@@ -472,7 +472,7 @@ module nts.uk.ui.at.kdw013.c {
 					<tr class="functional">
                         <td>
 							<span></span>
-							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails"></a>
+							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails, visible: frameNos().length < 20"></a>
                             <br />
 							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, enable: errors"></button>
                         </td>
