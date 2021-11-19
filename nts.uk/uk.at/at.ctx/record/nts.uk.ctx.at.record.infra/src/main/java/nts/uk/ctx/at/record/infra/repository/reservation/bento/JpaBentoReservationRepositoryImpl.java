@@ -57,7 +57,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a.CID, a.RESERVATION_ID, a.CONTRACT_CD, a.RESERVATION_YMD, a.RESERVATION_FRAME, a.CARD_NO, a.ORDERED,");
-		builderString.append("b.MANU_FRAME, b.REGIST_DATETIME, b.QUANTITY, b.AUTO_RESERVATION_ATR, a.WORK_LOCATION_CD ");
+		builderString.append("b.MENU_FRAME, b.REGIST_DATETIME, b.QUANTITY, b.AUTO_RESERVATION_ATR, a.WORK_LOCATION_CD ");
 		builderString.append("FROM KRCDT_RESERVATION a LEFT JOIN KRCDT_RESERVATION_DETAIL b ON a.CID = b.CID AND a.RESERVATION_ID = b.RESERVATION_ID ");
 		SELECT = builderString.toString();
 		
@@ -106,7 +106,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.MANU_FRAME = frameNoValue AND a.CID = 'companyID' ");
+				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.MENU_FRAME = frameNoValue AND a.CID = 'companyID' ");
 		FIND_ALL_RESERVATION_OF_A_BENTO = builderString.toString();
 	}
 	
@@ -131,7 +131,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 	private List<FullJoinBentoReservation> createFullJoinBentoReservation(ResultSet rs){
 		List<FullJoinBentoReservation> listFullData = new ArrayList<>();
 		while (rs.next()) {
-			String frameNo = rs.getString("MANU_FRAME");
+			String frameNo = rs.getString("MENU_FRAME");
 			Timestamp registerDate = rs.getTimestamp("REGIST_DATETIME"); 
 			String quantity = rs.getString("QUANTITY");
 			String autoReservation = rs.getString("AUTO_RESERVATION_ATR");

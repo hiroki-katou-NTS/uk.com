@@ -18,7 +18,7 @@ public class KrcdtReservationDetailPK {
 	@Column(name = "RESERVATION_ID")
 	public String reservationID;
 	
-	@Column(name = "MANU_FRAME")
+	@Column(name = "MENU_FRAME")
 	public int frameNo;
 	
 	@Column(name = "REGIST_DATETIME")
