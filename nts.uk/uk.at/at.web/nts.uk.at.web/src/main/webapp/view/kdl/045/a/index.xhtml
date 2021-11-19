@@ -320,13 +320,13 @@
 															<div class="size-a87"><span data-bind="text: atWork1A87() "></span></div>
 															<div style="float: left;">
 																<com:ko-if bind="atWork1showA9() == true">
-																<button tabindex="12" class="show-popup-atwork1 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div tabindex="12" class="show-popup-atwork1 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></div>
 																<div class="popup-atwork1 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
 																			<com:ko-if bind="atWork1A9 != null &amp;&amp; atWork1A9.timeAbbyakLeaveDisplay != ''">
 																				<!-- A9_1_1 -->
-																				<td>#{i18n.getText('KDL045_57')}</td>
+																				<td>#{i18n.getText('KDL045_57')}</td>	
 																				<!-- A9_1_2 -->
 																				<td><span data-bind="text: atWork1A9.timeAbbyakLeaveDisplay "></span></td>
 																			</com:ko-if>
@@ -394,9 +394,9 @@
 														<!-- A8_7_2 -->
 														<td > 
 															<div class="size-a87"><span data-bind="text: offWork1A87() "></span></div>
-															<div>
+															<div style="float: left;">
 																<com:ko-if bind="offWork1showA9() == true">
-																<button tabindex="13" class="show-popup-offwork1 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div tabindex="13" class="show-popup-offwork1 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></div>
 																<div class="popup-offwork1 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
@@ -469,9 +469,9 @@
 														<!-- A8_7_3 -->
 														<td> 
 															<div class="size-a87"><span data-bind="text: atWork2A87() "></span></div>
-															<div>
+															<div style="float: left;">
 																<com:ko-if bind="atWork2showA9() == true">
-																<button tabindex="14" class="show-popup-atwork2 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div tabindex="14" class="show-popup-atwork2 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></div>
 																<div class="popup-atwork2 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
@@ -544,9 +544,9 @@
 														<!-- A8_7_4 -->
 														<td> 
 															<div class="size-a87"><span data-bind="text: offWork2A87() "></span></div>
-															<div>
+															<div style="float: left;">
 																<com:ko-if bind="offWork2showA9() == true">
-																<button tabindex="15" class="show-popup-offwork2 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div tabindex="15" class="show-popup-offwork2 button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></div>
 																<div class="popup-offwork2 popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
@@ -617,8 +617,8 @@
 														<!-- A8_6_5 --> <!-- A8_6_5_1 -->
 														<td>
 															<div class="size-a86"> <span data-bind="text: privateTime"></span></div>
-															<com:ko-if bind="isDisableA8_6_5_1 == true">
-																<button tabindex="10" class="show-popup-privatetimea867"><i data-bind="ntsIcon: { no: 15, width: 25, height: 20 }"></i></button>
+															<com:ko-if bind="isDisableA8_6_5_1 == true"> 
+																<div tabindex="10" class="show-popup-privatetimea867"><i data-bind="ntsIcon: { no: 15, width: 25, height: 20 }"></i></div>
 																<div class="popup-privatetimea867 popup-area popup-panel popup-color">
 																	<com:ko bind="listPrivateTime" tag="foreach">
 																		<span data-bind="text: $data"></span><br />
@@ -629,9 +629,9 @@
 														<!-- A8_7_5 -->
 														<td> 
 															<div class="size-a87"><span data-bind="text: privateTimeA87() "></span></div>
-															<div>
+															<div style="float: left;">
 																<com:ko-if bind="privateTimeshowA9() == true">
-																<button tabindex="16" class="show-popup-privatetime button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div tabindex="16" class="show-popup-privatetime button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></div>
 																<div class="popup-privatetime popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>
@@ -702,8 +702,8 @@
 														<!-- A8_6_6 --><!-- A8_6_6_1 -->
 														<td>
 															<div class="size-a86"> <span data-bind="text: unionTime"></span></div>
-															<com:ko-if bind="isDisableA8_6_6_1 == true">
-																<button tabindex="11" class="show-popup-uniontimea867"><i data-bind="ntsIcon: { no: 15, width: 25, height: 20 }"></i></button>
+															<com:ko-if bind="isDisableA8_6_6_1 == true"> 
+																<div tabindex="11" class="show-popup-uniontimea867"><i data-bind="ntsIcon: { no: 15, width: 25, height: 20 }"></i></div>
 																<div class="popup-uniontimea867 popup-area popup-panel popup-color">
 																	<com:ko bind="listUnionTime" tag="foreach">
 																		<span data-bind="text: $data"></span><br />
@@ -714,9 +714,9 @@
 														<!-- A8_7_6 -->
 														<td > 
 															<div class="size-a87"><span data-bind="text: unionTimeA87() "></span></div>
-															<div>
+															<div style="float: left;">
 																<com:ko-if bind="unionTimeshowA9() == true">
-																<button tabindex="17" class="show-popup-uniontime button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button>
+																<div tabindex="17" class="show-popup-uniontime button-a88"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></div>
 																<div class="popup-uniontime popup-area popup-panel popup-color">
 																	<table class = "table-popup">
 																		<tr>

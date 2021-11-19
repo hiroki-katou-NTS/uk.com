@@ -4101,6 +4101,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			block.grayout();
 			let dataEmployee = _.filter(self.dataFromA().listEmp, (x: any) => { return x.id === empId; });
+			let dataWorkType = [];
+			dataWorkType.push(...self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList);
+
 			let dataShare: any = {
 				employeeInfo: self.dataScreen003A().employeeInfo[lineNo],
 				targetInfor: self.dataScreen003A().targetInfor,
@@ -4108,10 +4111,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				scheCorrection: self.dataScreen003A().scheCorrection,
 				unit: self.dataFromA().unit,
 				targetId: self.dataFromA().unit === 0 ? self.dataFromA().workplaceId : self.dataFromA().workplaceGroupId,
-				workplaceName: self.dataFromA().workplaceName
+				workplaceName: self.dataFromA().workplaceName,
+				disAbleWkTypeCodeLst : dataWorkType,
+				disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.displayWorkTypeControl
 			};
 			dataShare.employeeInfo.employeeCode = dataEmployee[0].code;
 			dataShare.employeeInfo.employeeName = dataEmployee[0].name;
+			
 			setShared('dataShareTo045', dataShare);
 			nts.uk.ui.windows.sub.modal('/view/kdl/045/a/index.xhtml').onClosed(() => {
 				model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 1);
