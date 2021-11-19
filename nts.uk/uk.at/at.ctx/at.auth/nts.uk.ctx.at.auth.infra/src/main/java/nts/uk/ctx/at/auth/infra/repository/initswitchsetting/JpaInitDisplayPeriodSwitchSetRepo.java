@@ -13,6 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.initswitchsetting.InitDisplayPeriodSwitchSet;
 import nts.uk.ctx.at.auth.dom.initswitchsetting.InitDisplayPeriodSwitchSetRepo;
 import nts.uk.ctx.at.auth.infra.entity.initswitchsetting.KacmtDispPeriodSwitch;
+import nts.uk.ctx.at.auth.infra.entity.initswitchsetting.KacmtDispPeriodSwitchPK;
 
 /**
  * @author hieult
@@ -37,6 +38,32 @@ public class JpaInitDisplayPeriodSwitchSetRepo extends JpaRepository implements 
 				.setParameter("companyID", companyID)
 				.setParameter("roleID", roleID)
 				.getSingle(c -> c.toDomain());
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void save(InitDisplayPeriodSwitchSet domain) {
+		Optional<KacmtDispPeriodSwitch> optEntity = this.queryProxy().query(GET_BY_KEY, KacmtDispPeriodSwitch.class)
+				.setParameter("companyID", domain.getCompanyID())
+				.setParameter("roleID", domain.getRoleID())
+				.getSingle();
+		if (optEntity.isPresent()) {
+			KacmtDispPeriodSwitch entity = optEntity.get();
+			entity.setDay(domain.getDay());
+			this.commandProxy().update(entity);
+			return;
+		}
+		
+		KacmtDispPeriodSwitch entity = KacmtDispPeriodSwitch.toEntity(domain);
+		this.commandProxy().insert(entity);
+		
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void deleteByRoleAndCompany(String cid, String roleID) {
+		KacmtDispPeriodSwitchPK pk = new KacmtDispPeriodSwitchPK(cid, roleID);
+		this.commandProxy().remove(KacmtDispPeriodSwitch.class, pk);
 	}
 
 }

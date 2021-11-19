@@ -11,6 +11,9 @@ import java.util.Optional;
  */
 public interface InitDisplayPeriodSwitchSetRepo {
 	
-	
 	Optional<InitDisplayPeriodSwitchSet> findByKey (String companyID , String roleID);
+	
+	void save (InitDisplayPeriodSwitchSet domain);
+	
+	void deleteByRoleAndCompany (String cid, String roleID);
 }
