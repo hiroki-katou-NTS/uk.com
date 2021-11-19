@@ -2711,6 +2711,12 @@ public class ProgramsManager {
             "/view/kmr/001/d/index.xhtml");
 
     /**
+     * KMR002
+     */
+    public static final Program KMR002A = new Program(WebAppId.AT, ProgramIdConsts.KMR002A, "KMR002_15",
+            "/view/kmr/002/a/index.xhtml");
+    
+    /**
      * KMR003
      */
     public static final Program KMR003A = new Program(WebAppId.AT, ProgramIdConsts.KMR003A, "KMR003_1",
