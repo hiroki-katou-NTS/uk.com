@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
@@ -64,29 +65,13 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 	public static OuenWorkTimeSheetOfDailyAttendanceDto from(String sid, GeneralDate ymd, OuenWorkTimeSheetOfDailyAttendance domain) {
 		OuenWorkTimeSheetOfDailyAttendanceDto dto = new OuenWorkTimeSheetOfDailyAttendanceDto();
 		if(domain != null){
-			WorkGroupDto wGroup = null;
-			if (domain.getWorkContent().getWork().isPresent()){
-					wGroup = new WorkGroupDto(
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD1() != null) ? domain.getWorkContent().getWork().get().getWorkCD1().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD2().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD2().get().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD3().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD3().get().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD4().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD4().get().v() : null, 
-							(domain.getWorkContent().getWork().isPresent() && domain.getWorkContent().getWork().get().getWorkCD5().isPresent()) ? domain.getWorkContent().getWork().get().getWorkCD5().get().v() : null
-					);
-			}
 			dto.setEmployeeId(sid);
 			dto.setDate(ymd);
 			dto.setNo(domain.getWorkNo().v());
 			dto.setWorkContent(WorkContentDto.from(domain.getWorkContent()));
 			dto.setTimeSheet(new TimeSheetOfAttendanceEachOuenSheetDto(domain.getTimeSheet().getWorkNo().v(), 
-					new WorkTimeInformationDto(new ReasonTimeChangeDto(
-							(domain.getTimeSheet().getStart().isPresent() && domain.getTimeSheet().getStart().get().getReasonTimeChange() != null && domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans() != null) ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getTimeChangeMeans().value : null, 
-							(domain.getTimeSheet().getStart().isPresent() && domain.getTimeSheet().getStart().get().getReasonTimeChange() != null && domain.getTimeSheet().getStart().get().getReasonTimeChange().getEngravingMethod().isPresent()) ? domain.getTimeSheet().getStart().get().getReasonTimeChange().getEngravingMethod().get().value : null), 
-							(domain.getTimeSheet().getStart().isPresent() && domain.getTimeSheet().getStart().get().getTimeWithDay().isPresent()) ? domain.getTimeSheet().getStart().get().getTimeWithDay().get().v() : null), 
-					new WorkTimeInformationDto(new ReasonTimeChangeDto(
-							(domain.getTimeSheet().getEnd().isPresent() && domain.getTimeSheet().getEnd().get().getReasonTimeChange() != null && domain.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans() != null) ? domain.getTimeSheet().getEnd().get().getReasonTimeChange().getTimeChangeMeans().value : null, 
-							(domain.getTimeSheet().getEnd().isPresent() && domain.getTimeSheet().getEnd().get().getReasonTimeChange() != null && domain.getTimeSheet().getEnd().get().getReasonTimeChange().getEngravingMethod().isPresent()) ? domain.getTimeSheet().getEnd().get().getReasonTimeChange().getEngravingMethod().get().value : null), 
-							(domain.getTimeSheet().getEnd().isPresent() && domain.getTimeSheet().getEnd().get().getTimeWithDay().isPresent())? domain.getTimeSheet().getEnd().get().getTimeWithDay().get().v() : null)));
+					domain.getTimeSheet().getStart().map(c -> WorkTimeInformationDto.fromDomain(c)).orElse(null), 
+					domain.getTimeSheet().getEnd().map(c -> WorkTimeInformationDto.fromDomain(c)).orElse(null)));
 			dto.exsistData();
 		}
 		return dto;
@@ -182,37 +167,23 @@ public class OuenWorkTimeSheetOfDailyAttendanceDto extends AttendanceItemCommon{
 		} else {
 			workContent = WorkContent.create( 
 					WorkplaceOfWorkEachOuen.create(
-							null, 
+							new WorkplaceId(""), 
 							null), 
-					Optional.ofNullable(WorkGroup.create(
-							null, 
-							Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())), 
+					Optional.empty(), 
 					Optional.empty());
 		}
-		ReasonTimeChange reasonTimeChangeStart = null;
-		WorkTimeInformation start = null;
-		if(this.timeSheet != null && this.timeSheet.getStart() != null) {
-			reasonTimeChangeStart = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getStart().getReasonTimeChange() == null ? null : this.timeSheet.getStart().getReasonTimeChange().getTimeChangeMeans()), 
-					 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getStart().getReasonTimeChange() == null ? null : this.timeSheet.getStart().getReasonTimeChange().getEngravingMethod())));	
-			start = new WorkTimeInformation(reasonTimeChangeStart, this.timeSheet.getStart().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getStart().getTimeWithDay()));
-		} else {
-			reasonTimeChangeStart = new ReasonTimeChange(null, Optional.empty());	
-			start = new WorkTimeInformation(reasonTimeChangeStart, null);
-		}
 		
-		ReasonTimeChange reasonTimeChangeEnd = null;
-		WorkTimeInformation end = null;
-		if(this.timeSheet != null && this.timeSheet.getEnd() != null) {
-			reasonTimeChangeEnd = new ReasonTimeChange(TimeChangeMeans.valueOf(this.timeSheet.getEnd().getReasonTimeChange() != null ? this.timeSheet.getEnd().getReasonTimeChange().getTimeChangeMeans() : null), 
-					 Optional.ofNullable(EngravingMethod.valueOf(this.timeSheet.getEnd().getReasonTimeChange() != null ? this.timeSheet.getEnd().getReasonTimeChange().getEngravingMethod() : null)));
-			end = new WorkTimeInformation(reasonTimeChangeEnd, this.timeSheet.getEnd().getTimeWithDay() == null ? null : new TimeWithDayAttr(this.timeSheet.getEnd().getTimeWithDay()));
-		} else {
-			reasonTimeChangeEnd = new ReasonTimeChange(null, Optional.empty());	
-			end = new WorkTimeInformation(reasonTimeChangeStart, null);
-		}
-		
-		TimeSheetOfAttendanceEachOuenSheet timeSheet = TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(this.timeSheet == null ? 1 : this.timeSheet.getNo()), Optional.ofNullable(start), Optional.ofNullable(end));
+		TimeSheetOfAttendanceEachOuenSheet timeSheet = this.timeSheet == null ? TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1), Optional.empty(), Optional.empty()) : this.timeSheet.domain();
 		OuenWorkTimeSheetOfDailyAttendance attendance = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(this.no), workContent, timeSheet, Optional.empty());
 		return attendance;
+	}
+	
+	public OuenWorkTimeSheetOfDailyAttendance correctOuen(OuenWorkTimeSheetOfDailyAttendance dto, String workplaceId) {
+		if (dto.getWorkContent().getWorkplace().getWorkplaceId() != null && dto.getWorkContent().getWorkplace().getWorkplaceId().v().isEmpty()) {
+			WorkplaceOfWorkEachOuen workplace = WorkplaceOfWorkEachOuen.create(new WorkplaceId(workplaceId), dto.getWorkContent().getWorkplace().getWorkLocationCD().map(x -> x).orElse(null));
+			WorkContent workContent = WorkContent.create(workplace, dto.getWorkContent().getWork(), dto.getWorkContent().getWorkSuppInfo());
+			return new OuenWorkTimeSheetOfDailyAttendance(dto.getWorkNo(), workContent, dto.getTimeSheet(), dto.getInputFlag());
+		}
+		return dto;
 	}
 }

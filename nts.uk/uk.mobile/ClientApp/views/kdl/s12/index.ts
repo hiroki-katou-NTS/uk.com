@@ -15,6 +15,8 @@ export class Kdls12Component extends Vue {
     public listTaskDisplay: Array<TaskManager> = [];
     public taskFrameNo: string;
     public baseDate: string;
+    public sid: string;
+    public taskCode: string;
     public selectedTask = {};
     public selectedTaskCD: string;
 
@@ -39,7 +41,9 @@ export class Kdls12Component extends Vue {
 
         self.baseDate = params.baseDate || self.baseDate;
         self.taskFrameNo = params.taskFrameNo || self.taskFrameNo;
-        self.selectedTaskCD = params.selectionCodeList.length > 0 ? params.selectionCodeList[0] : '';       
+        self.sid = params.sid || self.sid;
+        self.taskCode = params.taskCode || self.taskCode;
+        self.selectedTaskCD = _.isNil(params.selectionCodeList) ? '' :  ( params.selectionCodeList.length > 0 ? params.selectionCodeList[0] : '' );       
     }
 
     public back() {
@@ -52,7 +56,9 @@ export class Kdls12Component extends Vue {
         let self = this;
         let param = {
             baseDate: self.baseDate,
-            taskFrameNo: self.taskFrameNo
+            taskFrameNo: self.taskFrameNo,
+            sid: self.sid,
+            taskCode: self.taskCode
         };
         self.$http.post('at', servicePath.getTaskMaster, param).then((result: { data: Array<TaskManager> }) => {
             self.$mask('hide');
@@ -149,5 +155,7 @@ class TaskManager {
 interface IParam {
     taskFrameNo: string;
     baseDate: string;
+    sid: string;
+    taskCode: string;
     selectionCodeList: Array<string>;
 }

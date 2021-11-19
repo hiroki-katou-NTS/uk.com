@@ -19,4 +19,7 @@ public interface SharedAffWorkPlaceHisAdapter {
 	List<String> findAffiliatedWorkPlaceIdsToRootRequire(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
 	
 	Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> getAffWorkPlaceHisClones(String companyId, List<String> employeeId, DatePeriod baseDate);
+
+	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate baseDate);
+
 }

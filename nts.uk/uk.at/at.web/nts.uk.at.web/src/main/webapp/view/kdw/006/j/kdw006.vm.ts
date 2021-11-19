@@ -103,27 +103,31 @@ module nts.uk.at.view.kmk006.j {
                 let output = nts.uk.ui.windows.getShared("selectedChildAttendace");
                 const exist = _.find(vm.data.dailyAttendanceItem, ((item: IDailyAttendanceItem) => { return item.attendanceItemId == output }));
 
-                if (output) {
-                    switch (param) {
-                        case 1:
-                            vm.value1(output)
-                            if (exist) {
-                                vm.nameAttendent1(exist.attendanceName);
-                            }
-                            break;
-                        case 2:
-                            vm.value2(output)
-                            if (exist) {
-                                vm.nameAttendent2(exist.attendanceName);
-                            }
-                            break;
-                        case 3:
-                            vm.value3(output)
-                            if (exist) {
-                                vm.nameAttendent3(exist.attendanceName);
-                            }
-                            break;
-                    }
+                switch (param) {
+                    case 1:
+                        vm.value1(output)
+                        if (exist && output != null) {
+                            vm.nameAttendent1(exist.attendanceName);
+                        } else {
+                            vm.nameAttendent1('');
+                        }
+                        break;
+                    case 2:
+                        vm.value2(output)
+                        if (exist && output != null) {
+                            vm.nameAttendent2(exist.attendanceName);
+                        }else {
+                            vm.nameAttendent2('');
+                        }
+                        break;
+                    case 3:
+                        vm.value3(output)
+                        if (exist && output != null) {
+                            vm.nameAttendent3(exist.attendanceName);
+                        }else {
+                            vm.nameAttendent3('');
+                        }
+                        break;
                 }
             });
         }
@@ -220,12 +224,33 @@ module nts.uk.at.view.kmk006.j {
             const recordColumnDisplayItems = [];
 
             if (ko.unwrap(vm.value1)) {
+                if (ko.unwrap(vm.textInput1) === "") {
+                    vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_312')]})
+                    .then(() => {
+                        $('.ip-nameItem1').focus();
+                    })
+                    return;
+                }
                 recordColumnDisplayItems.push({ order: 1, attendanceItemId: ko.unwrap(vm.value1).toString(), displayName: ko.unwrap(vm.textInput1) });
             }
             if (ko.unwrap(vm.value2)) {
+                if (ko.unwrap(vm.textInput2) === "") {
+                    vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_313')]})
+                    .then(() => {
+                        $('.ip-nameItem2').focus();
+                    })
+                    return;
+                }
                 recordColumnDisplayItems.push({ order: 2, attendanceItemId: ko.unwrap(vm.value2).toString(), displayName: ko.unwrap(vm.textInput2) });
             }
             if (ko.unwrap(vm.value3)) {
+                if (ko.unwrap(vm.textInput3) === "") {
+                    vm.$dialog.info({messageId: 'Msg_3239', messageParams: [vm.$i18n('KDW006_314')]})
+                    .then(() => {
+                        $('.ip-nameItem3').focus();
+                    })
+                    return;
+                }
                 recordColumnDisplayItems.push({ order: 3, attendanceItemId: ko.unwrap(vm.value3).toString(), displayName: ko.unwrap(vm.textInput3) });
             }
 
@@ -284,7 +309,8 @@ module nts.uk.at.view.kmk006.j {
                                 .then(() => {
                                     vm.$ajax('at', API.ADD_OR_UPDATE, param)
                                         .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                                        .then(() => vm.reloadData())
+                                        // .then(() => vm.reloadData())
+                                        .then(() => location.reload())
                                 })
                                 .always(() => vm.$blockui('clear'));
                         }
