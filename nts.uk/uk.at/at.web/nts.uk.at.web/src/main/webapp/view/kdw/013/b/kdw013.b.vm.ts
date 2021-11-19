@@ -134,7 +134,7 @@ module nts.uk.ui.at.kdw013.b {
             .detail-event table tr {
                 height: 34px;
             }
-            .detail-event table tr>td:first-child {
+            .detail-event table tr>td{
                 vertical-align: top;
                 padding-top: 6px;
 				padding-left: 5px;
