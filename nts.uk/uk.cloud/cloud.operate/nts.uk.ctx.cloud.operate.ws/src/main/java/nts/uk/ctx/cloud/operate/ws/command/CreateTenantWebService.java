@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyCategoryFindDto;
 import nts.uk.ctx.sys.assist.app.find.mastercopy.MasterCopyCategoryFinder;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
 import nts.uk.shr.com.company.CompanyId;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
 import nts.uk.shr.infra.data.TenantLocatorService;
 
 import java.util.Arrays;
@@ -65,11 +66,18 @@ public class CreateTenantWebService extends WebService{
 	 * @param task
 	 */
 	private static void onTenant(String tenantCode, Runnable task) {
-		try {
-			TenantLocatorService.connect(tenantCode);
+		// テナントロケーターを使用するかどうかチェック
+		if (UKServerSystemProperties.usesTenantLocator()){
+			// 使用する
+			try {
+				TenantLocatorService.connect(tenantCode);
+				task.run();
+			} finally {
+				TenantLocatorService.disconnect();
+			}
+		}else{
+			// 使用しない
 			task.run();
-		} finally {
-			TenantLocatorService.disconnect();
 		}
 	}
 }
