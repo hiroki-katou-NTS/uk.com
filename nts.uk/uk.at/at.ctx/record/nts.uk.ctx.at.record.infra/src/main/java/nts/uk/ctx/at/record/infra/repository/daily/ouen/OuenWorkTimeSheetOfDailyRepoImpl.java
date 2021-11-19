@@ -450,6 +450,14 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 												   .setParameter("ymd", ymd)
 												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
+		
+		String deleteInfo = "DELETE FROM KrcdtDayTsSupSupplInfo o " + " WHERE o.pk.sid = :sId "
+				+ " AND o.pk.date = :ymd "
+				+ " AND o.pk.supNo = :ouenNo ";
+		this.getEntityManager().createQuery(deleteInfo).setParameter("sid", sId)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
 	}
 	
 }
