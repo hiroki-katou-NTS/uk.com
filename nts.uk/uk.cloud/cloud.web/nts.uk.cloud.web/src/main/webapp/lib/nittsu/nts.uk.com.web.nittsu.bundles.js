@@ -17031,7 +17031,7 @@ var nts;
                         var container = $(element);
                         if (nts.uk.util.isNullOrUndefined(container.attr("tabindex")))
                             container.attr("tabindex", "0");
-                        container.addClass("ntsControl ntsCheckBox").on("click", function (e) {
+                        container.addClass("ntsControl").on("click", function (e) {
                             if (container.data("readonly") === true)
                                 e.preventDefault();
                         });

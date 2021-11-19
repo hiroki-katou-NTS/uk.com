@@ -11,9 +11,10 @@ namespace Build4Cloud
     {
         private readonly string path;
 
-        public PersistenceXml(string path)
+        public PersistenceXml(string rootPath, string pathToWeb)
         {
-            this.path = path;
+            string xml = Path.Combine(pathToWeb, "src", "main", "resources", "META-INF", "persistence.xml");
+            this.path = xml;
         }
 
         public void CreateCloudEdition(int datasourcesCount)
