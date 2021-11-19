@@ -11,6 +11,7 @@ module nts.uk.at.view.ksu011.c.viewmodel {
 
         headLabel: KnockoutObservable<string>;
         warningLabel: KnockoutObservable<string>;
+        rightLimit: KnockoutObservable<number>;
 
         constructor(params: any) {
             super();
@@ -19,6 +20,7 @@ module nts.uk.at.view.ksu011.c.viewmodel {
             vm.currentCodeListSwap = ko.observableArray([]);
             vm.headLabel = ko.observable(params.target == "personal" ? vm.$i18n("KSU011_81") : vm.$i18n("KSU011_82"));
             vm.warningLabel = ko.observable(vm.$i18n('KSU011_80', params.target == "personal" ? ["10"] : ["5"]));
+            vm.rightLimit = ko.observable(params.target == "personal" ? 10 : 5);
         }
 
         created(params: any) {

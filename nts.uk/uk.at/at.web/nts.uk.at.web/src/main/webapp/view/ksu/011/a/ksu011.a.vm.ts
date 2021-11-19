@@ -141,8 +141,11 @@ module nts.uk.at.view.ksu011.a.viewmodel {
         openDialogB() {
             const vm = this;
             vm.$window.modal("/view/ksu/011/b/index.xhtml", {itemCode: vm.selectedOutputItemCode()}).then((data: any) => {
-                vm.$errors("clear");
-                if (data) vm.getAllSetting(data.itemCode);
+                if (data) {
+                    vm.getAllSetting(data.itemCode).then(() => {
+                        $(".ui-igcombo-wrapper").trigger("validate");
+                    });
+                }
             });
         }
     }
