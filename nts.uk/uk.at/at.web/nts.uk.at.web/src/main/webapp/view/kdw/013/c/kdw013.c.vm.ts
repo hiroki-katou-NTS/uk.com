@@ -1384,7 +1384,7 @@ module nts.uk.ui.at.kdw013.c {
 			aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
 		}
 		if(innerHeight - aboveBelow >= heightTaskDetails){
-			$('.taskDetails').css({ "overflow-y": "unset"});
+			$('.taskDetails').css({ "overflow-y": "hidden"});
 			$('.taskDetails').css({ "max-height": heightTaskDetails + 'px' });
 		}else if(innerHeight - aboveBelow < heightTaskDetails){
 			$('.taskDetails').css({ "overflow-y": "scroll"});
