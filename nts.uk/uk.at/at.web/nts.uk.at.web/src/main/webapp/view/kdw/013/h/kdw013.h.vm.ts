@@ -104,7 +104,7 @@ module nts.uk.at.view.kdw013.h {
 				let infor: any = _.find(self.params.lockInfos, (i:DailyLock)=> moment(self.params.date).isSame(moment(i.date)));
 				if(infor){
 					let err: string = null;
-					if(infor.lockPast == 0){
+					if(infor.lockDailyResult == 0){
 						err = getText('KDW013_53');
 					}
 					if(infor.lockWpl == 0){
@@ -122,7 +122,7 @@ module nts.uk.at.view.kdw013.h {
 					if(infor.lockConfirmDay == 0){
 						err = err ? (err + ',' + getText('KDW013_58')) : getText('KDW013_58');
 					}
-					if(infor.lockDailyResult == 0){
+					if(infor.lockPast == 0){
 						err = err ? (err + ',' + getText('KDW013_59')) : getText('KDW013_59');
 					}
 					if(err){
@@ -253,10 +253,25 @@ module nts.uk.at.view.kdw013.h {
 			
 			getPrimitiveValue(primitiveValue: number): string {
 				if(primitiveValue){
-					if(primitiveValue == 56){
+					if(primitiveValue == 21){
+						return 'BusinessTypeCode';
+					}else if(primitiveValue == 55){
+						return 'AnyItemAmount';
+					}else if(primitiveValue == 55){
+						return 'AnyAmountMonth';
+					}else if(primitiveValue == 56){
 						return 'AnyItemTime';
+					}else if(primitiveValue == 57){
+						return 'AnyTimeMonth';
+					}else if(primitiveValue == 58){
+						return 'AnyItemTimes';
+					}else if(primitiveValue == 59){
+						return 'AnyTimesMonth';
+					}else if(primitiveValue == 60){
+						return 'DiverdenceReasonCode';
+					}else{
+						return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
 					}
-					return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
 				}
 				return '';
 			}

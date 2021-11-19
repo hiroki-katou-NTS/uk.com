@@ -1332,7 +1332,7 @@ module nts.uk.ui.at.kdw013.c {
 			if($raw == null){
 				return { id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false };
 			}
-            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName , taskNote: $raw.displayInfo.taskNote, selected: false, $raw: $raw };
+            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName , taskNote: $raw.displayInfo.taskNote ? '(' + $raw.displayInfo.taskNote + ')': null, selected: false, $raw: $raw };
         }
 		getName(displayInfo: TaskDisplayInfoDto): string{
 			if(displayInfo.taskNote && displayInfo.taskNote!= ''){

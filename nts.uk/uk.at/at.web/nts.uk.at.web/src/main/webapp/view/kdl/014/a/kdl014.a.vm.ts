@@ -32,7 +32,7 @@ module nts.uk.at.view.kdl014.a {
                 service.getEmployeeData(param).done(function(data) {
                     if (data) {
                         _.forEach(data, function(item) {
-                            tg.push({ id: item.employeeId, code: item.employeeCode, businessName: item.employeeName, workplaceName: item.affiliationName, depName: '' });
+                            tg.push({ id: item.employeeId, code: item.employeeCode, businessName: item.businessName, workplaceName: item.affiliationName, depName: '' });
                         });
                         self.employeeInfoList(_.orderBy(tg, ['code'], ['asc']));
                     }

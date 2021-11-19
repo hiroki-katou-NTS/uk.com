@@ -256,44 +256,6 @@ module nts.uk.at.view.kmk002.a {
 
                 // init subscribe
                 this.initSubscribe();
-
-                this.selectedClac.subscribe((vl) => {
-                    if (vl == 1) this.enableUnit(false);
-                //     if (vl) {
-                //         if($('#inp-upper-amount-day').is(':enabled')){
-                //             $('#inp-upper-amount-day').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-number-day').is(':enabled')){
-                //             $('#inp-upper-number-day').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-time-day').is(':enabled')){
-                //             $('#inp-upper-time-day').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-amount-month').is(':enabled')){
-                //             $('#inp-upper-amount-month').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-number-month').is(':enabled')){
-                //             $('#inp-upper-number-month').ntsEditor('validate');
-                //         }
-                //         if($('#inp-upper-time-month').is(':enabled')){
-                //             $('#inp-upper-time-month').ntsEditor('validate');
-                //         }
-                //     } else {
-                //         $('#inp-upper-amount-day').ntsError('clear');
-                //         $('#inp-upper-number-day').ntsError('clear');
-                //         $('#inp-upper-time-day').ntsError('clear');
-                //         $('#inp-upper-amount-month').ntsError('clear');
-                //         $('#inp-upper-number-month').ntsError('clear');
-                //         $('#inp-upper-time-month').ntsError('clear');
-                //     }
-                })
-
-                this.enableUnit.subscribe(value => {
-                    if (value) {
-                        this.calcResultRange.upperCheck(false);
-                        this.calcResultRange.lowerCheck(false);
-                    }
-                });
             }
 
             /**
@@ -351,7 +313,48 @@ module nts.uk.at.view.kmk002.a {
             private initSubscribe(): void {
                 let self = this;
 
-                
+                self.selectedClac.subscribe((vl) => {
+                    if (vl == 1) self.enableUnit(false);
+                    //     if (vl) {
+                    //         if($('#inp-upper-amount-day').is(':enabled')){
+                    //             $('#inp-upper-amount-day').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-number-day').is(':enabled')){
+                    //             $('#inp-upper-number-day').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-time-day').is(':enabled')){
+                    //             $('#inp-upper-time-day').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-amount-month').is(':enabled')){
+                    //             $('#inp-upper-amount-month').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-number-month').is(':enabled')){
+                    //             $('#inp-upper-number-month').ntsEditor('validate');
+                    //         }
+                    //         if($('#inp-upper-time-month').is(':enabled')){
+                    //             $('#inp-upper-time-month').ntsEditor('validate');
+                    //         }
+                    //     } else {
+                    //         $('#inp-upper-amount-day').ntsError('clear');
+                    //         $('#inp-upper-number-day').ntsError('clear');
+                    //         $('#inp-upper-time-day').ntsError('clear');
+                    //         $('#inp-upper-amount-month').ntsError('clear');
+                    //         $('#inp-upper-number-month').ntsError('clear');
+                    //         $('#inp-upper-time-month').ntsError('clear');
+                    //     }
+                });
+
+                self.enableUnit.subscribe(value => {
+                    if (value) {
+                        self.calcResultRange.upperCheck(false);
+                        self.calcResultRange.lowerCheck(false);
+                        self.unit("");
+                    } else {
+                        // self.calcResultRange.upperCheck(self.optionalItemDtoStash.calcResultRange.upperCheck);
+                        // self.calcResultRange.lowerCheck(self.optionalItemDtoStash.calcResultRange.lowerCheck);
+                        self.unit(self.optionalItemDtoStash.unit);
+                    }
+                });
 
                 // Event on click checkAll checkbox
                 self.checkedAllFormula.subscribe(vl => {

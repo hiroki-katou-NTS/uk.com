@@ -47,5 +47,8 @@ public interface WorkplaceGroupAdapter {
 	 * @return
 	 */
 	List<String> getAllReferableEmp(GeneralDate date, String employeeId);
+	
+	
+	String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
 
 }
