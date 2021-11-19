@@ -50,7 +50,12 @@ public class HolidayAcqManageByMDTest {
 			private static final long serialVersionUID = 1L;
 			
 		{
+			//基準日 < 起算日
+			put(	GeneralDate.ymd(2021, 3, 1)
+					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 2, 3), GeneralDate.ymd(2021, 3, 2), 4.0)
+						);
 			
+			//基準日 >=  起算日
 			put(	GeneralDate.ymd(2021, 4, 1)
 				,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)
 					);
