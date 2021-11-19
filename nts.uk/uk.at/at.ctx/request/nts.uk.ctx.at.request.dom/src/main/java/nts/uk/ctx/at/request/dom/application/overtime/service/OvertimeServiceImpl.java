@@ -830,7 +830,8 @@ public class OvertimeServiceImpl implements OvertimeService {
                 .map(x -> x.getApplicationTime().v())
                 .mapToInt(Integer::intValue)
                 .sum();
-        totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
+        totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() 
+                && appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ? 
                 appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
         totalOverTime += appOverTime.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
         TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
@@ -854,7 +855,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				displayInfoOverTime.getAppDispInfoStartup(), 
 				new ArrayList<String>(), 
 				Optional.of(timeDigestionParam), 
-				false);
+				false,
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()), 
+				appOverTime.getWorkInfoOp().isPresent() ? appOverTime.getWorkInfoOp().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty());
 		// 残業申請の個別登録前チェッ処理
 		output = commonAlgorithmOverTime.checkBeforeOverTime(
 				require,
@@ -1263,13 +1266,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 	public void checkContentApp(String companyId, DisplayInfoOverTime displayInfoOverTime, AppOverTime appOverTime,
 			Boolean mode) {
 	    int totalOverTime = 0;
-	    totalOverTime = appOverTime.getApplicationTime().getApplicationTime().stream()
-	            .map(x -> x.getApplicationTime().v())
-	            .mapToInt(Integer::intValue)
-	            .sum();
-	    totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
-	            appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
-	            totalOverTime += appOverTime.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
+	    if (appOverTime.getApplicationTime() != null) {
+	        totalOverTime = appOverTime.getApplicationTime().getApplicationTime().stream()
+	                .map(x -> x.getApplicationTime().v())
+	                .mapToInt(Integer::intValue)
+	                .sum();
+	        totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() 
+                    && appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ? 
+	                appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
+	                totalOverTime += appOverTime.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
+	    }
 	            TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
 	                    0, 
 	                    0, 
@@ -1309,7 +1315,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 					displayInfoOverTime.getAppDispInfoStartup(), 
 					new ArrayList<String>(), 
 	                Optional.of(timeDigestionParam), 
-	                false);
+	                false,
+	                appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()), 
+	                appOverTime.getWorkInfoOp().isPresent() ? appOverTime.getWorkInfoOp().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty());
 			
 		}
 		// 申請時間に移動する前の個別チェック処理

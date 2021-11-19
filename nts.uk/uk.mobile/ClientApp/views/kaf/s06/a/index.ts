@@ -179,6 +179,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
         self.bindNumOfDay(self.maxDaySpecHdDto);
     }
     
+    @Watch('checkBoxC7', {deep: true})
+    public changeValueC7(data: any) {
+        const self = this;
+
+        self.changeUseWorkTime(data);
+    }
 
 
     @Prop() 
@@ -263,9 +269,17 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get A9_7() {
         const self = this;
         let model = self.model as Model;
-        let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0;
+        let substituteLeaveManagement = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement');
+        let timeAllowanceManagement = substituteLeaveManagement.timeAllowanceManagement;
 
-        return self.getFormatTime(0, time);
+        if (timeAllowanceManagement) {
+            return self.formatTimeFromMinute(_.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0);
+        } else {
+            return self.$i18n('KAFS06_40', [_.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subHdRemain').toString()]);
+        }
+        // let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0;
+
+        // return self.getFormatTime(0, time);
     }
     // 休暇残数情報．年休残数
     // 休暇残数情報．年休残時間
@@ -1686,6 +1700,34 @@ export class KafS06AComponent extends KafS00ShrComponent {
         
     }
 
+    public changeUseWorkTime(data: any) {
+        const self = this;
+
+        self.$mask('show');
+
+        self.model.appAbsenceStartInfoDto.workTimeChange = self.checkBoxC7;
+        let command = {
+            sId: self.user.employeeId, 
+            date: self.application.opAppStartDate, 
+            workTypeCd: self.workType.code, 
+            workTimeCd: self.checkBoxC7 ? self.workTime.code : null, 
+            appAbsenceStartInfo: self.model.appAbsenceStartInfoDto
+        };
+
+        self.$http.post('at', API.changeUseingWorkTime, command)
+            .then((res: any) => {
+                if (res) {
+                    self.model.appAbsenceStartInfoDto.requiredVacationTime = res.data.requiredVacationTime;
+                }
+            }).catch((res: any) => {
+                self.handleErrorCustom(res).then((result) => {
+                    if (result) {
+                        self.handleErrorCommon(res);
+                    }
+                });
+            })
+            .then(() => self.$mask('hide'));
+    }
     public updateByRelationship(data: any) {
         const self = this;
 
@@ -2052,6 +2094,7 @@ const API = {
     selectWorkType: 'at/request/application/appforleave/mobile/selectWorkType',
     selectWorkTime: 'at/request/application/appforleave/mobile/selectWorkTime',
     getMaxHoliDay: 'at/request/application/appforleave/mobile/getMaxHoliDay',
+    changeUseingWorkTime: 'at/request/application/appforleave/findChangeUsingWorkTime',
     checkBeforeInsert: 'at/request/application/appforleave/mobile/checkBeforeInsert',
     insert: 'at/request/application/appforleave/mobile/insert',
     update: 'at/request/application/appforleave/mobile/update',
