@@ -1219,6 +1219,9 @@ module nts.uk.ui.at.kdw013.c {
 			if(itemNext){
 				block.grayout();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
+					if(_.find(data, o => o.code == itemNext.value()) == undefined){
+						itemNext.value(null);
+					}
 					itemNext.options(vm.getMapperList(data, itemNext.value));
 					block.clear();
 	            }).always(() => block.clear());
