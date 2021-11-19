@@ -1,0 +1,120 @@
+/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
+module nts.uk.com.view.ccg015.h {
+  import ccg025Component = nts.uk.com.view.ccg025.a.component;
+  
+  const API = {
+    get: 'at/auth/workplace/initdisplayperiod/get',
+    save: 'at/auth/workplace/initdisplayperiod/save',
+    delete: 'at/auth/workplace/initdisplayperiod/delete',
+  }
+
+  @bean()
+  export class ScreenModel extends ko.ViewModel {
+    component: ccg025Component.viewmodel.ComponentModel = new ccg025Component.viewmodel.ComponentModel({ 
+      roleType: 3, //就業
+      multiple: false,
+      isAlreadySetting: false,
+      rows: 10,
+      tabindex: 4,
+    });
+    numberOfDays: KnockoutObservableArray<{name: string, value: number}> = ko.observableArray([]);
+    selectedNumberOfDay: KnockoutObservable<any> = ko.observable(0);
+
+    roleName: KnockoutObservable<string> = ko.observable('');
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    selectedRoleId: string = '';
+
+    created() {
+      const vm = this;
+      for (let i = 0; i <= 31; i++) {
+        if (i === 0) {
+          vm.numberOfDays.push({name: vm.$i18n('CCG015_103'), value: i});
+          continue;
+        }
+
+        vm.numberOfDays.push({name: vm.$i18n('CCG015_104', [i.toString()]), value: i});
+      }
+    }
+
+    mounted() {
+      const vm = this;
+      vm.component.currentCode.subscribe((value: any) => {
+        vm.selectedRoleId = value;
+        vm.getData();
+        const role = _.find(vm.component.listRole(), role => role.roleId === value);
+        if (_.isNil(role)) {
+          vm.roleName('');
+          return;
+        }
+
+        vm.roleName(`${role.roleCode} ${role.roleName}`);
+      });
+
+      vm.component.startPage();
+    }
+
+    getData() {
+      const vm = this;
+      vm
+        .$blockui('grayout')
+        .then(() => vm.$ajax('at', API.get, vm.selectedRoleId))
+        .then((response: InitDisplayPeriodSwitchSet) => {
+          if (!response) {
+            vm.selectedNumberOfDay(0);
+            vm.isNewMode(true);
+          }
+          else {
+            vm.isNewMode(false);
+            vm.selectedNumberOfDay(response.day);
+          }
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    onSave() {
+      const vm = this;
+      const command = {
+        companyId: __viewContext.user.companyId,
+        roleId: vm.selectedRoleId,
+        day: vm.selectedNumberOfDay(),
+      };
+      vm
+        .$blockui('grayout')
+        .then(() => vm.$ajax('at', API.save, command))
+        .then(() => vm.$dialog.info({messageId: 'Msg_15'}))
+        .then(() => vm.getData())
+        .always(() => vm.$blockui('clear'));
+    }
+
+    onDelete() {
+      const vm = this;
+      const command = {
+        companyId: __viewContext.user.companyId,
+        roleId: vm.selectedRoleId,
+      };
+      vm
+        .$blockui('grayout')
+        .then(() => vm.$dialog.confirm({messageId: 'Msg_18'}))
+        .then((response: 'yes' | 'no') => {
+          if (response === 'yes') {
+            vm
+              .$ajax('at', API.delete, command)
+              .then(() => vm.$dialog.info({messageId: 'Msg_15'}))
+              .then(() => vm.getData());
+          }
+        })
+        .always(() => vm.$blockui('clear'));
+    }
+
+    close() {
+      const vm = this;
+      vm.$window.close();
+    }
+  }
+
+  interface InitDisplayPeriodSwitchSet {
+    companyID: string;
+    roleID: string;
+  	day: number;
+  }
+}
