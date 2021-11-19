@@ -12,27 +12,36 @@ namespace Build4Cloud
     {
         static void Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length != 1)
             {
-                Console.WriteLine("コマンドライン引数でプロジェクト（comやatなど）とデータソース数を指定してください");
+                Console.WriteLine("コマンドライン引数でデータソース数を指定してください");
                 return;
             }
 
             var context = new Context
             {
                 RootPath = FindRootPathFromCurrent(),
-                Project = args[0],  // "com" | "at" | ...
+                Projects = new [] { "com", "at", "cloud" },
             };
 
-            int datasourcesCount = int.Parse(args[1]);
+            int datasourcesCount = int.Parse(args[0]);
 
-            var xml = new PersistenceXml(context.GetPathToPersistenceXml());
+            var loader = new EntityManagerLoader(context.RootPath);
+            loader.CreateCloudEdition(datasourcesCount);
 
-            xml.CreateCloudEdition(datasourcesCount);
+            foreach (var project in context.Projects)
+            {
+                string pathToWeb = Path.Combine(context.RootPath, $"uk.{project}", $"{project}.web", $"nts.uk.{project}.web");
 
-            Build(context);
+                var xml = new PersistenceXml(context.RootPath, pathToWeb);
+                xml.CreateCloudEdition(datasourcesCount);
 
-            xml.RestoreOriginalFile();
+                Build(pathToWeb);
+
+                xml.RestoreOriginalFile();
+            }
+
+            loader.RestoreOriginalFile();
         }
 
         private static string FindRootPathFromCurrent()
@@ -49,10 +58,10 @@ namespace Build4Cloud
             throw new Exception("root not found: " + Environment.CurrentDirectory);
         }
 
-        private static void Build(Context context)
+        private static void Build(string pathToWeb)
         {
             var processStartInfo = new ProcessStartInfo("gradle", "build");
-            processStartInfo.WorkingDirectory = context.GetPathToWeb();
+            processStartInfo.WorkingDirectory = pathToWeb;
 
             var process = Process.Start(processStartInfo);
             process.WaitForExit();
