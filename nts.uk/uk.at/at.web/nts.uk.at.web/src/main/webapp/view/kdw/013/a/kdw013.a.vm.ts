@@ -924,14 +924,13 @@ module nts.uk.ui.at.kdw013.a {
                     currentScreenNos.push(_.map(e.extendedProps.taskBlocks.taskDetails, td => td.supNo));
                 });
                 //③ 削除応援作業枠Noリスト
-                let removeItemNos = _.map(_.find(removeList, ri => moment(ri.date).isSame(moment(date))), ri => ri.supNos);
+                let removeItemNos = _.map(_.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date))), ri => ri.supNos);
 
                 let overwriteDeletions = _.map(_.intersection(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 0 } });
                 
                 let completeDeletions = _.map(_.difference(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 1 } });
                 
-                
-                deleteList.push(date, overwriteDeletions.concat(completeDeletions));
+                deleteList.push({ date, list: overwriteDeletions.concat(completeDeletions) });
 
             });    
     
