@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.shr.com.context.AppContexts;
@@ -50,7 +51,7 @@ public class ManHourRecordUseSettingFinder {
 			ErrorAlarmWorkRecord errorAlarmWorkRecord = ErrorAlarmWorkRecord.createFromJavaType(
 					companyId, "T001", "作業時間超過チェック", 
 					false, false, false, 
-					833, 0, false, 
+					833, ErrorAlarmClassification.ALARM.value, false, 
 					"", false, null, 
 					Collections.emptyList(), IdentifierUtil.randomUniqueId());
 			

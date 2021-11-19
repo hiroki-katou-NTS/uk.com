@@ -516,7 +516,7 @@ module nts.uk.at.view.kdw008.a {
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
 
-                self.checked(true);
+                self.checked(false);
                 self.showCode(true);
                 self.isUpdate(false);
                 self.isRemove(false);
