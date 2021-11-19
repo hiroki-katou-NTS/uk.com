@@ -204,6 +204,7 @@ public class DPHeaderDto {
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.NumbericValue.value) {
 			dto.setGrant(true);
+			dto.setColumnCssClass("halign-right");
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		}
 		return dto;

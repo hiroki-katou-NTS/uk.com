@@ -58,12 +58,14 @@ public class CheckArbitraryItems {
 			Optional<OptionalItem> optOptionalItem = optionalItemRepository.findByItemNo(companyId, ail.getFrameNo().v());
 			if(optOptionalItem.isPresent()) {
 				DPItemValue dPItemValue = itemCanCheck.stream().filter(x->x.getItemId() == ail.getAttendanceItemId()).findFirst().get();
-				CheckValueInputCorrectOuput checkError = optOptionalItem.get().checkInputValueCorrect(new BigDecimal(dPItemValue.getValue()));
-				if(!checkError.isCheckResult()) {
-					//返ってきた「入力値チェック結果.エラー内容」を全て表示する
-					for(String error :checkError.getErrorContent()) {
-						DPItemValue newobj = dPItemValue.createNewError(error);
-						result.add(newobj);
+				if(dPItemValue.getValue() != null) {
+					CheckValueInputCorrectOuput checkError = optOptionalItem.get().checkInputValueCorrect(new BigDecimal(dPItemValue.getValue()));
+					if(!checkError.isCheckResult()) {
+						//返ってきた「入力値チェック結果.エラー内容」を全て表示する
+						for(String error :checkError.getErrorContent()) {
+							DPItemValue newobj = dPItemValue.createNewError(error);
+							result.add(newobj);
+						}
 					}
 				}
 			}

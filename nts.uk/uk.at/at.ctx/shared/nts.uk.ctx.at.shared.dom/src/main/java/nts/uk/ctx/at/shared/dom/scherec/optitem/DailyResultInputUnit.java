@@ -45,7 +45,7 @@ public class DailyResultInputUnit {
     		valueDisplay = amountItemInputUnit.get().nameId;
     	}
     	
-    	if(value.doubleValue()%resultEnum ==0) {
+    	if(new BigDecimal(String.valueOf(value)).remainder(new BigDecimal(String.valueOf(resultEnum))).doubleValue() == 0) {
     		return new ValueCheckResult(true, Optional.empty());
     	}
     	String errorContens = TextResource.localize("Msg_2290",valueDisplay);
