@@ -570,22 +570,6 @@ public class AnnualLeaveInfo implements Cloneable {
 
 		List<AnnualLeaveError> annualLeaveErrors = new ArrayList<AnnualLeaveError>();
 
-		// 年休残数がマイナスかチェック
-		val withMinus = this.remainingNumber.getAnnualLeaveWithMinus();
-		if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
-
-			// 付与前付与後を判断する
-			GrantBeforeAfterAtr grantPeriodAtr
-				= aggregatePeriodWork.getGrantWork().getGrantPeriodAtr();
-		
-			if (grantPeriodAtr.equals(GrantBeforeAfterAtr.AFTER_GRANT)){
-				// 「日単位年休不足エラー（付与後）」を追加
-				annualLeaveErrors.add(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT);
-			} else {
-				// 「日単位年休不足エラー（付与前）」を追加
-				annualLeaveErrors.add(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT);
-			}
-		}
 
 		// 年休残数不足エラーチェック
 		Optional<AnnualLeaveError> annualLeaveErrorOpt
@@ -594,6 +578,11 @@ public class AnnualLeaveInfo implements Cloneable {
 		if ( annualLeaveErrorOpt.isPresent() ) {
 			annualLeaveErrors.add(annualLeaveErrorOpt.get());
 		}
+		
+		//付与前付与後を判断する
+		GrantBeforeAfterAtr grantAtr = aggregatePeriodWork.getGrantWork().judgeGrantPeriodAtr();
+		//エラーチェック
+		annualLeaveErrors.addAll(this.maxData.ErroeCheck(grantAtr));
 		
 		return annualLeaveErrors;
 	}
