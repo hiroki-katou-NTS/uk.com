@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.sys.env.dom.mailserver;
 
+import java.util.Comparator;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -17,7 +19,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @Getter
 // メールサーバー								
-public class MailServer extends AggregateRoot {
+public class MailServer extends AggregateRoot implements Comparable<MailServer> {
 
 	/** The company id. */
 	// 会社ID
@@ -126,4 +128,17 @@ public class MailServer extends AggregateRoot {
 		return true;
 	}
 
+	@Override
+	public int compareTo(MailServer o) {
+		return Comparator.comparing(MailServer::getCompanyId)
+				.thenComparing(MailServer::getUseAuthentication)
+				.thenComparing(MailServer::getEncryptionMethod)
+				.thenComparing(MailServer::getAuthenticationMethod)
+				.thenComparing(MailServer::getEmailAuthentication)
+				.thenComparing(MailServer::getPassword)
+				.thenComparing(MailServer::getSmtpInfo)
+				.thenComparing(MailServer::getPopInfo)
+				.thenComparing(MailServer::getImapInfo)
+				.compare(this, o);
+	}
 }
