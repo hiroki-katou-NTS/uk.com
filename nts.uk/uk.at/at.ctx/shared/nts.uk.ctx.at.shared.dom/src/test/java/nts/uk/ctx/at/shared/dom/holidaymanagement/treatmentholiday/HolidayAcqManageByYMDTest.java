@@ -47,7 +47,7 @@ public class HolidayAcqManageByYMDTest {
 															,	new FourWeekDays(4.0)
 																);
 		
-		Map<GeneralDate, HolidayAcqManaPeriod> expected  = new HashMap<GeneralDate, HolidayAcqManaPeriod>() {
+		Map<GeneralDate, HolidayAcqManaPeriod> expecteds  = new HashMap<GeneralDate, HolidayAcqManaPeriod>() {
 			private static final long serialVersionUID = 1L;
 		{
 			
@@ -113,13 +113,14 @@ public class HolidayAcqManageByYMDTest {
 						);
 		}};
 							
-		expected.entrySet().forEach( entry -> {
+		expecteds.forEach( (baseDate, expected) -> {
 			//Act
-			HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod( require, entry.getKey() );
+			HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod( require, baseDate );
 			
 			//Assert
-			assertThat( result.getPeriod()).isEqualTo( entry.getValue().getPeriod() );
-			assertThat( result.getHolidayDays()).isEqualTo( entry.getValue().getHolidayDays() );
+			assertThat( result.getPeriod().start()).isEqualTo( expected.getPeriod().start() );
+			assertThat( result.getPeriod().end()).isEqualTo( expected.getPeriod().end() );
+			assertThat( result.getHolidayDays()).isEqualTo( expected.getHolidayDays() );
 		
 		});
 		
