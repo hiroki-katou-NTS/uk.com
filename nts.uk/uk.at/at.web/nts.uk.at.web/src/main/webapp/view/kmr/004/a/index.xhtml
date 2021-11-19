@@ -19,8 +19,8 @@
 
     <ui:define name="content">
         <div id="functions-area" class="divHeader">
-            <button id="A1_1" tabindex="1" class="proceed" data-bind="click: printExcel, i18n: 'KMR004_1'"></button>
-            <button id="A1_2" tabindex="2" class="proceed" data-bind="click: printPDF, i18n: 'KMR004_2'"></button>
+            <button id="A1_1" tabindex="1" class="proceed" data-bind="click: printExcel, enable: enablePrint, i18n: 'KMR004_1'"></button>
+            <button id="A1_2" tabindex="2" class="proceed" data-bind="click: printPDF, enable: enablePrint, i18n: 'KMR004_2'"></button>
         </div>
         <div id="contents-area" >
             <div id="left-content">

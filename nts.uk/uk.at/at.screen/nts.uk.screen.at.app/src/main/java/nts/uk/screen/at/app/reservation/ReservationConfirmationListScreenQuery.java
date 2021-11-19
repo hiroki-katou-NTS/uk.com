@@ -52,7 +52,7 @@ public class ReservationConfirmationListScreenQuery {
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
             dto.setOrderMngAtr(bentoReservationSetting.getCorrectionContent().getOrderMngAtr()==ReservationOrderMngAtr.CAN_MANAGE);
         } else {
-            throw new BusinessException("Msg_1847");
+            throw new BusinessException("Msg_3247");
         }
 
         // 取得する(会社ID、年月日) 会社ID＝ログイン会社ID,年月日＝9999/12/31

@@ -37,6 +37,7 @@ module nts.uk.at.view.kmr004.a {
 		displayingWorkplaceList:number = 0;
 		totalOptions: KnockoutObservableArray<any> = ko.observableArray([]);
 		orderMngAtr: KnockoutObservable<boolean> = ko.observable(false);
+		enablePrint: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor() {
 			super();
@@ -81,6 +82,7 @@ module nts.uk.at.view.kmr004.a {
 			// Call init API
 			vm.$ajax(API.START, command).done((data) => {
 				vm.startKMR004aScreen(data);
+				vm.enablePrint(true);
 			}).fail(function(res) {
 				vm.showErrorMessage(res);
 			}).always(() => {
@@ -375,6 +377,10 @@ module nts.uk.at.view.kmr004.a {
 				} else if (vm.displayingWorkplaceList == 2) {
 					res.parameterIds = [vm.$i18n('KMR004_41')];
 				}
+			}
+			
+			if (res.messageId == "Msg_3247") {
+				vm.enablePrint(false);		
 			}
 
 			// show error message
