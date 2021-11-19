@@ -270,6 +270,8 @@ public class AppContentServiceImpl implements AppContentService {
 		result.add(new AppTypeMapProgramID(ApplicationType.OVER_TIME_APPLICATION, "KAF005", ApplicationTypeDisplay.NORMAL_OVERTIME));
 		// 残業申請＝KAF005、2
 		result.add(new AppTypeMapProgramID(ApplicationType.OVER_TIME_APPLICATION, "KAF005", ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME));
+		//・残業申請＝KAF005、3
+		result.add(new AppTypeMapProgramID(ApplicationType.OVER_TIME_APPLICATION, "KAF005", ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME));
 		// 休暇申請＝KAF006
 		result.add(new AppTypeMapProgramID(ApplicationType.ABSENCE_APPLICATION, "KAF006", null));
 		// 勤務変更申請＝KAF007
@@ -904,18 +906,24 @@ public class AppContentServiceImpl implements AppContentService {
 				}
 			}
 		}
-		// 申請理由内容　＝　申請内容の申請理由
-		String appReasonContent = this.getAppReasonContent(
-				appReasonDisAtr, 
-				appReason, 
-				screenAtr, 
-				application.getOpAppStandardReasonCD().orElse(null), 
-				appType, 
-				Optional.empty());
-		// 申請内容を改行(xuống dòng nội dung đơn xin)
-		if(Strings.isNotBlank(appReasonContent)) {
-			result += "\n" + appReasonContent;
+		if(appType == ApplicationType.OVER_TIME_APPLICATION && appOverTimeData.getOvertimeAtr() == ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME.value ){
+			//String appReasonContent = this.getOvertimeApplicationDataMultiTime()
+		}else {
+			// 申請理由内容　＝　申請内容の申請理由
+			String appReasonContent = this.getAppReasonContent(
+					appReasonDisAtr,
+					appReason,
+					screenAtr,
+					application.getOpAppStandardReasonCD().orElse(null),
+					appType,
+					Optional.empty());
+			// 申請内容を改行(xuống dòng nội dung đơn xin)
+			if(Strings.isNotBlank(appReasonContent)) {
+				result += "\n" + appReasonContent;
+			}
 		}
+
+
 		return result;
 	}
 	
@@ -1480,5 +1488,17 @@ public class AppContentServiceImpl implements AppContentService {
 			result += "\n" + appReasonContent;
 		}
 		return result;
+	}
+
+	@Override
+	public String getOvertimeApplicationDataMultiTime(DisplayAtr appReasonDisAtr, AppHolidayWorkData appHolidayWorkData, ScreenAtr screenAtr, String appReasonContent) {
+		// $SV=empty;
+		// $複数残業=empty
+		String SV = "";
+		String multipleOverTime = "";
+
+
+
+					return null;
 	}
 }
