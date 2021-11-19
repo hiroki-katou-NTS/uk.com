@@ -160,7 +160,7 @@ module nts.uk.at.view.kdp005.a {
 				let dfd = $.Deferred<void>();
 				const self = this;
 				nts.uk.ui.windows.sub.modal("com", "/view/ccg/007/a/index.xhtml", {
-					height: 300,
+					height: 320,
 					width: 400,
 					title: nts.uk.resource.getText("CCG007_9"),
 					dialogClass: 'no-close'
@@ -181,13 +181,9 @@ module nts.uk.at.view.kdp005.a {
 								service.getLogginSetting(data.contractCode).done((res) => {
 									self.listCompany = _.filter(res, 'icCardStamp');
 									if (self.listCompany.length == 0) {
-										self.openDialogF({
-											mode: 'admin'
-										}).then(() => {
-											self.errorMessage(getMessage("Msg_1527"));
-											self.isUsed(false);
-											dfd.resolve();
-										})
+										self.errorMessage(getMessage("Msg_1527"));
+										self.isUsed(false);
+										dfd.resolve();
 									} else {
 										self.btnChangeCompany(self.listCompany.length > 0);
 										characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {
