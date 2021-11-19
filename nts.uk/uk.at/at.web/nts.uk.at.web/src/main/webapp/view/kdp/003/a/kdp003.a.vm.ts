@@ -64,7 +64,6 @@ module nts.uk.at.kdp003.a {
 
 		worklocationCode: null | string = null;
 		workPlaceId: string = null;
-		contractCd: string = '';
 
 		showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
 
@@ -106,7 +105,7 @@ module nts.uk.at.kdp003.a {
 		pageComment: KnockoutObservable<string> = ko.observable('');
 		commentColor: KnockoutObservable<string> = ko.observable('');
 		passContract: String;
-		contractCode: String = "";
+		contractCode: String = "000000000000";
 
 		totalOpenViewR: number = 0;
 

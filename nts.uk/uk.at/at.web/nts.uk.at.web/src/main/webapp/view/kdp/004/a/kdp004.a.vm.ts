@@ -62,7 +62,7 @@ module nts.uk.at.view.kdp004.a {
 			showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
 
 			totalOpenViewR: number = 0;
-			contractCode: string = '';
+			contractCode: string = '000000000000';
 
 			// get from basyo;
 			workplace: string[] | [] = [];
