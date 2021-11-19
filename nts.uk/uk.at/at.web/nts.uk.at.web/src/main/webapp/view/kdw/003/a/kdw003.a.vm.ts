@@ -2415,7 +2415,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     initScreen: self.hasEmployee ? 1 : 0,
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                     lstEmployee: lstEmployee,
-                    formatCodes: self.formatCodes(),
+                    formatCodes: self.formatCodes()==null?[]:self.formatCodes(),
                     objectShare: null,
                     showLock: self.showLock(),
                     closureId: self.closureId,
@@ -2635,19 +2635,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.resolve(lstEmployee);
                 }else if (!_.isEmpty(self.selectedEmployee())) {
                     //let dfd2 = $.Deferred();
-                    service.searchEmployee(self.selectedEmployee()).done(data => {
-                        let emp = {
-                            id: data.employeeId,
-                            code: data.employeeCode,
-                            businessName: data.businessName,
-                            workplaceName: data.orgName,
-                            workplaceId: "",
-                            depName: '',
-                            isLoginUser: false
-                        }
-                        lstEmployee.push(emp);
-                        self.lstEmployee(lstEmployee);
-                        dfd.resolve(lstEmployee);
+                    self.searchEmployee().done(data => {
+                        dfd.resolve(data);
                         //  dfd2.resolve();
                     });
                     // dfd2.promise();
@@ -2659,6 +2648,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstEmployee = self.lstEmployee();
                 dfd.resolve(lstEmployee);
             }
+            return dfd.promise();
+        }
+
+        searchEmployee(): JQueryPromise<any> {
+            let dfd = $.Deferred(), self = this,lstEmployee = [];;
+            service.searchEmployee($('#search-input-'+'emp-component').val()).done(data => {
+                let emp = {
+                    id: data.employeeId,
+                    code: data.employeeCode,
+                    businessName: data.businessName,
+                    workplaceName: data.wkpDisplayName,
+                    workplaceId: "",
+                    depName: '',
+                    isLoginUser: false
+                }
+                lstEmployee.push(emp);
+                self.lstEmployee(lstEmployee);
+                dfd.resolve(lstEmployee);
+                //  dfd2.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
@@ -2969,6 +2980,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
                         let data = [dataTemp];
+                        self.formatCodes(data);
                         self.hideComponent();
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
@@ -2978,7 +2990,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
                             lstEmployee = self.lstEmployee();
                         }
-                        let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
+                        /*let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
                         let param = {
                             dateRange: (self.hasEmployee && !hasChangeFormat) ? {
                                 startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
@@ -2992,13 +3004,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             objectShare: null,
                             showLock: self.showLock(),
                             changeFormat: false
-                        };
+                        };*/
+						
                         self.characteristics.authenSelectFormat = data;
                         self.characteristics.employeeId = __viewContext.user.employeeId;
                         self.characteristics.companyId = __viewContext.user.companyId;
-                        self.characteristics.formatExtract = param.displayFormat;
+                        self.characteristics.formatExtract = self.hasEmployee ? self.displayFormat() : _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat;
                         character.save('characterKdw003a', self.characteristics);
-                        nts.uk.ui.block.invisible();
+						self.formatCodes(data);
+						self.reloadScreen();
+						
+                       /* nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.initParam(param).done((dataInit) => {
                             let paramMonth: any = {loadAfterCalc: false}
@@ -3017,13 +3033,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.receiveData(data);
                                 self.extraction();
                                 self.displayNumberZero();
-								self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
+	
+								self.reloadScreen();
+
                                 nts.uk.ui.block.clear();
                             });
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alert(error.message);
                             nts.uk.ui.block.clear();
-                        });
+                        });*/
                     }
                 });
             }
@@ -3734,7 +3752,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                        return __viewContext.user.employeeId == emp.id;
                     })
                     self.selectedEmployee(_.isEmpty(employeeLoginInList) ? self.lstEmployee()[0].id : employeeLoginInList.id);
-                    self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
+                    //#120496
+                    //self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.hasEmployee = true;
                     self.closureId = dataList.closureId;
                     self.loadKcp009();
@@ -5621,6 +5640,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dispSysDate: string = getText("KDW003_121", [moment(new Date()).format("YYYY/MM/DD")]);
         dispNextGrantDate: string;
 
+		dispAnnualDayUI: KnockoutObservable<boolean> = ko.observable(false);
+		displayAllUI: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any, grantDays: any, childCareVacation: any, longTermCareVacation: any) {
 
             this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate, grantDays]) : getText("KDW003_123");
@@ -5669,7 +5691,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 this.annualDay = "";
             if (this.dispAnnualDay) {
                 if (annualLeave.timeRemain) {
-                    let timeString = nts.uk.time.format.byId("Clock_Short_HM", annualLeave.timeRemain);
+                    let timeString = nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain);
                     if (annualLeave.annualLeaveRemain != null) {
                         this.annualDay = getText("KDW003_132", [annualLeave.annualLeaveRemain, timeString]);
                         if (annualLeave.annualLeaveRemain < 0)
@@ -5719,6 +5741,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-longTermCare-day").css("color", "#06c");
             } else
                 this.longTermCareValue = "";
+
+			this.dispAnnualDayUI(this.dispAnnualDay);
+			this.displayAllUI(this.dispCompensationDay || this.dispSubstitute || this.dispAnnualDay || (this.dispAnnualDay && this.dispReserve));
         }
 
         public remainCompensation(day: any, time: any, manage: any) {

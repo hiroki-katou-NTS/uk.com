@@ -2,11 +2,12 @@ module nts.uk.at.view.kdw013.h {
 	import getShared = nts.uk.ui.windows.getShared;
 	import setShared = nts.uk.ui.windows.setShared;
 	import block = nts.uk.ui.block;
-	import info = nts.uk.ui.dialog.info;
 	import error = nts.uk.ui.dialog.error;
+	import info = nts.uk.ui.dialog.info;
 	import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
+	import getMessage = nts.uk.resource.getMessage;
 
 	export module viewmodel {
 		const paths: any = {
@@ -103,7 +104,7 @@ module nts.uk.at.view.kdw013.h {
 				let infor: any = _.find(self.params.lockInfos, (i:DailyLock)=> moment(self.params.date).isSame(moment(i.date)));
 				if(infor){
 					let err: string = null;
-					if(infor.lockPast == 0){
+					if(infor.lockDailyResult == 0){
 						err = getText('KDW013_53');
 					}
 					if(infor.lockWpl == 0){
@@ -121,7 +122,7 @@ module nts.uk.at.view.kdw013.h {
 					if(infor.lockConfirmDay == 0){
 						err = err ? (err + ',' + getText('KDW013_58')) : getText('KDW013_58');
 					}
-					if(infor.lockDailyResult == 0){
+					if(infor.lockPast == 0){
 						err = err ? (err + ',' + getText('KDW013_59')) : getText('KDW013_59');
 					}
 					if(err){
@@ -199,8 +200,8 @@ module nts.uk.at.view.kdw013.h {
 					} else {
 						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
 					}
-				} else {
-					self.itemId29.itemSelectedDisplay('');
+				} else if(self.itemId29.value() == null || self.itemId29.value() == ''){
+					self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 				}
 				
 				//set name và type cho item tuy ý
@@ -252,7 +253,25 @@ module nts.uk.at.view.kdw013.h {
 			
 			getPrimitiveValue(primitiveValue: number): string {
 				if(primitiveValue){
-					return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
+					if(primitiveValue == 21){
+						return 'BusinessTypeCode';
+					}else if(primitiveValue == 55){
+						return 'AnyItemAmount';
+					}else if(primitiveValue == 55){
+						return 'AnyAmountMonth';
+					}else if(primitiveValue == 56){
+						return 'AnyItemTime';
+					}else if(primitiveValue == 57){
+						return 'AnyTimeMonth';
+					}else if(primitiveValue == 58){
+						return 'AnyItemTimes';
+					}else if(primitiveValue == 59){
+						return 'AnyTimesMonth';
+					}else if(primitiveValue == 60){
+						return 'DiverdenceReasonCode';
+					}else{
+						return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
+					}
 				}
 				return '';
 			}
@@ -387,19 +406,55 @@ module nts.uk.at.view.kdw013.h {
 					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
 				ajax(paths.save, param).done((data: any) => {
-					_.forEach(data.errorMap, errs => {
-						_.forEach(errs, err => {
-							info({ messageId: err.message, messageParams: [err.itemId]});
-						});
-					});
 					if(data.messageAlert == 'Msg_15'){
-						self.reLoadData();
+						info({ messageId: 'Msg_15' }).then(()=>{
+							self.reLoadData();	
+						});
+					}else{
+						_.forEach(data.errorMap, errs => {
+							_.forEach(errs, err => {
+								errors.add({ 
+									message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
+									errorCode: err.message, 
+									$control: $('#'+err.itemId+''), 
+									location: null
+								});
+							});
+						});
 					}
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
 				}).always(() => {
 					block.clear();
 				});
+			}
+			
+			getParamNameItemId(itemId: any): any[]{
+				if(itemId == 31 || itemId == 34){
+					return [getText('KDW013_84'), getText('KDW013_85')];
+				}else if(itemId == 157 || itemId == 159){
+					return [getText('KDW013_88', [1]), getText('KDW013_89', [1, 1])];
+				}else if(itemId == 163 || itemId == 165){
+					return [getText('KDW013_88', [2]), getText('KDW013_89', [2, 2])];
+				}else if(itemId == 169 || itemId == 171){
+					return [getText('KDW013_88', [3]), getText('KDW013_89', [3, 3])];
+				}else if(itemId == 175 || itemId == 177){
+					return [getText('KDW013_88', [4]), getText('KDW013_89', [4, 4])];
+				}else if(itemId == 181 || itemId == 183){
+					return [getText('KDW013_88', [5]), getText('KDW013_89', [5, 5])];
+				}else if(itemId == 187 || itemId == 189){
+					return [getText('KDW013_88', [6]), getText('KDW013_89', [6, 6])];
+				}else if(itemId == 193 || itemId == 195){
+					return [getText('KDW013_88', [7]), getText('KDW013_89', [7, 7])];
+				}else if(itemId == 199 || itemId == 201){
+					return [getText('KDW013_88', [8]), getText('KDW013_89', [8, 8])];
+				}else if(itemId == 205 || itemId == 207){
+					return [getText('KDW013_88', [9]), getText('KDW013_89', [9, 9])];
+				}else if(itemId == 211 || itemId == 213){
+					return [getText('KDW013_88', [10]), getText('KDW013_89', [10, 10])];
+				}
+				
+				return [itemId];
 			}
 			
 			reLoadData(){
@@ -414,6 +469,7 @@ module nts.uk.at.view.kdw013.h {
 				ajax(paths.reload, param).done((data: IItemValue[]) => {
 					console.log(data);
 					self.itemId28.value(_.find(data, i => i.itemId == 28).value);
+					self.itemId28.valueBeforeChange = self.itemId28.value();
 					let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
 					if (workType){
 						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
@@ -421,15 +477,17 @@ module nts.uk.at.view.kdw013.h {
 						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
 					}
 					self.itemId29.value(_.find(data, i => i.itemId == 29).value);
+					self.itemId29.valueBeforeChange = self.itemId29.value();
 					let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
 					if (workTime) {
 						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
-					} else {
-						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
+					} else if(self.itemId29.value() == null){
+						self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 					}
 					
 					_.forEach(self.itemOptions, (item) => {
 						item.value(_.find(data, i => i.itemId == item.itemId).value);
+						item.valueBeforeChange = item.value();
 					});
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });

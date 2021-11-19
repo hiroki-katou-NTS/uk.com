@@ -468,5 +468,37 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		return rs;
 	}
 	
+	// [2]  削除する
+	// 指定したキー条件に該当するレコードを削除する
+	@Override
+	public void deleteBySupFrameNo(String sId, GeneralDate ymd, SupportFrameNo supportFrameNo) {
+		
+		int ouenNo = supportFrameNo.v();
+		
+		String deleteTimeSheet = "DELETE FROM KrcdtDayOuenTimeSheet o " + " WHERE o.pk.sid = :sId "
+				+ " AND o.pk.ymd = :ymd "
+				+ " AND o.pk.ouenNo = :ouenNo ";
+		this.getEntityManager().createQuery(deleteTimeSheet).setParameter("sid", sId)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
+		
+		String deleteTime = "DELETE FROM KrcdtDayOuenTime o " + " WHERE o.pk.sid = :sId "
+				+ " AND o.pk.ymd = :ymd "
+				+ " AND o.pk.ouenNo = :ouenNo ";
+		this.getEntityManager().createQuery(deleteTime).setParameter("sid", sId)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
+		
+		String deleteInfo = "DELETE FROM KrcdtDayTsSupSupplInfo o " + " WHERE o.pk.sid = :sId "
+				+ " AND o.pk.date = :ymd "
+				+ " AND o.pk.supNo = :ouenNo ";
+		this.getEntityManager().createQuery(deleteInfo).setParameter("sid", sId)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
+	}
+	
 }
 

@@ -40383,7 +40383,7 @@ var nts;
                             return;
                         }
                         if (baseID.length >= 500) {
-                            var oldSelectedID = _.map(getSelected($grid), "id"), shouldRemove = _.difference(oldSelectedID, selectedId), shouldSelect = _.difference(selectedId, oldSelectedID);
+                            var oldSelectedID = _.map(getSelected($grid), "id"), shouldRemove = _.difference(_.isArray(oldSelectedID) ? oldSelectedID : [oldSelectedID], selectedId), shouldSelect = _.difference(_.isArray(selectedId) ? selectedId : [selectedId], oldSelectedID);
                             /** When data source large (data source > 500 (?)):
                                     if new value for select = half of data source
                                         or removed selected value = 1/3 of data source,
@@ -53928,17 +53928,25 @@ var nts;
                             element.id = 'master-content';
                         }
                         ko.applyBindingsToDescendants(bindingContext, element);
-                        $(element)
-                            .find('div[id^=functions-area]')
-                            .each(function (__, e) {
-                            ko.applyBindingsToNode(e, {
-                                'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
-                                title: e.getAttribute('data-title') || true,
-                                back: e.getAttribute('data-url')
-                            }, bindingContext);
-                            e.removeAttribute('data-url');
-                            e.removeAttribute('data-title');
-                        });
+                        var $functionsArea = $(element).find('div[id^=functions-area]');
+                        if ($functionsArea.length > 0) {
+                            $functionsArea.each(function (__, e) {
+                                ko.applyBindingsToNode(e, {
+                                    'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
+                                    title: e.getAttribute('data-title') || true,
+                                    back: e.getAttribute('data-url')
+                                }, bindingContext);
+                                e.removeAttribute('data-url');
+                                e.removeAttribute('data-title');
+                            });
+                        }
+                        else {
+                            $(element)
+                                .find('.sidebar-content-header')
+                                .each(function (__, e) {
+                                ko.applyBindingsToNode(e, { 'ui-function-bar': 'top' }, bindingContext);
+                            });
+                        }
                         $(element)
                             .find('div[id^=contents-area]')
                             .each(function (__, e) {
@@ -54024,10 +54032,12 @@ var nts;
                         var title = allBindingsAccessor.get('title');
                         var root = bindingContext.$root;
                         var mode = ko.unwrap(root.kiban.mode);
-                        element.classList.add('functions-area');
+                        if (!element.classList.contains('sidebar-content-header')) {
+                            element.classList.add('functions-area');
+                        }
                         // top area
                         if (!$(element).prev().length && position === 'top') {
-                            if (!element.id) {
+                            if (!element.id && !element.classList.contains('sidebar-content-header')) {
                                 element.id = "functions-area";
                             }
                             /*if (title && mode === 'view') {

@@ -166,6 +166,7 @@ module nts.uk.ui.at.kdw013.a {
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
+        removeList: KnockoutObservableArray<any> = ko.observableArray([]);
         //biến này để phục vụ việc lấy data khi thay đổi ở màn K  
         inputDate: KnockoutObservable<Date> = ko.observable();
     
@@ -831,6 +832,8 @@ module nts.uk.ui.at.kdw013.a {
                 return dates;
             };
     
+            let deleteAttByTimeZones = vm.createDeleteAttByTimeZones(dateRanges());
+    
             let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.itemId });
     
             let employeeId = vm.employee() ? vm.employee() : vm.$user.employeeId;
@@ -849,6 +852,7 @@ module nts.uk.ui.at.kdw013.a {
             let integrationOfDailys = vm.createIDaily(dateRanges());
 
             const command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
+                deleteAttByTimeZones,
                 changedDates,
                 editStateSetting,
                 employeeId,
@@ -902,6 +906,37 @@ module nts.uk.ui.at.kdw013.a {
             const vm = this;
 
             vm.dateRange({ start, end });
+        }
+
+        createDeleteAttByTimeZones(dates){
+            let vm = this;
+            const sID = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
+
+            
+            const deleteList = [];
+    
+            _.forEach(dates, date => {
+                //① 日別実績の工数実績作業
+                let dailyManHrTaskNos = _.map(_.get(_.find(_.get(vm.$datas(), 'dailyManHrTasks', []), hr => moment(hr.date).isSame(moment(date), 'days')), 'taskBlocks.taskDetails', []), td => td.supNo);
+                //② 工数実績作業ブロック
+                let currentScreenNos = [];
+                _.forEach(_.filter(vm.events(), e => (moment(e.start).isSame(moment(date), 'days') && _.get(e, 'extendedProps.taskBlocks.taskDetails', []).length)), e => {
+                    currentScreenNos.push(_.map(e.extendedProps.taskBlocks.taskDetails, td => td.supNo));
+                });
+                //③ 削除応援作業枠Noリスト
+                let removeItemNos = _.map(_.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date))), ri => ri.supNos);
+
+                let overwriteDeletions = _.map(_.intersection(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 0 } });
+                
+                let completeDeletions = _.map(_.difference(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 1 } });
+                
+                deleteList.push({ date, list: overwriteDeletions.concat(completeDeletions) });
+
+            });    
+    
+    
+            return { sID, deleteList };
+    
         }
 
         createWorkDetails(dates){

@@ -57,7 +57,7 @@ public class DailyLockDto {
 	private int lockConfirmDay;
 
 	/**
-	 * 日別実績のロック
+	 * 過去実績のロック
 	 */
 	private int lockPast;
 

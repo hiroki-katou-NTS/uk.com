@@ -37,7 +37,6 @@ module nts.uk.ui.at.kdw013.c {
     }
     .edit-event table>tbody>tr>td:first-child {
         vertical-align: top;
-        padding-top: 6px;
     }
     .edit-event table>tbody>tr.functional>td {
         text-align: right;
@@ -226,7 +225,9 @@ module nts.uk.ui.at.kdw013.c {
                 </colgroup>
                 <tbody>
                     <tr>
-                        <td data-bind="i18n: 'KDW013_27'"></td>
+                        <td>
+							<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}, text: nts.uk.resource.getText('KDW013_27')"></div>
+						</td>
                         <td class="caltimeSpanView">
                             <div class="ntsControl">
 								<input id="kdw013CStart" data-bind="ntsTimeEditor: {
@@ -237,7 +238,7 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '40px'}
+									option: {width: '50px'}
 									}" />
 								<span data-bind="text: nts.uk.resource.getText('KDW013_30')"></span>
 								<input id="kdw013CEnd" data-bind="ntsTimeEditor: {
@@ -248,9 +249,8 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '40px'}
+									option: {width: '50px'}
 									}" />
-								<span data-bind="visible: !showInputTime(), text: taskBlocks.caltimeSpanView.range"></span>
 							</div>
                         </td>
                     </tr>
@@ -264,7 +264,9 @@ module nts.uk.ui.at.kdw013.c {
                     <tbody data-bind = "foreach: taskItemValues">
 						<!-- ko if: (itemId == 3) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input class="inputRange" data-bind="ntsTimeEditor: {
@@ -275,7 +277,7 @@ module nts.uk.ui.at.kdw013.c {
 											inputFormat: 'time',
 											required: true,
 											enable: true,
-											option: {width: '40px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -283,7 +285,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
                         <!-- ko if: (itemId == 4) && use-->
                             <tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {required: true}, text: lable"></div>
+								</td>
                                 <td><div data-bind="ntsComboBox: {
 										options: options,
 										optionsValue: 'code',
@@ -305,7 +309,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
                         <!-- ko if: (itemId == 5 || itemId == 6 || itemId == 7 || itemId == 8) && use -->
                             <tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {}, text: lable"></div>
+								</td>
                                 <td><div data-bind="ntsComboBox: {
 										options: options,
 										optionsValue: 'code',
@@ -325,7 +331,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if:  (type == 0 && itemId > 8) && use -->
                             <tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {}, text: lable"></div>
+								</td>
                                 <td><div data-bind="ntsComboBox: {
 										options: options,
 										optionsValue: 'code',
@@ -345,14 +353,16 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: type == 2 && itemId > 8 && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px',
+											option: {width: '50px',
 													unitID: 'TIMES'},
 										}" />
 									</div>
@@ -361,7 +371,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 3 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
@@ -369,7 +381,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint: primitiveValue, 
 											value: value,
 											option: {
-												width: '223px', 
+												width: '50px', 
 												numberGroup: true, 
 												decimallength: 2, 
 												currencyformat: 'JPY',
@@ -382,7 +394,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 5 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeEditor: {
@@ -391,7 +405,7 @@ module nts.uk.ui.at.kdw013.c {
 											value: value,
 											mode: 'time',
 											inputFormat: 'time',
-											option: {width: '233px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -399,7 +413,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 6 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeWithDayEditor: { 
@@ -408,7 +424,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint:'TimeWithDayAttr', 
 											value: value, 
 											option: {
-												width: '233px',
+												width: '50px',
 												timeWithDay: true
 											}
 										}" />
@@ -418,7 +434,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 7 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<textarea data-bind="ntsMultilineEditor: {
@@ -432,14 +450,16 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 9 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px'}}" />
+											option: {width: '50px'}}" />
 									</div>
 								</td>
                             </tr>
@@ -452,7 +472,7 @@ module nts.uk.ui.at.kdw013.c {
 					<tr class="functional">
                         <td>
 							<span></span>
-							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails"></a>
+							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails, visible: frameNos().length < 20"></a>
                             <br />
 							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, enable: errors"></button>
                         </td>
@@ -532,15 +552,14 @@ module nts.uk.ui.at.kdw013.c {
 			.taskDetails table:nth-last-child(1){
    				margin-bottom: 0px;
 			}
-			.taskDetails table tr:first-child td:first-child{
-   				top: 10px;
-				position: relative
-			}
 			.taskDetails table tr:first-child td>div{
    				margin-top: 10px;
 			}
 			.edit-event .header .btn-error{
 				position: absolute;
+			}
+			body>div.constraint{
+				z-index: 100;
 			}
         </style>
         `;
@@ -706,7 +725,7 @@ module nts.uk.ui.at.kdw013.c {
 						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
 					}
 
-					block.grayout();
+					block.invisible();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
 		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings(), start);
 						setTimeout(() => {
@@ -853,7 +872,7 @@ module nts.uk.ui.at.kdw013.c {
                 .then((invalid: boolean) => {
                     if (!invalid) {
 						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
-							error({ messageId: "Msg_2217"});
+							error({ messageId: "Msg_2230"});
 							return;
 						}
                         if (event) {
@@ -1198,11 +1217,14 @@ module nts.uk.ui.at.kdw013.c {
             };
 			const itemNext = _.find(vm.taskItemValues(), (i) => {return i.itemId == nextItemId});
 			if(itemNext){
-				block.grayout();
+				block.invisible();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
+					if(_.find(data, o => o.code == itemNext.value()) == undefined){
+						itemNext.value(null);
+					}
 					itemNext.options(vm.getMapperList(data, itemNext.value));
 					block.clear();
-	            }).always(() => block.clear());
+	            });
 			}
         }
         
@@ -1310,7 +1332,7 @@ module nts.uk.ui.at.kdw013.c {
 			if($raw == null){
 				return { id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false };
 			}
-            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName , taskNote: $raw.displayInfo.taskNote, selected: false, $raw: $raw };
+            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName , taskNote: $raw.displayInfo.taskNote ? '(' + $raw.displayInfo.taskNote + ')': null, selected: false, $raw: $raw };
         }
 		getName(displayInfo: TaskDisplayInfoDto): string{
 			if(displayInfo.taskNote && displayInfo.taskNote!= ''){

@@ -92,6 +92,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
@@ -1482,7 +1483,7 @@ public class DailyPerformanceCorrectionProcessor {
 				// アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
 				// kiem tra thong tin rieng biet user
 				if (correct == null) {
-					if (formatCodeSelects.isEmpty()) {
+					if (formatCodeSelects == null || formatCodeSelects.isEmpty()) {
 						List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
 								.findAuthorityFormatInitialDisplay(companyId);
 						if (!initialDisplayDtos.isEmpty()) {
@@ -2063,6 +2064,9 @@ public class DailyPerformanceCorrectionProcessor {
 	public DatePeriodInfo updatePeriod(Optional<YearMonth> yearMonthOpt, Optional<Integer> closureIdShare, Optional<GeneralDate> dateTransfer, int displayFormat, String empTarget, DatePeriod period) {
 		GeneralDate today = GeneralDate.today();
 		DateRange result = new DateRange(today, today);
+		if(period != null) {
+			result = new DateRange(period.start(), period.end());
+		}
 		ClosureId closureId = null;
 		YearMonth yearMonth = null;
 		List<nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod> lstClosurePeriod  = new ArrayList<>();
@@ -2094,7 +2098,7 @@ public class DailyPerformanceCorrectionProcessor {
 								empTarget, dateRefer, ym));
 			}
 //			if(lstClosurePeriod.isEmpty()) return null;
-			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);;
+			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);
 			
 			List<AggrPeriodEachActualClosure> lstAggrPeriod = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
 					    .sorted((x, y) -> x.getPeriod().start().compareTo(y.getPeriod().end()))
