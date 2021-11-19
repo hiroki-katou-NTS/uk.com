@@ -41,14 +41,14 @@ module nts.uk.at.ksu008.a {
                 showEmptyItem: false,
                 showPanel: false,
                 rows: 12,
-                selectedMode: 1,
+                selectedMode: 3,
                 itemList: self.checkWorkplaceGroups.bind(self)
             };
 
             self.targetPeriod = ko.observable(0);
             self.periodStart = ko.observable(moment.utc().startOf('month').toISOString());
             self.periodEnd = ko.computed(() => {
-                if (self.periodStart() && moment.utc(self.periodStart(), "YYYY/MM/DD").isValid()) {
+                if (self.periodStart() && !$("#periodStart").ntsError("hasError")) {
                     if (self.targetPeriod() == 0) {
                         return moment.utc(self.periodStart()).add(1, "month").add(-1, "day");
                     } else {
@@ -125,6 +125,7 @@ module nts.uk.at.ksu008.a {
             const vm = this;
             vm.workplaceGroupList(data || []);
             if (_.isEmpty(data)) vm.$dialog.alert({messageId: "Msg_1929"});
+			else if (vm.selectedWkpGroupIds().length == 0) vm.selectedWkpGroupIds([data[0].id]);
         }
 
         getAllSetting(code?: string) {
@@ -167,7 +168,11 @@ module nts.uk.at.ksu008.a {
             let vm = this;
             const selectedSetting = _.find(vm.comboItemList(), i => i.code == vm.selectedCode());
             vm.$window.modal('/view/ksu/008/b/index.xhtml', {isSystemFixed: selectedSetting ? selectedSetting.systemFixed : true, layoutCode: vm.selectedCode()}).then((result: any) => {
-                vm.getAllSetting(result.code);
+				if (result) {
+                    vm.getAllSetting(result.code).then(() => {
+                        $("#A5_2").trigger("validate");
+                    });
+                }
                 $("#A1_1").focus();
             });
         }
