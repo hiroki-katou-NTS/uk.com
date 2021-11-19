@@ -35,7 +35,10 @@ public class AppOverTime extends Application {
 	private Optional<List<TimeZoneWithWorkNo>> workHoursOp = Optional.empty();
 	
 	// 勤務情報
-	private Optional<WorkInformation> workInfoOp = Optional.empty(); 
+	private Optional<WorkInformation> workInfoOp = Optional.empty();
+
+	//複数回残業内容
+	private Optional<OvertimeWorkMultipleTimes> multipleTimesOp = Optional.empty();
 	
 	public AppOverTime(Application application) {
 		super(application);

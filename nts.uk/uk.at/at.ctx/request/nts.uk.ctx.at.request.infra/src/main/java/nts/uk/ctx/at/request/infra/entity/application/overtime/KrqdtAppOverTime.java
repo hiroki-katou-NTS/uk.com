@@ -172,6 +172,10 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 	@JoinTable(name = "KRQDT_APP_OVERTIME_INPUT")
 	public List<KrqdtAppOvertimeInput> overtimeInputs;
 
+	@OneToMany(targetEntity = KrqdtAppOvertimeMultiTimes.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(name = "KRQDT_APP_OVERTIME_MULTI_TIMES")
+	public List<KrqdtAppOvertimeMultiTimes> multipleOvertimes;
+
 	@Override
 	protected Object getKey() {
 		return krqdtAppOvertimePK;
@@ -380,7 +384,11 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 																			  .map(x -> x.toDomain())
 																			  .collect(Collectors.toList()));
 		}
-		
+
+		if (!CollectionUtil.isEmpty(multipleOvertimes)) {
+			appOverTime.setMultipleTimesOp(Optional.of(KrqdtAppOvertimeMultiTimes.toDomain(multipleOvertimes)));
+		}
+
 		return appOverTime;
 	}
 	

@@ -65,7 +65,15 @@ public class ReceptionRestrictionSetCommand {
     public ReceptionRestrictionSetting toDomain() {
         if (appType == ApplicationType.OVER_TIME_APPLICATION.value)
             return new ReceptionRestrictionSetting(
-                    OTAppBeforeAccepRestric.createNew(methodCheck, dateBeforehandRestrictions, useAtr, earlyOvertime, normalOvertime, earlyNormalOvertime),
+                    OTAppBeforeAccepRestric.createNew(
+                            methodCheck,
+                            dateBeforehandRestrictions,
+                            useAtr,
+                            earlyOvertime,
+                            normalOvertime,
+                            earlyNormalOvertime,
+                            null
+                    ),
                     new AfterhandRestriction(allowFutureDay),
                     null,
                     EnumAdaptor.valueOf(appType, ApplicationType.class));

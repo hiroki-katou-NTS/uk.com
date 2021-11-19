@@ -40,7 +40,8 @@ public class JpaApprovalListDispSetImpl extends JpaRepository implements Approva
 					domain.getAdvanceExcessMessDisAtr().value,
 					domain.getActualExcessMessDisAtr().value,
 					domain.getWarningDateDisAtr().v(),
-					domain.getDisplayWorkPlaceName().value
+					domain.getDisplayWorkPlaceName().value,
+					domain.getUseApprovalFunction().value
 			);
 			this.commandProxy().insert(entity);
 		}

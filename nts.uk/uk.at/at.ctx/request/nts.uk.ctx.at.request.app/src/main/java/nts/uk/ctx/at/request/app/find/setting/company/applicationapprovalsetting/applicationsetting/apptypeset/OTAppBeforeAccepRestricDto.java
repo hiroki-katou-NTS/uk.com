@@ -49,6 +49,8 @@ public class OTAppBeforeAccepRestricDto {
 	 * 時刻（早出残業・通常残業）
 	 */
 	private Integer opEarlyNormalOvertime;
+
+	private Integer opMultipleOvertime;
 	
 	public static OTAppBeforeAccepRestricDto fromDomain(OTAppBeforeAccepRestric otAppBeforeAccepRestric) {
 		return new OTAppBeforeAccepRestricDto(
@@ -57,7 +59,9 @@ public class OTAppBeforeAccepRestricDto {
 				otAppBeforeAccepRestric.isToUse(), 
 				otAppBeforeAccepRestric.getOpEarlyOvertime().map(x -> x.v()).orElse(null), 
 				otAppBeforeAccepRestric.getOpNormalOvertime().map(x -> x.v()).orElse(null), 
-				otAppBeforeAccepRestric.getOpEarlyNormalOvertime().map(x -> x.v()).orElse(null));
+				otAppBeforeAccepRestric.getOpEarlyNormalOvertime().map(x -> x.v()).orElse(null),
+				otAppBeforeAccepRestric.getOpMultipleOvertime().map(x -> x.v()).orElse(null)
+		);
 	}
 	
 	public OTAppBeforeAccepRestric toDomain() {
@@ -67,6 +71,8 @@ public class OTAppBeforeAccepRestricDto {
 				toUse, 
 				opEarlyOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opEarlyOvertime)), 
 				opNormalOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opNormalOvertime)), 
-				opEarlyNormalOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opEarlyNormalOvertime)));
+				opEarlyNormalOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opEarlyNormalOvertime)),
+				opMultipleOvertime == null ? Optional.empty() : Optional.of(new AttendanceClock(opMultipleOvertime))
+		);
 	}
 }
