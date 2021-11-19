@@ -146,19 +146,24 @@ public class CreateOrderInfoFileQuery {
 			} else {
 				throw new BusinessException("Msg_1617");
 			}
-        //4.
+        //4. //5.
         List<BentoMenu> bentoMenuList = getAllBentoMenu(companyId, period);
-        if (CollectionUtil.isEmpty(bentoMenuList))
+        if (CollectionUtil.isEmpty(bentoMenuList)) {
             throw new BusinessException("Msg_1640");
-        //5.
+        }
+        //6. 
+        ReservationSetting reservationSetting = reservationSettingRepository.findByCId(companyId).orElse(null);
         Optional<String> closingName = Optional.empty();
-//        if(ReservationClosingTimeFrame.FRAME1.equals(reservationClosingTimeFrame))
-//            closingName = bentoMenuList.stream().findFirst().map(i -> i.getClosingTime().getClosingTime1().getReservationTimeName().v());
-//        else if (ReservationClosingTimeFrame.FRAME2.equals(reservationClosingTimeFrame))
-//            closingName = bentoMenuList.stream().filter(i -> i.getClosingTime().getClosingTime2().isPresent())
-//                    .findFirst().map(i -> i.getClosingTime().getClosingTime2().get().getReservationTimeName().v());
-
-        ReservationSetting reservationSetting = reservationSettingRepository.findByCId(companyId).orElse(null); 
+        if(reservationSetting!=null) {
+        	if(ReservationClosingTimeFrame.FRAME1.equals(reservationClosingTimeFrame)) {
+                closingName = reservationSetting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME1)
+                		.findAny().map(x -> x.getReceptionHours().getReceptionName().v());
+                		
+            } else if (ReservationClosingTimeFrame.FRAME2.equals(reservationClosingTimeFrame)) {
+                closingName = reservationSetting.getReservationRecTimeZoneLst().stream().filter(x -> x.getFrameNo()==ReservationClosingTimeFrame.FRAME1)
+                		.findAny().map(x -> x.getReceptionHours().getReceptionName().v());
+            }
+        }
         Optional<WorkLocationCode> workLocationCode = CollectionUtil.isEmpty(workLocationCodes) ? Optional.empty() : Optional.of(new WorkLocationCode(workLocationCodes.get(0)));
         List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo, closingName, 
         		reservationClosingTimeFrame, workLocationCode, reservationSetting);

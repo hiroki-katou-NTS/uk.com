@@ -17,6 +17,9 @@ public class ReservationConfirmationListDto {
 
     //予約の運用区別
     private OperationDistinction operationDistinction;
+    
+    // 予約修正内容.発注機能管理区分
+    private boolean orderMngAtr;
 
     // 弁当の予約締め時刻
     private ReservationClosingTimeDto closingTime;

@@ -16,6 +16,7 @@ module nts.uk.at.view.kmr004.a {
 	@bean()
 	export class KMR004AViewModel extends ko.ViewModel {
 		model : KnockoutObservable<OutputCondition> = ko.observable(new OutputCondition());
+		
 		baseDate: KnockoutObservable<Date> = ko.observable(new Date()); // base date for KCP004, KCP012
 		treeGrid: tree.TreeComponentOption; // tree grid properties object
 		listComponentOption: list.ComponentOption;
@@ -34,6 +35,8 @@ module nts.uk.at.view.kmr004.a {
 		selectedWorkLocationCode: KnockoutObservableArray<string> = ko.observableArray([]); // KCP012 selected codes
 		cacheKey:string;
 		displayingWorkplaceList:number = 0;
+		totalOptions: KnockoutObservableArray<any> = ko.observableArray([]);
+		orderMngAtr: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor() {
 			super();
@@ -68,11 +71,15 @@ module nts.uk.at.view.kmr004.a {
 
 		mounted() {
 			const vm = this;
+			let command = {
+				startDate: vm.model().period().startDate,
+				endDate: vm.model().period().endDate,	
+			};
 
 			vm.$blockui("grayout");
 
 			// Call init API
-			vm.$ajax(API.START).done((data) => {
+			vm.$ajax(API.START, command).done((data) => {
 				vm.startKMR004aScreen(data);
 			}).fail(function(res) {
 				vm.showErrorMessage(res);
@@ -124,7 +131,18 @@ module nts.uk.at.view.kmr004.a {
 			const vm = this;
 			vm.initClosingTimeLable(data);
 			vm.initClosingTimeSwitch(data);
-
+			
+			let totalOptions = [{id: EXTRACT_CONDITION.ALL, name: vm.$i18n('KMR004_17')}];
+			if(data.orderMngAtr) {
+				totalOptions.push({id: EXTRACT_CONDITION.ORDERED, name: vm.$i18n('KMR004_18')});
+				totalOptions.push({id: EXTRACT_CONDITION.UN_ORDERED, name: vm.$i18n('KMR004_19')});
+			}
+			vm.orderMngAtr(data.orderMngAtr);
+			vm.totalOptions(totalOptions);
+			let idAvailLst = _.map(vm.totalOptions(), o => o.id);
+			if(!_.includes(idAvailLst, vm.model().totalExtractCondition())) {
+				vm.model().totalExtractCondition(_.head(vm.totalOptions()).id);
+			}
 			if(data.operationDistinction == "BY_COMPANY"){
 				vm.initWorkplaceList();
 				vm. displayingWorkplaceList = 1;
@@ -399,7 +417,12 @@ module nts.uk.at.view.kmr004.a {
 			vm.outputConditionChecked(c13sData.outputConditionChecked);
 			vm.selectedTab(c13sData.selectedTab);
 			vm.model().totalTitle(c13sData.totalTitle);
-			vm.model().totalExtractCondition(c13sData.totalExtractCondition);
+			let idAvailLst = _.map(vm.totalOptions(), o => o.id);
+			if(_.includes(idAvailLst, c13sData.totalExtractCondition)) {
+				vm.model().totalExtractCondition(c13sData.totalExtractCondition);
+			} else {
+				vm.model().totalExtractCondition(_.head(vm.totalOptions()).id);
+			}
 			vm.model().extractionConditionChecked(c13sData.extractionConditionChecked);
 			vm.model().detailTitle(c13sData.detailTitle);
 			vm.model().itemExtractCondition(c13sData.itemExtractCondition);

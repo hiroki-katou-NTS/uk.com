@@ -62,7 +62,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
-		builderString.append(" WHERE a.CID = 'companyID' AND a.START_YMD <= 'startDate' AND a.END_YMD >= 'endDate' ");
+		builderString.append(" WHERE a.CID = 'companyID' AND a.START_YMD <= 'endDate' AND a.END_YMD >= 'startDate' ");
 		FIND_BENTO_MENU_PERIOD = builderString.toString();
 
 		builderString = new StringBuilder();
