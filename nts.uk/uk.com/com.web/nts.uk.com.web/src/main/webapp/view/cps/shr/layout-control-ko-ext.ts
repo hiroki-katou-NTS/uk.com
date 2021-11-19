@@ -2752,7 +2752,7 @@ module nts.custombinding {
                                 let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
 
                                 if (location.href.indexOf('/view/cps/007/a/') > -1) {
-                                    cats = _.filter(cats, (c: IItemCategory) => c.categoryCode != 'CS00069');
+                                    cats = _.filter(cats, (c: IItemCategory) => c.categoryCode != 'CS00069' && c.categoryCode != 'CS00100');
                                 }
 
                                 if (cats && cats.length) {

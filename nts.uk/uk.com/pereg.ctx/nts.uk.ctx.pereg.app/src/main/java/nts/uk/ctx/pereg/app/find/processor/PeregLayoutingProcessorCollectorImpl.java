@@ -71,6 +71,7 @@ import nts.uk.ctx.pereg.app.find.employment.history.EmploymentHistoryDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empcomofficehis.EmpCorpHealthOffHisDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.emphealinsurbeneinfo.EmpHealInsQualifiInfoDto;
 import nts.uk.ctx.pr.shared.app.find.socialinsurance.employeesociainsur.empsocialinsgradehis.EmpSocialInsGradeInforDto;
+import nts.uk.ctx.sys.gateway.app.find.login.password.userpassword.PeregLoginPasswordDto;
 import nts.uk.shr.pereg.app.find.PeregFinder;
 
 @Stateless
@@ -265,6 +266,9 @@ public class PeregLayoutingProcessorCollectorImpl implements PeregFinderProcesso
 			},
 			// CS00092
 			new TypeLiteral<PeregFinder<EmpSocialInsGradeInforDto>>() {
+			},
+			// CS00100 パスワード
+			new TypeLiteral<PeregFinder<PeregLoginPasswordDto>>() {
 			}
 	);
 
