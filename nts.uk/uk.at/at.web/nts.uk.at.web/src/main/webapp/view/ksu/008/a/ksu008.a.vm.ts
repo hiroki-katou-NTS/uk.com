@@ -48,7 +48,7 @@ module nts.uk.at.ksu008.a {
             self.targetPeriod = ko.observable(0);
             self.periodStart = ko.observable(moment.utc().startOf('month').toISOString());
             self.periodEnd = ko.computed(() => {
-                if (self.periodStart() && moment.utc(self.periodStart()).isValid()) {
+                if (self.periodStart() && moment.utc(self.periodStart(), "YYYY/MM/DD").isValid()) {
                     if (self.targetPeriod() == 0) {
                         return moment.utc(self.periodStart()).add(1, "month").add(-1, "day");
                     } else {
@@ -59,9 +59,7 @@ module nts.uk.at.ksu008.a {
             self.displayPeriod = ko.computed(() => {
                 if (self.periodStart() && self.periodEnd()
                     && moment.utc(self.periodStart()).isSameOrAfter(moment.utc("01/01/1900"))
-                    && moment.utc(self.periodStart()).isSameOrBefore(moment.utc("12/31/9999"))
-                    && self.periodEnd().isSameOrAfter(moment.utc("01/01/1900"))
-                    && self.periodEnd().isSameOrBefore(moment.utc("12/31/9999")))
+                    && moment.utc(self.periodStart()).isSameOrBefore(moment.utc("12/31/9999")))
                     return self.$i18n("KSU008_171", [moment.utc(self.periodStart()).format("YYYY/MM/DD") + "～" + self.periodEnd().format("YYYY/MM/DD")]);
                 else return "";
             });
