@@ -130,7 +130,7 @@ export class KdwS03BComponent extends Vue {
         let self = this;
 
         return self.params.paramData.lstControlDisplayItem.lstHeader;
-    }
+    }    
 
     get itemValues() {
         let self = this;
@@ -384,6 +384,13 @@ export class KdwS03BComponent extends Vue {
         }
     }
 
+    public getCheckboxType(key: string) {
+        let self = this;
+        let contentType = _.find(self.contentType, (item: ItemHeader) => item.key == key);
+
+        return contentType.ntsControl;
+    }
+
     public getItemType(key: string) {
         let self = this;
         let attendanceItem = self.getAttendanceItem(key);
@@ -448,11 +455,11 @@ export class KdwS03BComponent extends Vue {
     private addCustomValid() {
         let self = this;
         let screenDataValid: any = {};
-        _.forEach(self.params.rowData.rowData, (rowData: RowData, index) => {
+        _.forEach(self.params.rowData.rowData, (rowData: any, index) => {
             self.formatData(rowData);
             self.addMasterDialogParam(rowData);
             let attendanceItem = self.getAttendanceItem(rowData.key);
-            let contraint = _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).constraint;
+            let contraint = _.find(self.contentType, (item: ItemHeader) => item.key == rowData.key).constraint;            
             switch (attendanceItem.attendanceAtr) {
                 case ItemType.InputStringCode:
                     self.$set(self.screenData1, rowData.key, rowData.value0);
@@ -461,20 +468,29 @@ export class KdwS03BComponent extends Vue {
                     self.$set(self.screenData1, rowData.key, rowData.value0);
                     break;
                 case ItemType.InputNumber:
-                    self.$set(self.screenData1, rowData.key, rowData.value);
-                    if (contraint.cdisplayType == 'Primitive') {
-                        screenDataValid[rowData.key] = {
-                            loop: true,
-                            required: contraint.required
-                        };
+                    if (rowData.displayvalue) {
+                        self.$set(self.screenData1, rowData.key, 1);
+                    } else if (!rowData.displayvalue) {   
+                        self.$set(self.screenData1, rowData.key, 0);
                     } else {
-                        screenDataValid[rowData.key] = {
-                            loop: true,
-                            required: contraint.required,
-                            min: _.toNumber(contraint.min),
-                            max: _.toNumber(contraint.max)
-                        };
+                        self.$set(self.screenData1, rowData.key, rowData.value);
                     }
+                    
+                    if (!_.isNull(contraint)) {
+                        if (contraint.cdisplayType == 'Primitive') {
+                            screenDataValid[rowData.key] = {
+                                loop: true,
+                                required: contraint.required
+                            };
+                        } else {
+                            screenDataValid[rowData.key] = {
+                                loop: true,
+                                required: contraint.required,
+                                min: _.toNumber(contraint.min),
+                                max: _.toNumber(contraint.max)
+                            };
+                        }
+                    }                        
                     break;
                 case ItemType.InputMoney:
                     self.$set(self.screenData1, rowData.key, rowData.value);
@@ -545,7 +561,7 @@ export class KdwS03BComponent extends Vue {
             let constraintObj: any = {};
             switch (attendanceItem.attendanceAtr) {
                 case ItemType.InputNumber:
-                    if (contraint.cdisplayType == 'Primitive') {
+                    if ( !_.isNull(contraint) && contraint.cdisplayType == 'Primitive') {
                         constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
                         constraintObj.loop = true;
                         constraintObj.required = contraint.required;

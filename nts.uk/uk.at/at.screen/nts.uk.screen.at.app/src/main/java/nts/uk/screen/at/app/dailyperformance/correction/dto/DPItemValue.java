@@ -89,4 +89,23 @@ public class DPItemValue {
 		this.typeGroup = null;
 		this.message = null;
 	}
+	
+	public DPItemValue createNewError(String errorNew) {
+		return new DPItemValue(this.rowId, columnKey, itemId, value, valueType, layoutCode, employeeId, date, typeGroup,errorNew);
+	}
+
+	public DPItemValue(String rowId, String columnKey, int itemId, String value, String valueType, String layoutCode,
+			String employeeId, GeneralDate date, Integer typeGroup, String message) {
+		super();
+		this.rowId = rowId;
+		this.columnKey = columnKey;
+		this.itemId = itemId;
+		this.value = value;
+		this.valueType = valueType;
+		this.layoutCode = layoutCode;
+		this.employeeId = employeeId;
+		this.date = date;
+		this.typeGroup = typeGroup;
+		this.message = message;
+	}
 }

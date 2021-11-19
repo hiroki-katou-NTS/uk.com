@@ -5,9 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -91,10 +91,10 @@ public class KrcdtDayTsSupSupplInfo extends ContractCompanyUkJpaEntity implement
 	public String supplInfoCode5;
 	
 	@OneToOne
-	@JoinColumns({
-		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-		@JoinColumn(name = "YMD", referencedColumnName = "YMD", insertable = false, updatable = false),
-		@JoinColumn(name = "SUP_NO", referencedColumnName = "SUP_NO", insertable = false, updatable = false)})
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
+		@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD"),
+		@PrimaryKeyJoinColumn(name = "SUP_NO", referencedColumnName = "SUP_NO")})
 	public KrcdtDayOuenTimeSheet krcdtDayOuenTimeSheet;
 	
 	@Override
