@@ -321,15 +321,15 @@ public class AsposeForm9ExcelByFormatExportGenerator extends AsposeCellsReportGe
                 setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
             }
 
-            val columnE13 = dataSource.getForm9Layout().getNursingAideTable().getFullTime();
-            if (columnE13.isPresent()) {
-                val cellIndex = this.getCellIndex(columnE13.get().v() + rowE1);
-                cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isFullTime() ? 1 : EMPTY);
-                setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
-            }
-
             if ((!medicalTimeOfEmpMap.isEmpty() && isAttributeBlankIfZero) || (!medicalTimeOfEmpMap.isEmpty() && !isAttributeBlankIfZero)
                     || (medicalTimeOfEmpMap.isEmpty() && !isAttributeBlankIfZero)) {
+                val columnE13 = dataSource.getForm9Layout().getNursingAideTable().getFullTime();
+                if (columnE13.isPresent()) {
+                    val cellIndex = this.getCellIndex(columnE13.get().v() + rowE1);
+                    cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()).setValue(nursingAideEmpInfo.isFullTime() ? 1 : EMPTY);
+                    setStyle(cells.get(cellIndex.getRowIndex(), cellIndex.getColumnIndex()), TextAlignmentType.TOP, TextAlignmentType.LEFT, true);
+                }
+
                 val columnE14 = dataSource.getForm9Layout().getNursingAideTable().getShortTime();
                 if (columnE14.isPresent()) {
                     val cellIndex = this.getCellIndex(columnE14.get().v() + rowE1);
