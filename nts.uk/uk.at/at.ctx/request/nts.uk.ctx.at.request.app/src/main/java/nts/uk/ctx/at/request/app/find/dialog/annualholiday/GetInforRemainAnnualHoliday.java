@@ -83,10 +83,9 @@ public class GetInforRemainAnnualHoliday {
 				// ・年休・積休残数詳細情報DTO．次回付与予定日　＝　取得した期間．開始日
 				if (periodGrantDate.get().getNextGrantDate().isPresent())
 				accHolidayDto.setNextScheDate(TextResource.localize("KDL020_67", periodGrantDate.get().getNextGrantDate().get().toString(), this.getDayOfJapan(periodGrantDate.get().getNextGrantDate().get().dayOfWeek())));
-			
-				// 年休消化一覧を取得
-				annuaAccumulatedHoliday = annualLeave.getListAnnualLeave(sID);
 			}
+			// 年休消化一覧を取得
+			annuaAccumulatedHoliday = annualLeave.getListAnnualLeave(sID);
 		}
 		
 		accHolidayDto.setLstAnnAccHoliday(annuaAccumulatedHoliday);
