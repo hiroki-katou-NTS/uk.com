@@ -48,7 +48,7 @@ module nts.uk.at.ksu008.a {
             self.targetPeriod = ko.observable(0);
             self.periodStart = ko.observable(moment.utc().startOf('month').toISOString());
             self.periodEnd = ko.computed(() => {
-                if (self.periodStart() && moment.utc(self.periodStart(), "YYYY/MM/DD").isValid()) {
+                if (self.periodStart() && !$("#periodStart").ntsError("hasError")) {
                     if (self.targetPeriod() == 0) {
                         return moment.utc(self.periodStart()).add(1, "month").add(-1, "day");
                     } else {
