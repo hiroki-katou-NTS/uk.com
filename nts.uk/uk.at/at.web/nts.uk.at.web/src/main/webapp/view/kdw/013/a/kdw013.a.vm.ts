@@ -163,7 +163,7 @@ module nts.uk.ui.at.kdw013.a {
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         isShowBreakTime: KnockoutObservable<boolean> = ko.observable(false);
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
-        initialView: KnockoutObservable<string> = ko.observable('oneDay');
+        initialView: KnockoutObservable<string> = ko.observable('fullWeek');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
         removeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -610,7 +610,7 @@ module nts.uk.ui.at.kdw013.a {
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
                             if (value) {
-                                vm.initialView(value.initialView || 'oneDay');
+                                vm.initialView(value.initialView || 'fullWeek');
                                 vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
                                 vm.scrollTime(value.scrollTime || 420);
                                 vm.slotDuration(value.slotDuration || 30);
@@ -695,7 +695,7 @@ module nts.uk.ui.at.kdw013.a {
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
                             if (value) {
-                                vm.initialView(value.initialView || 'oneDay');
+                                vm.initialView(value.initialView || 'fullWeek');
                                 vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
                                 vm.scrollTime(value.scrollTime || 420);
                                 vm.slotDuration(value.slotDuration || 30);
