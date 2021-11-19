@@ -200,8 +200,8 @@ module nts.uk.at.view.kdw013.h {
 					} else {
 						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
 					}
-				} else {
-					self.itemId29.itemSelectedDisplay('');
+				} else if(self.itemId29.value() == null || self.itemId29.value() == ''){
+					self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 				}
 				
 				//set name và type cho item tuy ý
@@ -392,8 +392,9 @@ module nts.uk.at.view.kdw013.h {
 				};
 				ajax(paths.save, param).done((data: any) => {
 					if(data.messageAlert == 'Msg_15'){
-						info({ messageId: 'Msg_15' });
-						self.reLoadData();
+						info({ messageId: 'Msg_15' }).then(()=>{
+							self.reLoadData();	
+						});
 					}else{
 						_.forEach(data.errorMap, errs => {
 							_.forEach(errs, err => {
@@ -453,6 +454,7 @@ module nts.uk.at.view.kdw013.h {
 				ajax(paths.reload, param).done((data: IItemValue[]) => {
 					console.log(data);
 					self.itemId28.value(_.find(data, i => i.itemId == 28).value);
+					self.itemId28.valueBeforeChange = self.itemId28.value();
 					let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
 					if (workType){
 						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
@@ -460,15 +462,17 @@ module nts.uk.at.view.kdw013.h {
 						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
 					}
 					self.itemId29.value(_.find(data, i => i.itemId == 29).value);
+					self.itemId29.valueBeforeChange = self.itemId29.value();
 					let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
 					if (workTime) {
 						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
-					} else {
-						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
+					} else if(self.itemId29.value() == null){
+						self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 					}
 					
 					_.forEach(self.itemOptions, (item) => {
 						item.value(_.find(data, i => i.itemId == item.itemId).value);
+						item.valueBeforeChange = item.value();
 					});
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
