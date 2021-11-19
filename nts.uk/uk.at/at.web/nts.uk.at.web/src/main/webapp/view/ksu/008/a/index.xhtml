@@ -15,7 +15,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <div id="functions-area" tabindex="-1">
+        <div id="functions-area">
             <!--A1_1-->
             <button id="A1_1" tabindex="1" data-bind="click: exportExcel, enable: !!periodStart() &amp;&amp; comboItemList().length > 0 &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('KSU008_5')}</button>
             <!--A1_2-->
@@ -82,6 +82,7 @@
                             <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_13')}</div>
                             <!--A5_2-->
                             <div tabindex="8"
+								 id="A5_2"
                                  data-bind="ntsComboBox: {
                                     name: '#[KSU008_14]',
                                     options: comboItemList,
@@ -91,10 +92,10 @@
                                     optionsText: 'name',
                                     required: true,
                                     selectFirstIfNull: true,
-                                    width:'450px',
+                                    width:'475px',
                                     columns: [
                                         { prop: 'code', length: 4 },
-                                        { prop: 'name', length: 25 },
+                                        { prop: 'name', length: 28 },
                                         { prop: 'type', length: 4 },
 	                            ]}"></div>
                             <!--A5_3-->
@@ -102,9 +103,9 @@
                         </div>
                         <div class="control-group valign-center">
                             <!--A6_1-->
-                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_15')}</div>
+                            <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU008_16')}</div>
                             <!--A6_2-->
-                            <div  tabindex="9"
+                            <div  tabindex="10"
                                   style="display: inline-flex;"
                                   data-bind="ntsSwitchButton: {
                                             name: $i18n('KSU011_19'),
@@ -131,11 +132,11 @@
                                 <tr class="table_row">
                                     <td class="ui-widget-header">
                                         <!--A7_3-->
-                                        <div tabindex="10" data-bind="ntsCheckBox: { checked: deductionDateFromDeliveryTime }">#{i18n.getText('KSU008_22')}</div>
+                                        <div tabindex="11" data-bind="ntsCheckBox: { checked: deductionDateFromDeliveryTime }">#{i18n.getText('KSU008_22')}</div>
                                     </td>
                                     <td>
                                         <!--A7_3_1-->
-                                        <div tabindex="11"
+                                        <div tabindex="12"
                                              class="margin-5"
                                              style="width: 100px;"
                                              data-bind="ntsComboBox: {
@@ -158,7 +159,7 @@
                                     <td></td>
                                     <td>
                                         <!--A7_3_3-->
-                                        <div tabindex="12"
+                                        <div tabindex="13"
                                              id="colorpicker"
                                              data-bind="ntsColorPicker: {
                                                 value: deductionDateFromDeliveryTimeColor,
@@ -170,11 +171,11 @@
                                 <tr>
                                     <td class="ui-widget-header">
                                         <!--A7_4-->
-                                        <div tabindex="13" data-bind="ntsCheckBox: { checked: workingHours }">#{i18n.getText('KSU008_25')}</div>
+                                        <div tabindex="14" data-bind="ntsCheckBox: { checked: workingHours }">#{i18n.getText('KSU008_25')}</div>
                                     </td>
                                     <td>
                                         <!--A7_4_1-->
-                                        <div tabindex="14"
+                                        <div tabindex="15"
                                              class="margin-5"
                                              style="width: 100px;"
                                             data-bind="ntsComboBox: {
@@ -199,7 +200,7 @@
                                     </td>
                                     <td>
                                         <!--A7_4_4-->
-                                        <div tabindex="15" id="A7_4_4"
+                                        <div tabindex="16" id="A7_4_4"
                                             data-bind="ntsColorPicker: {
                                                     value: workingHoursScheduleColor,
                                                     name:'#[KSU008_28]',
@@ -216,7 +217,7 @@
                                     </td>
                                     <td>
                                         <!--A7_4_5-->
-                                        <div tabindex="16"
+                                        <div tabindex="17"
                                             data-bind="ntsColorPicker: {
                                                         value: workingHoursRecordColor,
                                                         enable: workingHours,
