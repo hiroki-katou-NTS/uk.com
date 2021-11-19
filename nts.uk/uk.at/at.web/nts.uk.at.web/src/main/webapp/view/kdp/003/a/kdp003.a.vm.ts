@@ -106,6 +106,7 @@ module nts.uk.at.kdp003.a {
 		pageComment: KnockoutObservable<string> = ko.observable('');
 		commentColor: KnockoutObservable<string> = ko.observable('');
 		passContract: String;
+		contractCode: String = "";
 
 		totalOpenViewR: number = 0;
 
@@ -129,6 +130,7 @@ module nts.uk.at.kdp003.a {
 									// Step4: CCG007_ログイン　A：契約認証を実行する
 									vm.openDialogCCG007A()
 								} else {
+									vm.contractCode = data.contractCode;
 									vm.$ajax(API.getAuthenticate, { contactCode: data.contractCode, password: data.contractPassword })
 										.then((isSuccess: boolean) => {
 											// Step4: CCG007_ログイン　A：契約認証を実行する
@@ -243,7 +245,7 @@ module nts.uk.at.kdp003.a {
 
 			if (locationCd) {
 				const param = {
-					contractCode: vm.$user.contractCode,
+					contractCode: vm.contractCode,
 					workLocationCode: locationCd
 				}
 
@@ -304,17 +306,17 @@ module nts.uk.at.kdp003.a {
 						companyCode: CCD,
 						employeeCode: SCD,
 						password: PWD,
-						contractCode: vm.$user.contractCode,
+						contractCode: vm.contractCode,
 						contractPassword: vm.passContract
 					};
 
 					// auto login by storage data of preview login
 					// <<ScreenQuery>> 打刻管理者でログインする
 
-					return vm.$ajax('at', API.COMPANIES, { contractCode: vm.$user.contractCode })
+					debugger;
+					return vm.$ajax('at', API.COMPANIES, { contractCode: vm.contractCode })
 						.then((data: f.CompanyItem[]) => {
-
-
+							
 							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
 								vm.setMessage({ messageId: 'Msg_1527' });
@@ -362,7 +364,7 @@ module nts.uk.at.kdp003.a {
 
 					if (locationCd) {
 						const param = {
-							contractCode: vm.$user.contractCode,
+							contractCode: vm.contractCode,
 							workLocationCode: locationCd
 						}
 
@@ -797,7 +799,7 @@ module nts.uk.at.kdp003.a {
 
 					if (locationCd) {
 						const param = {
-							contractCode: vm.$user.contractCode,
+							contractCode: vm.contractCode,
 							workLocationCode: locationCd
 						}
 
@@ -989,7 +991,7 @@ module nts.uk.at.kdp003.a {
 							companyCode: CCD,
 							employeeCode: SCD,
 							password: PWD,
-							contractCode: vm.$user.contractCode,
+							contractCode: vm.contractCode,
 							contractPassword: vm.passContract
 						};
 

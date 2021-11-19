@@ -62,6 +62,7 @@ module nts.uk.at.view.kdp004.a {
 			showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
 
 			totalOpenViewR: number = 0;
+			contractCode: string = '';
 
 			// get from basyo;
 			workplace: string[] | [] = [];
@@ -136,6 +137,7 @@ module nts.uk.at.view.kdp004.a {
 										// Step4: CCG007_ログイン　A：契約認証を実行する
 										self.openDialogCCG007A().then(() => dfd.resolve())
 									} else {
+										self.contractCode = data.contractCode;
 										vm.$ajax("at", "at/record/stamp/finger/get-authenticate",
 											{ contactCode: data.contractCode, password: data.contractPassword })
 											.then((isSuccess: boolean) => {
@@ -1064,10 +1066,6 @@ module nts.uk.at.view.kdp004.a {
 
 				// URLOption basyoが存在している場合
 				if (locationCd) {
-					const param = {
-						contractCode: vm.$user.contractCode,
-						workLocationCode: locationCd
-					}
 
 					vm.$window.storage("contractInfo")
 						.then((data: any) => {
