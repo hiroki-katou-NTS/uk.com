@@ -33,7 +33,7 @@ public class SharedAffJobtitleHisAdapterImpl implements SharedAffJobtitleHisAdap
 				employeeJobHis.get().getEmployeeId(),
 				employeeJobHis.get().getJobTitleID(), dateRange,
 				employeeJobHis.get().getJobTitleName(),
-				null//TODO dev add jobtileCode
+				employeeJobHis.get().getJobTitleCode()
 				);
 		return Optional.of(affJobTitleSidImport);
 	}
@@ -51,7 +51,7 @@ public class SharedAffJobtitleHisAdapterImpl implements SharedAffJobtitleHisAdap
 				export.getJobTitleID(), 
 				dateRange, 
 				export.getJobTitleName(),
-				null//TODO dev add jobtileCode
+				export.getJobTitleCode()
 				);
 	}
 
