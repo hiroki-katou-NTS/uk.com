@@ -30,7 +30,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2231);
 				addIdtoList(2251, 2270, attendanceItemIds);
 				break;
-				
+
 			case 2:
 				addIdtoList(931, 940, attendanceItemIds);
 				addIdtoList(1250, 1251, attendanceItemIds);
@@ -41,7 +41,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2232);
 				addIdtoList(2271, 2290, attendanceItemIds);
 				break;
-				
+
 			case 3:
 				addIdtoList(941, 950, attendanceItemIds);
 				addIdtoList(1252, 1253, attendanceItemIds);
@@ -52,7 +52,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2233);
 				addIdtoList(2291, 2310, attendanceItemIds);
 				break;
-				
+
 			case 4:
 				addIdtoList(951, 960, attendanceItemIds);
 				addIdtoList(1254, 1255, attendanceItemIds);
@@ -63,7 +63,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2234);
 				addIdtoList(2311, 2330, attendanceItemIds);
 				break;
-			
+
 			case 5:
 				addIdtoList(961, 970, attendanceItemIds);
 				addIdtoList(1256, 1257, attendanceItemIds);
@@ -74,7 +74,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2235);
 				addIdtoList(2331, 2350, attendanceItemIds);
 				break;
-			
+
 			case 6:
 				addIdtoList(971, 980, attendanceItemIds);
 				addIdtoList(1258, 1259, attendanceItemIds);
@@ -85,7 +85,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2236);
 				addIdtoList(2351, 2370, attendanceItemIds);
 				break;
-				
+
 			case 7:
 				addIdtoList(981, 990, attendanceItemIds);
 				addIdtoList(1260, 1261, attendanceItemIds);
@@ -96,7 +96,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2237);
 				addIdtoList(2371, 2390, attendanceItemIds);
 				break;
-			
+
 			case 8:
 				addIdtoList(991, 1000, attendanceItemIds);
 				addIdtoList(1262, 1263, attendanceItemIds);
@@ -107,7 +107,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2238);
 				addIdtoList(2391, 2410, attendanceItemIds);
 				break;
-				
+
 			case 9:
 				addIdtoList(1001, 1010, attendanceItemIds);
 				addIdtoList(1264, 1265, attendanceItemIds);
@@ -118,7 +118,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2239);
 				addIdtoList(2411, 2430, attendanceItemIds);
 				break;
-				
+
 			case 10:
 				addIdtoList(1011, 1020, attendanceItemIds);
 				addIdtoList(1266, 1267, attendanceItemIds);
@@ -129,7 +129,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2240);
 				addIdtoList(2431, 2450, attendanceItemIds);
 				break;
-				
+
 			case 11:
 				addIdtoList(1021, 1030, attendanceItemIds);
 				addIdtoList(2691, 2692, attendanceItemIds);
@@ -140,7 +140,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2241);
 				addIdtoList(2451, 2470, attendanceItemIds);
 				break;
-				
+
 			case 12:
 				addIdtoList(1031, 1040, attendanceItemIds);
 				addIdtoList(2693, 2694, attendanceItemIds);
@@ -151,7 +151,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2242);
 				addIdtoList(2471, 2490, attendanceItemIds);
 				break;
-				
+
 			case 13:
 				addIdtoList(1041, 1050, attendanceItemIds);
 				addIdtoList(2695, 2696, attendanceItemIds);
@@ -162,7 +162,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2243);
 				addIdtoList(2491, 2510, attendanceItemIds);
 				break;
-				
+
 			case 14:
 				addIdtoList(1051, 1060, attendanceItemIds);
 				addIdtoList(2697, 2698, attendanceItemIds);
@@ -173,7 +173,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2244);
 				addIdtoList(2511, 2530, attendanceItemIds);
 				break;
-				
+
 			case 15:
 				addIdtoList(1061, 1070, attendanceItemIds);
 				addIdtoList(2699, 2700, attendanceItemIds);
@@ -184,7 +184,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2245);
 				addIdtoList(2531, 2550, attendanceItemIds);
 				break;
-				
+
 			case 16:
 				addIdtoList(1071, 1080, attendanceItemIds);
 				addIdtoList(2701, 2702, attendanceItemIds);
@@ -195,7 +195,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2246);
 				addIdtoList(2551, 2570, attendanceItemIds);
 				break;
-				
+
 			case 17:
 				addIdtoList(1081, 1090, attendanceItemIds);
 				addIdtoList(2703, 2704, attendanceItemIds);
@@ -206,7 +206,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2247);
 				addIdtoList(2571, 2590, attendanceItemIds);
 				break;
-				
+
 			case 18:
 				addIdtoList(1091, 1100, attendanceItemIds);
 				addIdtoList(2705, 2706, attendanceItemIds);
@@ -217,7 +217,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2248);
 				addIdtoList(2591, 2610, attendanceItemIds);
 				break;
-				
+
 			case 19:
 				addIdtoList(1101, 1110, attendanceItemIds);
 				addIdtoList(2707, 2708, attendanceItemIds);
@@ -228,7 +228,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2249);
 				addIdtoList(2611, 2630, attendanceItemIds);
 				break;
-				
+
 			case 20:
 				addIdtoList(1111, 1120, attendanceItemIds);
 				addIdtoList(2709, 2710, attendanceItemIds);
@@ -239,15 +239,7 @@ public class GetAttendanceItemIdService {
 				attendanceItemIds.add(2250);
 				addIdtoList(2631, 2650, attendanceItemIds);
 				break;
-			
-				
-				
-				
-				
 			}
-			
-			
-
 		}
 
 		return attendanceItemIds;
