@@ -253,11 +253,25 @@ module nts.uk.at.view.kdw013.h {
 			
 			getPrimitiveValue(primitiveValue: number): string {
 				if(primitiveValue){
-					let primitive = _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');
-					if(primitiveValue < 53 && primitiveValue > 60 && !_.includes(primitive, 'Any')){
-						primitive = 'Any' + primitive;
+					if(primitiveValue == 21){
+						return 'BusinessTypeCode';
+					}else if(primitiveValue == 55){
+						return 'AnyItemAmount';
+					}else if(primitiveValue == 55){
+						return 'AnyAmountMonth';
+					}else if(primitiveValue == 56){
+						return 'AnyItemTime';
+					}else if(primitiveValue == 57){
+						return 'AnyTimeMonth';
+					}else if(primitiveValue == 58){
+						return 'AnyItemTimes';
+					}else if(primitiveValue == 59){
+						return 'AnyTimesMonth';
+					}else if(primitiveValue == 60){
+						return 'DiverdenceReasonCode';
+					}else{
+						return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
 					}
-					return primitive; 	
 				}
 				return '';
 			}
