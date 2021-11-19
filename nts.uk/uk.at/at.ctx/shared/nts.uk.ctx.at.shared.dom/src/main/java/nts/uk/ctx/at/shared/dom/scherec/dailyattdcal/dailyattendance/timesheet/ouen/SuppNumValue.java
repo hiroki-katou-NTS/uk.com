@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  * @author tutt
  *
  */
-@IntegerRange(min = 0, max = 99999999)
+@IntegerRange(min = -99999999, max = 99999999)
 public class SuppNumValue extends IntegerPrimitiveValue<SuppNumValue> {
 
 	private static final long serialVersionUID = 1L;
