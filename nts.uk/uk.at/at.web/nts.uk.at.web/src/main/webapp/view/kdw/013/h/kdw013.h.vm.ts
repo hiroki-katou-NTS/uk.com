@@ -104,7 +104,7 @@ module nts.uk.at.view.kdw013.h {
 				let infor: any = _.find(self.params.lockInfos, (i:DailyLock)=> moment(self.params.date).isSame(moment(i.date)));
 				if(infor){
 					let err: string = null;
-					if(infor.lockPast == 0){
+					if(infor.lockDailyResult == 0){
 						err = getText('KDW013_53');
 					}
 					if(infor.lockWpl == 0){
@@ -122,7 +122,7 @@ module nts.uk.at.view.kdw013.h {
 					if(infor.lockConfirmDay == 0){
 						err = err ? (err + ',' + getText('KDW013_58')) : getText('KDW013_58');
 					}
-					if(infor.lockDailyResult == 0){
+					if(infor.lockPast == 0){
 						err = err ? (err + ',' + getText('KDW013_59')) : getText('KDW013_59');
 					}
 					if(err){
