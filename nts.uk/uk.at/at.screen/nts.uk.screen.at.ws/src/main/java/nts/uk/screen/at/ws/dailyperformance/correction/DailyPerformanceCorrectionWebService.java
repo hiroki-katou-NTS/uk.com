@@ -34,6 +34,10 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchData;
+import nts.uk.ctx.bs.employee.dom.employee.service.dto.EmployeeSearchDto;
+
 import nts.uk.screen.at.app.dailymodify.command.DailyCalculationRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
@@ -86,7 +90,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.mobile.DPCorrectionProce
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.MonthParamInit;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ProcessMonthScreen;
-import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.DPEmployeeSearchData;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindEmployeeBase;
 import nts.uk.screen.at.app.dailyperformance.correction.selecterrorcode.DailyPerformanceErrorCodeProcessor;
 import nts.uk.shr.com.context.AppContexts;
@@ -173,6 +176,9 @@ public class DailyPerformanceCorrectionWebService {
 	
 	@Inject
 	private WorkplacePub workplacePub;
+
+	@Inject
+	private SearchEmployeeService searchEmployeeService;
 	
 	@POST
 	@Path("startScreen")
@@ -441,9 +447,13 @@ public class DailyPerformanceCorrectionWebService {
 	
 
 	@POST
-	@Path("get-info/{employeeId}")
-	public DPEmployeeSearchData getInfo(@PathParam(value = "employeeId") String employeeId) {
-		return findEmployeeBase.findInAllEmployee(employeeId, GeneralDate.today(), AppContexts.user().companyId()).orElse(null);
+	@Path("get-info/{employeeCode}")
+	public EmployeeSearchData getInfo(@PathParam(value = "employeeCode") String employeeCode) {
+		EmployeeSearchDto dto = new EmployeeSearchDto();
+		dto.setBaseDate(GeneralDate.today());
+		dto.setSystem("1");
+		dto.setEmployeeCode(employeeCode);
+		return this.searchEmployeeService.searchByCode(dto);
 	}
 	
 	@POST

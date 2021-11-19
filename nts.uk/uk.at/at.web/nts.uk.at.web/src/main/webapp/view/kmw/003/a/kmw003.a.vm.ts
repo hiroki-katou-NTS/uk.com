@@ -2004,6 +2004,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 self.available_A1_11(self.checkAvailable(data, 12));
                 //A2_1
                 $('#ccg001').show();
+
             } else if (initMode == 2) {
                 $('#cbClosureInfo').show();
                 //A4_7
