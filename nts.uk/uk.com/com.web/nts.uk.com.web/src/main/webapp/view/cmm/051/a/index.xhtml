@@ -18,7 +18,7 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button class="add" data-bind="click: createWkpManager, enable: $root.errors.isEmpty()" tabindex="1">#{i18n.getText('CMM051_1')}</button>
+            <button  class="add" data-bind="click: createWkpManager, enable: $root.errors.isEmpty()" tabindex="1">#{i18n.getText('CMM051_1')}</button>
             <button class="proceed" data-bind="click: saveWkpManager, enable: $root.errors.isEmpty() "
                     tabindex="2">#{i18n.getText('CMM051_2')}</button>
             <button class="danger" data-bind="click: remove, enable: isDelete() &amp;&amp; $root.errors.isEmpty"
@@ -26,7 +26,7 @@
         </div>
         <div id="contents-area">
             <div class="container cmm-051" style="width:1270px;">
-                <div tabindex="4" class="panel-row">
+                <div  class="panel-row">
                     <div class="row-left">
                         <!-- A2_2 -->
                         <div class="label"
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="row-right row-switch-button">
-                        <div tabindex="10" data-bind="ntsSwitchButton: {
+                        <div tabindex="4" data-bind="ntsSwitchButton: {
                     name: $i18n('CMM051_38'),
                     options: [
                       { id: 1, name: $i18n('CMM051_39')},
@@ -48,27 +48,38 @@
                 </div>
                 <div data-bind="if: mode() == 1" >
                     <div class="valign-center control-group a_3">
+                        <!--A8_1-->
                         <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
-                        <button tabindex="5" class="" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_47')}</button>
+                        <!--A8_2-->
+                        <button tabindex="12" class="" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_47')}</button>
+                        <!--A8_3-->
                         <label class="ntsControl limited-label wp-code" data-bind="text: workplaceCode()  "> </label>
+                        <!--A8_4-->
                         <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
                     </div>
                 </div>
                 <div data-bind="if: mode() == 0">
                     <div  class="valign-center control-group a_3">
+                        <!--A3_1-->
                         <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
+                        <!--A3_2-->
                         <button tabindex="5" class="" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_42')}</button>
+                        <!--A3_3-->
                         <label class="ntsControl limited-label wp-code " data-bind="text: employeeCode()  "> </label>
+                        <!--A3_3-->
                         <label class="ntsControl limited-label wp-name " data-bind="text: employeeName()"> </label>
                     </div>
                 </div>
                 <div id="left-content">
+                    <!--A9-->
                     <div data-bind="if: mode() == 1" class="kcp005">
-                        <div id="kcp005" tabindex="6">
+                        <div id="kcp005" tabindex="13">
                         </div>
                     </div>
+                    <!--A_4-->
                     <div data-bind="if: mode() == 0" class="wkp_list">
-                        <table id="wkp_list"
+                        <!--A_5-->
+                        <table id="wkp_list" tabindex="6"
                                data-bind="ntsGridList: {
 	                                            name:'#[CMM051_49]',
 	                                            width: 450,
@@ -89,25 +100,33 @@
                     <!--A10-1-->
                     <div data-bind="if: mode() == 1">
                         <div  class="a_6">
+                            <!--A10_1-->
                             <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
-                            <button tabindex="7" class=" a_62"
+                            <!--A10_2-->
+                            <button tabindex="14" class=" a_62"
                                     data-bind="click: openDialogA62102, enable: isNewMode() ">#{i18n.getText('CMM051_47')}</button>
+                            <!--A10_3-->
                             <label class="ntsControl limited-label wp-code" data-bind="text: employeeCode()  "> </label>
+                            <!--A10_4-->
                             <label class="ntsControl limited-label wp-name" data-bind="text: employeeName() "> </label>
                         </div>
                     </div>
                     <div data-bind="if: mode() == 0">
                         <!--A6-->
                         <div  class="a_10">
+                            <!--A6_1-->
                             <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
+                            <!--A6_2-->
                             <button tabindex="7" class=" a_62"
                                     data-bind="click: openDialogA62102, enable: isNewMode()">#{i18n.getText('CMM051_42')}</button>
+                            <!--A6_3-->
                             <label class="ntsControl limited-label wp-code code" data-bind="text:  workplaceCode()"> </label>
+                            <!--A6_4-->
                             <label class="ntsControl limited-label wp-name name" data-bind="text:  workplaceName()"> </label>
                         </div>
                     </div>
 
-                    <!--A7_1-->
+
                     <div class="date-list">
                         <table class="table_content">
                             <colgroup>
@@ -115,10 +134,13 @@
                                 <col width="270px"/>
                                 <col width="*"/>
                             </colgroup>
+
                             <tr>
+                                <!--A7_1-->
                                 <td style="vertical-align: top;">
                                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM051_48')}</div>
                                 </td>
+                                <!--A7_2-->
                                 <td tabindex="8">
                                     <div id="list-box" tabindex="7"
                                          data-bind="ntsListBox: {
@@ -136,16 +158,19 @@
                                 </td>
                                 <td style="vertical-align: top;">
                                     <div>
+                                        <!--A7_3-->
                                         <button tabindex="9"
                                                 data-bind="click: openAddHistoryDialog, enable : isNewModeHist"
                                                 class="history-button">#{i18n.getText('CMM051_50')}</button>
                                     </div>
                                     <div>
+                                        <!--A7_4-->
                                         <button tabindex="10"
                                                 data-bind="click: openUpdateHistoryDialog, enable : isUpdateModeHist()  &amp;&amp; !dateHistoryList.isEmpty"
                                                 class="history-button">#{i18n.getText('CMM051_51')}</button>
                                     </div>
                                     <div>
+                                        <!--A7_5-->
                                         <button tabindex="11"
                                                 data-bind="click: removeHistory,enable : isDeleteModeHist() &amp;&amp; !dateHistoryList.isEmpty"
                                                 class="history-button danger">#{i18n.getText('CMM051_52')}</button>

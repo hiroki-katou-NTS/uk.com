@@ -1,13 +1,9 @@
 ////// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmm051.a {
-    import alert = nts.uk.ui.dialog.alert;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import ccg = nts.uk.com.view.ccg026;
-    import model = nts.uk.com.view.ccg026.component.model;
     import block = nts.uk.ui.block;
-    import errors = nts.uk.ui.errors;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
@@ -41,8 +37,6 @@ module nts.uk.com.view.cmm051.a {
         //Date Range Picker
         dateValue: KnockoutObservable<any> = ko.observable("");
         selectedWkpId: KnockoutObservable<string>;
-        selectedWpkManagerId: KnockoutObservable<string>;
-        wkpManagerTree: any;
         headers: any;
 
         // start declare KCP005

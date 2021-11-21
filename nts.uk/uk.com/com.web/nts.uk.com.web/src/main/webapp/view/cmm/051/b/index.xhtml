@@ -21,8 +21,8 @@
     <!-- PAGE CONTENT -->
     <ui:define name="content">
         <div id="contents-area">
+            <!--B_1-->
             <div>#{i18n.getText('CMM051_53')}</div>
-
             <table class="table_content">
                 <colgroup>
                     <col width="120px"/>
@@ -30,9 +30,11 @@
                 </colgroup>
                 <tr>
                     <td>
+                        <!--B2_1-->
                         <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM051_54')}</div>
                     </td>
                     <td>
+                        <!--B2_2-->
                         <div id="daterangepicker" tabindex="1"
                              data-bind="ntsDateRangePicker:
                               { required: required,
@@ -45,9 +47,11 @@
         </div>
 
         <div id="functions-area-bottom">
-            <button tabindex="2" data-bind="click: execution"
+            <!--B3_1-->
+            <button tabindex="3" data-bind="click: execution"
                     class="x-large proceed">#{i18n.getText('CMM051_55')}</button>
-            <button tabindex="3" data-bind="click: cancel_Dialog" class="large" >#{i18n.getText('CMM051_56')}</button>
+            <!--B3_2-->
+            <button tabindex="4" data-bind="click: cancel_Dialog" class="large" >#{i18n.getText('CMM051_56')}</button>
         </div>
     </ui:define>
 
