@@ -148,6 +148,8 @@ module nts.uk.com.view.cmm051.a {
                         vm.backToTopPage();
                     });
                 });
+            }else {
+                vm.dateHistoryList([]);
             }
 
         }
@@ -534,9 +536,9 @@ module nts.uk.com.view.cmm051.a {
                     vm.$ajax("com", API.deleteWkpManager, command).done(() => {
                             if (mode == Mode.WPL) {
                                 let indexRemove = _.findIndex(vm.employInfors(), (e) => e.id == vm.employeeId());
-                                let emifId: any = "";
-                                if (indexRemove == (vm.employInfors().length - 1)) {
-                                    emifId = vm.employInfors()[indexRemove - 1].id;
+                                let emifId: any = null;
+                                if ( indexRemove == (vm.employInfors().length - 1)) {
+                                    emifId = indexRemove >=1 ? vm.employInfors()[indexRemove - 1].id : null;
                                 } else {
                                     emifId = vm.employInfors()[indexRemove + 1].id;
                                 }
@@ -546,7 +548,7 @@ module nts.uk.com.view.cmm051.a {
                                 let indexRemoveWP = _.findIndex(vm.workPlaceList(), (e) => e.id == vm.workPlaceId());
                                 let wpId: any = null;
                                 if (indexRemoveWP == (vm.workPlaceList().length - 1)) {
-                                    wpId = vm.workPlaceList()[indexRemoveWP - 1].id;
+                                    wpId = indexRemoveWP >=1 ? vm.workPlaceList()[indexRemoveWP - 1].id : null;
                                 } else {
                                     wpId = vm.workPlaceList()[indexRemoveWP + 1].id;
                                 }
