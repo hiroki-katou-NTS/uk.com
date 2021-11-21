@@ -183,8 +183,8 @@ module nts.uk.com.view.cmm051.a {
                     }
                 }
                 if (isNullOrEmpty(emps)) {
-                    vm.employeeCode("");
-                    vm.employeeName("");
+                    vm.employeeCode(null);
+                    vm.employeeName(null);
                 }
                 vm.employInfors(emps);
                 let info = _.find(vm.employInfors(), (e) => e.id == sid);
@@ -247,6 +247,9 @@ module nts.uk.com.view.cmm051.a {
                 vm.isNewModeHist(true);
                 vm.isUpdateModeHist(true);
                 vm.isDeleteModeHist(true);
+            } else {
+                vm.startDate(null);
+                vm.endDate(null)
             }
         }
 
@@ -288,23 +291,23 @@ module nts.uk.com.view.cmm051.a {
             vm.mode.subscribe((mode) => {
                 console.log("MODE :" + mode);
                 if (mode == Mode.WPL) {
-                    vm.employeeCode("");
-                    vm.employeeName("");
-                    vm.workplaceCode("");
-                    vm.workplaceName("");
+                    vm.employeeCode(null);
+                    vm.employeeName(null);
+                    vm.workplaceCode(null);
+                    vm.workplaceName(null);
                     vm.selectedEmCode(null);
                     vm.setDataDefaultMode();
                 } else if (mode == Mode.EMPLOYMENT) {
                     vm.employeeId(null);
                     vm.selectedEmCode(null);
-                    vm.employeeCode("");
-                    vm.employeeName("");
-                    vm.workplaceCode("");
-                    vm.workplaceName("");
+                    vm.employeeCode(null);
+                    vm.employeeName(null);
+                    vm.workplaceCode(null);
+                    vm.workplaceName(null);
                     let sidLogin = vm.$user.employeeId;
                     let sid: any[] = [];
                     sid.push(sidLogin);
-                    vm.getEmployeeInfo(sid,null)
+                    vm.getEmployeeInfo(sid, null)
                 }
             });
             vm.selectedEmCode.subscribe((e) => {
@@ -315,23 +318,23 @@ module nts.uk.com.view.cmm051.a {
                         vm.employeeCode(e);
                         vm.employeeId(eminfo.id);
                     } else {
-                        vm.employeeCode("");
-                        vm.employeeName("")
+                        vm.employeeCode(null);
+                        vm.employeeName(null)
                     }
                 }
             });
 
 
             vm.employeeId.subscribe((e) => {
-                if(!isNullOrUndefined(e)){
+                if (!isNullOrUndefined(e)) {
                     let eminfo = _.find(vm.employInfors(), (i) => i.id == e);
                     if (!isNullOrUndefined(eminfo)) {
                         vm.employeeName(eminfo.name);
                         vm.employeeCode(eminfo.code);
                         vm.isDelete(true);
                     } else {
-                        vm.employeeCode("");
-                        vm.employeeName("")
+                        vm.employeeCode(null);
+                        vm.employeeName(null)
                     }
                     vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId())
                 }
@@ -343,9 +346,13 @@ module nts.uk.com.view.cmm051.a {
                         vm.workplaceName(info.name);
                         vm.workplaceCode(info.code);
                         vm.isDelete(true);
+                    } else {
+                        vm.workplaceName(null);
+                        vm.workplaceCode(null);
                     }
                     vm.initScreen(vm.mode(), vm.employeeId(), e, vm.historyId())
                 }
+
             });
             vm.historyId.subscribe((id) => {
                 let idAddOrUpdate = vm.idAddOrUpdate();
@@ -378,10 +385,12 @@ module nts.uk.com.view.cmm051.a {
             nts.uk.ui.errors.clearAll();
             if (vm.isNewMode() == true) {
                 vm.dateHistoryList([]);
-                vm.employeeCode("");
-                vm.employeeName("");
-                vm.workplaceCode("");
-                vm.workplaceName("")
+                vm.employeeCode(null);
+                vm.employeeName(null);
+                vm.workplaceCode(null);
+                vm.workplaceName(null);
+                vm.startDate(null);
+                vm.endDate(null);
             }
         }
 
@@ -408,9 +417,9 @@ module nts.uk.com.view.cmm051.a {
             let vm = this;
             let mode = vm.mode();
             // validate
-            if (!vm.validate()) {
+            if(vm.validate()){
                 return;
-            }
+            };
             let workplaceId = vm.workPlaceId();
             let sid = vm.employeeId();
             let startDate = nts.uk.time.parseMoment(vm.startDate()).format();
@@ -467,14 +476,39 @@ module nts.uk.com.view.cmm051.a {
          */
         private validate() {
             let vm = this;
-
+            let hasError = false;
             // clear error
             vm.clearError();
+            if(vm.mode() == Mode.WPL){
+                if (isNullOrUndefined(vm.workplaceCode())) {
+                    $('#a8_2').focus();
+                    hasError = true;
+                    return hasError;
+                }
+                if(isNullOrUndefined(vm.employeeCode())){
+                    $('#a10_2').focus();
+                    hasError = true;
+                    return hasError;
+                }
 
-            // validate
-            $(".ntsDatepicker ").ntsEditor('validate');
-            $(".nts-editor").trigger("validate");
-            return !$('.nts-input').ntsError('hasError');
+            }else {
+                if (isNullOrUndefined(vm.employeeCode())) {
+                    $('#a3_2').focus();
+                    hasError = true;
+                    return hasError;
+                }
+                if(isNullOrUndefined(vm.workplaceCode())){
+                    $('#a6_2').focus();
+                    hasError = true;
+                    return hasError;
+                }
+            }
+            if (isNullOrUndefined(vm.startDate()) || isNullOrUndefined(vm.endDate())) {
+                $('#new_date').focus();
+                hasError = true;
+                return hasError;
+            }
+            return hasError;
         }
 
         /**
@@ -598,14 +632,13 @@ module nts.uk.com.view.cmm051.a {
                             if (!isNullOrEmpty(eminfos) && !isNullOrEmpty(personList)) {
                                 let eminfo = eminfos[0];
                                 let info = _.find(personList, (e) => e.pid == eminfo.personId);
-                                vm.employeeId(eminfo.id);
+                                vm.employeeId(eminfo.employeeId);
                                 vm.employeeCode(eminfo.employeeCode);
                                 vm.employeeName(info.businessName);
-
                             }
                         }
                         if (vm.mode() == Mode.EMPLOYMENT) {
-                            if(!isNullOrEmpty(empId)){
+                            if (!isNullOrEmpty(empId)) {
                                 let eInfor = _.find(eminfos, (e) => e.employeeId == empId[0]);
                                 if (!isNullOrUndefined(eInfor)) {
                                     let per = _.find(personList, (e) => e.pid == eInfor.personId);
@@ -625,15 +658,15 @@ module nts.uk.com.view.cmm051.a {
                                         })
                                     }
                                 } else {
-                                    vm.workplaceName("");
-                                    vm.workplaceCode("");
-                                    vm.workPlaceId("");
+                                    vm.workplaceName(null);
+                                    vm.workplaceCode(null);
+                                    vm.workPlaceId(null);
                                     vm.dateHistoryList([]);
                                     vm.workPlaceList([]);
                                 }
                                 vm.workPlaceList(wplIf);
                                 if (!isNullOrEmpty(vm.workPlaceList())) {
-                                    let wp = _.find(vm.workPlaceList(), (i) => i.id == wplId)
+                                    let wp = _.find(vm.workPlaceList(), (i) => i.id == wplId);
                                     if (isNullOrUndefined(wp)) {
                                         vm.workPlaceId(vm.workPlaceList()[0].id);
                                         vm.workPlaceId.valueHasMutated();
@@ -674,19 +707,9 @@ module nts.uk.com.view.cmm051.a {
          */
         public openAddHistoryDialog() {
             let vm = this;
-            let id = vm.historyId();
-            let info = _.find(vm.dateHistoryList(), (e) => e.id == id);
-            let startDate: any = "";
-            let endDate: any = "";
-            if (!isNullOrUndefined(info)) {
-                startDate = info.startDate;
-                endDate = info.endDate;
-            }
             let dataToScreenB = {
                 isCreate: true,
                 isUpdate: false,
-                startDate: startDate,
-                endDate: endDate
             };
             nts.uk.ui.windows.setShared("dataToScreenB", dataToScreenB);
             nts.uk.ui.windows.sub.modal('/view/cmm/051/b/index.xhtml').onClosed(() => {

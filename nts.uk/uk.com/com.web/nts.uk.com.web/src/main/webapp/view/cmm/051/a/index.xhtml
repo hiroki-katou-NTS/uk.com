@@ -49,11 +49,11 @@
                 <div data-bind="if: mode() == 1" >
                     <div class="valign-center control-group a_3">
                         <!--A8_1-->
-                        <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
+                        <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_46')}</div>
                         <!--A8_2-->
-                        <button tabindex="12" class="" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_47')}</button>
+                        <button tabindex="12" id = "a8_2" class="" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_47')}</button>
                         <!--A8_3-->
-                        <label class="ntsControl limited-label wp-code" data-bind="text: workplaceCode()  "> </label>
+                        <label class="ntsControl limited-label wp-code" id = "wpl_code" data-bind="text: workplaceCode(),required:true  "> </label>
                         <!--A8_4-->
                         <label class="ntsControl limited-label wp-name" data-bind="text: workplaceName()"> </label>
                     </div>
@@ -61,11 +61,11 @@
                 <div data-bind="if: mode() == 0">
                     <div  class="valign-center control-group a_3">
                         <!--A3_1-->
-                        <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
+                        <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_41')}</div>
                         <!--A3_2-->
-                        <button tabindex="5" class="" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_42')}</button>
+                        <button tabindex="5" id = "a3_2" class="" data-bind="click: openDialogA3282 ">#{i18n.getText('CMM051_42')}</button>
                         <!--A3_3-->
-                        <label class="ntsControl limited-label wp-code " data-bind="text: employeeCode()  "> </label>
+                        <label class="ntsControl limited-label wp-code " data-bind="text: employeeCode(),required:true  "> </label>
                         <!--A3_3-->
                         <label class="ntsControl limited-label wp-name " data-bind="text: employeeName()"> </label>
                     </div>
@@ -101,12 +101,12 @@
                     <div data-bind="if: mode() == 1">
                         <div  class="a_6">
                             <!--A10_1-->
-                            <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_41')}</div>
+                            <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_41')}</div>
                             <!--A10_2-->
-                            <button tabindex="14" class=" a_62"
+                            <button tabindex="14" class=" a_62" id = "a10_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode() ">#{i18n.getText('CMM051_47')}</button>
                             <!--A10_3-->
-                            <label class="ntsControl limited-label wp-code" data-bind="text: employeeCode()  "> </label>
+                            <label class="ntsControl limited-label wp-code" data-bind="text: employeeCode(),required:true  "> </label>
                             <!--A10_4-->
                             <label class="ntsControl limited-label wp-name" data-bind="text: employeeName() "> </label>
                         </div>
@@ -115,12 +115,12 @@
                         <!--A6-->
                         <div  class="a_10">
                             <!--A6_1-->
-                            <div data-bind="ntsFormLabel:{} ">#{i18n.getText('CMM051_46')}</div>
+                            <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_46')}</div>
                             <!--A6_2-->
-                            <button tabindex="7" class=" a_62"
+                            <button tabindex="7" class=" a_62" id = "a6_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode()">#{i18n.getText('CMM051_42')}</button>
                             <!--A6_3-->
-                            <label class="ntsControl limited-label wp-code code" data-bind="text:  workplaceCode()"> </label>
+                            <label class="ntsControl limited-label wp-code code" data-bind="text:  workplaceCode(),required:true"> </label>
                             <!--A6_4-->
                             <label class="ntsControl limited-label wp-name name" data-bind="text:  workplaceName()"> </label>
                         </div>
@@ -138,11 +138,11 @@
                             <tr>
                                 <!--A7_1-->
                                 <td style="vertical-align: top;">
-                                    <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM051_48')}</div>
+                                    <div data-bind="ntsFormLabel: {required:true}">#{i18n.getText('CMM051_48')}</div>
                                 </td>
                                 <!--A7_2-->
                                 <td tabindex="8">
-                                    <div id="list-box" tabindex="7"
+                                    <div id="list_box" tabindex="7"
                                          data-bind="ntsListBox: {
 									name: '#[CMM051_49]',
 									options: dateHistoryList,
@@ -151,6 +151,7 @@
 									multiple: false,
 									value: historyId,
 									rows: 4,
+									required:true,
 									columns: [
 										{ key: 'display', length: 15 }
 									]}">
@@ -159,7 +160,7 @@
                                 <td style="vertical-align: top;">
                                     <div>
                                         <!--A7_3-->
-                                        <button tabindex="9"
+                                        <button tabindex="9" id = "new_date"
                                                 data-bind="click: openAddHistoryDialog, enable : isNewModeHist"
                                                 class="history-button">#{i18n.getText('CMM051_50')}</button>
                                     </div>
