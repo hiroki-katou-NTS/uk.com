@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class RegisterSupportOperationSettingCommand {
     /** 利用するか **/
-    private boolean isUsed;
+    private int isUsed;
 
     /** 応援先が応援者を指定できるか **/
-    private boolean supportDestinationCanSpecifySupporter;
+//    private boolean supportDestinationCanSpecifySupporter;
 
     /** 一日の最大応援回数 **/
     private Integer maxNumberOfSupportOfDay;

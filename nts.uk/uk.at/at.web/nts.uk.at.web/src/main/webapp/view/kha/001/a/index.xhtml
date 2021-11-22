@@ -19,10 +19,9 @@
           <button
               class="proceed"
               tabindex="1"
-              data-bind="text: $vm.$i18n('KHA001_1'), click: , enable: $root.errors.isEmpty"
+              data-bind="text: $vm.$i18n('KHA001_1'), click: saveData, enable: $root.errors.isEmpty"
           ></button>
           <button
-              class="proceed"
               tabindex="2"
               data-bind="text: $vm.$i18n('KHA001_2'), click: exportExcel, enable: $root.errors.isEmpty"
           ></button>
@@ -31,11 +30,11 @@
           <div class="table mb-5">
             <div class="cell cell-left">
               <div
-                      data-bind="ntsFormLabel: { required: false}, text: $vm.$i18n('KHA001_3')"
+                      data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KHA001_3')"
               ></div>
             </div>
             <div class="cell valign-center">
-              <div
+              <div id ="KHA001_3"
                   class="cf"
                   tabindex="3"
                   data-bind="ntsSwitchButton: {
@@ -44,7 +43,7 @@
                                 optionsValue: 'code',
                                 optionsText: 'name',
                                 value: isUse,
-                                required: false,
+                                required: true,
                                 enable: true }"
               ></div>
             </div>
@@ -52,25 +51,29 @@
           <div class="table mb-5">
             <div class="cell cell-left">
               <div
-                      data-bind="ntsFormLabel: { required: false}, text: $vm.$i18n('KHA001_7')"
+                      data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KHA001_7')"
               ></div>
             </div>
             <div class="cell valign-center">
-              <div id="combo-box" data-bind="ntsComboBox: {
+              <div id="combo-box" tabindex="4" data-bind="ntsComboBox: {
                 name: '#[KHA001_7]',
                 options: itemListCbb,
-                optionsValue: 'value',
+                optionsValue: 'code',
                 visibleItemsCount: 5,
                 value: selectedCode,
                 editable: false,
-                enable: true,
-                required: false,
+                enable: isUse,
+                required: true,
                 selectFirstIfNull: true,
+                 width: 74,
                 columns: [
-                    { prop: 'code', length: 10 }
+                    { prop: 'code', length: 2 }
                 ]}">
+
               </div>
+
             </div>
+            <label>#{i18n.getText('KHA001_9')}</label>
           </div>
         </div>
       </ui:define>

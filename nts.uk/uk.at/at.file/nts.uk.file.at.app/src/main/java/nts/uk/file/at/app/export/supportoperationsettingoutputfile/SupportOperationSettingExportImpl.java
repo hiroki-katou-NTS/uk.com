@@ -39,11 +39,10 @@ public class SupportOperationSettingExportImpl implements MasterListData {
         String cid = AppContexts.user().companyId();
         List<MasterData> datas = new ArrayList<>();
         SupportOperationSetting supportOSExportData = supportOperationSettingRepository.get(cid);
-        if (supportOSExportData != null) {
+        if (supportOSExportData == null) {
             return datas;
-        } else {
-            datas.add(toData(supportOSExportData));
         }
+        datas.add(toData(supportOSExportData));
         return datas;
     }
 
@@ -56,14 +55,19 @@ public class SupportOperationSettingExportImpl implements MasterListData {
         Map<String, MasterCellData> data = new HashMap<>();
         data.put(SupportOperationSettingColumn.KHA001_3, MasterCellData.builder()
                 .columnId(SupportOperationSettingColumn.KHA001_3)
-                .value(x.isUsed() ? "Use" : "Not Use")
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .value(x.isUsed() ? TextResource.localize("KHA001_10") : TextResource.localize("KHA001_11"))
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
         data.put(SupportOperationSettingColumn.KHA001_7, MasterCellData.builder()
                 .columnId(SupportOperationSettingColumn.KHA001_7)
-                .value(x.getMaxNumberOfSupportOfDay().v())
-                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                .value(x.isUsed()? x.getMaxNumberOfSupportOfDay().v():"-")
+                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT))
                 .build());
         return MasterData.builder().rowData(data).build();
+    }
+
+    @Override
+    public String mainSheetName() {
+        return TextResource.localize("KHA001_50");
     }
 }

@@ -13,16 +13,16 @@ import javax.inject.Inject;
 @Stateless
 public class RegisterSupportOperationSettingCommandHandler extends CommandHandler<RegisterSupportOperationSettingCommand> {
 
-
     @Inject
-    SupportOperationSettingRepository repository;
+    private SupportOperationSettingRepository repository;
+
     @Override
     protected void handle(CommandHandlerContext<RegisterSupportOperationSettingCommand> commandHandlerContext) {
         RegisterSupportOperationSettingCommand command = commandHandlerContext.getCommand();
         String cid = AppContexts.user().companyId();
         SupportOperationSetting supportOperationSetting = new SupportOperationSetting(
-                command.isUsed(),
-                command.isSupportDestinationCanSpecifySupporter(),
+                command.getIsUsed()==1,
+                false, // default value
                 new MaximumNumberOfSupport(command.getMaxNumberOfSupportOfDay())
         );
 

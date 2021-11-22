@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 public class SupportOperationSettingWebService extends WebService {
 
     @Inject
-    RegisterSupportOperationSettingCommandHandler registerSupportOperationSettingCommandHandler;
+    private RegisterSupportOperationSettingCommandHandler registerSupportOperationSettingCommandHandler;
 
     @POST
     @Path("updateSupportOperationSetting")

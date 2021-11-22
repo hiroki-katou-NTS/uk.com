@@ -16,7 +16,7 @@ import javax.ws.rs.Produces;
 @Produces("application/json")
 public class SupportOperationSettingGetWebService extends WebService {
     @Inject
-    InitialDisplayKhaScreenQuery displayKhaScreenQuery;
+    private InitialDisplayKhaScreenQuery displayKhaScreenQuery;
 
     @POST
     @Path("get-data")

@@ -36,7 +36,7 @@ public class JpaSupportOperationSettingRepository extends JpaRepository implemen
     private void toEntity(SupportOperationSetting domain, KshmtSupportOperationSetting entity){
         entity.setAvailable(domain.isUsed());
         entity.setCanRecipientChooseSupporter(domain.isSupportDestinationCanSpecifySupporter());
-        entity.setMaxTimesPerDayOfSupport(domain.getMaxNumberOfSupportOfDay().v());
+        entity.setMaxTimesPerDayOfSupport(domain.isUsed() ? domain.getMaxNumberOfSupportOfDay().v(): entity.getMaxTimesPerDayOfSupport());
     }
 
 
