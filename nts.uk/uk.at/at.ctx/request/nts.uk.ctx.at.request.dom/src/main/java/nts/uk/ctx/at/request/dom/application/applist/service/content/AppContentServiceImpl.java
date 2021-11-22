@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.primitive.PrimitiveValueBase;
+import nts.uk.ctx.at.request.dom.application.overtime.*;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -59,11 +63,6 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
-import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
@@ -906,8 +905,15 @@ public class AppContentServiceImpl implements AppContentService {
 				}
 			}
 		}
+		//  複数回残業申請を追加 2021/10　申請⑧EA4134
+		//・申請種類＝残業申請
+		//・申請データ(残業申請).残業区分＝複数回残業
 		if(appType == ApplicationType.OVER_TIME_APPLICATION && appOverTimeData.getOvertimeAtr() == ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME.value ){
-			//String appReasonContent = this.getOvertimeApplicationDataMultiTime()
+			result = this.getOvertimeApplicationDataMultiTime(
+					appReasonDisAtr,
+					appHolidayWorkData,
+					screenAtr,
+					result);
 		}else {
 			// 申請理由内容　＝　申請内容の申請理由
 			String appReasonContent = this.getAppReasonContent(
@@ -1491,14 +1497,83 @@ public class AppContentServiceImpl implements AppContentService {
 	}
 
 	@Override
-	public String getOvertimeApplicationDataMultiTime(DisplayAtr appReasonDisAtr, AppHolidayWorkData appHolidayWorkData, ScreenAtr screenAtr, String appReasonContent) {
-		// $SV=empty;
-		// $複数残業=empty
-		String SV = "";
-		String multipleOverTime = "";
+	public String getOvertimeApplicationDataMultiTime(DisplayAtr appReasonDisAtr, AppHolidayWorkData appHolidayWorkData,
+													  ScreenAtr screenAtr, String appReasonContent) {
+		String companyId = AppContexts.user().companyId();
+		//　・申請理由内容 => appReasonContent
+		String reasonContent = appReasonContent;
+		//変数的に利用
+		// $SV = empty;
+		String SV = Strings.EMPTY;
+		// $複数残業 = empty
+		StringBuilder multipleOverTime = new StringBuilder(Strings.EMPTY);
+		ReasonForFixedForm reasonForFixedForm;
+		Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId, appHolidayWorkData.getAppID());
+		if(apOptional.isPresent()){
+			Optional<OvertimeWorkMultipleTimes> multipleTimesOp = apOptional.get().getMultipleTimesOp();
+			if(multipleTimesOp.isPresent()){
+				List<OvertimeReason> overtimeReasons = multipleTimesOp.get().getOvertimeReasons();
+				List<OvertimeHour> overtimeHours = multipleTimesOp.get().getOvertimeHours()
+						.stream()
+						.sorted(Comparator.comparing(OvertimeHour::getOvertimeNumber)).collect(Collectors.toList());
+				//残業申請.複数回残業内容.残業時間帯を残業回数昇順で１～ループ
+				for (int i = 0; i <overtimeHours.size() ; i++) {
+					val overtime =  overtimeHours.get(i);
+					Optional<OvertimeReason> overtimeReasonOptional =
+							overtimeReasons.stream().filter(e->e.getOvertimeNumber().equals(overtime.getOvertimeNumber())).findFirst();
+					TimeSpanForCalc timeSpanForCalc = overtime.getOvertimeHours();
+					AppStandardReasonCode appStandardReasonCode = null;
+					if(overtimeReasonOptional.isPresent()){
+						Optional<AppStandardReasonCode> fixedReasonCodeOpt = overtimeReasonOptional.get().getFixedReasonCode();
+						if(fixedReasonCodeOpt.isPresent()){
+							appStandardReasonCode = fixedReasonCodeOpt.get();
+						}
+					}
+					//ScreenID
+					//CMM045の場合
+					if(i>=1){
+						if(screenAtr == ScreenAtr.CMM045 ||screenAtr == ScreenAtr.KAF018){
+							SV = I18NText.getText("CMM045_308") + " ";
+						}else {
+							SV = "\n";
+						}
+					}
+					if (screenAtr == ScreenAtr.CMM045) {
+						//申請理由表示区分 => 表示しないの場合
+						if(appReasonDisAtr == DisplayAtr.NOT_DISPLAY){
+							// 申請の理由 ＝ Empty
+							reasonContent = Strings.EMPTY;
+						}
+					}else {
+						 reasonForFixedForm = this.getAppStandardReasonContent(
+								ApplicationType.OVER_TIME_APPLICATION, appStandardReasonCode, Optional.empty());
+						//申請の理由 ＝ 上記取得定型理由＋複数回残表内容.残業理由.申請理由
+						//複数回残表内容.残業理由.申請理由
+						String appReason  = Strings.EMPTY;
+						if(overtimeReasonOptional.isPresent()){
+							Optional<AppReason> applyReason = overtimeReasonOptional.get().getApplyReason();
+							if(applyReason.isPresent()){
+								appReason = applyReason.get().v();
+							}
+						}
+						reasonContent = reasonForFixedForm.v() + appReason;
+					}
+					//$複数残業 ＋＝ $SV＋ #CMM045_307※パラメータへのセットはノート参照
+					List<String> params = new ArrayList<>();
+					if(timeSpanForCalc !=null){
+						TimeWithDayAttr start = timeSpanForCalc.getStart();
+						TimeWithDayAttr end = timeSpanForCalc.getEnd();
+						params.add(start.toString());
+						params.add(end.toString());
+						params.add(reasonContent);
+					}
 
+					multipleOverTime.append(SV).append(I18NText.getText("CMM045_307", params));
+				}
+				reasonContent += multipleOverTime + " " + "\n" +" "+ reasonContent;
 
-
-					return null;
+			}
+		}
+			return reasonContent;
 	}
 }

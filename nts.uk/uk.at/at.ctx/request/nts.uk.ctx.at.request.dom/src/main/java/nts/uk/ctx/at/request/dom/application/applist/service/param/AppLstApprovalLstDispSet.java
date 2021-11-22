@@ -42,5 +42,10 @@ public class AppLstApprovalLstDispSet {
 	 * 申請対象日に対して警告表示
 	 */
 	private int appDateWarningDisp;
+
+	/**
+	 * 承認機能を利用する (申請⑧EA4134) todo
+	 */
+	private int useApprovalFunction;
 	
 }

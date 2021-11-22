@@ -69,6 +69,9 @@ public class ApplicationListFinder {
 		if(opApprovalListDisplaySetting.isPresent()) {
 			result.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
 			result.getDisplaySet().setAppDateWarningDisp(opApprovalListDisplaySetting.get().getWarningDateDisAtr().v());
+			//2021/10　申請⑧EA4134
+			//・申請一覧承認一覧表示設定.所属職場名表示.承認機能を利用する＝承認一覧表示設定.承認機能を利用する
+			result.getDisplaySet().setUseApprovalFunction(opApprovalListDisplaySetting.get().getUseApprovalFunction().value);
 		}
 		GeneralDate startDate = null;
 		GeneralDate endDate = null;

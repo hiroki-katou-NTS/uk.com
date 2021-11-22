@@ -38,7 +38,7 @@ public class AppLstApprovalLstDispSetDto {
 	private int appDateWarningDisp;
 
 	/**
-	 * 承認機能を利用する (申請⑧EA4134)
+	 * 承認機能を利用する (申請⑧EA4134) todo
 	 */
 	private int useApprovalFunction;
 	
@@ -50,7 +50,7 @@ public class AppLstApprovalLstDispSetDto {
 				displaySet.getEndDateDisp() == null ? null : displaySet.getEndDateDisp().toString(), 
 				displaySet.getWorkplaceNameDisp(), 
 				displaySet.getAppDateWarningDisp(),
-				1
+				displaySet.getUseApprovalFunction()
 		);
 	}
 	
