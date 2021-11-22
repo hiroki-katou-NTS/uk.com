@@ -152,18 +152,15 @@ module nts.uk.ui.at.kdw013.timeheader {
 
             const taskBlocks = _.get(manHrTask, 'taskBlocks', []);
 
-            if (!id || !ouenTimeSheet.length || !taskBlocks.length) {
+            if (!id || !ouenTimeSheet.length) {
                 return false;
             }
 
-            for (let i = 0; i < taskBlocks.length; i++) {
-
-                let taskDetails = _.get(taskBlocks[i], 'taskDetails', []);
-
-                for (let j = 0; j < taskDetails.length; j++) {
-                    if (_.find(ouenTimeSheet, ['workNo', _.get(taskDetails[j], 'supNo')])) {
-                        return true;
-                    }
+            for (let i = 0; i < ouenTimeSheet.length; i++) {
+                const workNo = _.get(ouenTimeSheet[i], 'workNo');
+                
+                if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
+                    return true;
                 }
             }
 
