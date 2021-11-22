@@ -31,7 +31,7 @@ public class JpaEditStateOfDailyRepository extends JpaRepository implements Edit
 			listItemIdString = listItemIdString.substring(0, listItemIdString.length() - 1) + ")";
 
 			Connection con = this.getEntityManager().unwrap(Connection.class);
-			String sqlQuery = "DELETE FROM KRCDT_DAY_EDIT_STATE WHERE SID = " + "'" + sId + "'" + " and YMD = "
+			String sqlQuery = "DELETE FROM KRCDT_DAY_EDIT_STATE WHERE SID = " + "'" + sId + "'" + " AND YMD = "
 					+ "'" + ymd + "'" + " AND ATTENDANCE_ITEM_ID IN " + listItemIdString;
 			try {
 				con.createStatement().executeUpdate(sqlQuery);

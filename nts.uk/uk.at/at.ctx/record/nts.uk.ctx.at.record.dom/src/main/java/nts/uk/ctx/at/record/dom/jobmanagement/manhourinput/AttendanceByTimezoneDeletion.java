@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
@@ -19,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
  */
 @Getter
 @AllArgsConstructor
+@Value
 public class AttendanceByTimezoneDeletion implements DomainValue {
 
 	// 枠NO

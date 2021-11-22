@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 
@@ -18,7 +18,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @AllArgsConstructor
-public class DeleteAttendancesByTimezone extends AggregateRoot {
+public class DeleteAttendancesByTimezone implements DomainAggregate {
 
 	// 社員ID
 	private final String sId;

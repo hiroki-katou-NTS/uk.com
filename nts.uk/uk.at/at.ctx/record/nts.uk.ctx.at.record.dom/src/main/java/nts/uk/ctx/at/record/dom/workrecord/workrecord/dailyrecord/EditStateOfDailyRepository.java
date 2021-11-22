@@ -16,5 +16,5 @@ public interface EditStateOfDailyRepository {
 	 * @param ymd 年月日
 	 * @param itemIdList 勤怠項目ID一覧
 	 */
-	void deleteByListItemId(String sId, GeneralDate ymd, List<Integer> itemIdList);
+	void deleteByListItemId(String sId, GeneralDate ymd, List<Integer> attendanceItemIds);
 }
