@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CreateFlowMenuDto;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponseDto;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
@@ -77,7 +78,11 @@ public class CopyFileCommandHandler extends CommandHandlerWithResult<CopyFileCom
 		// Copy フローメニューレイアウト fileId
 		// Replace all old fileIds with new fileIds
 		try {
-			String htmlContent = this.fileExportService.extract(layout.getFileId()).getHtmlContent();
+			Optional<ExtractionResponseDto> optHtmlContent = this.fileExportService.extract(layout.getFileId());
+			if (!optHtmlContent.isPresent()) {
+				return new CopyFileResultDto(CreateFlowMenuDto.fromDomain(createFlowMenu), "");
+			}
+			String htmlContent = optHtmlContent.get().getHtmlContent();
 			for (Entry<String, String> entry : fileMap.entrySet()) {
 				htmlContent = htmlContent.replace(entry.getKey(), entry.getValue());
 			}

@@ -60,11 +60,10 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 
 	@Override
 	public void deleteUploadedFiles(FlowMenuLayout layout) {
-		layout.getFileAttachmentSettings().forEach(file -> this.fileStorage.delete(file.getFileId()));
+		layout.getFileAttachmentSettings().forEach(file -> this.deleteFile(file.getFileId()));
 		layout.getImageSettings().forEach(image -> {
-			if (image.getIsFixed().equals(FixedClassification.RANDOM) && image.getFileId().isPresent()
-					&& !StringUtil.isNullOrEmpty(image.getFileId().get(), true)) {
-				this.fileStorage.delete(image.getFileId().get());
+			if (image.getIsFixed().equals(FixedClassification.RANDOM) && image.getFileId().isPresent()) {
+				this.deleteFile(image.getFileId().get());
 			}
 		});
 		this.deleteLayout(layout);
@@ -72,9 +71,7 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 
 	@Override
 	public void deleteLayout(FlowMenuLayout layout) {
-		if (layout.getFileId() != null) {
-			this.fileStorage.delete(layout.getFileId());
-		}
+		this.deleteFile(layout.getFileId());
 	}
 
 	/**
@@ -89,5 +86,11 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 			file = Paths.get(DATA_STORE_PATH, AppContexts.user().contractCode(), fileId).toFile();
 		}
 		return file;
+	}
+	
+	private void deleteFile(String fileId) {
+		if (!StringUtil.isNullOrEmpty(fileId, true)) {
+			this.fileStorage.delete(fileId);
+		}
 	}
 }
