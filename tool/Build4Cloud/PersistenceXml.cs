@@ -21,7 +21,7 @@ namespace Build4Cloud
         {
             StashOriginalFile();
 
-            Template template = Template.Load(path + ".orig");
+            Template template = Template.Load(PathToStashed);
 
             using (var cloud = File.CreateText(path))
             {
@@ -44,13 +44,18 @@ namespace Build4Cloud
 
         private void StashOriginalFile()
         {
-            File.Move(path, path + ".orig");
+            File.Move(path, PathToStashed);
         }
 
         public void RestoreOriginalFile()
         {
             File.Delete(path);
-            File.Move(path + ".orig", path);
+            File.Move(PathToStashed, path);
+        }
+
+        private String PathToStashed
+        {
+            get { return path + ".orig"; }
         }
     }
 

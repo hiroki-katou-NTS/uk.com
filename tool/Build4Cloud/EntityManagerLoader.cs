@@ -20,7 +20,7 @@ namespace Build4Cloud
         {
             StashOriginalFile();
 
-            var lines = File.ReadAllLines(GetPathToStashed());
+            var lines = File.ReadAllLines(PathToStashed);
 
             using (var writer = File.CreateText(path))
             {
@@ -55,18 +55,18 @@ namespace Build4Cloud
 
         private void StashOriginalFile()
         {
-            File.Move(path, GetPathToStashed());
+            File.Move(path, PathToStashed);
         }
 
         public void RestoreOriginalFile()
         {
             File.Delete(path);
-            File.Move(GetPathToStashed(), path);
+            File.Move(PathToStashed, path);
         }
 
-        private string GetPathToStashed()
+        private String PathToStashed
         {
-            return path + ".orig";
+            get { return path + ".orig"; }
         }
     }
 }
