@@ -910,7 +910,7 @@ module nts.uk.ui.at.kdw013.a {
 
         createDeleteAttByTimeZones(dates){
             let vm = this;
-            const sID = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
+            const sId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
 
             
             const deleteList = [];
@@ -935,7 +935,7 @@ module nts.uk.ui.at.kdw013.a {
             });    
     
     
-            return { sID, deleteList };
+            return { sId, deleteList };
     
         }
 
@@ -1236,9 +1236,9 @@ module nts.uk.ui.at.kdw013.a {
            taskInfos(){
                 let vm = this;
                 let warnings = [];
-                _.forEach(vm.ouenWorkTimes(), wt => {
+                _.forEach(vm.ouenWorkTimeSheets(), os => {
 
-                    let os: OuenWorkTimeSheetOfDailyAttendance = ko.utils.arrayFirst(vm.ouenWorkTimeSheets(), function(e) { return e.workNo == wt.no });
+                    let wt = ko.utils.arrayFirst(vm.ouenWorkTimes(), function(e) { return e.no == os.workNo });
                     let workCD1 = _.get(os, 'workContent.work.workCD1', null);
                     let workCD2 = _.get(os, 'workContent.work.workCD2', null);
                     let workCD3 = _.get(os, 'workContent.work.workCD3', null);
@@ -1281,9 +1281,9 @@ module nts.uk.ui.at.kdw013.a {
                     
                     if (!!os) {
                         warnings.push({
-                            workNo: wt.no,
+                            workNo: os.workNo,
                             name: taskNames,
-                            time: formatTime(wt.workTime.totalTime, 'Time_Short_HM')
+                            time: formatTime(_.get(wt, 'workTime.totalTime', 0), 'Time_Short_HM')
                         });
                     }
                 });
