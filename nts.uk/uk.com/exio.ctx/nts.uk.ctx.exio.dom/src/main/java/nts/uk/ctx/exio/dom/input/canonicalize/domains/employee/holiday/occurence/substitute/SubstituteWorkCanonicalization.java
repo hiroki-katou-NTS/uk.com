@@ -3,18 +3,32 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurenc
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.OccurenceHolidayCanonicalizationBase;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 振出管理データの正準化
  */
 public class SubstituteWorkCanonicalization extends OccurenceHolidayCanonicalizationBase {
 
-	public SubstituteWorkCanonicalization(DomainWorkspace workspace) {
-		super(workspace);
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 振出日 = 2;
+		public static final int 使用期限日 = 3;
+		public static final int 振出日数 = 4;
+		public static final int 振出データID = 100;
+		public static final int SID = 101;
+		public static final int 日付不明 = 102;
+		public static final int 振休消化区分 = 103;
+		public static final int 消滅日 = 104;
+		public static final int 法定内外区分 = 105;
 	}
 
 	@Override
@@ -23,10 +37,8 @@ public class SubstituteWorkCanonicalization extends OccurenceHolidayCanonicaliza
 			ExecutionContext context, IntermediateResult interm) {
 		
 		return interm
-				// 振休消化区分
-				.addCanonicalized(CanonicalItem.of(103, 0))
-				// 法定内外区分
-				.addCanonicalized(CanonicalItem.of(105, 0));
+				.addCanonicalized(CanonicalItem.of(Items.振休消化区分, 0))
+				.addCanonicalized(CanonicalItem.of(Items.法定内外区分, 0));
 	}
 	
 	public static interface RequireAdjust {
@@ -40,6 +52,6 @@ public class SubstituteWorkCanonicalization extends OccurenceHolidayCanonicaliza
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return super.appendMeta(source).addItem("振出データID");
+		return super.appendMeta(source).addItem(getItemNameByNo(Items.振出データID));
 	}
 }

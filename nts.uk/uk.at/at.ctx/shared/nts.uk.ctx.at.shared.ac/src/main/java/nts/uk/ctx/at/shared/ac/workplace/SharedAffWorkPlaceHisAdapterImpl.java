@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.shared.ac.workplace;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
@@ -37,6 +41,33 @@ public class SharedAffWorkPlaceHisAdapterImpl implements SharedAffWorkPlaceHisAd
 				opSWkpHistExport.get().getWkpDisplayName());
 		
 		return Optional.of(sharedAffWorkPlaceHisImport);
+	}
+	
+	@Override
+	public Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> getAffWorkPlaceHisClones(String companyId, List<String> employeeId, DatePeriod processingDate) {
+		Map<GeneralDate, Map<String, Optional<SWkpHistExport>>> sWkpHistExportMap = this.workplacePub.findBySid(companyId, employeeId, processingDate);
+		
+		Map<GeneralDate, Map<String, Optional<SharedAffWorkPlaceHisImport>>> resultMap = new HashMap<GeneralDate, Map<String,Optional<SharedAffWorkPlaceHisImport>>>();
+		
+		for (val sWkpHistExpor : sWkpHistExportMap.entrySet()) {
+			Map<String, Optional<SharedAffWorkPlaceHisImport>> sharedAffWorkPlaceHisImportMap = new HashMap<String, Optional<SharedAffWorkPlaceHisImport>>();
+			for (val opSWkpHistExport : sWkpHistExpor.getValue().entrySet()) {
+				if (!opSWkpHistExport.getValue().isPresent()) {
+					sharedAffWorkPlaceHisImportMap.put(opSWkpHistExport.getKey(), Optional.empty());
+				} else {
+				
+				SharedAffWorkPlaceHisImport sharedAffWorkPlaceHisImport = new SharedAffWorkPlaceHisImport(opSWkpHistExport.getValue().get().getDateRange(),
+						opSWkpHistExport.getValue().get().getEmployeeId(), opSWkpHistExport.getValue().get().getWorkplaceId(),
+						opSWkpHistExport.getValue().get().getWorkplaceCode(), opSWkpHistExport.getValue().get().getWorkplaceName(),
+						opSWkpHistExport.getValue().get().getWkpDisplayName());
+				
+				sharedAffWorkPlaceHisImportMap.put(opSWkpHistExport.getKey(), Optional.of(sharedAffWorkPlaceHisImport));
+				}
+			}
+			resultMap.put(sWkpHistExpor.getKey(), sharedAffWorkPlaceHisImportMap);
+		}
+		
+		return resultMap;
 	}
 
 	@Override
