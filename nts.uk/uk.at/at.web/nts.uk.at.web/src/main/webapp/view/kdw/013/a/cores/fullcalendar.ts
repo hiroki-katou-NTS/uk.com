@@ -577,7 +577,7 @@ module nts.uk.ui.at.kdw013.calendar {
             firstDay: ko.observable(1),
             scrollTime: ko.observable(420),
             slotDuration: ko.observable(30),
-            initialView : ko.observable('oneDay')
+            initialView : ko.observable('fullWeek')
         },
         excludeTimes: ko.observableArray([])
     });
@@ -717,7 +717,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     firstDay: ko.observable(1),
                     slotDuration: ko.observable(30),
                     editable: ko.observable(false),
-                    initialView: ko.observable('oneDay'),
+                    initialView: ko.observable('fullWeek'),
                     availableView: ko.observableArray([]),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
@@ -781,7 +781,7 @@ module nts.uk.ui.at.kdw013.calendar {
             }
 
             if (initialView === undefined) {
-                this.params.initialView = ko.observable('oneDay');
+                this.params.initialView = ko.observable('fullWeek');
             }
 
             if (availableView === undefined) {
