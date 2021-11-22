@@ -416,7 +416,11 @@ module nts.uk.com.view.cas012.a {
                 });
             }
         }
-
+        private showMessageError(res: any) {
+            if (res.businessException) {
+                nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+            }
+        }
         private insert(): void {
             let vm = this;
             let roleType = vm.selectedRoleType();
@@ -544,8 +548,9 @@ module nts.uk.com.view.cas012.a {
                             vm.selectCid("",roleType,userId);
                             vm.selectedUserID(userId);
                         }).always(() => {
-                        }).fail(()=>{
+                        }).fail((res)=>{
                             block.clear();
+                            vm.showMessageError(res);
                         });
                     }
                     else if (roleType == ListType.COMPANY_MANAGER) {
@@ -559,9 +564,9 @@ module nts.uk.com.view.cas012.a {
                             vm.selectCid(cid,roleType,userId);
                             vm.selectedUserID(userId);
                         }).always(() => {
-
-                        }).fail(()=>{
+                        }).fail((res)=>{
                             block.clear();
+                            vm.showMessageError(res);
                         });
                     }
 
