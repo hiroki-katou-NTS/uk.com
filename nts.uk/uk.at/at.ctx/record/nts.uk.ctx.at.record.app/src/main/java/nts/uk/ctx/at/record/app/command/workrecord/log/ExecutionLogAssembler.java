@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.app.command.workrecord.log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,10 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Cal
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContentRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.PartResetClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SetInforReflAprResult;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.SettingInforForDailyCreation;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -78,41 +74,10 @@ public class ExecutionLogAssembler {
 		List<ExecutionLog> result = new ArrayList<ExecutionLog>();
 		// Create DailyCreationSetInfo
 		if (command.isDailyCreation()) {
-			ExecutionType executionType = EnumAdaptor.valueOf(command.getCreationType(), ExecutionType.class);
-			DailyRecreateClassification creationType = EnumAdaptor.valueOf(command.getResetClass(), DailyRecreateClassification.class);
-			// Create PartResetClassification
-			Optional<PartResetClassification> getPartResetClassification = Optional.empty();
-			if (creationType == DailyRecreateClassification.PARTLY_MODIFIED) {
-				getPartResetClassification = Optional.of(new PartResetClassification(
-						// masterReconfiguration
-						command.isMasterReconfiguration(),
-						// closedHolidays
-						command.isClosedHolidays(),
-						// resettingWorkingHours
-						command.isResettingWorkingHours(),
-						// reflectsTheNumberOfFingerprintChecks
-						command.isRefNumberFingerCheck(),
-						// specificDateClassificationResetting
-						command.isSpecDateClassReset(),
-						// resetTimeAssignment
-						command.isResetTimeForAssig(),
-						// resetTimeChildOrNurseCare
-						command.isResetTimeForChildOrNurseCare(),
-						// calculationClassificationResetting
-						command.isCalClassReset()));
-			}
-			
-			SettingInforForDailyCreation dailyCreationSetInfo = new SettingInforForDailyCreation(
-					// executionContent
+			CalExeSettingInfor dailyCreationSetInfo = new CalExeSettingInfor(
 					ExecutionContent.DAILY_CREATION,
-					// executionType
-					executionType, 
-					// calExecutionSetInfoID
-					IdentifierUtil.randomUniqueId(), 
-					// creationType
-					creationType, 
-					// partResetClassification
-					getPartResetClassification);
+					EnumAdaptor.valueOf(command.getCreationType(), ExecutionType.class), 
+					IdentifierUtil.randomUniqueId());
 			val executionLog = createExecutionLog(empCalAndSumExecLogID, ExecutionContent.DAILY_CREATION, command);
 			executionLog.setDailyCreationSetInfo(dailyCreationSetInfo);
 			result.add(executionLog);
