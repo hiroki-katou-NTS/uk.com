@@ -76,7 +76,7 @@ module nts.uk.ui.at.kdw013.b {
             <!-- F3_2 -->
             <div class="textEditor pb10">
                 <!-- F3_1 -->
-                <label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
+				<div data-bind="ntsFormLabel: {required: true}, text: nts.uk.resource.getText('KDW013_71')"></div>
                 <input
                 class="input-f-b"
                 tabindex="1"
@@ -232,6 +232,8 @@ module nts.uk.ui.at.kdw013.b {
 		}
     
         openFDialog(){
+			const vm = this;
+			vm.favTaskName('');
             setTimeout(() => { $('.input-f-b').focus(); }, 100);
 
 			nts.uk.ui.errors.clearAll();
@@ -242,6 +244,7 @@ module nts.uk.ui.at.kdw013.b {
 
 		closeFDialog() {
 			$(".popup-area-f-from-b").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
 		}
 
         mounted() {
