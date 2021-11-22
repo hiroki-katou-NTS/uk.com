@@ -4,7 +4,7 @@
 .error{
 	color: red;
 }
-#contents-area table tr td div{
+#contents-area table tr td>div{
 	min-height: 40px;
 }
 #contents-area table.basic-items tr td:first-child {

@@ -211,7 +211,7 @@ module nts.uk.at.view.kdw013.h {
 						item.use = false;
 					}
 					let itemType = _.find(self.dataMaster.dailyAttendanceItem, d => d.attendanceItemId == item.itemId);
-					item.setUseNameType(itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null));
+					item.setUseNameType(itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null), itemType.masterType);
 					let option: Option[] = [];
 					let divergenceReasonInputMethods = null;
 					//trường hợp đặc biệt
@@ -255,7 +255,7 @@ module nts.uk.at.view.kdw013.h {
 				if(primitiveValue){
 					if(primitiveValue == 21){
 						return 'BusinessTypeCode';
-					}else if(primitiveValue == 55){
+					}else if(primitiveValue == 54){
 						return 'AnyItemAmount';
 					}else if(primitiveValue == 55){
 						return 'AnyAmountMonth';
@@ -543,7 +543,7 @@ module nts.uk.at.view.kdw013.h {
 	}
 	class ItemValue {
 		itemId: number;
-		value: KnockoutObservable<string> = ko.observable(null);
+		value: KnockoutObservable<any> = ko.observable(null);
 		valueBeforeChange: any;
 		valueType: number;
 		layoutCode: string;
@@ -589,15 +589,39 @@ module nts.uk.at.view.kdw013.h {
 	class ItemValueOption extends ItemValue {
 		lable: KnockoutObservable<string> = ko.observable('');
 		type: number;
+		masterType: number = null;
 		options: Option[] = [];
 		primitiveValue: string;
 		constructor(itemValue: IItemValue) {
 			super(itemValue);
 		}
-		setUseNameType(name?: string, type?: number, primitiveValue?: string) {
+		setUseNameType(name?: string, type?: number, primitiveValue?: string, masterType?: number) {
 			this.lable(name);
 			this.type = type;
+			this.masterType = masterType;
 			this.primitiveValue = primitiveValue;
+			if(this.type == 2 && this.masterType == 9){
+				this.value(this.value() == 1);
+			}
+		}
+		optionToDataSave() {
+			if(this.type == 2 && this.masterType == 9){
+				return {
+					itemId: this.itemId,
+					value: this.value() ? 1 : 0,
+					valueType: this.valueType,
+					layoutCode: this.layoutCode,
+					isFixed: this.fixed
+				};
+			}else{
+				return {
+					itemId: this.itemId,
+					value: this.value(),
+					valueType: this.valueType,
+					layoutCode: this.layoutCode,
+					isFixed: this.fixed
+				};				
+			}
 		}
 	}
 	type Option = {
