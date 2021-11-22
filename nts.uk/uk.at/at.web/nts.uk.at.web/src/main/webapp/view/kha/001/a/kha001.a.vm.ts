@@ -44,12 +44,10 @@ module nts.uk.com.view.kha001.a {
             { code: 19, name: vm.$i18n('KHA001_34') },
             { code: 20, name: vm.$i18n('KHA001_35') }
         ]);
-
-      vm.getSetting();
     }
     mounted() {
       const vm = this;
-
+      vm.getSetting();
     }
 
     getSetting() {
