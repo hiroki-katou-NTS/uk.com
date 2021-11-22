@@ -50,7 +50,7 @@ public class KrcdtDaySupDelete extends ContractCompanyUkJpaEntity implements Ser
 				deletion.getDeletionStatus().value);
 	}
 
-	public AttendanceByTimezoneDeletion toDomain() {
+	public AttendanceByTimezoneDeletion toAttendance() {
 		return new AttendanceByTimezoneDeletion(new SupportFrameNo(this.pk.supTaskNo),
 				AttendanceDeletionStatusEnum.of(this.status));
 	}

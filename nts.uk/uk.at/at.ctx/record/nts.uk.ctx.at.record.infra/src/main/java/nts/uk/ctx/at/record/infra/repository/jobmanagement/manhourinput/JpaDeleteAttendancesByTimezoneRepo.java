@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.jobmanagement.manhourinput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -50,21 +51,14 @@ public class JpaDeleteAttendancesByTimezoneRepo extends JpaRepository implements
 
 		for (KrcdtDaySupDelete entity : entities) {
 
-			if (deletedAttLst.isEmpty()) {
-				deletedAttLst.add(new DeleteAttendancesByTimezone(entity.pk.sId, entity.pk.ymd, new ArrayList<>()));
+			Optional<DeleteAttendancesByTimezone> optDelete = deletedAttLst.isEmpty() ? Optional.empty() : deletedAttLst.stream()
+					.filter(d -> entity.pk.sId.equals(d.getSId()) && entity.pk.ymd.equals(d.getYmd())).findAny();
 
+			if (!optDelete.isPresent()) {
+				deletedAttLst.add(new DeleteAttendancesByTimezone(entity.pk.sId, entity.pk.ymd,	Arrays.asList(entity.toAttendance())));
 			} else {
-
-				for (DeleteAttendancesByTimezone del : deletedAttLst) {
-					if (entity.pk.sId.equals(del.getSId()) && entity.pk.ymd.equals(del.getYmd())) {
-						del.getAttendanceDeletionLst().add(entity.toDomain());
-						
-					} else {
-						deletedAttLst.add(new DeleteAttendancesByTimezone(entity.pk.sId, entity.pk.ymd,
-								Arrays.asList(entity.toDomain())));
-					}
-				}
-
+				optDelete.get().getAttendanceDeletionLst().add(entity.toAttendance());
+				deletedAttLst.add(optDelete.get());
 			}
 
 		}
