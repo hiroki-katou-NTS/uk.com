@@ -45,8 +45,8 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstApprove;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstFrame;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstPhase;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstRoute;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstRouteSingle;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 /**
  * 
  * @author Doan Duy Hung
@@ -101,7 +101,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			+ " WHERE CID = 'companyID' AND EMPLOYEE_ID = 'employeeID'"
 			+ " AND ROOT_TYPE = rootType " + " AND START_DATE < 'recordDate' order by START_DATE desc";
 	
-	private final String UPDATE_END_BY_ID = "update WWFDT_INST_ROUTE set END_DATE = 'endDate' where ROOT_ID = 'rootID'";
+	private final String UPDATE_END_BY_ID = "update WWFDT_INST_ROUTE set END_DATE = @endDate where ROOT_ID = @rootID";
 
 	private final String FIND_BY_EMPS_PERIOD = BASIC_SELECT + " WHERE appRoot.EMPLOYEE_ID IN (employeeIDLst)"
 			+ " AND appRoot.CID = 'companyID'" + " AND appRoot.ROOT_TYPE = rootType"
@@ -547,16 +547,10 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	@Override
 	@SneakyThrows
 	public void updateEndByID(String rootID, GeneralDate endDate) {
-//		String query = UPDATE_END_BY_ID;
-//		query = query.replaceAll("rootID", rootID);
-//		query = query.replaceAll("endDate", endDate.toString("yyyy-MM-dd"));
-//		this.getEntityManager().createNativeQuery(query).executeUpdate();
-		WwfdtInstRouteSingle entity = this.getEntityManager().find(WwfdtInstRouteSingle.class, rootID);
-		if(entity!=null) {
-			entity.setEndDate(endDate);
-			this.commandProxy().update(entity);
-			this.getEntityManager().flush();
-		}
+		new NtsStatement(JDBCUtil.toUpdateWithCommonField(UPDATE_END_BY_ID), this.jdbcProxy())
+		.paramDate("endDate", endDate)
+		.paramString("rootID", rootID)
+		.execute();
 	}
 
 	@Override
