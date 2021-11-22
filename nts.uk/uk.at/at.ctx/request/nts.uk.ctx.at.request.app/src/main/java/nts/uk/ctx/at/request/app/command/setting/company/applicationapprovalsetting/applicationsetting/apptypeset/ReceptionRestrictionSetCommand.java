@@ -62,6 +62,11 @@ public class ReceptionRestrictionSetCommand {
      */
     private Integer earlyNormalOvertime;
 
+    /**
+     * 時刻（複数回残業）
+     */
+    private Integer multipleOvertime;
+
     public ReceptionRestrictionSetting toDomain() {
         if (appType == ApplicationType.OVER_TIME_APPLICATION.value)
             return new ReceptionRestrictionSetting(
@@ -72,7 +77,7 @@ public class ReceptionRestrictionSetCommand {
                             earlyOvertime,
                             normalOvertime,
                             earlyNormalOvertime,
-                            null
+                            multipleOvertime
                     ),
                     new AfterhandRestriction(allowFutureDay),
                     null,

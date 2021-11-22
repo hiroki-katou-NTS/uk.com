@@ -39,7 +39,8 @@ module nts.uk.at.view.kaf022.o.viewmodel {
             self.overtimeAppOptions = ko.observableArray([
                 new ItemModel(OVERTIME.EARLY, getText("Enum_APP_OVERTIME_EARLY")),
                 new ItemModel(OVERTIME.NORMAL, getText("Enum_APP_OVERTIME_NORMAL")),
-                new ItemModel(OVERTIME.EARLY_NORMAL, getText("Enum_APP_OVERTIME_EARLY_NORMAL"))
+                new ItemModel(OVERTIME.EARLY_NORMAL, getText("Enum_APP_OVERTIME_EARLY_NORMAL")),
+                new ItemModel(OVERTIME.MULTIPLE, getText("Enum_APP_OVERTIME_MULTIPLE"))
             ]);
             self.selectedOvertimeAppAtr = ko.observable(OVERTIME.EARLY);
 
@@ -135,6 +136,13 @@ module nts.uk.at.view.kaf022.o.viewmodel {
                         self.handleCheck
                     );
                 }));
+                self.overtimeWorkFrames.push(new OTWorkFrame(
+                    false,
+                    -1,
+                    getText("KAF022_797"),
+                    true,
+                    self.handleCheck
+                ));
                 self.selectedOvertimeAppAtr.valueHasMutated();
                 dfd.resolve();
                 // $.when(self.getData(self.selectedOvertimeAppAtr(), self.selectedFlexWorkAtr()), service.getOTQuota()).done((result1: any, allOtQuotaSettings: Array<OTQuota>) => {
@@ -226,7 +234,8 @@ module nts.uk.at.view.kaf022.o.viewmodel {
     enum OVERTIME {
         EARLY = 0,
         NORMAL = 1,
-        EARLY_NORMAL = 2
+        EARLY_NORMAL = 2,
+        MULTIPLE = 3
     }
 
 }

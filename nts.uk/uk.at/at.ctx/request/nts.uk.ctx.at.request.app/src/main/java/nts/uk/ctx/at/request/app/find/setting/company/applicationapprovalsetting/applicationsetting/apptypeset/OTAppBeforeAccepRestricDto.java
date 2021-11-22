@@ -50,6 +50,9 @@ public class OTAppBeforeAccepRestricDto {
 	 */
 	private Integer opEarlyNormalOvertime;
 
+	/**
+	 * 時刻（複数回残業）
+	 */
 	private Integer opMultipleOvertime;
 	
 	public static OTAppBeforeAccepRestricDto fromDomain(OTAppBeforeAccepRestric otAppBeforeAccepRestric) {

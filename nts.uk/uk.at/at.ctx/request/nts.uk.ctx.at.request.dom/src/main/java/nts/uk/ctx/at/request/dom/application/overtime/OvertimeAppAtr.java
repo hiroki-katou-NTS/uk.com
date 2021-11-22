@@ -26,7 +26,7 @@ public enum OvertimeAppAtr {
 	/**
 	 * 複数回残業
 	 */
-	MULTIPLE_OVERTIME(2, "Enum_APP_OVERTIME_MULTIPLE");
+	MULTIPLE_OVERTIME(3, "Enum_APP_OVERTIME_MULTIPLE");
 
 	public final int value;
 	

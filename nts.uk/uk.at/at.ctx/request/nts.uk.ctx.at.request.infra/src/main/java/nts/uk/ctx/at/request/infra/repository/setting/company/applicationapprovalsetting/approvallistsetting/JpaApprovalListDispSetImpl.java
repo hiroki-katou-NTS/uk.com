@@ -32,6 +32,7 @@ public class JpaApprovalListDispSetImpl extends JpaRepository implements Approva
 			entity.setActualExcessMessDisAtr(domain.getActualExcessMessDisAtr().value);
 			entity.setWarningDateDisAtr(domain.getWarningDateDisAtr().v());
 			entity.setDisplayWorkPlaceName(domain.getDisplayWorkPlaceName().value);
+			entity.setUseApprovalFunction(domain.getUseApprovalFunction().value);
 			this.commandProxy().update(entity);
 		} else {
 			KrqmtApproval entity = new KrqmtApproval(
