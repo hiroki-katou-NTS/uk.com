@@ -6483,6 +6483,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							}
 						}
 						self.addTypeOfTask(taskInfo.data.color, taskInfo);
+						__viewContext.viewModel.viewmodelAb.dataTaskInfo = data;
+						__viewContext.viewModel.viewmodelAb.setDataTaskInfo();
 					});
 
 					dfd.resolve();
