@@ -1,4 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+///<reference path="../../../../lib/generic/jquery/jquery.d.ts"/>
 module nts.uk.com.view.kha001.a {
   
   const PATH = {
@@ -15,7 +16,7 @@ module nts.uk.com.view.kha001.a {
     selectedCode: KnockoutObservable<number> = ko.observable(1);
     langId: KnockoutObservable<string> = ko.observable('ja');
 
-    constructor(params: any) {
+    constructor() {
       super();
       const vm = this;
       vm.switchItems = ko.observableArray([
@@ -54,10 +55,11 @@ module nts.uk.com.view.kha001.a {
       const vm = this;
       vm.$blockui('show');
       vm.$ajax('at',PATH.getSetting).done((data) => {
-        if( data ) {
-          vm.isUse(data.used?1:0);
+          if (!data) {
+              return;
+          }
+          vm.isUse(data.used ? 1 : 0);
           vm.selectedCode(data.maxNumberOfSupportOfDay);
-        }
       }).fail(error => {
         vm.$dialog.error(error);
       }).always(() => {
@@ -68,13 +70,13 @@ module nts.uk.com.view.kha001.a {
 
     exportExcel(): void {
       var self = this;
-      nts.uk.ui.block.grayout();
+      self.$blockui("grayout");
       let langId = self.langId();
       self.saveAsExcel(langId).done(function() {
       }).fail(function(error) {
-          nts.uk.ui.dialog.alertError({ messageId: error.messageId });
+          self.$dialog.error({ messageId: error.messageId });
       }).always(function() {
-          nts.uk.ui.block.clear();
+          self.$blockui("clear")
       });
     }
 
@@ -95,6 +97,9 @@ module nts.uk.com.view.kha001.a {
     saveData() {
       const vm = this;
         vm.$validate(".nts-input .ntsControl").then((valid: boolean) => {
+            if (!valid){
+                return;
+            }
             const dataRegister = {
                 isUsed: vm.isUse()?1:0,
                 maxNumberOfSupportOfDay: vm.selectedCode()
