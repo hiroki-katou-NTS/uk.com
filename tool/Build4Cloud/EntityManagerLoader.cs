@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 namespace Build4Cloud
 {
-    class EntityManagerLoader
+    class EntityManagerLoader : TemporarilyEditFile
     {
         private readonly string path;
 
         public EntityManagerLoader(string rootPath)
+            : base(Path.Combine(rootPath, @"uk.com\shr\nts.uk.shr.com\src\main\java\nts\uk\shr\infra\data\CloudEntityManagerLoader.java"))
         {
-            path = Path.Combine(rootPath, @"uk.com\shr\nts.uk.shr.com\src\main\java\nts\uk\shr\infra\data\CloudEntityManagerLoader.java");
         }
 
-        public void CreateCloudEdition(int datasourcesCount)
+        protected override void EditFile(int datasourcesCount)
         {
-            StashOriginalFile();
-
             var lines = File.ReadAllLines(PathToStashed);
 
             using (var writer = File.CreateText(path))
@@ -51,25 +49,6 @@ namespace Build4Cloud
                 writer.WriteLine($"@PersistenceContext(unitName = \"UK{i}\")");
                 writer.WriteLine($"private EntityManager entityManager{i};");
             }
-        }
-
-        private void StashOriginalFile()
-        {
-            // 何かの理由で残っていたら削除
-            File.Delete(PathToStashed);
-
-            File.Move(path, PathToStashed);
-        }
-
-        public void RestoreOriginalFile()
-        {
-            File.Delete(path);
-            File.Move(PathToStashed, path);
-        }
-
-        private String PathToStashed
-        {
-            get { return path + ".orig"; }
         }
     }
 }

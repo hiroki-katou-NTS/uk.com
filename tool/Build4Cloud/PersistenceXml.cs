@@ -7,20 +7,17 @@ using System.Threading.Tasks;
 
 namespace Build4Cloud
 {
-    class PersistenceXml
+    class PersistenceXml : TemporarilyEditFile
     {
         private readonly string path;
 
         public PersistenceXml(string rootPath, string pathToWeb)
+            : base(Path.Combine(pathToWeb, "src", "main", "resources", "META-INF", "persistence.xml"))
         {
-            string xml = Path.Combine(pathToWeb, "src", "main", "resources", "META-INF", "persistence.xml");
-            this.path = xml;
         }
 
-        public void CreateCloudEdition(int datasourcesCount)
+        protected override void EditFile(int datasourcesCount)
         {
-            StashOriginalFile();
-
             Template template = Template.Load(PathToStashed);
 
             using (var cloud = File.CreateText(path))
@@ -40,25 +37,6 @@ namespace Build4Cloud
                 
                 template.Footer.ForEach(l => cloud.WriteLine(l));
             }
-        }
-
-        private void StashOriginalFile()
-        {
-            // 何かの理由で残っていたら削除
-            File.Delete(PathToStashed);
-
-            File.Move(path, PathToStashed);
-        }
-
-        public void RestoreOriginalFile()
-        {
-            File.Delete(path);
-            File.Move(PathToStashed, path);
-        }
-
-        private String PathToStashed
-        {
-            get { return path + ".orig"; }
         }
     }
 
