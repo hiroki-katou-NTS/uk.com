@@ -561,6 +561,9 @@ module nts.uk.ui.at.kdw013.c {
 			body>div.constraint{
 				z-index: 100;
 			}
+			.edit-event table tr td:first-child div.form-label span{
+				line-height: 1.5;
+			}
         </style>
         `;
 
