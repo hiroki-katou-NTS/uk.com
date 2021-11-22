@@ -3617,7 +3617,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
                                             let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
                                             if (removeDate) {
-                                                removeDate.supNos.push(supNos);
+                                                removeDate.supNos.push(...supNos);
                                             } else {
                                                 removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
                                             }
