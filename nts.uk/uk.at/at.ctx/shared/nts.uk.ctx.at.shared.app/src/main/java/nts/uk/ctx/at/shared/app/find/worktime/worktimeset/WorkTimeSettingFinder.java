@@ -402,8 +402,6 @@ public class WorkTimeSettingFinder {
                 List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
                         workPlaceId, baseDate);
                 
-                workPlaceIdList.add(workPlaceId);
-                
                 // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
                 // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
                 List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
@@ -476,8 +474,6 @@ public class WorkTimeSettingFinder {
 				GeneralDate baseDate = GeneralDate.fromString(referenceDate, "yyyy/MM/dd");
                 List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
                 		workplaceID, baseDate);
-                
-                workPlaceIdList.add(workplaceID);
                 
                 // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
                 // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
