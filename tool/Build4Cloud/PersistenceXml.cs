@@ -9,8 +9,6 @@ namespace Build4Cloud
 {
     class PersistenceXml : TemporarilyEditFile
     {
-        private readonly string path;
-
         public PersistenceXml(string rootPath, string pathToWeb)
             : base(Path.Combine(pathToWeb, "src", "main", "resources", "META-INF", "persistence.xml"))
         {

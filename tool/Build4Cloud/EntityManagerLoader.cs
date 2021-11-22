@@ -9,8 +9,6 @@ namespace Build4Cloud
 {
     class EntityManagerLoader : TemporarilyEditFile
     {
-        private readonly string path;
-
         public EntityManagerLoader(string rootPath)
             : base(Path.Combine(rootPath, @"uk.com\shr\nts.uk.shr.com\src\main\java\nts\uk\shr\infra\data\CloudEntityManagerLoader.java"))
         {
