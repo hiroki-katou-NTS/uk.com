@@ -54,8 +54,14 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		Integer endCancelAtr = res.getInt("END_CANCEL_ATR");
 		String appID = res.getString("APP_ID");
 		String companyID = res.getString("CID");
-		return new KrqdtAppStamp(new KrqdtAppStampPK(companyID, appID, stampAtr, stampFrameNo), startTime, endTime,
-				startCancelAtr, endCancelAtr, goOutAtr);
+		return new KrqdtAppStamp(
+				new KrqdtAppStampPK(companyID, appID, stampAtr, stampFrameNo),
+				startTime,
+				endTime,
+				startCancelAtr,
+				endCancelAtr,
+				goOutAtr
+		);
 	}
 
 	@Override

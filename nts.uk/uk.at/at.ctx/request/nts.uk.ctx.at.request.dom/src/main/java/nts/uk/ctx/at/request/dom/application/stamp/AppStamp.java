@@ -7,13 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application;
+
 /**
  * Refactor4
  * @author hoangnd
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.打刻申請
+ * Update by LienPTK - 2021/11/22 - EA4158
  *
  */
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
