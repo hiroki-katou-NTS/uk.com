@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.supportoperationsetting;
+package nts.uk.ctx.at.shared.infra.entity.supportmanagement.supportoperationsetting;
 
 import lombok.Getter;
 import lombok.Setter;
