@@ -321,7 +321,7 @@ module nts.uk.at.view.kdw013.h {
                 setShared('kml001selectAbleCodeList', []);
                 setShared('kml001selectedCodeList', self.itemId29.value() ? [self.itemId29.value()]: []);
                 setShared('kml001isSelection', true);
-                setShared('kml001BaseDate', self.params.date);
+                setShared('kml001BaseDate', moment(self.params.date).format('YYYY/MM/DD'));
 				block.grayout();
 				ajax(paths.getWorkPlaceId, { employeeId: self.params.employeeId, date: moment(self.params.date) }).done(function(data: any) {
 					setShared('kml001WorkPlaceId', data ? data.workPlaceId: null);
@@ -413,12 +413,16 @@ module nts.uk.at.view.kdw013.h {
 					}else{
 						_.forEach(data.errorMap, errs => {
 							_.forEach(errs, err => {
-								errors.add({ 
-									message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
-									errorCode: err.message, 
-									$control: $('#'+err.itemId+''), 
-									location: null
-								});
+								if(_.includes(err.message, 'Msg_')){
+									errors.add({ 
+										message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
+										errorCode: err.message, 
+										$control: $('#'+err.itemId+''), 
+										location: null
+									});	
+								}else{
+									error(err.message);
+								}
 							});
 						});
 					}

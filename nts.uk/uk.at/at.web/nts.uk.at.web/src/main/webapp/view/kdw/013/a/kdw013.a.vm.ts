@@ -163,7 +163,7 @@ module nts.uk.ui.at.kdw013.a {
         initialDate: KnockoutObservable<Date> = ko.observable(new Date());
         isShowBreakTime: KnockoutObservable<boolean> = ko.observable(false);
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
-        initialView: KnockoutObservable<string> = ko.observable('oneDay');
+        initialView: KnockoutObservable<string> = ko.observable('fullWeek');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
         removeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -610,7 +610,7 @@ module nts.uk.ui.at.kdw013.a {
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
                             if (value) {
-                                vm.initialView(value.initialView || 'oneDay');
+                                vm.initialView(value.initialView || 'fullWeek');
                                 vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
                                 vm.scrollTime(value.scrollTime || 420);
                                 vm.slotDuration(value.slotDuration || 30);
@@ -695,7 +695,7 @@ module nts.uk.ui.at.kdw013.a {
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
                             if (value) {
-                                vm.initialView(value.initialView || 'oneDay');
+                                vm.initialView(value.initialView || 'fullWeek');
                                 vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
                                 vm.scrollTime(value.scrollTime || 420);
                                 vm.slotDuration(value.slotDuration || 30);
@@ -910,7 +910,7 @@ module nts.uk.ui.at.kdw013.a {
 
         createDeleteAttByTimeZones(dates){
             let vm = this;
-            const sID = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
+            const sId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
 
             
             const deleteList = [];
@@ -935,7 +935,7 @@ module nts.uk.ui.at.kdw013.a {
             });    
     
     
-            return { sID, deleteList };
+            return { sId, deleteList };
     
         }
 
@@ -1236,9 +1236,9 @@ module nts.uk.ui.at.kdw013.a {
            taskInfos(){
                 let vm = this;
                 let warnings = [];
-                _.forEach(vm.ouenWorkTimes(), wt => {
+                _.forEach(vm.ouenWorkTimeSheets(), os => {
 
-                    let os: OuenWorkTimeSheetOfDailyAttendance = ko.utils.arrayFirst(vm.ouenWorkTimeSheets(), function(e) { return e.workNo == wt.no });
+                    let wt = ko.utils.arrayFirst(vm.ouenWorkTimes(), function(e) { return e.no == os.workNo });
                     let workCD1 = _.get(os, 'workContent.work.workCD1', null);
                     let workCD2 = _.get(os, 'workContent.work.workCD2', null);
                     let workCD3 = _.get(os, 'workContent.work.workCD3', null);
@@ -1281,9 +1281,9 @@ module nts.uk.ui.at.kdw013.a {
                     
                     if (!!os) {
                         warnings.push({
-                            workNo: wt.no,
+                            workNo: os.workNo,
                             name: taskNames,
-                            time: formatTime(wt.workTime.totalTime, 'Time_Short_HM')
+                            time: formatTime(_.get(wt, 'workTime.totalTime', 0), 'Time_Short_HM')
                         });
                     }
                 });
