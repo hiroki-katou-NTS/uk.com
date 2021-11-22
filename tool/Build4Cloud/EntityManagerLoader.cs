@@ -55,6 +55,9 @@ namespace Build4Cloud
 
         private void StashOriginalFile()
         {
+            // 何かの理由で残っていたら削除
+            File.Delete(PathToStashed);
+
             File.Move(path, PathToStashed);
         }
 
