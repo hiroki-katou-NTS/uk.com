@@ -226,18 +226,7 @@ module nts.uk.ui.at.kdw013.a {
             const { mode } = $query;
             const cache: ChangeDateParam & { pair: -1 | 0 | 1 | 2 } = { ...initialCache(), pair: 0 };
             const sameCache = (params: ChangeDateParam): -1 | 0 | 1 | 2 => {
-            vm.$window
-            .storage('KDW013_SETTING')
-            .then((value: any) => {
-                if (value) {
-                    vm.initialView(value.initialView || 'fullWeek');
-                    vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
-                    vm.scrollTime(value.scrollTime || 420);
-                    vm.slotDuration(value.slotDuration || 30);
-                }
-
-
-            });
+            
                 if (cache.refDate !== params.refDate) {
                     if (cache.displayPeriod.end === params.displayPeriod.end) {
                         if (cache.displayPeriod.start === params.displayPeriod.start) {
@@ -607,6 +596,20 @@ module nts.uk.ui.at.kdw013.a {
             // get settings Msg_1960
             vm
                 .$blockui('grayout')
+                .then(() => {
+                    vm.$window
+                    .storage('KDW013_SETTING')
+                    .then((value: any) => {
+                        if (value) {
+                            vm.initialView(value.initialView || 'fullWeek');
+                            vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
+                            vm.scrollTime(value.scrollTime || 420);
+                            vm.slotDuration(value.slotDuration || 30);
+                        }
+
+
+                    });
+                })
                 .then(() => vm.$ajax('at', API.START, { inputDate }))
                 .fail((error) => {
                     vm.$dialog.error({ messageId: error.messageId }).then(() => {
