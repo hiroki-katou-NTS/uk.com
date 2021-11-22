@@ -51,79 +51,25 @@ public class HolidayAcqManageByMDTest {
 			
 		{
 			//基準日 < 起算日
-			put(	GeneralDate.ymd(2021, 3, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 2, 3), GeneralDate.ymd(2021, 3, 2), 4.0)
-						);
-			
+			put(GeneralDate.ymd(2021, 3, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 2, 3), GeneralDate.ymd(2021, 3, 2), 4.0));
 			//基準日 >=  起算日
-			put(	GeneralDate.ymd(2021, 4, 1)
-				,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)
-					);
-			
-			put(	GeneralDate.ymd(2021, 4, 28)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 4, 29)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 5, 26), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 5, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 5, 26), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 6, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 5, 27), GeneralDate.ymd(2021, 6, 23), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 7, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 6, 24), GeneralDate.ymd(2021, 7, 21), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 8, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 7, 22), GeneralDate.ymd(2021, 8, 18), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 9, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 8, 19), GeneralDate.ymd(2021, 9, 15), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 10, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 9, 16), GeneralDate.ymd(2021, 10, 13), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2021, 11, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 10, 14), GeneralDate.ymd(2021, 11, 10), 4.0)
-						);
-			
-			
-			put(	GeneralDate.ymd(2021, 12, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 11, 11), GeneralDate.ymd(2021, 12, 8), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2022, 1, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 12, 9), GeneralDate.ymd(2022, 1, 5), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2022, 2, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 1, 6), GeneralDate.ymd(2022, 2, 2), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2022, 3, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0)
-						);
-			
-			put(	GeneralDate.ymd(2022, 3, 3)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0)
-						);
-			
-			put(	GeneralDate.ymd(2022, 3, 31)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0)
-						);
-			
-			put(	GeneralDate.ymd(2022, 4, 1)
-					,	Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 4, 1), GeneralDate.ymd(2022, 4, 28), 4.0)
-						);
+			put(GeneralDate.ymd(2021, 4, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0));
+			put(GeneralDate.ymd(2021, 4, 28), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0));
+			put(GeneralDate.ymd(2021, 4, 29), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 5, 26), 4.0));
+			put(GeneralDate.ymd(2021, 5, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 5, 26), 4.0));
+			put(GeneralDate.ymd(2021, 6, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 5, 27), GeneralDate.ymd(2021, 6, 23), 4.0));
+			put(GeneralDate.ymd(2021, 7, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 6, 24), GeneralDate.ymd(2021, 7, 21), 4.0));
+			put(GeneralDate.ymd(2021, 8, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 7, 22), GeneralDate.ymd(2021, 8, 18), 4.0));
+			put(GeneralDate.ymd(2021, 9, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 8, 19), GeneralDate.ymd(2021, 9, 15), 4.0));
+			put(GeneralDate.ymd(2021, 10, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 9, 16), GeneralDate.ymd(2021, 10, 13), 4.0));
+			put(GeneralDate.ymd(2021, 11, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 10, 14), GeneralDate.ymd(2021, 11, 10), 4.0));
+			put(GeneralDate.ymd(2021, 12, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 11, 11), GeneralDate.ymd(2021, 12, 8), 4.0));
+			put(GeneralDate.ymd(2022, 1, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 12, 9), GeneralDate.ymd(2022, 1, 5), 4.0));
+			put(GeneralDate.ymd(2022, 2, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 1, 6), GeneralDate.ymd(2022, 2, 2), 4.0));
+			put(GeneralDate.ymd(2022, 3, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0));
+			put(GeneralDate.ymd(2022, 3, 3), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0));
+			put(GeneralDate.ymd(2022, 3, 31), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0));
+			put(GeneralDate.ymd(2022, 4, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 4, 1), GeneralDate.ymd(2022, 4, 28), 4.0));
 		}};
 		
 		expecteds.forEach( (baseDate, expected) -> {
