@@ -413,12 +413,16 @@ module nts.uk.at.view.kdw013.h {
 					}else{
 						_.forEach(data.errorMap, errs => {
 							_.forEach(errs, err => {
-								errors.add({ 
-									message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
-									errorCode: err.message, 
-									$control: $('#'+err.itemId+''), 
-									location: null
-								});
+								if(_.includes(err.message, 'Msg_')){
+									errors.add({ 
+										message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
+										errorCode: err.message, 
+										$control: $('#'+err.itemId+''), 
+										location: null
+									});	
+								}else{
+									error(err.message);
+								}
 							});
 						});
 					}
