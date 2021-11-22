@@ -55,7 +55,6 @@ module ccg018.a1.viewmodel {
                 name: x.roleSetName,
                 loginMenuCode: dataObj.loginMenuCode,
                 topMenuCode: dataObj.topMenuCode,
-                switchingDate: dataObj.switchingDate,
                 system: dataObj.system,
                 menuClassification: dataObj.menuClassification
               });
@@ -65,7 +64,6 @@ module ccg018.a1.viewmodel {
                 name: x.roleSetName,
                 loginMenuCode: '',
                 topMenuCode: '',
-                switchingDate: 0,
                 system: 0,
                 menuClassification: 0
               });
@@ -136,14 +134,6 @@ module ccg018.a1.viewmodel {
             ntsControl: 'Combobox1'
           },
           {
-            headerText: nts.uk.resource.getText('CCG018_51'),
-            key: 'switchingDate',
-            dataType: 'number',
-            width: '100px',
-            ntsControl: 'Combobox2',
-            class: 'switch-date'
-          },
-          {
             headerText: nts.uk.resource.getText('CCG018_10'),
             key: 'uniqueCode',
             dataType: 'string',
@@ -173,17 +163,6 @@ module ccg018.a1.viewmodel {
             optionsValue: 'code',
             optionsText: 'name',
             columns: comboColumns1,
-            controlType: 'ComboBox',
-            visibleItemsCount: 5,
-            dropDownAttachedToBody: false,
-            enable: true
-          },
-          {
-            name: 'Combobox2',
-            options: vm.listSwitchDate(),
-            optionsValue: 'value',
-            optionsText: 'text',
-            columns: comboColumns2,
             controlType: 'ComboBox',
             visibleItemsCount: 5,
             dropDownAttachedToBody: false,
@@ -275,7 +254,6 @@ module ccg018.a1.viewmodel {
   }
   export class ITopPageRoleSet {
     roleSetCode: string;
-    switchingDate: number;
     loginMenuCode: string;
     topMenuCode: string;
     menuClassification: number;
@@ -286,7 +264,6 @@ module ccg018.a1.viewmodel {
     roleSetCode: string;
     name: string;
     topMenuCode: string;
-    switchingDate: number = 0;
     system: number;
     menuClassification: number;
     loginMenuCode: string;
@@ -299,7 +276,6 @@ module ccg018.a1.viewmodel {
       vm.roleSetCode = param.roleSetCode;
       vm.name = param.name;
       vm.topMenuCode = param.topMenuCode;
-      vm.switchingDate = param.switchingDate;
       vm.loginMenuCode = param.loginMenuCode;
       vm.system = param.system;
       vm.menuClassification = param.menuClassification;
