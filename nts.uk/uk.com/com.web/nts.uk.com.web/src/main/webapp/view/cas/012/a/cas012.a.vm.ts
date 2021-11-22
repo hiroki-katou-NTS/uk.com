@@ -276,8 +276,9 @@ module nts.uk.com.view.cas012.a {
                 }
             }).always(() => {
                 block.clear();
-            }).fail(() => {
-
+            }).fail((res) => {
+                block.clear();
+                vm.showMessageError(res);
             });
         }
 
@@ -442,12 +443,9 @@ module nts.uk.com.view.cas012.a {
                     vm.isCreateMode(false);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                 }).always(() => {
-                }).fail(() => {
-                    nts.uk.ui.dialog.alertError({
-                        messageId: "Msg_61",
-                        messageParams: [nts.uk.resource.getText("CAS012_11")]
-                    });
+                }).fail((res) => {
                     block.clear();
+                    vm.showMessageError(res);
                 });
             }
             else if (roleType == ListType.COMPANY_MANAGER) {
@@ -465,12 +463,9 @@ module nts.uk.com.view.cas012.a {
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                     vm.isCreateMode(false);
                 }).always(() => {
-                }).fail(() => {
-                    nts.uk.ui.dialog.alertError({
-                        messageId: "Msg_61",
-                        messageParams: [nts.uk.resource.getText("CAS012_11")]
-                    });
+                }).fail((res) => {
                     block.clear();
+                    vm.showMessageError(res);
                 });
             }
 
@@ -497,12 +492,9 @@ module nts.uk.com.view.cas012.a {
                     vm.isCreateMode(false);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                 }).always(() => {
-                }).fail(() => {
-                    nts.uk.ui.dialog.alertError({
-                        messageId: "Msg_61",
-                        messageParams: [nts.uk.resource.getText("CAS012_11")]
-                    });
+                }).fail((res) => {
                     block.clear();
+                    vm.showMessageError(res);
                 });
             } else if (roleType == ListType.COMPANY_MANAGER) {
                 let roleGrant = {
@@ -519,12 +511,9 @@ module nts.uk.com.view.cas012.a {
                     vm.isCreateMode(false);
                     nts.uk.ui.dialog.info({messageId: "Msg_15"});
                 }).always(() => {
-                }).fail(() => {
-                    nts.uk.ui.dialog.alertError({
-                        messageId: "Msg_61",
-                        messageParams: [nts.uk.resource.getText("CAS012_11")]
-                    });
+                }).fail((res) => {
                     block.clear();
+                    vm.showMessageError(res);
                 });
             }
 
