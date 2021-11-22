@@ -19,6 +19,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.kdw013.a.ItemValueCommand;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
 import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
@@ -87,8 +88,8 @@ public class KDW013BCHWebService {
 
 	@POST
 	@Path("h/save")
-	public void saveH(KDW013HSaveCommand command) {
-		createAchievementRegistrationParam.registerAchievements(
+	public DataResultAfterIU saveH(KDW013HSaveCommand command) {
+		return createAchievementRegistrationParam.registerAchievements(
 				command.empTarget, 
 				command.targetDate, 
 				command.items.stream().map(c-> ItemValueCommand.toDomain(c)).collect(Collectors.toList()));

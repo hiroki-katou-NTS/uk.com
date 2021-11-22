@@ -502,8 +502,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				Optional.of(DeductionAtr.Deduction));
 		
 		AttendanceTime result = new AttendanceTime(0);
-		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
-			result = withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
+		if(flexTime.getFlexTime().getCalcTime().greaterThan(0)) {
+			result = withinTime.minusMinutes(flexTime.getFlexTime().getCalcTime().valueAsMinutes());
 		}
 		else {
 			result = withinTime;
@@ -879,5 +879,31 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				coreTimeSetting.getStartTime(), coreTimeSetting.getEndTime());
 		return deductionTimeSheet.exceptTimeSheet(
 				DeductionAtr.Deduction, DeductionClassification.GO_OUT, coreTimeSheet);
+	}
+	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間内時間帯
+	 */
+	@Override
+	public FlexWithinWorkTimeSheet recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		List<WithinWorkTimeFrame> frames = this.withinWorkTimeFrame.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		List<WithinWorkTimeFrame> duplicate = frames.stream()
+				.map(f -> f.recreateWithDuplicate(timeSpan, commonSet))
+				.filter(f -> f.isPresent())
+				.map(f -> f.get())
+				.collect(Collectors.toList());
+		
+		return new FlexWithinWorkTimeSheet(
+				duplicate,
+				this.shortTimeSheet,
+				this.leaveEarlyDecisionClock,
+				this.lateDecisionClock,
+				this.coreTimeSheet);
 	}
 }

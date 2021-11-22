@@ -43,6 +43,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.person.EmployeeInfoFunAdapterDto;
 import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyAttendanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoChoiceDetailsQuery;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoItemAndSelectInforQueryDto;
 import nts.uk.ctx.at.record.dom.adapter.employment.EmploymentHisOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.DateProcessedRecord;
 import nts.uk.ctx.at.record.dom.adapter.initswitchsetting.InitSwitchSetAdapter;
@@ -90,6 +92,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
@@ -249,6 +252,9 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	@Inject 
 	private RecordDomRequireService requireService;
+	
+	@Inject
+	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -690,6 +696,9 @@ public class DailyPerformanceCorrectionProcessor {
 		Integer cellEdit;
 		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
+				if(item.getId()==2266) {
+					System.out.println(2266);
+				}
 				//DPAttendanceItem dpAttenItem1 = mapDP.get(item.getId());
 				String itemIdAsString = item.getId().toString();
 				// int a = 1;
@@ -804,7 +813,7 @@ public class DailyPerformanceCorrectionProcessor {
 								cellDatas.add(new DPCellDataDto(mergeString(DPText.CODE, itemIdAsString), "",
 										attendanceAtrAsString, DPText.TYPE_LABEL));
 								value = NAME_EMPTY;
-							}
+							} 
 						} else {
 							if (groupType != null) {
 								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
@@ -829,6 +838,17 @@ public class DailyPerformanceCorrectionProcessor {
 									}
 									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
 									value = codeNameTaskMap.containsKey(value+"|"+frameNo) ? codeNameTaskMap.get(value+"|"+frameNo).getName() : NAME_NOT_FOUND;
+								}else if(groupType == TypeLink.WORK_SUP_OPTION.value) {
+									List<TaskSupInfoItemAndSelectInforQueryDto> listName = taskSupInfoChoiceDetailsQuery.get(data.getDate(), item.getId());
+									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
+									String valueName = NAME_NOT_FOUND;
+									for(TaskSupInfoItemAndSelectInforQueryDto temp : listName) {
+										if(temp.getCode().equals(value)) {
+											valueName = temp.getName();
+											break;
+										}
+									}
+									value = valueName;
 								} else {
 									cellDatas.add(
 											new DPCellDataDto(codeColKey, value, attendanceAtrAsString, DPText.TYPE_LABEL));
@@ -926,6 +946,14 @@ public class DailyPerformanceCorrectionProcessor {
 						}
 					} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
 						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
+						if (groupType != null && groupType == TypeLink.DOWORK.value) {
+							Double valueConvert = Double.parseDouble(value == "" ? "0.0" : value);
+							cellDatas.add(new DPCellDataDto(anyChar, valueConvert.equals(0.0) ? false : true, attendanceAtrAsString, DPText.TYPE_LABEL));
+						} else
+							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
+					} else if(attendanceAtr == DailyAttendanceAtr.NumbericValue.value){
+						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}
@@ -1395,7 +1423,7 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			Map<Integer, String> lstAttendanceItem = dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(new ArrayList<>(itemIds))
 					.stream().collect(Collectors.toMap(DailyAttendanceItemNameAdapterDto::getAttendanceItemId,
-							x -> x.getDisplayName())); // 9s
+							x -> x.getAttendanceItemName())); // 9s
 			
 			List<DPItemValue> dpItems = errorMonthProcessor.getErrorMonth(lstEmployee.stream().map(x -> x.getId()).collect(Collectors.toSet()), dateRange);
 			for(DPItemValue value : dpItems) {
@@ -1455,7 +1483,7 @@ public class DailyPerformanceCorrectionProcessor {
 				// アルゴリズム「社員の権限に対応する表示項目を取得する」を実行する
 				// kiem tra thong tin rieng biet user
 				if (correct == null) {
-					if (formatCodeSelects.isEmpty()) {
+					if (formatCodeSelects == null || formatCodeSelects.isEmpty()) {
 						List<AuthorityFormatInitialDisplayDto> initialDisplayDtos = repo
 								.findAuthorityFormatInitialDisplay(companyId);
 						if (!initialDisplayDtos.isEmpty()) {
@@ -1671,13 +1699,19 @@ public class DailyPerformanceCorrectionProcessor {
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(0).getKey(), false));
 					result.getColumnSettings().add(new ColumnSetting(key.getGroup().get(1).getKey(), false));
 				} else {
-					/*
+					/* 
 					 * 時間 - thoi gian hh:mm 5, 回数: so lan 2, 金額 : so tien 3, 日数:
 					 * so ngay -
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+					
+					if (dPItem.getAttendanceAtr() != null && dPItem.getAttendanceAtr().intValue() == DailyAttendanceAtr.NumberOfTime.value) {
+						if (dPItem.getTypeGroup() != null && dPItem.getTypeGroup().intValue() == TypeLink.DOWORK.value)
+							columnSetting = new ColumnSetting(key.getKey().isEmpty() ? "" : key.getKey(), false);
+					}
 				}
 			}
 			result.getColumnSettings().add(columnSetting);
@@ -2030,6 +2064,9 @@ public class DailyPerformanceCorrectionProcessor {
 	public DatePeriodInfo updatePeriod(Optional<YearMonth> yearMonthOpt, Optional<Integer> closureIdShare, Optional<GeneralDate> dateTransfer, int displayFormat, String empTarget, DatePeriod period) {
 		GeneralDate today = GeneralDate.today();
 		DateRange result = new DateRange(today, today);
+		if(period != null) {
+			result = new DateRange(period.start(), period.end());
+		}
 		ClosureId closureId = null;
 		YearMonth yearMonth = null;
 		List<nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod> lstClosurePeriod  = new ArrayList<>();
@@ -2061,7 +2098,7 @@ public class DailyPerformanceCorrectionProcessor {
 								empTarget, dateRefer, ym));
 			}
 //			if(lstClosurePeriod.isEmpty()) return null;
-			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);;
+			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);
 			
 			List<AggrPeriodEachActualClosure> lstAggrPeriod = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
 					    .sorted((x, y) -> x.getPeriod().start().compareTo(y.getPeriod().end()))

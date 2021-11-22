@@ -20,6 +20,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoChoiceDetailsQuery;
+import nts.uk.ctx.at.record.app.query.tasksupinforitemsetting.TaskSupInfoItemAndSelectInforQueryDto;
 import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
 import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHist;
 import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHistRepo;
@@ -64,6 +66,9 @@ public class DataDialogWithTypeProcessor {
 	
 	@Inject
 	private TaskInitialSelHistRepo taskInitialSelHistRepo;
+	
+	@Inject
+	private TaskSupInfoChoiceDetailsQuery taskSupInfoChoiceDetailsQuery;
 
 	// 勤務種類
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
@@ -167,6 +172,15 @@ public class DataDialogWithTypeProcessor {
 		return CodeNameType.create(TypeLink.WORK.value, codeNames);
 	}
 	
+	// 作業補足選択肢
+	public CodeNameType getWorkSupOption(GeneralDate ymd, int itemId) {
+		List<TaskSupInfoItemAndSelectInforQueryDto> datas = taskSupInfoChoiceDetailsQuery.get(ymd, itemId);
+		List<CodeName> codeNames = datas.stream()
+				.map(x -> new CodeName(x.getCode(), x.getName(), x.getHistoryId()))
+				.collect(Collectors.toList());
+		return CodeNameType.create(TypeLink.WORK_SUP_OPTION.value, codeNames);
+	}
+	
 	public CodeName getTypeDialog(int type, ParamDialog param) {
 		String companyId = AppContexts.user().companyId();
 		Optional<CodeName> codeName;
@@ -243,7 +257,7 @@ public class DataDialogWithTypeProcessor {
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
 			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
 					.createError(ErrorTypeWorkType.NO_GROUP.code);
-			
+		
 		case 15:
 			// KDL012
 			int workFrameNo = 0;
@@ -257,6 +271,13 @@ public class DataDialogWithTypeProcessor {
 					.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
 			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
 					.createError(ErrorTypeWorkType.NO_GROUP.code);
+		case 19:
+			// KDL013
+			codeName = this.getWorkSupOption(param.getDate(), param.getItemId()).getCodeNames().stream()
+				.filter(x -> x.getCode().equals(param.getSelectCode())).findFirst();
+			return codeName.isPresent() ? codeName.get().createError(ErrorTypeWorkType.MASTER.code) :  new CodeName(param.getSelectCode(), TextResource.localize("KDW003_81"), "")
+					.createError(ErrorTypeWorkType.NO_GROUP.code);
+	
 		default:
 			return null;
 		}
@@ -310,6 +331,9 @@ public class DataDialogWithTypeProcessor {
 				}
 			}
 			return this.getWorkWithFrameNo(companyId, workFrameNo).getCodeNames();
+		case 19:
+			// KDL013
+			return this.getWorkSupOption(param.getDate(), param.getItemId()).getCodeNames();
 		default:
 			return null;
 		}

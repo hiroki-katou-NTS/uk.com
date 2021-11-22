@@ -57,11 +57,8 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                             'data-order': _.get(item.extendedProps, 'order', ''),
                             'data-favId': _.get(item.extendedProps, 'favId', '')
                         }">
-                            <div data-bind="style: {
-                                'background-color': item.backgroundColor
-                            }"></div>
                             <div style="display: flex;">
-                                <label  class='limited-label' style='width:90%;cursor: pointer;'  data-bind='text: item.title'>
+                                <label  class='limited-label' style='padding-left: 10px;width:90%;cursor: pointer;'  data-bind='text: item.title'>
                                 </label>
                                 <i class='fav-icon img-icon' style='width: 20px; height: 25px;' data-bind="click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'favId', '')) }">
                                 </i>
@@ -116,7 +113,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                     of: ".popupButton-g"
                 },
                 showOnStart: false,
-                dismissible: true
+                dismissible: false
             });
         }
 
@@ -154,6 +151,14 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                 // お気に入り内容
                 taskBlockDetailContents: item.extendedProps.dropInfo.taskBlockDetailContents
             });
+			vm.params.screenA.popupTitle('KDW013_96');
+			vm.params.screenA.btnContent('KDW013_43');
+			setTimeout(() => {
+				$('.input-g').focus();
+			}, 100)
+			
+			jQuery('button.btn-error.small.danger').appendTo('.popup-area-g .textEditor.pb10');
+			
         }
     }
 

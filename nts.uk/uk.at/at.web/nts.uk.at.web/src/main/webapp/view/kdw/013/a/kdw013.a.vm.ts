@@ -21,6 +21,7 @@ module nts.uk.ui.at.kdw013.a {
 
     const DATE_FORMAT = 'YYYY-MM-DD';
     const DATE_TIME_FORMAT = 'YYYY-MM-DDTHH:mm:00.000\\Z';
+	const TIME_FORMAT = 'HH:mm';
 
     const API: API = {
         ADD: '/screen/at/kdw013/a/add_confirm',
@@ -152,8 +153,6 @@ module nts.uk.ui.at.kdw013.a {
 
         events: KnockoutObservableArray<calendar.EventApi> = ko.observableArray([]);
 
-        breakTime= ko.observableArray([]);
-
         businessHours= ko.observableArray([]);
 
         weekends: KnockoutObservable<boolean> = ko.observable(true);
@@ -167,6 +166,7 @@ module nts.uk.ui.at.kdw013.a {
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
+        removeList: KnockoutObservableArray<any> = ko.observableArray([]);
         //biến này để phục vụ việc lấy data khi thay đổi ở màn K  
         inputDate: KnockoutObservable<Date> = ko.observable();
     
@@ -214,6 +214,9 @@ module nts.uk.ui.at.kdw013.a {
         targetDate: KnockoutObservable<Date> =  ko.observable();
     
         fullCalendar : KnockoutObservable<FullCalendarComponent> = ko.observable();
+
+		popupTitle: KnockoutObservable<String> = ko.observable('');
+		btnContent: KnockoutObservable<String> = ko.observable('');
 
         constructor() {
             super();
@@ -312,7 +315,7 @@ module nts.uk.ui.at.kdw013.a {
                                 employeeId: vm.employee() || vm.$user.employeeId,
                                 start: setTimeOfDate(moment(ld.ymd).toDate(), start),
                                 end: setTimeOfDate(moment(ld.ymd).toDate(), end),
-                                title: work ? getTitles(work, tasks) : '',
+                                title: work ? getTitles(taskDetails, tasks) : '',
                                 backgroundColor: work ? getBackground(work, tasks) : '',
                                 textColor: '',
                                 extendedProps: {
@@ -344,7 +347,7 @@ module nts.uk.ui.at.kdw013.a {
 
                 });
     
-            vm.events.subscribe((datas) => vm.dataChanged(true));
+            vm.events.subscribe((datas) => { vm.dataChanged(true);});
 
             vm.$settings
                 .subscribe((settings) => computedEvents(ko.unwrap(vm.$datas), settings));
@@ -352,35 +355,11 @@ module nts.uk.ui.at.kdw013.a {
             vm.$toggle = {
                 save: ko.computed({
                     read: () => {
-                        const $settings = ko.unwrap(vm.$settings);
+                        const event = ko.unwrap(vm.events);
                         
                         if (!vm.dataChanged()) {
                             return false;
                         }
-
-                        if (!$settings) {
-                            return true;
-                        }
-
-                        const { startManHourInputResultDto } = $settings;
-
-                        if (!startManHourInputResultDto) {
-                            return true;
-                        }
-
-                        const { taskFrameUsageSetting } = startManHourInputResultDto;
-
-                        if (!taskFrameUsageSetting) {
-
-                            return true;
-                        }
-                        
-
-//                        const { frameSettingList } = taskFrameUsageSetting;
-
-//                        if (frameSettingList && frameSettingList.length) {
-//                            return !!_.find(frameSettingList, ({ useAtr, frameNo }) => frameNo === 2 && useAtr === 1);
-//                        }
 
                         return true;
                     }
@@ -415,7 +394,7 @@ module nts.uk.ui.at.kdw013.a {
                 vm.editable(mode === '0');
             }
             
-            vm.inputDate.subscribe((date)=>{
+            vm.inputDate.subscribe((date) => {
                 vm.reLoad();
             });
 
@@ -499,15 +478,14 @@ module nts.uk.ui.at.kdw013.a {
 
                     if (datas) {
 
-                        const { lstWorkRecordDetailDto } = datas;
+                        const { estimateZones } = datas;
 
                         return _
-                            .chain(lstWorkRecordDetailDto)
-                            .filter(({actualContent}) => { return !!actualContent.breakTimeSheets.length })
-                            .map(({actualContent, date}) => {
-                                const {breakTimeSheets} = actualContent;
+                            .chain(estimateZones)
+                            .filter(({breakTimeSheets}) => { return !!breakTimeSheets.length })
+                            .map(({breakTimeSheets, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(date),
+                                    dayOfWeek: vm.getDOW(ymd),
                                     breakTimes: _.map(breakTimeSheets, ({start, end}) => { return { start, end }; })
                                 };
                             }).value();
@@ -524,17 +502,16 @@ module nts.uk.ui.at.kdw013.a {
 
                     if (datas) {
 
-                        const { lstWorkRecordDetailDto } = datas;
+                        const { estimateZones } = datas;
 
                         return _
-                            .chain(lstWorkRecordDetailDto)
-                            .filter(({actualContent}) => { return !!actualContent.start.timeWithDay || !!actualContent.end.timeWithDay })
-                            .map(({actualContent, date}) => {
-                                const {start, end} = actualContent;
+                            .chain(estimateZones)
+                            .filter(({startTime, endTime}) => { return !!startTime && !!endTime })
+                            .map(({startTime, endTime, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(date),
-                                    start: start.timeWithDay,
-                                    end: end.timeWithDay
+                                    dayOfWeek: vm.getDOW(ymd),
+                                    start: startTime,
+                                    end: endTime
                                 };
                             }).value();
 
@@ -589,9 +566,9 @@ module nts.uk.ui.at.kdw013.a {
                                 let start = _.get(_.find(manHrContents, hr => { return hr.itemId == 31 }), 'value');
                                 let end = _.get(_.find(manHrContents, hr => { return hr.itemId == 34 }), 'value');
 
-                                if (start && end) {
+                                if (!!start || !!end) {
                                     //PC3_4 PC3_5
-                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [formatTime(start, 'Time_Short_HM'), formatTime(end, 'Time_Short_HM')]) });
+                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']) });
                                 }
 
                                 let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
@@ -619,8 +596,13 @@ module nts.uk.ui.at.kdw013.a {
             vm
                 .$blockui('grayout')
                 .then(() => vm.$ajax('at', API.START, { inputDate }))
-                .fail(function(error) {
-                    vm.$dialog.error({ messageId: error.messageId });
+                .fail((error) => {
+                    vm.$dialog.error({ messageId: error.messageId }).then(() => {
+                        let errors = ["Msg_2122", "Msg_2253", "Msg_2243", "Msg_1960", "Msg_1961"];
+                        if (errors.indexOf(error.messageId) != -1) {
+                            nts.uk.request.jumpToTopPage();
+                        }
+                    });
                 })
                 .then((response: StartProcessDto) => {
 
@@ -648,7 +630,7 @@ module nts.uk.ui.at.kdw013.a {
                     of: ".popupButton-f"
                 },
                 showOnStart: false,
-                dismissible: true
+ 				dismissible: false
             });
 
             $(".popup-area-g").ntsPopup({
@@ -659,7 +641,7 @@ module nts.uk.ui.at.kdw013.a {
                     of: ".popupButton-g"
                 },
                 showOnStart: false,
-                dismissible: true
+				dismissible: false
             });
 
             $(".popup-area-i").ntsPopup({
@@ -672,7 +654,6 @@ module nts.uk.ui.at.kdw013.a {
                 showOnStart: false,
                 dismissible: true
             });
-        
         }
 
             getFrameNo(events){
@@ -734,14 +715,14 @@ module nts.uk.ui.at.kdw013.a {
                 const start = moment(dateRange.start);
                 const end = moment(dateRange.end);
                 let range = end.diff(start, 'days');
-                let dates = [] ;
+                let dates = [];
                 for (let i = 0; i <= range; i++) {
                     dates.push(start.clone().add(i, 'days').format('YYYY/MM/DD'));
                 }
                 return _.indexOf(dates, date) + 1;
             }
-           
-                return 0;
+
+            return 0;
         }
 
         mounted() {
@@ -760,7 +741,8 @@ module nts.uk.ui.at.kdw013.a {
         }
 
         equipmentInput(){
-            console.log('equipmentInput click');
+            const vm = this;
+            vm.$jump.blank('com', '/view/oew/001/a/index.xhtml');
         }
 
         getChangedDates(dates){
@@ -768,10 +750,10 @@ module nts.uk.ui.at.kdw013.a {
             let vm = this;
             const $events = ko.unwrap(vm.events);
            return _.chain(dates).map(date => {
-                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'day') });
-                const data = _.find(vm.$datas().lstWorkRecordDetailDto, (e) => { return moment(e.date).isSame(date, 'day') });
+                const events = _.filter($events, (e) => { return moment(e.start).isSame(date, 'days') });
+                const data = _.find(vm.$datas().dailyManHrTasks, (e) => { return moment(e.date).isSame(date, 'days') });
 
-                if (events.length != _.size(_.get(data, 'lstWorkDetailsParamDto'))) {
+                if (events.length != _.size(_.get(data, 'taskBlocks'))) {
                     return { date: date, changed: true };
                 }
                 
@@ -850,6 +832,10 @@ module nts.uk.ui.at.kdw013.a {
                 return dates;
             };
     
+            let deleteAttByTimeZones = vm.createDeleteAttByTimeZones(dateRanges());
+    
+            let itemIds = _.map(_.get(setting, 'manHrInputDisplayFormat.displayManHrRecordItems', []), item => { return item.itemId });
+    
             let employeeId = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
@@ -864,19 +850,54 @@ module nts.uk.ui.at.kdw013.a {
             let manHrlst = vm.getManHrlst(dateRanges());
 
             let integrationOfDailys = vm.createIDaily(dateRanges());
-            
+
             const command: nts.uk.ui.at.kdw013.RegisterWorkContentCommand = {
+                deleteAttByTimeZones,
                 changedDates,
                 editStateSetting,
                 employeeId,
                 manHrlst,
                 integrationOfDailys,
                 mode,
-                workDetails
+                workDetails,
+                itemIds
             };
 
             console.log(command);
-            vm                .$blockui('grayout')                 //作業を登録する                .then(() => vm.$ajax('at', API.REGISTER, command))                .then((response: RegisterWorkContentDto) => {                    vm.dataChanged(false);                    if (response) {                            const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;                        if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {                            return vm.$dialog                                .info({ messageId: 'Msg_15' })                                .then(() => lstOvertimeLeaveTime)                                .then(() => {vm.dataChanged(false);                                            vm.reLoad();                                })                        } else {                            let errors = lstErrorMessageInfo.map(x => {                                return {                                    message: x.messageError,                                    messageId: x.resourceID,                                    supplements: {}                                };                            });                            nts.uk.ui.dialog.bundledErrors({ errors });                        }                    }                    return $                        .Deferred()                        .resolve()                        .then(() => null);                })                .fail((response: ErrorMessage) => {                    const { messageId, parameterIds } = response;                    return vm.$dialog                         Msg_2066, Msg_2080                        .error({ messageId, messageParams: parameterIds })                        .then(() => null);                })                .then((data: OvertimeLeaveTime[] | null) => {                    if (data && data.length) {                        vm.openDialogCaculationResult(data);                    }                })                .always(() => vm.$blockui('clear'));
+            vm
+                .$blockui('grayout')
+                //作業を登録する
+                .then(() => vm.$ajax('at', API.REGISTER, command))
+                .then((response: RegisterWorkContentDto) => {
+                    const { dataResult, lstOvertimeLeaveTime } = response;
+
+                    return vm.$dialog
+                        .info({ messageId: dataResult.messageAlert })
+                        .then(() => lstOvertimeLeaveTime)
+                        .then(() => {
+                            vm.dataChanged(false);
+                            //trigger reload data
+                            vm.dateRange.valueHasMutated();
+                        });
+
+                    return $
+                        .Deferred()
+                        .resolve()
+                        .then(() => null);
+                })
+                .fail((response: ErrorMessage) => {
+                    const { messageId, parameterIds } = response;
+
+                    return vm.$dialog
+                        .error({ messageId, messageParams: parameterIds })
+                        .then(() => null);
+                })
+                .then((data: OvertimeLeaveTime[] | null) => {
+                    if (data && data.length) {
+                        vm.openDialogCaculationResult(data);
+                    }
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         // 日付を変更する
@@ -885,6 +906,37 @@ module nts.uk.ui.at.kdw013.a {
             const vm = this;
 
             vm.dateRange({ start, end });
+        }
+
+        createDeleteAttByTimeZones(dates){
+            let vm = this;
+            const sID = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
+
+            
+            const deleteList = [];
+    
+            _.forEach(dates, date => {
+                //① 日別実績の工数実績作業
+                let dailyManHrTaskNos = _.map(_.get(_.find(_.get(vm.$datas(), 'dailyManHrTasks', []), hr => moment(hr.date).isSame(moment(date), 'days')), 'taskBlocks.taskDetails', []), td => td.supNo);
+                //② 工数実績作業ブロック
+                let currentScreenNos = [];
+                _.forEach(_.filter(vm.events(), e => (moment(e.start).isSame(moment(date), 'days') && _.get(e, 'extendedProps.taskBlocks.taskDetails', []).length)), e => {
+                    currentScreenNos.push(_.map(e.extendedProps.taskBlocks.taskDetails, td => td.supNo));
+                });
+                //③ 削除応援作業枠Noリスト
+                let removeItemNos = _.map(_.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date))), ri => ri.supNos);
+
+                let overwriteDeletions = _.map(_.intersection(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 0 } });
+                
+                let completeDeletions = _.map(_.difference(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 1 } });
+                
+                deleteList.push({ date, list: overwriteDeletions.concat(completeDeletions) });
+
+            });    
+    
+    
+            return { sID, deleteList };
+    
         }
 
         createWorkDetails(dates){
@@ -1069,6 +1121,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_F, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeFDialog();
                             vm.reloadTaskFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1121,6 +1174,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.UPDATE_TASK_NAME_G, updateFavNameCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeGDialog();
                             vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1164,6 +1218,7 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$ajax('at', API.ADD_FAV_TASK_G, registerFavoriteForOneDayCommand)
                     .done(() => {
                         vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.closeGDialog();
                             vm.reloadOneDayFav();    
                         }); 
                     }).fail((error: any) => {
@@ -1228,7 +1283,7 @@ module nts.uk.ui.at.kdw013.a {
                         warnings.push({
                             workNo: wt.no,
                             name: taskNames,
-                            time: wt.workTime.totalTime
+                            time: formatTime(wt.workTime.totalTime, 'Time_Short_HM')
                         });
                     }
                 });
@@ -1249,6 +1304,22 @@ module nts.uk.ui.at.kdw013.a {
 		
             vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
         }
+
+		closeFDialog() {
+			$(".popup-area-f").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+			}, 100);
+		}
+		
+		closeGDialog() {
+			$(".popup-area-g").ntsPopup('hide');
+			nts.uk.ui.errors.clearAll();
+			setTimeout(() => {
+				jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+			}, 100);
+		}
     }
 
     

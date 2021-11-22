@@ -19,6 +19,8 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAnd
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHourRecordAndAttendanceItemLinkRepository;
 import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecorditem.ManHrRecordConvertResult;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,13 +37,13 @@ public class GetDailyPerformanceData {
 	private IntegrationOfDailyGetter getter;
 	
 	@Inject
-	private DailyAttendenceWorkToManHrRecordItemConvertService dailyAttendenceWorkToManHrRecordItemConvertService;
-	
-	@Inject
 	private ManHourRecordAndAttendanceItemLinkRepository manHourRecordAndAttendanceItemLinkRepository;
 	
 	@Inject
 	private TaskTimeGroupRepository  taskTimeGroupRepository;
+	
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
 
 	/**
 	 * 
@@ -66,7 +68,7 @@ public class GetDailyPerformanceData {
 		for (IntegrationOfDaily interDaily : result.getLstIntegrationOfDaily()) {
 			
 			// 2 . 日別勤怠(Work)から工数実績項目に変換する 処理中の「日別勤怠(Work)」,$工数実績項目リス
-			ManHrRecordConvertResult convertRes = this.dailyAttendenceWorkToManHrRecordItemConvertService
+			ManHrRecordConvertResult convertRes = DailyAttendenceWorkToManHrRecordItemConvertService
 					.convert(new DailyAttendenceWorkToManHrRecordItemConvertServiceImpl(
 							manHourRecordAndAttendanceItemLinkRepository), interDaily, itemIds);
 			
@@ -93,6 +95,11 @@ public class GetDailyPerformanceData {
 		public List<ManHourRecordAndAttendanceItemLink> get(List<Integer> items) {
 
 			return this.manHourRecordAndAttendanceItemLinkRepository.get(AppContexts.user().companyId(), items);
+		}
+
+		@Override
+		public DailyRecordToAttendanceItemConverter createDailyConverter() {
+			return attendanceItemConvertFactory.createDailyConverter();
 		}
 
 	}

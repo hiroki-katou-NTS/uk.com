@@ -63,29 +63,26 @@ public class JpaFavoriteTaskItemRepository extends JpaRepository implements Favo
 	@Override
 	public List<FavoriteTaskItem> getBySameSetting(String sId, List<TaskContent> contents) {
 		List<FavoriteTaskItem> result = new ArrayList<>();
-		String defaultVal = "";
+		String defaultVal = null;
 
-		String taskCode1 = contents.stream().filter(f -> f.getItemId() == 4).findAny().map(x -> x.getTaskCode().v())
-				.orElse(defaultVal);
-		String taskCode2 = contents.stream().filter(f -> f.getItemId() == 5).findAny().map(x -> x.getTaskCode().v())
-				.orElse(defaultVal);
-		String taskCode3 = contents.stream().filter(f -> f.getItemId() == 6).findAny().map(x -> x.getTaskCode().v())
-				.orElse(defaultVal);
-		String taskCode4 = contents.stream().filter(f -> f.getItemId() == 7).findAny().map(x -> x.getTaskCode().v())
-				.orElse(defaultVal);
-		String taskCode5 = contents.stream().filter(f -> f.getItemId() == 8).findAny().map(x -> x.getTaskCode().v())
-				.orElse(defaultVal);
+		String taskCode1 = contents.stream().filter(f -> f.getItemId() == 4).findAny()
+				.map(x -> x.getTaskCode().v() == "" ? null : x.getTaskCode().v()).orElse(defaultVal);
+		String taskCode2 = contents.stream().filter(f -> f.getItemId() == 5).findAny()
+				.map(x -> x.getTaskCode().v() == "" ? null : x.getTaskCode().v()).orElse(defaultVal);
+		String taskCode3 = contents.stream().filter(f -> f.getItemId() == 6).findAny()
+				.map(x -> x.getTaskCode().v() == "" ? null : x.getTaskCode().v()).orElse(defaultVal);
+		String taskCode4 = contents.stream().filter(f -> f.getItemId() == 7).findAny()
+				.map(x -> x.getTaskCode().v() == "" ? null : x.getTaskCode().v()).orElse(defaultVal);
+		String taskCode5 = contents.stream().filter(f -> f.getItemId() == 8).findAny()
+				.map(x -> x.getTaskCode().v() == "" ? null : x.getTaskCode().v()).orElse(defaultVal);
 
 		List<KrcdtTaskFavFrameSet> favItems = this.queryProxy().query(SELECT_BY_SID, KrcdtTaskFavFrameSet.class)
 				.setParameter("sId", sId).getList();
 
-		if (taskCode1.isEmpty() || taskCode2.isEmpty() || taskCode3.isEmpty()  || taskCode4.isEmpty()  || taskCode5.isEmpty()) {
-			return result;
-		}
-		
 		for (KrcdtTaskFavFrameSet i : favItems) {
-			if (i.taskCd1 == taskCode1 && i.taskCd2 == taskCode2 && i.taskCd3 == taskCode3 && i.taskCd4 == taskCode4
-					&& i.taskCd5 == taskCode5) {
+			if (equalsWithNulls(i.taskCd1, taskCode1) && equalsWithNulls(i.taskCd2, taskCode2)
+					&& equalsWithNulls(i.taskCd3, taskCode3) && equalsWithNulls(i.taskCd4, taskCode4)
+					&& equalsWithNulls(i.taskCd5, taskCode5)) {
 				result.add(i.toDomain());
 			}
 		}
@@ -93,4 +90,11 @@ public class JpaFavoriteTaskItemRepository extends JpaRepository implements Favo
 		return result;
 	}
 
+	public final boolean equalsWithNulls(Object a, Object b) {
+		if (a == b)
+			return true;
+		if ((a == null) || (b == null))
+			return false;
+		return a.equals(b);
+	}
 }
