@@ -118,7 +118,11 @@ public class CreateDpItemQuery {
 		 * ※年月日と日別勤怠(Work)．年月日が同じものをチェックすること
 		 * 
 		 */
-		List<DailyRecordDto> dailyEdits = mapTimeZones.entrySet().stream().map(entry -> {
+		
+		List<DailyRecordDto> ids = integrationOfDailys.stream().map(x -> DailyRecordDto.from(x))
+				.collect(Collectors.toList());
+		
+		mapTimeZones.entrySet().forEach(entry -> {
 
 			Optional<IntegrationOfDaily> idOpt = integrationOfDailys.stream()
 					.filter(id -> id.getYmd().equals(entry.getKey())).findFirst();
@@ -126,12 +130,13 @@ public class CreateDpItemQuery {
 			idOpt.ifPresent(id -> {
 				id.getEditState().removeIf(es -> entry.getValue().indexOf(es.getAttendanceItemId()) != -1);
 			});
-			return DailyRecordDto.from(idOpt.get());
-		}).collect(Collectors.toList());
-		
-		// 11.DPItemParentを作成する
-		List<DailyRecordDto> ids = integrationOfDailys.stream().map(x -> DailyRecordDto.from(x))
+
+		});
+
+		List<DailyRecordDto> dailyEdits = integrationOfDailys.stream().map(x -> DailyRecordDto.from(x))
 				.collect(Collectors.toList());
+
+		// 11.DPItemParentを作成する
 		
 		return createDPItemParent(empTarget, dpitems, approvalConfirmCache, ids, period, dailyEdits);
 				
@@ -289,8 +294,8 @@ public class CreateDpItemQuery {
 		private ManHourRecordAndAttendanceItemLinkRepository manHourRepo;
 
 		@Override
-		public List<ManHourRecordAndAttendanceItemLink> get() {
-			return this.manHourRepo.get(AppContexts.user().companyId());
+		public List<ManHourRecordAndAttendanceItemLink> get(List<Integer> items) {
+			return this.manHourRepo.get(AppContexts.user().companyId(), items);
 		}
 
 	}

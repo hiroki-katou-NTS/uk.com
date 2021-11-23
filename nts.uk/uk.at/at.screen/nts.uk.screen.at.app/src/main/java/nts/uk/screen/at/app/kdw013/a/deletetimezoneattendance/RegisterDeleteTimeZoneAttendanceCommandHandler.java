@@ -30,7 +30,7 @@ public class RegisterDeleteTimeZoneAttendanceCommandHandler
 		RegisterDeleteTimeZoneAttendanceCommand command = context.getCommand();
 
 		// 1. 複数日を削除する(時間帯別勤怠の削除リスト.社員IDの1個目,時間帯別勤怠の削除リスト.年月日)
-		this.repo.deleteDays(command.getSID(),
+		this.repo.deleteDays(command.getEmployeeId(),
 				command.getDeleteList().stream().map(d -> d.getDate()).collect(Collectors.toList()));
 
 		// 2. create(時間帯別勤怠の削除リスト)

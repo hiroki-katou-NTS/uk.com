@@ -36,6 +36,8 @@
                 nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkSuppComment
                 nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode
                 nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
 			</com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily
@@ -212,7 +214,7 @@
                                 	<div data-bind="ntsFormLabel: {}, text: lable"></div>
                                 </td>
                                 <td>
-									<div data-bind="ntsComboBox: {
+									<div class="ntsControl fix" data-bind="ntsComboBox: {
 										name: lable,
 										options: options,
 										optionsValue: 'code',
@@ -221,6 +223,7 @@
 										optionsText: 'name',
 										editable: true,
 										selectFirstIfNull: false,
+										dropDownAttachedToBody: false,
 										width: '255px',
 										enable: enable,
 										columns: [
@@ -230,7 +233,7 @@
 								</td>
                             </tr>
                         </com:ko-if>
-                        <com:ko-if bind="use &amp;&amp; type == 2">
+                        <com:ko-if bind="use &amp;&amp; type == 2 &amp;&amp; masterType == null">
 							<tr>
                                 <td>
                                 	<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
@@ -243,11 +246,23 @@
 											value: value,
 											enable: enable,
 											option: {
-													width: '50px',
+													width: '70px',
 													unitID: 'TIMES'
 												}
 											},
 											attr: { id: itemId}" />
+									</div>
+								</td>
+                            </tr>
+                        </com:ko-if>
+                        <com:ko-if bind="use &amp;&amp; type == 2 &amp;&amp; masterType == 9">
+							<tr>
+                                <td>
+                                	<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+                                </td>
+                                <td>
+									<div class="ntsControl fix">
+										<div data-bind="ntsCheckBox: { checked: value }, attr: { id: itemId}"></div>
 									</div>
 								</td>
                             </tr>

@@ -78,7 +78,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		// 1.登録する(時間帯別勤怠の削除一覧)
 
-		this.regisDeleteHander.handle(command.getRegisDelete());
+		this.regisDeleteHander.handle(command.getDeleteAttByTimeZones());
 		
 		// 2. 実績登録パラメータを作成する
 

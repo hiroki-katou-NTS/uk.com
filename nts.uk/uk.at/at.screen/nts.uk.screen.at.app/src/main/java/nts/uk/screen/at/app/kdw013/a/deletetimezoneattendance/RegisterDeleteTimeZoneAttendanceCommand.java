@@ -16,14 +16,14 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourinput.DeleteAttendancesByTi
 @Getter
 public class RegisterDeleteTimeZoneAttendanceCommand {
 	// 社員ID
-	private String sID;
+	private String employeeId;
 	// 年月日リスト
 	private List<DeleteListAttendanceByTimeZoneCommand> deleteList;
 
 	public List<DeleteAttendancesByTimezone> toDomain() {
 
 		return deleteList.stream()
-				.map(x -> new DeleteAttendancesByTimezone(sID, x.getDate(),
+				.map(x -> new DeleteAttendancesByTimezone(employeeId, x.getDate(),
 						x.getList().stream().map(at -> at.toDomain()).collect(Collectors.toList())))
 				.collect(Collectors.toList());
 	}

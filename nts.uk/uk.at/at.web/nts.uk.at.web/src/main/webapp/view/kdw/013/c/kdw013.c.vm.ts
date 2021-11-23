@@ -238,7 +238,7 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '50px'}
+									option: {width: '40px'}
 									}" />
 								<span data-bind="text: nts.uk.resource.getText('KDW013_30')"></span>
 								<input id="kdw013CEnd" data-bind="ntsTimeEditor: {
@@ -249,8 +249,9 @@ module nts.uk.ui.at.kdw013.c {
 									inputFormat: 'time',
 									required: true,
 									enable: true,
-									option: {width: '50px'}
+									option: {width: '40px'}
 									}" />
+								<span data-bind="text: taskBlocks.caltimeSpanView.range"></span>
 							</div>
                         </td>
                     </tr>
@@ -345,7 +346,7 @@ module nts.uk.ui.at.kdw013.c {
 										visibleItemsCount: 5,
 										width : '255px',
 										columns: [
-											{ prop: 'code', length: 1 },
+											{ prop: 'code', length: 6 },
 											{ prop: 'name', length: 8 },
 										]}
                                     "></div></td>
@@ -564,6 +565,12 @@ module nts.uk.ui.at.kdw013.c {
 			.edit-event table tr td:first-child div.form-label span{
 				line-height: 1.5;
 			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown {
+			    width: 255px !important;
+			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown .ui-igcombo-listitemholder{
+				overflow: auto !important;
+			} 
         </style>
         `;
 

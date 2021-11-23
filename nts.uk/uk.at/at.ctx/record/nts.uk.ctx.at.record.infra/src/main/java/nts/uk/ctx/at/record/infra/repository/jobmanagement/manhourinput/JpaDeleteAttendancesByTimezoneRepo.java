@@ -33,6 +33,7 @@ public class JpaDeleteAttendancesByTimezoneRepo extends JpaRepository implements
 			this.commandProxy().insert(
 					KrcdtDaySupDelete.toEntity(deleteAttendancese.getSId(), deleteAttendancese.getYmd(), deletion));
 		}
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -55,7 +56,8 @@ public class JpaDeleteAttendancesByTimezoneRepo extends JpaRepository implements
 					.filter(d -> entity.pk.sId.equals(d.getSId()) && entity.pk.ymd.equals(d.getYmd())).findAny();
 
 			if (!optDelete.isPresent()) {
-				deletedAttLst.add(new DeleteAttendancesByTimezone(entity.pk.sId, entity.pk.ymd,	Arrays.asList(entity.toAttendance())));
+				deletedAttLst.add(new DeleteAttendancesByTimezone(entity.pk.sId, entity.pk.ymd,
+						new ArrayList(Arrays.asList(entity.toAttendance()))));
 			} else {
 				optDelete.get().getAttendanceDeletionLst().add(entity.toAttendance());
 				deletedAttLst.add(optDelete.get());
@@ -81,6 +83,7 @@ public class JpaDeleteAttendancesByTimezoneRepo extends JpaRepository implements
 		for (KrcdtDaySupDelete entity : entities) {
 			this.commandProxy().remove(entity);
 		}
+		this.getEntityManager().flush();
 	}
 
 }
