@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.primitive.PrimitiveValueBase;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.gul.mail.send.MailAttachedFileItf;
+import nts.gul.mail.send.MailAttachedFilePath;
+import nts.gul.mail.send.MailContents;
+import nts.gul.mail.send.MailSendOptions;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.alarm.*;
 import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
@@ -17,26 +17,23 @@ import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportDto;
 import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
-import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
-import nts.uk.shr.com.context.AppContexts;
-import org.apache.commons.lang3.StringUtils;
-
-import nts.arc.error.BusinessException;
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
-import nts.gul.mail.send.MailAttachedFileItf;
-import nts.gul.mail.send.MailAttachedFilePath;
-import nts.gul.mail.send.MailContents;
-import nts.gul.mail.send.MailSendOptions;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.OutputErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
 import nts.uk.shr.com.mail.SendMailFailedException;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class AlarmSendEmailService implements SendEmailService {
@@ -66,6 +63,9 @@ public class AlarmSendEmailService implements SendEmailService {
 
 	@Inject
 	private UserEmployeeAdapter userEmployeeAdapter;
+
+	@Inject
+    private AdministratorReceiveAlarmMailAdapter adminiReceiveAlarmMailAdapter;
 	
 	public String alarmSendEmail(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
 			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
@@ -166,36 +166,32 @@ public class AlarmSendEmailService implements SendEmailService {
 			throw new BusinessException("Msg_2206");
 		}
 
-		// ドメインモデル「職場管理者」を取得
-		val wkpIds = managerTargetList.stream().map(ManagerTagetDto::getWorkplaceID).distinct().collect(Collectors.toList());
-		List<WkpManagerImport> wkplManagerList = workplaceAdapter.findByWkpIdsAndDate(wkpIds, executeDate);
+		// 職場管理者を取得 [RQ.727] :
+        val wkpIds = managerTargetList.stream().map(ManagerTagetDto::getWorkplaceID).distinct().collect(Collectors.toList());
+        // Map <WorkplaceID, List<ManagerID>>
+        Map<String, List<String>> adminReceiveAlarmMailMap = adminiReceiveAlarmMailAdapter.getAdminReceiveAlarmMailByWorkplaceIds(wkpIds);
 
-		// Map＜管理者ID、List＜対象者ID＞＞にデータを追加
-		Map<String, List<String>> managerMap = new HashMap<>();
-		wkplManagerList.forEach(wkp -> {
-			val personIds = managerTargetList.stream().filter(a -> a.getWorkplaceID().equals(wkp.getWorkplaceId()))
-                                .map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
-
-			if (!managerMap.containsKey(wkp.getEmployeeId())) {
-				managerMap.put(wkp.getEmployeeId(), personIds);
-			} else {
-				List<String> newValues = managerMap.get(wkp.getEmployeeId());
-				newValues.addAll(personIds);
-				managerMap.put(wkp.getEmployeeId(), newValues);
-			}
-		});
-
-		// ドメインモデル「アラームメール送信ロール」を取得する
-		val mailSendingRole = alarmMailSendingRoleRepo.find(cid, IndividualWkpClassification.INDIVIDUAL.value);
+        // Map＜管理者ID、List＜対象者ID＞＞にデータを追加
+        Map<String, List<String>> managerMap = new HashMap<>();    // Map<ManagerID, List<TargetPersonID>>
+        adminReceiveAlarmMailMap.forEach((k, v) -> {   // Key = WorkplaceID; Value = List<ManagerID>>
+            val personIdList = managerTargetList.stream().filter(x -> x.getWorkplaceID().equals(k)).map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
+            v.forEach(managerId -> {
+                if (!personIdList.isEmpty()) {
+                    managerMap.put(managerId, personIdList);
+                }
+            });
+        });
 
 		// ドメインモデル「ロール」を取得
 		val roleList = mailAdapter.findByCompanyId(cid);
 
+		// ドメインモデル「アラームメール送信ロール」を取得する
+		val mailSendingRole = alarmMailSendingRoleRepo.find(cid, IndividualWkpClassification.INDIVIDUAL.value);
+
 		if (mailSendingRole.isPresent() && mailSendingRole.get().isRoleSetting()) {
-			for (val item : managerMap.entrySet()) {
-				// 社員IDListから就業ロールIDを取得
-//				【Input】:List＜社員ID＞　＝　ループ中のList＜管理社ID＞ ,基準日　＝　システム日付
-//               OUTPUT: Map <EmployeeID, RoleID>
+			Iterator<Map.Entry<String, List<String>>> itr = managerMap.entrySet().iterator();
+			while(itr.hasNext()) {
+				Map.Entry<String, List<String>> item = itr.next();
 				Map<String, String> empRoleMap = GetRoleWorkByEmployeeService.get(
 						new GetRoleWorkByEmployeeService.Require() {
 							@Override
@@ -208,22 +204,22 @@ public class AlarmSendEmailService implements SendEmailService {
 								return roleAdapter.getRoleSetFromUserId(userId, baseDate);
 							}
 						},
-						Arrays.asList(item.getKey()),
+						Collections.singletonList(item.getKey()),
 						executeDate
 				);
-                if (empRoleMap.size() == 0) {
-                    managerMap.remove(item.getKey());
-                } else {
-                    for (val entry : empRoleMap.entrySet()) {
-                        val roleValue = entry.getValue();
-                        val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
-                        if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) {
-                             // case false
-                            // Map＜管理者ID、List＜対象者ID＞＞にループ中管理者IDのRecordを除く
-                            managerMap.remove(item.getKey());
-                        }
-                    }
-                }
+
+				if (empRoleMap.isEmpty()) {
+//					itr.remove();  //TODO
+				} else {
+					for (Map.Entry<String, String> entry : empRoleMap.entrySet()) {
+						val roleValue = entry.getValue();
+						val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
+						if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) {
+							// Map＜管理者ID、List＜対象者ID＞＞にループ中管理者IDのRecordを除く
+//							itr.remove();   //TODO
+						}
+					}
+				}
 			}
 		}
 
