@@ -88,12 +88,12 @@ public class MenuSettingDto {
 	/**
 	 * 既定区分
 	 */
-	private int isFixed;
+	private Integer isFixed;
 	
 	/**
 	 * 比率
 	 */
-	private double ratio;
+	private Double ratio;
 	
 	/**
 	 * 画像ファイルID
