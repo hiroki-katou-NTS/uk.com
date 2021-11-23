@@ -741,6 +741,7 @@ module nts.uk.ui.at.kdw013.c {
 		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings(), start);
 						setTimeout(() => {
 							vm.updatePopupSize();
+							custominePositionCombo();
 						}, 150);
 					}).always(() => block.clear());
 				}
@@ -857,6 +858,9 @@ module nts.uk.ui.at.kdw013.c {
 				return;
 			}
 			vm.taskBlocks.addTaskDetailsView(vm.generateFrameNo());
+			setTimeout(() => {
+				custominePositionCombo();
+			}, 150);
 		}
 		
 		sumTotalTime():number{
@@ -1387,11 +1391,36 @@ module nts.uk.ui.at.kdw013.c {
 			aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
 		}
 		if(innerHeight - aboveBelow >= heightTaskDetails){
-			$('.taskDetails').css({ "overflow-y": "hidden"});
+			$('.taskDetails').css({ "overflow-y": "unset"});
 			$('.taskDetails').css({ "max-height": heightTaskDetails + 'px' });
 		}else if(innerHeight - aboveBelow < heightTaskDetails){
 			$('.taskDetails').css({ "overflow-y": "scroll"});
 			$('.taskDetails').css({ "max-height": (innerHeight - aboveBelow - 10) + 'px' });
 		}
+	}
+	
+	export function custominePositionCombo(){
+		let resetPosition = function(e: JQueryEventObject){
+			if($('.taskDetails').css("overflow-y") == 'scroll') {
+				var p = e.target.parentElement.parentElement.parentElement;
+				var listitemholder = $(p).find('.ui-igcombo-listitemholder');
+				var bottomListitemholder = listitemholder.offset().top + listitemholder.outerHeight(true);
+				var bottomTaskDetails = $('.taskDetails').offset().top + $('.taskDetails').outerHeight(true);
+				if(bottomListitemholder > bottomTaskDetails){
+					$(p).igCombo({dropDownOrientation: 'top'});
+				}else{
+					$(p).igCombo({dropDownOrientation: 'bottom'});
+				}
+			} 
+		};
+		$('.edit-event .taskDetails .ui-igcombo-button').click((e)=>{
+			let interval = setInterval(function () {
+				resetPosition(e);
+	        });	
+			setTimeout(() => {
+				clearInterval(interval);
+			}, 200);
+		});
+		
 	}
 }
