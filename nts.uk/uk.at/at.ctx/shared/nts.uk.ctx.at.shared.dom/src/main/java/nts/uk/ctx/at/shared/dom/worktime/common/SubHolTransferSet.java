@@ -200,6 +200,7 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 		}
 	}
 	
+	// 代休振替可能日数を取得
 	public Optional<Double> getTransferDays(AttendanceTime transferTime){
 		if (this.subHolTransferSetAtr == SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL) {
 			return Optional.empty();

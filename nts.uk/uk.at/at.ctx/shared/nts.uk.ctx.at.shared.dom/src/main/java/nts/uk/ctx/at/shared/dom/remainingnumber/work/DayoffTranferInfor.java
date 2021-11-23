@@ -25,6 +25,15 @@ public class DayoffTranferInfor {
 	private Optional<TranferTimeInfor> tranferBreakTime;
 	/**	振替残業時間 */
 	private Optional<TranferTimeInfor> tranferOverTime;
+	
+	// inv-1
+	private void validate() {
+		if ((tranferBreakTime.isPresent() && !tranferOverTime.isPresent())
+				|| (!tranferBreakTime.isPresent() && tranferOverTime.isPresent()))
+			return;
+		throw new BusinessException("DayoffTranferInfor validate");
+	}
+	
 	/**
 	 * 振替時間情報を取得する
 	 * @return
@@ -63,12 +72,13 @@ public class DayoffTranferInfor {
 		return afterData;
 	}
 
+	//作成元区分を取得する
 	public CreateAtr getCreateAtr() {
-		if(this.getTranferBreakTime().isPresent())
+		validate();
+		if (this.getTranferBreakTime().isPresent())
 			return this.getTranferBreakTime().get().getCreateAtr();
-		if(this.getTranferOverTime().isPresent())
+		if (this.getTranferOverTime().isPresent())
 			return this.getTranferOverTime().get().getCreateAtr();
-		
-		throw new BusinessException("DayoffTranferInfor createAtr error");
+		return null;
 	}
 }

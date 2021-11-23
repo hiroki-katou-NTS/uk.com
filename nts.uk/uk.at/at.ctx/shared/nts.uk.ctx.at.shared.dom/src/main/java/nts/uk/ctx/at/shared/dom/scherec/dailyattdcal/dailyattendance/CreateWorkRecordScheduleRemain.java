@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  */
 public class CreateWorkRecordScheduleRemain {
 
+	//残数作成元情報を作成する
 	public static List<RecordRemainCreateInfor> createRemain(Require require, String cid,
 			List<IntegrationOfDaily> domainDailys, SubsTransferProcessMode processMode) {
 

@@ -13,13 +13,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
@@ -76,10 +74,7 @@ public class CreateRemainInformation {
 		Optional<OverTimeOfDaily> overTimeWorkOutput = domainDaily.getAttendanceTimeOfDailyPerformance()
 				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 						.getOverTimeWork());
-		List<OverTimeFrameTime> overTimeWorkFrameTime = overTimeWorkOutput.isPresent()
-				? overTimeWork.get().getOverTimeWorkFrameTime()
-				: new ArrayList<OverTimeFrameTime>();
-		return overTimeWorkFrameTime.stream().collect(Collectors.summingInt(x -> x.getTransferTime().getTime().v()));
+		return overTimeWorkOutput.map(x -> x.calcTransTotalFrameTime().v()).orElse(0);
 	}
 
 	// 休出振替時間の合計を算出する
@@ -108,12 +103,8 @@ public class CreateRemainInformation {
 		Optional<HolidayWorkTimeOfDaily> workHolidayTimeOutput = domainDaily.getAttendanceTimeOfDailyPerformance()
 				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
 						.getWorkHolidayTime());
-		List<HolidayWorkFrameTime> holidayWorkFrameTime = workHolidayTimeOutput.isPresent()
-				? workHolidayTime.get().getHolidayWorkFrameTime()
-				: new ArrayList<>();
 		// 休出振替時間合計を設定する
-		return holidayWorkFrameTime.stream().filter(x -> x.getTransferTime().isPresent())
-				.collect(Collectors.summingInt(x -> x.getTransferTime().get().getTime().v()));
+		return workHolidayTimeOutput.map(x -> x.calcTransTotalFrameTime().v()).orElse(0);
 	}
 
 	/**

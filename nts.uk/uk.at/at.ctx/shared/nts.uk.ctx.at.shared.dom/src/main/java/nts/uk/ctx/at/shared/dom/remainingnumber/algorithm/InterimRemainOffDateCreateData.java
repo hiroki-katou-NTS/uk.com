@@ -1193,7 +1193,7 @@ public class InterimRemainOffDateCreateData {
 
 		//アルゴリズム「代休を発生させる勤務種類かを判定する」を実行する
 		Optional<WorkType> workType = require.workType(cid, workTypeCode);
-		if(!workType.get().isSubstituteHolidayOccurs()) {
+		if(!workType.map(x -> x.isSubstituteHolidayOccurs()).orElse(true)) {
 			return Optional.empty();
 		}
 		

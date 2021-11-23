@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 import java.util.Optional;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -21,16 +20,15 @@ public class GetSubHolOccurrenceSetting {
 	public static Optional<SubHolTransferSet> process(Require require, String cid, Optional<String> workTimeCode,
 			CompensatoryOccurrenceDivision originAtr) {
 		
+		//	$代休管理設定
 		val comLeavSet = require.findCompensatoryLeaveComSet(cid);
-		
-		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)){
-			if (comLeavSet == null)
-				return Optional.empty();
-			
-				if(comLeavSet.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.NO)
-					return Optional.empty();
+		//	if($代休管理設定.is not Present())
+		if (comLeavSet == null)
+			return Optional.empty();
+		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime) && !comLeavSet.isManagedTime()) {
+			return Optional.empty();
 		}
-		
+
 		Optional<WorkTimezoneCommonSet> commonset = Optional.empty();
 		if (workTimeCode.isPresent()) {
 			Optional<WorkTimeSetting> workTimeSet = require.getWorkTime(cid, workTimeCode.get());
@@ -55,8 +53,6 @@ public class GetSubHolOccurrenceSetting {
 					.filter(x -> x.getOriginAtr() == originAtr).map(x -> x.getSubHolTimeSet()).findFirst();
 		}
 		
-		if (comLeavSet == null)
-			return Optional.empty();
 		SubHolTransferSet result = comLeavSet.getCompensatoryOccurrenceSetting().stream()
 				.filter(x -> x.getOccurrenceType().value == originAtr.value).map(x -> x.getTransferSetting())
 				.findFirst().orElse(null);

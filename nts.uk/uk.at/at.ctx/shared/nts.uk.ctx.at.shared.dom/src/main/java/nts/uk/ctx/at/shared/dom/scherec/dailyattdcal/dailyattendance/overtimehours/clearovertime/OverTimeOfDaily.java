@@ -176,12 +176,10 @@ public class OverTimeOfDaily {
 	 * 
 	 * @return 残業時間
 	 */
-	public int calcTotalFrameTime() {
-		int totalTime = 0;
-		for (OverTimeFrameTime overTimeWorkFrameTime : overTimeWorkFrameTime) {
-			totalTime += overTimeWorkFrameTime.getOverTimeWork().getTime().valueAsMinutes();
-		}
-		return totalTime;
+	public AttendanceTime calcTotalFrameTime() {
+		int sumOverTime = this.overTimeWorkFrameTime.stream()
+				.collect(Collectors.summingInt(x -> x.getOverTimeWork().getTime().v()));
+		return  new AttendanceTime(sumOverTime);
 	}
 
 	/**
@@ -189,14 +187,19 @@ public class OverTimeOfDaily {
 	 * 
 	 * @return 振替残業時間
 	 */
-	public int calcTransTotalFrameTime() {
-		int transTotalTime = 0;
-		for (OverTimeFrameTime overTimeWorkFrameTime : overTimeWorkFrameTime) {
-			transTotalTime += overTimeWorkFrameTime.getTransferTime().getTime().valueAsMinutes();
-		}
-		return transTotalTime;
+	public AttendanceTime calcTransTotalFrameTime() {
+		int sumOverTranferTime = this.overTimeWorkFrameTime.stream()
+				.collect(Collectors.summingInt(x -> x.getTransferTime().getTime().v()));
+		return  new AttendanceTime(sumOverTranferTime);
 	}
 
+	//全枠の事前申請時間の合計の算出
+	public AttendanceTime calcTotalAppTime() {
+		int sumApp = this.overTimeWorkFrameTime.stream()
+				.collect(Collectors.summingInt(x -> x.getBeforeApplicationTime().v()));
+		return new AttendanceTime(sumApp);
+	}
+	
 	public OverTimeOfDaily createFromJavaType(List<OverTimeFrameTime> frameTimeList,
 			ExcessOverTimeWorkMidNightTime midNightTime, AttendanceTime irregularTime, FlexTime flexTime,
 			AttendanceTime overTimeWork) {
@@ -934,15 +937,13 @@ public class OverTimeOfDaily {
 				excessOverTimeWorkMidNightTimeClone, irregularTimeClone, flexTimeClone, overTimeWorkClone);
 	}
 
-	// 残業時間の代休振替を呼ぶかどうか
+	//事前申請時間から代休振替を行うか判断する
 	public boolean tranferOvertimeCompenCall(SubsTransferProcessMode processMode) {
-		int sumOverTime = this.overTimeWorkFrameTime.stream()
-				.collect(Collectors.summingInt(x -> x.getOverTimeWork().getTime().v()));
-		int sumOverTranferTime = this.overTimeWorkFrameTime.stream()
-				.collect(Collectors.summingInt(x -> x.getTransferTime().getTime().v()));
-		int sumApp = this.overTimeWorkFrameTime.stream()
-				.collect(Collectors.summingInt(x -> x.getBeforeApplicationTime().v()));
-		if ((sumOverTime + sumOverTranferTime) <= 0 && processMode == SubsTransferProcessMode.DAILY && sumApp > 0) {
+		AttendanceTime sumOverTime = calcTotalFrameTime();
+		AttendanceTime sumOverTranferTime = calcTransTotalFrameTime();
+		AttendanceTime sumApp = calcTotalAppTime();
+		if ((sumOverTime.valueAsMinutes() + sumOverTranferTime.valueAsMinutes()) <= 0
+				&& processMode == SubsTransferProcessMode.DAILY && sumApp.valueAsMinutes() > 0) {
 			return true;
 		}
 		return false;

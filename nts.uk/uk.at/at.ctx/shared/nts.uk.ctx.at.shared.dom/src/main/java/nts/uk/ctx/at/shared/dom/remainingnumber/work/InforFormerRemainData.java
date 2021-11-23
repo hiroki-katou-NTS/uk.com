@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -16,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
  *
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
 public class InforFormerRemainData {
@@ -36,6 +34,13 @@ public class InforFormerRemainData {
 	private CompanyHolidayMngSetting companyHolidaySetting;
 	/** 雇用別休暇管理設定 */
 	private EmploymentHolidayMngSetting employmentHolidaySetting;
+	
+	// inv-1
+	private void validate() {
+		if (workTypeRemain.isPresent() || dayOffTranfer.isPresent() || !vactionTime.isEmpty())
+			return;
+		throw new BusinessException("InforFormerRemainData validate");
+	}
 	/**
 	 * 分類を指定して発生使用明細を取得する
 	 * @param inforData
@@ -52,12 +57,14 @@ public class InforFormerRemainData {
 				.filter(od -> od.getWorkTypeAtr().equals(workTypeClass)&& od.isUseAtr() && od.getDays() > 0).findFirst();
 	}
 	
-	public CreateAtr getCreateAtr() {
+	//日数単位の作成元区分を取得する
+	public Optional<CreateAtr> getCreateAtr() {
+		validate();
 		if(this.getWorkTypeRemain().isPresent())
-			return this.getWorkTypeRemain().get().getCreateData();
+			return Optional.of(this.getWorkTypeRemain().get().getCreateData());
 		if(this.getDayOffTranfer().isPresent())
-			return this.getDayOffTranfer().get().getCreateAtr();
+			return  Optional.of(this.getDayOffTranfer().get().getCreateAtr());
 		
-		throw new BusinessException("InforFormerRemainData CreateAtr error");
+		return Optional.empty();
 	}
 }
