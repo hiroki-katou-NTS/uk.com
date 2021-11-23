@@ -19,18 +19,16 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQuery;
 import nts.uk.ctx.at.schedulealarm.app.query.alarmcheck.AlarmCheckConditionsQueryDto;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.EmployeeSearchCallSystemType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.pub.workplace.export.EmpOrganizationPub;
-import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
@@ -52,9 +50,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetInformationStartupScreenQuery {
 
     @Inject
-    private EmpOrganizationPub empOrganizationPub;
-
-    @Inject
     private WorkplaceGroupAdapter workplaceGroupAdapter;
     @Inject
     private RegulationInfoEmployeeAdapter regulInfoEmployeeAdap;
@@ -68,6 +63,9 @@ public class GetInformationStartupScreenQuery {
 
     @Inject
     private AlarmCheckConditionsQuery alarmCheckConditionsQuery;
+    
+    @Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
     final static String SPACE = " ";
     final static String ZEZO_TIME = "00:00";
@@ -79,7 +77,7 @@ public class GetInformationStartupScreenQuery {
         String sid = AppContexts.user().employeeId();
         GeneralDate baseDate = GeneralDate.today();
 
-        GetTargetIdentifiInforService.Require require = EmbedStopwatch.embed(new RequireImpl(empOrganizationPub));
+        GetTargetIdentifiInforService.Require require = EmbedStopwatch.embed(new RequireImpl());
 
         // 1. 取得する(Require, 年月日, 社員ID)
         TargetOrgIdenInfor targeOrg = GetTargetIdentifiInforService.get(require, baseDate, sid);
@@ -120,23 +118,15 @@ public class GetInformationStartupScreenQuery {
     }
 
 
-    @AllArgsConstructor
-    private class RequireImpl implements GetTargetIdentifiInforService.Require {
+	private class RequireImpl implements GetTargetIdentifiInforService.Require {
 
-        @Inject
-        private EmpOrganizationPub empOrganizationPub;
+		@Override
+		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate referenceDate, List<String> listEmpId) {
 
-        @Override
-        public List<EmpOrganizationImport> getEmpOrganization(GeneralDate referenceDate, List<String> listEmpId) {
+			return empAffiliationInforAdapter.getEmpOrganization(referenceDate, listEmpId);
+		}
 
-            List<EmpOrganizationExport> exports = empOrganizationPub.getEmpOrganiztion(referenceDate, listEmpId);
-            List<EmpOrganizationImport> data = exports.stream().map(i -> {
-                return new EmpOrganizationImport(new EmployeeId(i.getEmpId()), i.getBusinessName(), i.getEmpCd(), i.getWorkplaceId(), i.getWorkplaceGroupId());
-            }).collect(Collectors.toList());
-            return data;
-        }
-
-    }
+	}
 
     @AllArgsConstructor
     private class RequireGetEmpBySpecrOrgImpl implements GetEmpCanReferService.Require {

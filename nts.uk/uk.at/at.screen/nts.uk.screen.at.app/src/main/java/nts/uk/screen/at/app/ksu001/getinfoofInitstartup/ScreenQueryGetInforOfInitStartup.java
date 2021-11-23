@@ -25,19 +25,17 @@ import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForC
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForCompanyRepo;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganization;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.ShiftTableRuleForOrganizationRepo;
-import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
-import nts.uk.ctx.bs.employee.pub.workplace.export.EmpOrganizationPub;
-import nts.uk.ctx.bs.employee.pub.workplace.workplacegroup.EmpOrganizationExport;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -50,8 +48,6 @@ public class ScreenQueryGetInforOfInitStartup {
 
 	@Inject
 	private DisplaySettingByWorkplaceRepository workScheDisplaySettingRepo;
-	@Inject
-	private EmpOrganizationPub empOrganizationPub;
 	
 	@Inject
 	private WorkplaceGroupAdapter workplaceGroupAdapter;
@@ -67,6 +63,9 @@ public class ScreenQueryGetInforOfInitStartup {
 	@Inject
 	private ShiftTableRuleForCompanyRepo shiftTableRuleForCompanyRepo;
 	
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
+	
 	public DataScreenQueryGetInforDto getData() {
 		// Step 1,2
 		String companyID = AppContexts.user().companyId();
@@ -80,7 +79,7 @@ public class ScreenQueryGetInforOfInitStartup {
 		// step 3
 		// goi domain service 社員の対象組織識別情報を取得する
 		String sidLogin = AppContexts.user().employeeId();
-		RequireImpl require = new RequireImpl(empOrganizationPub);
+		RequireImpl require = new RequireImpl();
 		TargetOrgIdenInfor targetOrgIdenInfor = GetTargetIdentifiInforService.get(require, datePeriod.end(), sidLogin);
 		
 		// step 4
@@ -130,20 +129,12 @@ public class ScreenQueryGetInforOfInitStartup {
 	}
 	
 	
-	@AllArgsConstructor
-	private static class RequireImpl implements GetTargetIdentifiInforService.Require {
-		
-		@Inject
-		private EmpOrganizationPub empOrganizationPub;
+	private class RequireImpl implements GetTargetIdentifiInforService.Require {
 		
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate referenceDate, List<String> listEmpId) {
-			
-			List<EmpOrganizationExport> exports = empOrganizationPub.getEmpOrganiztion(referenceDate, listEmpId);
-			List<EmpOrganizationImport> data = exports.stream().map(i -> {
-				return new EmpOrganizationImport (new EmployeeId(i.getEmpId()),i.getBusinessName(), i.getEmpCd(), i.getWorkplaceId(), i.getWorkplaceGroupId());
-			}).collect(Collectors.toList());
-			return data;
+
+			return empAffiliationInforAdapter.getEmpOrganization(referenceDate, listEmpId);
 		}
 	}
 	
