@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.entity.reservation.reservationsetting;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +56,10 @@ public class KrcmtReservationSetting extends ContractUkJpaEntity {
     @JoinTable(name = "KRCMT_PREPARATION_RECTIME")
 	public List<KrcmtReservationRecTime> krcmtReservationRecTimeLst;
     
+    @OneToMany(targetEntity = KrcmtPreparationRoles.class, mappedBy = "krcmtReservationSetting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "KRCMT_PREPARATION_ROLES")
+	public List<KrcmtPreparationRoles> krcmtPreparationRolesLst;
+    
     @Override
     protected Object getKey() {
         return companyID;
@@ -70,7 +73,7 @@ public class KrcmtReservationSetting extends ContractUkJpaEntity {
     					EnumAdaptor.valueOf(krcmtReservationSetting.contentChangeDeadline, ContentChangeDeadline.class), 
     					krcmtReservationSetting.contentChangeDeadlineDay==null?null:EnumAdaptor.valueOf(krcmtReservationSetting.contentChangeDeadlineDay, ContentChangeDeadlineDay.class), 
     					EnumAdaptor.valueOf(krcmtReservationSetting.orderedMngAtr, ReservationOrderMngAtr.class),
-    					new ArrayList<>()), 
+    					krcmtReservationSetting.krcmtPreparationRolesLst.stream().map(x -> x.pk.roleID).collect(Collectors.toList())), 
     			new Achievements(EnumAdaptor.valueOf(krcmtReservationSetting.monthlyResults, AchievementMethod.class)),
     			krcmtReservationSetting.krcmtReservationRecTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()),
     			krcmtReservationSetting.rectime2Atr==0?false:true);
@@ -85,6 +88,7 @@ public class KrcmtReservationSetting extends ContractUkJpaEntity {
     			reservationSetting.getCorrectionContent().getContentChangeDeadlineDay()==null?null:reservationSetting.getCorrectionContent().getContentChangeDeadlineDay().value, 
     			reservationSetting.getCorrectionContent().getOrderMngAtr().value, 
     			reservationSetting.isReceptionTimeZone2Use()?1:0, 
-    			reservationSetting.getReservationRecTimeZoneLst().stream().map(x -> KrcmtReservationRecTime.fromDomain(x)).collect(Collectors.toList()));
+    			reservationSetting.getReservationRecTimeZoneLst().stream().map(x -> KrcmtReservationRecTime.fromDomain(x)).collect(Collectors.toList()),
+    			reservationSetting.getCorrectionContent().getCanModifiLst().stream().map(x -> KrcmtPreparationRoles.fromDomain(reservationSetting.getCompanyId(), x)).collect(Collectors.toList()));
     }
 }

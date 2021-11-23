@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.record.dom.workrecord.role.Role;
 
 /**
@@ -21,4 +22,6 @@ public class ReservationQueryOuput {
     
     // ロール
     public List<Role> roles;
+    
+    public List<EnumConstant> contentChangeDeadlineDayEnum;
 }

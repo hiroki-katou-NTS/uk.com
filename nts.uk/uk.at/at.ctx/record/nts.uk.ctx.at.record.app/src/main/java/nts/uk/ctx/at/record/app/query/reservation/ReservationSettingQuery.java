@@ -7,6 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumConstant;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ContentChangeDeadlineDay;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.role.Role;
@@ -40,9 +42,15 @@ public class ReservationSettingQuery {
             roles = getRoleNameQuery.getRoleName(settingOpt.get().getCorrectionContent().getCanModifiLst());
         }
         
+        List<EnumConstant> contentChangeDeadlineDayEnum = new ArrayList<>();
+        for(ContentChangeDeadlineDay item : ContentChangeDeadlineDay.values()) {
+        	contentChangeDeadlineDayEnum.add(new EnumConstant(item.value, item.toString(), item.name));
+        }
+        
         // 3.return()
         return new ReservationQueryOuput(
                 setting != null ? ReservationSettingDto.fromDomain(setting) : null, 
-                roles);
+                roles,
+                contentChangeDeadlineDayEnum);
     }
 }
