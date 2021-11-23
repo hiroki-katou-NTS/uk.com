@@ -75,6 +75,7 @@ module nts.uk.at.view.kdp005.a {
 			commentColor: KnockoutObservable<string> = ko.observable('');
 
 			totalOpenViewR: number = 0;
+			saveDefault: Boolean = false;
 
 			constructor() {
 				let self = this;
@@ -126,6 +127,7 @@ module nts.uk.at.view.kdp005.a {
 					.then((data: boolean) => {
 						// Step2: 契約コードに関するlocalstrageに登録する
 						if (!data) {
+							self.saveDefault = true;
 							vm.$window.storage("contractInfo", {
 								contractCode: "000000000000",
 								contractPassword: null
@@ -181,9 +183,21 @@ module nts.uk.at.view.kdp005.a {
 								service.getLogginSetting(data.contractCode).done((res) => {
 									self.listCompany = _.filter(res, 'icCardStamp');
 									if (self.listCompany.length == 0) {
-										self.errorMessage(getMessage("Msg_1527"));
-										self.isUsed(false);
-										dfd.resolve();
+
+										if (self.saveDefault) {
+											self.openDialogF({
+												mode: 'admin'
+											}).then(() => {
+												self.errorMessage(getMessage("Msg_1527"));
+												self.isUsed(false);
+												dfd.resolve();
+											})
+										} else {
+											self.errorMessage(getMessage("Msg_1527"));
+											self.isUsed(false);
+											dfd.resolve();
+										}
+
 									} else {
 										self.btnChangeCompany(self.listCompany.length > 0);
 										characteristics.restore("loginKDP005").done(function (loginInfo: ILoginInfo) {

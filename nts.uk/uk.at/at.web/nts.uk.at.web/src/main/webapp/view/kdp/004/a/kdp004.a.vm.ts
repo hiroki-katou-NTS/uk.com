@@ -74,6 +74,7 @@ module nts.uk.at.view.kdp004.a {
 
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
+			saveDefault: Boolean = false;
 			saveSuccess = false;
 
 			constructor() {
@@ -125,6 +126,7 @@ module nts.uk.at.view.kdp004.a {
 					.then((data: boolean) => {
 						// Step2: 契約コードに関するlocalstrageに登録する
 						if (!data) {
+							self.saveDefault = true
 							vm.$window.storage("contractInfo", {
 								contractCode: "000000000000",
 								contractPassword: null
@@ -182,11 +184,23 @@ module nts.uk.at.view.kdp004.a {
 										// self.errorMessage(getMessage("Msg_1527"));
 										// self.isUsed(false);
 										// dfd.resolve();
-
-										self.errorMessage(getMessage("Msg_1527"));
-										self.isUsed(false);
-										dfd.resolve();
-										return;
+										if (self.saveDefault) {
+											self.openScreenF({
+												mode: 'admin'
+											}).then(() => {
+												self.errorMessage(getMessage("Msg_1527"));
+												self.isUsed(false);
+												self.saveDefault = false
+												dfd.resolve();
+												return;
+											})
+										} else {
+											self.errorMessage(getMessage("Msg_1527"));
+											self.isUsed(false);
+											self.saveDefault = false
+											dfd.resolve();
+											return;
+										}
 									} else {
 										self.listCompany(_.filter(res, 'fingerAuthStamp'));
 										nts.uk.characteristics.restore(KDP004_SAVE_DATA).done(function (loginInfo: ILoginInfo) {
