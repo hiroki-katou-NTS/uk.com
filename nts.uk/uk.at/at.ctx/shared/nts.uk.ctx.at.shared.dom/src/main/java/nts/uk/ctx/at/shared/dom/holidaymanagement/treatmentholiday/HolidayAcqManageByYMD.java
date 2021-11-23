@@ -33,13 +33,14 @@ public class HolidayAcqManageByYMD implements FourWeekHolidayAcqMana, DomainValu
 		int numberOfCycles = 0;; 
 		GeneralDate startDate;
 		GeneralDate endDate;
-		if(baseDate.before(startingDate)) {
-			numberOfCycles = ( new DatePeriod(baseDate, startingDate).datesBetween().size() -2 ) /cycleDays; 
-			endDate = this.startingDate.addDays( ( numberOfCycles * -cycleDays) - 1 );
+		if(baseDate.before(this.startingDate)) {
+			GeneralDate startingDate = this.startingDate.addDays(-1);
+			numberOfCycles = ( new DatePeriod(baseDate, startingDate).datesBetween().size() -1 ) /cycleDays; 
+			endDate = startingDate.addDays( ( numberOfCycles * -cycleDays));
 			startDate = endDate.addDays( 1 - cycleDays );
 			
 		}else {
-			numberOfCycles = ( new DatePeriod(startingDate, baseDate).datesBetween().size() - 1) /cycleDays; 
+			numberOfCycles = ( new DatePeriod(this.startingDate, baseDate).datesBetween().size() - 1) /cycleDays; 
 			startDate = this.startingDate.addDays( numberOfCycles * cycleDays );
 			endDate = startDate.addDays( cycleDays - 1 );
 		}	
