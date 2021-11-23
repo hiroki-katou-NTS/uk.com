@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday;
 
 import lombok.Value;
-import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -30,11 +29,21 @@ public class HolidayAcqManageByYMD implements FourWeekHolidayAcqMana, DomainValu
 	 */
 	@Override
 	public HolidayAcqManaPeriod getManagementPeriod(Require require, GeneralDate baseDate) {
-		val cycleDays = 7*4;
-		val numberOfCycles = ( new DatePeriod(startingDate, baseDate).datesBetween().size() - 1) /cycleDays; 
+		int cycleDays = 7*4;
+		int numberOfCycles = 0;; 
+		GeneralDate startDate;
+		GeneralDate endDate;
+		if(baseDate.before(startingDate)) {
+			numberOfCycles = ( new DatePeriod(baseDate, startingDate).datesBetween().size() -2 ) /cycleDays; 
+			endDate = this.startingDate.addDays( ( numberOfCycles * -cycleDays) - 1 );
+			startDate = endDate.addDays( 1 - cycleDays );
+			
+		}else {
+			numberOfCycles = ( new DatePeriod(startingDate, baseDate).datesBetween().size() - 1) /cycleDays; 
+			startDate = this.startingDate.addDays( numberOfCycles * cycleDays );
+			endDate = startDate.addDays( cycleDays - 1 );
+		}	
 		
-		val startDate = this.startingDate.addDays( numberOfCycles * cycleDays );
-		val endDate = startDate.addDays( cycleDays - 1 );
 		
 		return new HolidayAcqManaPeriod( new DatePeriod( startDate, endDate ), this.fourWeekHoliday );
 		
