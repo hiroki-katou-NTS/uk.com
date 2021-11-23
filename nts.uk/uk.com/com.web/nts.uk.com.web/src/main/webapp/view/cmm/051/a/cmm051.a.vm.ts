@@ -110,10 +110,8 @@ module nts.uk.com.view.cmm051.a {
                     listEmployee = data.employeeInformation.listEmployee;
                     personList = data.employeeInformation.personList;
                     vm.setData(workplaceManagerList, listEmployee, personList, vm.employeeId(), vm.workPlaceId(), vm.historyId());
-                    vm.isDelete(true);
-                    vm.isNewModeHist(true);
                 } else {
-                    vm.isDelete(false);
+                    vm.setModeNoData();
                 }
 
             }).always(() => {
@@ -187,6 +185,9 @@ module nts.uk.com.view.cmm051.a {
                 if (isNullOrEmpty(emps)) {
                     vm.employeeCode(null);
                     vm.employeeName(null);
+                    vm.setModeNoData();
+                }else {
+                    vm.isNewMode(false);
                 }
                 vm.employInfors(emps);
                 let info = _.find(vm.employInfors(), (e) => e.id == sid);
@@ -212,7 +213,15 @@ module nts.uk.com.view.cmm051.a {
             }
 
         }
+        setModeNoData(): void{
+            let vm = this;
+            vm.isDelete(false);
+            vm.isNewMode(true);
+            vm.isNewModeHist(true);
+            vm.isUpdateModeHist(false);
+            vm.isDeleteModeHist(false);
 
+        }
         setDataHist(sid: string, workplaceManagerList: any[], histId: string, wplId: string): void {
             let vm = this;
             let listDatePeriod: any[] = [];
@@ -347,7 +356,6 @@ module nts.uk.com.view.cmm051.a {
                     if (!isNullOrEmpty(info)) {
                         vm.workplaceName(info.name);
                         vm.workplaceCode(info.code);
-                        vm.isDelete(true);
                     } else {
                         vm.workplaceName(null);
                         vm.workplaceCode(null);
@@ -386,13 +394,20 @@ module nts.uk.com.view.cmm051.a {
             let vm = this;
             nts.uk.ui.errors.clearAll();
             if (vm.isNewMode() == true) {
+                if(vm.mode() == Mode.WPL){
+                    vm.selectedEmCode(null);
+                    vm.employeeCode(null);
+                    vm.employeeName(null);
+                }
+                if(vm.mode() == Mode.EMPLOYMENT){
+                    vm.workPlaceId(null);
+                    vm.workplaceCode(null);
+                    vm.workplaceName(null);
+                }
                 vm.dateHistoryList([]);
-                vm.employeeCode(null);
-                vm.employeeName(null);
-                vm.workplaceCode(null);
-                vm.workplaceName(null);
                 vm.startDate(null);
                 vm.endDate(null);
+
             }
         }
 
@@ -406,11 +421,8 @@ module nts.uk.com.view.cmm051.a {
             vm.isNewMode(true);
             vm.isUpdateModeHist(false);
             vm.isDeleteModeHist(false);
-            vm.workPlaceList([]);
-            vm.employInfors([]);
             vm.isNewModeHist(true);
             vm.isDelete(false);
-            vm.selectedEmCode('');
             vm.initManager();
         }
 
@@ -435,6 +447,7 @@ module nts.uk.com.view.cmm051.a {
             block.invisible();
             if (vm.isNewMode()) {
                 vm.$ajax("com", API.addWkpManager, command).done(() => {
+                    vm.$dialog.info({ messageId: "Msg_15" }).then(()=>{
                         vm.initScreen(mode, sid, workplaceId, null);
                         if (mode == Mode.WPL) {
                             vm.getListWpl(workplaceId);
@@ -445,6 +458,7 @@ module nts.uk.com.view.cmm051.a {
                         }
                         vm.isNewMode(false);
                         vm.isDelete(true);
+                    });
                     }
                 ).always(() => {
                     block.clear();
@@ -459,10 +473,11 @@ module nts.uk.com.view.cmm051.a {
                     "endDate": endDate
                 };
                 vm.$ajax("com", API.addHistWkpManager, commandHist).done(() => {
+                    vm.$dialog.info({ messageId: "Msg_15" }).then(()=>{
                         vm.initScreen(mode, sid, workplaceId, vm.historyId());
                         vm.isNewMode(false);
                         vm.isDelete(true);
-                    }
+                    }); }
                 ).always(() => {
                     block.clear();
                 }).fail((res) => {
@@ -483,11 +498,13 @@ module nts.uk.com.view.cmm051.a {
             vm.clearError();
             if(vm.mode() == Mode.WPL){
                 if (isNullOrUndefined(vm.workplaceCode())) {
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_41")});
                     $('#a8_2').focus();
                     hasError = true;
                     return hasError;
                 }
                 if(isNullOrUndefined(vm.employeeCode())){
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_46")});
                     $('#a10_2').focus();
                     hasError = true;
                     return hasError;
@@ -495,17 +512,20 @@ module nts.uk.com.view.cmm051.a {
 
             }else {
                 if (isNullOrUndefined(vm.employeeCode())) {
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_46")});
                     $('#a3_2').focus();
                     hasError = true;
                     return hasError;
                 }
                 if(isNullOrUndefined(vm.workplaceCode())){
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_41")});
                     $('#a6_2').focus();
                     hasError = true;
                     return hasError;
                 }
             }
             if (isNullOrUndefined(vm.startDate()) || isNullOrUndefined(vm.endDate())) {
+                nts.uk.ui.dialog.alertError({messageId: 'Msg_2201'});
                 $('#new_date').focus();
                 hasError = true;
                 return hasError;

@@ -21,7 +21,7 @@
             <button  class="add" data-bind="click: createWkpManager, enable: $root.errors.isEmpty()" tabindex="1">#{i18n.getText('CMM051_1')}</button>
             <button class="proceed" data-bind="click: saveWkpManager, enable: $root.errors.isEmpty() "
                     tabindex="2">#{i18n.getText('CMM051_2')}</button>
-            <button class="danger" data-bind="click: remove, enable: isDelete() &amp;&amp; $root.errors.isEmpty"
+            <button class="danger" data-bind="click: remove, enable : isDelete() &amp;&amp; $root.errors.isEmpty"
                     tabindex="3">#{i18n.getText('CMM051_3')}</button>
         </div>
         <div id="contents-area">
@@ -101,7 +101,7 @@
                     <div data-bind="if: mode() == 1">
                         <div  class="a_6">
                             <!--A10_1-->
-                            <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_41')}</div>
+                            <div data-bind="ntsFormLabel:{required:true}" style="width: 60px" >#{i18n.getText('CMM051_41')}</div>
                             <!--A10_2-->
                             <button tabindex="14" class=" a_62" id = "a10_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode() ">#{i18n.getText('CMM051_47')}</button>
@@ -115,7 +115,7 @@
                         <!--A6-->
                         <div  class="a_10">
                             <!--A6_1-->
-                            <div data-bind="ntsFormLabel:{required:true} ">#{i18n.getText('CMM051_46')}</div>
+                            <div data-bind="ntsFormLabel:{required:true} " style="width: 60px">#{i18n.getText('CMM051_46')}</div>
                             <!--A6_2-->
                             <button tabindex="7" class=" a_62" id = "a6_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode()">#{i18n.getText('CMM051_42')}</button>
