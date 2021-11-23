@@ -3128,8 +3128,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         return employee.id === self.selectedEmployee();
                     }));
                     let param = {
-                        startDate: moment(self.dateRanger().startDate).utc().toISOString(), 
-                        endDate: moment(self.dateRanger().endDate).utc().toISOString(), 
+                        startDate: moment(self.timePeriodAllInfo.targetRange.startDate).utc().toISOString(), 
+                        endDate: moment(self.timePeriodAllInfo.targetRange.endDate).utc().toISOString(), 
                         mode: "0", 
                         listEmp: [lstEmployee[0].id]
                     };
