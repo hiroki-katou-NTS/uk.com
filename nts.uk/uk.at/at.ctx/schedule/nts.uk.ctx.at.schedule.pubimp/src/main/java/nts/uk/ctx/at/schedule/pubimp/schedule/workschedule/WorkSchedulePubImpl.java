@@ -59,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -88,6 +89,9 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 
 	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
+	
+	@Inject
+	private EmpAffiliationInforAdapter empAffiliationInforAdapter;
 
 	@Override
 	public Optional<WorkScheduleExport> get(String employeeID, GeneralDate ymd) {
@@ -426,8 +430,8 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 
 		@Override
 		public List<EmpOrganizationImport> getEmpOrganization(GeneralDate baseDate, List<String> lstEmpId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			
+			return empAffiliationInforAdapter.getEmpOrganization(baseDate, lstEmpId);
 		}
 
 	}
