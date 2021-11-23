@@ -18,6 +18,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
+import nts.uk.ctx.at.auth.app.find.employmentrole.dto.DateProcessed;
+import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -100,6 +103,9 @@ public class KTG027QueryProcessor {
 	
 	 @Inject
 	private ManagedParallelWithContext parallel;
+	 
+	@Inject
+	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 
 	public GeneralDate checkSysDateOrCloseEndDate() {
 		// EA luôn trả v�Systemdate
@@ -318,15 +324,17 @@ public class KTG027QueryProcessor {
 		if (lstClosure.isEmpty()) {
 			return result;
 		}
-
-		// 上長用の時間外時間表示．当月の締め情報．処理年月＝取得したドメインモデル「締め」．当月
-		// 上長用の時間外時間表示．当月の締め情報．締め開始日＝取得した締め期間．開始日
-		// 上長用の時間外時間表示．当月の締め情報．締め終了日＝取得した締め期間．終了日
-		// 上長用の時間外時間表示．ログイン者の締めID＝取得したドメインモデル「締め」．締めID
+		
+		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
+		DateProcessed dateProcessed = rq609.getListDateProcessed().stream()
+				.filter(c -> c.getClosureID() == closure.getClosureId().value)
+				.collect(Collectors.toList())
+				.get(0);
+		
 		CurrentClosingPeriodExport closingInformationForCurrentMonth = CurrentClosingPeriodExport.builder()
-				.processingYm(closure.getClosureMonth().getProcessingYm().v())
-				.closureEndDate(lstClosure.get(0).getPeriod().end().toString())
-				.closureStartDate(lstClosure.get(0).getPeriod().start().toString())
+				.processingYm(dateProcessed.getTargetDate().v())
+				.closureEndDate(dateProcessed.getDatePeriod().end().toString())
+				.closureStartDate(dateProcessed.getDatePeriod().start().toString())
 				.build();
 		result.setClosingInformationForCurrentMonth(closingInformationForCurrentMonth);
 		result.setClosureId(closure.getClosureId().value);

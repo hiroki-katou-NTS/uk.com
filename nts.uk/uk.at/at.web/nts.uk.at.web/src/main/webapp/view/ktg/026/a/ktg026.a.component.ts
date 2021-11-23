@@ -515,7 +515,7 @@ module nts.uk.at.view.ktg026.a {
             const targetDate: any = vm.isDialog ? vm.dialogParam.targetDate : null;
             let targetYear: any = vm.isDialog ? vm.dialogParam.targetYear : null;
 
-            const command = { employeeId, targetDate, targetYear, currentOrNextMonth };
+            const command = { employeeId, targetDate, targetYear };
             vm.legendOptions = {
                 items: [
                     { colorCode: '#99FF66', labelText: vm.$i18n('KTG026_2') },

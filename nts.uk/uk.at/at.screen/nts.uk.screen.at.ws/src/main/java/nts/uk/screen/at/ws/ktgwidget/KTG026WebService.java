@@ -46,7 +46,7 @@ class Ktg026Parmas {
 	// 対象年
 	Integer targetYear;
     // 表示年月
-    int currentOrNextMonth;
+    Integer currentOrNextMonth;
     // 処理年月
     int processingYm;
 }

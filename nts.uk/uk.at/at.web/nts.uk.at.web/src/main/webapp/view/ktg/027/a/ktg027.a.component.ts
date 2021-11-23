@@ -30,6 +30,10 @@ module nts.uk.at.view.ktg027.a {
             return 'special-exceeding-limit';
         }
 
+        if (state === 8) {
+            return 'bg-exceed-special-upperlimit color-exceed-special-upperlimit';
+        }
+
         return '';
     }
 
@@ -244,6 +248,7 @@ module nts.uk.at.view.ktg027.a {
         chartStyle!: KnockoutComputed<string>;
         legendOptions: any;
 		firstLoad: boolean = true; 
+        closingInfo: any = null;
 
         constructor(private cache: { currentOrNextMonth: 1 | 2; }) {
             super();
@@ -350,7 +355,7 @@ module nts.uk.at.view.ktg027.a {
                 .then(() => vm.$ajax('at', `${API.GET_DATA_INIT}/${cache.currentOrNextMonth}`))
                 .then((response: DataInit) => {
                     const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth, overtimeOfSubordinateEmployees } = response;
-
+                    vm.closingInfo = closingInformationForCurrentMonth;
                     vm.employees(personalInformationOfSubordinateEmployees);
 
                     vm.targetYear
@@ -374,19 +379,6 @@ module nts.uk.at.view.ktg027.a {
                         });
 
                     vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
-                        if (rs && rs.isRefresh) {
-                            vm.targetYear(rs.target);
-                            return;
-                        }
-
-                        // update targetYear by closure data
-                        if (closingInformationForNextMonth) {
-                            const { processingYm } = closingInformationForNextMonth;
-
-                            vm.targetYear(`${processingYm}`);
-                            return;
-                        }
-
                         const { processingYm } = closingInformationForCurrentMonth;
 
                         vm.targetYear(`${processingYm}`);
@@ -437,6 +429,7 @@ module nts.uk.at.view.ktg027.a {
                 targetDate: vm.targetYear(),
                 targetYear: "",
                 mode: "Superior",
+                closingInfo: vm.closingInfo,
             };
             vm.$window
                 .modal('at', '/view/ktg/026/a/superior.xhtml', paramKTG026);
