@@ -4118,6 +4118,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			dataShare.employeeInfo.employeeCode = dataEmployee[0].code;
 			dataShare.employeeInfo.employeeName = dataEmployee[0].name;
 			
+			if (dataShare.employeeInfo.workScheduleDto != null && dataShare.employeeInfo.workScheduleDto.workTypeCode != null )
+				dataWorkType.push(dataShare.employeeInfo.workScheduleDto.workTypeCode);
+			
 			setShared('dataShareTo045', dataShare);
 			nts.uk.ui.windows.sub.modal('/view/kdl/045/a/index.xhtml').onClosed(() => {
 				model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 1);
