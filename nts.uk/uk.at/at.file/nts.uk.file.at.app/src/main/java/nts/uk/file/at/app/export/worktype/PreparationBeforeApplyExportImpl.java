@@ -349,7 +349,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         List<MasterData> data = new ArrayList<>();
         for (int t = 0; t < receptionRestrictionSettings.size(); t++) {
             ReceptionRestrictionSetting setting = receptionRestrictionSettings.get(t);
-            int maxRow = setting.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? 7 : 3;
+            int maxRow = setting.getAppType() == ApplicationType.OVER_TIME_APPLICATION ? 8 : 3;
             for (int row = 0; row < maxRow; row++) {
                 Map<String, MasterCellData> rowData = new HashMap<>();
                 for (int col = 0; col < MAIN_COL_SIZE; col++) {
@@ -386,6 +386,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             if (col == 4 && row == 3) return TextResource.localize("KAF022_473");
             if (col == 4 && row == 4) return TextResource.localize("KAF022_474");
             if (col == 4 && row == 5) return TextResource.localize("KAF022_475");
+            if (col == 4 && row == 6) return TextResource.localize("KAF022_803");
 
             if (col == MAIN_COL_SIZE - 1) {
                 if (row == 0) return setting.getOtAppBeforeAccepRestric().get().isToUse() ? CHECK : NOT_CHECK;
@@ -408,6 +409,10 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 if (row == 5)
                     return setting.getOtAppBeforeAccepRestric().get().isToUse() && setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_TIME
                             ? setting.getOtAppBeforeAccepRestric().get().getOpEarlyNormalOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("")
+                            : "";
+                if (row == 6)
+                    return setting.getOtAppBeforeAccepRestric().get().isToUse() && setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_TIME
+                            ? setting.getOtAppBeforeAccepRestric().get().getOpMultipleOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("")
                             : "";
                 return setting.getAfterhandRestriction().isAllowFutureDay() ? CHECK : NOT_CHECK;
             }
@@ -1009,6 +1014,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=0")));
         queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=1")));
         queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=2")));
+        queries.add(new StandardMenuNameQuery("KAF005", "A", Optional.of("overworkatr=3")));
         queries.add(new StandardMenuNameQuery("KAF006", "A", Optional.empty()));
         queries.add(new StandardMenuNameQuery("KAF007", "A", Optional.empty()));
         queries.add(new StandardMenuNameQuery("KAF008", "A", Optional.empty()));
@@ -1022,7 +1028,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         queries.add(new StandardMenuNameQuery("KAF020", "A", Optional.empty()));
         List<StandardMenuNameExport> menuList = menuPub.getMenuDisplayName(companyId, queries);
 
-
         List<AppSetForProxyApp> appSetForProxyApps = applicationSetting.get().getAppSetForProxyApps();
 
         for (int row = 0; row < menuList.size(); row++) {
@@ -1033,7 +1038,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         return o.getAppType() == ApplicationType.OVER_TIME_APPLICATION
                                 && ((menu.getQueryString().equals("overworkatr=0") && o.getOpOvertimeAppAtr().get() == OvertimeAppAtr.EARLY_OVERTIME)
                                 || (menu.getQueryString().equals("overworkatr=1") && o.getOpOvertimeAppAtr().get() == OvertimeAppAtr.NORMAL_OVERTIME)
-                                || (menu.getQueryString().equals("overworkatr=2") && o.getOpOvertimeAppAtr().get() == OvertimeAppAtr.EARLY_NORMAL_OVERTIME));
+                                || (menu.getQueryString().equals("overworkatr=2") && o.getOpOvertimeAppAtr().get() == OvertimeAppAtr.EARLY_NORMAL_OVERTIME)
+                                || (menu.getQueryString().equals("overworkatr=3") && o.getOpOvertimeAppAtr().get() == OvertimeAppAtr.MULTIPLE_OVERTIME));
                     case "KAF006":
                         return o.getAppType() == ApplicationType.ABSENCE_APPLICATION;
                     case "KAF007":
@@ -1095,26 +1101,24 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 String value;
                 if (col == 0) {
                     if (row == 0) value = TextResource.localize("KAF022_520");
-                    else if (row == 1) value = TextResource.localize("KAF022_526");
-                    else if (row == 2) value = TextResource.localize("KAF022_531");
-                    else if (row == 8) value = TextResource.localize("KAF022_284");
-                    else if (row == 14) value = TextResource.localize("KAF022_410");
+                    else if (row == 7) value = TextResource.localize("KAF022_531");
+                    else if (row == 13) value = TextResource.localize("KAF022_410");
                     else value = "";
                 } else if (col == 1) {
-                    if (row == 0) value = TextResource.localize("KAF022_521");
-                    else if (row == 1) value = TextResource.localize("KAF022_530");
-                    else if (row == 2) value = TextResource.localize("KAF022_532");
-                    else if (row == 3) value = TextResource.localize("KAF022_533");
-                    else if (row == 4) value = TextResource.localize("KAF022_534");
-                    else if (row == 5) value = TextResource.localize("KAF022_535");
-                    else if (row == 6) value = TextResource.localize("KAF022_711");
-                    else if (row == 7) value = TextResource.localize("KAF022_713");
-                    else if (row == 8) value = TextResource.localize("KAF022_641");
-                    else if (row == 9) value = TextResource.localize("KAF022_714");
-                    else if (row == 10) value = TextResource.localize("KAF022_715");
-                    else if (row == 11) value = TextResource.localize("KAF022_305");
-                    else if (row == 12) value = TextResource.localize("KAF022_288");
-                    else if (row == 13) value = TextResource.localize("KAF022_716");
+                    if (row == 0) value = TextResource.localize("KAF022_530");
+                    else if (row == 1) value = TextResource.localize("KAF022_641");
+                    else if (row == 2) value = TextResource.localize("KAF022_714");
+                    else if (row == 3) value = TextResource.localize("KAF022_715");
+                    else if (row == 4) value = TextResource.localize("KAF022_305");
+                    else if (row == 5) value = TextResource.localize("KAF022_288");
+                    else if (row == 6) value = TextResource.localize("KAF022_716");
+                    else if (row == 7) value = TextResource.localize("KAF022_532");
+                    else if (row == 8) value = TextResource.localize("KAF022_533");
+                    else if (row == 9) value = TextResource.localize("KAF022_534");
+                    else if (row == 10) value = TextResource.localize("KAF022_535");
+                    else if (row == 11) value = TextResource.localize("KAF022_711");
+                    else if (row == 12) value = TextResource.localize("KAF022_713");
+                    else if (row == 13) value = TextResource.localize("KAF022_798");
                     else if (row == 14) value = TextResource.localize("KAF022_622");
                     else if (row == 17) value = TextResource.localize("KAF022_611");
                     else value = "";
@@ -1126,48 +1130,48 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                     else if (row == 18) value = TextResource.localize("KAF022_719");
                     else if (row == 19) value = TextResource.localize("KAF022_721");
                     else if (row == 20) value = TextResource.localize("KAF022_722");
-//                    else if (row == 21) value = TextResource.localize("KAF022_723");
                     else value = "";
                 } else {
-                    if (row == 0) value = overtimeWorkAppReflect.getReflectActualWorkAtr() == NotUseAtr.USE
-                            ? TextResource.localize("KAF022_420") : TextResource.localize("KAF022_421");
-                    else if (row == 1) value = applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr() == NotUseAtr.USE
+                    if (row == 0) value = applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
-                    else if (row == 2) value = applySetting.get().getOvertimeLeaveAppCommonSet().getPreExcessDisplaySetting() == NotUseAtr.NOT_USE
-                            ? TextResource.localize("KAF022_173") : TextResource.localize("KAF022_174");
-                    else if (row == 3) {
+                    else if (row == 1) value = applySetting.get().getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
+                    else if (row == 2) {
+                        if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.NOTDISPLAY) value = TextResource.localize("KAF022_37");
+                        else if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.DISPLAY) value = TextResource.localize("KAF022_301");
+                        else if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.AT_START_WORK_OFF_PERFORMANCE) value = TextResource.localize("KAF022_302");
+                        else value = TextResource.localize("KAF022_303");
+                    } else if (row == 3) value = applySetting.get().getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime()
+                            ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                    else if (row == 4) value = applySetting.get().getApplicationDetailSetting().getTimeInputUse() == NotUseAtr.USE
+                                ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                    else if (row == 5) value = applySetting.get().getApplicationDetailSetting().getRequiredInstruction()
+                            ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                    else if (row == 6) value = applySetting.get().getApplicationDetailSetting().getPreRequireSet() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                    else if (row == 7) value = applySetting.get().getOvertimeLeaveAppCommonSet().getPreExcessDisplaySetting() == NotUseAtr.NOT_USE
+                                ? TextResource.localize("KAF022_173") : TextResource.localize("KAF022_174");
+                    else if (row == 8) {
                         if (applySetting.get().getOvertimeLeaveAppCommonSet().getPerformanceExcessAtr() == AppDateContradictionAtr.NOTCHECK)
                             value =  TextResource.localize("KAF022_173");
                         else if (applySetting.get().getOvertimeLeaveAppCommonSet().getPerformanceExcessAtr() == AppDateContradictionAtr.CHECKREGISTER)
                             value =  TextResource.localize("KAF022_174");
                         else value =  TextResource.localize("KAF022_175");
-                    } else if (row == 4) value = applySetting.get().getOvertimeLeaveAppCommonSet().getOverrideSet() == OverrideSet.SYSTEM_TIME_PRIORITY
+                    } else if (row == 9) value = applySetting.get().getOvertimeLeaveAppCommonSet().getOverrideSet() == OverrideSet.SYSTEM_TIME_PRIORITY
                             ? TextResource.localize("KAF022_709") : TextResource.localize("KAF022_710");
-                    else if (row == 5) {
+                    else if (row == 10) {
                         if (applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr() == Time36AgreeCheckRegister.NOT_CHECK)
                             value =  TextResource.localize("KAF022_173");
                         else if (applySetting.get().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr() == Time36AgreeCheckRegister.CHECK)
                             value =  TextResource.localize("KAF022_175");
                         else value =  TextResource.localize("KAF022_651");
-                    } else if (row == 6) value = applySetting.get().getOvertimeLeaveAppCommonSet().getCheckOvertimeInstructionRegister() == NotUseAtr.USE
+                    }
+                    else if (row == 11) value = applySetting.get().getOvertimeLeaveAppCommonSet().getCheckOvertimeInstructionRegister() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
-                    else if (row == 7) value = applySetting.get().getOvertimeLeaveAppCommonSet().getCheckDeviationRegister() == NotUseAtr.USE
+                    else if (row == 12) value = applySetting.get().getOvertimeLeaveAppCommonSet().getCheckDeviationRegister() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
-                    else if (row == 8) value = applySetting.get().getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.USE
-                            ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
-                    else if (row == 9) {
-                        if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.NOTDISPLAY) value = TextResource.localize("KAF022_37");
-                        else if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.DISPLAY) value = TextResource.localize("KAF022_301");
-                        else if (applySetting.get().getApplicationDetailSetting().getAtworkTimeBeginDisp() == AtWorkAtr.AT_START_WORK_OFF_PERFORMANCE) value = TextResource.localize("KAF022_302");
-                        else value = TextResource.localize("KAF022_303");
-                    } else if (row == 10) value = applySetting.get().getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime()
-                            ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
-                    else if (row == 11) value = applySetting.get().getApplicationDetailSetting().getTimeInputUse() == NotUseAtr.USE
-                            ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
-                    else if (row == 12) value = applySetting.get().getApplicationDetailSetting().getRequiredInstruction()
-                            ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
-                    else if (row == 13) value = applySetting.get().getApplicationDetailSetting().getPreRequireSet() == NotUseAtr.USE
-                            ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
+                    else if (row == 13) value = overtimeWorkAppReflect.getReflectActualWorkAtr() == NotUseAtr.USE
+                            ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
                     else if (row == 14) value = overtimeWorkAppReflect.getBefore().getReflectWorkInfoAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
                     else if (row == 15) value = overtimeWorkAppReflect.getBefore().getReflectActualOvertimeHourAtr() == NotUseAtr.USE
@@ -1182,8 +1186,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
                     else value = overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectPaytimeAtr() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
-//                    else value = applySetting.get().getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime()
-//                            ? TextResource.localize("KAF022_44") : TextResource.localize("KAF022_396");
                 }
                 rowData.put(
                         COLUMN_NO_HEADER + col,
@@ -1231,7 +1233,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         List<OvertimeWorkFrame> frames = otWorkFrameRepo.getAllOvertimeWorkFrame(companyId);
         EnumSet.allOf(FlexWorkAtr.class).forEach(flex -> {
             int count = 0;
-            for (int index = 0; index < 3; index++) {
+            for (int index = 0; index < 4; index++) {
                 OvertimeAppAtr ot = EnumAdaptor.valueOf(index, OvertimeAppAtr.class);
                 OvertimeQuotaSetUse setting = settings.stream().filter(i -> i.getFlexWorkAtr() == flex && i.getOvertimeAppAtr() == ot).findFirst().orElse(null);
                 if (setting != null && !setting.getTargetOvertimeLimit().isEmpty()) {
@@ -1245,7 +1247,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                             String value;
                             if (col == 0 && row == 0 && count == 1) value = flex == FlexWorkAtr.FLEX_TIME ? "フレックス勤務者" : "フレックス勤務者以外";
                             else if (col == 1 && row == 0) value = TextResource.localize(ot.name);
-                            else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : target.toString();
+                            else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : (target.v() == -1 ? TextResource.localize("KAF022_797") : target.toString());
                             else value = "";
                             rowData.put(
                                     COLUMN_NO_HEADER + col,
@@ -1272,60 +1274,57 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             return data;
         applySetting.get().getHolidayApplicationTypeDisplayName().sort(Comparator.comparing(HolidayApplicationTypeDisplayName::getHolidayApplicationType));
 
-        for (int row = 0; row < 17; row++) {
+        for (int row = 0; row < 16; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
                 String value;
-                if (col == 0 && row == 0) value = TextResource.localize("KAF022_148");
-                else if (col == 0 && row == 8) value = TextResource.localize("KAF022_143");
-                else if (col == 0 && row == 9) value = TextResource.localize("KAF022_144");
-                else if (col == 0 && row == 16) value = TextResource.localize("KAF022_693");
+                if (col == 0 && row == 0) value = TextResource.localize("KAF022_520");
+                else if (col == 0 && row == 7) value = TextResource.localize("KAF022_531");
+                else if (col == 0 && row == 8) value = TextResource.localize("KAF022_555");
+                else if (col == 0 && row == 15) value = TextResource.localize("KAF022_693");
                 else if (col == 1) {
-                    if (row == 0) value = TextResource.localize("KAF022_149");
-                    else if (row == 1) value = TextResource.localize("KAF022_168");
-                    else if (row == 2) value = TextResource.localize("KAF022_158");
-                    else if (row == 3) value = TextResource.localize("KAF022_159");
-                    else if (row == 4) value = TextResource.localize("KAF022_160");
-                    else if (row == 5) value = TextResource.localize("KAF022_726");
-                    else if (row == 6) value = TextResource.localize("KAF022_727");
-                    else if (row == 7) value = TextResource.localize("KAF022_676");
-                    else if (row == 8) value = TextResource.localize("KAF022_154");
-                    else if (row == 9) value = TextResource.localize("KAF022_161");
-                    else if (row == 10) value = TextResource.localize("KAF022_162");
-                    else if (row == 11) value = TextResource.localize("KAF022_163");
-                    else if (row == 12) value = TextResource.localize("KAF022_164");
-                    else if (row == 13) value = TextResource.localize("KAF022_165");
-                    else if (row == 14) value = TextResource.localize("KAF022_166");
-                    else if (row == 15) value = TextResource.localize("KAF022_167");
+                    if (row == 0) value = TextResource.localize("KAF022_538");
+                    else if (row == 1) value = TextResource.localize("KAF022_541");
+                    else if (row == 2) value = TextResource.localize("KAF022_542");
+                    else if (row == 3) value = TextResource.localize("KAF022_543");
+                    else if (row == 4) value = TextResource.localize("KAF022_726");
+                    else if (row == 5) value = TextResource.localize("KAF022_727");
+                    else if (row == 6) value = TextResource.localize("KAF022_676");
+                    else if (row == 7) value = TextResource.localize("KAF022_547");
+                    else if (row == 8) value = TextResource.localize("KAF022_556");
+                    else if (row == 9) value = TextResource.localize("KAF022_557");
+                    else if (row == 10) value = TextResource.localize("KAF022_558");
+                    else if (row == 11) value = TextResource.localize("KAF022_559");
+                    else if (row == 12) value = TextResource.localize("KAF022_560");
+                    else if (row == 13) value = TextResource.localize("KAF022_561");
+                    else if (row == 14) value = TextResource.localize("KAF022_562");
                     else value = TextResource.localize("KAF022_728");
                 } else if (col == 2) {
                     if (row == 0) value = reflectSetting.get().getWorkAttendanceReflect().getReflectWorkHour() == ReflectWorkHourCondition.NOT_REFLECT
                             ? TextResource.localize("KAF022_101")
                             : (reflectSetting.get().getWorkAttendanceReflect().getReflectWorkHour() == ReflectWorkHourCondition.REFLECT
                                     ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_171"));
-                    else if (row == 1) value = reflectSetting.get().getWorkAttendanceReflect().getReflectAttendance() == NotUseAtr.USE
-                            ? TextResource.localize("KAF022_420") : TextResource.localize("KAF022_421");
-                    else if (row == 2) value = reflectSetting.get().getTimeLeaveReflect().getAnnualVacationTime() == NotUseAtr.USE
+                    else if (row == 1) value = reflectSetting.get().getTimeLeaveReflect().getAnnualVacationTime() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
-                    else if (row == 3) value = reflectSetting.get().getTimeLeaveReflect().getSuperHoliday60H() == NotUseAtr.USE
+                    else if (row == 2) value = reflectSetting.get().getTimeLeaveReflect().getSuperHoliday60H() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
-                    else if (row == 4) value = reflectSetting.get().getTimeLeaveReflect().getSubstituteLeaveTime() == NotUseAtr.USE
+                    else if (row == 3) value = reflectSetting.get().getTimeLeaveReflect().getSubstituteLeaveTime() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
-                    else if (row == 5) value = reflectSetting.get().getTimeLeaveReflect().getNursing() == NotUseAtr.USE
+                    else if (row == 4) value = reflectSetting.get().getTimeLeaveReflect().getNursing() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
-                    else if (row == 6) value = reflectSetting.get().getTimeLeaveReflect().getChildNursing() == NotUseAtr.USE
+                    else if (row == 5) value = reflectSetting.get().getTimeLeaveReflect().getChildNursing() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
-                    else if (row == 7) value = reflectSetting.get().getTimeLeaveReflect().getSpecialVacationTime() == NotUseAtr.USE
+                    else if (row == 6) value = reflectSetting.get().getTimeLeaveReflect().getSpecialVacationTime() == NotUseAtr.USE
                             ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
-                    else if (row == 8) value = applySetting.get().getHalfDayAnnualLeaveUsageLimitCheck() == UnregisterableCheckAtr.CHECKED
+                    else if (row == 7) value = applySetting.get().getHalfDayAnnualLeaveUsageLimitCheck() == UnregisterableCheckAtr.CHECKED
                             ? TextResource.localize("KAF022_175") : TextResource.localize("KAF022_173");
-                    else if (row == 9) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(0).getDisplayName().v();
-                    else if (row == 10) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(1).getDisplayName().v();
-                    else if (row == 11) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(2).getDisplayName().v();
-                    else if (row == 12) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(3).getDisplayName().v();
-                    else if (row == 13) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(4).getDisplayName().v();
-                    else if (row == 14) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(5).getDisplayName().v();
-                    else if (row == 15) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(6).getDisplayName().v();
+                    else if (row == 8) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(0).getDisplayName().v();
+                    else if (row == 9) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(1).getDisplayName().v();
+                    else if (row == 10) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(2).getDisplayName().v();
+                    else if (row == 11) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(3).getDisplayName().v();
+                    else if (row == 12) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(4).getDisplayName().v();
+                    else if (row == 13) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(5).getDisplayName().v();
+                    else if (row == 14) value = applySetting.get().getHolidayApplicationTypeDisplayName().get(6).getDisplayName().v();
                     else value = reflectSetting.get().getWorkAttendanceReflect().getOneDayLeaveDeleteAttendance() == NotUseAtr.USE
                                 ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
                 }
@@ -1834,7 +1833,6 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 else if (col == 1 && row == 5) value = TextResource.localize("KAF022_540");
                 else if (col == 1 && row == 6) value = TextResource.localize("KAF022_582");
                 else if (col == 1 && row == 9) value = TextResource.localize("KAF022_584");
-//                else if (col == 1 && row == 10) value = TextResource.localize("KAF022_585");
                 else if (col == 1 && row == 10) value = TextResource.localize("KAF022_728");
                 else if (col == 2 && row == 2) value = TextResource.localize("KAF022_568");
                 else if (col == 2 && row == 3) value = TextResource.localize("KAF022_569");
@@ -1953,7 +1951,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         Optional<ApprovalListDisplaySetting> setting = approvalListDispSetRepo.findByCID(companyId);
         if (!setting.isPresent()) return data;
 
-        for (int row = 0; row < 5; row++) {
+        for (int row = 0; row < 6; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 3; col++) {
                 String value;
@@ -1964,6 +1962,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 else if (col == 1 && row == 2) value = TextResource.localize("KAF022_591");
                 else if (col == 1 && row == 3) value = TextResource.localize("KAF022_595");
                 else if (col == 1 && row == 4) value = TextResource.localize("KAF022_599");
+                else if (col == 1 && row == 5) value = TextResource.localize("KAF022_804");
                 else if (col == 2 && row == 0) value = setting.get().getDisplayWorkPlaceName() == NotUseAtr.USE
                         ? TextResource.localize("KAF022_75") : TextResource.localize("KAF022_82");
                 else if (col == 2 && row == 1) value = setting.get().getAppReasonDisAtr() == DisplayAtr.DISPLAY
@@ -1973,6 +1972,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
                 else if (col == 2 && row == 4) value = setting.get().getActualExcessMessDisAtr() == DisplayAtr.DISPLAY
                         ? TextResource.localize("KAF022_36") : TextResource.localize("KAF022_37");
+                else if (col == 2 && row == 5) value = setting.get().getUseApprovalFunction() == NotUseAtr.USE
+                        ? TextResource.localize("KAF022_794") : TextResource.localize("KAF022_795");
                 else value = "";
                 rowData.put(
                         COLUMN_NO_HEADER + col,
