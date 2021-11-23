@@ -750,7 +750,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'shortName',
                 startDate: self.dateTimePrev(),
@@ -766,10 +765,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.saveModeGridToLocalStorege('shortName');
             
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
-                if (setWorkTypeTime) {
-                    self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
-                }
-                
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shortName',false);
@@ -795,7 +790,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
-            let setWorkTypeTime = userInfor.disPlayFormat == 'shift' ? true : false;
             let param = {
                 viewMode: 'time',
                 startDate: self.dateTimePrev(),
@@ -811,10 +805,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.saveModeGridToLocalStorege('time');
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
-                if (setWorkTypeTime) {
-                    self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
-                }
-                
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('time', false);
@@ -836,40 +826,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-        setWorkTypeTime(listWorkTypeInfo, userInfor) {
-            let self = this;
-            if (self.mode() == 'edit') {
-                __viewContext.viewModel.viewAB.enableListWorkType(true);
-            } else if (self.mode() == 'confirm'){
-
-            }
-            
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = {};
-            if (item.isPresent()) {
-                userInfor = JSON.parse(item.get());
-            }
-            
-            let workTypeCodeSave = item.isPresent() ? userInfor.workTypeCodeSelected : '';
-            let workTimeCodeSave = item.isPresent() ? userInfor.workTimeCodeSelected : '';
-            
-            let workTimeCode = '';
-            if (workTimeCodeSave != '') {
-                if (workTimeCodeSave === 'none') {
-                    workTimeCode = '';
-                } else if (workTimeCodeSave === 'deferred') {
-                    workTimeCode = ' ';
-                } else {
-                    workTimeCode = workTimeCodeSave;
-                }
-            }
-            self.setDataWorkType(listWorkTypeInfo);
-            __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave);
-            __viewContext.viewModel.viewAB.selected(workTimeCode);
-            __viewContext.viewModel.viewAB.workplaceIdKCP013(userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId);
-            __viewContext.viewModel.viewAB.filter(userInfor.unit == 0 ? true : false);
-        }
-        
         checkEnableCombWTime() {
             let self = this;
             if (self.selectedModeDisplayInBody() == 'shift')
