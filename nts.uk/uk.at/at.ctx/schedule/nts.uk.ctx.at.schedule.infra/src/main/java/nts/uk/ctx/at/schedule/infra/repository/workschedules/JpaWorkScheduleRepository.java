@@ -867,7 +867,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			return new ArrayList<>();
 		
 		List<WorkSchedule> result = new ArrayList<>();
-		long start = System.nanoTime();;
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			String listEmp = "(";
 			for (int i = 0; i < subList.size(); i++) {
@@ -945,9 +944,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				});
 			}
 		});
-		long end = System.nanoTime();	
-		long duration = (end- start) / 1000000; // ms;
-		System.out.println("Time Get Schedule " + sids.size() + " emp: " + duration);		
 		return result;
 
 	}
