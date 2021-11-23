@@ -392,6 +392,10 @@ module nts.uk.com.view.cmm051.a {
                             vm.isDeleteModeHist(false);
                             vm.isUpdateModeHist(true);
                         }
+                    }else {
+                        vm.isNewModeHist(true);
+                        vm.isDeleteModeHist(true);
+                        vm.isUpdateModeHist(true);
                     }
                 }
             })
@@ -463,6 +467,7 @@ module nts.uk.com.view.cmm051.a {
             if (vm.isNewMode()) {
                 vm.$ajax("com", API.addWkpManager, command).done(() => {
                     vm.$dialog.info({ messageId: "Msg_15" }).then(()=>{
+
                         vm.initScreen(mode, sid, workplaceId, null);
                         if (mode == Mode.WPL) {
                             vm.getListWpl(workplaceId);
@@ -472,6 +477,7 @@ module nts.uk.com.view.cmm051.a {
                             vm.getEmployeeInfo(sids, workplaceId);
                         }
                         vm.isNewMode(false);
+                        vm.idAddOrUpdate(null);
                         vm.isDelete(true);
                     });
                     }
@@ -492,6 +498,7 @@ module nts.uk.com.view.cmm051.a {
                         vm.initScreen(mode, sid, workplaceId, vm.historyId());
                         vm.isNewMode(false);
                         vm.isDelete(true);
+                        vm.idAddOrUpdate(null);
                     }); }
                 ).always(() => {
                     block.clear();
@@ -852,14 +859,23 @@ module nts.uk.com.view.cmm051.a {
                         };
                         vm.$ajax("com", API.deleteWkpHist, command).done(() => {
                                 let indexRemove = _.findIndex(vm.dateHistoryList(), (e) => e.id == id);
-                                let idHist: any = "";
-                                if ((indexRemove == 0) || ((indexRemove + 1) < vm.dateHistoryList().length)) {
-                                    idHist = vm.dateHistoryList()[indexRemove + 1].id;
+                                let idHist: any = null;
+                                if ((indexRemove == ( vm.dateHistoryList().length) -1)) {
+                                    idHist = indexRemove >=1 ? vm.dateHistoryList()[indexRemove - 1].id : null;
                                 } else {
-                                    idHist = vm.dateHistoryList()[indexRemove - 1].id;
+                                    idHist = vm.dateHistoryList()[indexRemove + 1].id;
                                 }
                                 vm.dateHistoryList().splice(indexRemove, 1);
                                 vm.historyId(idHist);
+                                if(vm.mode() == Mode.WPL){
+                                    vm.employeeId(vm.employeeId());
+                                    vm.getListWpl(vm.workPlaceId());
+                                }else {
+                                    let em : any[] = [];
+                                    em.push(vm.employeeId());
+                                    vm.getEmployeeInfo(em, vm.workPlaceId());
+                                }
+                                vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId());
                                 vm.isNewMode(false);
                             }
                         ).always(() => {
