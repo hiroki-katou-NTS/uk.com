@@ -545,19 +545,29 @@ public class DailyPerformanceCorrectionWebService {
 				errorParam.getEmployeeIDLst(), 
 				errorParam.getAttendanceItemID());
 	}
-	
+
 	@POST
 	@Path("getMasterDialogMob")
 	public Map<Integer, List<CodeName>> getMasterDialog(MasterDialogParam masterDialogParam) {
 		String companyID = AppContexts.user().companyId();
 		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeNameWT(
 				masterDialogParam.getTypes(),
-				companyID,
+				companyID,				
 				masterDialogParam.getEmployeeID(),
 				masterDialogParam.getWorkTypeCD(),
 				masterDialogParam.getDate());
 		return allMasterData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<CodeName>(entry.getValue().values())));
 	}
+	
+	@POST
+	@Path("getMasterTaskSupMob")
+	public Map<Integer, List<CodeName>> getMasterTaskSup(MasterDialogParam masterDialogParam) {
+		Map<Integer, Map<String, CodeName>> allMasterData = dialogProcessor.getAllCodeNameByItemId(				
+				masterDialogParam.getDate(), 
+				masterDialogParam.getItemIds());
+		return allMasterData.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> new ArrayList<CodeName>(entry.getValue().values())));
+	}
+
 	
 	@POST
 	@Path("getPrimitiveAll")
