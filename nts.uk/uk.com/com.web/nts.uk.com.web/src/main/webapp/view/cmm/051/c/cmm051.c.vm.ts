@@ -30,13 +30,10 @@ module nts.uk.com.view.cmm051.c {
             }
 
         }
-
         created() {
-
         }
-
         mounted() {
-
+            $("#daterangepicker").find(".ntsStartDatePicker").focus();
         }
 
         execution() {

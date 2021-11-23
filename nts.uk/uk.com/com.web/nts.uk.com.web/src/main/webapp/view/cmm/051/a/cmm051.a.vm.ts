@@ -133,11 +133,12 @@ module nts.uk.com.view.cmm051.a {
                 };
                 block.invisible();
                 vm.$ajax("com", API.getListHist, param).done((data) => {
-                    if (!isNullOrUndefined(data)) {
+                    if (!isNullOrEmpty(data)) {
                         vm.dateHistoryListFull(data);
                         vm.setDataHist(vm.employeeId(), vm.dateHistoryListFull(), histId, wplId);
                     }
-                    vm.isNewModeHist(true);
+                    if(isNullOrEmpty(vm.dateHistoryList()))
+                        vm.isNewModeHist(true);
                 }).always(() => {
                     block.clear();
                 }).fail((error) => {
@@ -307,6 +308,8 @@ module nts.uk.com.view.cmm051.a {
                     vm.workplaceCode(null);
                     vm.workplaceName(null);
                     vm.selectedEmCode(null);
+                    vm.historyId(null);
+                    vm.dateHistoryList([]);
                     vm.setDataDefaultMode();
                 } else if (mode == Mode.EMPLOYMENT) {
                     vm.employeeId(null);
@@ -315,6 +318,8 @@ module nts.uk.com.view.cmm051.a {
                     vm.employeeName(null);
                     vm.workplaceCode(null);
                     vm.workplaceName(null);
+                    vm.historyId(null);
+                    vm.dateHistoryList([]);
                     let sidLogin = vm.$user.employeeId;
                     let sid: any[] = [];
                     sid.push(sidLogin);
@@ -337,7 +342,7 @@ module nts.uk.com.view.cmm051.a {
 
 
             vm.employeeId.subscribe((e) => {
-                if (!isNullOrUndefined(e)) {
+                if (!isNullOrUndefined(e) ) {
                     let eminfo = _.find(vm.employInfors(), (i) => i.id == e);
                     if (!isNullOrUndefined(eminfo)) {
                         vm.employeeName(eminfo.name);
@@ -365,26 +370,28 @@ module nts.uk.com.view.cmm051.a {
 
             });
             vm.historyId.subscribe((id) => {
-                let idAddOrUpdate = vm.idAddOrUpdate();
-                let hist = _.find(vm.dateHistoryList(), (e) => e.id == id);
-                if (!isNullOrUndefined(hist)) {
-                    vm.startDate(hist.startDate);
-                    vm.endDate(hist.endDate);
-                }
-                if (!isNullOrUndefined(idAddOrUpdate)) {
-                    if (id == idAddOrUpdate) {
-                        vm.isNewModeHist(false);
-                        vm.isDeleteModeHist(false);
-                        vm.isUpdateModeHist(true);
-                    } else {
-                        vm.isNewModeHist(false);
-                        vm.isDeleteModeHist(false);
-                        vm.isUpdateModeHist(false);
+                if(!isNullOrUndefined(id)){
+                    let idAddOrUpdate = vm.idAddOrUpdate();
+                    let hist = _.find(vm.dateHistoryList(), (e) => e.id == id);
+                    if (!isNullOrUndefined(hist)) {
+                        vm.startDate(hist.startDate);
+                        vm.endDate(hist.endDate);
                     }
-                    if (id != idAddOrUpdate && !vm.isNewMode()) {
-                        vm.isNewModeHist(true);
-                        vm.isDeleteModeHist(true);
-                        vm.isUpdateModeHist(true);
+                    if (!isNullOrUndefined(idAddOrUpdate)) {
+                        if (id == idAddOrUpdate) {
+                            vm.isNewModeHist(false);
+                            vm.isDeleteModeHist(false);
+                            vm.isUpdateModeHist(true);
+                        } else {
+                            vm.isNewModeHist(false);
+                            vm.isDeleteModeHist(false);
+                            vm.isUpdateModeHist(false);
+                        }
+                        if (id != idAddOrUpdate && !vm.isNewMode()) {
+                            vm.isNewModeHist(false);
+                            vm.isDeleteModeHist(false);
+                            vm.isUpdateModeHist(true);
+                        }
                     }
                 }
             })
@@ -396,15 +403,23 @@ module nts.uk.com.view.cmm051.a {
             if (vm.isNewMode() == true) {
                 if(vm.mode() == Mode.WPL){
                     vm.selectedEmCode(null);
+                    vm.employeeId(null);
                     vm.employeeCode(null);
                     vm.employeeName(null);
+                    if(isNullOrEmpty(vm.employInfors())){
+                        vm.openDialogCDL009();
+                    }
                 }
                 if(vm.mode() == Mode.EMPLOYMENT){
                     vm.workPlaceId(null);
                     vm.workplaceCode(null);
                     vm.workplaceName(null);
+                    if(isNullOrEmpty(vm.workPlaceList())){
+                        vm.openCDL008Dialog();
+                    }
                 }
                 vm.dateHistoryList([]);
+                vm.historyId(null);
                 vm.startDate(null);
                 vm.endDate(null);
 
@@ -619,7 +634,7 @@ module nts.uk.com.view.cmm051.a {
             setShared('CDL009Params', {
                 isMultiSelect: false,
                 baseDate: moment(new Date()).toDate(),
-                selectedEmCode: vm.employeeId(),
+                selectedEmCode: vm.employeeCode(),
                 target: 1
             }, true);
 
@@ -858,14 +873,13 @@ module nts.uk.com.view.cmm051.a {
                 .ifNo(() => {
                 });
         }
-
         openCDL008Dialog(): void {
             const vm = this;
             const inputCDL008: any = {
                 startMode: StartMode.WORKPLACE,//  起動モード : 職場 (WORKPLACE = 0)
                 isMultiple: false,////選択モード : 単一選択
                 showNoSelection: false,// //未選択表示 : 非表示
-                selectedEmCodes: vm.workplaceCode(),
+                selectedCodes: vm.workPlaceId(),
                 isShowBaseDate: true,//基準日表示区分 : 表示
                 baseDate: moment.utc().toISOString(),
                 selectedSystemType: SystemType.EMPLOYMENT,// //システム区分 : 就業

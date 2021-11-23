@@ -136,3 +136,9 @@
 .name{
     margin-bottom: -10px;
 }
+.switchbox-wrappers.radio-wrappers label:not(:first-child) input+span {
+    margin-left: -3px !important;
+}
+.cmm_051{
+    margin-left: 5px;
+}

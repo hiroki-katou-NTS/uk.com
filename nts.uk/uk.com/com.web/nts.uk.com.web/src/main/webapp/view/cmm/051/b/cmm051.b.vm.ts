@@ -7,8 +7,8 @@ module nts.uk.com.view.cmm051.b {
     @bean()
     class ViewModel extends ko.ViewModel {
         periodDate: KnockoutObservable<any> = ko.observable(null);
-        startDate: KnockoutObservable<any> = ko.observable(moment());
-        endDate: KnockoutObservable<any> = ko.observable(moment());
+        startDate: KnockoutObservable<any> = ko.observable(null);
+        endDate: KnockoutObservable<any> = ko.observable(null);
         required: KnockoutObservable<boolean>;
         isCreate: boolean = false;
 
@@ -32,10 +32,11 @@ module nts.uk.com.view.cmm051.b {
 
         created() {
 
+
         }
 
         mounted() {
-
+            $("#daterangepicker").find(".ntsStartDatePicker").focus();
         }
 
         execution() {
