@@ -81,11 +81,10 @@ module nts.uk.com.view.kha001.a {
     }
 
     saveAsExcel(languageId: string): JQueryPromise<any> {
-      let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
+      let program = __viewContext.program.programName;
       let domainType = "KHA001";
-      if (program.length > 1){
-          program.shift();
-          domainType = domainType + program.join(" ");
+      if (program){
+          domainType = domainType+"_" + program;
       }
       let _params = {domainId: "SupportOperationSettingExport",
           domainType: domainType,
