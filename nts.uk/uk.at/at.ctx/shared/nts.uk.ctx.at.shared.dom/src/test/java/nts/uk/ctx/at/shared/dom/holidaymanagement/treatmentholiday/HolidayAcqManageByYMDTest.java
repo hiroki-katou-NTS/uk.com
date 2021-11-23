@@ -2,11 +2,14 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
+import org.junit.runner.RunWith;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
@@ -14,6 +17,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.FourWeekDays;
 
+@RunWith(Enclosed.class)
 public class HolidayAcqManageByYMDTest {
 
 	@Injectable
@@ -40,39 +44,46 @@ public class HolidayAcqManageByYMDTest {
 		assertThat(result).isEqualTo(StartDateClassification.SPECIFY_YMD);
 	}
 	
-	@Test
-	public void testGetManagementPeriod() {
+	@RunWith(Theories.class)
+	public static class TestGetMangementPeriod {
 		
-		val holidayAcqManageByYMD = new HolidayAcqManageByYMD(	GeneralDate.ymd(2021, 4, 1)//起算日
-															,	new FourWeekDays(4.0)
-																);
+		@Injectable
+		private HolidayAcquisitionManagement.Require require;
 		
-		Map<GeneralDate, HolidayAcqManaPeriod> expecteds  = new HashMap<GeneralDate, HolidayAcqManaPeriod>() {
-			private static final long serialVersionUID = 1L;
-		{
-			//起算日 > 基準日
-			put(GeneralDate.ymd(2020, 10, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2020, 10, 15), GeneralDate.ymd(2020, 11, 11), 4.0));
-			put(GeneralDate.ymd(2020, 11, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9), 4.0));
-			put(GeneralDate.ymd(2021, 3, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 3, 4), GeneralDate.ymd(2021, 3, 31), 4.0));
+		@DataPoints
+		public static Fixture[] cases = {
+			//基準日 < 起算日
+			new Fixture(GeneralDate.ymd(2020, 10, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2020, 10, 15), GeneralDate.ymd(2020, 11, 11), 4.0)),
+			new Fixture(GeneralDate.ymd(2020, 11, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9), 4.0)),
+			new Fixture(GeneralDate.ymd(2021, 3, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 3, 4), GeneralDate.ymd(2021, 3, 31), 4.0)),
+			//基準日 >=  起算日
+			new Fixture(GeneralDate.ymd(2021, 4, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)),
+			new Fixture(GeneralDate.ymd(2021, 9, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 8, 19), GeneralDate.ymd(2021, 9, 15), 4.0)),
+			new Fixture(GeneralDate.ymd(2022, 3, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 30), 4.0)),
+		};
+
+		@Theory
+		public void test(Fixture caseTest) {
 			
-			//起算日 <= 基準日
-			put(GeneralDate.ymd(2021, 4, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0));
-			put(GeneralDate.ymd(2021, 9, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 8, 19), GeneralDate.ymd(2021, 9, 15), 4.0));
-			put(GeneralDate.ymd(2022, 3, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 30), 4.0));
+			val holidayAcqManageByYMD = new HolidayAcqManageByYMD(	GeneralDate.ymd(2021, 4, 1)//起算日
+					,	new FourWeekDays(4.0)
+						);
 			
-		}};
-							
-		expecteds.forEach( (baseDate, expected) -> {
 			//Act
-			HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod( require, baseDate );
+			HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod( require, caseTest.param );
 			
 			//Assert
-			assertThat( result.getPeriod().start()).isEqualTo( expected.getPeriod().start() );
-			assertThat( result.getPeriod().end()).isEqualTo( expected.getPeriod().end() );
-			assertThat( result.getHolidayDays()).isEqualTo( expected.getHolidayDays() );
+			assertThat( result.getPeriod().start()).isEqualTo( caseTest.expect.getPeriod().start() );
+			assertThat( result.getPeriod().end()).isEqualTo( caseTest.expect.getPeriod().end() );
+			assertThat( result.getHolidayDays()).isEqualTo( caseTest.expect.getHolidayDays() );
+		}
 		
-		});
-		
+	}
+	
+	@AllArgsConstructor
+	static class Fixture {
+		GeneralDate param;
+		HolidayAcqManaPeriod expect;
 	}
 	
 	public static class Helper {
