@@ -6,11 +6,6 @@ module nts.uk.com.view.cmm029.a {
     initDisplay: "com/screen/cmm029/initDisplay",
     register: "com/screen/cmm029/register",
   };
-  const PROGRAM_ID_TAB_1 = ["CMM029_15", "CMM029_16", "CMM029_17", "CMM029_18", "CMM029_19"];
-  const PROGRAM_ID_TAB_2 = ["CMM029_22", "CMM029_26", "CMM029_25", "CMM029_28", "CMM029_29",
-    "CMM029_31", "CMM029_33", "CMM029_34", "CMM029_35", "CMM029_36"];
-  const PROGRAM_ID_TAB_3 = ["CMM029_39"];
-  const PROGRAM_ID_TAB_4 = ["CMM029_42"];
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -47,7 +42,7 @@ module nts.uk.com.view.cmm029.a {
 
     mounted() {
       const vm = this;
-      vm.initDisplay();
+      vm.initDisplay().then(() => vm.$nextTick(() => vm.displayDataOf("CMM029_42").taskOperationMethod.valueHasMutated()));
     }
 
     // 表示初期データを取得する
