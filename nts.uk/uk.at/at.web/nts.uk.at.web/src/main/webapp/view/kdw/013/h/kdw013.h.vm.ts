@@ -393,7 +393,7 @@ module nts.uk.at.view.kdw013.h {
 
 				self.itemOptions.forEach((item) => {
 					if (item.use && item.isChange()){
-						data.push(item.toDataSave());
+						data.push(item.optionToDataSave());
 					}
 				});
 
@@ -490,7 +490,11 @@ module nts.uk.at.view.kdw013.h {
 					}
 					
 					_.forEach(self.itemOptions, (item) => {
-						item.value(_.find(data, i => i.itemId == item.itemId).value);
+						if(item.type == 2 && item.masterType == 9){
+							item.value(_.find(data, i => i.itemId == item.itemId).value == 1);
+						}else {
+							item.value(_.find(data, i => i.itemId == item.itemId).value);
+						}
 						item.valueBeforeChange = item.value();
 					});
 				}).fail(function(res: any) {
@@ -614,13 +618,7 @@ module nts.uk.at.view.kdw013.h {
 					isFixed: this.fixed
 				};
 			}else{
-				return {
-					itemId: this.itemId,
-					value: this.value(),
-					valueType: this.valueType,
-					layoutCode: this.layoutCode,
-					isFixed: this.fixed
-				};				
+				return this.toDataSave();				
 			}
 		}
 	}
