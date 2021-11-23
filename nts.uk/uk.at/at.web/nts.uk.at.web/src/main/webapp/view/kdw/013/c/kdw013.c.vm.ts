@@ -1222,13 +1222,11 @@ module nts.uk.ui.at.kdw013.c {
             };
 			const itemNext = _.find(vm.taskItemValues(), (i) => {return i.itemId == nextItemId});
 			if(itemNext){
-				block.invisible();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
 					if(_.find(data, o => o.code == itemNext.value()) == undefined){
 						itemNext.value(null);
 					}
 					itemNext.options(vm.getMapperList(data, itemNext.value));
-					block.clear();
 	            });
 			}
         }
