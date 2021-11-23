@@ -232,7 +232,7 @@ module nts.uk.ui.at.kcp015.shared {
              *    });
              * Những đoạn code dùng cấu trúc cũ thay tương tự.
              */
-            nts.uk.ui.windows.setShared('KDL009_DATA', param.empIds);
+            nts.uk.ui.windows.setShared('KDL009_DATA', param.employeeIds);
             $('#A1_10_1').ntsPopup('hide');
             if (param.employeeIds.length > 1) {
                 nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});

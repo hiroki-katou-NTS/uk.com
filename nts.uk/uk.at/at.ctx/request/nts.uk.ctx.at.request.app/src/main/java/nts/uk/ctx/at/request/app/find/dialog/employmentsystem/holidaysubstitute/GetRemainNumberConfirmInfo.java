@@ -67,8 +67,14 @@ public class GetRemainNumberConfirmInfo {
 
 			boolean checkDate = false;
 
-			if (detail.getDateOccur().getDayoffDate().isPresent())
-				checkDate = lstDigestionDate.contains(detail.getDateOccur().getDayoffDate().get().toString());
+			if (detail.getDateOccur().getDayoffDate().isPresent()) {
+				List<GeneralDate> listDateUsedSeqVacation = lstSeqVacation.stream().map(c->c.getDateOfUse()).collect(Collectors.toList());
+				if(lstDigestionDate.contains(detail.getDateOccur().getDayoffDate().get().toString())
+						||(listDateUsedSeqVacation.contains(detail.getDateOccur().getDayoffDate().get()) && !unit)
+						) {
+					checkDate = true;
+				}
+			}
 			// Trueの場合
 			if (detail.getOccurrentClass() == OccurrenceDigClass.DIGESTION && checkDate == true) {
 			} else {
