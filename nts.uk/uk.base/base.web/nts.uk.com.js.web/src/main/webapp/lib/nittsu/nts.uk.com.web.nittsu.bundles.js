@@ -25862,6 +25862,7 @@ var nts;
                     v_1.FACON_DESC = "facon-desc";
                     v_1.ALIGN_LEFT = "halign-left";
                     v_1.ALIGN_RIGHT = "halign-right";
+                    v_1.ALIGN_CENTER = "halign-center";
                     v_1.DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
                     v_1._voilerRows = {};
                     v_1._encarRows = [];
@@ -27643,7 +27644,7 @@ var nts;
                                 tdStyle += "; display: none;";
                             else if (!_.isNil(col[0].columnCssClass)) {
                                 col[0].columnCssClass.split(' ').forEach(function (clz) {
-                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                                    if (clz === hpl.CURRENCY_CLS || clz === v.ALIGN_RIGHT || clz === v.ALIGN_CENTER) {
                                         td.classList.add(clz);
                                     }
                                 });
@@ -27983,7 +27984,7 @@ var nts;
                                 tdStyle += "; display: none;";
                             else if (!_.isNil(col[0].columnCssClass)) {
                                 col[0].columnCssClass.split(' ').forEach(function (clz) {
-                                    if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                                    if (clz === hpl.CURRENCY_CLS || clz === v.ALIGN_RIGHT || clz === v.ALIGN_CENTER) {
                                         td.classList.add(clz);
                                     }
                                 });
@@ -40427,8 +40428,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);

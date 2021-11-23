@@ -47,7 +47,7 @@ public class DeleteAttendancesByTimezone implements DomainAggregate {
 				.filter(a -> a.isNeedDeletingAttInfo() == true).collect(Collectors.toList());
 
 		// atomTask.add( $削除対象一覧.map($削除する(require, @社員ID, @年月日)) )
-		attDeletionLst.stream().map(m -> atomTasks.addAll(m.deleteAttendanceInfo(require, sId, ymd)));
+		attDeletionLst.forEach(m -> atomTasks.addAll(m.deleteAttendanceInfo(require, sId, ymd)));
 
 		// atomTask.add ( require.編集状態を削除する(@社員ID, @年月日, [2]勤怠項目一覧を取得する) )
 		atomTasks.add(AtomTask.of(() -> require.deleteByListItemId(sId, ymd, getAttendanceItems(require))));
@@ -73,7 +73,7 @@ public class DeleteAttendancesByTimezone implements DomainAggregate {
 				.filter(a -> a.isNeedDeletingEditedStatus() == true).collect(Collectors.toList());
 
 		// $削除対象一覧.map($.勤怠項目一覧を取得する(require))
-		attDeletionLst.stream().map(m -> attItems.addAll(m.getItemIds(require)));
+		attDeletionLst.forEach(m -> attItems.addAll(m.getItemIds(require)));
 
 		return attItems;
 	}

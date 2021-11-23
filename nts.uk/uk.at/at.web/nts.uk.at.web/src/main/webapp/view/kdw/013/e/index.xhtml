@@ -27,7 +27,9 @@
 						<tbody>
 							<tr>
 								<!-- E2_1 -->
-								<td data-bind="i18n: 'KDW013_27'"></td>
+								<td>
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW013_27')}</div>
+								</td>
 								<td>
 									<!-- E2_2 開始時刻 -->
 									<input tabindex="1"  id="editor-start"
@@ -56,7 +58,9 @@
 							</tr>
 							<tr>
 								<!-- E3_1 作業時間 -->
-								<td data-bind="i18n: 'KDW013_25'"></td>
+								<td>
+									<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW013_25')}</div>
+								</td>
 								<td> 
 									<input tabindex="3" 
 									data-bind="ntsTimeEditor: { 
@@ -72,7 +76,9 @@
 							</tr>
 							<tr>
 								<!-- E4_1 -->
-								<td data-bind="text: setTaskName1"></td>
+								<td>
+                                	<div data-bind="ntsFormLabel: {required: true}, text: setTaskName1"></div>
+                                </td>
 								<!-- E4_2 -->
 								<!-- E4_3 -->
 								<td>
@@ -92,7 +98,9 @@
 							<com:ko-if bind="useTask2">
 								<tr>
 									<!-- E6_1 -->
-									<td data-bind="text: setTaskName2"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName2"></div>
+                                	</td>
 									<!-- E6_2 -->
 									<!-- E6_3 -->
 									<td>
@@ -112,7 +120,9 @@
 							<com:ko-if bind="useTask3">
 								<tr>
 									<!-- E7_1 -->
-									<td data-bind="text: setTaskName3"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName3"></div>
+                                	</td>
 									<!-- E7_2 -->
 									<!-- E7_3 -->
 									<td>
@@ -132,7 +142,9 @@
 							<com:ko-if bind="useTask4">
 								<tr>
 									<!-- E8_1 -->
-									<td data-bind="text: setTaskName4"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName4"></div>
+                                	</td>
 									<!-- E8_2 -->
 									<!-- E8_3 -->
 									<td>
@@ -152,7 +164,9 @@
 							<com:ko-if bind="useTask5">
 								<tr>
 									<!-- E8_1 -->
-									<td data-bind="text: setTaskName5"></td>
+									<td>
+                                		<div data-bind="ntsFormLabel: {}, text: setTaskName5"></div>
+                                	</td>
 									<!-- E8_2 -->
 									<!-- E8_3 -->
 									<td>

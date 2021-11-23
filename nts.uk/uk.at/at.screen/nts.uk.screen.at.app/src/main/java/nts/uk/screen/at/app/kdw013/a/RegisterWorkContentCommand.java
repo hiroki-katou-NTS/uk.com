@@ -43,7 +43,7 @@ public class RegisterWorkContentCommand {
 	// 対象項目リスト
 	private List<Integer> itemIds;
 	
-	private RegisterDeleteTimeZoneAttendanceCommand regisDelete;
+	private RegisterDeleteTimeZoneAttendanceCommand deleteAttByTimeZones;
 	
 	
 	public List<ManHrRecordConvertResult> getManHrlst(){

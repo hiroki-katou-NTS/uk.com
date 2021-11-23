@@ -226,6 +226,7 @@ module nts.uk.ui.at.kdw013.a {
             const { mode } = $query;
             const cache: ChangeDateParam & { pair: -1 | 0 | 1 | 2 } = { ...initialCache(), pair: 0 };
             const sameCache = (params: ChangeDateParam): -1 | 0 | 1 | 2 => {
+            
                 if (cache.refDate !== params.refDate) {
                     if (cache.displayPeriod.end === params.displayPeriod.end) {
                         if (cache.displayPeriod.start === params.displayPeriod.start) {
@@ -595,6 +596,20 @@ module nts.uk.ui.at.kdw013.a {
             // get settings Msg_1960
             vm
                 .$blockui('grayout')
+                .then(() => {
+                    vm.$window
+                    .storage('KDW013_SETTING')
+                    .then((value: any) => {
+                        if (value) {
+                            vm.initialView(value.initialView || 'fullWeek');
+                            vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
+                            vm.scrollTime(value.scrollTime || 420);
+                            vm.slotDuration(value.slotDuration || 30);
+                        }
+
+
+                    });
+                })
                 .then(() => vm.$ajax('at', API.START, { inputDate }))
                 .fail((error) => {
                     vm.$dialog.error({ messageId: error.messageId }).then(() => {
@@ -606,18 +621,8 @@ module nts.uk.ui.at.kdw013.a {
                 })
                 .then((response: StartProcessDto) => {
 
-                    vm.$window
-                        .storage('KDW013_SETTING')
-                        .then((value: any) => {
-                            if (value) {
-                                vm.initialView(value.initialView || 'fullWeek');
-                                vm.firstDay(value.firstDay !== undefined ? value.firstDay : 1);
-                                vm.scrollTime(value.scrollTime || 420);
-                                vm.slotDuration(value.slotDuration || 30);
-                            }
-                            
-                            vm.$settings(new StartProcess(response));
-                        });
+                    
+                    vm.$settings(new StartProcess(response));
                 })
                 .always(() => vm.$blockui('clear'));
 
@@ -910,32 +915,38 @@ module nts.uk.ui.at.kdw013.a {
 
         createDeleteAttByTimeZones(dates){
             let vm = this;
-            const sID = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
-
+            const employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
+            const dailyManHrTasks = _.get(vm.$datas(), 'dailyManHrTasks', []);
             
             const deleteList = [];
     
             _.forEach(dates, date => {
+                
+                const hrTask = _.find(dailyManHrTasks, hr => moment(hr.date).isSame(moment(date), 'days'));
+                let taskDetails = [];
+                _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
+                    taskDetails.push(...tb.taskDetails);
+                })
                 //① 日別実績の工数実績作業
-                let dailyManHrTaskNos = _.map(_.get(_.find(_.get(vm.$datas(), 'dailyManHrTasks', []), hr => moment(hr.date).isSame(moment(date), 'days')), 'taskBlocks.taskDetails', []), td => td.supNo);
+                let dailyManHrTaskNos = _.map(taskDetails, td => td.supNo);
                 //② 工数実績作業ブロック
                 let currentScreenNos = [];
-                _.forEach(_.filter(vm.events(), e => (moment(e.start).isSame(moment(date), 'days') && _.get(e, 'extendedProps.taskBlocks.taskDetails', []).length)), e => {
-                    currentScreenNos.push(_.map(e.extendedProps.taskBlocks.taskDetails, td => td.supNo));
+                _.forEach(_.filter(vm.events(), e => (moment(e.start).isSame(moment(date), 'days') && _.get(e, 'extendedProps.taskBlock.taskDetails', []).length)), e => {
+                    currentScreenNos.push(..._.map(e.extendedProps.taskBlock.taskDetails, td => td.supNo));
                 });
                 //③ 削除応援作業枠Noリスト
-                let removeItemNos = _.map(_.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date))), ri => ri.supNos);
+                let removeItemNos = _.get(_.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date), 'days')), 'supNos');
 
-                let overwriteDeletions = _.map(_.intersection(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 0 } });
-                
-                let completeDeletions = _.map(_.difference(dailyManHrTaskNos.concat(currentScreenNos), removeItemNos), no => { return { supNo: no, status: 1 } });
+                let overwriteDeletions = _.map(_.uniq(_.intersection([].concat(dailyManHrTaskNos, currentScreenNos), removeItemNos)), no => { return { supNo: no, status: 0 } });
+
+                let completeDeletions = _.map(_.uniq(_.difference(removeItemNos, [].concat(dailyManHrTaskNos, currentScreenNos))), no => { return { supNo: no, status: 1 } });
                 
                 deleteList.push({ date, list: overwriteDeletions.concat(completeDeletions) });
 
             });    
     
     
-            return { sID, deleteList };
+            return { employeeId, deleteList };
     
         }
 
@@ -1236,9 +1247,9 @@ module nts.uk.ui.at.kdw013.a {
            taskInfos(){
                 let vm = this;
                 let warnings = [];
-                _.forEach(vm.ouenWorkTimes(), wt => {
+                _.forEach(vm.ouenWorkTimeSheets(), os => {
 
-                    let os: OuenWorkTimeSheetOfDailyAttendance = ko.utils.arrayFirst(vm.ouenWorkTimeSheets(), function(e) { return e.workNo == wt.no });
+                    let wt = ko.utils.arrayFirst(vm.ouenWorkTimes(), function(e) { return e.no == os.workNo });
                     let workCD1 = _.get(os, 'workContent.work.workCD1', null);
                     let workCD2 = _.get(os, 'workContent.work.workCD2', null);
                     let workCD3 = _.get(os, 'workContent.work.workCD3', null);
@@ -1279,13 +1290,12 @@ module nts.uk.ui.at.kdw013.a {
                         (taskName4 != '' ? taskName4 + ' ' : '') +
                         taskName5;
                     
-                    if (!!os) {
                         warnings.push({
-                            workNo: wt.no,
+                            workNo: os.workNo,
                             name: taskNames,
-                            time: formatTime(wt.workTime.totalTime, 'Time_Short_HM')
+                            time: formatTime(_.get(wt, 'workTime.totalTime', 0), 'Time_Short_HM')
                         });
-                    }
+                    
                 });
                 return warnings;
             }

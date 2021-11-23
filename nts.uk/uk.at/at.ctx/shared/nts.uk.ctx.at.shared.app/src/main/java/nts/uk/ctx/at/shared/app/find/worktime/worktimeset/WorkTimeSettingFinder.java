@@ -401,6 +401,7 @@ public class WorkTimeSettingFinder {
                 GeneralDate baseDate = GeneralDate.fromString(date, "yyyy/MM/dd");
                 List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
                         workPlaceId, baseDate);
+                
                 // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
                 // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
                 List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
@@ -470,10 +471,20 @@ public class WorkTimeSettingFinder {
 		if (workTimeCodes.isEmpty() || workTimeCodes == null ) { 
 			if (referenceDate != null) {
 				
-				// 「職場IDから職場別就業時間帯を取得」
-				List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, workplaceID);
-
-				if (listWorkTimeItem.isEmpty())
+				GeneralDate baseDate = GeneralDate.fromString(referenceDate, "yyyy/MM/dd");
+                List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
+                		workplaceID, baseDate);
+                
+                // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+                // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
+                List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
+                for (String wkpID : workPlaceIdList) {
+                    // アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
+                    List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
+                    workTimeSettingList.addAll(listWorkTimeItem);
+                }
+				
+				if (workTimeSettingList.isEmpty())
 					throw new BusinessException("Msg_1525");
 
 				List<PredetemineTimeSetting> predetemineTimeSettingList = this.predetemineTimeSettingRepository
@@ -483,7 +494,7 @@ public class WorkTimeSettingFinder {
 					// 先頭に「選択なし」を追加する / Add 「選択なし/không chọn」 vào đầu
 					result.add(new WorkTimeDto("", "選択なし", "", "", "", "", 0, 0, 0, 0));
 				}
-				result = getWorkTimeDtos(listWorkTimeItem, predetemineTimeSettingList);
+				result = getWorkTimeDtos(workTimeSettingList, predetemineTimeSettingList);
 			} else {
 				throw new BusinessException("Msg_1525");
 				

@@ -1202,6 +1202,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             })
                             let value: any;
                             value = self.getPrimitiveValue(data.value, item.attendanceAtr);
+							if (value == true || value == false) {
+								value = value ? 1 : 0
+							}
                             let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0);
                             dataChangeProcess.push(dataMap);
                         }
@@ -2805,7 +2808,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let itemOtherInGroup = CHECK_INPUT[value.itemId + ""];
                     let itemGroup = self.itemInputName[Number(itemOtherInGroup)];
                     let nameGroup: any = (itemGroup == undefined) ? "" : itemGroup;
-                    object.message = nts.uk.resource.getMessage(value.message, [object.itemName, nameGroup]);
+					if(_.includes(value.message,'_')){
+                    	object.message = nts.uk.resource.getMessage(value.message, [object.itemName, nameGroup]);
+					}
                     errorValidateScreeen.push(object);
                 });
 
@@ -5038,6 +5043,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             item = _.find(self.data, function(data) {
                 return data.id == self.attendenceId;
             })
+			// TypesMasterRelatedDailyAttendanceItem (日次の勤怠項目に関連するマスタの種類)
             switch (item.typeGroup) {
                 case 1:
                     // KDL002
@@ -5497,6 +5503,52 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     });
                     dfd15.promise()
                     break;
+				case 19 :
+				// KDL013 - WORK_SUPPLEMENT_OPT(19,"作業補足選択肢");
+                let dfd19 = $.Deferred();
+				let baseDate : any = null;
+				let rowSelect: any = _.find(selfParent.dailyPerfomanceData(), item => item.id==self.rowId().substring(1));
+				
+				if(rowSelect){
+					baseDate = rowSelect.date;
+				};
+				
+				setShared('KDL013Params', {
+                        baseDate: moment(baseDate).format("YYYY/MM/DD"),
+						atdId : item.id,
+                        selectedCode: self.selectedCode()
+                 	}, true);
+
+				modal('/view/kdl/013/a/index.xhtml').onClosed(function(): any {
+					let returnData = nts.uk.ui.windows.getShared('KDL013ParamsReturn');
+                    if (returnData !== undefined && returnData != "") {
+                        let dataKDL: any;
+                        let param3 = {
+                            typeDialog: 19,
+                            param: {
+                                itemId: item.id ,
+                                date: moment(baseDate).utc().toISOString()
+                            }
+                        };
+                        service.findAllCodeName(param3).done((data: any) => {
+                            let codeName = _.find(data, (item: any) => {
+                                return item.code == returnData;
+                            });
+                            self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
+                            dfd19.resolve();
+                        });
+                    }
+                    else {
+                        if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                        __viewContext.vm.clickCounter.clickLinkGrid = false;
+                        nts.uk.ui.block.clear();
+                        dfd19.resolve();
+                    }
+					__viewContext.vm.clickCounter.clickLinkGrid = false;
+                    nts.uk.ui.block.clear();
+				});
+                dfd19.promise();
+				break;
             }
             nts.uk.ui.block.clear();
         }

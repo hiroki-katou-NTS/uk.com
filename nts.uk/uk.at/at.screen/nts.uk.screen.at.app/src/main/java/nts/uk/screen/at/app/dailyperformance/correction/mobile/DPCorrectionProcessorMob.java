@@ -123,6 +123,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionSt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
 import nts.uk.screen.at.app.dailyperformance.correction.lock.ClosureSidDto;
@@ -893,7 +894,13 @@ public class DPCorrectionProcessorMob {
 					 */
 					DPAttendanceItem dPItem = mapDP
 							.get(Integer.parseInt(key.getKey().substring(1, key.getKey().length()).trim()));
+					
 					columnSetting.setTypeFormat(dPItem.getAttendanceAtr());
+					
+					if (dPItem.getAttendanceAtr().intValue() == DailyAttendanceAtr.NumberOfTime.value) {
+						if (dPItem.getTypeGroup() != null && dPItem.getTypeGroup().intValue() == TypeLink.DOWORK.value)
+							columnSetting = new ColumnSetting(key.getKey().isEmpty() ? "" : key.getKey(), false);
+					}
 				}
 			}
 			result.getColumnSettings().add(columnSetting);
