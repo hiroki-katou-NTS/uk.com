@@ -346,7 +346,7 @@ module nts.uk.ui.at.kdw013.c {
 										visibleItemsCount: 5,
 										width : '255px',
 										columns: [
-											{ prop: 'code', length: 1 },
+											{ prop: 'code', length: 6 },
 											{ prop: 'name', length: 8 },
 										]}
                                     "></div></td>
@@ -565,6 +565,12 @@ module nts.uk.ui.at.kdw013.c {
 			.edit-event table tr td:first-child div.form-label span{
 				line-height: 1.5;
 			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown {
+			    width: 255px !important;
+			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown .ui-igcombo-listitemholder{
+				overflow: auto !important;
+			} 
         </style>
         `;
 
