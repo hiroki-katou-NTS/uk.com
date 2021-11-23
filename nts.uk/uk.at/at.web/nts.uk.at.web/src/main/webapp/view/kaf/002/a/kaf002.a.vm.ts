@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                           new TabM(this.$i18n('KAF002_76'), true, true),
                           new TabM(this.$i18n('KAF002_32'), true, true),
                           new TabM(this.$i18n('KAF002_33'), true, true),
-                          new TabM(this.$i18n('KAF002_34'), false, true)];
+                          new TabM(this.$i18n('KAF002_34'), true, true)];
 
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
@@ -221,7 +221,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                  self.tabs()[3].visible(reflect.parentHours == 1);
                  self.tabs()[4].visible(reflect.nurseTime == 1);
                  // not use
-                 self.tabs()[5].visible(false);
+                 self.tabs()[5].visible(true);
              
              } 
            } 

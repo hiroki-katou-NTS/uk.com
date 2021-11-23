@@ -22,7 +22,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutTypeDispControl;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
 import nts.uk.shr.com.color.ColorCode;
 @Stateless
 public class JpaAppStampSettingRepository extends JpaRepository implements AppStampSettingRepository{
@@ -57,8 +56,6 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		AppStampSetting appStampSetting = new AppStampSetting();
 		
 		appStampSetting.setCompanyID(res.getString("CID"));
-		
-		appStampSetting.setSupportFrameDispNO(new SupportFrameDispNO(res.getInt("SUP_DISP_CNT")));
 		
 		appStampSetting.setUseCancelFunction(EnumAdaptor.valueOf(res.getInt("CANCEL_DISP_ATR"), UseDivision.class));
 		

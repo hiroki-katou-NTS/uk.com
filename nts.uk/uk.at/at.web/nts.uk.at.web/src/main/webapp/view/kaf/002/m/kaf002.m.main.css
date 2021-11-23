@@ -55,7 +55,7 @@ input {
 	text-align: center !important;
 }
 
-#kaf002TabPanel td :not(.titleColor) {
+#kaf002TabPanel td :not(.titleColor, .btn_workplace, .btn_worklocation ) {
 	text-align: center !important;
 }
 #kaf002TabPanel > div > label > span {

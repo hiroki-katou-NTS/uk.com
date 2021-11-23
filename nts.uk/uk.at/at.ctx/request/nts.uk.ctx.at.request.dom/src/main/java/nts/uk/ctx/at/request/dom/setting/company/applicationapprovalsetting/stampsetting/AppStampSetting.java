@@ -45,10 +45,14 @@ public class AppStampSetting extends AggregateRoot {
 	 */
 	private List<GoOutTypeDispControl> goOutTypeDispControl;
 
-	/** 場所の選択を利用する */
+	/** 
+	 * 場所の選択を利用する
+	 */
 	private NotUseAtr useLocationSelection;
 
-	/** 職場の選択を利用する */
+	/**
+	 * 職場の選択を利用する
+	 */
 	private NotUseAtr wkpDisAtr;
 
 	@Override

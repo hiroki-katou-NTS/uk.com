@@ -272,8 +272,8 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
                                 GoOutType.UNION
                         )
                 ),
-                NotUseAtr.NOT_USE, // TODO
-                NotUseAtr.NOT_USE  // TODO
+                NotUseAtr.NOT_USE, // TODO LienPTK change to get from DB
+                NotUseAtr.NOT_USE  // TODO LienPTK change to get from DB
         );
     }
 
@@ -294,6 +294,7 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
         KrqmtAppStamp entity = new KrqmtAppStamp();
         entity.companyId = companyId;
         entity.cancelDispAtr = setting.getUseCancelFunction().value;
+        // TODO LienPTK create use location and use workplace in here
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:
@@ -386,6 +387,7 @@ public class KrqmtAppStamp extends ContractUkJpaEntity {
 
     public void updateSetting(AppStampSetting setting) {
         cancelDispAtr = setting.getUseCancelFunction().value;
+        // TODO LienPTK update use location and use workplace in here
         for (GoOutTypeDispControl t : setting.getGoOutTypeDispControl()) {
             switch (t.getGoOutType()) {
                 case PRIVATE:

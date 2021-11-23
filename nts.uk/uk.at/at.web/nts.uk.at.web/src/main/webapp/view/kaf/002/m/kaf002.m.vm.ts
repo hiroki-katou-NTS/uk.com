@@ -121,7 +121,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             _.each(self.tabMs, (item, index) => {
 
                 let paramTab = {
-                    id: 'tab-' + String(index + 1), title: item.title, content: '.tab-content-' + String(index + 1), enable: ko.observable(item.enable), visible: ko.observable(item.visible)
+                    id: 'tab-' + String(index + 1),
+                    title: item.title, content: '.tab-content-' + String(index + 1),
+                    enable: ko.observable(item.enable),
+                    visible: ko.observable(item.visible)
                 };
                 paramTabs.push(paramTab);
                 self.enableList.push(ko.observable(false));
@@ -136,18 +139,21 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.selectedTab = ko.observable(paramTabs[0].id);
             self.selectedTemp = params.selectedTab;
             self.selectedTab.subscribe(value => {
-                
 				if (self.isPreAtr()) {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(580)							
-					} else {
+					} else if (self.selectedTab() === 'tab-1') {
+                        $('#kaf002TabPanel').width(800);
+                    } else {
 							$('#kaf002TabPanel').width(450)							
 					}
 				
 				} else {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(680)							
-					} else {
+					} else if (self.selectedTab() === 'tab-1') {
+                        $('#kaf002TabPanel').width(900);
+                    } else {
 							$('#kaf002TabPanel').width(550)							
 					}
 				}
@@ -168,6 +174,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 	                } else if (value == 'tab-5') {
 	                    self.selectedTemp(4);
 	                    
+	                } else if (value === 'tab-6') {
+	                    self.selectedTemp(STAMPTYPE.CHEERING);
 	                }
 				}
 				
@@ -259,14 +267,18 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if (self.isPreAtr()) {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(580)							
-				} else {
+				} else if (self.selectedTab() === 'tab-1') {
+                    $('#kaf002TabPanel').width(800);
+                } else {
 						$('#kaf002TabPanel').width(450)							
 				}
 				
 			} else {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(680)							
-				} else {
+				} else if (self.selectedTab() === 'tab-1') {
+                    $('#kaf002TabPanel').width(900);
+                } else {
 						$('#kaf002TabPanel').width(550)							
 				}
 			}
@@ -470,6 +482,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
             };
 
+            // Define grid options for  外出／戻り mode
             let comboColumns = [
                 { prop: 'name', length: 6 }];
             let comboItems = self.mode() == 0 ? self.createdReasonItem(self.reasonList)
@@ -535,6 +548,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(option2);
                 }
+            } else if (type === STAMPTYPE.ATTENDENCE) {
+                if ($('#' + id).length) {
+                    $('#' + id).ntsGrid(self.getCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
+                }
             } else {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(optionGrid);
@@ -545,10 +562,35 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if ($(nameAtr)) {
                 $(nameAtr).addClass('titleColor');
             }
+
+            let buttonWorkplaceAtr = 'td[aria-describedby ="' + id + '_workplaceId"]';
+            if ($(buttonWorkplaceAtr)) {
+                $(buttonWorkplaceAtr).addClass('btn_workplace');
+            }
+
+            let buttonWorkLocationAtr = 'td[aria-describedby ="' + id + '_workLocaiton"]';
+            if ($(buttonWorkLocationAtr)) {
+                $(buttonWorkLocationAtr).addClass('btn_worklocation');
+            }
+
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
                 if ($('#' + id).length) {
-                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow' + String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                    $('#' + id).append(`<tr id="trLink2">
+                                          <td></td>
+                                          <td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">
+                                            <div></div>
+                                          </td>
+                                          <td colspan="4">
+                                            <div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">
+                                              <a style="color: blue; text-decoration: underline"
+                                                data-bind="
+                                                  click: doSomething.bind($data, dataSource[' + items[0].index + ']),
+                                                  text: \'' + self.$i18n('KAF002_73') + '\'">
+                                              </a>
+                                            </div>
+                                          </td>
+                                        </tr>`);
                 }
 
             } else {
@@ -561,6 +603,79 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             }
 
 
+        }
+
+        private getCheeringGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
+            const self = this;
+            let options = {
+                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '770px' : '870px',
+                height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
+                dataSource: dataSource,
+                primaryKey: 'id',
+                virtualization: true,
+                virtualizationMode: 'continuous',
+                hidePrimaryKey: true,
+                columns: [
+                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
+                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' },
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px' },
+                    { headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: '200px', ntsControl: 'Button_WorkPlace' },
+                    { headerText: self.$i18n('KAF002_82'), key: 'workLocaiton', dataType: 'string', width: '200px', ntsControl: 'Button_WorkLocation' },
+                    { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px' }
+                ],
+                features: [
+                    {
+                        name: 'Resizing',
+                        columnSettings: [
+                            {
+                                columnKey: 'id', allowResizing: true, minimumWidth: 30
+                            },  {
+                                columnKey: 'startTime', allowResizing: false, minimumWidth: 30
+                            }, {
+                                columnKey: 'endTime', allowResizing: false, minimumWidth: 30
+                            }, {
+                                columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                            }
+                        ]
+                    },
+                    {
+                        name: 'Selection',
+                        mode: 'row',
+                        multipleSelection: true
+                    }
+                ],
+                ntsFeatures: [
+                    { name: 'CellState',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        state: 'state',
+                        states: statesTable
+                    }
+                ],
+                ntsControls: [
+                    {
+                        name: 'Button_WorkPlace', text: nts.uk.resource.getText('KAF002_83'), click: function(data: any) {
+                            nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
+                            nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
+                            });
+                        },
+                        controlType: 'Button'
+                    },
+                    {
+                        name: 'Button_WorkLocation', text: nts.uk.resource.getText('KAF002_84'), click: function(data: any) {
+                            nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
+                            nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
+                            });
+                        },
+                        controlType: 'Button'
+                    }
+                ]
+            };
+            if (!self.isVisibleComlumn || ko.toJS(self.isPreAtr)) {
+                options.columns.pop();
+            }
+            return options;
         }
 
     }
@@ -580,8 +695,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         flagObservable: KnockoutObservable<boolean> = ko.observable(false);
         flagEnable: KnockoutObservable<boolean> = ko.observable(true);
         index: number;
-		nameStart: string;
-		nameEnd: string;
+        nameStart: string;
+        nameEnd: string;
+        workplace: string;
+        workLocation: string;
 
         typeStamp: STAMPTYPE;
         constructor( dataObject: TimePlaceOutput, typeStamp: STAMPTYPE ) {
@@ -604,11 +721,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				if (frameNo == 1) {
 	                this.text1 = nts.uk.resource.getText( 'KAF002_103', [dataObject.frameNo]);	
 					this.nameStart = nts.uk.resource.getText('KAF002_101', [dataObject.frameNo]);
-					this.nameEnd = nts.uk.resource.getText('KAF002_102', [dataObject.frameNo]);				
+					this.nameEnd = nts.uk.resource.getText('KAF002_102', [dataObject.frameNo]);
+                    this.workplace = nts.uk.resource.getText('KAF002_81', [dataObject.frameNo]);
+                    this.workLocation = nts.uk.resource.getText('KAF002_82', [dataObject.frameNo]);
 				} else {
 					this.text1 = nts.uk.resource.getText( 'KAF002_65', [dataObject.frameNo]);
 					this.nameStart = nts.uk.resource.getText('KAF002_87', [dataObject.frameNo]);
-					this.nameEnd = nts.uk.resource.getText('KAF002_88', [dataObject.frameNo]);		
+					this.nameEnd = nts.uk.resource.getText('KAF002_88', [dataObject.frameNo]);
+                    this.workplace = nts.uk.resource.getText('KAF002_81', [dataObject.frameNo]);
+                    this.workLocation = nts.uk.resource.getText('KAF002_82', [dataObject.frameNo]);
 				}
                 param = param + 1;
             } else if ( typeStamp == STAMPTYPE.GOOUT_RETURNING ) {
@@ -636,6 +757,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				this.nameStart = nts.uk.resource.getText('KAF002_89', [dataObject.frameNo -2]);
 				this.nameEnd = nts.uk.resource.getText('KAF002_90', [dataObject.frameNo -2]);
                 param = param + 2;
+            } else if (typeStamp === STAMPTYPE.CHEERING) {
+                // TODO
             }
             this.startTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + start + '</span>'

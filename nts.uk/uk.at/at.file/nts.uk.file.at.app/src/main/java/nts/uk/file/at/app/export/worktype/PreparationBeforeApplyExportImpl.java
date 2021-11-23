@@ -386,6 +386,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
             if (col == 4 && row == 3) return TextResource.localize("KAF022_473");
             if (col == 4 && row == 4) return TextResource.localize("KAF022_474");
             if (col == 4 && row == 5) return TextResource.localize("KAF022_475");
+            if (col == 4 && row == 6) return TextResource.localize("KAF022_803");
 
             if (col == MAIN_COL_SIZE - 1) {
                 if (row == 0) return setting.getOtAppBeforeAccepRestric().get().isToUse() ? CHECK : NOT_CHECK;
@@ -409,6 +410,8 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                     return setting.getOtAppBeforeAccepRestric().get().isToUse() && setting.getOtAppBeforeAccepRestric().get().getMethodCheck() == BeforeAddCheckMethod.CHECK_IN_TIME
                             ? setting.getOtAppBeforeAccepRestric().get().getOpEarlyNormalOvertime().map(val -> convertToTime(val.v()) + TextResource.localize("KAF022_510")).orElse("")
                             : "";
+	            if (row == 6)
+	                return "TODO"; // TODO LienPTK
                 return setting.getAfterhandRestriction().isAllowFutureDay() ? CHECK : NOT_CHECK;
             }
         } else {
@@ -1781,7 +1784,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         } else if (stamp == StampAtr.SUPPORT_IN_SUPPORT_OUT) {
                             if (row == 0) value = reflectSetting.get().getSupportReflectAtr() == NotUseAtr.USE
                                     ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_101");
-                            else if (row == 1) value = applySetting.get().getSupportFrameDispNO().v() + " " + TextResource.localize("KAF022_755");
+//                            else if (row == 1) value = applySetting.get().getSupportFrameDispNO().v() + " " + TextResource.localize("KAF022_755");
                             else value = "";
                         } else if (stamp == StampAtr.OUT_OF_CARE_RETURN_OF_CARE) {
                             if (row == 0) value = reflectSetting.get().getCareReflectAtr() == NotUseAtr.USE

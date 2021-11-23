@@ -10,7 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 @NoArgsConstructor
 //打刻申請設定
@@ -19,11 +19,6 @@ public class AppStampSettingDto {
 	 * 会社ID
 	 */
 	public String companyID;
-	
-	/**
-	 * 応援枠の表示件数
-	 */
-	public Integer supportFrameDispNO;
 	
 	/**
 	 * 取消の機能の使用する
@@ -40,9 +35,17 @@ public class AppStampSettingDto {
 	 */
 	public List<GoOutTypeDispControlDto> goOutTypeDispControl;
 	
+	/**
+	 * 場所の選択を利用する
+	 */
+	public Integer useLocationSelection;
+
+	/** 職場の選択を利用する */
+	public Integer wkpDisAtr;
+	
 	public static AppStampSettingDto fromDomain(AppStampSetting appStampSetting) {
 		return new AppStampSettingDto(
-				appStampSetting.getCompanyID(), appStampSetting.getSupportFrameDispNO().v(),
+				appStampSetting.getCompanyID(),
 				appStampSetting.getUseCancelFunction().value,
 				!CollectionUtil.isEmpty(appStampSetting.getSettingForEachTypeLst())
 						? appStampSetting.getSettingForEachTypeLst().stream()
@@ -51,20 +54,22 @@ public class AppStampSettingDto {
 				!CollectionUtil.isEmpty(appStampSetting.getGoOutTypeDispControl())
 						? appStampSetting.getGoOutTypeDispControl().stream()
 								.map(x -> GoOutTypeDispControlDto.fromDomain(x)).collect(Collectors.toList())
-						: Collections.emptyList());
+						: Collections.emptyList(),
+				appStampSetting.getUseLocationSelection() != null ? appStampSetting.getUseLocationSelection().value : null,
+				appStampSetting.getWkpDisAtr() != null ? appStampSetting.getWkpDisAtr().value : null);
 	}
 	
 	public AppStampSetting toDomain() {
 		return new AppStampSetting(companyID,
-				new SupportFrameDispNO(supportFrameDispNO),
 				EnumAdaptor.valueOf(useCancelFunction, UseDivision.class),
 				!CollectionUtil.isEmpty(settingForEachTypeLst)
 						? settingForEachTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())
 						: Collections.emptyList(),
-
 				!CollectionUtil.isEmpty(goOutTypeDispControl)
 						? goOutTypeDispControl.stream().map(x -> x.toDomain()).collect(Collectors.toList())
-						: Collections.emptyList());
+						: Collections.emptyList(),
+				EnumAdaptor.valueOf(useLocationSelection, NotUseAtr.class),
+				EnumAdaptor.valueOf(wkpDisAtr, NotUseAtr.class));
 	}
 	
 	

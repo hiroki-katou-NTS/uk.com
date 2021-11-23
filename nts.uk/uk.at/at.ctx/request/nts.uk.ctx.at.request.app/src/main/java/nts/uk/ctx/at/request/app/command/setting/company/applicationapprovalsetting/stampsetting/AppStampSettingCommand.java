@@ -17,14 +17,16 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutTypeDispControl;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
 import nts.uk.shr.com.color.ColorCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppStampSettingCommand {
     private int cancelAtr;
+    private int useLocationSelection;
+    private int wkpDisAtr;
 
     private String workComment1Content;
     private String workComment1Color;
@@ -83,7 +85,6 @@ public class AppStampSettingCommand {
     public AppStampSetting toDomain(String companyId) {
         return new AppStampSetting(
                 companyId,
-                new SupportFrameDispNO(supportFrameDispNO),
                 EnumAdaptor.valueOf(cancelAtr, UseDivision.class),
                 Arrays.asList(
                         new SettingForEachType(
@@ -123,23 +124,25 @@ public class AppStampSettingCommand {
                         )
                 ),
                 Arrays.asList(
-                        new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(goOutPrivateDispAtr, DisplayAtr.class),
-                                GoOutType.PRIVATE
-                        ),
-                        new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(goOutOfficeDispAtr, DisplayAtr.class),
-                                GoOutType.OFFICE
-                        ),
-                        new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(goOutCompensationDispAtr, DisplayAtr.class),
-                                GoOutType.COMPENSATION
-                        ),
-                        new GoOutTypeDispControl(
-                                EnumAdaptor.valueOf(goOutUnionDispAtr, DisplayAtr.class),
-                                GoOutType.UNION
-                        )
-                )
+                    new GoOutTypeDispControl(
+                            EnumAdaptor.valueOf(goOutPrivateDispAtr, DisplayAtr.class),
+                            GoOutType.PRIVATE
+                    ),
+                    new GoOutTypeDispControl(
+                            EnumAdaptor.valueOf(goOutOfficeDispAtr, DisplayAtr.class),
+                            GoOutType.OFFICE
+                    ),
+                    new GoOutTypeDispControl(
+                            EnumAdaptor.valueOf(goOutCompensationDispAtr, DisplayAtr.class),
+                            GoOutType.COMPENSATION
+                    ),
+                    new GoOutTypeDispControl(
+                            EnumAdaptor.valueOf(goOutUnionDispAtr, DisplayAtr.class),
+                            GoOutType.UNION
+                    )
+        		),
+                EnumAdaptor.valueOf(useLocationSelection, NotUseAtr.class),
+                EnumAdaptor.valueOf(wkpDisAtr, NotUseAtr.class)
         );
     }
 }
