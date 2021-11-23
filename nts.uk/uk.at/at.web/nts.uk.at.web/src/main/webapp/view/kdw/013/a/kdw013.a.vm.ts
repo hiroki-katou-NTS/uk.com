@@ -836,6 +836,12 @@ module nts.uk.ui.at.kdw013.a {
 
                 return dates;
             };
+            let dates = vm.over20TaskDays(dateRanges());
+            if (dates.length) {
+                vm.$dialog
+                    .error({ messageId: 'Msg_2262', messageParams: dates });
+                return;
+            }
     
             let deleteAttByTimeZones = vm.createDeleteAttByTimeZones(dateRanges());
     
@@ -911,6 +917,18 @@ module nts.uk.ui.at.kdw013.a {
             const vm = this;
 
             vm.dateRange({ start, end });
+        }
+
+        over20TaskDays(dates){
+            const vm = this;
+            let result = [];
+            _.forEach(dates, date => {
+                let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
+                if (eventsInday.length > 20) {
+                    result.push(moment(date).format(DATE_FORMAT));
+                }
+            });
+            return result;
         }
 
         createDeleteAttByTimeZones(dates){
