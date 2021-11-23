@@ -115,6 +115,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
   
                       doc.body.innerHTML = res.htmlContent;
 											doc.body.setAttribute('style', 'overflow: auto; position: relative;');
+                      nts.uk.com.view.ccg034.share.model.customload.loadLimitedLabelForIframe();
                     });
                 } else {
                   element.innerHTML = `<iframe src="${ntsFile.liveViewUrl(fileId, 'index.htm')}"></iframe>`;

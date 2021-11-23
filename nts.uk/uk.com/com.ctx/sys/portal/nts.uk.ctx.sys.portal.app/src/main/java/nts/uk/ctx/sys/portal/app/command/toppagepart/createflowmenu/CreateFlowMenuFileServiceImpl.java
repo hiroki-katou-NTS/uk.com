@@ -18,6 +18,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileService;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FixedClassification;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.ImageInformation;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -62,8 +63,17 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 	public void deleteUploadedFiles(FlowMenuLayout layout) {
 		layout.getFileAttachmentSettings().forEach(file -> this.deleteFile(file.getFileId()));
 		layout.getImageSettings().forEach(image -> {
-			if (image.getIsFixed().equals(FixedClassification.RANDOM) && image.getFileId().isPresent()) {
-				this.deleteFile(image.getFileId().get());
+			ImageInformation imageInfo = image.getImageInformation();
+			if (imageInfo.getIsFixed().equals(FixedClassification.RANDOM) && imageInfo.getFileId().isPresent()) {
+				this.deleteFile(imageInfo.getFileId().get());
+			}
+		});
+		layout.getMenuSettings().forEach(menu -> {
+			if (menu.getImageInformation().isPresent()) {
+				ImageInformation imageInfo = menu.getImageInformation().get();
+				if (imageInfo.getIsFixed().equals(FixedClassification.RANDOM) && imageInfo.getFileId().isPresent()) {
+					this.deleteFile(imageInfo.getFileId().get());
+				}
 			}
 		});
 		this.deleteLayout(layout);

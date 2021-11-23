@@ -104,9 +104,9 @@ public class CreateFlowMenuTest {
 				.as("testFull fileAttachment")
 				.containsExactly(tuple("fileId", "content", 0, 0, Optional.empty(), Optional.empty(), 0, false, 0, 0, 0, 0));
 		assertThat(domain.getFlowMenuLayout().get().getImageSettings())
-				.extracting(x -> x.getFileId().isPresent() ? x.getFileId().get() : x.getFileId(),
-						x -> x.getFileName().isPresent() ? x.getFileName().get().v() : x.getFileName(),
-						x -> x.getIsFixed().value,
+				.extracting(x -> x.getImageInformation().getFileId().isPresent() ? x.getImageInformation().getFileId().get() : x.getImageInformation().getFileId(),
+						x -> x.getImageInformation().getFileName().isPresent() ? x.getImageInformation().getFileName().get().v() : x.getImageInformation().getFileName(),
+						x -> x.getImageInformation().getIsFixed().value,
 						x -> x.getSizeAndPosition().getColumn().v(),
 						x -> x.getSizeAndPosition().getHeight().v(),
 						x -> x.getSizeAndPosition().getRow().v(),
