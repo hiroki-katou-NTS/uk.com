@@ -731,8 +731,9 @@ module nts.uk.ui.at.kdw013.c {
 					}
                     vm.taskFrameSettings(extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList);
 					let param = {
+						employeeId: employeeId,
 						refDate: start,
-						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
+						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8),
 					}
 
 					block.invisible();
@@ -939,13 +940,7 @@ module nts.uk.ui.at.kdw013.c {
                 vm.caltimeSpanView.start(getTimeOfDate(taskBlocks.caltimeSpan.start));
 				vm.caltimeSpanView.end(getTimeOfDate(taskBlocks.caltimeSpan.end));
             }
-            vm.taskDetailsView.subscribe((tasks: ManHrTaskDetailView[])=>{
-				let item = 0;
-				_.forEach(tasks, (task: ITaskItemValue[])=>{
-					_.forEach(task, ()=>{
-						item++;
-					});
-				});
+            vm.taskDetailsView.subscribe(()=>{
 				let interval = setInterval(function () {
 					resetHeight();
                 });	

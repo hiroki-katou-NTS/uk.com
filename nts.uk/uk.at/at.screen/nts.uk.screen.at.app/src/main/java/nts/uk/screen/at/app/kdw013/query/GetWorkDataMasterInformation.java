@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethodI;
-import nts.uk.ctx.at.shared.app.query.task.GetTaskListOfSpecifiedWorkFrameNoQuery;
 import nts.uk.ctx.at.shared.app.query.worktime.worktimeset.WorkTimeSettingQuery;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
@@ -35,7 +34,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRel
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttdItemAuthRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -43,6 +44,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRe
 import nts.uk.screen.at.app.dailyperformance.correction.datadialog.DataDialogWithTypeProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
 import nts.uk.screen.at.app.kdw013.a.TaskDto;
+import nts.uk.screen.at.app.kdw013.c.GetAvailableWorking;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -54,7 +56,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class GetWorkDataMasterInformation {
     
     @Inject
-    private GetTaskListOfSpecifiedWorkFrameNoQuery getTaskListOfSpecifiedWorkFrameNoQuery; 
+    private GetAvailableWorking getAvailableWorking; 
     
     @Inject 
     private WorkLocationRepository workLocationRepository;
@@ -99,16 +101,36 @@ public class GetWorkDataMasterInformation {
      * @name 作業データマスタ情報を取得する
      * @param referenceDate 基準日
      * @param itemId List<工数実績項目ID>
+     * @param employeeId
+     * @param workCode1
+     * @param workCode2
+     * @param workCode3
+     * @param workCode4
+     * @param workCode5
      */
-    public WorkDataMasterInformationDto get(GeneralDate refDate, List<Integer> itemIds){
+    public WorkDataMasterInformationDto get(String employeeId, GeneralDate refDate, List<Integer> itemIds, Optional<String> workCode1, Optional<String> workCode2, Optional<String> workCode3, Optional<String> workCode4, Optional<String> workCode5){
     	LoginUserContext loginUserContext = AppContexts.user();
 
     	//1
     	Map<Integer, List<Task>> mapTask = new HashMap<>();
     	//作業枠NOを1～5をループする
-    	for (int i = 1 ; i <= 5; i++) {
+    	Map<Integer, Optional<String>> workCodes = new HashMap<>();
+    	workCodes.put(1, Optional.empty());
+    	workCodes.put(2, workCode1);
+    	workCodes.put(3, workCode2);
+    	workCodes.put(4, workCode3);
+    	workCodes.put(5, workCode4);
+    	for (Map.Entry<Integer, Optional<String>> workCode : workCodes.entrySet()) {
+    		Optional<TaskCode> taskCode = Optional.ofNullable(workCode.getValue().map(c -> new TaskCode(c)).orElse(null));
     		//取得する(ログイン会社ID, 処理中の作業枠NO)
-    		mapTask.put(i, getTaskListOfSpecifiedWorkFrameNoQuery.getListTask(loginUserContext.companyId(), i));
+    		mapTask.put(workCode.getKey(), 
+				getAvailableWorking.get(
+					employeeId, 
+					refDate, 
+					new TaskFrameNo(workCode.getKey()), 
+					taskCode
+				)
+			);
 		}
 
     	//2

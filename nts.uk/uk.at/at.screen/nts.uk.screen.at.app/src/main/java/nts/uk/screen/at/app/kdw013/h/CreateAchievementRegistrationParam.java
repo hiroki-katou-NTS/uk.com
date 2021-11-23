@@ -29,8 +29,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DateRange;
-import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
-import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -46,9 +44,6 @@ public class CreateAchievementRegistrationParam {
     
     @Inject
     private ConfirmStatusActualDayChange confirmStatusActualDayChange;
-    
-    @Inject
-    private GetWorkDataMasterInformation getWorkDataMasterInformation;
     
     @Inject
     private DailyModifyRCommandFacade dailyModifyRCommandFacade;
@@ -84,15 +79,6 @@ public class CreateAchievementRegistrationParam {
     	DailyRecordToAttendanceItemConverter dailyRecordToAttendanceItemConverter = attendanceItemConvertFactory.createDailyConverter();
     	dailyRecordToAttendanceItemConverter.setData(integrationOfDaily.get());															
     	return dailyRecordToAttendanceItemConverter.convert(items);
-    }
-    
-    /**
-     * @name 実績内容確認を起動する
-     */
-    public WorkDataMasterInformationDto startAchievementConfirmation(GeneralDate refDate, List<Integer> itemIds){
-    	
-    	return getWorkDataMasterInformation.get(refDate, itemIds);
-    	
     }
     
     /**
