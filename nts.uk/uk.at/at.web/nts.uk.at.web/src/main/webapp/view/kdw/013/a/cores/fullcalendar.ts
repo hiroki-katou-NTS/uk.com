@@ -2321,10 +2321,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
                 }
                 ,
-                slotLaneClassNames: (arg) => {
-                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
-                }
-                ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
                     /**
