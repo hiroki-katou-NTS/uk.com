@@ -6,6 +6,7 @@ module cmm045.a.viewmodel {
     import request = nts.uk.request;
     import getShared = nts.uk.ui.windows.getShared;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         //delete switch button - ver35
@@ -29,8 +30,12 @@ module cmm045.a.viewmodel {
         mode: KnockoutObservable<number> = ko.observable(1);
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
+        useApprovalFunction : KnockoutObservable<number> = ko.observable(0);
+        //UPDATE EA 4134
+		//  USE(1, "Enum_UseClassificationAtr_USE"),
+        //	NOT_USE(0, "Enum_UseClassificationAtr_NOT_USE");
+        //  spr
 
-        //spr
         isSpr: KnockoutObservable<boolean> = ko.observable(false);
         // extractCondition: KnockoutObservable<number> = ko.observable(0);
         //ver33
@@ -621,6 +626,10 @@ module cmm045.a.viewmodel {
 				self.updateFromAppListExtractCondition();
 			}
 			self.appListInfo = appListInfo;
+			if(!isNullOrUndefined(appListInfo) && !isNullOrUndefined(appListInfo.displaySet)){
+				let displaySet = appListInfo.displaySet.useApprovalFunction;
+				self.useApprovalFunction(displaySet)
+			};
 			let newItemLst = [];
 			_.each(appListInfo.appLst, item => {
 				newItemLst.push(new vmbase.DataModeApp(item));
@@ -1191,7 +1200,7 @@ module cmm045.a.viewmodel {
             }).then(() => {
                 let columns = [
                     { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: checkWidth, checkbox: {
-                        visible: item => item.checkAtr === true,
+                        visible: item => item.checkAtr === true && self.useApprovalFunction()==1,
                         applyToProperty: "check"
                     } },
                     { headerText: getText('CMM045_50'), key: 'details', width: detailsWidth, button: {
