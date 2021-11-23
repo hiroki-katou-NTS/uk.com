@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.infra.repository.supportmanagement.supportoperationsetting;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
@@ -19,7 +20,10 @@ public class JpaSupportOperationSettingRepository extends JpaRepository implemen
             KshmtSupportOperationSetting entity = op.get();
             this.toEntity(supportOperationSetting, entity);
             this.commandProxy().update(entity);
+        } else {
+            this.commandProxy().insert(toEntity(cid,supportOperationSetting));
         }
+
     }
 
     @Override
@@ -30,14 +34,21 @@ public class JpaSupportOperationSettingRepository extends JpaRepository implemen
             SupportOperationSetting domain = new SupportOperationSetting(entity.isAvailable(), entity.isCanRecipientChooseSupporter(), new MaximumNumberOfSupport(entity.getMaxTimesPerDayOfSupport()));
             return domain;
         }
-        return null;
+        return new SupportOperationSetting(false,false,new MaximumNumberOfSupport(1));
     }
 
     private void toEntity(SupportOperationSetting domain, KshmtSupportOperationSetting entity){
         entity.setAvailable(domain.isUsed());
         entity.setCanRecipientChooseSupporter(domain.isSupportDestinationCanSpecifySupporter());
-        entity.setMaxTimesPerDayOfSupport(domain.isUsed() ? domain.getMaxNumberOfSupportOfDay().v(): entity.getMaxTimesPerDayOfSupport());
+        entity.setMaxTimesPerDayOfSupport(domain.getMaxNumberOfSupportOfDay().v());
     }
-
+    private KshmtSupportOperationSetting toEntity(String cid, SupportOperationSetting domain){
+        val entity = new KshmtSupportOperationSetting();
+        entity.setCid(cid);
+        entity.setAvailable(domain.isUsed());
+        entity.setCanRecipientChooseSupporter(domain.isSupportDestinationCanSpecifySupporter());
+        entity.setMaxTimesPerDayOfSupport(domain.getMaxNumberOfSupportOfDay().v());
+        return entity;
+    }
 
 }

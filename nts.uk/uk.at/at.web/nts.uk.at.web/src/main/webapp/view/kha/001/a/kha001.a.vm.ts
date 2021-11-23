@@ -106,7 +106,7 @@ module nts.uk.com.view.kha001.a {
             vm.$blockui("invisible");
             vm.$ajax(PATH.registerSetting, dataRegister).done(() => {
                 vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
-                    $('#KHA001_3').focus();
+                    vm.getSetting();
                 });
             })
             .fail((err: any)=>{
