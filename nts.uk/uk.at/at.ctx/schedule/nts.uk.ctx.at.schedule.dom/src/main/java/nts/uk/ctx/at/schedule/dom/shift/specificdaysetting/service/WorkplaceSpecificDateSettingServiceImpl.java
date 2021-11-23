@@ -45,13 +45,11 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 		List<SpecificDateItemNo> specificDateItemList = new ArrayList<SpecificDateItemNo>();
 		Optional<CompanySpecificDateItem> companySpecificDateItemOpt = companySpecificDateRepository.get( companyID, date);
 		if(companySpecificDateItemOpt.isPresent()){
-			List<Integer> numberList = companySpecificDateItemOpt.get()
+			List<SpecificDateItemNo> specificDateItemNos = companySpecificDateItemOpt.get()
 							.getOneDaySpecificItem()
-							.getSpecificDayItems().stream()
-							.map(item -> item.v())
-							.collect(Collectors.toList());
+							.getSpecificDayItems();
 					
-			List<SpecificDateItem> currentList = specificDateItemRepository.getSpecifiDateByListCode(companyID, numberList);
+			List<SpecificDateItem> currentList = specificDateItemRepository.getSpecifiDateByListCode(companyID, specificDateItemNos);
 			specificDateItemList.addAll(currentList.stream().map(x -> x.getSpecificDateItemNo()).collect(Collectors.toList()));
 		}
 			
@@ -69,7 +67,12 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 			}
 
 		});
-		return new SpecificDateItemOutput(date, specificDateItemList.stream().distinct().map(x -> x.v().intValue()).collect(Collectors.toList()));
+		return new SpecificDateItemOutput(	date
+										,	specificDateItemList.stream()
+												.distinct()
+												.map(x -> x.v().intValue())
+												.collect(Collectors.toList())
+											);
 	}
 
 	@Override
@@ -77,14 +80,11 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 			GeneralDate date) {
 		List<SpecificDateItemNo> specificDateItemList = new ArrayList<SpecificDateItemNo>();
 		Optional<CompanySpecificDateItem> companySpecificDateItemOpt = companySpecificDateRepository.get(companyID, date);
-		if( !companySpecificDateItemOpt.isPresent() ){
-			List<Integer> numberList = companySpecificDateItemOpt.get()
+		if( companySpecificDateItemOpt.isPresent() ){
+			List<SpecificDateItemNo> specificDateItemNos = companySpecificDateItemOpt.get()
 					.getOneDaySpecificItem()
-					.getSpecificDayItems().stream()
-					.map( item  -> item.v() )
-					.distinct()
-					.collect(Collectors.toList());
-			List<SpecificDateItem> currentList = specificDateItemRepository.getSpecifiDateByListCode(companyID, numberList);
+					.getSpecificDayItems();
+			List<SpecificDateItem> currentList = specificDateItemRepository.getSpecifiDateByListCode(companyID, specificDateItemNos);
 			specificDateItemList.addAll(currentList.stream().map(x -> x.getSpecificDateItemNo()).collect(Collectors.toList()));
 		}
 		
@@ -92,8 +92,7 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 		 Optional<WorkplaceSpecificDateItem> workplaceSpecificDateItemOpt = workplaceSpecificDateRepository.get( workplace, date );
 			if( workplaceSpecificDateItemOpt.isPresent() ) {
 				workplaceSpecificDateItemOpt.get().getOneDaySpecificItem().getSpecificDayItems()
-				.stream().distinct()
-				.forEach(item -> {
+				.stream().forEach(item -> {
 					if(!specificDateItemList.contains(item)){
 						specificDateItemList.add(item);
 					}
@@ -101,7 +100,13 @@ public class WorkplaceSpecificDateSettingServiceImpl implements IWorkplaceSpecif
 				
 			}
 		});
-		return new SpecificDateItemOutput(date, specificDateItemList.stream().distinct().map(x -> x.v().intValue()).collect(Collectors.toList()));
+		
+		return new SpecificDateItemOutput(	date
+										,	specificDateItemList.stream()
+											.distinct()
+											.map(x -> x.v().intValue())
+											.collect(Collectors.toList())
+											);
 	}
 	
 }

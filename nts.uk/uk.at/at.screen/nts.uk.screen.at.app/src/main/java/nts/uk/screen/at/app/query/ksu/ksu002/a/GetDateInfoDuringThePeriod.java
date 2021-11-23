@@ -168,11 +168,8 @@ public class GetDateInfoDuringThePeriod {
 			if (lstSpecificDateItemNo.isEmpty()) {
 				return new ArrayList<>();
 			}
-
-			List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(mapper -> mapper.v())
-					.collect(Collectors.toList());
 			List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(),
-					_lstSpecificDateItemNo);
+					lstSpecificDateItemNo);
 			return data;
 		}
 	}

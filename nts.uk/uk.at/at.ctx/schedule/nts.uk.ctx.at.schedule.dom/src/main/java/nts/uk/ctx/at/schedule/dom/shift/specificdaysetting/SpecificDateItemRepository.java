@@ -26,20 +26,11 @@ public interface SpecificDateItemRepository {
 	void update ( SpecificDateItem domain );
 	
 	/**
-	 * hoatt
-	 * get list Specifi Date By List Code
-	 * @param companyId
-	 * @param lstSpecificDateItem
-	 * @return
-	 */
-	List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<Integer> lstSpecificDateItem);
-	
-	/**
-	 * 特定日項目NOで取得する
+	 * 特定日項目NOリストで取得する
 	 * @param companyId 会社ID
-	 * @param specificDateItemNo 特定日項目NO
+	 * @param specificDateItemNos 特定日項目NOリスト
 	 * @return
 	 */
-	SpecificDateItem getBySpecificDateItemNo( String companyId, SpecificDateItemNo specificDateItemNo );
+	List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<SpecificDateItemNo> specificDateItemNos);
 
 }

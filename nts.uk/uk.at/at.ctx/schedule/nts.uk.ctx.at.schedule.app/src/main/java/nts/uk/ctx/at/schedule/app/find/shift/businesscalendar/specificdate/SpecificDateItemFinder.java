@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.find.shift.businesscalendar.specificdate;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,10 +56,12 @@ public class SpecificDateItemFinder {
 	 * @return
 	 */
 	public List<SpecificDateItemDto> getSpecificDateItemByListCode(List<Integer> lstSpecificDateItem){
+		/*TODO dev fix
 		String companyId = AppContexts.user().companyId();
-		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDateItem)
+ 		return specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDateItem)
 				.stream()
 				.map(c-> toSpecificDateItemDto(c))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
+		return Collections.emptyList();
 	}
 }

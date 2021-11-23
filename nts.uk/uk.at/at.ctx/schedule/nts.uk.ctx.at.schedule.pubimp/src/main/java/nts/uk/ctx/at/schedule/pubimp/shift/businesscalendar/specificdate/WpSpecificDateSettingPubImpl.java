@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.pubimp.shift.businesscalendar.specificdate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemNo;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.SpecificDateItemRepository;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.service.IWorkplaceSpecificDateSettingService;
 import nts.uk.ctx.at.schedule.dom.shift.specificdaysetting.service.SpecificDateItemOutput;
@@ -41,7 +43,10 @@ public class WpSpecificDateSettingPubImpl implements WpSpecificDateSettingPub {
 	@Override
 	public List<SpecificDateItemExport> getSpecifiDateByListCode(String companyId, List<Integer> lstSpecificDateItem) {
 		List<SpecificDateItemExport> result = new ArrayList<>();
-		List<SpecificDateItem> specificDateItems = this.specificDateItemRepository.getSpecifiDateByListCode(companyId, lstSpecificDateItem);
+		List<SpecificDateItem> specificDateItems = this.specificDateItemRepository.getSpecifiDateByListCode(companyId
+				, lstSpecificDateItem.stream()
+					.map(itemNo -> new SpecificDateItemNo( itemNo))
+					.collect(Collectors.toList()));
 		for(SpecificDateItem spec : specificDateItems ){
 			SpecificDateItemExport  specificDateItemExport = new SpecificDateItemExport(spec.getCompanyId(),
 					spec.getUseAtr().value,

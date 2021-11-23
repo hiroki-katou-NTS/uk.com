@@ -4,8 +4,7 @@ package nts.uk.ctx.at.schedule.dom.shift.specificdaysetting;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
@@ -15,13 +14,17 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @author lan_lt
  *
  */
-@Getter
-@AllArgsConstructor
+@Value
 public class OneDaySpecificItem implements DomainValue {
 
 	/** 特定日項目リスト **/
 	private final List<SpecificDateItemNo> specificDayItems;
 	
+	/**
+	 * 作る
+	 * @param specificDayItems 特定日項目リスト
+	 * @return
+	 */
 	public static OneDaySpecificItem create( List<SpecificDateItemNo> specificDayItems ) {
 		
 		if( specificDayItems.isEmpty() || specificDayItems.size() > 10 ) {

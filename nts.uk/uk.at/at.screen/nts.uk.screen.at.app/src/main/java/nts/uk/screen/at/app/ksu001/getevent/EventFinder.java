@@ -6,7 +6,6 @@ package nts.uk.screen.at.app.ksu001.getevent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -134,11 +133,8 @@ public class EventFinder {
 			if (lstSpecificDateItemNo.isEmpty()) {
 				return new ArrayList<>();
 			}
-
-			List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(mapper -> mapper.v())
-					.collect(Collectors.toList());
 			List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(),
-					_lstSpecificDateItemNo);
+					lstSpecificDateItemNo);
 			return data;
 		}
 	}

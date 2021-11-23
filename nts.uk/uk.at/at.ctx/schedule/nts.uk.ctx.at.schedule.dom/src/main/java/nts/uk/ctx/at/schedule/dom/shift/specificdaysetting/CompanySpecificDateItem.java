@@ -21,7 +21,6 @@ public class CompanySpecificDateItem implements DomainAggregate {
 	private final GeneralDate specificDate;
 	
 	/** 特定日項目リスト **/
-	@Setter
 	private OneDaySpecificItem oneDaySpecificItem;
 	
 }

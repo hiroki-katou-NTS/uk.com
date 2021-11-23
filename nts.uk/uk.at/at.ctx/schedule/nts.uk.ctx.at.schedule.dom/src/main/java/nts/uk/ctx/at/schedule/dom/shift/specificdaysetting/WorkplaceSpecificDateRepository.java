@@ -27,7 +27,7 @@ public interface WorkplaceSpecificDateRepository {
 	 * @param workplaceId 職場ID
 	 * @param ymd 年月日
 	 */
-	void deleteByYmd( String workplaceId, GeneralDate ymd );
+	void delete( String workplaceId, GeneralDate ymd );
 	
 	/**
 	 * delete
