@@ -31,6 +31,14 @@
                 nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppNumValue
                 nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkSuppComment
                 nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.ChoiceCode
+                nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
+                nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+                nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
+                nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
+                nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth
+                nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode
 			</com:ValidatorScript>
 			<com:EnumScript>
 				nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily
@@ -83,7 +91,7 @@
 					<!-- F3_2 -->
 					<div class="textEditor pb10">
 						<!-- F3_1 -->
-						<label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW013_71')}</div>
 						<input
 						  class="input-f"
 						  tabindex="1"
@@ -106,12 +114,12 @@
 					<!-- G1_2 -->
  					<button class="closeG" data-bind="click: closeGDialog, icon: 202, size: 12"></button>
 					<!-- G2_1 -->
-					<div class= "pb10 align-left" data-bind="i18n: 'KDW013_96'"></div>
+					<div class= "pb10 align-left" data-bind="i18n: popupTitle"></div>
 
 					<!-- G3_2 -->
 					<div class="textEditor pb10">
 						<!-- G3_1 -->
-						<label class="pr10" data-bind="i18n: 'KDW013_71'"></label>
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDW013_71')}</div>
 						<input
 						  class="input-g"
 						  tabindex="1"
@@ -127,7 +135,7 @@
 					</div>
 
 					<!-- G4_1 -->
-					<button class= "proceed normal" tabindex = "2" data-bind="i18n: 'KDW013_43', click: $vm.registerOneDayFavTask"></button>
+					<button class= "proceed normal" tabindex = "2" data-bind="i18n: btnContent, click: $vm.registerOneDayFavTask"></button>
 				</div>
 				<div class="popup-area-i">
 					<!-- I1_2 -->

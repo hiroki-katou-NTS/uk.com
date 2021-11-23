@@ -392,6 +392,9 @@ module nts.uk.ui.at.kdw013.calendar {
         .favIcon:hover{
                 background-color: rgb(229, 242, 255);
         }
+        .border-dashed{
+            border-style: dashed !important;    
+        }
 `;
 
     @handler({
@@ -574,7 +577,7 @@ module nts.uk.ui.at.kdw013.calendar {
             firstDay: ko.observable(1),
             scrollTime: ko.observable(420),
             slotDuration: ko.observable(30),
-            initialView : ko.observable('oneDay')
+            initialView : ko.observable('fullWeek')
         },
         excludeTimes: ko.observableArray([])
     });
@@ -714,7 +717,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     firstDay: ko.observable(1),
                     slotDuration: ko.observable(30),
                     editable: ko.observable(false),
-                    initialView: ko.observable('oneDay'),
+                    initialView: ko.observable('fullWeek'),
                     availableView: ko.observableArray([]),
                     initialDate: ko.observable(new Date()),
                     events: ko.observableArray([]),
@@ -778,7 +781,7 @@ module nts.uk.ui.at.kdw013.calendar {
             }
 
             if (initialView === undefined) {
-                this.params.initialView = ko.observable('oneDay');
+                this.params.initialView = ko.observable('fullWeek');
             }
 
             if (availableView === undefined) {
@@ -1748,7 +1751,7 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const updateEvents = () => {
                 const sltds = vm.selectedEvents;
-                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ));
+                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => (formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')) && (formatDate(_.get(e,'end')) === formatDate(_.get(m,'end')) ) ));
                 const data = ko.unwrap(params.$datas);
                 
                 const isLock = (lockStatus) => {
@@ -2136,17 +2139,24 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .then(() => {
                                     $days.on('mousedown', (evt: JQueryEvent) => {
                                         if ($(evt.target).closest('.fc-col-header-cell.fc-day .favIcon').length > 0) {
-                                                    const className =  evt.target.classList[1];
-                                                        $(".popup-area-g").ntsPopup({
-                                                            trigger: '.' + className,
-                                                            position: {
-                                                                my: "left top",
-                                                                at: "left bottom",
-                                                                of: '.' + className
-                                                            },
-                                                            showOnStart: false,
-                                                            dismissible: false
-                                                        });
+                                            
+                                            let event = _.find(vm.params.events(), d => moment(d.start).isSame(moment(evt.target.classList[1].replace("fav-", "")), 'days'));
+                                            if (event) {
+                                                const className = evt.target.classList[1];
+                                                $(".popup-area-g").ntsPopup({
+                                                    trigger: '.' + className,
+                                                    position: {
+                                                        my: "left top",
+                                                        at: "left bottom",
+                                                        of: '.' + className
+                                                    },
+                                                    showOnStart: false,
+                                                    dismissible: false
+                                                });
+                                            } else {
+                                                $(".popup-area-g").ntsPopup("destroy");
+                                            }
+                                           
                                         }
                                     });
                                     $days
@@ -2184,6 +2194,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 vm.params.screenA.oneDayFavoriteSet(null);
                                                 vm.params.screenA.oneDayFavTaskName('');
                                                 vm.params.screenA.taskBlocks(taskBlocks);
+												vm.params.screenA.popupTitle('KDW013_72');
+												vm.params.screenA.btnContent('KDW013_1');
                                             } else {
                                                 
                                                 const target = $(evt.target).closest('.fc-col-header-cell.fc-day').get(0) as HTMLElement;
@@ -2305,7 +2317,12 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
                 },
-                dayCellClassNames: (arg) => {
+                slotLabelClassNames: (arg) => {
+                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+                }
+                ,
+                slotLaneClassNames: (arg) => {
+                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
                 }
                 ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
@@ -3542,7 +3559,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event) {
                                 vm.checkEditDialog().done((v) => {
                                     if (v == 'yes') {
-										nts.uk.ui.errors.clearAll();
+										$('.edit-event .nts-input').ntsError('clear');
                                         popupPosition.event(null);
                                         popupPosition.setting(null);
                                     }
@@ -3592,7 +3609,22 @@ module nts.uk.ui.at.kdw013.calendar {
                                 const starts = selecteds.map(({ start }) => formatDate(start));
 
                                 if (ko.isObservable(vm.params.events)) {
-                                    vm.params.events.remove((e: EventRaw) => (e.editable && starts.indexOf(formatDate(e.start)) !== -1));
+                                    vm.params.events.remove((e: EventRaw) => {
+                                        let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1;
+                                        
+                                        if (canRemove) {
+                                            let removeList = vm.params.screenA.removeList;
+                                            let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
+                                            let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                                            if (removeDate) {
+                                                removeDate.supNos.push(...supNos);
+                                            } else {
+                                                removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
+                                            }
+                                        }
+
+                                        return canRemove;
+                                    });
                                 }
                                 dataEvent.delete(false);
                                 popupPosition.event(null);

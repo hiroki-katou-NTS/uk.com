@@ -544,6 +544,7 @@ module nts.uk.ui.mgrid {
         export const FACON_DESC = "facon-desc";
         export const ALIGN_LEFT = "halign-left";
         export const ALIGN_RIGHT = "halign-right";
+        export const ALIGN_CENTER = "halign-center";
         export const DefaultRowConfig = { css: { height: BODY_ROW_HEIGHT } };
         export let _voilerRows = {};
         export let _encarRows = [];
@@ -2377,7 +2378,7 @@ module nts.uk.ui.mgrid {
                 if (!col) tdStyle += "; display: none;";
                 else if (!_.isNil(col[0].columnCssClass)) {
                     col[0].columnCssClass.split(' ').forEach(clz => {
-                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                        if (clz === hpl.CURRENCY_CLS || clz === v.ALIGN_RIGHT || clz === v.ALIGN_CENTER) {
                             td.classList.add(clz);
                         }
                     });
@@ -2734,7 +2735,7 @@ module nts.uk.ui.mgrid {
                 if (!col) tdStyle += "; display: none;";
                 else if (!_.isNil(col[0].columnCssClass)) {
                     col[0].columnCssClass.split(' ').forEach(clz => {
-                        if (clz === hpl.CURRENCY_CLS || clz === "halign-right") {
+                        if (clz === hpl.CURRENCY_CLS || clz === v.ALIGN_RIGHT || clz === v.ALIGN_CENTER) {
                             td.classList.add(clz);
                         }
                     });

@@ -123,19 +123,20 @@ module nts.uk.at.view.kdl012 {
                     vm.$window.close({setShareKDL012: currentCodeList});
                 }
             } else {
-                if (_.isEmpty(vm.currentCode())) {
+                let selectionList: Array<any> = _.filter(vm.items(), (x) => {
+                    return _.isEqual(vm.currentCode(), x.code);
+                });
+
+                if (_.isEmpty(vm.currentCode()) || _.isEmpty(selectionList)) {
                     vm.$dialog.error({messageId: 'Msg_2092'});
                 } else {
                     nts.uk.ui.windows.setShared('KDL012Output', vm.currentCode());
-                    let selectionList: Array<any> = _.filter(vm.items(), (x) => {
-                        return _.isEqual(vm.currentCode(), x.code);
-                    });
+                    
                     nts.uk.ui.windows.setShared('KDL012OutputList', selectionList);
                     //new
                     vm.$window.close({setShareKDL012: vm.currentCode()});
                 }
             }
-
         }
 
         closeDialog() {

@@ -144,16 +144,22 @@ module nts.uk.ui.at.kdw013.timeheader {
                 return false;
             }
 
-            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id=> { return moment(id.ymd).isSame(moment(date), 'days'); });
+            const manHrTask = _.find(_.get(datas, 'dailyManHrTasks', []), hr => { return moment(hr.date).isSame(moment(date), 'days'); });
+
+            const id = _.find(_.get(datas, 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
 
             const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+            const taskBlocks = _.get(manHrTask, 'taskBlocks', []);
 
             if (!id || !ouenTimeSheet.length) {
                 return false;
             }
 
             for (let i = 0; i < ouenTimeSheet.length; i++) {
-                if (_.get(ouenTimeSheet[i], 'timeSheet.start.timeWithDay', null) == null || _.get(ouenTimeSheet[i], 'timeSheet.end.timeWithDay', null) == null) {
+                const workNo = _.get(ouenTimeSheet[i], 'workNo');
+                
+                if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
                     return true;
                 }
             }

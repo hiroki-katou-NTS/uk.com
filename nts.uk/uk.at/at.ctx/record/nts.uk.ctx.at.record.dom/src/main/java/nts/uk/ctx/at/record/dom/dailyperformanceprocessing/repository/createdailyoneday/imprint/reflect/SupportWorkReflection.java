@@ -87,7 +87,7 @@ public class SupportWorkReflection {
 
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
 		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);
-		if (!startAtr) {
+		if (true || !startAtr) { /** TODO：　一旦動かないようにする、タスクデモで参照するように　*/
 			// 反映状態＝反映失敗を返す
 			return ReflectionAtr.REFLECT_FAIL;
 		}
@@ -640,8 +640,7 @@ public class SupportWorkReflection {
 			JudgmentCriteriaSameStampOfSupport judgmentSupport, List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSet) {
 		List<OuenWorkTimeSheetOfDailyAttendance> dataAutoSetNew = new ArrayList<>();
 		// パラメータ。応援データ一覧のsizeを確認する
-		if (dataAutoSet.size() <= 1
-				|| dataAutoSet.size() <= (judgmentSupport == null ? 0 : judgmentSupport.getSupportMaxFrame().v())) {
+		if (dataAutoSet.size() <= 1 || dataAutoSet.size() <= (judgmentSupport == null ? 0 : judgmentSupport.getSupportMaxFrame().v())) {
 			// １以下の場合 - パラメータ。応援データ一覧を返す
 			return dataAutoSet;
 		} else {
@@ -651,11 +650,9 @@ public class SupportWorkReflection {
 			// パラメータ。応援データ一覧の先頭の応援データを取得する
 			OuenWorkTimeSheetOfDailyAttendance firstData = dataAutoSet.get(0);
 			// 最大応援回数で補正する
-			dataAutoSetNew = this
-					.correctWithMaxNumberCheers(judgmentSupport != null &&
-					judgmentSupport.getSupportMaxFrame() != null ? judgmentSupport.getSupportMaxFrame().v() - 1 : 0,
-					dataAutoSet);
-			if (judgmentSupport!=null&& judgmentSupport.getSupportMaxFrame().v() == 1) {
+			dataAutoSetNew = this.correctWithMaxNumberCheers(judgmentSupport != null && judgmentSupport.getSupportMaxFrame() != null 
+					? judgmentSupport.getSupportMaxFrame().v() - 1 : 0, dataAutoSet);
+			if (judgmentSupport!=null && judgmentSupport.getSupportMaxFrame().v() == 1) {
 				// 最後の退勤の応援データを補正する
 				if(lastData.getTimeSheet().getStart().isPresent() && lastData.getTimeSheet().getEnd().isPresent()) {
 					lastData.getTimeSheet()

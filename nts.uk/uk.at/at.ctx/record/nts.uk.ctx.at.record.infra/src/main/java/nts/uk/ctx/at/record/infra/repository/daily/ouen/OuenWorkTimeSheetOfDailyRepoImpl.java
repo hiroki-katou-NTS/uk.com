@@ -129,15 +129,11 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		lstEntity.forEach(i -> {
 			Optional<KrcdtDayOuenTimeSheet> entityOld = getEntity(i.pk.sid, i.pk.ymd, i.pk.ouenNo);
-			if(!entityOld.isPresent()){
+			if (!entityOld.isPresent()) {
 				commandProxy().insert(i);
-			} else{
-				if (i.workCd1 == null) {
-					commandProxy().remove(entityOld.get());
-				} else {
-					updateData(entityOld.get(), i);
-					commandProxy().update(entityOld.get());
-				}
+			} else {
+				updateData(entityOld.get(), i);
+				commandProxy().update(entityOld.get());
 			}
 		});
 	}
@@ -187,7 +183,35 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		entityOld.startStampMethod = dataUpdate.startStampMethod;
 		entityOld.endStampMethod = dataUpdate.endStampMethod;
 		entityOld.workplaceId      = dataUpdate.workplaceId;
-		entityOld.krcdtDayTsSupSupplInfo = dataUpdate.krcdtDayTsSupSupplInfo;
+		if(entityOld.krcdtDayTsSupSupplInfo ==null) {
+			entityOld.krcdtDayTsSupSupplInfo = dataUpdate.krcdtDayTsSupSupplInfo;
+		}else {
+			
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoTime5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoTime5;
+			
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoNumber5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoNumber5;
+			
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoComment5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoComment5;
+			
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode1 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode1;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode2 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode2;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode3 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode3;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode4 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode4;
+			entityOld.krcdtDayTsSupSupplInfo.supplInfoCode5 = dataUpdate.krcdtDayTsSupSupplInfo.supplInfoCode5;
+			
+		}
 	}
 
 	@Override
@@ -301,6 +325,11 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
 												   .setParameter("ymd", ymd)
 												   .executeUpdate();
+		String deleteKrcdtDayTsSupSupplInfo = "delete from KrcdtDayTsSupSupplInfo o " + " where o.pk.sid = :sid "
+				+ " and o.pk.date = :ymd ";
+		this.getEntityManager().createQuery(deleteKrcdtDayTsSupSupplInfo).setParameter("sid", sid)
+												   .setParameter("ymd", ymd)
+												   .executeUpdate();
 	}
 	
 	@Override
@@ -311,6 +340,13 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
 												   .setParameter("ymd", ymd)
 												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
+		String deleteKrcdtDayTsSupSupplInfo = "delete from KrcdtDayTsSupSupplInfo o " + " where o.pk.sid = :sid "
+				+ " and o.pk.date = :ymd "
+				+ " and o.pk.supNo = :supNo ";
+		this.getEntityManager().createQuery(deleteKrcdtDayTsSupSupplInfo).setParameter("sid", sid)
+												   .setParameter("ymd", ymd)
+												   .setParameter("supNo", ouenNo)
 												   .executeUpdate();
 	}
 
@@ -430,6 +466,38 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 			});
 		});
 		return rs;
+	}
+	
+	// [2]  削除する
+	// 指定したキー条件に該当するレコードを削除する
+	@Override
+	public void deleteBySupFrameNo(String sId, GeneralDate ymd, SupportFrameNo supportFrameNo) {
+		
+		int ouenNo = supportFrameNo.v();
+		
+		String deleteTimeSheet = "DELETE FROM KrcdtDayOuenTimeSheet o " + " WHERE o.pk.sid = :sId "
+				+ " AND o.pk.ymd = :ymd "
+				+ " AND o.pk.ouenNo = :ouenNo ";
+		this.getEntityManager().createQuery(deleteTimeSheet).setParameter("sid", sId)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
+		
+		String deleteTime = "DELETE FROM KrcdtDayOuenTime o " + " WHERE o.pk.sid = :sId "
+				+ " AND o.pk.ymd = :ymd "
+				+ " AND o.pk.ouenNo = :ouenNo ";
+		this.getEntityManager().createQuery(deleteTime).setParameter("sid", sId)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
+		
+		String deleteInfo = "DELETE FROM KrcdtDayTsSupSupplInfo o " + " WHERE o.pk.sid = :sId "
+				+ " AND o.pk.date = :ymd "
+				+ " AND o.pk.supNo = :ouenNo ";
+		this.getEntityManager().createQuery(deleteInfo).setParameter("sid", sId)
+												   .setParameter("ymd", ymd)
+												   .setParameter("ouenNo", ouenNo)
+												   .executeUpdate();
 	}
 	
 }

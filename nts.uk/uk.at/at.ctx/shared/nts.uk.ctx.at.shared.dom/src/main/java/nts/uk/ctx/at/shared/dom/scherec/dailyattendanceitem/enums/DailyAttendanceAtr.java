@@ -28,7 +28,7 @@ public enum DailyAttendanceAtr {
 	Application(8),
 	
 	/*数値*/
-	numbericValue(9);
+	NumbericValue(9);
 	
 	public final int value;
 	

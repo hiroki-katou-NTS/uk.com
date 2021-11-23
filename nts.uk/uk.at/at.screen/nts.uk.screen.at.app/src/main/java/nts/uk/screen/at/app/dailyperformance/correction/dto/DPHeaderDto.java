@@ -62,9 +62,11 @@ public class DPHeaderDto {
 	private String inputProcess;
 	
 	private Boolean grant;
+	
+	private String columnCssClass;
 
 	private DPHeaderDto(String headerText, String attendanceName, String key, String dataType, String width, String color, boolean hidden,
-			String ntsControl, Boolean changedByOther, Boolean changedByYou, String headerCss, String inputProcess) {
+			String ntsControl, Boolean changedByOther, Boolean changedByYou, String headerCss, String inputProcess, String columnCssClass) {
 		super();
 		this.headerText = headerText;
 		this.attendanceName = attendanceName;
@@ -80,6 +82,7 @@ public class DPHeaderDto {
 		this.headerCssClass = headerCss;
 		this.inputProcess = inputProcess;
 		this.grant = false;
+		this.columnCssClass = columnCssClass;
 	}
 
 	private DPHeaderDto(String headerText, String attendanceName, String key, String dataType, String width, String color, boolean hidden,
@@ -107,9 +110,9 @@ public class DPHeaderDto {
 		val colorHeader = mapColor.get(Integer.parseInt(keyId));
 		DPHeaderDto dto = new DPHeaderDto("", "", key, "String", width,
 				colorHeader == null ? "#CFF1A5"
-						: colorHeader.getHeaderBackgroundColor() == null ? "#CFF1A5"
+						: colorHeader.getHeaderBackgroundColor().isEmpty() ? ""
 								: colorHeader.getHeaderBackgroundColor(),
-				false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)));
+				false, "", false, false, "center-align", inputProcess(Integer.parseInt(keyId)), "");
 		// optionalRepo.findByListNos(companyId, optionalitemNos)
 		DPAttendanceItem item = mapDP.get(Integer.parseInt(keyId));
 		int attendanceAtr = item.getAttendanceAtr();
@@ -122,7 +125,7 @@ public class DPHeaderDto {
 			dtoG.setColor(dto.getColor());
 			groups.add(dtoG);
 			groups.add(new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "String", String.valueOf(withChild) + "px", dto.getColor(),
-					false, "Link2", false, false, "center-align", null));
+					false, "Link2", false, false, "center-align", null, ""));
 			dto.setGroup(groups);
 			dto.setConstraint(new Constraint("Primitive", false, ""));
 		} else if (attendanceAtr == DailyAttendanceAtr.Classification.value && item.getTypeGroup() != null) {
@@ -133,28 +136,28 @@ public class DPHeaderDto {
 			if (item.getTypeGroup() == TypeLink.CALC.value) {
 				if(!DPText.ITEM_COMBOBOX_CALC.contains(Integer.parseInt(keyId))){
 					DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
-							String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false, "center-align", null);
+							String.valueOf(withChild) + "px", "", false, "ComboboxCalc", false, false, "center-align", null, "");
 					groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 					groups.add(dtoG);
 				}else{
 					DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
-							String.valueOf(withChild) + "px", "", false, "ComboItemsCompact", false, false, "center-align", null);
+							String.valueOf(withChild) + "px", "", false, "ComboItemsCompact", false, false, "center-align", null, "");
 					groups.get(0).setConstraint(new Constraint("Integer", true, Arrays.asList(0, 2)));
 					groups.add(dtoG);
 				}
 			}else if (item.getTypeGroup() == TypeLink.REASON_GO_OUT.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
-						String.valueOf(withChild) + "px", "", false, "ComboboxReason", false, false, "center-align", null);
+						String.valueOf(withChild) + "px", "", false, "ComboboxReason", false, false, "center-align", null, "");
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "3"));
 			}else if (item.getTypeGroup() == TypeLink.DOWORK.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
-						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork" + "Name" + keyId, false, false, "center-align", null);
+						String.valueOf(withChild) + "px", "", false, "ComboboxDoWork" + "Name" + keyId, false, false, "center-align", null, "");
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "1"));
 			}else if (item.getTypeGroup() == TypeLink.TIME_LIMIT.value) {
 				DPHeaderDto dtoG = new DPHeaderDto("<div style=\"max-height: 20px;\">名称</div>", "<div style=\"max-height: 20px;\">名称</div>", "Name" + keyId, "number",
-						String.valueOf(withChild) + "px", "", false, "ComboboxTimeLimit", false, false, "center-align", null);
+						String.valueOf(withChild) + "px", "", false, "ComboboxTimeLimit", false, false, "center-align", null, "");
 				groups.add(dtoG);
 				groups.get(0).setConstraint(new Constraint("Integer", true, "2"));
 			}
@@ -186,11 +189,22 @@ public class DPHeaderDto {
 			}
 			//dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		} else if (attendanceAtr == DailyAttendanceAtr.NumberOfTime.value) {
-			dto.setGrant(true);
-			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+			if (item.getTypeGroup() != null &&  item.getTypeGroup() == TypeLink.DOWORK.value) {
+				dto.setDataType("boolean");
+				dto.setNtsControl("Checkbox");
+				dto.setInputProcess(null);
+				dto.setColumnCssClass("halign-center");
+			} else {
+				dto.setGrant(true);
+				dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+			}
 		} else if (attendanceAtr == DailyAttendanceAtr.TimeOfDay.value) {
 			dto.setConstraint(new Constraint("TimeWithDay", false, ""));
 		} else if(attendanceAtr == DailyAttendanceAtr.Charater.value){
+			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
+		} else if (attendanceAtr == DailyAttendanceAtr.NumbericValue.value) {
+			dto.setGrant(true);
+			dto.setColumnCssClass("halign-right");
 			dto.setConstraint(new Constraint("Primitive", false, getPrimitiveAllName(item)));
 		}
 		return dto;
@@ -198,17 +212,17 @@ public class DPHeaderDto {
 
 	public static DPHeaderDto addHeaderApplication() {
 		return new DPHeaderDto(TextResource.localize("KDW003_63"), TextResource.localize("KDW003_63"), "Application", "String", "90px", "", false, "Button",
-				false, false, "center-align", null);
+				false, false, "center-align", null, "");
 	}
 
 	public static DPHeaderDto addHeaderSubmitted() {
 		return new DPHeaderDto(TextResource.localize("KDW003_62"), TextResource.localize("KDW003_62"), "Submitted", "String", "90px", "", false, "Label",
-				false, false, "center-align", null);
+				false, false, "center-align", null, "");
 	}
 
 	public static DPHeaderDto addHeaderApplicationList() {
 		return new DPHeaderDto(TextResource.localize("KDW003_110"), TextResource.localize("KDW003_110"), "ApplicationList", "String", "90px", "", false,
-				"ButtonList", false, false, "center-align", null);
+				"ButtonList", false, false, "center-align", null, "");
 	}
 
 	private static String getCode(String key) {
@@ -242,21 +256,21 @@ public class DPHeaderDto {
 
 	public static List<DPHeaderDto> GenerateFixedHeader() {
 		List<DPHeaderDto> lstHeader = new ArrayList<>();
-		lstHeader.add(new DPHeaderDto("ID", "ID", "id", "String", "30px", "", true, "Label", true, true, "center-align", null));
-		lstHeader.add(new DPHeaderDto("状<br/>態", "状<br/>態", "state", "String", "30px", "", false, "FlexImage", true, true, "center-align", null));
+		lstHeader.add(new DPHeaderDto("ID", "ID", "id", "String", "30px", "", true, "Label", true, true, "center-align", null, ""));
+		lstHeader.add(new DPHeaderDto("状<br/>態", "状<br/>態", "state", "String", "30px", "", false, "FlexImage", true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_129"), TextResource.localize("KDW003_129"), "error", "String", "60px", "", false, "Label", 
-				true, true, "center-align", null));
+				true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_41"), TextResource.localize("KDW003_41"), "date", "String", "70px", "", false, "Label",
-				true, true, "center-align", null));
+				true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_42"), TextResource.localize("KDW003_42"), "sign", "boolean", "35px", "", false,
-				"Checkbox", true, true, "center-align", null));
+				"Checkbox", true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_32"), TextResource.localize("KDW003_32"), "employeeCode", "String", "87px", "", false,
-				"Label", true, true, "center-align", null));
+				"Label", true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("KDW003_33"), TextResource.localize("KDW003_33"), "employeeName", "String", "162px", "", false,
-				"Label", true, true, "center-align", null));
-		lstHeader.add(new DPHeaderDto("", "", "picture-person", "String", "35px", "", false, "Image", true, true, "center-align", null));
+				"Label", true, true, "center-align", null, ""));
+		lstHeader.add(new DPHeaderDto("", "", "picture-person", "String", "35px", "", false, "Image", true, true, "center-align", null, ""));
 		lstHeader.add(new DPHeaderDto(TextResource.localize("承認"), TextResource.localize("承認"), "approval", "boolean", "35px", "", false, "Checkbox",
-				true, true, "center-align", null));
+				true, true, "center-align", null, ""));
 		return lstHeader;
 	}
 

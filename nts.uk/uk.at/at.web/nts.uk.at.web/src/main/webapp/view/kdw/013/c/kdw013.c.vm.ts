@@ -37,7 +37,6 @@ module nts.uk.ui.at.kdw013.c {
     }
     .edit-event table>tbody>tr>td:first-child {
         vertical-align: top;
-        padding-top: 6px;
     }
     .edit-event table>tbody>tr.functional>td {
         text-align: right;
@@ -226,7 +225,9 @@ module nts.uk.ui.at.kdw013.c {
                 </colgroup>
                 <tbody>
                     <tr>
-                        <td data-bind="i18n: 'KDW013_27'"></td>
+                        <td>
+							<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}, text: nts.uk.resource.getText('KDW013_27')"></div>
+						</td>
                         <td class="caltimeSpanView">
                             <div class="ntsControl">
 								<input id="kdw013CStart" data-bind="ntsTimeEditor: {
@@ -250,7 +251,7 @@ module nts.uk.ui.at.kdw013.c {
 									enable: true,
 									option: {width: '40px'}
 									}" />
-								<span data-bind="visible: !showInputTime(), text: taskBlocks.caltimeSpanView.range"></span>
+								<span data-bind="text: taskBlocks.caltimeSpanView.range"></span>
 							</div>
                         </td>
                     </tr>
@@ -264,7 +265,9 @@ module nts.uk.ui.at.kdw013.c {
                     <tbody data-bind = "foreach: taskItemValues">
 						<!-- ko if: (itemId == 3) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {required: true, constraint: 'AttendanceTime'}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input class="inputRange" data-bind="ntsTimeEditor: {
@@ -275,7 +278,7 @@ module nts.uk.ui.at.kdw013.c {
 											inputFormat: 'time',
 											required: true,
 											enable: true,
-											option: {width: '40px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -283,7 +286,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
                         <!-- ko if: (itemId == 4) && use-->
                             <tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {required: true}, text: lable"></div>
+								</td>
                                 <td><div data-bind="ntsComboBox: {
 										options: options,
 										optionsValue: 'code',
@@ -296,15 +301,18 @@ module nts.uk.ui.at.kdw013.c {
 										visibleItemsCount: 10,
 										width : '255px',
 										columns: [
-											{ prop: 'code', length: 1 },
-											{ prop: 'name', length: 8 },
+											{ prop: 'code' },
+											{ prop: 'name' },
+											{ prop: 'taskNote' },
 										]}
                                     "></div></td>
                             </tr>
                         <!-- /ko -->
                         <!-- ko if: (itemId == 5 || itemId == 6 || itemId == 7 || itemId == 8) && use -->
                             <tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {}, text: lable"></div>
+								</td>
                                 <td><div data-bind="ntsComboBox: {
 										options: options,
 										optionsValue: 'code',
@@ -324,7 +332,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if:  (type == 0 && itemId > 8) && use -->
                             <tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {}, text: lable"></div>
+								</td>
                                 <td><div data-bind="ntsComboBox: {
 										options: options,
 										optionsValue: 'code',
@@ -336,7 +346,7 @@ module nts.uk.ui.at.kdw013.c {
 										visibleItemsCount: 5,
 										width : '255px',
 										columns: [
-											{ prop: 'code', length: 1 },
+											{ prop: 'code', length: 6 },
 											{ prop: 'name', length: 8 },
 										]}
                                     "></div></td>
@@ -344,14 +354,16 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: type == 2 && itemId > 8 && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px',
+											option: {width: '50px',
 													unitID: 'TIMES'},
 										}" />
 									</div>
@@ -360,7 +372,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 3 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
@@ -368,7 +382,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint: primitiveValue, 
 											value: value,
 											option: {
-												width: '223px', 
+												width: '50px', 
 												numberGroup: true, 
 												decimallength: 2, 
 												currencyformat: 'JPY',
@@ -381,7 +395,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 5 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeEditor: {
@@ -390,7 +406,7 @@ module nts.uk.ui.at.kdw013.c {
 											value: value,
 											mode: 'time',
 											inputFormat: 'time',
-											option: {width: '233px'}
+											option: {width: '50px'}
 											}" />
 									</div>
 								</td>
@@ -398,7 +414,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 6 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsTimeWithDayEditor: { 
@@ -407,7 +425,7 @@ module nts.uk.ui.at.kdw013.c {
 											constraint:'TimeWithDayAttr', 
 											value: value, 
 											option: {
-												width: '233px',
+												width: '50px',
 												timeWithDay: true
 											}
 										}" />
@@ -417,7 +435,9 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 7 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<textarea data-bind="ntsMultilineEditor: {
@@ -431,14 +451,16 @@ module nts.uk.ui.at.kdw013.c {
                         <!-- /ko -->
 						<!-- ko if: (type == 9 && itemId > 8) && use -->
 							<tr>
-                                <td data-bind="text: lable"></td>
+                                <td>
+									<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+								</td>
                                 <td>
 									<div class="ntsControl fix">
 										<input data-bind="ntsNumberEditor: {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '233px'}}" />
+											option: {width: '50px'}}" />
 									</div>
 								</td>
                             </tr>
@@ -451,7 +473,7 @@ module nts.uk.ui.at.kdw013.c {
 					<tr class="functional">
                         <td>
 							<span></span>
-							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails"></a>
+							<a href="#" data-bind="i18n: 'KDW013_69', click: addTaskDetails, visible: frameNos().length < 20"></a>
                             <br />
 							<button class="proceed" data-bind="i18n: 'KDW013_43', click: function() { $component.save.apply($component, []) }, enable: errors"></button>
                         </td>
@@ -531,16 +553,24 @@ module nts.uk.ui.at.kdw013.c {
 			.taskDetails table:nth-last-child(1){
    				margin-bottom: 0px;
 			}
-			.taskDetails table tr:first-child td:first-child{
-   				top: 10px;
-				position: relative
-			}
 			.taskDetails table tr:first-child td>div{
    				margin-top: 10px;
 			}
 			.edit-event .header .btn-error{
 				position: absolute;
 			}
+			body>div.constraint{
+				z-index: 100;
+			}
+			.edit-event table tr td:first-child div.form-label span{
+				line-height: 1.5;
+			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown {
+			    width: 255px !important;
+			}
+			.edit-event .taskDetails table tr td .ui-igcombo-dropdown .ui-igcombo-listitemholder{
+				overflow: auto !important;
+			} 
         </style>
         `;
 
@@ -705,9 +735,9 @@ module nts.uk.ui.at.kdw013.c {
 						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
 					}
 
-					block.grayout();
+					block.invisible();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
-		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings());
+		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings(), start);
 						setTimeout(() => {
 							vm.updatePopupSize();
 						}, 150);
@@ -852,7 +882,7 @@ module nts.uk.ui.at.kdw013.c {
                 .then((invalid: boolean) => {
                     if (!invalid) {
 						if(vm.sumTotalTime() > (vm.taskBlocks.caltimeSpanView.end() - vm.taskBlocks.caltimeSpanView.start())){
-							error({ messageId: "Msg_2217"});
+							error({ messageId: "Msg_2230"});
 							return;
 						}
                         if (event) {
@@ -897,6 +927,7 @@ module nts.uk.ui.at.kdw013.c {
 		setting: a.TaskFrameSettingDto[] = [];
 		data: StartWorkInputPanelDto = null;
 		displayManHrRecordItem: DisplayManHrRecordItem[] = null;
+		start: Date;
 		constructor(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, private showInputTime: KnockoutObservable<boolean>) {
 			super(taskBlocks);
 			const vm = this;
@@ -924,15 +955,16 @@ module nts.uk.ui.at.kdw013.c {
             });
         }
 		
-        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[], setting: a.TaskFrameSettingDto[]) {
+        update(taskBlocks: IManHrPerformanceTaskBlock, employeeId: string, data: StartWorkInputPanelDto, displayManHrRecordItem: DisplayManHrRecordItem[], setting: a.TaskFrameSettingDto[], start: Date) {
 			const vm = this;
 			vm.setting = setting;
 			vm.data = data;
 			vm.displayManHrRecordItem = displayManHrRecordItem;
 			vm.employeeId = employeeId;
+			vm.start = start;
 			vm.taskDetails(_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetail(t)));
 			vm.taskDetailsView(
-				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, taskBlocks.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, setting, vm.displayManHrRecordItem))
+				_.map(taskBlocks.taskDetails, (t: IManHrTaskDetail) => new ManHrTaskDetailView(t, start, vm.employeeId, vm.showInputTime, vm.data, setting, vm.displayManHrRecordItem))
 			);
 			vm.caltimeSpan = new TimeSpanForCalc(taskBlocks.caltimeSpan);
             if(taskBlocks.caltimeSpan.start && taskBlocks.caltimeSpan.end){
@@ -956,7 +988,7 @@ module nts.uk.ui.at.kdw013.c {
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: '' });
 			});
 			let newTaskDetails: IManHrTaskDetail = { supNo: supNo, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.caltimeSpan.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
+			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
 		}
 
 		isChangedTime(): boolean{
@@ -1140,15 +1172,15 @@ module nts.uk.ui.at.kdw013.c {
 		}
 		
 		convertWorkLocationList(option: {code: string, name: string}[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
-            const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_40'), $raw: null, selected: false }];
+            const lst: DropdownItem[] = [{ id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false }];
             if (code && code()) {
                 const taskSelected = _.find(option, { 'code': code() });
                 if (!taskSelected) {
-                    lst.push({ id: code(), code: code(), name: getText('KDW013_41'), selected: false, $raw: null });
+                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), taskNote: '', selected: false, $raw: null });
                 }
             }
             _.each(option, (t: {code: string, name: string}) => {
-                lst.push({ id: t.code, code: t.code, name: t.name , selected: false, $raw: null });
+                lst.push({ id: t.code, code: t.code, name: t.name ,  taskNote: '',selected: false, $raw: null });
             });
             return lst;
         }
@@ -1195,11 +1227,14 @@ module nts.uk.ui.at.kdw013.c {
             };
 			const itemNext = _.find(vm.taskItemValues(), (i) => {return i.itemId == nextItemId});
 			if(itemNext){
-				block.grayout();
+				block.invisible();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
+					if(_.find(data, o => o.code == itemNext.value()) == undefined){
+						itemNext.value(null);
+					}
 					itemNext.options(vm.getMapperList(data, itemNext.value));
 					block.clear();
-	            }).always(() => block.clear());
+	            });
 			}
         }
         
@@ -1293,7 +1328,7 @@ module nts.uk.ui.at.kdw013.c {
             if (code && code()) {
                 const taskSelected = _.find(tasks, { 'code': code() });
                 if (!taskSelected) {
-                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), selected: false, $raw: null });
+                    lst.push({ id: code(), code: code(), name: getText('KDW013_40'), taskNote: '', selected: false, $raw: null });
                 }
             }
             _.each(tasks, (t: TaskDto) => {
@@ -1305,9 +1340,9 @@ module nts.uk.ui.at.kdw013.c {
 		mapper($raw: TaskDto | null): DropdownItem {
 			let vm = this;
 			if($raw == null){
-				return { id: '', code: '', name: getText('KDW013_41'), $raw: null, selected: false };
+				return { id: '', code: '', name: getText('KDW013_41'), taskNote: '', $raw: null, selected: false };
 			}
-            return { id: $raw.code, code: $raw.code, name: vm.getName($raw.displayInfo) , selected: false, $raw: $raw };
+            return { id: $raw.code, code: $raw.code, name: $raw.displayInfo.taskName , taskNote: $raw.displayInfo.taskNote ? '(' + $raw.displayInfo.taskNote + ')': null, selected: false, $raw: $raw };
         }
 		getName(displayInfo: TaskDisplayInfoDto): string{
 			if(displayInfo.taskNote && displayInfo.taskNote!= ''){
@@ -1342,6 +1377,7 @@ module nts.uk.ui.at.kdw013.c {
         id: string;
         code: string;
         name: string;
+		taskNote: string;
         selected: boolean;
         $raw: any;
     };

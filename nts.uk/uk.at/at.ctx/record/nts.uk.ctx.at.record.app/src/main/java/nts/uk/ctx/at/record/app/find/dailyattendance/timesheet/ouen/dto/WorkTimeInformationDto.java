@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
 @NoArgsConstructor
@@ -74,5 +76,12 @@ public class WorkTimeInformationDto implements ItemConst, AttendanceItemDataGate
 	public static WorkTimeInformationDto fromDomain(WorkTimeInformation domain) {
 
 		return new WorkTimeInformationDto(ReasonTimeChangeDto.fromDomain(domain.getReasonTimeChange()), domain.getTimeWithDay().map(x-> x.v()).orElse(null));
+	}
+	
+	public WorkTimeInformation domain() {
+		
+		return new WorkTimeInformation(
+				reasonTimeChange == null ? ReasonTimeChange.createByAutomaticSet() : reasonTimeChange.domain(), 
+				timeWithDay == null ? null : new TimeWithDayAttr(timeWithDay));
 	}
 }

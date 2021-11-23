@@ -2,11 +2,12 @@ module nts.uk.at.view.kdw013.h {
 	import getShared = nts.uk.ui.windows.getShared;
 	import setShared = nts.uk.ui.windows.setShared;
 	import block = nts.uk.ui.block;
-	import info = nts.uk.ui.dialog.info;
 	import error = nts.uk.ui.dialog.error;
+	import info = nts.uk.ui.dialog.info;
 	import errors = nts.uk.ui.errors;
 	import ajax = nts.uk.request.ajax;
 	import getText = nts.uk.resource.getText;
+	import getMessage = nts.uk.resource.getMessage;
 
 	export module viewmodel {
 		const paths: any = {
@@ -37,6 +38,7 @@ module nts.uk.at.view.kdw013.h {
 			breakTimeOptions: StartEndTime[] = [];
 
 			isShowBreakTimeOptions: KnockoutObservable<boolean> = ko.observable(false);
+			breakTimeOptionsText: KnockoutObservable<string> = ko.observable(getText('KDW013_92'));
 
 			itemOptions: ItemValueOption[] = [];
 
@@ -54,7 +56,13 @@ module nts.uk.at.view.kdw013.h {
 				self.setError();
 				self.setBaseItems();// data co dinh
 				self.orderOptionItems(); // data item tuy y
-				
+				self.isShowBreakTimeOptions.subscribe(v => {
+					if(v){
+						self.breakTimeOptionsText(getText('KDW013_93'));
+					}else{
+						self.breakTimeOptionsText(getText('KDW013_92'));
+					}
+				})
 			}
 
 			public startPage(): JQueryPromise<any> {
@@ -73,12 +81,16 @@ module nts.uk.at.view.kdw013.h {
 				);
 				block.invisible();
 				let param = _.map(self.params.displayAttItems, i => i.attendanceItemId);
-				param.push(28, 29);
+				param.push(28, 29, 31, 34, 157,159,163,165,169,171,175,177,181,183,187,189,193,195,199,201,205,207,211,213);
 				ajax(paths.start, { itemIds: param }).done(function(data: DataMaster) {
 					self.dataMaster = data;
 					self.setDataMaster();
+					self.setEnable();
 					console.log(data);
 					dfd.resolve();
+					$(document).ready(function() {
+		                $('.proceed').focus();
+		            });
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
 				}).always(() => {
@@ -92,7 +104,7 @@ module nts.uk.at.view.kdw013.h {
 				let infor: any = _.find(self.params.lockInfos, (i:DailyLock)=> moment(self.params.date).isSame(moment(i.date)));
 				if(infor){
 					let err: string = null;
-					if(infor.lockPast == 0){
+					if(infor.lockDailyResult == 0){
 						err = getText('KDW013_53');
 					}
 					if(infor.lockWpl == 0){
@@ -110,7 +122,7 @@ module nts.uk.at.view.kdw013.h {
 					if(infor.lockConfirmDay == 0){
 						err = err ? (err + ',' + getText('KDW013_58')) : getText('KDW013_58');
 					}
-					if(infor.lockDailyResult == 0){
+					if(infor.lockPast == 0){
 						err = err ? (err + ',' + getText('KDW013_59')) : getText('KDW013_59');
 					}
 					if(err){
@@ -118,6 +130,53 @@ module nts.uk.at.view.kdw013.h {
 					}else{
 						self.block(false);
 					}
+				}
+			}
+			
+			setEnable(){
+				let self = this;
+				let dailyAttendanceItemAuthority = self.dataMaster.dailyAttendanceItemAuthority;
+				let isMe = __viewContext.user.employeeId == self.params.employeeId;
+				if(dailyAttendanceItemAuthority){
+					_.forEach(self.dataMaster.dailyAttendanceItemAuthority.displayAndInput, displayAndInput => {
+						if(displayAndInput && displayAndInput.toUse){
+							if(displayAndInput.itemDailyID == 28){
+								self.itemId28.use = displayAndInput.toUse; 
+								self.itemId28.enable = isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers;
+							}else if(displayAndInput.itemDailyID == 29){
+								self.itemId29.use = displayAndInput.toUse;
+								self.itemId29.enable = isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers;
+							}else if(displayAndInput.itemDailyID == 31 || displayAndInput.itemDailyID == 34){
+								self.itemId31_34.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 157 || displayAndInput.itemDailyID == 159){
+								self.itemId157_159.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 163 || displayAndInput.itemDailyID == 165){
+								self.itemId163_165.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 169 || displayAndInput.itemDailyID == 171){
+								self.itemId169_171.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 175 || displayAndInput.itemDailyID == 177){
+								self.itemId175_177.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 181 || displayAndInput.itemDailyID == 183){
+								self.itemId181_183.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 187 || displayAndInput.itemDailyID == 189){
+								self.itemId187_189.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 193 || displayAndInput.itemDailyID == 195){
+								self.itemId193_195.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 199 || displayAndInput.itemDailyID == 201){
+								self.itemId199_201.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 205 || displayAndInput.itemDailyID == 207){
+								self.itemId205_207.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else if(displayAndInput.itemDailyID == 211 || displayAndInput.itemDailyID == 213){
+								self.itemId211_213.enable(displayAndInput.itemDailyID, displayAndInput.toUse, isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers);
+							}else {
+								let itemOption = _.find(self.itemOptions, item => item.itemId == displayAndInput.itemDailyID);
+								if(itemOption){
+									itemOption.use = displayAndInput.toUse;
+									itemOption.enable = isMe ? displayAndInput.youCanChangeIt: displayAndInput.canBeChangedByOthers;
+								}
+							}
+						}
+					});
 				}
 			}
 
@@ -141,15 +200,18 @@ module nts.uk.at.view.kdw013.h {
 					} else {
 						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
 					}
-				} else {
-					self.itemId29.itemSelectedDisplay('');
+				} else if(self.itemId29.value() == null || self.itemId29.value() == ''){
+					self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 				}
+				
 				//set name và type cho item tuy ý
 				_.forEach(self.itemOptions, item => {
 					let itemName = _.find(self.dataMaster.attItemName, a => a.attendanceItemId == item.itemId);
+					if(!itemName){
+						item.use = false;
+					}
 					let itemType = _.find(self.dataMaster.dailyAttendanceItem, d => d.attendanceItemId == item.itemId);
-					let use = true;
-					item.setUseNameType(use, itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null));
+					item.setUseNameType(itemName ? itemName.displayName : null, itemType ? itemType.dailyAttendanceAtr : null, self.getPrimitiveValue(itemType ? itemType.primitiveValue: null), itemType.masterType);
 					let option: Option[] = [];
 					let divergenceReasonInputMethods = null;
 					//trường hợp đặc biệt
@@ -191,7 +253,25 @@ module nts.uk.at.view.kdw013.h {
 			
 			getPrimitiveValue(primitiveValue: number): string {
 				if(primitiveValue){
-					return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
+					if(primitiveValue == 21){
+						return 'BusinessTypeCode';
+					}else if(primitiveValue == 54){
+						return 'AnyItemAmount';
+					}else if(primitiveValue == 55){
+						return 'AnyAmountMonth';
+					}else if(primitiveValue == 56){
+						return 'AnyItemTime';
+					}else if(primitiveValue == 57){
+						return 'AnyTimeMonth';
+					}else if(primitiveValue == 58){
+						return 'AnyItemTimes';
+					}else if(primitiveValue == 59){
+						return 'AnyTimesMonth';
+					}else if(primitiveValue == 60){
+						return 'DiverdenceReasonCode';
+					}else{
+						return _.find(this.primitiveValueDaily, (p: any) => p.value == primitiveValue).name.replace('Enum_PrimitiveValueDaily_','');	
+					}
 				}
 				return '';
 			}
@@ -241,7 +321,7 @@ module nts.uk.at.view.kdw013.h {
                 setShared('kml001selectAbleCodeList', []);
                 setShared('kml001selectedCodeList', self.itemId29.value() ? [self.itemId29.value()]: []);
                 setShared('kml001isSelection', true);
-                setShared('kml001BaseDate', self.params.date);
+                setShared('kml001BaseDate', moment(self.params.date).format('YYYY/MM/DD'));
 				block.grayout();
 				ajax(paths.getWorkPlaceId, { employeeId: self.params.employeeId, date: moment(self.params.date) }).done(function(data: any) {
 					setShared('kml001WorkPlaceId', data ? data.workPlaceId: null);
@@ -312,8 +392,8 @@ module nts.uk.at.view.kdw013.h {
 				});
 
 				self.itemOptions.forEach((item) => {
-					if (item.use() && item.isChange()){
-						data.push(item.toDataSave());
+					if (item.use && item.isChange()){
+						data.push(item.optionToDataSave());
 					}
 				});
 
@@ -325,14 +405,60 @@ module nts.uk.at.view.kdw013.h {
 					targetDate: new Date(self.params.date), //対象日
 					items: data //実績内容  => List<ItemValue> id và giá trị
 				};
-				ajax(paths.save, param).done(() => {
-					info({ messageId: 'Msg_15' });
-					self.reLoadData();
+				ajax(paths.save, param).done((data: any) => {
+					if(data.messageAlert == 'Msg_15'){
+						info({ messageId: 'Msg_15' }).then(()=>{
+							self.reLoadData();	
+						});
+					}else{
+						_.forEach(data.errorMap, errs => {
+							_.forEach(errs, err => {
+								if(_.includes(err.message, 'Msg_')){
+									errors.add({ 
+										message: getMessage(err.message, self.getParamNameItemId(err.itemId)), 
+										errorCode: err.message, 
+										$control: $('#'+err.itemId+''), 
+										location: null
+									});	
+								}else{
+									error(err.message);
+								}
+							});
+						});
+					}
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
 				}).always(() => {
 					block.clear();
 				});
+			}
+			
+			getParamNameItemId(itemId: any): any[]{
+				if(itemId == 31 || itemId == 34){
+					return [getText('KDW013_84'), getText('KDW013_85')];
+				}else if(itemId == 157 || itemId == 159){
+					return [getText('KDW013_88', [1]), getText('KDW013_89', [1, 1])];
+				}else if(itemId == 163 || itemId == 165){
+					return [getText('KDW013_88', [2]), getText('KDW013_89', [2, 2])];
+				}else if(itemId == 169 || itemId == 171){
+					return [getText('KDW013_88', [3]), getText('KDW013_89', [3, 3])];
+				}else if(itemId == 175 || itemId == 177){
+					return [getText('KDW013_88', [4]), getText('KDW013_89', [4, 4])];
+				}else if(itemId == 181 || itemId == 183){
+					return [getText('KDW013_88', [5]), getText('KDW013_89', [5, 5])];
+				}else if(itemId == 187 || itemId == 189){
+					return [getText('KDW013_88', [6]), getText('KDW013_89', [6, 6])];
+				}else if(itemId == 193 || itemId == 195){
+					return [getText('KDW013_88', [7]), getText('KDW013_89', [7, 7])];
+				}else if(itemId == 199 || itemId == 201){
+					return [getText('KDW013_88', [8]), getText('KDW013_89', [8, 8])];
+				}else if(itemId == 205 || itemId == 207){
+					return [getText('KDW013_88', [9]), getText('KDW013_89', [9, 9])];
+				}else if(itemId == 211 || itemId == 213){
+					return [getText('KDW013_88', [10]), getText('KDW013_89', [10, 10])];
+				}
+				
+				return [itemId];
 			}
 			
 			reLoadData(){
@@ -347,6 +473,7 @@ module nts.uk.at.view.kdw013.h {
 				ajax(paths.reload, param).done((data: IItemValue[]) => {
 					console.log(data);
 					self.itemId28.value(_.find(data, i => i.itemId == 28).value);
+					self.itemId28.valueBeforeChange = self.itemId28.value();
 					let workType = _.find(self.dataMaster.workTypes, w => w.workTypeCode == self.itemId28.value());
 					if (workType){
 						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + workType.name);
@@ -354,15 +481,21 @@ module nts.uk.at.view.kdw013.h {
 						self.itemId28.itemSelectedDisplay(self.itemId28.value() + ' ' + getText('KDW013_40'));
 					}
 					self.itemId29.value(_.find(data, i => i.itemId == 29).value);
+					self.itemId29.valueBeforeChange = self.itemId29.value();
 					let workTime = _.find(self.dataMaster.workTimeSettings, w => w.worktimeCode == self.itemId29.value());
 					if (workTime) {
 						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + workTime.workTimeDisplayName.workTimeName);
-					} else {
-						self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
+					} else if(self.itemId29.value() == null){
+						self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 					}
 					
 					_.forEach(self.itemOptions, (item) => {
-						item.value(_.find(data, i => i.itemId == item.itemId).value);
+						if(item.type == 2 && item.masterType == 9){
+							item.value(_.find(data, i => i.itemId == item.itemId).value == 1);
+						}else {
+							item.value(_.find(data, i => i.itemId == item.itemId).value);
+						}
+						item.valueBeforeChange = item.value();
 					});
 				}).fail(function(res: any) {
 					error({ messageId: res.messageId });
@@ -388,7 +521,7 @@ module nts.uk.at.view.kdw013.h {
 		end: ItemValue;
 		constructor(start: IItemValue, end: IItemValue, breakTimeNo?: number) {
 			this.start = new ItemValue(start, breakTimeNo ? getText('KDW013_88', [breakTimeNo]) : undefined);
-			this.end = new ItemValue(end, breakTimeNo ? getText('KDW013_89', [breakTimeNo]) : undefined);
+			this.end = new ItemValue(end, breakTimeNo ? getText('KDW013_89', [breakTimeNo, breakTimeNo]) : undefined);
 			this.end.value.subscribe(() => {
 			});
 		}
@@ -402,17 +535,27 @@ module nts.uk.at.view.kdw013.h {
 			}
 			return result;
 		}
+		enable(itemId: number, use: boolean, enable: boolean){
+			if(itemId == this.start.itemId){
+				this.start.use = use;
+				this.start.enable = enable;
+			}else if(itemId == this.end.itemId){
+				this.end.use = use;
+				this.end.enable = enable;
+			}
+		}
 	}
 	class ItemValue {
 		itemId: number;
-		value: KnockoutObservable<string> = ko.observable(null);
+		value: KnockoutObservable<any> = ko.observable(null);
 		valueBeforeChange: any;
 		valueType: number;
 		layoutCode: string;
 		fixed: boolean;
 		itemSelectedDisplay: KnockoutObservable<string> = ko.observable('');
+		use: boolean = false;
 		name: string; //only use for break times
-		
+		enable: boolean = false;
 		constructor(itemValue?: IItemValue, name?: string) {
 			this.itemId = itemValue.itemId;
 			this.value(itemValue.value);
@@ -449,23 +592,35 @@ module nts.uk.at.view.kdw013.h {
 
 	class ItemValueOption extends ItemValue {
 		lable: KnockoutObservable<string> = ko.observable('');
-		use: KnockoutObservable<boolean> = ko.observable(false);
 		type: number;
+		masterType: number = null;
 		options: Option[] = [];
 		primitiveValue: string;
 		constructor(itemValue: IItemValue) {
 			super(itemValue);
 		}
-		setUseNameType(use: boolean, name?: string, type?: number, primitiveValue?: string) {
-			if (use) {
-				this.use(use);
-				this.lable(name);
-				this.type = type;
-				this.primitiveValue = primitiveValue;
+		setUseNameType(name?: string, type?: number, primitiveValue?: string, masterType?: number) {
+			this.lable(name);
+			this.type = type;
+			this.masterType = masterType;
+			this.primitiveValue = primitiveValue;
+			if(this.type == 2 && this.masterType == 9){
+				this.value(this.value() == 1);
 			}
 		}
-		
-		
+		optionToDataSave() {
+			if(this.type == 2 && this.masterType == 9){
+				return {
+					itemId: this.itemId,
+					value: this.value() ? 1 : 0,
+					valueType: this.valueType,
+					layoutCode: this.layoutCode,
+					isFixed: this.fixed
+				};
+			}else{
+				return this.toDataSave();				
+			}
+		}
 	}
 	type Option = {
 		code: string;
@@ -495,6 +650,14 @@ module nts.uk.at.view.kdw013.h {
 		divergenceTimeRoots: any[];
 		workTimeSettings: any[];
 		workTypes: any[];
+		dailyAttendanceItemAuthority: {displayAndInput: DisplayAndInput[]};
+	}
+	
+	type DisplayAndInput = {
+		itemDailyID: number;
+		toUse: boolean;
+		youCanChangeIt: boolean;
+		canBeChangedByOthers: boolean;
 	}
 
 	type DailyLock = {

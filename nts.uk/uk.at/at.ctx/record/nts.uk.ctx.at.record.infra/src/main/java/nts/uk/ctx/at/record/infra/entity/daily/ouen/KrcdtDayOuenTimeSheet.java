@@ -89,7 +89,7 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 	@Column(name = "WORK_CD5")
 	public String workCd5;
 	
-	@OneToOne(mappedBy = "krcdtDayOuenTimeSheet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "krcdtDayOuenTimeSheet", cascade = CascadeType.ALL, orphanRemoval = true)
 	public KrcdtDayTsSupSupplInfo krcdtDayTsSupSupplInfo;
 	
 	@Override

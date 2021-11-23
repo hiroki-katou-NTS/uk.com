@@ -13,6 +13,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.screen.at.app.dailymodify.command.DailyModifyRCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPItemParent;
+import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.DeleteTimeZoneAttendanceCommand;
+import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.DeleteTimeZoneAttendanceCommandHandler;
+import nts.uk.screen.at.app.kdw013.a.deletetimezoneattendance.RegisterDeleteTimeZoneAttendanceCommandHandler;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommand;
 import nts.uk.screen.at.app.kdw013.command.RegisterTaskTimeGroupCommandHandler;
 import nts.uk.screen.at.app.kdw013.query.CreateDpItemQuery;
@@ -44,6 +47,12 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 	@Inject
 	private GetDailyPerformanceData getDailyPerformanceData;
 	
+	@Inject
+	private RegisterDeleteTimeZoneAttendanceCommandHandler regisDeleteHander;
+	
+	@Inject
+	private DeleteTimeZoneAttendanceCommandHandler deleteTimeZoneAttendanceCommandHandler;
+	
 	@Override
 	protected RegisterWorkContentDto handle(CommandHandlerContext<RegisterWorkContentCommand> context) {
 		
@@ -66,17 +75,22 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		});
 		
 		RegisterWorkContentDto result = new RegisterWorkContentDto();
-		// 1. 実績登録パラメータを作成する
+		
+		// 1.登録する(時間帯別勤怠の削除一覧)
+
+		this.regisDeleteHander.handle(command.getDeleteAttByTimeZones());
+		
+		// 2. 実績登録パラメータを作成する
 
 		DPItemParent dataParent = createDpItemQuery.CreateDpItem(command.getEmployeeId(), command.getChangedDates(),
 				command.getManHrlst(), dailys);
 
 		//throw business
-		// 2. 修正した実績を登録する
+		// 3. 修正した実績を登録する
 
 		result.setDataResult(this.dailyModifyRCommandFacade.insertItemDomain(dataParent));
 		
-		// 3. 作業時間帯グループを登録する
+		// 4. 作業時間帯グループを登録する
 		
 		command.getWorkDetails().forEach(wd -> {
 
@@ -84,15 +98,20 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 
 			this.handler.handle(cmd);
 		});
+		
+		//5. 日別実績の登録時にエラーが発生しない場合
+		
+		this.deleteTimeZoneAttendanceCommandHandler
+				.handle(new DeleteTimeZoneAttendanceCommand(command.getEmployeeId(), command.getChangedDates()));
 
-		// 4. アラーム発生対象日を確認する
+		//6. アラーム発生対象日を確認する
 
 		checkAlarmTargetDate.checkAlarm(command.getEmployeeId(), command.getChangedDates());
 		
 		
 		if(command.getMode() == 1){
 			
-			// 5.残業申請・休出時間申請の対象時間を取得する
+			// 7.残業申請・休出時間申請の対象時間を取得する
 			
 			List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(),
 					command.getChangedDates());
@@ -101,7 +120,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 			
 		}
 		
-		// 6. List<残業休出時間>.isPresent check dưới client
+		// 8. List<残業休出時間>.isPresent check dưới client
 
 		return result;
 	}
