@@ -111,27 +111,27 @@ module nts.uk.ui.at.kdw013.e {
             const vm = this;
 
             vm.taskLst1().push({
-                taskCode: '-1',
+                taskCode: '',
                 taskName: '未選択'
             });
 
             vm.taskLst2().push({
-                taskCode: '-1',
+                taskCode: '',
                 taskName: '未選択'
             });
 
             vm.taskLst3().push({
-                taskCode: '-1',
+                taskCode: '',
                 taskName: '未選択'
             });
 
             vm.taskLst4().push({
-                taskCode: '-1',
+                taskCode: '',
                 taskName: '未選択'
             });
 
             vm.taskLst5().push({
-                taskCode: '-1',
+                taskCode: '',
                 taskName: '未選択'
             });
 
@@ -193,19 +193,19 @@ module nts.uk.ui.at.kdw013.e {
             });
 
             vm.selectedTaskCD2.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD2 = value == '-1' ? null : value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD2 = value == '' ? null : value;
             });
 
             vm.selectedTaskCD3.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD3 = value == '-1' ? null : value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD3 = value == '' ? null : value;
             });
 
             vm.selectedTaskCD4.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD4 = value == '-1' ? null : value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD4 = value == '' ? null : value;
             });
 
             vm.selectedTaskCD5.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD5 = value == '-1' ? null : value;
+                vm.ouenWorkTimeSheet().workContent.work.workCD5 = value == '' ? null : value;
             });
 
             vm.startTime.subscribe((value)=> {
@@ -229,16 +229,27 @@ module nts.uk.ui.at.kdw013.e {
                 empId: vm.$user.employeeId,
                 date: vm.date(),
                 ouenTimeSheet: ko.unwrap(vm.ouenWorkTimeSheet),
-                ouenTime: ko.unwrap(vm.ouenWorkTime)
+                ouenTime: {workNo: ko.unwrap(vm.ouenWorkTime).no, workTime: ko.unwrap(vm.ouenWorkTime).workTime},
             };
 
-            vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param))
-            .done(() => {
-                vm.$dialog.info({ messageId: 'Msg_15' });
-            }).then (() => {
-                vm.close();
-            }).always(() => vm.$blockui('clear'));
-            
+			vm.$blockui('show');
+            vm.$validate('.nts-input').then((valid: boolean) => {
+				if (valid && !nts.uk.ui.errors.hasError()) {
+                    vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param)
+                    .done(() => {
+                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+							vm.close()
+                        }); 
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
+
+                } else {
+                    vm.$blockui("clear");
+                }
+            });
         }
         
          // ダイアログを閉じる
