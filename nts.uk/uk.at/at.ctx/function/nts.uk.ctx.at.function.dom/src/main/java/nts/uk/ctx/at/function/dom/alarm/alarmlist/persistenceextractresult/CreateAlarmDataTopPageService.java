@@ -12,9 +12,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -85,10 +82,6 @@ public class CreateAlarmDataTopPageService {
                     adminReceiveAlarmMailMap.values().stream()
                             .flatMap(Collection::stream)
                             .collect(Collectors.toList());
-//            wkplIdListNotErrors.forEach(x -> {
-//                List<String> preEmpIds = require.getListEmployeeId(x, GeneralDate.today());
-//                allEmpErrorsRemoved.addAll(preEmpIds);
-//            });
 
             //$削除の情報　＝　削除の情報Param#作成する(アラームリスト、 $全てエラーが解除済み社員、 上長、 $パターンコード )
             delInfo = Optional.of(DeleteInfoAlarmImport.builder()
@@ -115,11 +108,8 @@ public class CreateAlarmDataTopPageService {
 
         //$エラーがある職場IDList：for
         for (String wkpl : wkplIdListErrors) {//職場、基準日からアラーム通知先の社員を取得する
-            //$上長の社員IDList　 =　require. 職場、基準日からアラーム通知先の社員を取得する($, 年月日#今日())
-//            List<String> superiorEmpIDList = require.getListEmployeeId(wkpl, GeneralDate.today());
-
             // $上長の社員IDList　 =　$上長の社員IDMap.get($)
-            List<String> superiorEmpIDList = superiorEmployeeMap.get(wkpl);
+            List<String> superiorEmpIDList = superiorEmployeeMap.getOrDefault(wkpl, Collections.emptyList());
 
             //$発生日時　＝　$職場Map.get($)　：　sort $.発生日時 DESC first $.発生日時
             val topAlarmParamList = workplaceMap.getOrDefault(wkpl, new ArrayList<>());
