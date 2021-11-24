@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.spi.CDI;
 
+import lombok.val;
 import nts.arc.diagnose.performance.responsetime.aggregate.ResponseTimeAggregateFilter;
 import nts.arc.layer.ws.preprocess.RequestFilterCollector;
 import nts.arc.layer.ws.preprocess.RequestFilterMapping;
@@ -63,7 +65,17 @@ public class UkRequestFilterCollector implements RequestFilterCollector {
 
 	@Override
 	public List<RequestFilterMapping> collect() {
+
+		val criteria = CDI.current().select(Criteria.class);
+		if (!criteria.isUnsatisfied()) {
+			return criteria.get().select(FILTERS);
+		}
+
 		return FILTERS;
 	}
 
+	public interface Criteria {
+
+		List<RequestFilterMapping> select(List<RequestFilterMapping> source);
+	}
 }
