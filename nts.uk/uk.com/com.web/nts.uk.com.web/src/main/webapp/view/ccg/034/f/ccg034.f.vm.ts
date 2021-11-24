@@ -136,10 +136,12 @@ module nts.uk.com.view.ccg034.f {
       vm.isBold(vm.partData.isBold);
       vm.menuUrl(vm.partData.menuUrl);
       vm.textColorValue(vm.partData.textColor);
-      vm.imageType(vm.partData.isFixed ?? -1);
       vm.fileId(vm.partData.fileId);
+      vm.imageType(vm.partData.isFixed ?? -1);
       vm.originalFileId = vm.fileId();
-      vm.imageSrc(vm.partData.fileName);
+      if (!nts.uk.text.isNullOrEmpty(vm.partData.fileName)) {
+        vm.imageSrc(vm.partData.fileName);
+      }
 
       vm.findMenuData();
       vm.createPopUp();

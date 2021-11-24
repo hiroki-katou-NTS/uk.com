@@ -9,7 +9,7 @@
     <!-- head -->
     <ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 500, height: 720 };
+        var dialogSize = { width: 500, height: 710 };
       </script>
       <com:ValidatorScript>
         nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.DisplayName
@@ -129,7 +129,7 @@
                 group: 'F9_2'
               }" tabindex="5"></div>
               <!-- F9_3_3 画像のアップロード -->
-              <div id="F9_3_3" class="choose-button" data-bind="ntsFileUpload: {
+              <div id="F9_3_3" data-bind="ntsFileUpload: {
                 name: '#{i18n.getText('CCG034_135')}',
                 filename: uploadedFileName,
                 accept: ['.png','.gif', '.jpeg', '.jpg', '.tiff', '.bmp'],
@@ -142,11 +142,11 @@
                 maxSize: 1
               }"></div>
             </div>
-            <div class="flex valign-center" data-bind="visible: imageType() === 1 &amp;&amp; fileId()">
+            <div class="flex valign-center">
               <!-- F9_5_1 最大ファイルサイズ -->
               <label id="F9_5_1">${i18n.getText('CCG034_126')}</label>
               <!-- F9_5_2 ファイルサイズ -->
-              <label id="F9_5_2" class="ml-10" data-bind="text: displayFileSize"></label>
+              <label id="F9_5_2" class="ml-10" data-bind="text: displayFileSize, visible: imageType() === 1 &amp;&amp; fileId()"></label>
             </div>
           </div>
           <!-- F9_4_2 選択画像 -->
@@ -172,7 +172,7 @@
           <!-- F7_3 太字指定 -->
           <div id="F7_3" class="ml-10" data-bind="ntsCheckBox: { checked: isBold, enable: true, text: $vm.$i18n('CCG034_53')}" tabindex="10"></div>
           <!-- F7_4 文字(ラベル) -->
-          <label id="F7_4" class="ml-10">${i18n.getText('CCG034_77')}</label>
+          <label id="F7_4" class="ml-10">${i18n.getText('CCG034_64')}</label>
           <!-- F7_5 文字色 -->
           <div id="F7_5" class="ml-10" data-bind="ntsColorPicker: {
             name: '#[CCG034_64]',
