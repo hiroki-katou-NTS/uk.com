@@ -203,12 +203,12 @@ module nts.uk.at.view.kdl009.a {
 						let temp = _.map(data.detailRemainingNumbers, (a: any) => new RemainNumberDetailedInfoDto(a));
 						self.listDataInfo(temp);
 						//lấy dữ liệu quá khứ cuối cùng để bôi đen border
-						if(self.listDataInfo().length>2){
+						if(self.listDataInfo().length>1){
 							for(let i = 1;i<self.listDataInfo().length;i++){
 								if(self.listDataInfo()[i-1].isFuture){
 									break;
 								}
-								if(self.listDataInfo()[i].isFuture && !self.listDataInfo()[i-1].isFuture ){
+								if(self.listDataInfo()[i].isFuture ){
 									self.listDataInfo()[i].isLastPast(true);
 									break;
 								}
@@ -268,11 +268,11 @@ module nts.uk.at.view.kdl009.a {
 		deadline : string;
 		//期限日状況
 		dueDateStatus : string;
-		//消化数
+		//消化一覧[0].消化数
 		digestionCount : string;
-		//消化日
+		//消化一覧[0].消化日
 		digestionDate : string;
-		//消化日状況
+		//消化一覧[0].消化日状況
 		digestionDateStatus : string;
 		//消化状況
 		digestionStatus : string;
@@ -282,18 +282,35 @@ module nts.uk.at.view.kdl009.a {
 		accrualDate : string;
 		//発生日状況
 		occurrenceDateStatus : string;
+
+		//消化一覧
+		listDigestionItem : Array<DigestionItem>;
 		
 		isFuture : boolean;
 		isLastPast: KnockoutObservable<boolean> = ko.observable(false);
 		
-		displayA3_41 : string;
         constructor(data :any ) {
             let self = this;
+			self.listDigestionItem = [];
             self.deadline = data.deadline;
             self.dueDateStatus = data.dueDateStatus;
-			self.digestionCount = data.digestionCount;
-			self.digestionDate = data.digestionDate;
-			self.digestionDateStatus = data.digestionDateStatus;
+			if(data.listDigestion.length>0){
+				self.digestionCount = data.listDigestion[0].digestionCount;
+				self.digestionDate = data.listDigestion[0].digestionDate;
+				self.digestionDateStatus = data.listDigestion[0].digestionDateStatus;
+				if(data.listDigestion.length>1){
+					let listDigestionItem = [];
+					for(let i = 1;i<data.listDigestion.length;i++){
+						listDigestionItem.push(new DigestionItem(data.listDigestion[i]));
+					}
+					self.listDigestionItem = listDigestionItem;
+				}
+			}else{
+				self.digestionCount = "";
+				self.digestionDate = "";
+				self.digestionDateStatus = "";
+			}
+			
 			self.digestionStatus = data.digestionStatus;
 			self.numberOccurrences = data.numberOccurrences;
 			self.accrualDate = data.accrualDate;
@@ -308,13 +325,25 @@ module nts.uk.at.view.kdl009.a {
 			}
 			
 			
-			if(self.occurrenceDateStatus != ""){
+			if(self.digestionDateStatus == "予" || self.occurrenceDateStatus == "予"){
 				self.isFuture = true;
-				self.displayA3_41 = (self.digestionDate == "" ? "" : self.digestionDateStatus);
 			}else{
 				self.isFuture = false;
-				self.displayA3_41 = self.digestionDateStatus;
         	}
     	}
+	}
+	export class DigestionItem {
+		//消化数
+		digestionCount : string;
+		//消化日
+		digestionDate : string;
+		//消化日状況
+		digestionDateStatus : string;
+		constructor(data :any ) {
+			let self = this;
+			self.digestionCount = data.digestionCount;
+			self.digestionDate = data.digestionDate;
+			self.digestionDateStatus = data.digestionDateStatus;
+		}
 	}
 }

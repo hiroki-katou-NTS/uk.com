@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.app.find.dialog.employmentsystem.holidaysubstitute;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Data;
 /**
- * 
+ * 残数詳細情報
  * @author phongtq
  *
  */
@@ -13,15 +16,6 @@ public class RemainNumberDetailedInfo {
 	
 	// 期限日状況
 	private String dueDateStatus;
-	
-	// 消化数
-	private String digestionCount;
-	
-	// 消化日
-	private String digestionDate;
-	
-	// 消化日状況
-	private String digestionDateStatus;
 	
 	// 消化状況
 	private String digestionStatus;
@@ -34,19 +28,22 @@ public class RemainNumberDetailedInfo {
 	
 	// 発生日状況
 	private String occurrenceDateStatus;
+	
+	// 消化一覧
+	private List<DigestionItem> listDigestion = new ArrayList<>();
 
-	public RemainNumberDetailedInfo(String deadline, String dueDateStatus, String digestionCount, String digestionDate,
-			String digestionDateStatus, String digestionStatus, String numberOccurrences, String accrualDate,
-			String occurrenceDateStatus) {
+	public RemainNumberDetailedInfo(String deadline, String dueDateStatus, String digestionStatus,
+			String numberOccurrences, String accrualDate, String occurrenceDateStatus,
+			List<DigestionItem> listDigestion) {
 		super();
 		this.deadline = deadline;
 		this.dueDateStatus = dueDateStatus;
-		this.digestionCount = digestionCount;
-		this.digestionDate = digestionDate;
-		this.digestionDateStatus = digestionDateStatus;
 		this.digestionStatus = digestionStatus;
 		this.numberOccurrences = numberOccurrences;
 		this.accrualDate = accrualDate;
 		this.occurrenceDateStatus = occurrenceDateStatus;
+		this.listDigestion = listDigestion;
 	}
+
+	
 }

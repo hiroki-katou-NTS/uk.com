@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.dialog.employmentsystem.holidaysubstitute;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +11,6 @@ import javax.ejb.Stateless;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.LeaveOccurrDetail;
@@ -63,7 +63,7 @@ public class GetRemainNumberConfirmInfo {
 
 		for (AccumulationAbsenceDetail detail : lstAcctAbsenDetail) {
 			// 残数詳細情報を作成
-			RemainNumberDetailedInfo detailedInfo = new RemainNumberDetailedInfo("", "", "", "", "", "", "", "", "");
+			RemainNumberDetailedInfo detailedInfo = new RemainNumberDetailedInfo("", "", "", "", "", "", new ArrayList<>());
 
 			boolean checkDate = false;
 
@@ -80,21 +80,23 @@ public class GetRemainNumberConfirmInfo {
 			} else {
 				// 以外の場合
 				if (detail.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
+					
+					DigestionItem digestionItem = new DigestionItem(); 
 
 					// ループ中の逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ True
 					if (detail.getDateOccur().isUnknownDate()) {
 						// 残数詳細情報．消化日をセットする - 消化日
-						detailedInfo.setDigestionDate(TextResource.localize("KDL005_52"));
+						digestionItem.setDigestionDate(TextResource.localize("KDL005_52"));
 					} else {
 
 						// ループ中の逐次発生の休暇明細一覧．年月日．年月日 ＞ システム日付
 						if (detail.getDateOccur().getDayoffDate().get().after(GeneralDate.today())) {
 							// 残数詳細情報．消化日状況をセットする - 消化日状況
-							detailedInfo.setDigestionDateStatus(TextResource.localize("KDL005_40"));
+							digestionItem.setDigestionDateStatus(TextResource.localize("KDL005_40"));
 						}
 						String textDayoff = this.getDayOfJapan(detail.getDateOccur().getDayoffDate().get().dayOfWeek());
 						// 残数詳細情報．消化日をセットする - 消化日
-						detailedInfo.setDigestionDate(TextResource.localize("KDL005_41",
+						digestionItem.setDigestionDate(TextResource.localize("KDL005_41",
 								detail.getDateOccur().getDayoffDate().get().toString(), // ループ中の逐次発生の休暇明細一覧．年月日．年月日
 								textDayoff)); // ループ中の逐次発生の休暇明細一覧．年月日．年月日の曜日
 					}
@@ -106,8 +108,8 @@ public class GetRemainNumberConfirmInfo {
 						if(!unit && detail.getDateOccur().getDayoffDate().isPresent() && svai.getDateOfUse().equals(detail.getDateOccur().getDayoffDate().get())) {
 							checkExist = true;
 							//データをセットする
-							detailedInfo.setDigestionCount(TextResource.localize("KDL005_27", svai.getDayNumberUsed().v().toString()));
-							detailedInfo.setDigestionDateStatus(TextResource.localize("KDL005_49"));
+							digestionItem.setDigestionCount(TextResource.localize("KDL005_27", svai.getDayNumberUsed().v().toString()));
+							digestionItem.setDigestionDateStatus(TextResource.localize("KDL005_49"));
 							break;
 						}
 					}
@@ -121,12 +123,14 @@ public class GetRemainNumberConfirmInfo {
 									: 0 + String.valueOf(detail.getNumberOccurren().getTime().get().minute());
 							String hoursMinu = String.valueOf(detail.getNumberOccurren().getTime().get().hour()) + ":"
 									+ minu;
-							detailedInfo.setDigestionCount(hoursMinu);
+							digestionItem.setDigestionCount(hoursMinu);
 						} else {
-							detailedInfo.setDigestionCount(
+							digestionItem.setDigestionCount(
 									TextResource.localize("KDL005_27", detail.getNumberOccurren().getDay().toString())); // ループ中の逐次発生の休暇明細一覧．発生数．日数
 						}
 					}
+					
+					detailedInfo.setListDigestion(Arrays.asList(digestionItem));
 				} else {// 発生の場合
 
 					// ループ中の逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ True
@@ -251,25 +255,32 @@ public class GetRemainNumberConfirmInfo {
 					}
 						
 					// 逐次休暇の紐付け情報を絞り込む
-					Optional<SeqVacationAssociationInfo> seqVacationFil = lstSeqVacation.stream()
+					List<SeqVacationAssociationInfo> seqVacationFils = lstSeqVacation.stream()
 							.filter(x -> detail.getDateOccur().getDayoffDate().isPresent()
-									&& x.getOutbreakDay().equals(detail.getDateOccur().getDayoffDate().get()))
-							.findFirst();
-
+									&& x.getOutbreakDay().equals(detail.getDateOccur().getDayoffDate().get())).collect(Collectors.toList());
+					
+					List<DigestionItem> listDigestionItem = new ArrayList<>();
 					// 残数詳細情報の消化をセットする
-					if (seqVacationFil.isPresent() && !unit) {
-						// 残数詳細情報．消化日状態
-						detailedInfo.setDigestionDateStatus(TextResource.localize("KDL005_49"));
-						// 残数詳細情報．消化数
-						detailedInfo.setDigestionCount(
-								TextResource.localize("KDL005_27", seqVacationFil.get().getDayNumberUsed().toString())); // 絞り込んだ逐次休暇の紐付け情報．使用日数
-						// 残数詳細情報．消化日
-						String textDay = this.getDayOfJapan(seqVacationFil.get().getDateOfUse().dayOfWeek());
-						detailedInfo.setDigestionDate(
-								TextResource.localize("KDL005_41", seqVacationFil.get().getDateOfUse().toString(), textDay));
-
-						lstDigestionDate.add(seqVacationFil.get().getDateOfUse().toString());
+					for(SeqVacationAssociationInfo seqVacationFil : seqVacationFils) {
+						if(!unit) {
+							DigestionItem digestionItem = new DigestionItem();
+							// 残数詳細情報．消化日状態
+							digestionItem.setDigestionDateStatus(TextResource.localize("KDL005_49"));
+							// 残数詳細情報．消化数
+							digestionItem.setDigestionCount(
+									TextResource.localize("KDL005_27", seqVacationFil.getDayNumberUsed().toString())); // 絞り込んだ逐次休暇の紐付け情報．使用日数
+							// 残数詳細情報．消化日
+							String textDay = this.getDayOfJapan(seqVacationFil.getDateOfUse().dayOfWeek());
+							digestionItem.setDigestionDate(
+									TextResource.localize("KDL005_41", seqVacationFil.getDateOfUse().toString(), textDay));
+							listDigestionItem.add(digestionItem);
+							lstDigestionDate.add(seqVacationFil.getDateOfUse().toString());
+						}
 					}
+					listDigestionItem = listDigestionItem.stream()
+							.sorted((a, b) -> a.getDigestionDate().compareTo(b.getDigestionDate()))
+							.collect(Collectors.toList());
+					detailedInfo.setListDigestion(listDigestionItem);
 				}
 				// List<残数詳細情報>に作成した残数詳細情報を追加
 				detailedInfos.add(detailedInfo);
