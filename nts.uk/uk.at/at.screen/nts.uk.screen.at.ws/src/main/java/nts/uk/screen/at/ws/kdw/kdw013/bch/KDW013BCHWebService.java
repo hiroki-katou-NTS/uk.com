@@ -26,6 +26,7 @@ import nts.uk.screen.at.app.kdw013.c.SelectWorkItem;
 import nts.uk.screen.at.app.kdw013.h.CreateAchievementRegistrationParam;
 import nts.uk.screen.at.app.kdw013.query.AttendanceItemMasterInformationDto;
 import nts.uk.screen.at.app.kdw013.query.GetWorkDataMasterInformation;
+import nts.uk.screen.at.app.kdw013.query.StartParamDto;
 import nts.uk.screen.at.app.kdw013.query.WorkDataMasterInformationDto;
 import nts.uk.screen.at.ws.kdw.kdw013.SelectWorkItemParam;
 import nts.uk.screen.at.ws.kdw.kdw013.StartWorkInputPanelDto;
@@ -57,10 +58,7 @@ public class KDW013BCHWebService {
 	@POST
 	@Path("common/start")
 	public WorkDataMasterInformationDto start(StartParamDto param) {
-		return getWorkDataMasterInformation.get(param.employeeId, param.refDate, param.itemIds,
-				Optional.ofNullable(param.workCode1), Optional.ofNullable(param.workCode2),
-				Optional.ofNullable(param.workCode3), Optional.ofNullable(param.workCode4),
-				Optional.ofNullable(param.workCode5));
+		return getWorkDataMasterInformation.get(param.employeeId, param.refDate, param.itemIds, param.workCodeFrameNo);
 	}
 
 	// C:作業入力パネル.メニュー別OCD.作業項目を選択する
