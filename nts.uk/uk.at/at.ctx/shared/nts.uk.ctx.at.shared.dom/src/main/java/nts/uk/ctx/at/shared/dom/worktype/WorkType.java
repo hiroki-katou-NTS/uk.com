@@ -650,4 +650,23 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		
 		return true;
 	}
+
+	/**
+	 * 出勤時刻自動セットであるか
+	 * @return
+	 */
+	public boolean isAttendanceTimeAutoSet() {
+		return this.workTypeSetList.stream().anyMatch( 
+				workTimeSetting -> workTimeSetting.getAttendanceTime() == WorkTypeSetCheck.CHECK);
+	}
+	
+	/**
+	 * 退勤時刻自動セットであるか
+	 * @return
+	 */
+	public boolean isLeaveTimeAutoSet() {
+		return this.workTypeSetList.stream().anyMatch(
+				workTimeSetting -> workTimeSetting.getTimeLeaveWork() == WorkTypeSetCheck.CHECK);
+	}
+	
 }
