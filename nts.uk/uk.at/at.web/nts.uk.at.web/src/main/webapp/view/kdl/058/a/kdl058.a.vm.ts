@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl050.a.viewmodel {
+module nts.uk.at.view.kdl058.a.viewmodel {
     import block = nts.uk.ui.block;
     export class ScreenModel {
         year: KnockoutObservable<number>;
@@ -13,7 +13,7 @@ module nts.uk.at.view.kdl050.a.viewmodel {
         isCreate: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
-            self.year = ko.observable(nts.uk.ui.windows.getShared('KDL050_A_PARAM').yearMonth);
+            self.year = ko.observable(nts.uk.ui.windows.getShared('KDL058_A_PARAM').yearMonth);
             self.year.subscribe((newValue) => {
                 self.findPublicHolidayByYear(newValue);
                 self.selectHolidayByIndex(0);
@@ -28,9 +28,9 @@ module nts.uk.at.view.kdl050.a.viewmodel {
                 self.findPublicHoliday(value);
             });
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KDL050_7"), key: 'date', hidden: true },
-                { headerText: nts.uk.resource.getText("KDL050_7"), key: 'displayDate', width: 85 },
-                { headerText: nts.uk.resource.getText("KDL050_8"), key: 'holidayName', width: 240, formatter: _.escape }
+                { headerText: nts.uk.resource.getText("KDL058_7"), key: 'date', hidden: true },
+                { headerText: nts.uk.resource.getText("KDL058_7"), key: 'displayDate', width: 85 },
+                { headerText: nts.uk.resource.getText("KDL058_8"), key: 'holidayName', width: 240, formatter: _.escape }
             ]);
             // Holiday Details
             self.selectedPublicHoliday = ko.observable(new PublicHolidayObs("", ""));

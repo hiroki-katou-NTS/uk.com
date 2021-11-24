@@ -857,10 +857,10 @@ public class ProgramsManager {
             "/view/ksm/004/a/index.xhtml");
 
     /**
-     * KDL050A
+     * KDL058A
      */
-    public static final Program KDL050A = new Program(WebAppId.AT, ProgramIdConsts.KDL050A, "KDL050_1",
-            "/view/kdl/050/a/index.xhtml");
+    public static final Program KDL058A = new Program(WebAppId.AT, ProgramIdConsts.KDL058A, "KDL058_1",
+            "/view/kdl/058/a/index.xhtml");
 
     /**
      * KSM004D
