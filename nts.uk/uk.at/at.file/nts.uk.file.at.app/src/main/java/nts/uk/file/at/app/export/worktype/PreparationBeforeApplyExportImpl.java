@@ -1247,7 +1247,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                             String value;
                             if (col == 0 && row == 0 && count == 1) value = flex == FlexWorkAtr.FLEX_TIME ? "フレックス勤務者" : "フレックス勤務者以外";
                             else if (col == 1 && row == 0) value = TextResource.localize(ot.name);
-                            else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : (target.v() == -1 ? TextResource.localize("KAF022_797") : target.toString());
+                            else if (col == 2) value = frame != null ? frame.getOvertimeWorkFrName().v() : target.toString();
                             else value = "";
                             rowData.put(
                                     COLUMN_NO_HEADER + col,
