@@ -258,11 +258,11 @@
                         <com:ko-if bind="use &amp;&amp; type == 2 &amp;&amp; masterType == 9">
 							<tr>
                                 <td>
-                                	<div data-bind="ntsFormLabel: {constraint: primitiveValue}, text: lable"></div>
+                                	<div data-bind="ntsFormLabel: {}, text: lable"></div>
                                 </td>
                                 <td>
 									<div class="ntsControl fix">
-										<div data-bind="ntsCheckBox: { checked: value }, attr: { id: itemId}"></div>
+										<div data-bind="ntsCheckBox: { checked: value , text: 'する'}, attr: { id: itemId}"></div>
 									</div>
 								</td>
                             </tr>
