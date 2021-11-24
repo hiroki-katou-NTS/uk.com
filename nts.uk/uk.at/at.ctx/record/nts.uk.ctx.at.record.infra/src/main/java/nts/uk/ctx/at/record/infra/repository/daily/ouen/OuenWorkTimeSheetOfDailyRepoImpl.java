@@ -475,7 +475,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		
 		int ouenNo = supportFrameNo.v();
 		
-		String deleteTimeSheet = "DELETE FROM KrcdtDayOuenTimeSheet o " + " WHERE o.pk.sid = :sId "
+		String deleteTimeSheet = "DELETE FROM KrcdtDayOuenTimeSheet o " + " WHERE o.pk.sid = :sid "
 				+ " AND o.pk.ymd = :ymd "
 				+ " AND o.pk.ouenNo = :ouenNo ";
 		this.getEntityManager().createQuery(deleteTimeSheet).setParameter("sid", sId)
@@ -483,7 +483,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
 		
-		String deleteTime = "DELETE FROM KrcdtDayOuenTime o " + " WHERE o.pk.sid = :sId "
+		String deleteTime = "DELETE FROM KrcdtDayOuenTime o " + " WHERE o.pk.sid = :sid "
 				+ " AND o.pk.ymd = :ymd "
 				+ " AND o.pk.ouenNo = :ouenNo ";
 		this.getEntityManager().createQuery(deleteTime).setParameter("sid", sId)
@@ -491,7 +491,7 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 												   .setParameter("ouenNo", ouenNo)
 												   .executeUpdate();
 		
-		String deleteInfo = "DELETE FROM KrcdtDayTsSupSupplInfo o " + " WHERE o.pk.sid = :sId "
+		String deleteInfo = "DELETE FROM KrcdtDayTsSupSupplInfo o " + " WHERE o.pk.sid = :sid "
 				+ " AND o.pk.date = :ymd "
 				+ " AND o.pk.supNo = :ouenNo ";
 		this.getEntityManager().createQuery(deleteInfo).setParameter("sid", sId)

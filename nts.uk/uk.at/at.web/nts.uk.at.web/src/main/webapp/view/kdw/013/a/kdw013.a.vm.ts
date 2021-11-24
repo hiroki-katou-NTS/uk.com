@@ -941,12 +941,21 @@ module nts.uk.ui.at.kdw013.a {
             _.forEach(dates, date => {
                 
                 const hrTask = _.find(dailyManHrTasks, hr => moment(hr.date).isSame(moment(date), 'days'));
-                let taskDetails = [];
-                _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
-                    taskDetails.push(...tb.taskDetails);
-                })
+                const id = _.find(_.get(vm.$datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+                const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+                const taskBlocks = _.get(hrTask, 'taskBlocks', []);
+                
                 //① 日別実績の工数実績作業
-                let dailyManHrTaskNos = _.map(taskDetails, td => td.supNo);
+                let dailyManHrTaskNos = [];
+                for (let i = 0; i < ouenTimeSheet.length; i++) {
+                    const workNo = _.get(ouenTimeSheet[i], 'workNo');
+
+                    if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
+                       dailyManHrTaskNos.push(workNo);
+                    }
+                }                
                 //② 工数実績作業ブロック
                 let currentScreenNos = [];
                 _.forEach(_.filter(vm.events(), e => (moment(e.start).isSame(moment(date), 'days') && _.get(e, 'extendedProps.taskBlock.taskDetails', []).length)), e => {
