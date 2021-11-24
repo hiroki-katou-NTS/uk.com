@@ -38,7 +38,7 @@ module nts.uk.at.view.kal001.b {
                     {headerText: getText('KAL001_20'), key: 'workplaceName', width: 100},
                     {headerText: getText('KAL001_13'), key: 'employeeCode', width: 85},
                     {headerText: getText('KAL001_14'), key: 'employeeName', width: 130},
-                    {headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 125},
+                    {headerText: getText('KAL001_15'), key: 'alarmValueDate', width: 100},
                     {headerText: getText('KAL001_16'), key: 'categoryName', width: 60},
                     {headerText: getText('KAL001_17'), key: 'alarmItem', width: 115},
                     {headerText: getText('KAL001_18'), key: 'alarmValueMessage', width: 245},
@@ -46,7 +46,7 @@ module nts.uk.at.view.kal001.b {
                     {headerText: getText('KAL001_19'), key: 'comment', width: 260}
                 ];
                 if (self.isTopPage) {
-                    self.columns.push({headerText: getText('KAL001_162'), key: 'menuDisplay', width: 200});
+                    self.columns.push({headerText: getText('KAL001_162'), key: 'menuDisplay', width: 225});
                 } else {
                     if (_.isEmpty(self.dataSource)) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_835" });
