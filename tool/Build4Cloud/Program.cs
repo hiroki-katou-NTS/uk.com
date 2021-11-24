@@ -12,16 +12,26 @@ namespace Build4Cloud
     {
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length < 1)
             {
                 Console.WriteLine("コマンドライン引数でデータソース数を指定してください");
                 return;
             }
 
+            IEnumerable<string> targetProjects;
+            if (args.Length == 1)
+            {
+                targetProjects = new[] { "com", "at", "cloud" };
+            }
+            else
+            {
+                targetProjects = args.Skip(1);
+            }
+
             var context = new Context
             {
                 RootPath = FindRootPathFromCurrent(),
-                Projects = new [] { "com", "at", "cloud" },
+                Projects = targetProjects,
             };
 
             int datasourcesCount = int.Parse(args[0]);
