@@ -1299,6 +1299,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             .value());
 
                         updateEvents();
+
+                        if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') })) {
+                            
+                            setTimeout(() => {vm.params.screenA.dataChanged(false)}, 100);
+                        }
                         return;
                     }
                     let data =  ko.unwrap(vm.params.$datas);
@@ -1337,6 +1342,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     });
                 
                 updateEvents();
+                if (!_.find(vm.params.events(), (e) => { return _.get(e, 'extendedProps.isChanged') })) {
+                    setTimeout(() => {vm.params.screenA.dataChanged(false)}, 100);
+                }
             });
 
             // update drag item
