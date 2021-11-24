@@ -3310,26 +3310,26 @@ module nts.uk.ui.at.kdw013.calendar {
                                     let start = cbh.start;
                                     if (brTime.start > cbh.end) { end = 1440 };
                                     if (brTime.start < cbh.start) { start = 0 };
-                                        bhs.push({
-                                            daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
-                                            endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                        },
-                                            {
-                                                daysOfWeek: [cbh.dayOfWeek],
-                                                startTime: formatTime(brTime.end, false),
-                                                endTime: formatTime(end, false)
-                                            }
-                                        );
-                                    
-                                }
-                            } else {
                                     bhs.push({
                                         daysOfWeek: [cbh.dayOfWeek],
-                                        startTime: formatTime(cbh.start, false),
-                                        endTime: formatTime(cbh.end, false)
-                                    });
-                                
+                                        startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
+                                        endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
+                                    },
+                                        {
+                                            daysOfWeek: [cbh.dayOfWeek],
+                                            startTime: formatTime(brTime.end, false),
+                                            endTime: formatTime(end, false)
+                                        }
+                                    );
+
+                                }
+                            } else {
+                                bhs.push({
+                                    daysOfWeek: [cbh.dayOfWeek],
+                                    startTime: formatTime(cbh.start, false),
+                                    endTime: formatTime(cbh.end, false)
+                                });
+
                             }
                         }
                         
@@ -3864,7 +3864,14 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         // remove???
                         event.remove();
-
+                        let removeList = vm.params.screenA.removeList;
+                        let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(event.start), 'days'));
+                        let supNos = _.map(_.get(event, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                        if (removeDate) {
+                            removeDate.supNos.push(...supNos);
+                        } else {
+                            removeList.push({ date: moment(event.start).startOf('day').toDate(), supNos });
+                        }
                         // trigger update from parent view
                         mutated.valueHasMutated();
                     })
