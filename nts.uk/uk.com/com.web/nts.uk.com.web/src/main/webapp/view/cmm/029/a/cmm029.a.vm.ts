@@ -42,7 +42,7 @@ module nts.uk.com.view.cmm029.a {
 
     mounted() {
       const vm = this;
-      vm.initDisplay().then(() => vm.$nextTick(() => vm.displayDataOf("CMM029_42").taskOperationMethod.valueHasMutated()));
+      vm.initDisplay();
     }
 
     // 表示初期データを取得する
@@ -50,6 +50,7 @@ module nts.uk.com.view.cmm029.a {
       const vm = this;
       vm.$blockui("grayout");
       return vm.$ajax(API.initDisplay).then((data: IDisplayData[]) => vm.displayDatas(_.map(data, d => new DisplayData(d))))
+        .then(() => vm.$nextTick(() => vm.displayDataOf("CMM029_42").taskOperationMethod.valueHasMutated()))
         .always(() => vm.$blockui("clear"));
     }
 
