@@ -218,6 +218,8 @@ module nts.uk.ui.at.kdw013.a {
 
 		popupTitle: KnockoutObservable<String> = ko.observable('');
 		btnContent: KnockoutObservable<String> = ko.observable('');
+		
+		reloadFlag: KnockoutObservable<Boolean> =  ko.observable(false);
 
         constructor() {
             super();
@@ -1337,10 +1339,12 @@ module nts.uk.ui.at.kdw013.a {
                 ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
                 taskSettings: ko.unwrap(vm.taskSettings),
                 //対象日
-                date: vm.targetDate()
+                date: vm.targetDate(),
             }
 		
-            vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
+            vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => { 
+				 vm.dateRange.valueHasMutated();
+			});
         }
 
 		closeFDialog() {
