@@ -38,5 +38,5 @@ public class AppStamp extends Application {
 	public AppStamp(Application application) {
 		super(application);
 	}
-	
+
 }

@@ -10,8 +10,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
+
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.error.BusinessException;
@@ -20,6 +24,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.WorkLocationAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.WorkplaceAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkLocationNameImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkplaceNameImported;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -57,6 +65,15 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	
 	@Inject
 	private DetailBeforeUpdate detailBeforeUpdate;
+	
+	@Inject
+	private SupportOperationSettingRepository supportOperationSettingRepo;
+	
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+	
+	@Inject
+	private WorkLocationAdapter workLocationAdapter;
 
 	@Override
 	public AppStampOutput getDataCommon(String companyId, Optional<GeneralDate> dates,
@@ -108,7 +125,52 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		List<ErrorStampInfo> errorStampInfos = this.getErrorStampList(stampRecordOutput);
 		appStampOutput.setErrorListOptional(Optional.ofNullable(errorStampInfos));
 		
+		// ドメイン「応援の運用設定」を取得する
+		SupportOperationSetting supportOperationSetting = this.supportOperationSettingRepo.get(companyId);
+		
+		// 応援の運用設定.利用するか　＝　true
+		if (supportOperationSetting.isSupportDestinationCanSpecifySupporter()) {
+			
+		}
+		
 		return appStampOutput;
+	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF002_打刻申請.B：打刻申請（新規）→A・B画面.打刻申請（新規）共通アルゴリズム.職場名・場所名を取得する.職場名・場所名を取得する
+	 *
+	 * @param isGetWorkPlaceName 職場名を取得する（boolean）
+	 * @param isGetWorkLocationName 場所名を取得する
+	 * @param workPlaceIds 職場ID
+	 * @param workLocationCds 勤務場所コード
+	 * @return the list
+	 */
+	public List<String> findWkpAndWorkLocationName(boolean isGetWorkPlaceName
+												 , boolean isGetWorkLocationName
+												 , List<WorkplaceId> workPlaceIds
+												 , List<String> workLocationCds
+												 , Optional<GeneralDate> baseDate) {
+		// 職場名を取得するかをチェックする
+		// 職場名を取得する＝true　AND　職場ID（List）NOT　Empty
+		if (isGetWorkPlaceName && !workPlaceIds.isEmpty() && baseDate.isPresent()) {
+			// 職場名を取得する
+			return this.workplaceAdapter.findWkpInfo(workPlaceIds, baseDate.get())
+					   .stream()
+					   .map(WorkplaceNameImported::getWkpName)
+					   .collect(Collectors.toList());
+		}
+		
+		// INPUT.「場所名を取得する」をチェックする
+		// 場所名を取得する＝true　AND　場所コード（List）NOT　Empty
+		if (isGetWorkLocationName && !workLocationCds.isEmpty()) {
+			// 場所名を取得する
+			return this.workLocationAdapter.findWorkLocationName(workLocationCds)
+					   .stream()
+					   .map(WorkLocationNameImported::getWorkLocationName)
+					   .collect(Collectors.toList());
+		}
+		
+		return new ArrayList<>();
 	}
 
 	@Override

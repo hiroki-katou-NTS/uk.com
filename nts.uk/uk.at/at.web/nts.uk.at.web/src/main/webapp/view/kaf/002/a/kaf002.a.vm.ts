@@ -517,13 +517,33 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 item1_temp = item1_temp.concat(items2);   
             } 
         }
+
+        let itemsCheering = (function() {
+            let list = [];
+            let nursingTime = stampRecord.nursingTime;
+            for (let i = 1; i < 3; i++) {
+                let dataObject = new TimePlaceOutput(i);
+                _.forEach(nursingTime, item => {
+                    if (item.frameNo == i) {
+                        dataObject.opStartTime = item.opStartTime;
+                        dataObject.opEndTime = item.opEndTime;
+                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                    }
+                });
+                list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));
+            }
+            
+            return list;
+        })();
         
+
         dataSource.push(item1_temp);
         dataSource.push(items3);
         dataSource.push(items4);
         dataSource.push(items5);
         dataSource.push(items6);
-        dataSource.push([]);
+        dataSource.push(itemsCheering);
         self.dataSourceOb(dataSource);
     }
     initData() {
@@ -601,7 +621,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 let list = [];
                 for (let i = 1; i < 3; i++) {
                     let dataObject = new TimePlaceOutput(i);
-                    list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
+                    list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));
                 }
                 
                 return list;
@@ -631,8 +651,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             dataSource.push( items4 );
             dataSource.push( items5 );
             dataSource.push( items6 );
-            dataSource.push([]);
-            self.dataSourceOb( dataSource );
+            dataSource.push(items7);
+            self.dataSourceOb(dataSource);
         }
     
     

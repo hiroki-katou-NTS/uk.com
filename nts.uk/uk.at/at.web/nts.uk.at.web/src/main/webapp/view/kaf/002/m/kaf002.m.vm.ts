@@ -143,7 +143,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(580)							
 					} else if (self.selectedTab() === 'tab-1') {
-                        $('#kaf002TabPanel').width(800);
+                        $('#kaf002TabPanel').width(900);
                     } else {
 							$('#kaf002TabPanel').width(450)							
 					}
@@ -152,7 +152,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(680)							
 					} else if (self.selectedTab() === 'tab-1') {
-                        $('#kaf002TabPanel').width(900);
+                        $('#kaf002TabPanel').width(1000);
                     } else {
 							$('#kaf002TabPanel').width(550)							
 					}
@@ -268,7 +268,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(580)							
 				} else if (self.selectedTab() === 'tab-1') {
-                    $('#kaf002TabPanel').width(800);
+                    $('#kaf002TabPanel').width(900);
                 } else {
 						$('#kaf002TabPanel').width(450)							
 				}
@@ -277,7 +277,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(680)							
 				} else if (self.selectedTab() === 'tab-1') {
-                    $('#kaf002TabPanel').width(900);
+                    $('#kaf002TabPanel').width(1000);
                 } else {
 						$('#kaf002TabPanel').width(550)							
 				}
@@ -608,7 +608,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         private getCheeringGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
             const self = this;
             let options = {
-                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '770px' : '870px',
+                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '725px' : '825px',
                 height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
                 dataSource: dataSource,
                 primaryKey: 'id',
@@ -655,7 +655,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 ],
                 ntsControls: [
                     {
-                        name: 'Button_WorkPlace', text: nts.uk.resource.getText('KAF002_83'), click: function(data: any) {
+                        name: 'Button_WorkPlace',
+                        text: nts.uk.resource.getText('KAF002_83'),
+                        click: function(data: any) {
                             nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
                             nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
                             });
@@ -663,7 +665,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         controlType: 'Button'
                     },
                     {
-                        name: 'Button_WorkLocation', text: nts.uk.resource.getText('KAF002_84'), click: function(data: any) {
+                        name: 'Button_WorkLocation',
+                        text: nts.uk.resource.getText('KAF002_84'),
+                        click: function(data: any) {
                             nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
                             nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
                             });
@@ -758,7 +762,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				this.nameEnd = nts.uk.resource.getText('KAF002_90', [dataObject.frameNo -2]);
                 param = param + 2;
             } else if (typeStamp === STAMPTYPE.CHEERING) {
-                // TODO
+                this.text1 = nts.uk.resource.getText( 'KAF002_22', [dataObject.frameNo]);
             }
             this.startTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + start + '</span>'
