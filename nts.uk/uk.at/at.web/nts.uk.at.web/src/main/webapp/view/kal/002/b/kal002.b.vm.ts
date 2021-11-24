@@ -299,7 +299,7 @@ module nts.uk.at.view.kal002.c {
                 roleType: 3,
                 multiple: true,
                 currentCode: vm.currentRoleCodes(),
-                roleAtr: 0
+                roleAtr: 1
             };
             nts.uk.ui.windows.setShared("paramCdl025", param);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/025/index.xhtml").onClosed(() => {
