@@ -28,7 +28,9 @@ public class TenantLocatorService {
 	}
 	
 	public static String getDataSourceFor(String tenantCode) {
-		return TenantLocatorClient.getDataSource(tenantCode).get().getDatasourceName();
+		return TenantLocatorClient.getDataSource(tenantCode)
+				.orElseThrow(() -> new RuntimeException("テナントのデータソースが見つかりません：" + tenantCode))
+				.getDatasourceName();
 	}
 	
 	public static boolean isConnected() {

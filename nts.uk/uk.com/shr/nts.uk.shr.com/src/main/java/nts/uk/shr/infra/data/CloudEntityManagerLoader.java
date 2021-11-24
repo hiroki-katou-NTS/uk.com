@@ -3,6 +3,7 @@ package nts.uk.shr.infra.data;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -76,7 +77,18 @@ public class CloudEntityManagerLoader implements EntityManagerLoader{
 
 	@Override
 	public void forTenantDatasource(String tenantCode, Consumer<EntityManager> process) {
+
 		String datasource = TenantLocatorService.getDataSourceFor(tenantCode);
+		val em = entityManagersMap.get(datasource);
+
+		if (em == null) {
+			String message = "データソースが見つかりません" + System.lineSeparator()
+					+ "テナント: " + tenantCode + System.lineSeparator()
+					+ "TenantLocatorに返されたデータソース名: " + datasource + System.lineSeparator()
+					+ "Loaderに実装された全データソース名: " + entityManagersMap.keySet().stream().collect(Collectors.joining(", "));
+
+			throw new RuntimeException(message);
+		}
 //		setSessionVariable();
 		
 		process.accept(entityManagersMap.get(datasource));
