@@ -16,7 +16,6 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.days.FourWeekDays;
 import nts.uk.ctx.at.shared.dom.common.days.WeeklyDays;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayAcqManageByYMDTest.Helper;
 import nts.uk.shr.com.time.calendar.MonthDay;
 @RunWith(Enclosed.class)
 public class HolidayAcqManageByMDTest {
@@ -47,15 +46,15 @@ public class HolidayAcqManageByMDTest {
 		@DataPoints
 		public static Fixture[] cases = {
 			//基準日 < 起算日
-			new Fixture(GeneralDate.ymd(2019, 4, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 28), 4.0)),
-			new Fixture(GeneralDate.ymd(2019, 3, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2019, 2, 3), GeneralDate.ymd(2019, 3, 2), 4.0)),
-			new Fixture(GeneralDate.ymd(2019, 3, 3), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 31), 5.0)),
-			new Fixture(GeneralDate.ymd(2019, 3, 31), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 31), 5.0)),
+			new Fixture(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 28), 4.0),
+			new Fixture(GeneralDate.ymd(2019, 3, 1), GeneralDate.ymd(2019, 2, 3), GeneralDate.ymd(2019, 3, 2), 4.0),
+			new Fixture(GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 31), 5.0),
+			new Fixture(GeneralDate.ymd(2019, 3, 31), GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 31), 5.0),
 			//基準日 >=  起算日
-			new Fixture(GeneralDate.ymd(2021, 4, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)),
-			new Fixture(GeneralDate.ymd(2022, 3, 1), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0)),
-			new Fixture(GeneralDate.ymd(2022, 3, 3), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0)),
-			new Fixture(GeneralDate.ymd(2022, 3, 31), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0))
+			new Fixture(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0),
+			new Fixture(GeneralDate.ymd(2022, 3, 1), GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0),
+			new Fixture(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0),
+			new Fixture(GeneralDate.ymd(2022, 3, 31), GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0)
 		};
 
 		@Theory
@@ -70,9 +69,9 @@ public class HolidayAcqManageByMDTest {
 			HolidayAcqManaPeriod result = holidayAcqManageByMD.getManagementPeriod( require, caseTest.param );
 			
 			//Assert
-			assertThat( result.getPeriod().start()).isEqualTo( caseTest.expect.getPeriod().start() );
-			assertThat( result.getPeriod().end()).isEqualTo( caseTest.expect.getPeriod().end() );
-			assertThat( result.getHolidayDays()).isEqualTo( caseTest.expect.getHolidayDays() );
+			assertThat( result.getPeriod().start()).isEqualTo( caseTest.expectStartDate );
+			assertThat( result.getPeriod().end()).isEqualTo( caseTest.expectEndDate );
+			assertThat( result.getHolidayDays().v()).isEqualTo( caseTest.expectHolidayDays );
 		}
 		
 	}
@@ -80,7 +79,9 @@ public class HolidayAcqManageByMDTest {
 	@AllArgsConstructor
 	static class Fixture {
 		GeneralDate param;
-		HolidayAcqManaPeriod expect;
+		GeneralDate expectStartDate;
+		GeneralDate expectEndDate;
+		Double expectHolidayDays;
 	}
 	
 }

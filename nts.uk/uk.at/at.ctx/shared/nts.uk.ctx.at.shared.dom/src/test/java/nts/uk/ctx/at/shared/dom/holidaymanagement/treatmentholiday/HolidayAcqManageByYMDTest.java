@@ -14,12 +14,11 @@ import lombok.val;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.FourWeekDays;
 
 @RunWith(Enclosed.class)
 public class HolidayAcqManageByYMDTest {
-
+	
 	@Injectable
 	private HolidayAcquisitionManagement.Require require;
 	
@@ -53,13 +52,13 @@ public class HolidayAcqManageByYMDTest {
 		@DataPoints
 		public static Fixture[] cases = {
 			//基準日 < 起算日
-			new Fixture(GeneralDate.ymd(2020, 10, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2020, 10, 15), GeneralDate.ymd(2020, 11, 11), 4.0)),
-			new Fixture(GeneralDate.ymd(2020, 11, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9), 4.0)),
-			new Fixture(GeneralDate.ymd(2021, 3, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 3, 4), GeneralDate.ymd(2021, 3, 31), 4.0)),
+			new Fixture(GeneralDate.ymd(2020, 10, 15), GeneralDate.ymd(2020, 10, 15), GeneralDate.ymd(2020, 11, 11), 4.0),
+			new Fixture(GeneralDate.ymd(2020, 11, 15), GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9), 4.0),
+			new Fixture(GeneralDate.ymd(2021, 3, 15), GeneralDate.ymd(2021, 3, 4), GeneralDate.ymd(2021, 3, 31), 4.0),
 			//基準日 >=  起算日
-			new Fixture(GeneralDate.ymd(2021, 4, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0)),
-			new Fixture(GeneralDate.ymd(2021, 9, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2021, 8, 19), GeneralDate.ymd(2021, 9, 15), 4.0)),
-			new Fixture(GeneralDate.ymd(2022, 3, 15), Helper.createHolidayAcqManaPeriod(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 30), 4.0)),
+			new Fixture(GeneralDate.ymd(2021, 4, 15), GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0),
+			new Fixture(GeneralDate.ymd(2021, 9, 15), GeneralDate.ymd(2021, 8, 19), GeneralDate.ymd(2021, 9, 15), 4.0),
+			new Fixture(GeneralDate.ymd(2022, 3, 15), GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 30), 4.0)
 		};
 
 		@Theory
@@ -73,9 +72,9 @@ public class HolidayAcqManageByYMDTest {
 			HolidayAcqManaPeriod result = holidayAcqManageByYMD.getManagementPeriod( require, caseTest.param );
 			
 			//Assert
-			assertThat( result.getPeriod().start()).isEqualTo( caseTest.expect.getPeriod().start() );
-			assertThat( result.getPeriod().end()).isEqualTo( caseTest.expect.getPeriod().end() );
-			assertThat( result.getHolidayDays()).isEqualTo( caseTest.expect.getHolidayDays() );
+			assertThat( result.getPeriod().start()).isEqualTo( caseTest.expectStartDate );
+			assertThat( result.getPeriod().end()).isEqualTo( caseTest.expectEndDate );
+			assertThat( result.getHolidayDays().v() ).isEqualTo( caseTest.expectHolidayDays );
 		}
 		
 	}
@@ -83,22 +82,9 @@ public class HolidayAcqManageByYMDTest {
 	@AllArgsConstructor
 	static class Fixture {
 		GeneralDate param;
-		HolidayAcqManaPeriod expect;
+		GeneralDate expectStartDate;
+		GeneralDate expectEndDate;
+		Double expectHolidayDays;
 	}
 	
-	public static class Helper {
-		
-		/**
-		 * 休日取得の管理期間を作成する
-		 * @param startDate 開始日
-		 * @param endDate 終了日
-		 * @param holidayDays 休日日数
-		 * @return
-		 */
-		public static HolidayAcqManaPeriod createHolidayAcqManaPeriod( GeneralDate startDate, GeneralDate endDate, Double holidayDays) {
-			
-			return new HolidayAcqManaPeriod( new DatePeriod( startDate, endDate), new FourWeekDays(holidayDays));
-		}
-		
-	}
 }
