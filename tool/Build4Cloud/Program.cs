@@ -12,16 +12,20 @@ namespace Build4Cloud
     {
         static void Main(string[] args)
         {
-            if (args.Length < 1)
+            int dataSourcesCount;
+            if (args.Length >= 1)
             {
-                Console.WriteLine("コマンドライン引数でデータソース数を指定してください");
-                return;
+                dataSourcesCount = int.Parse(args[0]);
+            }
+            else
+            {
+                dataSourcesCount = 1; // テスト用
             }
 
             IEnumerable<string> targetProjects;
-            if (args.Length == 1)
+            if (args.Length < 2)
             {
-                targetProjects = new[] { "com", "at", "cloud" };
+                targetProjects = new[] { "cloud" };
             }
             else
             {
@@ -37,14 +41,14 @@ namespace Build4Cloud
             int datasourcesCount = int.Parse(args[0]);
 
             var loader = new EntityManagerLoader(context.RootPath);
-            loader.CreateCloudEdition(datasourcesCount);
+            loader.CreateCloudEdition(dataSourcesCount);
 
             foreach (var project in context.Projects)
             {
                 string pathToWeb = Path.Combine(context.RootPath, $"uk.{project}", $"{project}.web", $"nts.uk.{project}.web");
 
                 var xml = new PersistenceXml(context.RootPath, pathToWeb);
-                xml.CreateCloudEdition(datasourcesCount);
+                xml.CreateCloudEdition(dataSourcesCount);
 
                 Build(pathToWeb);
 
