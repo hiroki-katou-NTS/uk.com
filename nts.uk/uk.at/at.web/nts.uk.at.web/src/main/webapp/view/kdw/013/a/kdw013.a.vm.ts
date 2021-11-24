@@ -911,7 +911,7 @@ module nts.uk.ui.at.kdw013.a {
             let result = [];
             _.forEach(dates, date => {
                 let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
-                if (eventsInday.length > 20) {
+                if (_.flattenDeep(_.map(eventsInday, e => _.map(e.extendedProps.taskBlock.taskDetails, td => td.supNo))).length > 20) {
                     result.push(moment(date).format(DATE_FORMAT));
                 }
             });
