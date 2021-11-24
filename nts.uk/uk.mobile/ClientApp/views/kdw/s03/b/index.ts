@@ -11,6 +11,7 @@ import { CdlS04AComponent } from 'views/cdl/s04/a';
 import { CdlS02AComponent } from 'views/cdl/s02/a';
 import { CdlS24AComponent } from 'views/cdl/s24/a';
 import { Kdls12Component } from 'views/kdl/s12';
+import { result } from 'lodash';
 
 @component({
     name: 'kdws03b',
@@ -114,6 +115,7 @@ export class KdwS03BComponent extends Vue {
         lstTimeLimit: []
     };
     private masterDialogParam: Array<number> = [];
+    private masterItemIdParam: Array<number> = [];
     private oldData: any = [];
     private oldCheckBox: Array<number> = [];
     private listAutoCalc: any = [];
@@ -163,12 +165,13 @@ export class KdwS03BComponent extends Vue {
         self.addCustomValid();
         self.oldData = self.toJS(self.screenData[0]);
         self.createMasterComboBox();
+        self.getListTaskSup(self.masterItemIdParam);
         self.$http.post('at', API.masterDialogData, {
             types: self.masterDialogParam,
-            date: new Date(),
+            date: moment(self.params.date).utc().toDate(),
             employeeID: self.params.employeeID,
             workTypeCD: self.screenData1.A28
-        }).then((masterData: any) => {
+        }).then( (masterData: any) => {
             self.createMasterData(masterData.data);
             self.$mask('hide');
         }).catch((res: any) => {
@@ -179,6 +182,30 @@ export class KdwS03BComponent extends Vue {
                 });
         });
         self.screenDataWatch();
+    }
+
+    public getListTaskSup(keys: number[])  {
+        let self = this;        
+        self.$http.post('at', API.masterTaskSupOpt, {            
+            itemIds: self.masterItemIdParam,
+            date: moment(self.params.date).utc().toDate(),
+        }).then((dataAll: any) => {
+            _.forEach(keys, (key) => {
+                self.masterData[key] = [];
+                _.forEach(dataAll.data[key], (o) => {
+                    self.masterData[key].push({ code: o.code, name: o.name });                    
+                }); 
+                self.masterData[key].push({ code: '', name: 'なし' });
+            }); 
+            self.createMasterData(dataAll.data);
+            self.$mask('hide');
+        }).catch((res: any) => {
+            self.$mask('hide');
+            self.$modal.error(res.messageId)
+                .then(() => {
+                    self.$close();
+                });
+        });
     }
 
     public beforeUpdate() {
@@ -302,10 +329,12 @@ export class KdwS03BComponent extends Vue {
         _.forEach(data[MasterType.KDLS32_Reason], (o) => {
             self.masterData.reason.push({ code: o.code, name: o.name });
         });
+
         if (!_.find(self.masterData.reason, (item) => item.code == '')) {
             self.masterData.reason.push({ code: '', name: 'なし' });
-        }
+        }        
         _.forEach(self.screenData1, (value, key) => {
+            self.getRowComboBox(key);
             let attendanceItem = self.getAttendanceItem(key);
             if (!(self.getItemType(key) == ItemType.InputStringCode || self.getItemType(key) == ItemType.ButtonDialog)) {
                 return;
@@ -324,6 +353,19 @@ export class KdwS03BComponent extends Vue {
                         rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
                     }
                     break;
+                // case MasterType.KDL013_TaskSupOption:
+                //     rowData.comboLst = data;
+                    // _.forEach(data, (o) => {
+                    //     self.masterData.lstTaskSup.push({ code: o.code, name: o.name });
+                    // });
+                    // if (!_.find(self.masterData.lstTaskSup, (item) => item.code == '')) {
+                    //     self.masterData.lstTaskSup.push({ code: '', name: 'なし' });
+                    // }
+                    // if (!_.find(rowData.comboLst, (item) => item.code == value)) {
+                    //     rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
+                    // }
+                    // break;
+                
                 default: break;
             }
         });
@@ -344,6 +386,7 @@ export class KdwS03BComponent extends Vue {
 
     public getRowComboBox(key: string) {
         let self = this;
+        let idKey = key.replace('A', '');
         let masterType = self.getItemMasterType(key);
         switch (masterType) {
             case MasterType.DoWork:
@@ -358,7 +401,9 @@ export class KdwS03BComponent extends Vue {
                 return self.masterData.lstReasonGoOut;
             case MasterType.TimeLimit:
                 return self.masterData.lstTimeLimit;
-            default: 
+            case MasterType.KDL013_TaskSupOption:    
+                return self.masterData[idKey];
+            default:             
                 return _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).comboLst;
         }
     }
@@ -370,6 +415,9 @@ export class KdwS03BComponent extends Vue {
             case ItemType.InputNumber:
                 rowData.value = _.isEmpty(rowData.value) ? null : _.toNumber(rowData.value);
                 break;
+            case ItemType.InputNumericValue:
+                    rowData.value = _.isEmpty(rowData.value) ? null : _.toNumber(rowData.value);
+                    break;
             case ItemType.InputMoney:
                 rowData.value = _.isEmpty(rowData.value) ? null : _.toNumber(rowData.value);
                 break;
@@ -492,6 +540,7 @@ export class KdwS03BComponent extends Vue {
                         }
                     }                        
                     break;
+                
                 case ItemType.InputMoney:
                     self.$set(self.screenData1, rowData.key, rowData.value);
                     if (contraint.cdisplayType == 'Primitive') {
@@ -542,6 +591,32 @@ export class KdwS03BComponent extends Vue {
                             required: contraint.required
                         };
                     }
+                    break;
+
+                case  ItemType.InputNumericValue:
+                    if (rowData.value) {
+                        self.$set(self.screenData1, rowData.key, rowData.value);
+                    } else if (!rowData.value) {   
+                        self.$set(self.screenData1, rowData.key, 0);
+                    } else {
+                        self.$set(self.screenData1, rowData.key, rowData.value);
+                    }
+                    
+                    if (!_.isNull(contraint)) {
+                        if (contraint.cdisplayType == 'Primitive') {
+                            screenDataValid[rowData.key] = {
+                                loop: true,
+                                required: contraint.required
+                            };
+                        } else {
+                            screenDataValid[rowData.key] = {
+                                loop: true,
+                                required: contraint.required,
+                                min: _.toNumber(contraint.min),
+                                max: _.toNumber(contraint.max)
+                            };
+                        }
+                    }                        
                     break;
                 default:
                     self.$set(self.screenData1, rowData.key, rowData.value);
@@ -607,8 +682,12 @@ export class KdwS03BComponent extends Vue {
         switch (attendanceItem.attendanceAtr) {
             case ItemType.InputStringCode:
                 if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
-                    self.masterDialogParam.push(attendanceItem.typeGroup);
+                    self.masterDialogParam.push(attendanceItem.typeGroup);                    
                 }
+
+                if (attendanceItem.typeGroup == 19) {
+                    self.masterItemIdParam.push(attendanceItem.id);
+                }                        
                 break;
             case ItemType.ButtonDialog:
                 if (!_.includes(self.masterDialogParam, attendanceItem.typeGroup)) {
@@ -1133,6 +1212,7 @@ export class KdwS03BComponent extends Vue {
 const API = {
     getPrimitiveAll: 'screen/at/correctionofdailyperformance/getPrimitiveAll',
     masterDialogData: 'screen/at/correctionofdailyperformance/getMasterDialogMob',
+    masterTaskSupOpt: 'screen/at/correctionofdailyperformance/getMasterTaskSupMob',
     register: 'screen/at/correctionofdailyperformance/addUpMobile',
     linkItemCalc: 'screen/at/correctionofdailyperformance/calcTime'
 };
@@ -1202,7 +1282,8 @@ export enum ItemType {
     ComboBox = 4,
     Time = 5,
     TimeWithDay = 6,
-    InputStringChar = 7
+    InputStringChar = 7,
+    InputNumericValue = 9
 }
 
 export enum MasterType {
@@ -1220,7 +1301,8 @@ export enum MasterType {
     Remasks = 12,
     TimeLimit = 13,
     CDLS24_BusinessType = 14,
-    KDLS12_TaskSelection = 15
+    KDLS12_TaskSelection = 15,
+    KDL013_TaskSupOption = 19
 }
 
 interface RowData {
