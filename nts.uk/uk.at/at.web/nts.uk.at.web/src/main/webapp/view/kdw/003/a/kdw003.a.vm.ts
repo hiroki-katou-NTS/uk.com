@@ -1202,7 +1202,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             })
                             let value: any;
                             value = self.getPrimitiveValue(data.value, item.attendanceAtr);
-							if (value == true || value == false) {
+							if (value === true || value === false) {
 								value = value ? 1 : 0
 							}
                             let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0);
