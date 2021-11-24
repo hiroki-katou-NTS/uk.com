@@ -29,6 +29,9 @@ module ccg018.b.viewmodel {
         baseDate: KnockoutObservable<Date>;
         selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
+        listSwitchDate: KnockoutObservableArray<number> = ko.observableArray();
+        selectedSwitchDate: KnockoutObservable<number> = ko.observable(0);
+
         constructor(baseModel: base.result.BaseResultModel) {
             super(baseModel);
             let self = this;
@@ -55,6 +58,7 @@ module ccg018.b.viewmodel {
                     self.selectedItem(_.find(self.items(), ['code', codeChange]));
                     self.employeeName(self.selectedItem().name);
                     self.selectedItemAfterLogin(self.selectedItem().uniqueCode());
+                    self.selectedSwitchDate(self.selectedItem().switchingDate());
                     self.selectedItemAsTopPage(self.selectedItem().topPageCode());
                     self.isEnable(_.find(self.items(), ['code', self.currentCode()]).isAlreadySetting);
                 } else {
@@ -79,11 +83,11 @@ module ccg018.b.viewmodel {
                 });
                 self.findTopPagePersonSet();
             });
-
             self.isEmpty = ko.computed(function() {
-                return !nts.uk.ui.errors.hasError();
+              return !nts.uk.ui.errors.hasError();
             });
-
+            
+            self.listSwitchDate(self.getSwitchDateLists());
         }
 
         initCCG001(): void {
@@ -207,6 +211,7 @@ module ccg018.b.viewmodel {
           }
           const obj: any = {
             employeeId: self.selectedItem().employeeId,
+            switchingDate: self.selectedSwitchDate(),
             topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
             loginMenuCode: (self.selectedItemAfterLogin().length === 6 ? self.selectedItemAfterLogin().slice(0, 4) : ''),
             system: self.selectedItemAfterLogin().slice(-2, -1),
@@ -257,6 +262,7 @@ module ccg018.b.viewmodel {
                             self.isEnable(false);
                             self.selectedItemAfterLogin('');
                             self.selectedItemAsTopPage('');
+                            self.selectedSwitchDate(0);
 //                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_16'));
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             });
@@ -302,6 +308,7 @@ module ccg018.b.viewmodel {
                 _.forEach(lstSelection, id => {
                   const obj: any = {
                     employeeId: id,
+                    switchingDate: vm.selectedSwitchDate(),
                     topMenuCode: vm.selectedItemAsTopPage() ? vm.selectedItemAsTopPage() : '',
                     loginMenuCode: (vm.selectedItemAfterLogin().length === 6 ? vm.selectedItemAfterLogin().slice(0, 4) : vm.selectedItemAsTopPage()),
                     system: vm.selectedItemAfterLogin().slice(-2, -1),

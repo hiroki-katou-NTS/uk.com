@@ -55,6 +55,7 @@ module ccg018.a1.viewmodel {
                 name: x.roleSetName,
                 loginMenuCode: dataObj.loginMenuCode,
                 topMenuCode: dataObj.topMenuCode,
+                switchingDate: dataObj.switchingDate,
                 system: dataObj.system,
                 menuClassification: dataObj.menuClassification
               });
@@ -64,6 +65,7 @@ module ccg018.a1.viewmodel {
                 name: x.roleSetName,
                 loginMenuCode: '',
                 topMenuCode: '',
+                switchingDate: 0,
                 system: 0,
                 menuClassification: 0
               });
@@ -259,6 +261,7 @@ module ccg018.a1.viewmodel {
     menuClassification: number;
     system: number;
     name: string;
+    switchingDate: number = 0;
   }
   class TopPageRoleSet {
     roleSetCode: string;
@@ -268,6 +271,7 @@ module ccg018.a1.viewmodel {
     menuClassification: number;
     loginMenuCode: string;
     uniqueCode: string;
+    switchingDate: number = 0;
     //beacause there can exist same code, so create uniqueCode = loginMenuCd+ system+ menuClassification
     // uniqueCode: KnockoutObservable<string> = ko.observable('');
 
@@ -277,6 +281,7 @@ module ccg018.a1.viewmodel {
       vm.name = param.name;
       vm.topMenuCode = param.topMenuCode;
       vm.loginMenuCode = param.loginMenuCode;
+      vm.switchingDate = param.switchingDate;
       vm.system = param.system;
       vm.menuClassification = param.menuClassification;
       vm.uniqueCode = nts.uk.text.format("{0}{1}{2}", param.loginMenuCode, param.system, param.menuClassification);
