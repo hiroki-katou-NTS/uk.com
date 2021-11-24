@@ -116,7 +116,8 @@ module nts.uk.at.view.kal001.b {
                         {
                             name: "Tooltips",
                             columnSettings: [
-                                {columnKey: "workplaceName", allowTooltips: true}
+                                {columnKey: "workplaceName", allowTooltips: true},
+                                {columnKey: "menuDisplay", allowTooltips: false}
                             ]
                         },
                         {
