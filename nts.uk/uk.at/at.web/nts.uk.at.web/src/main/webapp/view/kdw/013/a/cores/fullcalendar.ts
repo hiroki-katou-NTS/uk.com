@@ -2009,6 +2009,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             [GROUP_ID]: SELECTED,
                             extendedProps: {
                                 status: 'new',
+                                isChanged: true,
                                 //作業枠利用設定
                                 taskFrameUsageSetting: ko.unwrap((vm.params.$settings)),
                                 //社員ID
@@ -3609,13 +3610,23 @@ module nts.uk.ui.at.kdw013.calendar {
                                         let canRemove = e.editable && starts.indexOf(formatDate(e.start)) !== -1;
                                         
                                         if (canRemove) {
-                                            let removeList = vm.params.screenA.removeList;
-                                            let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
-                                            let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
-                                            if (removeDate) {
-                                                removeDate.supNos.push(...supNos);
+                                            if (e.extendedProps.isTimeBreak) {
+                                                let removeList = vm.params.screenA.removeBreakList;
+                                                let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
+                                                if (removeDate) {
+                                                    removeDate.nos.push(_.get(e, 'extendedProps.no', []));
+                                                } else {
+                                                    removeList.push({ date: moment(e.start).startOf('day').toDate(), nos: [_.get(e, 'extendedProps.no', [])] });
+                                                }
                                             } else {
-                                                removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
+                                                let removeList = vm.params.screenA.removeList;
+                                                let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(e.start), 'days'));
+                                                let supNos = _.map(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                                                if (removeDate) {
+                                                    removeDate.supNos.push(...supNos);
+                                                } else {
+                                                    removeList.push({ date: moment(e.start).startOf('day').toDate(), supNos });
+                                                }
                                             }
                                         }
 
