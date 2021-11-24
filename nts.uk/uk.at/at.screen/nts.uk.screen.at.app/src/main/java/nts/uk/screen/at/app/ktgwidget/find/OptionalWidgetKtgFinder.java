@@ -180,6 +180,7 @@ public class OptionalWidgetKtgFinder {
 	/**
 	 * UKDesign.UniversalK.就業.KTG_ウィジェット.共通アルゴリズム.ウィジェット初期表示月の取得.ウィジェット初期表示月の取得
 	 */
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public WidgetInitialDisplayMonthDto getWidgetInitialDisplayMonth() {
 		// [RQ609]ログイン社員のシステム日時点の処理対象年月を取得する
 		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
