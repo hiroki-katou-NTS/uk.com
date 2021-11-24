@@ -149,8 +149,8 @@ public class GetInformationStartupScreenQuery {
         private RegulationInfoEmployeePub regulInfoEmpPub;
 
         @Override
-        public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
-            List<String> data = workplaceGroupAdapter.getReferableEmp(empId, date, DatePeriod.oneDay(date), workplaceGroupID);
+        public List<String> getEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period, String workplaceGroupID) {
+            List<String> data = workplaceGroupAdapter.getReferableEmp(empId, date, period, workplaceGroupID);
             return data;
         }
 
@@ -194,8 +194,8 @@ public class GetInformationStartupScreenQuery {
                     .worktypeCodes(new ArrayList<String>())
                     .filterByClosure(false)
                     .closureIds(new ArrayList<Integer>())
-                    .periodStart(GeneralDateTime.now())
-                    .periodEnd(GeneralDateTime.now())
+                    .periodStart( GeneralDateTime.fromString(q.getPeriodStart() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT) )
+                    .periodEnd( GeneralDateTime.fromString(q.getPeriodEnd() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT) )
                     .includeIncumbents(true)
                     .includeWorkersOnLeave(true)
                     .includeOccupancy(true)
@@ -215,7 +215,7 @@ public class GetInformationStartupScreenQuery {
         }
 
         @Override
-		public List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId) {
+		public List<String> getAllEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period) {
 			// don't have to implement it
 			return null;
 		}

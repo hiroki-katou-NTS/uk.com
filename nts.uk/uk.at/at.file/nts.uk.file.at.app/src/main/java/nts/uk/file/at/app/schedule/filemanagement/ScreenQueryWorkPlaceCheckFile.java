@@ -438,22 +438,22 @@ public class ScreenQueryWorkPlaceCheckFile {
         }
 
 //        @Override
-//        public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
-//            return workplaceGroupAdapter.getReferableEmp(date, empId, workplaceGroupID);
+//        public List<String> getEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period, String workplaceGroupID) {
+//            return workplaceGroupAdapter.getReferableEmp(empId, date, period, workplaceGroupID);
 //        }
 
         @Override
-        public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
+        public List<String> getEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period, String workplaceGroupID) {
             return workplaceGroupCache.get(new GetEmpCanReferByWorkplaceGroupParam(date, empId, workplaceGroupID)).orElse(new ArrayList<String>());
         }
 
 //        @Override
-//        public List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId) {
-//            return workplaceGroupAdapter.getAllReferableEmp(date, empId);
+//        public List<String> getAllEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period) {
+//            return workplaceGroupAdapter.getAllReferableEmp(empId, date, period);
 //        }
 
         @Override
-        public List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId) {
+        public List<String> getAllEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period) {
             return workplaceGroupAllCache.get(new GetAllEmpCanReferByWorkplaceGroupParam(date, empId)).orElse(new ArrayList<String>());
         }
 
@@ -494,8 +494,8 @@ public class ScreenQueryWorkPlaceCheckFile {
                     .worktypeCodes(new ArrayList<String>())
                     .filterByClosure(false)
                     .closureIds(new ArrayList<Integer>())
-                    .periodStart(GeneralDateTime.now())
-                    .periodEnd(GeneralDateTime.now())
+                    .periodStart( GeneralDateTime.fromString(regulationInfoEmpQuery.getPeriodStart() + " 00:00", "yyyy/MM/dd HH:mm") )
+                    .periodEnd( GeneralDateTime.fromString(regulationInfoEmpQuery.getPeriodEnd() + " 00:00", "yyyy/MM/dd HH:mm") )
                     .includeIncumbents(true)
                     .includeWorkersOnLeave(true)
                     .includeOccupancy(true)
