@@ -643,10 +643,8 @@ module nts.uk.ui.at.kdw013.c {
 			let vm = this;
 			const start = vm.taskBlocks.caltimeSpanView.start();
     		const end = vm.taskBlocks.caltimeSpanView.end();
-			if(vm.taskBlocks.taskDetailsView().length == 1 && _.isNumber(start) && _.isNumber(end) && end > start){
+			if(_.isNumber(start) && _.isNumber(end) && end > start){
 				vm.taskBlocks.caltimeSpanView.range(getText('KDW013_25') + ' '+ number2String(end - start));
-			}else{
-				vm.taskBlocks.caltimeSpanView.range('');
 			}
 		}
 
@@ -1401,27 +1399,18 @@ module nts.uk.ui.at.kdw013.c {
 	}
 	
 	export function custominePositionCombo(){
-		let resetPosition = function(e: JQueryEventObject){
-			if($('.taskDetails').css("overflow-y") == 'scroll') {
-				var p = e.target.parentElement.parentElement.parentElement;
-				var listitemholder = $(p).find('.ui-igcombo-listitemholder');
-				var bottomListitemholder = listitemholder.offset().top + listitemholder.outerHeight(true);
-				var bottomTaskDetails = $('.taskDetails').offset().top + $('.taskDetails').outerHeight(true);
-				if(bottomListitemholder > bottomTaskDetails){
-					$(p).igCombo({dropDownOrientation: 'top'});
-				}else{
-					$(p).igCombo({dropDownOrientation: 'bottom'});
-				}
-			} 
-		};
-		$('.edit-event .taskDetails .ui-igcombo-button').click((e)=>{
-			let interval = setInterval(function () {
-				resetPosition(e);
-	        });	
-			setTimeout(() => {
-				clearInterval(interval);
-			}, 200);
+		$('.edit-event .taskDetails .ui-igcombo-wrapper').igCombo({
+			dropDownOpened: function () {
+				let d = $(this);
+				let heightContent = $('.taskDetails').css("overflow-y") == 'scroll'? $('.taskDetails').offset().top + $('.taskDetails').outerHeight(true) : $('#master-wrapper').outerHeight(true);
+				var dropdown = d.find('.ui-igcombo-dropdown');
+				var bottomDropdownr = dropdown.offset().top + dropdown.outerHeight(true);
+				if(bottomDropdownr > heightContent){
+					d.igCombo({dropDownOrientation: 'top'});
+				}else if(d.offset().top + d.outerHeight(true) + dropdown.outerHeight(true) < heightContent){
+					d.igCombo({dropDownOrientation: 'bottom'});
+				}	
+			}	
 		});
-		
 	}
 }

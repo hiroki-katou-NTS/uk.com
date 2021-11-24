@@ -3321,13 +3321,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                             endTime: formatTime(end, false)
                                         }
                                     );
+
                                 }
                             } else {
                                 bhs.push({
-                                     daysOfWeek: [cbh.dayOfWeek],
-                                     startTime: formatTime(cbh.start, false),
-                                     endTime: formatTime(cbh.end, false)
-                                });  
+                                    daysOfWeek: [cbh.dayOfWeek],
+                                    startTime: formatTime(cbh.start, false),
+                                    endTime: formatTime(cbh.end, false)
+                                });
+
                             }
                         }
                         
@@ -3862,7 +3864,14 @@ module nts.uk.ui.at.kdw013.calendar {
 
                         // remove???
                         event.remove();
-
+                        let removeList = vm.params.screenA.removeList;
+                        let removeDate = _.find(removeList(), (ri) => moment(ri.date).isSame(moment(event.start), 'days'));
+                        let supNos = _.map(_.get(event, 'extendedProps.taskBlock.taskDetails', []), td => td.supNo);
+                        if (removeDate) {
+                            removeDate.supNos.push(...supNos);
+                        } else {
+                            removeList.push({ date: moment(event.start).startOf('day').toDate(), supNos });
+                        }
                         // trigger update from parent view
                         mutated.valueHasMutated();
                     })
