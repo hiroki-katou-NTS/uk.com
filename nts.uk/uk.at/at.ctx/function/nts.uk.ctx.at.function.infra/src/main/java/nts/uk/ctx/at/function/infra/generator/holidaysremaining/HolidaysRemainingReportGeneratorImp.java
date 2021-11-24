@@ -620,11 +620,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
         }
         // RQ 363
-        //val listAnnLeaveUsageStatusOfThisMonth = hdRemainingInfor.getListAnnLeaveUsageStatusOfThisMonth();
+        val listAnnLeaveUsageStatusOfThisMonth = hdRemainingInfor.getListAnnLeaveUsageStatusOfThisMonth();
         // rs 363
         List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New = hdRemainingInfor.getRs363New();
-        if (dataSource != null && rs363New != null) {
+        if (dataSource != null && listAnnLeaveUsageStatusOfThisMonth != null) {
             // E1_4
+
             val valueE14 = listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getRemainDay).sum();
             Double leave_DaysRemain = checkShowAreaAnnualBreak1(
                     dataSource.getHolidaysRemainingManagement()) ?
@@ -810,6 +811,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         // Result RequestList363
         val closeDateOpt = hdRemainingInfor.getClosureInforOpt();
+        if (listAnnLeaveUsageStatusOfThisMonth != null) {
             for (AggrResultOfAnnualLeaveEachMonthKdr item : rs363New) {
                 if (currentMonth.compareTo(item.getYearMonth()) > 0) {
                     continue;
@@ -995,7 +997,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     setBackgroundGray(cells.get(firstRow + row33, 10 + totalMonth));
                 }
             }
-
+        }
         firstRow += totalAddRows;
         count += totalAddRows;
         for (int index = 0; index < NUMBER_COLUMN - 2; index++) {
@@ -2414,7 +2416,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 YearMonth currentMonth = employee.getCurrentMonth().get();
 
                 // Result RequestList273
-                //val specialVacationImported = hdRemainingInfor.getMapSpecialVacation().get(specialHolidayCode);
+                val specialVacationImported = hdRemainingInfor.getMapSpecialVacation().get(specialHolidayCode);
                 val result273New = hdRemainingInfor.getMap273New().get(specialHolidayCode);
                 // Result RequestList263
                 // RS263 NEW
@@ -2471,7 +2473,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 val vlm15 = result273New.getRemainDateBf();
                 cells.get(firstRow, 7).setValue(vlm15 != null ? df.format(vlm15) : "");
 
-                if (result273New.getRemainDate() != null && result273New.getRemainDate() < 0) {
+                if (specialVacationImported.getRemainDate() != null && specialVacationImported.getRemainDate() < 0) {
                     setForegroundRed(cells.get(firstRow, 7));
                 }
                 if (rs263 != null) {
