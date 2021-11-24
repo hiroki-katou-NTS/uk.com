@@ -11,7 +11,6 @@ import { CdlS04AComponent } from 'views/cdl/s04/a';
 import { CdlS02AComponent } from 'views/cdl/s02/a';
 import { CdlS24AComponent } from 'views/cdl/s24/a';
 import { Kdls12Component } from 'views/kdl/s12';
-import { result } from 'lodash';
 
 @component({
     name: 'kdws03b',
@@ -42,7 +41,8 @@ import { result } from 'lodash';
             AnyItemTime: { constraint: 'AnyItemTime' },
             AnyTimeMonth: { constraint: 'AnyTimeMonth' },
             AnyItemTimes: { constraint: 'AnyItemTimes' },
-            AnyTimesMonth: { constraint: 'AnyTimesMonth' }
+            AnyTimesMonth: { constraint: 'AnyTimesMonth' },
+            SuppNumValue: { constraint: 'SuppNumValue' }
         }
     },
     constraints: [
@@ -68,7 +68,8 @@ import { result } from 'lodash';
         'nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth',
         'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes',
         'nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth',
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode'
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode',
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppNumValue'
     ],
     components: {
         'kdws03d': KdwS03DComponent,
@@ -171,8 +172,11 @@ export class KdwS03BComponent extends Vue {
             date: moment(self.params.date).utc().toDate(),
             employeeID: self.params.employeeID,
             workTypeCD: self.screenData1.A28
-        }).then( (masterData: any) => {
-            self.createMasterData(masterData.data);
+        }).then(async (masterData: any) => {
+            await new Promise((next) => {
+                self.createMasterData(masterData.data);
+                next();
+            });           
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
@@ -197,6 +201,17 @@ export class KdwS03BComponent extends Vue {
                 }); 
                 self.masterData[key].push({ code: '', name: 'なし' });
             }); 
+            _.forEach(self.screenData1, (value, key) => {
+                let idKey = key.replace('A', '');
+                if (!(self.getItemType(key) == ItemType.InputStringCode || self.getItemType(key) == ItemType.ButtonDialog)) {
+                    return;
+                }
+                // let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key);     
+                if (!_.find(self.masterData[idKey], (item) => item.code == value)) {
+                    self.masterData[idKey].push({ code: value, name: 'マスタ未登録' });
+                }
+                  
+            });
             self.createMasterData(dataAll.data);
             self.$mask('hide');
         }).catch((res: any) => {
@@ -333,8 +348,7 @@ export class KdwS03BComponent extends Vue {
         if (!_.find(self.masterData.reason, (item) => item.code == '')) {
             self.masterData.reason.push({ code: '', name: 'なし' });
         }        
-        _.forEach(self.screenData1, (value, key) => {
-            self.getRowComboBox(key);
+        _.forEach(self.screenData1, (value, key) => {            
             let attendanceItem = self.getAttendanceItem(key);
             if (!(self.getItemType(key) == ItemType.InputStringCode || self.getItemType(key) == ItemType.ButtonDialog)) {
                 return;
@@ -353,21 +367,10 @@ export class KdwS03BComponent extends Vue {
                         rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
                     }
                     break;
-                // case MasterType.KDL013_TaskSupOption:
-                //     rowData.comboLst = data;
-                    // _.forEach(data, (o) => {
-                    //     self.masterData.lstTaskSup.push({ code: o.code, name: o.name });
-                    // });
-                    // if (!_.find(self.masterData.lstTaskSup, (item) => item.code == '')) {
-                    //     self.masterData.lstTaskSup.push({ code: '', name: 'なし' });
-                    // }
-                    // if (!_.find(rowData.comboLst, (item) => item.code == value)) {
-                    //     rowData.comboLst.push({ code: value, name: 'マスタ未登録' });
-                    // }
-                    // break;
-                
+
                 default: break;
             }
+            self.getRowComboBox(key);
         });
     }
 
@@ -666,6 +669,14 @@ export class KdwS03BComponent extends Vue {
                         constraintObj.required = contraint.required;
                         self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
                         // self.$updateValidator( {screenData : { [rowData.key] : constraintObj}});
+                    }
+                    break;
+                case ItemType.InputNumericValue:
+                    if ( !_.isNull(contraint) && contraint.cdisplayType == 'Primitive') {
+                        constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
+                        constraintObj.loop = true;
+                        constraintObj.required = contraint.required;
+                        self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
                     }
                     break;
                 default:
@@ -1272,6 +1283,7 @@ export enum PrimitiveAll {
     No58 = 'AnyItemTimes',
     No59 = 'AnyTimesMonth',
     No60 = 'DiverdenceReasonCode',
+    No73 = 'SuppNumValue',
 }
 
 export enum ItemType {
