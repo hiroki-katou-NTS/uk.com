@@ -171,8 +171,11 @@ export class KdwS03BComponent extends Vue {
             date: moment(self.params.date).utc().toDate(),
             employeeID: self.params.employeeID,
             workTypeCD: self.screenData1.A28
-        }).then( (masterData: any) => {
-            self.createMasterData(masterData.data);
+        }).then(async (masterData: any) => {
+            await new Promise((next) => {
+                self.createMasterData(masterData.data);
+                next();
+            });           
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
