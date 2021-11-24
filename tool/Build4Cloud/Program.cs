@@ -34,11 +34,9 @@ namespace Build4Cloud
 
             var context = new Context
             {
-                RootPath = FindRootPathFromCurrent(),
+                RootPath = Util.FindRootPathFromCurrent(),
                 Projects = targetProjects,
             };
-
-            int datasourcesCount = int.Parse(args[0]);
 
             var loader = new EntityManagerLoader(context.RootPath);
             loader.CreateCloudEdition(dataSourcesCount);
@@ -50,36 +48,12 @@ namespace Build4Cloud
                 var xml = new PersistenceXml(context.RootPath, pathToWeb);
                 xml.CreateCloudEdition(dataSourcesCount);
 
-                Build(pathToWeb);
+                Util.Gradle("build", pathToWeb);
 
                 xml.RestoreOriginalFile();
             }
 
             loader.RestoreOriginalFile();
-        }
-
-        private static string FindRootPathFromCurrent()
-        {
-            for (string dir = Environment.CurrentDirectory; Directory.Exists(dir); dir = Path.Combine(dir, ".."))
-            {
-                string root = Path.Combine(dir, "nts.uk");
-                if (Directory.Exists(root))
-                {
-                    return root;
-                }
-            }
-
-            throw new Exception("root not found: " + Environment.CurrentDirectory);
-        }
-
-        private static void Build(string pathToWeb)
-        {
-            var processStartInfo = new ProcessStartInfo("gradle", "build");
-            processStartInfo.WorkingDirectory = pathToWeb;
-
-            var process = Process.Start(processStartInfo);
-            process.WaitForExit();
-            process.Close();
         }
     }
 

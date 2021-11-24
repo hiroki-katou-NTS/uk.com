@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,12 @@ namespace Build4Cloud
 {
     class EntityManagerLoader : TemporarilyEditFile
     {
+        private readonly string rootPath;
+
         public EntityManagerLoader(string rootPath)
             : base(Path.Combine(rootPath, @"uk.com\shr\nts.uk.shr.com\src\main\java\nts\uk\shr\infra\data\CloudEntityManagerLoader.java"))
         {
+            this.rootPath = rootPath;
         }
 
         protected override void EditFile(int datasourcesCount)
@@ -38,6 +42,9 @@ namespace Build4Cloud
                     }
                 }
             }
+
+            // com.web以外のビルドのためにupverが必要
+            Util.Gradle("upver", Path.Combine(rootPath, @"uk.com\shr\nts.uk.shr.com"));
         }
 
         private void AppendDataSources(StreamWriter writer, int datasourcesCount)
