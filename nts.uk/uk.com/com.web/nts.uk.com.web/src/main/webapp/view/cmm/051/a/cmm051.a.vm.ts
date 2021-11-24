@@ -521,13 +521,13 @@ module nts.uk.com.view.cmm051.a {
             vm.clearError();
             if(vm.mode() == Mode.WPL){
                 if (isNullOrUndefined(vm.workplaceCode())) {
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_41")});
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: [nts.uk.resource.getText("CMM051_46")]});
                     $('#a8_2').focus();
                     hasError = true;
                     return hasError;
                 }
                 if(isNullOrUndefined(vm.employeeCode())){
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_46")});
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: [nts.uk.resource.getText("CMM051_41")]});
                     $('#a10_2').focus();
                     hasError = true;
                     return hasError;
@@ -535,20 +535,20 @@ module nts.uk.com.view.cmm051.a {
 
             }else {
                 if (isNullOrUndefined(vm.employeeCode())) {
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_46")});
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: [nts.uk.resource.getText("CMM051_41")]});
                     $('#a3_2').focus();
                     hasError = true;
                     return hasError;
                 }
                 if(isNullOrUndefined(vm.workplaceCode())){
-                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: nts.uk.resource.getText("CMM051_41")});
+                    nts.uk.ui.dialog.alertError({messageId: 'Msg_218', messageParams: [nts.uk.resource.getText("CMM051_46")]});
                     $('#a6_2').focus();
                     hasError = true;
                     return hasError;
                 }
             }
             if (isNullOrUndefined(vm.startDate()) || isNullOrUndefined(vm.endDate())) {
-                nts.uk.ui.dialog.alertError({messageId: 'Msg_2201'});
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_2201', messageParams:[]});
                 $('#new_date').focus();
                 hasError = true;
                 return hasError;
@@ -577,6 +577,7 @@ module nts.uk.com.view.cmm051.a {
                     };
                     block.invisible();
                     vm.$ajax("com", API.deleteWkpManager, command).done(() => {
+                        vm.$dialog.info({ messageId: "Msg_16" }).then(()=>{
                             if (mode == Mode.WPL) {
                                 let indexRemove = _.findIndex(vm.employInfors(), (e) => e.id == vm.employeeId());
                                 let emifId: any = null;
@@ -601,7 +602,7 @@ module nts.uk.com.view.cmm051.a {
                                 vm.getEmployeeInfo(sids, wpId);
                             }
                             vm.initScreen(mode, vm.employeeId(), vm.workPlaceId(), vm.historyId());
-                        }
+                        });}
                     ).always(() => {
                         block.clear();
                     }).fail((res) => {
