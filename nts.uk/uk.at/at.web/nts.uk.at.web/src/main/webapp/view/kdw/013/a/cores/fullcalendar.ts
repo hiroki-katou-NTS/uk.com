@@ -161,7 +161,7 @@ module nts.uk.ui.at.kdw013.calendar {
             height: 224px;
         }
         .fc-container .fc-sidebar .fc-events>ul {
-            height: 140px;
+            height: auto;
         }
         .fc-container .fc-sidebar .fc-employees>.ui-igcombo-wrapper {
             width: 100%;
@@ -2310,7 +2310,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .then(() => {
                                     $(vm.$el)
                                         .find('.fc-sidebar')
-                                        .css({ 'width': '220px' });
+                                        .css({ 'width': '255px', 'height': 'calc(100vh - 162px)', 'overflow-y': 'auto' });
 
                                     vm.calendar.updateSize();
                                 });
@@ -2318,10 +2318,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
                 },
                 slotLabelClassNames: (arg) => {
-                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
-                }
-                ,
-                slotLaneClassNames: (arg) => {
                     return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
                 }
                 ,

@@ -912,6 +912,7 @@ module nts.uk.ui.at.kdw013.c {
                             event.setExtendedProp('sId', employeeId);
                             event.setExtendedProp('workingHours', (tr.start()) - (tr.start()));
                             event.setExtendedProp('taskBlock', vm.taskBlocks.getTaskDetails());
+                            event.setExtendedProp('isChanged', vm.changed());
                         }
 
                         // close popup
