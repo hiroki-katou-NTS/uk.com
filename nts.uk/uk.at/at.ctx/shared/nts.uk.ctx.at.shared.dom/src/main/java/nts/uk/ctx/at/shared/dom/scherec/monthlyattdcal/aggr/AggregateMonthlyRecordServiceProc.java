@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
-
-import javax.enterprise.concurrent.ManagedExecutorService;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +13,6 @@ import lombok.val;
 //import lombok.extern.slf4j.Slf4j;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.cache.CacheCarrier;
-import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -106,6 +102,8 @@ public class AggregateMonthlyRecordServiceProc {
 	private List<WorkingConditionItem> workingConditionItems;
 	/** 労働条件 */
 	private Map<String, DatePeriod> workingConditions;
+	/** 週NO管理 */
+	private Map<YearMonth, Integer> weekNoMap;
 	/** 手修正あり */
 	private boolean isRetouch;
 	/** 暫定残数データ */
@@ -152,6 +150,7 @@ public class AggregateMonthlyRecordServiceProc {
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;
+		this.weekNoMap = new HashMap<>();
 		this.isRetouch = false;
 		this.dailyInterimRemainMngs = new HashMap<>();
 		this.isOverWriteRemain = false;
@@ -193,7 +192,6 @@ public class AggregateMonthlyRecordServiceProc {
 				closureId, closureDate, monthlyWorkOpt);
 
 		// 「労働条件項目」を取得
-//		List<WorkingConditionItem> workingConditionItems = require.workingConditionItem(employeeId, monthPeriod);
 		val workingConditions = require.workingCondition(employeeId, monthPeriod);
 		val workingConditionItems = workingConditions.stream().map(c -> c.getWorkingConditionItem()).collect(Collectors.toList());
 		if (workingConditionItems.isEmpty()) {
@@ -217,39 +215,19 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 残数と集計の処理を並列で実行
 		{
-			CountDownLatch cdlAggregation = new CountDownLatch(1);
 			MutableValue<RuntimeException> excepAggregation = new MutableValue<>();
 
 			// 日別修正等の画面から実行されている場合、集計処理を非同期で実行
-			Runnable asyncAggregation = () -> {
-				try {
-					this.aggregationProcess(require, cacheCarrier, monthPeriod);
-				} catch (RuntimeException ex) {
-					excepAggregation.set(ex);
-				} finally {
-					cdlAggregation.countDown();
-				}
-			};
-
-			if (Thread.currentThread().getName().indexOf("REQUEST:") == 0) {
-				require.getExecutorService().submit(AsyncTask.builder()
-						.threadName("Aggregation").build(asyncAggregation));
-			} else {
-				// バッチなどの場合は非同期にせずそのまま実行
-				asyncAggregation.run();
+			try {
+				this.aggregationProcess(require, cacheCarrier, monthPeriod);
+			} catch (RuntimeException ex) {
+				excepAggregation.set(ex);
 			}
 
 			// 残数処理
 			// こちらはDB書き込みをしているので非同期化できない
 			this.remainingProcess(require, cacheCarrier, monthPeriod, companyId, employeeId, yearMonth, closureId,   closureDate,
 					companySets, employeeSets, monthlyCalculatingDailys, datePeriod, remainingProcAtr);
-
-			// 非同期実行中の集計処理と待ち合わせ
-			try {
-				cdlAggregation.await();
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
 
 			// 集計処理で例外が起きていたらここでthrow
 			if (excepAggregation.optional().isPresent()) {
@@ -339,12 +317,6 @@ public class AggregateMonthlyRecordServiceProc {
 		anyItems.stream().forEach(ai -> this.aggregateResult.putAnyItemOrUpdate(ai));
 		
 		ConcurrentStopwatches.stop("12500:任意項目：");
-		ConcurrentStopwatches.start("12600:大塚カスタマイズ：");
-
-		// 大塚カスタマイズ
-		//this.customizeForOtsuka();
-
-		ConcurrentStopwatches.stop("12600:大塚カスタマイズ：");
 
 		// 戻り値にエラー情報を移送
 		for (val errorInfo : this.errorInfos.values()) {
@@ -353,7 +325,6 @@ public class AggregateMonthlyRecordServiceProc {
 
 		return this.aggregateResult;
 	}
-
 
 	/**
 	 * 集計処理
@@ -725,7 +696,6 @@ public class AggregateMonthlyRecordServiceProc {
 		val output = require.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth, closureId, closureDate,
 				companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode, isCalcAttendanceRate);
 
-
 		// 年休、積休
 		this.aggregateResult.getAnnLeaRemNumEachMonthList().addAll(output.getAnnLeaRemNumEachMonthList());
 		this.aggregateResult.getRsvLeaRemNumEachMonthList().addAll(output.getRsvLeaRemNumEachMonthList());
@@ -756,17 +726,6 @@ public class AggregateMonthlyRecordServiceProc {
 		return require.createDailyInterimRemainMngs(cacheCarrier, this.companyId,this.employeeId,period,
 													this.companySets,this.monthlyCalculatingDailys);
 
-	}
-
-
-	/**
-	 * 大塚カスタマイズ
-	 */
-	private void customizeForOtsuka() {
-
-		// 2018.01.21 DEL shuichi_ishida Redmine#105681
-		// 時短日割適用日数
-		// this.TimeSavingDailyRateApplyDays();
 	}
 
 	/**
@@ -854,24 +813,30 @@ public class AggregateMonthlyRecordServiceProc {
 				lastInfo, latsWorkCondition.getContractTime());
 	}
 
-	/**
-	 * 時短日割適用日数
-	 */
-	private void TimeSavingDailyRateApplyDays() {
+	public static interface RequireM13 extends AttendanceTimeOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
+		MonthlyCalculation.RequireM4, VerticalTotalOfMonthly.RequireM1, ExcessOutsideWorkMng.RequireM5, RoundingSetOfMonthly.Require {
 
-		// 月別実績の所属情報を取得
-		val affiliationInfoOpt = this.aggregateResult.getAffiliationInfo();
-		if (!affiliationInfoOpt.isPresent())
-			return;
+	}
 
-		// 月末の勤務情報を判断
-		val lastInfo = affiliationInfoOpt.get().getLastInfo();
-		if (lastInfo.getBusinessTypeCd().map(c -> c.v()).orElse("").compareTo("0000002030") == 0) {
+	public static interface RequireM2 {
 
-			// 任意項目50にセット
-			this.aggregateResult.putAnyItemOrUpdate(AnyItemOfMonthly.of(this.employeeId, this.yearMonth, this.closureId,
-					this.closureDate, 50, Optional.empty(), Optional.of(new AnyTimesMonth(20.67)), Optional.empty()));
-		}
+//		List<WorkTypeOfDailyPerformance> dailyWorkTypes(List<String> employeeId, DatePeriod ymd);
+
+//		Optional<WorkTypeOfDailyPerformance> dailyWorkType(String employeeId, GeneralDate ymd);
+
+		Optional<AffiliationInforOfDailyAttd> dailyAffiliationInfor(String employeeId, GeneralDate ymd);
+
+		Map<GeneralDate, AffiliationInforOfDailyAttd> dailyAffiliationInfors(List<String> employeeId, DatePeriod ymd);
+
+	}
+
+	public static interface RequireM11 {
+
+		AttendanceDaysMonth monthAttendanceDays(CacheCarrier cacheCarrier, DatePeriod period, Map<String, WorkType> workTypeMap);
+	}
+
+	public static interface RequireM12 extends AnyItemAggrResult.RequireM1 {
+
 	}
 
 	public static interface RequireM10 {
@@ -916,7 +881,7 @@ public class AggregateMonthlyRecordServiceProc {
 		List<EditStateOfMonthlyPerformance> monthEditStates(String employeeId, YearMonth yearMonth, ClosureId closureId,
 				ClosureDate closureDate);
 
-		ManagedExecutorService getExecutorService();
+//		ManagedExecutorService getExecutorService();
 	}
 
 	private AttendanceTimeOfMonthly.RequireM2 createAttendanceTimeOfMonthlyRequire(

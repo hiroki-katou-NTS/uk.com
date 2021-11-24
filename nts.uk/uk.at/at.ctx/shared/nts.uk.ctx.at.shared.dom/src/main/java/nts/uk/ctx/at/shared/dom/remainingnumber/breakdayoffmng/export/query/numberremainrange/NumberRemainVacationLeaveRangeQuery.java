@@ -42,11 +42,11 @@ public class NumberRemainVacationLeaveRangeQuery {
 		val sequentialVacaDetail = GetSequentialVacationDetailDaikyu.process(require, inputParam.getCid(),
 				inputParam.getSid(), inputParam.getDateData(), inputParam.getFixManaDataMonth(),
 				inputParam.getInterimMng(), inputParam.getProcessDate(), inputParam.getOptBeforeResult());
-		List<AccumulationAbsenceDetail> lstAccTemp = sequentialVacaDetail.getLstAcctAbsenDetail();
+		List<AccumulationAbsenceDetail> lstAccTemp = sequentialVacaDetail.getVacationDetail().getLstAcctAbsenDetail();
 
 		// 代休、休出から月初の繰越数を計算
 		val calcNumCarry = CalcNumCarryAtBeginMonthFromDaikyu.calculate(require, inputParam.getCid(), inputParam.getSid(),
-				inputParam.getDateData(), sequentialVacaDetail, inputParam.isMode());
+				inputParam.getDateData(), sequentialVacaDetail.getVacationDetail(), inputParam.isMode());
 		result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcNumCarry.getCarryForwardDays()));
 		result.setCarryoverTime(new RemainingMinutes(calcNumCarry.getCarryForwardTime()));
 
@@ -56,7 +56,9 @@ public class NumberRemainVacationLeaveRangeQuery {
 		// 代休と休出の相殺処理
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> lstSeqVacation = OffsetProcessing.process(require,
 				inputParam.getCid(), inputParam.getSid(), inputParam.getDateData().end(), lstAccTemp);
-		result.setLstSeqVacation(lstSeqVacation.getRight());
+		 List<SeqVacationAssociationInfo> linkData = lstSeqVacation.getRight();
+		 linkData.addAll(sequentialVacaDetail.getSeqVacInfoList().getSeqVacInfoList());
+		result.setLstSeqVacation(linkData);
 		// 残った分を参照して、残数と未消化を計算
 		// da co xu ly o tren
 		RemainUndigestResult remainUndigestResult = TotalRemainUndigestNumber.process(require, inputParam.getCid(),
