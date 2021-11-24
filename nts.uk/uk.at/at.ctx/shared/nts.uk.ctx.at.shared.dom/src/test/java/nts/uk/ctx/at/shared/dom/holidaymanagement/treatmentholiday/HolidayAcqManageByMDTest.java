@@ -47,12 +47,21 @@ public class HolidayAcqManageByMDTest {
 		public static Fixture[] cases = {
 			//基準日 < 起算日
 			new Fixture(GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 28), 4.0),
-			new Fixture(GeneralDate.ymd(2019, 3, 1), GeneralDate.ymd(2019, 2, 3), GeneralDate.ymd(2019, 3, 2), 4.0),
-			new Fixture(GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 31), 5.0),
-			new Fixture(GeneralDate.ymd(2019, 3, 31), GeneralDate.ymd(2019, 3, 3), GeneralDate.ymd(2019, 3, 31), 5.0),
+			new Fixture(GeneralDate.ymd(2019, 4, 28), GeneralDate.ymd(2019, 4, 1), GeneralDate.ymd(2019, 4, 28), 4.0),
+				
+			new Fixture(GeneralDate.ymd(2020, 2, 3), GeneralDate.ymd(2020, 2, 3), GeneralDate.ymd(2020, 3, 1), 4.0),
+			new Fixture(GeneralDate.ymd(2020, 3, 1), GeneralDate.ymd(2020, 2, 3), GeneralDate.ymd(2020, 3, 1), 4.0),
+			
+			new Fixture(GeneralDate.ymd(2020, 3, 2), GeneralDate.ymd(2020, 3, 2), GeneralDate.ymd(2020, 3, 31), 5.0),
+			new Fixture(GeneralDate.ymd(2020, 3, 31), GeneralDate.ymd(2020, 3, 2), GeneralDate.ymd(2020, 3, 31), 5.0),
+			
 			//基準日 >=  起算日
 			new Fixture(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0),
-			new Fixture(GeneralDate.ymd(2022, 3, 1), GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0),
+			new Fixture(GeneralDate.ymd(2021, 4, 28), GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0),
+			new Fixture(GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 4, 29), GeneralDate.ymd(2021, 5, 26), 4.0),
+			
+			new Fixture(GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0),
+			new Fixture(GeneralDate.ymd(2022, 3, 2), GeneralDate.ymd(2022, 2, 3), GeneralDate.ymd(2022, 3, 2), 4.0),
 			new Fixture(GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0),
 			new Fixture(GeneralDate.ymd(2022, 3, 31), GeneralDate.ymd(2022, 3, 3), GeneralDate.ymd(2022, 3, 31), 5.0)
 		};
