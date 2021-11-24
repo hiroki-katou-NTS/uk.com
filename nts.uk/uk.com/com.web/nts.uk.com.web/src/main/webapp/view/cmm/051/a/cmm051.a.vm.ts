@@ -391,7 +391,7 @@ module nts.uk.com.view.cmm051.a {
                         if (id != idAddOrUpdate && !vm.isNewMode()) {
                             vm.isNewModeHist(false);
                             vm.isDeleteModeHist(false);
-                            vm.isUpdateModeHist(true);
+                            vm.isUpdateModeHist(false);
                         }
                     }else {
                         vm.isNewModeHist(true);
@@ -810,7 +810,7 @@ module nts.uk.com.view.cmm051.a {
             nts.uk.ui.windows.sub.modal('/view/cmm/051/c/index.xhtml').onClosed(() => {
                 let prams = getShared('dataToScreenA');
                 if (!isNullOrUndefined(prams)) {
-                    vm.isClicked(true);
+                    vm.isClicked(false);
                     let id = vm.historyId();
                     if (id == "idNew") {
                         vm.isNewMode(true);
