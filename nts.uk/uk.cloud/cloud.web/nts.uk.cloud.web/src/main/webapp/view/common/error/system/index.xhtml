@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<title></title>
 			<script>
-				var dialogSize = { width: 800, height: 300 };
+				var dialogSize = { width: 800, height: 500 };
 				var dialogCloseButton = true;
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -18,7 +18,7 @@
 			<com:scriptfile path="../common.error.start.js" />
 		</ui:define>
 
-		<ui:define name="content">
+		<ui:define name="content" style="overflow: scroll;">
 			<div id="contents-area" class="cf"> 
 				<div id="error-time">
 					<label data-bind="text: errorAtTime"></label>
