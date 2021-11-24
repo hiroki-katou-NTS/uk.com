@@ -419,9 +419,13 @@ module nts.uk.at.view.kdw013.h {
 										errorCode: err.message, 
 										$control: $('#'+err.itemId+''), 
 										location: null
-									});	
+									});
 								}else{
-									error(err.message);
+									if($('#'+err.itemId+'').length){
+										$('#'+err.itemId+'').ntsError('set', err.message);
+									}else{
+										error(err.message);	
+									}
 								}
 							});
 						});
