@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="row-right row-switch-button cmm_051">
-                        <div tabindex="4" data-bind="ntsSwitchButton: {
+                        <div id="swa_22" tabindex="4" data-bind="ntsSwitchButton: {
                     name: $i18n('CMM051_38'),
                     options: [
                       { id: 1, name: $i18n('CMM051_39')},
@@ -82,8 +82,9 @@
                         <table id="wkp_list" tabindex="6"
                                data-bind="ntsGridList: {
 	                                            name:'#[CMM051_49]',
-	                                            width: 450,
-	                                            rows: 10,
+	                                            width: 480,
+	                                            height: 441,
+	                                            rows: 20,
 	                                            options: workPlaceList,
 	                                            optionsValue: workPlaceId,
 	                                            primaryKey: 'id',

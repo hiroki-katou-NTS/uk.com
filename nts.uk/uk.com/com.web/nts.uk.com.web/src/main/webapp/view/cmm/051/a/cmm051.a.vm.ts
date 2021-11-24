@@ -288,7 +288,7 @@ module nts.uk.com.view.cmm051.a {
                 isShowSelectAllButton: false,
                 showOptionalColumn: false,
                 maxWidth: 480,
-                maxRows: 15,
+                maxRows: 20,
             };
             $('#kcp005').ntsListComponent(vm.listComponentOption)
         }
@@ -300,6 +300,7 @@ module nts.uk.com.view.cmm051.a {
 
         mounted() {
             let vm = this;
+            $('#swa_22').first().focus();
             vm.mode.subscribe((mode) => {
                 console.log("MODE :" + mode);
                 if (mode == Mode.WPL) {
