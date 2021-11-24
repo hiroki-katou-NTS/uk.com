@@ -41,7 +41,8 @@ import { Kdls12Component } from 'views/kdl/s12';
             AnyItemTime: { constraint: 'AnyItemTime' },
             AnyTimeMonth: { constraint: 'AnyTimeMonth' },
             AnyItemTimes: { constraint: 'AnyItemTimes' },
-            AnyTimesMonth: { constraint: 'AnyTimesMonth' }
+            AnyTimesMonth: { constraint: 'AnyTimesMonth' },
+            SuppNumValue: { constraint: 'SuppNumValue' }
         }
     },
     constraints: [
@@ -67,7 +68,8 @@ import { Kdls12Component } from 'views/kdl/s12';
         'nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth',
         'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes',
         'nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth',
-        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode'
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode',
+        'nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SuppNumValue'
     ],
     components: {
         'kdws03d': KdwS03DComponent,
@@ -667,6 +669,14 @@ export class KdwS03BComponent extends Vue {
                         constraintObj.required = contraint.required;
                         self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
                         // self.$updateValidator( {screenData : { [rowData.key] : constraintObj}});
+                    }
+                    break;
+                case ItemType.InputNumericValue:
+                    if ( !_.isNull(contraint) && contraint.cdisplayType == 'Primitive') {
+                        constraintObj = _.get(self.validations.fixedConstraint, PrimitiveAll['No' + attendanceItem.primitive]);
+                        constraintObj.loop = true;
+                        constraintObj.required = contraint.required;
+                        self.$updateValidator(`screenData.${rowData.key}`, constraintObj);
                     }
                     break;
                 default:
@@ -1273,6 +1283,7 @@ export enum PrimitiveAll {
     No58 = 'AnyItemTimes',
     No59 = 'AnyTimesMonth',
     No60 = 'DiverdenceReasonCode',
+    No73 = 'SuppNumValue',
 }
 
 export enum ItemType {
