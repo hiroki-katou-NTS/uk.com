@@ -15,6 +15,7 @@ public class TenantLocatorService {
 		}
 		else {
 			SessionContextProvider.get().put(SESSION_DATASOURCE, "");
+			throw new RuntimeException("テナントのデータソースが見つかりません：" + tenantCode);
 		}
 	}
 	
