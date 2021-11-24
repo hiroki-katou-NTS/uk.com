@@ -176,9 +176,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 					if (data !== 0) {
 						vm.reload = setInterval(() => {
-							if (vm.paramWidgetLayout2().length > 0 || vm.paramWidgetLayout3().length > 0) {
-								vm.callApiTopPage();
-							}
+							vm.callApiTopPage();
 						}, miliSeconds);
 					}
 				});
