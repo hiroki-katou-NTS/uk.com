@@ -106,8 +106,8 @@ public class KrcdtDayOuenTimeSheet extends ContractCompanyUkJpaEntity implements
 			
 			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), domain.getYmd(), oTimeSheetAtt.getWorkNo().v());
 			
-			entity.workplaceId = oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId() == null ? null : oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId().v();		
-			entity.workLocationCode = !oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null 
+			entity.workplaceId = oTimeSheetAtt.getWorkContent().getWorkplace() == null ? "" : oTimeSheetAtt.getWorkContent().getWorkplace().getWorkplaceId().v();		
+			entity.workLocationCode = oTimeSheetAtt.getWorkContent().getWorkplace() == null ? null : !oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().isPresent() ? null 
 					: oTimeSheetAtt.getWorkContent().getWorkplace().getWorkLocationCD().get().v();
 			
 			oTimeSheetAtt.getWorkContent().getWork().ifPresent(work -> {
