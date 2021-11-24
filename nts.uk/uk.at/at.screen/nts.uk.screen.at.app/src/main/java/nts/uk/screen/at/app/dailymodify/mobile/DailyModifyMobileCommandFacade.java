@@ -365,7 +365,7 @@ public class DailyModifyMobileCommandFacade {
 					}
 				}
 				//過去月集計結果を登録する
-				if(resultCalcMonth.getErrorAfterCheck() !=null && !resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
+				if(resultCalcMonth.getErrorAfterCheck() ==null && !resultCalcMonth.getListAggregatePastMonthResult().isEmpty()) {
 					registerPastMonthTotalResult.register(resultCalcMonth.getListAggregatePastMonthResult());
 				}
 			}
