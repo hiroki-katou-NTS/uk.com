@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.shr.com.time.TimeZone;
 
 /**
  * 
@@ -31,4 +32,8 @@ public class EstimatedTimeZone {
 	// 休憩時間帯
 
 	private List<BreakTimeSheet> breakTimeSheets = new ArrayList<BreakTimeSheet>();
+	
+	// 残業時間帯
+	
+	private List<TimeZone> overTimeZones  = new ArrayList<TimeZone>();
 }

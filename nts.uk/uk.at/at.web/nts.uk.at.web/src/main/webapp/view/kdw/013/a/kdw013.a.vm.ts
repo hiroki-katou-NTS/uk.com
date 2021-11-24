@@ -167,6 +167,7 @@ module nts.uk.ui.at.kdw013.a {
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
         removeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        removeBreakList: KnockoutObservableArray<any> = ko.observableArray([]);
         //biến này để phục vụ việc lấy data khi thay đổi ở màn K  
         inputDate: KnockoutObservable<Date> = ko.observable();
     
@@ -838,6 +839,12 @@ module nts.uk.ui.at.kdw013.a {
 
                 return dates;
             };
+            let dates = vm.over20TaskDays(dateRanges());
+            if (dates.length) {
+                vm.$dialog
+                    .error({ messageId: 'Msg_2262', messageParams: dates });
+                return;
+            }
     
             let deleteAttByTimeZones = vm.createDeleteAttByTimeZones(dateRanges());
     
@@ -850,7 +857,6 @@ module nts.uk.ui.at.kdw013.a {
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
             let changedDates = vm.getChangedDates(dateRanges());
-    
     
             let workDetails = vm.createWorkDetails(dateRanges());
     
@@ -913,6 +919,18 @@ module nts.uk.ui.at.kdw013.a {
             const vm = this;
 
             vm.dateRange({ start, end });
+        }
+
+        over20TaskDays(dates){
+            const vm = this;
+            let result = [];
+            _.forEach(dates, date => {
+                let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
+                if (eventsInday.length > 20) {
+                    result.push(moment(date).format(DATE_FORMAT));
+                }
+            });
+            return result;
         }
 
         createDeleteAttByTimeZones(dates){
@@ -999,28 +1017,38 @@ module nts.uk.ui.at.kdw013.a {
             let result = [];
 
             let ids = _.get(vm.$datas(), 'lstIntegrationOfDaily', []);
+    
+            let removeBreakList = vm.removeBreakList;
             _.forEach(dates, date => {
 
                 const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
 
                 
                 if (id) {
+                        
+                    const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
 
-                    //mapping break time
-                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+                    if (id) {
+                        //mapping break time
+                        let removeBreak = _.find(removeBreakList(), rb => moment(rb.date).isSame(moment(date), 'days'));
+                        let breakTime = _.get(id, 'breakTime');
+                        breakTime.breakTimeSheets = _.filter(_.get(id, 'breakTime.breakTimeSheets', []), bt => (_.get(removeBreak, 'nos', []).indexOf(bt.no) == -1));
 
-                    let breakTime = _.get(id, 'breakTime');
-                    breakTime.breakTimeSheets = _.map(breakTimes, bt => {
+                        if (vm.isShowBreakTime()) {
+                              //mapping break time
+                            const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+                            
+                            breakTime.breakTimeSheets = _.map(breakTimes, bt => {
 
-                        return {
-                            no: _.get(bt, 'extendedProps.no'),
-                            breakTime: _.get(bt, 'extendedProps.breakTime'),
-                            start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
-                            end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
-                        };
-                    });
-                    //mapping normal block   
-                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == false);
+                                return {
+                                    no: _.get(bt, 'extendedProps.no'),
+                                    breakTime: _.get(bt, 'extendedProps.breakTime'),
+                                    start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
+                                    end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
+                                };
+                            });
+                        }
+                    }
                 }
             });
 

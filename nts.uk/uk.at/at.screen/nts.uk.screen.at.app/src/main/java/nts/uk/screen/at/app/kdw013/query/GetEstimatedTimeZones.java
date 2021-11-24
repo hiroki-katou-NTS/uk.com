@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.kdw013.query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -90,7 +91,13 @@ public class GetEstimatedTimeZones {
 				wh.stream().mapToInt(x -> x.getTimeZone().getEndTime().v()).max().ifPresent(max -> {
 					endTime.add(max);
 				});
+				
+				//入力目安時間帯．残業時間帯 = 取得した「残業申請．勤務時間帯．時間帯」をセットする
+				result.setOverTimeZones(wh.stream()
+						.map(x -> x.getTimeZone())
+						.collect(Collectors.toList()));
 			});
+			
 			
 		});
 		if (!startTime.isEmpty()) {
