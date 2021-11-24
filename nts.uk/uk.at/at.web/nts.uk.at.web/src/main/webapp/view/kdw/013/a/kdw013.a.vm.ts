@@ -167,6 +167,7 @@ module nts.uk.ui.at.kdw013.a {
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
         validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
         removeList: KnockoutObservableArray<any> = ko.observableArray([]);
+        removeBreakList: KnockoutObservableArray<any> = ko.observableArray([]);
         //biến này để phục vụ việc lấy data khi thay đổi ở màn K  
         inputDate: KnockoutObservable<Date> = ko.observable();
     
@@ -217,6 +218,8 @@ module nts.uk.ui.at.kdw013.a {
 
 		popupTitle: KnockoutObservable<String> = ko.observable('');
 		btnContent: KnockoutObservable<String> = ko.observable('');
+		
+		reloadFlag: KnockoutObservable<Boolean> =  ko.observable(false);
 
         constructor() {
             super();
@@ -438,6 +441,8 @@ module nts.uk.ui.at.kdw013.a {
                                 .then((data: ChangeDateDto) => {
                                     vm.$datas(data);
                                     vm.dataChanged(false);
+                                    vm.removeList([]);
+                                    vm.removeBreakList([]);
                                 })
                                 .always(() => vm.$blockui('clear'));
                         }
@@ -486,7 +491,7 @@ module nts.uk.ui.at.kdw013.a {
                             .filter(({breakTimeSheets}) => { return !!breakTimeSheets.length })
                             .map(({breakTimeSheets, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(ymd),
+                                    dayOfWeek: moment(ymd).toDate().getDay(),
                                     breakTimes: _.map(breakTimeSheets, ({start, end}) => { return { start, end }; })
                                 };
                             }).value();
@@ -510,7 +515,7 @@ module nts.uk.ui.at.kdw013.a {
                             .filter(({startTime, endTime}) => { return !!startTime && !!endTime })
                             .map(({startTime, endTime, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(ymd),
+                                    dayOfWeek: moment(ymd).toDate().getDay(),
                                     start: startTime,
                                     end: endTime
                                 };
@@ -713,23 +718,6 @@ module nts.uk.ui.at.kdw013.a {
                 .always(() => vm.$blockui('clear'));
         }
 
-        getDOW(date){
-            const vm = this;
-            const dateRange = ko.unwrap(vm.dateRange);
-            if (dateRange) {
-                const start = moment(dateRange.start);
-                const end = moment(dateRange.end);
-                let range = end.diff(start, 'days');
-                let dates = [];
-                for (let i = 0; i <= range; i++) {
-                    dates.push(start.clone().add(i, 'days').format('YYYY/MM/DD'));
-                }
-                return _.indexOf(dates, date) + 1;
-            }
-
-            return 0;
-        }
-
         mounted() {
             const vm = this;
 
@@ -836,6 +824,12 @@ module nts.uk.ui.at.kdw013.a {
 
                 return dates;
             };
+            let dates = vm.over20TaskDays(dateRanges());
+            if (dates.length) {
+                vm.$dialog
+                    .error({ messageId: 'Msg_2262', messageParams: dates });
+                return;
+            }
     
             let deleteAttByTimeZones = vm.createDeleteAttByTimeZones(dateRanges());
     
@@ -848,7 +842,6 @@ module nts.uk.ui.at.kdw013.a {
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
             let changedDates = vm.getChangedDates(dateRanges());
-    
     
             let workDetails = vm.createWorkDetails(dateRanges());
     
@@ -913,6 +906,18 @@ module nts.uk.ui.at.kdw013.a {
             vm.dateRange({ start, end });
         }
 
+        over20TaskDays(dates){
+            const vm = this;
+            let result = [];
+            _.forEach(dates, date => {
+                let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
+                if (eventsInday.length > 20) {
+                    result.push(moment(date).format(DATE_FORMAT));
+                }
+            });
+            return result;
+        }
+
         createDeleteAttByTimeZones(dates){
             let vm = this;
             const employeeId = ko.unwrap(vm.editable) === false ? ko.unwrap(vm.employee) : vm.$user.employeeId;
@@ -923,12 +928,21 @@ module nts.uk.ui.at.kdw013.a {
             _.forEach(dates, date => {
                 
                 const hrTask = _.find(dailyManHrTasks, hr => moment(hr.date).isSame(moment(date), 'days'));
-                let taskDetails = [];
-                _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
-                    taskDetails.push(...tb.taskDetails);
-                })
+                const id = _.find(_.get(vm.$datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+                const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+                const taskBlocks = _.get(hrTask, 'taskBlocks', []);
+                
                 //① 日別実績の工数実績作業
-                let dailyManHrTaskNos = _.map(taskDetails, td => td.supNo);
+                let dailyManHrTaskNos = [];
+                for (let i = 0; i < ouenTimeSheet.length; i++) {
+                    const workNo = _.get(ouenTimeSheet[i], 'workNo');
+
+                    if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
+                       dailyManHrTaskNos.push(workNo);
+                    }
+                }                
                 //② 工数実績作業ブロック
                 let currentScreenNos = [];
                 _.forEach(_.filter(vm.events(), e => (moment(e.start).isSame(moment(date), 'days') && _.get(e, 'extendedProps.taskBlock.taskDetails', []).length)), e => {
@@ -997,28 +1011,38 @@ module nts.uk.ui.at.kdw013.a {
             let result = [];
 
             let ids = _.get(vm.$datas(), 'lstIntegrationOfDaily', []);
+    
+            let removeBreakList = vm.removeBreakList;
             _.forEach(dates, date => {
 
                 const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
 
                 
                 if (id) {
+                        
+                    const id = _.find(ids, id => moment(id.ymd).isSame(moment(date), 'days'));
 
-                    //mapping break time
-                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+                    if (id) {
+                        //mapping break time
+                        let removeBreak = _.find(removeBreakList(), rb => moment(rb.date).isSame(moment(date), 'days'));
+                        let breakTime = _.get(id, 'breakTime');
+                        breakTime.breakTimeSheets = _.filter(_.get(id, 'breakTime.breakTimeSheets', []), bt => (_.get(removeBreak, 'nos', []).indexOf(bt.no) == -1));
 
-                    let breakTime = _.get(id, 'breakTime');
-                    breakTime.breakTimeSheets = _.map(breakTimes, bt => {
+                        if (vm.isShowBreakTime()) {
+                              //mapping break time
+                            const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == true);
+                            
+                            breakTime.breakTimeSheets = _.map(breakTimes, bt => {
 
-                        return {
-                            no: _.get(bt, 'extendedProps.no'),
-                            breakTime: _.get(bt, 'extendedProps.breakTime'),
-                            start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
-                            end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
-                        };
-                    });
-                    //mapping normal block   
-                    const breakTimes = _.filter(vm.events(), e => moment(e.start).isSame(date, 'day') && _.get(e, 'extendedProps.isTimeBreak', false) == false);
+                                return {
+                                    no: _.get(bt, 'extendedProps.no'),
+                                    breakTime: _.get(bt, 'extendedProps.breakTime'),
+                                    start: (moment(bt.start).hour() * 60) + moment(bt.start).minute(),
+                                    end: (moment(bt.end).hour() * 60) + moment(bt.end).minute(),
+                                };
+                            });
+                        }
+                    }
                 }
             });
 
@@ -1309,10 +1333,12 @@ module nts.uk.ui.at.kdw013.a {
                 ouenWorkTimeSheets: ko.unwrap(vm.ouenWorkTimeSheets),
                 taskSettings: ko.unwrap(vm.taskSettings),
                 //対象日
-                date: vm.targetDate()
+                date: vm.targetDate(),
             }
 		
-            vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => {});
+            vm.$window.modal('at', '/view/kdw/013/e/index.xhtml', param).then(() => { 
+				 vm.dateRange.valueHasMutated();
+			});
         }
 
 		closeFDialog() {

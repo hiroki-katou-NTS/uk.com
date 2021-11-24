@@ -57,7 +57,10 @@ public class KDW013BCHWebService {
 	@POST
 	@Path("common/start")
 	public WorkDataMasterInformationDto start(StartParamDto param) {
-		return getWorkDataMasterInformation.get(param.refDate, param.itemIds);
+		return getWorkDataMasterInformation.get(param.employeeId, param.refDate, param.itemIds,
+				Optional.ofNullable(param.workCode1), Optional.ofNullable(param.workCode2),
+				Optional.ofNullable(param.workCode3), Optional.ofNullable(param.workCode4),
+				Optional.ofNullable(param.workCode5));
 	}
 
 	// C:作業入力パネル.メニュー別OCD.作業項目を選択する

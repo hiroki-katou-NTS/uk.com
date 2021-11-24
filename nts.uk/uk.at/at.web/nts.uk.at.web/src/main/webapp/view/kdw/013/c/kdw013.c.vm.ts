@@ -731,8 +731,9 @@ module nts.uk.ui.at.kdw013.c {
 					}
                     vm.taskFrameSettings(extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList);
 					let param = {
+						employeeId: employeeId,
 						refDate: start,
-						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8)
+						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8),
 					}
 
 					block.invisible();
@@ -740,6 +741,7 @@ module nts.uk.ui.at.kdw013.c {
 		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings(), start);
 						setTimeout(() => {
 							vm.updatePopupSize();
+							custominePositionCombo();
 						}, 150);
 					}).always(() => block.clear());
 				}
@@ -856,6 +858,9 @@ module nts.uk.ui.at.kdw013.c {
 				return;
 			}
 			vm.taskBlocks.addTaskDetailsView(vm.generateFrameNo());
+			setTimeout(() => {
+				custominePositionCombo();
+			}, 150);
 		}
 		
 		sumTotalTime():number{
@@ -907,6 +912,7 @@ module nts.uk.ui.at.kdw013.c {
                             event.setExtendedProp('sId', employeeId);
                             event.setExtendedProp('workingHours', (tr.start()) - (tr.start()));
                             event.setExtendedProp('taskBlock', vm.taskBlocks.getTaskDetails());
+                            event.setExtendedProp('isChanged', vm.changed());
                         }
 
                         // close popup
@@ -939,13 +945,7 @@ module nts.uk.ui.at.kdw013.c {
                 vm.caltimeSpanView.start(getTimeOfDate(taskBlocks.caltimeSpan.start));
 				vm.caltimeSpanView.end(getTimeOfDate(taskBlocks.caltimeSpan.end));
             }
-            vm.taskDetailsView.subscribe((tasks: ManHrTaskDetailView[])=>{
-				let item = 0;
-				_.forEach(tasks, (task: ITaskItemValue[])=>{
-					_.forEach(task, ()=>{
-						item++;
-					});
-				});
+            vm.taskDetailsView.subscribe(()=>{
 				let interval = setInterval(function () {
 					resetHeight();
                 });	
@@ -1227,13 +1227,11 @@ module nts.uk.ui.at.kdw013.c {
             };
 			const itemNext = _.find(vm.taskItemValues(), (i) => {return i.itemId == nextItemId});
 			if(itemNext){
-				block.invisible();
 	            return ajax('at', API.SELECT, param).done((data: TaskDto[]) => {
 					if(_.find(data, o => o.code == itemNext.value()) == undefined){
 						itemNext.value(null);
 					}
 					itemNext.options(vm.getMapperList(data, itemNext.value));
-					block.clear();
 	            });
 			}
         }
@@ -1394,11 +1392,36 @@ module nts.uk.ui.at.kdw013.c {
 			aboveBelow = aboveBelow + caltimeSpanViewHeight - 40;
 		}
 		if(innerHeight - aboveBelow >= heightTaskDetails){
-			$('.taskDetails').css({ "overflow-y": "hidden"});
+			$('.taskDetails').css({ "overflow-y": "unset"});
 			$('.taskDetails').css({ "max-height": heightTaskDetails + 'px' });
 		}else if(innerHeight - aboveBelow < heightTaskDetails){
 			$('.taskDetails').css({ "overflow-y": "scroll"});
 			$('.taskDetails').css({ "max-height": (innerHeight - aboveBelow - 10) + 'px' });
 		}
+	}
+	
+	export function custominePositionCombo(){
+		let resetPosition = function(e: JQueryEventObject){
+			if($('.taskDetails').css("overflow-y") == 'scroll') {
+				var p = e.target.parentElement.parentElement.parentElement;
+				var listitemholder = $(p).find('.ui-igcombo-listitemholder');
+				var bottomListitemholder = listitemholder.offset().top + listitemholder.outerHeight(true);
+				var bottomTaskDetails = $('.taskDetails').offset().top + $('.taskDetails').outerHeight(true);
+				if(bottomListitemholder > bottomTaskDetails){
+					$(p).igCombo({dropDownOrientation: 'top'});
+				}else{
+					$(p).igCombo({dropDownOrientation: 'bottom'});
+				}
+			} 
+		};
+		$('.edit-event .taskDetails .ui-igcombo-button').click((e)=>{
+			let interval = setInterval(function () {
+				resetPosition(e);
+	        });	
+			setTimeout(() => {
+				clearInterval(interval);
+			}, 200);
+		});
+		
 	}
 }

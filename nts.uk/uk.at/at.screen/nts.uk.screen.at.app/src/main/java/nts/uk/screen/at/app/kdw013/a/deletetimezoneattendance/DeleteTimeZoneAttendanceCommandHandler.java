@@ -52,9 +52,12 @@ public class DeleteTimeZoneAttendanceCommandHandler extends CommandHandler<Delet
 		});
 		// 3. persist
 		// 3.1 複数日を削除する (社員ID,年月日リスト)
-		deleteAtoms.forEach(atom -> {
-			atom.run();
-		});
+		transaction.execute(() -> {
+			deleteAtoms.forEach(atom -> {
+				atom.run();
+			});
+		}); 
+		
 	}
 
 	@AllArgsConstructor
