@@ -441,6 +441,8 @@ module nts.uk.ui.at.kdw013.a {
                                 .then((data: ChangeDateDto) => {
                                     vm.$datas(data);
                                     vm.dataChanged(false);
+                                    vm.removeList([]);
+                                    vm.removeBreakList([]);
                                 })
                                 .always(() => vm.$blockui('clear'));
                         }
@@ -489,7 +491,7 @@ module nts.uk.ui.at.kdw013.a {
                             .filter(({breakTimeSheets}) => { return !!breakTimeSheets.length })
                             .map(({breakTimeSheets, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(ymd),
+                                    dayOfWeek: moment(ymd).toDate().getDay(),
                                     breakTimes: _.map(breakTimeSheets, ({start, end}) => { return { start, end }; })
                                 };
                             }).value();
@@ -513,7 +515,7 @@ module nts.uk.ui.at.kdw013.a {
                             .filter(({startTime, endTime}) => { return !!startTime && !!endTime })
                             .map(({startTime, endTime, ymd}) => {
                                 return {
-                                    dayOfWeek: vm.getDOW(ymd),
+                                    dayOfWeek: moment(ymd).toDate().getDay(),
                                     start: startTime,
                                     end: endTime
                                 };
@@ -714,23 +716,6 @@ module nts.uk.ui.at.kdw013.a {
                     vm.$settings(new StartProcess(response));
                 })
                 .always(() => vm.$blockui('clear'));
-        }
-
-        getDOW(date){
-            const vm = this;
-            const dateRange = ko.unwrap(vm.dateRange);
-            if (dateRange) {
-                const start = moment(dateRange.start);
-                const end = moment(dateRange.end);
-                let range = end.diff(start, 'days');
-                let dates = [];
-                for (let i = 0; i <= range; i++) {
-                    dates.push(start.clone().add(i, 'days').format('YYYY/MM/DD'));
-                }
-                return _.indexOf(dates, date) + 1;
-            }
-
-            return 0;
         }
 
         mounted() {
@@ -943,12 +928,21 @@ module nts.uk.ui.at.kdw013.a {
             _.forEach(dates, date => {
                 
                 const hrTask = _.find(dailyManHrTasks, hr => moment(hr.date).isSame(moment(date), 'days'));
-                let taskDetails = [];
-                _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
-                    taskDetails.push(...tb.taskDetails);
-                })
+                const id = _.find(_.get(vm.$datas(), 'lstIntegrationOfDaily', []), id => { return moment(id.ymd).isSame(moment(date), 'days'); });
+
+                const ouenTimeSheet = _.get(id, 'ouenTimeSheet', []);
+
+                const taskBlocks = _.get(hrTask, 'taskBlocks', []);
+                
                 //① 日別実績の工数実績作業
-                let dailyManHrTaskNos = _.map(taskDetails, td => td.supNo);
+                let dailyManHrTaskNos = [];
+                for (let i = 0; i < ouenTimeSheet.length; i++) {
+                    const workNo = _.get(ouenTimeSheet[i], 'workNo');
+
+                    if (!_.find(taskBlocks, tb => _.find(tb.taskDetails, ['supNo', workNo]))) {
+                       dailyManHrTaskNos.push(workNo);
+                    }
+                }                
                 //② 工数実績作業ブロック
                 let currentScreenNos = [];
                 _.forEach(_.filter(vm.events(), e => (moment(e.start).isSame(moment(date), 'days') && _.get(e, 'extendedProps.taskBlock.taskDetails', []).length)), e => {
