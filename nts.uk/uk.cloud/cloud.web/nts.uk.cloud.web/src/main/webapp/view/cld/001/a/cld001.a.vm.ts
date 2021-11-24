@@ -109,9 +109,9 @@ module nts.uk.cloud.view.cld001.a {
                     $("#txtTenantCode").trigger("validate");
                 }
 
-                if (self.useCheckDigit_optionCode()) {
-                    $("#txtOptionCode").trigger("validate");
-                }
+                //if (self.useCheckDigit_optionCode()) {
+                //    $("#txtOptionCode").trigger("validate");
+                //}
 
                 if (nts.uk.ui.errors.hasError()) {
                     return;
