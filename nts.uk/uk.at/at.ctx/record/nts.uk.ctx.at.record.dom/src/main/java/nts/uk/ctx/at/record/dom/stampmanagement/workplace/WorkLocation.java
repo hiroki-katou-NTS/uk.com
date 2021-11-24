@@ -45,16 +45,6 @@ public class WorkLocation extends AggregateRoot {
 		return this.stampRange.checkWithinStampRange(geoCoordinate);
 	}
 
-	/**
-	 * [C-0] 勤務場所(契約コード、コード、名称、打刻範囲、IPアドレス一覧、職場、地域コード)																							
-	 *
-	 * @param contractCode the contract code
-	 * @param workLocationCD the work location CD
-	 * @param workLocationName the work location name
-	 * @param stampRange the stamp range
-	 * @param listIPAddress the list IP address
-	 * @param listWorkplace the list workplace
-	 */
 	public WorkLocation(ContractCode contractCode, WorkLocationCD workLocationCD, WorkLocationName workLocationName,
 			StampMobilePossibleRange stampRange, List<Ipv4Address> listIPAddress, List<WorkplacePossible> listWorkplace) {
 		super();
@@ -66,11 +56,5 @@ public class WorkLocation extends AggregateRoot {
 		this.listWorkplace = listWorkplace;
 	}
 	
-	public void findTimeDifferenceInArea(Required required, String contractCode) {
-		
-	}
 	
-	public static class Required {
-
-	}
 }
