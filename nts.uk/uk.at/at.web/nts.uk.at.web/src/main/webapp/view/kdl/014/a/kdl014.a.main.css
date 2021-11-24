@@ -11,13 +11,9 @@
 }
 
 #single-list_displayContainer {
-	width: 666px !important;
-    max-width: 685px !important;
+    max-width: 910px !important;
 }
 
-#single-list_headers_v {
-	width: 683px !important;
-}
 #single-list td img{
 	vertical-align: bottom;
 }
@@ -27,4 +23,5 @@
 }
 .time{
 	float: right;
+	margin-right: 5px;
 }
