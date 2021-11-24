@@ -971,680 +971,687 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	}
 	
 	// KSCDT_SCH_BASIC_INFO
-		private Map<Pair<String, GeneralDate>, List<KscdtSchBasicInfo>> getSchBasicInfo(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchBasicInfo> listSchBasicInfo = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_BASIC_INFO.SID, KSCDT_SCH_BASIC_INFO.YMD, KSCDT_SCH_BASIC_INFO.CID, KSCDT_SCH_BASIC_INFO.DECISION_STATUS, KSCDT_SCH_BASIC_INFO.EMP_CD, "
-					+ " KSCDT_SCH_BASIC_INFO.JOB_ID, KSCDT_SCH_BASIC_INFO.WKP_ID, KSCDT_SCH_BASIC_INFO.CLS_CD, KSCDT_SCH_BASIC_INFO.BUSTYPE_CD, KSCDT_SCH_BASIC_INFO.NURSE_LICENSE, "
-					+ " KSCDT_SCH_BASIC_INFO.WKTP_CD, KSCDT_SCH_BASIC_INFO.WKTM_CD, KSCDT_SCH_BASIC_INFO.GO_STRAIGHT_ATR, KSCDT_SCH_BASIC_INFO.BACK_STRAIGHT_ATR, "
-					+ " KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_ATR, KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_DAYS"
-					+ " FROM KSCDT_SCH_BASIC_INFO"
-					+ " WHERE KSCDT_SCH_BASIC_INFO.SID IN " + listEmp + " AND KSCDT_SCH_BASIC_INFO.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";;
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer confirmedATR = rs.getInt("DECISION_STATUS"); 
-					String empCd = rs.getString("EMP_CD"); 
-					String jobId = rs.getString("JOB_ID"); 
-					String wkpId = rs.getString("WKP_ID"); 
-					String clsCd = rs.getString("CLS_CD"); 
-					String busTypeCd = rs.getString("BUSTYPE_CD"); 
-					String nurseLicense = rs.getString("NURSE_LICENSE"); 
-					String wktpCd = rs.getString("WKTP_CD"); 
-					String wktmCd = rs.getString("WKTM_CD");
-					Integer goStraightAtr = rs.getInt("GO_STRAIGHT_ATR");
-					Integer backStraightAtr = rs.getInt("BACK_STRAIGHT_ATR");
-					Integer treatAsSubstituteAtr = rs.getInt("TREAT_AS_SUBSTITUTE_ATR");
-					Double treatAsSubstituteDays = rs.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
-					
-					listSchBasicInfo.add(new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid, 
-							confirmedATR == 1 ? true : false, 
-							empCd,jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd, wktmCd, 
-							goStraightAtr  == 1 ? true : false, 
-							backStraightAtr  == 1 ? true : false,
-							treatAsSubstituteAtr, treatAsSubstituteDays, 
-							null, new ArrayList<>(), new ArrayList<>(),
-							new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchBasicInfo>> mapPairSchBasicInfo = listSchBasicInfo
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairSchBasicInfo;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+	private Map<Pair<String, GeneralDate>, List<KscdtSchBasicInfo>> getSchBasicInfo(String listEmp, DatePeriod period) {
+
+		List<KscdtSchBasicInfo> listSchBasicInfo = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_BASIC_INFO.SID, KSCDT_SCH_BASIC_INFO.YMD, KSCDT_SCH_BASIC_INFO.CID, KSCDT_SCH_BASIC_INFO.DECISION_STATUS, KSCDT_SCH_BASIC_INFO.EMP_CD, "
+				+ " KSCDT_SCH_BASIC_INFO.JOB_ID, KSCDT_SCH_BASIC_INFO.WKP_ID, KSCDT_SCH_BASIC_INFO.CLS_CD, KSCDT_SCH_BASIC_INFO.BUSTYPE_CD, KSCDT_SCH_BASIC_INFO.NURSE_LICENSE, "
+				+ " KSCDT_SCH_BASIC_INFO.WKTP_CD, KSCDT_SCH_BASIC_INFO.WKTM_CD, KSCDT_SCH_BASIC_INFO.GO_STRAIGHT_ATR, KSCDT_SCH_BASIC_INFO.BACK_STRAIGHT_ATR, "
+				+ " KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_ATR, KSCDT_SCH_BASIC_INFO.TREAT_AS_SUBSTITUTE_DAYS"
+				+ " FROM KSCDT_SCH_BASIC_INFO" 
+				+ " WHERE KSCDT_SCH_BASIC_INFO.SID IN " + listEmp + " AND KSCDT_SCH_BASIC_INFO.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer confirmedATR = rs.getInt("DECISION_STATUS");
+				String empCd = rs.getString("EMP_CD");
+				String jobId = rs.getString("JOB_ID");
+				String wkpId = rs.getString("WKP_ID");
+				String clsCd = rs.getString("CLS_CD");
+				String busTypeCd = rs.getString("BUSTYPE_CD");
+				String nurseLicense = rs.getString("NURSE_LICENSE");
+				String wktpCd = rs.getString("WKTP_CD");
+				String wktmCd = rs.getString("WKTM_CD");
+				Integer goStraightAtr = rs.getInt("GO_STRAIGHT_ATR");
+				Integer backStraightAtr = rs.getInt("BACK_STRAIGHT_ATR");
+				Integer treatAsSubstituteAtr = rs.getInt("TREAT_AS_SUBSTITUTE_ATR");
+				Double treatAsSubstituteDays = rs.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
+
+				listSchBasicInfo.add(new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid,
+						confirmedATR == 1 ? true : false, empCd, jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd,
+						wktmCd, goStraightAtr == 1 ? true : false, backStraightAtr == 1 ? true : false,
+						treatAsSubstituteAtr, treatAsSubstituteDays, null, new ArrayList<>(), new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchBasicInfo>> mapPairSchBasicInfo = listSchBasicInfo.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairSchBasicInfo;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		
-		// KSCDT_SCH_EDIT_STATE
-		private Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> getSchEditState(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchEditState> listSchEditState = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_EDIT_STATE.SID, KSCDT_SCH_EDIT_STATE.YMD, KSCDT_SCH_EDIT_STATE.CID,"
-					+ " KSCDT_SCH_EDIT_STATE.ATD_ITEM_ID, KSCDT_SCH_EDIT_STATE.EDIT_STATE"
-					+ " FROM KSCDT_SCH_EDIT_STATE"
-					+ " WHERE KSCDT_SCH_EDIT_STATE.SID IN " + listEmp + " AND KSCDT_SCH_EDIT_STATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";;
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer atdItemId = rs.getInt("ATD_ITEM_ID");
-					Integer editState = rs.getInt("EDIT_STATE");
-					
-					listSchEditState.add(new KscdtSchEditState(new KscdtSchEditStatePK(sid, ymd, atdItemId), cid, editState));
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> mapPairSchEditState = listSchEditState
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairSchEditState;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+	}
+
+	// KSCDT_SCH_EDIT_STATE
+	private Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> getSchEditState(String listEmp, DatePeriod period) {
+
+		List<KscdtSchEditState> listSchEditState = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_EDIT_STATE.SID, KSCDT_SCH_EDIT_STATE.YMD, KSCDT_SCH_EDIT_STATE.CID,"
+				+ " KSCDT_SCH_EDIT_STATE.ATD_ITEM_ID, KSCDT_SCH_EDIT_STATE.EDIT_STATE" 
+				+ " FROM KSCDT_SCH_EDIT_STATE"
+				+ " WHERE KSCDT_SCH_EDIT_STATE.SID IN " + listEmp + " AND KSCDT_SCH_EDIT_STATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer atdItemId = rs.getInt("ATD_ITEM_ID");
+				Integer editState = rs.getInt("EDIT_STATE");
+
+				listSchEditState.add(new KscdtSchEditState(new KscdtSchEditStatePK(sid, ymd, atdItemId), cid, editState));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> mapPairSchEditState = listSchEditState.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairSchEditState;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_ATD_LVW_TIME
-		private Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> getSchAtdLvwTime(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchAtdLvwTime> listSchAtdLvwTime = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_ATD_LVW_TIME.SID, KSCDT_SCH_ATD_LVW_TIME.YMD, KSCDT_SCH_ATD_LVW_TIME.CID,"
-					+ " KSCDT_SCH_ATD_LVW_TIME.WORK_NO, "
-					+ " KSCDT_SCH_ATD_LVW_TIME.ATD_CLOCK, KSCDT_SCH_ATD_LVW_TIME.ATD_HOURLY_HD_TS_START, KSCDT_SCH_ATD_LVW_TIME.ATD_HOURLY_HD_TS_END,"
-					+ " KSCDT_SCH_ATD_LVW_TIME.LVW_CLOCK, KSCDT_SCH_ATD_LVW_TIME.LVW_HOURLY_HD_TS_START, KSCDT_SCH_ATD_LVW_TIME.LVW_HOURLY_HD_TS_END"
-					+ " FROM KSCDT_SCH_ATD_LVW_TIME"
-					+ " WHERE KSCDT_SCH_ATD_LVW_TIME.SID IN " + listEmp + " AND KSCDT_SCH_ATD_LVW_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";;
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer workNo = rs.getInt("WORK_NO");
-					Integer atdClock = rs.getInt("ATD_CLOCK");
-					Integer atdHourlyHDTSStart = rs.getInt("ATD_HOURLY_HD_TS_START");
-					Integer atdHourlyHDTSEnd = rs.getInt("ATD_HOURLY_HD_TS_END");
-					Integer lwkClock = rs.getInt("LVW_CLOCK");
-					Integer lvwHourlyHDTSStart = rs.getInt("LVW_HOURLY_HD_TS_START");
-					Integer lvwHourlyHDTSEnd = rs.getInt("LVW_HOURLY_HD_TS_END");
-					
-					listSchAtdLvwTime.add(new KscdtSchAtdLvwTime(new KscdtSchAtdLvwTimePK(sid, ymd, workNo), cid, atdClock, atdHourlyHDTSStart, atdHourlyHDTSEnd, lwkClock, lvwHourlyHDTSStart, lvwHourlyHDTSEnd));
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> mapPairSchAtdLvwTime = listSchAtdLvwTime
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairSchAtdLvwTime;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+	}
+
+	// KSCDT_SCH_ATD_LVW_TIME
+	private Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> getSchAtdLvwTime(String listEmp,
+			DatePeriod period) {
+
+		List<KscdtSchAtdLvwTime> listSchAtdLvwTime = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_ATD_LVW_TIME.SID, KSCDT_SCH_ATD_LVW_TIME.YMD, KSCDT_SCH_ATD_LVW_TIME.CID,"
+				+ " KSCDT_SCH_ATD_LVW_TIME.WORK_NO, "
+				+ " KSCDT_SCH_ATD_LVW_TIME.ATD_CLOCK, KSCDT_SCH_ATD_LVW_TIME.ATD_HOURLY_HD_TS_START, KSCDT_SCH_ATD_LVW_TIME.ATD_HOURLY_HD_TS_END,"
+				+ " KSCDT_SCH_ATD_LVW_TIME.LVW_CLOCK, KSCDT_SCH_ATD_LVW_TIME.LVW_HOURLY_HD_TS_START, KSCDT_SCH_ATD_LVW_TIME.LVW_HOURLY_HD_TS_END"
+				+ " FROM KSCDT_SCH_ATD_LVW_TIME" 
+				+ " WHERE KSCDT_SCH_ATD_LVW_TIME.SID IN " + listEmp + " AND KSCDT_SCH_ATD_LVW_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer workNo = rs.getInt("WORK_NO");
+				Integer atdClock = rs.getInt("ATD_CLOCK");
+				Integer atdHourlyHDTSStart = rs.getInt("ATD_HOURLY_HD_TS_START");
+				Integer atdHourlyHDTSEnd = rs.getInt("ATD_HOURLY_HD_TS_END");
+				Integer lwkClock = rs.getInt("LVW_CLOCK");
+				Integer lvwHourlyHDTSStart = rs.getInt("LVW_HOURLY_HD_TS_START");
+				Integer lvwHourlyHDTSEnd = rs.getInt("LVW_HOURLY_HD_TS_END");
+
+				listSchAtdLvwTime.add(new KscdtSchAtdLvwTime(new KscdtSchAtdLvwTimePK(sid, ymd, workNo), cid, atdClock,
+						atdHourlyHDTSStart, atdHourlyHDTSEnd, lwkClock, lvwHourlyHDTSStart, lvwHourlyHDTSEnd));
 			}
-		}
 
-		
-		
-		// KSCDT_SCH_SHORTTIME_TS
-		private Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> getSchShortTimeTs(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchShortTimeTs> listSchShortTimeTs = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_SHORTTIME_TS.SID, KSCDT_SCH_SHORTTIME_TS.YMD, KSCDT_SCH_SHORTTIME_TS.CID,"
-					+ " KSCDT_SCH_SHORTTIME_TS.CHILD_CARE_ATR, KSCDT_SCH_SHORTTIME_TS.FRAME_NO, KSCDT_SCH_SHORTTIME_TS.SHORTTIME_TS_START, KSCDT_SCH_SHORTTIME_TS.SHORTTIME_TS_END"
-					+ " FROM KSCDT_SCH_SHORTTIME_TS"
-					+ " WHERE KSCDT_SCH_SHORTTIME_TS.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";;
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer childCareAtr = rs.getInt("CHILD_CARE_ATR");
-					Integer frameNo = rs.getInt("FRAME_NO");
-					Integer shortTimeTsStart = rs.getInt("SHORTTIME_TS_START");
-					Integer shortTimeTsEnd = rs.getInt("SHORTTIME_TS_END");
-					
-					listSchShortTimeTs.add(new KscdtSchShortTimeTs(new KscdtSchShortTimeTsPK(sid, ymd, childCareAtr, frameNo), cid, shortTimeTsStart, shortTimeTsEnd));;
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeT = listSchShortTimeTs
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairSchShortTimeT;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+			Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> mapPairSchAtdLvwTime = listSchAtdLvwTime.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairSchAtdLvwTime;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// KSCDT_SCH_SHORTTIME_TS
+	private Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> getSchShortTimeTs(String listEmp,
+			DatePeriod period) {
+
+		List<KscdtSchShortTimeTs> listSchShortTimeTs = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_SHORTTIME_TS.SID, KSCDT_SCH_SHORTTIME_TS.YMD, KSCDT_SCH_SHORTTIME_TS.CID,"
+				+ " KSCDT_SCH_SHORTTIME_TS.CHILD_CARE_ATR, KSCDT_SCH_SHORTTIME_TS.FRAME_NO, KSCDT_SCH_SHORTTIME_TS.SHORTTIME_TS_START, KSCDT_SCH_SHORTTIME_TS.SHORTTIME_TS_END"
+				+ " FROM KSCDT_SCH_SHORTTIME_TS" 
+				+ " WHERE KSCDT_SCH_SHORTTIME_TS.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer childCareAtr = rs.getInt("CHILD_CARE_ATR");
+				Integer frameNo = rs.getInt("FRAME_NO");
+				Integer shortTimeTsStart = rs.getInt("SHORTTIME_TS_START");
+				Integer shortTimeTsEnd = rs.getInt("SHORTTIME_TS_END");
+
+				listSchShortTimeTs.add(new KscdtSchShortTimeTs(new KscdtSchShortTimeTsPK(sid, ymd, childCareAtr, frameNo), cid, shortTimeTsStart, shortTimeTsEnd));
 			}
-		}
 
-		
-		// KSCDT_SCH_BREAK_TS
-		private Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> getKscdtSchBreakTs(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchBreakTs> listSchBreakTs = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_BREAK_TS.SID, KSCDT_SCH_BREAK_TS.YMD, KSCDT_SCH_BREAK_TS.CID,"
-					+ " KSCDT_SCH_BREAK_TS.FRAME_NO, KSCDT_SCH_BREAK_TS.BREAK_TS_START, KSCDT_SCH_BREAK_TS.BREAK_TS_END"
-					+ " FROM KSCDT_SCH_BREAK_TS"
-					+ " WHERE KSCDT_SCH_BREAK_TS.SID IN " + listEmp + " AND KSCDT_SCH_BREAK_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";;
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer frameNo = rs.getInt("FRAME_NO");
-					Integer breakTsStart = rs.getInt("BREAK_TS_START");
-					Integer breakTsEnd = rs.getInt("BREAK_TS_END");
-					
-					listSchBreakTs.add(new KscdtSchBreakTs(new KscdtSchBreakTsPK(sid, ymd, frameNo), cid, breakTsStart, breakTsEnd));		
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> mapPairSchBreakTs = listSchBreakTs
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairSchBreakTs;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+			Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeT = listSchShortTimeTs.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairSchShortTimeT;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// KSCDT_SCH_BREAK_TS
+	private Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> getKscdtSchBreakTs(String listEmp,
+			DatePeriod period) {
+
+		List<KscdtSchBreakTs> listSchBreakTs = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_BREAK_TS.SID, KSCDT_SCH_BREAK_TS.YMD, KSCDT_SCH_BREAK_TS.CID,"
+				+ " KSCDT_SCH_BREAK_TS.FRAME_NO, KSCDT_SCH_BREAK_TS.BREAK_TS_START, KSCDT_SCH_BREAK_TS.BREAK_TS_END"
+				+ " FROM KSCDT_SCH_BREAK_TS" 
+				+ " WHERE KSCDT_SCH_BREAK_TS.SID IN " + listEmp + " AND KSCDT_SCH_BREAK_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer frameNo = rs.getInt("FRAME_NO");
+				Integer breakTsStart = rs.getInt("BREAK_TS_START");
+				Integer breakTsEnd = rs.getInt("BREAK_TS_END");
+
+				listSchBreakTs.add(new KscdtSchBreakTs(new KscdtSchBreakTsPK(sid, ymd, frameNo), cid, breakTsStart, breakTsEnd));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> mapPairSchBreakTs = listSchBreakTs.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairSchBreakTs;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		
-		// KSCDT_SCH_GOING_OUT_TS
-		private Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> getKscdtSchGoingOutTs(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchGoingOutTs> listSchGoingOutTs = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_GOING_OUT_TS.SID, KSCDT_SCH_GOING_OUT_TS.YMD, KSCDT_SCH_GOING_OUT_TS.CID,"
-					+ " KSCDT_SCH_GOING_OUT_TS.FRAME_NO, KSCDT_SCH_GOING_OUT_TS.REASON_ATR, KSCDT_SCH_GOING_OUT_TS.GOING_OUT_CLOCK, KSCDT_SCH_GOING_OUT_TS.GOING_BACK_CLOCK"
-					+ " FROM KSCDT_SCH_GOING_OUT_TS"
-					+ " WHERE KSCDT_SCH_GOING_OUT_TS.SID IN " + listEmp + " AND KSCDT_SCH_GOING_OUT_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";;
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer frameNo = rs.getInt("FRAME_NO");
-					Integer reasonAtr = rs.getInt("REASON_ATR");
-					Integer goingOutClock = rs.getInt("GOING_OUT_CLOCK");
-					Integer goingBackClock = rs.getInt("GOING_BACK_CLOCK");
-					
-					listSchGoingOutTs.add(new KscdtSchGoingOutTs(new KscdtSchGoingOutTsPK(sid, ymd, frameNo), cid, reasonAtr, goingOutClock, goingBackClock));			
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> mapPairGoingOutTs = listSchGoingOutTs
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairGoingOutTs;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+	}
+
+	// KSCDT_SCH_GOING_OUT_TS
+	private Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> getKscdtSchGoingOutTs(String listEmp,
+			DatePeriod period) {
+
+		List<KscdtSchGoingOutTs> listSchGoingOutTs = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_GOING_OUT_TS.SID, KSCDT_SCH_GOING_OUT_TS.YMD, KSCDT_SCH_GOING_OUT_TS.CID,"
+				+ " KSCDT_SCH_GOING_OUT_TS.FRAME_NO, KSCDT_SCH_GOING_OUT_TS.REASON_ATR, KSCDT_SCH_GOING_OUT_TS.GOING_OUT_CLOCK, KSCDT_SCH_GOING_OUT_TS.GOING_BACK_CLOCK"
+				+ " FROM KSCDT_SCH_GOING_OUT_TS" 
+				+ " WHERE KSCDT_SCH_GOING_OUT_TS.SID IN " + listEmp+ " AND KSCDT_SCH_GOING_OUT_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer frameNo = rs.getInt("FRAME_NO");
+				Integer reasonAtr = rs.getInt("REASON_ATR");
+				Integer goingOutClock = rs.getInt("GOING_OUT_CLOCK");
+				Integer goingBackClock = rs.getInt("GOING_BACK_CLOCK");
+
+				listSchGoingOutTs.add(new KscdtSchGoingOutTs(new KscdtSchGoingOutTsPK(sid, ymd, frameNo), cid,
+						reasonAtr, goingOutClock, goingBackClock));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> mapPairGoingOutTs = listSchGoingOutTs.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairGoingOutTs;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_TIME
-		private Map<Pair<String, GeneralDate>, List<KscdtSchTime>> getKscdtSchTimes(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchTime> listKscdtSchTime = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_TIME.SID, KSCDT_SCH_TIME.YMD, KSCDT_SCH_TIME.CID, KSCDT_SCH_TIME.COUNT, KSCDT_SCH_TIME.TOTAL_TIME, KSCDT_SCH_TIME.TOTAL_TIME_ACT,"
-					+ " KSCDT_SCH_TIME.PRS_WORK_TIME, KSCDT_SCH_TIME.PRS_WORK_TIME_ACT, KSCDT_SCH_TIME.PRS_PRIME_TIME, KSCDT_SCH_TIME.PRS_MIDNITE_TIME, KSCDT_SCH_TIME.EXT_BIND_TIME_OTW,"
-					+ " KSCDT_SCH_TIME.EXT_BIND_TIME_HDW, KSCDT_SCH_TIME.EXT_VARWK_OTW_TIME_LEGAL, KSCDT_SCH_TIME.EXT_FLEX_TIME, KSCDT_SCH_TIME.EXT_FLEX_TIME_PREAPP,"
-					+ " KSCDT_SCH_TIME.EXT_MIDNITE_OTW_TIME, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_LGHD, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_ILGHD, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_PUBHD,"
-					+ " KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL, KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL_PREAPP, KSCDT_SCH_TIME.INTERVAL_ATD_CLOCK, KSCDT_SCH_TIME.INTERVAL_TIME,"
-					+ " KSCDT_SCH_TIME.BRK_TOTAL_TIME, KSCDT_SCH_TIME.HDPAID_TIME, KSCDT_SCH_TIME.HDPAID_HOURLY_TIME, KSCDT_SCH_TIME.HDCOM_TIME, KSCDT_SCH_TIME.HDCOM_HOURLY_TIME,"
-					+ " KSCDT_SCH_TIME.HD60H_TIME, KSCDT_SCH_TIME.HD60H_HOURLY_TIME, KSCDT_SCH_TIME.HDSP_TIME, KSCDT_SCH_TIME.HDSP_HOURLY_TIME, KSCDT_SCH_TIME.HDSTK_TIME,"
-					+ " KSCDT_SCH_TIME.HD_HOURLY_TIME, KSCDT_SCH_TIME.HD_HOURLY_SHORTAGE_TIME, KSCDT_SCH_TIME.ABSENCE_TIME, KSCDT_SCH_TIME.VACATION_ADD_TIME, KSCDT_SCH_TIME.STAGGERED_WH_TIME"
-					+ " FROM KSCDT_SCH_TIME"
-					+ " WHERE KSCDT_SCH_TIME.SID IN " + listEmp + " AND KSCDT_SCH_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID");
-					Integer count = rs.getInt("COUNT"); 
-					Integer totalTime = rs.getInt("TOTAL_TIME"); 
-					Integer totalTimeAct = rs.getInt("TOTAL_TIME_ACT");
-					Integer prsWorkTime = rs.getInt("PRS_WORK_TIME") ;
-					Integer prsWorkTimeAct = rs.getInt("PRS_WORK_TIME_ACT") ;
-					Integer prsPrimeTime = rs.getInt("PRS_PRIME_TIME") ;
-					Integer prsMidniteTime = rs.getInt("PRS_MIDNITE_TIME") ;
-					Integer extBindTimeOtw = rs.getInt("EXT_BIND_TIME_OTW");
-					Integer extBindTimeHw = rs.getInt("EXT_BIND_TIME_HDW") ;
-					Integer extVarwkOtwTimeLegal = rs.getInt("EXT_VARWK_OTW_TIME_LEGAL") ;
-					Integer extFlexTime = rs.getInt("EXT_FLEX_TIME") ;
-					Integer extFlexTimePreApp = rs.getInt("EXT_FLEX_TIME_PREAPP"); 
-					Integer extMidNiteOtwTime = rs.getInt("EXT_MIDNITE_OTW_TIME") ;
-					Integer extMidNiteHdwTimeLghd = rs.getInt("EXT_MIDNITE_HDW_TIME_LGHD") ;
-					Integer extMidNiteHdwTimeIlghd = rs.getInt("EXT_MIDNITE_HDW_TIME_ILGHD") ;
-					Integer extMidNiteHdwTimePubhd = rs.getInt("EXT_MIDNITE_HDW_TIME_PUBHD") ;
-					Integer extMidNiteTotal = rs.getInt("EXT_MIDNITE_TOTAL") ;
-					Integer extMidNiteTotalPreApp = rs.getInt("EXT_MIDNITE_TOTAL_PREAPP") ;
-					Integer intervalAtdClock = rs.getInt("INTERVAL_ATD_CLOCK") ;
-					Integer intervalTime = rs.getInt("INTERVAL_TIME") ;
-					Integer brkTotalTime = rs.getInt("BRK_TOTAL_TIME") ;
-					Integer hdPaidTime = rs.getInt("HDPAID_TIME") ;
-					Integer hdPaidHourlyTime = rs.getInt("HDPAID_HOURLY_TIME"); 
-					Integer hdComTime = rs.getInt("HDCOM_TIME") ;
-					Integer hdComHourlyTime = rs.getInt("HDCOM_HOURLY_TIME"); 
-					Integer hd60hTime = rs.getInt("HD60H_TIME") ;
-					Integer hd60hHourlyTime = rs.getInt("HD60H_HOURLY_TIME"); 
-					Integer hdspTime = rs.getInt("HDSP_TIME") ;
-					Integer hdspHourlyTime = rs.getInt("HDSP_HOURLY_TIME") ;
-					Integer hdstkTime = rs.getInt("HDSTK_TIME") ;
-					Integer hdHourlyTime = rs.getInt("HD_HOURLY_TIME") ;
-					Integer hdHourlyShortageTime = rs.getInt("HD_HOURLY_SHORTAGE_TIME") ;
-					Integer absenceTime = rs.getInt("ABSENCE_TIME") ;
-					Integer vacationAddTime = rs.getInt("VACATION_ADD_TIME") ;
-					Integer staggeredWhTime = rs.getInt("STAGGERED_WH_TIME");
-					
-					listKscdtSchTime.add(new KscdtSchTime(new KscdtSchTimePK(sid, ymd), cid, count, totalTime, totalTimeAct,
-							prsWorkTime, prsWorkTimeAct, prsPrimeTime, prsMidniteTime, extBindTimeOtw, extBindTimeHw,
-							extVarwkOtwTimeLegal, extFlexTime, extFlexTimePreApp, extMidNiteOtwTime, extMidNiteHdwTimeLghd,
-							extMidNiteHdwTimeIlghd, extMidNiteHdwTimePubhd, extMidNiteTotal, extMidNiteTotalPreApp,
-							intervalAtdClock, intervalTime, brkTotalTime, hdPaidTime, hdPaidHourlyTime, hdComTime,
-							hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
-							hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime, 
-							new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
-							new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchTime>> mapPairSchTime = listKscdtSchTime
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairSchTime;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+	}
+
+	// KSCDT_SCH_TIME
+	private Map<Pair<String, GeneralDate>, List<KscdtSchTime>> getKscdtSchTimes(String listEmp, DatePeriod period) {
+
+		List<KscdtSchTime> listKscdtSchTime = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_TIME.SID, KSCDT_SCH_TIME.YMD, KSCDT_SCH_TIME.CID, KSCDT_SCH_TIME.COUNT, KSCDT_SCH_TIME.TOTAL_TIME, KSCDT_SCH_TIME.TOTAL_TIME_ACT,"
+				+ " KSCDT_SCH_TIME.PRS_WORK_TIME, KSCDT_SCH_TIME.PRS_WORK_TIME_ACT, KSCDT_SCH_TIME.PRS_PRIME_TIME, KSCDT_SCH_TIME.PRS_MIDNITE_TIME, KSCDT_SCH_TIME.EXT_BIND_TIME_OTW,"
+				+ " KSCDT_SCH_TIME.EXT_BIND_TIME_HDW, KSCDT_SCH_TIME.EXT_VARWK_OTW_TIME_LEGAL, KSCDT_SCH_TIME.EXT_FLEX_TIME, KSCDT_SCH_TIME.EXT_FLEX_TIME_PREAPP,"
+				+ " KSCDT_SCH_TIME.EXT_MIDNITE_OTW_TIME, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_LGHD, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_ILGHD, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_PUBHD,"
+				+ " KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL, KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL_PREAPP, KSCDT_SCH_TIME.INTERVAL_ATD_CLOCK, KSCDT_SCH_TIME.INTERVAL_TIME,"
+				+ " KSCDT_SCH_TIME.BRK_TOTAL_TIME, KSCDT_SCH_TIME.HDPAID_TIME, KSCDT_SCH_TIME.HDPAID_HOURLY_TIME, KSCDT_SCH_TIME.HDCOM_TIME, KSCDT_SCH_TIME.HDCOM_HOURLY_TIME,"
+				+ " KSCDT_SCH_TIME.HD60H_TIME, KSCDT_SCH_TIME.HD60H_HOURLY_TIME, KSCDT_SCH_TIME.HDSP_TIME, KSCDT_SCH_TIME.HDSP_HOURLY_TIME, KSCDT_SCH_TIME.HDSTK_TIME,"
+				+ " KSCDT_SCH_TIME.HD_HOURLY_TIME, KSCDT_SCH_TIME.HD_HOURLY_SHORTAGE_TIME, KSCDT_SCH_TIME.ABSENCE_TIME, KSCDT_SCH_TIME.VACATION_ADD_TIME, KSCDT_SCH_TIME.STAGGERED_WH_TIME"
+				+ " FROM KSCDT_SCH_TIME" 
+				+ " WHERE KSCDT_SCH_TIME.SID IN " + listEmp + " AND KSCDT_SCH_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer count = rs.getInt("COUNT");
+				Integer totalTime = rs.getInt("TOTAL_TIME");
+				Integer totalTimeAct = rs.getInt("TOTAL_TIME_ACT");
+				Integer prsWorkTime = rs.getInt("PRS_WORK_TIME");
+				Integer prsWorkTimeAct = rs.getInt("PRS_WORK_TIME_ACT");
+				Integer prsPrimeTime = rs.getInt("PRS_PRIME_TIME");
+				Integer prsMidniteTime = rs.getInt("PRS_MIDNITE_TIME");
+				Integer extBindTimeOtw = rs.getInt("EXT_BIND_TIME_OTW");
+				Integer extBindTimeHw = rs.getInt("EXT_BIND_TIME_HDW");
+				Integer extVarwkOtwTimeLegal = rs.getInt("EXT_VARWK_OTW_TIME_LEGAL");
+				Integer extFlexTime = rs.getInt("EXT_FLEX_TIME");
+				Integer extFlexTimePreApp = rs.getInt("EXT_FLEX_TIME_PREAPP");
+				Integer extMidNiteOtwTime = rs.getInt("EXT_MIDNITE_OTW_TIME");
+				Integer extMidNiteHdwTimeLghd = rs.getInt("EXT_MIDNITE_HDW_TIME_LGHD");
+				Integer extMidNiteHdwTimeIlghd = rs.getInt("EXT_MIDNITE_HDW_TIME_ILGHD");
+				Integer extMidNiteHdwTimePubhd = rs.getInt("EXT_MIDNITE_HDW_TIME_PUBHD");
+				Integer extMidNiteTotal = rs.getInt("EXT_MIDNITE_TOTAL");
+				Integer extMidNiteTotalPreApp = rs.getInt("EXT_MIDNITE_TOTAL_PREAPP");
+				Integer intervalAtdClock = rs.getInt("INTERVAL_ATD_CLOCK");
+				Integer intervalTime = rs.getInt("INTERVAL_TIME");
+				Integer brkTotalTime = rs.getInt("BRK_TOTAL_TIME");
+				Integer hdPaidTime = rs.getInt("HDPAID_TIME");
+				Integer hdPaidHourlyTime = rs.getInt("HDPAID_HOURLY_TIME");
+				Integer hdComTime = rs.getInt("HDCOM_TIME");
+				Integer hdComHourlyTime = rs.getInt("HDCOM_HOURLY_TIME");
+				Integer hd60hTime = rs.getInt("HD60H_TIME");
+				Integer hd60hHourlyTime = rs.getInt("HD60H_HOURLY_TIME");
+				Integer hdspTime = rs.getInt("HDSP_TIME");
+				Integer hdspHourlyTime = rs.getInt("HDSP_HOURLY_TIME");
+				Integer hdstkTime = rs.getInt("HDSTK_TIME");
+				Integer hdHourlyTime = rs.getInt("HD_HOURLY_TIME");
+				Integer hdHourlyShortageTime = rs.getInt("HD_HOURLY_SHORTAGE_TIME");
+				Integer absenceTime = rs.getInt("ABSENCE_TIME");
+				Integer vacationAddTime = rs.getInt("VACATION_ADD_TIME");
+				Integer staggeredWhTime = rs.getInt("STAGGERED_WH_TIME");
+
+				listKscdtSchTime.add(new KscdtSchTime(new KscdtSchTimePK(sid, ymd), cid, count, totalTime, totalTimeAct,
+						prsWorkTime, prsWorkTimeAct, prsPrimeTime, prsMidniteTime, extBindTimeOtw, extBindTimeHw,
+						extVarwkOtwTimeLegal, extFlexTime, extFlexTimePreApp, extMidNiteOtwTime, extMidNiteHdwTimeLghd,
+						extMidNiteHdwTimeIlghd, extMidNiteHdwTimePubhd, extMidNiteTotal, extMidNiteTotalPreApp,
+						intervalAtdClock, intervalTime, brkTotalTime, hdPaidTime, hdPaidHourlyTime, hdComTime,
+						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
+						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime, new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>()));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchTime>> mapPairSchTime = listKscdtSchTime.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairSchTime;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_OVERTIME_WORK
-		private Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> getOvertimeWorks(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchOvertimeWork> listKscdtSchOvertimeWork = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_OVERTIME_WORK.SID, KSCDT_SCH_OVERTIME_WORK.YMD, KSCDT_SCH_OVERTIME_WORK.CID, KSCDT_SCH_OVERTIME_WORK.FRAME_NO,"
-					+ " KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME, KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME_TRANS, KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME_PREAPP"
-					+ " FROM KSCDT_SCH_OVERTIME_WORK"
-					+ " WHERE KSCDT_SCH_OVERTIME_WORK.SID IN " + listEmp + " AND KSCDT_SCH_OVERTIME_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer frameNo = rs.getInt("FRAME_NO") ;
-					Integer overtimeWorkTime = rs.getInt("OVERTIME_WORK_TIME") ;
-					Integer overtimeWorkTimeTrans = rs.getInt("OVERTIME_WORK_TIME_TRANS") ;
-					Integer overtimeWorkTimePreApp = rs.getInt("OVERTIME_WORK_TIME_PREAPP") ;
-					
-					listKscdtSchOvertimeWork.add(new KscdtSchOvertimeWork(new KscdtSchOvertimeWorkPK(sid, ymd, frameNo), cid, overtimeWorkTime, overtimeWorkTimeTrans, overtimeWorkTimePreApp));			
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> mapPairOvertimeWork = listKscdtSchOvertimeWork
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairOvertimeWork;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+	}
+
+	// KSCDT_SCH_OVERTIME_WORK
+	private Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> getOvertimeWorks(String listEmp,
+			DatePeriod period) {
+
+		List<KscdtSchOvertimeWork> listKscdtSchOvertimeWork = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_OVERTIME_WORK.SID, KSCDT_SCH_OVERTIME_WORK.YMD, KSCDT_SCH_OVERTIME_WORK.CID, KSCDT_SCH_OVERTIME_WORK.FRAME_NO,"
+				+ " KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME, KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME_TRANS, KSCDT_SCH_OVERTIME_WORK.OVERTIME_WORK_TIME_PREAPP"
+				+ " FROM KSCDT_SCH_OVERTIME_WORK" 
+				+ " WHERE KSCDT_SCH_OVERTIME_WORK.SID IN " + listEmp + " AND KSCDT_SCH_OVERTIME_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer frameNo = rs.getInt("FRAME_NO");
+				Integer overtimeWorkTime = rs.getInt("OVERTIME_WORK_TIME");
+				Integer overtimeWorkTimeTrans = rs.getInt("OVERTIME_WORK_TIME_TRANS");
+				Integer overtimeWorkTimePreApp = rs.getInt("OVERTIME_WORK_TIME_PREAPP");
+
+				listKscdtSchOvertimeWork.add(new KscdtSchOvertimeWork(new KscdtSchOvertimeWorkPK(sid, ymd, frameNo),
+						cid, overtimeWorkTime, overtimeWorkTimeTrans, overtimeWorkTimePreApp));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> mapPairOvertimeWork = listKscdtSchOvertimeWork
+					.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairOvertimeWork;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_HOLIDAY_WORK
-		private Map<Pair<String, GeneralDate>, List<KscdtSchHolidayWork>> getHolidayWorks(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchHolidayWork> listKscdtSchHolidayWork = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_HOLIDAY_WORK.SID, KSCDT_SCH_HOLIDAY_WORK.YMD, KSCDT_SCH_HOLIDAY_WORK.CID, KSCDT_SCH_HOLIDAY_WORK.FRAME_NO,"
-					+ " KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TS_START, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TS_END, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME,"
-					+ " KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME_TRANS, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME_PREAPP"
-					+ " FROM KSCDT_SCH_HOLIDAY_WORK"
-					+ " WHERE KSCDT_SCH_HOLIDAY_WORK.SID IN " + listEmp + " AND KSCDT_SCH_HOLIDAY_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
-			
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
-				
-				while (rs.next()) {
-					
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd"); 
-					String cid = rs.getString("CID"); 
-					Integer frameNo = rs.getInt("FRAME_NO");
-					Integer holidayWorkTsStart = rs.getInt("HOLIDAY_WORK_TS_START");
-					Integer holidayWorkTsEnd = rs.getInt("HOLIDAY_WORK_TS_END");
-					Integer holidayWorkTime = rs.getInt("HOLIDAY_WORK_TIME");
-					Integer holidayWorkTimeTrans = rs.getInt("HOLIDAY_WORK_TIME_TRANS");
-					Integer holidayWorkTimePreApp = rs.getInt("HOLIDAY_WORK_TIME_PREAPP");
-					
-					listKscdtSchHolidayWork.add(new KscdtSchHolidayWork(new KscdtSchHolidayWorkPK(sid, ymd, frameNo), cid, holidayWorkTsStart, holidayWorkTsEnd, holidayWorkTime, holidayWorkTimeTrans, holidayWorkTimePreApp));			
-				}
-				
-				Map<Pair<String, GeneralDate>, List<KscdtSchHolidayWork>> mapPairHolidayWork = listKscdtSchHolidayWork
-						.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-				
-				return mapPairHolidayWork;
-				
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+	}
+
+	// KSCDT_SCH_HOLIDAY_WORK
+	private Map<Pair<String, GeneralDate>, List<KscdtSchHolidayWork>> getHolidayWorks(String listEmp,
+			DatePeriod period) {
+
+		List<KscdtSchHolidayWork> listKscdtSchHolidayWork = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_HOLIDAY_WORK.SID, KSCDT_SCH_HOLIDAY_WORK.YMD, KSCDT_SCH_HOLIDAY_WORK.CID, KSCDT_SCH_HOLIDAY_WORK.FRAME_NO,"
+				+ " KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TS_START, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TS_END, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME,"
+				+ " KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME_TRANS, KSCDT_SCH_HOLIDAY_WORK.HOLIDAY_WORK_TIME_PREAPP"
+				+ " FROM KSCDT_SCH_HOLIDAY_WORK" 
+				+ " WHERE KSCDT_SCH_HOLIDAY_WORK.SID IN " + listEmp + " AND KSCDT_SCH_HOLIDAY_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		Connection con = this.getEntityManager().unwrap(Connection.class);
+
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
+
+			while (rs.next()) {
+
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer frameNo = rs.getInt("FRAME_NO");
+				Integer holidayWorkTsStart = rs.getInt("HOLIDAY_WORK_TS_START");
+				Integer holidayWorkTsEnd = rs.getInt("HOLIDAY_WORK_TS_END");
+				Integer holidayWorkTime = rs.getInt("HOLIDAY_WORK_TIME");
+				Integer holidayWorkTimeTrans = rs.getInt("HOLIDAY_WORK_TIME_TRANS");
+				Integer holidayWorkTimePreApp = rs.getInt("HOLIDAY_WORK_TIME_PREAPP");
+
+				listKscdtSchHolidayWork.add(
+						new KscdtSchHolidayWork(new KscdtSchHolidayWorkPK(sid, ymd, frameNo), cid, holidayWorkTsStart,
+								holidayWorkTsEnd, holidayWorkTime, holidayWorkTimeTrans, holidayWorkTimePreApp));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchHolidayWork>> mapPairHolidayWork = listKscdtSchHolidayWork
+					.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairHolidayWork;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_BONUSPAY
-		private Map<Pair<String, GeneralDate>, List<KscdtSchBonusPay>> getBonusPays(String listEmp, DatePeriod period) {
-			
-			List<KscdtSchBonusPay> listKscdtSchBonusPay = new ArrayList<>();
-			
-			String QUERY = "SELECT KSCDT_SCH_BONUSPAY.SID, KSCDT_SCH_BONUSPAY.YMD,KSCDT_SCH_BONUSPAY.CID,"
-					+ " KSCDT_SCH_BONUSPAY.BONUSPAY_TYPE, KSCDT_SCH_BONUSPAY.FRAME_NO,"
-					+ " KSCDT_SCH_BONUSPAY.PREMIUM_TIME, KSCDT_SCH_BONUSPAY.PREMIUM_TIME_WITHIN, KSCDT_SCH_BONUSPAY.PREMIUM_TIME_WITHOUT"
-					+ " FROM KSCDT_SCH_BONUSPAY"
-					+ " WHERE KSCDT_SCH_BONUSPAY.SID IN " + listEmp + " AND KSCDT_SCH_BONUSPAY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
-			
-			Connection con = this.getEntityManager().unwrap(Connection.class);
+	}
 
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
+	// KSCDT_SCH_BONUSPAY
+	private Map<Pair<String, GeneralDate>, List<KscdtSchBonusPay>> getBonusPays(String listEmp, DatePeriod period) {
 
-				while (rs.next()) {
+		List<KscdtSchBonusPay> listKscdtSchBonusPay = new ArrayList<>();
 
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
-					String cid = rs.getString("CID");
-					Integer frameNo = rs.getInt("FRAME_NO");
-					Integer bonuspayType = rs.getInt("BONUSPAY_TYPE");
-					Integer premiumTime = rs.getInt("PREMIUM_TIME");
-					Integer premiumTimeWithIn = rs.getInt("PREMIUM_TIME_WITHIN");
-					Integer premiumTimeWithOut = rs.getInt("PREMIUM_TIME_WITHOUT");
+		String QUERY = "SELECT KSCDT_SCH_BONUSPAY.SID, KSCDT_SCH_BONUSPAY.YMD,KSCDT_SCH_BONUSPAY.CID,"
+				+ " KSCDT_SCH_BONUSPAY.BONUSPAY_TYPE, KSCDT_SCH_BONUSPAY.FRAME_NO,"
+				+ " KSCDT_SCH_BONUSPAY.PREMIUM_TIME, KSCDT_SCH_BONUSPAY.PREMIUM_TIME_WITHIN, KSCDT_SCH_BONUSPAY.PREMIUM_TIME_WITHOUT"
+				+ " FROM KSCDT_SCH_BONUSPAY" 
+				+ " WHERE KSCDT_SCH_BONUSPAY.SID IN " + listEmp + " AND KSCDT_SCH_BONUSPAY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-					listKscdtSchBonusPay.add(new KscdtSchBonusPay(new KscdtSchBonusPayPK(sid, ymd, bonuspayType, frameNo),
-							cid, premiumTime, premiumTimeWithIn, premiumTimeWithOut));
-				}
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 
-				Map<Pair<String, GeneralDate>, List<KscdtSchBonusPay>> mapPairBonusPay = listKscdtSchBonusPay.stream()
-						.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
 
-				return mapPairBonusPay;
+			while (rs.next()) {
 
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer frameNo = rs.getInt("FRAME_NO");
+				Integer bonuspayType = rs.getInt("BONUSPAY_TYPE");
+				Integer premiumTime = rs.getInt("PREMIUM_TIME");
+				Integer premiumTimeWithIn = rs.getInt("PREMIUM_TIME_WITHIN");
+				Integer premiumTimeWithOut = rs.getInt("PREMIUM_TIME_WITHOUT");
+
+				listKscdtSchBonusPay.add(new KscdtSchBonusPay(new KscdtSchBonusPayPK(sid, ymd, bonuspayType, frameNo),
+						cid, premiumTime, premiumTimeWithIn, premiumTimeWithOut));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchBonusPay>> mapPairBonusPay = listKscdtSchBonusPay.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairBonusPay;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_PREMIUM
-		private Map<Pair<String, GeneralDate>, List<KscdtSchPremium>> getPremiums(String listEmp, DatePeriod period) {
+	}
 
-			List<KscdtSchPremium> listKscdtSchPremium = new ArrayList<>();
+	// KSCDT_SCH_PREMIUM
+	private Map<Pair<String, GeneralDate>, List<KscdtSchPremium>> getPremiums(String listEmp, DatePeriod period) {
 
-			String QUERY = "SELECT KSCDT_SCH_PREMIUM.SID, KSCDT_SCH_PREMIUM.YMD, KSCDT_SCH_PREMIUM.CID,  "
-					+ " KSCDT_SCH_PREMIUM.FRAME_NO, KSCDT_SCH_PREMIUM.PREMIUM_TIME" + " FROM KSCDT_SCH_PREMIUM"
-					+ " WHERE KSCDT_SCH_PREMIUM.SID IN " + listEmp + " AND KSCDT_SCH_PREMIUM.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+		List<KscdtSchPremium> listKscdtSchPremium = new ArrayList<>();
 
-			Connection con = this.getEntityManager().unwrap(Connection.class);
+		String QUERY = "SELECT KSCDT_SCH_PREMIUM.SID, KSCDT_SCH_PREMIUM.YMD, KSCDT_SCH_PREMIUM.CID,  "
+				+ " KSCDT_SCH_PREMIUM.FRAME_NO, KSCDT_SCH_PREMIUM.PREMIUM_TIME" 
+				+ " FROM KSCDT_SCH_PREMIUM"
+				+ " WHERE KSCDT_SCH_PREMIUM.SID IN " + listEmp + " AND KSCDT_SCH_PREMIUM.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 
-				while (rs.next()) {
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
 
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
-					String cid = rs.getString("CID");
-					Integer frameNo = rs.getInt("FRAME_NO");
-					Integer premiumTime = rs.getInt("PREMIUM_TIME");
+			while (rs.next()) {
 
-					listKscdtSchPremium
-							.add(new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, frameNo), cid, premiumTime));
-				}
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer frameNo = rs.getInt("FRAME_NO");
+				Integer premiumTime = rs.getInt("PREMIUM_TIME");
 
-				Map<Pair<String, GeneralDate>, List<KscdtSchPremium>> mapPairPremium = listKscdtSchPremium.stream()
-						.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-				return mapPairPremium;
-
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+				listKscdtSchPremium
+						.add(new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, frameNo), cid, premiumTime));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchPremium>> mapPairPremium = listKscdtSchPremium.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairPremium;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
+	}
 
-		// KSCDT_SCH_SHORTTIME
-		private Map<Pair<String, GeneralDate>, List<KscdtSchShortTime>> getShortTimes(String listEmp, DatePeriod period) {
+	// KSCDT_SCH_SHORTTIME
+	private Map<Pair<String, GeneralDate>, List<KscdtSchShortTime>> getShortTimes(String listEmp, DatePeriod period) {
 
-			List<KscdtSchShortTime> listKscdtSchShortTime = new ArrayList<>();
+		List<KscdtSchShortTime> listKscdtSchShortTime = new ArrayList<>();
 
-			String QUERY = "SELECT KSCDT_SCH_SHORTTIME.SID, KSCDT_SCH_SHORTTIME.YMD, KSCDT_SCH_SHORTTIME.CID,  "
-					+ " KSCDT_SCH_SHORTTIME.CHILD_CARE_ATR, "
-					+ " KSCDT_SCH_SHORTTIME.COUNT, KSCDT_SCH_SHORTTIME.TOTAL_TIME, KSCDT_SCH_SHORTTIME.TOTAL_TIME_WITHIN, KSCDT_SCH_SHORTTIME.TOTAL_TIME_WITHOUT "
-					+ " FROM KSCDT_SCH_SHORTTIME" 
-					+ " WHERE KSCDT_SCH_SHORTTIME.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+		String QUERY = "SELECT KSCDT_SCH_SHORTTIME.SID, KSCDT_SCH_SHORTTIME.YMD, KSCDT_SCH_SHORTTIME.CID,  "
+				+ " KSCDT_SCH_SHORTTIME.CHILD_CARE_ATR, "
+				+ " KSCDT_SCH_SHORTTIME.COUNT, KSCDT_SCH_SHORTTIME.TOTAL_TIME, KSCDT_SCH_SHORTTIME.TOTAL_TIME_WITHIN, KSCDT_SCH_SHORTTIME.TOTAL_TIME_WITHOUT "
+				+ " FROM KSCDT_SCH_SHORTTIME" 
+				+ " WHERE KSCDT_SCH_SHORTTIME.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-			Connection con = this.getEntityManager().unwrap(Connection.class);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
 
-				while (rs.next()) {
+			while (rs.next()) {
 
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
-					String cid = rs.getString("CID");
-					Integer childCareAtr = rs.getInt("CHILD_CARE_ATR");
-					Integer count = rs.getInt("COUNT");
-					Integer totalTime = rs.getInt("TOTAL_TIME");
-					Integer totalTimeWithIn = rs.getInt("TOTAL_TIME_WITHIN");
-					Integer totalTimeWithOut = rs.getInt("TOTAL_TIME_WITHOUT");
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer childCareAtr = rs.getInt("CHILD_CARE_ATR");
+				Integer count = rs.getInt("COUNT");
+				Integer totalTime = rs.getInt("TOTAL_TIME");
+				Integer totalTimeWithIn = rs.getInt("TOTAL_TIME_WITHIN");
+				Integer totalTimeWithOut = rs.getInt("TOTAL_TIME_WITHOUT");
 
-					listKscdtSchShortTime.add(new KscdtSchShortTime(new KscdtSchShortTimePK(sid, ymd, childCareAtr), cid,
-							count, totalTime, totalTimeWithIn, totalTimeWithOut));
-				}
-
-				Map<Pair<String, GeneralDate>, List<KscdtSchShortTime>> mapPairShortTime = listKscdtSchShortTime.stream()
-						.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-				return mapPairShortTime;
-
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+				listKscdtSchShortTime.add(new KscdtSchShortTime(new KscdtSchShortTimePK(sid, ymd, childCareAtr), cid,
+						count, totalTime, totalTimeWithIn, totalTimeWithOut));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchShortTime>> mapPairShortTime = listKscdtSchShortTime.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairShortTime;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_COME_LATE
-		private Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> getKscdtSchComeLates(String listEmp, DatePeriod period) {
+	}
 
-			List<KscdtSchComeLate> listKscdtSchComeLate = new ArrayList<>();
+	// KSCDT_SCH_COME_LATE
+	private Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> getKscdtSchComeLates(String listEmp,
+			DatePeriod period) {
 
-			String QUERY = "SELECT KSCDT_SCH_COME_LATE.SID, KSCDT_SCH_COME_LATE.YMD, KSCDT_SCH_COME_LATE.CID,  "
-					+ " KSCDT_SCH_COME_LATE.WORK_NO, "
-					+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_PAID, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_COM, "
-					+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_60H, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_SP_NO, "
-					+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_CHILDCARE, "
-					+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_NURSECARE"
-					+ " FROM KSCDT_SCH_COME_LATE" 
-					+ " WHERE KSCDT_SCH_COME_LATE.SID IN " + listEmp + " AND KSCDT_SCH_COME_LATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+		List<KscdtSchComeLate> listKscdtSchComeLate = new ArrayList<>();
 
-			Connection con = this.getEntityManager().unwrap(Connection.class);
+		String QUERY = "SELECT KSCDT_SCH_COME_LATE.SID, KSCDT_SCH_COME_LATE.YMD, KSCDT_SCH_COME_LATE.CID,  "
+				+ " KSCDT_SCH_COME_LATE.WORK_NO, "
+				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_PAID, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_COM, "
+				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_60H, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_SP_NO, "
+				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_COME_LATE.USE_HOURLY_HD_CHILDCARE, "
+				+ " KSCDT_SCH_COME_LATE.USE_HOURLY_HD_NURSECARE" 
+				+ " FROM KSCDT_SCH_COME_LATE"
+				+ " WHERE KSCDT_SCH_COME_LATE.SID IN " + listEmp + " AND KSCDT_SCH_COME_LATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 
-				while (rs.next()) {
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
 
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
-					String cid = rs.getString("CID");
-					Integer workNo = rs.getInt("WORK_NO");
-					Integer useHourlyHdPaid = rs.getInt("USE_HOURLY_HD_PAID"); 
-					Integer useHourlyHdCom = rs.getInt("USE_HOURLY_HD_COM"); 
-					Integer useHourlyHd60h = rs.getInt("USE_HOURLY_HD_60H"); 
-					Integer useHourlyHdSpNO = rs.getInt("USE_HOURLY_HD_SP_NO");
-					Integer useHourlyHdSpTime = rs.getInt("USE_HOURLY_HD_SP_TIME");
-					Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE"); 
-					Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE"); 
+			while (rs.next()) {
 
-					listKscdtSchComeLate.add(new KscdtSchComeLate(new KscdtSchComeLatePK(sid, ymd, workNo), 
-							cid, useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
-							useHourlyHdChildCare, useHourlyHdNurseCare));
-				}
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer workNo = rs.getInt("WORK_NO");
+				Integer useHourlyHdPaid = rs.getInt("USE_HOURLY_HD_PAID");
+				Integer useHourlyHdCom = rs.getInt("USE_HOURLY_HD_COM");
+				Integer useHourlyHd60h = rs.getInt("USE_HOURLY_HD_60H");
+				Integer useHourlyHdSpNO = rs.getInt("USE_HOURLY_HD_SP_NO");
+				Integer useHourlyHdSpTime = rs.getInt("USE_HOURLY_HD_SP_TIME");
+				Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE");
+				Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
 
-				Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = listKscdtSchComeLate.stream()
-						.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-				return mapPairComeLate;
-
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+				listKscdtSchComeLate.add(new KscdtSchComeLate(new KscdtSchComeLatePK(sid, ymd, workNo), cid,
+						useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
+						useHourlyHdChildCare, useHourlyHdNurseCare));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = listKscdtSchComeLate.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairComeLate;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_GOING_OUT
-		private Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> getKscdtSchGoingOuts(String listEmp, DatePeriod period) {
+	}
 
-			List<KscdtSchGoingOut> listKscdtSchGoingOut = new ArrayList<>();
+	// KSCDT_SCH_GOING_OUT
+	private Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> getKscdtSchGoingOuts(String listEmp,
+			DatePeriod period) {
 
-			String QUERY = "SELECT KSCDT_SCH_GOING_OUT.SID, KSCDT_SCH_GOING_OUT.YMD, KSCDT_SCH_GOING_OUT.CID,  "
-					+ " KSCDT_SCH_GOING_OUT.REASON_ATR,"
-					+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_PAID, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_COM, "
-					+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_60H, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_SP_NO, "
-					+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_CHILDCARE, "
-					+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_NURSECARE"
-					+ " FROM KSCDT_SCH_GOING_OUT" 
-					+ " WHERE KSCDT_SCH_GOING_OUT.SID IN " + listEmp + " AND KSCDT_SCH_GOING_OUT.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+		List<KscdtSchGoingOut> listKscdtSchGoingOut = new ArrayList<>();
 
-			Connection con = this.getEntityManager().unwrap(Connection.class);
+		String QUERY = "SELECT KSCDT_SCH_GOING_OUT.SID, KSCDT_SCH_GOING_OUT.YMD, KSCDT_SCH_GOING_OUT.CID,  "
+				+ " KSCDT_SCH_GOING_OUT.REASON_ATR,"
+				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_PAID, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_COM, "
+				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_60H, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_SP_NO, "
+				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_CHILDCARE, "
+				+ " KSCDT_SCH_GOING_OUT.USE_HOURLY_HD_NURSECARE" 
+				+ " FROM KSCDT_SCH_GOING_OUT"
+				+ " WHERE KSCDT_SCH_GOING_OUT.SID IN " + listEmp + " AND KSCDT_SCH_GOING_OUT.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 
-				while (rs.next()) {
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
 
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
-					String cid = rs.getString("CID");
-					Integer reasonAtr = rs.getInt("REASON_ATR");
-					Integer useHourlyHdPaid = rs.getInt("USE_HOURLY_HD_PAID"); 
-					Integer useHourlyHdCom = rs.getInt("USE_HOURLY_HD_COM"); 
-					Integer useHourlyHd60h = rs.getInt("USE_HOURLY_HD_60H"); 
-					Integer useHourlyHdSpNO = rs.getInt("USE_HOURLY_HD_SP_NO");
-					Integer useHourlyHdSpTime = rs.getInt("USE_HOURLY_HD_SP_TIME");
-					Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE"); 
-					Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
+			while (rs.next()) {
 
-					listKscdtSchGoingOut.add(new KscdtSchGoingOut(new KscdtSchGoingOutPK(sid, ymd, reasonAtr), cid,
-							useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
-							useHourlyHdChildCare, useHourlyHdNurseCare));
-				}
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer reasonAtr = rs.getInt("REASON_ATR");
+				Integer useHourlyHdPaid = rs.getInt("USE_HOURLY_HD_PAID");
+				Integer useHourlyHdCom = rs.getInt("USE_HOURLY_HD_COM");
+				Integer useHourlyHd60h = rs.getInt("USE_HOURLY_HD_60H");
+				Integer useHourlyHdSpNO = rs.getInt("USE_HOURLY_HD_SP_NO");
+				Integer useHourlyHdSpTime = rs.getInt("USE_HOURLY_HD_SP_TIME");
+				Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE");
+				Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
 
-				Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = listKscdtSchGoingOut.stream()
-						.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-				return mapPairGoingOut;
-
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+				listKscdtSchGoingOut.add(new KscdtSchGoingOut(new KscdtSchGoingOutPK(sid, ymd, reasonAtr), cid,
+						useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
+						useHourlyHdChildCare, useHourlyHdNurseCare));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = listKscdtSchGoingOut.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairGoingOut;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
-		
-		// KSCDT_SCH_LEAVE_EARLY
-		private Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> getKscdtSchLeaveEarlys(String listEmp, DatePeriod period) {
+	}
 
-			List<KscdtSchLeaveEarly> listKscdtSchLeaveEarly = new ArrayList<>();
+	// KSCDT_SCH_LEAVE_EARLY
+	private Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> getKscdtSchLeaveEarlys(String listEmp,
+			DatePeriod period) {
 
-			String QUERY = "SELECT KSCDT_SCH_LEAVE_EARLY.SID, KSCDT_SCH_LEAVE_EARLY.YMD, KSCDT_SCH_LEAVE_EARLY.CID,  "
-					+ " KSCDT_SCH_LEAVE_EARLY.WORK_NO, "
-					+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_PAID, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_COM, "
-					+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_60H, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_SP_NO, "
-					+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_CHILDCARE, "
-					+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_NURSECARE"
-					+ " FROM KSCDT_SCH_LEAVE_EARLY" 
-					+ " WHERE KSCDT_SCH_LEAVE_EARLY.SID IN " + listEmp + " AND KSCDT_SCH_LEAVE_EARLY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+		List<KscdtSchLeaveEarly> listKscdtSchLeaveEarly = new ArrayList<>();
 
-			Connection con = this.getEntityManager().unwrap(Connection.class);
+		String QUERY = "SELECT KSCDT_SCH_LEAVE_EARLY.SID, KSCDT_SCH_LEAVE_EARLY.YMD, KSCDT_SCH_LEAVE_EARLY.CID,  "
+				+ " KSCDT_SCH_LEAVE_EARLY.WORK_NO, "
+				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_PAID, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_COM, "
+				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_60H, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_SP_NO, "
+				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_SP_TIME, KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_CHILDCARE, "
+				+ " KSCDT_SCH_LEAVE_EARLY.USE_HOURLY_HD_NURSECARE" 
+				+ " FROM KSCDT_SCH_LEAVE_EARLY"
+				+ " WHERE KSCDT_SCH_LEAVE_EARLY.SID IN " + listEmp + " AND KSCDT_SCH_LEAVE_EARLY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-			try {
-				ResultSet rs = con.createStatement().executeQuery(QUERY);
+		Connection con = this.getEntityManager().unwrap(Connection.class);
 
-				while (rs.next()) {
+		try {
+			ResultSet rs = con.createStatement().executeQuery(QUERY);
 
-					String sid = rs.getString("SID");
-					GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
-					String cid = rs.getString("CID");
-					Integer workNo = rs.getInt("WORK_NO");
-					Integer useHourlyHdPaid = rs.getInt("USE_HOURLY_HD_PAID"); 
-					Integer useHourlyHdCom = rs.getInt("USE_HOURLY_HD_COM"); 
-					Integer useHourlyHd60h = rs.getInt("USE_HOURLY_HD_60H"); 
-					Integer useHourlyHdSpNO = rs.getInt("USE_HOURLY_HD_SP_NO");
-					Integer useHourlyHdSpTime = rs.getInt("USE_HOURLY_HD_SP_TIME");
-					Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE"); 
-					Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
+			while (rs.next()) {
 
-					listKscdtSchLeaveEarly.add(new KscdtSchLeaveEarly(new KscdtSchLeaveEarlyPK(sid, ymd, workNo), cid,
-							useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
-							useHourlyHdChildCare, useHourlyHdNurseCare));
-				}
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer workNo = rs.getInt("WORK_NO");
+				Integer useHourlyHdPaid = rs.getInt("USE_HOURLY_HD_PAID");
+				Integer useHourlyHdCom = rs.getInt("USE_HOURLY_HD_COM");
+				Integer useHourlyHd60h = rs.getInt("USE_HOURLY_HD_60H");
+				Integer useHourlyHdSpNO = rs.getInt("USE_HOURLY_HD_SP_NO");
+				Integer useHourlyHdSpTime = rs.getInt("USE_HOURLY_HD_SP_TIME");
+				Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE");
+				Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
 
-				Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = listKscdtSchLeaveEarly.stream()
-						.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-				return mapPairLeaveEarly;
-
-			} catch (SQLException e) {
-				throw new RuntimeException(e);
+				listKscdtSchLeaveEarly.add(new KscdtSchLeaveEarly(new KscdtSchLeaveEarlyPK(sid, ymd, workNo), cid,
+						useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
+						useHourlyHdChildCare, useHourlyHdNurseCare));
 			}
+
+			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = listKscdtSchLeaveEarly.stream()
+					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+			return mapPairLeaveEarly;
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
 		}
+	}
 
 }
