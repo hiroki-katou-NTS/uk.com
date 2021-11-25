@@ -166,8 +166,8 @@ public class MonthlyAggregationEmployeeService {
 		IgnoreFlagDuringLock ignoreFlagDuringLock = canAggrWhenLock.flatMap(c -> {
 			val executionLog = require.getByExecutionContent(empCalAndSumExecLogID, ExecutionContent.MONTHLY_AGGREGATION.value);
 			
-			return executionLog.map(e -> executionLog.get().getIsCalWhenLock() != null && executionLog.get().getIsCalWhenLock() ?
-					IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
+			return executionLog.flatMap(e -> e.getIsCalWhenLock())
+					.map(e -> e != null && e ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
 					
 		}).orElse(IgnoreFlagDuringLock.CANNOT_CAL_LOCK);
 		
