@@ -119,7 +119,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	
 	@Inject 
 	private GetEmfromWkpidAndBDate getEmfromWkpidAndBDate;
-	
+
 	@Inject
 	private ObtainWkpListAndWkpManager obtainWkpListAndWkpManager;
 	
@@ -524,10 +524,11 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		if (!userID.isPresent()) return Optional.empty();
 
 		// ユーザIDからロールセットを取得する
-		Optional<RoleSet> roleSetOpt = roleSetService.getRoleSetFromUserId(userID.get(), GeneralDate.today());
-		if (!roleSetOpt.isPresent() || StringUtils.isEmpty(roleSetOpt.get().getEmploymentRoleId())) return Optional.empty();
+		Optional<RoleIndividualGrant> roleIndividualGrantOpt = roleIndividualGrantRepository.findByUserCompanyRoleTypeDate(userID.get(),
+				AppContexts.user().companyId(), 3, GeneralDate.today());
+		if (!roleIndividualGrantOpt.isPresent()) return Optional.empty();
 
-		return roleRepository.findByRoleId(roleSetOpt.get().getEmploymentRoleId());
+		return roleRepository.findByRoleId(roleIndividualGrantOpt.get().getRoleId());
 	}
 
 	@AllArgsConstructor
