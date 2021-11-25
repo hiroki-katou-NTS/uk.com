@@ -167,7 +167,7 @@ module nts.uk.ui.ktg001.a {
                                         <!-- A10_1 -->
                                         <div class="label font-size-sm flex fd-3 row-reverse" data-bind="
                                             text: $component.displayDate()"
-                                            style="text-align: right;">
+                                            style="text-align: right; color: #808080; font-weight: 500;">
                                         </div>
                                         <!-- A10_2 -->
                                         <div class="cf fd-2" data-bind="ntsSwitchButton: {
