@@ -626,15 +626,21 @@ module nts.uk.ui.at.kdw013.c {
 				setTimeout(() => {
 					clearInterval(interval);
 				}, 1000);
+				_.forEach(taskDetails, t => {
+					t.parent = vm;
+					t.callbackCheckChangeValue = vm.checkChangedForScreenA;	
+				});
             });
 
             vm.taskBlocks.caltimeSpanView.start.subscribe(() => {
 				vm.calTimeRange();
                 vm.validateRange($('#kdw013CStart'), $('#kdw013CEnd'));
+				vm.checkChangedForScreenA(vm);
 			});
 			vm.taskBlocks.caltimeSpanView.end.subscribe(() => {
 				vm.calTimeRange();
                 vm.validateRange($('#kdw013CEnd'), $('#kdw013CStart'));
+				vm.checkChangedForScreenA(vm);
 			});
 
 			$(window).resize(function () {
@@ -642,6 +648,13 @@ module nts.uk.ui.at.kdw013.c {
 			});
 			
         }
+
+		checkChangedForScreenA(vm: ViewModel){
+			let settings = vm.params.$settings;
+			if(settings()){
+				vm.params.$settings().isChange = vm.changed();
+			}
+		}
 
         calTimeRange(): void{
 			let vm = this;
@@ -1100,6 +1113,11 @@ module nts.uk.ui.at.kdw013.c {
 	export class ManHrTaskDetailView extends ManHrTaskDetail {
 		employeeId: string;
         itemBeforChange: ITaskItemValue[];
+
+		callbackCheckChangeValue: (vm: ViewModel) => void;
+		
+		parent: ViewModel = null;
+		
 		constructor(manHrTaskDetail: IManHrTaskDetail, private start: Date, employeeId: string, showInputTime: KnockoutObservable<boolean>, data: StartWorkInputPanelDto | null, setting: a.TaskFrameSettingDto[], displayManHrRecordItem: DisplayManHrRecordItem[]) {
 			super(manHrTaskDetail, data, displayManHrRecordItem);
 			const vm = this;
@@ -1196,6 +1214,11 @@ module nts.uk.ui.at.kdw013.c {
 						}
 					}
 				}
+				item.value.subscribe(()=>{
+					if(parent && typeof vm.callbackCheckChangeValue === 'function'){
+						vm.callbackCheckChangeValue(vm.parent);
+					}
+				});
             });
 			if(data){
 				vm.setWorkLists(data);
@@ -1404,7 +1427,7 @@ module nts.uk.ui.at.kdw013.c {
 	}
 
     type Params = {
-        close: (result?: 'yes' | 'cancel' | null) => void;
+        close: (result?: 'yes' | 'cancel'| 'save' | null) => void;
         remove: () => void;
         mode: KnockoutObservable<boolean>;
         view: KnockoutObservable<'view' | 'edit'>;
