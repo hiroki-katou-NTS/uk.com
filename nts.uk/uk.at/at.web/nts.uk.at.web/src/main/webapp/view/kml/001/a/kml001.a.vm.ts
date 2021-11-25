@@ -17,7 +17,8 @@ module nts.uk.at.view.kml001.a {
       isLastItem: KnockoutObservable<Boolean> = ko.observable(false);
       standardDate: KnockoutObservable<string> = ko.observable(null);
       langId: KnockoutObservable<string> = ko.observable('ja');
-      unitPriceOpt: KnockoutObservableArray<any> = ko.observableArray([]);
+      // workplaceCounterCategories: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory);
+      unitPriceOpt: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.UnitPrice);
       selectedHistory: KnockoutObservable<vmbase.GridPersonCostCalculation> = ko.observable(null);
       defaultPremiumSettings: KnockoutObservableArray<any> = ko.observableArray([]);
       latestPersonalData: KnockoutObservable<any> = ko.observable(null);
@@ -52,13 +53,13 @@ module nts.uk.at.view.kml001.a {
           ko.observable('')
         ]);
 
-        self.unitPriceOpt([
-          { code: 0, name: self.$i18n('KML001_22') },
-          { code: 1, name: self.$i18n('KML001_23') },
-          { code: 2, name: self.$i18n('KML001_24') },
-          { code: 3, name: self.$i18n('KML001_26') },
-          { code: 4, name: self.$i18n('KML001_25') },
-        ]);
+        // self.unitPriceOpt([
+        //   { code: 0, name: self.$i18n('KML001_22') },
+        //   { code: 1, name: self.$i18n('KML001_23') },
+        //   { code: 2, name: self.$i18n('KML001_24') },
+        //   { code: 3, name: self.$i18n('KML001_26') },
+        //   { code: 4, name: self.$i18n('KML001_25') },
+        // ]);
 
         self.currentPersonCost().unitPrice.subscribe((newValue) => {
           self.changeUnitPrice(newValue);
