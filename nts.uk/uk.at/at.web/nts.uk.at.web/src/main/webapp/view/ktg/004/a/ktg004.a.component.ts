@@ -63,9 +63,9 @@ module nts.uk.ui.ktg004.a {
                           <tr>
                             <td>
                               <div class="flex valign-center ktg004-header-row" style="justify-content: space-between;">
-                                <div class="ktg004-text-smaller" data-bind="ntsFormLabel: { text: textA15_1 }"></div>
+                                <label class="ktg004-header-text" data-bind="text: textA15_1"></label>
                                 <div class="flex valign-center">
-                                  <div class="ktg004-text-smaller" data-bind="ntsFormLabel: { text: periodText }"></div>
+                                  <label class="ktg004-header-text" data-bind="text: periodText"></label>
                                   <div data-bind="ntsSwitchButton: {
                                     name: '#[KTG004_32]',
                                     options: displayYearMonths,
@@ -111,7 +111,7 @@ module nts.uk.ui.ktg004.a {
                           <tr>
                             <td>
                               <div class="valign-center ktg004-header-row">
-                                <div class="ktg004-text-smaller" data-bind="ntsFormLabel: { text: textA17_1 }"></div>
+                                <label class="ktg004-header-text" data-bind="text: textA17_1"></label>
                               </div>
                             </td>
                           </tr>
@@ -168,7 +168,7 @@ module nts.uk.ui.ktg004.a {
                 .text-right span {
                     color: black;
                 }
-                .ktg004-fontsize div.form-label:not(.ktg004-text-smaller)>span.text {
+                .ktg004-fontsize div.form-label:not(.ktg004-header-text)>span.text {
                     font-size: 1rem !important;
                     padding-left: 10px;
                 }
@@ -186,8 +186,10 @@ module nts.uk.ui.ktg004.a {
                           border-width: 0px;
                           border-bottom: 1px solid #BFBFBF;
                 }
-                .ktg004-text-smaller {
+                .ktg004-header-text {
                   font-size: 0.8em !important;
+                  color: black !important;
+                  padding-right: 5px;
                 }
                 .ktg004-header-row {
                   margin-top: 10px;
