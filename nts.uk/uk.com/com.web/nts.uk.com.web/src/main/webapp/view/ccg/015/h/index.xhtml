@@ -38,15 +38,15 @@
         <div class="content-right fixed-flex-layout">
           <div class="content-right__section fixed-flex-layout">
             <!-- H2 -->
-            <div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG015_99')}</div>
+            <div data-bind="ntsFormLabel: {}" style="flex: 1;">#{i18n.getText('CCG015_99')}</div>
             <!-- H2_1 -->
-            <div class="label" data-bind="text: roleName"></div>
+            <div class="label" data-bind="text: roleName" style="flex: 2;"></div>
           </div>
           <div class="content-right__section fixed-flex-layout">
             <!-- H3 -->
-            <div data-bind="ntsFormLabel: {}">#{i18n.getText('CCG015_100')}</div>
+            <div data-bind="ntsFormLabel: {}" style="flex: 1;">#{i18n.getText('CCG015_100')}</div>
             <!-- H3_1 -->
-            <div class="label">#{i18n.getText('CCG015_101')}</div>
+            <div class="label" style="flex: 1;">#{i18n.getText('CCG015_101')}</div>
             <!-- H3_2 -->
             <div tabindex="5" data-bind="ntsComboBox: {
               name: $i18n('CCG015_100'),
@@ -61,7 +61,9 @@
               selectFirstIfNull: true,
               columns: [
                 { prop: 'name', length: 4 }
-              ]}"></div>
+              ]}"
+              style="flex: 1;">
+            </div>
           </div>
           <div class="content-right__section fixed-flex-layout">
             <!-- H4 -->
