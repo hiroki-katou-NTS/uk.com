@@ -191,7 +191,7 @@
 			</div>
 
 			<div id="functions-area-bottom" class="kdw013-function">
-				<button tabindex = "9" class="proceed normal" data-bind="i18n: 'KDW013_43', click: $vm.decide"></button>
+				<button tabindex = "9" class="proceed normal" data-bind="i18n: 'KDW013_43', click: $vm.decide, enable: $root.errors.isEmpty "></button>
 				<button tabindex = "10" class="normal" data-bind="i18n: 'KDW013_37', click: $vm.close"></button>
 			</div>
 		</ui:define>
