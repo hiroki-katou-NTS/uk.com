@@ -106,19 +106,15 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 
 		//6. アラーム発生対象日を確認する
 
-		checkAlarmTargetDate.checkAlarm(command.getEmployeeId(), command.getChangedDates());
+		checkAlarmTargetDate.checkAlarm(command.getEmployeeId(),  new DatePeriod(startDate, endDate));
 		
 		
-		if(command.getMode() == 1){
 			
-			// 7.残業申請・休出時間申請の対象時間を取得する
-			
-			List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(),
-					command.getChangedDates());
-			
-			result.setLstOvertimeLeaveTime(ots);
-			
-		}
+		// 7.残業申請・休出時間申請の対象時間を取得する
+
+		List<OvertimeLeaveTimeDto> ots = this.getTargetTime.get(command.getEmployeeId(), command.getChangedDates());
+
+		result.setLstOvertimeLeaveTime(ots);
 		
 		// 8. List<残業休出時間>.isPresent check dưới client
 
