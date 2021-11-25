@@ -81,12 +81,9 @@ public class GetEmpCanReferService {
 	private static List<String> getByWorkplaceGroup (
 			Require require, String employeeId, GeneralDate date, DatePeriod period, Optional<String> workplaceGroupId
 	) {
-
-		List<String> employeeIdList = workplaceGroupId.isPresent() ?
-				require.getEmpCanReferByWorkplaceGroup(date, employeeId, workplaceGroupId.get()) :
-				require.getAllEmpCanReferByWorkplaceGroup(date, employeeId);
-
-		return employeeIdList;
+		return workplaceGroupId.isPresent()
+				? require.getEmpCanReferByWorkplaceGroup(employeeId, date, period, workplaceGroupId.get())
+				: require.getAllEmpCanReferByWorkplaceGroup(employeeId, date, period);
 	}
 
 	/**
@@ -105,6 +102,8 @@ public class GetEmpCanReferService {
 		// create search query
 		RegulationInfoEmpQuery query = new RegulationInfoEmpQuery();
 		query.setBaseDate(date);
+		query.setPeriodStart(period.start());
+		query.setPeriodEnd(period.end());
 		query.setSystemType(CCG001SystemType.EMPLOYMENT);	// 就業
 		query.setReferenceRange(SearchReferenceRange.ALL_REFERENCE_RANGE);	// 参照可能範囲すべて
 
@@ -135,20 +134,22 @@ public class GetEmpCanReferService {
 
 		/**
 		 * 職場グループで参照可能な所属社員を取得する
-		 * @param date 年月日
 		 * @param empId 社員ID
+		 * @param date 年月日
+		 * @param period 期間
 		 * @param workplaceGroupID 職場グループID
 		 * @return List<社員ID>
 		 */
-		List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID);
+		List<String> getEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period, String workplaceGroupID);
 
 		/**
 		 * 職場グループで参照可能な所属社員をすべて取得する
-		 * @param date 年月日
 		 * @param empId 社員ID
+		 * @param date 年月日
+		 * @param period 期間
 		 * @return List<社員ID>
 		 */
-		List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId);
+		List<String> getAllEmpCanReferByWorkplaceGroup(String empId, GeneralDate date, DatePeriod period);
 
 		/**
 		 * 社員を並び替える

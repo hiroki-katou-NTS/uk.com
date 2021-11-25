@@ -137,23 +137,24 @@ public class GetEmpCanReferServiceTest {
 	public void testGetByWorkplaceGroup_workplaceGroupId_isPresent() {
 
 		GeneralDate date = GeneralDate.ymd(2020, 5, 1);
+		DatePeriod period = DatePeriod.oneDay(date);
 		String employeeId = "empId";
 		String workplaceGroupId = "wpl-group-id";
 
 		new Expectations() {{
 
-			require.getEmpCanReferByWorkplaceGroup(date, employeeId, workplaceGroupId) ;
+			require.getEmpCanReferByWorkplaceGroup(employeeId, date, period, workplaceGroupId) ;
 			result = Arrays.asList("emp1", "emp2", "emp3");
 		}};
 
 		List<String> result = NtsAssert.Invoke.staticMethod(
 				GetEmpCanReferService.class, "getByWorkplaceGroup"
-					, require, employeeId, date, DatePeriod.oneDay(date), Optional.of(workplaceGroupId)
+					, require, employeeId, date, period, Optional.of(workplaceGroupId)
 			);
 
 		new Verifications() {{
 
-			require.getAllEmpCanReferByWorkplaceGroup(date, employeeId) ;
+			require.getAllEmpCanReferByWorkplaceGroup(employeeId, date, period) ;
 			times = 0;
 		}};
 
@@ -171,21 +172,22 @@ public class GetEmpCanReferServiceTest {
 	public void testGetByWorkplaceGroup_workplaceGroupId_isEmpty() {
 
 		GeneralDate date = GeneralDate.ymd(2020, 5, 1);
+		DatePeriod period = DatePeriod.oneDay(date);
 		String employeeId = "empId";
 
 		new Expectations() {{
 
-			require.getAllEmpCanReferByWorkplaceGroup(date, employeeId) ;
+			require.getAllEmpCanReferByWorkplaceGroup(employeeId, date, period) ;
 			result = Arrays.asList("emp1", "emp2", "emp3");
 		}};
 
 		List<String> result = NtsAssert.Invoke.staticMethod(
 				GetEmpCanReferService.class, "getByWorkplaceGroup"
-					, require, employeeId, date, DatePeriod.oneDay(date), Optional.empty()
+					, require, employeeId, date, period, Optional.empty()
 			);
 
 		new Verifications() {{
-			require.getEmpCanReferByWorkplaceGroup(date, employeeId, anyString);
+			require.getEmpCanReferByWorkplaceGroup(employeeId, date, period, anyString);
 			times = 0;
 		}};
 
@@ -203,20 +205,21 @@ public class GetEmpCanReferServiceTest {
 	public void testGetByOrg_WORKPLACE_GROUP() {
 
 		GeneralDate date = GeneralDate.ymd(2020, 5, 1);
+		DatePeriod period = DatePeriod.oneDay(date);
 		String employeeId = "empId";
 		String workplaceGroupId = "wpl-group-id";
 		TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(workplaceGroupId);
 		List<String> empCanReferByWorkplaceGroup = Arrays.asList("emp3", "emp1", "emp2");
 
 		new Expectations() {{
-			require.getEmpCanReferByWorkplaceGroup(date, employeeId, workplaceGroupId ) ;
+			require.getEmpCanReferByWorkplaceGroup(employeeId, date, period, workplaceGroupId ) ;
 			result = empCanReferByWorkplaceGroup;
 
 			require.sortEmployee(empCanReferByWorkplaceGroup, EmployeeSearchCallSystemType.EMPLOYMENT, null, date, null);
 			result = Arrays.asList("emp2", "emp3", "emp1");
 		}};
 
-		List<String> result = GetEmpCanReferService.getByOrg(require, employeeId, date, DatePeriod.oneDay(date), targetOrg);
+		List<String> result = GetEmpCanReferService.getByOrg(require, employeeId, date, period, targetOrg);
 
 		assertThat( result ).containsExactly("emp2", "emp3", "emp1");
 
@@ -262,11 +265,12 @@ public class GetEmpCanReferServiceTest {
 	public void testGetAll() {
 
 		GeneralDate date = GeneralDate.ymd(2020, 5, 1);
+		DatePeriod period = DatePeriod.oneDay(date);
 		String employeeId = "empId";
 
 		new Expectations() {{
 
-			require.getAllEmpCanReferByWorkplaceGroup(date, employeeId);
+			require.getAllEmpCanReferByWorkplaceGroup(employeeId, date, period);
 			result = Arrays.asList("emp1", "emp2", "emp3", "emp4");
 
 			require.searchEmployee((RegulationInfoEmpQuery) any, anyString );
@@ -276,7 +280,7 @@ public class GetEmpCanReferServiceTest {
 			result = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5", "emp6");
 		}};
 
-		List<String> result = GetEmpCanReferService.getAll(require, employeeId, date, DatePeriod.oneDay(date));
+		List<String> result = GetEmpCanReferService.getAll(require, employeeId, date, period);
 
 		assertThat( result ).containsExactly("emp1", "emp2", "emp3", "emp4", "emp5", "emp6");
 
