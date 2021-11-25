@@ -3898,7 +3898,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     .then(() => view('view'));
             }
 
-            close(result?: 'yes' | 'cancel' | null) {
+            close(result ?: 'yes' | 'cancel' | 'save' | null) {
                 const vm = this;
                 const { params } = vm;
                 const { data, position, view, mutated } = params;
@@ -3911,10 +3911,14 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (event) {
                                 event.remove();
-                                // trigger update from parent view
-                                mutated.valueHasMutated();
+                                
                             }
                         }
+                        if(result === 'save'){
+                              // trigger update from parent view
+                              mutated.valueHasMutated();
+                        }
+                    
                     })
                     .then(() => data(null))
                     .then(() => position(null))

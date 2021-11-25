@@ -937,7 +937,7 @@ module nts.uk.ui.at.kdw013.c {
                         }
 
                         // close popup
-                        params.close();
+                        params.close('save');
                     }
                 });
         }
