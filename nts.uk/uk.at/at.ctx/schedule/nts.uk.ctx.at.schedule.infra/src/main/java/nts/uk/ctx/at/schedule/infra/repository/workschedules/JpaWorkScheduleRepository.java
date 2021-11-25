@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -876,7 +876,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			listEmp = listEmp.substring(0, listEmp.length() - 1) + ")";
 			
 			// ActualWorkingTimeOfDaily
-			Map<Pair<String, GeneralDate>, List<KscdtSchTime>> mapPairSchTime = this.getKscdtSchTimes(listEmp, period);
+			Map<Pair<String, GeneralDate>, KscdtSchTime> mapPairSchTime = this.getKscdtSchTimes(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> mapPairOvertimeWork = this.getOvertimeWorks(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchHolidayWork>> mapPairHolidayWork = this.getHolidayWorks(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchBonusPay>> mapPairBonusPay = this.getBonusPays(listEmp, period);
@@ -887,7 +887,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = this.getKscdtSchLeaveEarlys(listEmp, period);
 			
 			// WorkSchedule
-			Map<Pair<String, GeneralDate>, List<KscdtSchBasicInfo>> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
+			Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> mapPairSchEditState = this.getSchEditState(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> mapPairSchAtdLvwTime = this.getSchAtdLvwTime(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeTs = this.getSchShortTimeTs(listEmp, period);
@@ -899,42 +899,26 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				period.datesBetween().forEach(ymd -> {
 					Pair<String, GeneralDate> key = Pair.of(sid, ymd);
 					
-					List<KscdtSchTime> listSchTime = mapPairSchTime.get(key);
-					List<KscdtSchOvertimeWork> listOvertimeWork = mapPairOvertimeWork.get(key);
-					List<KscdtSchHolidayWork> listHolidayWork = mapPairHolidayWork.get(key);
-					List<KscdtSchBonusPay> listBonusPay = mapPairBonusPay.get(key);
-					List<KscdtSchPremium> listPremium = mapPairSchPremium.get(key);
-					List<KscdtSchShortTime> listShortTime = mapPairShortTime.get(key);
-					List<KscdtSchComeLate> listComeLate = mapPairComeLate.get(key);
-					List<KscdtSchGoingOut> listGoingOut = mapPairGoingOut.get(key);
-					List<KscdtSchLeaveEarly> listLeaveEarly = mapPairLeaveEarly.get(key);
-
-					List<KscdtSchBasicInfo> listSchBasicInfo = mapPairSchBasicInfo.get(key);
-					List<KscdtSchEditState> listEditState = mapPairSchEditState.get(key);
-					List<KscdtSchAtdLvwTime> listAtdLvwTime = mapPairSchAtdLvwTime.get(key);
-					List<KscdtSchShortTimeTs> listShortTimeTs = mapPairSchShortTimeTs.get(key);
-					List<KscdtSchBreakTs> listBreakTs = mapPairSchBreakTs.get(key);
-					List<KscdtSchGoingOutTs> listGoingOutTs = mapPairGoingOutTs.get(key);
-					if (listSchBasicInfo != null && !listSchBasicInfo.isEmpty()) {
-
-						KscdtSchBasicInfo basicInfo = listSchBasicInfo.get(0);
-						basicInfo.kscdtSchTime = null;
-						basicInfo.editStates = listEditState == null ? new ArrayList<>() : listEditState;
-						basicInfo.atdLvwTimes = listAtdLvwTime == null ? new ArrayList<>() : listAtdLvwTime;
-						basicInfo.schShortTimeTs = listShortTimeTs == null ? new ArrayList<>() : listShortTimeTs;
-						basicInfo.breakTs = listBreakTs == null ? new ArrayList<>() : listBreakTs;
-						basicInfo.kscdtSchGoingOutTs = listGoingOutTs == null ? new ArrayList<>() : listGoingOutTs;
+					if (mapPairSchBasicInfo.containsKey(key)) {
 						
-						if(listSchTime != null && !listSchTime.isEmpty()){
-							KscdtSchTime scheTime = listSchTime.get(0);
-							scheTime.overtimeWorks = listOvertimeWork == null ? new ArrayList<>() : listOvertimeWork;
-							scheTime.holidayWorks = listHolidayWork == null ? new ArrayList<>() : listHolidayWork;
-							scheTime.bonusPays = listBonusPay == null ? new ArrayList<>() : listBonusPay;
-							scheTime.premiums = listPremium == null ? new ArrayList<>() : listPremium;
-							scheTime.shortTimes = listShortTime == null ? new ArrayList<>() : listShortTime;
-							scheTime.kscdtSchComeLate = listComeLate == null ? new ArrayList<>() : listComeLate;
-							scheTime.kscdtSchGoingOut = listGoingOut == null ? new ArrayList<>() : listGoingOut;
-							scheTime.kscdtSchLeaveEarly = listLeaveEarly == null ? new ArrayList<>() : listLeaveEarly;
+						KscdtSchBasicInfo basicInfo = mapPairSchBasicInfo.get(key);
+						basicInfo.editStates = mapPairSchEditState.getOrDefault(key, new ArrayList<>()); 
+						basicInfo.atdLvwTimes = mapPairSchAtdLvwTime.getOrDefault(key, new ArrayList<>()); 
+						basicInfo.schShortTimeTs = mapPairSchShortTimeTs.getOrDefault(key, new ArrayList<>()); 
+						basicInfo.breakTs = mapPairSchBreakTs.getOrDefault(key, new ArrayList<>()); 
+						basicInfo.kscdtSchGoingOutTs = mapPairGoingOutTs.getOrDefault(key, new ArrayList<>()); 
+						
+						if(mapPairSchTime.containsKey(key)){
+							KscdtSchTime scheTime = mapPairSchTime.get(key);
+							
+							scheTime.overtimeWorks = mapPairOvertimeWork.getOrDefault(key, new ArrayList<>()); 
+							scheTime.holidayWorks = mapPairHolidayWork.getOrDefault(key, new ArrayList<>());
+							scheTime.bonusPays = mapPairBonusPay.getOrDefault(key, new ArrayList<>());
+							scheTime.premiums = mapPairSchPremium.getOrDefault(key, new ArrayList<>());
+							scheTime.shortTimes = mapPairShortTime.getOrDefault(key, new ArrayList<>());
+							scheTime.kscdtSchComeLate = mapPairComeLate.getOrDefault(key, new ArrayList<>());
+							scheTime.kscdtSchGoingOut = mapPairGoingOut.getOrDefault(key, new ArrayList<>());
+							scheTime.kscdtSchLeaveEarly = mapPairLeaveEarly.getOrDefault(key, new ArrayList<>());
 							
 							basicInfo.kscdtSchTime = scheTime;
 						}
@@ -971,7 +955,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	}
 	
 	// KSCDT_SCH_BASIC_INFO
-	private Map<Pair<String, GeneralDate>, List<KscdtSchBasicInfo>> getSchBasicInfo(String listEmp, DatePeriod period) {
+	private Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> getSchBasicInfo(String listEmp, DatePeriod period) {
 
 		List<KscdtSchBasicInfo> listSchBasicInfo = new ArrayList<>();
 
@@ -982,13 +966,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_BASIC_INFO" 
 				+ " WHERE KSCDT_SCH_BASIC_INFO.SID IN " + listEmp + " AND KSCDT_SCH_BASIC_INFO.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listSchBasicInfo = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1006,21 +985,20 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer treatAsSubstituteAtr = rs.getInt("TREAT_AS_SUBSTITUTE_ATR");
 				Double treatAsSubstituteDays = rs.getDouble("TREAT_AS_SUBSTITUTE_DAYS");
 
-				listSchBasicInfo.add(new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid,
-						confirmedATR == 1 ? true : false, empCd, jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd,
-						wktmCd, goStraightAtr == 1 ? true : false, backStraightAtr == 1 ? true : false,
-						treatAsSubstituteAtr, treatAsSubstituteDays, null, new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchBasicInfo>> mapPairSchBasicInfo = listSchBasicInfo.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairSchBasicInfo;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchBasicInfo(new KscdtSchBasicInfoPK(sid, ymd), cid, confirmedATR == 1 ? true : false,
+						empCd, jobId, wkpId, clsCd, busTypeCd, nurseLicense, wktpCd, wktmCd,
+						goStraightAtr == 1 ? true : false, backStraightAtr == 1 ? true : false, treatAsSubstituteAtr,
+						treatAsSubstituteDays, null, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>());
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = listSchBasicInfo.stream()
+				.collect(Collectors.toMap(x -> Pair.of(x.pk.sid, x.pk.ymd), x -> x));
+
+		return mapPairSchBasicInfo;
 	}
 
 	// KSCDT_SCH_EDIT_STATE
@@ -1033,30 +1011,24 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_EDIT_STATE"
 				+ " WHERE KSCDT_SCH_EDIT_STATE.SID IN " + listEmp + " AND KSCDT_SCH_EDIT_STATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listSchEditState = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
 				Integer atdItemId = rs.getInt("ATD_ITEM_ID");
 				Integer editState = rs.getInt("EDIT_STATE");
 
-				listSchEditState.add(new KscdtSchEditState(new KscdtSchEditStatePK(sid, ymd, atdItemId), cid, editState));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> mapPairSchEditState = listSchEditState.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairSchEditState;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchEditState(new KscdtSchEditStatePK(sid, ymd, atdItemId), cid, editState);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchEditState>> mapPairSchEditState = listSchEditState.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairSchEditState;
 	}
 
 	// KSCDT_SCH_ATD_LVW_TIME
@@ -1072,13 +1044,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_ATD_LVW_TIME" 
 				+ " WHERE KSCDT_SCH_ATD_LVW_TIME.SID IN " + listEmp + " AND KSCDT_SCH_ATD_LVW_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listSchAtdLvwTime = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1089,19 +1056,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer lwkClock = rs.getInt("LVW_CLOCK");
 				Integer lvwHourlyHDTSStart = rs.getInt("LVW_HOURLY_HD_TS_START");
 				Integer lvwHourlyHDTSEnd = rs.getInt("LVW_HOURLY_HD_TS_END");
-
-				listSchAtdLvwTime.add(new KscdtSchAtdLvwTime(new KscdtSchAtdLvwTimePK(sid, ymd, workNo), cid, atdClock,
-						atdHourlyHDTSStart, atdHourlyHDTSEnd, lwkClock, lvwHourlyHDTSStart, lvwHourlyHDTSEnd));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> mapPairSchAtdLvwTime = listSchAtdLvwTime.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairSchAtdLvwTime;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchAtdLvwTime(new KscdtSchAtdLvwTimePK(sid, ymd, workNo), cid, atdClock,
+						atdHourlyHDTSStart, atdHourlyHDTSEnd, lwkClock, lvwHourlyHDTSStart, lvwHourlyHDTSEnd);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+		
+		Map<Pair<String, GeneralDate>, List<KscdtSchAtdLvwTime>> mapPairSchAtdLvwTime = listSchAtdLvwTime.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairSchAtdLvwTime;
 	}
 
 	// KSCDT_SCH_SHORTTIME_TS
@@ -1115,13 +1080,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_SHORTTIME_TS" 
 				+ " WHERE KSCDT_SCH_SHORTTIME_TS.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listSchShortTimeTs = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1129,18 +1089,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer frameNo = rs.getInt("FRAME_NO");
 				Integer shortTimeTsStart = rs.getInt("SHORTTIME_TS_START");
 				Integer shortTimeTsEnd = rs.getInt("SHORTTIME_TS_END");
-
-				listSchShortTimeTs.add(new KscdtSchShortTimeTs(new KscdtSchShortTimeTsPK(sid, ymd, childCareAtr, frameNo), cid, shortTimeTsStart, shortTimeTsEnd));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeT = listSchShortTimeTs.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairSchShortTimeT;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchShortTimeTs(new KscdtSchShortTimeTsPK(sid, ymd, childCareAtr, frameNo), cid, shortTimeTsStart, shortTimeTsEnd);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchShortTimeTs>> mapPairSchShortTimeT = listSchShortTimeTs.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairSchShortTimeT;
+
 	}
 
 	// KSCDT_SCH_BREAK_TS
@@ -1154,31 +1113,24 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_BREAK_TS" 
 				+ " WHERE KSCDT_SCH_BREAK_TS.SID IN " + listEmp + " AND KSCDT_SCH_BREAK_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listSchBreakTs = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
 				Integer frameNo = rs.getInt("FRAME_NO");
 				Integer breakTsStart = rs.getInt("BREAK_TS_START");
 				Integer breakTsEnd = rs.getInt("BREAK_TS_END");
-
-				listSchBreakTs.add(new KscdtSchBreakTs(new KscdtSchBreakTsPK(sid, ymd, frameNo), cid, breakTsStart, breakTsEnd));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> mapPairSchBreakTs = listSchBreakTs.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairSchBreakTs;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchBreakTs(new KscdtSchBreakTsPK(sid, ymd, frameNo), cid, breakTsStart, breakTsEnd);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchBreakTs>> mapPairSchBreakTs = listSchBreakTs.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairSchBreakTs;
 	}
 
 	// KSCDT_SCH_GOING_OUT_TS
@@ -1192,13 +1144,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_GOING_OUT_TS" 
 				+ " WHERE KSCDT_SCH_GOING_OUT_TS.SID IN " + listEmp+ " AND KSCDT_SCH_GOING_OUT_TS.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listSchGoingOutTs = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1206,23 +1153,20 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer reasonAtr = rs.getInt("REASON_ATR");
 				Integer goingOutClock = rs.getInt("GOING_OUT_CLOCK");
 				Integer goingBackClock = rs.getInt("GOING_BACK_CLOCK");
-
-				listSchGoingOutTs.add(new KscdtSchGoingOutTs(new KscdtSchGoingOutTsPK(sid, ymd, frameNo), cid,
-						reasonAtr, goingOutClock, goingBackClock));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> mapPairGoingOutTs = listSchGoingOutTs.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairGoingOutTs;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchGoingOutTs(new KscdtSchGoingOutTsPK(sid, ymd, frameNo), cid, reasonAtr, goingOutClock, goingBackClock);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchGoingOutTs>> mapPairGoingOutTs = listSchGoingOutTs.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairGoingOutTs;
 	}
 
 	// KSCDT_SCH_TIME
-	private Map<Pair<String, GeneralDate>, List<KscdtSchTime>> getKscdtSchTimes(String listEmp, DatePeriod period) {
+	private Map<Pair<String, GeneralDate>, KscdtSchTime> getKscdtSchTimes(String listEmp, DatePeriod period) {
 
 		List<KscdtSchTime> listKscdtSchTime = new ArrayList<>();
 
@@ -1237,13 +1181,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_TIME" 
 				+ " WHERE KSCDT_SCH_TIME.SID IN " + listEmp + " AND KSCDT_SCH_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchTime = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1282,26 +1221,24 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer absenceTime = rs.getInt("ABSENCE_TIME");
 				Integer vacationAddTime = rs.getInt("VACATION_ADD_TIME");
 				Integer staggeredWhTime = rs.getInt("STAGGERED_WH_TIME");
-
-				listKscdtSchTime.add(new KscdtSchTime(new KscdtSchTimePK(sid, ymd), cid, count, totalTime, totalTimeAct,
-						prsWorkTime, prsWorkTimeAct, prsPrimeTime, prsMidniteTime, extBindTimeOtw, extBindTimeHw,
+				return new KscdtSchTime(new KscdtSchTimePK(sid, ymd), cid, count, totalTime, totalTimeAct, prsWorkTime,
+						prsWorkTimeAct, prsPrimeTime, prsMidniteTime, extBindTimeOtw, extBindTimeHw,
 						extVarwkOtwTimeLegal, extFlexTime, extFlexTimePreApp, extMidNiteOtwTime, extMidNiteHdwTimeLghd,
 						extMidNiteHdwTimeIlghd, extMidNiteHdwTimePubhd, extMidNiteTotal, extMidNiteTotalPreApp,
 						intervalAtdClock, intervalTime, brkTotalTime, hdPaidTime, hdPaidHourlyTime, hdComTime,
 						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
 						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime, new ArrayList<>(),
 						new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>()));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchTime>> mapPairSchTime = listKscdtSchTime.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairSchTime;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+						new ArrayList<>(), new ArrayList<>());
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, KscdtSchTime> mapPairSchTime = listKscdtSchTime.stream()
+				.collect(Collectors.toMap(x -> Pair.of(x.pk.sid, x.pk.ymd), x -> x));
+
+		return mapPairSchTime;
 	}
 
 	// KSCDT_SCH_OVERTIME_WORK
@@ -1315,13 +1252,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_OVERTIME_WORK" 
 				+ " WHERE KSCDT_SCH_OVERTIME_WORK.SID IN " + listEmp + " AND KSCDT_SCH_OVERTIME_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchOvertimeWork = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1329,19 +1261,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer overtimeWorkTime = rs.getInt("OVERTIME_WORK_TIME");
 				Integer overtimeWorkTimeTrans = rs.getInt("OVERTIME_WORK_TIME_TRANS");
 				Integer overtimeWorkTimePreApp = rs.getInt("OVERTIME_WORK_TIME_PREAPP");
-
-				listKscdtSchOvertimeWork.add(new KscdtSchOvertimeWork(new KscdtSchOvertimeWorkPK(sid, ymd, frameNo),
-						cid, overtimeWorkTime, overtimeWorkTimeTrans, overtimeWorkTimePreApp));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> mapPairOvertimeWork = listKscdtSchOvertimeWork
-					.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairOvertimeWork;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchOvertimeWork(new KscdtSchOvertimeWorkPK(sid, ymd, frameNo), cid, overtimeWorkTime,
+						overtimeWorkTimeTrans, overtimeWorkTimePreApp);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchOvertimeWork>> mapPairOvertimeWork = listKscdtSchOvertimeWork
+				.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairOvertimeWork;
 	}
 
 	// KSCDT_SCH_HOLIDAY_WORK
@@ -1356,13 +1286,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_HOLIDAY_WORK" 
 				+ " WHERE KSCDT_SCH_HOLIDAY_WORK.SID IN " + listEmp + " AND KSCDT_SCH_HOLIDAY_WORK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchHolidayWork = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1373,19 +1298,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer holidayWorkTimeTrans = rs.getInt("HOLIDAY_WORK_TIME_TRANS");
 				Integer holidayWorkTimePreApp = rs.getInt("HOLIDAY_WORK_TIME_PREAPP");
 
-				listKscdtSchHolidayWork.add(
-						new KscdtSchHolidayWork(new KscdtSchHolidayWorkPK(sid, ymd, frameNo), cid, holidayWorkTsStart,
-								holidayWorkTsEnd, holidayWorkTime, holidayWorkTimeTrans, holidayWorkTimePreApp));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchHolidayWork>> mapPairHolidayWork = listKscdtSchHolidayWork
-					.stream().collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairHolidayWork;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchHolidayWork(new KscdtSchHolidayWorkPK(sid, ymd, frameNo), cid, holidayWorkTsStart,
+						holidayWorkTsEnd, holidayWorkTime, holidayWorkTimeTrans, holidayWorkTimePreApp);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchHolidayWork>> mapPairHolidayWork = listKscdtSchHolidayWork.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairHolidayWork;
 	}
 
 	// KSCDT_SCH_BONUSPAY
@@ -1399,13 +1322,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_BONUSPAY" 
 				+ " WHERE KSCDT_SCH_BONUSPAY.SID IN " + listEmp + " AND KSCDT_SCH_BONUSPAY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchBonusPay = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1415,18 +1333,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer premiumTimeWithIn = rs.getInt("PREMIUM_TIME_WITHIN");
 				Integer premiumTimeWithOut = rs.getInt("PREMIUM_TIME_WITHOUT");
 
-				listKscdtSchBonusPay.add(new KscdtSchBonusPay(new KscdtSchBonusPayPK(sid, ymd, bonuspayType, frameNo),
-						cid, premiumTime, premiumTimeWithIn, premiumTimeWithOut));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchBonusPay>> mapPairBonusPay = listKscdtSchBonusPay.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairBonusPay;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchBonusPay(new KscdtSchBonusPayPK(sid, ymd, bonuspayType, frameNo), cid, premiumTime,
+						premiumTimeWithIn, premiumTimeWithOut);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchBonusPay>> mapPairBonusPay = listKscdtSchBonusPay.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairBonusPay;
 	}
 
 	// KSCDT_SCH_PREMIUM
@@ -1439,31 +1356,24 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_PREMIUM"
 				+ " WHERE KSCDT_SCH_PREMIUM.SID IN " + listEmp + " AND KSCDT_SCH_PREMIUM.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchPremium = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
 				Integer frameNo = rs.getInt("FRAME_NO");
 				Integer premiumTime = rs.getInt("PREMIUM_TIME");
 
-				listKscdtSchPremium
-						.add(new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, frameNo), cid, premiumTime));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchPremium>> mapPairPremium = listKscdtSchPremium.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairPremium;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, frameNo), cid, premiumTime);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchPremium>> mapPairPremium = listKscdtSchPremium.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairPremium;
 	}
 
 	// KSCDT_SCH_SHORTTIME
@@ -1477,13 +1387,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_SHORTTIME" 
 				+ " WHERE KSCDT_SCH_SHORTTIME.SID IN " + listEmp + " AND KSCDT_SCH_SHORTTIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchShortTime = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1493,18 +1398,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer totalTimeWithIn = rs.getInt("TOTAL_TIME_WITHIN");
 				Integer totalTimeWithOut = rs.getInt("TOTAL_TIME_WITHOUT");
 
-				listKscdtSchShortTime.add(new KscdtSchShortTime(new KscdtSchShortTimePK(sid, ymd, childCareAtr), cid,
-						count, totalTime, totalTimeWithIn, totalTimeWithOut));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchShortTime>> mapPairShortTime = listKscdtSchShortTime.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairShortTime;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchShortTime(new KscdtSchShortTimePK(sid, ymd, childCareAtr), cid, count, totalTime,
+						totalTimeWithIn, totalTimeWithOut);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchShortTime>> mapPairShortTime = listKscdtSchShortTime.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairShortTime;
 	}
 
 	// KSCDT_SCH_COME_LATE
@@ -1522,13 +1426,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_COME_LATE"
 				+ " WHERE KSCDT_SCH_COME_LATE.SID IN " + listEmp + " AND KSCDT_SCH_COME_LATE.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchComeLate = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1541,19 +1440,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE");
 				Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
 
-				listKscdtSchComeLate.add(new KscdtSchComeLate(new KscdtSchComeLatePK(sid, ymd, workNo), cid,
-						useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
-						useHourlyHdChildCare, useHourlyHdNurseCare));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = listKscdtSchComeLate.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairComeLate;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchComeLate(new KscdtSchComeLatePK(sid, ymd, workNo), cid, useHourlyHdPaid,
+						useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime, useHourlyHdChildCare,
+						useHourlyHdNurseCare);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = listKscdtSchComeLate.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairComeLate;
 	}
 
 	// KSCDT_SCH_GOING_OUT
@@ -1571,13 +1469,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_GOING_OUT"
 				+ " WHERE KSCDT_SCH_GOING_OUT.SID IN " + listEmp + " AND KSCDT_SCH_GOING_OUT.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchGoingOut = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1590,19 +1483,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE");
 				Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
 
-				listKscdtSchGoingOut.add(new KscdtSchGoingOut(new KscdtSchGoingOutPK(sid, ymd, reasonAtr), cid,
-						useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
-						useHourlyHdChildCare, useHourlyHdNurseCare));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = listKscdtSchGoingOut.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairGoingOut;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchGoingOut(new KscdtSchGoingOutPK(sid, ymd, reasonAtr), cid, useHourlyHdPaid,
+						useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime, useHourlyHdChildCare,
+						useHourlyHdNurseCare);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = listKscdtSchGoingOut.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairGoingOut;
 	}
 
 	// KSCDT_SCH_LEAVE_EARLY
@@ -1620,13 +1512,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " FROM KSCDT_SCH_LEAVE_EARLY"
 				+ " WHERE KSCDT_SCH_LEAVE_EARLY.SID IN " + listEmp + " AND KSCDT_SCH_LEAVE_EARLY.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
-		Connection con = this.getEntityManager().unwrap(Connection.class);
-
-		try {
-			ResultSet rs = con.createStatement().executeQuery(QUERY);
-
-			while (rs.next()) {
-
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchLeaveEarly = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 				String sid = rs.getString("SID");
 				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
 				String cid = rs.getString("CID");
@@ -1639,19 +1526,17 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer useHourlyHdChildCare = rs.getInt("USE_HOURLY_HD_CHILDCARE");
 				Integer useHourlyHdNurseCare = rs.getInt("USE_HOURLY_HD_NURSECARE");
 
-				listKscdtSchLeaveEarly.add(new KscdtSchLeaveEarly(new KscdtSchLeaveEarlyPK(sid, ymd, workNo), cid,
-						useHourlyHdPaid, useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime,
-						useHourlyHdChildCare, useHourlyHdNurseCare));
-			}
-
-			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = listKscdtSchLeaveEarly.stream()
-					.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
-
-			return mapPairLeaveEarly;
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+				return new KscdtSchLeaveEarly(new KscdtSchLeaveEarlyPK(sid, ymd, workNo), cid, useHourlyHdPaid,
+						useHourlyHdCom, useHourlyHd60h, useHourlyHdSpNO, useHourlyHdSpTime, useHourlyHdChildCare,
+						useHourlyHdNurseCare);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
 		}
-	}
 
+		Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = listKscdtSchLeaveEarly.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairLeaveEarly;
+	}
 }
