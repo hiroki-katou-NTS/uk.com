@@ -63,7 +63,14 @@ module nts.uk.ui.ktg004.a {
                           <tr>
                             <td>
                               <div class="flex valign-center ktg004-header-row" style="justify-content: space-between;">
-                                <label class="ktg004-header-text" data-bind="text: textA15_1"></label>
+                                <div class="flex valign-center">
+                                  <div data-bind="if: !isUpdating()">
+                                    <label class="ktg004-header-text" data-bind="text: textA15_1"></label>
+                                  </div>
+                                  <div data-bind="if: isUpdating">
+                                    <label class="ktg004-header-text on-update" data-bind="text: textA15_2"></label>
+                                  </div>
+                                </div>
                                 <div class="flex valign-center">
                                   <label class="ktg004-header-text" data-bind="text: periodText"></label>
                                   <div data-bind="ntsSwitchButton: {
@@ -191,6 +198,9 @@ module nts.uk.ui.ktg004.a {
                   color: black !important;
                   padding-right: 5px;
                 }
+                .ktg004-header-text.on-update {
+                  color: #7F7F7F !important;
+                }
                 .ktg004-header-row {
                   margin-top: 10px;
                 }
@@ -216,8 +226,10 @@ module nts.uk.ui.ktg004.a {
         displayYearMonths: KnockoutObservableArray<any>;
         selectedDisplayYearMonth: KnockoutObservable<number> = ko.observable(null);
         textA15_1: KnockoutObservable<string>;
+        textA15_2: KnockoutObservable<string>;
         textA17_1: KnockoutObservable<string>;
         responseData: ResponseData;
+        isUpdating: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             super();
@@ -228,14 +240,17 @@ module nts.uk.ui.ktg004.a {
             ]);
             vm.periodText = ko.computed(() => vm.$i18n("KTG004_31", [vm.processStartDate(), vm.processEndDate()]));
             vm.textA15_1 = ko.observable(vm.$i18n("KTG004_29"));
+            vm.textA15_2 = ko.observable(vm.$i18n("KTG004_30"));
             vm.textA17_1 = ko.observable(vm.$i18n("KTG004_35"));
             vm.selectedDisplayYearMonth.subscribe(value => {
+              vm.isUpdating(true);
               vm.updatePeriod(value);
               vm.param.displayYearMonth = value;
               vm.$window.storage(STORAGE_KEY, vm.param);
               vm.$blockui("invisibleView")
                 .then(() => vm.getAttendanceInfor(value))
                 .then(() => vm.buildData(vm.responseData))
+                .then(() => vm.isUpdating(false))
                 .always(() => vm.$blockui("clearView"));
             });
         }
