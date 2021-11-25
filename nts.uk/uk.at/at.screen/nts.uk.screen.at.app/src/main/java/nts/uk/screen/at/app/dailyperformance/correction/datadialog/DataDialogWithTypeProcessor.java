@@ -516,13 +516,18 @@ public class DataDialogWithTypeProcessor {
 				return toMap(this.getEmployment(companyId).getCodeNames());
 			case 14:
 				// CDL024
-				return toMap(this.getBussinessType(companyId).getCodeNames());
+				return toMap(this.getBussinessType(companyId).getCodeNames());				
 			default:
 				return new HashMap<>();
 			}
 		}));
 	}
 	
+	public Map<Integer, Map<String, CodeName>> getAllCodeNameByItemId(GeneralDate date, List<Integer> itemIds) {
+		return itemIds.stream().collect(Collectors.toMap(itemId -> itemId, itemId -> {
+				return toMap(this.getWorkSupOption(date, itemId).getCodeNames());
+		}));
+	}
 	private Map<String, CodeNameInfo> toMapMaster(List<CodeName> codeNames) {
 		return codeNames.stream().filter(distinctByKey(x -> x.getCode()))
 				.collect(Collectors.toMap(x -> x.getCode(), x -> new CodeNameInfo(x.getCode(), x.getName(), x.getId())));
