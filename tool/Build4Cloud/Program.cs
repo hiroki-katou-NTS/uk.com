@@ -22,7 +22,7 @@ namespace Build4Cloud
                 string name = parts[0];
                 string value = parts[1];
 
-                switch (arg)
+                switch (name)
                 {
                     case "-d":
                         dataSourcesCount = int.Parse(value);
