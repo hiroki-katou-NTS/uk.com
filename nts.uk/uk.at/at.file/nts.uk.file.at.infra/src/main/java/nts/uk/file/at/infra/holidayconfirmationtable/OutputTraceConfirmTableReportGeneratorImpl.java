@@ -419,6 +419,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     private String formatDate(Integer mngUnit, OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetails) {
         if (date == null)
             return null;
+        boolean hasH = false;
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
@@ -427,25 +428,27 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         }
         if (usedNumber != 1.0 && mngUnit == 1) {
             formattedDate.append(TextResource.localize("KDR003_120"));
+            hasH = true;
         }
+        boolean finalHasH = hasH;
         occurrenceAcquisitionDetails.stream()
                 .filter(o -> o.getOccurrenceDigClass() == cls && o.getDate().getDayoffDate().isPresent() && o.getDate().getDayoffDate().get().equals(date))
                 .findFirst().ifPresent(detail -> {
-            int spaceLeft = 2, spaceRight = 3;
+           boolean hasBracket = false;
             if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
                 formattedDate.insert(0, "(");
                 formattedDate.append(")");
-                spaceLeft += -1;
-                spaceRight += -1;
+                hasBracket = true;
             }
             if (detail.getIsExpiredInCurrentMonth().isPresent() && detail.getIsExpiredInCurrentMonth().get()) {
                 formattedDate.insert(0, "[");
                 formattedDate.append("]");
-                spaceLeft += -1;
-                spaceRight += -1;
+                hasBracket = true;
             }
-            if (spaceLeft > 0) formattedDate.insert(0, spaceLeft == 1 ? " " : "  ");
-            if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
+            if(hasBracket || finalHasH){
+                formattedDate.insert(0," ");
+                formattedDate.append(" ");
+            }
         });
         return formattedDate.toString();
     }
@@ -457,7 +460,8 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
      */
     private String formatNoLinkedDate(Integer mngUnit, OccurrenceAcquisitionDetails detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
-        int spaceLeft = 2, spaceRight = 3;
+        boolean hasH = false;
+        boolean hasBracket = false;
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -465,45 +469,45 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         }
         if (detail.getNumberConsecuVacation().getDay().v() != 1.0 && mngUnit != 2) {
             formattedDate.append(TextResource.localize("KDR003_120"));
+            hasH = true;
         }
         if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
             formattedDate.insert(0, "(");
             formattedDate.append(")");
-            spaceLeft += -1;
-            spaceRight += -1;
+            hasBracket = true;
         }
         if (detail.getIsExpiredInCurrentMonth().isPresent() && detail.getIsExpiredInCurrentMonth().get()) {
             formattedDate.insert(0, "[");
             formattedDate.append("]");
-            spaceLeft += -1;
-            spaceRight += -1;
+            hasBracket = true;
+
         }
-        if (spaceLeft > 0) formattedDate.insert(0, spaceLeft == 1 ? " " : "  ");
-        if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
+        if(hasBracket || hasH){
+            formattedDate.insert(0," ");
+            formattedDate.append(" ");
+        }
         return formattedDate.toString();
     }
-
     private String formatNoLinkedTime(OccurrenceAcquisitionDetails detail, int value) {
         StringBuilder formattedDate = new StringBuilder();
-        int spaceLeft = 2, spaceRight = 3;
+        boolean hasBracket = false;
         formattedDate.append(convertToTime(value));
         if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
             formattedDate.insert(0, "(");
             formattedDate.append(")");
-            spaceRight += -1;
-            spaceLeft += -1;
+            hasBracket = true;
         }
         if (detail.getIsExpiredInCurrentMonth().isPresent() && detail.getIsExpiredInCurrentMonth().get()) {
             formattedDate.insert(0, "[");
             formattedDate.append("]");
-            spaceLeft += -1;
-            spaceRight += -1;
+            hasBracket = true;
         }
-        if (spaceLeft > 0) formattedDate.insert(0, spaceLeft == 1 ? " " : "  ");
-        if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
+        if(hasBracket){
+            formattedDate.insert(0," ");
+            formattedDate.append(" ");
+        }
         return formattedDate.toString();
     }
-
     /**
      * Convert minute to HH:mm
      */
@@ -528,7 +532,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         if (value != null && !value.contains("(") && !value.contains("[") &&
                 !value.contains(TextResource.localize("KDR003_120"))) {
             Style style = cells.get(row, col).getStyle();
-            style.setHorizontalAlignment(TextAlignmentType.RIGHT);
+            style.setHorizontalAlignment(TextAlignmentType.CENTER);
             cells.get(row, col).setStyle(style);
         }
     }
@@ -569,10 +573,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                     howToPrintDate,
                     details
             );
-            cells.get(row, col - 1).setValue(value);
-            Style style = cells.get(row, col - 1).getStyle();
-            style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-            cells.get(row, col - 1).setStyle(style);
+            this.setValue(cells, row, col - 1, value);
         } else {
             String value = this.formatDate(mngUnit,
                     OccurrenceDigClass.OCCURRENCE,
@@ -594,10 +595,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                     howToPrintDate,
                     details
             );
-            cells.get(row + 1, col - 1).setValue(value);
-            Style style = cells.get(row + 1, col - 1).getStyle();
-            style.setHorizontalAlignment(TextAlignmentType.RIGHT);
-            cells.get(row + 1, col - 1).setStyle(style);
+            this.setValue(cells, row + 1, col - 1, value);
         } else {
             String value = this.formatDate(mngUnit,
                     OccurrenceDigClass.DIGESTION,
