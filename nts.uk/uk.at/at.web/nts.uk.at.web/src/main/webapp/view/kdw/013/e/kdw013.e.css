@@ -18,3 +18,15 @@
 #panel-e{
     height: 350px;
 }
+
+.ui-igcombo-dropdown {
+    width: 335px !important;
+}
+.ui-igcombo-list {
+	overflow-x: auto !important;
+	width: 331px !important;
+}
+
+.ui-igcombo-dropdown .ui-igcombo-listitemholder {
+	overflow: unset !important;
+}
