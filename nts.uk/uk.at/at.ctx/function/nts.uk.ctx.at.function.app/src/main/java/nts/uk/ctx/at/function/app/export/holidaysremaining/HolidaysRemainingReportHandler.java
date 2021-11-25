@@ -399,29 +399,29 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             val breakDayOffMngInPeriodQueryRequire = numberRemainVacationLeaveRangeProcess.createRequire();
 
             // Call RequestList269
-            for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-                GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-                DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
-                        endDate.before(end) ? endDate : end);
-                BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
-                        cId, employeeId,
-                        periodDate,
-                        false,
-                        closureInforOpt.get().getPeriod().end(),
-                        false,
-                        new ArrayList<>(),
-                        Optional.empty(),
-                        Optional.empty(),
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        Optional.empty(), new FixedManagementDataMonth());
-                SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
-                        .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
+            //for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
+                //GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+                //DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
+                //        endDate.before(end) ? endDate : end);
+                //BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+                //        cId, employeeId,
+                //       periodDate,
+                //        false,
+                //        closureInforOpt.get().getPeriod().end(),
+                //        false,
+                //        new ArrayList<>(),
+                //        Optional.empty(),
+                //        Optional.empty(),
+                //        new ArrayList<>(),
+                //        new ArrayList<>(),
+                //        Optional.empty(), new FixedManagementDataMonth());
+                //SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
+                //        .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
 
                 //listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
                 //        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
                 //        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
-            }
+            //}
             // Call RequestList259 ver2 - hoatt
             if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
                 listStatusHoliday = hdRemainMer.getResult259();
