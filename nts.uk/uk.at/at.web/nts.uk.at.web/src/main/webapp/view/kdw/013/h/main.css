@@ -26,3 +26,7 @@ table.optionItems tr td .ui-igcombo-list{
 	overflow-x: auto !important;
 	width: 253px !important;
 }
+.startTime{
+	display: inline-block;
+	min-width: 72px;
+} 
