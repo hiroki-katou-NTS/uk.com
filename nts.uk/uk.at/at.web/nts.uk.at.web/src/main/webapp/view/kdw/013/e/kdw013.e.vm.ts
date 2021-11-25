@@ -176,7 +176,7 @@ module nts.uk.ui.at.kdw013.e {
 			}
 
             _.forEach(vm.taskDtos(), task => {
-                if (task.taskFrameNo == 1) {
+                if (task.taskFrameNo == 1 && task.code == vm.ouenWorkTimeSheet().workContent.work.workCD1) {
 					
 					vm.taskLst1().push({
 	                	taskCode: task.code,
@@ -184,28 +184,28 @@ module nts.uk.ui.at.kdw013.e {
 	            		});
 					
                 }
-                if (task.taskFrameNo == 2) {
+                if (task.taskFrameNo == 2  && task.code == vm.ouenWorkTimeSheet().workContent.work.workCD2) {
 
                     vm.taskLst2().push({
                         taskCode: task.code,
                         taskName: task.code + ' ' + task.displayInfo.taskName
                     });
                 }
-                if (task.taskFrameNo == 3) {
+                if (task.taskFrameNo == 3  && task.code == vm.ouenWorkTimeSheet().workContent.work.workCD3) {
 
                     vm.taskLst3().push({
                         taskCode: task.code,
                         taskName: task.code + ' ' + task.displayInfo.taskName
                     });
                 }
-                if (task.taskFrameNo == 4) {
+                if (task.taskFrameNo == 4  && task.code == vm.ouenWorkTimeSheet().workContent.work.workCD4) {
 
                     vm.taskLst4().push({
                         taskCode: task.code,
                         taskName: task.code + ' ' + task.displayInfo.taskName
                     });
                 }
-                if (task.taskFrameNo == 5) {
+                if (task.taskFrameNo == 5  && task.code == vm.ouenWorkTimeSheet().workContent.work.workCD5) {
 
                     vm.taskLst5().push({
                         taskCode: task.code,
