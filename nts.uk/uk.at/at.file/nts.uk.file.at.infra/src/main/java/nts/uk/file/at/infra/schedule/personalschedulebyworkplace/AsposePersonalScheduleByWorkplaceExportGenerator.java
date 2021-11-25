@@ -5,6 +5,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.system.ServerSystemProperties;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.EstimatedSalary;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkClassificationAsAggregationTarget;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.LaborCostAggregationUnit;
@@ -427,10 +428,11 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             new ShiftMasterName(i.getShiftMasterName()),
                             new ColorCodeChar6(i.getColor()),
                             new ColorCodeChar6(i.getColorSmartphone()),
-                            new Remarks(i.getRemark())
+                            StringUtil.isNullOrEmpty(i.getRemark(),true) ? Optional.empty() : Optional.of(new Remarks(i.getRemark()))
                     ),
                     i.getWorkTypeCd(),
-                    i.getWorkTimeCd()
+                    i.getWorkTimeCd(),
+                    StringUtil.isNullOrEmpty(i.getImportCode(),true) ? Optional.empty() : Optional.of(new ShiftMasterImportCode(i.getImportCode()))
             )).collect(Collectors.toList()));
         }
         if (attendanceItems.stream().anyMatch(i -> i.getAttendanceItem().get() == ScheduleTableAttendanceItem.WORK_TIME)) {
