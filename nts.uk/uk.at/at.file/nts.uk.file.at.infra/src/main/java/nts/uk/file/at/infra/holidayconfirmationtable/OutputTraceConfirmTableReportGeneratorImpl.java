@@ -611,27 +611,29 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     }
 
     private void prepareNoLinkingData(List<OccurrenceAcquisitionDetails> details, List<LinkingInformation> linkingInfors) {
-        // remove linked date
-        ListIterator<OccurrenceAcquisitionDetails> iterator = details.listIterator();
-        while (iterator.hasNext()) {
-            OccurrenceAcquisitionDetails detail = iterator.next();
-            double linkingUsedDays;
-            if (detail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
-                linkingUsedDays = linkingInfors
-                        .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate()
-                                .get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
-            } else {
-                linkingUsedDays = linkingInfors
-                        .stream().filter(i -> i.getYmd().equals(detail.getDate().getDayoffDate().get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
-            }
-            if (linkingUsedDays >= detail.getNumberConsecuVacation().getDay().v()) {
-                iterator.remove();
-            } else if (linkingUsedDays > 0) {
-                detail.getNumberConsecuVacation().setDay(new ManagementDataRemainUnit(detail.getNumberConsecuVacation().getDay().v() - linkingUsedDays));
-                iterator.set(detail);
+           // remove linked date
+        if(!linkingInfors.isEmpty()) {
+            ListIterator<OccurrenceAcquisitionDetails> iterator = details.listIterator();
+            while (iterator.hasNext()) {
+                OccurrenceAcquisitionDetails detail = iterator.next();
+                double linkingUsedDays;
+                if (detail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
+                    linkingUsedDays = linkingInfors
+                            .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate()
+                                    .get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
+                } else {
+                    linkingUsedDays = linkingInfors
+                            .stream().filter(i -> i.getYmd().equals(detail.getDate().getDayoffDate().get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
+                }
+                if (linkingUsedDays >= detail.getNumberConsecuVacation().getDay().v()) {
+                    iterator.remove();
+                } else if (linkingUsedDays > 0) {
+                    detail.getNumberConsecuVacation().setDay(new ManagementDataRemainUnit(detail.getNumberConsecuVacation().getDay().v() - linkingUsedDays));
+                    iterator.set(detail);
+                }
             }
         }
-        details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+           details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
     }
     private void setForegroundRed(Cell cell) {
         Style style = cell.getStyle();
