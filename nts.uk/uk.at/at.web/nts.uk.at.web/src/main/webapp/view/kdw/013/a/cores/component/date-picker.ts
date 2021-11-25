@@ -21,7 +21,7 @@ module nts.uk.ui.at.kdw013.datepicker {
         name: 'kdw013-date-picker',
         
         template: `
-            <div data-bind="ntsAccordion: {active: 0}">
+            <div data-bind="ntsAccordion: {}">
                 <h3>
                     <label data-bind="i18n: 'KDW013_97'"></label>
                 </h3>
