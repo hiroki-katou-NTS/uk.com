@@ -152,12 +152,16 @@ public class KTG004Finder {
 			//Get work status data - 勤務状況のデータを取得する
 			result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()));
 			//Get the number of vacations left - 休暇残数を取得する
-			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth()).getRemainingNumberInforDto());
+			GetVacationLeftOutput vacationLeftOutput = this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingThisMonth());
+			result.setRemainingNumberInfor(vacationLeftOutput.getRemainingNumberInforDto());
+			result.setVacationSetting(vacationLeftOutput.getVacationSetting());
 		}else {
 			//Get work status data - 勤務状況のデータを取得する
 			result.setAttendanceInfor(this.getWorkStatusData(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay()));
 			//Get the number of vacations left - 休暇残数を取得する
-			result.setRemainingNumberInfor(this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay()).getRemainingNumberInforDto());
+			GetVacationLeftOutput vacationLeftOutput = this.getTheNumberOfVacationsLeft(cid, employeeId, result.getItemsSetting(), result.getClosingDisplay());
+			result.setRemainingNumberInfor(vacationLeftOutput.getRemainingNumberInforDto());
+			result.setVacationSetting(vacationLeftOutput.getVacationSetting());
 		}
 		
 		//Determine if the login person is the person in charge - ログイン者が担当者か判断する

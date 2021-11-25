@@ -596,6 +596,7 @@ module nts.uk.ui.ktg004.a {
         nextMonthClosingInformation: any | null;
 
         remainingNumberInfor: RemainingNumberInfor;
+        vacationSetting: VacationSetting;
     }
 
     interface ItemSetting {
@@ -639,6 +640,35 @@ module nts.uk.ui.ktg004.a {
         subHolidayTimeManage: number;
 
     }
+
+    interface VacationSetting {
+		// 60H超休残数管理する
+		holiday60HManage: boolean;
+    
+		// 介護残数管理する
+		nursingManage: boolean;
+		
+		// 公休残数管理する
+		publicHolidayManage: boolean;
+		
+		// 子の看護残数管理する
+		childCaremanage: boolean;
+		
+		// 振休残数管理する
+		accomoManage: boolean;
+		
+		// 積立年休残数管理する
+		accumAnnualManage: boolean;
+		
+		// 代休残数管理する
+		substituteManage: boolean;
+		
+		// 代休時間残数管理する
+		substituteTimeManage: boolean;
+		
+		// 年休残数管理する
+		annualManage: boolean;
+	}
 
     interface SpecialHolidaysRemainings {
         code: number;
