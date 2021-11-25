@@ -48,17 +48,18 @@ table#table4 {
 table#table6 td {
 	height: 40px;
 	border: 2px solid #ccc;
-	padding-left: 10px;
+	padding-left: 5px;
 }
 
 .button-a88{
     margin-left: 15px;
+	margin-top: 7px;
 }
 
 .block-left-2 {
 	height: 400px;
 	width: 424px;
-/* 	float: left; */
+ 	float: left; 
 	margin-top: 10px;
 }
 
