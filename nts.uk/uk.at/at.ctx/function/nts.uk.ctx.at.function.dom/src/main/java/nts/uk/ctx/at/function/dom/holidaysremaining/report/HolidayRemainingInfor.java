@@ -61,7 +61,7 @@ public class HolidayRemainingInfor {
     // RequestList207
     //private NursingLeaveCurrentSituationImported nursingLeave;
     //
-    private CurrentHolidayImported currentHolidayLeft;
+    //private CurrentHolidayImported currentHolidayLeft;
 
     private CurrentHolidayRemainImported currentHolidayRemainLeft;
     private SubstituteHolidayAggrResult substituteHolidayAggrResult;//9
@@ -95,7 +95,7 @@ public class HolidayRemainingInfor {
                                  List<StatusHolidayImported> listStatusHoliday,
                                  List<CurrentHolidayRemainImported> listCurrentHolidayRemain,
                                  List<StatusOfHolidayImported> listStatusOfHoliday,
-                                 CurrentHolidayImported currentHolidayLeft,
+                                 //CurrentHolidayImported currentHolidayLeft,
                                  CurrentHolidayRemainImported currentHolidayRemainLeft,
                                  SubstituteHolidayAggrResult substituteHolidayAggrResult,
                                  CompenLeaveAggrResult compenLeaveAggrResult,
@@ -127,7 +127,7 @@ public class HolidayRemainingInfor {
         this.listStatusHoliday = listStatusHoliday;
         this.listCurrentHolidayRemain = listCurrentHolidayRemain;
         this.listStatusOfHoliday = listStatusOfHoliday;
-        this.currentHolidayLeft = currentHolidayLeft;
+        //this.currentHolidayLeft = currentHolidayLeft;
         this.currentHolidayRemainLeft = currentHolidayRemainLeft;
         this.substituteHolidayAggrResult = substituteHolidayAggrResult;
         this.compenLeaveAggrResult = compenLeaveAggrResult;
