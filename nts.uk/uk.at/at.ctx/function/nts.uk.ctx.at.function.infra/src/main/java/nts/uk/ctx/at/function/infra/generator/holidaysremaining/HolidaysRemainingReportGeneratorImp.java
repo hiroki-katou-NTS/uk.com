@@ -1608,7 +1608,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         YearMonth currentMonth = employee.getCurrentMonth().get();
         // Set value for 振休 J
-        // Result RequestList270
+        // Result RequestList 204
         val currentHolidayList = hdRemainingInfor.getListCurrentHolidayRemain();
         // Result RequestList260
         val StatusOfHolidayList = hdRemainingInfor.getListStatusOfHoliday();

@@ -296,7 +296,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // RequestList281
         List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber = null;
         // RequestList265
-        AnnLeaveOfThisMonthImported annLeaveOfThisMonth = null;
+        //AnnLeaveOfThisMonthImported annLeaveOfThisMonth = null;
         // RequestList255
         List<AnnualLeaveUsageImported> listAnnualLeaveUsage = new ArrayList<>();
         // RequestList363
@@ -308,10 +308,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // RequestList364
         List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon = null;
         // RequestList269
-        List<CurrentHolidayImported> listCurrentHoliday = new ArrayList<>();
+        //List<CurrentHolidayImported> listCurrentHoliday = new ArrayList<>();
         // RequestList259
         List<StatusHolidayImported> listStatusHoliday = null;
-        // RequestList270
+        // RequestList204
         List<CurrentHolidayRemainImported> listCurrentHolidayRemain = new ArrayList<>();
         // RequestList260
         List<StatusOfHolidayImported> listStatusOfHoliday = null;
@@ -369,7 +369,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             listAnnLeaGrantNumber = listAnnLeaGrantNumber.stream()
                     .sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate)).collect(Collectors.toList());
             // Call RequestList265
-            annLeaveOfThisMonth = remainDel.getResult265();
+            //annLeaveOfThisMonth = remainDel.getResult265();
             // Call RequestList255 ver2 - hoatt
             if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
                 listAnnualLeaveUsage = hdRemainMer.getResult255();
@@ -418,9 +418,9 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
                         .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
 
-                listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
-                        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
-                        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
+                //listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
+                //        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
+                //        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
             }
             // Call RequestList259 ver2 - hoatt
             if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
@@ -712,12 +712,12 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         return new HolidayRemainingInfor(
                 grantDate,
                 listAnnLeaGrantNumber,
-                annLeaveOfThisMonth,
+                //annLeaveOfThisMonth,
                 listAnnualLeaveUsage,
                 reserveHoliday,
                 listReservedYearHoliday,
                 listRsvLeaUsedCurrentMon,
-                listCurrentHoliday,
+                //listCurrentHoliday,
                 listStatusHoliday,
                 listCurrentHolidayRemain,
                 listStatusOfHoliday,
