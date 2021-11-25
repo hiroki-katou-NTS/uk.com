@@ -101,6 +101,12 @@
     margin-left: 10px;
     margin-top: 5px;
 }
+#wpl_code {
+    width: 95px;
+}
+#wpa3-code {
+    width: 115px;
+}
 .wp-name{
     width: 410px;
     margin-top: 5px;

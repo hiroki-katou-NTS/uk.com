@@ -719,6 +719,8 @@ module nts.uk.com.view.cmm051.a {
                                     } else {
                                         vm.workPlaceId(wplId);
                                     }
+                                    vm.isDelete(true);
+                                    vm.isNewMode(false);
 
                                 }
                             }
