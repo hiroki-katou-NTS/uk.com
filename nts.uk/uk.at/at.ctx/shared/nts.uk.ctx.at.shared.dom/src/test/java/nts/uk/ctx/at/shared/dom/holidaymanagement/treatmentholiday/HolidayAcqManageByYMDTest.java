@@ -52,11 +52,7 @@ public class HolidayAcqManageByYMDTest {
 		@DataPoints
 		public static Fixture[] cases = {
 			//基準日 < 起算日
-			new Fixture(GeneralDate.ymd(2020, 11, 11), GeneralDate.ymd(2020, 10, 15), GeneralDate.ymd(2020, 11, 11), 4.0),
-			new Fixture(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9), 4.0),	
-				
-			new Fixture(GeneralDate.ymd(2021, 3, 4), GeneralDate.ymd(2021, 3, 4), GeneralDate.ymd(2021, 3, 31), 4.0),
-			new Fixture(GeneralDate.ymd(2021, 3, 31), GeneralDate.ymd(2021, 3, 4), GeneralDate.ymd(2021, 3, 31), 4.0),
+			new Fixture(GeneralDate.ymd(2020, 3, 31), GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0),
 			
 			//基準日 >=  起算日
 			new Fixture(GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 1), GeneralDate.ymd(2021, 4, 28), 4.0),
