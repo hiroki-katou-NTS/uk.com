@@ -222,6 +222,7 @@ module nts.uk.com.view.cmm051.a {
             vm.isNewModeHist(true);
             vm.isUpdateModeHist(false);
             vm.isDeleteModeHist(false);
+            $('#swa_22').first().focus();
 
         }
         setDataHist(sid: string, workplaceManagerList: any[], histId: string, wplId: string): void {
@@ -584,6 +585,7 @@ module nts.uk.com.view.cmm051.a {
                                 let emifId: any = null;
                                 if ( indexRemove == (vm.employInfors().length - 1)) {
                                     emifId = indexRemove >=1 ? vm.employInfors()[indexRemove - 1].id : null;
+                                    $('#swa_22').first().focus();
                                 } else {
                                     emifId = vm.employInfors()[indexRemove + 1].id;
                                 }
@@ -594,6 +596,7 @@ module nts.uk.com.view.cmm051.a {
                                 let wpId: any = null;
                                 if (indexRemoveWP == (vm.workPlaceList().length - 1)) {
                                     wpId = indexRemoveWP >=1 ? vm.workPlaceList()[indexRemoveWP - 1].id : null;
+                                    $('#swa_22').first().focus();
                                 } else {
                                     wpId = vm.workPlaceList()[indexRemoveWP + 1].id;
                                 }
@@ -855,45 +858,51 @@ module nts.uk.com.view.cmm051.a {
 
         public removeHistory(): void {
             let vm = this;
-            nts.uk.ui.dialog.confirm({messageId: "Msg_18"})
-                .ifYes(() => {
-                    let id = vm.historyId();
-                    if (!isNullOrUndefined(id)) {
-                        block.invisible();
-                        let command = {
-                            "wkpManagerId": id
-                        };
-                        vm.$ajax("com", API.deleteWkpHist, command).done(() => {
-                                let indexRemove = _.findIndex(vm.dateHistoryList(), (e) => e.id == id);
-                                let idHist: any = null;
-                                if ((indexRemove == ( vm.dateHistoryList().length) -1)) {
-                                    idHist = indexRemove >=1 ? vm.dateHistoryList()[indexRemove - 1].id : null;
-                                } else {
-                                    idHist = vm.dateHistoryList()[indexRemove + 1].id;
+            if(vm.dateHistoryList().length == 1){
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_57', messageParams:[]});
+            }
+            else{
+                nts.uk.ui.dialog.confirm({messageId: "Msg_18"})
+                    .ifYes(() => {
+                        let id = vm.historyId();
+                        if (!isNullOrUndefined(id)) {
+                            block.invisible();
+                            let command = {
+                                "wkpManagerId": id
+                            };
+                            vm.$ajax("com", API.deleteWkpHist, command).done(() => {
+                                    let indexRemove = _.findIndex(vm.dateHistoryList(), (e) => e.id == id);
+                                    let idHist: any = null;
+                                    if ((indexRemove == ( vm.dateHistoryList().length) -1)) {
+                                        idHist = indexRemove >=1 ? vm.dateHistoryList()[indexRemove - 1].id : null;
+                                    } else {
+                                        idHist = vm.dateHistoryList()[indexRemove + 1].id;
+                                    }
+                                    vm.dateHistoryList().splice(indexRemove, 1);
+                                    vm.historyId(idHist);
+                                    if(vm.mode() == Mode.WPL){
+                                        vm.employeeId(vm.employeeId());
+                                        vm.getListWpl(vm.workPlaceId());
+                                    }else {
+                                        let em : any[] = [];
+                                        em.push(vm.employeeId());
+                                        vm.getEmployeeInfo(em, vm.workPlaceId());
+                                    }
+                                    vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId());
+                                    vm.isNewMode(false);
                                 }
-                                vm.dateHistoryList().splice(indexRemove, 1);
-                                vm.historyId(idHist);
-                                if(vm.mode() == Mode.WPL){
-                                    vm.employeeId(vm.employeeId());
-                                    vm.getListWpl(vm.workPlaceId());
-                                }else {
-                                    let em : any[] = [];
-                                    em.push(vm.employeeId());
-                                    vm.getEmployeeInfo(em, vm.workPlaceId());
-                                }
-                                vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId());
-                                vm.isNewMode(false);
-                            }
-                        ).always(() => {
-                            block.clear();
-                        }).fail((res) => {
-                            nts.uk.ui.block.clear();
-                            vm.showMessageError(res);
-                        })
-                    }
-                })
-                .ifNo(() => {
-                });
+                            ).always(() => {
+                                block.clear();
+                            }).fail((res) => {
+                                nts.uk.ui.block.clear();
+                                vm.showMessageError(res);
+                            })
+                        }
+                    })
+                    .ifNo(() => {
+                    });
+            }
+
         }
         openCDL008Dialog(): void {
             const vm = this;
