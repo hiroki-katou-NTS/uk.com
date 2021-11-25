@@ -568,8 +568,12 @@ module nts.uk.ui.at.kdw013.c {
 			.edit-event .taskDetails table tr td .ui-igcombo-dropdown {
 			    width: 255px !important;
 			}
+			.edit-event .taskDetails table tr td .ui-igcombo-list{
+				overflow-x: auto !important;
+				width: 253px !important;
+			}
 			.edit-event .taskDetails table tr td .ui-igcombo-dropdown .ui-igcombo-listitemholder{
-				overflow: auto !important;
+				overflow: unset !important;
 			} 
         </style>
         `;
