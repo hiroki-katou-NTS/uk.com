@@ -1988,7 +1988,7 @@ module nts.uk.com.view.ccg034.d {
             const imageRatio = partDataMenuModel.ratio;
             $partHTML.css({ 'display': 'grid', 'grid-auto-columns': '100%', 'grid-auto-rows': 'minmax(0, 1fr) max-content' });
             const $partImageContainer = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_top' })
-              .css("align-self", "start");
+              .css({ "align-self": "start", "height": "100%" });
             const $partImage = $("<img>")
               .addClass("ccg034-hyperlink")
               .attr("src", src);
@@ -1997,16 +1997,8 @@ module nts.uk.com.view.ccg034.d {
                 'width': '100%',
                 'height': 'auto',
               });
-              $partImageContainer.css({
-                'width': '100%',
-                'height': 'auto',
-              });
             } else {
               $partImage.css({
-                'width': 'auto',
-                'height': '100%',
-              });
-              $partImageContainer.css({
                 'width': 'auto',
                 'height': '100%',
               });
