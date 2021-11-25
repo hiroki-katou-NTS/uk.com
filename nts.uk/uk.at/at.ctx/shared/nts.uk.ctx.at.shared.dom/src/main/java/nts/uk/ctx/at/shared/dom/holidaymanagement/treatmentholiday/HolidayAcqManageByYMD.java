@@ -38,7 +38,7 @@ public class HolidayAcqManageByYMD implements FourWeekHolidayAcqMana, DomainValu
 			
 		}
 		
-		val numberOfCycles = ( new DatePeriod(startingDate, baseDate).datesBetween().size() - 1) /cycleDays; 
+		val numberOfCycles = ( new DatePeriod(startingDate, baseDate).datesBetween().size() - 1 ) /cycleDays; 
 		
 		val startDate = this.startingDate.addDays( numberOfCycles * cycleDays );
 		val endDate = startDate.addDays( cycleDays - 1 );
