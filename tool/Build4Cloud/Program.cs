@@ -12,24 +12,28 @@ namespace Build4Cloud
     {
         static void Main(string[] args)
         {
-            int dataSourcesCount;
-            if (args.Length >= 1)
-            {
-                dataSourcesCount = int.Parse(args[0]);
-            }
-            else
-            {
-                dataSourcesCount = 1; // テスト用
-            }
+            int dataSourcesCount = 1;
+            IEnumerable<string> targetProjects = new[] { "cloud" };
+            string mode = "build";
 
-            IEnumerable<string> targetProjects;
-            if (args.Length < 2)
+            foreach (string arg in args)
             {
-                targetProjects = new[] { "cloud" };
-            }
-            else
-            {
-                targetProjects = args.Skip(1);
+                string[] parts = arg.Split('=');
+                string name = parts[0];
+                string value = parts[1];
+
+                switch (arg)
+                {
+                    case "-d":
+                        dataSourcesCount = int.Parse(value);
+                        break;
+                    case "-p":
+                        targetProjects = value.Split(',');
+                        break;
+                    case "-m":
+                        mode = value.ToLower();
+                        break;
+                }
             }
 
             var context = new Context
@@ -48,12 +52,18 @@ namespace Build4Cloud
                 var xml = new PersistenceXml(context.RootPath, pathToWeb);
                 xml.CreateCloudEdition(dataSourcesCount);
 
-                Util.Gradle("build", pathToWeb);
+                if (mode == "build")
+                {
+                    Util.Gradle("build", pathToWeb);
 
-                xml.RestoreOriginalFile();
+                    xml.RestoreOriginalFile();
+                }
             }
 
-            loader.RestoreOriginalFile();
+            if (mode == "build")
+            {
+                loader.RestoreOriginalFile();
+            }
         }
     }
 
