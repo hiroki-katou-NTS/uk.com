@@ -94,11 +94,19 @@ public class AggregatePastMonthsService {
 		
 		aggrPeriods.forEach(ap -> {
 			
-			/** 過去月集計する */
-			val result = aggrPastMonth(require, cacheCarrier, cId, sid, ap, dailyRecords, comSets, aggrResults);
+			/** 過去の月別実績を取得する*/
+			Optional<AttendanceTimeOfMonthly> attdTime = require.attendanceTimeOfMonthly(sid, ap.getYearMonth(), ap.getClosureId(), ap.getClosureDate());
 			
-			/** 過去月集計結果を一覧に入れる */
-			aggrResults.add(result);
+			if(attdTime.isPresent()) {
+				/** 過去月集計する */
+				val result = aggrPastMonth(require, cacheCarrier, cId, sid, ap, dailyRecords, comSets, aggrResults);
+				
+				/** 月別実績の勤怠時間のVersionを更新する*/
+				result.getMonthlyAttdTime().setVersion(attdTime.get().getVersion());
+				
+				/** 過去月集計結果を一覧に入れる */
+				aggrResults.add(result);
+			}
 		});
 		
 		return aggrResults;

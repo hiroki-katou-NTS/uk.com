@@ -361,7 +361,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializab
 		this.verticalTotal.getWorkDays().recalcSomeItem();
 	}
 
-	public static interface RequireM3 extends AttendanceTimeOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
+	public static interface RequireM3 extends RequireM1, TotalCountByPeriod.RequireM1,
 		MonthlyCalculation.RequireM4, VerticalTotalOfMonthly.RequireM1, ExcessOutsideWorkMng.RequireM5, RoundingSetOfMonthly.Require {
 
 	}
