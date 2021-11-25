@@ -5,7 +5,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
