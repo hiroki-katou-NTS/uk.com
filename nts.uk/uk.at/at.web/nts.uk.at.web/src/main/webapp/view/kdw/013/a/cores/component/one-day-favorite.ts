@@ -58,7 +58,7 @@ module nts.uk.ui.at.kdw013.onedayfavorite {
                             'data-favId': _.get(item.extendedProps, 'favId', '')
                         }">
                             <div style="display: flex;">
-                                <label  class='limited-label' style='padding-left: 10px;width:90%;cursor: pointer;'  data-bind='text: item.title'>
+                                <label  class='limited-label' style='padding-left: 10px;width:88%; cursor: pointer;'  data-bind='text: item.title'>
                                 </label>
                                 <i class='fav-icon img-icon' style='width: 20px; height: 25px;' data-bind="click: function(item,evn) { $component.editFav(evn,_.get(item.extendedProps, 'favId', '')) }">
                                 </i>
