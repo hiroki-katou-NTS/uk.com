@@ -8,6 +8,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroup;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroupRepository;
+import nts.uk.screen.at.app.kdw013.a.RegisterWorkContentCommand;
 
 /**
  * 
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroupRepository;
  */
 
 @Stateless
-public class RegisterTaskTimeGroupCommandHandler extends CommandHandler<RegisterTaskTimeGroupCommand> {
+public class RegisterTaskTimeGroupCommandHandler extends CommandHandler<RegisterWorkContentCommand> {
 
 	@Inject
 	private TaskTimeGroupRepository repo;
@@ -25,18 +26,29 @@ public class RegisterTaskTimeGroupCommandHandler extends CommandHandler<Register
 	/**
 	 * 登録する
 	 */
+
 	@Override
-	protected void handle(CommandHandlerContext<RegisterTaskTimeGroupCommand> context) {
-		RegisterTaskTimeGroupCommand cmd = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterWorkContentCommand> context) {
+		
+		RegisterWorkContentCommand cmd = context.getCommand();
+		cmd.getChangedDates().forEach(date -> {
+			// 1. delete(社員ID,年月日)
+			this.repo.delete(cmd.getEmployeeId(), date);
+		});
+		
+		
+		cmd.getWorkDetails().forEach(wd -> {
 
-		// 1. delete(社員ID,年月日)
-		this.repo.delete(cmd.getSId(), cmd.getDate());
+			RegisterTaskTimeGroupCommand grpCmd = new RegisterTaskTimeGroupCommand(cmd.getEmployeeId(), wd.getDate(),
+					wd.toTimeZones());
+			// 2. 時間帯リスト.isPresent: create
+			if (!CollectionUtil.isEmpty(grpCmd.getTimezones())) {
+				TaskTimeGroup timeGroup = grpCmd.toDomain();
+				// 3. persist
+				this.repo.insert(timeGroup);
+			}
+		});
 
-		// 2. 時間帯リスト.isPresent: create
-		if (!CollectionUtil.isEmpty(cmd.getTimezones())) {
-			TaskTimeGroup timeGroup = cmd.toDomain();
-			// 3. persist
-			this.repo.insert(timeGroup);
-		}
+		
 	}
 }

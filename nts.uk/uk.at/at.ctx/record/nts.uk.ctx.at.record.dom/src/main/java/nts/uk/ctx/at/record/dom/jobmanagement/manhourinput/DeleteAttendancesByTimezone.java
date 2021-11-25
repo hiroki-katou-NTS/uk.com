@@ -50,7 +50,7 @@ public class DeleteAttendancesByTimezone implements DomainAggregate {
 		attDeletionLst.forEach(m -> atomTasks.addAll(m.deleteAttendanceInfo(require, sId, ymd)));
 
 		// atomTask.add ( require.編集状態を削除する(@社員ID, @年月日, [2]勤怠項目一覧を取得する) )
-		atomTasks.add(AtomTask.of(() -> require.deleteByListItemId(sId, ymd, getAttendanceItems(require))));
+		//atomTasks.add(AtomTask.of(() -> require.deleteByListItemId(sId, ymd, getAttendanceItems(require))));
 
 		return atomTasks;
 	}

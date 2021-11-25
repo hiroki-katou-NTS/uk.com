@@ -92,12 +92,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 		
 		// 4. 作業時間帯グループを登録する
 		
-		command.getWorkDetails().forEach(wd -> {
-
-			RegisterTaskTimeGroupCommand cmd = new RegisterTaskTimeGroupCommand(command.getEmployeeId(), wd.getDate(), wd.toTimeZones());
-
-			this.handler.handle(cmd);
-		});
+		this.handler.handle(command);
 		
 		//5. 日別実績の登録時にエラーが発生しない場合
 		
