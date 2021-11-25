@@ -8,8 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationQueryOuput;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationSettingQuery;
+import nts.uk.ctx.at.record.app.query.reservation.StartReservationCorrectOutput;
+import nts.uk.ctx.at.record.app.query.reservation.StartReservationCorrectParam;
+import nts.uk.ctx.at.record.app.query.reservation.StartReservationCorrectQuery;
 import nts.uk.screen.at.app.reservation.BentoJoinReservationSetting;
 import nts.uk.screen.at.app.reservation.BentoMenuJoinBentoSettingDto;
 import nts.uk.screen.at.app.reservation.BentoMenuSetScreenProcessor;
@@ -25,6 +29,9 @@ public class BentoMenuWebService extends WebService{
     
     @Inject
     private ReservationSettingQuery reservationSettingQuery;
+    
+    @Inject
+    private StartReservationCorrectQuery startReservationCorrectQuery;
 
     @POST
     @Path("getbentomenu")
@@ -48,5 +55,16 @@ public class BentoMenuWebService extends WebService{
     @Path("start")
     public ReservationQueryOuput start() {
         return reservationSettingQuery.getReservationSetting();
+    }
+    
+    @POST
+    @Path("startCorrect")
+    public StartReservationCorrectOutput startReservationCorrect(StartReservationCorrectParam param) {
+        return startReservationCorrectQuery.startReservationCorrection(
+                GeneralDate.fromString(param.getCorrectionDate(), "yyyy/MM/dd"), 
+                GeneralDate.fromString(param.getReservationDate(), "yyyy/MM/dd"), 
+                param.getFrameNo(), 
+                param.getExtractCondition(), 
+                param.getEmployeeIds());
     }
 }
