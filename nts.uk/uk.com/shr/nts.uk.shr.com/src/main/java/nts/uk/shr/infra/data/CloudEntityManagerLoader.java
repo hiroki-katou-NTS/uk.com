@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -54,11 +55,7 @@ public class CloudEntityManagerLoader implements EntityManagerLoader{
     @Override
     public EntityManager getEntityManager() {
     	String datasourceName = TenantLocatorService.getConnectedDataSource();
-    	EntityManager em = entityManagersMap.get(datasourceName);
-    	if (em == null) {
-			throw FatalLog.writeThenException(this, "データソースに一致するマネージャが見つかりませんでした: " + datasourceName);
-    	}
-    	return em;
+		return getEntityManagerForDataSource(datasourceName, "connected");
     }
 	
 	@Override
@@ -77,8 +74,13 @@ public class CloudEntityManagerLoader implements EntityManagerLoader{
 
 	@Override
 	public void forTenantDatasource(String tenantCode, Consumer<EntityManager> process) {
-
 		String datasource = TenantLocatorService.getDataSourceFor(tenantCode);
+		val em = getEntityManagerForDataSource(datasource, tenantCode);
+		process.accept(em);
+	}
+
+	private EntityManager getEntityManagerForDataSource(String datasource, String tenantCode) {
+
 		val em = entityManagersMap.get(datasource);
 
 		if (em == null) {
@@ -89,9 +91,8 @@ public class CloudEntityManagerLoader implements EntityManagerLoader{
 
 			throw new RuntimeException(message);
 		}
-//		setSessionVariable();
-		
-		process.accept(entityManagersMap.get(datasource));
+
+		return em;
 	}
 
 	private void runner(Runnable runnable) {
