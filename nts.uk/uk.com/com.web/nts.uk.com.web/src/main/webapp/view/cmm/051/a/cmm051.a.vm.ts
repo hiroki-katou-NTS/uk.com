@@ -136,9 +136,17 @@ module nts.uk.com.view.cmm051.a {
                     if (!isNullOrEmpty(data)) {
                         vm.dateHistoryListFull(data);
                         vm.setDataHist(vm.employeeId(), vm.dateHistoryListFull(), histId, wplId);
-                    }
-                    if(isNullOrEmpty(vm.dateHistoryList()))
+                    }else {
                         vm.isNewModeHist(true);
+                        vm.startDate(null);
+                        vm.endDate(null);
+                        vm.historyId(null);
+                        vm.dateHistoryList([]);
+                    }
+                    // if(isNullOrEmpty(vm.dateHistoryList())){
+                    //
+                    // }
+
                 }).always(() => {
                     block.clear();
                 }).fail((error) => {
@@ -263,7 +271,10 @@ module nts.uk.com.view.cmm051.a {
                 vm.isDeleteModeHist(true);
             } else {
                 vm.startDate(null);
-                vm.endDate(null)
+                vm.endDate(null);
+                vm.historyId(null);
+                vm.dateHistoryList([]);
+
             }
         }
 
