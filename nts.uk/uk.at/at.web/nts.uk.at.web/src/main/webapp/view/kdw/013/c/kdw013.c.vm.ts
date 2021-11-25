@@ -568,8 +568,12 @@ module nts.uk.ui.at.kdw013.c {
 			.edit-event .taskDetails table tr td .ui-igcombo-dropdown {
 			    width: 255px !important;
 			}
+			.edit-event .taskDetails table tr td .ui-igcombo-list{
+				overflow-x: auto !important;
+				width: 253px !important;
+			}
 			.edit-event .taskDetails table tr td .ui-igcombo-dropdown .ui-igcombo-listitemholder{
-				overflow: auto !important;
+				overflow: unset !important;
 			} 
         </style>
         `;
@@ -728,10 +732,30 @@ module nts.uk.ui.at.kdw013.c {
 						taskBlock.taskDetails[0].supNo = vm.generateFrameNo();
 					}
                     vm.taskFrameSettings(extendedProps.taskFrameUsageSetting.taskFrameUsageSetting.frameSettingList);
+					let workCodeFrameNo: any[] = [];
+					_.forEach(taskBlock.taskDetails, t => {
+						let frameNo = t.supNo;
+						let workCode1 = null, workCode2 = null, workCode3 = null, workCode4 = null, workCode5 = null; 
+						_.forEach(t.taskItemValues, i =>{
+							if(i.itemId == 4 && i.value != ''){
+								workCode1 = i.value;
+							}else if(i.itemId == 5 && i.value != ''){
+								workCode2 = i.value;
+							}else if(i.itemId == 6 && i.value != ''){
+								workCode3 = i.value;
+							}else if(i.itemId == 7 && i.value != ''){
+								workCode4 = i.value;
+							}else if(i.itemId == 8 && i.value != ''){
+								workCode5 = i.value;
+							}
+						});
+						workCodeFrameNo.push({frameNo, workCode1, workCode2, workCode3, workCode4, workCode5});
+					});
 					let param = {
 						employeeId: employeeId,
 						refDate: start,
 						itemIds: _.filter(_.map(displayManHrRecordItems, i => i.itemId), t => t > 8),
+						workCodeFrameNo: workCodeFrameNo
 					}
 
 					block.invisible();
@@ -985,8 +1009,20 @@ module nts.uk.ui.at.kdw013.c {
 			_.forEach(vm.taskDetailsView()[0].taskItemValues(), (taskItemValue: TaskItemValue)=>{
 				taskItemValues.push({ itemId: taskItemValue.itemId, value: '' });
 			});
+			
 			let newTaskDetails: IManHrTaskDetail = { supNo: supNo, taskItemValues: taskItemValues }
-			vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
+			let workCodeFrameNo: any[] = [];
+			workCodeFrameNo.push({frameNo:supNo, workCode1: null, workCode2: null, workCode3: null, workCode4: null, workCode5: null});
+			let param = {
+				employeeId: vm.employeeId,
+				refDate: vm.start,
+				itemIds: _.filter(_.map(vm.displayManHrRecordItem, i => i.itemId), t => t > 8),
+				workCodeFrameNo: workCodeFrameNo
+			}
+            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
+				vm.data.frameNoVsTaskFrameNos.push(data.frameNoVsTaskFrameNos[0]);
+				vm.taskDetailsView.push(new ManHrTaskDetailView(newTaskDetails, vm.start, vm.employeeId, vm.showInputTime, vm.data, vm.setting, vm.displayManHrRecordItem));
+			});
 		}
 
 		isChangedTime(): boolean{
@@ -1300,23 +1336,26 @@ module nts.uk.ui.at.kdw013.c {
 		}
 		setWorkLists(taskList: StartWorkInputPanelDto): void{
 			const vm = this;
-			const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = taskList;
-			_.each(vm.taskItemValues(), (i: TaskItemValue) => {
-        		if(i.itemId == 4){
-					i.options(vm.getMapperList(taskFrameNo1, i.value));
-				}else if(i.itemId == 5){
-					i.options(vm.getMapperList(taskFrameNo2, i.value));
-				}
-				else if(i.itemId == 6){
-					i.options(vm.getMapperList(taskFrameNo3, i.value));
-				}
-				else if(i.itemId == 7){
-					i.options(vm.getMapperList(taskFrameNo4, i.value));
-				}
-				else if(i.itemId == 8){
-					i.options(vm.getMapperList(taskFrameNo5, i.value));
-				}
-            });
+			let frameNoVsTaskFrameNos = _.find(taskList.frameNoVsTaskFrameNos, i => i.frameNo == vm.supNo)
+			if(frameNoVsTaskFrameNos){
+				const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = frameNoVsTaskFrameNos;
+				_.each(vm.taskItemValues(), (i: TaskItemValue) => {
+	        		if(i.itemId == 4){
+						i.options(vm.getMapperList(taskFrameNo1, i.value));
+					}else if(i.itemId == 5){
+						i.options(vm.getMapperList(taskFrameNo2, i.value));
+					}
+					else if(i.itemId == 6){
+						i.options(vm.getMapperList(taskFrameNo3, i.value));
+					}
+					else if(i.itemId == 7){
+						i.options(vm.getMapperList(taskFrameNo4, i.value));
+					}
+					else if(i.itemId == 8){
+						i.options(vm.getMapperList(taskFrameNo5, i.value));
+					}
+	            });	
+			}
 		}
 		getMapperList(tasks: TaskDto[], code: KnockoutObservable<string> | undefined): DropdownItem[]{
 			const vm = this;
