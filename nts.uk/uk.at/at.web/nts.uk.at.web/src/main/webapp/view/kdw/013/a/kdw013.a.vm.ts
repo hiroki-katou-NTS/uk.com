@@ -886,17 +886,13 @@ module nts.uk.ui.at.kdw013.a {
 
                     return vm.$dialog
                         .info({ messageId: dataResult.messageAlert })
-                        .then(() => lstOvertimeLeaveTime)
                         .then(() => {
                             vm.dataChanged(false);
                             //trigger reload data
                             vm.dateRange.valueHasMutated();
-                        });
+                        })
+                        .then(() => lstOvertimeLeaveTime);
 
-                    return $
-                        .Deferred()
-                        .resolve()
-                        .then(() => null);
                 })
                 .fail((response: ErrorMessage) => {
                     const { messageId, parameterIds } = response;
