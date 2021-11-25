@@ -838,7 +838,8 @@ module nts.uk.ui.at.kdw013.c {
                 })
                 .then((isNew: boolean | null) => {
                     if (isNew) {
-                        vm.$dialog
+						if (vm.changed()) {
+                        	vm.$dialog
                             .confirm({ messageId: 'Msg_2094' })
                             .then((v: 'yes' | 'no') => {
                                 if (v === 'yes') {
@@ -849,6 +850,13 @@ module nts.uk.ui.at.kdw013.c {
                                     vm.params.close("yes");
                                 }
                             });
+						} else {
+							nts.uk.ui.errors.clearAll();
+							setTimeout(() => {
+								jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+							}, 100);
+                            params.close("yes");
+                        }
                     } else {						
                         if (vm.changed()) {
                             vm.$dialog
@@ -937,7 +945,7 @@ module nts.uk.ui.at.kdw013.c {
                         }
 
                         // close popup
-                        params.close();
+                        params.close('save');
                     }
                 });
         }
