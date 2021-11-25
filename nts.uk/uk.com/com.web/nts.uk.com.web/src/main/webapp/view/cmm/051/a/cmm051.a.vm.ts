@@ -190,6 +190,7 @@ module nts.uk.com.view.cmm051.a {
                 }else {
                     vm.isNewMode(false);
                 }
+                emps = _.orderBy(emps, ['code'], ['asc']);
                 vm.employInfors(emps);
                 let info = _.find(vm.employInfors(), (e) => e.id == sid);
                 if (isNullOrUndefined(info)) {
@@ -710,6 +711,7 @@ module nts.uk.com.view.cmm051.a {
                                     vm.dateHistoryList([]);
                                     vm.workPlaceList([]);
                                 }
+                                wplIf = _.orderBy(wplIf, ['code'], ['asc']);
                                 vm.workPlaceList(wplIf);
                                 if (!isNullOrEmpty(vm.workPlaceList())) {
                                     let wp = _.find(vm.workPlaceList(), (i) => i.id == wplId);
