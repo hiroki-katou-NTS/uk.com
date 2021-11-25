@@ -578,13 +578,28 @@ module nts.uk.ui.at.kdw013.a {
                                 }
 
                                 let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
+                                const gentext = (hr, attItem) => {
+                                    if (!_.isNaN(Number(hr.value)) && hr.valueType == 1) {
+                                        return (formatTime(hr.value, 'Time_Short_HM'));
+                                    }
 
+                                    if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2 && hr.value == 1) {
+                                        return '☑ する'
+                                    }
+                                    if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2) {
+                                        return '☐ する'
+                                    }
+
+                                    return hr.value;
+
+                                }
                                 _.forEach(rdis, rdi => {
 
                                     let hr = _.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId });
-                                    //PC3_6 PC3_7
-                                    if (!_.isNil(hr.value)) {
-                                        events.push({ title: rdi.displayName, text: (!_.isNaN(Number(hr.value)) && hr.valueType == 1) ? (formatTime(hr.value, 'Time_Short_HM')) : hr.value , valueType: hr.valueType });
+                                    let attItem = _.find(_.get(setting, 'dailyAttendanceItem', []), ati => ati.attendanceItemId == rdi.attendanceItemId);
+                                    //PC3_6 PC3_7 ☐ ☑
+                                    if (!_.isNil(_.get(hr, 'value'))) {
+                                        events.push({ title: rdi.displayName, text:gentext(hr,attItem), valueType: hr.valueType });
                                     }
 
                                 });
