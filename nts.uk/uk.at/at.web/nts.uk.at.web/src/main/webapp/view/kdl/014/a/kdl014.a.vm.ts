@@ -112,7 +112,7 @@ module nts.uk.at.view.kdl014.a {
         bindingGrid(){
             let self = this;
 			let locationInfoHidden = true;
-			if (!self.display && self.checkMobile) {
+			if (self.display && self.checkMobile) {
 				locationInfoHidden = false
 			}
 			
