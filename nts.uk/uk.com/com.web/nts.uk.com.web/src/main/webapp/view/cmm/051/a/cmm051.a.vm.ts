@@ -872,6 +872,7 @@ module nts.uk.com.view.cmm051.a {
                                 "wkpManagerId": id
                             };
                             vm.$ajax("com", API.deleteWkpHist, command).done(() => {
+                                vm.$dialog.info({ messageId: "Msg_16" }).then(()=>{
                                     let indexRemove = _.findIndex(vm.dateHistoryList(), (e) => e.id == id);
                                     let idHist: any = null;
                                     if ((indexRemove == ( vm.dateHistoryList().length) -1)) {
@@ -892,6 +893,7 @@ module nts.uk.com.view.cmm051.a {
                                     vm.initScreen(vm.mode(), vm.employeeId(), vm.workPlaceId(), vm.historyId());
                                     vm.isNewMode(false);
                                 }
+                                );}
                             ).always(() => {
                                 block.clear();
                             }).fail((res) => {
