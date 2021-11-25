@@ -395,6 +395,9 @@ module nts.uk.ui.at.kdw013.calendar {
         .border-dashed{
             border-style: dashed !important;    
         }
+        .otTime {
+            background-color: #FFFF99;
+        }
 `;
 
     @handler({
@@ -2327,7 +2330,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     }
                 },
                 slotLabelClassNames: (arg) => {
-                    return moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+                    let result = moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+
+                    return result ;
+                },
+                slotLaneClassNames: (arg) => {
+                    let result = moment(arg.date).minutes() % 60 != 0 ? 'border-dashed' : '';
+
+                    return result + ' ' + (vm.isOTTime(arg.date) ? 'otTime' : '');
                 }
                 ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
@@ -3385,6 +3395,14 @@ module nts.uk.ui.at.kdw013.calendar {
         
         
        
+            
+         public   isOTTime(date){
+                const vm = this;
+                const datas = vm.params.$datas();
+                const etz = _.find(_.get(datas, 'estimateZones', []), es => moment(es.ymd).isSame(moment(date), 'days'));
+                const overTimeZones = _.get(etz, 'overTimeZones', []);
+                return false;
+            }
 
         public getFrameNo(events){
                 let maxNo = 20;

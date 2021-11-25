@@ -66,12 +66,12 @@ module nts.uk.ui.at.kdw013.e {
             vm.getCbbList();
             vm.startTime(vm.ouenWorkTimeSheet().timeSheet.start.timeWithDay);
             vm.endTime(vm.ouenWorkTimeSheet().timeSheet.end.timeWithDay);
-            vm.totalTime(vm.ouenWorkTime().workTime.totalTime);
-            vm.selectedTaskCD1(vm.ouenWorkTimeSheet().workContent.work.workCD1 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD1);
-            vm.selectedTaskCD2(vm.ouenWorkTimeSheet().workContent.work.workCD2 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD2);
-            vm.selectedTaskCD3(vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD3);
-            vm.selectedTaskCD4(vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD4);
-            vm.selectedTaskCD5(vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '-1' : vm.ouenWorkTimeSheet().workContent.work.workCD5);
+            vm.totalTime(vm.ouenWorkTime() ? vm.ouenWorkTime().workTime.totalTime : 0);
+            vm.selectedTaskCD1(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD1);
+            vm.selectedTaskCD2(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD2);
+            vm.selectedTaskCD3(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3);
+            vm.selectedTaskCD4(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4);
+            vm.selectedTaskCD5(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5);
 
         }
 
@@ -189,8 +189,13 @@ module nts.uk.ui.at.kdw013.e {
             $('#editor-start').focus();
 
             vm.selectedTaskCD1.subscribe((value) => {
-                vm.ouenWorkTimeSheet().workContent.work.workCD1 = value;
-            });
+				if (vm.ouenWorkTimeSheet().workContent.work == null) {
+					vm.ouenWorkTimeSheet().workContent.work = {workCD1: value, workCD2: null, workCD3: null, workCD4: null, workCD5: null};
+					
+				} else {
+					 vm.ouenWorkTimeSheet().workContent.work.workCD1 = value;
+				}
+			});
 
             vm.selectedTaskCD2.subscribe((value) => {
                 vm.ouenWorkTimeSheet().workContent.work.workCD2 = value == '' ? null : value;
@@ -217,7 +222,14 @@ module nts.uk.ui.at.kdw013.e {
             })
 
             vm.totalTime.subscribe((value)=> {
-                vm.ouenWorkTime().workTime.totalTime = value;
+	
+				if (vm.ouenWorkTime()) {
+					 vm.ouenWorkTime().workTime.totalTime = value;
+				} else {
+					let workTime = {totalTime: value};
+					vm.ouenWorkTime({no: vm.ouenWorkTimeSheet().workNo, workTime: workTime});
+				}
+			
             })
             
         }
@@ -233,23 +245,22 @@ module nts.uk.ui.at.kdw013.e {
             };
 
 			vm.$blockui('show');
-            vm.$validate('.nts-input').then((valid: boolean) => {
-				if (valid && !nts.uk.ui.errors.hasError()) {
-                    vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param)
-                    .done(() => {
-                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-							vm.close()
-                        }); 
-                    }).fail((error: any) => {
-                        vm.$dialog.error(error);
-                    }).always(() => {
-                        vm.$blockui("hide");
-                    });
+            $('.ntsControl').trigger('validate');
+			if (!nts.uk.ui.errors.hasError()) {
+                vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param)
+                .done(() => {
+                    vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+						vm.close()
+                    }); 
+                }).fail((error: any) => {
+                    vm.$dialog.error(error);
+                }).always(() => {
+                    vm.$blockui("hide");
+                });
 
-                } else {
-                    vm.$blockui("clear");
-                }
-            });
+            } else {
+                vm.$blockui("clear");
+            }
         }
         
          // ダイアログを閉じる

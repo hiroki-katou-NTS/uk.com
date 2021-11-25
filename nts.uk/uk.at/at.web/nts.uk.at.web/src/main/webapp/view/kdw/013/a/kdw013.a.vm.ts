@@ -578,13 +578,28 @@ module nts.uk.ui.at.kdw013.a {
                                 }
 
                                 let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
+                                const gentext = (hr, attItem) => {
+                                    if (!_.isNaN(Number(hr.value)) && hr.valueType == 1) {
+                                        return (formatTime(hr.value, 'Time_Short_HM'));
+                                    }
 
+                                    if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2 && hr.value == 1) {
+                                        return '☑ する'
+                                    }
+                                    if (_.get(attItem, 'masterType') == 9 && _.get(attItem, 'dailyAttendanceAtr') == 2) {
+                                        return '☐ する'
+                                    }
+
+                                    return hr.value;
+
+                                }
                                 _.forEach(rdis, rdi => {
 
-                                    let value = _.get(_.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId }), 'value');
-                                    //PC3_6 PC3_7
-                                    if (!_.isNil(value)) {
-                                        events.push({ title: rdi.displayName, text: !_.isNaN(Number(value)) ? (formatTime(value, 'Time_Short_HM')) : value });
+                                    let hr = _.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId });
+                                    let attItem = _.find(_.get(setting, 'dailyAttendanceItem', []), ati => ati.attendanceItemId == rdi.attendanceItemId);
+                                    //PC3_6 PC3_7 ☐ ☑
+                                    if (!_.isNil(_.get(hr, 'value'))) {
+                                        events.push({ title: rdi.displayName, text:gentext(hr,attItem), valueType: hr.valueType });
                                     }
 
                                 });
@@ -911,7 +926,7 @@ module nts.uk.ui.at.kdw013.a {
             let result = [];
             _.forEach(dates, date => {
                 let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
-                if (eventsInday.length > 20) {
+                if (_.flattenDeep(_.map(eventsInday, e => _.map(e.extendedProps.taskBlock.taskDetails, td => td.supNo))).length > 20) {
                     result.push(moment(date).format(DATE_FORMAT));
                 }
             });
