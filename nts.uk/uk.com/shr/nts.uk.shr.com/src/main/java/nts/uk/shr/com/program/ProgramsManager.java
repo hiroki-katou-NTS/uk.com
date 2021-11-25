@@ -2398,6 +2398,11 @@ public class ProgramsManager {
     public static final Program CMM051A = new Program(WebAppId.COM, ProgramIdConsts.CMM051A, "CMM051_1",
             "/view/cmm/051/a/index.xhtml");
     /**
+     * CMM052A
+     */
+    public static final Program CMM052A = new Program(WebAppId.COM, ProgramIdConsts.CMM052A, "CMM052_1",
+            "/view/cmm/052/a/index.xhtml");
+    /**
      * CMM001
      */
     public static final Program CMM001A = new Program(WebAppId.COM, ProgramIdConsts.CMM001A, "CMM001_39",
