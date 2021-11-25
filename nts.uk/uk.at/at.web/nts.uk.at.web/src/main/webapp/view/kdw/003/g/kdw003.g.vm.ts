@@ -193,22 +193,22 @@ module nts.uk.at.view.kdw003.cg {
             self.loadData();
 
             self.selectedTaskCode1.subscribe(code => {
-                if(code != '')
+                if(!_.isNil(code))
                     self.getChildTask(1, code);
             });
 
             self.selectedTaskCode2.subscribe(code => {
-                if(code != '')
+                if(!_.isNil(code))
                     self.getChildTask(2, code);
             });
 
             self.selectedTaskCode3.subscribe(code => {
-                if(code != '')
+                if(!_.isNil(code))
                     self.getChildTask(3, code);
             });
 
             self.selectedTaskCode4.subscribe(code => {
-                if(code != '')
+                if(!_.isNil(code))
                     self.getChildTask(4, code);
             });
         }
@@ -422,66 +422,52 @@ module nts.uk.at.view.kdw003.cg {
                    switch(request.taskFrameNo){
                         case 1:
                             if(_.isEmpty(data)){
-                                let task:any = _.find(self.listTaskFrame2(), task => task.taskCode == self.selectedTaskCode2());
-                                if(_.isNull(task) && _.isUndefined(task))
-                                    listTask2.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                listTask2.push(self.first);
-                                self.listTaskFrame2([]);
+                                self.startDate.valueHasMutated();
                             } else {
+                                self.listTaskFrame2().splice(0,self.listTaskFrame2().length);
                                 _.each(data, task => {
                                     listTask2.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                });
+                                });        
                                 listTask2.unshift(self.first);
-                            } 
-                            self.listTaskFrame2(listTask2);
+                                self.listTaskFrame2(listTask2);        
+                            }                            
+                            
                             break;
                         case 2:
                             if(_.isEmpty(data)){
-                                let task:any = _.find(self.listTaskFrame3(), task => task.taskCode == self.selectedTaskCode3());
-                                if(_.isNull(task) && _.isUndefined(task))
-                                    listTask3.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                listTask3.push(self.first);
-                                self.listTaskFrame3([]);
+                                self.startDate.valueHasMutated();
                             } else {
+                                self.listTaskFrame3().splice(0,self.listTaskFrame3().length);
                                 _.each(data, task => {
                                     listTask3.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                });
+                                });               
                                 listTask3.unshift(self.first);
-                            }                                                     
-                            
-                            self.listTaskFrame3(listTask3);
+                                self.listTaskFrame3(listTask3);      
+                            } 
                             break;
                         case 3:
                             if(_.isEmpty(data)){
-                                let task:any = _.find(self.listTaskFrame4(), task => task.taskCode == self.selectedTaskCode4());
-                                if(_.isNull(task) && _.isUndefined(task))
-                                    listTask4.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                listTask4.push(self.first);
-                                self.listTaskFrame4([]);
+                                self.startDate.valueHasMutated();
                             } else {
+                                self.listTaskFrame4().splice(0,self.listTaskFrame4().length);
                                 _.each(data, task => {
                                     listTask4.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                });
-                                listTask4.unshift(self.first);
-                            }                                
-                            
-                            self.listTaskFrame4(listTask4);
+                                });                     
+                                listTask4.unshift(self.first);  
+                                self.listTaskFrame4(listTask4); 
+                            } 
                             break;
                         case 4:
                             if(_.isEmpty(data)){
-                                let task:any = _.find(self.listTaskFrame5(), task => task.taskCode == self.selectedTaskCode5() && self.selectedTaskCode5() != '') ; 
-                                if(_.isNull(task) && _.isUndefined(task))
-                                    listTask5.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                listTask5.push(self.first);
-                                self.listTaskFrame5([]);
-                            } else {
+                                self.startDate.valueHasMutated();
+                            } else {                               
+                                self.listTaskFrame5().splice(0,self.listTaskFrame5().length);
                                 _.each(data, task => {
                                     listTask5.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate));
-                                });
+                                });          
                                 listTask5.unshift(self.first);
-                            }                                                            
-                            
-                            self.listTaskFrame5(listTask5);
+                                self.listTaskFrame5(listTask5);   
+                            } 
                             break;
                    }
                 }
