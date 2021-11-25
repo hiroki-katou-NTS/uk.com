@@ -726,7 +726,8 @@ module nts.uk.com.view.cmm051.a {
                                     }
                                     vm.isDelete(true);
                                     vm.isNewMode(false);
-
+                                }else {
+                                    vm.setModeNoData();
                                 }
                             }
                         }
