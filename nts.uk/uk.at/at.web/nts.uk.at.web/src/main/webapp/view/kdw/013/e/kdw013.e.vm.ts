@@ -1,4 +1,5 @@
 module nts.uk.ui.at.kdw013.e {
+	import getText = nts.uk.resource.getText;
 
     interface IParams {
         workNo: number,
@@ -63,7 +64,6 @@ module nts.uk.ui.at.kdw013.e {
             }
 
             vm.getSetting();
-            vm.getCbbList();
             vm.startTime(vm.ouenWorkTimeSheet().timeSheet.start.timeWithDay);
             vm.endTime(vm.ouenWorkTimeSheet().timeSheet.end.timeWithDay);
             vm.totalTime(vm.ouenWorkTime() ? vm.ouenWorkTime().workTime.totalTime : 0);
@@ -72,7 +72,8 @@ module nts.uk.ui.at.kdw013.e {
             vm.selectedTaskCD3(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3);
             vm.selectedTaskCD4(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4);
             vm.selectedTaskCD5(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5);
-        }
+			vm.getCbbList();        
+}
 
         getSetting() {
             const vm = this;
@@ -134,13 +135,54 @@ module nts.uk.ui.at.kdw013.e {
                 taskName: '未選択'
             });
 
+			let selectedTask1 = _.find(vm.taskDtos(), t => t.taskFrameNo == 1 && t.code == vm.selectedTaskCD1());
+			if (!selectedTask1) {
+				vm.taskLst1().push({
+                taskCode: vm.selectedTaskCD1(),
+                taskName: vm.selectedTaskCD1() + ' ' + getText('KDW013_40')
+            	});
+			}
+			
+			let selectedTask2 = _.find(vm.taskDtos(), t => t.taskFrameNo == 2 && t.code == vm.selectedTaskCD2());
+			if (!selectedTask2) {
+				vm.taskLst2().push({
+                taskCode: vm.selectedTaskCD2(),
+                taskName: vm.selectedTaskCD2() + ' ' + getText('KDW013_40')
+            	});
+			}
+			
+			let selectedTask3 = _.find(vm.taskDtos(), t => t.taskFrameNo == 3 && t.code == vm.selectedTaskCD3());
+			if (!selectedTask3) {
+				vm.taskLst3().push({
+                taskCode: vm.selectedTaskCD3(),
+                taskName: vm.selectedTaskCD3() + ' ' + getText('KDW013_40')
+            	});
+			}
+			
+			let selectedTask4 = _.find(vm.taskDtos(), t => t.taskFrameNo == 4 && t.code == vm.selectedTaskCD4());
+			if (!selectedTask4) {
+				vm.taskLst4().push({
+                taskCode: vm.selectedTaskCD4(),
+                taskName: vm.selectedTaskCD4() + ' ' + getText('KDW013_40')
+            	});
+			}
+			
+			let selectedTask5 = _.find(vm.taskDtos(), t => t.taskFrameNo == 5 && t.code == vm.selectedTaskCD5());
+			if (!selectedTask5) {
+				vm.taskLst5().push({
+                taskCode: vm.selectedTaskCD5(),
+                taskName: vm.selectedTaskCD5() + ' ' + getText('KDW013_40')
+            	});
+			}
+
             _.forEach(vm.taskDtos(), task => {
                 if (task.taskFrameNo == 1) {
-
-                    vm.taskLst1().push({
-                        taskCode: task.code,
-                        taskName: task.code + ' ' + task.displayInfo.taskName
-                    });
+					
+					vm.taskLst1().push({
+	                	taskCode: task.code,
+	                	taskName: task.code + ' ' + task.displayInfo.taskName
+	            		});
+					
                 }
                 if (task.taskFrameNo == 2) {
 
