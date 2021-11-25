@@ -581,10 +581,10 @@ module nts.uk.ui.at.kdw013.a {
 
                                 _.forEach(rdis, rdi => {
 
-                                    let value = _.get(_.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId }), 'value');
+                                    let hr = _.find(manHrContents, hr => { return hr.itemId == rdi.attendanceItemId });
                                     //PC3_6 PC3_7
-                                    if (!_.isNil(value)) {
-                                        events.push({ title: rdi.displayName, text: !_.isNaN(Number(value)) ? (formatTime(value, 'Time_Short_HM')) : value });
+                                    if (!_.isNil(hr.value)) {
+                                        events.push({ title: rdi.displayName, text: (!_.isNaN(Number(hr.value)) && hr.valueType == 1) ? (formatTime(hr.value, 'Time_Short_HM')) : hr.value , valueType: hr.valueType });
                                     }
 
                                 });
@@ -911,7 +911,7 @@ module nts.uk.ui.at.kdw013.a {
             let result = [];
             _.forEach(dates, date => {
                 let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
-                if (eventsInday.length > 20) {
+                if (_.flattenDeep(_.map(eventsInday, e => _.map(e.extendedProps.taskBlock.taskDetails, td => td.supNo))).length > 20) {
                     result.push(moment(date).format(DATE_FORMAT));
                 }
             });
