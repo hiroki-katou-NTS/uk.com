@@ -28,10 +28,7 @@ public class CorrectAddSalaryCode {
 				new WorkplaceId(domainDaily.getAffiliationInfor().getWplID()));
 
 		// 加給コードをセットする
-		if (bonusPaySetting.isPresent()) {
-			domainDaily.getAffiliationInfor().setBonusPaySettingCode(bonusPaySetting.map(x -> x.getCode()));
-			return;
-		}
+		domainDaily.getAffiliationInfor().setBonusPaySettingCode(bonusPaySetting.map(x -> x.getCode()));
 		return;
 	}
 
