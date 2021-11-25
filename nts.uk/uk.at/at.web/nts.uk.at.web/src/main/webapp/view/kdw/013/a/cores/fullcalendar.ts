@@ -3911,11 +3911,10 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (event) {
                                 event.remove();
+                                // trigger update from parent view
+                                mutated.valueHasMutated();
                             }
                         }
-
-                        // trigger update from parent view
-                        mutated.valueHasMutated();
                     })
                     .then(() => data(null))
                     .then(() => position(null))

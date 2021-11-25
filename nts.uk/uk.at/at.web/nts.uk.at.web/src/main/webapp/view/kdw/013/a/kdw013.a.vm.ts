@@ -792,16 +792,16 @@ module nts.uk.ui.at.kdw013.a {
                     _.forEach(_.filter(eventInday, e => _.get(e, 'extendedProps.isTimeBreak', false) == false), e => {
                         let {taskDetails} = _.get(e, 'extendedProps.taskBlock');
                         _.forEach(taskDetails, td => {
+                            
+                            if (taskDetails.length == 1) {
+                                _.remove(td.taskItemValues, ti => ti.itemId == 3);
+                            }
 
                             _.forEach(td.taskItemValues, ti => {
                                 const start = (moment(e.start).hour() * 60) + moment(e.start).minute();
                                 const end = (moment(e.end).hour() * 60) + moment(e.end).minute();
                                 if (ti.itemId == 1) { ti.value = taskDetails.length > 1 ? null : start };
                                 if (ti.itemId == 2) { ti.value = taskDetails.length > 1 ? null : end };
-                                if (taskDetails.length == 1) {
-                                    if (ti.itemId == 3) { ti.value = end - start };
-                                }
-
                             });
 
                         });
