@@ -1379,7 +1379,7 @@ module nts.uk.com.view.ccg034.d {
       htmlContent += `<link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css">`;
       htmlContent += `</head>`;
       htmlContent += `<body>`;
-      htmlContent += `<div class="content-container" style="width: ${vm.maxWidth()}px; height: ${vm.maxHeight()}px;">`;
+      htmlContent += `<div class="content-container" style="width: ${vm.maxWidth()}px; height: ${vm.maxHeight()}px; margin: auto; position: relative;">`;
       htmlContent += $layout.html();
       htmlContent += `</div>`;
       htmlContent += `</body>`;
