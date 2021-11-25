@@ -14,6 +14,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		getLoginUser: "screen/com/ccg008/get-user"
 	};
 
+	const KTG_STORAGE_KEY = ['KTG001_INITIAL_DATA', 'KTG004_YM_PARAM',];
+
 	const getWidgetName = (type: number) => {
 		switch (type) {
 			case 0:
@@ -166,6 +168,9 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					return `layout-type-${ltpy}`;
 				}
 			});
+			
+			// Remvoe all cache of KTG001 AND KTG004 Widget
+			_.forEach(KTG_STORAGE_KEY, key => vm.$window.storage(key, null));
 
 			vm.reloadInterval
 				.subscribe((data: any) => {
