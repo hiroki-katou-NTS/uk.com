@@ -40,7 +40,9 @@ public class RegisterNewOptionsCommandHandeler extends CommandHandler<RegisterNe
 
 		choicesDetails.stream().forEach(f -> {
 			if (f.getCode().v().equals(command.getChoiceCode())) {
-				throw new BusinessException("Msg_3");
+				if(f.getHistoryId().equals(command.historyId)) {
+					throw new BusinessException("Msg_3");
+				}
 			}
 		});
 

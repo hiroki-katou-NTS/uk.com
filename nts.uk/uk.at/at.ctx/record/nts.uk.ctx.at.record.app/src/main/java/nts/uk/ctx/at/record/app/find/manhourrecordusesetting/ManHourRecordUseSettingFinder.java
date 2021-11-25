@@ -49,11 +49,21 @@ public class ManHourRecordUseSettingFinder {
 		
 		if (!errorAlarmWorkRecordOp.isPresent()) {
 			ErrorAlarmWorkRecord errorAlarmWorkRecord = ErrorAlarmWorkRecord.createFromJavaType(
-					companyId, "T001", "作業時間超過チェック", 
-					false, false, false, 
-					833, ErrorAlarmClassification.ALARM.value, false, 
-					"", false, null, 
-					Collections.emptyList(), IdentifierUtil.randomUniqueId());
+					companyId,
+					"T001",
+					"作業時間超過チェック", 
+					false,
+					false,
+					false, 
+					833,
+					ErrorAlarmClassification.ALARM.value,
+					false, 
+					"",
+					false,
+					null, 
+					Collections.emptyList(),
+					IdentifierUtil.randomUniqueId()
+					);
 			
 			ErrorAlarmCondition errorAlarmCondition = ErrorAlarmCondition.init();
 			errorAlarmCondition.setCheckId(errorAlarmWorkRecord.getErrorAlarmCheckID());
@@ -71,10 +81,41 @@ public class ManHourRecordUseSettingFinder {
 
 			// Set AttendanceItemCondition
 			ErAlAttendanceItemCondition<CheckedTimeDuration> erAlAttendanceItemCondition = new ErAlAttendanceItemCondition<CheckedTimeDuration>(
-					companyId, "T001", 1, 1, true, 0);
+					companyId,
+					"T001",
+					1,
+					1,
+					true,
+					0
+					);
 			erAlAttendanceItemCondition.setCountableTarget(Arrays.asList(559), 
-					Arrays.asList(1305, 1349, 1393, 1437, 1481, 1525, 1569, 1613, 1657, 1701));
-			erAlAttendanceItemCondition.setCompareRange(RangeCompareType.BETWEEN_RANGE_CLOSED.value, new CheckedTimeDuration(-1), new CheckedTimeDuration(1));
+					Arrays.asList(
+							1305,
+							1349,
+							1393,
+							1437,
+							1481,
+							1525,
+							1569,
+							1613,
+							1657,
+							1701,
+							1745,
+							1789,
+							1833,
+							1877,
+							1921,
+							1965,
+							2009,
+							2053,
+							2097,
+							2141
+							));
+			erAlAttendanceItemCondition.setCompareRange(
+					RangeCompareType.OUTSIDE_RANGE_CLOSED.value,
+					new CheckedTimeDuration(-1),
+					new CheckedTimeDuration(1)
+					);
 			
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Arrays.asList(erAlAttendanceItemCondition);
 			
@@ -84,8 +125,14 @@ public class ManHourRecordUseSettingFinder {
 					.setAttendanceItemConditionGroup2(0, conditionsGroup2);
 			// Set AlCheckTargetCondition
 			errorAlarmCondition.createAlCheckTargetCondition(
-					false, false,false, false, 
-					Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+					false,
+					false,
+					false,
+					false, 
+					Collections.emptyList(),
+					Collections.emptyList(),
+					Collections.emptyList(),
+					Collections.emptyList());
 			// Set DisplayMessage
 			errorAlarmCondition.setDisplayMessage("総労働時間と作業の合計時間に差があります。");
 			// Set ContinuousPeriod

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -854,6 +855,8 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		if(!duplicate.isPresent()) {
 			return AttendanceTimeOfDailyAttendance.allZeroValue();
 		}
+		//常に「打刻から計算する」にする。※申請のみで運用する場合に応援作業の残業等が計算されない問題の対策
+		duplicate.get().getIntegrationOfDaily().setCalAttr(CalAttrOfDailyAttd.createAllCalculate());
 		
 		//日別勤怠の勤怠時間を計算する
 		return collectCalculationResult(
