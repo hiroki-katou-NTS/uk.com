@@ -72,7 +72,6 @@ module nts.uk.ui.at.kdw013.e {
             vm.selectedTaskCD3(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD3);
             vm.selectedTaskCD4(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD4);
             vm.selectedTaskCD5(vm.ouenWorkTimeSheet().workContent.work == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5 == null ? '' : vm.ouenWorkTimeSheet().workContent.work.workCD5);
-
         }
 
         getSetting() {
@@ -236,7 +235,7 @@ module nts.uk.ui.at.kdw013.e {
 
         decide() {
             const vm = this;
-
+			vm.totalTime.valueHasMutated();
             let param = {
                 empId: vm.$user.employeeId,
                 date: vm.date(),
