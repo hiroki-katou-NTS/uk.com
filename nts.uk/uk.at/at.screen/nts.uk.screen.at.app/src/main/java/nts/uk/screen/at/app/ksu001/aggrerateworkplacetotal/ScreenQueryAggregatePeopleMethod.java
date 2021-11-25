@@ -22,6 +22,9 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.ShiftMasterDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,6 +42,9 @@ public class ScreenQueryAggregatePeopleMethod {
 	
 	@Inject
 	private ShiftMasterRepository shiftMasterRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	/**
 	 * 
 	 * @param targetOrg
@@ -56,7 +62,7 @@ public class ScreenQueryAggregatePeopleMethod {
 			List<IntegrationOfDaily> actualList,
 			boolean isShiftDisplay
 			) {
-		Require require = new Require(shiftMasterRepository);
+		Require require = new Require(shiftMasterRepository, workTypeRepository);
 		
 		String companyId = AppContexts.user().companyId();
 		// 1: シフト表示か == false
@@ -167,12 +173,24 @@ public class ScreenQueryAggregatePeopleMethod {
 		@Inject
 		private ShiftMasterRepository shiftMasterRepository;
 		
+		@Inject
+		private WorkTypeRepository workTypeRepository;
 		@Override
 		public Optional<ShiftMaster> getShiftMaster(WorkInformation workInformation) {
 			return shiftMasterRepository.getByWorkTypeAndWorkTime(
 					AppContexts.user().companyId(),
 					workInformation.getWorkTypeCode().v(),
 					workInformation.getWorkTimeCodeNotNull().map(x -> x.v()).orElse(null));
+		}
+
+		@Override
+		public List<WorkType> getWorkTypes(List<WorkTypeCode> workTypeCodes) {
+			return workTypeRepository.getPossibleWorkType(
+						AppContexts.user().companyId()
+					,	workTypeCodes.stream()
+									.map(c -> c.v())
+									.collect(Collectors.toList())
+						);
 		}
 		
 	}
