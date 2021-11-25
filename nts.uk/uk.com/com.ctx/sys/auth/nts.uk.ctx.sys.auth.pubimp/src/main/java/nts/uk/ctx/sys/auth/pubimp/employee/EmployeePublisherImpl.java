@@ -38,6 +38,7 @@ import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -524,7 +525,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 
 		// ユーザIDからロールセットを取得する
 		Optional<RoleSet> roleSetOpt = roleSetService.getRoleSetFromUserId(userID.get(), GeneralDate.today());
-		if (!roleSetOpt.isPresent()) return Optional.empty();
+		if (!roleSetOpt.isPresent() || StringUtils.isEmpty(roleSetOpt.get().getEmploymentRoleId())) return Optional.empty();
 
 		return roleRepository.findByRoleId(roleSetOpt.get().getEmploymentRoleId());
 	}

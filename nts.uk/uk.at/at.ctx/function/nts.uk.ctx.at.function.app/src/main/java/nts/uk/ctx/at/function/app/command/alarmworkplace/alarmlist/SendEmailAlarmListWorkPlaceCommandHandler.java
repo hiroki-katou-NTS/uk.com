@@ -10,7 +10,6 @@ import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AdministratorReceiveAlarmMailAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeAlarmListAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
-import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.mailserver.MailServerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleExportRpAdapter;
@@ -18,16 +17,9 @@ import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportDto;
 import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
-import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.OutputErrorInfo;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSetting;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSettingRepository;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.NormalAutoClassification;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.GetRoleWorkByEmployeeService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.sendemail.WorkplaceSendEmailService;
@@ -250,9 +242,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 
     private Map<String, List<String>> angAnAdministrator(List<String> worplaceIdList, GeneralDate executeDate,
                                                          Optional<AlarmMailSendingRole> roleMailSettingOpt, String cid) {
-        // ドメインモデル「職場管理者」を取得
-//        List<WkpManagerImport> wkplManagerList = workplaceAdapter.findByWkpIdsAndDate(worplaceIdList, executeDate);
-
         // 管理者を取得する。[RQ.727]
         Map<String, List<String>> adminReceiveAlarmMailMap =  adminReceiveAlarmMailAdapter.getAdminReceiveAlarmMailByWorkplaceIds(worplaceIdList);
 
@@ -304,17 +293,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                 }
             }
         }
-        
-//        List<String> managerList = wkplManagerList.stream().map(x -> x.getEmployeeId()).distinct().collect(Collectors.toList());
-//        for (String item : managerList) {
-//            managerMap.put(
-//                    item,
-//                    wkplManagerList
-//                            .stream()
-//                            .filter(x -> x.getEmployeeId().equals(item)).map(x -> x.getWorkplaceId())
-//                            .collect(Collectors.toList())
-//            );
-//        }
+
         return managerMap;
     }
 }

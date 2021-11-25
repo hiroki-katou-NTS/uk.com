@@ -173,9 +173,9 @@ public class AlarmSendEmailService implements SendEmailService {
 
         // Map＜管理者ID、List＜対象者ID＞＞にデータを追加
         Map<String, List<String>> managerMap = new HashMap<>();    // Map<ManagerID, List<TargetPersonID>>
-        adminReceiveAlarmMailMap.forEach((k, v) -> {   // Key = WorkplaceID; Value = List<ManagerID>>
-            val personIdList = managerTargetList.stream().filter(x -> x.getWorkplaceID().equals(k)).map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
-            v.forEach(managerId -> {
+        adminReceiveAlarmMailMap.forEach((workplaceId, managerIds) -> {
+            val personIdList = managerTargetList.stream().filter(x -> x.getWorkplaceID().equals(workplaceId)).map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
+			managerIds.forEach(managerId -> {
                 if (!personIdList.isEmpty()) {
                     managerMap.put(managerId, personIdList);
                 }
@@ -215,12 +215,6 @@ public class AlarmSendEmailService implements SendEmailService {
 					    if (!mailSendingRole.get().getRoleIds().contains(entry.getValue())){
                             itr.remove();
                         }
-//						val roleValue = entry.getValue();
-//						val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
-//						if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) {
-//							// Map＜管理者ID、List＜対象者ID＞＞にループ中管理者IDのRecordを除く
-////							itr.remove();
-//						}
 					}
 				}
 			}
