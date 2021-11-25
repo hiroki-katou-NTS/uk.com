@@ -171,6 +171,17 @@ module nts.uk.ui.at.kdw013.b {
 			    border-radius: 50%;
 				width: 30px;
 			}
+			.taskDetailsB::-webkit-scrollbar{
+				width: 8px;
+			}
+			.taskDetailsB::-webkit-scrollbar-thumb {
+				border-radius: 4px;
+				background-color: #dededfa6;
+			}
+			.taskDetailsB::-webkit-scrollbar-thumb:hover
+			{
+				background-color: #c1c1c1;
+			}
         </style>
         `;
 
@@ -276,10 +287,30 @@ module nts.uk.ui.at.kdw013.b {
 						//set valua in f screen
 						
 						vm.taskContents = _.map(_.filter(taskBlock.taskDetails[0].taskItemValues, i => i.itemId > 3 && i.itemId < 9), t => {return { itemId: t.itemId, taskCode: t.value}});
-						
+						let workCodeFrameNo: any[] = [];
+						_.forEach(taskBlock.taskDetails, t => {
+							let frameNo = t.supNo;
+							let workCode1 = null, workCode2 = null, workCode3 = null, workCode4 = null, workCode5 = null; 
+							_.forEach(t.taskItemValues, i =>{
+								if(i.itemId == 4 && i.value != ''){
+									workCode1 = i.value;
+								}else if(i.itemId == 5 && i.value != ''){
+									workCode2 = i.value;
+								}else if(i.itemId == 6 && i.value != ''){
+									workCode3 = i.value;
+								}else if(i.itemId == 7 && i.value != ''){
+									workCode4 = i.value;
+								}else if(i.itemId == 8 && i.value != ''){
+									workCode5 = i.value;
+								}
+							});
+							workCodeFrameNo.push({frameNo, workCode1, workCode2, workCode3, workCode4, workCode5});
+						});
 						let param ={
+							employeeId: extendedProps.employeeId,
 							refDate: start,
-							itemIds: _.filter(_.map(extendedProps.displayManHrRecordItems, i => i.itemId), t => t > 8)
+							itemIds: _.filter(_.map(extendedProps.displayManHrRecordItems, i => i.itemId), t => t > 8),
+							workCodeFrameNo
 						}
 						block.grayout();
 			            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
@@ -288,6 +319,7 @@ module nts.uk.ui.at.kdw013.b {
 							});
 							vm.dataSources(taskDetails);
 							setTimeout(() => {
+								resetHeightB();
 								vm.updatePopupSize();
 								// Init popup
         						vm.initPopup();
@@ -315,35 +347,38 @@ module nts.uk.ui.at.kdw013.b {
 			let range = _.find(taskDetail.taskItemValues, i => i.itemId == 3).value;
 			items.push({ key: 'KDW013_25', value: number2String(parseInt(range)) });			
 			
+			let frameNoVsTaskFrameNos = _.find(data.frameNoVsTaskFrameNos, i => i.frameNo == taskDetail.supNo)
+			const { taskFrameNo1, taskFrameNo2, taskFrameNo3, taskFrameNo4, taskFrameNo5 } = frameNoVsTaskFrameNos;
+			
 			const [first, second, thirt, four, five] = vm.taskFrameSettings;
 			
 			if (first && first.useAtr === 1) {
 				let item = _.find(taskDetail.taskItemValues, i => i.itemId == 4);
 				if(item && item.value){
-					items.push(vm.setTaskData(first, item.value, data.taskFrameNo1));					
+					items.push(vm.setTaskData(first, item.value, taskFrameNo1));					
 				}
             }
             if (second && second.useAtr === 1) {
                 let item = _.find(taskDetail.taskItemValues, i => i.itemId == 5);
 				if(item && item.value){
-					items.push(vm.setTaskData(second, item.value, data.taskFrameNo2));					
+					items.push(vm.setTaskData(second, item.value, taskFrameNo2));					
 				}            }
             if (thirt && thirt.useAtr === 1) {
                 let item = _.find(taskDetail.taskItemValues, i => i.itemId == 6);
 				if(item && item.value){
-					items.push(vm.setTaskData(thirt, item.value, data.taskFrameNo3));					
+					items.push(vm.setTaskData(thirt, item.value, taskFrameNo3));					
 				}
             }
             if (four && four.useAtr === 1) {
                 let item = _.find(taskDetail.taskItemValues, i => i.itemId == 7);
 				if(item && item.value){
-					items.push(vm.setTaskData(four, item.value, data.taskFrameNo4));					
+					items.push(vm.setTaskData(four, item.value, taskFrameNo4));					
 				}
             }
             if (five && five.useAtr === 1) {
               let item = _.find(taskDetail.taskItemValues, i => i.itemId == 8);
 				if(item && item.value){
-					items.push(vm.setTaskData(five, item.value, data.taskFrameNo5));					
+					items.push(vm.setTaskData(five, item.value, taskFrameNo5));					
 				}
             }
 			// cho vao day de sap xep
@@ -475,4 +510,21 @@ module nts.uk.ui.at.kdw013.b {
         $settings: KnockoutObservable<a.StartProcessDto | null>;
         $share: KnockoutObservable<nts.uk.ui.at.kdw013.StartWorkInputPanelDto | null>;
     }
+
+	export function resetHeightB():void {
+		let innerHeight = window.innerHeight - 35
+		let heightTaskDetails = -5; 
+		_.each($('.taskDetailsB table'),(table:any)=>{
+			heightTaskDetails = heightTaskDetails + table.offsetHeight + 5;
+		});
+		
+		let aboveBelow = 160;
+		if(innerHeight - aboveBelow >= heightTaskDetails){
+			$('.taskDetailsB').css({ "overflow-y": "unset"});
+			$('.taskDetailsB').css({ "max-height": heightTaskDetails + 'px' });
+		}else if(innerHeight - aboveBelow < heightTaskDetails){
+			$('.taskDetailsB').css({ "overflow-y": "scroll"});
+			$('.taskDetailsB').css({ "max-height": (innerHeight - aboveBelow - 45) + 'px' });
+		}
+	}
 }

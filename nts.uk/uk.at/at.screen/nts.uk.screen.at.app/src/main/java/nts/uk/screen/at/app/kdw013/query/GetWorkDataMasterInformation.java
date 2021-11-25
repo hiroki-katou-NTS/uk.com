@@ -117,9 +117,9 @@ public class GetWorkDataMasterInformation {
     				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
     		List<TaskDto> taskFrameNo3 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(3), Optional.ofNullable(workCodeFrameNo.workCode2).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
     				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
-    		List<TaskDto> taskFrameNo4 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(4), Optional.ofNullable(workCodeFrameNo.workCode2).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
+    		List<TaskDto> taskFrameNo4 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(4), Optional.ofNullable(workCodeFrameNo.workCode3).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
     				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
-    		List<TaskDto> taskFrameNo5 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(5), Optional.ofNullable(workCodeFrameNo.workCode3).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
+    		List<TaskDto> taskFrameNo5 = getAvailableWorking.get(employeeId, refDate, new TaskFrameNo(5), Optional.ofNullable(workCodeFrameNo.workCode4).map(c -> Optional.of(new TaskCode(c))).orElse(Optional.empty()))
     				.stream().map(c->TaskDto.toDto(c)).collect(Collectors.toList());
     		
     		//指定された作業情報を取得する
