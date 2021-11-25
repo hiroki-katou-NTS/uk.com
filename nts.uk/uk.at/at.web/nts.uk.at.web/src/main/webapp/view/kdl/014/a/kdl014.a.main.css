@@ -15,7 +15,10 @@
 }
 
 #single-list td img{
-	vertical-align: bottom;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
 
 #single-list tr td:last-child {

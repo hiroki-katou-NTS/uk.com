@@ -180,7 +180,7 @@ module nts.uk.at.view.kdl014.a {
 			self.lstDataBase([]);
             _.forEach(self.dataServer, function(item, index : any) {
                     if (self.display == false) {
-                        item.locationInfo = null;
+                        //item.locationInfo = null;
                     }
 					self.getLocationAdd(item).done(() => {
 						item.locationAdd = self.locationAdd;
@@ -204,7 +204,7 @@ module nts.uk.at.view.kdl014.a {
                 data: { method: 'searchByGeoLocation', x: x, y : y}
             }).done(function (data) {
                     if (data != null && !_.isNil(data.response.location) && data.response.location.length > 0) {
-						self.locationAdd = data.response.location[0].prefecture + " " + data.response.location[0].city + " " + data.response.location[0].town + " " + data.response.location[0].town; 
+						self.locationAdd = data.response.location[0].prefecture + " " + data.response.location[0].city + " " + data.response.location[0].town; 
                     }
 					
 					if (data == null || (data != null && _.isNil(data.response.location)) || (data != null && !_.isNil(data.response.location) && data.response.location.length == 0)) {
