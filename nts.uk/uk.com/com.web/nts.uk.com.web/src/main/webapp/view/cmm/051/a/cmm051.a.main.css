@@ -130,7 +130,7 @@
     display: flex;
 }
 .a_62{
-    margin-left: 36px;
+    margin-left: 30px;
     width: 95px;
 }
 .wkp_list{
@@ -147,4 +147,16 @@
 }
 .cmm_051{
     margin-left: 5px;
+}
+#a8_2{
+    margin-left: 16px;
+}
+#a3_2{
+    margin-left: 27px;
+}
+.history-button{
+    margin-bottom: 5px;
+}
+#wpcode{
+    width: 125px;
 }

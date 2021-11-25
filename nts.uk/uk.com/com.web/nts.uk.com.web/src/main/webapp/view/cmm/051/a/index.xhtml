@@ -121,7 +121,7 @@
                             <button tabindex="7" class=" a_62" id = "a6_2"
                                     data-bind="click: openDialogA62102, enable: isNewMode()">#{i18n.getText('CMM051_47')}</button>
                             <!--A6_3-->
-                            <label class="ntsControl limited-label wp-code code" data-bind="text:  workplaceCode(),required:true"> </label>
+                            <label class="ntsControl limited-label wp-code code" id="wpcode" data-bind="text:  workplaceCode(),required:true"> </label>
                             <!--A6_4-->
                             <label class="ntsControl limited-label wp-name name" data-bind="text:  workplaceName()"> </label>
                         </div>
@@ -132,7 +132,7 @@
                         <table class="table_content">
                             <colgroup>
                                 <col width="85px"/>
-                                <col width="270px"/>
+                                <col width="256px"/>
                                 <col width="*"/>
                             </colgroup>
 
@@ -151,7 +151,7 @@
 									optionsText: 'display',
 									multiple: false,
 									value: historyId,
-									rows: 4,
+									rows: 5,
 									required:true,
 									columns: [
 										{ key: 'display', length: 15 }
