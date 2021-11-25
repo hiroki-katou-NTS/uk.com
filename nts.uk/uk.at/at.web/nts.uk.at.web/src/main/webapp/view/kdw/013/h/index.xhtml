@@ -46,7 +46,7 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" class="proceed" data-bind="click: registration, enable: !block() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('KDW013_1')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: registration, enable: !disableRegistration() &amp;&amp; $root.errors.isEmpty ">#{i18n.getText('KDW013_1')}</button>
 				<button data-bind="click:closeDialog">#{i18n.getText('KDW013_37')}</button>
 			</div>
 			<div id="contents-area">
@@ -83,19 +83,21 @@
 						</td>
 						<td>	
 							<div data-bind="with: itemId31_34">
-								<com:ko-if bind="start.use">
-									<input data-bind="ntsTimeEditor: { 
-										name: '#[KDW013_84]', 
-										constraint: 'AttendanceClock', 
-										value: start.value, 
-										inputFormat: 'time', 
-										mode: 'time', 
-										enable: start.enable,
-										option: {width: '50px'}},
-										attr: { id: start.itemId}
-										" />
-								</com:ko-if>
-								<span data-bind="if: start.use &amp;&amp; end.use">#{i18n.getText('KDW013_30')}</span>																	
+								<div class="startTime">
+									<com:ko-if bind="start.use">
+										<input data-bind="ntsTimeEditor: { 
+											name: '#[KDW013_84]', 
+											constraint: 'AttendanceClock', 
+											value: start.value, 
+											inputFormat: 'time', 
+											mode: 'time', 
+											enable: start.enable,
+											option: {width: '50px'}},
+											attr: { id: start.itemId}
+											" />
+									</com:ko-if>
+								</div>
+								<span data-bind="if: start.use || end.use">#{i18n.getText('KDW013_30')}</span>																	
 								<com:ko-if bind="end.use">
 									<input data-bind="ntsTimeEditor: { 
 										name: '#[KDW013_85]', 
@@ -123,19 +125,21 @@
 												<tr data-bind="if: start.use || end.use">
 													<td>
 														<div>
-															<com:ko-if bind="start.use">
-																<input data-bind="ntsTimeEditor: { 
-																	name: start.name, 
-																	constraint: 'AttendanceClock', 
-																	value: start.value, 
-																	inputFormat: 'time', 
-																	mode: 'time', 
-																	enable: start.enable,
-																	option: {width: '50px'}},
-																	attr: { id: start.itemId}
-																	" />
-															</com:ko-if>
-															<span data-bind="if: start.use &amp;&amp; end.use">#{i18n.getText('KDW013_30')}</span>																			
+															<div class="startTime">
+																<com:ko-if bind="start.use">
+																	<input data-bind="ntsTimeEditor: { 
+																		name: start.name, 
+																		constraint: 'AttendanceClock', 
+																		value: start.value, 
+																		inputFormat: 'time', 
+																		mode: 'time', 
+																		enable: start.enable,
+																		option: {width: '50px'}},
+																		attr: { id: start.itemId}
+																		" />
+																</com:ko-if>
+															</div>
+															<span data-bind="if: start.use || end.use">#{i18n.getText('KDW013_30')}</span>																			
 															<com:ko-if bind="end.use">
 																<input data-bind="ntsTimeEditor: { 
 																	name: end.name, 
@@ -262,7 +266,7 @@
                                 </td>
                                 <td>
 									<div class="ntsControl fix">
-										<div data-bind="ntsCheckBox: { checked: value , text: 'する'}, attr: { id: itemId}"></div>
+										<div data-bind="ntsCheckBox: { enable: enable, checked: value , text: 'する'}, attr: { id: itemId}"></div>
 									</div>
 								</td>
                             </tr>
