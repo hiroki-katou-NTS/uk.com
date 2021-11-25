@@ -244,6 +244,7 @@ public class CountNumberOfPeopleByEachWorkMethodServiceTest {
 		val workType_1 = Helper.createWorkType("wtp001");
 		val workType_2 = Helper.createWorkType("wtp003");
 		val workType_3 = Helper.createWorkType("wtp004");
+		val workType_4 = Helper.createWorkType("wtp005");
 		
 		val dailyWork1 = Helper.createIntegrationOfDaily("wtp001", "dummy");
 		val dailyWork2 = Helper.createIntegrationOfDaily("wtp002", "");//filter
@@ -251,13 +252,13 @@ public class CountNumberOfPeopleByEachWorkMethodServiceTest {
 		val dailyWork4 = Helper.createIntegrationOfDaily("wtp004", "dummy");
 		val dailyWork5 = Helper.createIntegrationOfDaily("wtp005", "dummy" );//duplicate
 		val dailyWork6 = Helper.createIntegrationOfDaily("wtp005", "dummy" );//duplicate
+		val dailyWork7 = Helper.createIntegrationOfDaily("wtp006", "dummy" );//master not existed
 		
+		val dailyWorks = Arrays.asList( dailyWork1, dailyWork2, dailyWork3, dailyWork4, dailyWork5, dailyWork6, dailyWork7 );
 		
-		val dailyWorks = Arrays.asList( dailyWork1, dailyWork2, dailyWork3, dailyWork4, dailyWork5, dailyWork6 );
+		val workTypes = Arrays.asList( workType_1, workType_2, workType_3, workType_4 );
 		
-		val workTypes = Arrays.asList( workType_1, workType_2, workType_3);
-		
-		new Expectations( workType_1, workType_2, workType_3 ) {
+		new Expectations( workType_1, workType_2, workType_3, workType_4 ) {
 			{
 				require.getWorkTypes( (List<WorkTypeCode>) any);
 				result = workTypes;
@@ -270,6 +271,9 @@ public class CountNumberOfPeopleByEachWorkMethodServiceTest {
 				
 				workType_3.isWorkingDay();
 				result = true;
+				
+				workType_4.isWorkingDay();
+				result = false;
 			}
 		};
 		
