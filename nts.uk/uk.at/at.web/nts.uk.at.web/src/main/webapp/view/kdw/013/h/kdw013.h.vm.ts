@@ -112,7 +112,7 @@ module nts.uk.at.view.kdw013.h {
 				});
 				
 				if(!enableItems){
-					self.disableRegistration(false);
+					self.disableRegistration(true);
 				}
 			}
 			
