@@ -758,14 +758,13 @@ module nts.uk.ui.at.kdw013.c {
 						workCodeFrameNo: workCodeFrameNo
 					}
 
-					block.invisible();
 		            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
 		            	vm.taskBlocks.update(taskBlock, employeeId, data, displayManHrRecordItems, vm.taskFrameSettings(), start);
 						setTimeout(() => {
 							vm.updatePopupSize();
 							custominePositionCombo();
 						}, 150);
-					}).always(() => block.clear());
+					});
 				}
 			});
 

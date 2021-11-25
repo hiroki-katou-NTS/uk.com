@@ -312,7 +312,6 @@ module nts.uk.ui.at.kdw013.b {
 							itemIds: _.filter(_.map(extendedProps.displayManHrRecordItems, i => i.itemId), t => t > 8),
 							workCodeFrameNo
 						}
-						block.grayout();
 			            ajax('at', API.START, param).done((data: StartWorkInputPanelDto) => {
 							_.forEach(taskBlock.taskDetails, taskDetail =>{
 								taskDetails.push(vm.setlableValueItems(taskDetail,data, extendedProps.displayManHrRecordItems));
@@ -324,7 +323,7 @@ module nts.uk.ui.at.kdw013.b {
 								// Init popup
         						vm.initPopup();
 							}, 150);
-						}).always(() => block.clear());
+						});
                     } else {
                         vm.dataSources(taskDetails);
 						// Init popup
