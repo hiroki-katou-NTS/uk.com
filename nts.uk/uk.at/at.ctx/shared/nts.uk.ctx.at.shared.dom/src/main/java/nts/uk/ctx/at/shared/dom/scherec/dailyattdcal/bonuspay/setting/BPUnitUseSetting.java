@@ -110,16 +110,15 @@ public class BPUnitUseSetting extends AggregateRoot {
 		//$職場ID一覧
 		List<String> wplIds = require.getWorkplaceIdAndUpper(companyId, baseDate, workplaceId.v());
 		
-		//$職場加給設定
-		Optional<WorkplaceBonusPaySetting> getWPBPSetting = require
-				.getListSetting(companyId, wplIds.stream().map(x -> new WorkplaceId(x)).collect(Collectors.toList()))
-				.stream().findFirst();
+		for (String wpl : wplIds) {
+			Optional<WorkplaceBonusPaySetting> wPBPSetting = require.getWPBPSetting(companyId, new WorkplaceId(wpl));
+			if (wPBPSetting.isPresent()) {
+				return getBonusPaySettingCommon(require, wPBPSetting.get().getBonusPaySettingCode());
+			}
+		}
 
-		if(!getWPBPSetting.isPresent())
-			return Optional.empty();
+	   return Optional.empty();
 		
-		// ドメインモデル「加給設定」を取得する
-		return getBonusPaySettingCommon(require, getWPBPSetting.get().getBonusPaySettingCode());
 	}
 	
 	// [prv-5] 会社から加給設定を取得する
@@ -144,7 +143,7 @@ public class BPUnitUseSetting extends AggregateRoot {
 		List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
 		
 		// WPBonusPaySettingRepository
-		List<WorkplaceBonusPaySetting> getListSetting(String companyId, List<WorkplaceId> lstWorkplace);
+		Optional<WorkplaceBonusPaySetting> getWPBPSetting(String companyId, WorkplaceId wpl);
 
 		// CPBonusPaySettingRepository
 		Optional<CompanyBonusPaySetting> getSettingCom(String companyId);

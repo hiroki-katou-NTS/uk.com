@@ -203,10 +203,10 @@ public class CorrectionAfterChangeWorkInfo {
 			}
 
 			@Override
-			public List<WorkplaceBonusPaySetting> getListSetting(String companyId, List<WorkplaceId> lstWorkplace) {
-				return wpBonusPaySettingRepository.getListSetting(companyId, lstWorkplace);
+			public Optional<WorkplaceBonusPaySetting> getWPBPSetting(String companyId, WorkplaceId wpl) {
+				return wpBonusPaySettingRepository.getWPBPSetting(companyId, wpl);
 			}
-			
+
 		};
 	}
 
