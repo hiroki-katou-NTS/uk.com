@@ -41,7 +41,7 @@ module nts.uk.ui.at.kdw013.e {
         taskLst4: KnockoutObservableArray<TaskCbb> = ko.observableArray([]);
         taskLst5: KnockoutObservableArray<TaskCbb> = ko.observableArray([]);
 
-        selectedTaskCD1: KnockoutObservable<string> = ko.observable('');
+        selectedTaskCD1: KnockoutObservable<string> = ko.observable();
         selectedTaskCD2: KnockoutObservable<string> = ko.observable();
         selectedTaskCD3: KnockoutObservable<string> = ko.observable();
         selectedTaskCD4: KnockoutObservable<string> = ko.observable();
@@ -245,23 +245,22 @@ module nts.uk.ui.at.kdw013.e {
             };
 
 			vm.$blockui('show');
-            vm.$validate('.nts-input').then((valid: boolean) => {
-				if (valid && !nts.uk.ui.errors.hasError()) {
-                    vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param)
-                    .done(() => {
-                        vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
-							vm.close()
-                        }); 
-                    }).fail((error: any) => {
-                        vm.$dialog.error(error);
-                    }).always(() => {
-                        vm.$blockui("hide");
-                    });
+            $('.ntsControl').trigger('validate');
+			if (!nts.uk.ui.errors.hasError()) {
+                vm.$ajax('at', '/screen/at/kdw013/e/update_timezone', param)
+                .done(() => {
+                    vm.$dialog.info({ messageId: 'Msg_15' }).then(()=>{
+						vm.close()
+                    }); 
+                }).fail((error: any) => {
+                    vm.$dialog.error(error);
+                }).always(() => {
+                    vm.$blockui("hide");
+                });
 
-                } else {
-                    vm.$blockui("clear");
-                }
-            });
+            } else {
+                vm.$blockui("clear");
+            }
         }
         
          // ダイアログを閉じる
