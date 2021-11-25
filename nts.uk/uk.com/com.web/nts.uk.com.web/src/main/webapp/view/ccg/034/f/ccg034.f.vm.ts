@@ -108,6 +108,7 @@ module nts.uk.com.view.ccg034.f {
       });
 
       vm.imageType.subscribe(value => {
+        $("#F9_10").ntsPopup("hide");
         if (value === 1 && !nts.uk.text.isNullOrEmpty(vm.fileId())) {
           vm.$ajax("/shr/infra/file/storage/isexist/" + vm.fileId()).then((isExist: boolean) => {
             if (isExist) {
@@ -260,14 +261,20 @@ module nts.uk.com.view.ccg034.f {
           vm.partData.textColor = vm.textColorValue();
           vm.partData.isFixed = vm.imageType() === -1 ? null : vm.imageType();
           // ImageType === 0
-          vm.partData.fileName = vm.imageSrc();
-          image.src = vm.imageSrc();
-          // ImageType === 1
-          vm.partData.fileId = vm.fileId();
-          image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : null;
-          vm.partData.originalFileId = vm.originalFileId;
+          if (vm.imageType() === 0) {
+            vm.partData.fileName = vm.imageSrc();
+            image.src = vm.imageSrc();
+            if (vm.fileId() !== vm.partData.originalFileId && !nts.uk.text.isNullOrEmpty(vm.fileId())) {
+              (nts.uk.request as any).file.remove(vm.fileId());
+            }
+          } else if (vm.imageType() === 1) {
+            // ImageType === 1
+            vm.partData.fileId = vm.fileId();
+            image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : null;
+            vm.partData.originalFileId = vm.originalFileId;
+          }
           
-          vm.partData.ratio = image.naturalHeight / image.naturalWidth;
+          vm.partData.ratio = (image.naturalHeight / image.naturalWidth) || 0;
           // Return data
           vm.$window.close(vm.partData);
         }
