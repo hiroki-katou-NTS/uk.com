@@ -9,14 +9,14 @@ public class TenantLocatorService {
 	private static final String SESSION_DATASOURCE = "nts.uk.shr.infra.data,TenantLocatorService,datasource";
 	
 	public static void connect(String tenantCode) {
-		val datasource = TenantLocatorClient.getDataSource(tenantCode);
-		if(datasource.isPresent()) {
-			SessionContextProvider.get().put(SESSION_DATASOURCE, datasource.get().getDatasourceName());
-		}
-		else {
-			SessionContextProvider.get().put(SESSION_DATASOURCE, "");
+
+		val datasourceOpt = TenantLocatorClient.getDataSource(tenantCode);
+		if (!datasourceOpt.isPresent()) {
+			disconnect();
 			throw new RuntimeException("テナントのデータソースが見つかりません：" + tenantCode);
 		}
+
+		SessionContextProvider.get().put(SESSION_DATASOURCE, datasourceOpt.get().getDatasourceName());
 	}
 	
 	public static void disconnect() {
