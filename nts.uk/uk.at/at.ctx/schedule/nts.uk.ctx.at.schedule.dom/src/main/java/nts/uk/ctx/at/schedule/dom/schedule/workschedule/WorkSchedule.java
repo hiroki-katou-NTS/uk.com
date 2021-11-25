@@ -115,6 +115,9 @@ public class WorkSchedule implements DomainAggregate {
 			optTimeLeaving = Optional.of(
 					TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation) );
 		}
+		
+		val isBackStraight = workInformation.isBackStraight(require) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
+		val isGoStraight = workInformation.isGoStraight(require) ? NotUseAttribute.Use : NotUseAttribute.Not_use;
 			
 		return new WorkSchedule(
 				employeeId, 
@@ -124,8 +127,8 @@ public class WorkSchedule implements DomainAggregate {
 						require, 
 						workInformation, 
 						CalculationState.No_Calculated, 
-						NotUseAttribute.Not_use, 
-						NotUseAttribute.Not_use, 
+						isBackStraight, 
+						isGoStraight, 
 						DayOfWeek.convertFromCommonClass(date.dayOfWeekEnum())), 
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
 				new BreakTimeOfDailyAttd(),

@@ -510,25 +510,30 @@ module nts.uk.at.view.kdl045.a {
                     //A5_6,A5_7,A5_10,A5_11 = 0
 //                    self.timeRange1Value({ startTime: null, endTime: null });
 //                    self.timeRange2Value({ startTime: null, endTime: null });
-                    let timeRange1ScreenModel = $("#a5-5").data("screenModel");
-                    if (timeRange1ScreenModel) {
-                        timeRange1ScreenModel.startTime(null);
-                        timeRange1ScreenModel.endTime(null);
-                    }
+                    setTimeout(() => {
+                        let timeRange1ScreenModel = $("#a5-5").data("screenModel");
+                        if (timeRange1ScreenModel) {
+                            timeRange1ScreenModel.startTime(null);
+                            timeRange1ScreenModel.endTime(null);
+                        }
 
-                    let timeRange2ScreenModel = $("#a5-9").data("screenModel");
-                    if (timeRange2ScreenModel) {
-                        timeRange2ScreenModel.startTime(null);
-                        timeRange2ScreenModel.endTime(null);
-                    }
-                }else{
-					self.disableA10(true);
-                    if(self.isEnableA5_9()  == false){
                         let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                         if (timeRange2ScreenModel) {
                             timeRange2ScreenModel.startTime(null);
                             timeRange2ScreenModel.endTime(null);
                         }
+                    }, 200);
+                    
+                }else{
+					self.disableA10(true);
+                    if(self.isEnableA5_9()  == false){
+                        setTimeout(() => {
+                            let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+                            if (timeRange2ScreenModel) {
+                                timeRange2ScreenModel.startTime(null);
+                                timeRange2ScreenModel.endTime(null);
+                            }
+                        }, 200);
                     }
                 }
             }
@@ -650,6 +655,12 @@ module nts.uk.at.view.kdl045.a {
                     workTimeCodes: [],
                     selectedWorkTimeCode: self.workTime()
                 }, true);
+
+                let param = {
+					disAbleWkTypeCodeLst : self.employee().disAbleWkTypeCodeLst,
+                    disWkTypeCon: self.employee().disWkTypeCon
+				}
+                setShared('paramKsu003Kdl003', param);
                 block.grayout();
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
@@ -669,8 +680,8 @@ module nts.uk.at.view.kdl045.a {
 
                         let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                         if (timeRange2ScreenModel) {
-                            timeRange2ScreenModel.startTime(childData.second.start != null ? childData.second.start : 0);
-                            timeRange2ScreenModel.endTime(childData.second.end != null ? childData.second.end : 0);
+                            timeRange2ScreenModel.startTime(childData.second.start != null ? childData.second.start : "");
+                            timeRange2ScreenModel.endTime(childData.second.end != null ? childData.second.end : "");
                         }
                         self.timeRange1Value({ startTime: childData.first.start != null ? childData.first.start : null, endTime: childData.first.end != null ? childData.first.end : null }); 
                         self.timeRange2Value({ startTime: childData.second.start != null ? childData.second.start : null, endTime: childData.second.end != null ? childData.second.end : null });

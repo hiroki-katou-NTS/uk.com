@@ -36,10 +36,10 @@ public class ScreenQuery28DayPeriod {
 	
 	/**
 	 * @param ymd 基準日: 年月日
-	 * @param toAdvancePeriod 期間を進めるか: boolean
+	 * @param isNextMonth 期間を進めるか: boolean
 	 * @return DatePeriodDto
 	 */
-	public DatePeriodDto get(GeneralDate ymd, boolean toAdvancePeriod) {
+	public DatePeriodDto get(GeneralDate ymd, boolean isNextMonth) {
 		String companyId = AppContexts.user().companyId();
 		// 1: get
 		Optional<TreatmentHoliday> treatmentHolidayOp = treatmentHolidayRepository.get(companyId);
@@ -72,13 +72,13 @@ public class ScreenQuery28DayPeriod {
 			
 		} else if (holidayUnit.value == HolidayCheckUnit.ONE_WEEK.value) {
 			
-			if (toAdvancePeriod) {
+			if (isNextMonth) {
 				
-				return DatePeriodDto.from(period.newSpan(period.start().addDays(21), period.end().addDays(21)));
+				return DatePeriodDto.from(period.newSpan(period.start(), period.end().addDays(21)));
 				
 			} else {
 				
-				return DatePeriodDto.from(period.newSpan(period.start().addDays(-21), period.end().addDays(-21)));
+				return DatePeriodDto.from(period.newSpan(period.start().addDays(-21), period.end()));
 			}
 		}
 		

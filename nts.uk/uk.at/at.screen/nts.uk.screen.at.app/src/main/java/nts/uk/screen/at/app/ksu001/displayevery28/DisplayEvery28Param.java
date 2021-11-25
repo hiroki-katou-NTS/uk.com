@@ -39,5 +39,5 @@ public class DisplayEvery28Param {
 	
 	public int mode;
 	
-	public boolean toAdvancePeriod; // 期間を進めるか
+	public boolean isNextMonth; // 期間を進めるか
 }

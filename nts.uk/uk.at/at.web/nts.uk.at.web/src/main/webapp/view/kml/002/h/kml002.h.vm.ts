@@ -86,782 +86,185 @@ module nts.uk.at.view.kml002.k {
             }); 
 
             self.itemHandling.subscribe((val) => {     
-                self.clearError();                      
+                self.clearError();     
+                self.enableRegisterBtn(true);                   
                 val.backgroundColor1.subscribe((color) => {
-                    $('#colorpicker1').ntsError('clear');
-                    self.enableRegisterBtn(true); 
-                    if (!color || color =='') {
-                        $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});    
-                        self.enableRegisterBtn(false);
-                    }
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true);   
+                    // $('#colorpicker1').ntsError('clear');
+                    // self.enableRegisterBtn(true); 
+                    // if (!color || color =='') {
+                    //     $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});    
+                    //     self.enableRegisterBtn(false);
+                    // }
                 }) ;
-
-                val.backgroundColor2.subscribe((color) => {
-                    $('#colorpicker2').ntsError('clear');
-                    self.enableRegisterBtn(true); 
-                    if (!color || color =='') {
-                        $('#colorpicker2').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_160")]}); 
-                        self.enableRegisterBtn(false);
-                    }
+                 val.backgroundColor2.subscribe((color) => {
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true);                    
                 });
 
                 val.backgroundColor3.subscribe((color) => {
-                    $('#colorpicker3').ntsError('clear');
-                    self.enableRegisterBtn(true); 
-                    if (!color || color =='') {
-                        $('#colorpicker3').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_161")]}); 
-                        self.enableRegisterBtn(false);
-                    }
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true);                    
                 });
                 val.backgroundColor4.subscribe((color) => {
-                    $('#colorpicker4').ntsError('clear');
-                    self.enableRegisterBtn(true); 
-                    if (!color || color =='') {
-                        $('#colorpicker4').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_162")]}); 
-                        self.enableRegisterBtn(false);
-                    }
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true);                    
                 });
                 val.backgroundColor5.subscribe((color) => {
-                    $('#colorpicker5').ntsError('clear');
-                    self.enableRegisterBtn(true); 
-                    if (!color || color =='') {
-                        $('#colorpicker5').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_163")]}); 
-                        self.enableRegisterBtn(false);
-                    }
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true);                   
                 });     
+
             });   
-            
+
             self.itemMonthly.subscribe((val) => {
-                val.amount1.subscribe((amount) => {                    
-                    self.clearErrorMonth();  
-                    if(amount == '' ||  parseInt(amount) == 0) {
-                        $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]});
-                        self.enableRegisterBtn(false);
-                    } else if(!self.validateAll() && amount != '' &&  parseInt(amount) > 0) {
-                        self.enableRegisterBtn(true);
-                    }
-                    
-                    if(val.amount1() == '' && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]});
-                        self.enableRegisterBtn(false);
-                    }   
-                    if(val.amount2()!='' && parseInt(val.amount2()) <= parseInt(amount)){
-                        $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                        self.enableRegisterBtn(false);
-                    }
-
-                    if((val.amount2()=='' && (val.amount3() != '' || val.amount4() != '' || val.amount5() != ''))){
-                        $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                        self.enableRegisterBtn(false);
-                    }
-
-                    if(parseInt(val.amount3()) <= parseInt(val.amount2())){
-                        $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]});
-                        self.enableRegisterBtn(false);
-                    }
-                    if(parseInt(val.amount4()) <= parseInt(val.amount3())){
-                        $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                        $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                        self.enableRegisterBtn(false);
-                    }
+                val.amount1.subscribe((amount) => {
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
+
                 val.amount2.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if(val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]});
-                        self.enableRegisterBtn(false);
-                    }
-                    if(amount != ''){
-                        if(parseInt(val.amount1()) >= parseInt(amount)){                        
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});   
-                            self.enableRegisterBtn(false);                                          
-                        }
-                        if((val.amount3()=='' && (val.amount4() != '' || val.amount5() != '')) || (parseInt(val.amount3()) <= parseInt(amount))){
-                            $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]});
-                            self.enableRegisterBtn(false);
-                        } 
-                        if(parseInt(val.amount4()) <= parseInt(val.amount3())){
-                            $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    } else {
-                        if(val.amount3() != '' || val.amount4() != '' || val.amount5() != ''){
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});
-                            self.enableRegisterBtn(false);
-                        } 
-                    }   
-                    self.validateAll();                 
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
+
                 val.amount3.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(amount != ''){
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount2()) >= parseInt(amount)) {
-                            $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if((val.amount4()=='' &&  val.amount5() != '') || (parseInt(val.amount4()) <= parseInt(val.amount3()))){
-                            $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtn(false);
-                        }                     
-                        if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    } else {
-                        if(val.amount4() != '' || val.amount5() != ''){
-                            $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtn(false);
-                        } 
-                        if (parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    }        
-                    self.validateAll();            
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
+
                 val.amount4.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(amount != ''){
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount3()) >= parseInt(amount)) {
-                            $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    } else {
-                        if(val.amount5() != ''){
-                            $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if ( parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    }    
-                    self.validateAll();               
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
 
                 val.amount5.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                        $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                        $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (val.amount4() == '' || parseInt(val.amount3()) >= parseInt(val.amount4())) {
-                        $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (parseInt(val.amount4()) >= parseInt(amount)) {
-                        $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (amount == '') {
-                        $('#month4').ntsError('clear');
-                        if(val.amount3() == '') {
-                            $('#month3').ntsError('clear');
-                        }
-                       
-                        if(val.amount2() == '') {
-                            $('#month2').ntsError('clear');
-                        }
-
-                        if(val.amount1() == '') {
-                            $('#month1').ntsError('clear');
-                        }    
-                    }
-                    self.validateAll();
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
             });
 
             self.itemAnnual.subscribe((val) => {
                 val.amount1.subscribe((amount) => {
+                    self.clearError();
                     self.clearErrorAnnual();
-                    if(amount == '' ||  parseInt(amount) == 0){
-                        $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtn(false);
-                    } else if(!self.validateAll() && amount != '' &&  parseInt(amount) > 0){
-                        self.enableRegisterBtn(true);
-                    }
-                    
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (val.amount2() != '' && parseInt(val.amount2()) <= parseInt(amount)) {
-                        $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (val.amount2() == '' && (val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(parseInt(val.amount3()) <= parseInt(val.amount2())){
-                        $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]});
-                        self.enableRegisterBtn(false);
-                    }
-                    if(parseInt(val.amount4()) <= parseInt(val.amount3())){
-                        $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                        $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                        self.enableRegisterBtn(false);
-                    }
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
 
                 val.amount2.subscribe((amount) => {
+                    self.clearError();
                     self.clearErrorAnnual();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(amount != ''){
-                        if(parseInt(val.amount1()) >= parseInt(amount)){                       
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]});
-                            self.enableRegisterBtn(false);
-                        }
-                        if((val.amount3()=='' && (val.amount4() != '' || val.amount5() != '')) || parseInt(val.amount3()) <= parseInt(val.amount2())){
-                            $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]});
-                            self.enableRegisterBtn(false);
-                        } 
-                        if (parseInt(val.amount4()) <= parseInt(val.amount3())){
-                            $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    } else {
-                        if(val.amount3() != '' || val.amount4() != '' || val.amount5() != ''){
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]});
-                            self.enableRegisterBtn(false);
-                        } 
-                    }
-                    self.validateAll();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
 
                 val.amount3.subscribe((amount) => {
+                    self.clearError();
                     self.clearErrorAnnual();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(amount != '') {
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount2()) >= parseInt(amount)) {
-                            $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if ((val.amount4() == '' && val.amount5() != '') || parseInt(val.amount4()) <= parseInt(val.amount3())) {
-                            $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    } else {
-                        if(val.amount4() != '' || val.amount5() != ''){
-                            $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtn(false);
-                        } 
-                        if (parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    }    
-                    self.validateAll();                
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
-    
-                val.amount4.subscribe((amount) => {
-                    self.clearErrorAnnual();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(amount != '') {
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount3()) >= parseInt(amount)) {
-                            $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    } else {
-                        if(val.amount5() != ''){
-                            $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                            self.enableRegisterBtn(false);
-                        } 
-                        if (parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtn(false);
-                        }
-                        if (parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtn(false);
-                        }
-                    }  
-                    self.validateAll();                  
-                });
-    
-                val.amount5.subscribe((amount) => {
-                    self.clearErrorAnnual();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtn(false);
-                    }                    
-                    if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                        $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                        $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (val.amount4() == '' || parseInt(val.amount3()) >= parseInt(val.amount4())) {
-                        $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if (parseInt(val.amount4()) >= parseInt(amount)) {
-                        $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                        self.enableRegisterBtn(false);
-                    }
-                    if(amount == ''){
-                        $('#year4').ntsError('clear');
-                        if(val.amount3() == '') {
-                            $('#year3').ntsError('clear');
-                        }
-                       
-                        if(val.amount2() == '') {
-                            $('#year2').ntsError('clear');
-                        }
 
-                        if(val.amount1() == '') {
-                            $('#year2').ntsError('clear');
-                        }    
-                        self.validateAll();                      
-                    }
+                val.amount4.subscribe((amount) => {
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
                 });
+
+                val.amount5.subscribe((amount) => {
+                    self.clearError();
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtn(true); 
+                });                
             });
-            
-            //screen K
-            self.itemMonthlyScreenK.subscribe((val) => {
-                val.amount1.subscribe((amount) => {                    
-                    self.clearErrorMonth();
-                    if(amount == '' ||  parseInt(amount) == 0){
-                        $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]}); 
-                        self.enableRegisterBtnScreenK(false);
-                    } else if(!self.validateAllScreenK() && amount != '' &&  parseInt(amount) > 0){
-                        self.enableRegisterBtnScreenK(true);
-                    }
-                    if(val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]}); 
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(val.amount2() != '' && parseInt(val.amount2()) <= parseInt(amount)){
-                        $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(val.amount2() == '' && (val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]}); 
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(parseInt(val.amount3()) <= parseInt(val.amount2())){
-                        $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]});
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(parseInt(val.amount4()) <= parseInt(val.amount3())){
-                        $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                        $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                });
-                val.amount2.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if(val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]}); 
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(amount != ''){
-                        if(parseInt(val.amount1()) >= parseInt(amount)){                      
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if((val.amount3() == '' && (val.amount4() != '' || val.amount5() != '')) || (parseInt(val.amount3()) <= parseInt(amount))){
-                            $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")]}); 
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if(parseInt(val.amount4()) <= parseInt(val.amount3())){
-                            $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    }  else {
-                        if(val.amount3() != '' || val.amount4() != '' || val.amount5() != ''){
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")]});
-                            self.enableRegisterBtnScreenK(false);
-                        } 
-                    }
-                    self.validateAllScreenK();
-                });
-                val.amount3.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }                    
-                    if(amount != ''){
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount2()) >= parseInt(amount)) {
-                            $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if ((val.amount4() == '' && val.amount5() != '') || (parseInt(val.amount4()) <= parseInt(val.amount3()))) {
-                            $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    } else {
-                        if(val.amount4() != '' || val.amount5() != ''){
-                            $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtnScreenK(false);
-                        } 
-                        if (parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    }  
-                    self.validateAllScreenK();                  
-                });
-                val.amount4.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(amount != ''){
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }                    
-                        if (parseInt(val.amount3()) >= parseInt(amount)) {
-                            $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    } else {
-                        if(val.amount5() != ''){
-                            $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }   
-                    }      
-                    self.validateAllScreenK();              
-                });
-                val.amount5.subscribe((amount) => {
-                    self.clearErrorMonth();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                        $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                        $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (val.amount4() == '' || parseInt(val.amount3()) >= parseInt(val.amount4())) {
-                        $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (parseInt(val.amount4()) >= parseInt(amount)) {
-                        $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(amount == ''){
-                        $('#month4screenk').ntsError('clear');
-                       
-                        if(val.amount3() == '') {
-                            $('#month3screenk').ntsError('clear');
-                        }
-                       
-                        if(val.amount2() == '') {
-                            $('#month2screenk').ntsError('clear');
-                        }
 
-                        if(val.amount1() == '') {
-                            $('#month1screenk').ntsError('clear');
-                        }    
-                    }
-                    self.validateAllScreenK();
+            self.itemMonthlyScreenK.subscribe((val) => {
+                val.amount1.subscribe((amount) => {
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
+                });
+
+                val.amount2.subscribe((amount) => {
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
+                });
+
+                val.amount3.subscribe((amount) => {
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
+                });
+
+                val.amount4.subscribe((amount) => {
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
+                });
+
+                val.amount5.subscribe((amount) => {
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
                 });
             });
 
             self.itemAnnualScreenK.subscribe((val) => {
                 val.amount1.subscribe((amount) => {
                     self.clearErrorAnnual();
-                    if(amount == '' || parseInt(amount) == 0){
-                        $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] }); 
-                        self.enableRegisterBtnScreenK(false);
-                    } else if(!self.validateAllScreenK() && amount != '' && parseInt(amount) > 0){
-                        self.enableRegisterBtnScreenK(true);
-                    }
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(val.amount2() != '' && parseInt(val.amount2()) <= parseInt(amount)){
-                        $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]});  
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(val.amount2() == '' && (val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]});  
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(parseInt(val.amount3()) <= parseInt(val.amount2())){
-                        $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]});   
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(parseInt(val.amount4()) <= parseInt(val.amount3())){
-                        $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]});
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(parseInt(val.amount5()) <= parseInt(val.amount4())){
-                        $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
                 });
 
                 val.amount2.subscribe((amount) => {
-                    self.clearErrorAnnual(); 
-                    if(val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')){
-                        $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")]}); 
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(amount != ''){
-                        if(parseInt(val.amount1()) >= parseInt(amount)){                       
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]});
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if((val.amount3() == '' && (val.amount4() != '' || val.amount5() != '')) || parseInt(val.amount3()) <= parseInt(val.amount2())){
-                            $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")]});   
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount4()) <= parseInt(val.amount3())){
-                            $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]});
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    } else {
-                        if(val.amount3() != '' || val.amount4() != '' || val.amount5() != ''){
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")]});
-                            self.enableRegisterBtnScreenK(false);
-                        } 
-                    }    
-                    self.validateAllScreenK();                
+                    self.clearErrorAnnual();
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
                 });
 
                 val.amount3.subscribe((amount) => {
                     self.clearErrorAnnual();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(amount != '') {
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount2()) >= parseInt(amount)) {
-                            $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if((val.amount4() == '' && val.amount5() != '') || parseInt(val.amount4()) < parseInt(val.amount3())){
-                            $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")]});   
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    } else {
-                        if(val.amount4() != '' || val.amount5() != ''){
-                            $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtnScreenK(false);
-                        } 
-                        if(parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    }      
-                    self.validateAllScreenK();              
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
                 });
-    
+
                 val.amount4.subscribe((amount) => {
                     self.clearErrorAnnual();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if(amount != '') {
-                        if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount3()) >= parseInt(amount)) {
-                            $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount5()) <= parseInt(val.amount4())){
-                            $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    } else {
-                        if(val.amount5() != ''){
-                            $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                            self.enableRegisterBtnScreenK(false);
-                        } 
-                        if (parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                            $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                        if (parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                            $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                            self.enableRegisterBtnScreenK(false);
-                        }
-                    }  
-                    self.validateAllScreenK();                  
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
                 });
-    
+
                 val.amount5.subscribe((amount) => {
                     self.clearErrorAnnual();
-                    if (val.amount1() == ''  && (val.amount2() != '' || val.amount3() != '' || val.amount4() != '' || val.amount5() != '')) {
-                        $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (val.amount2() == '' || parseInt(val.amount1()) >= parseInt(val.amount2())) {
-                        $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (val.amount3() == '' || parseInt(val.amount2()) >= parseInt(val.amount3())) {
-                        $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (val.amount4() == '' || parseInt(val.amount3()) >= parseInt(val.amount4())) {
-                        $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (parseInt(val.amount4()) >= parseInt(amount)) {
-                        $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
-                        self.enableRegisterBtnScreenK(false);
-                    }
-                    if (amount == '') {
-                        $('#year4screenk').ntsEditor('clear');
-
-                        if(val.amount3() == '') {
-                            $('#year3screenk').ntsError('clear');
-                        }
-                       
-                        if(val.amount2() == '') {
-                            $('#year2screenk').ntsError('clear');
-                        }
-
-                        if(val.amount1() == '') {
-                            $('#year1screenk').ntsError('clear');
-                        }    
-                    }
-                    self.validateAllScreenK();
-                });
-            });
+                    self.clearErrorMonth(); 
+                    self.enableRegisterBtnScreenK(true); 
+                });                
+            });        
         }
 
         mounted(){
@@ -911,16 +314,6 @@ module nts.uk.at.view.kml002.k {
                 self.itemHandling(new ItemHandling(dataHandling));
                 self.itemMonthly(new ItemMonthly(dataMonthly));
                 self.itemAnnual(new ItemAnnual(dataAnnual));
-                self.itemMonthly().amount1() == '' || self.itemAnnual().amount1() == '' ? self.enableRegisterBtn(false) : self.enableRegisterBtn(true);
-                if(self.itemMonthly().amount1() == '' || parseInt(self.itemMonthly().amount1()) == 0) {
-                    $('#month1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]});
-                    self.enableRegisterBtn(false);
-                }
-
-                if(self.itemAnnual().amount1() == '' || parseInt(self.itemAnnual().amount1()) == 0) {
-                    $('#year1').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                    self.enableRegisterBtn(false);
-                }
                 $('#month1').focus();
             }).always(() => {
                 self.$blockui("hide");
@@ -932,17 +325,19 @@ module nts.uk.at.view.kml002.k {
             let command: any = {}, handlings: Array<ItemHandlingModel> = [], months: Array<ItemAmountModel> = [],
                 years: Array<ItemAmountModel> = [];
 
-            if (self.validateAll()) {
-                return;
-            }
-                       
             handlings.push({ "frameNo": 1, "backgroundColor": self.itemHandling().backgroundColor1() });
             handlings.push({ "frameNo": 2, "backgroundColor": self.itemHandling().backgroundColor2() });
             handlings.push({ "frameNo": 3, "backgroundColor": self.itemHandling().backgroundColor3() });
             handlings.push({ "frameNo": 4, "backgroundColor": self.itemHandling().backgroundColor4() });
             handlings.push({ "frameNo": 5, "backgroundColor": self.itemHandling().backgroundColor5() });
 
-            if(self.itemMonthly().amount1()){
+            self.checkDataScreenH(handlings, self.itemMonthly(), self.itemAnnual());
+            if (self.validateAll()) {
+                return;
+            }          
+                
+           
+            if(!_.isNull(self.itemMonthly().amount1())){
                 months.push({ "frameNo": 1, "amount": parseInt(self.itemMonthly().amount1()) });
             }
             if(self.itemMonthly().amount2()){
@@ -958,7 +353,7 @@ module nts.uk.at.view.kml002.k {
                 months.push({ "frameNo": 5, "amount": parseInt(self.itemMonthly().amount5()) });
             }
 
-            if(self.itemAnnual().amount1()){
+            if(!_.isNull(self.itemAnnual().amount1())){
                 years.push({ "frameNo": 1, "amount": parseInt(self.itemAnnual().amount1()) });
             }
 
@@ -992,6 +387,69 @@ module nts.uk.at.view.kml002.k {
             }).always(() => {
                 self.$blockui("hide");
             });
+        }
+
+        checkDataScreenH(itemHandling: Array<ItemHandlingModel>, itemMonthly: ItemMonthly, itemAnnual: ItemAnnual): void {
+            let self = this;
+            if(_.isNull(itemHandling[0].backgroundColor) || itemHandling[0].backgroundColor == ''){
+                $('#colorpicker1').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_159")]});
+                self.enableRegisterBtn(false);            }
+            
+            if(_.isNull(itemHandling[1].backgroundColor) || itemHandling[1].backgroundColor == ''){
+                $('#colorpicker2').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_160")]}); 
+                self.enableRegisterBtn(false);
+            }
+            if(_.isNull(itemHandling[2].backgroundColor) || itemHandling[2].backgroundColor == ''){
+                $('#colorpicker3').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_161")]}); 
+                self.enableRegisterBtn(false);
+            }
+            if(_.isNull(itemHandling[3].backgroundColor) || itemHandling[3].backgroundColor == ''){
+                $('#colorpicker4').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_162")]}); 
+                self.enableRegisterBtn(false);
+            }
+            if(_.isNull(itemHandling[4].backgroundColor) ||itemHandling[4].backgroundColor == ''){
+                $('#colorpicker5').ntsError('set', { messageId: 'MsgB_2', messageParams: [getText("KML002_163")]}); 
+                self.enableRegisterBtn(false);
+            }
+            if( (itemMonthly.amount2() == '' && (itemMonthly.amount3() != '' || itemMonthly.amount4() != '' || itemMonthly.amount5() != '')) ||
+                                    (itemMonthly.amount2() != '' && parseInt(itemMonthly.amount1()) >= parseInt(itemMonthly.amount2()))) {
+                $('#month2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemMonthly.amount3() == '' && (itemMonthly.amount4() != '' || itemMonthly.amount5() != '')) ||
+                                    (itemMonthly.amount3() != '' && parseInt(itemMonthly.amount2()) >= parseInt(itemMonthly.amount3()))) {
+                $('#month3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemMonthly.amount4() == '' && itemMonthly.amount5() != '') ||
+                                    (itemMonthly.amount4() != '' && parseInt(itemMonthly.amount3()) >= parseInt(itemMonthly.amount4()))) {
+                $('#month4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
+                self.enableRegisterBtn(false);
+            }
+            if(itemMonthly.amount5() != '' && parseInt(itemMonthly.amount4()) >= parseInt(itemMonthly.amount5())) {
+                $('#month5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
+                self.enableRegisterBtn(false);
+            }
+
+            if( (itemAnnual.amount2() == '' && (itemAnnual.amount3() != '' || itemAnnual.amount4() != '' || itemAnnual.amount5() != '')) ||
+                            (itemAnnual.amount2() != '' && parseInt(itemAnnual.amount1()) >= parseInt(itemAnnual.amount2()))) {
+                $('#year2').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemAnnual.amount3() == '' && (itemAnnual.amount4() != '' || itemAnnual.amount5() != '')) ||
+                            (itemAnnual.amount3() != '' && parseInt(itemAnnual.amount2()) >= parseInt(itemAnnual.amount3()))) {
+                $('#year3').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemAnnual.amount4() == '' && itemAnnual.amount5() != '' ) ||
+                          (itemAnnual.amount4() != '' && parseInt(itemAnnual.amount3()) >= parseInt(itemAnnual.amount4()))) {
+                $('#year4').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
+                self.enableRegisterBtn(false);
+            }
+            if( itemAnnual.amount5() != '' && parseInt(itemAnnual.amount4()) >= parseInt(itemAnnual.amount5())) {
+                $('#year5').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
+                self.enableRegisterBtn(false);
+            }
         }
 
         loadDataScreenK(): void {
@@ -1082,38 +540,70 @@ module nts.uk.at.view.kml002.k {
                     self.enableDeleteBtn(false);
                 }
                 self.itemMonthlyScreenK(new ItemMonthly(dataMonthly));
-                self.itemAnnualScreenK(new ItemAnnual(dataAnnual));
-                if(self.itemMonthlyScreenK().amount1() == '' || parseInt(self.itemMonthlyScreenK().amount1()) == 0) {
-                    $('#month1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_139")]}); 
-                    self.enableRegisterBtnScreenK(false);
-                } else {
-                    self.clearErrorAnnual();
-                    self.clearErrorMonth();
-                    self.enableRegisterBtnScreenK(true);
-                }
-                if(self.itemAnnualScreenK().amount1() == '' || parseInt(self.itemAnnualScreenK().amount1()) == 0) {
-                    $('#year1screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_145")] });
-                    self.enableRegisterBtnScreenK(false);
-                } else {
-                    self.clearErrorAnnual();
-                    self.clearErrorMonth();
-                    self.enableRegisterBtnScreenK(true);
-                }
+                self.itemAnnualScreenK(new ItemAnnual(dataAnnual));               
                 $('#month1screenk').focus();
             }).always(() => {
                 self.$blockui("hide");
             });
         }
 
+        
+        checkDataScreenK(itemMonthly: ItemMonthly, itemAnnual: ItemAnnual): void {
+            let self = this;            
+            if( (itemMonthly.amount2() == '' && (itemMonthly.amount3() != '' || itemMonthly.amount4() != '' || itemMonthly.amount5() != '')) ||
+                                    (itemMonthly.amount2() != '' && parseInt(itemMonthly.amount1()) >= parseInt(itemMonthly.amount2()))) {
+                $('#month2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_140")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemMonthly.amount3() == '' && (itemMonthly.amount4() != '' || itemMonthly.amount5() != '')) ||
+                                    (itemMonthly.amount3() != '' && parseInt(itemMonthly.amount2()) >= parseInt(itemMonthly.amount3()))) {
+                $('#month3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_141")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemMonthly.amount4() == '' && itemMonthly.amount5() != '') ||
+                                    (itemMonthly.amount4() != '' && parseInt(itemMonthly.amount3()) >= parseInt(itemMonthly.amount4()))) {
+                $('#month4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_142")] });
+                self.enableRegisterBtn(false);
+            }
+            if(itemMonthly.amount5() != '' && parseInt(itemMonthly.amount4()) >= parseInt(itemMonthly.amount5())) {
+                $('#month5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_143")] });
+                self.enableRegisterBtn(false);
+            }
+
+            if( (itemAnnual.amount2() == '' && (itemAnnual.amount3() != '' || itemAnnual.amount4() != '' || itemAnnual.amount5() != '')) ||
+                            (itemAnnual.amount2() != '' && parseInt(itemAnnual.amount1()) >= parseInt(itemAnnual.amount2()))) {
+                $('#year2screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_146")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemAnnual.amount3() == '' && (itemAnnual.amount4() != '' || itemAnnual.amount5() != '')) ||
+                            (itemAnnual.amount3() != '' && parseInt(itemAnnual.amount2()) >= parseInt(itemAnnual.amount3()))) {
+                $('#year3screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_147")] });
+                self.enableRegisterBtn(false);
+            }
+            if( (itemAnnual.amount4() == '' && itemAnnual.amount5() != '' ) ||
+                          (itemAnnual.amount4() != '' && parseInt(itemAnnual.amount3()) >= parseInt(itemAnnual.amount4()))) {
+                $('#year4screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_148")] });
+                self.enableRegisterBtn(false);
+            }
+            if( itemAnnual.amount5() != '' && parseInt(itemAnnual.amount4()) >= parseInt(itemAnnual.amount5())) {
+                $('#year5screenk').ntsError('set', { messageId: 'MsgB_1', messageParams: [getText("KML002_153") + getText("KML002_149")] });
+                self.enableRegisterBtn(false);
+            }
+        }
+
+
         registerMoneyEmp(): void {
             const self = this;            
             let command:any = {}, months: Array<ItemAmountModel> = [], 
             years: Array<ItemAmountModel> = [];
+
+            self.checkDataScreenK(self.itemMonthlyScreenK() ,self.itemAnnualScreenK());
+
             if (self.validateAllScreenK()) {
                 return;
             }
 
-            if(self.itemMonthlyScreenK().amount1()){
+            if(!_.isNull(self.itemMonthlyScreenK().amount1())){
                 months.push({ "frameNo": 1, "amount": parseInt(self.itemMonthlyScreenK().amount1()) });
             }
             if(self.itemMonthlyScreenK().amount2()){
@@ -1129,7 +619,7 @@ module nts.uk.at.view.kml002.k {
                 months.push({ "frameNo": 5, "amount": parseInt(self.itemMonthlyScreenK().amount5()) });
             }
 
-            if(self.itemAnnualScreenK().amount1()){
+            if(!_.isNull(self.itemAnnualScreenK().amount1())){
                 years.push({ "frameNo": 1, "amount": parseInt(self.itemAnnualScreenK().amount1()) });
             }
 
@@ -1237,7 +727,10 @@ module nts.uk.at.view.kml002.k {
                 self.enableRegisterBtn(false);                 
                 return true;                
             }
-            self.enableRegisterBtn(true);
+            if(self.itemMonthly().amount1() !='' && parseInt(self.itemMonthly().amount1()) != 0
+                && self.itemAnnual().amount1() != '' && parseInt(self.itemAnnual().amount1())!= 0){
+                self.enableRegisterBtn(true);
+            }            
             return false;
         }
 
@@ -1258,10 +751,15 @@ module nts.uk.at.view.kml002.k {
                 self.enableRegisterBtnScreenK(false);
                 return true;
             }
-            self.enableRegisterBtnScreenK(true);
+
+            if(self.itemMonthlyScreenK().amount1() !='' && parseInt(self.itemMonthlyScreenK().amount1()) != 0
+                && self.itemAnnualScreenK().amount1() != '' && parseInt(self.itemAnnualScreenK().amount1())!= 0){
+                self.enableRegisterBtnScreenK(true);
+            }               
             return false;
         }
 
+        
         private clearError(): void {
             $('#colorpicker1').ntsError('clear');
             $('#colorpicker2').ntsError('clear');
@@ -1281,8 +779,7 @@ module nts.uk.at.view.kml002.k {
             $('#month3screenk').ntsError('clear');
             $('#month4screenk').ntsError('clear');
             $('#month5screenk').ntsError('clear');      
-            // this.enableRegisterBtn(true);      
-            // this.enableRegisterBtnScreenK(true);
+            
         }
 
         private clearErrorAnnual(): void {           
@@ -1296,8 +793,6 @@ module nts.uk.at.view.kml002.k {
             $('#year3screenk').ntsError('clear');
             $('#year4screenk').ntsError('clear');
             $('#year5screenk').ntsError('clear');
-            // this.enableRegisterBtn(true);
-            // this.enableRegisterBtnScreenK(true);
         }
     }
 

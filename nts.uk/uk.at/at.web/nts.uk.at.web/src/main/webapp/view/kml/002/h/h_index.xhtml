@@ -30,17 +30,17 @@
         <div style="margin: 15px 0px 0px 80px;">   
             <!--H4-->                                 
            <table class="border-all">
-               <colgroup>
+               <colgroup>                  
                     <col width="80px" />
-                    <col width="120px" />
+                    <col width="100px" />
                     <col width="25px" />
-                    <col width="120px" />
+                    <col width="100px" />
                     <col width="25px" />
-                    <col width="120px" />
+                    <col width="100px" />
                     <col width="25px" />
-                    <col width="120px" />
+                    <col width="100px" />
                     <col width="25px" />
-                    <col width="120px" />                          
+                    <col width="100px" />     
                </colgroup>
                <thead>
                    <tr data-bind="with: itemHandling">  
@@ -48,7 +48,7 @@
                         <th class="ui-widget-header" ></th>
                         <th class="ui-widget-header" >
                             <!--H4-1-1--> 
-                            <span style="margin: 0 10px;">#{i18n.getText('KML002_132')}</span>
+                            <span style="margin: 0 3px;">#{i18n.getText('KML002_132')}</span>
                             <!--H4-1-2--> 
                             <div  id="colorpicker1" tabindex="6" data-bind="ntsColorPicker: {value: backgroundColor1, enable: true, width: 50, name: '#[KML002_159]' }"/>
                         </th>
@@ -57,7 +57,7 @@
 
                         <th class="ui-widget-header" >
                             <!--H4-3-1--> 
-                            <span style="margin: 0 10px;">#{i18n.getText('KML002_134')}</span>
+                            <span style="margin: 0 3px;">#{i18n.getText('KML002_134')}</span>
                             <!--H4-3-2--> 
                             <div id="colorpicker2" tabindex="7" data-bind="ntsColorPicker: {value: backgroundColor2, enable: true, width: 50, name: '#[KML002_160]'}"/>
                         </th>
@@ -66,7 +66,7 @@
 
                         <th class="ui-widget-header" >
                             <!--H4-5-1--> 
-                            <span style="margin: 0 10px;">#{i18n.getText('KML002_135')}</span>
+                            <span style="margin: 0 3px;">#{i18n.getText('KML002_135')}</span>
                             <!--H4-5-2--> 
                             <div id="colorpicker3" tabindex="8" data-bind="ntsColorPicker: {value: backgroundColor3, enable: true, width: 50, name: '#[KML002_161]'}"/>
                         </th>
@@ -75,7 +75,7 @@
 
                         <th class="ui-widget-header" >
                             <!--H4-7-1--> 
-                            <span style="margin: 0 10px;">#{i18n.getText('KML002_136')}</span>
+                            <span style="margin: 0 3px;">#{i18n.getText('KML002_136')}</span>
                             <!--H4-7-2--> 
                             <div id="colorpicker4" tabindex="9" data-bind="ntsColorPicker: {value: backgroundColor4, enable: true, width: 50, name: '#[KML002_162]'}"/>
                         </th>
@@ -84,7 +84,7 @@
 
                         <th class="ui-widget-header" >
                             <!--H4-9-1--> 
-                            <span style="margin: 0 10px;">#{i18n.getText('KML002_137')}</span>
+                            <span style="margin: 0 3px;">#{i18n.getText('KML002_137')}</span>
                             <!--H4-9-2--> 
                             <div id="colorpicker5" tabindex="10" data-bind="ntsColorPicker: {value: backgroundColor5, enable: true, width: 50, name: '#[KML002_163]'}"/>
                         </th>                                
@@ -100,14 +100,14 @@
                     <td role="rowheader">
                         <input tabindex="11" id="month1" data-bind="ntsNumberEditor: {
                                             name: '#[KML002_139]',
-                                            value: amount1,
+                                            value: amount1,                                            
                                             constraint: 'EstimatePrice',
                                             option: new nts.uk.ui.option.CurrencyEditorOption({
                                                 numberGroup: true,
                                                 currencyposition:'right',
                                                 currencyformat: 'JPY'
                                             }),
-                                            required: false,
+                                            required: true,
                                             enable: true,
                                             readonly: false,
                                             immediate: false}" />
@@ -202,7 +202,7 @@
                                                             currencyposition:'right',
                                                             currencyformat: 'JPY'
                                                         }),
-                                                         required: false,
+                                                         required: true,
                                                          enable: true,
                                                          readonly: false,
                                                          immediate: false}" />

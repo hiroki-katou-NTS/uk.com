@@ -1,11 +1,11 @@
 #contents-area {
-	width: 1500px;
+	width: 1200px;
 	overflow: hidden;
 }
 #left-content {
-	padding: 28px 0px 0px 20px;
+	padding: 5px 0px 0px 0px;
 	float: left;
-	width: 350px;
+	width: 325px;
     height: 460px;
     
 	border-radius: 7px;
@@ -13,7 +13,7 @@
 	overflow: hidden;
 }
 #right-content {
-	margin-left: 15px;
+	margin-left: 0px;
 	float: left;
 	margin-top: 8px;
 	overflow: hidden;
@@ -34,7 +34,7 @@
 
 .line {
 	margin: 5px 0px;
-	width: 872px;	
+	width: 783px;	
 	border:none;
 	height: 1px;
 	background:#9A9A9A;
@@ -73,7 +73,7 @@
 }
 
 .nts-input {
-	width: 85px !important;
+	width: 70px !important;
 }
 
 .border-all td {

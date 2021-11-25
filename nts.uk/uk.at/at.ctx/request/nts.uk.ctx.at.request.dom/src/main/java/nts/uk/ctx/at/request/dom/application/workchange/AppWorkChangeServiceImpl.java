@@ -521,7 +521,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				appDispInfoStartupOutput, 
 				appWorkChange.getOpWorkTypeCD().isPresent() ? Arrays.asList(appWorkChange.getOpWorkTypeCD().get().v()) : new ArrayList<String>(), 
 				Optional.empty(), 
-				false);
+				false, 
+				appWorkChange.getOpWorkTypeCD().map(WorkTypeCode::v), 
+				appWorkChange.getOpWorkTimeCD().map(WorkTimeCode::v));
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;
