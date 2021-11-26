@@ -29,6 +29,7 @@ module nts.uk.at.view.kdp005.a {
 
 		const KDP005_SAVE_DATA = 'loginKDP005';
 		const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
+		const IS_RELOAD_VIEW = 'IS_RELOAD_VIEW_005';
 
 		const API = {
 			NOTICE: 'at/record/stamp/notice/getStampInputSetting',
@@ -145,7 +146,13 @@ module nts.uk.at.view.kdp005.a {
 											.then((isSuccess: boolean) => {
 												// Step4: CCG007_ログイン　A：契約認証を実行する
 												if (!isSuccess) {
-													self.openDialogCCG007A().then(() => dfd.resolve())
+													vm.$window.storage(IS_RELOAD_VIEW).then((data: boolean) => {
+														if (data) {
+															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.startScreen().then(() => dfd.resolve()));
+														} else {
+															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.openDialogCCG007A().then(() => dfd.resolve());
+														}
+													})
 												} else {
 													self.startScreen().then(() => dfd.resolve());
 												}
@@ -211,7 +218,7 @@ module nts.uk.at.view.kdp005.a {
 
 												if (__viewContext.user.companyId != loginInfo.companyId || __viewContext.user.employeeCode != loginInfo.employeeCode) {
 													self.login(self.loginInfo).done(() => {
-														location.reload();
+														self.reloadView()
 													}).fail(() => {
 														dfd.resolve();
 													});
@@ -266,6 +273,11 @@ module nts.uk.at.view.kdp005.a {
 				]
 				let item = _.find(notUseMessage, ['value', errorType]);
 				return item ? getMessage(item.text, [getText('KDP002_4')]) : '';
+			}
+
+			reloadView() {
+				const vm = new ko.ViewModel();
+				vm.$window.storage(IS_RELOAD_VIEW, true).then(() => location.reload())
 			}
 
 			doFirstLoad(): JQueryPromise<any> {
@@ -325,7 +337,7 @@ module nts.uk.at.view.kdp005.a {
 									self.openDialogK().done((result) => {
 										if (!result) {
 											if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-												location.reload();
+												self.reloadView()
 												dfd.resolve();
 											} else {
 												self.stampSetting({});
@@ -338,7 +350,7 @@ module nts.uk.at.view.kdp005.a {
 											self.saveSuccess = true;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
 												if (__viewContext.user.companyId != loginResult.em.companyId || __viewContext.user.employeeCode != loginResult.em.employeeCode) {
-													location.reload();
+													self.reloadView()
 													dfd.resolve();
 												} else {
 													dfd.resolve(self.loginInfo);
@@ -350,7 +362,7 @@ module nts.uk.at.view.kdp005.a {
 									self.loginInfo = loginResult.em;
 									self.loginInfo.selectedWP = self.workplace;
 									nts.uk.characteristics.save(KDP005_SAVE_DATA, self.loginInfo).done(() => {
-										location.reload();
+										self.reloadView()
 									});
 								}
 							});
@@ -509,17 +521,17 @@ module nts.uk.at.view.kdp005.a {
 											self.loginInfo = loginResult.em;
 											self.loginInfo.selectedWP = result;
 											characteristics.save("loginKDP005", self.loginInfo).done(() => {
-												location.reload();
+												self.reloadView()
 											});
 										} else {
-											location.reload();
+											self.reloadView()
 										}
 									});
 								} else {
 									self.loginInfo = loginResult.em;
 									self.loginInfo.selectedWP = self.workplace;
 									characteristics.save("loginKDP005", self.loginInfo).done(() => {
-										location.reload();
+										self.reloadView()
 									});
 								}
 							})
@@ -534,7 +546,7 @@ module nts.uk.at.view.kdp005.a {
 										if (self.listCompany.length == 0) {
 											self.errorMessage(getMessage("Msg_1527"));
 											self.isUsed(false);
-											location.reload();
+											self.reloadView()
 										}
 									});
 								}
@@ -854,7 +866,7 @@ module nts.uk.at.view.kdp005.a {
 										vm.$window.modal('at', DIALOG.P)
 											.then(() => {
 												// self.loadNotice(self.loginInfo);
-												window.location.reload(false);
+												self.reloadView()
 											})
 									}
 								});

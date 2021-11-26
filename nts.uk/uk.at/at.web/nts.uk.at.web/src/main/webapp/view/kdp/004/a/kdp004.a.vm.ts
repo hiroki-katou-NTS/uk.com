@@ -33,6 +33,7 @@ module nts.uk.at.view.kdp004.a {
 
 		const KDP004_SAVE_DATA = 'loginKDP004';
 		const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
+		const IS_RELOAD_VIEW = 'IS_RELOAD_VIEW_004';
 
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
@@ -145,7 +146,13 @@ module nts.uk.at.view.kdp004.a {
 											.then((isSuccess: boolean) => {
 												// Step4: CCG007_ログイン　A：契約認証を実行する
 												if (!isSuccess) {
-													self.openDialogCCG007A().then(() => dfd.resolve())
+													vm.$window.storage(IS_RELOAD_VIEW).then((data: boolean) => {
+														if (data) {
+															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.openDialogCCG007A().then(() => dfd.resolve()));
+														} else {
+															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.startScreen().then(() => dfd.resolve()));
+														}
+													})
 												} else {
 													self.startScreen().then(() => dfd.resolve());
 												}
@@ -249,6 +256,11 @@ module nts.uk.at.view.kdp004.a {
 					}
 				}
 				return ButtonDisplayMode.ShowAll;
+			}
+
+			reloadView() {
+				const vm = new ko.ViewModel();
+				vm.$window.storage(IS_RELOAD_VIEW, true).then(() => location.reload())
 			}
 
 			getErrorNotUsed(errorType) {
@@ -630,10 +642,10 @@ module nts.uk.at.view.kdp004.a {
 											self.loginInfo.selectedWP = result;
 											self.saveSuccess = true;
 											nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
-												location.reload();
+												self.reloadView();
 											});
 										} else {
-											location.reload();
+											self.reloadView();
 											// if (self.saveSuccess) {
 											// 	location.reload();
 											// }
@@ -642,7 +654,7 @@ module nts.uk.at.view.kdp004.a {
 								} else {
 									self.loginInfo.selectedWP = self.workplace;
 									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
-										location.reload();
+										self.reloadView();
 									});
 								}
 							})

@@ -43,6 +43,7 @@ module nts.uk.at.kdp003.a {
 
 	const KDP003_SAVE_DATA = 'loginKDP003';
 	const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
+	const IS_RELOAD_VIEW = 'IS_RELOAD_VIEW_003';
 
 	@bean()
 	export class ViewModel extends ko.ViewModel {
@@ -134,7 +135,13 @@ module nts.uk.at.kdp003.a {
 										.then((isSuccess: boolean) => {
 											// Step4: CCG007_ログイン　A：契約認証を実行する
 											if (!isSuccess) {
-												vm.openDialogCCG007A()
+												vm.$window.storage(IS_RELOAD_VIEW).then((data: boolean) => {
+													if (data) {
+														vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.openDialogCCG007A());
+													} else {
+														vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.getDataStartScreen());
+													}
+												})
 											} else {
 												vm.getDataStartScreen();
 											}
@@ -227,6 +234,11 @@ module nts.uk.at.kdp003.a {
 			vm.mountedContent();
 		}
 
+		reloadView() {
+			const vm = new ko.ViewModel();
+			vm.$window.storage(IS_RELOAD_VIEW, true).then(() => location.reload())
+		}
+
 		// get WorkPlace from basyo -> save locastorage.
 		basyo() {
 			$.urlParam = function (name) {
@@ -315,7 +327,7 @@ module nts.uk.at.kdp003.a {
 					debugger;
 					return vm.$ajax('at', API.COMPANIES, { contractCode: vm.contractCode })
 						.then((data: f.CompanyItem[]) => {
-							
+
 							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
 								vm.setMessage({ messageId: 'Msg_1527' });
@@ -837,7 +849,7 @@ module nts.uk.at.kdp003.a {
 							return vm.$window.modal('at', DIALOG.K, params)
 								.then((workplaceData: undefined | k.Return) => {
 									if (workplaceData === undefined) {
-										location.reload();
+										vm.reloadView()
 									}
 
 									openViewK = true;
@@ -1011,12 +1023,12 @@ module nts.uk.at.kdp003.a {
 				.always(() => {
 					if (ko.unwrap(vm.modeBasyo)) {
 						if (saveSuccess) {
-							location.reload();
+							vm.reloadView()
 							saveSuccess = false;
 						}
 					} else {
 						if (openViewK && saveSuccess) {
-							location.reload();
+							vm.reloadView()
 							openViewK = false;
 							saveSuccess = false;
 						}
