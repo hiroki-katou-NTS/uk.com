@@ -1673,9 +1673,9 @@ public class DailyPerformanceCorrectionProcessor {
 				.getListAttendanceItemControl(companyId, lstAtdItemUnique).stream().collect(Collectors.toMap(x -> x.getAttendanceItemId(), x -> x));
 		for (FormatDPCorrectionDto dto : lstFormat) {
 			if(mapDP.get(dto.getAttendanceItemId()).getAttendanceAtr()==DailyAttendanceAtr.Application.value) {
-				lstHeader.add(DPHeaderDto.addHeaderSubmitted());
+				lstHeader.add(DPHeaderDto.addHeaderSubmitted(mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())), mapAttendanceItemControl));
 				if (showButton) {
-					lstHeader.add(DPHeaderDto.addHeaderApplication());
+					lstHeader.add(DPHeaderDto.addHeaderApplication(mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())), mapAttendanceItemControl));
 				}
 			} else {
 				lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
