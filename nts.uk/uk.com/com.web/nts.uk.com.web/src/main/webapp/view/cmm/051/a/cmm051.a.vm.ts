@@ -86,8 +86,8 @@ module nts.uk.com.view.cmm051.a {
             ]);
             vm.columns = ko.observableArray([
                 {headerText: '', key: 'id', hidden: true},
-                {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 150},
-                {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 300}
+                {headerText: nts.uk.resource.getText("CMM051_44"), key: 'code', width: 145},
+                {headerText: nts.uk.resource.getText("CMM051_45"), key: 'name', width: 195}
             ]);
 
         }
@@ -300,8 +300,8 @@ module nts.uk.com.view.cmm051.a {
                 alreadySettingList: vm.alreadySettingPersonal,
                 isShowSelectAllButton: false,
                 showOptionalColumn: false,
-                maxWidth: 480,
-                maxRows: 20,
+                maxWidth: 470,
+                maxRows: 15,
             };
             $('#kcp005').ntsListComponent(vm.listComponentOption)
         }
