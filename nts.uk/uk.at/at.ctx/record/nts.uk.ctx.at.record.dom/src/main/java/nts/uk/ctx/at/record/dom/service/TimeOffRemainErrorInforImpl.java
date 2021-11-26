@@ -72,8 +72,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				param.getObjDate(),
 				recordInfor,
 				Collections.emptyList(),
-				Collections.emptyList(),
-				param.isUseDayoff());
+				Collections.emptyList());
 		Map<GeneralDate, DailyInterimRemainMngData> interimRemainData = InterimRemainOffPeriodCreateData
 				.createInterimRemainByScheRecordApp(require, cacheCarrier, createInterimDataParam);
 		Optional<DailyInterimRemainMngData> optDaily = Optional.empty();

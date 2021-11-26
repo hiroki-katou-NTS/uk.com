@@ -76,7 +76,7 @@ public class CreateDailyInterimRemainMngs {
 				dailyRecord, temporaryProcessMode);
 
 		InterimRemainCreateDataInputPara inputPara = new InterimRemainCreateDataInputPara(cid,
-				sid, period, recordRemains, Collections.emptyList(), Collections.emptyList(), false);
+				sid, period, recordRemains, Collections.emptyList(), Collections.emptyList());
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(cid, absSettingOpt, dayOffSetting);
 
 		/** 指定期間の暫定残数管理データを作成する */

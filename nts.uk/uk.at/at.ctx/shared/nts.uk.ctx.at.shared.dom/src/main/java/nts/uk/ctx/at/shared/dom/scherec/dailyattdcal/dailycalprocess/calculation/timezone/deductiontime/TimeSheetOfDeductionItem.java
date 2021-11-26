@@ -601,6 +601,11 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		TimeWithDayAttr newStart = oneDayRange.getStart();
 		TimeWithDayAttr newEnd = oneDayRange.getEnd();
 		
+		//控除の場合、出退勤との重複は見ない
+		if (dedAtr == DeductionAtr.Deduction) {
+			result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
+			return result;
+		}
 		//出勤時刻が含まれているか判断する
 		if(oneDayRange.getStart().lessThan(time.getTimespan().getStart())
 				&& time.getTimespan().getStart().lessThanOrEqualTo(oneDayRange.getEnd())
@@ -613,12 +618,6 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			if(oneDayRange.contains(time.getTimespan().getStart())){
 				newStart = time.getTimespan().getStart();
 			}
-			
-			if (dedAtr == DeductionAtr.Deduction) {
-				result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
-				return result;
-			}
-		
 			switch(calcMethod) {
 				//計上しない
 				case NOT_APPROP_ALL:

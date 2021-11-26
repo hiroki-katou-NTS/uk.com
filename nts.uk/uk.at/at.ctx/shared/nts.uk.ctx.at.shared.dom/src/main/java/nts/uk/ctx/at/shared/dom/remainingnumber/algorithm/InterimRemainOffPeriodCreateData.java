@@ -94,7 +94,7 @@ public class InterimRemainOffPeriodCreateData {
 					inputParam.getCid(),
 					inputParam.getSid(),
 					loopDate,
-					inputParam.isDayOffTimeIsUse(),
+					comHolidaySetting.getDayOffSetting().isManagedTime(),
 					dataCreate,
 					comHolidaySetting,
 					employmentHolidaySetting,
@@ -214,8 +214,7 @@ public class InterimRemainOffPeriodCreateData {
 				param.getDateData(),
 				param.getRecordData(),
 				param.getScheData(),
-				param.getAppData(),
-				param.isDayOffTimeIsUse());
+				param.getAppData());
 		return createInterimRemainDataMng(require, cacheCarrier, createDataParam, comHolidaySetting);
 	}
 
