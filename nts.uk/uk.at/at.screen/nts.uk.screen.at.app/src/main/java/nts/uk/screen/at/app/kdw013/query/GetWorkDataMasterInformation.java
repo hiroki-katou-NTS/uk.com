@@ -126,16 +126,16 @@ public class GetWorkDataMasterInformation {
     		if(Optional.ofNullable(workCodeFrameNo.workCode1).isPresent() && !taskFrameNo1.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode1)).findAny().isPresent()) {
     			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(1), new TaskCode(workCodeFrameNo.workCode1)).ifPresent(c-> taskFrameNo1.add(TaskDto.toDto(c)));
     		}
-    		if(Optional.ofNullable(workCodeFrameNo.workCode2).isPresent() && !taskFrameNo1.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode2)).findAny().isPresent()) {
+    		if(Optional.ofNullable(workCodeFrameNo.workCode2).isPresent() && !taskFrameNo2.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode2)).findAny().isPresent()) {
     			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(2), new TaskCode(workCodeFrameNo.workCode2)).ifPresent(c-> taskFrameNo2.add(TaskDto.toDto(c)));
     		}
-    		if(Optional.ofNullable(workCodeFrameNo.workCode3).isPresent() && !taskFrameNo1.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode3)).findAny().isPresent()) {
+    		if(Optional.ofNullable(workCodeFrameNo.workCode3).isPresent() && !taskFrameNo3.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode3)).findAny().isPresent()) {
     			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(3), new TaskCode(workCodeFrameNo.workCode3)).ifPresent(c-> taskFrameNo3.add(TaskDto.toDto(c)));
     		}
-    		if(Optional.ofNullable(workCodeFrameNo.workCode4).isPresent() && !taskFrameNo1.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode4)).findAny().isPresent()) {
+    		if(Optional.ofNullable(workCodeFrameNo.workCode4).isPresent() && !taskFrameNo4.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode4)).findAny().isPresent()) {
     			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(4), new TaskCode(workCodeFrameNo.workCode4)).ifPresent(c-> taskFrameNo4.add(TaskDto.toDto(c)));
     		}
-    		if(Optional.ofNullable(workCodeFrameNo.workCode5).isPresent() && !taskFrameNo1.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode5)).findAny().isPresent()) {
+    		if(Optional.ofNullable(workCodeFrameNo.workCode5).isPresent() && !taskFrameNo5.stream().filter(c->c.getCode().equals(workCodeFrameNo.workCode5)).findAny().isPresent()) {
     			taskingRepository.getOptionalTask(loginUserContext.companyId(), new TaskFrameNo(5), new TaskCode(workCodeFrameNo.workCode5)).ifPresent(c-> taskFrameNo5.add(TaskDto.toDto(c)));
     		}
     		
