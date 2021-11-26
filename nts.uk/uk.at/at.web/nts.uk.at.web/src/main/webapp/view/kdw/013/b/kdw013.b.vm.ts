@@ -273,10 +273,15 @@ module nts.uk.ui.at.kdw013.b {
                         vm.favTaskName('');
                         const { extendedProps, start, end } = event as any as calendar.EventRaw;
 						if(extendedProps.taskBlock.taskDetails.length == 1){
-							let start = _.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 1).value;
-							let end = _.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 2).value;
-							_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value = end - start;
+							
+							if (_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value == '') {
+								let start = _.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 1).value;
+								let end = _.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 2).value;
+								_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value = end - start;
+							}
+							
 						}
+						
 						const startTime = getTimeOfDate(start);
                         const endTime = getTimeOfDate(end);
 						vm.time(`${number2String(startTime)}${vm.$i18n('KDW013_30')}${number2String(endTime)}`);
