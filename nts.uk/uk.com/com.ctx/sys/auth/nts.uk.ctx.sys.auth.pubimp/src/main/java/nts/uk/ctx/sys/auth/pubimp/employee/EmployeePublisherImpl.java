@@ -532,14 +532,14 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		Optional<RoleIndividualGrant> roleIndividualGrantOpt = roleIndividualGrantRepository.findByUserCompanyRoleTypeDate(userID.get(),
 				AppContexts.user().companyId(), 3, baseDate);
 
-		if (roleSetOpt.isPresent()) {
-			if (roleIndividualGrantOpt.isPresent()) {
+		if (roleIndividualGrantOpt.isPresent()) {
+			return Optional.empty();
+		} else {
+			if (!roleSetOpt.isPresent())
 				return Optional.empty();
-			} else {
+			else
 				return roleRepository.findByRoleId(roleSetOpt.get().getEmploymentRoleId());
-			}
 		}
-		return Optional.empty();
 	}
 
 	@AllArgsConstructor
