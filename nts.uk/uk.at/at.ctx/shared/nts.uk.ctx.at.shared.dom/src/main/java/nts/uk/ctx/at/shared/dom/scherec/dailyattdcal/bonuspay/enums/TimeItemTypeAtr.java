@@ -17,4 +17,20 @@ public enum TimeItemTypeAtr {
 	SPECIAL_TYPE(1);
 
 	public final int value;
+	
+	/**
+	 * 加給か
+	 * @return 加給である
+	 */
+	public boolean isNomalType() {
+		return this.equals(NORMAL_TYPE);
+	}
+	
+	/**
+	 * 特定日加給か
+	 * @return 特定日加給である
+	 */
+	public boolean isSpecialType() {
+		return this.equals(SPECIAL_TYPE);
+	}
 }
