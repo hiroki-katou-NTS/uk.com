@@ -207,7 +207,8 @@ module nts.uk.at.view.kal012.b {
             let param = {
                 currentCode: vm.model.rolesId(),
                 roleType: 3,
-                multiple: true
+                multiple: true,
+                roleAtr: 1
             };
             nts.uk.ui.windows.setShared("paramCdl025", param);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/025/index.xhtml").onClosed(() => {

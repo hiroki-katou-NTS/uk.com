@@ -6,6 +6,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.alarm.AdministratorReceiveAlarmMailAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AffAtWorkplaceExport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeAlarmListAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeWorkplaceAdapter;
@@ -24,6 +25,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,8 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
     private EmployeeAlarmListAdapter employeeAlarmListAdapter;
     @Inject
     protected TransactionService transaction;
+    @Inject
+    private AdministratorReceiveAlarmMailAdapter adminReceiveAlarmMailAdapter;
 
     /**
      * アラーム（トップページ）永続化の処理
@@ -143,7 +147,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         }
 
         //アラームリストからトップページアラームデータに変換する
-        RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
+        RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, adminReceiveAlarmMailAdapter);
         List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
                 new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
 
@@ -243,7 +247,8 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         private PersisAlarmListExtractResultRepository alarmExtractResultRepo;
         private TopPageAlarmAdapter topPageAlarmAdapter;
         private EmployeeWorkplaceAdapter employeeWorkplaceAdapter;
-        private EmployeeAlarmListAdapter employeeAlarmListAdapter;
+//        private EmployeeAlarmListAdapter employeeAlarmListAdapter;
+        private AdministratorReceiveAlarmMailAdapter adminReceiveAlarmMailAdapter;
 
         @Override
         public Optional<PersistenceAlarmListExtractResult> getAlarmListExtractionResult(String companyId, String patternCode, String autoRunCode) {
@@ -260,14 +265,19 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
             return employeeWorkplaceAdapter.getWorkplaceId(sIds, baseDate);
         }
 
-        @Override
-        public List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate) {
-            return employeeAlarmListAdapter.getListEmployeeId(workplaceId, referenceDate).stream().distinct().collect(Collectors.toList());
-        }
+//        @Override
+//        public List<String> getListEmployeeId(String workplaceId, GeneralDate referenceDate) {
+//            return employeeAlarmListAdapter.getListEmployeeId(workplaceId, referenceDate).stream().distinct().collect(Collectors.toList());
+//        }
 
         @Override
         public void create(String companyId, List<TopPageAlarmImport> alarmInfos, Optional<DeleteInfoAlarmImport> delInfoOpt) {
             topPageAlarmAdapter.create(companyId, alarmInfos, delInfoOpt);
+        }
+
+        @Override
+        public Map<String, List<String>> getAdminReceiveAlarmMailByWorkplaceIds(List<String> workplaceIds) {
+            return adminReceiveAlarmMailAdapter.getAdminReceiveAlarmMailByWorkplaceIds(workplaceIds);
         }
     }
 }
