@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
+package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +21,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
  *         代休振替処理
  */
 public class SubstituteTransferProcess {
-	public static List<OvertimeHourTransfer> process(Require require, String cid, Optional<String> workTimeCode,
-			CompensatoryOccurrenceDivision originAtr, MaximumTimeZone maxTimeZone, List<OvertimeHourTransfer> maxTime,
-			List<OvertimeHourTransfer> timeAfterReflectApp) {
+	public static List<OvertimeHdHourTransfer> process(Require require, String cid, Optional<String> workTimeCode,
+			CompensatoryOccurrenceDivision originAtr, MaximumTimeZone maxTimeZone, List<OvertimeHdHourTransfer> maxTime,
+			List<OvertimeHdHourTransfer> timeAfterReflectApp) {
 
 		//代休設定を取得する
 		Optional<SubHolTransferSet> subSet = GetSubHolOccurrenceSetting.process(require, cid, workTimeCode, originAtr);
@@ -62,7 +62,7 @@ public class SubstituteTransferProcess {
 
 	// 時間帯から振替時間を振り替える
 	private static TransferResultAllFrame processTransferFromTransTimeZone(AttendanceTime tranferableTime, MaximumTimeZone maxTimeZone,
-			List<OvertimeHourTransfer> maxTime, List<OvertimeHourTransfer> timeAfterReflectApp) {
+			List<OvertimeHdHourTransfer> maxTime, List<OvertimeHdHourTransfer> timeAfterReflectApp) {
 
 		// input. 最大時間帯（List）でループ
 		AtomicInteger index = new AtomicInteger(-1);
@@ -73,13 +73,13 @@ public class SubstituteTransferProcess {
 
 				return new TransferResultAllFrame(tranferableTime, timeAfterReflectApp);
 			// 処理中の最大時間帯に該当する枠NOの振替時間を取得
-			OvertimeHourTransfer maxTimeItem = maxTime.stream().filter(x -> x.getNo() == index.get()).findFirst()
+			OvertimeHdHourTransfer maxTimeItem = maxTime.stream().filter(x -> x.getNo() == index.get()).findFirst()
 					.orElse(null);
 			if (maxTimeItem == null || maxTimeItem.getTransferTime().v() <= 0)
 				continue;
 
 			// [input.振替をした後の時間（List）]をチェック
-			OvertimeHourTransfer timeAfterReflectAppItem = timeAfterReflectApp.stream()
+			OvertimeHdHourTransfer timeAfterReflectAppItem = timeAfterReflectApp.stream()
 					.filter(x -> x.getNo() == maxTimeZoneItem.getKey().v()).findFirst().orElse(null);
 			if (timeAfterReflectAppItem == null || timeAfterReflectAppItem.getTime().v() <= 0)
 				continue;
@@ -95,7 +95,7 @@ public class SubstituteTransferProcess {
 
 	// 時間帯から時間を振り替える
 	private static TransferResultAllFrame  processTransferFromTimeZone(AttendanceTime tranferableTime, MaximumTimeZone maxTimeZone,
-			List<OvertimeHourTransfer> maxTime, List<OvertimeHourTransfer> timeAfterReflectApp) {
+			List<OvertimeHdHourTransfer> maxTime, List<OvertimeHdHourTransfer> timeAfterReflectApp) {
 
 		AtomicInteger index = new AtomicInteger(-1);
 		// input. 最大時間帯（List）でループ
@@ -106,13 +106,13 @@ public class SubstituteTransferProcess {
 
 				return new TransferResultAllFrame(tranferableTime, timeAfterReflectApp);
 			// 処理中の最大時間帯に該当する枠NOの振替時間を取得
-			OvertimeHourTransfer maxTimeItem = maxTime.stream().filter(x -> x.getNo() ==  index.get()).findFirst()
+			OvertimeHdHourTransfer maxTimeItem = maxTime.stream().filter(x -> x.getNo() ==  index.get()).findFirst()
 					.orElse(null);
 			if (maxTimeItem == null || maxTimeItem.getTime().v() <= 0)
 				continue;
 
 			// [input.振替をした後の時間（List）]をチェック
-			OvertimeHourTransfer timeAfterReflectAppItem = timeAfterReflectApp.stream()
+			OvertimeHdHourTransfer timeAfterReflectAppItem = timeAfterReflectApp.stream()
 					.filter(x -> x.getNo() == maxTimeZoneItem.getKey().v()).findFirst().orElse(null);
 			if (timeAfterReflectAppItem == null || timeAfterReflectAppItem.getTime().v() <= 0)
 				continue;
@@ -128,7 +128,7 @@ public class SubstituteTransferProcess {
 
 	// 時間帯から時間の振替
 	private static TransferResultFrame processTimeZoneDetail(int tranferableTime, int maxTime,
-			OvertimeHourTransfer timeAfterReflectApp) {
+			OvertimeHdHourTransfer timeAfterReflectApp) {
 
 		// [input.振替可能時間] と [input.最大時間]を比較
 
@@ -179,11 +179,11 @@ public class SubstituteTransferProcess {
 	 *
 	 * 時間から振り替える
 	 */
-	private static List<OvertimeHourTransfer> processTimeToTimeTransferAll(int tranferableTime,
-			List<OvertimeHourTransfer> timeAfterReflectApp) {
+	private static List<OvertimeHdHourTransfer> processTimeToTimeTransferAll(int tranferableTime,
+			List<OvertimeHdHourTransfer> timeAfterReflectApp) {
 
 		// input.振替をした後の時間（List）でループ
-		for (OvertimeHourTransfer detail : timeAfterReflectApp) {
+		for (OvertimeHdHourTransfer detail : timeAfterReflectApp) {
 			// 振替可能時間をチェック
 			if (tranferableTime <= 0) {
 				return timeAfterReflectApp;
@@ -202,7 +202,7 @@ public class SubstituteTransferProcess {
 	 * 時間から時間の振替
 	 */
 	private static TransferResultFrame processTimeToTimeTransfer(int tranferableTime,
-			OvertimeHourTransfer timeReflectApp) {
+			OvertimeHdHourTransfer timeReflectApp) {
 
 		int transferredTime = 0;
 		// [時間外労働時間.時間]と[振替可能時間]を比較

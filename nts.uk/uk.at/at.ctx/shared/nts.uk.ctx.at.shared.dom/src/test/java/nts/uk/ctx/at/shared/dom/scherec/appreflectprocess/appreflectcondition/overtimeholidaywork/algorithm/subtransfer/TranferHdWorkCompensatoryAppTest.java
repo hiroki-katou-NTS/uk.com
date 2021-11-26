@@ -18,6 +18,10 @@ import mockit.integration.junit4.JMockit;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.CreateWorkMaxTimeZone;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.MaximumTimeZone;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.OvertimeHdHourTransfer;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.SubstituteTransferProcess;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
@@ -36,10 +40,10 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSetCheck;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
-public class TranferHdWorkCompensatoryTest {
+public class TranferHdWorkCompensatoryAppTest {
 
 	@Injectable
-	private TranferHdWorkCompensatory.Require require;
+	private TranferHdWorkCompensatoryApp.Require require;
 
 	private String cid = "1";
 
@@ -72,12 +76,12 @@ public class TranferHdWorkCompensatoryTest {
 
 				SubstituteTransferProcess.process(require, anyString, (Optional<String>)any,
 						(CompensatoryOccurrenceDivision)any, (MaximumTimeZone) any,
-						(List<OvertimeHourTransfer>) any, (List<OvertimeHourTransfer>) any);
-				result = Arrays.asList(new OvertimeHourTransfer(1, new AttendanceTime(666), new AttendanceTime(999)));
+						(List<OvertimeHdHourTransfer>) any, (List<OvertimeHdHourTransfer>) any);
+				result = Arrays.asList(new OvertimeHdHourTransfer(1, new AttendanceTime(666), new AttendanceTime(999)));
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -111,7 +115,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -149,7 +153,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -191,7 +195,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -224,7 +228,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -257,7 +261,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -290,7 +294,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -323,7 +327,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -357,7 +361,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -390,7 +394,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -423,7 +427,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())
@@ -455,7 +459,7 @@ public class TranferHdWorkCompensatoryTest {
 			}
 		};
 
-		TranferHdWorkCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferHdWorkCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime())

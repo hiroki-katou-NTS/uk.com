@@ -45,8 +45,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	@Inject
 	private RemainCreateInforByScheData remainScheData;
 	@Inject
-	private RemainCreateInforByRecordData remainRecordData;
-	@Inject
 	private RemainCreateInforByApplicationData remainAppData;
 	@Inject
 	private TmpAnnualHolidayMngRepository tmpAnnual;
@@ -70,6 +68,9 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private ComSubstVacationRepository subRepos;
 	@Inject
 	private LinkDataRegisterImpl linkDataRegisterImpl;
+	
+	@Inject
+	private RemainCreateInforByRecordData remainCreateInforByRecordData;
 
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
@@ -78,11 +79,11 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		CompensatoryLeaveComSetting comSubset =  leaveSetRepos.find(cid);
 
 		//暫定データを作成する為の勤務予定を取得する
-		List<ScheRemainCreateInfor> lstScheData = this.remainScheData.createRemainInforNew(sid, lstDate);
+		List<ScheRemainCreateInfor> lstScheData = this.remainScheData.createRemainInforNew(cid, sid, lstDate);
 
 		//暫定データを作成する為の日別実績を取得する
 
-		List<RecordRemainCreateInfor> lstRecordData = this.remainRecordData.lstRecordRemainData(sid, lstDate);
+		List<RecordRemainCreateInfor> lstRecordData = remainCreateInforByRecordData.lstRecordRemainData(new CacheCarrier(), cid, sid, lstDate);
 
 		List<InterimRemain> interimRemains  = new ArrayList<InterimRemain>();
 

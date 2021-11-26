@@ -1,4 +1,6 @@
-package nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer;
+package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,17 +10,17 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /**
  * @author thanh_nx
  *
- *振替結果(1枠)
+ *振替結果(全枠)
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransferResultFrame {
+public class TransferResultAllFrame {
 	
 	//残りの振替可能時間
-	private AttendanceTime time;
+	private AttendanceTime timeRemain;
 	
 	//振替をした後の時間
-	private OvertimeHourTransfer maximumTime;
+	private List<OvertimeHdHourTransfer> timeAfterTransfer;
 
 }

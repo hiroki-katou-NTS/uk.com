@@ -16,12 +16,12 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.CreateWorkMaxTimeZone;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.MaximumTimeZone;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.OvertimeHdHourTransfer;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.createremain.subtransfer.SubstituteTransferProcess;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.CreateWorkMaxTimeZone;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.MaximumTimeZone;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.OvertimeHourTransfer;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.SubstituteTransferProcess;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TranferOvertimeCompensatory;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.algorithm.subtransfer.TranferOvertimeCompensatoryApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
@@ -36,10 +36,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
-public class TranferOvertimeCompensatoryTest {
+public class TranferOvertimeCompensatoryAppTest {
 
 	@Injectable
-	private TranferOvertimeCompensatory.Require require;
+	private TranferOvertimeCompensatoryApp.Require require;
 
 	private String cid = "1";
 
@@ -70,12 +70,12 @@ public class TranferOvertimeCompensatoryTest {
 
 				SubstituteTransferProcess.process(require, anyString, (Optional<String>) any,
 						CompensatoryOccurrenceDivision.FromOverTime, (MaximumTimeZone) any,
-						(List<OvertimeHourTransfer>) any, (List<OvertimeHourTransfer>) any);
-				result = Arrays.asList(new OvertimeHourTransfer(1, new AttendanceTime(666), new AttendanceTime(999)));
+						(List<OvertimeHdHourTransfer>) any, (List<OvertimeHdHourTransfer>) any);
+				result = Arrays.asList(new OvertimeHdHourTransfer(1, new AttendanceTime(666), new AttendanceTime(999)));
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -111,7 +111,7 @@ public class TranferOvertimeCompensatoryTest {
 //			}
 //		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork()).isEmpty();
 	}
@@ -138,7 +138,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -169,7 +169,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -200,7 +200,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -231,7 +231,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -262,7 +262,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -293,7 +293,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -324,7 +324,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -356,7 +356,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
@@ -387,7 +387,7 @@ public class TranferOvertimeCompensatoryTest {
 			}
 		};
 
-		TranferOvertimeCompensatory.process(require, cid, dailyApp.getDomain());
+		TranferOvertimeCompensatoryApp.process(require, cid, dailyApp.getDomain());
 		assertThat(
 				dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 						.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTime())
