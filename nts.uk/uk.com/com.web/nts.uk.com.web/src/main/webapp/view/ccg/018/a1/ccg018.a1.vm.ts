@@ -115,6 +115,7 @@ module ccg018.a1.viewmodel {
         rowVirtualization: true,
         virtualization: true,
         virtualizationMode: 'continuous',
+        tabIndex: 2,
         columns: [
           {
             headerText: nts.uk.resource.getText('CCG018_8'),
@@ -133,14 +134,16 @@ module ccg018.a1.viewmodel {
             key: 'topMenuCode',
             dataType: 'string',
             width: '240px',
-            ntsControl: 'Combobox1'
+            ntsControl: 'Combobox1',
+            tabIndex: 3,
           },
           {
             headerText: nts.uk.resource.getText('CCG018_10'),
             key: 'uniqueCode',
             dataType: 'string',
             width: '240px',
-            ntsControl: 'Combobox3'
+            ntsControl: 'Combobox3',
+            tabIndex: 4,
           },
         ],
         headerRendered: (evt: any, ui: any) => {
@@ -168,7 +171,7 @@ module ccg018.a1.viewmodel {
             controlType: 'ComboBox',
             visibleItemsCount: 5,
             dropDownAttachedToBody: false,
-            enable: true
+            enable: true,
           },
           {
             name: 'Combobox3',
@@ -179,7 +182,7 @@ module ccg018.a1.viewmodel {
             controlType: 'ComboBox',
             visibleItemsCount: 5,
             dropDownAttachedToBody: false,
-            enable: true
+            enable: true,
           }
         ]
       });
