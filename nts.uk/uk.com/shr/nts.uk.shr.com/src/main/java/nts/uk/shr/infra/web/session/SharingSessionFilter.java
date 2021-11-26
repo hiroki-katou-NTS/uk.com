@@ -48,7 +48,7 @@ public class SharingSessionFilter implements Filter {
 		 */
 		SessionContextCookie.getSessionContextFrom(httpRequest)
 				.ifPresent(sessionContext -> {
-					if (!isLoggedIn || !sessionContext.equals(createStringSessionContext())) {
+					if (!isLoggedIn || !sessionContext.equals(SessionContextCookie.createStringSessionContext())) {
 						restoreSessionContext(sessionContext);
 					}
 				});
@@ -68,13 +68,6 @@ public class SharingSessionFilter implements Filter {
 	
 	private static final String DELIMITER = "@";
 
-	private static String createStringSessionContext() {
-		String userContext = SingletonBeansSoftCache.get(LoginUserContextManager.class).toBase64();
-		String csrfToken = CsrfToken.getFromSession();
-		
-		// '='はCookieに含めると誤作動を起こすようなので、置換しておく
-		return (userContext + DELIMITER + csrfToken).replace('=', '*');
-	}
 	
 	private static void restoreSessionContext(String sessionContextInCookie) {
 		val parts = sessionContextInCookie.replace('*', '=').split(DELIMITER);
