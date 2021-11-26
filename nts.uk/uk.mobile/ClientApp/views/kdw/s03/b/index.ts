@@ -206,13 +206,12 @@ export class KdwS03BComponent extends Vue {
                 if (!(self.getItemType(key) == ItemType.InputStringCode || self.getItemType(key) == ItemType.ButtonDialog)) {
                     return;
                 }
-                // let rowData = _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key);     
                 if (!_.find(self.masterData[idKey], (item) => item.code == value)) {
                     self.masterData[idKey].push({ code: value, name: 'マスタ未登録' });
                 }
                   
-            });
-            self.createMasterData(dataAll.data);
+                self.getRowComboBox(key);
+            });            
             self.$mask('hide');
         }).catch((res: any) => {
             self.$mask('hide');
@@ -405,7 +404,7 @@ export class KdwS03BComponent extends Vue {
             case MasterType.TimeLimit:
                 return self.masterData.lstTimeLimit;
             case MasterType.KDL013_TaskSupOption:    
-                return self.masterData[idKey];
+                return !_.isUndefined(self.masterData[idKey]) ? self.masterData[idKey] : null ;
             default:             
                 return _.find(self.params.rowData.rowData, (rowData: RowData) => rowData.key == key).comboLst;
         }
