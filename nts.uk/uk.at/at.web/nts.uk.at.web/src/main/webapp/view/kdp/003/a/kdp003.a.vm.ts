@@ -133,7 +133,7 @@ module nts.uk.at.kdp003.a {
 									vm.$ajax(API.getAuthenticate, { contactCode: data.contractCode, password: data.contractPassword })
 										.then((isSuccess: boolean) => {
 											// Step4: CCG007_ログイン　A：契約認証を実行する
-											if (isSuccess) {
+											if (!isSuccess) {
 												vm.openDialogCCG007A()
 											} else {
 												vm.getDataStartScreen();

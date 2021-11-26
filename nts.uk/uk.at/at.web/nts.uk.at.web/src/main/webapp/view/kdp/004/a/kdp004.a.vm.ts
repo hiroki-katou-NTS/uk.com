@@ -144,7 +144,7 @@ module nts.uk.at.view.kdp004.a {
 											{ contactCode: data.contractCode, password: data.contractPassword })
 											.then((isSuccess: boolean) => {
 												// Step4: CCG007_ログイン　A：契約認証を実行する
-												if (isSuccess) {
+												if (!isSuccess) {
 													self.openDialogCCG007A().then(() => dfd.resolve())
 												} else {
 													self.startScreen().then(() => dfd.resolve());
