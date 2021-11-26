@@ -217,35 +217,13 @@ public class GetRemainNumberConfirmInfo {
 							detailedInfo.setDigestionStatus(TextResource.localize("KDL005_51", text));
 					}
 
-					// 残数詳細情報．期限日状況をセットする - 期限日状況
-					// Input．逐次発生の休暇明細一覧．未相殺の合計を取得する() を呼び出す - can hoi lai
-					UnoffsetNumSeqVacation numSeqVacation = vacationDetails.getTotalUnoffset();
-
-					// Input．逐次発生の休暇明細一覧．時系列にソートする() を呼び出す
-					List<AccumulationAbsenceDetail> lstAcctAbsenSort = vacationDetails.sortAccAbsDetailASC();
-
-					// 逐次発生の休暇明細一覧．発生消化区分 ＝＝ 発生
-					// AND 逐次発生の休暇明細一覧．休暇発生明細．消化区分　＝＝　未消化
-					// AND 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
-					List<AccumulationAbsenceDetail> acctAbsenFil = lstAcctAbsenSort.stream()
-							.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE
-									&& (((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED 
-											|| ((LeaveOccurrDetail) x).judgeDigestiveStatus(GeneralDate.today()) == DigestionAtr.UNUSED) 
-									&& !x.getDateOccur().isUnknownDate()).collect(Collectors.toList());
-					
-					if (!acctAbsenFil.isEmpty() && detail.getDateOccur().getDayoffDate().isPresent() ) {
-						// 探した逐次発生の休暇明細一覧．休暇発生明細
-						List<GeneralDate> listDateLine = acctAbsenFil.stream().map( x->((LeaveOccurrDetail) x).getDeadline() ).collect(Collectors.toList());
-						listDateLine = listDateLine.stream().sorted((a, b) -> a.compareTo(b)).collect(Collectors.toList());
-						GeneralDate dateMin = listDateLine.get(0);
-						Optional<AccumulationAbsenceDetail> acctAbsenFilData = acctAbsenFil.stream()
-								.filter(x -> x.getDateOccur().getDayoffDate().get()
-										.equals(detail.getDateOccur().getDayoffDate().get()))
-								.findFirst();
-						// 探した逐次発生の休暇明細一覧．年月日．年月日＝＝ループ中の逐次発生の休暇明細．年月日．年月日　の場合
-						if (acctAbsenFilData.isPresent() && ((LeaveOccurrDetail) acctAbsenFilData.get()).getDeadline().equals(dateMin) ) {
-							detailedInfo.setDueDateStatus(TextResource.localize("KDL005_45"));
-						}
+					// 残数詳細情報．期限日状況をセットする
+					LeaveOccurrDetail leaveOccurrDetail = (LeaveOccurrDetail)detail;
+					//ループ中の逐次発生の休暇明細一覧．休暇発生明細．消化区分　＝＝　未消化  || 逐次発生の休暇明細一覧の消化状態を判断（システム日付）　＝＝　未消化
+					if((leaveOccurrDetail.getDigestionCate() == DigestionAtr.UNUSED || leaveOccurrDetail.judgeDigestiveStatus(GeneralDate.today()) == DigestionAtr.UNUSED)
+							&& leaveOccurrDetail.getDeadline().beforeOrEquals(GeneralDate.today().addMonths(1)) //ループ中の逐次発生の休暇明細一覧．休暇発生明細．期限日．年月日 <= システム日付．Add（１Month）の場合
+							) {
+						detailedInfo.setDueDateStatus(TextResource.localize("KDL005_45"));
 					}
 					
 					if(occurrDetail.getDigestionCate()  == DigestionAtr.UNUSED || dataDigestionAtr == DigestionAtr.UNUSED) { 
