@@ -21,7 +21,7 @@ public class JpaWorkDaysNumberOnLeaveCountRepository extends JpaRepository
 	private static final String SELECT_BY_CID = "SELECT t FROM KrcmtCalcMAttdCountVacation t "
 			+ "WHERE t.pk.cid = :cid";
 
-	private WorkDaysNumberOnLeaveCount toDomain(String cid, List<KrcmtCalcMAttdCountVacation> entities) {
+	public WorkDaysNumberOnLeaveCount toDomain(String cid, List<KrcmtCalcMAttdCountVacation> entities) {
 		List<LeaveCountedAsWorkDaysType> leaveTypes = entities.stream()
 				.map(entity -> EnumAdaptor.valueOf(entity.pk.vacationType, LeaveCountedAsWorkDaysType.class))
 				.collect(Collectors.toList());
