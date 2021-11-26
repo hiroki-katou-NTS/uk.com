@@ -39,7 +39,7 @@ public class MailServer extends AggregateRoot implements Comparable<MailServer> 
 
 	/** The email authentication. */
 	// 認証用メールアドレス
-	private EmailAuthentication emailAuthentication;
+	private MailAddress emailAuthentication;
 
 	/** The password. */
 	// パスワード

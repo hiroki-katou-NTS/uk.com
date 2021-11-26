@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.sys.env.dom.mailserver.EmailAuthentication
+        nts.uk.ctx.sys.env.dom.mailserver.MailAddress
 			</com:ValidatorScript>
 			<script>
 				var dialogSize = {
@@ -31,10 +31,10 @@
           <label id="B1_2" data-bind="text: emailFrom"></label>
         </div>
         <div class="flex valign-center">
-          <div id="B3_1" class="setting-label" data-bind="ntsFromLabel: { required: true, constraint: 'EmailAuthentication' }">#{i18n.getText('CMM050_28')}</div>
+          <div id="B3_1" class="setting-label" data-bind="ntsFormLabel: { required: true, constraint: 'MailAddress' }">#{i18n.getText('CMM050_28')}</div>
           <input id="B3_2" data-bind="ntsTextEditor: {
             value: emailTo,
-            constraint: 'EmailAuthentication',
+            constraint: 'MailAddress',
             name: '#[CMM050_28]',
             option: { width: '400px' }
           }" tabindex="1" />
