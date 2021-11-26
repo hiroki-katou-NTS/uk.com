@@ -459,6 +459,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		// Map <WorkplaceID, List<ManagerID>>
 		Map<String, List<String>> workplaceEmployeeMap = new HashMap<>();
 		GeneralDate baseDate = GeneralDate.today();
+        String empLoginId = AppContexts.user().employeeId();
 
 		for (String workplaceId : workplaceIds) {
 			List<String> employeeIds = new ArrayList<>();
@@ -467,7 +468,6 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			List<String> adminIds = getListEmployeeId(workplaceId, baseDate);
 
 			// 自分自身を省く
-			String empLoginId = AppContexts.user().employeeId();
 			if (adminIds.stream().anyMatch(x -> x.contains(empLoginId))) {
 				adminIds.remove(empLoginId);
 			}
@@ -490,6 +490,12 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 			upperWorkplaceIds.forEach(upperWkpId -> {
 				// [No.218] アルゴリズム「職場から職場管理者社員を取得する」を実行する。
 				List<String> administratorList = getListEmployeeId(upperWkpId, baseDate);
+
+                // 自分自身を省く
+                if (administratorList.stream().anyMatch(x -> x.contains(empLoginId))) {
+                    administratorList.remove(empLoginId);
+                }
+
 				administratorList.forEach(admin -> {
 					//職場管理者IDからロールを取得する
 					Optional<Role> roleOpt = getRoleFromEmployeeId(admin);
