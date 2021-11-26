@@ -137,9 +137,11 @@ module nts.uk.at.kdp003.a {
 											if (!isSuccess) {
 												vm.$window.storage(IS_RELOAD_VIEW).then((data: boolean) => {
 													if (data) {
-														vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.openDialogCCG007A());
+														// vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.openDialogCCG007A());
+														vm.openDialogCCG007A()
 													} else {
-														vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.getDataStartScreen());
+														// vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.getDataStartScreen());
+														vm.getDataStartScreen()
 													}
 												})
 											} else {
@@ -197,6 +199,8 @@ module nts.uk.at.kdp003.a {
 
 		getDataStartScreen() {
 			const vm = this;
+
+			vm.$window.storage(IS_RELOAD_VIEW, true)
 			// show or hide stampHistoryButton
 			vm.message.subscribe((value) => vm.showClockButton.company(value === null));
 
@@ -236,7 +240,7 @@ module nts.uk.at.kdp003.a {
 
 		reloadView() {
 			const vm = new ko.ViewModel();
-			vm.$window.storage(IS_RELOAD_VIEW, true).then(() => location.reload())
+			vm.$window.storage(IS_RELOAD_VIEW, false).then(() => location.reload())
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
@@ -324,7 +328,6 @@ module nts.uk.at.kdp003.a {
 					// auto login by storage data of preview login
 					// <<ScreenQuery>> 打刻管理者でログインする
 
-					debugger;
 					return vm.$ajax('at', API.COMPANIES, { contractCode: vm.contractCode })
 						.then((data: f.CompanyItem[]) => {
 

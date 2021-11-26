@@ -148,9 +148,11 @@ module nts.uk.at.view.kdp004.a {
 												if (!isSuccess) {
 													vm.$window.storage(IS_RELOAD_VIEW).then((data: boolean) => {
 														if (data) {
-															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.openDialogCCG007A().then(() => dfd.resolve()));
+															// vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.openDialogCCG007A().then(() => dfd.resolve()));
+															self.openDialogCCG007A().then(() => dfd.resolve())
 														} else {
-															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.startScreen().then(() => dfd.resolve()));
+															// vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.startScreen().then(() => dfd.resolve()));
+															self.startScreen().then(() => dfd.resolve())
 														}
 													})
 												} else {
@@ -180,6 +182,8 @@ module nts.uk.at.view.kdp004.a {
 				let self = this;
 				let dfd = $.Deferred<void>();
 				const vm = new ko.ViewModel();
+
+				vm.$window.storage(IS_RELOAD_VIEW, true)
 
 				self.getWorkPlacesInfo();
 				self.basyo().done(() => {
@@ -260,7 +264,7 @@ module nts.uk.at.view.kdp004.a {
 
 			reloadView() {
 				const vm = new ko.ViewModel();
-				vm.$window.storage(IS_RELOAD_VIEW, true).then(() => location.reload())
+				vm.$window.storage(IS_RELOAD_VIEW, false).then(() => location.reload())
 			}
 
 			getErrorNotUsed(errorType) {
