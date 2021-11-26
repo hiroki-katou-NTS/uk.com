@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DataResultAfterIU;
 
 /**
@@ -20,4 +21,5 @@ public class RegisterWorkContentDto {
 	
 	private DataResultAfterIU dataResult;
 	
+	private List<BusinessException> alarmMsg_2081;
 }
