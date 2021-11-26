@@ -883,15 +883,14 @@ module nts.uk.ui.at.kdw013.a {
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
                     const { dataResult, lstOvertimeLeaveTime } = response;
-
-                    return vm.$dialog
-                        .info({ messageId: dataResult.messageAlert })
-                        .then(() => {
-                            vm.dataChanged(false);
-                            //trigger reload data
-                            vm.dateRange.valueHasMutated();
-                        })
-                        .then(() => lstOvertimeLeaveTime);
+                        return vm.$dialog
+                            .info({ messageId: dataResult.messageAlert })
+                            .then(() => {
+                                vm.dataChanged(false);
+                                //trigger reload data
+                                vm.dateRange.valueHasMutated();
+                            })
+                            .then(() => lstOvertimeLeaveTime);
 
                 })
                 .fail((response: ErrorMessage) => {
