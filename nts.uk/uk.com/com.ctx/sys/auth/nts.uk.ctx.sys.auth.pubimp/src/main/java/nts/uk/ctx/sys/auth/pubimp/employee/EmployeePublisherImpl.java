@@ -519,16 +519,27 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	 * @return
 	 */
 	private Optional<Role> getRoleFromEmployeeId(String employeeId) {
+		GeneralDate baseDate = GeneralDate.today();
+
 		// 社員IDからユーザIDを取得する
 		Optional<String> userID = acquireUserIDFromEmpIDService.getUserIDByEmpID(employeeId);
 		if (!userID.isPresent()) return Optional.empty();
 
 		// ユーザIDからロールセットを取得する
-		Optional<RoleIndividualGrant> roleIndividualGrantOpt = roleIndividualGrantRepository.findByUserCompanyRoleTypeDate(userID.get(),
-				AppContexts.user().companyId(), 3, GeneralDate.today());
-		if (!roleIndividualGrantOpt.isPresent()) return Optional.empty();
+		Optional<RoleSet> roleSetOpt = roleSetService.getRoleSetFromUserId(userID.get(), baseDate);
 
-		return roleRepository.findByRoleId(roleIndividualGrantOpt.get().getRoleId());
+		// ロール個人別付与を取得する
+		Optional<RoleIndividualGrant> roleIndividualGrantOpt = roleIndividualGrantRepository.findByUserCompanyRoleTypeDate(userID.get(),
+				AppContexts.user().companyId(), 3, baseDate);
+
+		if (roleSetOpt.isPresent()) {
+			if (roleIndividualGrantOpt.isPresent()) {
+				return Optional.empty();
+			} else {
+				return roleRepository.findByRoleId(roleSetOpt.get().getEmploymentRoleId());
+			}
+		}
+		return Optional.empty();
 	}
 
 	@AllArgsConstructor
