@@ -3135,12 +3135,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 case WorkplaceCounterCategory.WORKTIME_PEOPLE: 
                     let peopleMethod: Array<any> = self.dataAggrerateWorkplace.peopleMethod,
                         peopleMethodValue = _.filter(peopleMethod, item => !_.isEmpty(item.peopleMethod)),
-                        actualMode =  self.achievementDisplaySelected() == MODE.ACTUAL;
+                        actualMode =  self.achievementDisplaySelected() == MODE.ACTUAL,
+                        idx = self.achievementDisplaySelected() == MODE.ACTUAL?3:2;
                     if(_.isEmpty(peopleMethodValue)) {
 						leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
 	                    leftHorzContentDs.push({ id: 'id2', title: '', subtitle: '' });
 	                    if(actualMode) leftHorzContentDs.push({ id: 'id3', title: '', subtitle: '' });
-	                    for(let i=1; i<=3; i++) {
+                        for(let i=1; i<= idx; i++) {
 	                        let objectPeopleMethod = { sid: '' };
 	                        _.set(objectPeopleMethod, 'id', 'id'+i);
 	                        _.forEach(keys, key => {
@@ -3171,7 +3172,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
                     	leftHorzContentDs.push({ id: 'id'+(index*3+2), title: '', subtitle: getText("KSU001_71") });
                     	if(actualMode) leftHorzContentDs.push({ id: 'id'+(index*3+3), title: '', subtitle: getText("KSU001_72") });
-						for(let i=1; i<=3; i++) {
+						for(let i=1; i<= idx; i++) {
 	                        let objectPeopleMethod = { sid: '' }, sumPeopleMethod: any = '';
 	                        _.set(objectPeopleMethod, 'id', 'id'+(index*3+i));
 	                        _.forEach(keys, key => {
