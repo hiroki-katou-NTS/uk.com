@@ -23,7 +23,7 @@ public enum WTCalSettingAtr {
 	
 	/**
 	 * 自動計算するか
-	 * return 自動計算するである
+	 * return 自動計算する
 	 */
 	public boolean isCalculation() {
 		return this.equals(CALCULATION);

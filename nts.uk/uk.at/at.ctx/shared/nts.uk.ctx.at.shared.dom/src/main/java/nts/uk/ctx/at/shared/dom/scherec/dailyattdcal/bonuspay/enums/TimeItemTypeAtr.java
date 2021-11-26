@@ -20,7 +20,7 @@ public enum TimeItemTypeAtr {
 	
 	/**
 	 * 加給か
-	 * @return 加給である
+	 * @return 加給
 	 */
 	public boolean isNomalType() {
 		return this.equals(NORMAL_TYPE);
@@ -28,7 +28,7 @@ public enum TimeItemTypeAtr {
 	
 	/**
 	 * 特定日加給か
-	 * @return 特定日加給である
+	 * @return 特定日加給
 	 */
 	public boolean isSpecialType() {
 		return this.equals(SPECIAL_TYPE);

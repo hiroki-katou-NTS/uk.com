@@ -26,7 +26,7 @@ public enum HTCalSettingAtr {
 
 	/**
 	 * 自動計算しないか
-	 * @return 自動計算しないである
+	 * @return 自動計算しない
 	 */
 	public boolean isNonCalculation() {
 		return this.equals(NON_CALCULATION);
@@ -34,7 +34,7 @@ public enum HTCalSettingAtr {
 	
 	/**
 	 * 自動計算するか
-	 * @return 自動計算するである
+	 * @return 自動計算する
 	 */
 	public boolean isCalculation() {
 		return this.equals(CALCULATION);
@@ -42,7 +42,7 @@ public enum HTCalSettingAtr {
 	
 	/**
 	 * 休出の自動計算の設定に従うか
-	 * @return 休出の自動計算の設定に従うである
+	 * @return 休出の自動計算の設定に従う
 	 */
 	public boolean isFollowHolidaySetting() {
 		return this.equals(FOLLOW_HOLIDAY_SETTING);
