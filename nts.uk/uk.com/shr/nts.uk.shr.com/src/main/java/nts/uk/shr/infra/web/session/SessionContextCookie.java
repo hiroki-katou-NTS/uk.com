@@ -18,6 +18,7 @@ import nts.arc.bean.SingletonBeansSoftCache;
 import nts.arc.security.csrf.CsrfToken;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 /**
  * warファイル間でセッションを擬似的に共有するための仕組み
@@ -92,17 +93,18 @@ public class SessionContextCookie {
 	
 	private static final String DELIMITER = "@";
 
-	private static String createStringSessionContext() {
+	public static String createStringSessionContext() {
 		String userContext = SingletonBeansSoftCache.get(LoginUserContextManager.class).toBase64();
 		String csrfToken = CsrfToken.getFromSession();
+		String dataSource = TenantLocatorService.getConnectedDataSource();
 		
 		// '='はCookieに含めると誤作動を起こすようなので、置換しておく
-		return (userContext + DELIMITER + csrfToken).replace('=', '*');
+		return (userContext + DELIMITER + csrfToken + DELIMITER + dataSource).replace('=', '*');
 	}
 	
 	private static void restoreSessionContext(String sessionContextInCookie) {
 		val parts = sessionContextInCookie.replace('*', '=').split(DELIMITER);
-		if (parts.length != 2) {
+		if (parts.length != 3) {
 			log.error("Invalid session context cookie: " + sessionContextInCookie);
 			return;
 		}
@@ -110,6 +112,7 @@ public class SessionContextCookie {
 		try {
 			SingletonBeansSoftCache.get(LoginUserContextManager.class).restoreBase64(parts[0]);
 			CsrfToken.setToSession(parts[1]);
+			TenantLocatorService.connectDataSource(parts[2]);
 		} catch (Exception ex) {
 			// 何らかの理由で破損したCookieから復元しようとした場合は、復元せずにスルー（エラーは起こさないようにしておく）
 			// 一応、ログには出力しておく

@@ -16,7 +16,11 @@ public class TenantLocatorService {
 			throw new RuntimeException("テナントのデータソースが見つかりません：" + tenantCode);
 		}
 
-		SessionContextProvider.get().put(SESSION_DATASOURCE, datasourceOpt.get().getDatasourceName());
+		connectDataSource(datasourceOpt.get().getDatasourceName());
+	}
+
+	public static void connectDataSource(String dataSourceName) {
+		SessionContextProvider.get().put(SESSION_DATASOURCE, dataSourceName);
 	}
 	
 	public static void disconnect() {
