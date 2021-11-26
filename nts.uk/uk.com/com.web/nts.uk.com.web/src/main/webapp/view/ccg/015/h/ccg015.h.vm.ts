@@ -50,7 +50,9 @@ module nts.uk.com.view.ccg015.h {
         vm.roleName(`${role.roleCode} ${role.roleName}`);
       });
 
-      vm.component.startPage();
+      vm.component
+        .startPage()
+        .then(() => $('#ccg015_h10 .multi-list_container').focus());
     }
 
     getData() {
@@ -99,7 +101,7 @@ module nts.uk.com.view.ccg015.h {
           if (response === 'yes') {
             vm
               .$ajax('at', API.delete, command)
-              .then(() => vm.$dialog.info({messageId: 'Msg_15'}))
+              .then(() => vm.$dialog.info({messageId: 'Msg_16'}))
               .then(() => vm.getData());
           }
         })

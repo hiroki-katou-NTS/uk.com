@@ -6,6 +6,10 @@ module nts.uk.com.view.ccg015.a {
   export class ScreenModel extends ko.ViewModel {
     textButton: KnockoutComputed<string> = ko.computed(() => _.replace(this.$i18n('CCG015_49'), '\n', '<br/>'));
 
+    mounted() {
+      $('#A1_3').focus();
+    }
+
     openScreenCCG034() {
       const vm = this;
       vm.$jump('/view/ccg/034/a/index.xhtml');

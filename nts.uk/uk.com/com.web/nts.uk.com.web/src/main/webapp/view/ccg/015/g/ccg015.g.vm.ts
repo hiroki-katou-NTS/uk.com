@@ -43,9 +43,9 @@ module nts.uk.at.view.ccg015.g.screenModel {
     onClickDecision(){
       const vm = this;
       const command: ToppageReloadSettingCommand = new ToppageReloadSettingCommand(vm.cId(), parseInt(vm.reloadInterval()));
-      vm.$ajax('com', API.save, command).then(()=> {
-        vm.$window.close();
-      });
+      vm.$ajax('com', API.save, command)
+      .then(()=> vm.$dialog.info({messageId: 'Msg_15'}))
+      .then(() => vm.$window.close());
     }
 
     onClickCancel(){
