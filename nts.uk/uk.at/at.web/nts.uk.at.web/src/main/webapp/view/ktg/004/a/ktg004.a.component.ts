@@ -61,26 +61,27 @@ module nts.uk.ui.ktg004.a {
                         </colgroup>
                         <tbody data-bind="if: isDisplayA15_1">
                           <tr>
-                            <td>
+                            <td style="text-align: center;">
                               <div class="flex valign-center ktg004-header-row" style="justify-content: space-between;">
-                                <div class="flex valign-center">
+                                <div class="flex valign-center" style="flex: 2;">
                                   <div data-bind="if: !isUpdating()">
-                                    <label class="ktg004-header-text" data-bind="text: textA15_1"></label>
+                                    <div class="label ktg004-header-text" data-bind="text: textA15_1"></div>
                                   </div>
-                                  <div data-bind="if: isUpdating">
-                                    <label class="ktg004-header-text on-update" data-bind="text: textA15_2"></label>
+                                  <div data-bind="if: isUpdating" class="on-update">
+                                    <div class="label ktg004-header-text" data-bind="text: textA15_2"></div>
                                   </div>
                                 </div>
-                                <div class="flex valign-center">
-                                  <label class="ktg004-header-text" data-bind="text: periodText"></label>
-                                  <div data-bind="ntsSwitchButton: {
+                                <div class="flex valign-center" style="flex: 3;">
+                                    <div class="label ktg004-header-text" data-bind="text: periodText"></div>
+                                </div>
+                                <div data-bind="ntsSwitchButton: {
                                     name: '#[KTG004_32]',
                                     options: displayYearMonths,
                                     optionsValue: 'value',
                                     optionsText: 'name',
                                     value: selectedDisplayYearMonth
-                                  }"></div>
-                                </div>
+                                }"
+                                style="flex: 2;"></div>
                               </div>
                             </td>
                           </tr>
@@ -194,15 +195,14 @@ module nts.uk.ui.ktg004.a {
                           border-bottom: 1px solid #BFBFBF;
                 }
                 .ktg004-header-text {
-                  font-size: 0.8em !important;
-                  color: black !important;
-                  padding-right: 5px;
+                  font-size: smaller;
+                  text-align: right;
                 }
-                .ktg004-header-text.on-update {
-                  color: #7F7F7F !important;
+                .on-update {
+                  background: #7F7F7F !important;
                 }
                 .ktg004-header-row {
-                  margin-top: 10px;
+                  margin: 10px 5px 5px 5px;
                 }
             </style>
         `
