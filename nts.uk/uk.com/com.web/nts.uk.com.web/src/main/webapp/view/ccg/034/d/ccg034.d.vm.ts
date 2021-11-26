@@ -988,6 +988,15 @@ module nts.uk.com.view.ccg034.d {
           vm.$window.modal('/view/ccg/034/f/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
               if (result && !nts.uk.text.isNullOrEmpty(String(result.clientId))) {
+                const partMenu = (result as PartDataMenuModel);
+                // Only prepare for delete if has changes
+                if (!_.find(vm.modifiedPartList.added, partMenu.fileId) && partMenu.fileId !== partMenu.originalFileId) {
+                  vm.modifiedPartList.added.push(partMenu.fileId);
+                }
+                if (!_.find(vm.modifiedPartList.deleted, partMenu.originalFileId) 
+                  && (partMenu.fileId !== partMenu.originalFileId || (partMenu.isFixed === 0 && !nts.uk.text.isNullOrEmpty(partMenu.originalFileId)))) {
+                  vm.modifiedPartList.deleted.push(partMenu.originalFileId);
+                }
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -1224,7 +1233,6 @@ module nts.uk.com.view.ccg034.d {
       const listPartData: PartDataModel[] = [];
       const $layout: JQuery = $('<div>')
         .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
-      _.forEach(_.uniq(vm.modifiedPartList.deleted), fileId => vm.removeFile(fileId));
       for (const partClientId in vm.mapPartData) {
         listPartData.push(vm.mapPartData[partClientId]);
         $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
@@ -1250,8 +1258,8 @@ module nts.uk.com.view.ccg034.d {
               height: data.height,
               fontSize: data.fontSize,
               bold: data.isBold ? 1 : 0,
-              horizontalPosition: data.alignHorizontal,
-              verticalPosition: data.alignVertical,
+              horizontalPosition: _.isNil(data.isFixed) ? data.alignHorizontal : HorizontalAlign.MIDDLE,
+              verticalPosition: _.isNil(data.isFixed) ? data.alignVertical : VerticalAlign.BOTTOM,
               systemType: data.systemType,
               menuClassification: data.menuClassification,
               menuCode: data.menuCode,
@@ -1259,7 +1267,7 @@ module nts.uk.com.view.ccg034.d {
               textColor: data.textColor,
               isFixed: data.isFixed,
               ratio: data.ratio,
-              fileId: data.fileId,
+              fileId: data.isFixed === 1 ? data.fileId : null,
               fileName: data.fileName
             }))
             .value();
@@ -1349,6 +1357,13 @@ module nts.uk.com.view.ccg034.d {
               arrowSettings: listArrowSettingDto,
             }),
           });
+          // Filter for unused fileIds and deleted them
+          _.chain(vm.modifiedPartList.deleted)
+            .filter(fileId => !_.chain(listMenuSettingDto).map(data => data.fileId).includes(fileId)
+                           && !_.chain(listFileAttachmentSettingDto).map(data => data.fileId).includes(fileId)
+                           && !_.chain(listImageSettingDto).map(data => data.fileId).includes(fileId))
+            .uniq()
+            .forEach(fileId => vm.removeFile(fileId));
           return vm.$ajax(API.updateLayout, updateLayoutParams);
         })
         // [After] save layout data
@@ -1973,7 +1988,7 @@ module nts.uk.com.view.ccg034.d {
             const imageRatio = partDataMenuModel.ratio;
             $partHTML.css({ 'display': 'grid', 'grid-auto-columns': '100%', 'grid-auto-rows': 'minmax(0, 1fr) max-content' });
             const $partImageContainer = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_top' })
-              .css("align-self", "start");
+              .css({ "align-self": "start", "height": "100%" });
             const $partImage = $("<img>")
               .addClass("ccg034-hyperlink")
               .attr("src", src);
@@ -1982,16 +1997,8 @@ module nts.uk.com.view.ccg034.d {
                 'width': '100%',
                 'height': 'auto',
               });
-              $partImageContainer.css({
-                'width': '100%',
-                'height': 'auto',
-              });
             } else {
               $partImage.css({
-                'width': 'auto',
-                'height': '100%',
-              });
-              $partImageContainer.css({
                 'width': 'auto',
                 'height': '100%',
               });
