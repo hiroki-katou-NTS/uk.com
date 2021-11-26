@@ -172,7 +172,7 @@ div#user-image {
   width: 30px;
   height: 30px;
   position: absolute !important;
-  right: 0;
+  right: 10px;
   top: 0;
   padding: 0px !important;
 }
