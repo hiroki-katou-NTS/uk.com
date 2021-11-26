@@ -1,5 +1,16 @@
 package nts.uk.file.at.app.export.schedule.personalschedulebyworkplace;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.CountNumberOfPeopleByEachWorkMethodService;
@@ -8,25 +19,15 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 勤務方法ごとに人数を集計する
@@ -39,6 +40,9 @@ public class AggregateNumberOfPeopleByWorkQuery {
 
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepo;
+    
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 
     /**
      * 集計する
@@ -50,6 +54,16 @@ public class AggregateNumberOfPeopleByWorkQuery {
             public Optional<ShiftMaster> getShiftMaster(WorkInformation workInformation) {
                 return shiftMasterRepo.getByWorkTypeAndWorkTime(companyId, workInformation.getWorkTypeCode().v(), workInformation.getWorkTimeCodeNotNull().map(i -> i.v()).orElse(null));
             }
+
+			@Override
+			public List<WorkType> getWorkTypes(List<WorkTypeCode> workTypeCodes) {
+				return workTypeRepository.getPossibleWorkType(
+						AppContexts.user().companyId()
+					,	workTypeCodes.stream()
+									.map(c -> c.v())
+									.collect(Collectors.toList())
+						);
+			}
         };
 
         if (shiftDisplay) {
