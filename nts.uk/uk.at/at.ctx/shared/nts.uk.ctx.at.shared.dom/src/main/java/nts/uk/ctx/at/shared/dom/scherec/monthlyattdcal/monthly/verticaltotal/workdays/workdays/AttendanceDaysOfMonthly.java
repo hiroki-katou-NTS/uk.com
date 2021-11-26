@@ -60,31 +60,30 @@ public class AttendanceDaysOfMonthly implements Serializable{
 		
 		/** 休暇時の日数カウントを計算する */
 		val workDaysNumberOnLeaveCount = require.workDaysNumberOnLeaveCount(cid);
-		val holidayTimeDays = workDaysNumberOnLeaveCount.countDaysOnHoliday(workType);
+		val holidayTimeDays = workDaysNumberOnLeaveCount.countDaysOnHoliday(workType).v();
 		
-		val totalAttendanceDays = attendanceDays + holidayTimeDays.v();
+		val totalAttendanceDays = attendanceDays + holidayTimeDays;
 		
 		// 労働制を取得
 		if (workingSystem == WorkingSystem.EXCLUDED_WORKING_CALCULATE){
 
 			// 計算対象外の時、無条件で、出勤日数に加算する
 			this.days = this.days.addDays(totalAttendanceDays);
-		}
-		else {
-			// その他労働制の時
+		} else { // その他労働制の時
 			
 			// 勤務種類が連続勤務かどうかを判断する
 			if (workTypeDaysCountTable.isContinuousWorkDay()) {
 				
 				// 1日連続勤務の時、無条件で、出勤日数に加算する
 				this.days = this.days.addDays(totalAttendanceDays);
-			}
-			else {
+			} else {
 				
 				// その他勤務の時、出勤している日なら、出勤日数に加算する
-				if (isAttendanceDay){
-					this.days = this.days.addDays(totalAttendanceDays); 
+				if (isAttendanceDay) {
+					this.days = this.days.addDays(attendanceDays); 
 				}
+				
+				this.days = this.days.addDays(holidayTimeDays); 
 			}
 		}
 	}
