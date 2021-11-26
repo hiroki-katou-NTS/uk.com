@@ -3134,11 +3134,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // 就業時間帯別の利用人数
                 case WorkplaceCounterCategory.WORKTIME_PEOPLE: 
                     let peopleMethod: Array<any> = self.dataAggrerateWorkplace.peopleMethod,
-                        peopleMethodValue = _.filter(peopleMethod, item => !_.isEmpty(item.peopleMethod));
+                        peopleMethodValue = _.filter(peopleMethod, item => !_.isEmpty(item.peopleMethod)),
+                        actualMode =  self.achievementDisplaySelected() == MODE.ACTUAL;
                     if(_.isEmpty(peopleMethodValue)) {
 						leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
 	                    leftHorzContentDs.push({ id: 'id2', title: '', subtitle: '' });
-	                    leftHorzContentDs.push({ id: 'id3', title: '', subtitle: '' });
+	                    if(actualMode) leftHorzContentDs.push({ id: 'id3', title: '', subtitle: '' });
 	                    for(let i=1; i<=3; i++) {
 	                        let objectPeopleMethod = { sid: '' };
 	                        _.set(objectPeopleMethod, 'id', 'id'+i);
@@ -3169,7 +3170,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 							subtitle: getText("KSU001_70") 
 						});
                     	leftHorzContentDs.push({ id: 'id'+(index*3+2), title: '', subtitle: getText("KSU001_71") });
-                    	leftHorzContentDs.push({ id: 'id'+(index*3+3), title: '', subtitle: getText("KSU001_72") });
+                    	if(actualMode) leftHorzContentDs.push({ id: 'id'+(index*3+3), title: '', subtitle: getText("KSU001_72") });
 						for(let i=1; i<=3; i++) {
 	                        let objectPeopleMethod = { sid: '' }, sumPeopleMethod: any = '';
 	                        _.set(objectPeopleMethod, 'id', 'id'+(index*3+i));
@@ -6731,5 +6732,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     enum InnerIndex {
         STARTTIME = 2,
         ENDTIME = 3,
+    }
+    
+    enum MODE {
+        SCHEDULE = 2,
+        ACTUAL = 1,
     }
 }
