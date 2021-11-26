@@ -883,15 +883,21 @@ module nts.uk.ui.at.kdw013.a {
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
                     const { dataResult, lstOvertimeLeaveTime } = response;
-                        return vm.$dialog
-                            .info({ messageId: dataResult.messageAlert })
-                            .then(() => {
+					if(dataResult.errorMap.message){
+						if(_.includes(dataResult.errorMap.message, 'Msg_')){
+							return vm.$dialog.error({ messageId: dataResult.errorMap[0].message });
+						}else{
+							return vm.$dialog.error(dataResult.errorMap.message);
+						}						
+					}else{
+						return vm.$dialog.info({ messageId: 'Msg_15' })
+							.then(() => {
                                 vm.dataChanged(false);
                                 //trigger reload data
                                 vm.dateRange.valueHasMutated();
                             })
                             .then(() => lstOvertimeLeaveTime);
-
+					}
                 })
                 .fail((response: ErrorMessage) => {
                     const { messageId, parameterIds } = response;
@@ -965,7 +971,7 @@ module nts.uk.ui.at.kdw013.a {
 
                 let completeDeletions = _.map(_.uniq(_.difference(removeItemNos, [].concat(dailyManHrTaskNos, currentScreenNos))), no => { return { supNo: no, status: 1 } });
                 
-                deleteList.push({ date, list: overwriteDeletions.concat(completeDeletions) });
+                deleteList.push({ date: new Date(moment(date).format('YYYY-MM-DD')), list: overwriteDeletions.concat(completeDeletions) });
 
             });    
     

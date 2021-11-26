@@ -851,25 +851,17 @@ module nts.uk.ui.at.kdw013.c {
                 })
                 .then((isNew: boolean | null) => {
                     if (isNew) {
-						if (vm.changed()) {
-                        	vm.$dialog
-                            .confirm({ messageId: 'Msg_2094' })
-                            .then((v: 'yes' | 'no') => {
-                                if (v === 'yes') {
-									nts.uk.ui.errors.clearAll();
-									setTimeout(() => {
-										jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
-									}, 100);
-                                    vm.params.close("yes");
-                                }
-                            });
-						} else {
-							nts.uk.ui.errors.clearAll();
-							setTimeout(() => {
-								jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
-							}, 100);
-                            params.close("yes");
-                        }
+                    	vm.$dialog
+                        .confirm({ messageId: 'Msg_2094' })
+                        .then((v: 'yes' | 'no') => {
+                            if (v === 'yes') {
+								nts.uk.ui.errors.clearAll();
+								setTimeout(() => {
+									jQuery('button.btn-error.small.danger').appendTo('#functions-area');									
+								}, 100);
+                                vm.params.close("yes");
+                            }
+                        });
                     } else {						
                         if (vm.changed()) {
                             vm.$dialog
