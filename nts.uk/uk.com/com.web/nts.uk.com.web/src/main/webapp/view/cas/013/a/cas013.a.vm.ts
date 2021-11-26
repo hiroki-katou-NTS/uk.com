@@ -119,7 +119,7 @@ module nts.uk.com.view.cas013.a {
                 {headerText: '', key: 'id', hidden: true},
                 {headerText: nts.uk.resource.getText("CAS013_35"), key: 'employeeCodeAndName', width: 252},
                 {headerText: nts.uk.resource.getText("CAS013_32"), key: 'period', width: 203},
-                {headerText: nts.uk.resource.getText("CAS013_36"), key: 'companyCode', width: 60},
+                {headerText: nts.uk.resource.getText("CAS013_36"), key: 'companyCode', width: 90}
             ]);
 
             vm.columnsIndividual = ko.observableArray([
@@ -466,6 +466,7 @@ module nts.uk.com.view.cas013.a {
         openBModal(): void {
             let vm = this;
             nts.uk.ui.windows.setShared("cid_from_a", vm.companyId());
+            nts.uk.ui.errors.clearAll();
             nts.uk.ui.windows.sub.modal('/view/cas/013/b/index.xhtml').onClosed(() => {
                 let employeeInf = nts.uk.ui.windows.getShared("employeeInf");
                 let cidSelected = nts.uk.ui.windows.getShared("cid");
@@ -477,12 +478,12 @@ module nts.uk.com.view.cas013.a {
                     vm.workplaceCode(employeeInf.workplaceCode);
                     vm.workplaceName(employeeInf.workplaceName);
                     vm.selectedUserID(employeeInf.userId);
+                    $("#daterangepicker").find(".ntsStartDatePicker").focus();
                 }
                 if (!isNullOrUndefined(cidSelected)) {
                     vm.companyName(cidSelected.name);
                     vm.companyCode(cidSelected.code);
                     vm.companyId(cidSelected.id);
-
                 }
 
             });
@@ -490,6 +491,8 @@ module nts.uk.com.view.cas013.a {
 
         save(): void {
             let vm = this;
+            $("#daterangepicker").find(".ntsStartDatePicker").trigger("validate");
+            $("#daterangepicker").find(".ntsEndDatePicker").trigger("validate");
             if (!nts.uk.util.isNullOrUndefined(vm.employyeCode())
                 && !nts.uk.util.isNullOrUndefined(vm.employyeName())
                 && !nts.uk.util.isNullOrUndefined(vm.companyCode())
@@ -509,9 +512,6 @@ module nts.uk.com.view.cas013.a {
                     messageParams: [nts.uk.resource.getText("CAS013_10")]
                 });
             }
-            else if (nts.uk.util.isNullOrUndefined(vm.dateValue().startDate) || nts.uk.util.isNullOrUndefined(vm.dateValue().endDate)) {
-                $(".nts-input").trigger("validate");
-            }
         }
 
         private insert(): void {
@@ -521,7 +521,7 @@ module nts.uk.com.view.cas013.a {
             let userId = vm.selectedUserID();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
-            let cid = vm.companyId();
+            let cid =__viewContext.user.companyId;
             block.invisible();
             let roleGrant = {
                 userID: userId,
@@ -555,7 +555,7 @@ module nts.uk.com.view.cas013.a {
             let userId = vm.selectedUserID();
             let start = nts.uk.time.parseMoment(vm.dateValue().startDate).format();
             let end = nts.uk.time.parseMoment(vm.dateValue().endDate).format();
-            let cid = vm.companyId();
+            let cid =__viewContext.user.companyId;
             let roleGrant = {
                 userID: userId,
                 roleID: roleId,
@@ -585,17 +585,17 @@ module nts.uk.com.view.cas013.a {
             let vm = this;
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
+                    block.invisible();
                     let vm = this;
                     let roleTpye = vm.selectedRoleType();
                     let userId = vm.selectedUserID();
-                    block.invisible();
-                    let cid = vm.companyId();
+                    let cid =__viewContext.user.companyId;
                     let roleGrant = {
                         userID: userId,
                         roleType: roleTpye,
                         companyID: cid
                     };
-                    let id = cid+userId;
+                    let id = cid+"_"+userId+"_"+roleTpye;
                     vm.$ajax('com', API.deleteRoleGrant, roleGrant).done(function () {
                         nts.uk.ui.dialog.info({messageId: "Msg_16"});
                     }).always(() => {

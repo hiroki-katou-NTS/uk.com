@@ -171,7 +171,6 @@ module nts.uk.com.view.cas011.a {
                             let item = employmentRole[i];
                             let display = item.roleCode + " " + item.name;
                             dataA41.push({id : item.roleId, code : item.roleCode, display : display})
-
                         }
                         vm.dataA41(dataA41);
                     }
@@ -188,14 +187,16 @@ module nts.uk.com.view.cas011.a {
                         vm.listAllWebMenus = listWebMenu;
                     }
                     if (itemList && itemList.length > 0) {
-                        if(!isNullOrUndefined(defaultRoleSet))
-                        for (let i = 0; i< itemList.length; i ++){
-                            let item = itemList[i];
-                            if(item.roleSetCd == defaultRoleSet.roleSetCd){
-                                item.defaultRoleSet = true;
-                                item.check = 1;
-                            }else {
-                                item.defaultRoleSet = false;
+                        if(!isNullOrUndefined(defaultRoleSet)){
+                            vm.defaultRoleSetCode(defaultRoleSet.roleSetCd);
+                            for (let i = 0; i< itemList.length; i ++){
+                                let item = itemList[i];
+                                if(item.roleSetCd == defaultRoleSet.roleSetCd){
+                                    item.defaultRoleSet = true;
+                                    item.check = 1;
+                                }else {
+                                    item.defaultRoleSet = false;
+                                }
                             }
                         }
                         vm.listRoleSets(itemList);
@@ -242,12 +243,12 @@ module nts.uk.com.view.cas011.a {
             $('.nts-input').trigger("validate");
 
             if(currentRoleSet.employmentRoleId() == null ||currentRoleSet.employmentRoleId() == ""){
-                $('#employmentRoleId').ntsError('set', { messageId: "Msg_218", messageParams:resource.getText('CAS011_14') });
+                $('#employmentRoleId').ntsError('set', { messageId: "Msg_218", messageParams:[resource.getText('CAS011_14')]});
                 $('#employmentRoleId').focus();
             }
 
             if(currentRoleSet.personInfRoleId() == null || currentRoleSet.personInfRoleId() == ""){
-                $('#personInfRoleId').ntsError('set', { messageId: "Msg_218", messageParams:resource.getText('CAS011_18') });
+                $('#personInfRoleId').ntsError('set', { messageId: "Msg_218", messageParams:[resource.getText('CAS011_18')]});
                 $('#personInfRoleId').focus();
             }
             if (errors.hasError() === false) {
