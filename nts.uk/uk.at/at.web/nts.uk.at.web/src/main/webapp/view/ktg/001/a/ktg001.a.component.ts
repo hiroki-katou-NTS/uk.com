@@ -106,7 +106,7 @@ module nts.uk.ui.ktg001.a {
                             <col width="99%" />
                         </colgroup>
                         <tbody>
-                            <tr data-bind="visible: $component.appRowVisible || $component.aggrRowVisible()">
+                            <tr data-bind="visible: $component.appRowVisible() || $component.aggrRowVisible()">
                                 <td colspan="3" style="border-bottom: 1px solid #BFBFBF;">
                                     <div class="label font-size-sm" data-bind="text: $i18n('KTG001_13')"></div>
                                 </td>
@@ -162,7 +162,7 @@ module nts.uk.ui.ktg001.a {
                                         <div class="label font-size-sm fd-2" data-bind="
                                             text: $i18n('KTG001_15'),
                                             visible: $component.isChangingYM()"
-                                            style="text-align: left;">
+                                            style="text-align: left; background: #7f7f7f;">
                                         </div>
                                         <!-- A10_1 -->
                                         <div class="label font-size-sm flex fd-3 row-reverse" data-bind="
@@ -170,7 +170,7 @@ module nts.uk.ui.ktg001.a {
                                             style="text-align: right; color: #808080; font-weight: 500;">
                                         </div>
                                         <!-- A10_2 -->
-                                        <div class="cf fd-2" data-bind="ntsSwitchButton: {
+                                        <div class="fd-2 fd-center" data-bind="ntsSwitchButton: {
                                             name: $i18n('KTG001_16'),
                                             options: yearMonths,
                                             optionsValue: 'code',
@@ -246,6 +246,10 @@ module nts.uk.ui.ktg001.a {
                 </div>
             </div>
             <style rel="stylesheet">
+                .fd-center {
+                    display: flex;
+                    place-content: center;
+                }
                 .row-reverse {
                     flex-direction: row-reverse;
                 }
