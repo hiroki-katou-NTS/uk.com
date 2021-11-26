@@ -78,7 +78,7 @@ public class CreateRemainInformation {
 	}
 
 	// 休出振替時間の合計を算出する
-	public static int getTransferTotal(Require require, String cid, IntegrationOfDaily domainDaily,
+	private static int getTransferTotal(Require require, String cid, IntegrationOfDaily domainDaily,
 			SubsTransferProcessMode processMode) {
 
 		Optional<HolidayWorkTimeOfDaily> workHolidayTime = domainDaily.getAttendanceTimeOfDailyPerformance()

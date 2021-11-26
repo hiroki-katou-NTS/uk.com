@@ -3,10 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 /**
@@ -14,9 +11,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAt
  * @author do_dt
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 @Getter
 public class DayoffTranferInfor {
 	/**	就業時間帯コード */
@@ -25,6 +19,14 @@ public class DayoffTranferInfor {
 	private Optional<TranferTimeInfor> tranferBreakTime;
 	/**	振替残業時間 */
 	private Optional<TranferTimeInfor> tranferOverTime;
+	
+	public DayoffTranferInfor(Optional<String> workTimeCode, Optional<TranferTimeInfor> tranferBreakTime,
+			Optional<TranferTimeInfor> tranferOverTime) {
+		this.workTimeCode = workTimeCode;
+		this.tranferBreakTime = tranferBreakTime;
+		this.tranferOverTime = tranferOverTime;
+		validate();
+	}
 	
 	// inv-1
 	private void validate() {
@@ -79,6 +81,7 @@ public class DayoffTranferInfor {
 			return this.getTranferBreakTime().get().getCreateAtr();
 		if (this.getTranferOverTime().isPresent())
 			return this.getTranferOverTime().get().getCreateAtr();
-		return null;
+		throw new BusinessException("DayoffTranferInfor validate");
 	}
+
 }

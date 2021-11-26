@@ -2,9 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -14,8 +12,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
  * @author do_dt
  *
  */
-@AllArgsConstructor
-@Setter
 @Getter
 public class InforFormerRemainData {
 	/** 社員ID */
@@ -34,6 +30,22 @@ public class InforFormerRemainData {
 	private CompanyHolidayMngSetting companyHolidaySetting;
 	/** 雇用別休暇管理設定 */
 	private EmploymentHolidayMngSetting employmentHolidaySetting;
+	
+	//[C-1] 作る
+	public InforFormerRemainData(String sid, GeneralDate ymd, boolean dayOffTimeIsUse,
+			Optional<WorkTypeRemainInfor> workTypeRemain, List<VacationTimeInfor> vactionTime,
+			Optional<DayoffTranferInfor> dayOffTranfer, CompanyHolidayMngSetting companyHolidaySetting,
+			EmploymentHolidayMngSetting employmentHolidaySetting) {
+		this.sid = sid;
+		this.ymd = ymd;
+		this.dayOffTimeIsUse = dayOffTimeIsUse;
+		this.workTypeRemain = workTypeRemain;
+		this.vactionTime = vactionTime;
+		this.dayOffTranfer = dayOffTranfer;
+		this.companyHolidaySetting = companyHolidaySetting;
+		this.employmentHolidaySetting = employmentHolidaySetting;
+		validate();
+	}
 	
 	// inv-1
 	private void validate() {
@@ -58,7 +70,7 @@ public class InforFormerRemainData {
 	}
 	
 	//日数単位の作成元区分を取得する
-	public Optional<CreateAtr> getCreateAtr() {
+	public Optional<CreateAtr> getCreateAtrOfDaysUnit() {
 		validate();
 		if(this.getWorkTypeRemain().isPresent())
 			return Optional.of(this.getWorkTypeRemain().get().getCreateData());
