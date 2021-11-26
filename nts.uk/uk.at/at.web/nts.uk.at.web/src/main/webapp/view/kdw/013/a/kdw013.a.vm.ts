@@ -882,7 +882,7 @@ module nts.uk.ui.at.kdw013.a {
                 //作業を登録する
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
-                    const { dataResult, lstOvertimeLeaveTime } = response;
+                    const { dataResult, lstOvertimeLeaveTime, alarmMsg_2081 } = response;
 					if(dataResult.errorMap.message){
 						if(_.includes(dataResult.errorMap.message, 'Msg_')){
 							return vm.$dialog.error({ messageId: dataResult.errorMap[0].message });
@@ -890,7 +890,19 @@ module nts.uk.ui.at.kdw013.a {
 							return vm.$dialog.error(dataResult.errorMap.message);
 						}						
 					}else{
-						return vm.$dialog.info({ messageId: 'Msg_15' })
+						
+						let messageId = '';
+						let messageParams = [];
+						
+						if (alarmMsg_2081.length > 0) {
+							messageId = 'Msg_2081';
+							messageParams = alarmMsg_2081[0].parameters;
+						} else {
+							messageId = 'Msg_15';
+							messageParams = []
+						}
+						
+						return vm.$dialog.info({ messageId: messageId, messageParams: messageParams })
 							.then(() => {
                                 vm.dataChanged(false);
                                 //trigger reload data

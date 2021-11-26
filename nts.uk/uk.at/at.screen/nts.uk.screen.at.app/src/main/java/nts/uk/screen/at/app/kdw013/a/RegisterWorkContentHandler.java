@@ -101,7 +101,7 @@ public class RegisterWorkContentHandler extends CommandHandlerWithResult<Registe
 
 		//6. アラーム発生対象日を確認する
 
-		checkAlarmTargetDate.checkAlarm(command.getEmployeeId(),  new DatePeriod(startDate, endDate));
+		result.setAlarmMsg_2081(checkAlarmTargetDate.checkAlarm(command.getEmployeeId(),  new DatePeriod(startDate, endDate)));
 		
 		
 			
