@@ -835,26 +835,13 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			if (isOverWriteOpt.get()){
 				if(isOverWritePeriod.isPresent()){
 
-					//上書き対象期間内の暫定年休管理データを削除(日数単位のデータ)
-					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()) && x.getUsedNumber().isUseDay());
+					//上書き対象期間内の暫定年休管理データを削除
+					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()));
 
 					// 上書き用データがある時、追加する
 					if (forOverWriteListOpt.isPresent()){
 						val overWrites = forOverWriteListOpt.get();
 						for (val overWrite : overWrites){
-
-							// 時間休暇の場合は、addする前に、時間休暇の種類を参照し、同じ種類がすでに存在する場合は削除してから上書きする。
-							if (!overWrite.getUsedNumber().isUseDay() && overWrite.getAppTimeTypeEnum().isPresent()) {
-								val sameDatas = results.stream()
-										.filter(x -> x.getYmd().equals(overWrite.getYmd())
-												&& x.getAppTimeTypeEnum().isPresent())
-										.collect(java.util.stream.Collectors.toList());
-								for (val sameData : sameDatas) {
-									if (sameData.getAppTimeTypeEnum().get()
-											.equals(overWrite.getAppTimeTypeEnum().get()))
-										results.removeIf(x -> x.getRemainManaID().equals(sameData.getRemainManaID()));
-								}
-							}
 
 							// 上書き用データを追加
 							results.add(overWrite);

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -8,6 +10,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 
 @Getter
@@ -168,6 +172,31 @@ public class AnnualLeaveMaxData extends AggregateRoot {
 
 	private static Integer toInteger(BigDecimal bigNumber) {
 		return bigNumber != null ? bigNumber.intValue() : new Integer(0);
+	}
+	
+	/**
+	 * 年休上限エラーチェック
+	 * @param aggregatePeriodWork
+	 * @return
+	 */
+	public List<AnnualLeaveError>  ErroeCheck(GrantBeforeAfterAtr grantAtr){
+		List<AnnualLeaveError> errorList = new ArrayList<>();
+		
+		if(this.halfdayAnnualLeaveMax.isPresent()){
+			Optional<AnnualLeaveError> error = this.halfdayAnnualLeaveMax.get().ExcessMaxErroeCheck(grantAtr);
+			if(error.isPresent()){
+				errorList.add(error.get());
+			}
+		}
+		
+		if(this.timeAnnualLeaveMax.isPresent()){
+			Optional<AnnualLeaveError> error = this.timeAnnualLeaveMax.get().ExcessMaxErroeCheck(grantAtr);
+			if(error.isPresent()){
+				errorList.add(error.get());
+			}
+		}
+		
+		return errorList;
 	}
 
 }
