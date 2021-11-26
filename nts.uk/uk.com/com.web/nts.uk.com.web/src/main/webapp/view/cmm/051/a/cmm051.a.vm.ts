@@ -373,7 +373,6 @@ module nts.uk.com.view.cmm051.a {
             });
             vm.workPlaceId.subscribe((e) => {
                 vm.selectedEmCode(null);
-                vm.employeeId(null);
                 if (!isNullOrUndefined(e)) {
                     let info = _.find(vm.workPlaceList(), (i) => i.id == e);
                     if (!isNullOrEmpty(info)) {
