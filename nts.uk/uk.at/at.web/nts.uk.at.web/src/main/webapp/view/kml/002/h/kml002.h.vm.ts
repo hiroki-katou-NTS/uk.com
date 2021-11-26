@@ -59,7 +59,8 @@ module nts.uk.at.view.kml002.k {
              }); 
             $('#screen-k').click(function(){
                 self.clearErrorAnnual();
-                self.clearErrorMonth();               
+                self.clearErrorMonth();   
+                self.clearError();            
                 self.loadDataScreenK();
             });       
 
