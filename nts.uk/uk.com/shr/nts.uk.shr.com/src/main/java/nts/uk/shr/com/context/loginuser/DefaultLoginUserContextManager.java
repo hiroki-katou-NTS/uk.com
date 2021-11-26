@@ -201,6 +201,9 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 	@Override
 	public String toBase64() {
 		val context = SessionContextProvider.get().get(LoginUserContext.KEY_SESSION_SCOPED);
+		if (context == null) {
+			throw new RuntimeException("LoginUserContext is null");
+		}
 		return ObjectSerializer.toBase64((Serializable) context);
 	}
 
