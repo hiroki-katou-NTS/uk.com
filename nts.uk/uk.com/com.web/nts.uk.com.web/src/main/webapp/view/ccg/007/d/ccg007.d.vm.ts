@@ -279,7 +279,6 @@
                                 nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                                 //Save LoginInfo
                                 nts.uk.characteristics.save("form3LoginInfo", { companyCode: self.selectedCompanyCode(), employeeCode: self.employeeCode() }).done(function () {
-                                    self.resetToppageStorage();
                                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                                 });
                             });
@@ -311,11 +310,9 @@
                                     //Save LoginInfo
                                     nts.uk.characteristics.save("form3LoginInfo", { companyCode: self.selectedCompanyCode(), employeeCode: self.employeeCode() })
                                         .done(function () {
-                                            self.resetToppageStorage();
                                             nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                                         });
                                 } else {
-                                    self.resetToppageStorage();
                                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                                 }
                             });
@@ -347,7 +344,6 @@
                         nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                         //Save LoginInfo
                         nts.uk.characteristics.save("form3LoginInfo", { companyCode: self.selectedCompanyCode(), employeeCode: self.employeeCode() }).done(function () {
-                            self.resetToppageStorage();
                             nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                         });
                     }
@@ -385,13 +381,6 @@
                 service.account().done(data => {
                     alert('domain: ' + data.domain + '\n' + 'user name: ' + data.userName)
                 });
-            }
-
-            private resetToppageStorage() {
-                const self = this;
-                const TOPPAGE_STORAGE_KEY = ['KTG001_INITIAL_DATA', 'KTG004_YM_PARAM',];
-                // Remove all cache of KTG001 AND KTG004 Widget
-                _.forEach(TOPPAGE_STORAGE_KEY, key => self.$window.storage(key, null));
             }
         }
 

@@ -14,6 +14,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		getLoginUser: "screen/com/ccg008/get-user"
 	};
 
+	const TOPPAGE_STORAGE_KEY = ['KTG001_INITIAL_DATA', 'KTG004_YM_PARAM',];
+
 	const getWidgetName = (type: number) => {
 		switch (type) {
 			case 0:
@@ -160,6 +162,13 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		constructor() {
 			super();
 			const vm = this;
+
+			const fromScreen = __viewContext.transferred.value;
+			if (fromScreen && fromScreen.screen && fromScreen.screen === 'login') {
+				// Remove all cache of KTG001 AND KTG004 Widget
+				_.forEach(TOPPAGE_STORAGE_KEY, key => vm.$window.storage(key, null));
+			}
+
 			vm.classLayoutName = ko.computed({
 				read: () => {
 					const ltpy = ko.unwrap<LAYOUT_DISPLAY_TYPE>(vm.layoutDisplayType);
