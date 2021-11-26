@@ -445,7 +445,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 formattedDate.append("]");
                 hasBracket = true;
             }
-            if(hasBracket || finalHasH){
+            if(!hasBracket && !finalHasH){
                 formattedDate.insert(0," ");
                 formattedDate.append(" ");
             }
@@ -482,7 +482,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             hasBracket = true;
 
         }
-        if(hasBracket || hasH){
+        if(!hasBracket && !hasH){
             formattedDate.insert(0," ");
             formattedDate.append(" ");
         }
@@ -502,7 +502,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             formattedDate.append("]");
             hasBracket = true;
         }
-        if(hasBracket){
+        if(!hasBracket){
             formattedDate.insert(0," ");
             formattedDate.append(" ");
         }
