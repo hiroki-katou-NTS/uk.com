@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroup;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeGroupRepository;
 import nts.uk.ctx.at.record.dom.daily.timegroup.TaskTimeZone;
 import nts.uk.ctx.at.record.infra.entity.daily.timegroup.KsrdtTaskTsGroup;
+import nts.uk.ctx.at.record.infra.entity.daily.timegroup.KsrdtTaskTsGroupPk;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -31,6 +32,8 @@ public class JpaTaskTimeGroupRepository extends JpaRepository implements TaskTim
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT g FROM KsrdtTaskTsGroup g";
 	private static final String SELECT_BY_SID = SELECT_ALL_QUERY_STRING + " WHERE g.pk.sId = :sId";
 	private static final String SELECT_BY_SID_AND_DATE = SELECT_BY_SID + " AND g.pk.date = :date";
+	
+	private static final String DELETE_BY_DATE= "DELETE FROM KsrdtTaskTsGroup g WHERE g.pk.sId = :sId AND g.pk.date = :date";
 
 	@Override
 	public void insert(TaskTimeGroup tg) {
@@ -46,14 +49,9 @@ public class JpaTaskTimeGroupRepository extends JpaRepository implements TaskTim
 
 	@Override
 	public void delete(String sId, GeneralDate date) {
-
-		List<KsrdtTaskTsGroup> entities = this.queryProxy().query(SELECT_BY_SID_AND_DATE, KsrdtTaskTsGroup.class)
-				.setParameter("date", date).setParameter("sId", sId).getList();
-
-		if (entities.size() > 0) {
-			this.commandProxy().removeAll(entities);
-		}
-		this.getEntityManager().flush();
+		this.getEntityManager().createQuery(DELETE_BY_DATE)
+		.setParameter("date", date).setParameter("sId", sId)
+		.executeUpdate();
 	}
 
 	@Override
