@@ -122,8 +122,8 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}
 			InterimRemainCreateDataInputPara dataCreate = new InterimRemainCreateDataInputPara(inputParam.getCid(),
 					inputParam.getSid(), dateData, inputParam.getRecordData(), inputParam.getScheData(),
-					inputParam.getAppData(), false);
-			
+					inputParam.getAppData());
+
 			//inputの情報から、暫定データを差分作成する。
 			Map<GeneralDate, DailyInterimRemainMngData> mapDataOutputTmp = InterimRemainOffPeriodCreateData
 					.createInterimRemainByScheRecordApp(require, cacheCarrier, dataCreate);
