@@ -51,6 +51,10 @@ public class LeaveOverNumber {
 		}
 	}
 
+	public LeaveOverNumber(Double days) {
+		this.numberOverDays = new DayNumberOver(days == null? 0.0d: days.doubleValue());
+		this.timeOver = Optional.empty();
+	}
 	public LeaveOverNumber(Double days, Integer minutes) {
 		this.numberOverDays = new DayNumberOver(days == null? 0.0d: days.doubleValue());
 		this.timeOver = minutes != null ? Optional.of(new TimeOver(minutes)) : Optional.empty();

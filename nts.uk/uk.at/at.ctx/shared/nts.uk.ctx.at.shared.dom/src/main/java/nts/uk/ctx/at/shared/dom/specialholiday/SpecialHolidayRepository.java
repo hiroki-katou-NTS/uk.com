@@ -18,14 +18,6 @@ public interface SpecialHolidayRepository {
 	List<SpecialHoliday> findByCompanyId(String companyId);
 	
 	/**
-	 * ドメインモデル「特別休暇」を取得する
-	 * @param companyId
-	 * @param specialHolidayCode
-	 * @return
-	 */
-	Optional<SpecialHoliday> findByCode(String companyId, int specialHolidayCode);
-	
-	/**
 	 * 
 	 * @param companyId
 	 * @param specialHolidayCodes

@@ -39,7 +39,6 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 	public void add(AnnualLeaveMaxData maxData) {
 		KrcmtAnnLeaMax entity = new KrcmtAnnLeaMax();
 		entity.sid = maxData.getEmployeeId();
-		entity.cid = maxData.getCompanyId();
 		if ( maxData.getHalfdayAnnualLeaveMax().isPresent()) {
 			HalfdayAnnualLeaveMax halfday = maxData.getHalfdayAnnualLeaveMax().get();
 			entity.maxTimes = halfday.getMaxTimes().v();
@@ -152,7 +151,6 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 			
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
-			sql = sql.replace("CID_VAL", "'"+ c.getCompanyId() + "'");
 			
 			Optional<HalfdayAnnualLeaveMax> maxData = c.getHalfdayAnnualLeaveMax();
 			if ( maxData.isPresent()) {
@@ -204,7 +202,6 @@ public class JpaAnnLeaMaxDataRepo extends JpaRepository implements AnnLeaMaxData
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 			
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
-			sql = sql.replace("CID_VAL", "'"+ c.getCompanyId() + "'");
 			
 			Optional<HalfdayAnnualLeaveMax> maxData = c.getHalfdayAnnualLeaveMax();
 			if ( maxData.isPresent()) {

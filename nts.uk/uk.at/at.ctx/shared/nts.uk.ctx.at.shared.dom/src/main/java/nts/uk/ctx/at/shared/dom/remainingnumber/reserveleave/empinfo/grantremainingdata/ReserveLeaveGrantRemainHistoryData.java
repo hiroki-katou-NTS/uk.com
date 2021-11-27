@@ -25,17 +25,11 @@ public class ReserveLeaveGrantRemainHistoryData extends ReserveLeaveGrantRemaini
 
 	public ReserveLeaveGrantRemainHistoryData(ReserveLeaveGrantRemainingData data, YearMonth yearMonth,
 			ClosureId closureId, ClosureDate closureDate) {
-		super();
-		this.leaveID = data.getLeaveID();
-		this.employeeId = data.getEmployeeId();
+		super(data.getLeaveID(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
+				data.getExpirationStatus(), data.getRegisterType(), data.getDetails());
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;
-		this.grantDate = data.getGrantDate();
-		this.deadline = data.getDeadline();
-		this.expirationStatus = data.getExpirationStatus();
-		this.registerType = data.getRegisterType();
-		this.details = data.getDetails();
 	}
 
 }

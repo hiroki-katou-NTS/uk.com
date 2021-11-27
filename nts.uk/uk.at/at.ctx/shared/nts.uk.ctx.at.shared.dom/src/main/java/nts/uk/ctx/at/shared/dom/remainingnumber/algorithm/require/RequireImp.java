@@ -492,6 +492,10 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo) {
 		return specialHolidayRepo.findBySphdSpecLeave(cid, sphdSpecLeaveNo);
 	}
+	@Override
+	public List<Integer> getAbsenceNumber(String cid, int absenseNo) {
+		return specialHolidayRepo.findByAbsframeNo(cid, absenseNo);
+	}
 
 	@Override
 	public Optional<Closure> closure(String companyId, int closureId) {

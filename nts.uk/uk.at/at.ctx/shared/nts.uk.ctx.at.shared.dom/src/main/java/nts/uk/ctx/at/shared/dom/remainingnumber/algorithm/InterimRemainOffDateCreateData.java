@@ -652,9 +652,6 @@ public class InterimRemainOffDateCreateData {
 		//勤務種類の分類をチェックする
 		switch (wkClasssifi) {
 		case Absence:
-			// 子の看護介護の残数発生使用明細を設定する
-			setCare(require, cid, day, workTypeSetList, result);
-			break;
 		case SpecialHoliday:
 			// INPUT.勤務種類の分類＝特別休暇
 			// 特休使用明細を追加する
@@ -666,6 +663,12 @@ public class InterimRemainOffDateCreateData {
 				if (!holidaySpecialCd.isEmpty()) {
 					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), day);
 					lstSpeUseDetail.add(detailData);
+				}else{
+					List<Integer> absenceSpecialCd = require.getAbsenceNumber(cid, x.getSumAbsenseNo());
+					if (!absenceSpecialCd.isEmpty()) {
+						SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(absenceSpecialCd.get(0), day);
+						lstSpeUseDetail.add(detailData);
+					}
 				}
 			});
 
@@ -1538,6 +1541,8 @@ public class InterimRemainOffDateCreateData {
 	public static interface RequireM8 {
 
 		List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo);
+		
+		List<Integer> getAbsenceNumber(String cid, int absenseNo);
 
 		CheckCareResult checkCare(WorkTypeSet wkSet, String cid);
 

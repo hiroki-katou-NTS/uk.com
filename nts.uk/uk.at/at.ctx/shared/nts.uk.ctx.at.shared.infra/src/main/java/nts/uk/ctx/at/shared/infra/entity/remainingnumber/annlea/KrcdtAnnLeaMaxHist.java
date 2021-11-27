@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Time
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -29,16 +30,13 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_HDPAID_MAX_HIST")
-public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
+public class KrcdtAnnLeaMaxHist extends ContractCompanyUkJpaEntity {
 
 	private static final long serialVersionUID = 1L;
 
 	/** プライマリキー */
 	@EmbeddedId
 	public KrcdtAnnLeaMaxHistPK PK;
-
-	@Column(name = "CID")
-	public String cid;
 
 	//半日年休上限回数
 	@Column(name = "MAX_TIMES")
@@ -75,11 +73,10 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 		return this.PK;
 	}
 
-	public KrcdtAnnLeaMaxHist(String sid, String cid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
+	public KrcdtAnnLeaMaxHist(String sid, Integer maxTimes, Integer usedTimes, Integer remainingTimes,
 			Integer maxMinutes, Integer usedMinutes, Integer remainingMinutes, int yearMonth, int closureId,
 			Integer closeDay, Integer isLastDay) {
 		super();
-		this.cid = cid;
 		this.maxTimes = maxTimes;
 		this.usedTimes = usedTimes;
 		this.remainingTimes = remainingTimes;
@@ -90,7 +87,7 @@ public class KrcdtAnnLeaMaxHist extends ContractUkJpaEntity {
 	}
 
 	public static KrcdtAnnLeaMaxHist fromDomain(AnnualLeaveMaxHistoryData domain) {
-		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(), domain.getCompanyId(),
+		return new KrcdtAnnLeaMaxHist(domain.getEmployeeId(),
 				domain.getHalfdayAnnualLeaveMax().isPresent()
 						? domain.getHalfdayAnnualLeaveMax().get().getMaxTimes().v() : null,
 				domain.getHalfdayAnnualLeaveMax().isPresent()

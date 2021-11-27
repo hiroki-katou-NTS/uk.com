@@ -56,6 +56,20 @@ public class LeaveUsedNumber{
 		return domain;
 	}
 
+	public static LeaveUsedNumber createFromJavaType(
+			Double days,
+			int minutes,
+			Double stowageDays,
+			Double leaveOverLimitNumber){
+		
+		LeaveUsedNumber domain = new LeaveUsedNumber();
+		domain.days = new LeaveUsedDayNumber(days);
+		domain.minutes = Optional.of(new LeaveUsedTime(minutes));
+		domain.stowageDays = Optional.of(new LeaveUsedDayNumber(stowageDays));
+		domain.leaveOverLimitNumber = Optional.of(new LeaveOverNumber(leaveOverLimitNumber));
+		return domain;
+	}
+	
 	/**
 	 * 日数、時間ともに０のときはTrue,それ以外はfalseを返す
 	 * @return

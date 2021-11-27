@@ -50,13 +50,13 @@ public class MonthlyClosureRemainNumProcess {
 				.then(CompensatoryHolidayProcess.compensatoryHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng))
 				/** 特別休暇処理 */
 				.then(SpecialHolidayProcess.specialHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng.getDaily()))
-				/** TODO: 公休処理 */
+				/** 公休処理 */
 				.then(PublicHolidayProcess.process(require, cacheCarrier, period, empId, interimRemainMng.getDaily()))
 				/** TODO: 60H超休処理 */
 				
-				/** TODO: 子の看護休暇処理 */
+				/** 子の看護休暇処理 */
 				.then(ChildCareProcess.process(require, cacheCarrier, period, empId, interimRemainMng.getDaily()))
-				/** TODO: 介護休暇処理 */
+				/** 介護休暇処理 */
 				.then(CareProcess.process(require, cacheCarrier, period, empId, interimRemainMng.getDaily()));
 	}
 	
