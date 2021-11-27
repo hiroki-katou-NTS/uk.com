@@ -42,7 +42,7 @@
         </div>
       </div>
       <div id="functions-area-bottom">
-        <button id="B4_2" class="large proceed" data-bind="click: proceedTestEmail" tabindex="2">#{i18n.getText('CMM050_29')}</button>
+        <button id="B4_2" class="large proceed" data-bind="click: proceedTestEmail, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('CMM050_29')}</button>
         <button id="B4_3" class="large" data-bind="click: closeDialog" tabindex="3">#{i18n.getText('CMM050_30')}</button>
       </div>
 		</ui:define>
