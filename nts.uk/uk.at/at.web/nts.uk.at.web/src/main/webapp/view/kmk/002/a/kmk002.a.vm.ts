@@ -28,6 +28,7 @@ module nts.uk.at.view.kmk002.a {
                     self.langJP((value == "ja") ? true : false);
                 });
 
+
             }
 
             /**
@@ -2414,10 +2415,12 @@ module nts.uk.at.view.kmk002.a {
                 let param = <ParamToD>{};
                 param.formulaId = dto.formulaId;
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
+                param.formulaNumber = dto.formulaAtr;
                 param.formulaName = dto.formulaName;
                 param.formulaSetting = dto.formulaSetting;
                 param.selectableFormulas = self.getSelectableFormulas(self.orderNo());
                 param.operatorDatasource = Enums.ENUM_OPT_ITEM.operatorAtr;
+                param.enums =  Enums.ENUM_OPT_ITEM;
 
                 nts.uk.ui.windows.setShared('paramToD', param);
 
@@ -2660,11 +2663,13 @@ module nts.uk.at.view.kmk002.a {
         }
         export interface ParamToD {
             formulaId: string;
+            formulaNumber:number;
             formulaName: string;
             formulaAtr: string;
             formulaSetting: FormulaSettingDto;
             operatorDatasource: Array<EnumConstantDto>;
             selectableFormulas: Array<FormulaDto>;
+            enums: any;
         }
     }
 }
