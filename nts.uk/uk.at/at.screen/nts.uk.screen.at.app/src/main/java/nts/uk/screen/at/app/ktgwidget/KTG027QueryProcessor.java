@@ -404,6 +404,13 @@ public class KTG027QueryProcessor {
 
 		// [RQ30]社員所属職場履歴を取得
 		SWkpHistImport sWkpHistImport = this.employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriod.get().end());
+		
+		if (sWkpHistImport == null) {
+			return AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
+					.personalInformationOfSubordinateEmployees(new ArrayList<PersonEmpBasicInfoImport>())
+					.overtimeOfSubordinateEmployees(new ArrayList<AgreementTimeOfManagePeriodDto>())
+					.build();
+		}
 
 		// [No.573]職場の下位職場を基準職場を含めて取得する
 		List<String> lstWorkPlaceId = this.workplacePub.getWorkplaceIdAndChildren(
@@ -428,7 +435,7 @@ public class KTG027QueryProcessor {
 		// List＜管理期間の36協定時間＞
 		AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
 				.personalInformationOfSubordinateEmployees(listPersonEmp)
-				.OvertimeOfSubordinateEmployees(listAgreementTimeDetail).build();
+				.overtimeOfSubordinateEmployees(listAgreementTimeDetail).build();
 
 		return result;
 	}
