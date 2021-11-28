@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
@@ -61,6 +62,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     @Inject
     private StandardMenuRepository standardMenuRepo;
+
+    @Inject
+    private WeekRuleManagementRepo weekRuleManagementRepo;
 
     @Override
     public void generate(FileGeneratorContext context, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) {
@@ -567,7 +571,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         val startDateValue = dataSource.getDateInformationList().get(0).getDayOfWeek().value;
         int count = ArrayUtils.indexOf(headerList.toArray(), startDateValue);
 
-        boolean isFirst = true;
+        val weekRuleManagement = weekRuleManagementRepo.find(AppContexts.user().companyId());
+        boolean isFirst = weekRuleManagement.isPresent() && weekRuleManagement.get().getDayOfWeek().value == startDayOfWeek;
         List<PersonalScheduleByIndividualFormat> dataList = new ArrayList<>();
         PersonalScheduleByIndividualFormat format = new PersonalScheduleByIndividualFormat();
         Map<Integer, String> holiday = new HashMap<>();
