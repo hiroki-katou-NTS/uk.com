@@ -2462,11 +2462,18 @@ module nts.uk.at.view.kmk002.a {
                 let selectableFormulas = self.getSelectableFormulas(self.orderNo());
                 left = _.find(selectableFormulas, item => item.formulaId == dto.leftItem.formulaItemId);
                 right = _.find(selectableFormulas, item => item.formulaId == dto.leftItem.formulaItemId);
-                let isTimeLeft = left.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
-                let isTimeRight = right.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
-                let isNumberLeft =   left.formulaAtr == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
-                let isNumberRight =   right.formulaAtr == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
-
+                let isTimeLeft = false;
+                let isNumberLeft = false;
+                let isTimeRight = false;
+                let isNumberRight = false;
+                if(!isNullOrUndefined(left)){
+                    isTimeLeft = left.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
+                    isNumberLeft = left.formulaAtr == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
+                }
+                if(!isNullOrUndefined(right)) {
+                    isTimeRight =  right.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
+                    isNumberRight =   right.formulaAtr == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
+                }
                 // set left item
                 if (self.isSettingMethodOfItemSelection(dto.leftItem)) {
                     leftItem = self.getSymbolById(dto.leftItem.formulaItemId);
