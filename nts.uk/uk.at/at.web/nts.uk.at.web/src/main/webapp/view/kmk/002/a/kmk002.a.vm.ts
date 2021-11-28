@@ -2473,8 +2473,8 @@ module nts.uk.at.view.kmk002.a {
                 } else {
                     leftItem = dto.leftItem.inputValue;
                     if((isTimeLeft && isTimeRight && (dto.operator == 0 ||dto.operator ==1))
-                        ||isTimeLeft && isNumberRight && (dto.operator == 0 )
-                        ||isNumberLeft && isTimeRight&& (dto.operator == 3)){
+                        ||(isTimeLeft && isNumberRight && (dto.operator == 2 ))
+                        ||(isNumberLeft && isTimeRight&& (dto.operator == 3))){
                         leftItem  = this.formatTime(dto.leftItem.inputValue)
                     }
                 }
@@ -2485,8 +2485,8 @@ module nts.uk.at.view.kmk002.a {
                 } else {
                     rightItem = dto.rightItem.inputValue;
                     if((isTimeLeft && isTimeRight && (dto.operator == 0 ||dto.operator ==1))
-                        ||isTimeLeft && isNumberRight && (dto.operator == 0 )
-                        ||isNumberLeft && isTimeRight&& (dto.operator == 3)){
+                        ||(isTimeLeft && isNumberRight && (dto.operator == 2 ))
+                        ||(isNumberLeft && isTimeRight&& (dto.operator == 3))){
                         rightItem  = this.formatTime(dto.rightItem.inputValue)
                     }
 

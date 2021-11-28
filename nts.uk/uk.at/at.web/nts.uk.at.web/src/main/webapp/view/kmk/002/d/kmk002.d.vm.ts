@@ -280,9 +280,9 @@ module nts.uk.at.view.kmk002.d {
                 //2 : *
                 //3 : /
                 if(!isNullOrUndefined(rightItem) &&!isNullOrUndefined(formulaNumber)&&!isNullOrUndefined(operator)){
-                    if(seft.isTimeSelected(formulaNumber) && seft.isTimeSelected(rightItem.formulaAtr) && (operator == 0 ||operator==1)
-                        ||seft.isTimeSelected(formulaNumber) && seft.isNumberSelected(rightItem.formulaAtr) && (operator == 0 )
-                        ||seft.isNumberSelected(formulaNumber) && seft.isTimeSelected(rightItem.formulaAtr) && (operator == 3)){
+                    if((seft.isTimeSelected(formulaNumber) && seft.isTimeSelected(rightItem.formulaAtr) && (operator == 0 ||operator==1))
+                        ||(seft.isTimeSelected(formulaNumber) && seft.isNumberSelected(rightItem.formulaAtr) && (operator == 2 ))
+                        ||(seft.isNumberSelected(formulaNumber) && seft.isTimeSelected(rightItem.formulaAtr) && (operator == 3))){
                         return true
                     }else {
                         return false;
@@ -303,9 +303,9 @@ module nts.uk.at.view.kmk002.d {
                 //2 : *
                 //3 : /
                 if(!isNullOrUndefined(leftItem) &&!isNullOrUndefined(formulaNumber)&&!isNullOrUndefined(operator)){
-                    if(seft.isTimeSelected(formulaNumber) && seft.isTimeSelected(leftItem.formulaAtr) && (operator == 0 ||operator==1)
-                        ||seft.isTimeSelected(formulaNumber) && seft.isNumberSelected(leftItem.formulaAtr) && (operator == 0 )
-                        ||seft.isNumberSelected(formulaNumber) && seft.isTimeSelected(leftItem.formulaAtr) && (operator == 3)){
+                    if((seft.isTimeSelected(formulaNumber) && seft.isTimeSelected(leftItem.formulaAtr) && (operator == 0 ||operator==1))
+                        ||(seft.isTimeSelected(formulaNumber) && seft.isNumberSelected(leftItem.formulaAtr) && (operator == 2 ))
+                        ||(seft.isNumberSelected(formulaNumber) && seft.isTimeSelected(leftItem.formulaAtr) && (operator == 3))){
                         return true
                     }else {
                         return false;
