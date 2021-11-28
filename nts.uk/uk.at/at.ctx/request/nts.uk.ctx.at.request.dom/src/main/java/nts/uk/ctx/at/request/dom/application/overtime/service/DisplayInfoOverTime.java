@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateApplication;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeWorkMultipleTimes;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 
 /**
@@ -45,4 +46,6 @@ public class DisplayInfoOverTime {
 	private CalculatedFlag calculatedFlag;
 	// 申請中の勤務情報
 	private Optional<WorkInfo> workInfo = Optional.empty();
+	// 最新の複数回残業申請
+	private Optional<OvertimeWorkMultipleTimes> latestMultipleOvertimeApp = Optional.empty();
 }

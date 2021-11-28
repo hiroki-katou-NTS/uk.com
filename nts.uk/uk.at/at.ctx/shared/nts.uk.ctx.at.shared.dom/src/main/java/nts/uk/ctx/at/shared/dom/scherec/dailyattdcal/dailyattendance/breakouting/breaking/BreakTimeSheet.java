@@ -58,7 +58,7 @@ public class BreakTimeSheet extends DomainObject {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		if(startTime != null && endTime != null){
-			this.breakTime = new AttendanceTime(startTime.valueAsMinutes() - endTime.valueAsMinutes());
+			this.breakTime = new AttendanceTime(endTime.valueAsMinutes() - startTime.valueAsMinutes());
 		} else {
 			this.breakTime = AttendanceTime.ZERO;
 		}
@@ -70,7 +70,7 @@ public class BreakTimeSheet extends DomainObject {
 	 * @return　重複する時間（分）　　重複していない場合は0を返す
 	 */
 	public int calculateMinutesDuplicatedWith(TimeSpanForCalc baseTimeSheet) {
-		return baseTimeSheet.getDuplicatedWith(baseTimeSheet)
+		return this.convertToTimeSpanForCalc().getDuplicatedWith(baseTimeSheet)
 				.map(ts -> ts.lengthAsMinutes())
 				.orElse(0);
 	}

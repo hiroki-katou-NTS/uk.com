@@ -7,7 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 /**
@@ -62,6 +65,13 @@ public class AppOverTime extends Application {
 		this.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD());
 	}
 	public Application getApplication() {
+		this.validate();
+		Optional<AppReason> opAppReason = this.overTimeClf == OvertimeAppAtr.MULTIPLE_OVERTIME
+				? this.multipleTimesOp.get().createApplyReason()
+				: this.getOpAppReason();
+		Optional<AppStandardReasonCode> opAppStandardReasonCD = this.overTimeClf == OvertimeAppAtr.MULTIPLE_OVERTIME
+				? this.multipleTimesOp.get().createFixedReason()
+				: this.getOpAppStandardReasonCD();
 		return new Application(
 				this.getVersion(),
 				this.getAppID(),
@@ -76,8 +86,16 @@ public class AppOverTime extends Application {
 				this.getOpReversionReason(),
 				this.getOpAppStartDate(),
 				this.getOpAppEndDate(),
-				this.getOpAppReason(),
-				this.getOpAppStandardReasonCD());
+				opAppReason,
+				opAppStandardReasonCD
+		);
+	}
+
+	@Override
+	public void validate() {
+		super.validate();
+		if (overTimeClf == OvertimeAppAtr.MULTIPLE_OVERTIME && !multipleTimesOp.isPresent())
+			throw new BusinessException("Msg_3248");
 	}
 	
 }

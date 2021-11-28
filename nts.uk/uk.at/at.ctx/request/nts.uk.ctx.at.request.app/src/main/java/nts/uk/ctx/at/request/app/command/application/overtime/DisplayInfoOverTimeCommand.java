@@ -8,10 +8,15 @@ import java.util.stream.Collectors;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
+import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.*;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+import org.apache.commons.lang3.StringUtils;
 
 public class DisplayInfoOverTimeCommand {
 	// 基準日に関する情報
@@ -32,9 +37,10 @@ public class DisplayInfoOverTimeCommand {
 	public Integer calculatedFlag;
 	
 	public WorkInfo workInfo;
+
+	public List<MultipleOvertimeContentCommand> latestMultipleOvertimeApp;
 	
 	public DisplayInfoOverTime toDomain() {
-		
 		return new DisplayInfoOverTime(
 				infoBaseDateOutput.toDomain(),
 				infoNoBaseDate.toDomain(),
@@ -48,7 +54,25 @@ public class DisplayInfoOverTimeCommand {
 				calculationResultOp == null ? Optional.empty() : Optional.of(calculationResultOp.toDomain()),
 				infoWithDateApplicationOp == null ? Optional.empty() : Optional.of(infoWithDateApplicationOp.toDomain()),
 				EnumAdaptor.valueOf(calculatedFlag, CalculatedFlag.class),
-				Optional.ofNullable(workInfo)
-				);
+				Optional.ofNullable(workInfo),
+				convert(latestMultipleOvertimeApp)
+		);
+	}
+
+	private Optional<OvertimeWorkMultipleTimes> convert(List<MultipleOvertimeContentCommand> command) {
+		if (CollectionUtil.isEmpty(command)) return Optional.empty();
+		List<OvertimeHour> overtimeHours = command.stream()
+				.map(i -> new OvertimeHour(
+						new OvertimeNumber(i.getFrameNo()),
+						new TimeSpanForCalc(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime()))
+				)).collect(Collectors.toList());
+		List<OvertimeReason> overtimeReasons = command.stream()
+				.filter(i -> i.getFixedReasonCode() != null || !StringUtils.isEmpty(i.getAppReason()))
+				.map(i -> new OvertimeReason(
+						new OvertimeNumber(i.getFrameNo()),
+						i.getFixedReasonCode() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(i.getFixedReasonCode())),
+						StringUtils.isEmpty(i.getAppReason()) ? Optional.empty() : Optional.of(new AppReason(i.getAppReason()))
+				)).collect(Collectors.toList());
+		return Optional.of(new OvertimeWorkMultipleTimes(overtimeHours, overtimeReasons));
 	}
 }

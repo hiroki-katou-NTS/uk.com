@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.request.app.find.application.overtime;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.MultipleOvertimeContentDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
 
@@ -30,6 +31,9 @@ public class DisplayInfoOverTimeDto {
 	public Integer calculatedFlag;
 	
 	public WorkInfo workInfo;
+
+	// 最新の複数回残業申請
+	public List<MultipleOvertimeContentDto> latestMultipleOvertimeApp;
 	
 	public DisplayInfoOverTimeDto(
 			List<WorkdayoffFrameDto> workdayoffFrames,
@@ -67,8 +71,9 @@ public class DisplayInfoOverTimeDto {
 				CalculationResultDto.fromDomain(displayInfoOverTime.getCalculationResultOp().orElse(null)),
 				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)),
 				displayInfoOverTime.getCalculatedFlag().value,
-				displayInfoOverTime.getWorkInfo().orElse(null)
-				);
+				displayInfoOverTime.getWorkInfo().orElse(null),
+				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() ? MultipleOvertimeContentDto.toDto(displayInfoOverTime.getLatestMultipleOvertimeApp().get()) : Collections.emptyList()
+		);
 	}
 	public static DisplayInfoOverTimeDto fromDomainChangeDate(DisplayInfoOverTime displayInfoOverTime) {
 		

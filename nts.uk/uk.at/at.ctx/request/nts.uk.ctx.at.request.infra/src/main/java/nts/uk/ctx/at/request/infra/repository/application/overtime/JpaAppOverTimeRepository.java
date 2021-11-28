@@ -77,6 +77,20 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				   .getSingle(x -> x.toDomain());
 		
 	}
+
+	@Override
+	public Optional<AppOverTime> findLatestMultipleOvertimeApp(String employeeId, GeneralDate appDate, PrePostAtr prePostAtr) {
+		return this.queryProxy().query("SELECT o FROM KrqdtAppOverTime o, KrqdtApplication a " +
+				"WHERE a.pk.companyID = o.krqdtAppOvertimePK.cid AND a.pk.appID = o.krqdtAppOvertimePK.appId " +
+				"AND o.overtimeAtr = 3 AND a.employeeID = :empId AND a.appDate = :appDate AND a.prePostAtr = :prePost " +
+				"ORDER BY a.inputDate DESC", KrqdtAppOverTime.class)
+				.setParameter("empId", employeeId)
+				.setParameter("appDate", appDate)
+				.setParameter("prePost", prePostAtr.value)
+				.getList(KrqdtAppOverTime::toDomain)
+				.stream().findFirst();
+	}
+
 	// KrqdtAppOverTime
 	@Override
 	public void add(AppOverTime appOverTime) {

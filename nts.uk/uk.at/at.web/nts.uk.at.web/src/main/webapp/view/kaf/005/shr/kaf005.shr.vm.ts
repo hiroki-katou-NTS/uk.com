@@ -1,6 +1,63 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
 	const template = `
-<div class="container cf" style="margin-top: -2px" data-bind="with: $parent">
+<div class="cf" style="margin-top: -2px" data-bind="with: $parent">
+	<!--A15-1 multiple overtime content-->
+	<div class="cf valign-top control-group table" data-bind="if: opOvertimeAppAtr() == 3">
+		<div class="cm-column cell" style="display: inline-block; width: 119px">
+			<div class="lblTitle pull-left" data-bind="text: $i18n('KAF005_349'), ntsFormLabel: {required: true}"></div>
+		</div>
+		<div class="cell table-time" style="margin-top: 5px;">
+			<div id="A15_2" class="label" data-bind="text: $i18n('KAF005_348')"></div>	
+			<div data-bind="foreach: multipleOvertimeContents">
+				<div class="control-group valign-center" data-bind="style: {width: 320 + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1 ? 210 : 0) + ($parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1 ? 210 : 0) + 'px'}">
+					<input data-bind="ntsTimeWithDayEditor: {
+											name: '#[KAF005_333]', 
+											value: start, 
+											constraint:'TimeWithDayAttr', 
+											enable: ($parent.visibleModel.c7() && $parent.outputMode()),
+											option: {width: '85px', timeWithDay: true}
+                                        }, attr: {id: 'A15_3_' + $index()}" />
+					<span data-bind="text: $parent.$i18n('KAF005_38')" style="padding-left: 5px; padding-right: 5px;"></span>
+					<input data-bind="ntsTimeWithDayEditor: {
+											name: '#[KAF005_334]', 
+											value: end, 
+											constraint:'TimeWithDayAttr', 
+											enable: ($parent.visibleModel.c7() && $parent.outputMode()),
+											option: {width: '85px', timeWithDay: true}
+                                        }, attr: {id: 'A15_5_' + $index()}" />
+					</td>
+					<div class="multiple-reason" style="width: 200px; margin-left: 10px;"
+						data-bind="ntsComboBox: {
+										name: $parent.$i18n('KAF005_87'),
+										options: $parent.reasonTypeItemLst,
+										optionsValue: 'appStandardReasonCD',
+										optionsText: 'reasonForFixedForm',
+										value: fixedReasonCode,
+										columns: [{ prop: 'reasonForFixedForm', length: 20 }],
+										required: (!!start() || !!end()) && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired 
+									},
+									visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayStandardReason == 1">
+					</div>
+					<input class="multiple-reason" style="margin-left: 10px;"
+							data-bind="ntsTextEditor: {            
+											 name: $parent.$i18n('KAF005_88'),           
+											 value: appReason,            
+											 constraint: 'AppReason',            
+											 required: ko.computed(function() { return (!!start() || !!end()) && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting && $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason; }),
+											 option: {width: '200'}          
+									 },
+									 visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1"/>
+					<button style="margin-left: 10px; width: 30px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data)">
+					    <i data-bind="ntsIcon: { no: 236 }"></i>
+                    </button>				
+				</div>
+			</div>
+			<button style="width: 30px;" data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10">
+			    <i data-bind="ntsIcon: { no: 237 }"></i>
+            </button>
+		</div>
+	</div>
+	
 	<div class="cf valign-top control-group"
 		data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
@@ -37,7 +94,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
+									enable: ($parent.opOvertimeAppAtr() != 3 && $parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input class="right-content"
@@ -46,24 +103,20 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
+									enable: ($parent.opOvertimeAppAtr() != 3 && $parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-
-
-
+	
 	<!-- calculate button A5_8-->
 	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px; margin-top: 12px;">
 		<button style="width: 100px; margin-left: 200px"
 			data-bind="text: $i18n('KAF005_43'), click: calculate, enable: outputMode()"
 			class="caret-bottom caret-inline"></button>
 	</div>
-
-
 
 	<!-- over time hours -->
 	<div class="cf valign-top control-group" data-bind="visible: true" style="margin-bottom: 2px; margin-top: 22px;">
@@ -428,7 +481,15 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		start?: KnockoutObservable<number>;
 		end?: KnockoutObservable<number>;
 	}
-	
+
+	export interface MultipleOvertimeContent {
+		frameNo: number;
+		start: KnockoutObservable<number>;
+		end: KnockoutObservable<number>;
+		fixedReasonCode: KnockoutObservable<number>;
+		appReason: KnockoutObservable<string>;
+	}
+
 	export interface HolidayTime {
 		frameNo: string;
 		displayNo: KnockoutObservable<string>;

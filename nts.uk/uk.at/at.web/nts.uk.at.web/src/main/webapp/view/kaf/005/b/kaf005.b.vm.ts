@@ -4,6 +4,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	import OverTime = nts.uk.at.view.kaf005.shr.viewmodel.OverTime;
 	import HolidayTime = nts.uk.at.view.kaf005.shr.viewmodel.HolidayTime;
 	import RestTime = nts.uk.at.view.kaf005.shr.viewmodel.RestTime;
+	import MultipleOvertimeContent = nts.uk.at.view.kaf005.shr.viewmodel.MultipleOvertimeContent;
 	import WorkHours = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkHours;
 	import Work = nts.uk.at.view.kaf005.shr.work_info.viewmodel.Work;
 	import WorkInfo = nts.uk.at.view.kaf005.shr.work_info.viewmodel.WorkInfo;
@@ -17,10 +18,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%; width: 1260px">
+				<div class="two-panel" style="height: 100%;">
 					<div class="left-panel"
-						style="width: calc(1260px - 388px); height: inherit; padding-bottom: 5px;">
-						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden"> 
+						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
+						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
@@ -83,29 +84,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 											}
 							
 										}"></div>
-
-
 							</div>
-
-
-
-
-
-
-							<div style="margin-top: 11px"
-								data-bind="component: { name: 'kaf000-b-component7', 
+							<div data-bind="if: opOvertimeAppAtr() != 3">
+								<div style="margin-top: 11px"
+									data-bind="component: { name: 'kaf000-b-component7', 
 														params: {
 															appType: appType,
 															application: application,
 															appDispInfoStartupOutput: appDispInfoStartupOutput
 														} }"></div>
-														
-														
-														
-						<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
+							</div>										
+							<div data-bind="component: { name: 'kaf005-share-footer'}"></div>
 						
-						<div style="padding-top: 30px;">
-										
+							<div style="padding-top: 30px;">
+											
 							</div>                          
 						</div>
 					</div>
@@ -186,7 +178,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		titleLabelInput1: KnockoutObservable<String>;
 		titleLabel2: KnockoutObservable<String>;
 		titleLabelInput2: KnockoutObservable<String>;
-		
+
+        opOvertimeAppAtr: KnockoutObservable<number> = ko.observable(0);
+
+        multipleOvertimeContents: KnockoutObservableArray<MultipleOvertimeContent> = ko.observableArray([]);
+        reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		
 		setTitleLabel() {
 			const vm = this;
@@ -196,7 +192,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				const param = vm.messageInfos()[0].titleDrop();
 				
 				return vm.$i18n('KAF005_90', [param]);
-			})
+			});
 			vm.titleLabelInput1 = ko.computed(() => {
 				if (_.isEmpty( vm.messageInfos())) return '';
 				const param = vm.messageInfos()[0].titleInput();
@@ -257,36 +253,26 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			vm.$nextTick(() => {
 				document.getElementById('inpStartTime1').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
-							
-							
 							vm.getBreakTimes();
 						}
-				})
-				
+				});
 				document.getElementById('inpEndTime1').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours1.start()) && _.isNumber(vm.workInfo().workHours1.end())) {
-							
-							
 							vm.getBreakTimes();
 						}
-				})
+				});
 				document.getElementById('inpStartTime2').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
-							
-							
 							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 						}
-				})
+				});
 				
 				document.getElementById('inpEndTime2').addEventListener('focusout', () => {
 					if (_.isNumber(vm.workInfo().workHours2.start()) && _.isNumber(vm.workInfo().workHours2.end())) {
-							
-							
 							vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 						}
-				})
-				
-			})
+				});
+			});
 		}
 
         initAppDetail() {
@@ -301,6 +287,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             return vm.$ajax(API.initAppDetail, command)
             .done(res => {
                 if (res) {
+                	vm.opOvertimeAppAtr(res.displayInfoOverTime.overtimeAppAtr);
                     vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
 					ko.contextFor(vm.$el).$vm.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
@@ -314,6 +301,33 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					vm.bindMessageInfo(vm.dataSource);
 					vm.assginTimeTemp();
 					vm.assignWorkHourAndRest();
+
+                    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+                        vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
+                        let defaultReasonTypeItem: any = _.find(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
+                        if(_.isUndefined(defaultReasonTypeItem)) {
+                            let dataLst = [{
+                                appStandardReasonCD: '',
+                                displayOrder: 0,
+                                defaultValue: false,
+                                reasonForFixedForm: vm.$i18n('KAFS00_23'),
+                            }];
+                            vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
+                        }
+                    }
+					if (!_.isEmpty(res.appOverTime.multipleOvertimeContents)) {
+                        vm.multipleOvertimeContents([]);
+                        res.appOverTime.multipleOvertimeContents.forEach((i: any) => {
+                        	vm.multipleOvertimeContents.push({
+								frameNo: i.frameNo,
+								start: ko.observable(i.startTime),
+								end: ko.observable(i.endTime),
+								fixedReasonCode: ko.observable(i.fixedReasonCode),
+								appReason: ko.observable(i.appReason)
+							});
+						});
+					}
+
 					// assign mode can be editd or displayed
 					vm.outputMode(vm.dataSource.appDispInfoStartup.appDetailScreenInfo.outputMode == 1);
 					if (vm.isStart) {
@@ -355,6 +369,27 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				vm.isStart = true;
             	vm.initAppDetail();
             }
+        }
+
+        addMultipleRow() {
+            const vm = this;
+            let fixedReasonCode = null;
+            let defaultReasonTypeItem: any = _.find(vm.reasonTypeItemLst(), (o) => o.defaultValue);
+            if(!_.isUndefined(defaultReasonTypeItem)) {
+                fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
+            }
+            vm.multipleOvertimeContents.push({
+                frameNo: 1,
+                start: ko.observable(null),
+                end: ko.observable(null),
+                fixedReasonCode: ko.observable(fixedReasonCode),
+                appReason: ko.observable(null)
+            });
+        }
+
+        removeMultipleRow(data: MultipleOvertimeContent) {
+            const vm = this;
+            vm.multipleOvertimeContents.remove(data);
         }
 
 		assignWorkHourAndRest(isChangeDate?: boolean) {
@@ -510,7 +545,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					commandUpdate.appDispInfoStartupDto = vm.dataSource.appDispInfoStartup;
 					if (!_.isNil(appOverTimeTemp)) {
 							appOverTimeTemp.application = applicationTemp.application;
-							commandUpdate.appOverTime = appOverTimeTemp;							
+							appOverTimeTemp.multipleOvertimeContents = applicationTemp.multipleOvertimeContents;
+							commandUpdate.appOverTime = appOverTimeTemp;
 					} else {
 						commandUpdate.appOverTime = applicationTemp;
 					}
@@ -642,6 +678,16 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					_.remove(appOverTime.workHoursOp, (i) => i.workNo == 2);
 				}
 			}
+
+            appOverTime.multipleOvertimeContents = vm.multipleOvertimeContents()
+                .filter(i => !!i.start() && !!i.end())
+                .map((i, idx) => ({
+                    frameNo: idx + 1,
+                    startTime: i.start(),
+                    endTime: i.end(),
+                    fixedReasonCode: i.fixedReasonCode(),
+                    appReason: i.appReason()
+                }));
 			
 			// A5 ---
 			let restTime = vm.restTime() as Array<RestTime>;
@@ -1469,6 +1515,17 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			});
 			workContent.breakTimes = breakTimeSheetArray;
 			command.workContent = workContent;
+            command.appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+            command.multipleOvertimeContents = self.multipleOvertimeContents()
+                .filter(i => !!i.start() && !!i.end())
+                .map((i, idx) => ({
+                    frameNo: idx + 1,
+                    startTime: i.start(),
+                    endTime: i.end(),
+                    fixedReasonCode: i.fixedReasonCode(),
+                    appReason: i.appReason()
+                }));
+            command.overtimeAtr = self.opOvertimeAppAtr();
 			self.$ajax(API.calculate, command)
 				.done((res: DisplayInfoOverTime) => {
 					if (res) {
@@ -3384,13 +3441,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		status: number;
 	}
 	enum OvertimeAppAtr {
-
 		EARLY_OVERTIME,
 		NORMAL_OVERTIME,
-		EARLY_NORMAL_OVERTIME
+		EARLY_NORMAL_OVERTIME,
+		MULTIPLE_OVERTIME
 	}
 	export enum AttendanceType {
-
 		NORMALOVERTIME,
 		BREAKTIME,
 		BONUSPAYTIME,
@@ -3402,11 +3458,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		MIDDLE_HOLIDAY_HOLIDAY,
 		FLEX_OVERTIME,
 		MIDNIGHT_OUTSIDE
-		
-		
-		
-		
-		
 	}
 
 	export interface FirstParam { // start param
