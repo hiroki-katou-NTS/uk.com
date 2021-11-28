@@ -18,9 +18,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
-import nts.uk.ctx.at.auth.app.find.employmentrole.dto.DateProcessed;
-import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYearAdapter;
 import nts.uk.ctx.at.record.app.find.monthly.agreement.export.AgreementExcessInfoDto;
@@ -64,9 +61,6 @@ public class KTG026QueryProcessor {
 
 	@Inject
 	private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
-	
-	@Inject
-	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 
 	/**
 	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG026_時間外労働時間の表示(従業員用).アルゴリズム.起動する.起動する
@@ -76,35 +70,17 @@ public class KTG026QueryProcessor {
 	 * @param currentOrNextMonth
 	 * @return
 	 */
-	public EmployeesOvertimeDisplayDto startScreenKtg026(String employeeId, Integer targetDate, Integer targetYear,
-			Integer currentOrNextMonth) {
-		val require = requireService.createRequire();
-		CacheCarrier cacheCarrier = new CacheCarrier();
-		// システム日付
-		GeneralDate systemDate = GeneralDate.today();
+	public EmployeesOvertimeDisplayDto startScreenKtg026(int closureID, String employeeId, Integer targetDate, Integer targetYear,
+			int currentOrNextMonth, int processingYm) {
 		
-		// [RQ609]ログイン社員のシステム日時点の処理対象年月を取得する
-		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
-
-		// 社員に対応する処理締めを取得する
-		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, systemDate);
-
-		// 従業員用の時間外時間表示．ログイン者の締めID＝取得したドメインモデル「締め」．締めID
-		int closureID = closure.getClosureId().value;
-		
-		DateProcessed dateProcessed = rq609.getListDateProcessed()
-				.stream()
-				.filter(c -> c.getClosureID() == closureID)
-				.collect(Collectors.toList())
-				.get(0);
-
-		PresentClosingPeriodDto closingPeriod = PresentClosingPeriodDto.builder()
-					.processingYm(dateProcessed.getTargetDate().v())
-					.closureStartDate(dateProcessed.getDatePeriod().start())
-					.closureEndDate(dateProcessed.getDatePeriod().end()).build();
+		PresentClosingPeriodDto closingPeriod =  PresentClosingPeriodDto.builder()
+					.processingYm(processingYm)
+					.closureStartDate(null)
+					.closureEndDate(null)
+					.build();
 
 		// アルゴリズム「年月を指定して、36協定期間の年度を取得する」を実行する
-		Year year = this.getYearAgreementPeriod(closure.getClosureMonth().getProcessingYm());
+		Year year = this.getYearAgreementPeriod(YearMonth.of(processingYm));
 
 		// 従業員用の時間外時間表示．当月含む年＝取得した年度
 		int yearIncludeThisMonth = year.v();
@@ -121,7 +97,7 @@ public class KTG026QueryProcessor {
 			// 従業員用の時間外時間表示．表示する年＝取得した年度
 			displayYear = this.getYearAgreementPeriod(YearMonth.of(targetDate)).v();
 
-		} else if (currentOrNextMonth!= null && currentOrNextMonth == 2) { // INPUT．表示年月＝翌月表示
+		} else if (currentOrNextMonth == 2) { // INPUT．表示年月＝翌月表示
 			yearIncludeNextMonth = this.getYearAgreementPeriod(YearMonth.of(closingPeriod.getProcessingYm()).addMonths(1)).v();
 			displayYear = yearIncludeNextMonth;
 		}

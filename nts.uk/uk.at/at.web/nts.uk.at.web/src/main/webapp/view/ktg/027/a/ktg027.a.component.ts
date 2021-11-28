@@ -247,20 +247,11 @@ module nts.uk.at.view.ktg027.a {
         dataTable!: KnockoutComputed<any[]>;
         chartStyle!: KnockoutComputed<string>;
         legendOptions: any;
-		firstLoad: boolean = true; 
-        closingInfo: any = null;
+		firstLoad: boolean = true;
+        cache: any;
 
-        constructor(private cache: { currentOrNextMonth: 1 | 2; }) {
+        constructor() {
             super();
-
-            if (!this.cache) {
-                this.cache = { currentOrNextMonth: 1 };
-            } else {
-                if (typeof this.cache.currentOrNextMonth === 'undefined') {
-                    this.cache.currentOrNextMonth = 1;
-                }
-            }
-
             const vm = this;
 
             vm.dataTable = ko.computed({
@@ -337,8 +328,6 @@ module nts.uk.at.view.ktg027.a {
 
         created() {
             const vm = this;
-            const { cache } = vm;
-
             vm.legendOptions = {
                 items: [
                     { colorCode: '#99FF66', labelText: vm.$i18n('KTG027_2') },
@@ -350,12 +339,16 @@ module nts.uk.at.view.ktg027.a {
                 + '</div>'
             };
 
+            const startScreen = () => {
+            
+            const { closureId, currentOrNextMonth, endDate, processDate, startDate } = vm.cache;
+            const bodyParams = { closingId: closureId, currentOrNextMonth, startDate, endDate, processingYm: processDate };
             vm
                 .$blockui('invisibleView')
-                .then(() => vm.$ajax('at', `${API.GET_DATA_INIT}/${cache.currentOrNextMonth}`))
+                .then(() => vm.$ajax('at', API.GET_DATA_INIT, bodyParams))
                 .then((response: DataInit) => {
                     const { closureId, personalInformationOfSubordinateEmployees, closingInformationForCurrentMonth, closingInformationForNextMonth, overtimeOfSubordinateEmployees } = response;
-                    vm.closingInfo = closingInformationForCurrentMonth;
+
                     vm.employees(personalInformationOfSubordinateEmployees);
 
                     vm.targetYear
@@ -364,21 +357,34 @@ module nts.uk.at.view.ktg027.a {
                                 if (!valid || _.isEmpty(ym)) return;
 
                                 if (typeof ym === 'string') {
-                                    vm.$window.storage('KTG027_TARGET', {
+                                    vm.$window.storage('KTG027_INITIAL_DATA', {
                                         isRefresh: false,
                                         target: ym
                                     });
-									if(vm.firstLoad){
-										vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees});
-										vm.firstLoad = false;										
-									}else{
-										vm.loadData(ym, closureId);	
-									}
+                                    if(vm.firstLoad){
+                                        vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees});
+                                        vm.firstLoad = false;
+                                    }else{
+                                        vm.loadData(ym, closureId);	
+                                    }
                                 }
                             });
                         });
 
-                    vm.$window.storage('KTG027_TARGET').then((rs: {isRefresh: boolean, target: any}) => {
+                    vm.$window.storage('KTG027_INITIAL_DATA').then((rs: {isRefresh: boolean, target: any}) => {
+                        if (rs && rs.isRefresh && rs.target) {
+                            vm.targetYear(rs.target);
+                            return;
+                        }
+
+                        // update targetYear by closure data
+                        if (closingInformationForNextMonth) {
+                            const { processingYm } = closingInformationForNextMonth;
+
+                            vm.targetYear(`${processingYm}`);
+                            return;
+                        }
+
                         const { processingYm } = closingInformationForCurrentMonth;
 
                         vm.targetYear(`${processingYm}`);
@@ -387,6 +393,12 @@ module nts.uk.at.view.ktg027.a {
                 .fail((message: { messageId: string }) => {
                     vm.$dialog.error(message).then(() => vm.$blockui('clearView'));
                 });
+                }
+
+            // Rq609 is called here, by cache of ccg008
+            vm.$window.storage('cache')
+                .then(obj => vm.cache = obj)
+                .then(() => startScreen());
         }
 
         // load data by change ym
@@ -429,7 +441,6 @@ module nts.uk.at.view.ktg027.a {
                 targetDate: vm.targetYear(),
                 targetYear: "",
                 mode: "Superior",
-                closingInfo: vm.closingInfo,
             };
             vm.$window
                 .modal('at', '/view/ktg/026/a/superior.xhtml', paramKTG026);

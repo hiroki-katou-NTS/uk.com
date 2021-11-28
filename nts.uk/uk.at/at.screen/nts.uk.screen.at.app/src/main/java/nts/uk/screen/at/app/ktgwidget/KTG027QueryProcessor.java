@@ -18,9 +18,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
-import nts.uk.ctx.at.auth.app.find.employmentrole.dto.DateProcessed;
-import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -103,9 +100,6 @@ public class KTG027QueryProcessor {
 	
 	 @Inject
 	private ManagedParallelWithContext parallel;
-	 
-	@Inject
-	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 
 	public GeneralDate checkSysDateOrCloseEndDate() {
 		// EA luôn trả v�Systemdate
@@ -308,7 +302,8 @@ public class KTG027QueryProcessor {
 	 * @return
 	 * @param currentOrNextMonth
 	 */
-	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(int currentOrNextMonth) {
+	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(int currentOrNextMonth,
+			int closingId, String startDate, String endDate, int processingYm) {
 		val require = this.requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		String sID = AppContexts.user().employeeId();
@@ -324,20 +319,14 @@ public class KTG027QueryProcessor {
 		if (lstClosure.isEmpty()) {
 			return result;
 		}
-		
-		InitDisplayPeriodSwitchSetDto rq609 = displayPeriodfinder.targetDateFromLogin();
-		DateProcessed dateProcessed = rq609.getListDateProcessed().stream()
-				.filter(c -> c.getClosureID() == closure.getClosureId().value)
-				.collect(Collectors.toList())
-				.get(0);
-		
+
 		CurrentClosingPeriodExport closingInformationForCurrentMonth = CurrentClosingPeriodExport.builder()
-				.processingYm(dateProcessed.getTargetDate().v())
-				.closureEndDate(dateProcessed.getDatePeriod().end().toString())
-				.closureStartDate(dateProcessed.getDatePeriod().start().toString())
+				.processingYm(processingYm)
+				.closureEndDate(endDate)
+				.closureStartDate(startDate)
 				.build();
 		result.setClosingInformationForCurrentMonth(closingInformationForCurrentMonth);
-		result.setClosureId(closure.getClosureId().value);
+		result.setClosureId(closingId);
 		// INPUT．表示年月＝当月表示
 		if (currentOrNextMonth == 1) {
 			// 対象年月を指定するログイン者の配下社員の時間外時間の取得

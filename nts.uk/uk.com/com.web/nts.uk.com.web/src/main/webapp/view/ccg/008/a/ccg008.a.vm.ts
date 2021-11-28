@@ -14,7 +14,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		getLoginUser: "screen/com/ccg008/get-user"
 	};
 
-	const TOPPAGE_STORAGE_KEY = ['KTG001_INITIAL_DATA', 'KTG004_YM_PARAM',];
+	const TOPPAGE_STORAGE_KEY = ['KTG001_INITIAL_DATA', 'KTG004_YM_PARAM'];
 
 	const getWidgetName = (type: number) => {
 		switch (type) {
@@ -167,6 +167,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
 			if (fromScreen && fromScreen.screen && fromScreen.screen === 'login') {
 				// Remove all cache of KTG001 AND KTG004 Widget
 				_.forEach(TOPPAGE_STORAGE_KEY, key => vm.$window.storage(key, null));
+				// Clear fromScreen
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			}
 
 			vm.classLayoutName = ko.computed({
@@ -176,6 +178,25 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					return `layout-type-${ltpy}`;
 				}
 			});
+
+			const refreshLayout = () => {
+					const restoreKtg026 = vm.$window.storage('KTG026_INITIAL_DATA').then((rs: {isRefresh: boolean, target: any}) => {
+						if (rs) {
+							rs.isRefresh = true;
+							vm.$window.storage('KTG026_INITIAL_DATA', rs);
+						}
+					});
+					const restoreKtg027 = vm.$window.storage('KTG027_INITIAL_DATA').then((rs: {isRefresh: boolean, target: any}) => {
+						if (rs) {
+							rs.isRefresh = true;
+							vm.$window.storage('KTG027_INITIAL_DATA', rs);
+						}
+					});
+				-
+					$.when(restoreKtg026, restoreKtg027).then(() => {
+						vm.callApiTopPage();
+					})
+				}
 			
 			vm.reloadInterval
 				.subscribe((data: any) => {
@@ -186,7 +207,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 					if (data !== 0) {
 						vm.reload = setInterval(() => {
-							vm.callApiTopPage();
+							refreshLayout();
 						}, miliSeconds);
 					}
 				});
@@ -239,7 +260,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                         }
                       });
                       vm.dataToppage(null);
-                      vm.startDateInClosure(cache.startDate);
+                      vm.startDateInClosure(cache.processDate);
                       const params: any = {
                         closureId:  cache.closureId,
                         processDate : parseInt(vm.startDateInClosure())
@@ -253,7 +274,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                     vm.$window.storage("cache").then((obj: any) => {
                       console.log(obj);
                       vm.dataToppage(null);
-                      vm.startDateInClosure(cache.startDate);
+                      vm.startDateInClosure(cache.processDate);
                       vm.closureId(obj.closureId);
                       const params: any = {
                         closureId:  cache.closureId,
