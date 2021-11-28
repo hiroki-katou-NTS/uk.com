@@ -52,6 +52,7 @@ import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -84,8 +85,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     private final int TEXT_COLOR_WEEKDAY = Integer.parseInt("404040", 16);
 
     private final int COLUMN_WIDTH = 4;
-    private final int START_HEADER_ROW = 4;
-    private final int START_DATA_ROW = 8;
+    private final int START_HEADER_ROW = 5;
+    private final int START_DATA_ROW = 9;
     private final int START_DATE_COL = 3;
     private final int PERSONAL_INFO_COLUMN = 0;
     private final int ADDITIONAL_PERSONAL_INFO_COLUMN = 2;
@@ -137,6 +138,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             WorksheetCollection worksheets = workbook.getWorksheets();
             Worksheet worksheet = worksheets.get(0);
             worksheet.setName(dataSource.getOutputSetting().getName().v());
+            worksheet.setGridlinesVisible(false);
             this.printHeader(worksheet, dataSource, comment);
             this.printContent(worksheet, dataSource);
             reportContext.processDesigner();
@@ -186,7 +188,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         pageSetup.setHeader(1, "&16&\"" + FONT_NAME + ",Bold\"" + dataSource.getOutputSetting().getName().v());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&9&\"" + FONT_NAME + "\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
-        pageSetup.setPrintTitleRows("$1:$8");
+        pageSetup.setPrintTitleRows("$1:$9");
     }
 
     private String getText(String resourceId) {
@@ -196,19 +198,19 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     private void printHeader(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource, String comment) {
         Cells cells = worksheet.getCells();
         // B part
-        cells.get("A3").setValue(
+        cells.get("A4").setValue(
                 getText("KSU001_4129")
                         + dataSource.getPeriod().start().toString() + "(" + this.getDayOfWeek(dataSource.getPeriod().start().dayOfWeekEnum()) + ")"
                         + getText("KSU001_4130")
                         + dataSource.getPeriod().end().toString() + "(" + this.getDayOfWeek(dataSource.getPeriod().end().dayOfWeekEnum()) + ")"
         );
-        Style styleA3 = cells.get("A3").getStyle();
-        styleA3.setHorizontalAlignment(TextAlignmentType.LEFT);
-        styleA3.getFont().setName(FONT_NAME);
-        styleA3.getFont().setSize(FONT_SIZE);
-        cells.get("A3").setStyle(styleA3);
-        cells.get("A4").setValue((dataSource.getOrgUnit() == 0 ? getText("KSU001_4132") : getText("KSU001_4133")) + dataSource.getOrganizationDisplayInfo().getCode() + SPACE + dataSource.getOrganizationDisplayInfo().getDisplayName());
-        cells.get("A4").setStyle(styleA3);
+        Style styleA4 = cells.get("A4").getStyle();
+        styleA4.setHorizontalAlignment(TextAlignmentType.LEFT);
+        styleA4.getFont().setName(FONT_NAME);
+        styleA4.getFont().setSize(FONT_SIZE);
+        cells.get("A4").setStyle(styleA4);
+        cells.get("A5").setValue((dataSource.getOrgUnit() == 0 ? getText("KSU001_4132") : getText("KSU001_4133")) + dataSource.getOrganizationDisplayInfo().getCode() + SPACE + dataSource.getOrganizationDisplayInfo().getDisplayName());
+        cells.get("A5").setStyle(styleA4);
 
         // C1 part
         cells.get(START_HEADER_ROW, PERSONAL_INFO_COLUMN).setValue(getText("KSU001_4131"));
@@ -346,7 +348,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             }
         }
 
-        cells.get(0, START_DATE_COL).setValue(comment);
+        String[] commentLines = comment.split("\n");
+        cells.get(0, START_DATE_COL).setValue(commentLines.length > 2 ? StringUtils.join(commentLines, SPACE) : comment);
         Style styleC1 = cells.get(0, START_DATE_COL).getStyle();
         styleC1.setVerticalAlignment(TextAlignmentType.TOP);
         styleC1.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -354,7 +357,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         styleC1.getFont().setName(FONT_NAME);
         styleC1.getFont().setSize(FONT_SIZE);
         cells.get(0, START_DATE_COL).setStyle(styleC1);
-        cells.merge(0, START_DATE_COL, 2, startCol - START_DATE_COL);
+        cells.merge(0, START_DATE_COL, 3, startCol - START_DATE_COL);
     }
 
     private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean wrapText, boolean firstRow, boolean lastRow, boolean doubleBorder, boolean wkp) {
