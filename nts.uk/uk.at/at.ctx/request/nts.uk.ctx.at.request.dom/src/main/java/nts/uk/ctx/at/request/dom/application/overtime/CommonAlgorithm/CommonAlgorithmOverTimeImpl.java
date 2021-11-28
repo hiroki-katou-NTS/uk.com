@@ -575,7 +575,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			) {
 		Optional<WorkHours> output = Optional.empty();
 		// INPUT．「申請日」と「＠時間入力利用区分」をチェックする
-		if (!(dateOp.isPresent() && applicationDetailSetting.getTimeInputUse() == NotUseAtr.USE)) {
+		if (!dateOp.isPresent()) {
 			return output;
 		}
 		// 勤務時間を取得する
