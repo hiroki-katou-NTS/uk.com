@@ -108,12 +108,12 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     private void pageSetting(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         // A1_1
-        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
+        pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + dataSource.getCompanyName());
         // A1_2
-        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + getText("KSU002_56"));
+        pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + getText("KSU002_56"));
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         // A1_3, A1_4
-        pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
+        pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
         pageSetup.setPrintTitleRows("$1:$3");
     }
 
