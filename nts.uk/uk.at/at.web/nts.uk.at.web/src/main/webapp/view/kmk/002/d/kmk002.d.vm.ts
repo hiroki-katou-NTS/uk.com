@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk002.d {
         import EnumAdaptor = nts.uk.at.view.kmk002.a.service.model.EnumAdaptor;
         import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;
         import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+        import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
 
         export class ScreenModel {
             formulaSetting: FormulaSetting;
@@ -379,8 +380,10 @@ module nts.uk.at.view.kmk002.d {
                 self.operatorDatasource(dto.operatorDatasource);
                 self.enums = dto.enums;
                 self.formulaNumber = dto.formulaNumber;
-                self.isD29(self.checkD2_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
-                self.isD49(self.checkD4_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
+                if(!isNullOrEmpty(dto.selectableFormulas)){
+                    self.isD29(self.checkD2_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
+                    self.isD49(self.checkD4_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
+                }
 
             }
 

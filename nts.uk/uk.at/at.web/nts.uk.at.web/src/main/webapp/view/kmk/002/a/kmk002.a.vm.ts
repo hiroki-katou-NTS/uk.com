@@ -14,6 +14,8 @@ module nts.uk.at.view.kmk002.a {
 
     export module viewmodel {
 
+        import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+
         export class ScreenModel {
             optionalItemHeader: OptionalItemHeader;
             langId: KnockoutObservable<string> = ko.observable('ja');
@@ -2356,6 +2358,14 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 return self.formulaAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
             }
+            public formatTime(time:number):string {
+                if(time == 0){
+                    return "0:00";
+                }
+                let hours : number = Math.floor( time/ 60);
+                let minutes :number  = time % 60;
+                return hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString());
+            }
 
             /**
              * Check whether number atr is selected
@@ -2372,7 +2382,6 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 return self.formulaAtr() == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
             }
-
             /**
             * Open dialog C: Item selection
             */
@@ -2444,16 +2453,30 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let result;
                 let leftItem;
+                let right;
+                let left;
                 let rightItem;
 
                 // get item selection enum value.
                 let operator: string = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_OPT_ITEM.operatorAtr);
+                let selectableFormulas = self.getSelectableFormulas(self.orderNo());
+                left = _.find(selectableFormulas, item => item.formulaId == dto.leftItem.formulaItemId);
+                right = _.find(selectableFormulas, item => item.formulaId == dto.leftItem.formulaItemId);
+                let isTimeLeft = left.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
+                let isTimeRight = right.formulaAtr == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
+                let isNumberLeft =   left.formulaAtr == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
+                let isNumberRight =   right.formulaAtr == EnumAdaptor.valueOf('AMOUNT', Enums.ENUM_OPT_ITEM.formulaAtr);
 
                 // set left item
                 if (self.isSettingMethodOfItemSelection(dto.leftItem)) {
                     leftItem = self.getSymbolById(dto.leftItem.formulaItemId);
                 } else {
                     leftItem = dto.leftItem.inputValue;
+                    if((isTimeLeft && isTimeRight && (dto.operator == 0 ||dto.operator ==1))
+                        ||isTimeLeft && isNumberRight && (dto.operator == 0 )
+                        ||isNumberLeft && isTimeRight&& (dto.operator == 3)){
+                        leftItem  = this.formatTime(dto.leftItem.inputValue)
+                    }
                 }
 
                 // set right item
@@ -2461,15 +2484,25 @@ module nts.uk.at.view.kmk002.a {
                     rightItem = self.getSymbolById(dto.rightItem.formulaItemId);
                 } else {
                     rightItem = dto.rightItem.inputValue;
-                }
+                    if((isTimeLeft && isTimeRight && (dto.operator == 0 ||dto.operator ==1))
+                        ||isTimeLeft && isNumberRight && (dto.operator == 0 )
+                        ||isNumberLeft && isTimeRight&& (dto.operator == 3)){
+                        rightItem  = this.formatTime(dto.rightItem.inputValue)
+                    }
 
+                }
                 // set result
                 result = leftItem + ' ' + operator + ' ' + rightItem;
                 self.settingResult(result);
 
                 // clear error
                 $('#settingResult' + self.orderNo()).ntsEditor('validate');
+
+
+
+
             }
+
 
             /**
              * Display the setting of formula setting
