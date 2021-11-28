@@ -69,7 +69,7 @@ public class AggregationUnitOfWorkMethodTest {
 		
 		new Expectations() {{
 			require.getShiftMaster(workInfo);
-			result = Optional.of( ShiftMasterHelper.createDummyWithImportCode("shift-code") );
+			result = Optional.of( ShiftMasterHelper.createDummyWithCode("shift-code") );
 		}};
 		
 		Optional<String> result = AggregationUnitOfWorkMethod.SHIFT.getWorkMethod(require, workInfoOfDailyAttendance);
