@@ -116,6 +116,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkSaveDataMode: any = true;
 		lstChartTask: any = [];
 		taskTypeDel: any = [];
+		dataToAb: any = {};
 
 		modes = ko.observableArray(["normal", "paste", "pasteFlex"].map(c => ({ code: c, name: c })));
 
@@ -787,13 +788,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
 					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
-					let dataToAb = {
+					self.dataToAb = {
 						targetDate: self.targetDate(),
 						dataScreen003A: self.dataScreen003A(),
 						localStore: self.localStore,
 						organizationName: self.organizationName()
 					}
-					setShared("dataShareAbFromA", dataToAb);
+					setShared("dataShareAbFromA", self.dataToAb);
 					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
 					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
 					self.selectedTimeRange(self.dataInitStartKsu003Dto().byDateDto.dispRange + 1);
@@ -1506,6 +1507,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				self.checkDisByDate = true;
 				self.dataScreen003A().canModified = 1;
+			}
+			
+			if (self.selectedDisplayPeriod() == 2) {
+				self.dataToAb = {
+					targetDate: self.targetDate(),
+					dataScreen003A: self.dataScreen003A(),
+					localStore: self.localStore,
+					organizationName: self.organizationName()
+				}
+				setShared("dataShareAbFromA", self.dataToAb);
+				
+				__viewContext.viewModel.viewmodelAb.getTaskPallet().done(() => {
+					__viewContext.viewModel.viewmodelAb.sourceCompany(__viewContext.viewModel.viewmodelAb.dataSourceCompany()[__viewContext.viewModel.viewmodelAb.selectedPage()]);
+					__viewContext.viewModel.viewmodelAb.setDataPalletToButton(__viewContext.viewModel.viewmodelAb.selectedPage(),2);
+				});
 			}
 
 			if (check == 1) {
@@ -6484,6 +6500,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 						self.addTypeOfTask(taskInfo.data.color, taskInfo);
 						__viewContext.viewModel.viewmodelAb.dataTaskInfo = data;
+						__viewContext.viewModel.viewmodelAb.textButtonArr([]);
 						__viewContext.viewModel.viewmodelAb.setDataTaskInfo();
 					});
 

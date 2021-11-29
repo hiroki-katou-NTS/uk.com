@@ -111,6 +111,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			let self = this, dfd = $.Deferred<any>();
 			self.dataFromScrA = getShared("dataShareAbFromA");
 			self.setDataDefautStore();
+			self.textButtonArr([]);
 			self.getTaskInfo().done(() => {
 				//$("#tableButton1").ntsButtonTable("setSelectedCell", 1, 0);
 				self.getTaskPallet().done(() => {
@@ -221,6 +222,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 		// ①<<Query>> 作業パレットを取得する
 		public getTaskPallet(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
+			self.dataFromScrA = getShared("dataShareAbFromA");
 			let param = {
 				baseDate: self.dataFromScrA.targetDate,
 				targetUnit: self.dataFromScrA.dataScreen003A.unit,
@@ -315,6 +317,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			}
 
 			self.setPalletButton(self.dataTaskPallet);
+			self.textButtonArr([]);
 
 			for (let i = 1; i <= 5; i++) {
 				let dataPallet = data.workPaletteDisplayInforDto.lstTaskPaletteOrganizationDto;
