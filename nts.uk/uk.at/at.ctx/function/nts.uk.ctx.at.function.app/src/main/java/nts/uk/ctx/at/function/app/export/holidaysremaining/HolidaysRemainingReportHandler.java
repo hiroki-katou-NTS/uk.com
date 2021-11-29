@@ -296,7 +296,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // RequestList281
         List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber = null;
         // RequestList265
-        AnnLeaveOfThisMonthImported annLeaveOfThisMonth = null;
+        //AnnLeaveOfThisMonthImported annLeaveOfThisMonth = null;
         // RequestList255
         List<AnnualLeaveUsageImported> listAnnualLeaveUsage = new ArrayList<>();
         // RequestList363
@@ -308,10 +308,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // RequestList364
         List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon = null;
         // RequestList269
-        List<CurrentHolidayImported> listCurrentHoliday = new ArrayList<>();
+        //List<CurrentHolidayImported> listCurrentHoliday = new ArrayList<>();
         // RequestList259
         List<StatusHolidayImported> listStatusHoliday = null;
-        // RequestList270
+        // RequestList204
         List<CurrentHolidayRemainImported> listCurrentHolidayRemain = new ArrayList<>();
         // RequestList260
         List<StatusOfHolidayImported> listStatusOfHoliday = null;
@@ -320,7 +320,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         // RequestList207
         NursingLeaveCurrentSituationImported nursingLeave = null;
         //add by HieuLT
-        CurrentHolidayImported currentHolidayLeft = null;
+        //CurrentHolidayImported currentHolidayLeft = null;
         CurrentHolidayRemainImported currentHolidayRemainLeft = null;
         List<AggrResultOfAnnualLeaveEachMonthKdr> getRs363 = new ArrayList<>();
         //  RQ 203 right
@@ -369,7 +369,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             listAnnLeaGrantNumber = listAnnLeaGrantNumber.stream()
                     .sorted(Comparator.comparing(AnnLeaGrantNumberImported::getGrantDate)).collect(Collectors.toList());
             // Call RequestList265
-            annLeaveOfThisMonth = remainDel.getResult265();
+            //annLeaveOfThisMonth = remainDel.getResult265();
             // Call RequestList255 ver2 - hoatt
             if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
                 listAnnualLeaveUsage = hdRemainMer.getResult255();
@@ -399,55 +399,55 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             val breakDayOffMngInPeriodQueryRequire = numberRemainVacationLeaveRangeProcess.createRequire();
 
             // Call RequestList269
-            for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
-                GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
-                DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
-                        endDate.before(end) ? endDate : end);
-                BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
-                        cId, employeeId,
-                        periodDate,
-                        false,
-                        closureInforOpt.get().getPeriod().end(),
-                        false,
-                        new ArrayList<>(),
-                        Optional.empty(),
-                        Optional.empty(),
-                        new ArrayList<>(),
-                        new ArrayList<>(),
-                        Optional.empty(), new FixedManagementDataMonth());
-                SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
-                        .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
+            //for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
+                //GeneralDate end = GeneralDate.ymd(s.year(), s.month(), 1).addMonths(1).addDays(-1);
+                //DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(s.year(), s.month(), 1),
+                //        endDate.before(end) ? endDate : end);
+                //BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+                //        cId, employeeId,
+                //       periodDate,
+                //        false,
+                //        closureInforOpt.get().getPeriod().end(),
+                //        false,
+                //        new ArrayList<>(),
+                //        Optional.empty(),
+                //        Optional.empty(),
+                //        new ArrayList<>(),
+                //        new ArrayList<>(),
+                //        Optional.empty(), new FixedManagementDataMonth());
+                //SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
+                //        .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
 
-                listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
-                        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
-                        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
-            }
+                //listCurrentHoliday.add(new CurrentHolidayImported(s, currentHoliday.getCarryoverDay().v(),
+                //        currentHoliday.getOccurrenceDay().v(), currentHoliday.getDayUse().v(),
+                //        currentHoliday.getUnusedDay().v(), currentHoliday.getRemainDay().v()));
+            //}
             // Call RequestList259 ver2 - hoatt
             if (currentMonth.compareTo(startDate.yearMonth()) > 0) {
                 listStatusHoliday = hdRemainMer.getResult259();
             }
-            DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
-            BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
-                    cId, employeeId,
-                    periodDate,
-                    false,
-                    closureInforOpt.get().getPeriod().end(),
-                    false,
-                    new ArrayList<>(),
-                    Optional.empty(),
-                    Optional.empty(),
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    Optional.empty(), new FixedManagementDataMonth());
-            SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
-                    .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
-            currentHolidayLeft = new CurrentHolidayImported(
-                    currentMonth,
-                    currentHoliday.getCarryoverDay().v(),
-                    currentHoliday.getOccurrenceDay().v(),
-                    currentHoliday.getDayUse().v(),
-                    currentHoliday.getUnusedDay().v(),
-                    currentHoliday.getRemainDay().v());
+            //DatePeriod periodDate = new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
+            //BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+            //        cId, employeeId,
+            //        periodDate,
+            //        false,
+            //        closureInforOpt.get().getPeriod().end(),
+            //        false,
+            //        new ArrayList<>(),
+            //        Optional.empty(),
+            //        Optional.empty(),
+            //        new ArrayList<>(),
+            //        new ArrayList<>(),
+            //        Optional.empty(), new FixedManagementDataMonth());
+            //SubstituteHolidayAggrResult currentHoliday = NumberRemainVacationLeaveRangeQuery
+             //       .getBreakDayOffMngInPeriod(breakDayOffMngInPeriodQueryRequire, inputRefactor);
+            //currentHolidayLeft = new CurrentHolidayImported(
+            //        currentMonth,
+            //        currentHoliday.getCarryoverDay().v(),
+            //        currentHoliday.getOccurrenceDay().v(),
+            //        currentHoliday.getDayUse().v(),
+            //        currentHoliday.getUnusedDay().v(),
+            //        currentHoliday.getRemainDay().v());
         }
         if (variousVacationControl.isPauseItemHolidaySetting()) {
             for (YearMonth s = currentMonth; s.lessThanOrEqualTo(endDate.yearMonth()); s = s.addMonths(1)) {
@@ -712,16 +712,16 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         return new HolidayRemainingInfor(
                 grantDate,
                 listAnnLeaGrantNumber,
-                annLeaveOfThisMonth,
+                //annLeaveOfThisMonth,
                 listAnnualLeaveUsage,
                 reserveHoliday,
                 listReservedYearHoliday,
                 listRsvLeaUsedCurrentMon,
-                listCurrentHoliday,
+                //listCurrentHoliday,
                 listStatusHoliday,
                 listCurrentHolidayRemain,
                 listStatusOfHoliday,
-                currentHolidayLeft,
+                //currentHolidayLeft,
                 currentHolidayRemainLeft,
                 substituteHolidayAggrResult,
                 subVaca,

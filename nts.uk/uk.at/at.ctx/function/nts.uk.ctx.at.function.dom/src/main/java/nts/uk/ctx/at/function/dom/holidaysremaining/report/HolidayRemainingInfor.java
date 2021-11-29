@@ -35,7 +35,7 @@ public class HolidayRemainingInfor {
     // RequestList281
     private List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber;//2
     // RequestList265
-    private AnnLeaveOfThisMonthImported annLeaveOfThisMonth;
+    //private AnnLeaveOfThisMonthImported annLeaveOfThisMonth;
     // RequestList255
     private List<AnnualLeaveUsageImported> listAnnualLeaveUsage;//4
     // RequestList363
@@ -47,21 +47,21 @@ public class HolidayRemainingInfor {
     // RequestList364
     private List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon;//7
     // RequestList269
-    private List<CurrentHolidayImported> listCurrentHoliday;
+    //private List<CurrentHolidayImported> listCurrentHoliday;
     // RequestList259
     private List<StatusHolidayImported> listStatusHoliday;//8
-    // RequestList270
+    // RequestList204
     private List<CurrentHolidayRemainImported> listCurrentHolidayRemain;//11
     // RequestList260
     private List<StatusOfHolidayImported> listStatusOfHoliday;//12
     // RequestList263
     private Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday;
     // RequestList206
-    private ChildNursingLeaveCurrentSituationImported childNursingLeave;
+    //private ChildNursingLeaveCurrentSituationImported childNursingLeave;
     // RequestList207
-    private NursingLeaveCurrentSituationImported nursingLeave;
+    //private NursingLeaveCurrentSituationImported nursingLeave;
     //
-    private CurrentHolidayImported currentHolidayLeft;
+    //private CurrentHolidayImported currentHolidayLeft;
 
     private CurrentHolidayRemainImported currentHolidayRemainLeft;
     private SubstituteHolidayAggrResult substituteHolidayAggrResult;//9
@@ -86,16 +86,16 @@ public class HolidayRemainingInfor {
 
     public HolidayRemainingInfor(Optional<GeneralDate> grantDate,
                                  List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
-                                 AnnLeaveOfThisMonthImported annLeaveOfThisMonth,
+                                 //AnnLeaveOfThisMonthImported annLeaveOfThisMonth,
                                  List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
                                  ReserveHolidayImported reserveHoliday,
                                  List<ReservedYearHolidayImported> listReservedYearHoliday,
                                  List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon,
-                                 List<CurrentHolidayImported> listCurrentHoliday,
+                                 //List<CurrentHolidayImported> listCurrentHoliday,
                                  List<StatusHolidayImported> listStatusHoliday,
                                  List<CurrentHolidayRemainImported> listCurrentHolidayRemain,
                                  List<StatusOfHolidayImported> listStatusOfHoliday,
-                                 CurrentHolidayImported currentHolidayLeft,
+                                 //CurrentHolidayImported currentHolidayLeft,
                                  CurrentHolidayRemainImported currentHolidayRemainLeft,
                                  SubstituteHolidayAggrResult substituteHolidayAggrResult,
                                  CompenLeaveAggrResult compenLeaveAggrResult,
@@ -117,17 +117,17 @@ public class HolidayRemainingInfor {
         super();
         this.grantDate = grantDate;
         this.listAnnLeaGrantNumber = listAnnLeaGrantNumber;
-        this.annLeaveOfThisMonth = annLeaveOfThisMonth;
+        //this.annLeaveOfThisMonth = annLeaveOfThisMonth;
         this.listAnnualLeaveUsage = listAnnualLeaveUsage;
         this.listAnnLeaveUsageStatusOfThisMonth = listAnnLeaveUsageStatusOfThisMonth;
         this.reserveHoliday = reserveHoliday;
         this.listReservedYearHoliday = listReservedYearHoliday;
         this.listRsvLeaUsedCurrentMon = listRsvLeaUsedCurrentMon;
-        this.listCurrentHoliday = listCurrentHoliday;
+        //this.listCurrentHoliday = listCurrentHoliday;
         this.listStatusHoliday = listStatusHoliday;
         this.listCurrentHolidayRemain = listCurrentHolidayRemain;
         this.listStatusOfHoliday = listStatusOfHoliday;
-        this.currentHolidayLeft = currentHolidayLeft;
+        //this.currentHolidayLeft = currentHolidayLeft;
         this.currentHolidayRemainLeft = currentHolidayRemainLeft;
         this.substituteHolidayAggrResult = substituteHolidayAggrResult;
         this.compenLeaveAggrResult = compenLeaveAggrResult;
