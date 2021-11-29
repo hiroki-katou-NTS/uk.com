@@ -60,6 +60,10 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			+ " WHERE a.cID = :cId"
 			+ " AND a.dayOff IN :lstDate";
 	
+	private static final String SELECT_BY_SID_AND_DAY_OFF = "SELECT t FROM KrcdtHdComMng t "
+			+ "WHERE t.sID = :sid "
+			+ "AND t.dayOff = :date";
+	
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcdtHdComMng> list = this.queryProxy().query(GET_BY_SID_DATE, KrcdtHdComMng.class)
@@ -434,6 +438,13 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		.setParameter("unknownDate", unknownDateFlag)
 		.setParameter("targetDate", target)
 		.executeUpdate();
+	}
+
+	@Override
+	public Optional<CompensatoryDayOffManaData> findBySidAndDate(String sid, GeneralDate date) {
+		return this.queryProxy().query(SELECT_BY_SID_AND_DAY_OFF, KrcdtHdComMng.class)
+				.setParameter("sid", sid).setParameter("date", date)
+				.getSingle(this::toDomain);
 	}
 
 }
