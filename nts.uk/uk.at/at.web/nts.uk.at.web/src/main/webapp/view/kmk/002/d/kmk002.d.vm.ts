@@ -37,19 +37,17 @@ module nts.uk.at.view.kmk002.d {
                         let isTimeD29 = self.formulaSetting.checkD2_9(leftId,operator,rightId);
                         let isTimeD49 = self.formulaSetting.checkD4_9(leftId,operator,rightId);
                         if(!isNullOrUndefined(isTimeD29)){
-                            if(!self.formulaSetting.isD29() && isTimeD29){
+                            if(self.formulaSetting.isD29() == !isTimeD29){
                                 self.formulaSetting.leftItem.inputValue(null);
                             }
                             self.formulaSetting.isD29(isTimeD29);
-                            console.log("TIME D29 : " + isTimeD29);
                         }
 
                         if(!isNullOrUndefined(isTimeD49)){
-                            if(!self.formulaSetting.isD49() && isTimeD49){
-                                self.formulaSetting.leftItem.inputValue(null);
+                            if(self.formulaSetting.isD49()  == !isTimeD49){
+                                self.formulaSetting.rightItem.inputValue(null);
                             }
                             self.formulaSetting.isD49(isTimeD49);
-                            console.log("TIME D29 : " + isTimeD49);
                         }
 
                     }
@@ -62,19 +60,17 @@ module nts.uk.at.view.kmk002.d {
                         let isTimeD29 = self.formulaSetting.checkD2_9(leftId,operator,rightId);
                         let isTimeD49 = self.formulaSetting.checkD4_9(leftId,operator,rightId);
                         if(!isNullOrUndefined(isTimeD29)){
-                            if(!self.formulaSetting.isD29() && isTimeD29){
+                            if(self.formulaSetting.isD29() == !isTimeD29){
                                 self.formulaSetting.leftItem.inputValue(null);
                             }
                             self.formulaSetting.isD29(isTimeD29);
-                            console.log("TIME D29 : " + isTimeD29);
                         }
 
                         if(!isNullOrUndefined(isTimeD49)){
-                            if(!self.formulaSetting.isD49() && isTimeD49){
-                                self.formulaSetting.leftItem.inputValue(null);
+                            if(self.formulaSetting.isD49() == !isTimeD49){
+                                self.formulaSetting.rightItem.inputValue(null);
                             }
                             self.formulaSetting.isD49(isTimeD49);
-                            console.log("TIME D29 : " + isTimeD49);
                         }
 
                     }
@@ -88,19 +84,17 @@ module nts.uk.at.view.kmk002.d {
                         let isTimeD49 = self.formulaSetting.checkD4_9(leftId,operator,rightId);
 
                         if(!isNullOrUndefined(isTimeD29)){
-                            if(!self.formulaSetting.isD29() && isTimeD29){
+                            if(self.formulaSetting.isD29()  == !isTimeD29){
                                 self.formulaSetting.leftItem.inputValue(null);
                             }
                             self.formulaSetting.isD29(isTimeD29);
-                            console.log("TIME D29 : " + isTimeD29);
                         }
 
                         if(!isNullOrUndefined(isTimeD49)){
-                            if(!self.formulaSetting.isD49() && isTimeD49){
-                                self.formulaSetting.leftItem.inputValue(null);
+                            if(self.formulaSetting.isD49() ==!isTimeD49){
+                                self.formulaSetting.rightItem.inputValue(null);
                             }
                             self.formulaSetting.isD49(isTimeD49);
-                            console.log("TIME D29 : " + isTimeD49);
                         }
 
                     }
