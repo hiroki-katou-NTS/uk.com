@@ -8,6 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StartEndClassification;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,7 +29,7 @@ public class DestinationTimeAppDto {
 				destinationTimeApp.getTimeStampAppEnum().value,
 				destinationTimeApp.getEngraveFrameNo(),
 				destinationTimeApp.getStartEndClassification().value,
-				destinationTimeApp.getSupportWork().isPresent() ? destinationTimeApp.getSupportWork().get() : null);
+				destinationTimeApp.getSupportWorkNo().isPresent() ? destinationTimeApp.getSupportWorkNo().get().v() : null);
 	}
 	
 	public DestinationTimeApp toDomain() {
@@ -36,7 +37,7 @@ public class DestinationTimeAppDto {
 				EnumAdaptor.valueOf(timeStampAppEnum, TimeStampAppEnum.class),
 				engraveFrameNo,
 				EnumAdaptor.valueOf(startEndClassification, StartEndClassification.class),
-				supportWork == null ? Optional.empty() : Optional.of(supportWork));
+				supportWork == null ? Optional.empty() : Optional.of(new WorkNo(supportWork)));
 	}
 
 }

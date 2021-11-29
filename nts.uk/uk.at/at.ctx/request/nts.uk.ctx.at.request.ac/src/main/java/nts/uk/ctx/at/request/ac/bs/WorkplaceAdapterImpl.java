@@ -15,7 +15,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
 
-@Stateless
+@Stateless(name = "WorkplaceAdapterName")
 public class WorkplaceAdapterImpl implements WorkplaceAdapter {
 
 	@Inject

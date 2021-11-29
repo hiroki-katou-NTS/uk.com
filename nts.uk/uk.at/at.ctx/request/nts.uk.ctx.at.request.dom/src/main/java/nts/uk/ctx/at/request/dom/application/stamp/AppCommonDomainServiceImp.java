@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,6 +16,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
 import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 
@@ -130,9 +134,30 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		// 応援の運用設定.利用するか　＝　true
 		if (supportOperationSetting.isSupportDestinationCanSpecifySupporter()) {
-			
+			// TODO LienPTK
+			List<WorkLocationCD> workLocationCDs = Stream.of(stampRecordOutput.getWorkingTime()
+													 	   , stampRecordOutput.getExtraordinaryTime()
+													 	   , stampRecordOutput.getSupportTime())
+													.flatMap(Collection::stream)
+													.map(t -> t.getOpWorkLocationCD().orElse(null))
+													.filter(Objects::nonNull)
+			                    					.collect(Collectors.toList());  
+			List<WorkplaceId> workplaceIds = Stream.of(stampRecordOutput.getWorkingTime()
+										 	   		 , stampRecordOutput.getExtraordinaryTime()
+										 	   		 , stampRecordOutput.getSupportTime())
+													.flatMap(Collection::stream)
+													.map(t -> t.getOpWorkLocationCD().orElse(null))
+													.filter(Objects::nonNull)
+													.collect(Collectors.toList()); 
+			WkpWorkLocationName wkpWorkLocationName = this.findWkpAndWorkLocationName(
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getWkpDisAtr().isUse(),
+					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getUseLocationSelection().isUse(),
+					wkpIds,
+					workLocationCDs,
+					dates.isPresent() ? dates.get() : GeneralDate.today()
+			);
 		}
-		
+
 		return appStampOutput;
 	}
 	
@@ -145,32 +170,34 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	 * @param workLocationCds 勤務場所コード
 	 * @return the list
 	 */
-	public List<String> findWkpAndWorkLocationName(boolean isGetWorkPlaceName
+	public WkpWorkLocationName findWkpAndWorkLocationName(boolean isGetWorkPlaceName
 												 , boolean isGetWorkLocationName
 												 , List<WorkplaceId> workPlaceIds
 												 , List<String> workLocationCds
-												 , Optional<GeneralDate> baseDate) {
+												 , GeneralDate baseDate) {
+		WkpWorkLocationName result = new WkpWorkLocationName();
+
 		// 職場名を取得するかをチェックする
 		// 職場名を取得する＝true　AND　職場ID（List）NOT　Empty
-		if (isGetWorkPlaceName && !workPlaceIds.isEmpty() && baseDate.isPresent()) {
+		if (isGetWorkPlaceName && !workPlaceIds.isEmpty()) {
 			// 職場名を取得する
-			return this.workplaceAdapter.findWkpInfo(workPlaceIds, baseDate.get())
-					   .stream()
-					   .map(WorkplaceNameImported::getWkpName)
-					   .collect(Collectors.toList());
+			result.setWorkplaceNames(this.workplaceAdapter.findWkpInfo(workPlaceIds, baseDate)
+									     .stream()
+									     .map(WorkplaceNameImported::getWkpName)
+									     .collect(Collectors.toList()));
 		}
-		
+
 		// INPUT.「場所名を取得する」をチェックする
 		// 場所名を取得する＝true　AND　場所コード（List）NOT　Empty
 		if (isGetWorkLocationName && !workLocationCds.isEmpty()) {
 			// 場所名を取得する
-			return this.workLocationAdapter.findWorkLocationName(workLocationCds)
-					   .stream()
-					   .map(WorkLocationNameImported::getWorkLocationName)
-					   .collect(Collectors.toList());
+			result.setWorkLocationNames(this.workLocationAdapter.findWorkLocationName(workLocationCds)
+										    .stream()
+										    .map(WorkLocationNameImported::getWorkLocationName)
+										    .collect(Collectors.toList()));
 		}
-		
-		return new ArrayList<>();
+
+		return result;
 	}
 
 	@Override
@@ -583,6 +610,14 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			appStampOutput.setAppStampSetting(appStampSettingOptional.get());
 		}
 		appStampOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
+		
+		// ドメイン「応援の運用設定」を取得する
+		SupportOperationSetting supportOperationSetting = this.supportOperationSettingRepo.get(companyId);
+		
+		// 応援の運用設定.利用するか　＝　true
+		if (supportOperationSetting.isSupportDestinationCanSpecifySupporter()) {
+			// TODO LienPTK
+		}
 		return appStampOutput;
 	}
 	

@@ -550,7 +550,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
             } else if (type === STAMPTYPE.ATTENDENCE) {
                 if ($('#' + id).length) {
-                    $('#' + id).ntsGrid(self.getCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
+                    $('#' + id).ntsGrid(self.getAttendanceGrid(isChrome, dataSource, headerFlagContent, statesTable));
                 }
             } else {
                 if ($('#' + id).length) {
@@ -605,7 +605,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         }
 
-        private getCheeringGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
+        private getAttendanceGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
             const self = this;
             let options = {
                 width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '725px' : '825px',
@@ -659,7 +659,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         text: nts.uk.resource.getText('KAF002_83'),
                         click: function(data: any) {
                             nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
-                            nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
+                            nts.uk.ui.windows.sub.modal("com", "/view/cdl/010/a/index.xhtml").onClosed(() => {
                             });
                         },
                         controlType: 'Button'
@@ -669,7 +669,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         text: nts.uk.resource.getText('KAF002_84'),
                         click: function(data: any) {
                             nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
-                            nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
+                            nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml").onClosed(() => {
                             });
                         },
                         controlType: 'Button'

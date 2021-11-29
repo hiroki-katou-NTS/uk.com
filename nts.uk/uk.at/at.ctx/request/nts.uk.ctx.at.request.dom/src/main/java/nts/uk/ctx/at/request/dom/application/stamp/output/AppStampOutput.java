@@ -43,4 +43,10 @@ public class AppStampOutput {
 	
 //	臨時勤務利用
 	private Optional<Boolean> useTemporary = Optional.empty();
+
+//  場所名
+	private List<String> workLocationNames;
+	
+//  職場名
+	private List<String> workplaceNames;
 }

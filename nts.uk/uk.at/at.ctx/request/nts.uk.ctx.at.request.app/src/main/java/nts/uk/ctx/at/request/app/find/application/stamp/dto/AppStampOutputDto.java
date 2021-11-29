@@ -35,8 +35,13 @@ public class AppStampOutputDto {
 	
 //	臨時勤務利用
 	public Boolean useTemporary;
+
+//  場所名
+	private List<String> workLocationNames;
 	
-	
+//  職場名
+	private List<String> workplaceNames;
+
 	public static AppStampOutputDto fromDomain(AppStampOutput appStampOutput) {
 		return new AppStampOutputDto(
 				AppStampSettingDto.fromDomain(appStampOutput.getAppStampSetting()),
@@ -55,7 +60,9 @@ public class AppStampOutputDto {
 				appStampOutput.getAppStampReflectOptional().isPresent()
 						? AppStampReflectDto.fromDomain(appStampOutput.getAppStampReflectOptional().get())
 						: null,
-				appStampOutput.getUseTemporary().isPresent() ? appStampOutput.getUseTemporary().get() : null);
+				appStampOutput.getUseTemporary().isPresent() ? appStampOutput.getUseTemporary().get() : null,
+				appStampOutput.getWorkLocationNames(),
+				appStampOutput.getWorkplaceNames());
 	}
 	
 	
@@ -69,6 +76,8 @@ public class AppStampOutputDto {
 						: Optional.empty(),
 				appStampOptional != null ? Optional.of(appStampOptional.toDomain()) : Optional.empty(),
 				appStampReflectOptional != null ? Optional.of(appStampReflectOptional.toDomain()) : Optional.empty(),
-				useTemporary != null ? Optional.of(useTemporary) : Optional.empty());
+				useTemporary != null ? Optional.of(useTemporary) : Optional.empty(),
+				workLocationNames,
+				workplaceNames);
 	}
 }

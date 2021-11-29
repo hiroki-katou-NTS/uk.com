@@ -16,7 +16,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * refactor 4
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.打刻申請設定.打刻申請設定
  * @author Doan Duy Hung
- * Update by LienPTK - 2021/11/22 - EA4158
  */
 //打刻申請設定
 @Getter
