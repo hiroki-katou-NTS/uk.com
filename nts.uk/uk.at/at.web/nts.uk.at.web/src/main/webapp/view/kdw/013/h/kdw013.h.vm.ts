@@ -352,6 +352,9 @@ module nts.uk.at.view.kdw013.h {
 								} else {
 									self.itemId29.itemSelectedDisplay(self.itemId29.value() + ' ' + getText('KDW013_40'));
 								}	
+							}else{
+								self.itemId29.value(null);
+								self.itemId29.itemSelectedDisplay(getText('KDW013_86'));
 							}
 	                    console.log(kml001selectedCodeList);
 	                });
