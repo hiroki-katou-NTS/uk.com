@@ -1120,7 +1120,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			String companyId, String WorkTypeCode) {
 		// val x = shareContainer.getShared("WorkType" + WorkTypeCode);
 		val workType = shareContainer.getShared("WorkType" + WorkTypeCode,
-				() -> workTypeRepository.findNoAbolishByPK(companyId, WorkTypeCode));
+				() -> workTypeRepository.findByPK(companyId, WorkTypeCode));
 		if (workType.isPresent()) {
 			return Optional.of(workType.get().clone());
 		}
