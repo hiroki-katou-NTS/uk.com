@@ -292,11 +292,21 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			} else {
 				text_A3_31_32 = "<span style='margin-left:15px;'>" + text45 + " " + z.deadline; + "</span>";
 			}
+
+			if (z.listDigestion.length > 0){
+				_.forEach(z.listDigestion, (a : any, index : any) => {
+					text_A4_41_42_43 = a.digestionDate + a.digestionCount
+					if (index == 0) {
+						self.holidayData.push(new HolidayInfo(z.occurrenceDateStatus, textA3_11_12_13, z.digestionStatus, text_A3_31_32, a.digestionDateStatus, text_A4_41_42_43));
+					} else {
+						self.holidayData.push(new HolidayInfo("", "", "", "",a.digestionDateStatus, text_A4_41_42_43));
+					}
+					
+				})
+			} else {
+				self.holidayData.push(new HolidayInfo(z.occurrenceDateStatus, textA3_11_12_13, z.digestionStatus, text_A3_31_32,"", text_A4_41_42_43));
+			}
 			
-			text_A4_41_42_43 = z.digestionDate + z.digestionCount
-
-			self.holidayData.push(new HolidayInfo(z.occurrenceDateStatus, textA3_11_12_13, z.digestionStatus, text_A3_31_32,z.digestionDateStatus, text_A4_41_42_43));
-
 			if ((_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
 				|| _.includes(z.digestionDateStatus, nts.uk.resource.getText('KDL005_40')))) {
 				if (self.checkSolid == 0) {
