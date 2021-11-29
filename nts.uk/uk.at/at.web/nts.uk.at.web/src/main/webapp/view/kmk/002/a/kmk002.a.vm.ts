@@ -2467,7 +2467,7 @@ module nts.uk.at.view.kmk002.a {
                 let operator: string = EnumAdaptor.localizedNameOf(dto.operator, Enums.ENUM_OPT_ITEM.operatorAtr);
                 let selectableFormulas = self.getSelectableFormulas(self.orderNo());
                 left = _.find(selectableFormulas, item => item.formulaId == dto.leftItem.formulaItemId);
-                right = _.find(selectableFormulas, item => item.formulaId == dto.leftItem.formulaItemId);
+                right = _.find(selectableFormulas, item => item.formulaId == dto.rightItem.formulaItemId);
 
                 let isTimeLeft = false;
                 let isNumberLeft = false;
@@ -2486,9 +2486,9 @@ module nts.uk.at.view.kmk002.a {
                     leftItem = self.getSymbolById(dto.leftItem.formulaItemId);
                 } else {
                     leftItem = dto.leftItem.inputValue;
-                    if((isTimeSelected && isTimeLeft && (dto.operator == 0 ||dto.operator ==1))
-                        ||(isTimeSelected && isNumberLeft && (dto.operator == 2 ))
-                        ||(isNumberSelected && isTimeLeft && (dto.operator == 3))){
+                    if((isTimeSelected && isTimeRight && (dto.operator == 0 ||dto.operator ==1))
+                        ||(isTimeSelected && isNumberRight && (dto.operator == 2 ))
+                        ||(isNumberSelected && isTimeRight && (dto.operator == 3))){
                         leftItem  = this.formatTime(dto.leftItem.inputValue)
                     }
                 }
@@ -2498,9 +2498,9 @@ module nts.uk.at.view.kmk002.a {
                     rightItem = self.getSymbolById(dto.rightItem.formulaItemId);
                 } else {
                     rightItem = dto.rightItem.inputValue;
-                    if((isTimeSelected && isTimeRight && (dto.operator == 0 ||dto.operator ==1))
-                        ||(isTimeSelected && isNumberRight && (dto.operator == 2 ))
-                        ||(isNumberSelected && isTimeRight&& (dto.operator == 3))){
+                    if((isTimeSelected && isTimeLeft && (dto.operator == 0 ||dto.operator ==1))
+                        ||(isTimeSelected && isNumberLeft && (dto.operator == 2 ))
+                        ||(isNumberSelected && isTimeLeft&& (dto.operator == 3))){
                         rightItem  = this.formatTime(dto.rightItem.inputValue)
                     }
 
