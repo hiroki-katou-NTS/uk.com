@@ -54,11 +54,13 @@ public class DeleteAttendancesByTimezoneTest {
 		
 		new Expectations() {
 			{
-				require.deleteByListItemId(anyString, GeneralDate.today(), itemIds);
+				require.deleteBySupFrameNo(anyString, GeneralDate.today(), SupportFrameNo.of(1));
 			}
 		};
 		
-		NtsAssert.atomTask(() -> result.get(2), any -> require.deleteByListItemId("sId", GeneralDate.today(), itemIds));
+		
+		NtsAssert.atomTask(() -> result.get(0), any -> require.deleteBySupFrameNo("sId", GeneralDate.today(), SupportFrameNo.of(1)));
+		NtsAssert.atomTask(() -> result.get(1), any -> require.deleteByListItemId("sId", GeneralDate.today(), itemIds));
 	}
 	
 		// [1] 応援作業別勤怠を削除する
