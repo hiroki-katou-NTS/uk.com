@@ -33,6 +33,7 @@ module nts.uk.at.view.kdp004.a {
 
 		const KDP004_SAVE_DATA = 'loginKDP004';
 		const WORKPLACES_STORAGE = 'WORKPLACES_STORAGE';
+		const IS_RELOAD_VIEW = 'IS_RELOAD_VIEW_004';
 
 		export class ScreenModel {
 			stampSetting: KnockoutObservable<StampSetting> = ko.observable({} as StampSetting);
@@ -62,6 +63,7 @@ module nts.uk.at.view.kdp004.a {
 			showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
 
 			totalOpenViewR: number = 0;
+			contractCode: string = '000000000000';
 
 			// get from basyo;
 			workplace: string[] | [] = [];
@@ -73,6 +75,7 @@ module nts.uk.at.view.kdp004.a {
 
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
+			saveDefault: Boolean = false;
 			saveSuccess = false;
 
 			constructor() {
@@ -119,46 +122,130 @@ module nts.uk.at.view.kdp004.a {
 						self.useWork(data.workUse);
 					})
 
+				// Call step1: クラウド/オンプレの判断を行う
+				vm.$ajax("at", "at/record/stamp/finger/get-isCloud")
+					.then((data: boolean) => {
+						// Step2: 契約コードに関するlocalstrageに登録する
+						if (!data) {
+							self.saveDefault = true
+							vm.$window.storage("contractInfo", {
+								contractCode: "000000000000",
+								contractPassword: null
+							}).then(() => self.startScreen().then(() => dfd.resolve()));
+						} else {
+							// Step3: テナント認証する
+							vm.$window.storage("contractInfo")
+								.then((data: any) => {
+									if (!data) {
+										// Step4: CCG007_ログイン　A：契約認証を実行する
+										self.openDialogCCG007A().then(() => dfd.resolve())
+									} else {
+										self.contractCode = data.contractCode;
+										vm.$ajax("at", "at/record/stamp/finger/get-authenticate",
+											{ contactCode: data.contractCode, password: data.contractPassword })
+											.then((isSuccess: boolean) => {
+												// Step4: CCG007_ログイン　A：契約認証を実行する
+												if (!isSuccess) {
+													vm.$window.storage(IS_RELOAD_VIEW).then((data: boolean) => {
+														if (data || data == null) {
+															localStorage.removeItem("nts.uk.characteristics." + KDP004_SAVE_DATA)
+															self.openDialogCCG007A().then(() => dfd.resolve())
+														} else {
+															self.startScreen().then(() => dfd.resolve())
+														}
+													})
+												} else {
+													self.startScreen().then(() => dfd.resolve());
+												}
+											});
+									}
+								});
+						}
+					})
+				return dfd.promise();
+			}
+
+			openDialogCCG007A(): JQueryPromise<void> {
+				let dfd = $.Deferred<void>();
+				const self = this;
+				nts.uk.ui.windows.sub.modal("com", "/view/ccg/007/a/index.xhtml", {
+					height: 320,
+					width: 400,
+					title: nts.uk.resource.getText("CCG007_9"),
+					dialogClass: 'no-close'
+				}).onClosed(() => { self.startScreen().then(() => dfd.resolve()) });
+				return dfd.promise();
+			}
+
+			startScreen(): JQueryPromise<void> {
+				let self = this;
+				let dfd = $.Deferred<void>();
+				const vm = new ko.ViewModel();
+
+				vm.$window.storage(IS_RELOAD_VIEW, true)
 
 				self.getWorkPlacesInfo();
 				self.basyo().done(() => {
-					nts.uk.characteristics.restore(KDP004_SAVE_DATA).done(function (loginInfo: ILoginInfo) {
-
-						if (!loginInfo) {
-							self.setLoginInfo().done((loginResult) => {
-								if (!loginResult) {
-									self.isUsed(false);
-									dfd.resolve();
-									return;
-								}
-								$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
-									dfd.resolve();
-									return;
-								});
-							});
-						} else {
-							self.loginInfo = loginInfo;
-							if (ko.unwrap(self.modeBasyo)) {
-								self.loginInfo.selectedWP = self.workplace;
-								nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
-							}
-
-							$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
-								dfd.resolve();
-							});
-						}
-					})
-				}).always(() => {
 					vm.$window.storage("contractInfo")
 						.then((data: any) => {
 							if (data) {
 								service.getLogginSetting(data.contractCode).done((res) => {
-									self.listCompany(_.filter(res, 'fingerAuthStamp'));
+									if (res.length == 0) {
+										// self.errorMessage(getMessage("Msg_1527"));
+										// self.isUsed(false);
+										// dfd.resolve();
+										if (self.saveDefault) {
+											self.openScreenF({
+												mode: 'admin'
+											}).then(() => {
+												self.errorMessage(getMessage("Msg_1527"));
+												self.isUsed(false);
+												self.saveDefault = false
+												dfd.resolve();
+												return;
+											})
+										} else {
+											self.errorMessage(getMessage("Msg_1527"));
+											self.isUsed(false);
+											self.saveDefault = false
+											dfd.resolve();
+											return;
+										}
+									} else {
+										self.listCompany(_.filter(res, 'fingerAuthStamp'));
+										nts.uk.characteristics.restore(KDP004_SAVE_DATA).done(function (loginInfo: ILoginInfo) {
+
+											if (!loginInfo) {
+												self.setLoginInfo().done((loginResult) => {
+													if (!loginResult) {
+														self.isUsed(false);
+														dfd.resolve();
+														return;
+													}
+													$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+														dfd.resolve();
+														return;
+													});
+												});
+											} else {
+												self.loginInfo = loginInfo;
+												if (ko.unwrap(self.modeBasyo)) {
+													self.loginInfo.selectedWP = self.workplace;
+													nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo);
+												}
+
+												$.when(self.doFirstLoad(), self.loadNotice(self.loginInfo)).done(() => {
+													dfd.resolve();
+												});
+											}
+										}).always(() => {
+											self.modeBasyo(false);
+										});
+									}
 								});
 							}
-						});
-					self.modeBasyo(false);
-				});
+						})
+				})
 				return dfd.promise();
 			}
 
@@ -172,6 +259,11 @@ module nts.uk.at.view.kdp004.a {
 					}
 				}
 				return ButtonDisplayMode.ShowAll;
+			}
+
+			reloadView() {
+				const vm = new ko.ViewModel();
+				vm.$window.storage(IS_RELOAD_VIEW, false).then(() => location.reload())
 			}
 
 			getErrorNotUsed(errorType) {
@@ -204,8 +296,8 @@ module nts.uk.at.view.kdp004.a {
 
 				vm.$window.storage('contractInfo')
 					.done((data: any) => {
-						loginInfo.contractPassword = _.escape(data ? data.contractPassword : "");
-						loginInfo.contractCode = _.escape(data ? data.contractCode : "");
+						loginInfo.contractPassword = data.contractPassword;
+						loginInfo.contractCode = data.contractCode;
 					}).then(() => {
 						block.grayout();
 						service.confirmUseOfStampInput({ employeeId: null, stampMeans: 1 }).done((res) => {
@@ -553,10 +645,10 @@ module nts.uk.at.view.kdp004.a {
 											self.loginInfo.selectedWP = result;
 											self.saveSuccess = true;
 											nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
-												location.reload();
+												self.reloadView();
 											});
 										} else {
-											location.reload();
+											self.reloadView();
 											// if (self.saveSuccess) {
 											// 	location.reload();
 											// }
@@ -565,7 +657,7 @@ module nts.uk.at.view.kdp004.a {
 								} else {
 									self.loginInfo.selectedWP = self.workplace;
 									nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
-										location.reload();
+										self.reloadView();
 									});
 								}
 							})
@@ -651,7 +743,7 @@ module nts.uk.at.view.kdp004.a {
 																service.stampInput(registerdata).done((res) => {
 																	//phat nhac
 																	self.playAudio(button.audioType);
-																	
+
 																	if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																		self.openScreenC(button, layout, loginInfo.em);
 																	} else {
@@ -687,7 +779,7 @@ module nts.uk.at.view.kdp004.a {
 														service.stampInput(registerdata).done((res) => {
 															//phat nhac
 															self.playAudio(button.audioType);
-															
+
 															if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 																self.openScreenC(button, layout, loginInfo.em);
 															} else {
@@ -746,7 +838,7 @@ module nts.uk.at.view.kdp004.a {
 												service.stampInput(registerdata).done((res) => {
 													//phat nhac
 													self.playAudio(button.audioType);
-													
+
 													if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 														self.openScreenC(button, layout, loginInfo.em);
 													} else {
@@ -783,7 +875,7 @@ module nts.uk.at.view.kdp004.a {
 
 											//phat nhac
 											self.playAudio(button.audioType);
-											
+
 											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
 												self.openScreenC(button, layout, loginInfo.em);
 											} else {
@@ -1003,10 +1095,6 @@ module nts.uk.at.view.kdp004.a {
 
 				// URLOption basyoが存在している場合
 				if (locationCd) {
-					const param = {
-						contractCode: vm.$user.contractCode,
-						workLocationCode: locationCd
-					}
 
 					vm.$window.storage("contractInfo")
 						.then((data: any) => {

@@ -52,8 +52,8 @@ public class GetTargetDateRecordApplication {
 						SetPreClockArt.NONE, ChangeClockAtr.GOING_TO_WORK, ChangeCalArt.NONE),
 				new RefectActualResult(null, null, null, null), Optional.empty(), lstCard.get(0).getStampCardId());
 
-		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, cid, applicaton.getEmployeeID(),
-				stamp);
+		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require,
+				stamp).map(x -> x.getDate());
 		return Pair.of(date, Optional.of(stamp));
 
 	}
