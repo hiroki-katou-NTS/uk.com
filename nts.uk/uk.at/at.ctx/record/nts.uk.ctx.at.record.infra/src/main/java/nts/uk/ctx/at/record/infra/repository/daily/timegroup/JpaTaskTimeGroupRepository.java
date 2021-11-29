@@ -52,6 +52,7 @@ public class JpaTaskTimeGroupRepository extends JpaRepository implements TaskTim
 		this.getEntityManager().createQuery(DELETE_BY_DATE)
 		.setParameter("date", date).setParameter("sId", sId)
 		.executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override

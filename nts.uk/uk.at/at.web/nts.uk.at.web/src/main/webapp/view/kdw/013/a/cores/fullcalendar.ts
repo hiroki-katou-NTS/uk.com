@@ -943,8 +943,10 @@ module nts.uk.ui.at.kdw013.calendar {
                                         let item = _.find(sortedList, [ 'favId', $(ui.item).attr('data-favId')]);
 
                                         let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
+                                        vm.taskDragItems([]);
                                         vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_task_dis_order', command))
                                                 .done(() => {
+                                                    
                                                     vm.params.screenA.reloadTaskFav();
                                                 }).always(() => vm.$blockui('clear'));
                                 },
@@ -1968,7 +1970,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     const events = vm.calendar.getEvents();
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
-
+                    const {lstIntegrationOfDaily} = data;
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
                     
                     if (vm.$view() == "edit" && vm.params.$settings().isChange) {
@@ -2011,6 +2013,13 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                      let frameNos =[];                    
                      _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                    
+                     let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(info.date).isSame(moment(id.ymd), 'days'); });
+                     _.forEach(_.filter(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null), ot => {
+                                frameNos.push(ot.workNo);
+                     })
+                            
+                            
                     
                     let newEvent = {
                             id: randomId(),
@@ -2405,6 +2414,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.$view('view');
                         }
                         if (!event.extendedProps.isTimeBreak) {
+                            let frameNos = _.get(_.maxBy(_.filter(events, (e) => moment(e.start).isSame(moment(event.start), 'days')), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
+                            event.setExtendedProp('frameNos',frameNos);
                             popupData.event(event);
                         }
                         // update exclude-times
@@ -2813,6 +2824,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
+                    const {lstIntegrationOfDaily} = data;
                     
                     if (startDate.isAfter(formatDate(start))) {
                         vm.calendar.unselect();
@@ -2830,6 +2842,10 @@ module nts.uk.ui.at.kdw013.calendar {
                             .value();
                     let frameNos = [];
                     _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                    let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                    _.forEach(_.filter(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null), ot => {
+                        frameNos.push(ot.workNo);
+                    });
                     let newEvent = {
                         id: randomId(),
                         start: start,
@@ -2897,7 +2913,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     } = event;
                     const data = ko.unwrap(params.$datas);
                     const startDate = moment(_.get(data, 'workStartDate'));
-                    
+                    const {lstIntegrationOfDaily} = data;
                     if (startDate.isAfter(formatDate(start))) {
                         event.remove();
                         return;
@@ -2935,13 +2951,34 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         let frameNos = [];
                         _.forEach(eventInDay, e => _.forEach(e.extendedProps.taskBlock.taskDetails, td => { frameNos.push(td.supNo); }));
+                        let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                        _.forEach(_.filter(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null), ot => {
+                            frameNos.push(ot.workNo);
+                        })
                         const startMinutes = (moment(start).hour() * 60) + moment(start).minute();
                         const endMinutes = (moment(end).hour() * 60) + moment(end).minute();
+                        const getFrameNo = (events) => {
+                            const vm = this;
+                            const data = ko.unwrap(vm.params.$datas());
+                            const {lstIntegrationOfDaily} = data;
+                            let maxNo = 20;
+                            let resultNo;
+                            for (let i = 1; i < maxNo; i++) {
+                                let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
+                                let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
+                                let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
+                                if (!event && !ouenTime) {
+                                    resultNo = i;
+                                    break;
+                                }
+                            }
+                            return resultNo;
+                        };
 
                         taskItemValues.push({ itemId: 1, value: startMinutes });
                         taskItemValues.push({ itemId: 2, value: endMinutes });
                         taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
-                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : vm.getFrameNo(eventInDay), taskItemValues }];
+                        let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks),
                                 start,
@@ -3402,20 +3439,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 const etz = _.find(_.get(datas, 'estimateZones', []), es => moment(es.ymd).isSame(moment(date), 'days'));
                 const overTimeZones = _.get(etz, 'overTimeZones', []);
                 return false;
-            }
-
-        public getFrameNo(events){
-                let maxNo = 20;
-                let resultNo;
-                for (let i = 1; i < maxNo; i++) {
-                    let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
-
-                    if (!event) {
-                        resultNo = i;
-                        break;
-                    }
-                }
-                return resultNo;
             }
 
         
