@@ -150,7 +150,8 @@ module nts.uk.at.view.kdp005.a {
 														if (data) {
 															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.startScreen().then(() => dfd.resolve()));
 														} else {
-															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.openDialogCCG007A().then(() => dfd.resolve());
+															localStorage.removeItem("nts.uk.characteristics." + KDP005_SAVE_DATA)
+															vm.$window.storage(IS_RELOAD_VIEW, false).then(() => self.openDialogCCG007A().then(() => dfd.resolve()));
 														}
 													})
 												} else {
