@@ -136,12 +136,16 @@ module nts.uk.at.kdp003.a {
 											// Step4: CCG007_ログイン　A：契約認証を実行する
 											if (!isSuccess) {
 												vm.$window.storage(IS_RELOAD_VIEW).then((data: boolean) => {
-													if (data) {
-														// vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.openDialogCCG007A());
+													console.log(data);
+
+													if (data == null) {
 														vm.openDialogCCG007A()
 													} else {
-														// vm.$window.storage(IS_RELOAD_VIEW, false).then(() => vm.getDataStartScreen());
-														vm.getDataStartScreen()
+														if (data) {
+															vm.openDialogCCG007A()
+														} else {
+															vm.getDataStartScreen()
+														}
 													}
 												})
 											} else {
