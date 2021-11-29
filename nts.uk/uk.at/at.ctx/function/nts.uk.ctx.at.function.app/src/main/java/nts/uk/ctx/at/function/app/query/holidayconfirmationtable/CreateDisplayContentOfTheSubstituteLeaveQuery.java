@@ -99,7 +99,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                     sid,
                     period,
                     false,
-                    period.end(),
+                    period == null ? GeneralDate.today() : period.end(),
                     false,
                     new ArrayList<>(),
                     Optional.empty(),

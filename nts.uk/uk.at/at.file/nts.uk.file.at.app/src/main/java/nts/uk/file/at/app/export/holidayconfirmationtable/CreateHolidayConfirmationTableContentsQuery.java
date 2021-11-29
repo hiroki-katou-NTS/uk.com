@@ -97,7 +97,7 @@ public class CreateHolidayConfirmationTableContentsQuery {
                     companyId,
                     employee.getSid(),
                     period,
-                    period.end(),
+                    period == null ? GeneralDate.today() : period.end(),
                     false,
                     false,
                     Collections.emptyList(),
