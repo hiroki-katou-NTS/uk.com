@@ -24,6 +24,7 @@ import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.common.MonthlyEstimateTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
@@ -61,6 +62,9 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     @Inject
     private StandardMenuRepository standardMenuRepo;
+
+    @Inject
+    private WeekRuleManagementRepo weekRuleManagementRepo;
 
     @Override
     public void generate(FileGeneratorContext context, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) {
@@ -108,12 +112,12 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     private void pageSetting(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         // A1_1
-        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
+        pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + dataSource.getCompanyName());
         // A1_2
-        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + getText("KSU002_56"));
+        pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + getText("KSU002_56"));
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         // A1_3, A1_4
-        pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
+        pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
         pageSetup.setPrintTitleRows("$1:$3");
     }
 
@@ -567,7 +571,8 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         val startDateValue = dataSource.getDateInformationList().get(0).getDayOfWeek().value;
         int count = ArrayUtils.indexOf(headerList.toArray(), startDateValue);
 
-        boolean isFirst = true;
+        val weekRuleManagement = weekRuleManagementRepo.find(AppContexts.user().companyId());
+        boolean isFirst = weekRuleManagement.isPresent() && weekRuleManagement.get().getDayOfWeek().value == startDayOfWeek;
         List<PersonalScheduleByIndividualFormat> dataList = new ArrayList<>();
         PersonalScheduleByIndividualFormat format = new PersonalScheduleByIndividualFormat();
         Map<Integer, String> holiday = new HashMap<>();

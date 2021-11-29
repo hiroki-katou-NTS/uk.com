@@ -56,7 +56,7 @@ module nts.uk.at.view.ksu001.k.b {
         isReload :KnockoutObservable<boolean> = ko.observable(false);
         exitStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
 
-        constructor() {            
+        constructor(code: string) {
             super();
             const self = this;                    
             self.personalInfoItems.splice(0, 0, {value: -1 , name:getText('KSU005_68')});
@@ -192,10 +192,10 @@ module nts.uk.at.view.ksu001.k.b {
                 return self.itemList().length < 10;
             });
             self.isEnableDisplayShiftBackgroundColor = ko.computed(() => {
-                const rowOne: ScreenItem = _.find(self.itemList(), (i: ScreenItem) => i.isNumberOne());
-                return rowOne && rowOne.attendanceItem() == "0";
+                const rowOne: ScreenItem = _.find(self.itemList(), (i: ScreenItem) => i.attendanceItem() == "0");
+                return !!rowOne;
             });
-            self.loadData();
+            self.loadData(code);
         }
 
         findDetail(code: string): void {
@@ -444,11 +444,9 @@ module nts.uk.at.view.ksu001.k.b {
             });            
         }
 
-        loadData(): void {
+        loadData(code: string): void {
             const self = this;
             let dataList: Array<ItemModel> = [];
-            let code = getShared('dataShareKSU005a');
-            let newCode = getShared('dataShareKSU005c');
             self.$blockui("invisible");
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                 if(data && data.length > 0){
@@ -458,7 +456,7 @@ module nts.uk.at.view.ksu001.k.b {
                         }                        
                     });            
                     self.items(_.sortBy(dataList, item => item.code));
-                    newCode ? self.selectedCode(newCode) : self.selectedCode(code);       
+                    code ? self.selectedCode(code) : self.selectedCode(self.items()[0].code);
                 } else {
                     self.clearData();
                 }
@@ -627,12 +625,7 @@ module nts.uk.at.view.ksu001.k.b {
 
         closeDialog(): void {
             const self = this;
-            let request: any = {
-                name: self.scheduleTableOutputSetting().name()
-            };
-            self.exitStatus() === 'Update' ? request.code = self.selectedCode() :request.code = getShared('dataShareKSU005a');
-            setShare('dataShareCloseKSU005b', request);
-            self.$window.close();            
+            self.$window.close(self.exitStatus() === 'Update' ? {code: self.selectedCode(), name: self.scheduleTableOutputSetting().name()} : null);
         }
 
         openDialog(): void {
@@ -641,11 +634,11 @@ module nts.uk.at.view.ksu001.k.b {
             request.copySourceCode = self.scheduleTableOutputSetting().code();
             request.copySourceName = self.scheduleTableOutputSetting().name();
 
-            setShare('dataShareKSU005b', request);
-            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/001/kc/index.xhtml').onClosed(() =>{
-                let newCode = getShared('dataShareKSU005c');
-                newCode ? self.reloadData(newCode) : self.reloadData(self.scheduleTableOutputSetting().code());
-                newCode ? self.exitStatus('Update') : self.exitStatus('Cancel');
+            self.$window.modal('/view/ksu/001/kc/index.xhtml', request).then((newCode) => {
+                if (newCode) {
+                    self.reloadData(newCode);
+                    self.exitStatus('Update');
+                }
             });
         }
     }

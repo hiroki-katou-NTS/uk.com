@@ -15,19 +15,18 @@ module nts.uk.at.view.ksu001.k.c {
         newCode:KnockoutObservable<string> = ko.observable('');
         newName:KnockoutObservable<string> = ko.observable('');
       
-        constructor() {
+        constructor(params: any) {
             super();
             const self = this;            
-            self.loadData();            
+            self.loadData(params);
         }
 
         mounted() {
             $('#outputSettingCopyCode').focus(); 
         }
 
-        loadData(): void {
+        loadData(data: any): void {
             const self = this;
-            let data = getShared('dataShareKSU005b');            
             self.copySourceCode(data.copySourceCode);
             self.copySourceName(data.copySourceName);
         }
@@ -50,8 +49,7 @@ module nts.uk.at.view.ksu001.k.c {
             self.$blockui('invisible');  
             self.$ajax(Paths.COPY_SCHEDULE_TABLE_OUTPUT_SETTING, request).done(() => {
                 self.$dialog.info({messageId: "Msg_15"}).then(function() {
-                    self.closeDialog();
-                    setShare('dataShareKSU005c', self.newCode());
+                    self.$window.close(request.newCode);
                 });  
             }).fail((res) => {
                 if(res.messageId == 'Msg_3')                    
@@ -70,6 +68,7 @@ module nts.uk.at.view.ksu001.k.c {
             }
             return false;
         }
+
         closeDialog(): void {
             const vm = this;
             vm.$window.close();

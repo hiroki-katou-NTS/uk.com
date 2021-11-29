@@ -87,91 +87,98 @@ module nts.uk.at.view.ksu001.k.a {
         openDialog(): void {
             let self = this;
             let code = self.selectedCode();
-            setShare('dataShareKSU005a', code);
-            nts.uk.ui.windows.sub.modal('/view/ksu/001/kb/index.xhtml').onClosed(() => {
-                let dataList: Array<ItemModel> = [];
-                let res = getShared('dataShareCloseKSU005b');
-                self.$blockui("invisible");
-                self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
-                    if (data && data.length > 0) {
-                        data = _.sortBy(data, ['code']);
-                        if (data[0].isAttendance == null) {
-                            _.each(data, item => {
-                                dataList.push(new ItemModel(item.code, item.name));                                
-                            });
-                            self.itemList(dataList);
-                            self.characteristics.code = res.code;
-                            self.characteristics.name = res.name;
-                            self.characteristics.comments = self.comments();
-                            character.save('characterKsu005a', self.characteristics);
-                            self.selectedCode(res.code);
-                            $("#preview-frame")[0].innerHTML = "";
-                        } else if (data[0].isAttendance) {                            
-                            self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
-                                // self.openDialog();
-                                $("#A2_3").focus();
-                            });
+            self.$window.modal('/view/ksu/001/kb/index.xhtml', code).then((returnedData: any) => {
+                if (returnedData) {
+                    let dataList: Array<ItemModel> = [];
+                    self.$blockui("invisible");
+                    self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
+                        if (data && data.length > 0) {
+                            if (data[0].isAttendance == null) {
+                                _.each(data, item => {
+                                    dataList.push(new ItemModel(item.code, item.name));
+                                });
+                                self.itemList(dataList);
+                                self.characteristics.code = returnedData.code;
+                                self.characteristics.name = returnedData.name;
+                                self.characteristics.comments = self.comments();
+                                character.save('characterKsu005a', self.characteristics);
+                                self.selectedCode(returnedData.code);
+                                $("#preview-frame")[0].innerHTML = "";
+                            } else if (data[0].isAttendance) {
+                                self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
+                                    // self.openDialog();
+                                    $("#A2_3").focus();
+                                });
+                            } else {
+                                self.$dialog.error({ messageId: 'Msg_1970' }).then(() => {
+                                    self.closeDialog();
+                                });
+                            }
                         } else {
-                            self.$dialog.error({ messageId: 'Msg_1970' }).then(() => {                                
-                                self.closeDialog();
-                            });
+                            self.itemList(dataList);
                         }
-                    } else {
-                        self.itemList(dataList);
-                    }
-                    $('#exportExcel').focus();
-                }).always(() => {
-                    self.$blockui("hide");
-                });
+                        $('#exportExcel').focus();
+                    }).always(() => {
+                        self.$blockui("hide");
+                    });
+                }
             });
             $('#exportExcel').focus();
         }
 
         exportExcel() {
             const vm = this;
-            const query: any = {
-                orgUnit: vm.params.orgUnit,
-                orgId: vm.params.orgId,
-                periodStart: vm.params.startDate,
-                periodEnd: vm.params.endDate,
-                employeeIds: vm.params.employeeIds,
-                outputSettingCode: vm.selectedCode(),
-                comment: vm.comments(),
-                excel: true,
-                closureDate: {
-                    closureDay: vm.params.closeDate.day,
-                    lastDayOfMonth: vm.params.closeDate.lastDay
+            vm.$validate().then(valid => {
+                if (valid) {
+                    const query: any = {
+                        orgUnit: vm.params.orgUnit,
+                        orgId: vm.params.orgId,
+                        periodStart: vm.params.startDate,
+                        periodEnd: vm.params.endDate,
+                        employeeIds: vm.params.employeeIds,
+                        outputSettingCode: vm.selectedCode(),
+                        comment: vm.comments(),
+                        excel: true,
+                        closureDate: {
+                            closureDay: vm.params.closeDate.day,
+                            lastDayOfMonth: vm.params.closeDate.lastDay
+                        }
+                    };
+                    vm.$blockui("grayout");
+                    nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
                 }
-            };
-            vm.$blockui("grayout");
-            nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
-                vm.$dialog.error(error);
-            }).always(() => {
-                vm.$blockui("hide");
             });
         }
 
         exportPdf() {
             const vm = this;
-            const query: any = {
-                orgUnit: vm.params.orgUnit,
-                orgId: vm.params.orgId,
-                periodStart: vm.params.startDate,
-                periodEnd: vm.params.endDate,
-                employeeIds: vm.params.employeeIds,
-                outputSettingCode: vm.selectedCode(),
-                comment: vm.comments(),
-                excel: false,
-                closureDate: {
-                    closureDay: vm.params.closeDate.day,
-                    lastDayOfMonth: vm.params.closeDate.lastDay
+            vm.$validate().then(valid => {
+                if (valid) {
+                    const query: any = {
+                        orgUnit: vm.params.orgUnit,
+                        orgId: vm.params.orgId,
+                        periodStart: vm.params.startDate,
+                        periodEnd: vm.params.endDate,
+                        employeeIds: vm.params.employeeIds,
+                        outputSettingCode: vm.selectedCode(),
+                        comment: vm.comments(),
+                        excel: false,
+                        closureDate: {
+                            closureDay: vm.params.closeDate.day,
+                            lastDayOfMonth: vm.params.closeDate.lastDay
+                        }
+                    };
+                    vm.$blockui("grayout");
+                    nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide");
+                    });
                 }
-            };
-            vm.$blockui("grayout");
-            nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
-                vm.$dialog.error(error);
-            }).always(() => {
-                vm.$blockui("hide");
             });
         }
 

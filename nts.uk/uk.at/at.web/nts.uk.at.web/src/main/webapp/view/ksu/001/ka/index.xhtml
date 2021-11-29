@@ -22,11 +22,11 @@
                 <!--A1-1-->
                 <button tabindex="1"
                         id="exportExcel"
-                        data-bind="click: exportExcel, enable: !_.isEmpty(itemList())">#{i18n.getText('KSU001_4079')}</button>
+                        data-bind="click: exportExcel, enable: !_.isEmpty(itemList()) &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('KSU001_4079')}</button>
                 <!--A1-2-->
                 <button tabindex="2"
                         id="A1_2"
-                        data-bind="click: exportPdf, enable: !_.isEmpty(itemList())">#{i18n.getText('KSU001_4080')}</button>
+                        data-bind="click: exportPdf, enable: !_.isEmpty(itemList()) &amp;&amp; $root.errors.isEmpty()">#{i18n.getText('KSU001_4080')}</button>
                 <!--A1-3-->
                 <button tabindex="3" id="A1_3" data-bind="click: closeDialog">#{i18n.getText('KSU001_4081')}</button>
             </div>
@@ -42,7 +42,7 @@
                          data-bind="ntsComboBox: {
                                             name:'#[KSU001_4083]',
                                             options: itemList,
-                                            width: 230,
+                                            width: 260,
                                             optionsValue: 'code',
                                             visibleItemsCount: 10,
                                             value: selectedCode,
@@ -69,14 +69,14 @@
                     <!--A3-2-->
                     <textarea tabindex="7"
                               class="inputValue"
-                              rows="3" cols="80"
+                              rows="4" cols="75"
                               data-bind="ntsMultilineEditor: {
                                                 name: '#[KSU001_4086]',
                                                 value: comments,
                                                 constraint:'PersonalScheduleComments',
                                                 required: false }" />
                 </div>
-                <div id="preview-frame" style="width: 100%; height: calc(100% - 100px); overflow: auto; border: 1px solid #cfd4da;"/>
+                <div id="preview-frame" style="width: 100%; height: calc(100% - 110px); overflow: auto; border: 1px solid #cfd4da;"/>
             </div>
         </ui:define>
         </ui:composition>
