@@ -1,4 +1,5 @@
 module nts.uk.com.view.cas014.b {
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     var paths = {
         initScreen: "screen/com/cas014/get-data-init",
         getRoleSetGrantedToEmployee: "screen/com/cas014/get-role-set-grandted-person/",
@@ -33,23 +34,26 @@ module nts.uk.com.view.cas014.b {
             self.selectedEmployeeCode = ko.observable(null);
             self.selectedEmployeeName = ko.observable(null);
             self.selectedEmployeeCode.subscribe(function(data: any) {
-                let item = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.code == data);
-                if (item) {
-                    self.getEmployeeInfo(item.id);
-                    self.selectedEmployeeName(item.name);
-                    self.screenMode(ScreenMode.UPDATE);
-                    $("#B4_2").focus();
-                } else {
-                    self.screenMode(ScreenMode.NEW);
-                    $("#B3_2").focus();
-                    if (!self.backFromCDL009) {
-                        self.selectedEmployeeId(null);
-                        self.selectedEmployeeName(null);
-                        self.selectedRoleCode(null);
-                        self.dateValue({});
-                        self.openDialogCDL009();
-                    } else {
+                if(!isNullOrUndefined(data)){
+                    let item = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.code == data);
+                    if (item) {
                         self.backFromCDL009 = false;
+                        self.getEmployeeInfo(item.id);
+                        self.selectedEmployeeName(item.name);
+                        self.screenMode(ScreenMode.UPDATE);
+                        $("#B4_2").focus();
+                    } else {
+                        self.screenMode(ScreenMode.NEW);
+                        $("#B3_2").focus();
+                        if (!self.backFromCDL009) {
+                            self.selectedEmployeeId(null);
+                            self.selectedEmployeeName(null);
+                            self.selectedRoleCode(null);
+                            self.dateValue({});
+                            self.openDialogCDL009();
+                        } else {
+                            self.backFromCDL009 = false;
+                        }
                     }
                 }
             });
@@ -106,10 +110,10 @@ module nts.uk.com.view.cas014.b {
                             content: tmp ? tmp.name : ""
                         }
                     }));
-
                     _.defer(() => {
                         if (_.isEmpty(self.roleSetPersonList())) {
-                            self.selectedEmployeeCode() == null ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(null);
+                        //    self.selectedEmployeeCode() == null ? self.selectedEmployeeCode.valueHasMutated() : self.selectedEmployeeCode(null);
+                            $("#B3_2").focus();
                         } else {
                             if (employeeId) {
                                 const emp = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.id == employeeId);
@@ -156,12 +160,16 @@ module nts.uk.com.view.cas014.b {
                 self.$dialog.error(error);
             });
         }
-
         createNewRoleSetPerson() {
             let self = this;
             nts.uk.ui.errors.clearAll();
-            self.backFromCDL009 = false;
+            self.screenMode(ScreenMode.NEW);
+          //  self.backFromCDL009 = false;
             self.selectedEmployeeCode(null);
+            self.selectedEmployeeName(null);
+            self.selectedRoleCode(null);
+            self.dateValue({});
+            self.openDialogCDL009();
         }
 
         registerRoleSetPerson() {

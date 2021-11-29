@@ -75,7 +75,6 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
         return new SacmtRoleSet(
 			key,
 			domain.getRoleSetName().v(),
-			0,//TODO because field approvalAuthority in domain [RoleSet], dev fix
 			domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"",
 			domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): "",
 			domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): "",
@@ -95,7 +94,6 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 		upEntity.buildEntity(
 			upEntity.roleSetPK,
 			domain.getRoleSetName().v(),
-			0,//TODO because field approvalAuthority in domain [RoleSet], dev fix
 			domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"",
 			domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): "",
 			domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): "",
@@ -191,14 +189,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      
 	private static final String SELECT_BY_CID_ROLLSETCD_AUTHOR = "SELECT rs FROM SacmtRoleSet rs"
             + " WHERE rs.roleSetPK.companyId = :companyId"
-            + " AND rs.roleSetPK.roleSetCd = :roleSetCd "
-            + " AND rs.approvalAuthority = :approvalAuthority";
+            + " AND rs.roleSetPK.roleSetCd = :roleSetCd ";
 	@Override
-	public Optional<RoleSet> findByCidRollSetCDAuthor(String companyId, String roleSetCd, int approvalAuthority) {
+	public Optional<RoleSet> findByCidRollSetCDAuthor(String companyId, String roleSetCd) {
 		return this.queryProxy().query(SELECT_BY_CID_ROLLSETCD_AUTHOR ,SacmtRoleSet.class)
 				.setParameter("companyId", companyId)
 				.setParameter("roleSetCd", roleSetCd)
-				.setParameter("approvalAuthority", approvalAuthority)
 				.getSingle( c -> toDomain(c));
 	}
 
