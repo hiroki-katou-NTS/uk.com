@@ -249,6 +249,7 @@ module nts.uk.at.view.ktg027.a {
         legendOptions: any;
 		firstLoad: boolean = true;
         cache: any;
+        isRefresh: boolean = false;
 
         constructor() {
             super();
@@ -361,10 +362,11 @@ module nts.uk.at.view.ktg027.a {
                                         isRefresh: false,
                                         target: ym
                                     });
-                                    if(vm.firstLoad){
+                                    if (vm.firstLoad && !vm.isRefresh) {
                                         vm.loadData(ym, closureId, {overtimeOfSubordinateEmployees, personalInformationOfSubordinateEmployees});
                                         vm.firstLoad = false;
-                                    }else{
+                                    } else {
+                                        vm.isRefresh = false;
                                         vm.loadData(ym, closureId);	
                                     }
                                 }
@@ -373,6 +375,7 @@ module nts.uk.at.view.ktg027.a {
 
                     vm.$window.storage('KTG027_INITIAL_DATA').then((rs: {isRefresh: boolean, target: any}) => {
                         if (rs && rs.isRefresh && rs.target) {
+                            vm.isRefresh = true;
                             vm.targetYear(rs.target);
                             return;
                         }
