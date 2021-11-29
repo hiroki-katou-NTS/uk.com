@@ -23,9 +23,9 @@ module nts.uk.at.view.cdl011.a {
         vm.functionId = param;
       } else {
         // Fall back to support old UI
-        vm.functionId = nts.uk.ui.windows.getShared("CDL001_PARAM");
+        vm.functionId = nts.uk.ui.windows.getShared("CDL011_PARAM");
       }
-      switch (param) {
+      switch (vm.functionId) {
         case 1:
           vm.mailFunctionName(vm.$i18n("CDL011_2")); break;
         case 6:
@@ -33,8 +33,8 @@ module nts.uk.at.view.cdl011.a {
         case 9:
           vm.mailFunctionName(vm.$i18n("CDL011_4")); break;
       }
-      vm.findData(param)
-        .always(() => vm.$blockui("clear").then(() => vm.$nextTick(() => $("#A2_1").focus())));
+      vm.findData(vm.functionId)
+        .always(() => vm.$blockui("clear").then(() => vm.$nextTick(() => $("#A2_1 input").focus())));
     }
 
     private findData(functionId: number): JQueryPromise<void> {

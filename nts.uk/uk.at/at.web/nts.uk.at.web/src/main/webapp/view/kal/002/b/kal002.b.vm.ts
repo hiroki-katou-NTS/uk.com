@@ -118,6 +118,10 @@ module nts.uk.at.view.kal002.b.viewmodel {
             return dfd.promise();
         }
         
+        public openDialogCDL011() {
+          nts.uk.ui.windows.setShared("CDL011_PARAM", 9);
+          nts.uk.ui.windows.sub.modal("com", "/view/cdl/011/a/index.xhtml");
+        }
     }
     
     export interface MailSettingsDto {

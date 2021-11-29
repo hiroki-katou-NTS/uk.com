@@ -3888,6 +3888,9 @@ public class ProgramsManager {
     public static final Program CDL010A = new Program(WebAppId.COM, ProgramIdConsts.CDL010A, "CDL010_1",
     		"/view/cdl/010/a/index.xhtml");
     
+    public static final Program CDL011A = new Program(WebAppId.COM, ProgramIdConsts.CDL011A, "CDL011_1",
+    		"/view/cdl/011/a/index.xhtml");
+    
     /**
      * CCGS03
      */
