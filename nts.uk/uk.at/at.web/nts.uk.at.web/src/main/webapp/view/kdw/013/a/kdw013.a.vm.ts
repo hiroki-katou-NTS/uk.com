@@ -848,7 +848,7 @@ module nts.uk.ui.at.kdw013.a {
 
             let changedDates = vm.getChangedDates(dateRanges());
     
-            let workDetails = vm.createWorkDetails(dateRanges());
+            let workDetails = vm.createWorkDetails(changedDates);
     
             let manHrlst = vm.getManHrlst(dateRanges());
 
@@ -996,7 +996,7 @@ module nts.uk.ui.at.kdw013.a {
                 
                 const eventHas2Task = _
                     .chain(vm.events())
-                    .filter(({ start }) => moment(start).isSame(date, 'day'))
+                    .filter(({ start }) => moment(start).isSame(moment(date), 'days'))
                     .filter(({ extendedProps }) => _.get(extendedProps, 'taskBlock.taskDetails', []).length > 1).value();
                     
                 _.forEach(eventHas2Task, ({ start, end, extendedProps }) => {
