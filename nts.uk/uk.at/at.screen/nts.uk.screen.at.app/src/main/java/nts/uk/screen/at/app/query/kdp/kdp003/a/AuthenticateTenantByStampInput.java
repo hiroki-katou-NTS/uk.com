@@ -49,8 +49,7 @@ public class AuthenticateTenantByStampInput {
 		TenantAuthenticationResult tenantAuthResult = ConnectDataSourceOfTenant.connect(require, loginClient,
 				param.contactCode, param.password);
 
-//		return tenantAuthResult.isSuccess();
-		return false;
+		return tenantAuthResult.isSuccess();
 	}
 
 	@RequiredArgsConstructor
