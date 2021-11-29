@@ -631,25 +631,25 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                     .getBreakDayOffMngInPeriod(rq, input);
             substituteHolidayAggrResultsRight.put(s, item);
         }
-        CompenLeaveAggrResult subVaca = null;
-        if (closureInforOpt.isPresent()) {
-            val param = new AbsRecMngInPeriodRefactParamInput(
-                    cId,
-                    employeeId,
-                    periodDate,
-                    closureInforOpt.get().getPeriod().end(),
-                    false,
-                    false,
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    new ArrayList<>(),
-                    Optional.empty()
-                    , Optional.empty()
-                    , Optional.empty(),
-                    new FixedManagementDataMonth());
-            subVaca = NumberCompensatoryLeavePeriodQuery
-                    .process(rq, param);
-        }
+//        CompenLeaveAggrResult subVaca = null;
+//        if (closureInforOpt.isPresent()) {
+//            val param = new AbsRecMngInPeriodRefactParamInput(
+//                    cId,
+//                    employeeId,
+//                    periodDate,
+//                    closureInforOpt.get().getPeriod().end(),
+//                    false,
+//                    false,
+//                    new ArrayList<>(),
+//                    new ArrayList<>(),
+//                    new ArrayList<>(),
+//                    Optional.empty()
+//                    , Optional.empty()
+//                    , Optional.empty(),
+//                    new FixedManagementDataMonth());
+//            subVaca = NumberCompensatoryLeavePeriodQuery
+//                    .process(rq, param);
+//        }
         // [RQ677]期間中の60H超休残数を取得する
         AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h = this.getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
                 cId,
@@ -724,7 +724,7 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                 //currentHolidayLeft,
                 currentHolidayRemainLeft,
                 substituteHolidayAggrResult,
-                subVaca,
+                //subVaca,
                 aggrResultOfHolidayOver60h,
                 getRs363,
                 getSpeHdOfConfMonVer2,
