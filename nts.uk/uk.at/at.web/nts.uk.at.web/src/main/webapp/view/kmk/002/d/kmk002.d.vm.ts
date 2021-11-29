@@ -212,12 +212,20 @@ module nts.uk.at.view.kmk002.d {
                 }
 
                 // Check required input of right item
-                if (self.rightItem.settingMethod() == SettingMethod.NUMBER_INPUT) {
+                if (self.rightItem.settingMethod() == SettingMethod.NUMBER_INPUT ) {
+                    // if(self.rightItem.inputValue() == null){
+                    //     $('#inp-right-item2').trigger("validate");
+                    // }
+                    $('#inp-right-item2').ntsEditor('validate');
                     $('#inp-right-item').ntsEditor('validate');
                 }
 
                 // Check required input of left item
                 if (self.leftItem.settingMethod() == SettingMethod.NUMBER_INPUT) {
+                    // if(self.leftItem.inputValue() == null){
+                    //     $('#inp-left-item_1').trigger("validate");
+                    // }
+                    $('#inp-left-item_1').ntsEditor('validate');
                     $('#inp-left-item').ntsEditor('validate');
                 }
 
