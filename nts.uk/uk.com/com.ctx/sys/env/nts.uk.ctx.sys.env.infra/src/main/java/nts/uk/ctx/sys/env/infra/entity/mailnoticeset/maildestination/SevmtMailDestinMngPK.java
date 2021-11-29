@@ -7,9 +7,11 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class SevmtMailDestinMngPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
