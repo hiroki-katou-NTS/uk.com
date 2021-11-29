@@ -114,7 +114,7 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
         // A1_1
         pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + dataSource.getCompanyName());
         // A1_2
-        pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + getText("KSU002_56"));
+        pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック,Bold\"" + getText("KSU002_56"));
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
         // A1_3, A1_4
         pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
