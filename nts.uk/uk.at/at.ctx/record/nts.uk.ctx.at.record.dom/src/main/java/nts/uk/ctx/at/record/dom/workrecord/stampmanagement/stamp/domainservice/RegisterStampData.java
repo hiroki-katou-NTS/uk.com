@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 //import nts.uk.ctx.at.record.dom.stamp.management.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 
 /**
  * @author ThanhNX
@@ -75,6 +75,6 @@ public class RegisterStampData {
 
 		//[R-10] 既に同じ打刻あるか
 		public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime, ChangeClockArt changeClockArt);
+				GeneralDateTime dateTime, ChangeClockAtr changeClockArt);
 	}
 }

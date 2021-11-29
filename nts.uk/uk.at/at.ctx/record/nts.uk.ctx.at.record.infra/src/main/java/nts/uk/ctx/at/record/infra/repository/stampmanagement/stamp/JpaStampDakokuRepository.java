@@ -396,7 +396,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 	@Override
 	public boolean existsStamp(ContractCode contractCode, StampNumber stampNumber, GeneralDateTime dateTime,
-			ChangeClockArt changeClockArt) {
+			ChangeClockAtr changeClockArt) {
 		return this.queryProxy()
 				.find(new KrcdtStampPk(contractCode.v(), stampNumber.v(), dateTime, changeClockArt.value),
 						KrcdtStamp.class)
