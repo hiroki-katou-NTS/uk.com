@@ -110,7 +110,7 @@ public class RoleWorkplaceIDFinder {
 			return workplaceAdapter.findListWkpIdByBaseDate(referenceDate);
 		}else {
 			if(isWkplManager.isPresent() && isWkplManager.get()) {
-				//
+				//ドメインモデル「職場管理者」を取得する
 				listWkpId.addAll(workplaceManagerRepository.findListWkpManagerByEmpIdAndBaseDate(employeeId, referenceDate).stream().map(c->c.getWorkplaceId()).collect(Collectors.toList()));
 			}
 					
