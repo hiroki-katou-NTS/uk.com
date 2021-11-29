@@ -894,29 +894,34 @@ module nts.uk.ui.at.kdw013.a {
 						let messageId = '';
 						let messageParams = [];
 						
-						if (alarmMsg_2081.length > 0) {
+						if (alarmMsg_2081 && alarmMsg_2081.length > 0) {
 							messageId = 'Msg_2081';
 							messageParams = alarmMsg_2081[0].parameters;
+							return nts.uk.ui.dialog.caution({ messageId: messageId, messageParams: messageParams })
+								.then(() => {
+		                            vm.dataChanged(false);
+		                            //trigger reload data
+		                            vm.dateRange.valueHasMutated();
+		                        })
+		                        .then(() => lstOvertimeLeaveTime);
 						} else {
-							messageId = 'Msg_15';
-							messageParams = []
-						}
-						
-						return vm.$dialog.info({ messageId: messageId, messageParams: messageParams })
+							return vm.$dialog.info({ messageId: 'Msg_15'})
 							.then(() => {
                                 vm.dataChanged(false);
                                 //trigger reload data
                                 vm.dateRange.valueHasMutated();
                             })
                             .then(() => lstOvertimeLeaveTime);
+						}
 					}
                 })
                 .fail((response: ErrorMessage) => {
                     const { messageId, parameterIds } = response;
-
-                    return vm.$dialog
+					if(messageId){
+						return vm.$dialog
                         .error({ messageId, messageParams: parameterIds })
-                        .then(() => null);
+                        .then(() => null);	
+					}
                 })
                 .then((data: OvertimeLeaveTime[] | null) => {
                     if (data && data.length) {
