@@ -671,17 +671,20 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         Style style = commonStyle();
         if (attendanceItem != null && attendanceInfo.isPresent()) {
             Optional<WorkType> workType = attendanceInfo.get().getWorkType(require);
+            boolean leaveBlank = false;
             if (workType.isPresent()) {
                 if (workType.get().chechAttendanceDay() == AttendanceDayAttr.FULL_TIME) {
                     style.getFont().setColor(Color.getBlue());
                 } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HOLIDAY) {
                     style.getFont().setColor(Color.getRed());
+                    leaveBlank = true;
                 } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_AM || workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_PM) {
                     style.getFont().setColor(Color.fromArgb(255, 127, 39));
                 }
             }
             switch (attendanceItem) {
                 case SHIFT:
+                    if (leaveBlank) break;
                     Optional<ShiftMaster> shiftMaster = attendanceInfo.get().getShiftMaster(require);
                     if (shiftMaster.isPresent()) {
                         value = shiftMaster.get().getDisplayInfor().getName().v();
@@ -697,6 +700,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) + getText("KSU001_4135");
                     break;
                 case WORK_TIME:
+                    if (leaveBlank) break;
                     Optional<WorkTimeSetting> workTime = attendanceInfo.get().getWorkTime(require);
                     if (workTime.isPresent())
                         value = workTime.get().getWorkTimeDisplayName().getWorkTimeAbName().v();
@@ -707,6 +711,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 case END_TIME:
                 case START_TIME_2:
                 case END_TIME_2:
+                    if (leaveBlank) break;
                     TimeWithDayAttr time = (TimeWithDayAttr) attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem);
                     if (time != null) value = time.getRawTimeWithFormat();
                     break;
@@ -723,10 +728,12 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 case LABOR_COST_TIME_8:
                 case LABOR_COST_TIME_9:
                 case LABOR_COST_TIME_10:
+                    if (leaveBlank) break;
                     AttendanceTime attdTime = (AttendanceTime) attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem);
                     if (attdTime != null) value = new TimeWithDayAttr(attdTime.v()).getRawTimeWithFormat();
                     break;
                 default:
+                    if (leaveBlank) break;
                     if (attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) != null)
                         value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem).toString();
                     break;
