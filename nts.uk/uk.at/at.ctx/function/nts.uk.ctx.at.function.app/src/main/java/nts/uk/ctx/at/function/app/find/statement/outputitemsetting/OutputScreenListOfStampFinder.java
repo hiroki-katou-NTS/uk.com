@@ -162,7 +162,7 @@ public class OutputScreenListOfStampFinder {
 				}
 			}
 		}
-		List<String> listEmployeeId = listEmployeeStampInfo.stream().map(c -> c.getEmployeeId())
+		List<String> listEmployeeId = listEmployeeStampInfo.stream().map(c -> c.getEmployeeId()).distinct()
 				.collect(Collectors.toList());
 
 		// 2 <call> List＜社員の打刻情報＞.社員ID :List<社員情報>
