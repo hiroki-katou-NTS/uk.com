@@ -93,6 +93,7 @@ module nts.uk.at.view.ksu001.k.a {
                     self.$blockui("invisible");
                     self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                         if (data && data.length > 0) {
+                            data = _.sortBy(data, ['code']);
                             if (data[0].isAttendance == null) {
                                 _.each(data, item => {
                                     dataList.push(new ItemModel(item.code, item.name));
