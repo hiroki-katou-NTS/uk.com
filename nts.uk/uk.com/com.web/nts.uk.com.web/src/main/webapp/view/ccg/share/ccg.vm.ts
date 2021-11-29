@@ -686,8 +686,7 @@ module nts.uk.com.view.ccg.share.ccg {
                     && self.showSameDepartmentAndChild;
 
                 self.showSameWorkplace = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
-                    self.referenceRange != EmployeeReferenceRange.ONLY_MYSELF
-                    && self.showSameWorkplace;
+                    self.showSameWorkplace;
                 self.showSameWorkplaceAndChild = self.systemType == ConfigEnumSystemType.ADMINISTRATOR ? true :
                     (self.referenceRange == EmployeeReferenceRange.ALL_REFERENCE_RANGE
                         || self.referenceRange == EmployeeReferenceRange.AFFILIATION_AND_ALL_SUBORDINATES)
