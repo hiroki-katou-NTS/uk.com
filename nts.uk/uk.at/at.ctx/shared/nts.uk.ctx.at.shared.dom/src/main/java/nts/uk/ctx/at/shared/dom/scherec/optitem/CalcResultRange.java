@@ -285,8 +285,16 @@ public class CalcResultRange extends DomainObject {
 		if (time == null) {
 			return "";
 		}
+		boolean check = false;
+		if(time<0) {
+			time = time*(-1);
+			check = true;
+		}
 		String m = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60) : 0 + String.valueOf(time % 60);
 		String timeString = String.valueOf(time / 60) + ":" + m;
+		if(check) {
+			timeString ="-"+timeString;
+		}
 		return timeString;
 	}
 
