@@ -1065,12 +1065,14 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Optional<BreakTimeZoneSetting> breakTime = displayInfoOverTime.getInfoWithDateApplicationOp().get().getBreakTime();
 			if (breakTime.isPresent()) {
 				List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
-				breakTimes = IntStream.range(1, (int) breakTimeZones.stream().count())
+				if(!CollectionUtil.isEmpty(breakTimeZones)) {
+					breakTimes = IntStream.range(0, (int) breakTimeZones.stream().count())
 							.mapToObj(i -> new BreakTimeSheet(
-									new BreakFrameNo(i),
+									new BreakFrameNo(i+1),
 									breakTimeZones.get(i).getStart(),
 									breakTimeZones.get(i).getEnd()))
 							.collect(Collectors.toList());
+				}
 			}
 		}
 		workContent.setTimeZones(timeZones);

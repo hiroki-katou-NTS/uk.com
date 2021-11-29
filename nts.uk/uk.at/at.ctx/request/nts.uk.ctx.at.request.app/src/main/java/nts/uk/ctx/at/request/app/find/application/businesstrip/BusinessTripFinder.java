@@ -594,13 +594,9 @@ public class BusinessTripFinder {
                     businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
                     businessTripInfoOutput.getAppDispInfoStartup(),
-                    param.getBusinessTrip() != null ? 
-                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()) : 
-                            new ArrayList<String>(),
-                    Optional.empty(), 
-                    param.getBusinessTrip() != null ? 
-                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst() : 
-                            Optional.empty(), 
+                    new ArrayList<>(), // in new mode, businessTrip = null
+                    Optional.empty(),
+                    Optional.empty(), // in new mode, businessTrip = null
                     false
             );
 
