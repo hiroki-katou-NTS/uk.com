@@ -3355,7 +3355,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 							jobTitleInfoData.push(jobTitleInfoSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(jobTitleInfoData, 'code')), (groupItem: Array<any>, index: number) => {
+                    
+					_.forEach(_.reverse(_.values(_.groupBy(jobTitleInfoData, 'code'))), (groupItem: Array<any>, index: number) => {
 						let objectJobTitle = { sid: '' }, sumJobTitleInfo: any = '';
 	                    leftHorzContentDs.push({ 
 							id: 'id' + index, 
