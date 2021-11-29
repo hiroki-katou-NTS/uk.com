@@ -216,7 +216,8 @@ module nts.uk.at.view.kdp002.l {
         onClickReturn() {
             const vm = this;
             vm.frameNo(vm.frameNo() - 1);
-
+			vm.searchValue('');
+		
             vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo())]));
 
             if (vm.frameNo() != 1) {
@@ -226,7 +227,7 @@ module nts.uk.at.view.kdp002.l {
             } else {
                 vm.getTask({sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''});
             }
-
+			vm.framePosition(0);
             vm.wordCodeMap.set(vm.frameNo(), null);
 			$('#L2_1').focus();
         }

@@ -234,6 +234,7 @@ export class KdpS01LComponent extends Vue {
         let vm = this;
         vm.frameNo --;
 
+        vm.taskNameCd = '';
         vm.frameName = vm.getFrameName(vm.frameNo);
 
         if (vm.frameNo != 1) {
@@ -260,6 +261,7 @@ export class KdpS01LComponent extends Vue {
         
         });
         } else {
+            vm.framePosition = 0;
             vm.initTask();
             vm.frameNo = 1;
             vm.reloadData();
