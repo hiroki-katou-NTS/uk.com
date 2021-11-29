@@ -49,8 +49,8 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 
 		for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
 
-			List<TaskContent> contents = new ArrayList<>();
 			for (TaskContentForEachSupportFrame frame : content.getTaskContents()) {
+				List<TaskContent> contents = new ArrayList<>();
 				
 				if (frame.getTaskContent().getItemId() >= 4 && frame.getTaskContent().getItemId() <= 8) {
 					if (!contentMap.containsKey(frame.getFrameNo().v())) {
