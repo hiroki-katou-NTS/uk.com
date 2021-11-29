@@ -13,7 +13,9 @@ module nts.uk.com.view.ccg015.e {
     $menuCreationLayout: JQuery = null;
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-    isRender: KnockoutObservable<boolean> = ko.observable(true);
+    isRenderKTG001: KnockoutObservable<boolean> = ko.observable(true);
+    isRenderKTG004: KnockoutObservable<boolean> = ko.observable(true);
+    isRenderKTG005: KnockoutObservable<boolean> = ko.observable(true);
     sortedIds: string[] = [];
 
     created(params: any) {
@@ -67,7 +69,7 @@ module nts.uk.com.view.ccg015.e {
           // Remove drag item
           ui.helper.remove();
           setTimeout(() => {
-            if (vm.isMouseInsideLayout()) {
+            if (vm.isMouseInsideLayout() && menuPosition >= 0) {
               vm.createItem(itemType, menuPosition);
             }
           }, 300);
@@ -123,22 +125,21 @@ module nts.uk.com.view.ccg015.e {
       const StandardWidgetTypeKTG004 = "0003";
       const StandardWidgetTypeKTG005 = "0001";
       const StandardWidgetTypeKTG001 = "0002";
-      vm.isRender(false);
       if (itemType === MenuPartType.PART_KTG_004) {
-         vm.$window.modal('at', '/view/ktg/004/b/index.xhtml', StandardWidgetTypeKTG004)
-            .then((result: any) => {
-              vm.isRender(true);
-        });
-      } else if (itemType === MenuPartType.PART_KTG_005){
-        vm.$window.modal('at', '/view/ktg/005/b/index.xhtml', StandardWidgetTypeKTG005)
-            .then((result: any) => {
-              vm.isRender(true);
-        });
+        vm.$window
+          .modal('at', '/view/ktg/004/b/index.xhtml', StandardWidgetTypeKTG004)
+          .then(() => vm.isRenderKTG004(false))
+          .then(() => vm.isRenderKTG004(true));
+      } else if (itemType === MenuPartType.PART_KTG_005) {
+        vm.$window
+          .modal('at', '/view/ktg/005/b/index.xhtml', StandardWidgetTypeKTG005)
+          .then(() => vm.isRenderKTG005(false))
+          .then(() => vm.isRenderKTG005(true));
       } else {
-        vm.$window.modal('at', '/view/ktg/001/b/index.xhtml', StandardWidgetTypeKTG001)
-            .then((result: any) => {
-              vm.isRender(true);
-        });
+        vm.$window
+          .modal('at', '/view/ktg/001/b/index.xhtml', StandardWidgetTypeKTG001)
+          .then(() => vm.isRenderKTG001(false))
+          .then(() => vm.isRenderKTG001(true));
       }
     }
 
