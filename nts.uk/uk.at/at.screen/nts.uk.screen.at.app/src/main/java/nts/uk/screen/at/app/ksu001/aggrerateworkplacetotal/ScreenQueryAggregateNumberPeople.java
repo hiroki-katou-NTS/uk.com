@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +37,6 @@ import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.sys.log.app.find.reference.LogOutputItemDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.EmploymentDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -112,7 +110,6 @@ public class ScreenQueryAggregateNumberPeople {
 								   .collect(Collectors.toList()))
 						.flatMap(list -> list.stream())
 						.distinct()
-						.sorted()
 						.collect(Collectors.toList());
 			//1.2 : <call>
 			List<Employment> employments = 
@@ -167,7 +164,6 @@ public class ScreenQueryAggregateNumberPeople {
 					.distinct()
 					.collect(Collectors.toList()))
 					.stream()
-					.sorted(Comparator.comparing(x -> x.getClassificationCode().v()))
 					.collect(Collectors.toList());
 			
 			Map<GeneralDate, Map<ClassificationDto, BigDecimal>> classificationOutput = 
@@ -200,10 +196,6 @@ public class ScreenQueryAggregateNumberPeople {
 			Map<GeneralDate, Map<String, BigDecimal>> countEachJob =
 					CountNumberOfPeopleByAttributeService.countingEachJobTitle(require, dailyWorks);
 			
-			// sort condition 
-			Comparator<JobTitleInfo> sortByRankCode = Comparator.comparing(x -> x.getSequenceCode().v());
-			Comparator<JobTitleInfo> sortByJobTitleCode = Comparator.comparing(x -> x.getJobTitleCode().v());
-			
 			// 3.2: <call>
 			List<JobTitleInfo> jobTitleInfos = 
 					jobTitleInfoRepository
@@ -222,7 +214,6 @@ public class ScreenQueryAggregateNumberPeople {
 									.collect(Collectors.toList()),
 							baseDate)
 					.stream()
-					.sorted(sortByRankCode.thenComparing(sortByJobTitleCode))
 					.collect(Collectors.toList());
 			
 			Map<GeneralDate, Map<JobTitleInfoDto, BigDecimal>> jobTitileInfoOutput =
