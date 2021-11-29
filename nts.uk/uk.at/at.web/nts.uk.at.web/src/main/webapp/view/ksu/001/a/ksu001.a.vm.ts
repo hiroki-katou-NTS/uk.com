@@ -793,24 +793,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             }
             
-            let workTypeCodeSave = !_.isNil(self.userInfor)  ? self.userInfor.workTypeCodeSelected : '';
-            let workTimeCodeSave = !_.isNil(self.userInfor)  ? self.userInfor.workTimeCodeSelected : '';
-            
-            let workTimeCode = ''; 
-            if (workTimeCodeSave != '') {
-                if (workTimeCodeSave === 'none') {
-                    workTimeCode = '';
-                } else if (workTimeCodeSave === 'deferred') {
-                    workTimeCode = ' ';
-                } else {
-                    workTimeCode = workTimeCodeSave;
-                }
-            }
             self.setDataWorkType(listWorkTypeInfo);
-            __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave);
-            __viewContext.viewModel.viewAB.selected(workTimeCode);
-            __viewContext.viewModel.viewAB.workplaceIdKCP013(self.userInfor.unit == 0 ? self.userInfor.workplaceId : self.userInfor.workplaceGroupId);
-            __viewContext.viewModel.viewAB.filter(self.userInfor.unit == 0 ? true : false);
         }
         
         checkEnableCombWTime() {
