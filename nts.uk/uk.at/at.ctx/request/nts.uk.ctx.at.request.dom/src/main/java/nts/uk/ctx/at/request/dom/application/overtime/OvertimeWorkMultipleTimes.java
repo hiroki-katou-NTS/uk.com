@@ -134,7 +134,7 @@ public class OvertimeWorkMultipleTimes {
                                                                WorkInformation workInfo,
                                                                List<TimeZoneWithWorkNo> workingHours,
                                                                List<BreakTimeSheet> breakTimes) {
-        List<TimeZoneWithWorkNo> workingHoursPredetemine = workingHours;
+        List<TimeZoneWithWorkNo> workingHoursPredetemine = new ArrayList<>(workingHours);
         if (workInfo.getWorkTimeCodeNotNull().isPresent()) {
             Optional<PredetemineTimeSetting> predTimeSet = require.getPredetemineTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (predTimeSet.isPresent()) {
@@ -145,7 +145,7 @@ public class OvertimeWorkMultipleTimes {
             }
             Optional<WorkTimeSetting> workTimeSetting = require.getWorkTimeSetting(companyId, workInfo.getWorkTimeCode().v());
             if (workTimeSetting.isPresent() && workTimeSetting.get().getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
-                breakTimes = this.getFlowWorkBreakTime(require, companyId, employeeId, date, workInfo, predTimeSet, workingHours);
+                breakTimes = this.getFlowWorkBreakTime(require, companyId, employeeId, date, workInfo, predTimeSet, new ArrayList<>(workingHours));
             }
         }
         List<BreakTimeSheet> result = this.calculateNewBreakTimes(breakTimes, workingHoursPredetemine, workingHours);
@@ -216,20 +216,23 @@ public class OvertimeWorkMultipleTimes {
         workingHours.forEach(time -> {
             workingHoursPredetemine.forEach(predTime -> {
                 if (time.getWorkNo().equals(predTime.getWorkNo())) {
-                    if (time.getTimeZone().getStartTime().lessThan(predTime.getTimeZone().getStartTime())
-                            || time.getTimeZone().getEndTime().greaterThan(predTime.getTimeZone().getEndTime())) {
-                        overtimeHours.forEach(ot -> {
-                            if (time.getTimeZone().getStartTime().lessThan(ot.getOvertimeHours().getStart())
-                                    && time.getTimeZone().getEndTime().greaterThan(ot.getOvertimeHours().getEnd())) {
-                                int startDiff = ot.getOvertimeHours().getStart().v() - time.getTimeZone().getStartTime().v();
-                                int endDiff = time.getTimeZone().getEndTime().v() - ot.getOvertimeHours().getEnd().v();
-                                if (startDiff < endDiff) {
+                    if (time.getTimeZone().getStartTime().lessThan(predTime.getTimeZone().getStartTime())) {
+                        overtimeHours.stream()
+                                .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getOvertimeHours().getStart())
+                                        && time.getTimeZone().getEndTime().greaterThan(ot.getOvertimeHours().getEnd()))
+                                .findFirst()
+                                .ifPresent(ot -> {
                                     breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), time.getTimeZone().getStartTime(), ot.getOvertimeHours().getStart()));
-                                } else {
+                                });
+                    }
+                    if (time.getTimeZone().getEndTime().greaterThan(predTime.getTimeZone().getEndTime())) {
+                        overtimeHours.stream()
+                                .filter(ot -> time.getTimeZone().getStartTime().lessThan(ot.getOvertimeHours().getStart())
+                                        && time.getTimeZone().getEndTime().greaterThan(ot.getOvertimeHours().getEnd()))
+                                .reduce((first, second) -> second)
+                                .ifPresent(ot -> {
                                     breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), ot.getOvertimeHours().getEnd(), time.getTimeZone().getEndTime()));
-                                }
-                            }
-                        });
+                                });
                     }
                 }
             });
