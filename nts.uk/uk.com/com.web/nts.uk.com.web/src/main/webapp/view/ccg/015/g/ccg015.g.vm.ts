@@ -1,19 +1,18 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
-module nts.uk.at.view.ccg008.e.screenModel {
+module nts.uk.at.view.ccg015.g.screenModel {
+  const API = {
+    getSetting: 'screen/com/ccg008/get-setting',
+    save: 'screen/com/ccg008/save',
+  };
 
   @bean()
   export class ViewModel extends ko.ViewModel {
     itemListCb: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-    selectedCode: KnockoutObservable<string> = ko.observable('0');
-    isEnable: KnockoutObservable<boolean> = ko.observable(true);
-    isEditable: KnockoutObservable<boolean> = ko.observable(false);
-    isRequired: KnockoutObservable<boolean> = ko.observable(false);
-    selectFirstIfNull: KnockoutObservable<boolean> = ko.observable(false);
+    reloadInterval: KnockoutObservable<string> = ko.observable('0');
     cId: KnockoutObservable<string> = ko.observable('');
+
     created(){
       const vm = this;
-      const data = nts.uk.ui.windows.getShared('DataFromScreenA');
-      vm.selectedCode(data.toString());
       vm.itemListCb = ko.observableArray([
         new ItemModel('0', ''),
         new ItemModel('1', '1'),
@@ -24,23 +23,32 @@ module nts.uk.at.view.ccg008.e.screenModel {
         new ItemModel('6', '40'),
         new ItemModel('7', '50'),
         new ItemModel('8', '60')
-    ]);
+      ]);
     }
+
     mounted(){
+      const vm = this;
       $('#combo-box').focus();
+      vm
+        .$blockui('grayout')
+        .then(() => vm.$ajax('com', API.getSetting))
+        .then(setting => {
+          if (setting && setting.reloadInterval) {
+            vm.reloadInterval(setting.reloadInterval);
+          }
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
     onClickDecision(){
       const vm = this;
-      const command: ToppageReloadSettingCommand = new ToppageReloadSettingCommand(vm.cId(), parseInt(vm.selectedCode()));
-      vm.$ajax('com','screen/com/ccg008/save',command).then(()=> {
-        nts.uk.ui.windows.setShared('DataFromScreenE',parseInt(vm.selectedCode()));
-        this.$window.close();
-      });
+      const command: ToppageReloadSettingCommand = new ToppageReloadSettingCommand(vm.cId(), parseInt(vm.reloadInterval()));
+      vm.$ajax('com', API.save, command)
+      .then(()=> vm.$dialog.info({messageId: 'Msg_15'}))
+      .then(() => vm.$window.close());
     }
+
     onClickCancel(){
-      const vm = this;
-      nts.uk.ui.windows.setShared('DataFromScreenE',parseInt(vm.selectedCode()));
       this.$window.close();
     }
   }
@@ -50,8 +58,8 @@ module nts.uk.at.view.ccg008.e.screenModel {
     name: string;
 
     constructor(code: string, name: string) {
-        this.code = code;
-        this.name = name;
+      this.code = code;
+      this.name = name;
     }
   }
 
@@ -61,6 +69,6 @@ module nts.uk.at.view.ccg008.e.screenModel {
     constructor(cId: string, reloadInteval: number) {
       this.cId = cId;
       this.reloadInteval = reloadInteval;
-  }
+    }
   }
 }

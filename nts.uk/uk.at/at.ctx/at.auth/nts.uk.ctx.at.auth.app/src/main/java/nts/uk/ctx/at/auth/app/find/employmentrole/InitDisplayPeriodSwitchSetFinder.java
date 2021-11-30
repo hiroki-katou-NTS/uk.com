@@ -15,6 +15,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.DateProcessed;
+import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDataDto;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.auth.dom.initswitchsetting.InitDisplayPeriodSwitchSet;
 import nts.uk.ctx.at.auth.dom.initswitchsetting.InitDisplayPeriodSwitchSetRepo;
@@ -92,5 +93,17 @@ public class InitDisplayPeriodSwitchSetFinder {
 			}
 			return data;
 		}
+	}
+	
+	public InitDisplayPeriodSwitchSetDataDto getInitDisplayPeriodSwitchSetData(String companyID, String roleID) {
+		Optional<InitDisplayPeriodSwitchSet> initDisplayPeriodSwitchSet = repo.findByKey(companyID, roleID);
+		if (!initDisplayPeriodSwitchSet.isPresent()) {
+			return null;
+		}
+		
+		return new InitDisplayPeriodSwitchSetDataDto(
+				initDisplayPeriodSwitchSet.get().getCompanyID(),
+				initDisplayPeriodSwitchSet.get().getRoleID(),
+				initDisplayPeriodSwitchSet.get().getDay());
 	}
 }
