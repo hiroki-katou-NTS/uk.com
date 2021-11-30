@@ -97,6 +97,10 @@ public class SessionContextCookie {
 		String userContext = SingletonBeansSoftCache.get(LoginUserContextManager.class).toBase64();
 		String csrfToken = CsrfToken.getFromSession();
 		String dataSource = TenantLocatorService.getConnectedDataSource();
+
+		if (dataSource == null || dataSource.isEmpty()) {
+			throw new RuntimeException("セッションにデータソースが設定されていません: " + ((dataSource == null) ? "null" : "empty string"));
+		}
 		
 		// '='はCookieに含めると誤作動を起こすようなので、置換しておく
 		return (userContext + DELIMITER + csrfToken + DELIMITER + dataSource).replace('=', '*');
