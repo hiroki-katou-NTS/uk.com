@@ -1420,6 +1420,6 @@ public class CalculationSettingExportImpl implements MasterListData {
     private String formatTime(int value) {
     	final String hour = String.valueOf(value / 60);
     	final String minute = String.valueOf(value % 60);
-    	return StringUtil.padLeft(hour, 2, '0') + ":" + StringUtil.padLeft(minute, 2, '0');
+    	return hour + ":" + StringUtil.padLeft(minute, 2, '0');
     }
 }
