@@ -92,7 +92,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
@@ -156,6 +155,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.cache.DPCorrectionSt
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkapproval.ApproveRootStatusForEmpDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.checkshowbutton.DailyPerformanceAuthorityDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.companyhist.AffComHistItemAtScreen;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.primitive.PrimitiveValueDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workplacehist.WorkPlaceHistTemp;
 import nts.uk.screen.at.app.dailyperformance.correction.error.DCErrorInfomation;
@@ -696,9 +696,6 @@ public class DailyPerformanceCorrectionProcessor {
 		Integer cellEdit;
 		if (dPControlDisplayItem.getLstAttendanceItem() != null) {
 			for (DPAttendanceItem item : dPControlDisplayItem.getLstAttendanceItem()) {
-				if(item.getId()==2266) {
-					System.out.println(2266);
-				}
 				//DPAttendanceItem dpAttenItem1 = mapDP.get(item.getId());
 				String itemIdAsString = item.getId().toString();
 				// int a = 1;
@@ -945,7 +942,11 @@ public class DailyPerformanceCorrectionProcessor {
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 						}
 					} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
-						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
+						if(item.getPrimitive()==PrimitiveValueDaily.MoneyDay.value) {
+							cellDatas.add(new DPCellDataDto(anyChar, Strings.isEmpty(value) ? "" : Double.valueOf(value).intValue(), attendanceAtrAsString, DPText.TYPE_LABEL));
+						} else {
+							cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
+						}
 					} else if(attendanceAtr == DailyAttendanceAtr.NumberOfTime.value){
 						if (groupType != null && groupType == TypeLink.DOWORK.value) {
 							Double valueConvert = Double.parseDouble(value == "" ? "0.0" : value);
