@@ -66,7 +66,7 @@ public class HolidayRemainingInfor {
     private CurrentHolidayRemainImported currentHolidayRemainLeft;
     private SubstituteHolidayAggrResult substituteHolidayAggrResult;//9
     //RequestList204
-    private CompenLeaveAggrResult compenLeaveAggrResult;
+    //private CompenLeaveAggrResult compenLeaveAggrResult;
     //RQ 677
     private AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h;
     //363
@@ -98,7 +98,7 @@ public class HolidayRemainingInfor {
                                  //CurrentHolidayImported currentHolidayLeft,
                                  CurrentHolidayRemainImported currentHolidayRemainLeft,
                                  SubstituteHolidayAggrResult substituteHolidayAggrResult,
-                                 CompenLeaveAggrResult compenLeaveAggrResult,
+                                 //CompenLeaveAggrResult compenLeaveAggrResult,
                                  AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h,
                                  List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New,
                                  List<SpecialVacationPastSituation> getSpeHdOfConfMonVer2,
@@ -130,7 +130,7 @@ public class HolidayRemainingInfor {
         //this.currentHolidayLeft = currentHolidayLeft;
         this.currentHolidayRemainLeft = currentHolidayRemainLeft;
         this.substituteHolidayAggrResult = substituteHolidayAggrResult;
-        this.compenLeaveAggrResult = compenLeaveAggrResult;
+        //this.compenLeaveAggrResult = compenLeaveAggrResult;
         this.aggrResultOfHolidayOver60h = aggrResultOfHolidayOver60h;
         this.rs363New = rs363New;
         this.getSpeHdOfConfMonVer2 = getSpeHdOfConfMonVer2;
