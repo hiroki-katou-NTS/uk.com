@@ -2000,7 +2000,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     const events = vm.calendar.getEvents();
 
-                    let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isSameOrAfter(moment(info.date)) });
+                    let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isAfter(moment(info.date)) });
 
                     if (isHasTask) {
                         return;
@@ -2566,8 +2566,28 @@ module nts.uk.ui.at.kdw013.calendar {
                     const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
                     
                     if (extendedProps.isTimeBreak) {
+                        
                         if (!moment(arg.oldEvent.start).isSame(start, 'days')) {
-                            vm.revertEvent(arg.oldEvent , $caches);
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
+                        
+                        const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
+                        const orverideBreak = _.filter(breakInday, br => moment(br.start).isSameOrBefore(start) && moment(br.end).isAfter(start) && (br.extendedProps.id != extendedProps.id));
+                        if (orverideBreak.length) {
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
+                        
+                        const businessHours = ko.unwrap(vm.params.businessHours);
+                        
+                        const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                        
+                        const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                        const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                        if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440)){
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
                         }
                         
                         return;
@@ -2722,29 +2742,22 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.revertEvent(arg.oldEvent, $caches);
                             return;
                         }
+                        const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
+                        const orverideBreak = _.filter(breakInday, br => moment(br.start).isBefore(end) && (br.extendedProps.id != extendedProps.id));
+                        if (orverideBreak.length) {
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
                         
+                        const businessHours = ko.unwrap(vm.params.businessHours);
                         
+                        const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
                         
-                        //validate businessHours 
-//                        
-//                        let businessHours = vm.calendar.getOption('businessHours');
-//
-//                        let dow = moment(start).day();
-//
-//                        if (businessHours) {
-//                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow) });
-//
-//                            let format = 'hh:mm:ss',
-//                                startTime = moment(start, format),
-//                                endTime = moment(end, format),
-//                                beforeTime = moment(setting.startTime, format),
-//                                afterTime = moment(setting.endTime, format);
-//                            if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime)) {
-//                                 vm.revertEvent(arg.oldEvent , $caches);
-//                            }
-//
-//                            return;
-//                        }
+                        const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                        if (endAsMinites > _.get(bh, 'end', 1440)){
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
                         return;
                     }
                     
