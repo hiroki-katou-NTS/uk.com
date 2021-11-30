@@ -39,7 +39,7 @@ public class RegisterPersonRoleCommandHandler extends CommandHandler<RegisterPer
 
 		Role role = command.toDomain(companyId, contractCode);
 		// 未来日参照許可：「しない」固定で登録
-		PersonRole personRole = new PersonRole(role.getRoleId(), false);
+		PersonRole personRole = new PersonRole(role.getRoleId(), companyId, false);
 
 		if (command.getCreateMode()) {
 			// 画面で指定されたロールの内容でドメインモデル「ロール」を新規作成する
