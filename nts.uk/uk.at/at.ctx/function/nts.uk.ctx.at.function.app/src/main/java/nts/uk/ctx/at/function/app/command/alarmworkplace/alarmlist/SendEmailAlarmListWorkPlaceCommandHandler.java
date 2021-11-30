@@ -170,9 +170,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             );
         }
 
-        if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
-            return TextResource.localize("Msg_965");
-        }
+//        if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
+//            return TextResource.localize("Msg_965");
+//        }
 
         //管理者未設定職場リスト：取得した管理者未設定職場リスト
         List<String> unsetList = new ArrayList<>();
