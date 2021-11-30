@@ -2553,6 +2553,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.showA11()) {
                 $("#vertDropDown").html(function() { return $('#vertDiv'); });
                 $('#vertDiv').css('display', '');   
+                $('#vertDiv').css('margin-left', 0 + 'px');
                 
                 $('.ex-body-vert-sum').scroll(() => {
                     $('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
@@ -3509,7 +3510,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("updateTable", "verticalSummaries", vertSumHeader, vertSumContent);
                 $("#vertDropDown").html(function() { return $('#vertDiv'); });
                 $('#vertDiv').css('display', '');
-
+                $('#vertDiv').css('margin-left', 0 + 'px');
+                
                 $('.ex-body-vert-sum').scroll(() => {
                     $('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
                 });
