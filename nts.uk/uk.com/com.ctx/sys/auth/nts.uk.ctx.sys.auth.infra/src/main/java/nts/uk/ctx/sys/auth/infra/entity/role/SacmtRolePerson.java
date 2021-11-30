@@ -25,9 +25,6 @@ public class SacmtRolePerson extends ContractUkJpaEntity implements Serializable
 	@Column(name = "REFER_FUTURE_DATE")
 	private boolean referFutureDate;
 
-	@Column(name = "CID")
-	public String companyId;
-
 	@Override
 	protected Object getKey() {
 		return null;

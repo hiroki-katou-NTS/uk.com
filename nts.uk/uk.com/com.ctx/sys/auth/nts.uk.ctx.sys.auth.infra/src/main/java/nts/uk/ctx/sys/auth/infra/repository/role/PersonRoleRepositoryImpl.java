@@ -48,7 +48,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 		
 		return new PersonRole(
 				entity.getRoleId(), 
-				entity.getCompanyId(), // TODO: developer will update
+				"000000000000-0000", // TODO: developer will update
 				entity.isReferFutureDate());
 	}
 
@@ -89,7 +89,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 	private static SacmtRolePerson  toEntity(PersonRole personRole){
 		SacmtRolePerson entity = new SacmtRolePerson();
 		entity.setRoleId(personRole.getRoleId());
-		entity.setCompanyId(personRole.getCompanyId());
+		// TODO developer will update. companyID
 		entity.setReferFutureDate(personRole.getReferFutureDate());
 		return entity;
 	}
