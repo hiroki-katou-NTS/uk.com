@@ -113,9 +113,20 @@ public class WorkScheduleImportService {
 	 */
 	private static ImportResult checkIfEmployeeIsTarget(Require require, ImportResult interimResult) {
 
+		/* チェック対象の存在判定 */
+		if ( !interimResult.existsUncheckedResults() ) {
+			// チェック対象なし⇒終了
+			return interimResult;
+		}
+
+
 		/* 参照範囲チェック */
 		// 参照可能な社員を取得する
-		val referableEmployees = GetEmpCanReferService.getAll(require, require.getOwnEmployeeId().v(), GeneralDate.today(), DatePeriod.oneDay(GeneralDate.today()));
+		val importableDates = interimResult.getImportableDates();
+		val referableEmployees = GetEmpCanReferService.getAll(
+					require, require.getOwnEmployeeId().v()
+				,	GeneralDate.today(), new DatePeriod( importableDates.get(0), importableDates.get(importableDates.size() - 1) )
+			);
 		// 参照可否でグループ化
 		// [Key] true: 参照範囲内(正常) / false: 参照範囲外(エラー)
 		val referableStatus = interimResult.getUncheckedResults().stream()
@@ -160,6 +171,13 @@ public class WorkScheduleImportService {
 	 * @return 取り込み結果
 	 */
 	private static ImportResult checkForContentIntegrity(Require require, ImportResult interimResult) {
+
+		/* チェック対象の存在判定 */
+		if ( !interimResult.existsUncheckedResults() ) {
+			// チェック対象なし⇒終了
+			return interimResult;
+		}
+
 
 		/* シフトマスタのチェック */
 		// 取り込みコードを取得
@@ -206,6 +224,13 @@ public class WorkScheduleImportService {
 	 * @return 取り込み結果
 	 */
 	private static ImportResult checkForExistingWorkSchedule(Require require, ImportResult interimResult) {
+
+		/* チェック対象の存在判定 */
+		if ( !interimResult.existsUncheckedResults() ) {
+			// チェック対象なし⇒終了
+			return interimResult;
+		}
+
 
 		/* 既存の勤務予定をチェック */
 		// チェック結果

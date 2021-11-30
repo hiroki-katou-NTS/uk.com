@@ -272,10 +272,10 @@ public class WorkScheduleImportServiceTest {
 		importSeeds.entrySet().stream()
 			.filter( seed -> seed.getValue().isPresent() )
 			.forEach( seed -> {
-				val scheMngStatus = Helper.createEmployeeWorkingStatus( seed.getKey().getEmployeeId(), seed.getKey().getYmd(), seed.getValue().get() );
+				val status = Helper.createEmployeeWorkingStatus( seed.getKey().getEmployeeId(), seed.getKey().getYmd(), seed.getValue().get() );
 				new Expectations( EmployeeWorkingStatus.class ) {{
 					EmployeeWorkingStatus.create( require, seed.getKey().getEmployeeId().v(), seed.getKey().getYmd() );
-					result = scheMngStatus;
+					result = status;
 				}};
 			} );
 
@@ -297,6 +297,7 @@ public class WorkScheduleImportServiceTest {
 			.containsExactlyElementsOf( interimResult.getOrderOfEmployees() );
 
 		// 取り込み結果
+		assertThat( result ).isNotEqualTo( interimResult );
 		assertThat( result.getResults() )
 			.containsExactlyInAnyOrderElementsOf(
 					importSeeds.entrySet().stream()
@@ -320,7 +321,7 @@ public class WorkScheduleImportServiceTest {
 			put( Helper.createDummyShiftMaster( "Imp#DDD" ), true );
 			put( Helper.createDummyShiftMaster( "Imp#GGG" ), true );
 			put( Helper.createDummyShiftMaster( "Imp#SWK" ), true );
-			// put( Helper.createDummyWithImportCode( "Imp#XXX" ), false ); ⇒ 取得失敗
+			// put( Helper.createDummyShiftMaster( "Imp#XXX" ), false ); ⇒ 取得失敗
 			put( Helper.createDummyShiftMaster( "Imp#AAA" ), false );
 			put( Helper.createDummyShiftMaster( "Imp#ABC" ), true );
 			put( Helper.createDummyShiftMaster( "Imp#TDS" ), false );
@@ -396,6 +397,7 @@ public class WorkScheduleImportServiceTest {
 			.containsExactlyElementsOf( interimResult.getOrderOfEmployees() );
 
 		// 取り込み結果
+		assertThat( result ).isNotEqualTo( interimResult );
 		assertThat( result.getResults() )
 			.containsExactlyInAnyOrderElementsOf(
 					importSeeds.stream()
@@ -486,6 +488,7 @@ public class WorkScheduleImportServiceTest {
 			.containsExactlyElementsOf( interimResult.getOrderOfEmployees() );
 
 		// 取り込み結果
+		assertThat( result ).isNotEqualTo( interimResult );
 		assertThat( result.getResults() )
 			.containsExactlyInAnyOrderElementsOf(
 					importSeeds.entrySet().stream()
@@ -493,10 +496,66 @@ public class WorkScheduleImportServiceTest {
 						.collect(Collectors.toList())
 			);
 
+
 	}
 
 
+	/**
+	 * Target	:
+	 * 	- checkIfEmployeeIsTarget
+	 * 	- checkForContentIntegrity
+	 * 	- checkForExistingWorkSchedule
+	 * Pattern	: 未チェックの取り込み対象がない
+	 */
+	@Test
+	public void test_unexistsUncheckedResults(@Injectable ImportResult interimResult) {
 
+		/* 未チェックの取込対象なし */
+		new Expectations() {{
+			interimResult.existsUncheckedResults();
+			result = false;
+		}};
+
+
+		/* 取込対象の社員かチェックする: checkIfEmployeeIsTarget */
+		{
+			// 実行
+			ImportResult result = NtsAssert.Invoke.staticMethod(
+					WorkScheduleImportService.class, "checkIfEmployeeIsTarget"
+						, require, interimResult
+			);
+			// 検証
+			assertThat( result ).isEqualTo( interimResult );
+		}
+
+		/* 取り込み内容の整合性をチェックする: checkForContentIntegrity */
+		{
+			// 実行
+			ImportResult result = NtsAssert.Invoke.staticMethod(
+					WorkScheduleImportService.class, "checkForContentIntegrity"
+						, require, interimResult
+			);
+			// 検証
+			assertThat( result ).isEqualTo( interimResult );
+		}
+
+		/* 取込対象の勤務予定をチェックする: checkForExistingWorkSchedule */
+		{
+			// 実行
+			ImportResult result = NtsAssert.Invoke.staticMethod(
+					WorkScheduleImportService.class, "checkForExistingWorkSchedule"
+						, require, interimResult
+			);
+			// 検証
+			assertThat( result ).isEqualTo( interimResult );
+		}
+
+	}
+
+
+	/**
+	 * Target	: importFrom
+	 */
 	@Test
 	public void test_importFrom() {
 
