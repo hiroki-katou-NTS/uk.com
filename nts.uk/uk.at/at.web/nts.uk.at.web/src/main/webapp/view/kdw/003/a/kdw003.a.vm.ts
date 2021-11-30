@@ -1201,7 +1201,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
                             })
                             let value: any;
-                            value = self.getPrimitiveValue(data.value, item.attendanceAtr);
+                            value = self.getPrimitiveValue(data.value, item.attendanceAtr, item.primitive);
 							if (value === true || value === false) {
 								value = value ? 1 : 0
 							}
@@ -1600,7 +1600,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 return String(value.id) === data.columnKey.substring(1, data.columnKey.length);
                             })
                             let value: any;
-                            value = self.getPrimitiveValue(data.value, item.attendanceAtr);
+                            value = self.getPrimitiveValue(data.value, item.attendanceAtr, item.primitive);
                             let dataMap = new InfoCellEdit(data.rowId, data.columnKey.substring(1, data.columnKey.length), value, layoutAndType == undefined ? "" : layoutAndType.valueType, layoutAndType == undefined ? "" : layoutAndType.layoutCode, dataTemp.employeeId, dataTemp.dateDetail.utc().toISOString(), 0, data.columnKey);
                             dataChangeProcess.push(dataMap);
                         }
@@ -2212,7 +2212,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             return check;
         }
 
-        getPrimitiveValue(value: any, atr: any): string {
+        getPrimitiveValue(value: any, atr: any, primitive?: any): string {
             var self = this;
             let valueResult: string = "";
             if (atr != undefined && atr != null) {
@@ -2221,6 +2221,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     valueResult = value == "" ? null : String(self.getHoursAll(value));
                 } else if (atr == 5) {
                     valueResult = value == "" ? null : String(self.getHoursTime(value));
+				} else if (atr == 3) {
+					if(primitive==54) {
+						valueResult = _.isEmpty(value) ? null : value;		
+					}  else {
+						valueResult = value;	
+					}
                 } else {
                     valueResult = value;
                 }

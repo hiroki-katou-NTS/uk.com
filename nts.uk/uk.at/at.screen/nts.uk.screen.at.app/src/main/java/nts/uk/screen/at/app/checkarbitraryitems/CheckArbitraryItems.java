@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
@@ -58,7 +60,7 @@ public class CheckArbitraryItems {
 			Optional<OptionalItem> optOptionalItem = optionalItemRepository.findByItemNo(companyId, ail.getFrameNo().v());
 			if(optOptionalItem.isPresent()) {
 				DPItemValue dPItemValue = itemCanCheck.stream().filter(x->x.getItemId() == ail.getAttendanceItemId()).findFirst().get();
-				if(dPItemValue.getValue() != null) {
+				if(Strings.isNotBlank(dPItemValue.getValue())) {
 					CheckValueInputCorrectOuput checkError = optOptionalItem.get().checkInputValueCorrect(new BigDecimal(dPItemValue.getValue()));
 					if(!checkError.isCheckResult()) {
 						//返ってきた「入力値チェック結果.エラー内容」を全て表示する
