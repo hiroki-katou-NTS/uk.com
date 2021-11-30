@@ -7,6 +7,9 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.maildestination.AvailableMailAddress
 import nts.uk.ctx.sys.env.dom.mailnoticeset.maildestination.FunctionType;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.maildestination.MailDestinationFunctionManage;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.環境.メール通知設定.メール送信先機能.社員のメールアドレス通知を取得する
+ */
 public class GetEmailNotificationDomainService {
 
 	/**
