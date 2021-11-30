@@ -456,9 +456,14 @@ module nts.uk.at.view.ksu001.k.b {
                         }                        
                     });            
                     self.items(_.sortBy(dataList, item => item.code));
-                    code ? self.selectedCode(code) : self.selectedCode(self.items()[0].code);
+                    if (code) {
+                        self.selectedCode(code);
+                    } else {
+                        if (self.items().length > 0) self.selectedCode(self.items()[0].code);
+                        else self.clearData();
+                    }
                 } else {
-                    self.clearData();
+					self.clearData();
                 }
                 
             }).always(() => {

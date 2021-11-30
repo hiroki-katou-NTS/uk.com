@@ -106,7 +106,7 @@ module nts.uk.at.view.ksu001.k.a {
                                 $("#preview-frame")[0].innerHTML = "";
                             } else if (data[0].isAttendance) {
                                 self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
-                                    // self.openDialog();
+                                    self.itemList([]);
                                     $("#A2_3").focus();
                                 });
                             } else {
