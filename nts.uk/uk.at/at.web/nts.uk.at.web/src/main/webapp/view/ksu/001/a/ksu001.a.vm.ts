@@ -3316,7 +3316,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // 職位人数
                 case WorkplaceCounterCategory.POSITION_PEOPLE: 
                     let jobTitleInfo: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
-                        jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople))
+                        jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople));
+                    
+                    let listMaxNumberPeople: Array<any> = [];
+                    let length = 0;
+                    _.forEach(jobTitleInfo, item => {
+                        if (item.numberPeople.length > length) {
+                            length = item.numberPeople.length;
+                            listMaxNumberPeople = item.numberPeople;
+                        }
+                    });
+
                     if(_.isEmpty(jobTitleInfoValue)) {
 						let objectJobTitle = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
@@ -3339,7 +3349,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
                     
-					_.forEach(_.reverse(_.values(_.groupBy(jobTitleInfoData, 'code'))), (groupItem: Array<any>, index: number) => {
+                    let objGroup = _.groupBy(jobTitleInfoData, 'code');
+					_.forEach(listMaxNumberPeople, (item, index: number) => {
+                        let groupItem: Array<any> = objGroup[item.code];
 						let objectJobTitle = { sid: '' }, sumJobTitleInfo: any = '';
 	                    leftHorzContentDs.push({ 
 							id: 'id' + index, 
