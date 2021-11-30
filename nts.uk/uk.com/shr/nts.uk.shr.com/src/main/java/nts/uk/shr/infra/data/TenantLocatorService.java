@@ -20,6 +20,14 @@ public class TenantLocatorService {
 	}
 
 	public static void connectDataSource(String dataSourceName) {
+
+		if (dataSourceName == null) {
+			throw new NullPointerException("dataSourceName");
+		}
+		if (dataSourceName.isEmpty()) {
+			throw new RuntimeException("dataSourceName is empty");
+		}
+
 		SessionContextProvider.get().put(SESSION_DATASOURCE, dataSourceName);
 	}
 	
