@@ -198,8 +198,7 @@ module nts.uk.at.view.kdw001.b {
                 if (self.selectedCreatDivisionCode() == 1 || 
                     self.selectedCalDivisionCode() == 1  || 
                     self.selectedAggregateClassCode() == 1 ) {
-                   if( (self.selectedCreatDivisionCode() == 1 &&self.dailyCreatedCheck() ==true) || 
-                       (self.selectedCalDivisionCode() == 1 && self.dailyCalCheck()==true) || 
+                   if( (self.selectedCalDivisionCode() == 1 && self.dailyCalCheck()==true) || 
                        (self.selectedAggregateClassCode() == 1 && self.monthCountCheck()==true)){
                         
                     
