@@ -76,6 +76,7 @@ public class GetEmailNotificationDomainServiceTest {
 				.filter(result -> result.getSid().equals(sid)).findFirst();
 		
 		// then
+		assertThat(results.getMailDestinationFunctionManage()).isPresent();
 		assertThat(data).isPresent();
 		assertThat(data.get().getOptCompanyMailAddress()).isPresent();
 		assertThat(data.get().getOptPersonalMailAddress()).isPresent();
@@ -117,6 +118,7 @@ public class GetEmailNotificationDomainServiceTest {
 				.filter(result -> result.getSid().equals(sid)).findFirst();
 		
 		// then
+		assertThat(results.getMailDestinationFunctionManage()).isPresent();
 		assertThat(data).isPresent();
 		assertThat(data.get().getOptCompanyMailAddress()).isNotPresent();
 		assertThat(data.get().getOptCompanyMobileMailAddress()).isNotPresent();
