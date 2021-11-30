@@ -125,7 +125,8 @@ public class SpecialLeaveManagementService {
 					specialHolidayInterimMngData,
 					param.getSpecialLeaveCode(),
 					employee.getEntryDate(),
-					outputData
+					outputData,
+					param.getBaseDate()
 					);
 		}
 

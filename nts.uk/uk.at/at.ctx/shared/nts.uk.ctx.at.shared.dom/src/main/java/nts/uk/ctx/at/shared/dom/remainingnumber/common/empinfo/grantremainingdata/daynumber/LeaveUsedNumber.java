@@ -131,7 +131,7 @@ public class LeaveUsedNumber{
 		if(numberOverDays == null && timeOver == null) {
 			this.leaveOverLimitNumber = Optional.empty();
 		}else {
-			this.leaveOverLimitNumber = Optional.of(new LeaveOverNumber(numberOverDays, minutes));
+			this.leaveOverLimitNumber = Optional.of(new LeaveOverNumber(numberOverDays, timeOver));
 		}
 	}
 
@@ -212,6 +212,10 @@ public class LeaveUsedNumber{
 				tempAnnualLeaveMng.getUsedNumber().getUsedTime().map(mapper -> mapper.v()).orElse(0)));
 		this.stowageDays=Optional.empty();
 		this.leaveOverLimitNumber=Optional.empty();
+	}
+	
+	public boolean isLimitOver(){
+		return this.getLeaveOverLimitNumber().isPresent();
 	}
 
 }
