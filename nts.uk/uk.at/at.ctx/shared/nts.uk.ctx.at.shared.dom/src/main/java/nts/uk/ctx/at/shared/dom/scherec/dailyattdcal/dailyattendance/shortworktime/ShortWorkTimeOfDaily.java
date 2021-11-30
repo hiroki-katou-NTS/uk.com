@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.PremiumCalcMethodDetailOfHoliday;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
@@ -31,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 日別実績の短時間勤務時間
@@ -211,23 +208,12 @@ public class ShortWorkTimeOfDaily {
 	private static boolean decisionDeductChild(
 			DeductionAtr dedAtr,
 			PremiumAtr premiumAtr,
-			HolidayCalcMethodSet holidayCalcMethodSet) {
-		
+			AddSettingOfWorkingTime holidayCalcMethodSet) {
+
+		// 計上なら、控除する
 		if (dedAtr.isAppropriate()) return true;
-		
-		if (premiumAtr.isRegularWork()) {			
-			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();
-			if (advancedSet.isPresent()){
-				if (advancedSet.get().getCalculateIncludCareTime() == NotUseAtr.USE) return false;
-			}
-		}
-		else{
-			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
-			if (advanceSet.isPresent()){
-				if (advanceSet.get().getCalculateIncludCareTime() == NotUseAtr.USE) return true;
-			}
-		}
-		return true;
+		// 育児介護時間を含めて計算するか判断する
+		return !holidayCalcMethodSet.isCalculateIncludCareTime(premiumAtr);
 	}
 	
 	/**

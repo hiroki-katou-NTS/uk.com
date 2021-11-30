@@ -57,7 +57,7 @@ public class FlexCalcMethodOfHalfHoliday {
 		if (workAtr.isMorning() || workAtr.isAfterNoon()){
 			FlexCalcMethod flexCalcMethod = isCalcPremium ? this.calcPremium : this.calcLack;	// フレックス計算方法
 			if (flexCalcMethod == FlexCalcMethod.PREDETERMINED_TIME_ONE_DAY){
-				return breakDownOfPredTime.get(WorkAtr.OneDay);
+				return AttendanceTime.ZERO;
 			}
 		}
 		return breakDownOfPredTime.get(workAtr);

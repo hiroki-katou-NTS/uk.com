@@ -136,6 +136,7 @@ public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializab
 
 	public static interface Require {
 		Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth);
 	}
 	
 	/**

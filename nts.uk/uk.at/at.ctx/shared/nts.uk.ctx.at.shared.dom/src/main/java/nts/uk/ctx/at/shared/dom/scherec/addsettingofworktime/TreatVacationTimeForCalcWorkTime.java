@@ -10,36 +10,24 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.dom.DomainObject;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Class EmploymentCalcDetailedSetIncludeVacationAmount.
+ * 就業時間計算時の休暇時間の扱い
  */
-// 休暇分を含める就業計算詳細設定
 @NoArgsConstructor
 @Getter
-public class EmploymentCalcDetailedSetIncludeVacationAmount extends DomainObject implements SerializableWithOptional{
+public class TreatVacationTimeForCalcWorkTime extends IncludeVacationSetForCalcWorkTime implements SerializableWithOptional{
 
-	/** Serializable */
 	private static final long serialVersionUID = 1L;
 	
-	/** The addition. */
-	// 加算する
-	private NotUseAtr addition;
-	
-	/** The deformation exceeds predetermined value. */
-	// 通常、変形の所定超過時
-	private Optional<CalculationMethodForNormalWorkAndDeformedLaborOverTime> deformationExceedsPredeterminedValue;
-	
-	/** The addition within monthly statutory. */
-	// 月次法定内のみ加算
+	/** 月次法定内のみ加算 */
 	private Optional<NotUseAtr> additionWithinMonthlyStatutory;
-	
-	/** The predetermined deficiency of flex. */
-	// フレックスの所定不足時
+	/** フレックスの所定不足時 */
 	private Optional<CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork> predeterminedDeficiencyOfFlex;
+	/** 欠勤時間をマイナスする */
+	private Optional<NotUseAtr> minusAbsenceTime;
 
 	private void writeObject(ObjectOutputStream stream){
 		writeObjectWithOptional(stream);
@@ -51,27 +39,38 @@ public class EmploymentCalcDetailedSetIncludeVacationAmount extends DomainObject
 
 	/**
 	 * Instantiates a new employment calc detailed set include vacation amount.
-	 *
 	 * @param addition the addition
 	 * @param deformationExceedsPredeterminedValue the deformation exceeds predetermined value
 	 * @param additionWithinMonthlyStatutory the addition within monthly statutory
 	 * @param predeterminedDeficiencyOfFlex the predetermined deficiency of flex
+	 * @param minusAbsenceTime the minus absence time
 	 */
-	public EmploymentCalcDetailedSetIncludeVacationAmount(Integer addition,
+	public TreatVacationTimeForCalcWorkTime(Integer addition,
 			Integer deformationExceedsPredeterminedValue,
 			Integer additionWithinMonthlyStatutory,
-			Integer predeterminedDeficiencyOfFlex) {
+			Integer predeterminedDeficiencyOfFlex,
+			Integer minusAbsenceTime) {
 		super();
 		this.addition = NotUseAtr.valueOf(addition);
-		this.deformationExceedsPredeterminedValue = Optional.ofNullable(deformationExceedsPredeterminedValue == null 
-																			? null 
-																			: CalculationMethodForNormalWorkAndDeformedLaborOverTime.valueOf(deformationExceedsPredeterminedValue));
-		this.additionWithinMonthlyStatutory = Optional.ofNullable(additionWithinMonthlyStatutory == null 
-																			? null 
-																			: NotUseAtr.valueOf(additionWithinMonthlyStatutory));
-		this.predeterminedDeficiencyOfFlex = Optional.ofNullable(predeterminedDeficiencyOfFlex == null 
-																			? null 
-																			: CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork.valueOf(predeterminedDeficiencyOfFlex));
+		this.deformationExceedsPredeterminedValue = Optional.ofNullable(CalculationMethodForNormalWorkAndDeformedLaborOverTime.valueOf(deformationExceedsPredeterminedValue));
+		this.additionWithinMonthlyStatutory = Optional.ofNullable(NotUseAtr.valueOf(additionWithinMonthlyStatutory));
+		this.predeterminedDeficiencyOfFlex = Optional.ofNullable(CalculationMethodAtTheTimeOfLackOfFixedTimeForFlexWork.valueOf(predeterminedDeficiencyOfFlex));
+		this.minusAbsenceTime = Optional.ofNullable(NotUseAtr.valueOf(minusAbsenceTime));
+	}
+	
+	/**
+	 * 月次法定内のみ加算するかどうか確認する
+	 * @return true:法定内のみ加算,false:全て加算
+	 */
+	public boolean isAdditionWithinMonthlyStatutory() {
+		return this.additionWithinMonthlyStatutory.orElse(NotUseAtr.NOT_USE).isUse();
+	}
+	
+	/**
+	 * 欠勤をマイナスせず所定から控除する
+	 * @return true：控除する、false：控除しない
+	 */
+	public boolean isMinusAbsenceTime() {
+		return this.minusAbsenceTime.orElse(NotUseAtr.NOT_USE).isUse();
 	}
 }
-

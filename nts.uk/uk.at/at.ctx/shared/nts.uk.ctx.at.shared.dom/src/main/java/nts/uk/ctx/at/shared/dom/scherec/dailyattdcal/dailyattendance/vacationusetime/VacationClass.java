@@ -312,15 +312,15 @@ public class VacationClass {
 		VacationAddTime vacationAddTime =
 				new VacationAddTime(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO);
 		// 休暇加算するかどうか判断
-		if (addSetting.getNotUseAtr(premiumAtr) == NotUseAtr.NOT_USE){
+		if (addSetting.isAddVacation(premiumAtr) == NotUseAtr.NOT_USE){
 			// 加算しない時、休暇加算時間を全て0で返す
 			return vacationAddTime;
 		}
 		// 加算時間の設定を取得
 		BreakDownTimeDay breakdownTimeDay = holidayAddtionSet.get().getReference().getVacationAddTime(
 				require, AppContexts.user().companyId(), employeeId, workTimeCode, baseDate);
-		// 休暇の計算方法の設定を確認する
-		HolidayCalcMethodSet holidayCalcMethodSet = addSetting.getVacationCalcMethodSet();
+		// 労働時間の加算設定を確認する
+		AddSettingOfWorkingTime holidayCalcMethodSet = addSetting.getAddSetOfWorkingTime();
 		// 休暇加算時間を加算するかどうか判断
 		vacationAddTime = judgeVacationAddTime(breakdownTimeDay, premiumAtr,
 				holidayAddtionSet.get(), workType, holidayCalcMethodSet);
@@ -342,7 +342,7 @@ public class VacationClass {
 			PremiumAtr premiumAtr,
 			HolidayAddtionSet holidayAddtionSet,
 			WorkType workType,
-			HolidayCalcMethodSet holidayCalcMethodSet) {
+			AddSettingOfWorkingTime holidayCalcMethodSet) {
 		
 		VacationAddTime vacationAddTime = new VacationAddTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
 		// 加算する休暇設定を取得
@@ -368,10 +368,10 @@ public class VacationClass {
 	 * @return 加算する休暇設定
 	 */
 	private static LeaveSetAdded getAddVacationSet(PremiumAtr premiumAtr,
-			HolidayAddtionSet holidayAddtionSet, HolidayCalcMethodSet holidayCalcMethodSet) {
+			HolidayAddtionSet holidayAddtionSet, AddSettingOfWorkingTime holidayCalcMethodSet) {
 		LeaveSetAdded leaveSetAdded = new LeaveSetAdded(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);// 下のif文に入らない場合は全てしないを返す
 		// 休暇加算設定の取得
-		if (holidayCalcMethodSet.getNotUseAtr(premiumAtr) == NotUseAtr.USE) {// 加算する場合
+		if (holidayCalcMethodSet.isAddVacation(premiumAtr) == NotUseAtr.USE) {// 加算する場合
 			leaveSetAdded = holidayAddtionSet.getAdditionVacationSet();
 		}
 		return leaveSetAdded;

@@ -44,8 +44,7 @@ public class GetSubHolOccurrenceSetting {
 		}
 		
 		val comLeavSet = require.compensatoryLeaveComSetting(cid);
-		if (comLeavSet == null)
-			return Optional.empty();
+		if (!comLeavSet.isPresent()) return Optional.empty();
 		SubHolTransferSet result = comLeavSet.get().getCompensatoryOccurrenceSetting().stream()
 				.filter(x -> x.getOccurrenceType().value == originAtr.value).map(x -> x.getTransferSetting())
 				.findFirst().orElse(null);

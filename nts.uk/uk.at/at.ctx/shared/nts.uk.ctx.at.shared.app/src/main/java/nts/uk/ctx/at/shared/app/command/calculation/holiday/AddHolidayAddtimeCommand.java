@@ -203,13 +203,28 @@ public class AddHolidayAddtimeCommand {
 		if (this.regularWork == null) {
 			return null;
 		}
-		return WorkRegularAdditionSet.createFromJavaType(companyId, this.regularWork.getCalcActualOperationPre(),
-				this.regularWork.getExemptTaxTimePre(), this.regularWork.getIncChildNursingCarePre(),
-				this.regularWork.getAdditionTimePre(), this.regularWork.getNotDeductLateleavePre(),
-				this.regularWork.getDeformatExcValuePre(), this.regularWork.getExemptTaxTimeWork(),
-				this.regularWork.getCalcActualOperationWork(), this.regularWork.getIncChildNursingCareWork(),
-				this.regularWork.getNotDeductLateleaveWork(), this.regularWork.getAdditionTimeWork(),
+		return WorkRegularAdditionSet.createFromJavaType(
+				companyId,
+				this.regularWork.getCalcActualOperationPre(),
+				this.regularWork.getIncChildNursingCarePre(),
+				this.regularWork.getNotDeductLateleavePre(),
+				0,
 				this.regularWork.getEnableSetPerWorkHour1(),
+				this.regularWork.getExemptTaxTimePre(),
+				this.regularWork.getAdditionTimePre(),
+				this.regularWork.getDeformatExcValuePre(),
+				0,
+				this.regularWork.getCalcActualOperationWork(),
+				this.regularWork.getIncChildNursingCareWork(),
+				this.regularWork.getNotDeductLateleaveWork(),
+				0,
+				this.regularWork.getEnableSetPerWorkHour2(),
+				this.regularWork.getExemptTaxTimeWork(),
+				this.regularWork.getAdditionTimeWork(),
+				0,
+				0,
+				0,
+				0,
 				this.regularWork.getUseAtr());
 	}
 
@@ -223,15 +238,28 @@ public class AddHolidayAddtimeCommand {
 		if (this.flexWork == null) {
 			return null;
 		}
-		return WorkFlexAdditionSet.createFromJavaType(companyId, this.flexWork.getCalcActualOperationPre(),
-				this.flexWork.getExemptTaxTimePre(), this.flexWork.getIncChildNursingCarePre(),
-				this.flexWork.getPredeterminedOvertimePre(), this.flexWork.getAdditionTimePre(),
-				this.flexWork.getNotDeductLateleavePre(), this.flexWork.getExemptTaxTimeWork(),
-				this.flexWork.getMinusAbsenceTimeWork(), this.flexWork.getCalcActualOperationWork(),
-				this.flexWork.getIncChildNursingCareWork(), this.flexWork.getNotDeductLateleaveWork(),
-				this.flexWork.getPredeterminDeficiencyWork(), this.flexWork.getAdditionTimeWork(),
+		return WorkFlexAdditionSet.createFromJavaType(
+				companyId,
+				this.flexWork.getCalcActualOperationPre(),
+				this.flexWork.getIncChildNursingCarePre(),
+				this.flexWork.getNotDeductLateleavePre(),
+				0,
 				this.flexWork.getEnableSetPerWorkHour1(),
+				this.flexWork.getExemptTaxTimePre(),
+				this.flexWork.getAdditionTimePre(),
+				0,
+				this.flexWork.getPredeterminedOvertimePre(),
+				this.flexWork.getCalcActualOperationWork(),
+				this.flexWork.getIncChildNursingCareWork(),
+				this.flexWork.getNotDeductLateleaveWork(),
+				0,
+				this.flexWork.getEnableSetPerWorkHour2(),
+				this.flexWork.getExemptTaxTimeWork(),
+				this.flexWork.getAdditionTimeWork(),
+				0,
+				this.flexWork.getPredeterminDeficiencyWork(),
 				this.flexWork.getAdditionWithinMonthlyStatutory(),
+				this.flexWork.getMinusAbsenceTimeWork(),
 				this.flexWork.getUseAtr());
 	}
 
@@ -245,12 +273,29 @@ public class AddHolidayAddtimeCommand {
 		if (this.irregularWork == null) {
 			return null;
 		}
-		return WorkDeformedLaborAdditionSet.createFromJavaType(companyId, this.irregularWork.getCalcActualOperationPre(),
-				this.irregularWork.getExemptTaxTimePre(), this.irregularWork.getIncChildNursingCarePre(), this.irregularWork.getAdditionTimePre(),
-				this.irregularWork.getNotDeductLateleavePre(),this.irregularWork.getDeformatExcValue(), this.irregularWork.getExemptTaxTimeWork(),
-				this.irregularWork.getMinusAbsenceTimeWork(), this.irregularWork.getCalcActualOperationWork(),
-				this.irregularWork.getIncChildNursingCareWork(), this.irregularWork.getNotDeductLateleaveWork(),this.irregularWork.getAdditionTimeWork(),
-				this.irregularWork.getEnableSetPerWorkHour1(), this.irregularWork.getUseAtr());
+		return WorkDeformedLaborAdditionSet.createFromJavaType(
+				companyId,
+				this.irregularWork.getCalcActualOperationPre(),
+				this.irregularWork.getIncChildNursingCarePre(),
+				this.irregularWork.getNotDeductLateleavePre(),
+				0,
+				this.irregularWork.getEnableSetPerWorkHour1(),
+				this.irregularWork.getExemptTaxTimePre(),
+				this.irregularWork.getAdditionTimePre(),
+				this.irregularWork.getDeformatExcValue(),
+				this.irregularWork.getPredeterminedOvertimePre(),
+				this.irregularWork.getCalcActualOperationWork(),
+				this.irregularWork.getIncChildNursingCareWork(),
+				this.irregularWork.getNotDeductLateleaveWork(),
+				0,
+				this.irregularWork.getEnableSetPerWorkHour2(),
+				this.irregularWork.getExemptTaxTimeWork(),
+				this.irregularWork.getAdditionTimeWork(),
+				0,
+				this.irregularWork.getPredeterminDeficiencyWork(),
+				0,
+				this.irregularWork.getMinusAbsenceTimeWork(),
+				this.irregularWork.getUseAtr());
 	}
 	
 	/**
@@ -263,12 +308,28 @@ public class AddHolidayAddtimeCommand {
 		if (this.hourlyPaymentAddCommand == null) {
 			return null;
 		}
-		return HourlyPaymentAdditionSet.createFromJavaType(companyId, this.hourlyPaymentAddCommand.getCalcPremiumVacation(), this.hourlyPaymentAddCommand.getAddition1(), 
-				this.hourlyPaymentAddCommand.getDeformatExcValue(), this.hourlyPaymentAddCommand.getIncChildNursingCare(), this.hourlyPaymentAddCommand.getDeduct(), 
-				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime1(), 
-				this.hourlyPaymentAddCommand.getCalcWorkHourVacation() , this.hourlyPaymentAddCommand.getAddition2(), this.hourlyPaymentAddCommand.getCalculateIncludCareTime(), 
-				this.hourlyPaymentAddCommand.getNotDeductLateLeaveEarly(), 
-				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime2(), this.hourlyPaymentAddCommand.getEnableSetPerWorkHour1(),
+		return HourlyPaymentAdditionSet.createFromJavaType(
+				companyId,
+				this.hourlyPaymentAddCommand.getCalcPremiumVacation(),
+				this.hourlyPaymentAddCommand.getIncChildNursingCare(),
+				this.hourlyPaymentAddCommand.getDeduct(),
+				0,
+				this.hourlyPaymentAddCommand.getEnableSetPerWorkHour1(),
+				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime1(),
+				this.hourlyPaymentAddCommand.getAddition1(),
+				this.hourlyPaymentAddCommand.getDeformatExcValue(),
+				0,
+				this.hourlyPaymentAddCommand.getCalcWorkHourVacation(),
+				this.hourlyPaymentAddCommand.getCalculateIncludCareTime(),
+				this.hourlyPaymentAddCommand.getNotDeductLateLeaveEarly(),
+				0,
+				this.hourlyPaymentAddCommand.getEnableSetPerWorkHour2(),
+				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime2(),
+				this.hourlyPaymentAddCommand.getAddition2(),
+				0,
+				0,
+				0,
+				0,
 				this.hourlyPaymentAddCommand.getUseAtr());
 	}
 }

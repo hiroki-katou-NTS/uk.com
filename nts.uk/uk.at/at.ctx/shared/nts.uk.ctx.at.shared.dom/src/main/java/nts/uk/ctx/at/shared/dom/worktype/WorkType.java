@@ -561,26 +561,42 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	}
 	
 	/**
-	 * 休出かどうかの判断
-	 * @return true=休出,false=休出ではない
+	 * 1日休出かどうかの判断
+	 * @return true=1日休出,false=1日休出ではない
 	 */
 	public boolean isHolidayWork(){
-		if (this.isOneDay()){
-			if (this.dailyWork.getOneDay() == WorkTypeClassification.HolidayWork) return true;
-		}
+		Optional<WorkAtr> workAtr = this.getWorkAtr(WorkTypeClassification.HolidayWork);
+		if (workAtr.isPresent() && workAtr.get().isOneDay()) return true;
 		return false;
 	}
+	
+	/**
+	 * 1日休日かどうかの判断
+	 * @return true=1日休日,false=1日休日ではない
+	 */
 	public boolean isHoliday(){
-		if (this.isOneDay()){
-			if (this.dailyWork.getOneDay() == WorkTypeClassification.Holiday) return true;
-		}
+		Optional<WorkAtr> workAtr = this.getWorkAtr(WorkTypeClassification.Holiday);
+		if (workAtr.isPresent() && workAtr.get().isOneDay()) return true;
 		return false;
 	}
-	/** 連続勤務か */
+	
+	/**
+	 * 1日振休かどうかの判断
+	 * @return true=1日振休,false=1日振休ではない
+	 */
+	public boolean isPause(){
+		Optional<WorkAtr> workAtr = this.getWorkAtr(WorkTypeClassification.Pause);
+		if (workAtr.isPresent() && workAtr.get().isOneDay()) return true;
+		return false;
+	}
+	
+	/**
+	 * 連続勤務かどうかの判断
+	 * @return true=連続勤務,false=連続勤務ではない
+	 */
 	public boolean isContinuousWork() {
-		if (this.isOneDay() && this.dailyWork.getOneDay() == WorkTypeClassification.ContinuousWork) 
-			return true;
-			
+		Optional<WorkAtr> workAtr = this.getWorkAtr(WorkTypeClassification.ContinuousWork);
+		if (workAtr.isPresent() && workAtr.get().isOneDay()) return true;
 		return false;
 	}
 	

@@ -15,4 +15,11 @@ public interface EmTimezoneLateEarlyCommonSetGetMemento {
 	 * @return the del from em time
 	 */
 	boolean getDelFromEmTime();
+
+	/**
+	 * Gets the deduct by app.
+	 *
+	 * @return the deduct by app
+	 */
+	boolean getIncludeByApp();
 }

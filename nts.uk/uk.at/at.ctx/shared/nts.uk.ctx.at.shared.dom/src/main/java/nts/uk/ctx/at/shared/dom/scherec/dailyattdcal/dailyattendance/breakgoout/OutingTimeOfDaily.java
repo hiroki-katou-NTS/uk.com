@@ -6,7 +6,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -129,7 +129,7 @@ public class OutingTimeOfDaily {
 			boolean isCalculatable,
 			Optional<OutingCalcWithinCoreTime> outingCalcSet,
 			PremiumAtr premiumAtr,
-			HolidayCalcMethodSet holidayCalcMethodSet,
+			AddSettingOfWorkingTime holidayCalcMethodSet,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			ManageReGetClass recordClass) {
 		BreakTimeGoOutTimes goOutTimes = new BreakTimeGoOutTimes(0);
@@ -233,8 +233,8 @@ public class OutingTimeOfDaily {
 	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
-	public AttendanceTime calcVacationAddTime(HolidayCalcMethodSet calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet, WorkTimeForm workTimeForm) {
-		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
+	public AttendanceTime calcVacationAddTime(AddSettingOfWorkingTime calcMethodSet, Optional<HolidayAddtionSet> holidayAddtionSet, WorkTimeForm workTimeForm) {
+		if(calcMethodSet.isAddVacation(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;
 		}
 		return holidayAddtionSet.get().getAddTime(this.timeVacationUseOfDaily, this.recordTotalTime.getTotalTime().getCalcTime(), workTimeForm);
@@ -249,12 +249,12 @@ public class OutingTimeOfDaily {
 	 * @return 時間休暇加算時間
 	 */
 	public AttendanceTime calcVacationAddTime(
-			HolidayCalcMethodSet calcMethodSet,
+			AddSettingOfWorkingTime calcMethodSet,
 			Optional<HolidayAddtionSet> holidayAddtionSet,
 			DeductionTimeSheet deductionTimeSheet,
 			WorkTimeForm workTimeForm) {
 		
-		if(calcMethodSet.getNotUseAtr(PremiumAtr.RegularWork).isNotUse()) {
+		if(calcMethodSet.isAddVacation(PremiumAtr.RegularWork).isNotUse()) {
 			return AttendanceTime.ZERO;
 		}
 		//一致する計上用時間帯を取得する

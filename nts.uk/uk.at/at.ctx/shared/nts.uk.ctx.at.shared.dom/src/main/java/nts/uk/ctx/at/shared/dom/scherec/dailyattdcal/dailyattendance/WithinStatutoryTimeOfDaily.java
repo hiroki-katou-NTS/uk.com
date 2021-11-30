@@ -219,7 +219,7 @@ public class WithinStatutoryTimeOfDaily {
 		// 労働条件項目
 		WorkingConditionItem conditionItem = personCommonSetting.getPersonInfo();
 		// 統合就業時間帯の確認
-		boolean isFlexDay = false;										// フレックス勤務日かどうか
+		boolean isFlexDay = conditionItem.getLaborSystem().isFlexTimeWork();	// フレックス勤務日かどうか
 		if (integrationOfWorkTime.isPresent()){
 			WorkTimeSetting workTimeSet = integrationOfWorkTime.get().getWorkTimeSetting();	// 就業時間帯の設定
 			isFlexDay = workTimeSet.getWorkTimeDivision().isFlexWorkDay(conditionItem);
@@ -367,7 +367,7 @@ public class WithinStatutoryTimeOfDaily {
 		WorkingConditionItem conditionItem = personCommonSetting.getPersonInfo();
 		
 		// 統合就業時間帯の確認
-		boolean isFlexDay = false;										// フレックス勤務日かどうか
+		boolean isFlexDay = conditionItem.getLaborSystem().isFlexTimeWork();										// フレックス勤務日かどうか
 		Optional<CoreTimeSetting> coreTimeSetting = Optional.empty();	// コアタイム時間帯設定
 		if (integrationOfWorkTime.isPresent()){
 			WorkTimeSetting workTimeSet = integrationOfWorkTime.get().getWorkTimeSetting();	// 就業時間帯の設定
@@ -378,7 +378,7 @@ public class WithinStatutoryTimeOfDaily {
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)withinTimeSheet;
 			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime =
 					commonSetting.isPresent() &&
-					commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime() &&
+					commonSetting.get().getLateEarlySet().getCommonSet().isIncludeLateEarlyInWorkTime() &&
 					coreTimeSetting.isPresent() &&
 					coreTimeSetting.get().isUseTimeSheet() ?
 							Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet()) : commonSetting;
@@ -401,11 +401,6 @@ public class WithinStatutoryTimeOfDaily {
 					lateEarlyMinusAtr);
 		}
 		else {
-//			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime =
-//					commonSetting.isPresent() &&
-//					commonSetting.get().getLateEarlySet().getCommonSet().isDelFromEmTime() ?
-//							Optional.of(commonSetting.get().reverceTimeZoneLateEarlySet()) : commonSetting;
-			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime = commonSetting;
 			return withinTimeSheet.calcWorkTime(
 					personCommonSetting,
 					integrationOfDaily,
@@ -418,7 +413,7 @@ public class WithinStatutoryTimeOfDaily {
 					holidayAddtionSet,
 					settingOfFlex,
 					dailyUnit,
-					leaveLatesetForWorkTime,
+					commonSetting,
 					lateEarlyMinusAtr).getWorkTime();
 		}
 	}

@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
@@ -169,11 +169,11 @@ public class ManageReGetClass {
 	}
 	
 	/**
-	 * 休暇の計算方法の設定を取得する
-	 * @return 休暇の計算方法の設定
+	 * 労働時間の加算設定を取得する
+	 * @return 労働時間の加算設定
 	 */
-	public HolidayCalcMethodSet getHolidayCalcMethodSet() {
-		return this.personDailySetting.getAddSetting().getVacationCalcMethodSet();
+	public AddSettingOfWorkingTime getHolidayCalcMethodSet() {
+		return this.personDailySetting.getAddSetting().getAddSetOfWorkingTime();
 	}
 	
 	/**

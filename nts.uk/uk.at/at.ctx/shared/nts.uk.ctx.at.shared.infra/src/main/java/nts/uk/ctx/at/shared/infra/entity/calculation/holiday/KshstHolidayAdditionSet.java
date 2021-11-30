@@ -77,18 +77,6 @@ public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Ser
 	@Column(name = "YEARLY_RESERVED")
 	public int yearlyReserved;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshmtCalcCAddHdReg regularWorkSet;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshmtCalcCAddHdFle flexWorkSet;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstWorkDepLaborSet irregularWorkSet;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstHourPayAaddSet hourPayAaddSet;
-	
 	/** 加算方法 */
 	@Column(name = "ADDING_METHOD1")
 	public int addingMethod1;
@@ -96,8 +84,8 @@ public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Ser
 	/* 勤務区分*/
 	@Column(name = "WORK_CLASS1")
 	public int workClass1;
+
 	/** 加算方法 */
-	
 	@Column(name = "ADDING_METHOD2")
 	public int addingMethod2;
 	

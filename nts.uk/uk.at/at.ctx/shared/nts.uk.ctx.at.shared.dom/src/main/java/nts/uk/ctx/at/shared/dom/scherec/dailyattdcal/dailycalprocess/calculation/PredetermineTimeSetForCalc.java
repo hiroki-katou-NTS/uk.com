@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -129,13 +130,20 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	
 	/**
 	 * 勤務の単位を基に時間帯の開始、終了を補正
-	 * @param dailyWork 1日の勤務
+	 * @param workType 勤務種類
+	 * @param workNo 勤務No
 	 */
-	public void correctPredetermineTimeSheet(DailyWork dailyWork,int workNo) {
+	public void correctPredetermineTimeSheet(WorkType workType, int workNo) {
 		
-		if (dailyWork.getAttendanceHolidayAttr().isHalfDayWorking()) {
-			val workingTimeSheet = this.getHalfDayWorkingTimeSheetOf(dailyWork.getAttendanceHolidayAttr(),workNo);
+		WorkStyle workStyle = workType.checkWorkDay();
+		switch (workStyle){
+		case MORNING_WORK:
+		case AFTERNOON_WORK:
+			val workingTimeSheet = this.getHalfDayWorkingTimeSheetOf(workStyle.toAttendanceHolidayAttr(), workNo);
 			correctTimeSheet(workingTimeSheet.getStart(), workingTimeSheet.getEnd());
+			break;
+		default:
+			break;
 		}
 	}
 

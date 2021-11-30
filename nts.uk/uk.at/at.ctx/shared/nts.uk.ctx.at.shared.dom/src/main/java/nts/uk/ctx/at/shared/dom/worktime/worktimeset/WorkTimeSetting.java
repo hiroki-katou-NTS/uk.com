@@ -192,11 +192,11 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		val atr = this.getWorkTimeDivision().getWorkTimeForm();
 		switch ( atr ) {
 			case FIXED:	// 就業時間帯の勤務形態 -> 固定勤務
-				return require.fixedWorkSetting(this.companyId, this.worktimeCode).get();
+				return require.fixedWorkSetting(this.companyId, this.worktimeCode).orElse(null);
 			case FLOW:	// 就業時間帯の勤務形態 -> 流動勤務
-				return require.flowWorkSetting(this.companyId, this.worktimeCode).get();
+				return require.flowWorkSetting(this.companyId, this.worktimeCode).orElse(null);
 			case FLEX:	// 就業時間帯の勤務形態 -> フレックス勤務
-				return require.flexWorkSetting(this.companyId, this.worktimeCode).get();
+				return require.flexWorkSetting(this.companyId, this.worktimeCode).orElse(null);
 			default:
 				break;
 		}

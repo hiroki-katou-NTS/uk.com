@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TreatLateEarlyTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetGetMemento;
 
@@ -31,8 +31,8 @@ public class WorkTimezoneLateEarlySetDto implements WorkTimezoneLateEarlySetGetM
 	 * WorkTimezoneLateEarlySetGetMemento#getCommonSet()
 	 */
 	@Override
-	public EmTimezoneLateEarlyCommonSet getCommonSet() {
-		return new EmTimezoneLateEarlyCommonSet(this.commonSet);
+	public TreatLateEarlyTime getCommonSet() {
+		return new TreatLateEarlyTime(this.commonSet);
 	}
 
 	/*

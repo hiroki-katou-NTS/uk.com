@@ -151,7 +151,7 @@ public class BreakTimeSheetGetter {
 									new BreakTimeOfDailyAttd(),
 									Optional.empty(),
 									new ArrayList<>()),
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
 							timeLeavingWork, 
 							withinWorkTimeSheet));
 		}

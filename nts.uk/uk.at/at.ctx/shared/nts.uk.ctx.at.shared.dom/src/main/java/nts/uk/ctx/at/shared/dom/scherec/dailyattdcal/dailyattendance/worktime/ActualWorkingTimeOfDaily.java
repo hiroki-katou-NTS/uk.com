@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtime
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.shr.com.context.AppContexts;
@@ -237,10 +239,14 @@ public class ActualWorkingTimeOfDaily {
 //		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork()){
 //			/*緊急対応　固定勤務時　就業時間帯or計算設定で遅刻早退控除しない　なら、休憩未取得処理飛ばす*/
 
-			if(recordClass.getIntegrationOfWorkTime().isPresent()
-					&& recordClass.getIntegrationOfWorkTime().get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm().isFixed()
-					&& recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()){
-				boolean lateEarlyDeductFlag = recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(recordClass.getWorkTimezoneCommonSet());
+			if (recordClass.getIntegrationOfWorkTime().isPresent() &&
+				recordClass.getIntegrationOfWorkTime().get().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm().isFixed()){
+				Optional<WorkTimezoneLateEarlySet> lateEarlySet = Optional.empty();
+				if (recordClass.getWorkTimezoneCommonSet().isPresent()){
+					lateEarlySet = Optional.of(recordClass.getWorkTimezoneCommonSet().get().getLateEarlySet());
+				}
+				boolean lateEarlyDeductFlag = !recordClass.getAddSetting().getAddSetOfWorkingTime().isIncludeLateEarlyInWorkTime(
+						PremiumAtr.RegularWork, lateEarlySet);
 				if(!lateEarlyDeductFlag) return totalWorkingTime; 
 			}
 		

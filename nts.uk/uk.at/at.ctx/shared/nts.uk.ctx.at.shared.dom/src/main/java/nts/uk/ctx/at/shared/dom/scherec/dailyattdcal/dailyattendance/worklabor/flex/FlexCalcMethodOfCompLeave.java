@@ -74,7 +74,7 @@ public class FlexCalcMethodOfCompLeave {
 		if (flexBasicSet.getFlexTimeHandle().isIncludeIllegalHdwk()) return AttendanceTime.ZERO;
 		if (workAtr.isMorning() || workAtr.isAfterNoon()){
 			if (isCalcPremium && this.calcPremium == FlexCalcMethod.PREDETERMINED_TIME_ONE_DAY){
-				return breakDownOfPredTime.get(WorkAtr.OneDay);
+				return AttendanceTime.ZERO;
 			}
 		}
 		return breakDownOfPredTime.get(workAtr);

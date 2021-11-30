@@ -59,10 +59,13 @@ public class RefDesForAdditionalTakeLeave {
     		}
     	}
     	
-    	/** 個人別設定参照先を確認 */
-    	if(referIndividualSet.get() == VacationSpecifiedTimeRefer.WORK_HOUR_DUR_WEEKDAY) {
-    		
-    		/** 平日時集票時間帯を参照 */
+    	// 個人別設定参照先を確認
+    	if (!this.referIndividualSet.isPresent()){
+    		// 平日時就業時間帯を参照
+    		return getVacationAddTimeForWeekend(require, cid, sid, baseDate);
+    	}
+    	if (referIndividualSet.get() == VacationSpecifiedTimeRefer.WORK_HOUR_DUR_WEEKDAY) {
+    		// 平日時就業時間帯を参照
     		return getVacationAddTimeForWeekend(require, cid, sid, baseDate);
     	}
     	

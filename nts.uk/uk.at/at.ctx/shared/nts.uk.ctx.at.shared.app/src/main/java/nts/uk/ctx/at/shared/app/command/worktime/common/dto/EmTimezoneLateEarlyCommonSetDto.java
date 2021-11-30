@@ -13,18 +13,18 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSetGetM
  */
 @Getter
 @Setter
-public class EmTimezoneLateEarlyCommonSetDto implements  EmTimezoneLateEarlyCommonSetGetMemento{
+public class EmTimezoneLateEarlyCommonSetDto implements EmTimezoneLateEarlyCommonSetGetMemento{
 	
-	/** The del from em time. */
 	private boolean delFromEmTime;
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSetGetMemento#getDelFromEmTime()
-	 */
+	private boolean includeByApp;
+	
 	@Override
 	public boolean getDelFromEmTime() {
 		return this.delFromEmTime;
 	}
 
-
+	@Override
+	public boolean getIncludeByApp() {
+		return this.includeByApp;
+	}
 }

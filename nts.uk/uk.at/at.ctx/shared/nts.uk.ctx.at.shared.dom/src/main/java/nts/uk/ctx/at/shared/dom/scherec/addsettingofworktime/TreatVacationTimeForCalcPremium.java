@@ -10,28 +10,19 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.dom.DomainObject;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * The Class IncludeHolidaysPremiumCalcDetailSet.
+ * 割増時間計算時の休暇時間の扱い
  */
-// 休暇分を含める割増計算詳細設定
 @NoArgsConstructor
 @Getter
-public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject implements SerializableWithOptional{
+public class TreatVacationTimeForCalcPremium extends IncludeVacationSetForCalcWorkTime implements SerializableWithOptional{
 
-	/** Serializable */
 	private static final long serialVersionUID = 1L;
 	
-	// 加算する
-	private NotUseAtr addition;
-	
-	// 通常、変形の所定超過時
-	private Optional<CalculationMethodForNormalWorkAndDeformedLaborOverTime> deformationExceedsPredeterminedValue;
-	
-	// フレックスの所定超過時
+	/** フレックスの所定超過時 */
 	private Optional<CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime> predeterminedExcessTimeOfFlex;
 
 	private void writeObject(ObjectOutputStream stream){
@@ -44,12 +35,12 @@ public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject implements
 
 	/**
 	 * Instantiates a new include holidays premium calc detail set.
-	 *
 	 * @param addition the addition
 	 * @param deformationExceedsPredeterminedValue the deformation exceeds predetermined value
 	 * @param predeterminedExcessTimeOfFlex the predetermined excess time of flex
 	 */
-	public IncludeHolidaysPremiumCalcDetailSet(Integer addition,
+	public TreatVacationTimeForCalcPremium(
+			Integer addition,
 			Integer deformationExceedsPredeterminedValue,
 			Integer predeterminedExcessTimeOfFlex) {
 		super();
@@ -64,7 +55,7 @@ public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject implements
 	 * @param deformationExceedsPredeterminedValue
 	 * @param predeterminedExcessTimeOfFlex
 	 */
-	public IncludeHolidaysPremiumCalcDetailSet(
+	public TreatVacationTimeForCalcPremium(
 			NotUseAtr addition,
 			Optional<CalculationMethodForNormalWorkAndDeformedLaborOverTime> deformationExceedsPredeterminedValue,
 			Optional<CalulationMethodWhenFlexWorkHoursExceededThePrescribedTime> predeterminedExcessTimeOfFlex) {
@@ -80,8 +71,9 @@ public class IncludeHolidaysPremiumCalcDetailSet extends DomainObject implements
 	 * @param employmentCalcDetailedSet 休暇分を含める就業計算詳細設定
 	 * @return 休暇分を含める割増計算詳細設定
 	 */
-	public IncludeHolidaysPremiumCalcDetailSet of(EmploymentCalcDetailedSetIncludeVacationAmount employmentCalcDetailedSet) {
-		return new IncludeHolidaysPremiumCalcDetailSet(
+	public TreatVacationTimeForCalcPremium of(
+			TreatVacationTimeForCalcWorkTime employmentCalcDetailedSet) {
+		return new TreatVacationTimeForCalcPremium(
 				employmentCalcDetailedSet.getAddition(),
 				employmentCalcDetailedSet.getDeformationExceedsPredeterminedValue(),
 				this.predeterminedExcessTimeOfFlex);

@@ -945,7 +945,7 @@ public class TotalWorkingTime {
 		int vacationAddTime = 0;		// 休暇加算時間
 		
 		// 休暇加算するかどうか判断
-		if (recordClass.getAddSetting().getNotUseAtr(PremiumAtr.RegularWork) == NotUseAtr.NOT_USE){
+		if (recordClass.getAddSetting().isAddVacation(PremiumAtr.RegularWork) == NotUseAtr.NOT_USE){
 			return AttendanceTime.ZERO;
 		}
 		// 社員設定管理

@@ -101,9 +101,9 @@ public class AbsenceTenProcess {
 		int isManageByTime = 0;
 		int digestiveUnit = 0;
 		// ドメインモデル「雇用の代休管理設定」を取得する(lấy domain 「雇用の代休管理設定」)
-		CompensatoryLeaveEmSetting compensatoryLeaveEmSet = require.compensatoryLeaveEmSetting(companyID, empHistImport.get().getEmploymentCode()).get();
+		Optional<CompensatoryLeaveEmSetting> compensatoryLeaveEmSet = require.compensatoryLeaveEmSetting(companyID, empHistImport.get().getEmploymentCode());
 		// １件以上取得できた(lấy được 1 data trở lên)
-		if(compensatoryLeaveEmSet != null && compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.NO)){
+		if(compensatoryLeaveEmSet.isPresent() && compensatoryLeaveEmSet.get().getIsManaged().equals(ManageDistinct.NO)){
 			//if (compensatoryLeaveEmSet.getIsManaged() != null) {				
 				//if (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)) {
 					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理する
@@ -123,18 +123,18 @@ public class AbsenceTenProcess {
 			//}
 		}else{
 			// ０件(0 data), ドメインモデル「代休管理設定」を取得する(lấy dữ liệu domain 「代休管理設定」)
-			CompensatoryLeaveComSetting compensatoryLeaveComSet = require.compensatoryLeaveComSetting(companyID).get();
-			if(compensatoryLeaveComSet != null){
-				if (compensatoryLeaveComSet.isManaged()) {
+			Optional<CompensatoryLeaveComSetting> compensatoryLeaveComSet = require.compensatoryLeaveComSetting(companyID);
+			if(compensatoryLeaveComSet.isPresent()){
+				if (compensatoryLeaveComSet.get().isManaged()) {
 					// ドメインモデル「代休管理設定」．管理区分 = 管理する
 					result.setSubstitutionFlg(true);
 					result.setExpirationOfsubstiHoliday(
-							compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+							compensatoryLeaveComSet.get().getCompensatoryAcquisitionUse().getExpirationTime().value);
 					// add refactor RequestList203
-					result.setAdvancePayment(compensatoryLeaveComSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-					isManageByTime = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit()
+					result.setAdvancePayment(compensatoryLeaveComSet.get().getCompensatoryAcquisitionUse().getPreemptionPermit().value);
+					isManageByTime = compensatoryLeaveComSet.get().getCompensatoryDigestiveTimeUnit()
 							.getIsManageByTime().value;
-					digestiveUnit = compensatoryLeaveComSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
+					digestiveUnit = compensatoryLeaveComSet.get().getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
 				}
 			}else{
 				//ドメインモデル「代休管理設定」．管理区分 = 管理しない

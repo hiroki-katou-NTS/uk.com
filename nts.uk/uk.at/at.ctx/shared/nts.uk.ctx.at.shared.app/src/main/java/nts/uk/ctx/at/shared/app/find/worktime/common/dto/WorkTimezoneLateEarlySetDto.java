@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TreatLateEarlyTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetSetMemento;
 
@@ -39,7 +39,7 @@ public class WorkTimezoneLateEarlySetDto implements WorkTimezoneLateEarlySetSetM
 	 * worktime.common.EmTimezoneLateEarlyCommonSet)
 	 */
 	@Override
-	public void setCommonSet(EmTimezoneLateEarlyCommonSet set) {
+	public void setCommonSet(TreatLateEarlyTime set) {
 		set.saveToMemento(this.commonSet);
 	}
 

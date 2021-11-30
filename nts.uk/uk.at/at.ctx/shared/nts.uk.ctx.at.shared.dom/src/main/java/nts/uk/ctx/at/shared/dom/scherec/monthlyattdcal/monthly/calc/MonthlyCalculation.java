@@ -825,10 +825,13 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			ConcurrentStopwatches.stop("12223:通常変形の月単位：");
 		} else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK) { // フレックス時間勤務 の時
 			
-			/** 月の法定労働時間を取得する。*/
-			this.statutoryWorkingTime = this.settingsByFlex.getStatutoryWorkingTimeMonth(
-					require, this.companySets, this.employeeSets,
-					this.yearMonth, this.procPeriod, this.closureId,this.monthlyCalculatingDailys);
+			// 月の法定労働時間を取得する
+			this.statutoryWorkingTime = new AttendanceTimeMonth(FlexTimeOfMonthly.getFlexStatutoryLaborTime(
+					require, cacheCarrier, this.companySets, this.employeeSets, this.settingsByFlex,
+					true, this.yearMonth, this.companyId, this.employmentCd, this.employeeId,
+					aggrPeriod.end(), Optional.of(aggrPeriod), this.closureId, this.closureDate,
+					Optional.of(this.aggregateTime), this.monthlyCalculatingDailys)
+					.getStatutorySetting().valueAsMinutes());
 
 			// フレックス集計方法を取得する
 			val flexAggrMethod = this.settingsByFlex.getFlexAggrSet().getAggrMethod();
@@ -1615,7 +1618,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 	
 	public static interface RequireM4 extends AggregateTotalWorkingTime.RequireM3,
 		RegularAndIrregularTimeOfMonthly.RequireM3, RegularAndIrregularTimeOfMonthly.RequireM1,
-		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5, SettingRequiredByFlex.RequireM1 {}
+		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5 {}
 	
 	public static interface RequireM2 extends RequireM5, RequireM4, RequireM1, 
 		AgreementTimeOfManagePeriod.RequireM2 {}

@@ -138,7 +138,7 @@ public class AggregateMonthlyRecordService {
 		proc.setCompanyId(cid);
 		proc.setEmployeeId(sid);
 		Optional<ComSubstVacation> absSettingOpt = require.comSubstVacation(cid);
-		CompensatoryLeaveComSetting dayOffSetting = require.compensatoryLeaveComSetting(cid).get();
+		CompensatoryLeaveComSetting dayOffSetting = require.compensatoryLeaveComSetting(cid).orElse(null);
 		MonAggrCompanySettings comSetting = new MonAggrCompanySettings();
 		comSetting.setAbsSettingOpt(absSettingOpt);
 		comSetting.setDayOffSetting(dayOffSetting);

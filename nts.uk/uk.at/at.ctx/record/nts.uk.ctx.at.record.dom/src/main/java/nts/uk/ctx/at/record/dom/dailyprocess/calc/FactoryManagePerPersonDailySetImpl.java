@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
@@ -284,27 +284,27 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 				AggregateRoot hourlyPaymentAdditionSet = map.get("hourlyPaymentAdditionSet");
 				return hourlyPaymentAdditionSet != null
 						?(HourlyPaymentAdditionSet) hourlyPaymentAdditionSet
-						: new HourlyPaymentAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+						: new HourlyPaymentAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 			}
 			AggregateRoot workRegularAdditionSet = map.get("regularWork");
 			return workRegularAdditionSet != null
 					?(WorkRegularAdditionSet) workRegularAdditionSet
-					: new WorkRegularAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+					: new WorkRegularAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		
 		case FLEX_TIME_WORK:
 			AggregateRoot workFlexAdditionSet = map.get("flexWork");
 			return workFlexAdditionSet != null
 					?(WorkFlexAdditionSet) workFlexAdditionSet
-					: new WorkFlexAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+					: new WorkFlexAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 			
 		case VARIABLE_WORKING_TIME_WORK:
 			AggregateRoot workDeformedLaborAdditionSet = map.get("irregularWork");
 			return workDeformedLaborAdditionSet != null
 					? (WorkDeformedLaborAdditionSet) workDeformedLaborAdditionSet
-					: new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+					: new WorkDeformedLaborAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		
 		default:
-			return new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+			return new WorkDeformedLaborAdditionSet(companyID, AddSettingOfWorkingTime.emptyHolidayCalcMethodSet());
 		}
 	}
 	

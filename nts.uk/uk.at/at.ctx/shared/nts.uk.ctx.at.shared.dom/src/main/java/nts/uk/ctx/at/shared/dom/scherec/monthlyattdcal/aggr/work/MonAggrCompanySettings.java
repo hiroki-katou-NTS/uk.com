@@ -315,7 +315,7 @@ public class MonAggrCompanySettings {
 		domain.absSettingOpt = require.comSubstVacation(companyId);
 		
 		// 代休管理設定
-		domain.dayOffSetting = require.compensatoryLeaveComSetting(companyId).get();
+		domain.dayOffSetting = require.compensatoryLeaveComSetting(companyId).orElse(null);
 		
 		// 日別実績の運用開始設定
 		domain.operationStartSet = require.dailyOperationStartSet(new CompanyId(companyId));

@@ -46,7 +46,7 @@ public class WithinStatutoryMidNightTime {
 		}
 		WorkType workType = recordReGet.getWorkType().get();
 		// フレックス勤務日かどうか
-		boolean isFlex = false;
+		boolean isFlex = conditionItem.getLaborSystem().isFlexTimeWork();
 		if (recordReGet.getWorkTimeSetting().isPresent()){
 			isFlex = recordReGet.getWorkTimeSetting().get().getWorkTimeDivision().isFlexWorkDay(conditionItem);
 		}

@@ -162,20 +162,20 @@ public class IrregularPeriodCarryforwardsTimeOfCurrent implements Serializable{
 		// 変形労働勤務の加算設定を取得する
 		if (!holidayAdditionMap.containsKey("irregularWork")) return ProcAtrAddMethod.ADD;
 		val setOfIrregular = (WorkDeformedLaborAdditionSet)holidayAdditionMap.get("irregularWork");
-		val holidayCalcMethodSet = setOfIrregular.getVacationCalcMethodSet();
+		val addSetOfWorkTime = setOfIrregular.getAddSetOfWorkingTime();
 		
 		boolean isPremiumAdd = false;		// 割増計算：休暇分を含める＝加算する なら true
 		boolean isWorkTimeAdd = false;		// 就業計算：休暇分を含める＝加算する なら true
 		
-		val premiumCalcMethod = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday();
-		if (premiumCalcMethod.getAdvanceSet().isPresent()){
-			if (premiumCalcMethod.getAdvanceSet().get().getIncludeVacationSet().getAddition() == NotUseAtr.USE){
+		val premiumCalcMethod = addSetOfWorkTime.getAddSetOfPremium();
+		if (premiumCalcMethod.getTreatVacation().isPresent()){
+			if (premiumCalcMethod.getTreatVacation().get().getAddition() == NotUseAtr.USE){
 				isPremiumAdd = true;
 			}
 		}
-		val workTimeCalcMethod = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday();
-		if (workTimeCalcMethod.getAdvancedSet().isPresent()){
-			if (workTimeCalcMethod.getAdvancedSet().get().getIncludeVacationSet().getAddition() == NotUseAtr.USE){
+		val workTimeCalcMethod = addSetOfWorkTime.getAddSetOfWorkTime();
+		if (workTimeCalcMethod.getTreatVacation().isPresent()){
+			if (workTimeCalcMethod.getTreatVacation().get().getAddition() == NotUseAtr.USE){
 				isWorkTimeAdd = true;
 			}
 		}

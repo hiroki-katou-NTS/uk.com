@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -782,7 +782,7 @@ public class CalculationRangeOfOneDay {
 							integrationOfWorkTime,
 							integrationOfDaily,
 							deductionTimeSheetCalcBefore,
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
 							timeLeavingWork,
 							creatingWithinWorkTimeSheet));
 		}
@@ -808,7 +808,7 @@ public class CalculationRangeOfOneDay {
 							integrationOfWorkTime,
 							integrationOfDaily,
 							deductionTimeSheetCalcBefore,
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
 							timeLeavingWork,
 							creatingWithinWorkTimeSheet));
 		}
@@ -880,7 +880,7 @@ public class CalculationRangeOfOneDay {
 							integrationOfWorkTime,
 							integrationOfDaily,
 							deductionTimeSheetCalcBefore,
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
 							timeLeavingWork,
 							creatingWithinWorkTimeSheet));
 		}
@@ -912,7 +912,7 @@ public class CalculationRangeOfOneDay {
 							integrationOfWorkTime,
 							integrationOfDaily,
 							deductionTimeSheetCalcBefore,
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime(),
 							timeLeavingWork,
 							creatingWithinWorkTimeSheet));
 		}
@@ -958,7 +958,7 @@ public class CalculationRangeOfOneDay {
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param deductionTimeSheet 控除時間帯
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param addSetOfWorkTime 労働時間の加算設定
 	 * @param timeLeavingWork 出退勤
 	 * @param creatingWithinWorkTimeSheet 就業時間内時間帯
 	 * @return 出退勤
@@ -968,7 +968,7 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			DeductionTimeSheet deductionTimeSheet,
-			HolidayCalcMethodSet holidayCalcMethodSet,
+			AddSettingOfWorkingTime addSetOfWorkTime,
 			TimeLeavingWork timeLeavingWork,
 			WithinWorkTimeSheet creatingWithinWorkTimeSheet){
 		
@@ -985,7 +985,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				deductionTimeSheet,
-				holidayCalcMethodSet,
+				addSetOfWorkTime,
 				timeLeavingWork,
 				predetermineTimeSet);
 	}
@@ -996,7 +996,7 @@ public class CalculationRangeOfOneDay {
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @param deductionTimeSheet 控除時間帯
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param addSetOfWorkTime 労働時間の加算設定
 	 * @param timeLeavingWork 出退勤
 	 * @param creatingWithinWorkTimeSheet 就業時間内時間帯
 	 * @return  出退勤
@@ -1006,7 +1006,7 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfWorkTime integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily,
 			DeductionTimeSheet deductionTimeSheet,
-			HolidayCalcMethodSet holidayCalcMethodSet,
+			AddSettingOfWorkingTime addSetOfWorkTime,
 			TimeLeavingWork timeLeavingWork,
 			WithinWorkTimeSheet creatingWithinWorkTimeSheet){
 		
@@ -1019,7 +1019,7 @@ public class CalculationRangeOfOneDay {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				deductionTimeSheet,
-				holidayCalcMethodSet,
+				addSetOfWorkTime,
 				timeLeavingWork,
 				predetermineTimeSet);
 	}
@@ -1050,7 +1050,7 @@ public class CalculationRangeOfOneDay {
 		}
 		
 		//午前勤務、午後勤務の場合に時間帯を補正する
-		copiedPredetermineTimeSetForCalc.correctPredetermineTimeSheet(workType.getDailyWork(),workNo.v());
+		copiedPredetermineTimeSetForCalc.correctPredetermineTimeSheet(workType,workNo.v());
 		return copiedPredetermineTimeSetForCalc;
 	}
 	

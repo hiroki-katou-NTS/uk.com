@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
@@ -283,7 +283,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							createTimeSheet,
 							integrationOfDaily.getCalAttr().getOvertimeSetting(),
 							integrationOfWorkTime.getLegalOverTimeFrameNoMap(todayWorkType),
-							personDailySetting.getAddSetting().getVacationCalcMethodSet());
+							personDailySetting.getAddSetting().getAddSetOfWorkingTime());
 			}
 		}
 		return createTimeSheet;
@@ -365,7 +365,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 							.collect(Collectors.toList()),
 					integrationOfDaily.getCalAttr().getOvertimeSetting(),
 					integrationOfWorkTime.getLegalOverTimeFrameNoMap(todayWorkType),
-					personDailySetting.getAddSetting().getVacationCalcMethodSet());
+					personDailySetting.getAddSetting().getAddSetOfWorkingTime());
 					
 					return result;
 				}
@@ -381,7 +381,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 	 * @param autoCalculationSet　時間外の自動計算設定
 	 */
 	public static List<OverTimeFrameTimeSheetForCalc> reclassified(AttendanceTime ableRangeTime,List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
-			AutoCalOvertimeSetting autoCalculationSet,Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames,HolidayCalcMethodSet holidayCalcMethodSet) {
+			AutoCalOvertimeSetting autoCalculationSet,Map<EmTimezoneNo, OverTimeFrameNo> statutoryOverFrames,AddSettingOfWorkingTime holidayCalcMethodSet) {
 		boolean forceAtr = true;
 		AttendanceTime overTime = new AttendanceTime(0);
 		AttendanceTime transTime = new AttendanceTime(0);
