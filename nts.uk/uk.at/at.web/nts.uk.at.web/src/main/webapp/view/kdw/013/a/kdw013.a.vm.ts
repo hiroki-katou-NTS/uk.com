@@ -283,6 +283,8 @@ module nts.uk.ui.at.kdw013.a {
                             _.forEach(_.get(ld, 'breakTime.breakTimeSheets', []), bt => {
                                 
                                 const businessHours = ko.unwrap(vm.businessHours);
+                                const start  = setTimeOfDate(moment(ld.ymd).toDate(), bt.start);
+                                const end = setTimeOfDate(moment(ld.ymd).toDate(), bt.end);
 
                                 const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
                                 const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
@@ -291,8 +293,8 @@ module nts.uk.ui.at.kdw013.a {
                                 if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
                                     events.push(
                                         {
-                                            start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
-                                            end: setTimeOfDate(moment(ld.ymd).toDate(), bt.end),
+                                            start,
+                                            end,
                                             title: vm.$i18n('KDW013_79'),
                                             backgroundColor: BREAKTIME_COLOR,
                                             textColor: '',
