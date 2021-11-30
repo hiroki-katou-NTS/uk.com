@@ -41,6 +41,12 @@ public class AppStampOutputDto {
 	
 //  職場名
 	private List<String> workplaceNames;
+	
+// 応援を利用する
+	private boolean useCheering;
+
+// 最大応援回数
+	private int maxOfCheer;
 
 	public static AppStampOutputDto fromDomain(AppStampOutput appStampOutput) {
 		return new AppStampOutputDto(
@@ -62,7 +68,9 @@ public class AppStampOutputDto {
 						: null,
 				appStampOutput.getUseTemporary().isPresent() ? appStampOutput.getUseTemporary().get() : null,
 				appStampOutput.getWorkLocationNames(),
-				appStampOutput.getWorkplaceNames());
+				appStampOutput.getWorkplaceNames(),
+				appStampOutput.isUseCheering(),
+				appStampOutput.getMaxOfCheer());
 	}
 	
 	
@@ -78,6 +86,8 @@ public class AppStampOutputDto {
 				appStampReflectOptional != null ? Optional.of(appStampReflectOptional.toDomain()) : Optional.empty(),
 				useTemporary != null ? Optional.of(useTemporary) : Optional.empty(),
 				workLocationNames,
-				workplaceNames);
+				workplaceNames,
+				useCheering,
+				maxOfCheer);
 	}
 }

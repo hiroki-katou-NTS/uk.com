@@ -49,4 +49,10 @@ public class AppStampOutput {
 	
 //  職場名
 	private List<String> workplaceNames;
+	
+// 応援を利用する
+	private boolean useCheering;
+
+// 最大応援回数
+	private int maxOfCheer;
 }

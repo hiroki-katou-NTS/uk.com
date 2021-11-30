@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  *
@@ -249,7 +247,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.empty(), 
 								new StampFrameNo(x.getShortWorkTimeFrameNo().v()), 
 								Optional.of(x.getEndTime()), 
-								Optional.of(x.getStartTime())))
+								Optional.of(x.getStartTime()),
+								null))
 						.collect(Collectors.toList()));
 			}
 			// 打刻実績．介護時間帯．時刻開始/時刻終了
@@ -262,7 +261,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.empty(), 
 								new StampFrameNo(x.getShortWorkTimeFrameNo().v()), 
 								Optional.of(x.getEndTime()), 
-								Optional.of(x.getStartTime())))
+								Optional.of(x.getStartTime()),
+								null))
 						.collect(Collectors.toList()));
 			}
 			// 打刻実績．勤務時間帯
@@ -272,14 +272,16 @@ public class CollectAchievementImpl implements CollectAchievement {
 					Optional.empty(),
 					new StampFrameNo(1),
 					recordWorkInfoImport.getEndTime1().flatMap(x -> x.getTimeWithDay()),
-					recordWorkInfoImport.getStartTime1().flatMap(x -> x.getTimeWithDay())
+					recordWorkInfoImport.getStartTime1().flatMap(x -> x.getTimeWithDay()),
+					null
 					);
 			TimePlaceOutput workTime2 = new TimePlaceOutput(
 					Optional.empty(),
 					Optional.empty(),
 					new StampFrameNo(2),
 					recordWorkInfoImport.getEndTime2().flatMap(x -> x.getTimeWithDay()),
-					recordWorkInfoImport.getStartTime2().flatMap(x -> x.getTimeWithDay())
+					recordWorkInfoImport.getStartTime2().flatMap(x -> x.getTimeWithDay()),
+					null
 					);		
 			List<TimePlaceOutput> workTimeList = new ArrayList<TimePlaceOutput>();
 			workTimeList.add(workTime1);
@@ -296,7 +298,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.empty(), 
 								new StampFrameNo(x.getWorkNo().v()), 
 								x.getLeaveStamp().flatMap(c -> c.getStamp()).flatMap(c -> c.getTimeDay().getTimeWithDay()), 
-								x.getAttendanceStamp().flatMap(c -> c.getStamp()).flatMap(c -> c.getTimeDay().getTimeWithDay())))
+								x.getAttendanceStamp().flatMap(c -> c.getStamp()).flatMap(c -> c.getTimeDay().getTimeWithDay()),
+								null))
 						.collect(Collectors.toList()));
 			}
 			// 打刻実績．外出時間帯
@@ -309,7 +312,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.of(x.getReasonForGoOut()), 
 								new StampFrameNo(x.getOutingFrameNo().v()), 
 								x.getComeBack().flatMap(c -> c.getTimeDay().getTimeWithDay()), 
-								x.getGoOut().flatMap(c -> c.getTimeDay().getTimeWithDay())))
+								x.getGoOut().flatMap(c -> c.getTimeDay().getTimeWithDay()),
+								null))
 						.collect(Collectors.toList()));
 			}
 			// 打刻実績．休憩時間帯
@@ -322,7 +326,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.empty(), 
 								new StampFrameNo(x.getBreakFrameNo().v()), 
 								Optional.of(x.getEndTime()), 
-								Optional.of(x.getStartTime())))
+								Optional.of(x.getStartTime()),
+								null))
 						.collect(Collectors.toList()));
 			}
 		}
