@@ -272,9 +272,6 @@ module nts.uk.ui.at.kdw013.a {
                     
                     const {lstIntegrationOfDaily} = data;
                     
-                    
-                        
-                    
                     _.forEach(lstIntegrationOfDaily, ld => {
                         
                         let frameNos = _.map(ld.ouenTimeSheet, ot => ot.workNo);
@@ -284,28 +281,37 @@ module nts.uk.ui.at.kdw013.a {
                         let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
                         if (ko.unwrap(vm.isShowBreakTime)) {
                             _.forEach(_.get(ld, 'breakTime.breakTimeSheets', []), bt => {
-                                events.push(
-                                    {
-                                        start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
-                                        end: setTimeOfDate(moment(ld.ymd).toDate(), bt.end),
-                                        title: vm.$i18n('KDW013_79'),
-                                        backgroundColor: BREAKTIME_COLOR,
-                                        textColor: '',
-                                        extendedProps: {
-                                            no: bt.no,
-                                            breakTime: bt.breakTime,
-                                            id: randomId(),
-                                            status: 'normal' as any,
-                                            isTimeBreak: true,
-                                            isChanged: false,
-                                            taskBlock: {
-                                                manHrContents,
-                                                taskDetails: []
-                                            }
-                                        } as any
-                                    }
+                                
+                                const businessHours = ko.unwrap(vm.businessHours);
 
-                                );
+                                const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                                const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                                const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+
+                                if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
+                                    events.push(
+                                        {
+                                            start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
+                                            end: setTimeOfDate(moment(ld.ymd).toDate(), bt.end),
+                                            title: vm.$i18n('KDW013_79'),
+                                            backgroundColor: BREAKTIME_COLOR,
+                                            textColor: '',
+                                            extendedProps: {
+                                                no: bt.no,
+                                                breakTime: bt.breakTime,
+                                                id: randomId(),
+                                                status: 'normal' as any,
+                                                isTimeBreak: true,
+                                                isChanged: false,
+                                                taskBlock: {
+                                                    manHrContents,
+                                                    taskDetails: []
+                                                }
+                                            } as any
+                                        }
+
+                                    );
+                                }
                             });
                         }
                         
