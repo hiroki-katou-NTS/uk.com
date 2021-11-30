@@ -625,6 +625,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					break;
 				}
 				WorkTimeCode workTimeCd = integrationDaily.getWorkInformation().getRecordInfo().getWorkTimeCode();
+				if (workTimeCd == null) isWorkTypeChk = false;
 				if(isWorkTypeChk && workTimeCd != null) {
 					switch (wTimeCom) {
 					case SELECTED:
@@ -654,7 +655,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						this.createExtractAlarmRenzoku(sid,
 								lstExtractInfoResult,
 								alarmCheckConditionCode,
-								new DatePeriod(exDate.addDays(-renzoku), exDate),
+								new DatePeriod(exDate.addDays(-renzoku), exDate.addDays(-1)),
 								result.getLstResultCondition(),
 								extCond.getNameWKRecord().v(),
 								alMes,
