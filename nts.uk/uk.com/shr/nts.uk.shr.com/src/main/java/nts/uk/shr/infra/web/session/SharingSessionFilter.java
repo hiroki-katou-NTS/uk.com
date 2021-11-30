@@ -35,23 +35,7 @@ public class SharingSessionFilter implements Filter {
 		boolean isLoggedIn = sessionLowLayer.isLoggedIn();
 		val httpRequest = (HttpServletRequest) request;
 
-		/*
-		 * Cookieでセッション情報がやってきて、
-		 * 1.かつ、ログインセッション情報が無い場合
-		 *   -> 主にcom.webからat.webへの初回の移動とかでありえる
-		 * 
-		 * 2.かつ、ログインセッション情報があり、それと一致しない場合
-		 *   -> 主にcom.webからat.webへの移動前に会社切り替えとかやった場合
-		 * 
-		 * 上記1,2いずれの場合も、Cookieの情報が正しいとみなして、サーバ側のセッションを書き換える。
-		 * ログインしているのにCookieがやってこないケースは無いと思われるが、もしあったとしてもサーバ上のセッション情報でそのまま動作すれば良い
-		 */
-		SessionContextCookie.getSessionContextFrom(httpRequest)
-				.ifPresent(sessionContext -> {
-					if (!isLoggedIn || !sessionContext.equals(SessionContextCookie.createStringSessionContext())) {
-						restoreSessionContext(sessionContext);
-					}
-				});
+		SessionContextCookie.restoreSessionIfNeeded(isLoggedIn, httpRequest);
 		
 		chain.doFilter(request, response);
 		
@@ -61,20 +45,7 @@ public class SharingSessionFilter implements Filter {
 		SessionContextCookie.updateCookie((HttpServletResponse) response);
 	}
 
-
 	@Override
 	public void destroy() {
-	}
-	
-	private static final String DELIMITER = "@";
-
-	
-	private static void restoreSessionContext(String sessionContextInCookie) {
-		val parts = sessionContextInCookie.replace('*', '=').split(DELIMITER);
-		if (parts.length != 2) {
-			return;
-		}
-		SingletonBeansSoftCache.get(LoginUserContextManager.class).restoreBase64(parts[0]);
-		CsrfToken.setToSession(parts[1]);
 	}
 }
