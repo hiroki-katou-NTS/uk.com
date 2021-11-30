@@ -118,7 +118,7 @@ public class GetEstimatedTimeZones {
 				WorkStyle wkStyle = this.basicScheduleService.checkWorkDay(workTypeCode);
 
 				// 出勤休日区分 <> １日休日系
-				if (!wkStyle.equals(WorkStyle.ONE_DAY_REST)) {
+				if (wkStyle != null && !wkStyle.equals(WorkStyle.ONE_DAY_REST)) {
 					// 4. 取得する(就業時間帯コード)
 					this.predTimeSetRepo.findByWorkTimeCode(AppContexts.user().companyId(), wtCd.v())
 							.ifPresent(predSet -> {
