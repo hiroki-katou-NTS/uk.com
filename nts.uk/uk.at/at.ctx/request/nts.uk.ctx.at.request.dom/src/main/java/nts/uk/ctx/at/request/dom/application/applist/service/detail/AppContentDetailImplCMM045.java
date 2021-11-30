@@ -600,8 +600,8 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		AppOverTimeData appOverTimeData = new AppOverTimeData(
 				appOverTime.getWorkHoursOp().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getStartTime().v()).orElse(null)).orElse(null), 
 				appOverTime.getOverTimeClf().value, 
-				appOverTime.getWorkHoursOp().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getEndTime().v()).orElse(null)).orElse(null), 
-				appOverTime.getAppID(),
+				appOverTime.getWorkHoursOp().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getEndTime().v()).orElse(null)).orElse(null),
+				application.getAppID(),
 				excessTimeNumber,
 				excessTime,
 				appOverTime.getApplicationTime().getFlexOverTime().map(x -> x.v()), 

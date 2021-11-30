@@ -913,7 +913,7 @@ public class AppContentServiceImpl implements AppContentService {
 					appReasonDisAtr,
 					appOverTimeData,
 					screenAtr,
-					result);
+					appReason.toString());
 		}else {
 			// 申請理由内容　＝　申請内容の申請理由
 			String appReasonContent = this.getAppReasonContent(
@@ -1501,10 +1501,10 @@ public class AppContentServiceImpl implements AppContentService {
 													  ScreenAtr screenAtr, String appReasonContent) {
 		String companyId = AppContexts.user().companyId();
 		//　・申請理由内容 => appReasonContent
-		String reasonContent = appReasonContent;
+		String reasonContent = "";
 		//変数的に利用
 		// $SV = empty;
-		String SV = Strings.EMPTY;
+		String SV = "";
 		// $複数残業 = empty
 		StringBuilder multipleOverTime = new StringBuilder(Strings.EMPTY);
 		ReasonForFixedForm reasonForFixedForm;
@@ -1538,21 +1538,19 @@ public class AppContentServiceImpl implements AppContentService {
 							SV = "\n";
 						}
 					}
-					if (screenAtr == ScreenAtr.CMM045) {
+					if (screenAtr == ScreenAtr.CMM045 && appReasonDisAtr == DisplayAtr.NOT_DISPLAY ) {
 						//申請理由表示区分 => 表示しないの場合
-						if(appReasonDisAtr == DisplayAtr.NOT_DISPLAY){
 							// 申請の理由 ＝ Empty
-							reasonContent = Strings.EMPTY;
-						}
+							reasonContent = "";
 					}else {
-						 reasonForFixedForm = this.getAppStandardReasonContent(
+						reasonForFixedForm = this.getAppStandardReasonContent(
 								ApplicationType.OVER_TIME_APPLICATION, appStandardReasonCode, Optional.empty());
 						//申請の理由 ＝ 上記取得定型理由＋複数回残表内容.残業理由.申請理由
 						//複数回残表内容.残業理由.申請理由
-						String appReason  = Strings.EMPTY;
-						if(overtimeReasonOptional.isPresent()){
+						String appReason = "";
+						if (overtimeReasonOptional.isPresent()) {
 							Optional<AppReason> applyReason = overtimeReasonOptional.get().getApplyReason();
-							if(applyReason.isPresent()){
+							if (applyReason.isPresent()) {
 								appReason = applyReason.get().v();
 							}
 						}
@@ -1563,17 +1561,18 @@ public class AppContentServiceImpl implements AppContentService {
 					if(timeSpanForCalc !=null){
 						TimeWithDayAttr start = timeSpanForCalc.getStart();
 						TimeWithDayAttr end = timeSpanForCalc.getEnd();
-						params.add(start.toString());
-						params.add(end.toString());
+
+						params.add(start.getFullText());
+						params.add(end.getFullText());
 						params.add(reasonContent);
 					}
 
 					multipleOverTime.append(SV).append(I18NText.getText("CMM045_307", params));
 				}
-				reasonContent += multipleOverTime + "　" + "\n" +"　"+ reasonContent;
+				return multipleOverTime  + "\n" + appReasonContent;
 
 			}
 		}
-			return reasonContent;
+			return appReasonContent;
 	}
 }
