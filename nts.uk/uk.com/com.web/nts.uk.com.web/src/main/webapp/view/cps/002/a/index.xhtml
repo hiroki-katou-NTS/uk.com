@@ -40,7 +40,7 @@
 			<div id="functions-area">
 				<a tabindex="1" class="goback" 
 					data-bind="ntsLinkButton: { jump: '/view/cps/018/a/index.xhtml' }, visible: $vm.isFromCPS018">#{i18n.getText('CAS001_100')}</a>
-				<span class="licenseCheck" data-bind="text:licenseCheck,css: classWarning, style: { visibility: licenseCheckDipslay() ? 'visible' : 'hidden' } "></span>
+				<span class="licenseCheck" data-bind="text:licenseCheck,css: classWarning, style: { visibility: licenseCheckDipslay() ? 'visible' : 'hidden', marginLeft: $vm.isFromCPS018() ? '518px' : '640px' } "></span>
 				<button data-bind="click:openGModal" id="init_setting_btn" tabindex="2">#{i18n.getText('CPS002_11')}</button>
 			</div>
 			<div id="contents-area" class="cf hidden" data-bind="let: {
