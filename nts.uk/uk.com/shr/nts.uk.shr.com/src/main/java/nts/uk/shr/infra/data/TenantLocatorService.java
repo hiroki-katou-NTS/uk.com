@@ -1,6 +1,7 @@
 package nts.uk.shr.infra.data;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.scoped.session.SessionContextProvider;
 import nts.tenantlocator.client.TenantLocatorClient;
 
@@ -13,7 +14,7 @@ public class TenantLocatorService {
 		val datasourceOpt = TenantLocatorClient.getDataSource(tenantCode);
 		if (!datasourceOpt.isPresent()) {
 			disconnect();
-			throw new RuntimeException("テナントのデータソースが見つかりません：" + tenantCode);
+			throw new BusinessException("Msg_314");
 		}
 
 		connectDataSource(datasourceOpt.get().getDatasourceName());
