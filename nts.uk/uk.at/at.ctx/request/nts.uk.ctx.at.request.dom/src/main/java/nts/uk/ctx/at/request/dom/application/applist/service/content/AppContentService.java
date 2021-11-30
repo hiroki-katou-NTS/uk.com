@@ -265,5 +265,5 @@ public interface AppContentService {
 	 * @return 申請理由内容
 	 */
 
-	public String getOvertimeApplicationDataMultiTime(DisplayAtr appReasonDisAtr,AppHolidayWorkData appHolidayWorkData,ScreenAtr screenAtr,String appReasonContent);
+	public String getOvertimeApplicationDataMultiTime(DisplayAtr appReasonDisAtr,AppOverTimeData appOverTimeData,ScreenAtr screenAtr,String appReasonContent);
 }

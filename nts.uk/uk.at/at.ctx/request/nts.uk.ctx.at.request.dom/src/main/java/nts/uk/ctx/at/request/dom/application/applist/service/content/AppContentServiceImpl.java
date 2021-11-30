@@ -911,7 +911,7 @@ public class AppContentServiceImpl implements AppContentService {
 		if(appType == ApplicationType.OVER_TIME_APPLICATION && appOverTimeData.getOvertimeAtr() == ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME.value ){
 			result = this.getOvertimeApplicationDataMultiTime(
 					appReasonDisAtr,
-					appHolidayWorkData,
+					appOverTimeData,
 					screenAtr,
 					result);
 		}else {
@@ -1497,7 +1497,7 @@ public class AppContentServiceImpl implements AppContentService {
 	}
 
 	@Override
-	public String getOvertimeApplicationDataMultiTime(DisplayAtr appReasonDisAtr, AppHolidayWorkData appHolidayWorkData,
+	public String getOvertimeApplicationDataMultiTime(DisplayAtr appReasonDisAtr, AppOverTimeData appOverTimeData,
 													  ScreenAtr screenAtr, String appReasonContent) {
 		String companyId = AppContexts.user().companyId();
 		//　・申請理由内容 => appReasonContent
@@ -1508,7 +1508,7 @@ public class AppContentServiceImpl implements AppContentService {
 		// $複数残業 = empty
 		StringBuilder multipleOverTime = new StringBuilder(Strings.EMPTY);
 		ReasonForFixedForm reasonForFixedForm;
-		Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId, appHolidayWorkData.getAppID());
+		Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId, appOverTimeData.getAppID());
 		if(apOptional.isPresent()){
 			Optional<OvertimeWorkMultipleTimes> multipleTimesOp = apOptional.get().getMultipleTimesOp();
 			if(multipleTimesOp.isPresent()){
@@ -1533,7 +1533,7 @@ public class AppContentServiceImpl implements AppContentService {
 					//CMM045の場合
 					if(i>=1){
 						if(screenAtr == ScreenAtr.CMM045 ||screenAtr == ScreenAtr.KAF018){
-							SV = I18NText.getText("CMM045_308") + " ";
+							SV = I18NText.getText("CMM045_308") + "　";
 						}else {
 							SV = "\n";
 						}
@@ -1570,7 +1570,7 @@ public class AppContentServiceImpl implements AppContentService {
 
 					multipleOverTime.append(SV).append(I18NText.getText("CMM045_307", params));
 				}
-				reasonContent += multipleOverTime + " " + "\n" +" "+ reasonContent;
+				reasonContent += multipleOverTime + "　" + "\n" +"　"+ reasonContent;
 
 			}
 		}
