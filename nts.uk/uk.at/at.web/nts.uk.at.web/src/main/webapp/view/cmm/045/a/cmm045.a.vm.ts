@@ -721,7 +721,7 @@ module cmm045.a.viewmodel {
                 checkbox?: { visible: Function, applyToProperty: string },
                 button?: { text: string, click: Function }
             }>
-        }) {
+        },useApprovalFunction: number) {
 
             let $container = $("#app-grid-container");
             $container.hide();
@@ -759,7 +759,7 @@ module cmm045.a.viewmodel {
                                     .attr("id", "batch-check")
                                     .attr("type", "checkbox")
                                     .addClass(column.key))
-                                .append($("<span/>").addClass("box"))
+                                .append($("<span/>").addClass(useApprovalFunction == 1 ? "box" : ""))
                                 .change((e) => {
                                     let checked = $(e.target).prop("checked");
                                     $appGrid.find("input[type=checkbox]." + column.key)
@@ -875,15 +875,28 @@ module cmm045.a.viewmodel {
                             extraClass = "";
                         }
                         if (column.checkbox.visible(item) === true) {
-                            $("<label/>")
-                                .addClass("ntsCheckBox")
-                                .append($("<input/>")
-                                    .attr("type", "checkbox")
-                                    .addClass(column.key))
-                                .append($("<span/>").addClass("box"))
-                                .appendTo($td)
-                                .parent("td")
-                                .addClass(extraClass);
+                        	if(self.useApprovalFunction() == 1){
+                                $("<label/>")
+                                    .addClass("ntsCheckBox")
+                                    .append($("<input/>")
+                                        .attr("type", "checkbox")
+                                        .addClass(column.key))
+                                    .append($("<span/>").addClass("box"))
+                                    .appendTo($td)
+                                    .parent("td")
+                                    .addClass(extraClass);
+							}else {
+                                $("<label/>")
+                                    .addClass("ntsCheckBox")
+                                    .append($("<input/>")
+                                        .attr("type", "checkbox")
+                                        .addClass(column.key))
+                                    .append($("<span/>").addClass(""))
+                                    .appendTo($td)
+                                    .parent("td")
+                                    .addClass(extraClass);
+							}
+
                         }
                     }
                     else if (column.button !== undefined) {
@@ -1199,30 +1212,32 @@ module cmm045.a.viewmodel {
                     }
             }).then(() => {
                 let columns = [
-                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: checkWidth, checkbox: {
-                        visible: item => item.checkAtr === true && self.useApprovalFunction()==1,
-                        applyToProperty: "check"
-                    } },
-                    { headerText: getText('CMM045_50'), key: 'details', width: detailsWidth, button: {
-                        text: getText('CMM045_50'),
-                        click: (e) => {
-                            let targetAppId = $(e.target).closest("td").data("app-id");
-                            let lstAppId = self.items().map(app => app.appID);
-                            // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
-                            character.save('AppListExtractCondition', self.appListExtractConditionDto).then(() => {
-								nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
-							});
-                        }
-                    } },
-                    { headerText: getText('CMM045_51'), key: 'applicantName', width: applicantNameWidth },
-                    { headerText: getText('CMM045_52'), key: 'appType', width: appTypeWidth},
-                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: prePostAtrWidth, hidden: isHidden},
-                    { headerText: getText('CMM045_54'), key: 'appDate', width: appDateWidth},
-                    { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
-                    { headerText: getText('CMM045_56'), key: 'inputDate', width: inputDateWidth},
-                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: reflectionStatusWidth, extraClassProperty: "appStatusName"},
-                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: opApprovalStatusInquiryWidth },
-                ]
+                        { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: checkWidth, checkbox: {
+                                visible: item => item.checkAtr === true,
+                                applyToProperty: "check"
+                            } },
+                        { headerText: getText('CMM045_50'), key: 'details', width: detailsWidth, button: {
+                                text: getText('CMM045_50'),
+                                click: (e) => {
+                                    let targetAppId = $(e.target).closest("td").data("app-id");
+                                    let lstAppId = self.items().map(app => app.appID);
+                                    // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+                                    character.save('AppListExtractCondition', self.appListExtractConditionDto).then(() => {
+                                        nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                                    });
+                                }
+                            } },
+                        { headerText: getText('CMM045_51'), key: 'applicantName', width: applicantNameWidth },
+                        { headerText: getText('CMM045_52'), key: 'appType', width: appTypeWidth},
+                        { headerText: getText('CMM045_53'), key: 'prePostAtr', width: prePostAtrWidth, hidden: isHidden},
+                        { headerText: getText('CMM045_54'), key: 'appDate', width: appDateWidth},
+                        { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
+                        { headerText: getText('CMM045_56'), key: 'inputDate', width: inputDateWidth},
+                        { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: reflectionStatusWidth, extraClassProperty: "appStatusName"},
+                        { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: opApprovalStatusInquiryWidth },
+                    ]
+
+
                 let heightAuto = window.innerHeight - 364 > 60 ? window.innerHeight - 364 : 60;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
@@ -1230,7 +1245,7 @@ module cmm045.a.viewmodel {
                     width: widthAuto,
                     height: heightAuto,
                     columns: columns.filter(c => c.hidden !== true)
-                });
+                },self.useApprovalFunction());
 
                 $("#app-resize").css("width", widthAuto);
             });
