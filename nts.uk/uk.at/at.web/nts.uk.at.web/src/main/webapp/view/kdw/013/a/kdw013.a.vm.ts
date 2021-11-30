@@ -269,18 +269,21 @@ module nts.uk.ui.at.kdw013.a {
                 const { tasks } = settings;
                 if (data) {
                     let events = [];
-                    _.forEach(_.get(data, 'lstIntegrationOfDaily'), ld => {
+                    
+                    const {lstIntegrationOfDaily} = data;
+                    
+                    
                         
+                    
+                    _.forEach(lstIntegrationOfDaily, ld => {
                         
-                        let frameNos =[];
+                        let frameNos = _.map(ld.ouenTimeSheet, ot => ot.workNo);
                         
                         let hrTask = _.find(_.get(data, 'dailyManHrTasks', []), dt => moment(dt.date).isSame(moment(ld.ymd),'days'));
-                        
                         
                         let {manHrContents} = _.find(_.get(data, 'convertRes'), cr => moment(cr.ymd).isSame(moment(ld.ymd), 'days'));
                         if (ko.unwrap(vm.isShowBreakTime)) {
                             _.forEach(_.get(ld, 'breakTime.breakTimeSheets', []), bt => {
-                                frameNos.push(bt.no);
                                 events.push(
                                     {
                                         start: setTimeOfDate(moment(ld.ymd).toDate(), bt.start),
@@ -305,13 +308,14 @@ module nts.uk.ui.at.kdw013.a {
                                 );
                             });
                         }
+                        
                         _.forEach(_.get(hrTask, 'taskBlocks', []), tb => {
                             const {taskDetails, caltimeSpan} = tb;
                             const ts = _.find(_.get(ld, 'ouenTimeSheet', []), ot => ot.workNo == _.get(taskDetails[0], 'supNo', null));
                             const {start, end} = caltimeSpan;
                             const work = _.get(ts, 'workContent.work');
                            
-                            frameNos.push(vm.getFrameNo(events));
+                            
                             events.push({
                                 taskFrameUsageSetting: ko.unwrap((vm.$settings)),
                                 period: { start, end },
@@ -323,7 +327,6 @@ module nts.uk.ui.at.kdw013.a {
                                 backgroundColor: work ? getBackground(work, tasks) : '',
                                 textColor: '',
                                 extendedProps: {
-                                    frameNo: vm.getFrameNo(events),
                                     frameNos,
                                     id: randomId(),
                                     isTimeBreak: false,
@@ -681,19 +684,6 @@ module nts.uk.ui.at.kdw013.a {
             });
         }
 
-            getFrameNo(events){
-                let maxNo = 20;
-                let resultNo = 1;
-                for (let i = 1; i < maxNo; i++) {
-                    let event = _.find(events, e => _.get(e, 'extendedProps.frameNo') == i);
-                    if (!event) {
-                        resultNo = i;
-                        break;
-                    }
-                }
-                return resultNo;
-            }
-
         getTaskValues(){
             const vm = this;
                  let items = [];
@@ -858,7 +848,7 @@ module nts.uk.ui.at.kdw013.a {
 
             let changedDates = vm.getChangedDates(dateRanges());
     
-            let workDetails = vm.createWorkDetails(dateRanges());
+            let workDetails = vm.createWorkDetails(changedDates);
     
             let manHrlst = vm.getManHrlst(dateRanges());
 
@@ -894,29 +884,34 @@ module nts.uk.ui.at.kdw013.a {
 						let messageId = '';
 						let messageParams = [];
 						
-						if (alarmMsg_2081.length > 0) {
+						if (alarmMsg_2081 && alarmMsg_2081.length > 0) {
 							messageId = 'Msg_2081';
 							messageParams = alarmMsg_2081[0].parameters;
+							return nts.uk.ui.dialog.caution({ messageId: messageId, messageParams: messageParams })
+								.then(() => {
+		                            vm.dataChanged(false);
+		                            //trigger reload data
+		                            vm.dateRange.valueHasMutated();
+		                        })
+		                        .then(() => lstOvertimeLeaveTime);
 						} else {
-							messageId = 'Msg_15';
-							messageParams = []
-						}
-						
-						return vm.$dialog.info({ messageId: messageId, messageParams: messageParams })
+							return vm.$dialog.info({ messageId: 'Msg_15'})
 							.then(() => {
                                 vm.dataChanged(false);
                                 //trigger reload data
                                 vm.dateRange.valueHasMutated();
                             })
                             .then(() => lstOvertimeLeaveTime);
+						}
 					}
                 })
                 .fail((response: ErrorMessage) => {
                     const { messageId, parameterIds } = response;
-
-                    return vm.$dialog
+					if(messageId){
+						return vm.$dialog
                         .error({ messageId, messageParams: parameterIds })
-                        .then(() => null);
+                        .then(() => null);	
+					}
                 })
                 .then((data: OvertimeLeaveTime[] | null) => {
                     if (data && data.length) {
@@ -1001,7 +996,7 @@ module nts.uk.ui.at.kdw013.a {
                 
                 const eventHas2Task = _
                     .chain(vm.events())
-                    .filter(({ start }) => moment(start).isSame(date, 'day'))
+                    .filter(({ start }) => moment(start).isSame(moment(date), 'days'))
                     .filter(({ extendedProps }) => _.get(extendedProps, 'taskBlock.taskDetails', []).length > 1).value();
                     
                 _.forEach(eventHas2Task, ({ start, end, extendedProps }) => {
