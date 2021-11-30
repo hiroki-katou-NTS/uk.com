@@ -7,7 +7,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
 
                 <!-- ko foreach: { data: $component.params.data, as: 'day' } -->
                 <td class="fc-event-note fc-day" style='text-align: center;' data-bind="css: { 'no-data': !day.events.length }, attr: { 'data-date': day.date }">
-                    <div style="display: flex;"> 
+                    <div style="display: flex;height:calc(100% - 19px);"> 
                         <div style='text-align: left;' data-bind="foreach: { data: day.events, as: 'note' }">
                             <div class="text-note" data-bind="text: note.title"></div>
                         </div>
@@ -16,7 +16,7 @@ module nts.uk.ui.at.kdw013.eventheadear {
                         </div>
                     </div>
                     <!-- ko if: $component.showHIcon(day.date) -->
-                    <div style="min-height: 20px;">     
+                    <div style="min-height: 20px; height:20px;">     
                         <i class='openHIcon' data-bind="ntsIcon: { no: 232, width: 20, height: 20 },click: function(day) { $component.openHDialog(day) } " > </i>
                     </div>
                     <!-- /ko -->
@@ -26,6 +26,10 @@ module nts.uk.ui.at.kdw013.eventheadear {
                     .openHIcon{
                         cursor: pointer;
                         }
+                    .fc-day,.text-note{
+                        font-size: 12px;
+                        line-height: 17px;
+                    }
                 </style>
                 `
     })

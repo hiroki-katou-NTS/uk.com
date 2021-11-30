@@ -102,9 +102,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     user-select: none; /* Non-prefixed version, currently
                                         supported by Chrome, Edge, Opera and Firefox */
         }
+        .fc .fc-col-header-cell-cushion{
+            padding: 0px;
+            line-height: 20px;
+            font-size: 12px;
+        }
         .fc-container .fc-sidebar {
             float: left;
-            width: 210px;
+            width: 255px;
             min-width: 210px;
             max-width: calc(100vw - 755px);
             overflow: hidden;
@@ -113,7 +118,7 @@ module nts.uk.ui.at.kdw013.calendar {
             border-right: 1px solid #ccc;
             position: relative;
             padding-right: 1px;
-            min-height: calc(100vh - 162px);
+            min-height: calc(100vh - 148px);
         }
         .fc-container .fc-sidebar>div {
             padding: 0 10px;
@@ -197,7 +202,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-toolbar.fc-header-toolbar {
             min-height: 33px;
-            margin-bottom: 10px;
+            margin-bottom: 2px;
         }
         .fc-container .fc-timegrid thead>tr>td td:first-child {
             font-size: 11px;
@@ -251,6 +256,9 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-header-toolbar .fc-settings-button {
             width: 34px;
         }
+        .fc-settings-button {
+            margin-top: 2px;
+        }
         .fc-container .fc-timegrid-slot-label-bold {
             font-weight: bold;
         }
@@ -290,7 +298,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-event-note>div {
             padding: 2px;
-            min-height: 112px;
+            min-height: 50px;
             overflow: hidden;
         } 
         .fc-container .fc-event-note>div>div{
@@ -398,6 +406,20 @@ module nts.uk.ui.at.kdw013.calendar {
         .otTime {
             background-color: #FFFF99;
         }
+        .fc-view-harness{
+            background-color: white;
+        }
+        .fc-current-day-button,
+        .fc-preview-day-button,
+        .fc-next-day-button,
+        .fc-one-day-button,
+        .fc-full-week-button,
+        .fc-settings-button{
+            height: 25px;
+            font-size: 12px;
+            padding: 0 4px;
+        }
+        
 `;
 
     @handler({
@@ -883,7 +905,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     this.popupPosition.event(null);
                     this.popupPosition.setting(null);
                 });
-    
+            
         }
 
         computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcess | null){
@@ -1561,6 +1583,23 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const customButtons: ButtonSet = {
                 'current-day': {
+                    text: vm.$i18n('今日'),
+                    click: () => {
+                        clearSelection();
+                        
+                        if (moment(initialDate()).isSame(moment(new Date()), 'day')) {
+                            return;
+                        }
+                        if (ko.isObservable(initialDate)) {
+                            initialDate(new Date());
+                        } else {
+                            vm.calendar.gotoDate(formatDate(new Date()));
+                        }
+                        const sc = ko.unwrap(scrollTime);
+                        vm.calendar.scrollToTime(formatTime(sc));
+                    }
+                },
+                'pika-day': {
                     text: vm.$i18n('今日'),
                     click: () => {
                         clearSelection();
@@ -2331,7 +2370,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .then(() => {
                                     $(vm.$el)
                                         .find('.fc-sidebar')
-                                        .css({ 'width': '255px', 'height': 'calc(100vh - 162px)', 'overflow-y': 'auto' });
+                                        .css({ 'width': '255px', 'height': 'calc(100vh - 148px)', 'overflow-y': 'auto' });
 
                                     vm.calendar.updateSize();
                                 });
@@ -3436,9 +3475,6 @@ module nts.uk.ui.at.kdw013.calendar {
             vm.$nextTick(() => {
                 vm.calendar.updateSize();
             });
-
-            // test item
-            //_.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
         }
         
 
