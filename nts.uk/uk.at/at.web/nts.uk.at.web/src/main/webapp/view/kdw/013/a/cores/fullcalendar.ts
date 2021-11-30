@@ -1344,26 +1344,35 @@ module nts.uk.ui.at.kdw013.calendar {
                                 
                                 let { manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(etz.ymd), 'days'));
                                 const {no, breakTime} = bts;
-                                events.push({
-                                    id: randomId(),
-                                    title: vm.$i18n('KDW013_79'),
-                                    start,
-                                    end,
-                                    textColor: '',
-                                    backgroundColor: BREAKTIME_COLOR,
-                                    extendedProps: {
-                                        no,
-                                        breakTime,
+                                const businessHours = ko.unwrap(vm.params.businessHours);
+
+                                const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                                const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                                const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                                
+                                if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
+                                    events.push({
                                         id: randomId(),
-                                        status: 'normal',
-                                        isTimeBreak: true,
-                                        isChanged: true,
-                                        taskBlock: {
-                                            manHrContents,
-                                            taskDetails: []
-                                        }
-                                    } as any
-                                });
+                                        title: vm.$i18n('KDW013_79'),
+                                        start,
+                                        end,
+                                        textColor: '',
+                                        backgroundColor: BREAKTIME_COLOR,
+                                        extendedProps: {
+                                            no,
+                                            breakTime,
+                                            id: randomId(),
+                                            status: 'normal',
+                                            isTimeBreak: true,
+                                            isChanged: true,
+                                            taskBlock: {
+                                                manHrContents,
+                                                taskDetails: []
+                                            }
+                                        } as any
+                                    });
+                                }
+                               
                             });
                         
                     });
