@@ -1533,7 +1533,7 @@ public class AppContentServiceImpl implements AppContentService {
 					//CMM045の場合
 					if(i>=1){
 						if(screenAtr == ScreenAtr.CMM045 ||screenAtr == ScreenAtr.KAF018){
-							SV = I18NText.getText("CMM045_308") + " ";
+							SV = I18NText.getText("CMM045_308") + "　";
 						}else {
 							SV = "\n";
 						}
@@ -1570,7 +1570,7 @@ public class AppContentServiceImpl implements AppContentService {
 
 					multipleOverTime.append(SV).append(I18NText.getText("CMM045_307", params));
 				}
-				reasonContent += multipleOverTime + " " + "\n" +" "+ reasonContent;
+				reasonContent += multipleOverTime + "　" + "\n" +"　"+ reasonContent;
 
 			}
 		}
