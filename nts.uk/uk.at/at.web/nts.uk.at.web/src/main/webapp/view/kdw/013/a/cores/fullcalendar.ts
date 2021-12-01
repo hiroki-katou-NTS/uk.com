@@ -952,30 +952,34 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.taskDragItems(draggers);
-                            $('#task-fav').sortable({
-                                axis: "y",
-                                update: function( event, ui ) {
+                            if (!$('#task-fav').hasClass("ui-sortable")) {
+                                $('#task-fav').sortable({
+                                    axis: "y",
+                                    update: (event, ui) =>{
+                                        $("#task-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
                                         for (let i = 1; i <= rows.length; i++) {
                                             let element = rows[i - 1];
                                             sortedList.push({ favId: $(element).attr("data-favId"), order: i });
                                         }
-                                    
-                                        let item = _.find(sortedList, [ 'favId', $(ui.item).attr('data-favId')]);
+
+                                        let item = _.find(sortedList, ['favId', $(ui.item).attr('data-favId')]);
 
                                         let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
                                         vm.taskDragItems([]);
                                         vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_task_dis_order', command))
-                                                .done(() => {
-                                                    
-                                                    vm.params.screenA.reloadTaskFav();
-                                                }).always(() => vm.$blockui('clear'));
-                                },
-                                out: function(event, ui) {
-                                    $("#task-fav").sortable("cancel");
-                                }
-                            });
+                                            .done(() => {
+
+                                                vm.params.screenA.reloadTaskFav();
+                                            }).always(() => vm.$blockui('clear'));
+                                    },
+                                    out: (event, ui) => {
+                                        $("#task-fav").sortable("cancel");
+                                    }
+                                });
+                            }
+                            
                             return;
                         }
                     }
@@ -1029,9 +1033,13 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.onedayDragItems(draggers);
+                            if ($('#one-day-fav').hasClass("ui-sortable")) {
+                                $('#one-day-fav').sortable("destroy");
+                            }
                             $('#one-day-fav').sortable({
                                 axis: "y",
                                 update: function( event, ui ) {
+                                        $("#one-day-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
                                         for (let i = 1; i <= rows.length; i++) {
@@ -2462,7 +2470,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.$view('view');
                         }
                         if (!event.extendedProps.isTimeBreak) {
-                            let frameNos = _.get(_.maxBy(_.filter(events, (e) => moment(e.start).isSame(moment(event.start), 'days')), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
+                            let frameNos = _.get(_.maxBy(_.filter(events, (e) => (moment(e.start).isSame(moment(event.start), 'days') && !e.extendedProps.isTimeBreak)), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
                             event.setExtendedProp('frameNos',frameNos);
                             popupData.event(event);
                         }
