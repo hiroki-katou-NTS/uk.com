@@ -117,8 +117,8 @@ module nts.uk.at.view.kdl045.a {
             //privatetime A8_6_7
             $(".popup-privatetimea867").ntsPopup({
                 position: {
-                    my: "left top",
-                    at: "left bottom",
+                    my: "right top",
+                    at: "right bottom",
                     of: ".show-popup-privatetimea867"
                 },
                 showOnStart: false,
@@ -132,8 +132,8 @@ module nts.uk.at.view.kdl045.a {
             //uniontime A8_6_7
             $(".popup-uniontimea867").ntsPopup({
                 position: {
-                    my: "left top",
-                    at: "left bottom",
+                    my: "right top",
+                    at: "right bottom",
                     of: ".show-popup-uniontimea867"
                 },
                 showOnStart: false,
