@@ -1186,7 +1186,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL, KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL_PREAPP, KSCDT_SCH_TIME.INTERVAL_ATD_CLOCK, KSCDT_SCH_TIME.INTERVAL_TIME,"
 				+ " KSCDT_SCH_TIME.BRK_TOTAL_TIME, KSCDT_SCH_TIME.HDPAID_TIME, KSCDT_SCH_TIME.HDPAID_HOURLY_TIME, KSCDT_SCH_TIME.HDCOM_TIME, KSCDT_SCH_TIME.HDCOM_HOURLY_TIME,"
 				+ " KSCDT_SCH_TIME.HD60H_TIME, KSCDT_SCH_TIME.HD60H_HOURLY_TIME, KSCDT_SCH_TIME.HDSP_TIME, KSCDT_SCH_TIME.HDSP_HOURLY_TIME, KSCDT_SCH_TIME.HDSTK_TIME,"
-				+ " KSCDT_SCH_TIME.HD_HOURLY_TIME, KSCDT_SCH_TIME.HD_HOURLY_SHORTAGE_TIME, KSCDT_SCH_TIME.ABSENCE_TIME, KSCDT_SCH_TIME.VACATION_ADD_TIME, KSCDT_SCH_TIME.STAGGERED_WH_TIME"
+				+ " KSCDT_SCH_TIME.HD_HOURLY_TIME, KSCDT_SCH_TIME.HD_HOURLY_SHORTAGE_TIME, KSCDT_SCH_TIME.ABSENCE_TIME, KSCDT_SCH_TIME.VACATION_ADD_TIME, KSCDT_SCH_TIME.STAGGERED_WH_TIME,"
+				+ " KSCDT_SCH_TIME.PRS_WORK_TIME_AMOUNT, KSCDT_SCH_TIME.PREMIUM_WORK_TIME_TOTAL , KSCDT_SCH_TIME.PREMIUM_AMOUNT_TOTAL, KSCDT_SCH_TIME.USE_DAILY_HD_SUB "
 				+ " FROM KSCDT_SCH_TIME" 
 				+ " WHERE KSCDT_SCH_TIME.SID IN " + listEmp + " AND KSCDT_SCH_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
@@ -1230,15 +1231,21 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer absenceTime = rs.getInt("ABSENCE_TIME");
 				Integer vacationAddTime = rs.getInt("VACATION_ADD_TIME");
 				Integer staggeredWhTime = rs.getInt("STAGGERED_WH_TIME");
+				Integer prsWorkTimeAmount = rs.getInt("PRS_WORK_TIME_AMOUNT");
+				Integer premiumWorkTimeTotal = rs.getInt("PREMIUM_WORK_TIME_TOTAL");
+				Integer premiumAmountTotal = rs.getInt("PREMIUM_AMOUNT_TOTAL");
+				Integer useDailyHDSub = rs.getInt("USE_DAILY_HD_SUB");
+				
 				return new KscdtSchTime(new KscdtSchTimePK(sid, ymd), cid, count, totalTime, totalTimeAct, prsWorkTime,
 						prsWorkTimeAct, prsPrimeTime, prsMidniteTime, extBindTimeOtw, extBindTimeHw,
 						extVarwkOtwTimeLegal, extFlexTime, extFlexTimePreApp, extMidNiteOtwTime, extMidNiteHdwTimeLghd,
 						extMidNiteHdwTimeIlghd, extMidNiteHdwTimePubhd, extMidNiteTotal, extMidNiteTotalPreApp,
 						intervalAtdClock, intervalTime, brkTotalTime, hdPaidTime, hdPaidHourlyTime, hdComTime,
 						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
-						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime, new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
-						new ArrayList<>(), new ArrayList<>());
+						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime,
+						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
+						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(),
+						prsWorkTimeAmount, premiumWorkTimeTotal, premiumAmountTotal, useDailyHDSub);
 			});
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -1361,7 +1368,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		List<KscdtSchPremium> listKscdtSchPremium = new ArrayList<>();
 
 		String QUERY = "SELECT KSCDT_SCH_PREMIUM.SID, KSCDT_SCH_PREMIUM.YMD, KSCDT_SCH_PREMIUM.CID,  "
-				+ " KSCDT_SCH_PREMIUM.FRAME_NO, KSCDT_SCH_PREMIUM.PREMIUM_TIME" 
+				+ " KSCDT_SCH_PREMIUM.FRAME_NO, KSCDT_SCH_PREMIUM.PREMIUM_TIME, KSCDT_SCH_PREMIUM.PREMIUM_TIME_AMOUNT , KSCDT_SCH_PREMIUM.PREMIUM_TIME_UNIT_COST" 
 				+ " FROM KSCDT_SCH_PREMIUM"
 				+ " WHERE KSCDT_SCH_PREMIUM.SID IN " + listEmp + " AND KSCDT_SCH_PREMIUM.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
 
@@ -1372,8 +1379,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				String cid = rs.getString("CID");
 				Integer frameNo = rs.getInt("FRAME_NO");
 				Integer premiumTime = rs.getInt("PREMIUM_TIME");
+				Integer premiumTimeAmount = rs.getInt("PREMIUM_TIME_AMOUNT");
+				Integer premiumTimeUnitCost = rs.getInt("PREMIUM_TIME_UNIT_COST");
 
-				return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, frameNo), cid, premiumTime);
+				return new KscdtSchPremium(new KscdtSchPremiumPK(sid, ymd, frameNo), cid, premiumTime, premiumTimeAmount, premiumTimeUnitCost);
 			});
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
