@@ -266,7 +266,7 @@ module nts.uk.ui.at.kdw013.a {
                 if (cache.pair === -1) {
                     return;
                 }
-                const { tasks } = settings;
+                const { tasks, taskFrameUsageSetting } = settings;
                 if (data) {
                     let events = [];
                     
@@ -331,7 +331,7 @@ module nts.uk.ui.at.kdw013.a {
                                 employeeId: vm.employee() || vm.$user.employeeId,
                                 start: setTimeOfDate(moment(ld.ymd).toDate(), start),
                                 end: setTimeOfDate(moment(ld.ymd).toDate(), end),
-                                title: work ? getTitles(taskDetails, tasks) : '',
+                                title: work ? getTitles(taskDetails, tasks, taskFrameUsageSetting) : '',
                                 backgroundColor: work ? getBackground(work, tasks) : '',
                                 textColor: '',
                                 extendedProps: {

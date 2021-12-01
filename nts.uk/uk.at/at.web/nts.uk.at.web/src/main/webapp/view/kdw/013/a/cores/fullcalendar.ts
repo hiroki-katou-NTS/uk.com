@@ -3041,7 +3041,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
                         let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
                             events.push({
-                                title: getTitles(taskDetails, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start,
                                 end,
                                 textColor,
@@ -3108,7 +3108,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 td.taskItemValues.push({ itemId: 3, value: task.endTime - task.startTime });
                             });
                             events.push({
-                                title: getTitles(taskDetails, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start : timeStart,
                                 end : timeEnd,
                                 textColor,
