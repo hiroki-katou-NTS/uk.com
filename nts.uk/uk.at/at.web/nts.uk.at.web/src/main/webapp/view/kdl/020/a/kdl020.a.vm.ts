@@ -254,7 +254,8 @@ module nts.uk.at.view.kdl020.a.viewmodel {
 					self.checkEnable(false);
 				}
 				if (!self.checkSub()) {
-					_.forEach(data.employeeImports, (a: any, ind) => {
+					let dataEmp = _.sortBy(data.employeeImports, ['employeeCode']); // fix tạm để tránh miss sort
+					_.forEach(dataEmp, (a: any, ind) => {
 						self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName, workplaceName: 'HN' })
 					});
 				}
