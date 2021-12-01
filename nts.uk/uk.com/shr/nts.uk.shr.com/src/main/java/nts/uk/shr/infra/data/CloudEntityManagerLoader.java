@@ -88,8 +88,8 @@ public class CloudEntityManagerLoader implements EntityManagerLoader{
 					+ "テナント: " + tenantCode + System.lineSeparator()
 					+ "TenantLocatorに返されたデータソース名: " + datasource + System.lineSeparator()
 					+ "Loaderに実装された全データソース名: " + entityManagersMap.keySet().stream().collect(Collectors.joining(", "));
-
-			throw new RuntimeException(message);
+			
+			throw FatalLog.writeThenException(CloudEntityManagerLoader.class, message);
 		}
 
 		return em;
