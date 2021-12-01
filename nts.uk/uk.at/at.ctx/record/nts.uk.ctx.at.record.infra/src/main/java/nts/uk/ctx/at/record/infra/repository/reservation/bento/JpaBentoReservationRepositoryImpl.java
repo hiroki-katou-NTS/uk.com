@@ -368,6 +368,8 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}
+		
+		this.getEntityManager().flush();
 	}
 
 	@Override

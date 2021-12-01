@@ -13,6 +13,8 @@ module nts.uk.at.kmr003.b {
         empIds: any[] = [];
         gridOptions: any = { dataSource: [], columns: [], features: [], ntsControls: [] };
         deleteAll: KnockoutObservable<boolean> = ko.observable(false);
+        bentoReservationWithEmp: any[] = [];
+        listEmpInfo: any[] = [];
     
         created(param: any) {
             const vm = this;
@@ -22,6 +24,7 @@ module nts.uk.at.kmr003.b {
                 vm.receptionHours1(param.receptionHours1);
                 vm.receptionHours2(param.receptionHours2);
                 vm.orderMngAtr(param.orderMngAtr);
+                vm.date(param.correctionDate);
                 vm.empIds = param.empIds;
             }
 
@@ -55,6 +58,30 @@ module nts.uk.at.kmr003.b {
                 vm.selectedReception(param.selectedReception);
             }
 
+            vm.startReservation();
+
+            vm.date.subscribe(() => {
+                vm.startReservation();
+            });
+
+            vm.selectedReception.subscribe(() => {
+                vm.startReservation();
+            });
+
+            vm.selectedCondition.subscribe(() => {
+                vm.startReservation();
+            });
+
+        }
+        
+        mounted() {
+            const vm = this;
+            
+        }
+        
+        startReservation() {
+            const vm = this;
+            
             let paramStart = {
                 reservationDate: moment().format('YYYY/MM/DD'), 
                 correctionDate: moment(vm.date()).format('YYYY/MM/DD'), 
@@ -62,11 +89,10 @@ module nts.uk.at.kmr003.b {
                 extractCondition: vm.selectedCondition(), 
                 employeeIds: vm.empIds
             }
-
+    
             vm.$blockui('show');
             vm.$ajax(API.startCorrect, paramStart).done((res) => {
                 if (res) {
-                    console.log(res);
                     vm.convertToGridData(res);
                     vm.bindGrid();
                 }
@@ -76,24 +102,20 @@ module nts.uk.at.kmr003.b {
                 }
             }).always(() => vm.$blockui('hide'));
         }
-        
-        mounted() {
-            const vm = this;
-            
-        }
 
         convertToGridData(param: any) {
             const vm = this;
 
-            let orderheader = "<div>" + vm.$i18n('KMR003_49') +"</div><div data-bind='ntsCheckBox: { checked: deleteAll }'>" + "</div>";
+            vm.gridOptions = { dataSource: [], columns: [], features: [], ntsControls: [] };
+            let orderheader = "<div>" + vm.$i18n('KMR003_49') +"</div><div data-bind='ntsCheckBox: { checked: true }'>" + "</div>";
 
             // bind columns
             vm.gridOptions.columns = [
                 { headerText: '' , itemId: 'deleteFlg', key: 'deleteFlg', dataType: 'boolean', width: '50px', checkbox: true, ntsControl: 'deleteFlg' }, 
                 { headerText: '' , itemId: 'employeeId', key: 'employeeId', dataType: 'string', width: '150px', hidden: true }, 
                 { headerText: vm.$i18n('KMR003_46') , itemId: 'employeeCode', key: 'employeeCode', dataType: 'string', width: '150px' }, 
-                { headerText: vm.$i18n('KMR003_47') , itemId: 'employeeName', key: 'employeeName', dataType: 'string', width: '300px' }, 
-                { headerText: vm.$i18n('KMR003_48') , itemId: 'time', key: 'time', dataType: 'string', width: '300px' }, 
+                { headerText: vm.$i18n('KMR003_47') , itemId: 'employeeName', key: 'employeeName', dataType: 'string', width: '200px' }, 
+                { headerText: vm.$i18n('KMR003_48') , itemId: 'time', key: 'time', dataType: 'string', width: '200px' }, 
                 { headerText: orderheader , itemId: 'ordered', key: 'ordered', dataType: 'boolean', width: '70px', ntsControl: 'ordered' }
             ];
         
@@ -108,13 +130,10 @@ module nts.uk.at.kmr003.b {
 
             for (let i = 0; i < param.bento.length; i++) {
                 let columnHeader = "<div>" + param.bento[i].name + "</div><div>" + '(' + param.bento[i].unit + ')' + "</div>";
-                vm.gridOptions.columns.push({ headerText: columnHeader , itemId: 'bento' + i, key: 'bento' + i, dataType: 'string', width: '70px' })
-                headerStyle.columns.push({ key: 'bento' + i, colors: ['align-center', 'header_backgroundcolor'] });
-                cellStates.push({ rowId: 'bento' + i, columnKey: 'employeeCode', state: [nts.uk.ui.mgrid.color.Lock] });
-                cellStates.push({ rowId: 'bento' + i, columnKey: 'employeeName', state: [nts.uk.ui.mgrid.color.Lock] });
-                cellStates.push({ rowId: 'bento' + i, columnKey: 'time', state: [nts.uk.ui.mgrid.color.Lock] });
+                vm.gridOptions.columns.push({ headerText: columnHeader , itemId: 'bento' + param.bento[i].frameNo, key: 'bento' + param.bento[i].frameNo, dataType: 'string', width: '70px' })
+                headerStyle.columns.push({ key: 'bento' + param.bento[i].frameNo, colors: ['align-center', 'header_backgroundcolor'] });
             }
-
+            
             // bind features
             let columnFixing = { name: 'ColumnFixing', columnSettings: [
                 { columnKey: 'deleteFlg', isFixed: true }, 
@@ -123,10 +142,7 @@ module nts.uk.at.kmr003.b {
                 { columnKey: 'time', isFixed: true }, 
                 { columnKey: 'ordered', isFixed: true }
             ]};
-            vm.gridOptions.features.push(columnFixing);
-            vm.gridOptions.features.push(headerStyle);
-            vm.gridOptions.features.push({ name: 'CellStyles', states: cellStates });
-
+            
             // bind ntsControls
             let ntsControls = [
                 { name: 'deleteFlg', options: {value: false}, optionsValue: 'value', controlType: 'CheckBox' },
@@ -134,32 +150,46 @@ module nts.uk.at.kmr003.b {
                 { name: 'notEditable', editable: false }
             ]
             vm.gridOptions.ntsControls = ntsControls;
-
+            
             // bind dataSource
+            vm.bentoReservationWithEmp = param.bentoReservation;
+            vm.listEmpInfo = param.listEmpInfo;
             for (let empId in param.bentoReservation) {
                 let emp = _.filter(param.listEmpInfo, (e: any) => e.employeeId === empId)[0];
-
+                
                 // item B42_2
                 let empCode = emp.employeeCode;
                 // item B42_3
                 let empBusinessName = emp.businessName;
-
+                
                 let bentoReservation = param.bentoReservation[empId].bentoReservation;
                 let details = bentoReservation.listBentoReservationDetail;
                 let dateMax = moment.max(_.map(details, (detail: any) => moment(detail.dateTime))).format("YYYY/MM/DD HH:mm");
                 let ordered = bentoReservation.ordered;
-
-                let item = { 
+                
+                let item: any = { 
                     employeeId: empId, 
                     deleteFlg: false, 
                     employeeCode: empCode, 
                     employeeName: empBusinessName, 
                     time: dateMax, 
                     ordered: ordered
-                 }
-
-                 vm.gridOptions.dataSource.push(item);
+                }
+                details.forEach((detail: any) => {
+                    item['bento' + detail.frameNo] = detail.bentoCount
+                })
+                vm.gridOptions.dataSource.push(item);
+                
+                cellStates.push({ rowId: empId, columnKey: 'employeeCode', state: ['mgrid-disable'] });
+                cellStates.push({ rowId: empId, columnKey: 'employeeName', state: ['mgrid-disable'] });
+                cellStates.push({ rowId: empId, columnKey: 'time', state: ['mgrid-disable'] });
+                cellStates.push({ rowId: empId, columnKey: 'deleteFlg', state: ['align-center'] });
+                cellStates.push({ rowId: empId, columnKey: 'ordered', state: ['align-center'] });
             }
+            vm.gridOptions.dataSource = _.sortBy(vm.gridOptions.dataSource, ['employeeId']);
+            vm.gridOptions.features.push(columnFixing);
+            vm.gridOptions.features.push(headerStyle);
+            vm.gridOptions.features.push({ name: 'CellStyles', states: cellStates });
         }
 
         bindGrid() {
@@ -168,7 +198,7 @@ module nts.uk.at.kmr003.b {
             if ($("#grid").data("mGrid")) $("#grid").mGrid("destroy");
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 width: '1200px',
-                height: '400px',
+                height: ($('#contents-area')[0].offsetHeight - 200) + 'px',
                 headerHeight: "70px",
                 subHeight: "140px",
                 subWidth: "100px",
@@ -178,7 +208,7 @@ module nts.uk.at.kmr003.b {
                 virtualization: true,
                 virtualizationMode: "continuous",
                 enter: "right",
-                autoFitWindow: true,
+                autoFitWindow: false,
                 features: vm.gridOptions.features,
                 ntsControls: vm.gridOptions.ntsControls
             }).create();
@@ -198,11 +228,89 @@ module nts.uk.at.kmr003.b {
         register() {
             const vm = this;
 
+            let dataSource = $('#grid').mGrid("dataSource");
+            let command: any = [];
+
+            for (let empId in vm.bentoReservationWithEmp) {
+                let emp = _.filter(vm.listEmpInfo, (e: any) => e.employeeId === empId)[0];
+
+                let bentoReservation = _.clone(vm.bentoReservationWithEmp[empId].bentoReservation);
+                let listBentoReservationDetail = bentoReservation.listBentoReservationDetail;
+                let details = [];
+
+                let rowFilter = _.filter(dataSource, (x: any) => x.employeeId === empId);
+                if (rowFilter.length > 0) {
+                    let row = rowFilter[0];
+                    // loop dataSource grid
+                    for (let bento in row) {
+                        if (_.startsWith(bento, 'bento')) {
+                            let frame = bento.substring(5);
+                            // filter bento + frame in list reservation
+                            if (_.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame).length > 0) {
+                                // record not edit
+                                if (row[bento] && _.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0].bentoCount == row[bento]) {
+                                    details.push(_.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0]);
+                                } 
+                                // record is edited
+                                else if ((row[bento] && _.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0].bentoCount != row[bento])) {
+                                    let detail = _.filter(listBentoReservationDetail, (x: any) => x.frameNo == frame)[0];
+                                    detail.bentoCount = row[bento];
+                                    detail.dateTime = moment().format('YYYY/MM/DD HH:mm:ss');
+
+                                    details.push(detail);
+                                }
+                                // record is deleted in grid
+                                else {
+                                    // not add to list details
+                                }
+                            } else {
+                                details.push({ 
+                                    frameNo: parseInt(frame),
+                                    bentoCount: row[bento], 
+                                    dateTime: moment().format('YYYY/MM/DD HH:mm:ss'), 
+                                    autoReservation: false,
+                                 });
+                            }
+                        }
+
+                    }
+
+                    // add 1 reservation record to list command
+                    bentoReservation.listBentoReservationDetail = details;
+                    bentoReservation.ordered = row['ordered'];
+                    command.push({
+                        bentorReservation: bentoReservation, 
+                        employeeCode: emp.employeeCode, 
+                        employeeName: emp.businessName
+                    });
+                }
+            }
+
+            vm.$blockui('grayout');
+            vm.$ajax(API.register, command).done((res) => {
+                if (res) {
+                    let errors: any[] = [];
+                    _.forEach(res, (x: any) => {
+                        let message = vm.$i18n.message(x.messageId, x.params);
+                        errors.push({ message: message, messageId: x.messageId, supplements: {} });
+                    })
+                    nts.uk.ui.dialog.bundledErrors({
+                        errors: errors
+                    }).then(() => vm.startReservation());
+                } else {
+                    vm.$dialog.info({ messageId: "Msg_15"}).then(() => vm.startReservation());
+                }
+            }).fail((err) => {
+                if (err) {
+                    vm.$dialog.error({messageId: err.messageId, messageParams: err.parameterIds});
+                }
+            }).always(() => vm.$blockui('hide'));
         }
 
-        delete() {
+        clear() {
             const vm = this;
 
+            
         }
     }
 
@@ -227,6 +335,7 @@ module nts.uk.at.kmr003.b {
     }
 
     const API = {
-        startCorrect: "at/record/reservation/bento-menu/startCorrect"
+        startCorrect: "at/record/reservation/bento-menu/startCorrect",
+        register: "at/record/reservation/bento-menu/registerCorrect"
     }
 }

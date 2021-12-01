@@ -1,14 +1,20 @@
 package nts.uk.screen.at.ws.kmr.kmr001.b;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReservationWithEmpCommand;
+import nts.uk.ctx.at.record.app.command.reservation.bento.BentoReserveCommand;
+import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterErrorMessage;
+import nts.uk.ctx.at.record.app.command.reservation.bento.RegisterReservationCorrectCommand;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationQueryOuput;
 import nts.uk.ctx.at.record.app.query.reservation.ReservationSettingQuery;
 import nts.uk.ctx.at.record.app.query.reservation.StartReservationCorrectOutput;
@@ -32,6 +38,9 @@ public class BentoMenuWebService extends WebService{
     
     @Inject
     private StartReservationCorrectQuery startReservationCorrectQuery;
+    
+    @Inject
+    private RegisterReservationCorrectCommand registerReservationCorrectCommand;
 
     @POST
     @Path("getbentomenu")
@@ -66,5 +75,12 @@ public class BentoMenuWebService extends WebService{
                 param.getFrameNo(), 
                 param.getExtractCondition(), 
                 param.getEmployeeIds());
+    }
+    
+    @POST
+    @Path("registerCorrect")
+    public List<RegisterErrorMessage> registerCorrectReservation(List<BentoReservationWithEmpCommand> param) {
+        return registerReservationCorrectCommand
+                .register(param.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
     }
 }

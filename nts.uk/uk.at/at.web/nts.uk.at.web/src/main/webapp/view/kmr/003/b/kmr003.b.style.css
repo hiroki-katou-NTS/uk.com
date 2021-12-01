@@ -7,3 +7,11 @@
     background-color: #CFF1A5 !important;
     color: #000 !important;
 }
+
+.mgrid table tr td.mgrid-disable {
+    background-color: #fff;
+}
+
+.mgrid .mgrid-header td div {
+    color: #000 !important;
+}
