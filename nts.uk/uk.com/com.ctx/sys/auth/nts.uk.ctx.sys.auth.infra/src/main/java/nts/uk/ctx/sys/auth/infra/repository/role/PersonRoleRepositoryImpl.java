@@ -48,7 +48,7 @@ public class PersonRoleRepositoryImpl extends JpaRepository implements PersonRol
 		
 		return new PersonRole(
 				entity.getRoleId(), 
-				entity.getCompanyId(), // TODO: developer will update
+				entity.getCompanyId(),
 				entity.isReferFutureDate());
 	}
 
