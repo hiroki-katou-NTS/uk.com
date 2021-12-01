@@ -58,13 +58,13 @@ input {
 #kaf002TabPanel td :not(.titleColor) {
 	text-align: center !important;
 }
+#kaf002TabPanel td .btn_worklocation div,
 #kaf002TabPanel td .btn_workplace div {
 	text-align: left !important;
-    padding-left: 10px !important;
 }
-#kaf002TabPanel td .btn_worklocation div {
-	text-align: left !important;
-    padding-left: 10px !important;
+#kaf002TabPanel td .btn_worklocation > div,
+#kaf002TabPanel td .btn_workplace > div {
+	padding: 0 10px !important;
 }
 #kaf002TabPanel > div > label > span {
 	font-size: 110%;

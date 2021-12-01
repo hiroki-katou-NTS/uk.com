@@ -142,18 +142,22 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				if (self.isPreAtr()) {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(580)							
-					} else if (self.selectedTab() === 'tab-1') {
+					}
+                    else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
                         $('#kaf002TabPanel').width(900);
-                    } else {
-							$('#kaf002TabPanel').width(450)							
+                    }
+                    else {
+                        $('#kaf002TabPanel').width(450)							
 					}
 				
 				} else {
 					if (self.selectedTab() == 'tab-2') {
 							$('#kaf002TabPanel').width(680)							
-					} else if (self.selectedTab() === 'tab-1') {
+					}
+                    else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
                         $('#kaf002TabPanel').width(1000);
-                    } else {
+                    }
+                    else {
 							$('#kaf002TabPanel').width(550)							
 					}
 				}
@@ -267,18 +271,22 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if (self.isPreAtr()) {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(580)							
-				} else if (self.selectedTab() === 'tab-1') {
+				}
+                else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
                     $('#kaf002TabPanel').width(900);
-                } else {
+                }
+                else {
 						$('#kaf002TabPanel').width(450)							
 				}
 				
 			} else {
 				if (self.selectedTab() == 'tab-2') {
 						$('#kaf002TabPanel').width(680)							
-				} else if (self.selectedTab() === 'tab-1') {
+				}
+                else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
                     $('#kaf002TabPanel').width(1000);
-                } else {
+                }
+                else {
 						$('#kaf002TabPanel').width(550)							
 				}
 			}
@@ -476,9 +484,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         states: statesTable
                     }
                 ],
-                ntsControls: [
-
-                ]
+                ntsControls: []
 
             };
 
@@ -552,6 +558,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(self.getAttendanceGrid(isChrome, dataSource, headerFlagContent, statesTable));
                 }
+            } else if (type === STAMPTYPE.CHEERING) {
+                if ($('#' + id).length) {
+                    $('#' + id).ntsGrid(self.getAttendanceGrid(isChrome, dataSource, headerFlagContent, statesTable));
+                }
             } else {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(optionGrid);
@@ -608,7 +618,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         private getAttendanceGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
             const self = this;
             let options = {
-                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '725px' : '825px',
+                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '880px' : '980px',
                 height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
                 dataSource: dataSource,
                 primaryKey: 'id',
@@ -616,13 +626,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 virtualizationMode: 'continuous',
                 hidePrimaryKey: true,
                 columns: [
-                    { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
-                    { headerText: '', key: 'text1', dataType: 'string', width: '120px' },
-                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: '100px' },
-                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: '100px' },
-                    { headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: '200px', ntsControl: 'Button_WorkPlace' },
-                    { headerText: self.$i18n('KAF002_82'), key: 'workLocaiton', dataType: 'string', width: '200px', ntsControl: 'Button_WorkLocation' },
-                    { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: '100px' }
+                    { headerText: 'ID', key: 'id', dataType: 'number', width: 0, hidden: true },
+                    { headerText: '', key: 'text1', dataType: 'string', width: 120 },
+                    { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: 140 },
+                    { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: 140 },
+                    { headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: 230, ntsControl: 'Button_WorkPlace' },
+                    { headerText: self.$i18n('KAF002_82'), key: 'workLocaiton', dataType: 'string', width: 230, ntsControl: 'Button_WorkLocation' },
+                    { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: 100 }
                 ],
                 features: [
                     {
@@ -630,11 +640,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         columnSettings: [
                             {
                                 columnKey: 'id', allowResizing: true, minimumWidth: 30
-                            },  {
+                            },
+                            {
                                 columnKey: 'startTime', allowResizing: false, minimumWidth: 30
-                            }, {
+                            },
+                            {
                                 columnKey: 'endTime', allowResizing: false, minimumWidth: 30
-                            }, {
+                            },
+                            {
                                 columnKey: 'flag', allowResizing: false, minimumWidth: 30
                             }
                         ]
@@ -646,7 +659,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     }
                 ],
                 ntsFeatures: [
-                    { name: 'CellState',
+                    {
+                        name: 'CellState',
                         rowId: 'rowId',
                         columnKey: 'columnKey',
                         state: 'state',
