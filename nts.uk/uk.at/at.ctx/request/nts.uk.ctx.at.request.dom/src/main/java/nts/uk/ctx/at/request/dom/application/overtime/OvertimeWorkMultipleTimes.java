@@ -44,13 +44,10 @@ public class OvertimeWorkMultipleTimes {
      * @return 複数回残業内容
      */
     public static OvertimeWorkMultipleTimes create(List<OvertimeHour> overtimeHours, List<OvertimeReason> overtimeReasons) {
-        Set<OvertimeNumber> overtimeNumberSet = overtimeHours.stream().map(OvertimeHour::getOvertimeNumber).collect(Collectors.toSet());
-        if (overtimeNumberSet.size() != overtimeHours.size()) {
-            throw new BusinessException("Msg_3238");
-        }
-        overtimeNumberSet = overtimeReasons.stream().map(OvertimeReason::getOvertimeNumber).collect(Collectors.toSet());
-        if (overtimeNumberSet.size() != overtimeReasons.size()) {
-            throw new BusinessException("Msg_3238");
+        for (int i = 0; i < overtimeHours.size() - 1; i++) {
+            if (overtimeHours.get(i).getOvertimeHours().getDuplicatedWith(overtimeHours.get(i + 1).getOvertimeHours()).isPresent()) {
+                throw new BusinessException("Msg_3238");
+            }
         }
         overtimeHours.sort(Comparator.comparing(OvertimeHour::getOvertimeNumber));
         overtimeReasons.sort(Comparator.comparing(OvertimeReason::getOvertimeNumber));

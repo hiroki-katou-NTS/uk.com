@@ -52,8 +52,8 @@ public class OvertimeWorkMultipleTimesTest {
     public void testCreateSuccess() {
         OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
                 Arrays.asList(
-                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(480), new TimeWithDayAttr(1020))),
-                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(480), new TimeWithDayAttr(1020)))
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(900), new TimeWithDayAttr(1020))),
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(1050), new TimeWithDayAttr(1080)))
                 ),
                 Arrays.asList(
                         new OvertimeReason(new OvertimeNumber(1), Optional.of(new AppStandardReasonCode(1)), Optional.empty()),
@@ -73,17 +73,6 @@ public class OvertimeWorkMultipleTimesTest {
                         new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(480), new TimeWithDayAttr(1020)))
                 ),
                 Collections.emptyList()
-        ));
-    }
-
-    @Test
-    public void testCreateFail2() {
-        NtsAssert.businessException("Msg_3238", () -> OvertimeWorkMultipleTimes.create(
-                Collections.emptyList(),
-                Arrays.asList(
-                        new OvertimeReason(new OvertimeNumber(1), Optional.of(new AppStandardReasonCode(1)), Optional.empty()),
-                        new OvertimeReason(new OvertimeNumber(1), Optional.of(new AppStandardReasonCode(1)), Optional.empty())
-                )
         ));
     }
 
