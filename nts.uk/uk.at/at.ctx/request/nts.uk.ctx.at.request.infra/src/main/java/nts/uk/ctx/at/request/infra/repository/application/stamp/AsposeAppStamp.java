@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 
@@ -22,7 +27,9 @@ import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeZoneApp;
 import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.stamp.StartEndClassification;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampApp;
+import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -68,6 +75,9 @@ public class AsposeAppStamp {
 					temporaryTime3 = EMPTY, outTime = EMPTY, outTime2 = EMPTY, outTime3 = EMPTY, outTime4 = EMPTY, outTime5 = EMPTY, outTime6 = EMPTY, outTime7 = EMPTY, outTime8 = EMPTY, outTime9 = EMPTY, outTime10 = EMPTY,
 					breakTime = EMPTY, breakTime2 = EMPTY, breakTime3 = EMPTY, breakTime4 = EMPTY, breakTime5 = EMPTY, breakTime6 = EMPTY, breakTime7 = EMPTY, breakTime8 = EMPTY, breakTime9 = EMPTY, breakTime10 = EMPTY,
 					childCareTime = EMPTY, childCareTime2 = EMPTY, nursingTime = EMPTY, nursingTime2 = EMPTY;
+			
+			Map<Integer, String> supportTimes = IntStream.rangeClosed(1, 3).boxed()
+					.collect(Collectors.toMap(Function.identity(), i -> EMPTY));
 			int deleteCnt = 0;
 
 			/*
@@ -339,6 +349,21 @@ public class AsposeAppStamp {
 							}
 						}
 					}
+					
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getSupportReflectAtr().isUse()
+							&& appStampOutputOp.get().isUseCheering() && destTimeApp.getSupportWorkNo().isPresent()
+							&& destTimeApp.getSupportWorkNo().get().v() <= appStampOutputOp.get().getMaxOfCheer()) {
+						String value = supportTimes.get(destTimeApp.getSupportWorkNo().get().v());
+						if (destTimeApp.getTimeStampAppEnum().equals(TimeStampAppEnum.CHEERING)) {
+							if (destTimeApp.getStartEndClassification().equals(StartEndClassification.START) ) {
+								value = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
+										+ HALF_WIDTH_SPACE;
+							} else {
+								value += timeStampApp.getTimeOfDay().getFullText();
+							}
+							supportTimes.put(destTimeApp.getSupportWorkNo().get().v(), value);
+						}
+					}
 				}
 
 				for(DestinationTimeApp destinationTimeApp : listDesTimeApp) {
@@ -386,6 +411,12 @@ public class AsposeAppStamp {
 					}
 					if(destinationTimeApp.getTimeStampAppEnum().value == 2 && destinationTimeApp.getEngraveFrameNo() == 10) {
 						outTime10 = I18NText.getText("KAF002_80");
+					}
+					if (appStampOutputOp.get().getAppStampReflectOptional().get().getSupportReflectAtr().isUse()
+							&& appStampOutputOp.get().isUseCheering() && destinationTimeApp.getSupportWorkNo().isPresent()
+							&& destinationTimeApp.getSupportWorkNo().get().v() <= appStampOutputOp.get().getMaxOfCheer()
+							&& destinationTimeApp.getTimeStampAppEnum().equals(TimeStampAppEnum.CHEERING)) {
+						supportTimes.put(destinationTimeApp.getSupportWorkNo().get().v(), I18NText.getText("KAF002_80"));
 					}
 				}
 
@@ -675,6 +706,17 @@ public class AsposeAppStamp {
 			Cell cellD35 = cells.get("D35");
 			Cell cellB36 = cells.get("B36");
 			Cell cellD36 = cells.get("D36");
+			
+			for (Entry<Integer, String> entry: supportTimes.entrySet()) {
+				int index = entry.getKey() - 1;
+				if (!entry.getValue().equals(EMPTY)) {
+					String value = I18NText.getText("KAF002_86", String.valueOf(entry.getKey()));
+					cells.get(35 + index, 1).setValue(value);
+				} else {
+					cells.deleteRow(35 + index);
+					deleteCnt++;
+				}
+			}
 
 			if (!nursingTime2.equals(EMPTY)) {
 				cellB36.setValue(I18NText.getText("KAF002_69", "2"));
