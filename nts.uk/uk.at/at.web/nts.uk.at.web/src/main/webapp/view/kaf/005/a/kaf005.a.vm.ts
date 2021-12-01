@@ -1000,7 +1000,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				.then((isValid) => {
 					if (isValid) {
 						// validate riêng cho màn hình
-						return vm.$validate('.inputTime', '.multiple-reason');
+						return vm.$validate('.inputTime', '.multiple-reason:not([style*="display: none"])');
 					}
 				})
 				.then((result) => {

@@ -48,12 +48,12 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									 },
 									 visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1"/>
 					<button style="margin-left: 10px; width: 30px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data)">
-					    <i data-bind="ntsIcon: { no: 236 }"></i>
+					    <i data-bind="ntsIcon: { no: 237 }"></i>
                     </button>				
 				</div>
 			</div>
 			<button style="width: 30px;" data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10">
-			    <i data-bind="ntsIcon: { no: 237 }"></i>
+			    <i data-bind="ntsIcon: { no: 236 }"></i>
             </button>
 		</div>
 	</div>
