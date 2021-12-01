@@ -44,10 +44,6 @@ public class GetEstimatedTimeZones {
 
 		// 1. 日別勤怠(Work).出退勤.isPresent 出退勤の時間帯を返す() List<時間帯>
 		
-		List<Integer> startTime = new ArrayList<>();
-		
-		List<Integer> endTime = new ArrayList<>();
-		
 		inteDaiy.getAttendanceLeave().ifPresent(al -> {
 			
 			/**
@@ -58,11 +54,10 @@ public class GetEstimatedTimeZones {
 			 */
 			// get workNo 1
 			al.getAttendanceLeavingWork(1).ifPresent(lw -> {
-				startTime.add(lw.getTimespan().start());
-				endTime.add(lw.getTimespan().end());
+				result.setStartTime(new TimeWithDayAttr(lw.getTimespan().start()));
+				result.setEndTime(new TimeWithDayAttr(lw.getTimespan().end()));
 			});			
 		});
-		
 		// 2.取得する(社員ID, 年月日) 日別勤怠(Work).社員ID,日別勤怠(Work).年月日 Optional<残業申請>
 		
 		this.getLastOverTimeApplication.get(inteDaiy.getEmployeeId(), inteDaiy.getYmd()).ifPresent(oApp -> {
@@ -81,14 +76,12 @@ public class GetEstimatedTimeZones {
 			
 			oApp.getWorkHoursOp().ifPresent(wh -> {
 				wh.stream().mapToInt(x -> x.getTimeZone().getStartTime().v()).min().ifPresent(min -> {
-					startTime.add(min);
-					
-				});
-
-				wh.stream().mapToInt(x -> x.getTimeZone().getEndTime().v()).max().ifPresent(max -> {
-					endTime.add(max);
+					result.setStartTime(new TimeWithDayAttr(min));
 				});
 				
+				wh.stream().mapToInt(x -> x.getTimeZone().getEndTime().v()).max().ifPresent(max -> {
+					result.setEndTime(new TimeWithDayAttr(max));
+				});
 				//入力目安時間帯．残業時間帯 = 取得した「残業申請．勤務時間帯．時間帯」をセットする
 				result.setOverTimeZones(wh.stream()
 						.map(x -> x.getTimeZone())
@@ -97,12 +90,7 @@ public class GetEstimatedTimeZones {
 			
 			
 		});
-		if (!startTime.isEmpty()) {
-			result.setStartTime(new TimeWithDayAttr(Collections.min(startTime)));
-		}
-		if (!endTime.isEmpty()) {
-			result.setEndTime(new TimeWithDayAttr(Collections.max(endTime)));
-		}
+		
 		
 		//(求めた「開始時刻」.isEmpty OR 求めた「終了時刻」.isEmpty) AND 「日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード」.isPresent
 		

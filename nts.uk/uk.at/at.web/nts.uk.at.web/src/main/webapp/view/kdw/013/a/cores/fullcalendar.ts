@@ -952,30 +952,35 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.taskDragItems(draggers);
-                            $('#task-fav').sortable({
-                                axis: "y",
-                                update: function( event, ui ) {
+                            if (!$('#task-fav').hasClass("ui-sortable")) {
+                                $('#task-fav').sortable({
+                                    forcePlaceholderSize: true,
+                                    axis: "y",
+                                    update: (event, ui) =>{
+                                        $("#task-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
                                         for (let i = 1; i <= rows.length; i++) {
                                             let element = rows[i - 1];
                                             sortedList.push({ favId: $(element).attr("data-favId"), order: i });
                                         }
-                                    
-                                        let item = _.find(sortedList, [ 'favId', $(ui.item).attr('data-favId')]);
+
+                                        let item = _.find(sortedList, ['favId', $(ui.item).attr('data-favId')]);
 
                                         let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
                                         vm.taskDragItems([]);
                                         vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_task_dis_order', command))
-                                                .done(() => {
-                                                    
-                                                    vm.params.screenA.reloadTaskFav();
-                                                }).always(() => vm.$blockui('clear'));
-                                },
-                                out: function(event, ui) {
-                                    $("#task-fav").sortable("cancel");
-                                }
-                            });
+                                            .done(() => {
+
+                                                vm.params.screenA.reloadTaskFav();
+                                            }).always(() => vm.$blockui('clear'));
+                                    },
+                                    out: (event, ui) => {
+                                        $("#task-fav").sortable("cancel");
+                                    }
+                                });
+                            }
+                            
                             return;
                         }
                     }
@@ -1029,9 +1034,12 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.onedayDragItems(draggers);
-                            $('#one-day-fav').sortable({
+                            if (!$('#one-day-fav').hasClass("ui-sortable")) {
+                              $('#one-day-fav').sortable({
+                                forcePlaceholderSize: true,
                                 axis: "y",
                                 update: function( event, ui ) {
+                                        $("#one-day-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
                                         for (let i = 1; i <= rows.length; i++) {
@@ -1051,7 +1059,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 out: function(event, ui) {
                                     $("#one-day-fav").sortable("cancel");
                                 }
-                            });
+                            }); 
+                            }
+                            
                             return;
                         }
                     }
@@ -2462,7 +2472,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.$view('view');
                         }
                         if (!event.extendedProps.isTimeBreak) {
-                            let frameNos = _.get(_.maxBy(_.filter(events, (e) => moment(e.start).isSame(moment(event.start), 'days')), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
+                            let frameNos = _.get(_.maxBy(_.filter(events, (e) => (moment(e.start).isSame(moment(event.start), 'days') && !e.extendedProps.isTimeBreak)), function(e) { return _.last(e.extendedProps.taskBlock.taskDetails).supNo; }), 'extendedProps.frameNos', []);
                             event.setExtendedProp('frameNos',frameNos);
                             popupData.event(event);
                         }
@@ -3416,19 +3426,27 @@ module nts.uk.ui.at.kdw013.calendar {
                                     const brBeforeTime = breakOfDay.breakTimes[j - 1];
                                     let end = cbh.end;
                                     let start = cbh.start;
-                                    if (brTime.start > cbh.end) { end = 1440 };
-                                    if (brTime.start < cbh.start) { start = 0 };
-                                    bhs.push({
-                                        daysOfWeek: [cbh.dayOfWeek],
-                                        startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
-                                        endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                    },
-                                        {
+                                    if (brTime.end < end) {
+                                        bhs.push({
                                             daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: formatTime(brTime.end, false),
-                                            endTime: formatTime(end, false)
+                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
+                                            endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
+                                        },
+                                            {
+                                                daysOfWeek: [cbh.dayOfWeek],
+                                                startTime: formatTime(brTime.end, false),
+                                                endTime: formatTime(end, false)
+                                            }
+                                        );
+                                    } else {
+                                        if (!_.find(bhs, ['daysOfWeek', cbh.dayOfWeek])) {
+                                            bhs.push({
+                                                daysOfWeek: [cbh.dayOfWeek],
+                                                startTime: start,
+                                                endTime: end
+                                            });
                                         }
-                                    );
+                                    }
 
                                 }
                             } else {
