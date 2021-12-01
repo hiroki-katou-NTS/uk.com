@@ -61,7 +61,10 @@ public class SearchForRolePersonalizedGrantScreenQuery {
                 });
             }
         }
-        return rGrants.stream().sorted(Comparator.comparing(Cas012aDto::getEmployeeCode))
-                .collect(Collectors.toList());
+
+        Comparator<Cas012aDto> compareByCode = Comparator
+                .comparing(Cas012aDto::getEmployeeCode)
+                .thenComparing(Cas012aDto::getCompanyCode);
+        return rGrants.stream().sorted(compareByCode).collect(Collectors.toList());
     }
 }
