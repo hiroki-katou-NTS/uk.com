@@ -118,7 +118,7 @@ public class GetEstimatedTimeZones {
 				WorkStyle wkStyle = this.basicScheduleService.checkWorkDay(workTypeCode);
 
 				// 出勤休日区分 <> １日休日系
-				if (!wkStyle.equals(WorkStyle.ONE_DAY_REST)) {
+				if (wkStyle != null && !wkStyle.equals(WorkStyle.ONE_DAY_REST)) {
 					// 4. 取得する(就業時間帯コード)
 					this.predTimeSetRepo.findByWorkTimeCode(AppContexts.user().companyId(), wtCd.v())
 							.ifPresent(predSet -> {
@@ -153,7 +153,7 @@ public class GetEstimatedTimeZones {
 								}
 
 								if (result.getEndTime() == null) {
-									predSet.getTimezoneByAmPmAtr(atr).stream().mapToInt(x -> x.getStart().v()).max()
+									predSet.getTimezoneByAmPmAtr(atr).stream().mapToInt(x -> x.getEnd().v()).max()
 											.ifPresent(x -> {
 												result.setEndTime(new TimeWithDayAttr(x));
 											});

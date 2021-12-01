@@ -102,9 +102,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     user-select: none; /* Non-prefixed version, currently
                                         supported by Chrome, Edge, Opera and Firefox */
         }
+        .fc .fc-col-header-cell-cushion{
+            padding: 0px;
+            line-height: 20px;
+            font-size: 12px;
+        }
         .fc-container .fc-sidebar {
             float: left;
-            width: 210px;
+            width: 255px;
             min-width: 210px;
             max-width: calc(100vw - 755px);
             overflow: hidden;
@@ -113,7 +118,7 @@ module nts.uk.ui.at.kdw013.calendar {
             border-right: 1px solid #ccc;
             position: relative;
             padding-right: 1px;
-            min-height: calc(100vh - 162px);
+            min-height: calc(100vh - 148px);
         }
         .fc-container .fc-sidebar>div {
             padding: 0 10px;
@@ -197,7 +202,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-toolbar.fc-header-toolbar {
             min-height: 33px;
-            margin-bottom: 10px;
+            margin-bottom: 2px;
         }
         .fc-container .fc-timegrid thead>tr>td td:first-child {
             font-size: 11px;
@@ -251,6 +256,9 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-container .fc-header-toolbar .fc-settings-button {
             width: 34px;
         }
+        .fc-settings-button {
+            margin-top: 2px;
+        }
         .fc-container .fc-timegrid-slot-label-bold {
             font-weight: bold;
         }
@@ -290,7 +298,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-event-note>div {
             padding: 2px;
-            min-height: 112px;
+            min-height: 50px;
             overflow: hidden;
         } 
         .fc-container .fc-event-note>div>div{
@@ -387,7 +395,7 @@ module nts.uk.ui.at.kdw013.calendar {
         .favIcon{
             position: absolute;
             left: calc(100% - 22px);
-            bottom: calc(100% - 20px);
+            bottom: calc(100% - 18px);
         }
         .favIcon:hover{
                 background-color: rgb(229, 242, 255);
@@ -398,6 +406,20 @@ module nts.uk.ui.at.kdw013.calendar {
         .otTime {
             background-color: #FFFF99;
         }
+        .fc-view-harness{
+            background-color: white;
+        }
+        .fc-current-day-button,
+        .fc-preview-day-button,
+        .fc-next-day-button,
+        .fc-one-day-button,
+        .fc-full-week-button,
+        .fc-settings-button{
+            height: 25px;
+            font-size: 12px;
+            padding: 0 4px;
+        }
+        
 `;
 
     @handler({
@@ -883,7 +905,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     this.popupPosition.event(null);
                     this.popupPosition.setting(null);
                 });
-    
+            
         }
 
         computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcess | null){
@@ -1322,26 +1344,35 @@ module nts.uk.ui.at.kdw013.calendar {
                                 
                                 let { manHrContents} = _.find(_.get(vm.params.$datas(), 'convertRes'), cr => moment(cr.ymd).isSame(moment(etz.ymd), 'days'));
                                 const {no, breakTime} = bts;
-                                events.push({
-                                    id: randomId(),
-                                    title: vm.$i18n('KDW013_79'),
-                                    start,
-                                    end,
-                                    textColor: '',
-                                    backgroundColor: BREAKTIME_COLOR,
-                                    extendedProps: {
-                                        no,
-                                        breakTime,
+                                const businessHours = ko.unwrap(vm.params.businessHours);
+
+                                const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                                const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                                const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                                
+                                if (startAsMinites >= _.get(bh, 'start', 0) && endAsMinites <= _.get(bh, 'end', 1440)) {
+                                    events.push({
                                         id: randomId(),
-                                        status: 'normal',
-                                        isTimeBreak: true,
-                                        isChanged: true,
-                                        taskBlock: {
-                                            manHrContents,
-                                            taskDetails: []
-                                        }
-                                    } as any
-                                });
+                                        title: vm.$i18n('KDW013_79'),
+                                        start,
+                                        end,
+                                        textColor: '',
+                                        backgroundColor: BREAKTIME_COLOR,
+                                        extendedProps: {
+                                            no,
+                                            breakTime,
+                                            id: randomId(),
+                                            status: 'normal',
+                                            isTimeBreak: true,
+                                            isChanged: true,
+                                            taskBlock: {
+                                                manHrContents,
+                                                taskDetails: []
+                                            }
+                                        } as any
+                                    });
+                                }
+                               
                             });
                         
                     });
@@ -1561,6 +1592,23 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const customButtons: ButtonSet = {
                 'current-day': {
+                    text: vm.$i18n('今日'),
+                    click: () => {
+                        clearSelection();
+                        
+                        if (moment(initialDate()).isSame(moment(new Date()), 'day')) {
+                            return;
+                        }
+                        if (ko.isObservable(initialDate)) {
+                            initialDate(new Date());
+                        } else {
+                            vm.calendar.gotoDate(formatDate(new Date()));
+                        }
+                        const sc = ko.unwrap(scrollTime);
+                        vm.calendar.scrollToTime(formatTime(sc));
+                    }
+                },
+                'pika-day': {
                     text: vm.$i18n('今日'),
                     click: () => {
                         clearSelection();
@@ -2000,7 +2048,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     const events = vm.calendar.getEvents();
 
-                    let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isSameOrAfter(moment(info.date)) });
+                    let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isAfter(moment(info.date)) });
 
                     if (isHasTask) {
                         return;
@@ -2331,7 +2379,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 .then(() => {
                                     $(vm.$el)
                                         .find('.fc-sidebar')
-                                        .css({ 'width': '255px', 'height': 'calc(100vh - 162px)', 'overflow-y': 'auto' });
+                                        .css({ 'width': '255px', 'height': 'calc(100vh - 148px)', 'overflow-y': 'auto' });
 
                                     vm.calendar.updateSize();
                                 });
@@ -2566,8 +2614,28 @@ module nts.uk.ui.at.kdw013.calendar {
                     const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
                     
                     if (extendedProps.isTimeBreak) {
+                        
                         if (!moment(arg.oldEvent.start).isSame(start, 'days')) {
-                            vm.revertEvent(arg.oldEvent , $caches);
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
+                        
+                        const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
+                        const orverideBreak = _.filter(breakInday, br => moment(br.start).isSameOrBefore(start) && moment(br.end).isAfter(start) && (br.extendedProps.id != extendedProps.id));
+                        if (orverideBreak.length) {
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
+                        
+                        const businessHours = ko.unwrap(vm.params.businessHours);
+                        
+                        const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
+                        
+                        const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
+                        const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                        if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440)){
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
                         }
                         
                         return;
@@ -2722,29 +2790,22 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.revertEvent(arg.oldEvent, $caches);
                             return;
                         }
+                        const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
+                        const orverideBreak = _.filter(breakInday, br => moment(br.start).isBefore(end) && (br.extendedProps.id != extendedProps.id));
+                        if (orverideBreak.length) {
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
                         
+                        const businessHours = ko.unwrap(vm.params.businessHours);
                         
+                        const bh = _.find(businessHours, bh => bh.dayOfWeek == start.getDay());
                         
-                        //validate businessHours 
-//                        
-//                        let businessHours = vm.calendar.getOption('businessHours');
-//
-//                        let dow = moment(start).day();
-//
-//                        if (businessHours) {
-//                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow) });
-//
-//                            let format = 'hh:mm:ss',
-//                                startTime = moment(start, format),
-//                                endTime = moment(end, format),
-//                                beforeTime = moment(setting.startTime, format),
-//                                afterTime = moment(setting.endTime, format);
-//                            if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime)) {
-//                                 vm.revertEvent(arg.oldEvent , $caches);
-//                            }
-//
-//                            return;
-//                        }
+                        const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
+                        if (endAsMinites > _.get(bh, 'end', 1440)){
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
                         return;
                     }
                     
@@ -2980,7 +3041,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         taskItemValues.push({ itemId: 3, value: endMinutes - startMinutes });
                         let taskDetails = [{ supNo: _.isEmpty(eventInDay) ? 1 : getFrameNo(eventInDay), taskItemValues }];
                             events.push({
-                                title: getTitles(taskDetails, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start,
                                 end,
                                 textColor,
@@ -3047,7 +3108,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                 td.taskItemValues.push({ itemId: 3, value: task.endTime - task.startTime });
                             });
                             events.push({
-                                title: getTitles(taskDetails, vm.params.$settings().tasks),
+                                title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
                                 start : timeStart,
                                 end : timeEnd,
                                 textColor,
@@ -3423,9 +3484,6 @@ module nts.uk.ui.at.kdw013.calendar {
             vm.$nextTick(() => {
                 vm.calendar.updateSize();
             });
-
-            // test item
-            //_.extend(window, { draggerOne, calendar: vm.calendar, params, popupPosition });
         }
         
 
