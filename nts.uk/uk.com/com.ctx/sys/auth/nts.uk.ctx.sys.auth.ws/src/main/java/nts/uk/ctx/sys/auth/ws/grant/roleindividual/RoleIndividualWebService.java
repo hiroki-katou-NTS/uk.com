@@ -43,6 +43,7 @@ import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
+import nts.uk.ctx.sys.auth.dom.role.personrole.PersonRole;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("ctx/sys/auth/grant/roleindividual")
@@ -156,7 +157,7 @@ public class RoleIndividualWebService extends WebService {
 	@Path("get/futurerefpermit")
 	public boolean getFutureDateRefPermit() {
 		String roleId = AppContexts.user().roles().forPersonalInfo();
-		return this.personInforRoleFinder.find(roleId).getReferFutureDate();
+		return this.personInforRoleFinder.find(roleId).map(PersonRole::getReferFutureDate).orElse(false);
 	}
 
     @POST

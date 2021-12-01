@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.app.find.exi.dataformat;
 
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
 
 /**
@@ -18,7 +19,7 @@ public class DateDataFormSetDto {
 	/**
 	 * 固定値の値
 	 */
-	private String valueOfFixedValue;
+	private GeneralDate valueOfFixedValue;
 
 	/**
 	 * 形式選択
@@ -27,7 +28,7 @@ public class DateDataFormSetDto {
 
 	public static DateDataFormSetDto fromDomain(DateDataFormSet domain) {
 		return new DateDataFormSetDto(domain.getFixedValue().value,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get() : null,
 				domain.getFormatSelection().value);
 	}
 

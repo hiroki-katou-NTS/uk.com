@@ -41,8 +41,7 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCarePub
 	@Inject
 	private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
-	@Inject
-	private GetRemainingNumberCareService getRemainingNumberCareService;
+
 
 	/**
 	 * 期間中の介護休暇残数を取得
@@ -81,7 +80,7 @@ public class GetRemainingNumberCarePubImpl  implements GetRemainingNumberCarePub
 		Optional<AggrResultOfChildCareNurse> domPrevCareLeave = Optional.empty();
 
 
-		AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
+		AggrResultOfChildCareNurse result = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
 				companyId, employeeId, period, performReferenceAtr, criteriaDate, isOverWrite, domChildCareNurseManagemenList, domPrevCareLeave, createAtr, periodOverWrite, cacheCarrier, require);
 
 		return mapToPub(result);

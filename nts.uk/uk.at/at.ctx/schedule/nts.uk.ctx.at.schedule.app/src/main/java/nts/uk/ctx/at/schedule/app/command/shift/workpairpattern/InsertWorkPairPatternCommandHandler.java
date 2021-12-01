@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ *
  * @author sonnh1
  *
  */
@@ -43,7 +43,7 @@ public class InsertWorkPairPatternCommandHandler extends CommandHandler<InsertPa
 		if(patternCommand.getGroupUsageAtr() == 0 && CollectionUtil.isEmpty(patternCommand.getListInsertPatternItemCommand())){
 			throw new BusinessException("Msg_510");
 		}
-		
+
 		// 制約のチェックを行う(check quy ước cảu domain)
 		patternCommand.getListInsertPatternItemCommand().stream().forEach(patternItemCommand -> {
 			patternItemCommand.getListInsertWorkPairSetCommand().stream().forEach(workPairSetCommand -> {
@@ -51,11 +51,12 @@ public class InsertWorkPairPatternCommandHandler extends CommandHandler<InsertPa
 						workPairSetCommand.getWorkTimeCode());
 			});
 		});
-		
+
 		// 親画面パラメータ.勤務ペアパターン単位選択をチェックする(check parameter 勤務ペアパターン単位選択)
 		if (StringUtil.isNullOrEmpty(patternCommand.getWorkplaceId(), true)) {
 			String companyId = AppContexts.user().companyId();
 			// convert to domain
+
 			ComPattern comPattern = ComPattern.convertFromJavaType(companyId, patternCommand.getGroupNo(),
 					patternCommand.getGroupName(), patternCommand.getGroupUsageAtr(), patternCommand.getNote(),
 					patternCommand.getListInsertPatternItemCommand().stream().map(x -> {

@@ -15,6 +15,7 @@ public interface GetNextAnnLeaGrantInfo {
 	/**
 	 * 次回年休付与情報を取得する
 	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
 	 * @param closureStart 締め開始日
 	 * @param entryDate 入社年月日
 	 * @param criteriaDate 年休付与基準日
@@ -22,6 +23,6 @@ public interface GetNextAnnLeaGrantInfo {
 	 * @param contractTime 契約時間
 	 * @return 次回年休付与
 	 */
-	Optional<NextAnnualLeaveGrant> algorithm(String companyId, GeneralDate closureStart, GeneralDate entryDate,
+	Optional<NextAnnualLeaveGrant> algorithm(String companyId, String employeeId, GeneralDate closureStart, GeneralDate entryDate,
 			GeneralDate criteriaDate, String grantTableCode, Optional<LimitedTimeHdTime> contractTime);
 }

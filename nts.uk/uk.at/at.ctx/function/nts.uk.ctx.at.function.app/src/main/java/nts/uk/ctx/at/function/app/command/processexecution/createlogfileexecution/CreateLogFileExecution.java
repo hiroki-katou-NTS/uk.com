@@ -53,8 +53,8 @@ public class CreateLogFileExecution {
 		String errorBusiness = optProcessExeLogManage.get().getErrorBusiness()
 				.map(value -> value ? "異常" : "正常").orElse("正常");
 
-		String timeRun = CalTimeRangeDateTimeToString.calTimeExec(optProcessExeLogManage.get().getLastExecDateTime().get(),
-				optProcessExeLogManage.get().getLastEndExecDateTime().get());
+		String timeRun = CalTimeRangeDateTimeToString.calTimeExec(optProcessExeLogManage.get().getLastExecDateTime().orElse(null),
+				optProcessExeLogManage.get().getLastEndExecDateTime().orElse(null));
 
 		String lastEndExecDateTime = "";
 		if(optProcessExeLogManage.get().getLastEndExecDateTime() != null) {

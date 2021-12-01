@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -228,7 +229,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 
 		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(output));
 		//抽出条件_チェック(A5_7)をチェックする
-		List<AnnualHolidayGrant> newGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
+		List<AnnualHolidayGrant> newGrant = getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor()
+				.map(AnnualHolidayGrantInfor::getLstGrantInfor).orElse(Collections.emptyList());
 		if (exCondition) {
 			//アルゴリズム「抽出条件での絞り込みを行う」を実行する
 			boolean getByExtrac = this.getByExtractionConditions(sid, period.start(), newGrant, exConditionDays, exComparison);
@@ -307,7 +309,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
 			List<TempAnnualLeaveMngs> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
 			for (TempAnnualLeaveMngs x : lstTmpAnnual) {
-				DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
+				DailyInterimRemainMngData remainMng = DailyInterimRemainMngData.createEmpty(null);
 				remainMng.setRecAbsData(Arrays.asList(x));
 				remainMng.getAnnualHolidayData().add(x);
 				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);

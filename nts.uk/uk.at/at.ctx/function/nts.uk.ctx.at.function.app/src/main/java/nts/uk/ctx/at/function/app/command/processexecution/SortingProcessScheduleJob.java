@@ -40,9 +40,11 @@ public class SortingProcessScheduleJob extends UkScheduledJob {
 
 		String companyId = context.scheduletimeData().getString("companyId");
 		String execItemCd = context.scheduletimeData().getString("execItemCd");
+		String companyCd = context.scheduletimeData().getString("companyCd");
 		ScheduleExecuteCommand s = new ScheduleExecuteCommand();
 		s.setCompanyId(companyId);
 		s.setExecItemCd(execItemCd);
+		s.setCompanyCd(companyCd);
 		
 		// scheduler.getNextFireTime(id)は、Quartzから実行されたサーバ上でなければ値が返らない。
 		// そのため、ここであらかじめ取得してから渡すようにする。

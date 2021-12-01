@@ -84,6 +84,7 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity
 	 * @param domain       the domain require <code>not null</code>
 	 */
 	public KfnmtProcessExecution(@NonNull String contractCode, @NonNull UpdateProcessAutoExecution domain) {
+		this.contractCd = contractCode;
 		domain.setMemento(this);
 	}
 

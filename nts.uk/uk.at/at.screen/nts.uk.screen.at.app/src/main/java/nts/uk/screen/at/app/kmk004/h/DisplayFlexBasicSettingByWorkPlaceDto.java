@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.screen.at.app.kmk004.g.ComFlexMonthActCalSetDto;
-import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
 
 /**
  * 
@@ -19,7 +18,7 @@ public class DisplayFlexBasicSettingByWorkPlaceDto {
 	// 職場別フレックス勤務集計方法
 	WkpFlexMonthActCalSetDto flexMonthActCalSet;
 	// 会社別フレックス勤務集計方法
-	GetFlexPredWorkTimeDto flexPredWorkTime;
+//	GetFlexPredWorkTimeDto flexPredWorkTime;
 	
 	ComFlexMonthActCalSetDto comFlexMonthActCalSet;
 	

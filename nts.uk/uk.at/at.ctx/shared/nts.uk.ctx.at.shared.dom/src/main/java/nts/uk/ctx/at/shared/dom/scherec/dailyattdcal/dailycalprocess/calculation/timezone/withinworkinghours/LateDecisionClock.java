@@ -128,32 +128,40 @@ public class LateDecisionClock {
 		}
 		if (attendance != null){
 			result = Optional.of(new TimeSpanForDailyCalc(predetermineTimeSet.getStart(), attendance));
-			// フレックス勤務かどうか判断
-			if(integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) {
-				// フレックス勤務
-				CoreTimeSetting coreTimeSetting = integrationOfWorkTime.getFlexWorkSetting().get().getCoreTimeSetting();
-				
-				// コアタイム使用するかどうか
-				if(coreTimeSetting.getTimesheet().isNOT_USE()) {
-					return Optional.empty();
-				}
-				val coreTime = coreTimeSetting.getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
-				if(attendance.greaterThanOrEqualTo(coreTime.getEndTime())) {
-					return Optional.of(new TimeSpanForDailyCalc(coreTime.getStartTime(), coreTime.getEndTime()));
-				}
-				return Optional.of(new TimeSpanForDailyCalc(coreTime.getStartTime(), attendance));
-			}
 			// 勤務形態を取得する
 			WorkTimeForm workTimeform = integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm();
-			if (workTimeform.isFixed()){
-				// 固定勤務
+			switch (workTimeform){
+			case FLEX:		// フレックス勤務
+				CoreTimeSetting coreTimeSetting = integrationOfWorkTime.getFlexWorkSetting().get().getCoreTimeSetting();
+				// コアタイム使用するかどうか
+				if(coreTimeSetting.getTimesheet().isNOT_USE()) {
+					result = Optional.empty();
+				}
+				else {
+					val coreTime = coreTimeSetting.getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
+					if(attendance.greaterThanOrEqualTo(coreTime.getEndTime())) {
+						result = Optional.of(new TimeSpanForDailyCalc(coreTime.getStartTime(), coreTime.getEndTime()));
+					}
+					else {
+						result = Optional.of(new TimeSpanForDailyCalc(coreTime.getStartTime(), attendance));
+					}
+				}
+				break;
+			case FIXED:		// 固定勤務
 				// 固定勤務の計算範囲の取得
-				return getCalcRangeForFixed(predetermineTimeSet, attendance, integrationOfWorkTime, attr);
+				result = getCalcRangeForFixed(predetermineTimeSet, attendance, integrationOfWorkTime, attr);
+				break;
+			case FLOW:		// 流動勤務
+				if(attendance.greaterThanOrEqualTo(predetermineTimeSet.getEnd())) {
+					result = Optional.of(new TimeSpanForDailyCalc(predetermineTimeSet.getStart(), predetermineTimeSet.getEnd()));
+				}
+				break;
+			default:
+				break;
 			}
-			// 流動勤務
-			if(attendance.greaterThanOrEqualTo(predetermineTimeSet.getEnd())) {
-				result = Optional.of(new TimeSpanForDailyCalc(predetermineTimeSet.getStart(), predetermineTimeSet.getEnd()));
-			}
+		}
+		if(!result.isPresent() || result.get().isReverse() || result.get().isEqual()) {
+			return Optional.empty();
 		}
 		return result;
 	}
@@ -192,7 +200,7 @@ public class LateDecisionClock {
 		}
 		if (minTime == null) return Optional.empty();
 		if (minTime.greaterThanOrEqualTo(attendance)){
-			return Optional.of(new TimeSpanForDailyCalc(minTime, minTime));
+			return Optional.empty();
 		}
 		return Optional.of(new TimeSpanForDailyCalc(minTime, attendance));
 	}

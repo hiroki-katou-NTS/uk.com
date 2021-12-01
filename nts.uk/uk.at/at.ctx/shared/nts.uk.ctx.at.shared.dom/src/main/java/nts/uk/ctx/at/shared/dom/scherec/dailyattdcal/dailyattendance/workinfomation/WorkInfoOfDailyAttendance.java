@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.algorithm.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
@@ -148,8 +149,9 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	}
 
 	// 勤務情報と始業終業を変更する
-	public void changeWorkSchedule(Require require, WorkInformation workInfo, boolean changeWorkType,
+	public List<Integer> changeWorkSchedule(Require require, WorkInformation workInfo, boolean changeWorkType,
 			boolean changeWorkTime) {
+		List<Integer> lstState = new ArrayList<>();
 		// 勤務情報を変更する
 		WorkTypeCode workTypeCode = this.recordInfo.getWorkTypeCode();
 		Optional<WorkTimeCode> workTimeCode = this.recordInfo.getWorkTimeCodeNotNull();
@@ -180,8 +182,11 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 				this.scheduleTimeSheets.add(new ScheduleTimeSheet(i + 1,
 																	timeZone.get(i).getStart().valueAsMinutes(),
 																	timeZone.get(i).getEnd().valueAsMinutes()));
+				lstState.add(CancelAppStamp.createItemId(3, i + 1, 2));
+				lstState.add(CancelAppStamp.createItemId(4, i + 1, 2));
 			}
 		});
+		return lstState;
 	}
 
 	/**

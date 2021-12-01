@@ -9,10 +9,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
 
 public class UpdateUnbalancedNumberTest {
 
@@ -36,7 +34,6 @@ public class UpdateUnbalancedNumberTest {
 	// manager time = false, accdigest >= occur
 	public void test() {
 
-		TimeLapseVacationSetting setting = create(false);//時間管理区分
 		
 		AccumulationAbsenceDetail accdigest = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
@@ -49,7 +46,7 @@ public class UpdateUnbalancedNumberTest {
 				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
 				1.0, 120);// 未相殺数
 		
-		UpdateUnbalancedNumber.updateUnbalanced(setting, accdigest, occur, TypeOffsetJudgment.REAMAIN);
+		UpdateUnbalancedNumber.updateUnbalanced(false, accdigest, occur, TypeOffsetJudgment.REAMAIN);
 
 		AccumulationAbsenceDetail accdigestExpected = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
@@ -79,8 +76,6 @@ public class UpdateUnbalancedNumberTest {
 	 * */
 	public void test2() {
 
-		TimeLapseVacationSetting setting = create(false);//時間管理区分
-
 		AccumulationAbsenceDetail accdigest = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
@@ -92,7 +87,7 @@ public class UpdateUnbalancedNumberTest {
 				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
 				1.0, 120);// 未相殺数
 		
-		UpdateUnbalancedNumber.updateUnbalanced(setting, accdigest, occur, TypeOffsetJudgment.REAMAIN);
+		UpdateUnbalancedNumber.updateUnbalanced(false, accdigest, occur, TypeOffsetJudgment.REAMAIN);
 
 		AccumulationAbsenceDetail accdigestExpected = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
@@ -122,8 +117,6 @@ public class UpdateUnbalancedNumberTest {
 	 * */
 	public void test3() {
 
-		TimeLapseVacationSetting setting = create(true);//時間管理区分
-
 		AccumulationAbsenceDetail accdigest = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
@@ -135,7 +128,7 @@ public class UpdateUnbalancedNumberTest {
 				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
 				1.0, 120);// 未相殺数
 		
-		UpdateUnbalancedNumber.updateUnbalanced(setting, accdigest, occur, TypeOffsetJudgment.REAMAIN);
+		UpdateUnbalancedNumber.updateUnbalanced(true, accdigest, occur, TypeOffsetJudgment.REAMAIN);
 
 		AccumulationAbsenceDetail accdigestExpected = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
@@ -165,8 +158,6 @@ public class UpdateUnbalancedNumberTest {
 	 * */
 	public void test4() {
 
-		TimeLapseVacationSetting setting = create(true);//時間管理区分
-
 		AccumulationAbsenceDetail accdigest = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
@@ -178,7 +169,7 @@ public class UpdateUnbalancedNumberTest {
 				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
 				1.0, 480);// 未相殺数
 		
-		UpdateUnbalancedNumber.updateUnbalanced(setting, accdigest, occur, TypeOffsetJudgment.REAMAIN);
+		UpdateUnbalancedNumber.updateUnbalanced(true, accdigest, occur, TypeOffsetJudgment.REAMAIN);
 
 		AccumulationAbsenceDetail accdigestExpected = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
@@ -209,8 +200,6 @@ public class UpdateUnbalancedNumberTest {
 		 * */
 	public void test5() {
 
-		TimeLapseVacationSetting setting = create(false);//時間管理区分
-
 		AccumulationAbsenceDetail accdigest = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
@@ -222,7 +211,7 @@ public class UpdateUnbalancedNumberTest {
 				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
 				0.5, 120);// 未相殺数
 		
-		UpdateUnbalancedNumber.updateUnbalanced(setting, accdigest, occur, TypeOffsetJudgment.ABSENCE);
+		UpdateUnbalancedNumber.updateUnbalanced(false, accdigest, occur, TypeOffsetJudgment.ABSENCE);
 		AccumulationAbsenceDetail accdigestExpected = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
@@ -251,7 +240,6 @@ public class UpdateUnbalancedNumberTest {
 	 * */
 	public void test6() {
 
-		TimeLapseVacationSetting setting = create(false);//時間管理区分
 		AccumulationAbsenceDetail accdigest = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
 				Optional.of(GeneralDate.ymd(2019, 11, 11)), // 年月日
@@ -263,7 +251,7 @@ public class UpdateUnbalancedNumberTest {
 				"a6", GeneralDate.ymd(2019, 12, 8), //期限日
 				1.0, 120);// 未相殺数
 
-		UpdateUnbalancedNumber.updateUnbalanced(setting, accdigest, occur, TypeOffsetJudgment.REAMAIN);
+		UpdateUnbalancedNumber.updateUnbalanced(false, accdigest, occur, TypeOffsetJudgment.REAMAIN);
 
 		AccumulationAbsenceDetail accdigestExpected = DaikyuFurikyuHelper.createDetailDefaultUnba(true, // 代休
 				OccurrenceDigClass.DIGESTION, // 発生消化区分
@@ -294,10 +282,4 @@ public class UpdateUnbalancedNumberTest {
 				.isEqualTo(actual.getUnbalanceNumber().getTime().get());
 	}
 
-	private  TimeLapseVacationSetting create(boolean magTime) {
-		return  new TimeLapseVacationSetting(
-					new DatePeriod(GeneralDate.ymd(2019, 4, 11), GeneralDate.ymd(2019, 4, 20)), true, 2, true,
-					Optional.of(magTime), Optional.of(5));
-	}
-	
 }

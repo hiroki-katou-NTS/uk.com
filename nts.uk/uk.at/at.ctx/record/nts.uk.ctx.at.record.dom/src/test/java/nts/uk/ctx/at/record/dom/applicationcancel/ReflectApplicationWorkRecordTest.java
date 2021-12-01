@@ -84,12 +84,12 @@ public class ReflectApplicationWorkRecordTest {
 				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD).getDomain());
 				
 				// 「 打刻申請（NRモード）を反映する」のテスト呼び出す
-				TimeStampApplicationNRMode.process(require, (GeneralDate) any, (AppRecordImageShare) any,
+				TimeStampApplicationNRMode.process(require, anyString, (GeneralDate) any, (AppRecordImageShare) any,
 						(DailyRecordOfApplication) any, (Optional<Stamp>) any, (ChangeDailyAttendance) any);
 				times = 1;
 
 				// 「レコーダイメージ申請の対象日を取得する」のテスト呼び出す
-				GetTargetDateRecordApplication.getTargetDate(require, (AppRecordImageShare) any);
+				GetTargetDateRecordApplication.getTargetDate(require, anyString, (AppRecordImageShare) any);
 				result = Pair.of(Optional.of(GeneralDate.ymd(2020, 01, 01)), Optional.of(createStamp()));
 				times = 1;
 
@@ -97,12 +97,12 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require,  "", appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
-		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get()));
+		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get(), true));
 
 	}
 
@@ -135,7 +135,7 @@ public class ReflectApplicationWorkRecordTest {
 				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD).getDomain());
 				
 				// 「[RQ667]申請反映後の日別勤怠(work）を作成する（勤務実績）」のテスト呼び出す
-				RCCreateDailyAfterApplicationeReflect.process(require, (ApplicationShare) any,
+				RCCreateDailyAfterApplicationeReflect.process(require, "", (ApplicationShare) any,
 						(DailyRecordOfApplication) any, (GeneralDate) any);
 				times = 1;
 
@@ -143,12 +143,12 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, appImg,
+		val actualResult = ReflectApplicationWorkRecord.process(require,  "", appImg,
 				GeneralDate.ymd(2020, 01, 01), reflectStatus, GeneralDateTime.FAKED_NOW);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
-		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get()));
+		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get(), true));
 
 	}
 
@@ -162,6 +162,7 @@ public class ReflectApplicationWorkRecordTest {
 						SetPreClockArt.NONE, // 所定時刻セット区分
 						ChangeClockArt.GOING_TO_WORK, // 時刻変更区分
 						ChangeCalArt.NONE), // 計算区分変更対象
-				new RefectActualResult( null, null, null), Optional.empty());
+				new RefectActualResult( null, null, null), Optional.empty(),
+				"DUMMY");
 	}
 }

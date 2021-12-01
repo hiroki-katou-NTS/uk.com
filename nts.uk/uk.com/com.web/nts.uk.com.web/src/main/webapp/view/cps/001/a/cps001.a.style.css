@@ -15,6 +15,9 @@
     min-width: 160px;
     display: inline-block;
 }
+#contents-area{
+	min-width: 1280px;
+}
 
 #contents-area>.left-area, 
 #contents-area>.right-area,

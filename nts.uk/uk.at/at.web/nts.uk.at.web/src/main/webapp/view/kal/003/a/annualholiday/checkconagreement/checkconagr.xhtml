@@ -15,7 +15,7 @@
 
     <div>
     <label style="width: 50px">#{i18n.getText('KAL003_220')}</label>
-    <input id = "con_usage_obli_day" tabindex="12" data-bind="ntsNumberEditor: {
+    <input style="margin-left: 24px;" id = "con_usage_obli_day" tabindex="12" data-bind="ntsNumberEditor: {
 		    name: nts.uk.resource.getText('KAL003_221'),
 			value: usageObliDay,
 			constraint: 'YearlyUsageObDay',
@@ -26,8 +26,8 @@
 			required:  ko.observable(true),
 			enable:   ko.observable(true),
 			readonly:  ko.observable(false)}" /><br />
-	<label>#{i18n.getText('KAL003_222')}</label><br />
-	<input style="margin-left: 40px; margin-top: 5px" tabindex="13" data-bind="ntsTextEditor: {
+	<label>#{i18n.getText('KAL003_222')}</label>
+	<input style="margin-left: 10px; margin-top: 5px" tabindex="13" data-bind="ntsTextEditor: {
 		    name: nts.uk.resource.getText('KAL003_223'),
 			value: displayMessage,
 			constraint: 'MessageDisp',

@@ -28,7 +28,9 @@ public class CsvDataImportService extends WebService {
 	@POST
 	@Path("getRecord/{fileId}/{dataLineNum}/{startLine}/{endcoding}")
 	public List<CsvMappingDataDto> getRecord(@PathParam("fileId") String fileId,
-			@PathParam("dataLineNum") int dataLineNum, @PathParam("startLine") int startLine, @PathParam("endcoding") Integer endcoding) {
+			@PathParam("dataLineNum") int dataLineNum, 
+			@PathParam("startLine") int startLine, 
+			@PathParam("endcoding") Integer endcoding) {
 		return fileFind.getRecordByIndex(fileId, dataLineNum, startLine, endcoding);
 	}
 

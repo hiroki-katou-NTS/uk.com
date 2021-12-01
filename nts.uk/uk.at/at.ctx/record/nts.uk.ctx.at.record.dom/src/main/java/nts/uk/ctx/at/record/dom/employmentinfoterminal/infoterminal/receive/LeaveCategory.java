@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive;
 
+import java.util.Optional;
+
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.StampClassifi;
+
 /**
  * @author ThanhNX
  *
- *         出退区分  NR
+ *         出退区分NR
  */
 public enum LeaveCategory {
 
@@ -74,4 +78,27 @@ public enum LeaveCategory {
 		return null;
 	}
 
+	// [1] 出退区分NRから打刻分類を変換する
+	public Optional<StampClassifi> convertStampClassifi() {
+		switch (this) {
+		case WORK:
+		case WORK_HALF:
+		case WORK_FLEX:
+		case EARLY:
+		case VACATION:
+			return Optional.of(StampClassifi.ATTENDANCE);
+		case LEAVE:
+		case LEAVE_HALF:
+		case LEAVE_OVERTIME:
+		case LEAVE_FLEX:
+			return Optional.of(StampClassifi.LEAVING);
+		case GO_OUT:
+			return Optional.of(StampClassifi.GO_OUT);
+		case RETURN:
+			return Optional.of(StampClassifi.GO_BACK);
+		default:
+			return Optional.empty();
+		}
+
+	}
 }

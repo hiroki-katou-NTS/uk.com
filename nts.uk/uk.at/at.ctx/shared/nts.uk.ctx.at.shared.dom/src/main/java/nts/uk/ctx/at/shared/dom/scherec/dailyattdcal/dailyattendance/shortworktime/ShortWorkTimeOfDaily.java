@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -70,8 +71,14 @@ public class ShortWorkTimeOfDaily {
 		WorkTimes workTimes = new WorkTimes(0);
 		DeductionTotalTime totalTime = DeductionTotalTime.defaultValue();
 		DeductionTotalTime totalDeductionTime = DeductionTotalTime.defaultValue();
-		
 		ChildCareAtr careAtr = getChildCareAttributeToDaily(recordClass.getIntegrationOfDaily());
+		ShortWorkTimeOfDaily zeroValue = new ShortWorkTimeOfDaily(workTimes, totalTime, totalDeductionTime, careAtr);
+		
+		// 勤務種類を確認
+		if (!recordClass.getWorkType().isPresent()) return zeroValue;
+		WorkType workType = recordClass.getWorkType().get();
+		// 出勤系かどうかの判断
+		if (workType.isWorkingDay() == false) return zeroValue;
 		
 		if(recordClass.getCalculatable() && recordClass.getIntegrationOfDaily().getShortTime().isPresent()){
 			//短時間勤務回数
@@ -174,14 +181,19 @@ public class ShortWorkTimeOfDaily {
 			if (recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().isPresent()){
 				ShortTimeWorkSheetWithoutWork withoutWork =
 						recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().get();
-				// 勤務外短時間勤務時間を累計する
+				// 勤務外短時間勤務時間を累計する（所定内）
 				ConditionAtr conditionAtr = ConditionAtr.Child;
 				if (careAtr.isCare()) conditionAtr = ConditionAtr.Care;
+				AttendanceTime withinTime = withoutWork.sumShortWorkTimeWithoutWork(
+						conditionAtr, TimeSheetRoundingAtr.ALL, Optional.empty(), true);
+				// 勤務外短時間勤務時間を累計する（所定外）
 				AttendanceTime withoutTime = withoutWork.sumShortWorkTimeWithoutWork(
-						conditionAtr, TimeSheetRoundingAtr.ALL, Optional.empty());
+						conditionAtr, TimeSheetRoundingAtr.ALL, Optional.empty(), false);
+				
+				AttendanceTime totalTime = withinTime.addMinutes(withoutTime.valueAsMinutes());
 				result = DeductionTotalTime.of(
-						result.getTotalTime().addMinutes(withoutTime, withoutTime),
-						result.getWithinStatutoryTotalTime(),
+						result.getTotalTime().addMinutes(totalTime, totalTime),
+						result.getWithinStatutoryTotalTime().addMinutes(withinTime, withinTime),
 						result.getExcessOfStatutoryTotalTime().addMinutes(withoutTime, withoutTime));
 			}
 		}
@@ -223,7 +235,7 @@ public class ShortWorkTimeOfDaily {
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @return 育児介護区分
 	 */
-	private static ChildCareAtr getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
+	public static ChildCareAtr getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
 		if(integrationOfDaily.getShortTime().isPresent()) {
 			val firstTimeSheet = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
 			if(firstTimeSheet.isPresent()) {

@@ -80,9 +80,9 @@
 			<div id="contents-area" style="background-color: inherit;">
 				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
-						style="width: calc(1260px - 410px); height: inherit; ">
+						style="width: calc(1260px - 388px); height: inherit; padding-bottom: 5px;">
 						<div
-						style="height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden;">
+						style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden;">
 							<div style="height: fit-content;">
 								<div class="table"
 									style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
@@ -97,7 +97,7 @@
 																	  } }"></div>
 									</div>
 									<div class="cell" style="text-align: right;">
-										<div
+										<div style="margin-top: 12px"
 											data-bind="component: { name: 'kaf000-a-component6',
 																params: {
 																	appType: appType,
@@ -120,7 +120,8 @@
 															params: {
 																appType: appType,
 																application: application,
-																appDispInfoStartupOutput: appDispInfoStartupOutput
+																appDispInfoStartupOutput: appDispInfoStartupOutput,
+																opOvertimeAppAtr: opOvertimeAppAtr
 															} }"></div>
 								<!--  share -->
 	
@@ -137,7 +138,7 @@
 																	holidayTime: holidayTime,
 																	overTime: overTime,
 																	visibleModel: visibleModel,
-																	agent: isAgentMode
+																	agent: agentForTable
 																}
 												
 															}"></div>
@@ -175,22 +176,23 @@
 						</div>
 					</div>
 
-					<div class="right-panel" style="width: 410px; height: inherit;">
+					<div class="right-panel" style="width: 388px; height: inherit; padding-bottom: 5px; padding-right: 0">
 						<div
-							style="height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto;">
-							<div style="padding-top: 10px"
+							style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto;">
+							<div
 								data-bind="component: { name: 'kaf000-a-component1', 
 																params: {
 																	appType: appType,
 																	appDispInfoStartupOutput: appDispInfoStartupOutput
 																} }"></div>
-																
-							<div
+<!--							<div data-bind="if: visibleModel.c6()">-->
+								<div
 									data-bind="component: { name: 'kaf005-share-header',
 													params: {
 														overTimeWork: overTimeWork
 													}
-													}"></div>    													
+													}"></div>
+<!--							</div>-->
 							<div
 								data-bind="component: { name: 'kaf000-a-component8',
 																params: {

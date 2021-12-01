@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
     const template = `
     <div id="kaf012-share-component2">
         <div class="control-group table" style="margin-bottom: 13px">
-            <div class="cell valign-center" style="padding-right: 3px" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
+            <div class="cell valign-center" style="padding-right: 3px" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_5')}"></div>
             <div class="cell valign-center" id="leave-type-switch"
                 data-bind="ntsSwitchButton: {
 						name: $i18n('KAF012_5'),
@@ -40,7 +40,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         </div>
         <div class="control-group table" style="margin-bottom: -3px">
             <div class="cell" style="padding-right: 3px; vertical-align: top" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
-            <div class="cell valign-center" style="display: inline-flex;" data-bind="css: {hidden: appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag > 0}">
+            <div class="cell valign-center" style="display: inline-flex;">
                 <div class="pull-left" >
                     <table id="kaf012-input-table">
                         <thead>
@@ -190,7 +190,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; substituteAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -206,7 +206,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; annualAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -222,7 +222,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; childCareAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -238,7 +238,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; careAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -254,7 +254,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; super60AppTime > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -270,7 +270,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0 &#124;&#124; specialAppTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -434,7 +434,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         },
                         {
                             code: 1,
-                            name: vm.$i18n('KAF012_4'),
+                            name: vm.$i18n('KAF012_55'),
                             display: (value.timeAnnualLeaveMng.timeAnnualLeaveMngAtr && !!vm.reflectSetting() && vm.reflectSetting().condition.annualVacationTime == 1)
                                         || vm.leaveType() == LeaveType.ANNUAL
                                         || (vm.leaveType() == LeaveType.COMBINATION && checkData(1))
@@ -480,6 +480,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         vm.switchOptions(result);
                     }
                     if (result.length > 0 && !vm.leaveType()) vm.leaveType(vm.switchOptions()[0].code);
+                    vm.leaveType.valueHasMutated();
                 }
             });
             vm.specialLeaveFrame.subscribe(value => {
@@ -758,7 +759,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         enableInput: KnockoutComputed<boolean>;
 
         constructor(appTimeType: number, workNo: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
-            this.appTimeType = ko.observable(GoingOutReason.PRIVATE);
+            this.appTimeType = ko.observable(appTimeType < 4 ? appTimeType : GoingOutReason.PRIVATE);
             this.workNo = workNo;
             this.startTime = ko.observable(null);
             this.endTime = ko.observable(null);
@@ -768,12 +769,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     && !!reflectSetting()
                     && reflectSetting().destination.privateGoingOut == 0
                     && reflectSetting().destination.unionGoingOut == 1) {
-                    this.appTimeType(AppTimeType.UNION);
+                    this.appTimeType(GoingOutReason.UNION);
                 } else if (!!reflectSetting
                     && !!reflectSetting()
                     && reflectSetting().destination.privateGoingOut == 1
                     && reflectSetting().destination.unionGoingOut == 0) {
-                    this.appTimeType(AppTimeType.PRIVATE);
+                    this.appTimeType(GoingOutReason.PRIVATE);
                 }
                 return !!reflectSetting
                     && !!reflectSetting()

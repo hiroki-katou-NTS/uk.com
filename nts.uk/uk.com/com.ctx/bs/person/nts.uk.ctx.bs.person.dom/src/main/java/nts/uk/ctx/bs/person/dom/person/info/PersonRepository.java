@@ -40,6 +40,8 @@ public interface PersonRepository {
 
 	void addNewPerson(Person newPerson);
 	
+	void delete(String personId);
+	
 	/**
 	 * @author lanlt
 	 * get full domain cps003

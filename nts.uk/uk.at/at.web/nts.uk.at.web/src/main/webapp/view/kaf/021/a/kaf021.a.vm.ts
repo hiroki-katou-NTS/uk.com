@@ -248,8 +248,8 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 subWidth: "130px",
-                subHeight: "240px",
-                headerHeight: '80px',
+                subHeight: "255px",
+                headerHeight: '70px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
                 primaryKey: 'employeeId',

@@ -15,6 +15,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
@@ -75,7 +77,13 @@ public class ChangeWorkToHalfdayLeave {
 		}
 		//取得できた勤務種類を確認する
 		integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(workType.get().getWorkTypeCode());
-		changeDailyAtt.setFixBreakCorrect(true);
+		//日別勤怠の編集状態を追加する
+		Optional<EditStateOfDailyAttd> editState = integrationOfDaily.getEditState().stream()
+				.filter(c->c.getAttendanceItemId() == 28).findFirst();
+		if(!editState.isPresent()) {
+			integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(28, EditStateSetting.IMPRINT));
+		}
+		changeDailyAtt.setCorrectValCopyFromSche(true);
 		changeDailyAtt.setWorkInfo(true);
 		
 		return listErrorMessageInfo;

@@ -7,9 +7,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,5 +44,15 @@ public class PeriodFinder {
 	
 	public YearMonth getCurentMonth() {
 		return closureEmploymentService.getCurentMonth();
+	}
+	
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.会社.Export.会社の期首月を取得する.アルゴリズム.会社の期首月を取得する
+	 * @return
+	 */
+	public String getStartMonth() {
+		// ドメインモデル「会社情報」を取得する
+		Optional<CompanyImport622> optCompany = this.companyAdapter.getCompanyNotAbolitionByCid(AppContexts.user().companyId());
+		return optCompany.map(data -> StringUtil.padLeft(String.valueOf(data.getStartMonth()), 2, '0')).orElse(null);
 	}
 }

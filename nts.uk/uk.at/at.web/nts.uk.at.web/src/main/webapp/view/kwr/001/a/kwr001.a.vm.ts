@@ -215,6 +215,7 @@ module nts.uk.at.view.kwr001.a {
                     showWorktype: true,
                     isMutipleCheck: true,
                     
+                    tabindex: -1,
                     /**
                     * Self-defined function: Return data from CCG001
                     * @param: data: the data return from CCG001
@@ -724,12 +725,12 @@ module nts.uk.at.view.kwr001.a {
                     // update spec ver 25, only hidden temporary
                     //  && !self.checkedA10_5()
                         && !self.checkedA10_6() && !self.checkedA10_7()) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_2309" });
                         return false;
                     }    
                 } else {
                     if (!self.checkedA10_2() && !self.checkedA10_4() && !self.checkedA10_6() && !self.checkedA10_7()) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_1167" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_2309" });
                         return false;
                     }
                 }

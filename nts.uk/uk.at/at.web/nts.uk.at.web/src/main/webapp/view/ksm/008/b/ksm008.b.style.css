@@ -21,11 +21,13 @@
     padding-bottom: 0.5rem;
     padding-left: 10px;
     margin-bottom: 5px;
+    margin-left: 20px;
 }
 
 #B10_1 {
-    margin-left: 205px;
+    margin-left: 172px;
     color: #C00000;
     background-color: #FED3C6;
     line-height: 25px;
+    margin-top: 10px;
 }

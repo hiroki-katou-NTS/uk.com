@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.flowmenu.service.FlowMenuService;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -31,14 +32,16 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 		String companyId = AppContexts.user().companyId();
 		UpdateFlowMenuCommand command = context.getCommand();
 		
-		Optional<FlowMenu> checkFlowMenu = repository.findByCode(companyId, context.getCommand().getTopPagePartID());
+		Optional<FlowMenu> checkFlowMenu = repository.findByToppagePartCodeAndType(
+				companyId,
+				command.getTopPageCode(),
+				0);
 		if (!checkFlowMenu.isPresent())
-			throw new RuntimeException("Can't find FlowMenu with ID: " + context.getCommand().getTopPagePartID());
+			throw new RuntimeException("Can't find FlowMenu with code: " + command.getTopPageCode());
 		
 		// Update FLowMenu
 		FlowMenu flowMenu = checkFlowMenu.get();
-		flowMenu.setName(command.getTopPageName());
-		flowMenu.setSize(command.getWidth(), command.getHeight());
+		flowMenu.setName(new TopPagePartName(command.getTopPageName()));
 		flowMenu.setFileID(command.getFileID());
 		flowMenu.setDefClassAtr(command.getDefClassAtr());
 		flowMenuService.updateFlowMenu(flowMenu);

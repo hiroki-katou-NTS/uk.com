@@ -30,24 +30,42 @@
 			</com:ko>
 		</com:ko>
 	</div>
+	<div>
+		<com:ko tag="if" bind="isDetailMode() &amp;&amp; mainSettingModel.workTimeSetting.isRegularWork()">
+			<com:ko tag="if" bind="isFixedMode">
+				<div class="tab-rows">
+					<div tabindex="-1" style="width: 120px;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
+					<div tabindex="56" data-bind="ntsSwitchButton: {
+							options: autoCalUseAttrs,
+							optionsValue: 'code',
+							optionsText: 'name',
+							name: '#[KMK003_212]',
+							value: mainSettingModel.fixedWorkSetting.legalOTSetting,
+							enable: true }"></div>
+					<button tabindex="57" style="margin-left: 20px;"
+						data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
+				</div>
+			</com:ko>
+			<com:ko tag="if" bind="isFlowMode">
+				<div class="tab-rows">
+					<div tabindex="-1" style="width: 120px;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
+					<div tabindex="56" data-bind="ntsSwitchButton: {
+							options: autoCalUseAttrs,
+							optionsValue: 'code',
+							optionsText: 'name',
+							name: '#[KMK003_212]',
+							value: mainSettingModel.flowWorkSetting.designatedSetting,
+							enable: true }"></div>
+					<button tabindex="57" style="margin-left: 20px;"
+						data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
+				</div>
+			</com:ko>
+		</com:ko>
+	</div>
 
 	<com:ko tag="ifnot" bind="isFlexMode">
 		<com:ko tag="ifnot" bind="isFlowMode">
 			<com:ko tag="if" bind="isFixedMode">
-				<com:ko tag="if" bind="isDetailMode">
-					<div class="tab-rows">
-						<div tabindex="-1" style="width: 120px;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
-						<div tabindex="56" data-bind="ntsSwitchButton: {
-								options: autoCalUseAttrs,
-								optionsValue: 'code',
-								optionsText: 'name',
-								name: '#[KMK003_212]',
-								value: mainSettingModel.fixedWorkSetting.legalOTSetting,
-								enable: true }"></div>
-						<button tabindex="57" style="margin-left: 20px;"
-							data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
-					</div>
-				</com:ko>
 				<div class="tab-seperator">	
 					<com:ko tag="if" bind="isDetailMode">						
 						<div tabindex="-1" class="accordion"
@@ -111,7 +129,7 @@
 			</com:ko>
 			
 			<com:ko tag="if" bind="isDiffTimeMode">
-				<com:ko tag="if" bind="isDetailMode">
+				<!-- <com:ko tag="if" bind="isDetailMode() &amp;&amp; mainSettingModel.workTimeSetting.isRegularWork()">
 					<div class="tab-rows">
 						<div tabindex="-1" style="width: 120px;" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_185')}</div>
 						<div tabindex="56" data-bind="ntsSwitchButton: {
@@ -124,7 +142,7 @@
 						<button tabindex="57" style="margin-left: 20px;"
 							data-bind="ntsHelpButton: {image: 'img/IMG_KMK003_1.png', position: 'right top' }">?</button>
 					</div>
-				</com:ko>
+				</com:ko> -->
 				<div class="tab-seperator">	
 					<com:ko tag="if" bind="isDetailMode">						
 						<div tabindex="-1" class="accordion"
@@ -190,11 +208,13 @@
 
 		<com:ko tag="if" bind="isFlowMode">
 
-			<com:ko tag="if" bind="isDetailMode">
-				<div class="tab-seperator">
-					<div tabindex="61" id="tab3_fixtable_flow"
-						data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
-				</div>
+			<!-- <com:ko tag="if" bind="isDetailMode">
+				<com:ko tag="if" bind="isDetailMode">
+					<div class="tab-seperator">
+						<div tabindex="61" id="tab3_fixtable_flow"
+							data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
+					</div>
+				</com:ko>
 			</com:ko>
 
 
@@ -202,6 +222,18 @@
 				<div class="tab-seperator">
 					<div tabindex="61" id="tab3_fixtable_flow_simple"
 						data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlowSimple}"></div>
+				</div>
+			</com:ko> -->
+			<com:ko tag="if" bind="showSimpleFlow">
+				<div class="tab-seperator">
+					<div tabindex="61" id="tab3_fixtable_flow_simple"
+						data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlowSimple}"></div>
+				</div>
+			</com:ko>
+			<com:ko tag="ifnot" bind="showSimpleFlow">
+				<div class="tab-seperator">
+					<div tabindex="61" id="tab3_fixtable_flow"
+						data-bind="ntsFixTableCustom: {option: fixTableOptionOvertimeFlow}"></div>
 				</div>
 			</com:ko>
 		</com:ko>

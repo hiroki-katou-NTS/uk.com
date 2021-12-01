@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.application.appabsence.ApplyForLeaveShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.StampRequestModeShare;
@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ti
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
  * @author thanh_nx
@@ -42,13 +43,18 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.wo
  */
 public class RCCreateDailyAfterApplicationeReflect {
 
-	public static DailyAfterAppReflectResult process(Require require, ApplicationShare application,
+	public static DailyAfterAppReflectResult process(Require require, String companyId, ApplicationShare application,
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
-		String companyId = require.getCId();
-		// TODO: typeDaikyu chua co domain
+		//各申請反映条件のドメインモデルを取得する
 		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
 				application.getAppType() != ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION ? Optional.empty()
 						: Optional.of(((ApplicationForHolidaysShare) application).getTypeApplicationHolidays()));
+		
+		//勤怠時間を存在しない場合は、全て0の値でインスタンスを作成する
+		if(!dailyApp.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			dailyApp.setAttendanceTimeOfDailyPerformance(Optional.of(AttendanceTimeOfDailyAttendance.createDefault()));
+		}
+		
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
@@ -65,7 +71,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 		case BUSINESS_TRIP_APPLICATION:
 			// 3：出張申請の反映（勤務実績）
 			itemIds.addAll(((ReflectBusinessTripApp) domainSetReflect).reflectRecord(require,
-					(BusinessTripShare) application, dailyApp, date));
+					(BusinessTripInfoShare) application, dailyApp));
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務実績）

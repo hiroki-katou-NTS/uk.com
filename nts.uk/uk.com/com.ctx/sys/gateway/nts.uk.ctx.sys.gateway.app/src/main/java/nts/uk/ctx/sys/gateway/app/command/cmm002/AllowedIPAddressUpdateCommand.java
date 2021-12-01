@@ -19,4 +19,9 @@ public class AllowedIPAddressUpdateCommand {
 	 * ・ドメイン：許可IPアドレス_OLD
 	 */
 	public AllowedIPAddressCommand allowedIPAddressOld;
+	
+	/**
+	 * 検査対象のIPアドレス						
+	 */
+	public AllowedIPAddressCommand ipAddressToCheck;
 }

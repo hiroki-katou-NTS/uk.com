@@ -15,7 +15,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompensLeaveComDto {
-
+	
+	/**
+	 * 代休管理する
+	 */
 	private boolean manageCompenLeave;
 
 	private boolean manageTimeOff;
@@ -23,5 +26,4 @@ public class CompensLeaveComDto {
 	private Double compenLeaveRemain;
 	
 	private Integer timeRemain;
-	
 }

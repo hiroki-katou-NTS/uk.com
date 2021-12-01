@@ -143,7 +143,6 @@ public class WorkTimeSettingTest {
 					"historyId",
 					ManageAtr.NOTUSE,
 					null,
-					null,
 					NotUseAtr.NOTUSE,
 					NotUseAtr.NOTUSE,
 					"employeeId",
