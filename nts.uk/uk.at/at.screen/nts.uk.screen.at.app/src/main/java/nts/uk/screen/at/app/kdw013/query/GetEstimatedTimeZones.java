@@ -153,7 +153,7 @@ public class GetEstimatedTimeZones {
 								}
 
 								if (result.getEndTime() == null) {
-									predSet.getTimezoneByAmPmAtr(atr).stream().mapToInt(x -> x.getStart().v()).max()
+									predSet.getTimezoneByAmPmAtr(atr).stream().mapToInt(x -> x.getEnd().v()).max()
 											.ifPresent(x -> {
 												result.setEndTime(new TimeWithDayAttr(x));
 											});
