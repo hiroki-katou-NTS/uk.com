@@ -267,11 +267,9 @@ public class GetScheduleOfWorkInfo002 {
 			empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(empLeaveWorkPeriods.stream().collect(Collectors
 					.toMap(h -> h.getEmpID(), h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
 
-			List<WorkingConditionItemWithPeriod> listData = workCondRepo
-					.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), empIdList, period);
-			workCondItemWithPeriodCache = KeyDateHistoryCache
-					.loaded(listData.stream().collect(Collectors.toMap(h -> h.getWorkingConditionItem().getEmployeeId(),
-							h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			List<WorkingConditionItemWithPeriod> listData = workCondRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(),empIdList, period);
+			Map<String, List<WorkingConditionItemWithPeriod>> data = listData.stream().collect(Collectors.groupingBy(item ->item.getWorkingConditionItem().getEmployeeId()));
+			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries(data));
 		}
 
 		public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
@@ -315,5 +313,14 @@ public class GetScheduleOfWorkInfo002 {
 			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
 			return data;
 		}
+	}
+	
+	private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries(Map<String, List<WorkingConditionItemWithPeriod>> data) {
+		Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
+		data.forEach( (k,v) -> {
+			List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+			rs.put(k, s);
+		});
+		return rs;
 	}
 }
