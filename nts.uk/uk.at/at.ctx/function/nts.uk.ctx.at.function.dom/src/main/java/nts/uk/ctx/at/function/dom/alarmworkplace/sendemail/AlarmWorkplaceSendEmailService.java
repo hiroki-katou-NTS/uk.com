@@ -144,7 +144,6 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
             List<ValueExtractAlarmManualDto> data = new ArrayList<>();
             // ループ中項目のList＜管理者ID＞をループする
 
-            List<String> errorsAdmin = new ArrayList<>();
             for (String workPlaceId : target.getValue()) {
                 List<ValueExtractAlarmManualDto> dataFilter = listValueExtractAlarmDto
                         .stream()
@@ -168,12 +167,20 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                         Optional.empty()
                 );
                 if (!isSucess) {
+                    List<String> errorsAdmin = new ArrayList<>();
                     errorsAdmin.add(adminID);
                     for (String workPlaceId : target.getValue()) {
-                        errorTadmin.put(workPlaceId, errorsAdmin);
+//                        errorTadmin.put(workPlaceId, errorsAdmin);
+                        if (!errorTadmin.containsKey(workPlaceId)) {
+                            errorTadmin.put(workPlaceId, errorsAdmin);
+                        } else {
+                            List<String> empError = errorTadmin.getOrDefault(workPlaceId, Collections.emptyList());
+                            empError.addAll(errorsAdmin);
+                            errorTadmin.put(workPlaceId, empError.stream().distinct().collect(Collectors.toList()));
+                        }
                     }
-                    errorsAdmin.clear();
-                    System.out.println("send failed");
+//                    errorsAdmin.clear();
+                    System.out.println("send failed " + adminID);
                 } else {
                     System.out.println("success send email");
                 }

@@ -116,7 +116,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         List<String> empIdList = new ArrayList<>();
         Map<String, List<String>> managerIdMap = new HashMap<>();
         //[ロール設定=true]
-        if (sendingRole.isPresent() && sendingRole.get().isRoleSetting()) {
+//        if (sendingRole.isPresent() && sendingRole.get().isRoleSetting()) {
             managerIdMap = angAnAdministrator(command.getWorkplaceIds(), executeDate, sendingRole, companyId);
 
             //取得したアラームメール送信ロール．マスタチェック結果を就業担当へ送信をチェックする
@@ -134,7 +134,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                     }
                 }
             }
-        } // end check sendingRole
+//        }
 
         //ドメインモデル「メールサーバ」を取得する
         boolean useAuthentication = mailServerAdapter.findBy(companyId);
@@ -170,9 +170,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             );
         }
 
-        if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
-            return TextResource.localize("Msg_965");
-        }
+//        if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
+//            return TextResource.localize("Msg_965");
+//        }
 
         //管理者未設定職場リスト：取得した管理者未設定職場リスト
         List<String> unsetList = new ArrayList<>();
