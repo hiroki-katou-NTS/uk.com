@@ -47,7 +47,22 @@
 												columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
+						<div id="mode"
+							data-bind="ntsComboBox: {
+											name: '',
+											options: modes,
+											optionsValue: 'code',
+											optionsText: 'name',
+											visibleItemsCount: 3,
+											value: selectedMode,
+											editable: false,
+											enable: true,
+											required: false,
+											columns: [{ prop: 'name', length: 10 }]
+							}"></div>
 						<button data-bind="click: replace">Replace</button>
+						<button data-bind="click: chart1">Chart1</button>
+						<button data-bind="click: chart2">Chart2</button>
 						<div id="extable" style="height: 400px;"></div>
 						<article class="cf" style="margin-top: 400px;">
 							<div class="tabs">

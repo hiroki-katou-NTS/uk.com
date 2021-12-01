@@ -128,29 +128,46 @@ public enum Unit {
 	 * @return
 	 */
 	public int roundDown(int timeAsMinutes) {
-		return roundDownBigDecimal(BigDecimal.valueOf(timeAsMinutes)).intValue();
+		/** 単位を求める */
+		int unit = this.asTime();
+		
+		if (this == Unit.ROUNDING_TIME_1MIN) {
+			return timeAsMinutes;
+		}
+		
+		/** 【時間】÷単位の余りチェック */
+		int remain = Math.abs(timeAsMinutes % unit);
+		
+		if (remain > 0) {
+			/** 時間を切り捨てする */
+			return downByUnit(timeAsMinutes, unit);
+		}
+		
+		return timeAsMinutes;
 	}
 	
 	public BigDecimal roundDownBigDecimal(BigDecimal timeAsMinutes) {
-		//マイナスの場合
-		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
-			// 一旦、プラスの数値にする
-			BigDecimal result = timeAsMinutes.negate();
-			BigDecimal amari = result.remainder(BigDecimal.valueOf(this.asTime()));
-			if(amari.compareTo(BigDecimal.ONE)>0) {
-				// 切り捨て処理
-				result = result.subtract(amari).add(BigDecimal.valueOf(this.asTime()));
-			}
-			//再びマイナスの値に戻す
-			return result.negate();
-		}
-		//マイナスではない場合
-		BigDecimal amari = timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime()));
-		if(amari.compareTo(BigDecimal.ZERO)>0) {
-			//切り捨て処理
-			return timeAsMinutes.subtract(amari);
-		}
-		return timeAsMinutes;
+
+		return BigDecimal.valueOf(roundDown(timeAsMinutes.intValue()));
+//		//マイナスの場合
+//		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
+//			// 一旦、プラスの数値にする
+//			BigDecimal result = timeAsMinutes.negate();
+//			BigDecimal amari = result.remainder(BigDecimal.valueOf(this.asTime()));
+//			if(amari.compareTo(BigDecimal.ONE)>0) {
+//				// 切り捨て処理
+//				result = result.subtract(amari).add(BigDecimal.valueOf(this.asTime()));
+//			}
+//			//再びマイナスの値に戻す
+//			return result.negate();
+//		}
+//		//マイナスではない場合
+//		BigDecimal amari = timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime()));
+//		if(amari.compareTo(BigDecimal.ZERO)>0) {
+//			//切り捨て処理
+//			return timeAsMinutes.subtract(amari);
+//		}
+//		return timeAsMinutes;
 	}
 	
 	
@@ -162,29 +179,45 @@ public enum Unit {
 	 * @return
 	 */
 	public int roundUp(int timeAsMinutes) {
-		return roundUpBigDecimal(BigDecimal.valueOf(timeAsMinutes)).intValue();
+		/** 単位を求める */
+		int unit = this.asTime();
+		
+		if (this == Unit.ROUNDING_TIME_1MIN) {
+			return timeAsMinutes;
+		}
+		
+		/** 【時間】÷単位の余りチェック */
+		int remain = Math.abs(timeAsMinutes % unit);
+		
+		if (remain > 0) {
+			/** 時間を切り上げ */
+			return upByUnit(timeAsMinutes, unit);
+		}
+		
+		return timeAsMinutes;
 	}
 	
 	public BigDecimal roundUpBigDecimal(BigDecimal timeAsMinutes) {
-		//マイナスの場合
-		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
-			// 一旦、プラスの数値にする
-			BigDecimal result = timeAsMinutes.negate();
-			BigDecimal amari = result.remainder(BigDecimal.valueOf(this.asTime()));
-			if(amari.compareTo(BigDecimal.ZERO)>0) {
-				// 切り上げ処理
-				result = result.subtract(amari);
-			}
-			//再びマイナスの値に戻す
-			return result.negate();
-		}
-		//マイナスではない場合
-		BigDecimal amari = timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime()));
-		if(amari.compareTo(BigDecimal.ZERO)>0) {
-			//切り上げ処理
-			return timeAsMinutes.subtract(amari).add(BigDecimal.valueOf(this.asTime()));
-		}
-		return timeAsMinutes;
+		return BigDecimal.valueOf(roundUp(timeAsMinutes.intValue()));
+//		//マイナスの場合
+//		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
+//			// 一旦、プラスの数値にする
+//			BigDecimal result = timeAsMinutes.negate();
+//			BigDecimal amari = result.remainder(BigDecimal.valueOf(this.asTime()));
+//			if(amari.compareTo(BigDecimal.ZERO)>0) {
+//				// 切り上げ処理
+//				result = result.subtract(amari);
+//			}
+//			//再びマイナスの値に戻す
+//			return result.negate();
+//		}
+//		//マイナスではない場合
+//		BigDecimal amari = timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime()));
+//		if(amari.compareTo(BigDecimal.ZERO)>0) {
+//			//切り上げ処理
+//			return timeAsMinutes.subtract(amari).add(BigDecimal.valueOf(this.asTime()));
+//		}
+//		return timeAsMinutes;
 	}
 	
 	
@@ -192,32 +225,79 @@ public enum Unit {
 	/**
 	 * 未満切捨以上切上
 	 * @param timeAsMinutes
-	 * @param roundingDirection
 	 * @return
 	 */
 	public int roundDownOver(int timeAsMinutes) {
-		return roundDownOverBigDecimal(BigDecimal.valueOf(timeAsMinutes)).intValue();
+		
+		/** 単位を求める */
+		int unit = this.asTime();
+		
+		
+		if (this != Unit.ROUNDING_TIME_15MIN && this != Unit.ROUNDING_TIME_30MIN) {
+			return timeAsMinutes;
+		}
+		
+		
+		/** 切捨て～切り上げの範囲を求める */
+		int border = unit * 2;
+
+		/** 対象時間から範囲の倍数を求める */
+		int multiple = timeAsMinutes / border;
+
+		/** 切捨ての位置と切り上の位置を求める */
+		int botBorder = multiple * border - unit;
+		int topBorder = multiple * border + unit;
+
+		/** 切り上げ、切捨てかを判断する */
+		if (botBorder <= timeAsMinutes && timeAsMinutes < topBorder) {
+
+			/** 切捨て */
+			return multiple * border;
+		} else {
+			/**　切上げ */
+			return timeAsMinutes > 0 ? (multiple + 1) * border : (multiple - 1) * border;
+		}
+	}
+
+	/** 時間を切り捨てする */
+	private int downByUnit(int timeAsMinutes, int unit) {
+		/** 時間から単位分を求める */
+		int perUnit = timeAsMinutes / unit;
+		
+		/** 時間を切り捨て */
+		return timeAsMinutes < 0 ? unit * (perUnit - 1) : unit * perUnit;
+	}
+
+	/** 時間を切り上げする */
+	private int upByUnit(int timeAsMinutes, int unit) {
+		/** 時間から単位分を求める */
+		int perUnit = timeAsMinutes / unit;
+		
+		/** 時間を切り捨て */
+		return timeAsMinutes > 0 ? unit * (perUnit + 1) : unit * perUnit;
 	}
 	
 	public BigDecimal roundDownOverBigDecimal(BigDecimal timeAsMinutes) {
-		BigDecimal div = timeAsMinutes.divide(BigDecimal.valueOf(this.asTime()),6,BigDecimal.ROUND_HALF_UP);
-		//マイナスの場合
-		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
-			if(div.remainder(BigDecimal.valueOf(2)).signum()==0) {
-				return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())));
-			}else {
-				if(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).signum() == 0) {
-					return timeAsMinutes.add(BigDecimal.valueOf(this.asTime()));
-				}else {
-					return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).subtract(BigDecimal.valueOf(this.asTime())));
-				}
-			}
-		}
-		//マイナスではない場合
-		if(div.remainder(BigDecimal.valueOf(2)).signum()==0) {
-			return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())));
-		}else {
-			return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).add(BigDecimal.valueOf(this.asTime())));
-		}
+		
+		return BigDecimal.valueOf(roundDownOver(timeAsMinutes.intValue()));
+//		BigDecimal div = timeAsMinutes.divide(BigDecimal.valueOf(this.asTime()),6,BigDecimal.ROUND_HALF_UP);
+//		//マイナスの場合
+//		if(timeAsMinutes.compareTo(BigDecimal.ZERO)<0) {
+//			if(div.remainder(BigDecimal.valueOf(2)).signum()==0) {
+//				return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())));
+//			}else {
+//				if(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).signum() == 0) {
+//					return timeAsMinutes.add(BigDecimal.valueOf(this.asTime()));
+//				}else {
+//					return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).subtract(BigDecimal.valueOf(this.asTime())));
+//				}
+//			}
+//		}
+//		//マイナスではない場合
+//		if(div.remainder(BigDecimal.valueOf(2)).signum()==0) {
+//			return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())));
+//		}else {
+//			return timeAsMinutes.subtract(timeAsMinutes.remainder(BigDecimal.valueOf(this.asTime())).add(BigDecimal.valueOf(this.asTime())));
+//		}
 	}
 }

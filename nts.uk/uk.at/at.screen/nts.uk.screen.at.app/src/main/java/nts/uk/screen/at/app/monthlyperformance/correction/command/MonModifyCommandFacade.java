@@ -108,8 +108,7 @@ public class MonModifyCommandFacade {
 		mapItemDetail.entrySet().forEach(item -> {
 			List<MPItemDetail> rowDatas = item.getValue();
 			MonthlyModifyQuery query = new MonthlyModifyQuery(rowDatas.stream().map(x -> {
-				return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue())
-						.valueType(ValueType.valueOf(x.getValueType())).withPath("");
+				return ItemValue.builder().itemId(x.getItemId()).layout(x.getLayoutCode()).value(x.getValue()).withPath("");
 			}).collect(Collectors.toList()), dataParent.getYearMonth(), item.getKey(), dataParent.getClosureId(),
 					dataParent.getClosureDate());
 			

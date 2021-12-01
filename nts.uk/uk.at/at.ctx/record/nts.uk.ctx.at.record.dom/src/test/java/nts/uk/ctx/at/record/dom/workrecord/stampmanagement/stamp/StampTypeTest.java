@@ -2,10 +2,14 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.Expectations;
+import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
@@ -15,7 +19,13 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.i18n.TextResource;
 /**
  * 
@@ -24,6 +34,9 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 @RunWith(JMockit.class)
 public class StampTypeTest {
+	
+	@Injectable
+	private StampType.Require require;
 
 	@Test
 	public void getters() {
@@ -450,6 +463,211 @@ public class StampTypeTest {
         		ChangeClockArt.valueOf(0), 
         		ChangeCalArt.valueOf(2));
 		assertThat(stampType.checkBookAuto()).isFalse();
+	}
+	
+	/**
+	 * if 勤務種類を取得する is empty
+	 */
+	@Test
+	public void testChangeWorkOnHolidays_1() {
+		StampType stampType = StampHelper.getStampTypeDefault();
+		String workTypeCode = "workType";
+		
+		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);
+		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(restTime, lateNightTime);
+		
+		new Expectations() {
+			{
+				require.findByPK(workTypeCode);
+			}
+		};
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		assertThat(result).isFalse();
+	}
+	
+	/**
+	 * if 勤務種類を取得する not empty
+	 * 一日休日かを確認する not holiday
+	 */
+	@Test
+	public void testChangeWorkOnHolidays_2() {
+		StampType stampType = StampHelper.getStampTypeDefault();
+		String workTypeCode = "workType";
+		
+		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);//dummy
+		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT, AutoCalAtrOvertime.APPLYMANUALLYENTER);//dummy
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(restTime, lateNightTime);
+		
+		WorkType wt = new WorkType("companyId", new WorkTypeCode(workTypeCode), new ArrayList<>());
+		new Expectations() {
+			{
+				require.findByPK(workTypeCode);
+				result = Optional.of(wt);
+			}
+		};
+		
+		new MockUp<WorkType>() {
+			@Mock
+			public boolean isHoliday(){
+				return false;
+			}
+		};
+		
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		assertThat(result).isFalse();
+	}
+	
+	/**
+	 * if 勤務種類を取得する not empty
+	 * 一日休日かを確認する is holiday
+	 * 日別勤怠の計算区分の休出時間の計算区分を確認する  == 打刻から計算する
+	 */
+	@Test
+	public void testChangeWorkOnHolidays_3() {
+		StampType stampType = StampHelper.getStampTypeDefault();
+		String workTypeCode = "workType";
+		
+		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
+				AutoCalAtrOvertime.CALCULATEMBOSS);
+		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,////dummy 
+				AutoCalAtrOvertime.APPLYMANUALLYENTER);////dummy
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(restTime, lateNightTime);
+		
+		WorkType wt = new WorkType("companyId", new WorkTypeCode(workTypeCode), new ArrayList<>());
+		new Expectations() {
+			{
+				require.findByPK(workTypeCode);
+				result = Optional.of(wt);
+			}
+		};
+		
+		new MockUp<WorkType>() {
+			@Mock
+			public boolean isHoliday(){
+				return true;
+			}
+		};
+		
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		assertThat(result).isTrue();
+	}
+	
+	/**
+	 * if 勤務種類を取得する not empty
+	 * 一日休日かを確認する is holiday
+	 * 日別勤怠の計算区分の休出時間の計算区分を確認する  == 申請または手入力
+	 */
+	@Test
+	public void testChangeWorkOnHolidays_4() {
+		StampType stampType = StampHelper.getStampTypeDefault();
+		String workTypeCode = "workType";
+		
+		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
+				AutoCalAtrOvertime.APPLYMANUALLYENTER);
+		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,////dummy 
+				AutoCalAtrOvertime.APPLYMANUALLYENTER);////dummy
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(restTime, lateNightTime);
+		
+		WorkType wt = new WorkType("companyId", new WorkTypeCode(workTypeCode), new ArrayList<>());
+		new Expectations() {
+			{
+				require.findByPK(workTypeCode);
+				result = Optional.of(wt);
+			}
+		};
+		
+		new MockUp<WorkType>() {
+			@Mock
+			public boolean isHoliday(){
+				return true;
+			}
+		};
+		
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		assertThat(result).isFalse();
+	}
+	
+	/**
+	 * if 勤務種類を取得する not empty
+	 * 一日休日かを確認する is holiday
+	 * 日別勤怠の計算区分の休出時間の計算区分を確認する  == タイムレコーダーで選択
+	 * 打刻の計算区分変更対象を確認する == 休出
+	 */
+	@Test
+	public void testChangeWorkOnHolidays_5() {
+		StampType stampType = StampHelper.getStampTypeHaveInput(
+				false, //dummy
+        		null,//dummy
+        		SetPreClockArt.valueOf(0),//dummy
+        		ChangeClockArt.valueOf(0), //dummy
+        		ChangeCalArt.valueOf(3));
+		String workTypeCode = "workType";
+		
+		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
+				AutoCalAtrOvertime.TIMERECORDER);
+		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,////dummy 
+				AutoCalAtrOvertime.APPLYMANUALLYENTER);////dummy
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(restTime, lateNightTime);
+		
+		WorkType wt = new WorkType("companyId", new WorkTypeCode(workTypeCode), new ArrayList<>());
+		new Expectations() {
+			{
+				require.findByPK(workTypeCode);
+				result = Optional.of(wt);
+			}
+		};
+		
+		new MockUp<WorkType>() {
+			@Mock
+			public boolean isHoliday(){
+				return true;
+			}
+		};
+		
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		assertThat(result).isTrue();
+	}
+	
+	/**
+	 * if 勤務種類を取得する not empty
+	 * 一日休日かを確認する is holiday
+	 * 日別勤怠の計算区分の休出時間の計算区分を確認する  == タイムレコーダーで選択
+	 * 打刻の計算区分変更対象を確認する != 休出
+	 */
+	@Test
+	public void testChangeWorkOnHolidays_6() {
+		StampType stampType = StampHelper.getStampTypeHaveInput(
+				false, //dummy
+        		null,//dummy
+        		SetPreClockArt.valueOf(0),//dummy
+        		ChangeClockArt.valueOf(0), //dummy
+        		ChangeCalArt.valueOf(2));
+		String workTypeCode = "workType";
+		
+		AutoCalSetting restTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,//dummy
+				AutoCalAtrOvertime.TIMERECORDER);
+		AutoCalSetting lateNightTime = new AutoCalSetting(TimeLimitUpperLimitSetting.INDICATEDYIMEUPPERLIMIT,////dummy 
+				AutoCalAtrOvertime.APPLYMANUALLYENTER);////dummy
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(restTime, lateNightTime);
+		
+		WorkType wt = new WorkType("companyId", new WorkTypeCode(workTypeCode), new ArrayList<>());
+		new Expectations() {
+			{
+				require.findByPK(workTypeCode);
+				result = Optional.of(wt);
+			}
+		};
+		
+		new MockUp<WorkType>() {
+			@Mock
+			public boolean isHoliday(){
+				return true;
+			}
+		};
+		
+		boolean result = stampType.changeWorkOnHolidays(require, holidayTimeSetting, workTypeCode);
+		assertThat(result).isFalse();
 	}
 	
 

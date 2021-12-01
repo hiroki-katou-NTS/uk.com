@@ -89,7 +89,6 @@
               #{i18n.getText('KAL003_313')}
 						</button>
 						
-						<button data-bind="click: checkParentValueFromSub">Test</button>
           </div>
         </div>
         <div class="contents-area">
@@ -166,10 +165,10 @@
                   <label data-bind="text: displayCategory"></label>
                 </div>
                 <div
-                  class="valign-center control-group"
+                  class="flex valign-center control-group"
                   data-bind="visible: category() == 5"
                 >
-                  <label class="flabel">#{i18n.getText('KAL003_50')}</label>
+                  <label style="width: 200px">#{i18n.getText('KAL003_50')}</label>
                   <div
                     tabindex="9"
                     data-bind="ntsRadioBoxGroup: {

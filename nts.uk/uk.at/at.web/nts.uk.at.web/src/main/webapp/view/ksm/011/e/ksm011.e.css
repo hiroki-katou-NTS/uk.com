@@ -20,10 +20,11 @@ div#contents-area {
   margin: 15px !important;
 }
 
-.ui-tabs-panel {
+#tab-panel {
   width: 700px;
+  overflow: visible;
 }
 
 .divi .control-group .label:first-child {
-  margin-left: 140px;
+  margin-left: 100px;
 }

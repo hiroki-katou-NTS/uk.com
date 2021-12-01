@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { 
 					width: 600, 
-					height: 430 
+					height: 400 
 			};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,7 +22,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div class="contents-area dialog-contents">
+			<div id="contents-area" class="dialog-contents">
 				<label id="S1">#{i18n.getText('CMF002_236')}</label>
 				<table>
 					<tr>
@@ -67,8 +67,7 @@
 					</tr>
 				</table>
 			</div>
-			<hr />
-			<div class="button">
+			<div id="functions-area-bottom" class="button">
 				<com:ko-if bind="(dialogMode() == 'saving')">
 					<button id="S10_1" class="large" tabindex="1"
 						data-bind="click : interrupt">#{i18n.getText('CMF002_245')}</button>

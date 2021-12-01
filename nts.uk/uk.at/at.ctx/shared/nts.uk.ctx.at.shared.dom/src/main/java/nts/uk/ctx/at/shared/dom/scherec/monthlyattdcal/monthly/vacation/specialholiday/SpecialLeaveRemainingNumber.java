@@ -159,7 +159,7 @@ public class SpecialLeaveRemainingNumber {
 				val remainingNumber = remainingData.getDetails().getRemainingNumber();
 
 				// 「特休不足ダミーフラグ」をチェック
-				if (remainingData.isShortageRemain() == false){
+				if (remainingData.isDummyData() == false){
 
 					// 特別休暇残数．明細に特別休暇残明細を追加
 					TimeOfRemain remainingTime = null;

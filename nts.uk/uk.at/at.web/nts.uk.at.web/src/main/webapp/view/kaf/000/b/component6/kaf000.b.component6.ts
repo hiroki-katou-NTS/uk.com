@@ -10,6 +10,9 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
                     </div>
                     <div class="cell valign-center" data-bind="text: appDateString"></div>
                 </div>
+                <div data-bind="if: !dispSingleDate && from006">
+                                <div class="ml-120 cell valign-center" data-bind=" text: $i18n('KAF006_101')"></div>
+                            </div>
             </div>
         `
     })
@@ -17,12 +20,14 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
 		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
         appDateString: KnockoutObservable<string>;
+		dispSingleDate: boolean = true;
+		from006: boolean = false;
         created(params: any) {
             const vm = this;
 			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.appDateString = ko.observable("appDateString");
-
+            vm.from006 = params.from006;
 
             params.application().appDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appDate);
             params.application().opAppStartDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStartDate);
@@ -32,8 +37,10 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
 			let appDateString = "";
 			if(params.application().opAppStartDate()==params.application().opAppEndDate()) {
 				appDateString = params.application().appDate();
+				vm.dispSingleDate = true;
 			} else {
 				appDateString = params.application().opAppStartDate() + '～' +params.application().opAppEndDate();
+				vm.dispSingleDate = false;
 			}
 			vm.appDateString(vm.$i18n('KAF011_23', [appDateString, inputDate]));
 

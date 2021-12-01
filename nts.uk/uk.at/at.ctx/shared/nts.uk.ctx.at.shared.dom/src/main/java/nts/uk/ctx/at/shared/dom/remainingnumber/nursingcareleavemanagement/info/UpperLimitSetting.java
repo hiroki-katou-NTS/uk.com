@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum UpperLimitSetting {
 	
-	//家族情報を参照
-	FAMILY_INFO(1),
+//	//家族情報を参照
+//	FAMILY_INFO(1),
 	
 	//個人情報を参照（毎年利用）
 	PER_INFO_EVERY_YEAR(2),

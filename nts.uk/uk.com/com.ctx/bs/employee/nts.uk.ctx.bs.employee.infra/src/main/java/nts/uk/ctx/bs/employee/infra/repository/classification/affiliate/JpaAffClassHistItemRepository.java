@@ -262,11 +262,12 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 	public void addAll(List<AffClassHistItem> domains) {
 		String INS_SQL = "INSERT INTO BSYMT_AFF_CLASS_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " HIST_ID, SID, CLASSIFICATION_CODE)"
+				+ " CONTRACT_CD, HIST_ID, SID, CLASSIFICATION_CODE)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, SID_VAL, CLASSIFICATION_CODE_VAL); ";
+				+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, CLASSIFICATION_CODE_VAL); ";
 
+		String contractCode = AppContexts.user().contractCode();
 		GeneralDateTime insertTime = GeneralDateTime.now();
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
@@ -287,6 +288,7 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 			
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
 			sql = sql.replace("CLASSIFICATION_CODE_VAL", "'" + c.getClassificationCode().v()+ "'");

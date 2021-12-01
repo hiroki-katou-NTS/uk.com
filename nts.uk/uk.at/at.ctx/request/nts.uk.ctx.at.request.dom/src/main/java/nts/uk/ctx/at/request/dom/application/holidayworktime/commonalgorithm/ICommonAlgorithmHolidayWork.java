@@ -22,8 +22,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -145,9 +147,14 @@ public interface ICommonAlgorithmHolidayWork {
 	 * @param actualContentDisplayList
 	 * @return
 	 */
-	InitWorkTypeWorkTime initWork(String companyId, String employeeId, GeneralDate baseDate,
-			List<WorkType> workTypeList, List<WorkTimeSetting> workTimeList,
+	public InitWorkTypeWorkTime initWork(
+			String companyId,
+			String employeeId,
+			GeneralDate baseDate,
+			List<WorkType> workTypeList,
+			List<WorkTimeSetting> workTimeList,
 			List<ActualContentDisplay> actualContentDisplayList);
+	
 	
 	public WorkContent getWorkContent(HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput);
 	
@@ -183,4 +190,22 @@ public interface ICommonAlgorithmHolidayWork {
 	 */
 	public List<ConfirmMsgOutput> checkAfterMoveToAppTime(boolean require, String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
 			AppHolidayWork appHolidayWork);
+	/**
+	 * 休日日の勤務種類・就業時間帯の初期選択
+	 * @param companyId
+	 * @param employeeId
+	 * @param workTypeList
+	 * @param workTimeList
+	 * @param holidayAtrOp
+	 * @param workingConditionItemOp
+	 * @return
+	 */
+	public WorkHolidayInfo initWorkHoliday(
+			String companyId,
+			String employeeId,
+			List<WorkType> workTypeList,
+			List<WorkTimeSetting> workTimeList,
+			Optional<HolidayAtr> holidayAtrOp,
+			Optional<WorkingConditionItem> workingConditionItemOp
+			);
 }

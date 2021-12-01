@@ -133,4 +133,11 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		//@勤務時間.総労働時間.外出時間
 		return this.actualWorkingTimeOfDaily.getTotalWorkingTime().getOutingTimeOfDailyPerformance();
 	}
+	
+	public static AttendanceTimeOfDailyAttendance createDefault() {
+		return new AttendanceTimeOfDailyAttendance(WorkScheduleTimeOfDaily.defaultValue(),
+				ActualWorkingTimeOfDaily.defaultValue(), StayingTimeOfDaily.defaultValue(),
+				AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO,
+				MedicalCareTimeOfDaily.defaultValue());
+	}
 }

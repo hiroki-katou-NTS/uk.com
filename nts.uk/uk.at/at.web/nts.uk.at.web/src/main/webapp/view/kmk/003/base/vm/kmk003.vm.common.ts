@@ -1486,7 +1486,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 resetData() {
-                    this.priorityAtr = ko.observable((this.stampAtr() == StampPiorityAtr.LEAVE_WORK || this.stampAtr() == StampPiorityAtr.EXIT || this.stampAtr() == StampPiorityAtr.PC_LOGOUT) ? 1 : 0);
+                    this.priorityAtr((this.stampAtr() == StampPiorityAtr.LEAVE_WORK || this.stampAtr() == StampPiorityAtr.EXIT || this.stampAtr() == StampPiorityAtr.PC_LOGOUT) ? 1 : 0);
                 }
             }
 
@@ -1551,6 +1551,12 @@ module nts.uk.at.view.kmk003.a {
                     this.prioritySets.forEach(function(item, index) {
                         item.resetData();
                     });
+                }
+
+                initJDialog() {
+                    //init value J4_5, J4_10 ver 3.8
+                    this.getRoundingSetsGoOut().roundingSet.fontRearSection(0);
+                    this.getRoundingSetsTurnBack().roundingSet.fontRearSection(1);
                 }
 
                 getPrioritySetsGoWork(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.GOING_WORK) }

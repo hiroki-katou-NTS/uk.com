@@ -270,7 +270,7 @@ module nts.uk.at.view.kmf003.b.viewmodel {
                 }
                 
                 _.forEach(grantHolidayTblList, function(item) {
-                    if(checkErr && item.month != null && item.year != null && (item.grantDays == null || item.grantDays == "")) {
+                    if(checkErr && item.month != null && item.year != null && nts.uk.text.isNullOrEmpty(item.grantDays)) {
                         checkErr = false;
                         nts.uk.ui.dialog.alert({ messageId: "Msg_270" }).then(() => {
                             $('#b2_1').focus();

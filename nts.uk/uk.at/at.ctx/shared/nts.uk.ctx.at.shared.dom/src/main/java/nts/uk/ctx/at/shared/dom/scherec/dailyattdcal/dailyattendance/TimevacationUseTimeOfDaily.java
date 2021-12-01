@@ -7,19 +7,18 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.HolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 日別実績の時間休暇使用時間 (old)
- * 日別勤怠の時間休暇使用時間 (new)
+ * 日別勤怠の時間休暇使用時間
  * @author ken_takasu
- *
  */
 @Getter
 @Setter
-public class TimevacationUseTimeOfDaily {
+public class TimevacationUseTimeOfDaily implements Cloneable {
 	
 	//時間年休使用時間
 	private AttendanceTime timeAnnualLeaveUseTime;
@@ -35,6 +34,7 @@ public class TimevacationUseTimeOfDaily {
 	private AttendanceTime timeChildCareHolidayUseTime;
 	//介護休暇使用時間
 	private AttendanceTime timeCareHolidayUseTime;
+	
 	/**
 	 * Constructor 
 	 */
@@ -57,6 +57,26 @@ public class TimevacationUseTimeOfDaily {
 		this.timeChildCareHolidayUseTime = timeChildCareHolidayUseTime;
 		this.timeCareHolidayUseTime = timeCareHolidayUseTime;
 	}
+
+	@Override
+	public TimevacationUseTimeOfDaily clone() {
+		TimevacationUseTimeOfDaily clone = null;
+		try {
+			clone = (TimevacationUseTimeOfDaily)super.clone();
+			clone.timeAnnualLeaveUseTime = new AttendanceTime(this.timeAnnualLeaveUseTime.valueAsMinutes());
+			clone.timeCompensatoryLeaveUseTime = new AttendanceTime(this.timeCompensatoryLeaveUseTime.valueAsMinutes());
+			clone.sixtyHourExcessHolidayUseTime = new AttendanceTime(this.sixtyHourExcessHolidayUseTime.valueAsMinutes());
+			clone.timeSpecialHolidayUseTime = new AttendanceTime(this.timeSpecialHolidayUseTime.valueAsMinutes());
+			clone.specialHolidayFrameNo = this.specialHolidayFrameNo.isPresent() ?
+					Optional.of(new SpecialHdFrameNo(this.specialHolidayFrameNo.get().v())) : Optional.empty();
+			clone.timeChildCareHolidayUseTime = new AttendanceTime(this.timeChildCareHolidayUseTime.valueAsMinutes());
+			clone.timeCareHolidayUseTime = new AttendanceTime(this.timeCareHolidayUseTime.valueAsMinutes());
+		}
+		catch (Exception e){
+			throw new RuntimeException("TimevacationUseTimeOfDaily clone error.");
+		}
+		return clone;
+	}
 	
 	public static TimevacationUseTimeOfDaily defaultValue(){
 		return new TimevacationUseTimeOfDaily(
@@ -68,23 +88,12 @@ public class TimevacationUseTimeOfDaily {
 				new AttendanceTime(0),
 				new AttendanceTime(0));
 	}
-	
-	/**
-	 * 各使用時間から相殺時間を控除する
-	 * 
-	 * @param deductionOffSetTime
-	 */
-	public void subtractionDeductionOffSetTime(DeductionOffSetTime deductionOffSetTime) {
-		this.timeAnnualLeaveUseTime = new AttendanceTime(this.timeAnnualLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getAnnualLeave().valueAsMinutes());
-		this.timeCompensatoryLeaveUseTime = new AttendanceTime(this.timeCompensatoryLeaveUseTime.valueAsMinutes() - deductionOffSetTime.getCompensatoryLeave().valueAsMinutes());
-		this.sixtyHourExcessHolidayUseTime = new AttendanceTime(this.sixtyHourExcessHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getSixtyHourHoliday().valueAsMinutes());
-		this.timeSpecialHolidayUseTime = new AttendanceTime(this.timeSpecialHolidayUseTime.valueAsMinutes() - deductionOffSetTime.getSpecialHoliday().valueAsMinutes());
-	}
 
 	/**
 	 * 加算使用時間の計算
-	 * @param holidayAddtionSet
-	 * @return
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param additionAtr 就業加算時間のみかどうか
+	 * @return 加算使用時間
 	 */
 	public int calcTotalVacationAddTime(Optional<HolidayAddtionSet> holidayAddtionSet,AdditionAtr additionAtr) {
 		int result = 0;
@@ -111,10 +120,10 @@ public class TimevacationUseTimeOfDaily {
 	}
 	
 	/**
-	 * 
 	 * 合計使用時間の計算
+	 * @return 合計使用時間
 	 */
-	public int  totalVacationAddTime(){
+	public int totalVacationAddTime(){
 		int result = 0;
 		
 		result = this.timeAnnualLeaveUseTime.valueAsMinutes()
@@ -128,17 +137,131 @@ public class TimevacationUseTimeOfDaily {
 	
 	/**
 	 * 引く
-	 * @param offSetTime 控除相殺時間
-	 * @return 時間休暇使用時間
+	 * @param target 減算対象
+	 * @return 日別勤怠の時間休暇使用時間（減算後）
 	 */
-	public TimevacationUseTimeOfDaily minus(DeductionOffSetTime offSetTime) {
+	public TimevacationUseTimeOfDaily minus(TimevacationUseTimeOfDaily target) {
 		return new TimevacationUseTimeOfDaily(
-			this.timeAnnualLeaveUseTime.minusMinutes(offSetTime.getAnnualLeave().valueAsMinutes()),
-			this.timeCompensatoryLeaveUseTime.minusMinutes(offSetTime.getCompensatoryLeave().valueAsMinutes()),
-			this.sixtyHourExcessHolidayUseTime.minusMinutes(offSetTime.getSixtyHourHoliday().valueAsMinutes()),
-			this.timeSpecialHolidayUseTime.minusMinutes(offSetTime.getSpecialHoliday().valueAsMinutes()),
-			this.specialHolidayFrameNo.map(s -> new SpecialHdFrameNo(s.v())),
-			new AttendanceTime(this.timeChildCareHolidayUseTime.valueAsMinutes()),
-			new AttendanceTime(this.timeCareHolidayUseTime.valueAsMinutes()));
+			this.timeAnnualLeaveUseTime.minusMinutes(target.timeAnnualLeaveUseTime.valueAsMinutes()),
+			this.timeCompensatoryLeaveUseTime.minusMinutes(target.getTimeCompensatoryLeaveUseTime().valueAsMinutes()),
+			this.sixtyHourExcessHolidayUseTime.minusMinutes(target.getSixtyHourExcessHolidayUseTime().valueAsMinutes()),
+			this.timeSpecialHolidayUseTime.minusMinutes(target.getTimeSpecialHolidayUseTime().valueAsMinutes()),
+			Optional.empty(),
+			this.timeChildCareHolidayUseTime.minusMinutes(target.getTimeChildCareHolidayUseTime().valueAsMinutes()),
+			this.timeCareHolidayUseTime.minusMinutes(target.getTimeCareHolidayUseTime().valueAsMinutes()));
+	}
+	
+	/**
+	 * 加算
+	 * @param target 加算対象
+	 * @return 日別勤怠の時間休暇使用時間（加算後）
+	 */
+	public TimevacationUseTimeOfDaily add(TimevacationUseTimeOfDaily target) {
+		return new TimevacationUseTimeOfDaily(
+			this.timeAnnualLeaveUseTime.addMinutes(target.timeAnnualLeaveUseTime.valueAsMinutes()),
+			this.timeCompensatoryLeaveUseTime.addMinutes(target.getTimeCompensatoryLeaveUseTime().valueAsMinutes()),
+			this.sixtyHourExcessHolidayUseTime.addMinutes(target.getSixtyHourExcessHolidayUseTime().valueAsMinutes()),
+			this.timeSpecialHolidayUseTime.addMinutes(target.getTimeSpecialHolidayUseTime().valueAsMinutes()),
+			Optional.empty(),
+			this.timeChildCareHolidayUseTime.addMinutes(target.getTimeChildCareHolidayUseTime().valueAsMinutes()),
+			this.timeCareHolidayUseTime.addMinutes(target.getTimeCareHolidayUseTime().valueAsMinutes()));
+	}
+
+	/**
+	 * 就業時間に加算する値だけを取得する
+	 * @param holidayAddSet 休暇加算時間設定
+	 * @return 加算使用時間
+	 */
+	public TimevacationUseTimeOfDaily getValueForAddWorkTime(HolidayAddtionSet holidayAddSet){
+		// 時間年休使用時間
+		AttendanceTime timeAnnual = AttendanceTime.ZERO;
+		if (holidayAddSet.getAdditionVacationSet().getAnnualHoliday() == NotUseAtr.USE){
+			timeAnnual = this.timeAnnualLeaveUseTime;
+		}
+		// 時間代休使用時間
+		AttendanceTime timeComp = AttendanceTime.ZERO;
+		// 超過有休使用時間
+		AttendanceTime excessLeave = AttendanceTime.ZERO;
+		if (holidayAddSet.getAdditionVacationSet().getAnnualHoliday() == NotUseAtr.USE){
+			excessLeave = this.sixtyHourExcessHolidayUseTime;
+		}
+		// 特別休暇使用時間
+		AttendanceTime specialHoliday = AttendanceTime.ZERO;
+		if (holidayAddSet.getAdditionVacationSet().getSpecialHoliday() == NotUseAtr.USE){
+			specialHoliday = this.timeSpecialHolidayUseTime;
+		}
+		// 子の看護休暇使用時間
+		AttendanceTime childCare = AttendanceTime.ZERO;
+		// 介護休暇使用時間
+		AttendanceTime care = AttendanceTime.ZERO;
+		
+		return new TimevacationUseTimeOfDaily(
+				timeAnnual, timeComp, excessLeave, specialHoliday, Optional.empty(), childCare, care);
+	}
+	
+	/**
+	 * 作る
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @param remainingTime	 時間休暇使用残時間
+	 * @return 日別勤怠の時間休暇使用時間
+	 */
+	public TimevacationUseTimeOfDaily create(
+			CompanyHolidayPriorityOrder priorityOrder,
+			AttendanceTime remainingTime){
+		
+		int annualHoliday = 0;
+		int subHoliday = 0;
+		int sixtyhourHoliday = 0;
+		int specialHoliday = 0;
+		int childCare = 0;
+		int care = 0;
+		
+		// 時間休暇の優先順を取得する
+		for (HolidayPriorityOrder holiday : priorityOrder.getHolidayPriorityOrders()){
+			// 時間休暇使用残時間が残っているか確認する
+			if (remainingTime.valueAsMinutes() <= 0) break;
+			
+			switch (holiday) {
+			case ANNUAL_HOLIDAY:
+				// 年休を相殺する時間を計算する
+				annualHoliday = Math.min(this.timeAnnualLeaveUseTime.valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(annualHoliday);
+				break;
+			case SUB_HOLIDAY:
+				// 代休を相殺する時間を計算する
+				subHoliday = Math.min(this.timeCompensatoryLeaveUseTime.valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(subHoliday);
+				break;
+			case SIXTYHOUR_HOLIDAY:
+				// 超過有休を相殺する時間を計算する
+				sixtyhourHoliday = Math.min(this.sixtyHourExcessHolidayUseTime.valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(sixtyhourHoliday);
+				break;
+			case SPECIAL_HOLIDAY:
+				// 特別休暇を相殺する時間を計算する
+				specialHoliday = Math.min(this.timeSpecialHolidayUseTime.valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(specialHoliday);
+				break;
+			case CHILD_CARE:
+				// 子の看護を相殺する時間を計算する
+				childCare = Math.min(this.timeChildCareHolidayUseTime.valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(childCare);
+				break;
+			case CARE:
+				// 介護を相殺する時間を計算する
+				care = Math.min(this.timeCareHolidayUseTime.valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(care);
+				break;
+			}
+		}
+		// 日別勤怠の時間休暇使用時間を作成する
+		return new TimevacationUseTimeOfDaily(
+				new AttendanceTime(annualHoliday),
+				new AttendanceTime(subHoliday),
+				new AttendanceTime(sixtyhourHoliday),
+				new AttendanceTime(specialHoliday),
+				Optional.empty(),
+				new AttendanceTime(childCare),
+				new AttendanceTime(care));
 	}
 }

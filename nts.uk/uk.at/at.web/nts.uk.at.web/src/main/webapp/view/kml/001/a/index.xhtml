@@ -68,11 +68,12 @@
                   tabindex="7"
                   data-bind="ntsGridList: {
 										name: '#[KML001_6]', 
-										height: 300,
+										rows: 12,
 										options: gridPersonCostList,
 										optionsValue: 'dateRange',
 										columns: ko.observableArray([
-							        { headerText: '', prop: 'dateRange' }]),
+                                            { headerText: '', prop: 'dateRange' }
+                                        ]),
 										value: currentGridPersonCost }"
                 ></table>
               </div>
@@ -312,7 +313,8 @@
                     </th>
                   </tr>
                 </thead>
-                <tbody data-bind="foreach: currentPersonCost().premiumSets">
+                <!--<tbody data-bind="foreach: currentPersonCost().premiumSets">-->
+                <tbody data-bind="foreach: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
                   <com:ko-if
                     bind="$index() === 0 &amp;&amp; $vm.currentPersonCost().calculationSetting() === 1"
                   >
@@ -329,96 +331,113 @@
                           class="combo-box-a5-10 field-required"
                           tabindex="15"
                           data-bind="ntsComboBox: {
-														name: '#[KML001_85]',
-														options: $parent.unitPriceOpt(),
-														optionsValue: 'code',
-														value: $vm.currentPersonCost().workingHour,
-														optionsText: 'name',
-														dropDownAttachedToBody:true,
-														selectFirstIfNull: true,
-														visibleItemsCount: 5,
-														enable: $vm.currentPersonCost().calculationSetting() === 1,
-														required: true }"
-                        ></div>
+                                        name: '#[KML001_85]',
+                                        options: $vm.unitPriceOpt(),
+                                        optionsValue: 'code',
+                                        value: $vm.currentPersonCost().workingHour,
+                                        optionsText: 'name',
+                                        dropDownAttachedToBody:true,
+                                        selectFirstIfNull: true,
+                                        visibleItemsCount: 5,
+                                        enable: $vm.currentPersonCost().calculationSetting() === 1,
+                                        required: true
+                                  }">
+                        </div>
                       </td>
                       <td></td>
                     </tr>
                   </com:ko-if>
-                  <tr data-bind="css: { notUse: useAtr() == 0 }">
-                    <td
-                      style="word-wrap: break-word"
-                      data-bind="text: (name()=='')?'ITEM'+($index()+1):name()"
-                    ></td>
-                    <td class="valign-center">
-                      <span>
-                        <input
-                          tabindex="16"
-                          class="premiumInput premiumPercent field-required"
-                          data-bind="ntsNumberEditor: {
-															name: '#[KML001_13]',
-															value: rate,
-															constraint: 'PremiumRate',
-															option: { 
-																width: '80px',
-																decimallength: 0, 
-                                unitID: 'PERCENT'
-															},
-															required: true, 
-															enable: $vm.currentPersonCost().calculationSetting() === 0
-													 }"
-                        />
-                      </span>
-                    </td>
-                    <td class="valign-center">
-                      <div
-                        id="comboBoxA5_10"
-                        class="combo-box-a5-10 field-required"
-                        tabindex="16"
-                        data-bind="ntsComboBox: {
-															name: '#[KML001_82]',
-															options: [
-																{ code: 0, name: '#{i18n.getText('KML001_22')}' },
-																{ code: 1, name: '#{i18n.getText('KML001_23')}' },
-																{ code: 2, name: '#{i18n.getText('KML001_24')}' },
-																{ code: 3, name: '#{i18n.getText('KML001_26')}' },
-																{ code: 4, name: '#{i18n.getText('KML001_25')}' }
-															],
-															optionsValue: 'code',
-															value: unitPrice,
-															optionsText: 'name',
-															dropDownAttachedToBody:true,
-															selectFirstIfNull: true,
-															visibleItemsCount: 5,
-															enable: $vm.currentPersonCost().calculationSetting() === 1,
-															required: true }"
-                      ></div>
-                    </td>
-                    <td class="control-group valign-center">
-                      <div class="table">
-                        <div class="cell valign-center">
-                          <button
-                            class="small"
-                            tabindex="16"
-                            data-bind="click: function(){ $vm.selectDialog($data, $index())}"
-                          >
-                            #{i18n.getText('KML001_15')}
-                          </button>
-                        </div>
-                        <div class="cell valign-center">
-                          <input
-                            class="premiumInput premiumItems field-required"
-                            data-bind="ntsTextEditor: {
-                              name: '#[KML001_14]',
-                              value: $parent.viewAttendanceItems()[$index()],
-                              constraint: 'Memo',
-                              option: { width: '365px' },
-                              enable: true,
-                              readonly: true }"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                  <com:ko-if bind="$vm.currentPersonCost().premiumSets()[$index()] != null">
+                      <tr data-bind="css: { notUse: $vm.currentPersonCost().premiumSets()[$index()].useAtr() == 0 }">
+                          <td style="word-wrap: break-word"
+                              data-bind="text: ($vm.currentPersonCost().premiumSets()[$index()].name()=='')?'ITEM'+($index()+1):$vm.currentPersonCost().premiumSets()[$index()].name()">
+                          </td>
+                          <td class="valign-center">
+                            <span>
+                              <input tabindex="16"
+                                      class="premiumInput premiumPercent field-required"
+                                      data-bind="ntsNumberEditor: {
+                                                        name: '#[KML001_13]',
+                                                        value: $vm.currentPersonCost().premiumSets()[$index()].rate,
+                                                        constraint: 'PremiumRate',
+                                                        option: {
+                                                            width: '80px',
+                                                            decimallength: 0,
+                                                            unitID: 'PERCENT'
+                                                        },
+                                                        required: true,
+                                                        enable: $vm.currentPersonCost().calculationSetting() === 0
+                                                 }"/>
+                            </span>
+                          </td>
+                          <td class="valign-center">
+                              <div id="comboBoxA5_10"
+                                      class="combo-box-a5-10 field-required"
+                                      tabindex="16"
+                                      data-bind="ntsComboBox: {
+                                                    name: '#[KML001_82]',
+                                                    options: [
+                                                        { code: 0, name: '#{i18n.getText('KML001_22')}' },
+                                                        { code: 1, name: '#{i18n.getText('KML001_23')}' },
+                                                        { code: 2, name: '#{i18n.getText('KML001_24')}' },
+                                                        { code: 3, name: '#{i18n.getText('KML001_26')}' },
+                                                        { code: 4, name: '#{i18n.getText('KML001_25')}' }
+                                                    ],
+                                                    optionsValue: 'code',
+                                                    value: $vm.currentPersonCost().premiumSets()[$index()].unitPrice,
+                                                    optionsText: 'name',
+                                                    dropDownAttachedToBody:true,
+                                                    selectFirstIfNull: true,
+                                                    visibleItemsCount: 5,
+                                                    enable: $vm.currentPersonCost().calculationSetting() === 1,
+                                                    required: true
+                                          }">
+                              </div>
+                          </td>
+                          <td class="control-group valign-center">
+                              <div class="table">
+                                  <div class="cell valign-center">
+                                      <button
+                                              class="small"
+                                              tabindex="16"
+                                              data-bind="click: function(){ $vm.selectDialog($vm.currentPersonCost().premiumSets()[$index()], $index())}"
+                                      >
+                                          #{i18n.getText('KML001_15')}
+                                      </button>
+                                  </div>
+                                  <div class="cell valign-center">
+                                      <input class="premiumInput premiumItems field-required"
+                                              data-bind="ntsTextEditor: {
+                                                              name: '#[KML001_14]',
+                                                              value: $vm.viewAttendanceItems()[$index()],
+                                                              constraint: 'Memo',
+                                                              option: { width: '365px' },
+                                                              enable: true,
+                                                              readonly: true
+                                                      }"/>
+                                  </div>
+                              </div>
+                          </td>
+                      </tr>
+                  </com:ko-if>
+                  <com:ko-if bind="$vm.currentPersonCost().premiumSets()[$index()] == null">
+                    <!--placeholder, do not remove-->
+                      <tr>
+                        <td colspan="4" class="valign-center" style="background: transparent; border-top: none;" data-bind="style: $index() != 9 ? {'border-bottom': 'none' } : {}">
+                          <div class="combo-box-a5-10 field-required"
+                               data-bind="ntsComboBox: {
+                                                options: [],
+                                                optionsValue: 'code',
+                                                value: ko.observable(null),
+                                                optionsText: 'name',
+                                                enable: false,
+                                                required: false
+                                            },
+                                            style: {visibility: 'hidden'}">
+                          </div>
+                        </td>
+                      </tr>
+                  </com:ko-if>
                 </tbody>
               </table>
             </div>

@@ -55,7 +55,7 @@ public class DailySnapshotWorkAdapterImpl implements DailySnapshotWorkAdapter {
 						.predetermineTime(snapshot.getSnapshot().getPredetermineTime())
 						.build())
 				.build();
-		snapshotPub.save(domain);
+		snapshotPub.update(domain);
 	}
 
 	@Override
@@ -79,6 +79,11 @@ public class DailySnapshotWorkAdapterImpl implements DailySnapshotWorkAdapter {
 	@Override
 	public List<DailySnapshotWorkImport> find(String sid, DatePeriod ymd) {
 		
+		return snapshotPub.find(sid, ymd).stream().map(c -> convert(c)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DailySnapshotWorkImport> find(List<String> sid, DatePeriod ymd) {
 		return snapshotPub.find(sid, ymd).stream().map(c -> convert(c)).collect(Collectors.toList());
 	}
 }

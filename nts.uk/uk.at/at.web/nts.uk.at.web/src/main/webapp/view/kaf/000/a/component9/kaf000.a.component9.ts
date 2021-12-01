@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
         template: `
 			<div id="kaf000-a-component9" style="display: inline-block; margin-left: 5px;" data-bind="if: params">
 				<div data-bind="if: displayBack">
-					<a class="goback link-button" data-bind="click: backtoPre, text: $i18n('KAF000_53')"></a>
+					<a class="goback link-button" style="background-color: #f1fdfb;height: 30px !important;" data-bind="click: backtoPre, text: $i18n('KAF000_53')"></a>
 				</div>
 			</div>
         `

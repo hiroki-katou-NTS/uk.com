@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.pub.user.ChangeUserPasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
@@ -39,9 +38,6 @@ public class UserAdapterImpl implements UserAdapter {
 
 	@Inject
 	private CheckBeforePasswordPublisher checkPasswordPublisher;
-
-	@Inject
-	private ChangeUserPasswordPublisher changeUserPasswordPublisher;
 
 	@Inject
 	private GetUserPublish getUserPublish ;
@@ -105,7 +101,7 @@ public class UserAdapterImpl implements UserAdapter {
 				userName(userInfo.getUserName()).
 				mailAddress(userInfo.getMailAddress()).
 				loginId(userInfo.getLoginID())
-				.associatePersonId(userInfo.getAssociatedPersonID()).password(userInfo.getPassword())
+				.associatePersonId(userInfo.getAssociatedPersonID())
 				.expirationDate(userInfo.getExpirationDate()).contractCode(userInfo.getContractCode()).build());
 	}
 
@@ -124,12 +120,10 @@ public class UserAdapterImpl implements UserAdapter {
 				userInfo.getMailAddress(),
 				userInfo.getLoginID(),
 				userInfo.getAssociatedPersonID(),
-				userInfo.getPassword(),
 				userInfo.getContractCode(),
-				userInfo.getExpirationDate(),
-				Integer.valueOf( userInfo.getPassStatus())));
+				userInfo.getExpirationDate()));
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -139,9 +133,10 @@ public class UserAdapterImpl implements UserAdapter {
 	@Override
 	public List<UserImport> getListUsersByListPersonIds(List<String> listPersonIds) {
 		return this.userPublisher.getListUserByListAsId(listPersonIds).stream()
-				.map(userInfo -> UserImport.builder().userId(userInfo.getUserID()).userName(userInfo.getUserName())
+				.map(userInfo -> UserImport.builder().userId(
+						userInfo.getUserID()).userName(userInfo.getUserName())
 						.mailAddress(userInfo.getMailAddress()).loginId(userInfo.getLoginID())
-						.associatePersonId(userInfo.getAssociatedPersonID()).password(userInfo.getPassword())
+						.associatePersonId(userInfo.getAssociatedPersonID())
 						.expirationDate(userInfo.getExpirationDate()).contractCode(userInfo.getContractCode()).build())
 				.collect(Collectors.toList());
 	}
@@ -161,28 +156,13 @@ public class UserAdapterImpl implements UserAdapter {
 		}
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public Optional<UserInforExImport> getByEmpID(String empID) {
 		return userPublisher.getByEmpID(empID)
 				.map(x -> new UserInforExImport(x.getUserID(), x.getLoginID(), x.getEmpID(), x.getEmpCD()));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#passwordPolicyCheck(
-	 * java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public CheckBeforeChangePass passwordPolicyCheck(String userId, String newPass, String contractCode) {
-		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheck(userId, newPass,
-				contractCode);
-
-		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -194,39 +174,10 @@ public class UserAdapterImpl implements UserAdapter {
 	public CheckBeforeChangePass passwordPolicyCheckForSubmit(String userId, String newPass, String contractCode) {
 		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.passwordPolicyCheckForSubmit(userId, newPass,
 				contractCode);
-
+		
 		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#
-	 * checkBeforeChangePassword(java.lang.String, java.lang.String,
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public CheckBeforeChangePass checkBeforeChangePassword(String userId, String currentPass, String newPass,
-			String reNewPass) {
-		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeChangePassword(userId, currentPass,
-				newPass, reNewPass);
-		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#
-	 * checkBeforeResetPassword(java.lang.String, java.lang.String,
-	 * java.lang.String)
-	 */
-	@Override
-	public CheckBeforeChangePass checkBeforeResetPassword(String userId, String newPass, String reNewPass) {
-		CheckBeforeChangePassOutput result = this.checkPasswordPublisher.checkBeforeResetPassword(userId, newPass,
-				reNewPass);
-		return new CheckBeforeChangePass(result.isError(), this.convert(result.getMessage()));
-	}
-
+	
 	/**
 	 * Convert.
 	 *
@@ -240,30 +191,18 @@ public class UserAdapterImpl implements UserAdapter {
 			return new PasswordMessageImport(item.getMessage(), item.getParam());
 		}).collect(Collectors.toList());
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter#updatePassword(java.
-	 * lang.String, java.lang.String)
-	 */
-	@Override
-	public void updatePassword(String userId, String newPassword) {
-		changeUserPasswordPublisher.changePass(userId, newPassword);
-	}
 	
 	@Override
 	public Optional<UserImportNew> getByUserIDandDate(String userId , GeneralDate systemDate) {
 		Optional<UserExport> user = this.userPublisher.getByUserIDandDate(userId, systemDate);
-
+		
 		// Check found or not!
 		if (user.isPresent()) {
 			return this.covertToImportDomainNew(user);
 		}
 		return Optional.empty();
 	}
-
+	
 	@Override
 	public List<UserDto> getUser(List<String> userIds) {
 		return this.getUserPublish.getUser(userIds).stream().map(item -> {
@@ -273,7 +212,6 @@ public class UserAdapterImpl implements UserAdapter {
 		     dto.setUserName(item.getUserName().get());
 		     dto.setAssociatedPersonID(item.getAssociatedPersonID().get());
 		     dto.setMailAddress(item.getMailAddress().get());
-		     dto.setPassword(item.getPassword());
 		     return dto;
 		    }).collect(Collectors.toList());
 	}

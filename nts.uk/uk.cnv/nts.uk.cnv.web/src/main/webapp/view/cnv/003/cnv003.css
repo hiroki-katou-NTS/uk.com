@@ -1,0 +1,16 @@
+#header {
+	height: 61px;
+}
+
+label.title {
+	font-size: 24px;
+	margin: 10px 10px;
+}
+
+div.fixed-flex-layout-left{
+	width: 250px;
+}
+
+button {
+	margin: 0px 10px;
+}

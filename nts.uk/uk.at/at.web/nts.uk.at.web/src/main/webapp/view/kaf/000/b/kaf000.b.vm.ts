@@ -74,6 +74,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         displayCancelButton: KnockoutObservable<boolean> = ko.observable(true);
         enableCancelButton: KnockoutObservable<boolean> = ko.observable(true);
+		displayCancelLabel: KnockoutObservable<boolean> = ko.observable(false);
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -150,9 +151,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					$('.pg-name > span').text(appNameInfo.opProgramID + opString + " " + appNameInfo.appName);
+					$('#pg-disp-name').text(appNameInfo.appName);
+					$('#pg-id').text(appNameInfo.opProgramID + opString);
+					if($('#pg-id').length == 0) {
+						let $el = $("#pg-disp-name");
+			            let pgid = "<span id='pg-id'>" + appNameInfo.opProgramID + opString + "</span>";
+			            let pgidcaret = "<div id='pg-id-caret'></div>"
+			            $("body").append(pgid);
+			            $("body").append(pgidcaret);
+			
+			            $el.mouseenter((e) => {
+			                let top = $el.offset().top + 23;
+			                let left = $el.offset().left + 5;
+			                $("#pg-id").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+			                $("#pg-id-caret").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+			            });
+			            $el.mouseleave((e) => {
+			                $("#pg-id").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+			                $("#pg-id-caret").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+			            });
+					}
 				} else {
-					$('.pg-name > span').text("");
+					$('#pg-disp-name').text("");
 				}
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
@@ -160,7 +180,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     successData.appDetailScreenInfo.reflectPlanState,
                     successData.appDetailScreenInfo.authorizableFlags,
                     successData.appDetailScreenInfo.alternateExpiration,
-                    loginFlg);
+                    loginFlg,
+					successData.appDetailScreenInfo.pastApp);
 				if(_.isFunction(vm.childReloadEvent)) {
 	                vm.childReloadEvent();
 	            }
@@ -179,46 +200,68 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             state: any, // trạng thái đơn
             canApprove: any,  // có thể bấm nút approval không true, false
             expired: any, // phân biệt thời hạn
-            loginFlg: any // login có phải người viết đơn/ người xin hay k
+            loginFlg: any, // login có phải người viết đơn/ người xin hay k
+			pastApp?: boolean
         ) {
             const vm = this;
             vm.displayApprovalButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue != ApprovalAtr.APPROVED));
-            vm.enableApprovalButton((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
+            vm.enableApprovalButton(!pastApp && ((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
-                && !expired);
+                && !expired));
 
             vm.displayDenyButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue != ApprovalAtr.DENIAL));
-            vm.enableDenyButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
-                && canApprove
-                && !expired);
+            vm.enableDenyButton(!pastApp &&
+				((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+	                && canApprove
+	                && !expired));
 
             vm.displayRemandButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
             vm.enableRemandButton(
+					!pastApp &&
+				(
                 ((state == Status.DENIAL || state == Status.NOTREFLECTED || state == Status.REMAND)
                     && canApprove
                     && !expired) ||
                 (state == Status.WAITREFLECTION
                     && canApprove
                     && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
-                    && !expired)
+                    && !expired))
             );
 
             vm.displayReleaseButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
-            vm.enableReleaseButton((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+            vm.enableReleaseButton(
+				!pastApp &&
+				((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
-                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL));
+                && (approvalAtrValue == ApprovalAtr.APPROVED || approvalAtrValue == ApprovalAtr.DENIAL)
+			));
 
             vm.displayUpdateButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER));
-            vm.enableUpdateButton(state == Status.NOTREFLECTED || state == Status.REMAND);
+            vm.enableUpdateButton(
+				!pastApp &&
+				(state == Status.NOTREFLECTED || state == Status.REMAND)
+				);
 
             vm.displayDeleteButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER));
-            vm.enableDeleteButton(state == Status.NOTREFLECTED || state == Status.REMAND);
+            vm.enableDeleteButton(
+				!pastApp &&
+				(state == Status.NOTREFLECTED || state == Status.REMAND)
+			);
 
-            vm.displayCancelButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT || userTypeValue == UserType.OTHER)
-                && loginFlg);
-            vm.enableCancelButton(state == Status.REFLECTED);
+			if(state == Status.CANCELED) {
+				vm.displayCancelButton(false);
+				vm.displayCancelLabel(true);	
+			} else {
+				vm.displayCancelButton(true);
+				vm.displayCancelLabel(false);
+			}
+			if(pastApp) {
+				vm.enableCancelButton(false);	
+			} else {
+				vm.enableCancelButton((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPLICANT) && state != Status.CANCELED);
+			}
 
             vm.displayApprovalLabel((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER)
                 && (approvalAtrValue == ApprovalAtr.APPROVED));
@@ -391,7 +434,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let command = {
             	appIDLst: [vm.currentApp()],
 				isMultiMode: false,
-				appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+				appDispInfoStartupOutput: vm.appDispInfoStartupOutput(), 
+
             };
             nts.uk.ui.windows.setShared("KDL030_PARAM", command);
             nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml");
@@ -402,8 +446,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
+					let hdsubRecLinkData: any = null
+					if(vm.childParam.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION && vm.kaf011BViewModel().appCombinaSelected() == 0){
+						hdsubRecLinkData = {
+							absId: vm.kaf011BViewModel().displayInforWhenStarting().abs.application.appID, 
+							recId: vm.kaf011BViewModel().displayInforWhenStarting().rec.application.appID,
+							linkApp: vm.kaf011BViewModel().application().appID() == vm.kaf011BViewModel().displayInforWhenStarting().abs.application.appID 
+								? vm.kaf011BViewModel().displayInforWhenStarting().rec.application : vm.kaf011BViewModel().displayInforWhenStarting().abs.application
+						}
+						// hdsubRecLinkData.linkApp.inputDate = moment().format('YYYY/MM/DD HH:mm:ss');
+					}	
+
 					let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
-		            	command = { appDispInfoStartupOutput };
+		            	command = { 
+							appDispInfoStartupOutput: appDispInfoStartupOutput, 
+							hdsubRecLinkData: hdsubRecLinkData
+						 };
                     return vm.$ajax(API.deleteapp, command);
                 }
             }).done((successData: any) => {
@@ -431,14 +489,19 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             vm.$dialog.confirm({ messageId: "Msg_249" }).then((result: 'no' | 'yes' | 'cancel') => {
                 if (result === 'yes') {
-                    return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
+                    return vm.$ajax(API.cancel, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
 	                    vm.loadData();
 	                });
-				}
+				} 
+				// else {
+				// 	vm.$dialog.info({ messageId: "Msg_2188" }).then(() => {
+	            //         vm.loadData();
+	            //     });
+				// }
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
@@ -541,7 +604,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				if(obj.appListAtr==1) {
 					param = 1;
 				}
-				vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+				vm.$jump("at", "/view/cmm/045/a/index.xhtml");
             });
 		}
 
@@ -565,9 +628,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
 			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
 			if(appNameInfo) {
-				$('.pg-name > span').text(appNameInfo.opProgramID + "B " + appNameInfo.appName);
+				$('#pg-disp-name').text(appNameInfo.appName);
+				$('#pg-id').text(appNameInfo.opProgramID + "B");
+				if($('#pg-id').length == 0) {
+					let $el = $("#pg-disp-name");
+		            let pgid = "<span id='pg-id'>" + appNameInfo.opProgramID + "B" + "</span>";
+		            let pgidcaret = "<div id='pg-id-caret'></div>"
+		            $("body").append(pgid);
+		            $("body").append(pgidcaret);
+		
+		            $el.mouseenter((e) => {
+		                let top = $el.offset().top + 23;
+		                let left = $el.offset().left + 5;
+		                $("#pg-id").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+		                $("#pg-id-caret").css({"visibility": "visible", "top": top + "px", "left" : left + "px", "z-index" : "1000"});
+		            });
+		            $el.mouseleave((e) => {
+		                $("#pg-id").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+		                $("#pg-id-caret").css({"visibility": "hidden", "top": "0px", "left" : "0px", "z-index" : "-1"});
+		            });
+				}
 			} else {
-				$('.pg-name > span').text("");
+				$('#pg-disp-name').text("");
 			}
 		}
     }

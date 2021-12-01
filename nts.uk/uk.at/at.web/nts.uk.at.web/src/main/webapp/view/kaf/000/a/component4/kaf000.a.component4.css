@@ -6,3 +6,8 @@
 #kaf000-a-component4 .col-1 {
 	width: 120px;
 }
+
+.pl-15 {
+	padding-left: 15px;
+	padding-top: 5px;
+}

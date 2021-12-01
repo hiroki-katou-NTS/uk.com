@@ -13,8 +13,6 @@ import lombok.Getter;
 
 public class UserSprExport {
 	
-
-
 	// ID 
 	/** The user id. */
 	private String userID;
@@ -35,19 +33,13 @@ public class UserSprExport {
 	/** The mail address. */
 	private Optional<String> mailAddress;
 	
-	// パスワード
-	/** The password. */
-	private String password;
-	
 	public UserSprExport(String userID, String loginID,String userName, String associatedPersonID,
-			String mailAddress, String password) {
+			String mailAddress) {
 		super();
 		this.userID = userID;
 		this.loginID = loginID;
 		this.userName = Optional.ofNullable(userName == null ? null : userName);
 		this.associatedPersonID = Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID);
 		this.mailAddress =  Optional.ofNullable(mailAddress == null ? null : mailAddress);
-		this.password = password;
 	}
-
 }

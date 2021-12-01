@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,12 +8,10 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
@@ -49,13 +46,10 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -191,7 +185,7 @@ public class OverTimeSheet {
 			val beforeApp = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
 					.filter(x -> x.getOverWorkFrameNo().v().intValue() == overTime.getOverWorkFrameNo().v().intValue()).findFirst()
 					.map(x -> x.getBeforeApplicationTime()).orElse(new AttendanceTime(0));
-			overTime.addBeforeTime(beforeApp);
+			overTime.setBeforeApplicationTime(beforeApp);
 		});
 		
 		//補正処理を実行する為に、日別勤怠の残業時間のインスタンスを作成
@@ -516,10 +510,10 @@ public class OverTimeSheet {
 	
 		return this.frameTimeSheets.stream().map(tc -> {
 			val mapData = tc.changeNotWorkFrameTimeSheet();
-			//B.計算残業時間←A.枠時間.残業時間.時間
-			mapData.setOverTimeCalc(tc.getFrameTime().getOverTimeWork().getTime());
-			//B.計算振替残業時間←A.枠時間.振替時間.時間
-			mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().getTime());
+			//B.計算残業時間←A.枠時間.残業時間.計算時間
+			mapData.setOverTimeCalc(tc.getFrameTime().getOverTimeWork().getCalcTime());
+			//B.計算振替残業時間←A.枠時間.振替時間.計算時間
+			mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().getCalcTime());
 			//残業枠時間帯の作成
 			return mapData;
 		}).sorted((first, second) -> first.getFrameNo().v().compareTo(second.getFrameNo().v()))
@@ -726,15 +720,6 @@ public class OverTimeSheet {
 			}
 		}
 		
-		//時間休暇溢れ分の割り当て
-		List<OverTimeFrameTimeSheetForCalc> afterAllocateVacation = OverTimeSheet.allocateTimeVacationToOverTime(
-				integrationOfWorkTime.getFlowWorkSetting().get(),
-				personDailySetting.getAddSetting(),
-				createdWithinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
-				calcRange.get().getStart(),
-				integrationOfDaily.getCalAttr().getOvertimeSetting(),
-				overTimeFrameTimeSheets);
-		
 		//変形基準内残業を分割
 		List<OverTimeFrameTimeSheetForCalc> afterVariableWork = OverTimeFrameTimeSheetForCalc.dicisionCalcVariableWork(
 				companyCommonSetting,
@@ -743,7 +728,7 @@ public class OverTimeSheet {
 				integrationOfWorkTime,
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
-				afterAllocateVacation);
+				overTimeFrameTimeSheets);
 		
 		//法定内残業分割処理
 		List<OverTimeFrameTimeSheetForCalc> afterCalcStatutoryOverTimeWork = OverTimeFrameTimeSheetForCalc.diciaionCalcStatutory(
@@ -757,89 +742,6 @@ public class OverTimeSheet {
 				createdWithinWorkTimeSheet);
 		
 		return Optional.of(new OverTimeSheet(afterCalcStatutoryOverTimeWork));
-	}
-	
-	/**
-	 * 時間休暇溢れ分を割り当て
-	 * @param flowWorkSetting 流動勤務設定
-	 * @param addSetting 加算設定 
-	 * @param timeVacationAdditionRemainingTime 休暇使用合計残時間未割当
-	 * @param overTimeStartTime 残業開始時刻
-	 * @param autoCalcSet 残業時間の自動計算設定
-	 * @param overTimeframeTimeSheets 残業枠時間帯(WORK)
-	 */
-	private static List<OverTimeFrameTimeSheetForCalc> allocateTimeVacationToOverTime(
-			FlowWorkSetting flowWorkSetting,
-			AddSetting addSetting,
-			AttendanceTime timeVacationAdditionRemainingTime,
-			TimeWithDayAttr overTimeStartTime,
-			AutoCalOvertimeSetting autoCalcSet,
-			List<OverTimeFrameTimeSheetForCalc> overTimeframeTimeSheets) {
-		
-		//input.休暇使用合計残時間未割当のチェック
-		if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO))
-			return overTimeframeTimeSheets;
-		
-		//割増計算方法をチェック
-		if(addSetting.getCalculationByActualTimeAtr(PremiumAtr.Premium).isCalclationByActualTime())
-			return overTimeframeTimeSheets;
-		
-		if(!overTimeframeTimeSheets.isEmpty()){
-			overTimeframeTimeSheets.sort((f,s) -> s.getOverTimeWorkSheetNo().compareTo(f.getOverTimeWorkSheetNo()));
-			//勤務した残業時間帯に割り当てる
-			timeVacationAdditionRemainingTime = overTimeframeTimeSheets.get(overTimeframeTimeSheets.size()-1).allocateToOverTimeFrame(
-					timeVacationAdditionRemainingTime,
-					flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone(),
-					autoCalcSet);
-		}
-		
-		if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO))
-			return overTimeframeTimeSheets;
-		
-		//勤務した残業時間帯以降に割り当てる
-		overTimeframeTimeSheets.addAll(
-				OverTimeSheet.createFrameWorkSheetAsNonWorkingHours(
-					new EmTimezoneNo(overTimeframeTimeSheets.size()),
-					timeVacationAdditionRemainingTime,
-					overTimeStartTime,
-					flowWorkSetting.getHalfDayWorkTimezone().getWorkTimeZone()));
-		
-		return overTimeframeTimeSheets;
-	}
-	
-	/**
-	 * 以降に割当（勤務していない残業枠時間帯を作成して時間休暇溢れ時間を持たせる）
-	 * @param overTimeWorkSheetNo 就業時間帯NO
-	 * @param timeVacationAdditionRemainingTime 休暇使用合計残時間未割当
-	 * @param overTimeStartTime 残業開始時刻
-	 * @param flowWorkTimezoneSetting 流動勤務設定
-	 * @return 時間休暇溢れ時間を持たせた残業枠時間帯
-	 */
-	private static List<OverTimeFrameTimeSheetForCalc> createFrameWorkSheetAsNonWorkingHours(
-			EmTimezoneNo overTimeWorkSheetNo,
-			AttendanceTime timeVacationAdditionRemainingTime,
-			TimeWithDayAttr overTimeStartTime,
-			FlowWorkTimezoneSetting flowWorkTimezoneSetting){
-		
-		//残業枠を作成する
-		List<OverTimeFrameTimeSheetForCalc> overTimeFrames = flowWorkTimezoneSetting.getLstOTTimezone().stream()
-				.filter(timezone -> overTimeWorkSheetNo.lessThan(new EmTimezoneNo(timezone.getWorktimeNo())))
-				.map(timezone -> OverTimeFrameTimeSheetForCalc.createEmpty(
-						new TimeSpanForDailyCalc(overTimeStartTime, overTimeStartTime),
-						timezone))
-				.sorted((f,s) -> f.getOverTimeWorkSheetNo().compareTo(s.getOverTimeWorkSheetNo()))
-				.collect(Collectors.toList());
-		
-		//残業枠へ割り当てる
-		for(int i=0; i<overTimeFrames.size(); i++) {
-			timeVacationAdditionRemainingTime = overTimeFrames.get(i).allocateOverflowTimeVacation(
-					i == overTimeFrames.size()-1,
-					timeVacationAdditionRemainingTime,
-					flowWorkTimezoneSetting);
-			
-			if(timeVacationAdditionRemainingTime.lessThanOrEqualTo(AttendanceTime.ZERO)) break;
-		}
-		return overTimeFrames;
 	}
 	
 	/**
@@ -930,22 +832,14 @@ public class OverTimeSheet {
 	 */
 	public List<TimeSpanForCalc> getTimeSheetNotDupOverTime(TimeSpanForCalc timeSpan){
 		
-		List<TimeSpanForCalc> results = new ArrayList<>(Arrays.asList(timeSpan));
-		
-		// 確認中Listに保存
-		List<TimeSpanForCalc> checking = new ArrayList<>(Arrays.asList(timeSpan));
+		List<TimeSpanForCalc> target = new ArrayList<>();	// 比較対象List
 		// 残業枠時間帯を確認する
 		for (OverTimeFrameTimeSheetForCalc frame : this.frameTimeSheets){
-			// 確認中Listを確認する
-			for (TimeSpanForCalc check : checking){
-				// 結果Listをクリア
-				results = new ArrayList<>();
-				// 基準時間帯の比較対象と重複していない部分の取得
-				results.addAll(check.getNotDuplicationWith(frame.getTimeSheet().getTimeSpan()));
-				// 確認中List ←　結果List
-				checking = new ArrayList<>(results);
-			}
+			// 比較対象Listに追加する
+			target.add(frame.getTimeSheet().getTimeSpan());
 		}
+		// 指定Listと重複していない時間帯の取得
+		List<TimeSpanForCalc> results = timeSpan.getNotDuplicatedWith(target);
 		// 結果を返す
 		return results;
 	}

@@ -6,6 +6,7 @@ package nts.uk.ctx.pereg.app.find.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,6 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionDto;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
@@ -35,8 +35,11 @@ import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -316,15 +319,20 @@ public class ComboBoxRetrieveFactory {
 						workplaceId = null;
 					}
 				}
-
+				
+				// Get all workTime installed at Kmk017
 				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId)
 						.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
+
+				// Lấy tên tương ứng của WorkTime được cài đặt ở màn Kmk017
+				// tương ứng với list workTimeCodeList được lấy từ step trước
+				// đó.
 				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
 								workTimeSetting.getWorktimeCode() + JP_SPACE
 										+ workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v()))
 						.collect(Collectors.toList());
-
+					
 			}
 
 		case "M00010":
@@ -419,6 +427,10 @@ public class ComboBoxRetrieveFactory {
 			return new ArrayList<>();
 		}
 		List<EnumConstant> enumConstants = EnumAdaptor.convertToValueNameList((Class<E>) enumClass);
+		
+		if (enumName.equals("E00007")) {
+			return specialWithE00007();
+		}
 
 		if (enumName.equals("E00008")) {
 			return specialWithE00008(enumConstants);
@@ -428,6 +440,18 @@ public class ComboBoxRetrieveFactory {
 				.map(enumElement -> new ComboBoxObject(enumElement.getValue() + "", enumElement.getLocalizedName()))
 				.collect(Collectors.toList());
 	}
+	
+	//combine E00007 and E00008
+	private List<ComboBoxObject> specialWithE00007() {
+		List<ComboBoxObject> comboBoxList = new ArrayList<>();
+		
+		comboBoxList.add(new ComboBoxObject(0 + "", "カレンダー(会社)"));
+		comboBoxList.add(new ComboBoxObject(1 + "", "カレンダー(職場)"));
+		comboBoxList.add(new ComboBoxObject(2 + "", "カレンダー(分類)"));
+		comboBoxList.add(new ComboBoxObject(3 + "", "月間パターン"));
+		comboBoxList.add(new ComboBoxObject(4 + "", "個人情報曜日別"));
+		return comboBoxList;
+	}
 
 	private List<ComboBoxObject> specialWithE00008(List<EnumConstant> enumConstants) {
 
@@ -435,7 +459,7 @@ public class ComboBoxRetrieveFactory {
 		for (EnumConstant enumElement : enumConstants) {
 			int value = enumElement.getValue();
 			String customText = "";
-			if (value == WorkScheduleMasterReferenceAtr.WORKPLACE.value) {
+			if (value == WorkScheduleMasterReferenceAtr.WORK_PLACE.value) {
 				customText = TextResource.localize("Com_Workplace");
 			} else if (value == WorkScheduleMasterReferenceAtr.CLASSIFICATION.value) {
 				customText = TextResource.localize("Com_Class");

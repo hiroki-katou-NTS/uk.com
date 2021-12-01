@@ -82,7 +82,7 @@ public class WorkTimeHolidayCalcMethod extends DomainObject implements Serializa
 	 * @return 「実働時間のみで計算する」に変更したインスタンス
 	 */
 	public WorkTimeHolidayCalcMethod createCalculationByActualTime() {
-		return new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, this.advancedSet);
+		return new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, Optional.empty());
 	}
 	
 	/**
@@ -112,6 +112,20 @@ public class WorkTimeHolidayCalcMethod extends DomainObject implements Serializa
 			return true;
 		
 		return false;
+	}
+	
+	/**
+	 * 欠勤をマイナスせず所定から控除する
+	 * @return true：控除する、false：控除しない
+	 */
+	public boolean isMinusAbsenceTime() {
+		if(this.calculateActualOperation.isCalclationByActualTime()) {
+			return false;
+		}
+		if(!this.advancedSet.isPresent()) {
+			return false;
+		}
+		return this.advancedSet.get().isMinusAbsenceTime();
 	}
 }
 

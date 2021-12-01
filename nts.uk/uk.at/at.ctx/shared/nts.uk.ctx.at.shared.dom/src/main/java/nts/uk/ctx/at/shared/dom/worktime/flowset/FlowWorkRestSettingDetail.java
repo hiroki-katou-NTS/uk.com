@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 // 流動勤務の休憩設定詳細
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlowWorkRestSettingDetail extends WorkTimeDomainObject implements Cloneable{
 
 	/** The flow rest setting. */
@@ -80,5 +83,18 @@ public class FlowWorkRestSettingDetail extends WorkTimeDomainObject implements C
 			throw new RuntimeException("FlowWorkRestSettingDetail clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 外出から休憩へ変換するか
+	 * @param isFixBreak 固定休憩である
+	 * @param reason 外出理由
+	 * @return true：変換する false：変換しない
+	 */
+	public boolean isConvertGoOutToBreak(boolean isFixBreak, GoingOutReason reason) {
+		if(isFixBreak) {
+			return this.flowFixedRestSetting.isConvertGoOutToBreak(reason);
+		}
+		return this.flowRestSetting.isConvertGoOutToBreak(reason);
 	}
 }

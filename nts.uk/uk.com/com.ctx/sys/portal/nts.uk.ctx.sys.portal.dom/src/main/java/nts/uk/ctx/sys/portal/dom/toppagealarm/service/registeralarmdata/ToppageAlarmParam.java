@@ -37,6 +37,11 @@ public class ToppageAlarmParam {
 	
 	//部下の社員ID
 	private List<String> subSids; //#116503
+	
+	/**
+	 * 部下のエラーがない社員ID
+	 */
+	private List<String> noErrSids;
 
 	/*
 	 * パターンコード

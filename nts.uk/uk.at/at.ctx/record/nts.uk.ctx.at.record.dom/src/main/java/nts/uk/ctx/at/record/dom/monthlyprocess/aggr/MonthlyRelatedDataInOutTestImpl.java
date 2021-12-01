@@ -190,13 +190,9 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		val vDivergenceTimeMap = vDivergenceTime.getDivergenceTimeList();
 		val aggrDivergenceTime01 = AggregateDivergenceTime.of(1,
 				new AttendanceTimeMonth(3210 + randomVal),
-				new AttendanceTimeMonth(0),
-				new AttendanceTimeMonth(0),
 				DivergenceAtrOfMonthly.NORMAL);
 		val aggrDivergenceTime02 = AggregateDivergenceTime.of(2,
 				new AttendanceTimeMonth(3220 + randomVal),
-				new AttendanceTimeMonth(0),
-				new AttendanceTimeMonth(0),
 				DivergenceAtrOfMonthly.NORMAL);
 		vDivergenceTimeMap.put(1, aggrDivergenceTime01);
 		if (randomVal >= 6) vDivergenceTimeMap.put(2, aggrDivergenceTime02);

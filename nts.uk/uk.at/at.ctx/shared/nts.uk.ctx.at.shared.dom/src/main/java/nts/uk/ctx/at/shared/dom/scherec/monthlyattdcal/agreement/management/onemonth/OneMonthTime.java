@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.one
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 public class OneMonthTime {
 	
 	/** エラーアラーム時間 */
-	@Setter
 	private OneMonthErrorAlarmTime erAlTime;
 	/** 上限時間 */
 	private AgreementOneMonthTime upperLimit;
@@ -27,8 +25,9 @@ public class OneMonthTime {
 		this.erAlTime = erAlTime;
 		this.upperLimit = upperLimit;
 	}
-	
-	public static OneMonthTime of(OneMonthErrorAlarmTime erAlTime, AgreementOneMonthTime upperLimit) {
+
+	/**　不変条件チェックするコンストラクタ　*/
+	public static OneMonthTime createWithCheck(OneMonthErrorAlarmTime erAlTime, AgreementOneMonthTime upperLimit) {
 
 		/** 不変条件: @上限時間 ≧ @エラーアラーム時間.エラー時間 */
 		if (upperLimit.lessThan(erAlTime.getError())) {

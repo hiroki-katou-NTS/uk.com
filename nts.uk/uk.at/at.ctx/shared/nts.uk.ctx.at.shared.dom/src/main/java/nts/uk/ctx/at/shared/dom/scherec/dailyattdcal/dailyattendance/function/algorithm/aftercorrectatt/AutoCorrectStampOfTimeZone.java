@@ -26,7 +26,7 @@ public class AutoCorrectStampOfTimeZone {
 
 		// 自動打刻セットの補正
 		TimeLeavingOfDailyAttd timeLeaving = autoStampSettingProcess.process(companyId, domainDaily.getYmd(),
-				workingCond, domainDaily.getWorkInformation(), domainDaily.getAttendanceLeave().orElse(null));
+				workingCond, domainDaily.getWorkInformation(), domainDaily.getAttendanceLeave().orElse(null), domainDaily.getEditState());
 		domainDaily.setAttendanceLeave(Optional.ofNullable(timeLeaving));
 
 		// 直行直帰による、戻り時刻補正

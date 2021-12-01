@@ -34,6 +34,8 @@ table th {
 }
 .margin-date-picker {
   margin: 10px 0px 15px 10px;
+  position: relative;
+  height: 32px;
 }
 
 .footer-content {
@@ -77,4 +79,13 @@ table th {
 .blue-link:hover {
   cursor: pointer;
   color: rgb(0, 0, 255) !important;
+}
+#B3 {
+  position: absolute;
+  top: 3px;
+  right: 20px;
+}
+#B2_2 {
+  position: absolute;
+  left: 0;
 }

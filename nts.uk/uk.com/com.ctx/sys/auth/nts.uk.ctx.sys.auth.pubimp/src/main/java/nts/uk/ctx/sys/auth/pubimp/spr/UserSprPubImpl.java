@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.shared.dom.user.UserRepository;
  */
 @Stateless
 public class UserSprPubImpl implements UserSprPub {
-
+	
 	@Inject
 	private UserRepository userRepository;
 	
@@ -32,13 +32,11 @@ public class UserSprPubImpl implements UserSprPub {
 				x.getLoginID().v(), 
 				x.getUserName().isPresent() ? x.getUserName().get().v() : "", 
 				x.getAssociatedPersonID().isPresent() ? x.getAssociatedPersonID().get() : "", 
-				x.getMailAddress().isPresent() ? x.getMailAddress().get().v() : "", 
-				x.getPassword().v()));
+				x.getMailAddress().isPresent() ? x.getMailAddress().get().v() : ""));
 	}
-
+	
 	@Override
 	public Optional<String> getRoleFromUserId(String companyID, String userId, int roleType) {
 		return Optional.ofNullable(roleFromUserIdPub.getRoleFromUserId(userId, roleType, GeneralDate.today()));
 	}
-
 }

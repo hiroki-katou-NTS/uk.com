@@ -443,6 +443,13 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		return sDataMngInfoRepo.findByEmployeCD(employeeCode, companyId)
 				.map(e -> toExport(e));
 	}
+
+	@Override
+	public List<EmployeeDataMngInfoExport> findSdataMngInfoByEmployeeCodes(String companyId, List<String> employeeCodes) {
+		return sDataMngInfoRepo.findByListEmployeeCode(companyId, employeeCodes)
+				.stream()
+				.map(e -> toExport(e)).collect(Collectors.toList());
+	}
 	
 	private static EmployeeDataMngInfoExport toExport(EmployeeDataMngInfo mngInfo) {
 		return new EmployeeDataMngInfoExport(

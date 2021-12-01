@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +43,10 @@ public class WwfdtApprovalPhaseState extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApprovalPhaseStatePK wwfdpApprovalPhaseStatePK;
+	
+	@Version
+	@Column(name="EXCLUS_VER")
+	private int version;
 	
 	@Column(name="APP_PHASE_ATR")
 	public Integer approvalAtr;

@@ -1,5 +1,9 @@
 package nts.uk.file.at.app.export.dailyschedule.totalsum;
 
+import java.text.DecimalFormat;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +31,8 @@ public class TotalValue {
 	private String value;
 	
 	private int valueType;
+	
+	private String unit = "";
 	
 	/**
 	 * Value.
@@ -58,5 +64,36 @@ public class TotalValue {
 			return (T) this.value;
 		}
 		throw new RuntimeException("invalid type: " + this.valueType);
+	}
+	
+	public <T extends Number> void addValue(T value, ValueType valueType) {
+		if (value == null) {
+			return;
+		}
+		if (valueType.isInteger()) {
+			this.value = String.valueOf(NumberUtils.toInt(this.value, 0) + value.intValue());
+		} else if (valueType.isDouble()) {
+			this.value = String.valueOf(NumberUtils.toDouble(this.value, 0) + value.doubleValue());
+		}
+	}
+	
+	public String formatValue() {
+		String result = null;
+		if (StringUtil.isNullOrEmpty(this.value, true)) {
+			return this.value;
+		}
+		switch(EnumAdaptor.valueOf(this.valueType, ValueType.class)) {
+		case AMOUNT:
+			DecimalFormat formatDouble = new DecimalFormat("###,###,###.#");
+			result = formatDouble.format(Double.valueOf(this.value));
+			break;
+		case AMOUNT_NUM:
+			DecimalFormat formatInt = new DecimalFormat("###,###,###");
+			result = formatInt.format(Integer.valueOf(this.value));
+			break;
+		default:
+			result = this.value;
+		}
+		return result.concat(this.unit);
 	}
 }

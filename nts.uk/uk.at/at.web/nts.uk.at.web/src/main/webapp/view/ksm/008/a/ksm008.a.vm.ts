@@ -90,6 +90,7 @@ module nts.uk.at.ksm008.a {
                 if (data && data.length) {
                     const listMenu = _.orderBy(data, ['code'], ['asc']);
                     listMenu.forEach((item: any) => {
+                        item.isNoBorder = ko.observable(_.isEmpty(item.subConditions));
                         _.forEach(item.subConditions, subCondition => {
                             let explanation: string = "" + subCondition.explanation;
                             explanation = explanation.replace(/\\r/g, "\r");
@@ -161,7 +162,9 @@ module nts.uk.at.ksm008.a {
 
         image: string,
         /** サブ条件リスト */
-        subConditions: KnockoutObservableArray<SubConditionKO>
+        subConditions: KnockoutObservableArray<SubConditionKO>,
+
+        isNoBorder: KnockoutObservable<boolean>
     }
 
     interface SubConditionKO {

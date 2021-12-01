@@ -36,20 +36,20 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement {
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
-	
+
 	@Inject
 	private YearHolidayRepository yearHolidayRepository;
-	
+
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-	
+
 	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	/**
 	 * RequestList210
 	 * 次回年休付与日を取得する
-	 * 
+	 *
 	 * @param cId
 	 * @param sId
 	 * @return
@@ -59,92 +59,48 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 	public List<NextAnnualLeaveGrant> acquireNextHolidayGrantDate(CompanyId companyId, EmployeeId employeeId, Optional<GeneralDate> referenceDate) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		// ドメインモデル「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = annLeaEmpBasicInfoRepository.get(employeeId.v());
-		
+
 		if(!annualLeaveEmpBasicInfo.isPresent()) {
 			return Collections.emptyList();
 		}
-		
+
 		// 次回年休付与の計算範囲を作成
 		Optional<DatePeriod> period = createCalRangeNextYearHdGrant(referenceDate);
-		
+
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> result = calculateNextHolidayGrant(require, cacheCarrier, companyId.v(), 
-				employeeId.v(), period, annualLeaveEmpBasicInfo);
-		
+		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
+				companyId.v(), employeeId.v(), period,
+				Optional.empty(), annualLeaveEmpBasicInfo, Optional.empty(), Optional.empty());
+
 		// 次回年休付与を返す
-		return result;
+		return nextAnnLeaGrantList;
 	}
-	
+
 	/**
 	 * 次回年休付与の計算範囲を作成
-	 * 
+	 *
 	 * @param referenceDate
 	 * @return
 	 */
 	private Optional<DatePeriod> createCalRangeNextYearHdGrant(Optional<GeneralDate> referenceDate) {
 		Optional<DatePeriod> result = Optional.empty();
-		
+
 		// パラメータ「基準日」が存在するかチェック
-		if(referenceDate.isPresent()) {	
+		if(referenceDate.isPresent()) {
 			// 基準日から1年間の期間を返す
 			result = Optional.of(new DatePeriod(referenceDate.get(), referenceDate.get().addYears(1))) ;
 		}
-		
+
 		return result;
 	}
 
 	/**
-	 * 次回年休付与を計算
-	 * 
-	 * @param companyId
-	 * @param employeeId
-	 * @param period
-	 * @param annualLeaveEmpBasicInfo
-	 * @return
-	 */
-	private List<NextAnnualLeaveGrant> calculateNextHolidayGrant(
-			RecordDomRequireService.Require require, 
-			CacheCarrier cacheCarrier, String companyId, String employeeId, 
-			Optional<DatePeriod> period, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo) {
-		boolean isSingleDay = false;
-		Optional<DatePeriod> periodDate = period;
-		
-		// Imported(就業)「社員」を取得する
-		EmployeeImport employee = empEmployeeAdapter.findByEmpId(employeeId);
-		
-		// パラメータ「期間」をチェック
-		if(!period.isPresent()) {
-			isSingleDay = true;
-			
-			// 社員に対応する締め開始日を取得する
-			Optional<GeneralDate> closureStartDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
-			
-			periodDate = Optional.ofNullable(new DatePeriod(GeneralDate.ymd(closureStartDate.get().year(), 
-					closureStartDate.get().month(), closureStartDate.get().day()), GeneralDate.ymd(9999, 12, 31)));
-		}
-		
-		// ドメインモデル「年休付与テーブル設定」を取得する
-		Optional<GrantHdTblSet> grantHdTblSet = yearHolidayRepository.findByCode(companyId, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().v());
-		
-		if(!grantHdTblSet.isPresent()) {
-			return Collections.emptyList();
-		}
-		
-		// 次回年休付与を取得する
-		return  GetNextAnnualLeaveGrant.algorithm(require, cacheCarrier, 
-				companyId, grantHdTblSet.get().getYearHolidayCode().v(), employee.getEntryDate(), 
-				annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), periodDate.get(), isSingleDay);
-		
-		// List<次回年休付与>を返す
-	}
-	
-	/**
 	 * RequestList323
 	 * 次回年休付与時点の出勤率・出勤日数・所定日数・年間所定日数を取得する
-	 * 
+	 *
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @return 次回年休付与時点出勤率
@@ -154,19 +110,19 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 	public Optional<AttendRateAtNextHoliday> getDaysPerYear(CompanyId companyId, EmployeeId employeeId) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		AttendRateAtNextHoliday result = null;
-		
+
 		// 「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> basicInfoOpt = this.annLeaEmpBasicInfoRepository.get(employeeId.v());
 		if (!basicInfoOpt.isPresent()) return Optional.empty();
 		AnnualLeaveEmpBasicInfo basicInfo = basicInfoOpt.get();
-		
+
 		// 次回年休付与を計算
 		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
 				companyId.v(), employeeId.v(), Optional.empty(),
 				Optional.empty(), basicInfoOpt, Optional.empty(), Optional.empty());
-		
+
 		// List先頭の次回年休付与を出力用クラスにセット
 		if (nextAnnLeaGrantList.size() <= 0) return Optional.empty();
 		NextAnnualLeaveGrant nextAnnualLeaveGrant = nextAnnLeaGrantList.get(0);
@@ -182,13 +138,13 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 			attendanceDays = attendanceRateOpt.get().getWorkingDays();
 			predeterminedDays = attendanceRateOpt.get().getPrescribedDays();
 		}
-		
+
 		// 年休社員基本情報から年間所定日数をセット
 		Double annualPerYearDays = 0.0;
 		if (basicInfo.getWorkingDaysPerYear().isPresent()) {
 			annualPerYearDays = basicInfo.getWorkingDaysPerYear().get().v().doubleValue();
 		}
-		
+
 		// 次回年休付与時点出勤率を返す
 		result = new AttendRateAtNextHoliday(
 				nextAnnualLeaveGrant.getGrantDate(),
@@ -199,7 +155,7 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 				new AttendanceDaysMonth(annualPerYearDays));
 		return Optional.ofNullable(result);
 	}
-	
-	
-	
+
+
+
 }

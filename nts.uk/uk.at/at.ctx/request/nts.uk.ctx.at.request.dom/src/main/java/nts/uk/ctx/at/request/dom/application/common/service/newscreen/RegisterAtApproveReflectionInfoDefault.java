@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveResultImport;
 
 @Stateless
 public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApproveReflectionInfoService {
@@ -21,9 +22,9 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	@Override
 	public String newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
 		// 2.承認する(ApproveService)
-		approvalRootStateAdapter.doApprove(application.getAppID(), application.getEnteredPersonID(), "");
+		ApproveResultImport approveResultImport = approvalRootStateAdapter.doApprove(application.getAppID(), application.getEnteredPersonID(), "");
 		// アルゴリズム「承認全体が完了したか」を実行する(thực hiện thuật toán 「」)
-		Boolean approvalCompletionFlag = approvalRootStateAdapter.isApproveAllComplete(application.getAppID());
+		Boolean approvalCompletionFlag = approvalRootStateAdapter.isApproveAllComplete(approveResultImport.getApprovalRootState());
 		if(!approvalCompletionFlag) {
 			return "";
 		}

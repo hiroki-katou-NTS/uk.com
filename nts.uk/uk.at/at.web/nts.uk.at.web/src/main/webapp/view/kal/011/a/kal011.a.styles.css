@@ -3,13 +3,13 @@
 }
 
 .tbl-wrap > .cell:nth-child(1){
-    width: 515px;
+    width: 470px;
     padding: 10px 10px 0 10px;
 }
 
 .tbl-wrap > .cell:nth-child(2){
     width: auto;
-    padding: 10px 0 0 30px;
+    padding: 10px 0 0 0px;
 }
 
 .tbl-control{
@@ -35,4 +35,9 @@
 
 .nts-datepicker-wrapper .ntsDatepicker.yearmonth-picker {
     width: 85px !important;
+}
+
+#nts-component-tree {
+  padding-right: 0px !important;
+  padding-top: 0px !important;
 }

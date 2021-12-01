@@ -16,8 +16,11 @@ import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AggregateAffiliationInfo;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
@@ -52,6 +55,8 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 
 	/** 締め日: 日付 */
 	private ClosureDateDto closureDate;
+	
+	private int contractTime;
 
 	@Override
 	public String employeeId() {
@@ -76,7 +81,8 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 																		ConvertHelper.getEnum(closureID, ClosureId.class), 
 																		closureDate == null ? null : closureDate.toDomain(), 
 																		startMonthInfo == null ? new AggregateAffiliationInfo()  : startMonthInfo.toDomain(), 
-																		endMonthInfo == null ? new AggregateAffiliationInfo() : endMonthInfo.toDomain());
+																		endMonthInfo == null ? new AggregateAffiliationInfo() : endMonthInfo.toDomain(),
+																		new LaborContractTime(contractTime));
 		domain.setVersion(this.version);
 		
 		return domain;
@@ -98,6 +104,7 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 			dto.setStartMonthInfo(AggregateAffiliationInfoDto.from(domain.getFirstInfo()));
 			dto.setYearMonth(domain.getYearMonth());
 			dto.setVersion(domain.getVersion());
+			dto.setContractTime(domain.getContractTime().valueAsMinutes());
 			dto.exsistData();
 		}
 		return dto;
@@ -145,6 +152,29 @@ public class AffiliationInfoOfMonthlyDto extends MonthlyItemCommon {
 	@Override
 	public String rootName() {
 		return MONTHLY_AFFILIATION_INFO_NAME;
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (path.equals(CONTRACT_TIME)) {
+			return Optional.of(ItemValue.builder().value(this.contractTime).valueType(ValueType.TIME));
+		}
+		return super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(CONTRACT_TIME)) {
+			return PropType.VALUE;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (path.equals(CONTRACT_TIME)) {
+			this.contractTime = value.valueOrDefault(0);
+		}
 	}
 	
 	

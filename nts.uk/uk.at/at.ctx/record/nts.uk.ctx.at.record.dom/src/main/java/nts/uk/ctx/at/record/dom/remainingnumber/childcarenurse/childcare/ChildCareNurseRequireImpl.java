@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.CareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
@@ -20,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagementRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.data.CareManagementDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
@@ -35,13 +33,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService;
 
 public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNurseService.Require{
@@ -124,6 +122,11 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 	public List<Closure> closure(String companyId) {
 		return closureRepo.findAll(companyId);
 	}
+	
+	@Override
+	public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+		return closureRepo.findAllActive(companyId, useAtr);
+	}
 
 	@Override
 	public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
@@ -157,28 +160,6 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 	public NursingLeaveSetting nursingLeaveSetting(String companyId, NursingCategory nursingCategory) {
 		return nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, nursingCategory.value);
 	}
-
-	@Override
-	public AnnualPaidLeaveSetting annualLeaveSet(String companyId) {
-		return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
-	}
-
-	@Override
-	public LaborContractTime empContractTime(String employeeId, GeneralDate criteriaDate) {
-		Optional<WorkingConditionItem>domain = workingConditionItemRepo.getBySidAndStandardDate(employeeId, criteriaDate);
-		if(!domain.isPresent())
-			return new LaborContractTime(0);
-		return domain.get().getContractTime();
-	}
-
-	@Override
-	public LaborContractTime contractTime(String companyId, String employeeId,  GeneralDate criteriaDate) {
-		Optional<WorkingConditionItem>domain = workingConditionItemRepo.getBySidAndStandardDate(employeeId, criteriaDate);
-		if(!domain.isPresent())
-			return new LaborContractTime(0);
-		return domain.get().getContractTime();
-	}
-
 
 	@Override
 	public Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId) {

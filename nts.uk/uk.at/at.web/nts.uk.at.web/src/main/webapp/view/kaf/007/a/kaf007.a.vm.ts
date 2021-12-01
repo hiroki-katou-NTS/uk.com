@@ -280,7 +280,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				companyId: vm.$user.companyId,
 				applicationDto: ko.toJS(applicationDto),
 				appWorkChangeDto: ko.toJS(appWorkChangeDto),
-				isError: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag,
+				opMsgErrorLst: vm.model().appDispInfoStartupOutput().appDispInfoWithDateOutput.opMsgErrorLst,
 				appDispInfoStartupDto: ko.toJS(vm.model().appDispInfoStartupOutput),
 				holidayDates: holidayDateLst
 			}

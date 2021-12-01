@@ -23,7 +23,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.Divided
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -39,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
@@ -275,7 +275,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 						}else{
 							resultRateOpt = Optional.of(new CalYearOffWorkAttendRate(100.0,0.0,365.0,0.0));
 						}
-						
+
 						if (resultRateOpt.isPresent()){
 							val resultRate = resultRateOpt.get();
 							nextAnnualGrantList.setAttendanceRate(Optional.of(
@@ -344,10 +344,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		Optional<AnnualLeaveGrantRemainingData> remainingShortageData
 			= annualLeaveInfoEnd.createLeaveGrantRemainingShortageData();
 
-		// 特別休暇不足分として作成した特別休暇付与データを削除する
+		// 年休不足分として作成した年休付与データを削除する
 		aggrResult.deleteShortageRemainData();
 
-		// 特別休暇(期間終了日時点)に残数不足の付与残数データを追加
+		// 年休(期間終了日時点)に残数不足の付与残数データを追加
 		if ( remainingShortageData.isPresent() ) {
 			annualLeaveInfoEnd.getGrantRemainingDataList().add(remainingShortageData.get());
 		}
@@ -822,14 +822,28 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		if (isOverWriteOpt.isPresent()){
 			if (isOverWriteOpt.get()){
 				if(isOverWritePeriod.isPresent()){
-				
-					//上書き対象期間内の暫定年休管理データを削除
-					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()));
-					
+
+					//上書き対象期間内の暫定年休管理データを削除(日数単位のデータ)
+					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()) && x.getUsedNumber().isUseDay());
+
 					// 上書き用データがある時、追加する
 					if (forOverWriteListOpt.isPresent()){
 						val overWrites = forOverWriteListOpt.get();
 						for (val overWrite : overWrites){
+
+							// 時間休暇の場合は、addする前に、時間休暇の種類を参照し、同じ種類がすでに存在する場合は削除してから上書きする。
+							if (!overWrite.getUsedNumber().isUseDay() && overWrite.getAppTimeTypeEnum().isPresent()) {
+								val sameDatas = results.stream()
+										.filter(x -> x.getYmd().equals(overWrite.getYmd())
+												&& x.getAppTimeTypeEnum().isPresent())
+										.collect(java.util.stream.Collectors.toList());
+								for (val sameData : sameDatas) {
+									if (sameData.getAppTimeTypeEnum().get()
+											.equals(overWrite.getAppTimeTypeEnum().get()))
+										results.removeIf(x -> x.getRemainManaID().equals(sameData.getRemainManaID()));
+								}
+							}
+
 							// 上書き用データを追加
 							results.add(overWrite);
 						}
@@ -870,7 +884,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val itrRemainDatas = annualLeaveInfo.getGrantRemainingDataList().listIterator();
 		while (itrRemainDatas.hasNext()){
 			val remainData = itrRemainDatas.next();
-			if (remainData.isShortageRemain() == false) continue;
+			if (remainData.isDummyData() == false) continue;
 
 			// 取得した年休付与残数の「年休使用数」、「年休残数」をそれぞれ合計
 			AnnualLeaveNumberInfo detail = (AnnualLeaveNumberInfo) remainData.getDetails();
@@ -927,14 +941,14 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val itrAsOfPeriodEndData = result.getAsOfPeriodEnd().getGrantRemainingDataList().listIterator();
 		while (itrAsOfPeriodEndData.hasNext()){
 			val remainData = itrAsOfPeriodEndData.next();
-			if (remainData.isShortageRemain()) itrAsOfPeriodEndData.remove();
+			if (remainData.isDummyData()) itrAsOfPeriodEndData.remove();
 		}
 
 		// 期間終了日の翌日開始時点の不足分付与残数データを削除する
 		val itrAsOfEndNextData = result.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingDataList().listIterator();
 		while (itrAsOfEndNextData.hasNext()){
 			val remainData = itrAsOfEndNextData.next();
-			if (remainData.isShortageRemain()) itrAsOfEndNextData.remove();
+			if (remainData.isDummyData()) itrAsOfEndNextData.remove();
 		}
 
 		// 付与時点の不足分付与残数データを削除する
@@ -943,7 +957,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				val itrAsOfGrant = asOfGrant.getGrantRemainingDataList().listIterator();
 				while (itrAsOfGrant.hasNext()){
 					val remainData = itrAsOfGrant.next();
-					if (remainData.isShortageRemain()) itrAsOfGrant.remove();
+					if (remainData.isDummyData()) itrAsOfGrant.remove();
 				}
 			}
 		}
@@ -954,7 +968,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				val itrLapsed = lapsed.getGrantRemainingDataList().listIterator();
 				while (itrLapsed.hasNext()){
 					val remainData = itrLapsed.next();
-					if (remainData.isShortageRemain()) itrLapsed.remove();
+					if (remainData.isDummyData()) itrLapsed.remove();
 				}
 			}
 		}
