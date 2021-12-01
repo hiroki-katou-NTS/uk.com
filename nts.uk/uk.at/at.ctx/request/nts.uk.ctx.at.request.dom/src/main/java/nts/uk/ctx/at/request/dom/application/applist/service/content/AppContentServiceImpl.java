@@ -913,7 +913,7 @@ public class AppContentServiceImpl implements AppContentService {
 					appReasonDisAtr,
 					appOverTimeData,
 					screenAtr,
-					appReason.toString());
+					appReason == null ? Strings.EMPTY : appReason.toString());
 		}else {
 			// 申請理由内容　＝　申請内容の申請理由
 			String appReasonContent = this.getAppReasonContent(
@@ -1508,7 +1508,8 @@ public class AppContentServiceImpl implements AppContentService {
 		// $複数残業 = empty
 		StringBuilder multipleOverTime = new StringBuilder(Strings.EMPTY);
 		ReasonForFixedForm reasonForFixedForm;
-		Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId, appOverTimeData.getAppID());
+
+		Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId,appOverTimeData.getAppID());
 		if(apOptional.isPresent()){
 			Optional<OvertimeWorkMultipleTimes> multipleTimesOp = apOptional.get().getMultipleTimesOp();
 			if(multipleTimesOp.isPresent()){
@@ -1554,7 +1555,7 @@ public class AppContentServiceImpl implements AppContentService {
 								appReason = applyReason.get().v();
 							}
 						}
-						reasonContent = reasonForFixedForm.v() + appReason;
+						reasonContent = reasonForFixedForm == null ? appReason : (reasonForFixedForm.v() + appReason);
 					}
 					//$複数残業 ＋＝ $SV＋ #CMM045_307※パラメータへのセットはノート参照
 					List<String> params = new ArrayList<>();
