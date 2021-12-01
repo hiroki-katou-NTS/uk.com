@@ -89,6 +89,7 @@ module nts.uk.at.view.ksu001.k.a {
             let code = self.selectedCode();
             self.$window.modal('/view/ksu/001/kb/index.xhtml', code).then((returnedData: any) => {
                 if (returnedData) {
+                    $("#preview-frame")[0].innerHTML = "";
                     let dataList: Array<ItemModel> = [];
                     self.$blockui("invisible");
                     self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
@@ -103,7 +104,6 @@ module nts.uk.at.view.ksu001.k.a {
                                 self.characteristics.comments = self.comments();
                                 character.save('characterKsu005a', self.characteristics);
                                 self.selectedCode(returnedData.code);
-                                $("#preview-frame")[0].innerHTML = "";
                             } else if (data[0].isAttendance) {
                                 self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
                                     self.itemList([]);
