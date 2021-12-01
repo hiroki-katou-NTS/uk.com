@@ -681,8 +681,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         name: 'Button_WorkPlace',
                         text: nts.uk.resource.getText('KAF002_83'),
                         click: function(data: any) {
-                            nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
-                            nts.uk.ui.windows.sub.modal("com", "/view/cdl/010/a/index.xhtml").onClosed(() => {
+                            nts.uk.ui.windows.setShared("inputCDL008", { executionId: data.id });
+                            nts.uk.ui.windows.sub.modal("com", "/view/cdl/008/a/index.xhtml").onClosed(() => {
                             });
                         },
                         controlType: 'Button'
@@ -691,7 +691,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         name: 'Button_WorkLocation',
                         text: nts.uk.resource.getText('KAF002_84'),
                         click: function(data: any) {
-                            nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
+                            nts.uk.ui.windows.setShared("KDL010SelectWorkLocation", { executionId: data.id });
                             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml").onClosed(() => {
                             });
                         },

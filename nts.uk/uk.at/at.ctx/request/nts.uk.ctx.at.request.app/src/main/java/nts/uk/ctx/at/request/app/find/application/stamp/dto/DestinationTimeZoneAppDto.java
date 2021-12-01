@@ -23,7 +23,8 @@ public class DestinationTimeZoneAppDto {
 	
 	public DestinationTimeZoneApp toDomain() {
 		return new DestinationTimeZoneApp(
-				EnumAdaptor.valueOf(timeZoneStampClassification, TimeZoneStampClassification.class),
+				timeZoneStampClassification != null
+				? EnumAdaptor.valueOf(timeZoneStampClassification, TimeZoneStampClassification.class) : null,
 				engraveFrameNo);
 	}
 	
