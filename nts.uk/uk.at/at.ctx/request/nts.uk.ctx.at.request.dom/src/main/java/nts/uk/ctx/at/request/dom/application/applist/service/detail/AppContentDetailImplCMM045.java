@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -633,15 +634,18 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				overtimeHolidayWorkActual==null ? false : overtimeHolidayWorkActual.isActualStatus(),
 				application);
 		Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
-		switch (appOverTime.getOverTimeClf()) {
-		case EARLY_OVERTIME:
+		switch (appOverTime.getOverTimeClf().value) {
+		case 0:
 			opAppTypeDisplay = Optional.of(ApplicationTypeDisplay.EARLY_OVERTIME);
 			break;
-		case NORMAL_OVERTIME:
+		case 1:
 			opAppTypeDisplay = Optional.of(ApplicationTypeDisplay.NORMAL_OVERTIME);
 			break;
-		case EARLY_NORMAL_OVERTIME:
+		case 2:
 			opAppTypeDisplay = Optional.of(ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME);
+			break;
+		case 3:
+			opAppTypeDisplay = Optional.of(ApplicationTypeDisplay.OVERTIME_MULTIPLE_TIME);
 			break;
 		default:
 			break;
