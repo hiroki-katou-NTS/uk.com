@@ -83,16 +83,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     created(params: AppInitParam) {
         const self = this;
 		if(nts.uk.request.location.current.isFromMenu) {
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+            sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
 		} else {
-			if(!_.isNil(__viewContext.transferred.value)) {
-				self.isFromOther = true;
+            if(!_.isNil(__viewContext.transferred.value)) {
+                self.isFromOther = true;
 				params = __viewContext.transferred.value;
 			}	
 		}
 		
 		let empLst: Array<string> = [],
-			dateLst: Array<string> = [];
+        dateLst: Array<string> = [];
         self.application = ko.observable(new Application(self.appType()));
 		self.application().opStampRequestMode(0);
         self.selectedTab.subscribe(value => {

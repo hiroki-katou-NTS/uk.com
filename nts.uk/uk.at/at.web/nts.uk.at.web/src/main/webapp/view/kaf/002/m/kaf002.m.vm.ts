@@ -78,10 +78,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 		comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
 
+        appDate: KnockoutObservable<any>;
+
         created(params: any) {
 
             const self = this;
-			
+
+            self.appDate = params.appDate;
 			const comment1 = params.comment1 as KnockoutObservable<Comment>;
 			self.comment1(ko.unwrap(comment1));
 			comment1.subscribe((comment) => {
@@ -681,8 +684,22 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         name: 'Button_WorkPlace',
                         text: nts.uk.resource.getText('KAF002_83'),
                         click: function(data: any) {
-                            nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
-                            nts.uk.ui.windows.sub.modal("com", "/view/cdl/010/a/index.xhtml").onClosed(() => {
+                            const inputCDL008: any = {
+                                startMode: 0, // workplace
+                                isMultiple: false,
+                                showNoSelection: true,
+                                selectedCodes: '',
+                                isShowBaseDate: false,
+                                baseDate: _.isNil(self.appDate())
+                                    ? moment.utc().toISOString()
+                                    : moment.utc(self.appDate(), 'YYYY/MM/DD').toISOString(),
+                                selectedSystemType: 2, //employment
+                                isrestrictionOfReferenceRange: false
+                            };
+                            nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
+
+                            nts.uk.ui.windows.sub.modal("com", "/view/cdl/008/a/index.xhtml").onClosed(() => {
+                                
                             });
                         },
                         controlType: 'Button'
@@ -691,8 +708,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         name: 'Button_WorkLocation',
                         text: nts.uk.resource.getText('KAF002_84'),
                         click: function(data: any) {
-                            nts.uk.ui.windows.setShared("executionData", { executionId: data.id });
-                            nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml").onClosed(() => {
+                            nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', '');
+                            nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+
                             });
                         },
                         controlType: 'Button'
