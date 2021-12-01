@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdl050.a.service {
+module nts.uk.at.view.kdl058.a.service {
     var paths: any = {
         getAllHoliday: "at/schedule/holiday/getAllHoliday",
         createPublicHoliday : "at/schedule/holiday/create",
