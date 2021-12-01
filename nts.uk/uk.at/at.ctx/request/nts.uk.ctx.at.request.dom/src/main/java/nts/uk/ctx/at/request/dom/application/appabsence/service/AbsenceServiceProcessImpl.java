@@ -1013,6 +1013,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		    }
 			appAbsenceStartInfoOutput.setWorkTimeLst(timezoneUses);
 		}
+		// ドメイン「就業時間帯の設定」を取得する
+		Optional<WorkTimeSetting> workTimeSettingOptional = workTimeSettingRepository.findByCode(companyID, workTimeCD.get());
+		if (workTimeSettingOptional.isPresent()) {
+		    // 流動勤務か判断して、セットする
+		    appAbsenceStartInfoOutput.setFlowWorkFlag(workTimeSettingOptional.get().getWorkTimeDivision().getWorkTimeMethodSet().isFluidWork());
+		}
+		
 		// 「休暇申請起動時の表示情報」を返す
 		return appAbsenceStartInfoOutput;
 	}
