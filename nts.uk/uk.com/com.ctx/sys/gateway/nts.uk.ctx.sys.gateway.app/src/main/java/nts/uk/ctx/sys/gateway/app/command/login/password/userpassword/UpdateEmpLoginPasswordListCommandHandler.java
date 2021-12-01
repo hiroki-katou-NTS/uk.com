@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password.userpassword;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.TransactionService;
@@ -48,17 +51,26 @@ public class UpdateEmpLoginPasswordListCommandHandler extends CommandHandlerWith
 	protected List<MyCustomizeException> handle(CommandHandlerContext<List<UpdateEmpLoginPasswordCommand>> context) {
 		val require = requireProvider.create();
 		val command = context.getCommand();
+		List<MyCustomizeException> errorExceptionLst = new ArrayList<MyCustomizeException>();
 		
 		command.forEach(cmd -> {
-			Optional<User> userOpt = userRepo.getByAssociatedPersonId(cmd.getPersonId());
-			
-			if (userOpt.isPresent()) {
-				val atomTask = ChangeLoginPasswordOfUser.change(require, userOpt.get().getUserID(), cmd.getPassword());
+			try {
+				Optional<User> userOpt = userRepo.getByAssociatedPersonId(cmd.getPersonId());
 				
-				transaction.execute(atomTask);
+				if (userOpt.isPresent()) {
+					val atomTask = ChangeLoginPasswordOfUser.change(require, userOpt.get().getUserID(), cmd.getPassword());
+					
+					transaction.execute(atomTask);
+				}
+			} catch(BundledBusinessException bundledEx) {
+				List<BusinessException> exList = bundledEx.cloneExceptions();
+				exList.forEach(e -> {
+					MyCustomizeException ex = new MyCustomizeException(e.getMessageId(), Arrays.asList(cmd.getPersonId()));
+					errorExceptionLst.add(ex);
+				});
 			}
 		});
-		return new ArrayList<MyCustomizeException>();
+		return errorExceptionLst;
 	}
 
 }
