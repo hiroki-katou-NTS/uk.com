@@ -43,7 +43,7 @@ module nts.uk.at.view.cmf006.a {
                 roleType: vm.roleType(),
                 multiple: false,
                 isResize: false,
-                rows: 10,
+                rows: 9,
                 tabindex: 3
             });
             vm.fetchPermissionSettingList();
