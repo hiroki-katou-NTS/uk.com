@@ -482,12 +482,26 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 		end?: KnockoutObservable<number>;
 	}
 
-	export interface MultipleOvertimeContent {
+	export class MultipleOvertimeContent {
 		frameNo: number;
 		start: KnockoutObservable<number>;
 		end: KnockoutObservable<number>;
 		fixedReasonCode: KnockoutObservable<number>;
 		appReason: KnockoutObservable<string>;
+
+		constructor(sub: any, frameNo: number, start?: number, end?: number, fixedReasonCode?: number, appReason?: string) {
+			this.frameNo = frameNo;
+			this.start = ko.observable(start);
+			this.end = ko.observable(end);
+			this.fixedReasonCode = ko.observable(fixedReasonCode);
+			this.appReason = ko.observable(appReason);
+			this.start.subscribe(value => {
+				if (sub) sub();
+			});
+            this.start.subscribe(value => {
+				if (sub) sub();
+            });
+		}
 	}
 
 	export interface HolidayTime {
