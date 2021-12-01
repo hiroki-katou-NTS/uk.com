@@ -45,50 +45,77 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 	public void insert(OneDayFavoriteSet set) {
 		this.commandProxy().insert(new KrcdtTaskFavDaySet(set));
 
-		Map<Integer, List<TaskContent>> contentMap = new HashMap<>();
-
+//		Map<Integer, List<TaskContent>> contentMap = new HashMap<>();
+//
+//		for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
+//
+//			for (TaskContentForEachSupportFrame frame : content.getTaskContents()) {
+//				List<TaskContent> contents = new ArrayList<>();
+//				
+//				if (frame.getTaskContent().getItemId() >= 3 && frame.getTaskContent().getItemId() <= 8) {
+//					if (!contentMap.containsKey(frame.getFrameNo().v())) {
+//						contents.add(frame.getTaskContent());
+//						contentMap.put(frame.getFrameNo().v(), contents);
+//					} else {
+//						contentMap.get(frame.getFrameNo().v()).add(frame.getTaskContent());
+//					}
+//				}
+//			}
+//		}
+//		
+//		for (Map.Entry<Integer, List<TaskContent>> entry : contentMap.entrySet()) {
+//
+//			List<TaskContent> taskContents = entry.getValue();
+//			
+//			if (!taskContents.isEmpty()) {
+//				Integer taskPeriod = taskContents.stream().filter(m -> m.getItemId() == 3).findAny().map(m -> Integer.parseInt(m.getTaskCode().v())).orElse(null);
+//				
+//				String taskCd1 = taskContents.stream().filter(m -> m.getItemId() == 4).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+//				String taskCd2 = taskContents.stream().filter(m -> m.getItemId() == 5).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+//				String taskCd3 = taskContents.stream().filter(m -> m.getItemId() == 6).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+//				String taskCd4 = taskContents.stream().filter(m -> m.getItemId() == 7).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+//				String taskCd5 = taskContents.stream().filter(m -> m.getItemId() == 8).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+//
+//				set.getTaskBlockDetailContents().stream()
+//						.filter(x -> x.getTaskContents().stream()
+//								.filter(tc -> tc.getFrameNo().v().equals(entry.getKey())).findFirst().isPresent())
+//						.findFirst()
+//						.ifPresent(x -> {
+//								this.commandProxy()
+//								.insert(new KrcdtTaskFavDaySetItem(
+//												new KrcdtTaskFavDaySetItemPk(set.getFavId(), entry.getKey(),
+//												x.getStartTime().v()), taskCd1,
+//												taskCd2, taskCd3, taskCd4, taskCd5));
+//					
+//				});
+//			}
+//		
+//		}
+		
 		for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {
-
-			for (TaskContentForEachSupportFrame frame : content.getTaskContents()) {
-				List<TaskContent> contents = new ArrayList<>();
-				
-				if (frame.getTaskContent().getItemId() >= 4 && frame.getTaskContent().getItemId() <= 8) {
-					if (!contentMap.containsKey(frame.getFrameNo().v())) {
-						contents.add(frame.getTaskContent());
-						contentMap.put(frame.getFrameNo().v(), contents);
-					} else {
-						contentMap.get(frame.getFrameNo().v()).add(frame.getTaskContent());
-					}
-				}
-			}
-		}
-		
-		for (Map.Entry<Integer, List<TaskContent>> entry : contentMap.entrySet()) {
-
-			List<TaskContent> taskContents = entry.getValue();
 			
-			if (!taskContents.isEmpty()) {
-				String taskCd1 = taskContents.stream().filter(m -> m.getItemId() == 4).findAny().map(m -> m.getTaskCode().v()).orElse(null);
-				String taskCd2 = taskContents.stream().filter(m -> m.getItemId() == 5).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
-				String taskCd3 = taskContents.stream().filter(m -> m.getItemId() == 6).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
-				String taskCd4 = taskContents.stream().filter(m -> m.getItemId() == 7).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
-				String taskCd5 = taskContents.stream().filter(m -> m.getItemId() == 8).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
-
-				set.getTaskBlockDetailContents().stream()
-						.filter(x -> x.getTaskContents().stream()
-								.filter(tc -> tc.getFrameNo().v().equals(entry.getKey())).findFirst().isPresent())
-						.findFirst()
-						.ifPresent(x -> {
-								this.commandProxy()
-								.insert(new KrcdtTaskFavDaySetItem(
-												new KrcdtTaskFavDaySetItemPk(set.getFavId(), entry.getKey(),
-												x.getStartTime().v()), taskCd1,
-												taskCd2, taskCd3, taskCd4, taskCd5));
+			for (TaskContentForEachSupportFrame frame : content.getTaskContents()) {
+			
+				List<TaskContent> taskContents = frame.getTaskContent();
+				if (!taskContents.isEmpty()) {
 					
-				});
+					String taskCd1 = taskContents.stream().filter(m -> m.getItemId() == 4).findAny().map(m -> m.getTaskCode().v()).orElse(null);
+					String taskCd2 = taskContents.stream().filter(m -> m.getItemId() == 5).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+					String taskCd3 = taskContents.stream().filter(m -> m.getItemId() == 6).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+					String taskCd4 = taskContents.stream().filter(m -> m.getItemId() == 7).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+					String taskCd5 = taskContents.stream().filter(m -> m.getItemId() == 8).findAny().map(m -> m.getTaskCode().v() == "" ? null : m.getTaskCode().v()).orElse(null);
+					
+					this.commandProxy()
+					.insert(new KrcdtTaskFavDaySetItem(
+							new KrcdtTaskFavDaySetItemPk(set.getFavId(), frame.getFrameNo().v(),
+							content.getStartTime().v()), taskCd1,
+							taskCd2, taskCd3, taskCd4, taskCd5, frame.getAttendanceTime().isPresent() ? frame.getAttendanceTime().get().v() : null));
+					
+				}
+			
 			}
-		
 		}
+		
 		
 
 		for (TaskBlockDetailContent content : set.getTaskBlockDetailContents()) {

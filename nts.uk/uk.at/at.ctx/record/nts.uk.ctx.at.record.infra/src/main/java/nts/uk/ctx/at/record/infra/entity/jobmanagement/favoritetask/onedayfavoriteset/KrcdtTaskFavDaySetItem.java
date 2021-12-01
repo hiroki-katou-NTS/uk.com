@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 /**
  * 
  * @author tutt
- *
+ * 1日お気に入り作業セット詳細
  */
 @NoArgsConstructor
 @Entity
@@ -44,6 +44,9 @@ public class KrcdtTaskFavDaySetItem extends ContractCompanyUkJpaEntity implement
 	@Column(name = "TASK_CD5")
 	public String taskCd5;
 	
+	@Column(name = "TASK_TIME")
+	public Integer taskTime;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "FAV_ID", referencedColumnName = "FAV_ID"),
 		@PrimaryKeyJoinColumn(name = "START_CLOCK", referencedColumnName = "START_CLOCK") })
@@ -54,7 +57,7 @@ public class KrcdtTaskFavDaySetItem extends ContractCompanyUkJpaEntity implement
 		return this.pk;
 	}
 
-	public KrcdtTaskFavDaySetItem(KrcdtTaskFavDaySetItemPk krcdtTaskFavDaySetItemPk, String taskCd1, String taskCd2, String taskCd3, String taskCd4, String taskCd5) {
+	public KrcdtTaskFavDaySetItem(KrcdtTaskFavDaySetItemPk krcdtTaskFavDaySetItemPk, String taskCd1, String taskCd2, String taskCd3, String taskCd4, String taskCd5, Integer taskTime) {
 		super();
 		this.pk = krcdtTaskFavDaySetItemPk;
 		this.taskCd1 = taskCd1;
@@ -62,6 +65,7 @@ public class KrcdtTaskFavDaySetItem extends ContractCompanyUkJpaEntity implement
 		this.taskCd3 = taskCd3;
 		this.taskCd4 = taskCd4;
 		this.taskCd5 = taskCd5;
+		this.taskTime = taskTime;
 	}
 	
 }
