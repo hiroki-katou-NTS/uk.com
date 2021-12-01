@@ -913,7 +913,7 @@ public class AppContentServiceImpl implements AppContentService {
 					appReasonDisAtr,
 					appOverTimeData,
 					screenAtr,
-					appReason == null ? Strings.EMPTY : appReason.toString());
+					result);
 		}else {
 			// 申請理由内容　＝　申請内容の申請理由
 			String appReasonContent = this.getAppReasonContent(
