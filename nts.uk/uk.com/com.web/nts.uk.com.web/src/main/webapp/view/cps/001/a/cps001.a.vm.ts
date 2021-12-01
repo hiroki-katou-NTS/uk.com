@@ -260,7 +260,11 @@ module cps001.a.vm {
                         let index = _.findLastIndex(lstCardNumber, function(o) { return o == mes.parameterIds[0]; });
                         $($('[data-code = IS00779]')[index]).ntsError('set', { messageId: "Msg_346" });
                     } else {
-                        alert(mes);
+                        if (mes.errors && mes.errors.length > 1) {
+                            nts.uk.ui.dialog.bundledErrors(mes); 
+                        } else {
+                            alert(mes);
+                        }
                     }
 
                 });
