@@ -317,7 +317,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.getOneDay().isSpecialHoliday();
 		}
 		if (this.workTypeUnit.isMonringAndAfternoon()) {
-			return this.getMorning().isSpecialHoliday() && this.getAfternoon().isSpecialHoliday();
+			return this.getMorning().isSpecialHoliday() || this.getAfternoon().isSpecialHoliday();
 		}
 		return false;
 	}
