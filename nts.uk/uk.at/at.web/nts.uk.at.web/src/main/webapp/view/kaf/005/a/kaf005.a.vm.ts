@@ -56,15 +56,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
 		opOvertimeAppAtr: KnockoutObservable<number>;
 
-		multipleOvertimeContents: KnockoutObservableArray<MultipleOvertimeContent> = ko.observableArray([
-            {
-                frameNo: 1,
-                start: ko.observable(null),
-                end: ko.observable(null),
-                fixedReasonCode: ko.observable(null),
-                appReason: ko.observable(null)
-            }
-        ]);
+		multipleOvertimeContents: KnockoutObservableArray<MultipleOvertimeContent> = ko.observableArray([]);
         reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		
 		setTitleLabel() {
@@ -218,13 +210,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                         if (!_.isEmpty(data.latestMultiOvertimeApp.multipleOvertimeContents)) {
                                     		vm.multipleOvertimeContents([]);
                                             data.latestMultiOvertimeApp.multipleOvertimeContents.forEach(i => {
-                                                vm.multipleOvertimeContents.push({
-													frameNo: i.frameNo,
-													start: ko.observable(i.startTime),
-													end: ko.observable(i.endTime),
-													fixedReasonCode: ko.observable(i.fixedReasonCode),
-													appReason: ko.observable(i.appReason)
-												});
+                                                vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                                                	() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                                    i.frameNo,
+                                                    i.startTime,
+                                                    i.endTime,
+                                                    i.fixedReasonCode,
+                                                    i.appReason
+												));
 											});
 										}
 										if (!_.isEmpty(data.latestMultiOvertimeApp.breakTimeOp)) {
@@ -250,6 +243,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					});
 					if (loadDataFlag) {
 					    if (vm.opOvertimeAppAtr() == OvertimeAppAtr.MULTIPLE_OVERTIME) {
+					    	vm.multipleOvertimeContents([
+                                new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1)
+							]);
 					        vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
                             let defaultReasonTypeItem: any = _.find(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst, (o) => o.defaultValue);
                             if(_.isUndefined(defaultReasonTypeItem)) {
@@ -646,13 +642,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						if (!_.isEmpty(res.latestMultipleOvertimeApp)) {
 							self.multipleOvertimeContents([]);
                             res.latestMultipleOvertimeApp.forEach(i => {
-								self.multipleOvertimeContents.push({
-									frameNo: i.frameNo,
-									start: ko.observable(i.startTime),
-									end: ko.observable(i.endTime),
-									fixedReasonCode: ko.observable(i.fixedReasonCode),
-									appReason: ko.observable(i.appReason)
-								});
+								self.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                                    () => {self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                    i.frameNo,
+                                    i.startTime,
+                                    i.endTime,
+                                    i.fixedReasonCode,
+                                    i.appReason
+                                ));
                             });
 						}
 					}
@@ -948,13 +945,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
             if(!_.isUndefined(defaultReasonTypeItem)) {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
-		    vm.multipleOvertimeContents.push({
-                frameNo: 1,
-                start: ko.observable(null),
-                end: ko.observable(null),
-                fixedReasonCode: ko.observable(fixedReasonCode),
-                appReason: ko.observable(null)
-            });
+		    vm.multipleOvertimeContents.push(new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1));
         }
 
         removeMultipleRow(data: MultipleOvertimeContent) {
