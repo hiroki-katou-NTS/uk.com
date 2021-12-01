@@ -521,7 +521,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let itemsCheering = (function() {
             let list = [];
             let nursingTime = stampRecord.nursingTime;
-            for (let i = 1; i < 3; i++) {
+            for (let i = 1; i <= 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
                 _.forEach(nursingTime, item => {
                     if (item.frameNo == i) {
@@ -619,7 +619,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             
             let items7 = (function() {
                 let list = [];
-                for (let i = 1; i < 3; i++) {
+                for (let i = 1; i <= 3; i++) {
                     let dataObject = new TimePlaceOutput(i);
                     list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));
                 }

@@ -56,6 +56,9 @@ public class RemainingHolidayInforDto {
 	}
 
 	public AbsRecRemainMngOfInPeriod toDomain() {
+		if (lstAbsRecMng == null) {
+			lstAbsRecMng = Collections.emptyList();
+		}
 	    return new AbsRecRemainMngOfInPeriod(
 	            lstAbsRecMng.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 	            remainDays, 
