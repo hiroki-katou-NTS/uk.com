@@ -275,9 +275,7 @@ module nts.uk.ui.at.kdw013.b {
 						if(extendedProps.taskBlock.taskDetails.length == 1){
 							
 							if (_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value == '') {
-								let start = _.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 1).value;
-								let end = _.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 2).value;
-								_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value = end - start;
+								_.find(extendedProps.taskBlock.taskDetails[0].taskItemValues, i => i.itemId == 3).value = '0';
 							}
 							
 						}
