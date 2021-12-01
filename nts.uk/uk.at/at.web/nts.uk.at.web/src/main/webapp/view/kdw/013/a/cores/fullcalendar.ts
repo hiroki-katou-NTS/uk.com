@@ -954,6 +954,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.taskDragItems(draggers);
                             if (!$('#task-fav').hasClass("ui-sortable")) {
                                 $('#task-fav').sortable({
+                                    forcePlaceholderSize: true,
                                     axis: "y",
                                     update: (event, ui) =>{
                                         $("#task-fav").sortable("destroy");
@@ -1033,10 +1034,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             // update dragger items
                             vm.onedayDragItems(draggers);
-                            if ($('#one-day-fav').hasClass("ui-sortable")) {
-                                $('#one-day-fav').sortable("destroy");
-                            }
-                            $('#one-day-fav').sortable({
+                            if (!$('#one-day-fav').hasClass("ui-sortable")) {
+                              $('#one-day-fav').sortable({
+                                forcePlaceholderSize: true,
                                 axis: "y",
                                 update: function( event, ui ) {
                                         $("#one-day-fav").sortable("destroy");
@@ -1059,7 +1059,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 out: function(event, ui) {
                                     $("#one-day-fav").sortable("cancel");
                                 }
-                            });
+                            }); 
+                            }
+                            
                             return;
                         }
                     }
@@ -3424,19 +3426,27 @@ module nts.uk.ui.at.kdw013.calendar {
                                     const brBeforeTime = breakOfDay.breakTimes[j - 1];
                                     let end = cbh.end;
                                     let start = cbh.start;
-                                    if (brTime.start > cbh.end) { end = 1440 };
-                                    if (brTime.start < cbh.start) { start = 0 };
-                                    bhs.push({
-                                        daysOfWeek: [cbh.dayOfWeek],
-                                        startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
-                                        endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                    },
-                                        {
+                                    if (brTime.end < end) {
+                                        bhs.push({
                                             daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: formatTime(brTime.end, false),
-                                            endTime: formatTime(end, false)
+                                            startTime: !brBeforeTime ? formatTime(start, false) : formatTime(brBeforeTime.end, false),
+                                            endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
+                                        },
+                                            {
+                                                daysOfWeek: [cbh.dayOfWeek],
+                                                startTime: formatTime(brTime.end, false),
+                                                endTime: formatTime(end, false)
+                                            }
+                                        );
+                                    } else {
+                                        if (!_.find(bhs, ['daysOfWeek', cbh.dayOfWeek])) {
+                                            bhs.push({
+                                                daysOfWeek: [cbh.dayOfWeek],
+                                                startTime: start,
+                                                endTime: end
+                                            });
                                         }
-                                    );
+                                    }
 
                                 }
                             } else {
