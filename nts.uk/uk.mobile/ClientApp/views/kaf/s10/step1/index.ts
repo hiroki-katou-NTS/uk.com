@@ -218,8 +218,8 @@ export class KafS10Step1Component extends Vue {
             workHours2.end = workHoursOp2 ? workHoursOp2.endTime : null;
 
         }
-        self.workHours1 = _.isNumber(workHours1.start) ?  workHours1 : null;
-        self.workHours2 = _.isNumber(workHours1.start) ?  workHours2 : null;
+        self.workHours1 = (_.isNumber(workHours1.start) || _.isNumber(workHours1.end)) ?  workHours1 : null;
+        self.workHours2 = (_.isNumber(workHours2.start) || _.isNumber(workHours2.end)) ?  workHours2 : null;
 
     }
 
