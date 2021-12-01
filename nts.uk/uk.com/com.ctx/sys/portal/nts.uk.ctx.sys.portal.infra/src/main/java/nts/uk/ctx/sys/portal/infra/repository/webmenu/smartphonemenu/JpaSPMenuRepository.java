@@ -110,7 +110,7 @@ public class JpaSPMenuRepository extends JpaRepository implements SPMenuReposito
 	@Override
 	public List<SPMenuEmployment> findSPMenuEmploymentUse(String companyID, String roleID) {
 		return this.queryProxy().query(SEL_SP_MN_EMP, SptmtSPMenuK.class).setParameter("companyID", companyID)
-				.setParameter("roleID", roleID).setParameter("dispAtr", 1).getList(t -> toDomainEmp(t));
+				.setParameter("roleID", roleID).setParameter("dispAtr", true).getList(t -> toDomainEmp(t));
 	}
 
 	@Override
