@@ -98,7 +98,13 @@ public class RoundingSetOfMonthly extends AggregateRoot {
 			
 			return converter.convert(Arrays.asList(v.getKey(), AttendanceItemOfMonthly.FLEX_SHORTAGE_TIME.value, 
 														AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value));
-
+		else if (v.getKey() >= AttendanceItemOfMonthly.HOLIDAY_WORK_TIME_01.value 
+				&& v.getKey() <= AttendanceItemOfMonthly.HOLIDAY_WORK_TIME_10.value) 
+			return converter.convert(Arrays.asList(v.getKey(), v.getKey() + 33));
+		
+		else if (v.getKey() >= AttendanceItemOfMonthly.OVER_TIME_01.value 
+				&& v.getKey() <= AttendanceItemOfMonthly.OVER_TIME_10.value) 
+			return converter.convert(Arrays.asList(v.getKey(), v.getKey() + 33));
 		return converter.convert(Arrays.asList(v.getKey()));
 	}
 	

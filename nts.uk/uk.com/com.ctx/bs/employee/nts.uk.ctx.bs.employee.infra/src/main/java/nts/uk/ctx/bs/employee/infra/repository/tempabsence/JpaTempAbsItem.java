@@ -274,8 +274,10 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 	public void addAll(List<TempAbsenceHisItem> domains) {
 		String SQL = "INSERT INTO BSYMT_TEMP_ABS_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " HIST_ID, SID, TEMP_ABS_FRAME_NO,"
+				+ " CONTRACT_CD, HIST_ID, SID, TEMP_ABS_FRAME_NO,"
 				+ " REMARKS, SO_INS_PAY_CATEGORY";
+		
+		String contractCode = AppContexts.user().contractCode();
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -291,7 +293,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			case 1:
 				String sql = SQL + ")" + " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
+						+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
 					Leave leave = (Leave) c;
 					sql = sql.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 					sql = sql.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -303,6 +305,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 					sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 					
+					sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 					sql = sql.replace("HIST_ID_VAL", "'" + leave.getHistoryId() + "'");
 					sql = sql.replace("SID_VAL", "'" + leave.getEmployeeId() + "'");
 					sql = sql.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
@@ -313,7 +316,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			case 2:
 				String sql1 = SQL +  ", MULTIPLE) "+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, MULTIPLE_VAL); ";
+						+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, MULTIPLE_VAL); ";
 					MidweekClosure midweek = (MidweekClosure) c;
 					sql1 = sql1.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 					sql1 = sql1.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -325,6 +328,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					sql1 = sql1.replace("UPD_SCD_VAL", "'" + updScd + "'");
 					sql1 = sql1.replace("UPD_PG_VAL", "'" + updPg + "'");
 					
+					sql1 = sql1.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 					sql1 = sql1.replace("HIST_ID_VAL", "'" + midweek.getHistoryId() + "'");
 					sql1 = sql1.replace("SID_VAL", "'" + midweek.getEmployeeId() + "'");
 					sql1 = sql1.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
@@ -336,7 +340,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			case 3:
 				String sql2 = SQL  + ", FAMILY_MEMBER_ID)"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, FAMILY_MEMBER_ID_VAL); ";
+						+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, FAMILY_MEMBER_ID_VAL); ";
 					AfterChildbirth childBirth = (AfterChildbirth) c;
 					sql2 = sql2.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 					sql2 = sql2.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -348,6 +352,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					sql2 = sql2.replace("UPD_SCD_VAL", "'" + updScd + "'");
 					sql2 = sql2.replace("UPD_PG_VAL", "'" + updPg + "'");
 					
+					sql2 = sql2.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 					sql2 = sql2.replace("HIST_ID_VAL", "'" + childBirth.getHistoryId() + "'");
 					sql2 = sql2.replace("SID_VAL", "'" + childBirth.getEmployeeId() + "'");
 					sql2 = sql2.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
@@ -359,7 +364,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			case 4:
 				String sql3 = SQL  + ", CREATE_DATE, SPOUSE_IS_LEAVE)"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, CREATE_DATE_VAL, SPOUSE_IS_LEAVE_VAL); ";
+						+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, CREATE_DATE_VAL, SPOUSE_IS_LEAVE_VAL); ";
 					ChildCareHoliday childCare = (ChildCareHoliday) c;
 					sql3 = sql3.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 					sql3 = sql3.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -371,6 +376,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					sql3 = sql3.replace("UPD_SCD_VAL", "'" + updScd + "'");
 					sql3 = sql3.replace("UPD_PG_VAL", "'" + updPg + "'");
 					
+					sql3 = sql3.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 					sql3 = sql3.replace("HIST_ID_VAL", "'" + childCare.getHistoryId() + "'");
 					sql3 = sql3.replace("SID_VAL", "'" + childCare.getEmployeeId() + "'");
 					sql3 = sql3.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
@@ -383,7 +389,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			case 5:
 				String sql4 = SQL  +", SAME_FAMILY, SAME_FAMILY_DAYS, FAMILY_MEMBER_ID)"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, SAME_FAMILY_VAL, SAME_FAMILY_DAYS_VAL, FAMILY_MEMBER_ID_VAL); ";
+						+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL, SAME_FAMILY_VAL, SAME_FAMILY_DAYS_VAL, FAMILY_MEMBER_ID_VAL); ";
 					CareHoliday careLeave = (CareHoliday) c;
 					sql4 = sql4.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 					sql4 = sql4.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -395,6 +401,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 					sql4 = sql4.replace("UPD_SCD_VAL", "'" + updScd + "'");
 					sql4 = sql4.replace("UPD_PG_VAL", "'" + updPg + "'");
 					
+					sql4 = sql4.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 					sql4 = sql4.replace("HIST_ID_VAL", "'" + careLeave.getHistoryId() + "'");
 					sql4 = sql4.replace("SID_VAL", "'" + careLeave.getEmployeeId() + "'");
 					sql4 = sql4.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
@@ -408,7 +415,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			case 6:
 				String sql5 = SQL + ")"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
+						+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
 				SickLeave sickLeave = (SickLeave) c;
 				sql5 = sql5.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 				sql5 = sql5.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -420,6 +427,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 				sql5 = sql5.replace("UPD_SCD_VAL", "'" + updScd + "'");
 				sql5 = sql5.replace("UPD_PG_VAL", "'" + updPg + "'");
 				
+				sql5 = sql5.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 				sql5 = sql5.replace("HIST_ID_VAL", "'" + sickLeave.getHistoryId() + "'");
 				sql5 = sql5.replace("SID_VAL", "'" + sickLeave.getEmployeeId() + "'");
 				sql5 = sql5.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");
@@ -434,7 +442,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 			case 10:
 				String sql6 = SQL  + ")"+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 						+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-						+ " HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
+						+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, TEMP_ABS_FRAME_NO_VAL, REMARKS_VAL, SO_INS_PAY_CATEGORY_VAL); ";
 				AnyLeave anyLeave = (AnyLeave) c;
 				sql6 = sql6.replace("INS_DATE_VAL", "'" + GeneralDateTime.now() + "'");
 				sql6 = sql6.replace("INS_CCD_VAL", "'" + insCcd + "'");
@@ -446,6 +454,7 @@ public class JpaTempAbsItem extends JpaRepository implements TempAbsItemReposito
 				sql6 = sql6.replace("UPD_SCD_VAL", "'" + updScd + "'");
 				sql6 = sql6.replace("UPD_PG_VAL", "'" + updPg + "'");
 				
+				sql6 = sql6.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 				sql6 = sql6.replace("HIST_ID_VAL", "'" + anyLeave.getHistoryId() + "'");
 				sql6 = sql6.replace("SID_VAL", "'" + anyLeave.getEmployeeId() + "'");
 				sql6 = sql6.replace("TEMP_ABS_FRAME_NO_VAL", "" + tempAbsenceFrNo + "");

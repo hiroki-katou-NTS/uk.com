@@ -121,11 +121,15 @@
 }
 
 .mgrid table tr td.cell-selected:not(.nts-control) {
-	background: #007fff;
+	font-weight: 700;
+	color: #30CC40;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
+	box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
 }
 
 .mgrid table tr td.cell-selected:not(.ui-state-hover) {
-	color: #fff;
+	color: #30CC40;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;			
 }
 
 .mgrid table tr.mgrid-top-space td {
@@ -217,12 +221,15 @@
 }
 
 .mcombo-listitemholder .mcombo-listitem.selecteditem {
-	background-color: #007fff;
-	color: #fff;
+	font-weight: 700;
+	color: #30CC40;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;
+	box-shadow: 0px 8px 10px rgba(22, 154, 28, 0.1);
 }
 
 .mcombo-listitemholder .mcombo-listitem:not(.selecteditem):hover {
-	background-color: #efebeb;
+	color: #30CC40;
+	background: linear-gradient(0deg, rgba(68, 224, 140, 0.1), rgba(68, 224, 140, 0.1)), #FFFFFF;			
 }
 
 .mcombo-state-active {

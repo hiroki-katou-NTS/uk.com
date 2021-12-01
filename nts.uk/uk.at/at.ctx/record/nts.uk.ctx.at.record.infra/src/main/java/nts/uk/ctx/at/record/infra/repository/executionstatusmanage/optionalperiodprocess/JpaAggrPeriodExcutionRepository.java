@@ -31,6 +31,9 @@ implements AggrPeriodExcutionRepository{
 	private static final String FIND_EXECUTION;
 	private static final String FIND_EXECUTION_AGGR;
 
+	private static final String FIND_BY_AGGR_ID = "SELECT e FROM KrcmtAggrPeriodExcution e"
+			+ " WHERE e.krcmtAggrPeriodExcutionPK.companyId = :companyId"
+			+ " AND e.krcmtAggrPeriodExcutionPK.aggrId = :aggrId";
 	
 	static{
 	StringBuilder builderString = new StringBuilder();
@@ -271,6 +274,16 @@ implements AggrPeriodExcutionRepository{
 		this.commandProxy().updateAll(domains.stream()
 				.map(this::convertToDbTypeApe)
 				.collect(Collectors.toList()));
+	}
+
+
+
+	@Override
+	public Optional<AggrPeriodExcution> findByAggrId(String cid, String aggrId) {
+		return this.queryProxy().query(FIND_BY_AGGR_ID, KrcmtAggrPeriodExcution.class)
+				.setParameter("companyId", cid)
+				.setParameter("aggrId", aggrId)
+				.getSingle(this::convertToDomainApe);
 	}
 	
 }

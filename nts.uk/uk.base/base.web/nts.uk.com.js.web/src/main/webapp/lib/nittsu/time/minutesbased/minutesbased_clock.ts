@@ -45,7 +45,7 @@ module nts.uk.time.minutesBased {
             export function toText(dayAttr: DayAttr) {
                 switch (dayAttr) {
                     case DayAttr.THE_PREVIOUS_DAY: return "前日";
-                    case DayAttr.THE_PRESENT_DAY: return "当日";
+                    case DayAttr.THE_PRESENT_DAY: return "";
                     case DayAttr.THE_NEXT_DAY: return "翌日";
                     case DayAttr.TWO_DAY_LATER: return "翌々日";
                     default: new Error("invalid dayAttr: " + dayAttr);

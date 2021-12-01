@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
@@ -16,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.VacationAddTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktype.VacationCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -227,7 +228,7 @@ public class VacationClass {
 				);
 			}
         } else {
-            if (siftCode.isPresent()) {
+            if (!siftCode.isPresent()) {
                 return predetermineTimeSet.isPresent() ? predetermineTimeSet.get().getAdditionSet().getAddTime()
 						: new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
             } else {
@@ -268,35 +269,38 @@ public class VacationClass {
 	 * @param workType 勤務種類
 	 * @param siftCode 就業時間帯コード
 	 * @param conditionItem 労働条件項目
+	 * @param addSetting 加算設定
 	 * @param holidayAdditionSet 休暇加算時間設定
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
 	 * @param predTimeSettingForCalc 計算用所定時間設定
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
 	 * @return 休暇加算時間
 	 */
 	public VacationAddTime calcVacationAddTime(
-			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+			PremiumAtr premiumAtr,
 			WorkType workType,
 			Optional<WorkTimeCode> siftCode,
 			WorkingConditionItem conditionItem,
+			AddSetting addSetting,
 			Optional<HolidayAddtionSet> holidayAdditionSet,
-			HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<PredetermineTimeSetForCalc> predTimeSettingForCalc,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		
-		VacationAddTime vacationAddTime;
-		if (holidayAdditionSet.isPresent() && holidayCalcMethodSet.getCalcurationByActualTimeAtr(
-				premiumAtr) == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME) {// 実働時間以外も含めて計算する 場合
-			// 加算時間の設定を取得
-			BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predTimeSettingForCalc, siftCode,
-					holidayAdditionSet.get(), conditionItem, predetermineTimeSetByPersonInfo);
-			// 休暇加算時間を加算するかどうか判断
-			vacationAddTime = judgeVacationAddTime(breakdownTimeDay, premiumAtr,
-					holidayAdditionSet.get(), workType, holidayCalcMethodSet);
-		} else {// 実働時間のみで計算する 場合
-				// 休暇加算時間を全て 0 で返す
-			vacationAddTime = new VacationAddTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
+		VacationAddTime vacationAddTime =
+				new VacationAddTime(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO);
+		// 休暇加算するかどうか判断
+		if (addSetting.getNotUseAtr(premiumAtr) == NotUseAtr.NOT_USE){
+			// 加算しない時、休暇加算時間を全て0で返す
+			return vacationAddTime;
 		}
+		// 加算時間の設定を取得
+		BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predTimeSettingForCalc, siftCode,
+				holidayAdditionSet.get(), conditionItem, predetermineTimeSetByPersonInfo);
+		// 休暇の計算方法の設定を確認する
+		HolidayCalcMethodSet holidayCalcMethodSet = addSetting.getVacationCalcMethodSet();
+		// 休暇加算時間を加算するかどうか判断
+		vacationAddTime = judgeVacationAddTime(breakdownTimeDay, premiumAtr,
+				holidayAdditionSet.get(), workType, holidayCalcMethodSet);
+		// 休暇加算時間を返す
 		return vacationAddTime;
 	}
 
@@ -312,7 +316,7 @@ public class VacationClass {
 	 */
 	public VacationAddTime judgeVacationAddTime(
 			BreakDownTimeDay breakdownTimeDay,
-			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+			PremiumAtr premiumAtr,
 			HolidayAddtionSet holidayAddtionSet,
 			WorkType workType,
 			HolidayCalcMethodSet holidayCalcMethodSet) {
@@ -339,7 +343,7 @@ public class VacationClass {
 	 * @author ken_takasu
 	 * @return
 	 */
-	public LeaveSetAdded getAddVacationSet(nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+	public LeaveSetAdded getAddVacationSet(PremiumAtr premiumAtr,
 			HolidayAddtionSet holidayAddtionSet, HolidayCalcMethodSet holidayCalcMethodSet) {
 		LeaveSetAdded leaveSetAdded = new LeaveSetAdded(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);// 下のif文に入らない場合は全てしないを返す
 		// 休暇加算設定の取得
@@ -385,42 +389,44 @@ public class VacationClass {
 	 */
 	public static BreakDownTimeDay getAddVacationTimeFromEmpInfo(HolidayAddtionSet holidayAdditionSet,
 			WorkingConditionItem workConditionItem, Optional<PredetermineTimeSetForCalc> predTimeForCalc) {
-		BreakDownTimeDay addTime = new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0),
-				new AttendanceTime(0));
 		// Refactor code QA #40197
-        VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = holidayAdditionSet.getReference().getReferIndividualSet().get();
-        switch (vacationSpecifiedTimeRefer) {
-            case WORK_HOUR_DUR_WEEKDAY: {
-                // 休暇加算時間利用区分を確認
-                if (workConditionItem.getVacationAddedTimeAtr().value == 0) {
-                    return null;
-                }
-                // 休暇加算時間設定を取得する
-                if (workConditionItem.getHolidayAddTimeSet().isPresent()) {
-                    // 1日の時間内訳を返す
-                    return new BreakDownTimeDay(
-                            workConditionItem.getHolidayAddTimeSet().get().getOneDay().v(),
-                            workConditionItem.getHolidayAddTimeSet().get().getMorning().v(),
-                            workConditionItem.getHolidayAddTimeSet().get().getAfternoon().v()
-                    );
-                } else {
-                    // 1日の時間内訳を０で返す
-                    return new BreakDownTimeDay(0,0,0);
-                }
-            }
-            case WORK_HOUR_DUR_hd: {
-                // 平日時の就業時間帯コードを取得する
-                Optional<WorkTimeCode> workTimeCode = workConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode();
-                if (workTimeCode.isPresent()) {
-                    // 所定時間を取得する
-                    return predTimeForCalc.get().getAdditionSet().getPredTime();
-                } else {
-                    // 1日の時間内訳を０で返す
-                    return new BreakDownTimeDay(0,0,0);
-                }
-            }
-        }
-
+        Optional<VacationSpecifiedTimeRefer> vacationSpecifiedTimeRefer = holidayAdditionSet.getReference().getReferIndividualSet();
+        if (vacationSpecifiedTimeRefer.isPresent()) {
+			switch (vacationSpecifiedTimeRefer.get()) {
+				case WORK_HOUR_DUR_WEEKDAY: {
+					// 休暇加算時間利用区分を確認
+					if (workConditionItem.getVacationAddedTimeAtr().value == 0) {
+						return null;
+					}
+					// 休暇加算時間設定を取得する
+					if (workConditionItem.getHolidayAddTimeSet().isPresent()) {
+						// 1日の時間内訳を返す
+						return new BreakDownTimeDay(
+								workConditionItem.getHolidayAddTimeSet().get().getOneDay().v(),
+								workConditionItem.getHolidayAddTimeSet().get().getMorning().v(),
+								workConditionItem.getHolidayAddTimeSet().get().getAfternoon().v()
+						);
+					} else {
+						// 1日の時間内訳を０で返す
+						return new BreakDownTimeDay(0,0,0);
+					}
+				}
+				case WORK_HOUR_DUR_hd: {
+					// 平日時の就業時間帯コードを取得する
+					Optional<WorkTimeCode> workTimeCode = workConditionItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
+					if (workTimeCode.isPresent()) {
+						// 所定時間を取得する
+						if (predTimeForCalc.isPresent())
+							return predTimeForCalc.get().getAdditionSet().getPredTime();
+						else
+							return null;
+					} else {
+						// 1日の時間内訳を０で返す
+						return new BreakDownTimeDay(0,0,0);
+					}
+				}
+			}
+		}
 		return null;
 	}
 

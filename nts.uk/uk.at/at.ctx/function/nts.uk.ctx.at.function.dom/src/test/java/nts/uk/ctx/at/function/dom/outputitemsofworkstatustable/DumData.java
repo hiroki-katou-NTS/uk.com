@@ -7,6 +7,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedgerDaily;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
@@ -328,7 +329,7 @@ public class DumData {
     public static final List<DailyOutputItemsAnnualWorkLedger> dailyOutputItemList = Arrays.asList(
             new DailyOutputItemsAnnualWorkLedger(
                     0,
-                    new OutputItemNameOfAnnualWorkLedger("itemName01"),
+                    new OutputItemNameOfAnnualWorkLedgerDaily("itemName01"),
                     true,
                     EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
                     EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),
@@ -344,7 +345,7 @@ public class DumData {
             ),
             new DailyOutputItemsAnnualWorkLedger(
                     1,
-                    new OutputItemNameOfAnnualWorkLedger("itemName02"),
+                    new OutputItemNameOfAnnualWorkLedgerDaily("itemName02"),
                     true,
                     EnumAdaptor.valueOf(2, IndependentCalcClassic.class),
                     EnumAdaptor.valueOf(2, DailyMonthlyClassification.class),

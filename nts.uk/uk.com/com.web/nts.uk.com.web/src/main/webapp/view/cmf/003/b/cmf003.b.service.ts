@@ -9,6 +9,7 @@ module nts.uk.com.view.cmf003.b {
             addMalSet: "ctx/sys/assist/app/addMalSet",
             screenDisplayProcess: "ctx/sys/assist/autosetting/screenDisplayProcessing",
             patternSettingSelect: "ctx/sys/assist/autosetting/patternSettingSelect",
+            getClosurePeriod: "com/screen/closurePeriod/get",
         }
 
         export function getConditionList(): JQueryPromise<any> {
@@ -25,6 +26,10 @@ module nts.uk.com.view.cmf003.b {
 
         export function patternSettingSelect(param: any): JQueryPromise<any> {
           return ajax('com', paths.patternSettingSelect, param);
+        }
+
+        export function getClosurePeriod(): JQueryPromise<any> {
+          return ajax('com', paths.getClosurePeriod);
         }
     }
 }

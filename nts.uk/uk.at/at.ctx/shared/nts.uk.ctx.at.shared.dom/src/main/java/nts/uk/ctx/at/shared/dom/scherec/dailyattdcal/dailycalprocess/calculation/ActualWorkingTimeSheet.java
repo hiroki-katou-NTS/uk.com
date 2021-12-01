@@ -43,8 +43,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Setter
 public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 
-	//時間休暇溢れ時間
-	protected Optional<AttendanceTime> timeVacationOverflowTime = Optional.empty();
 	//加給
 	protected List<BonusPayTimeSheetForCalc> bonusPayTimeSheet = new ArrayList<>();
 	//特定日加給
@@ -69,10 +67,6 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 		this.bonusPayTimeSheet = bonusPayTimeSheet;
 		this.specBonusPayTimesheet = specifiedBonusPayTimeSheet;
 		this.midNightTimeSheet = midNighttimeSheet;		
-	}
-	
-	public AttendanceTime calcTotalTime() {
-		return super.calcTotalTime().addMinutes(this.timeVacationOverflowTime.orElse(AttendanceTime.ZERO).valueAsMinutes());
 	}
 	
 	/**

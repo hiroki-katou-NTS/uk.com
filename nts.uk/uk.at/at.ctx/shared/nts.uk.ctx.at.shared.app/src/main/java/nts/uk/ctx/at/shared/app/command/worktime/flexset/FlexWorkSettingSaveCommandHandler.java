@@ -68,10 +68,10 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 		}
 
 		// update mode
-		FlexWorkSetting oldDomain = this.flexWorkSettingRepository
-				.find(companyId, command.getWorktimeSetting().worktimeCode).get();
+//		FlexWorkSetting oldDomain = this.flexWorkSettingRepository
+//				.find(companyId, command.getWorktimeSetting().worktimeCode).get();
 		flexWorkSetting.correctData(ScreenMode.valueOf(command.getScreenMode()),
-				command.getWorktimeSetting().getWorkTimeDivision(), oldDomain);
+				command.getWorktimeSetting().getWorkTimeDivision(), flexWorkSetting);
 		// Validate + common handler
 		this.validate(command, flexWorkSetting);
 		this.flexWorkSettingRepository.update(flexWorkSetting);

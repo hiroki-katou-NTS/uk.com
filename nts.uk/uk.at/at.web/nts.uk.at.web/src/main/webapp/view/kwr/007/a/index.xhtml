@@ -34,7 +34,7 @@
             data-bind="enable: $root.errors.isEmpty, text: $i18n('KWR007_2'), click: function() { exportExcelPDF(1) }"
           />
         </div>
-        <div id="content-area" class="kwr-007">
+        <div id="contents-area" class="kwr-007">
           <div id="CCG001" tabindex="-1"></div>
           <div class="pull-left fixed-flex-layout-left">
             <div class="employees-list">
@@ -70,7 +70,7 @@
           </div>
           <div class="pull-left fixed-flex-layout-right">
             <!-- A4_1-->
-            <div class="panel panel-frame">
+            <div class="panel panel-frame kwr-007a ">
               <div class="panel-row">
                 <div class="row-left">
                   <!-- A5_1-->
@@ -240,8 +240,10 @@
                   <div class="check-list check-list-2 multiple-check panel panel-frame">
                     <div class="lable" data-bind="text: $i18n('KWR007_31')"></div>
                     <div tabindex="17" id="A8_5_1" class="check-list-item" data-bind="foreach: specifyWorkplaceHierarchy">
+
                       <div tabindex="18" class="checkbox-item" 
                       data-bind="ntsCheckBox: { checked: checked, enable: $parent.isEnableSpecifyWP, text: name,name: nameId }"></div>
+
                     </div>
                     <div class="lable" data-bind="text: $i18n('KWR007_41')"></div>
                   </div>

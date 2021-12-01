@@ -9,6 +9,7 @@ import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrame;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceFrameNo;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.frame.TempAbsenceRepositoryFrame;
+import nts.uk.ctx.bs.employee.pub.employee.TempAbsenceFrameExport;
 import nts.uk.ctx.bs.employee.pub.temporaryabsence.*;
 
 import javax.ejb.Stateless;
@@ -64,4 +65,20 @@ public class TempAbsencePubImpl implements TempAbsencePub {
 
         return new TempAbsenceExport(leaveHists, leaveHistItems);
     }
+
+	@Override
+	public List<String> getAbsenceEmpsByPeriod(List<String> sids, DatePeriod period) {
+		// ドメインモデル「休職休業履歴」を取得する
+		List<TempAbsenceHistory> tempAbsenceHistories = this.tempAbsHistRepo.getByListSid(sids, period);
+		// 「休職休業履歴」が取得できた社員ID一覧を返す
+		return tempAbsenceHistories.stream().map(TempAbsenceHistory::getEmployeeId).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<TempAbsenceFrameExport> getTempAbsenceFrameByListNo(String cid, List<Integer> tempAbsenceFrameNos) {
+		return this.tempAbsenceRepositoryFrame.findByCidAndFrameNos(cid, tempAbsenceFrameNos).stream()
+				.map(data -> new TempAbsenceFrameExport(cid, data.getTempAbsenceFrNo().v().intValue(),
+						data.getUseClassification().value, data.getTempAbsenceFrName().v()))
+				.collect(Collectors.toList());
+	}
 }

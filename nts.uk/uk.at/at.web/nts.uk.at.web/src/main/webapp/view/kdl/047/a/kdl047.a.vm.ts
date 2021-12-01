@@ -130,7 +130,9 @@ module nts.uk.at.view.kdl047.a.screenModel {
     // Event on click A8_1 item
     onClickDecision(): void {
       const vm = this;
-      $('#A3_2').trigger('validate');
+      if (vm.objectDisplay.itemNameLine.displayInputCategory === 1) {
+        $('#A3_2').trigger('validate');
+      }
       _.defer(() => {
         if (!$('#A3_2').ntsError('hasError')) {
           let attendanceRecord: AttendanceRecordExport = new AttendanceRecordExport();

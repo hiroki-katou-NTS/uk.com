@@ -1037,6 +1037,9 @@ project (':at.web:nts.uk.at.web') {
 		
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.app', version: version
 		runtime group: 'com.screen', name: 'nts.uk.screen.com.infra', version: version
+		
+		compile group: 'nemunoki.oruta', name: 'nemunoki.oruta.shr', version: version
+		compile group: 'cnv.core', name: 'nts.uk.cnv.core', version: version
 	}
 	
 	task tsc(type: Exec) {

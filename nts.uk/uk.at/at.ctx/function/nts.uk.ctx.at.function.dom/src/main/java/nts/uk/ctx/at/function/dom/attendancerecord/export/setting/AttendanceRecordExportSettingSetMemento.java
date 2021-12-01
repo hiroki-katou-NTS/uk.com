@@ -80,4 +80,6 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 * @param monthlyConfirmedDisplay the new monthly confirmed display
 	 */
 	void setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay monthlyConfirmedDisplay);
+	
+	void setStartOfWeek(DayOfWeek startOfWeek);
 }

@@ -21,10 +21,6 @@ public class MenuBarDto {
 
 	private int menuCls;
 
-	private String backgroundColor;
-
-	private String textColor;
-
 	private int displayOrder;
 
 	private List<TitleBarDto> titleMenu;

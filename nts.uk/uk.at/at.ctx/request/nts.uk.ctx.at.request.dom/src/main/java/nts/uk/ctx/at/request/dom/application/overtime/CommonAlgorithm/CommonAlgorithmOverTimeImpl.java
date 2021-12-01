@@ -10,12 +10,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementError;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementErrorAtr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInforList;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
@@ -37,16 +35,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
-import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OutDateApplication;
 import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
@@ -67,11 +61,14 @@ import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRootRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementErrorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInforList;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -783,7 +780,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			if (overStateOutput.getIsExistApp()) {
 				// メッセージ（Msg_1508）をOUTPUT「確認メッセージリスト」に追加する
 				output.add(new ConfirmMsgOutput(
-										"Msg_2019",
+										"Msg_1508",
 										displayInfoOverTime
 											.getAppDispInfoStartup()
 										    .getAppDispInfoNoDateOutput()
@@ -941,6 +938,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(),
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
 		// ある場合
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 		if (!CollectionUtil.isEmpty(time36ErrorInforList.getTime36AgreementErrorLst())) {
 			/**
 			 * 	・エラー情報一覧に「月間エラー」がある場合：
@@ -967,30 +965,58 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			 */
 			for (Time36AgreementError el : time36ErrorInforList.getTime36AgreementErrorLst()) {
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MONTH_ERROR) {
-					throw new BusinessException("Msg_1535", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					bundledBusinessExceptions.addMessage(
+							"Msg_1535",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+							);
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.YEAR_ERROR) {
-					throw new BusinessException("Msg_1536", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					
+					bundledBusinessExceptions.addMessage(
+							"Msg_1536",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+							);
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MAX_MONTH_ERROR) {
-					throw new BusinessException("Msg_1537", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					bundledBusinessExceptions.addMessage(
+							"Msg_1537",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+									
+							);
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MAX_YEAR_ERROR) {
-					throw new BusinessException("Msg_2056", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					bundledBusinessExceptions.addMessage(
+							"Msg_2056",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+									
+							);
+					
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MAX_MONTH_AVERAGE_ERROR) {
-					throw new BusinessException(
-							"Msg_1538", 
+					bundledBusinessExceptions.addMessage(
+							"Msg_1538",
 							el.getOpYearMonthPeriod().map(x -> x.start().year() + "/" + x.start().month()).orElse(""),
 							el.getOpYearMonthPeriod().map(x -> x.end().year() + "/" + x.end().month()).orElse(""),
 							this.convertTime_Short_HM(el.getAgreementTime()),
 							this.convertTime_Short_HM(el.getThreshold())
+									
 							);
+					
 				}
 			}
 			
 			
 		}
+		if (!CollectionUtil.isEmpty(bundledBusinessExceptions.getMessageId())) {
+			
+			throw bundledBusinessExceptions;
+		}
+		
+		
 		
 	}
 	
@@ -1067,7 +1093,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				Optional.of(appOverTime),
 				Optional.empty(),
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet());
-		// ３６上限チェック not done
+		// ３６上限チェック
 		this.check36Limit(companyId, appOverTime, displayInfoOverTime);
 		
 		// 申請日の矛盾チェック

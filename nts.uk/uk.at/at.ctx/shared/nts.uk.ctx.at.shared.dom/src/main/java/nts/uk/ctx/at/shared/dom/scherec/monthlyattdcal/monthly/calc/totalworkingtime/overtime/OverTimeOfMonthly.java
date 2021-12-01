@@ -211,9 +211,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		// 残業・振替の処理順序を取得する
 		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
-		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(companyId, 
-																companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
-																false);
+		val overTimeAndTransferAtrs = GetOverTimeAndTransferOrder.get(require, companyId, workTimeCode, false);
 		
 		// 残業・振替のループ
 		for (val overTimeAndTransferAtr : overTimeAndTransferAtrs){
@@ -659,7 +657,8 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 			this.aggregateOverTimeMap.putIfAbsent(frameNo, targetAggrOverTime);
 		}
 	}
-	public static interface RequireM1 extends RequireM2, MonAggrCompanySettings.RequireM3 {
+	public static interface RequireM1 extends RequireM2, 
+		MonAggrCompanySettings.RequireM3, GetOverTimeAndTransferOrder.RequireM1 {
 	}
 	
 	public static interface RequireM2 extends MonAggrCompanySettings.RequireM1 {

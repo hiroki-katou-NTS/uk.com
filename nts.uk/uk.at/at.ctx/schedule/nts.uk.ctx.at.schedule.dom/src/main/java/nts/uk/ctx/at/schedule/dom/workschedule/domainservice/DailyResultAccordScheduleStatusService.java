@@ -34,14 +34,8 @@ public class DailyResultAccordScheduleStatusService {
 			/*return 社員IDリスト:																												
 			map [prv-1] 社員別に取得する( require, $, 期間 )																		
 			flatMap	*/	
-			long startTime = System.nanoTime();
-			
 			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.getByEmp(require, x, datePeriod);
 			map.putAll(data);
-			
-			long endTime = System.nanoTime();
-			long duration = (endTime - startTime) / 1000000; // ms;
-			System.out.println("employee: " + duration + "ms");
 		});
 		return map;
 	}

@@ -72,6 +72,14 @@ public interface WorkplacePub {
 	Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate);
 	
 	/**
+	 * Clone from RequestList No.30
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	Map<GeneralDate, Map<String, Optional<SWkpHistExport>>> findBySid(String companyID, List<String> employeeId, DatePeriod baseDate);
+	
+	/**
 	 * [No.650]社員が所属している職場を取得する
 	 * 社員と基準日から所属職場履歴項目を取得する
 	 * @param employeeID

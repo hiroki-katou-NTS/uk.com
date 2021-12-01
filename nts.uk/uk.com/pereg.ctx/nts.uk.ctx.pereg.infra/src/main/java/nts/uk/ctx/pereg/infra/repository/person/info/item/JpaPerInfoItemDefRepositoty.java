@@ -330,9 +330,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID = String.join(" ", SELECT_NO_WHERE_BYCATEGORYCODE, "WHERE",
 			CONDITION_FOR_ALL_REQUIREDITEM_BY_LIST_CATEGORY_ID);
 	
-	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId, i.itemName, i.ppemtPerInfoItemPK.perInfoItemDefId, i.requiredAtr, i.abolitionAtr  FROM PpemtItem i INNER JOIN PpemtCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+	private final static String SELECT_REQUIRED_ITEM = "SELECT i.itemCd, i.perInfoCtgId, i.itemName, i.ppemtPerInfoItemPK.perInfoItemDefId, i.requiredAtr, i.abolitionAtr  "
+			+ " FROM PpemtItem i INNER JOIN PpemtCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtItemCommon ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
 			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd "
+			+ " AND i.contractCd = ic.ppemtPerInfoItemCmPK.contractCd"
+			+ " AND c.contractCd = ic.ppemtPerInfoItemCmPK.contractCd"
 			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId IN :lstPerInfoCategoryId AND ic.itemType <> 1";
 	
 	private final static String SEL_ITEM_ID_BY_CTG_CD_AND_ITEM_CD = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId"

@@ -25,6 +25,9 @@
 			nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode
 			nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName
 				</com:ValidatorScript>
+      <com:EnumScript>
+        nts.uk.ctx.at.function.dom.attendancerecord.export.setting.DayOfWeek
+      </com:EnumScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kwr002.b.style.css" />
 			<com:scriptfile path="kwr002.b.service.js" />
@@ -146,7 +149,7 @@
 									</td>
 									<!-- font size -->
 									<!--B9_2-->
-									<td colspan="2">
+									<td colspan="2" class="th-col2">
 										<div class="cf switch-btn" tabindex="10"
 											data-bind="ntsSwitchButton: {
 											name: '#[KWR002_49]',
@@ -157,11 +160,28 @@
 											}">
 										</div>
 									</td>
-									<td>
+									<td class="th-col2">
 										<button id="switchhelpbtn" tabindex="-1"
 												data-bind="ntsHelpButton: {image: '../image/KWR002_1.png', position: 'bottom right', enable: true}">?</button>
 									</td>
 								</tr>
+                <tr style="margin-top: 20px">
+                  <td colspan="1" class="th-col1">
+                    <!-- B10_1 -->
+                    <div id="B10_1" class="form-label" data-bind="ntsFormLabel: {}">#{i18n.getText('KWR002_53')}</div>
+                  </td>
+                  <td colspan="2" class="th-col2">
+                    <!-- B10_2 -->
+                    <div id="B10_2" data-bind="ntsComboBox: {
+                      name: '#[KWR002_53]',
+                      options: $parent.dayOfWeekList,
+                      optionsValue: 'value',
+                      optionsText: 'name',
+                      visibleItemsCount: 7,
+                      value: startOfWeek
+                    }"></div>
+                  </td>
+                </tr>
 								<tr style="margin-top: 20px;">
 									<td colspan="1" class="th-col1">
 										<!--B8_1-->

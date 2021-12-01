@@ -9,6 +9,8 @@ import lombok.val;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AttendanceTypeShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.overtime.OvertimeApplicationSettingShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.AfterOtWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
@@ -72,7 +74,7 @@ public class OtWorkAppReflectTest {
 	 * テストしたい内容
 	 * 
 	 * 
-	 * →事前残業申請の反映ができる
+	 * →事前残業申請の反映ができる(事前申請時間)
 	 * 
 	 * 準備するデータ
 	 * 
@@ -89,16 +91,17 @@ public class OtWorkAppReflectTest {
 	@Test
 	public void test2() {
 
-		val overTimeApp = ReflectApplicationHelper.createOverTimeAppBeforeAfter(PrePostAtrShare.PREDICT);// 勤務情報 =
-																											// ("003",
-																											// "003")
+		val overTimeApp = ReflectApplicationHelper.createOverTimeAppBeforeAfter(PrePostAtrShare.PREDICT);
+		overTimeApp.getApplicationTime().getApplicationTime()
+				.add(new OvertimeApplicationSettingShare(1, AttendanceTypeShare.NORMALOVERTIME, 100));
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);// 勤務情報 = ("001", "001")
 		// [実績の勤務情報へ反映する] = しない
 		OtWorkAppReflect createOtWorkRfl = otWorkRflBeforeAfter(NotUseAtr.USE);// 残業申請.事前.勤務情報、出退勤を反映する
 		createOtWorkRfl.process(require, cid, overTimeApp, dailyApp);
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");// 勤務種類コード
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get()
+				.getOverTimeWorkFrameTime().get(0).getBeforeApplicationTime().v()).isEqualTo(100);//事前申請時間
 
 	}
 

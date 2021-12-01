@@ -423,6 +423,30 @@ public class NursingLeaveSetting extends AggregateRoot {
     	}
 		return childCareNurseUpperLimitSplit;
     }
+    
+    /**
+     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.休暇.子の看護休暇.介護看護休暇設定.残数の集計期間を求める.残数の集計期間を求める
+     * 残数の集計期間を求める
+     * @param date
+     */
+    public DatePeriod findPeriodForRemainNumber(GeneralDate date) {
+        // 基準日の月日と起算日の月日を比較
+        // 基準日．月日　＜＝　起算日
+        if (date.beforeOrEquals(this.startMonthDay.toDate(date.year()))) {
+            // 基準日の年に-1年し集計期間を求める
+            GeneralDate startDate = GeneralDate.ymd(date.year() - 1, startMonthDay.getMonth(), startMonthDay.getDay());
+            GeneralDate endDate = startDate.addYears(1).addDays(-1);
+            
+            return new DatePeriod(startDate, endDate);
+        }
+        
+        // 基準日．月日　＞　起算日
+        // 基準日の年で集計期間を求める
+        GeneralDate starDate = GeneralDate.ymd(date.year(),  startMonthDay.getMonth(), startMonthDay.getDay());
+        GeneralDate endDate = starDate.addYears(1).addDays(-1);
+        
+        return new DatePeriod(starDate, endDate);
+    }
 
 
 	// Require

@@ -242,7 +242,7 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Tim
 	}
 	
 	/**
-	 * 基準の時間帯で比較対象の時間帯に重複していない部分を取得する
+	 * 基準時間帯の比較対象と重複していない部分の取得
 	 * @param other 比較対象
 	 * @return 重複してない部分
 	 */
@@ -280,6 +280,45 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Tim
 		return result.stream().filter(c -> !c.getStart().equals(c.getEnd())).collect(Collectors.toList());
 	}
 	
+	/**
+	 * 指定Listと重複している時間帯の取得
+	 * @param other 比較対象
+	 * @return 重複している時間帯List
+	 */
+	public List<TimeSpanForCalc> getDuplicatedWith(List<TimeSpanForCalc> targetList){
+		List<TimeSpanForCalc> results = new ArrayList<>();
+		for (TimeSpanForCalc target : targetList){
+			// 重複している時間帯を返す
+			Optional<TimeSpanForCalc> dupSpan = this.getDuplicatedWith(target);
+			if (dupSpan.isPresent()) results.add(dupSpan.get());
+		}
+		// 結果Listを返す
+		return results;
+	}
+	
+	/**
+	 * 指定Listと重複していない時間帯の取得
+	 * @param other 比較対象
+	 * @return 重複している時間帯List
+	 */
+	public List<TimeSpanForCalc> getNotDuplicatedWith(List<TimeSpanForCalc> targetList){
+		List<TimeSpanForCalc> results = new ArrayList<>(Arrays.asList(this));
+		// 確認中Listを作成する
+		List<TimeSpanForCalc> checkList = new ArrayList<>(results);
+		for (TimeSpanForCalc target : targetList){
+			// 結果Listの新規作成
+			results = new ArrayList<>();
+			for (TimeSpanForCalc check : checkList){
+				// 基準時間帯の比較対象と重複していない部分の取得
+				List<TimeSpanForCalc> notDupSpan = check.getNotDuplicationWith(target);
+				results.addAll(notDupSpan);
+			}
+			// 確認中List ← 結果List
+			checkList = new ArrayList<>(results);
+		}
+		// 結果Listを返す
+		return results;
+	}
 	
 	/**
 	 *　重複している時間分時間帯をずらす
@@ -339,5 +378,13 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Tim
 	 */
 	public boolean isReverse() {
 		return this.start.greaterThan(this.end);
+	}
+	
+	/**
+	 * 開始と終了が同じ
+	 * start == end
+	 */
+	public boolean isEqual() {
+		return this.start.equals(this.end);
 	}
 }

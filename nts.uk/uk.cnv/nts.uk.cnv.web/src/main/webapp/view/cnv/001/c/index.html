@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title></title>
+
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="cnv001.c.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="cnv001.c.js"></script>
+</head>
+
+<body>
+<div id="messageDialog" title="">
+	<label id="lblMessage"></label>
+</div>
+<div id="msgTestDialog" title="">
+	<textarea id="txtTestOutput"></textarea>
+</div>
+
+<div id="master-wrapper" data-bind="with: content">
+	<div id="master-content">
+		<div id="functions-area">
+			<button id="btnRegist" class="large proceed">登録</button>
+			<button id="btnClose" class="large">閉じる</button>
+			<button id="btnTest" class="large" style="margin-left: 100px;">テスト出力</button>
+			<button id="btnTest_update" class="large" style="display:none">updateテスト出力</button>
+		</div>
+		<table>
+			<tr>
+				<td>
+					<div class="form-label" style="width:350px;margin:5px 5px 5px 5px;">
+						<label>カテゴリ：</label>
+						<label id="lblCategory" style="width:350px;"></label>
+					</div>
+				</td>
+				<td>
+					<div class="form-label" style="width:350px;margin:5px 5px 5px 5px;">
+						<label>UKテーブル名：</label>
+						<label id="lblUkTableName"></label>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="form-label" style="width:350px;margin:5px 5px 5px 5px;">
+						<label>レコード説明：</label>
+						<label id="lblExplanation"></label>
+					</div>
+				</td>
+				<td>
+					<div class="form-label" style="width:350px;margin:5px 5px 5px 5px;">
+						<label>ERPテーブル名：</label>
+						<label id="lblErpTableName"></label>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td>
+					<div class="fixed-flex-layout-left bg-green cf">
+						<fieldset>
+							<legend>UK列名</legend>
+							<select id="selUkColumns" class="selUkColumns" size=21 style="width:350px;">
+								<option>-- 未選択 --</option>
+							</select>
+						</fieldset>
+					</div>
+				</td>
+				<td style="width:70px;">
+					<div class="caret-left outline"></div>
+				</td>
+				<td>
+					<table>
+						<tr style="height:100px;">
+							<td>
+								<div class="form-label required">
+									<label>変換タイプ：</label>
+								</div>
+								<span class="nts-editor-wrapped ntsControl">
+									<select id="selConvType" style="width:250px;" class="nts-editor nts-input">
+										<option value="NULL">-- 選んでください --</option>
+										<option value="NONE">そのまま移送</option>
+										<option value="CODE_TO_ID">コードからID</option>
+										<option value="CODE_TO_CODE">コード変換</option>
+										<option value="FIXID_VALUE">固定値</option>
+										<option value="FIXID_VALUE_WITH_CONDITION">条件付き固定値</option>
+										<option value="PARENT">親テーブル参照</option>
+										<option value="STRING_CONCAT">文字列連結</option>
+										<option value="TIME_WITH_DAY_ATTR">日区分付き時刻</option>
+										<option value="DATETIME_MERGE">時刻変換</option>
+										<option value="GUID">GUID発行</option>
+										<option value="PASSWORD">暗号化パスワード</option>
+										<option value="FILE_ID">ファイルID</option>
+										<option value="SOURCE_JOIN">移行元テーブル結合</option>
+									</select>
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="tabs">
+									<ul>
+										<li><a href="#null">空</a></li>
+										<li><a href="#none">そのまま移送</a></li>
+										<li><a href="#codeToCode">コード変換</a></li>
+										<li><a href="#codeToId">コードからID</a></li>
+										<li><a href="#fixedValue">固定値</a></li>
+										<li><a href="#fixedCalueWithCond">条件付き固定値</a></li>
+										<li><a href="#parent">親テーブル参照</a></li>
+										<li><a href="#stringConcat">文字列連結</a></li>
+										<li><a href="#timeWithDayAttr">日区分付き時刻</a></li>
+										<li><a href="#datetimeMerge">時刻変換</a></li>
+										<li><a href="#guid">GUID発行</a></li>
+										<li><a href="#password">暗号化パスワード</a></li>
+										<li><a href="#fileId">ファイルID</a></li>
+										<li><a href="#sourceJoin">移行元テーブル結合</a></li>
+									</ul>
+									
+									<div id="null">
+										<!-- 未選択時 -->
+									</div>
+									<div id="none">
+										<!-- そのまま移送 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_none" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="codeToCode">
+										<!-- コード変換 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>変換種別：</label>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="text" id="txtCodeToCodeType" style="width: 270px;" class="nts-editor nts-input reset-element">
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_codeToCode" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="codeToId">
+										<!-- コードからID -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>ID変換種別：</label>
+													</div>
+												</td>
+												<td>
+													<select id="selCodeToIdType" class="ntsControl" style="width:350px;">
+														<option value="NULL">-- 未選択 --</option>
+														<option value="TO_CID">会社CDからCID</option>
+														<option value="TO_SID">社員CDからSID</option>
+														<option value="TO_JOB_ID">職位CDからJOB_ID</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_codeToId" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>会社コード列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_codeToId_ccd" class="selSourceColumn selNullable" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="fixedValue">
+										<!-- 固定値 -->
+										<table>
+											<tr>
+												<td style="width:120px;">
+													<div class="form-label required broken">
+														<label>固定値：</label>
+														<i>半角50文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="text" id="txtFixedValue" style="width: 250px;" class="nts-editor nts-input reset-element">
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="checkbox" id="chkFixedValueIsParam" class="nts-editor nts-input reset-element">事前定義パラメータか？
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													※ 固定値が文字列の場合は'（シングルコーテーション）で囲うこと<br />
+													※ 契約コードの場合<br />　固定値：CONTRACT_CD、事前定義パラメータ：trueを指定する<br />
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="fixedCalueWithCond">
+										<!-- 条件付き固定値 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_fixedCalueWithCond" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>条件（記号／条件値）：</label>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selOperator_fixedCalueWithCond" class="selOperator" style="width:200px;">
+															<option value="NULL">-- 未選択 --</option>
+															<option value="=">等しい（＝）</option>
+															<option value="<>">等しくない（＜＞）</option>
+															<option value=">">より大きい（＞）</option>
+															<option value="<">より小さい（＜）</option>
+															<option value=">=">以上（≧）</option>
+															<option value="<=">以下（≦）</option>
+															<option value="IS NULL">NULLである（IS NULL）)</option>
+															<option value="IS NOT NULL">NULLではない（IS NOT NULL）</option>
+														</select>
+														<input type="text" id="txtConditionValue" style="width: 200px;" class="nts-editor nts-input reset-element">
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td style="width:120px;">
+													<div class="form-label required broken">
+														<label>固定値：</label>
+														<i>半角50文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="text" id="txtFixedValueWithCond" style="width: 250px;" class="nts-editor nts-input reset-element">
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="checkbox" id="chkFixedValueWithCondIsParam" class="nts-editor nts-input reset-element">事前定義パラメータか？
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													※ 条件に一致しない場合はそのまま移送される<br />
+													※ 変換元の値が「-1」の場合だけ固定値をセットする、等を想定
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													※ 条件値や固定値が文字列の場合は'（シングルコーテーション）で囲うこと<br />
+													※ 契約コードの場合<br />　固定値：CONTRACT_CD、事前定義パラメータ：trueを指定する<br />
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="parent">
+										<!-- 親テーブル参照 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>親テーブル名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td colspan="2">
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="text" id="txtParentTblName" style="width: 250px;" class="nts-editor nts-input reset-element">
+														<button id="btnLoadParent" class="normal">列情報取得</button>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>親テーブル列名（移送元列名）：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td colspan="2">
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_parent" class="selSourceParentColumn">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>結合条件：</label>
+													</div>
+												</td>
+												<td colspan="2">
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK1:
+													<input type="checkbox" id="chkParentJoin1" class="nts-editor nts-input reset-element chkJoin" checked="checked" data-target="selJoinPK1"></input>
+													<select id="selJoinPK1" class="selSourceColumn selJoinPK">
+														<option>-- 未選択 --</option>
+													</select>
+													PK6 :
+													<input type="checkbox" id="chkParentJoin6" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK6"></input>
+													<select id="selJoinPK6" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK2:
+													<input type="checkbox" id="chkParentJoin2" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK2"></input>
+													<select id="selJoinPK2" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK7 :
+													<input type="checkbox" id="chkParentJoin7" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK7"></input>
+													<select id="selJoinPK7" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK3:
+													<input type="checkbox" id="chkParentJoin3" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK3"></input>
+													<select id="selJoinPK3" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK8 :
+													<input type="checkbox" id="chkParentJoin8" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK8"></input>
+													<select id="selJoinPK8" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK4:
+													<input type="checkbox" id="chkParentJoin4" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK4"></input>
+													<select id="selJoinPK4" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK9 :
+													<input type="checkbox" id="chkParentJoin9" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK9"></input>
+													<select id="selJoinPK9" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK5:
+													<input type="checkbox" id="chkParentJoin5" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK5"></input>
+													<select id="selJoinPK5" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK10:
+													<input type="checkbox" id="chkParentJoin10" class="nts-editor nts-input reset-element chkJoin" data-target="selJoinPK10"></input>
+													<select id="selJoinPK10" class="selSourceColumn selJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="stringConcat">
+										<!-- 文字列連結 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名１：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_stringConcat1" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名２：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_stringConcat2" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>区切り文字：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<input type="text" id="txtDelimiter" style="width: 250px;" class="nts-editor nts-input reset-element">
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													※ 氏名や住所などの連結を想定<br />
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="timeWithDayAttr">
+										<!-- 日区分付き時刻 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>日区分　列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_timeWithDayAttr_dayAttr" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>時刻　列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_timeWithDayAttr_time" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													※ 移送先の時刻列での前日の扱い　　00:00起点からの差　（前日23:00 ⇒ -60）<br />
+													※ 上記以外のパターンがある場合、要相談<br />
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="datetimeMerge">
+										<!-- 時刻変換 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>年月日 列名：</label>
+														<i>YYYYMMDD 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_yyyymmdd" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+												<td>
+													<div class="form-label broken">
+														<label>時間 列名：</label>
+														<i>HH 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_hh" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>年 列名：</label>
+														<i>YYYY 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_yyyy" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+												<td>
+													<div class="form-label broken">
+														<label>分 列名：</label>
+														<i>MI 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_mi" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>月 列名：</label>
+														<i>MM 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_mm" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+												<td>
+													<div class="form-label broken">
+														<label>時分 列名：</label>
+														<i>HH:MI 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_hhmi" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>年月 列名：</label>
+														<i>YYYYMM 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_yyyymm" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+												<td>
+													<div class="form-label broken">
+														<label>時分 列名：</label>
+														<i>分で格納</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_minutes" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>月日 列名：</label>
+														<i>MMDD 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_mmdd" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+												<td>
+													<div class="form-label broken">
+														<label>秒 列名：</label>
+														<i>SS 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_ss" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>日 列名：</label>
+														<i>DD 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_dd" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+												<td>
+												</td>
+												<td>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label broken">
+														<label>年月日時分 列名：</label>
+														<i>YYYYMMDDHHMI 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_yyyymmddhhmi" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+												<td>
+													<div class="form-label broken">
+														<label>年月日時分秒 列名：</label>
+														<i>YYYYMMDDHHMISS 形式</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_yyyymmddhhmiss" class="selSourceColumn selDateTimeMerge selNullable">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="guid">
+										<!-- GUID発行 -->
+										<table>
+											<tr>
+												<td>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="checkbox" id="chkGuid" class="nts-editor nts-input reset-element" disabled="disabled" checked>GUIDを発行する
+													</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="password">
+										<!-- 暗号化パスワード -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_password" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													※ 事前にUKの暗号化ロジックを通して暗号化したパスワードと生パスワードを<br />
+													　 変換テーブルに格納しておく必要がある<br />
+													※ 現状、ログイン時のユーザーのパスワードのみを想定<br />
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div id="fileId">
+										<!-- ファイルID -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_fileId" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>ファイル種別：</label>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selFileType" class="selFileType" style="width:350px;">
+															<option>-- 未選択 --</option>
+															<option value="PROFILE_PHOTO">顔写真</option>
+															<option value="MAP">地図</option>
+															<option value="DOCUMENT">電子書類</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>kojin_id列名：</label>
+													</div>
+												</td>
+												<td>
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_kojinId" class="selSourceColumn" style="width:350px;">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+												</td>
+												<td>
+													※ サーバ上のファイルパスが格納された列を指定する<br />
+													※ 事前にUKへのファイルアップロードとファイルパスとファイルIDの紐付けが必要
+												</td>
+											</tr>
+										</table>
+									</div>
+									
+									<div id="sourceJoin">
+										<!-- 移行元テーブル結合 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移行元テーブル名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td colspan="2">
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="text" id="txtSourceTblName" style="width: 250px;" class="nts-editor nts-input reset-element">
+														<button id="btnLoadSourceTbl" class="normal">列情報取得</button>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td colspan="2">
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_source" class="selJoinSourceColumn">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>結合条件：</label>
+													</div>
+												</td>
+												<td colspan="2">
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK1:
+													<input type="checkbox" id="chkSourceJoin1" class="nts-editor nts-input reset-element chkJoin" checked="checked" data-target="selSourceJoinPK1"></input>
+													<select id="selSourceJoinPK1" class="selSourceColumn selSourceJoinPK">
+														<option>-- 未選択 --</option>
+													</select>
+													PK6 :
+													<input type="checkbox" id="chkSourceJoin6" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK6"></input>
+													<select id="selSourceJoinPK6" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK2:
+													<input type="checkbox" id="chkSourceJoin2" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK2"></input>
+													<select id="selSourceJoinPK2" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK7 :
+													<input type="checkbox" id="chkSourceJoin7" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK7"></input>
+													<select id="selSourceJoinPK7" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK3:
+													<input type="checkbox" id="chkSourceJoin3" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK3"></input>
+													<select id="selSourceJoinPK3" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK8 :
+													<input type="checkbox" id="chkSourceJoin8" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK8"></input>
+													<select id="selSourceJoinPK8" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK4:
+													<input type="checkbox" id="chkSourceJoin4" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK4"></input>
+													<select id="selSourceJoinPK4" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK9 :
+													<input type="checkbox" id="chkSourceJoin9" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK9"></input>
+													<select id="selSourceJoinPK9" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK5:
+													<input type="checkbox" id="chkSourceJoin5" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK5"></input>
+													<select id="selSourceJoinPK5" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK10:
+													<input type="checkbox" id="chkSourceJoin10" class="nts-editor nts-input reset-element chkJoin" data-target="selSourceJoinPK10"></input>
+													<select id="selSourceJoinPK10" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div><!-- end tabs -->
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+</body>
+</html>

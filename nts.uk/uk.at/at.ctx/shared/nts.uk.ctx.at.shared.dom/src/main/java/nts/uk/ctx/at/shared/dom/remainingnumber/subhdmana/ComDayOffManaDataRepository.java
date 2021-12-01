@@ -61,6 +61,8 @@ public interface ComDayOffManaDataRepository {
 	 */
 	void deleteByComDayOffId(String comDayOffID);
 	
+	void deleteAllByEmployeeId(String employeeId);
+	
 	void updateReDayByComDayId(List<String> comDayIds);
 	
 	void updateReDayReqByComDayId(String comDayId,Boolean check);

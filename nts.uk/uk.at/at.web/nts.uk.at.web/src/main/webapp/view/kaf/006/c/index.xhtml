@@ -88,12 +88,52 @@
                                 option: { width: '350' } }" ></textarea>
                         </div>
                     </div>
-                    <div  style="margin: 5px 0" data-bind="component: { name: 'kaf006-c-component3', 
+                    <!-- <div  style="margin: 5px 0" data-bind="component: { name: 'kaf006-c-component3', 
                                                                         params: {
                                                                             appType: appType,
                                                                             application: application,
                                                                             appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                                        } }"></div>
+                                                                        } }"></div> -->
+                    <div id="listApproverRootState" class="table" data-bind="if: approvalRootState().length != 0">
+                        <div style="margin-top: -1px; overflow: auto;">
+                            <div class="cell" id="label-1">
+                                <div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF000_37')"></div>
+                            </div>
+                            <div class="cell" id="table-1">
+                                <table class="table-phase">
+                                    <thead>
+                                        <tr class="bg-green">
+                                            <th style="width: 111px; border: 1px solid black; text-align: center; height: 25px;"></th>
+                                            <th style="width: 111px; border: 1px solid black; text-align: center; height: 25px;"></th>
+                                            <th style="width: 230px; border: 1px solid black; text-align: center; height: 25px;" data-bind="text: $i18n('KAF000_3')"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: { data: approvalRootState, as: 'loopPhase' }">
+                                        <com:ko-foreach bind="{data: loopPhase.listApprovalFrame, as: 'loopFrame'}">
+                                            <com:ko-foreach bind="{data: loopFrame.listApprover, as: 'loopApprover'}">
+                                            <tr>
+                                                <com:ko bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)" tag="if">
+                                                    <td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) }" 
+                                                    style="width: 81px; border: 1px solid black; text-align: center; height: 25px;" class="bg-green">
+                                                        <p style="height: 25px;" data-bind="text: $vm.getPhaseLabel(loopPhase.phaseOrder())"></p>
+                                                    </td>
+                                                </com:ko>
+                                                <td style="width: 73px; border: 1px solid black; text-align: center; height: 25px;" class="bg-green">
+                                                    <p style="height: 25px;" data-bind="text: $vm.getApproverLabelByIndex()"></p>
+                                                </td>
+                                                <td style="width: 275px; border: 1px solid black; text-align: center; height: 25px;">
+                                                    <p class="limited-label" style="width: 270px; text-align: left; padding-left: 5px; vertical-align: middle; height: 25px;"
+                                                        data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            </com:ko-foreach>
+                                        </com:ko-foreach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="functions-area-bottom">

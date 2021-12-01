@@ -135,7 +135,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
-        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null));
+        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null, null, null, null));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -444,6 +444,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').show();
                 else
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').hide();
+
+				if (val.dispChildCare)
+                    $('#fixed-table td:nth-child(5), #fixed-table th:nth-child(5)').show();
+                else
+                    $('#fixed-table td:nth-child(5), #fixed-table th:nth-child(5)').hide();
+
+				if (val.dispLongTermCare)
+                    $('#fixed-table td:nth-child(6), #fixed-table th:nth-child(6)').show();
+                else
+                    $('#fixed-table td:nth-child(6), #fixed-table th:nth-child(6)').hide();
             });
             $(window).on('resize', function() {
                 var win = $(this); //this = window
@@ -900,8 +910,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         loadRemainNumberTable() {
             let self = this;
-            service.getRemainNum(self.selectedEmployee()).done((data: any) => {
-                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
+            let param = {
+                employeeId: self.selectedEmployee(),
+                closureDate: self.dateRanger().startDate
+            }
+            service.getRemainNum(param).done((data: any) => {
+                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate, data.grantDays, data.childCareVacation, data.longTermCareVacation));
                 self.referenceVacation(
                     new ReferenceVacation(
                         data.annualLeave == null ? false : data.annualLeave.manageYearOff,
@@ -2392,7 +2406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     initScreen: self.hasEmployee ? 1 : 0,
                     mode: _.isEmpty(self.shareObject()) ? 0 : self.shareObject().screenMode,
                     lstEmployee: lstEmployee,
-                    formatCodes: self.formatCodes(),
+                    formatCodes: self.formatCodes()==null?[]:self.formatCodes(),
                     objectShare: null,
                     showLock: self.showLock(),
                     closureId: self.closureId,
@@ -2612,19 +2626,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     dfd.resolve(lstEmployee);
                 }else if (!_.isEmpty(self.selectedEmployee())) {
                     //let dfd2 = $.Deferred();
-                    service.searchEmployee(self.selectedEmployee()).done(data => {
-                        let emp = {
-                            id: data.employeeId,
-                            code: data.employeeCode,
-                            businessName: data.businessName,
-                            workplaceName: data.orgName,
-                            workplaceId: "",
-                            depName: '',
-                            isLoginUser: false
-                        }
-                        lstEmployee.push(emp);
-                        self.lstEmployee(lstEmployee);
-                        dfd.resolve(lstEmployee);
+                    self.searchEmployee().done(data => {
+                        dfd.resolve(data);
                         //  dfd2.resolve();
                     });
                     // dfd2.promise();
@@ -2636,6 +2639,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 lstEmployee = self.lstEmployee();
                 dfd.resolve(lstEmployee);
             }
+            return dfd.promise();
+        }
+
+        searchEmployee(): JQueryPromise<any> {
+            let dfd = $.Deferred(), self = this,lstEmployee = [];;
+            service.searchEmployee($('#search-input-'+'emp-component').val()).done(data => {
+                let emp = {
+                    id: data.employeeId,
+                    code: data.employeeCode,
+                    businessName: data.businessName,
+                    workplaceName: data.wkpDisplayName,
+                    workplaceId: "",
+                    depName: '',
+                    isLoginUser: false
+                }
+                lstEmployee.push(emp);
+                self.lstEmployee(lstEmployee);
+                dfd.resolve(lstEmployee);
+                //  dfd2.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
             return dfd.promise();
         }
 
@@ -2942,6 +2967,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     var dataTemp = nts.uk.ui.windows.getShared('KDW003C_Output');
                     if (dataTemp != undefined) {
                         let data = [dataTemp];
+                        self.formatCodes(data);
                         self.hideComponent();
                         let lstEmployee = [];
                         if (self.displayFormat() === 0) {
@@ -2951,7 +2977,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         } else {
                             lstEmployee = self.lstEmployee();
                         }
-                        let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
+                        /*let hasChangeFormat: boolean = (self.displayFormatOld == self.displayFormat()) ? false : true;
                         let param = {
                             dateRange: (self.hasEmployee && !hasChangeFormat) ? {
                                 startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
@@ -2965,13 +2991,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             objectShare: null,
                             showLock: self.showLock(),
                             changeFormat: false
-                        };
+                        };*/
+						
                         self.characteristics.authenSelectFormat = data;
                         self.characteristics.employeeId = __viewContext.user.employeeId;
                         self.characteristics.companyId = __viewContext.user.companyId;
-                        self.characteristics.formatExtract = param.displayFormat;
+                        self.characteristics.formatExtract = self.hasEmployee ? self.displayFormat() : _.isEmpty(self.shareObject()) ? 0 : self.shareObject().displayFormat;
                         character.save('characterKdw003a', self.characteristics);
-                        nts.uk.ui.block.invisible();
+						self.formatCodes(data);
+						self.reloadScreen();
+						
+                       /* nts.uk.ui.block.invisible();
                         nts.uk.ui.block.grayout();
                         service.initParam(param).done((dataInit) => {
                             let paramMonth: any = {loadAfterCalc: false}
@@ -2990,12 +3020,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 self.receiveData(data);
                                 self.extraction();
                                 self.displayNumberZero();
+	
+								self.reloadScreen();
                                 nts.uk.ui.block.clear();
                             });
                         }).fail(function(error) {
                             nts.uk.ui.dialog.alert(error.message);
                             nts.uk.ui.block.clear();
-                        });
+                        });*/
                     }
                 });
             }
@@ -3666,7 +3698,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                        return __viewContext.user.employeeId == emp.id;
                     })
                     self.selectedEmployee(_.isEmpty(employeeLoginInList) ? self.lstEmployee()[0].id : employeeLoginInList.id);
-                    self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
+                    //#120496
+                    //self.dateRanger({ startDate: dataList.periodStart, endDate: dataList.periodEnd });
                     self.hasEmployee = true;
                     self.closureId = dataList.closureId;
                     self.loadKcp009();
@@ -4769,6 +4802,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
         }
 
+		openKDL051Dialog() {
+            let self = this;
+            let param = {
+                employeeIds: [self.selectedEmployee()],
+                baseDate: new Date()
+            }
+            setShared('KDL051A_PARAM', param);
+            modal("/view/kdl/051/single.xhtml");
+        }
+
+		openKDL052Dialog() {
+            let self = this;
+            let param = {
+                employeeIds: [self.selectedEmployee()],
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
+            }
+			setShared('OPEN_WINDOWS_DATA', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
+            modal('/view/kdl/052/single.xhtml');
+        }
+
     }
 
     export class AuthorityDetailModel {
@@ -5327,40 +5380,52 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dispAnnualDay: boolean;
         dispAnnualTime: boolean;
         dispReserve: boolean;
+		dispChildCare: string;
+		dispLongTermCare: string;
         compensationDay: string;
         compensationTime: string;
         substitute: string;
         annualDay: string;
         annualTime: string;
         reserve: string;
+		childCareValue: string;
+		longTermCareValue: string;
 
         dispSysDate: string = getText("KDW003_121", [moment(new Date()).format("YYYY/MM/DD")]);
         dispNextGrantDate: string;
 
-        constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any) {
-            this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate]) : getText("KDW003_123");
+		dispAnnualDayUI: KnockoutObservable<boolean> = ko.observable(false);
+		displayAllUI: KnockoutObservable<boolean> = ko.observable(false);
+
+        constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any, grantDays: any, childCareVacation: any, longTermCareVacation: any) {
+            this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate, grantDays]) : getText("KDW003_123");
             this.dispCompensationDay = compensatoryLeave == null ? false : compensatoryLeave.manageCompenLeave;
             this.dispCompensationTime = compensatoryLeave == null ? false : compensatoryLeave.manageTimeOff;
             this.dispSubstitute = substitutionLeave == null ? false : substitutionLeave.manageAtr;
             this.dispAnnualDay = annualLeave == null ? false : annualLeave.manageYearOff;
             this.dispAnnualTime = annualLeave == null ? false : annualLeave.manageTimeOff;
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
-            if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
-                this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
-                if (compensatoryLeave.compenLeaveRemain < 0)
-                    $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-compen-day").css("color", "");
-            } else
-                this.compensationDay = "";
-            if (this.dispCompensationTime && compensatoryLeave.timeRemain != null) {
-                this.compensationTime = nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain);
-                if (compensatoryLeave.timeRemain < 0)
-                    $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-compen-time").css("color", "");
-            } else
-                this.compensationTime = "";
+			this.dispChildCare = childCareVacation == null ? false : childCareVacation.manageNursing;
+			this.dispLongTermCare = longTermCareVacation == null ? false : longTermCareVacation.manageNursing;
+            // if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
+            //     this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
+            //     if (compensatoryLeave.compenLeaveRemain < 0)
+            //         $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
+            //     else
+            //         $("#fixed-table td.remain-compen-day").css("color", "");
+            // } else
+            //     this.compensationDay = "";
+            // if (this.dispCompensationTime && compensatoryLeave.timeRemain != null) {
+            //     this.compensationTime = nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain);
+            //     if (compensatoryLeave.timeRemain < 0)
+            //         $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
+            //     else
+            //         $("#fixed-table td.remain-compen-time").css("color", "");
+            // } else
+            //     this.compensationTime = "";
+            if (this.dispCompensationDay) {
+                this.compensationDay = this.remainCompensation(compensatoryLeave.compenLeaveRemain, compensatoryLeave.timeRemain, compensatoryLeave.manageTimeOff);
+            }
             if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
                 this.substitute = getText("KDW003_8", [substitutionLeave.holidayRemain]);
                 if (substitutionLeave.holidayRemain < 0)
@@ -5377,14 +5442,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-annual-day").css("color", "");
             } else
                 this.annualDay = "";
-            if (this.dispAnnualTime && annualLeave.timeRemain != null) {
-                this.annualTime = nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain);
-                if (annualLeave.timeRemain < 0)
-                    $("#fixed-table td.remain-annual-time").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-annual-time").css("color", "");
-            } else
-                this.annualTime = "";
+            if (this.dispAnnualDay) {
+                if (annualLeave.timeRemain) {
+                    let timeString = nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain);
+                    if (annualLeave.annualLeaveRemain != null) {
+                        this.annualDay = getText("KDW003_132", [annualLeave.annualLeaveRemain, timeString]);
+                        if (annualLeave.annualLeaveRemain < 0)
+                            $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
+                        else
+                            $("#fixed-table td.remain-annual-day").css("color", "");
+                    }
+                } else {
+                    this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);
+                }
+            }
             if (this.dispReserve && reserveLeave.remainNumber != null) {
                 this.reserve = getText("KDW003_8", [reserveLeave.remainNumber]);
                 if (reserveLeave.remainNumber < 0)
@@ -5393,6 +5464,68 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-reserve-day").css("color", "");
             } else
                 this.reserve = "";
+
+			if (this.dispChildCare) {
+				if (_.isNull(childCareVacation.remainDays)) childCareVacation.remainDays = 0;
+				if (childCareVacation.remainTime != 0) {
+					this.childCareValue = getText("KDW003_132", [childCareVacation.remainDays, nts.uk.time.format.byId("Time_Short_HM", childCareVacation.remainTime)]);	
+				} else {
+					this.childCareValue = getText("KDW003_8", [childCareVacation.remainDays]);	
+				}
+                if (childCareVacation.remainDays < 0 || (childCareVacation.remainDays == 0 && childCareVacation.remainTime < 0))
+                    $("#fixed-table td.remain-childCare-day").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-childCare-day").css("color", "#06c");
+            } else
+                this.childCareValue = "";
+
+			if (this.dispLongTermCare) {
+				if (_.isNull(longTermCareVacation.remainDays)) longTermCareVacation.remainDays = 0;
+				if (longTermCareVacation.remainTime != 0) {
+					this.longTermCareValue = getText("KDW003_132", [longTermCareVacation.remainDays, nts.uk.time.format.byId("Time_Short_HM", longTermCareVacation.remainTime)]);	
+				} else {
+					this.longTermCareValue = getText("KDW003_8", [longTermCareVacation.remainDays]);	
+				}
+                if (longTermCareVacation.remainDays < 0 || (longTermCareVacation.remainDays == 0 && longTermCareVacation.remainTime < 0))
+                    $("#fixed-table td.remain-longTermCare-day").css("color", "#ff0000");
+                else
+                    $("#fixed-table td.remain-longTermCare-day").css("color", "#06c");
+            } else
+                this.longTermCareValue = "";
+
+			this.dispAnnualDayUI(this.dispAnnualDay);
+			this.displayAllUI(this.dispCompensationDay || this.dispSubstitute || this.dispAnnualDay || (this.dispAnnualDay && this.dispReserve));
+        }
+
+        public remainCompensation(day: any, time: any, manage: any) {
+            let output = "";
+            let timeString = nts.uk.time.format.byId("Time_Short_HM", time);
+            let dayString = getText("KDW003_8", [day.toString()]);
+            if (time) {
+                if (time < 0)
+                    $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
+                else {
+                    $("#fixed-table td.remain-compen-time").css("color", "");
+                }
+                output = timeString;
+            } else if (day) {
+                if (day < 0)
+                    $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
+                else {
+                    $("#fixed-table td.remain-compen-day").css("color", "");
+                }
+                output = dayString;
+            } else {
+                if (manage) {
+                    output = timeString; 
+                    $("#fixed-table td.remain-compen-time").css("color", "");
+                } else {
+                    output = dayString;
+                    $("#fixed-table td.remain-compen-day").css("color", "");
+                }
+            }
+
+            return output;
         }
     }
 

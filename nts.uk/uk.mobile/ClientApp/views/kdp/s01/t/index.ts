@@ -1,5 +1,5 @@
 import { component, Prop } from '@app/core/component';
-import { _, Vue } from '@app/provider';
+import { _, Vue, moment } from '@app/provider';
 import { model } from 'views/kdp/S01/shared/index.d';
 
 @component({
@@ -30,9 +30,9 @@ export class KdpS01TComponent extends Vue {
     public goto(button) {
         let vm = this,
             url = button.screen + 's' + button.screenCd.slice(1) + button.screenId.toLowerCase(),
-            param;
+            param = { date: moment(vm.setting.errorDate).format('YYYY/MM/DD') };
 
-        vm.$goto(url);
+        vm.$goto(url, param);
         // hien tai khong can param
         // if (button.queryString) {
         //     let value = button.queryString.split('=')[1];

@@ -171,7 +171,13 @@ module nts.uk.at.view.ksu003.a.model {
 		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
 		return time;
 	}
-
+	
+	export function checkTimeChartChang(time: any, timeRangeLimit: any, dispStartHours: any) {
+		// check start time
+		if (time < ((dispStartHours * 60) / 5)) time = ((dispStartHours * 60) / 5);
+		return time;
+	}
+	
 	export function checkRangeBreakTime(lstHoliday: any[], breakTime: any, index: any) {
 		let rangeBreak: any = { start: 0, end: 9999 };
 		lstHoliday = _.filter(lstHoliday, x => { return x.index === index });
@@ -232,6 +238,8 @@ module nts.uk.at.view.ksu003.a.model {
 
 	export function calcAllTime(schedule: any, lstTime: any, timeRangeLimit: any, dispStart: any, dispStartHours: any) {
 		// Tính tổng thời gian làm việc
+		timeRangeLimit = timeRangeLimit;
+		let targetInfor = nts.uk.ui.windows.getShared("targetInforKsu003"); // thay tạm cho __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor
 		let totalTimeAll = 0, totalTimeWork = 0,
 			start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
 			end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
@@ -410,8 +418,8 @@ module nts.uk.at.view.ksu003.a.model {
 					workTimeCd: employeeInfo[index045].workScheduleDto.workTimeCode,
 					startTime: employeeInfo[index045].workScheduleDto.startTime1,
 					endTime: employeeInfo[index045].workScheduleDto.endTime1,
-					startTime2: employeeInfo[index045].workScheduleDto.startTime2,
-					endTime2: employeeInfo[index045].workScheduleDto.endTime2,
+					startTime2: employeeInfo[index045].workScheduleDto.startTime2 == 0 ? null : employeeInfo[index045].workScheduleDto.startTime2 ,
+					endTime2: employeeInfo[index045].workScheduleDto.endTime2 == 0 ? null : employeeInfo[index045].workScheduleDto.endTime2,
 					listBreakTime: employeeInfo[index045].workScheduleDto.listBreakTimeZoneDto,
 					directAtr: employeeInfo[index045].workInfoDto.directAtr,
 					bounceAtr: employeeInfo[index045].workInfoDto.bounceAtr,
