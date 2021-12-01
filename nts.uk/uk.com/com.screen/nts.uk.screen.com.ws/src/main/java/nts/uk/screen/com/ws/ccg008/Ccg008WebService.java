@@ -127,7 +127,6 @@ public class Ccg008WebService {
 		}
 		if(topPageSetting.isPresent()) {
 			result.setTopMenuCode(topPageSetting.get().getTopMenuCode().v());
-			result.setSwitchingDate(topPageSetting.get().getSwitchingDate().v());
 			result.setSystem(topPageSetting.get().getMenuLogin().getSystem().value);
 			result.setMenuClassification(topPageSetting.get().getMenuLogin().getMenuClassification().value);
 			result.setLoginMenuCode(topPageSetting.get().getMenuLogin().getLoginMenuCode().v());

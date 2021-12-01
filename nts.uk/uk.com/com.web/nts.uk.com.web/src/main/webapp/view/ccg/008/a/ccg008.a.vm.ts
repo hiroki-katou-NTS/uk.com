@@ -245,15 +245,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                       .storage('cache')
                       .then((obj: any) => {
                         if (obj) {
-                          const { switchingDate } = vm.topPageSetting;
-                          const endDate = moment.utc(obj.endDate, D_FORMAT).add(switchingDate, 'day').startOf('day');
-    
-                          if (endDate.isBefore(moment().startOf('day'))) {
-                            obj.currentOrNextMonth = 2;
-                          }
-    
                           vm.closureId(obj.closureId);
-    
                           vm.$window.shared('cache', obj);
                         } else {
                           vm.closureId(1);
