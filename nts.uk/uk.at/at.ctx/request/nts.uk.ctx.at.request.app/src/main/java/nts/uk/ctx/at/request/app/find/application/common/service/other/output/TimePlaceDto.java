@@ -59,7 +59,7 @@ public class TimePlaceDto {
 				timePlaceOutput.getFrameNo().v(), 
 				timePlaceOutput.getOpEndTime().map(x -> x.v()).orElse(null), 
 				timePlaceOutput.getOpStartTime().map(x -> x.v()).orElse(null),
-				timePlaceOutput.getWorkplaceId().v());
+				timePlaceOutput.getWorkplaceId() == null ? "" : timePlaceOutput.getWorkplaceId().v());
 	} 
 	
 	public TimePlaceOutput toDomain() {

@@ -561,6 +561,18 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             } else if (type === STAMPTYPE.CHEERING) {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(self.getAttendanceGrid(isChrome, dataSource, headerFlagContent, statesTable));
+                    
+                    const $expandRow = $('<tr id="trLinkCheer">');
+                    const $firstCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">');
+                    const $secondCol = $('<td colspan="5">');
+                    const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
+                    const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline">${self.$i18n('KAF002_85', ['0'])}</a>`)
+                    $secondCol__div__link.click(() => self.doSomething(self.dataSource[items[0].index]));
+                    $secondCol__div.append($secondCol__div__link);
+                    $secondCol.append($secondCol__div);
+                    $expandRow.append($firstCol);
+                    $expandRow.append($secondCol);
+                    $('#' + id).append($expandRow);
                 }
             } else {
                 if ($('#' + id).length) {
@@ -586,21 +598,18 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
                 if ($('#' + id).length) {
-                    $('#' + id).append(`<tr id="trLink2">
-                                          <td></td>
-                                          <td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">
-                                            <div></div>
-                                          </td>
-                                          <td colspan="4">
-                                            <div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">
-                                              <a style="color: blue; text-decoration: underline"
-                                                data-bind="
-                                                  click: doSomething.bind($data, dataSource[' + items[0].index + ']),
-                                                  text: \'' + self.$i18n('KAF002_73') + '\'">
-                                              </a>
-                                            </div>
-                                          </td>
-                                        </tr>`);
+                    const $expandRow = $('<tr id="trLink2">');
+                    const $firstCol = $('<td>')
+                    const $secondCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">')
+                    const $thirdCol = $('<td colspan="4">');
+                    const $thirdCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">')
+                    $thirdCol__div.append('<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']), text: \'' + self.$i18n('KAF002_73') + '\'"></a>');
+                    
+                    $thirdCol.append($thirdCol__div);
+                    $expandRow.append($firstCol);
+                    $expandRow.append($secondCol);
+                    $expandRow.append($thirdCol);
+                    $('#' + id).append($expandRow);
                 }
 
             } else {
@@ -776,7 +785,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 				this.nameEnd = nts.uk.resource.getText('KAF002_90', [dataObject.frameNo -2]);
                 param = param + 2;
             } else if (typeStamp === STAMPTYPE.CHEERING) {
-                this.text1 = nts.uk.resource.getText( 'KAF002_22', [dataObject.frameNo]);
+                this.text1 = nts.uk.resource.getText( 'KAF002_86', [dataObject.frameNo] );
+				this.nameStart = nts.uk.resource.getText('KAF002_99', [dataObject.frameNo]);
+				this.nameEnd = nts.uk.resource.getText('KAF002_100', [dataObject.frameNo]);
             }
             this.startTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + start + '</span>'

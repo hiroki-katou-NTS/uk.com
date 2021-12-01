@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
 import nts.uk.shr.com.color.ColorCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaAppStampSettingRepository extends JpaRepository implements AppStampSettingRepository{
 
@@ -58,6 +59,8 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appStampSetting.setCompanyID(res.getString("CID"));
 		
 		appStampSetting.setUseCancelFunction(EnumAdaptor.valueOf(res.getInt("CANCEL_DISP_ATR"), UseDivision.class));
+		appStampSetting.setUseLocationSelection(EnumAdaptor.valueOf(res.getInt("STAMP_PLACE_DISP_ATR"), NotUseAtr.class));
+		appStampSetting.setWkpDisAtr(EnumAdaptor.valueOf(res.getInt("STAMP_WKP_DISP_ATR"), NotUseAtr.class));
 		
 		List<SettingForEachType> settingForEachTypeLst = new ArrayList<SettingForEachType>();
 		
