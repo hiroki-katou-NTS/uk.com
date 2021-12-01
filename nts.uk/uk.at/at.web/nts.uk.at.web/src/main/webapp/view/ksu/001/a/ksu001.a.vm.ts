@@ -3200,6 +3200,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 case WorkplaceCounterCategory.EMPLOYMENT_PEOPLE: 
                     let employment: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.employment,
                         employmentValue = _.filter(employment, item => !_.isEmpty(item.numberPeople));
+                    
+                    let listMaxNumberPeople: Array<any> = [];
+                    let length = 0;
+                    _.forEach(employment, item => {
+                        if (item.numberPeople.length > length) {
+                            length = item.numberPeople.length;
+                            listMaxNumberPeople = item.numberPeople;
+                        }
+                    });
+                    
                     if(_.isEmpty(employmentValue)) {
 						let objectEmployment = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
@@ -3221,8 +3231,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 							employmentData.push(employmentSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(employmentData, 'code')), (groupItem: Array<any>, index: number) => {
-						let objectEmployment = { sid: '' }, sumEmployment: any = '';
+                    
+                    let objGroup = _.groupBy(employmentData, 'code');
+                    _.forEach(listMaxNumberPeople, (item, index: number) => {
+                        let groupItem: Array<any> = objGroup[item.code];
+                        let objectEmployment = { sid: '' }, sumEmployment: any = '';
 	                    leftHorzContentDs.push({ 
 							id: 'id' + index, 
 							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
@@ -3259,6 +3272,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 case WorkplaceCounterCategory.CLASSIFICATION_PEOPLE: 
                     let classification: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.classification,
                         classificationValue = _.filter(classification, item => !_.isEmpty(item.numberPeople));
+                    
+                    let listMaxNumberPeople: Array<any> = [];
+                    let length = 0;
+                    _.forEach(classification, item => {
+                        if (item.numberPeople.length > length) {
+                            length = item.numberPeople.length;
+                            listMaxNumberPeople = item.numberPeople;
+                        }
+                    });
+                    
+                    
                     if(_.isEmpty(classificationValue)) {
 						let objectClassification = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
@@ -3280,8 +3304,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 							classificationData.push(classificationSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(classificationData, 'code')), (groupItem: Array<any>, index: number) => {
-						let objectClassification = { sid: '' }, sumClassification: any = '';
+                    
+
+                    let objGroup = _.groupBy(classificationData, 'code');
+                    _.forEach(listMaxNumberPeople, (item, index: number) => {
+                        let groupItem: Array<any> = objGroup[item.code];
+                        let objectClassification = { sid: '' }, sumClassification: any = '';
 	                    leftHorzContentDs.push({ 
 							id: 'id' + index, 
 							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
