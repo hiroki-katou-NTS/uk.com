@@ -483,9 +483,10 @@ module nts.uk.ui.at.kdw013.a {
                                 let start = _.get(_.find(manHrContents, hr => { return hr.itemId == 31 }), 'value');
                                 let end = _.get(_.find(manHrContents, hr => { return hr.itemId == 34 }), 'value');
 
-                                //PC3_4 PC3_5
-                                events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']) });
-                                
+                                if (convert) {
+                                    //PC3_4 PC3_5
+                                    events.push({ title: vm.$i18n('KDW013_68'), text: vm.$i18n('KDW013_73', [start ? formatTime(start, 'Time_Short_HM') : '　　', end ? formatTime(end, 'Time_Short_HM') : '']) });
+                                }
 
                                 let rdis = _.sortBy(_.get(setting, 'manHrInputDisplayFormat.recordColumnDisplayItems', []), ['order']);
                                 const gentext = (hr, attItem) => {
