@@ -11,7 +11,7 @@ module nts.uk.ui.at.kdw013.timeheader {
                             cursor: pointer;
                             position: absolute;
                             left: calc(100% - 22px);
-                            bottom: calc(100% - 19px);
+                            bottom: calc(100% - 17px);
                         }
                     .warningIcon:hover {
                          background-color: rgb(229, 242, 255);

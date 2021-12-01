@@ -395,7 +395,7 @@ module nts.uk.ui.at.kdw013.calendar {
         .favIcon{
             position: absolute;
             left: calc(100% - 22px);
-            bottom: calc(100% - 20px);
+            bottom: calc(100% - 18px);
         }
         .favIcon:hover{
                 background-color: rgb(229, 242, 255);
