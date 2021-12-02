@@ -122,7 +122,7 @@ public class ContinuousHolCheckSetRepoImpl extends JpaRepository implements Cont
 			this.getEntityManager().flush();
 			entity.continuousDays = setting.getMaxContinuousDays().v();
 			entity.messageDisplay = setting.getDisplayMessege().v();
-			entity.useAtr = setting.isUseAtr() ? 1 : 0;
+			entity.useAtr = setting.isUseAtr();
 			this.commandProxy().insertAll(toNonTarget(setting.getIgnoreWorkType(), setting.getCompanyId()));
 			this.commandProxy().insertAll(toTarget(setting.getTargetWorkType(), setting.getCompanyId()));
 			this.getEntityManager().flush();

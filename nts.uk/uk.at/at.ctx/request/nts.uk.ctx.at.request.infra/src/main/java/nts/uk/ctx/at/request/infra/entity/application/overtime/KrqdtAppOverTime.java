@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.AllArgsConstructor;
@@ -52,7 +53,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 	public KrqdtAppOvertimePK krqdtAppOvertimePK;
 	
 	@Column(name = "OVERTIME_ATR")
-	public Integer overtimeAtr;
+	public boolean overtimeAtr;
 	
 	@Column(name = "WORK_TYPE_CD")
 	public String workTypeCode;
@@ -181,7 +182,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 		if (getKey() == null) return null;
 		AppOverTime appOverTime = new AppOverTime();
 		
-		appOverTime.setOverTimeClf(EnumAdaptor.valueOf(overtimeAtr, OvertimeAppAtr.class));
+		appOverTime.setOverTimeClf(EnumAdaptor.valueOf(BooleanUtils.toInteger(overtimeAtr), OvertimeAppAtr.class));
 		if (StringUtils.isNotBlank(workTypeCode) || StringUtils.isNotBlank(workTimeCode)) {
 			WorkInformation workInformation = new WorkInformation("", "");
 			appOverTime.setWorkInfoOp(Optional.of(workInformation));
