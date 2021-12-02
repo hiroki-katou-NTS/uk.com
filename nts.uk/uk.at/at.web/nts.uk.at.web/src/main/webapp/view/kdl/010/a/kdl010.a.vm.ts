@@ -45,9 +45,11 @@ module kdl010.a.viewmodel {
             var selectWorkLocation = _.find(self.workLocationList(), ['workLocationCD', self.selectCode()]);
             if (selectWorkLocation !== undefined) {
                 nts.uk.ui.windows.setShared("KDL010workLocation", selectWorkLocation.workLocationCD);
+                nts.uk.ui.windows.setShared("KDL010workLocationName", selectWorkLocation.workLocationName);
             }
             else {
                 nts.uk.ui.windows.setShared("KDL010workLocation", null, true);
+                nts.uk.ui.windows.setShared("KDL010workLocationName", null, true);
             }
             nts.uk.ui.windows.close();
         }
