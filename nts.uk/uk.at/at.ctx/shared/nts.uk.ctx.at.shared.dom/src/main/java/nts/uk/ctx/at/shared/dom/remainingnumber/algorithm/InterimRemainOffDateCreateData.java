@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
@@ -652,26 +653,10 @@ public class InterimRemainOffDateCreateData {
 		switch (wkClasssifi) {
 		case Absence:
 		case SpecialHoliday:
-			// INPUT.勤務種類の分類＝特別休暇
-			// 特休使用明細を追加する
-			List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(result.getSpeHolidayDetailData());
-
-			workTypeSetList.stream().filter(x -> x.getWorkAtr().equals(workAtr)).findFirst().ifPresent(x -> {
-				// アルゴリズム「特別休暇枠NOから特別休暇を取得する」を実行する
-				List<Integer> holidaySpecialCd = require.getSpecialHolidayNumber(cid, x.getSumSpHodidayNo());
-				if (!holidaySpecialCd.isEmpty()) {
-					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), day);
-					lstSpeUseDetail.add(detailData);
-				}else{
-					List<Integer> absenceSpecialCd = require.getAbsenceNumber(cid, x.getSumAbsenseNo());
-					if (!absenceSpecialCd.isEmpty()) {
-						SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(absenceSpecialCd.get(0), day);
-						lstSpeUseDetail.add(detailData);
-					}
-				}
-			});
-
-			result.setSpeHolidayDetailData(lstSpeUseDetail);
+			// INPUT.勤務種類の分類＝特別休暇 or 欠勤
+			// 特休使用明細を設定する
+			setSpecialHoliday(require, cid, day, workTypeSetList, workAtr, wkClasssifi, result);
+	
 			// 子の看護介護の残数発生使用明細を設定する
 			setCare(require, cid, day, workTypeSetList, result);
 			break;
@@ -761,6 +746,40 @@ public class InterimRemainOffDateCreateData {
 		return require.getHolidayWorkScheduleNew(cid, sid, ymd, wkTypeCd,WorkingDayCategory.workingDay)
 				.map(x -> x.getWorkTimeCodeNotNull().map(y->y.v()).orElse(null)).orElse(null);
 
+	}
+	
+	/**
+	 * 特休使用明細を設定する
+	 * @param require
+	 * @param cid 会社ID
+	 * @param day　日数
+	 * @param workTypeSetList　勤務種類
+	 * @param workAtr　workAtr
+	 * @param wkClasssifi 勤務種類の分類
+	 * @param dataOutput　勤務種類別残数情報
+	 */
+	private static void setSpecialHoliday(RequireM8 require, String cid, double day, List<WorkTypeSet> workTypeSetList,
+			WorkAtr workAtr, WorkTypeClassification wkClasssifi, WorkTypeRemainInfor dataOutput){
+		
+		List<SpecialHolidayUseDetail> lstSpeUseDetail = new ArrayList<>(dataOutput.getSpeHolidayDetailData());
+		
+		workTypeSetList.stream().filter(x -> x.getWorkAtr().equals(workAtr)).findFirst().ifPresent(x -> {
+
+			if(wkClasssifi.equals(WorkTypeClassification.Absence)){
+				List<Integer> absenceSpecialCd = require.getAbsenceNumber(cid, x.getSumAbsenseNo());
+				if (!absenceSpecialCd.isEmpty()) {
+					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(absenceSpecialCd.get(0), day);
+					lstSpeUseDetail.add(detailData);
+				}
+			}else if(wkClasssifi.equals(WorkTypeClassification.SpecialHoliday)){
+				List<Integer> holidaySpecialCd = require.getSpecialHolidayNumber(cid, x.getSumSpHodidayNo());
+				if (!holidaySpecialCd.isEmpty()) {
+					SpecialHolidayUseDetail detailData = new SpecialHolidayUseDetail(holidaySpecialCd.get(0), day);
+					lstSpeUseDetail.add(detailData);
+				}
+			}
+		});
+		dataOutput.setSpeHolidayDetailData(lstSpeUseDetail);
 	}
 
 	/**
