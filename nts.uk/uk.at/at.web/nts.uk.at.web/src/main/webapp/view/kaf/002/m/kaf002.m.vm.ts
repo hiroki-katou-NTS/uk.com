@@ -567,7 +567,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
                     
-                    if (self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3) {
+                    if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3) {
                         const $expandRow = $('<tr id="trLinkCheer">');
                         const $firstCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">');
                         const $secondCol = $('<td colspan="5">');
@@ -597,7 +597,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 $(buttonWorkplaceAtr).addClass('btn_workplace');
             }
 
-            let buttonWorkLocationAtr = 'td[aria-describedby ="' + id + '_workLocaiton"]';
+            let buttonWorkLocationAtr = 'td[aria-describedby ="' + id + '_workLocaitonCD"]';
             if ($(buttonWorkLocationAtr)) {
                 $(buttonWorkLocationAtr).addClass('btn_worklocation');
             }
@@ -649,11 +649,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: 140 },
                     {
                         headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: 230,
-                        ntsControl: 'Button_WorkPlace', hidden: self.kaf002Data.appStampSetting.wkpDisAtr == 0,
+                        ntsControl: 'Button_WorkPlace', hidden: self.kaf002Data && self.kaf002Data.appStampSetting.wkpDisAtr == 0,
                     },
                     {
                         headerText: self.$i18n('KAF002_82'), key: 'workLocaitonCD', dataType: 'string', width: 230,
-                        ntsControl: 'Button_WorkLocation', hidden: self.kaf002Data.appStampSetting.useLocationSelection == 0,
+                        ntsControl: 'Button_WorkLocation', hidden: self.kaf002Data && self.kaf002Data.appStampSetting.useLocationSelection == 0,
                     },
                     { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: 100 }
                 ],
@@ -671,7 +671,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 columnKey: 'endTime', allowResizing: false, minimumWidth: 30
                             },
                             {
-                                columnKey: 'flag', allowResizing: false, minimumWidth: 30
+                                columnKey: 'text1', allowResizing: false, minimumWidth: 30
+                            },
+                            {
+                                columnKey: 'workplaceId', allowResizing: false, minimumWidth: 30
+                            },
+                            {
+                                columnKey: 'workLocaitonCD', allowResizing: false, minimumWidth: 30
                             }
                         ]
                     },
@@ -718,7 +724,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 self.dataSource[data.index][data.idGetList].workplaceId = selected;
 
                                 const selectedInfor = nts.uk.ui.windows.getShared('workplaceInfor')
-                                const $selected = $(`<div>${selectedInfor[0].displayName}</div>`);
+                                const $selected = $(`<div class="limited-label">${selectedInfor[0].displayName}</div>`);
                                 if (self.selectedTab() == 'tab-1') {
                                     $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
                                 }
@@ -740,6 +746,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 const workLocationCD = returnWorkLocationCD !== undefined? returnWorkLocationCD : "";
                                 data.workLocationCD = workLocationCD;
                                 self.dataSource[data.index][data.idGetList].workLocationCD = workLocationCD;
+
+                                const $selected = $(`<div class="limited-label">${workLocationCD}</div>`);
+                                if (self.selectedTab() == 'tab-1') {
+                                    $('#grid1_container .nts-grid-control-workLocaitonCD-' + data.id).append($selected);
+                                }
+                                if (self.selectedTab() == 'tab-6') {
+                                    $('#grid6_container .nts-grid-control-workLocaitonCD-' + data.id).append($selected);
+                                }
                             });
                         },
                         controlType: 'Button'

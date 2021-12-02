@@ -694,7 +694,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 destinationTimeApp.engraveFrameNo = (el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - length : el.id);
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
-                                timeStampAppDto.workLocationCd = null;
+                                timeStampAppDto.workLocationCd = el.workLocationCD;
+                                timeStampAppDto.wkpId = el.workplaceId;
                                 if (!_.isNull(el.typeReason)) {
                                     timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);                                    
                                 }
