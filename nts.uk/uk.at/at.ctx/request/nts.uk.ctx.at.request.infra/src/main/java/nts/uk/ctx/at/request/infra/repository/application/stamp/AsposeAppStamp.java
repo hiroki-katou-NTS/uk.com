@@ -711,9 +711,10 @@ public class AsposeAppStamp {
 				int index = entry.getKey() - 1;
 				if (!entry.getValue().equals(EMPTY)) {
 					String value = I18NText.getText("KAF002_86", String.valueOf(entry.getKey()));
-					cells.get(35 + index, 1).setValue(value);
+					cells.get(36 + index, 1).setValue(value);
+					cells.get(36 + index, 3).setValue(entry.getValue());
 				} else {
-					cells.deleteRow(35 + index);
+					cells.deleteRow(36 + index);
 					deleteCnt++;
 				}
 			}
@@ -959,24 +960,24 @@ public class AsposeAppStamp {
 
 			// set style for bottom
 
-			cells.setRowHeightPixel(38 - deleteCnt - 2, 5);
-			cells.setRowHeightPixel(38 - deleteCnt - 1, 130);
-			cells.setRowHeightPixel(38 - deleteCnt, 5);
-			cells.setRowHeightPixel(38 - deleteCnt + 1, 5);
-			cells.setRowHeightPixel(38 - deleteCnt + 2, 130);
-			cells.setRowHeightPixel(38 - deleteCnt + 3, 5);
+			cells.setRowHeightPixel(41 - deleteCnt - 2, 5);
+			cells.setRowHeightPixel(41 - deleteCnt - 1, 130);
+			cells.setRowHeightPixel(41 - deleteCnt, 5);
+			cells.setRowHeightPixel(41 - deleteCnt + 1, 5);
+			cells.setRowHeightPixel(41 - deleteCnt + 2, 130);
+			cells.setRowHeightPixel(41 - deleteCnt + 3, 5);
 
 			// before reason
-			Cell bReason = worksheet.getCells().get("B" + (38 - deleteCnt - 1));
-			Cell cReason = worksheet.getCells().get("C" + (38 - deleteCnt - 1));
-			Cell dReason = worksheet.getCells().get("D" + (38 - deleteCnt - 1));
-			Cell eReason = worksheet.getCells().get("E" + (38 - deleteCnt - 1));
-			Cell fReason = worksheet.getCells().get("F" + (38 - deleteCnt - 1));
-			Cell gReason = worksheet.getCells().get("G" + (38 - deleteCnt - 1));
-			Cell hReason = worksheet.getCells().get("H" + (38 - deleteCnt - 1));
-			Cell iReason = worksheet.getCells().get("I" + (38 - deleteCnt - 1));
-			Cell jReason = worksheet.getCells().get("J" + (38 - deleteCnt - 1));
-			Cell kReason = worksheet.getCells().get("K" + (38 - deleteCnt - 1));
+			Cell bReason = worksheet.getCells().get("B" + (41 - deleteCnt - 1));
+			Cell cReason = worksheet.getCells().get("C" + (41 - deleteCnt - 1));
+			Cell dReason = worksheet.getCells().get("D" + (41 - deleteCnt - 1));
+			Cell eReason = worksheet.getCells().get("E" + (41 - deleteCnt - 1));
+			Cell fReason = worksheet.getCells().get("F" + (41 - deleteCnt - 1));
+			Cell gReason = worksheet.getCells().get("G" + (41 - deleteCnt - 1));
+			Cell hReason = worksheet.getCells().get("H" + (41 - deleteCnt - 1));
+			Cell iReason = worksheet.getCells().get("I" + (41 - deleteCnt - 1));
+			Cell jReason = worksheet.getCells().get("J" + (41 - deleteCnt - 1));
+			Cell kReason = worksheet.getCells().get("K" + (41 - deleteCnt - 1));
 
 			Style bReasonStyle = bReason.getStyle();
 			Style cReasonStyle = cReason.getStyle();
@@ -1029,10 +1030,10 @@ public class AsposeAppStamp {
 			kReason.setStyle(kReasonStyle);
 
 			// reason
-			Cell bReasonLabel = cells.get("B" + (38 - deleteCnt));
-			Cell cReasonLabel = cells.get("C" + (38 - deleteCnt));
-			Cell dReasonLabel = cells.get("D" + (38 - deleteCnt));
-			Cell kReasonLabel = cells.get("K" + (38 - deleteCnt));
+			Cell bReasonLabel = cells.get("B" + (41 - deleteCnt));
+			Cell cReasonLabel = cells.get("C" + (41 - deleteCnt));
+			Cell dReasonLabel = cells.get("D" + (41 - deleteCnt));
+			Cell kReasonLabel = cells.get("K" + (41 - deleteCnt));
 
 			Style bReasonLabelStyle = bReasonLabel.getStyle();
 			Style cReasonLabelStyle = cReasonLabel.getStyle();
@@ -1064,20 +1065,20 @@ public class AsposeAppStamp {
 			dReasonLabel.setStyle(dReasonLabelStyle);
 			kReasonLabel.setStyle(kReasonLabelStyle);
 
-			cells.merge(38 - deleteCnt - 1, 1, 1, 2);
-			cells.merge(38 - deleteCnt - 1, 3, 1, 8);
+			cells.merge(41 - deleteCnt - 1, 1, 1, 2);
+			cells.merge(41 - deleteCnt - 1, 3, 1, 8);
 
 			// under reason
-			Cell bReasonUnder = worksheet.getCells().get("B" + (38 - deleteCnt + 1));
-			Cell cReasonUnder = worksheet.getCells().get("C" + (38 - deleteCnt + 1));
-			Cell dReasonUnder = worksheet.getCells().get("D" + (38 - deleteCnt + 1));
-			Cell eReasonUnder = worksheet.getCells().get("E" + (38 - deleteCnt + 1));
-			Cell fReasonUnder = worksheet.getCells().get("F" + (38 - deleteCnt + 1));
-			Cell gReasonUnder = worksheet.getCells().get("G" + (38 - deleteCnt + 1));
-			Cell hReasonUnder = worksheet.getCells().get("H" + (38 - deleteCnt + 1));
-			Cell iReasonUnder = worksheet.getCells().get("I" + (38 - deleteCnt + 1));
-			Cell jReasonUnder = worksheet.getCells().get("J" + (38 - deleteCnt + 1));
-			Cell kReasonUnder = worksheet.getCells().get("K" + (38 - deleteCnt + 1));
+			Cell bReasonUnder = worksheet.getCells().get("B" + (41 - deleteCnt + 1));
+			Cell cReasonUnder = worksheet.getCells().get("C" + (41 - deleteCnt + 1));
+			Cell dReasonUnder = worksheet.getCells().get("D" + (41 - deleteCnt + 1));
+			Cell eReasonUnder = worksheet.getCells().get("E" + (41 - deleteCnt + 1));
+			Cell fReasonUnder = worksheet.getCells().get("F" + (41 - deleteCnt + 1));
+			Cell gReasonUnder = worksheet.getCells().get("G" + (41 - deleteCnt + 1));
+			Cell hReasonUnder = worksheet.getCells().get("H" + (41 - deleteCnt + 1));
+			Cell iReasonUnder = worksheet.getCells().get("I" + (41 - deleteCnt + 1));
+			Cell jReasonUnder = worksheet.getCells().get("J" + (41 - deleteCnt + 1));
+			Cell kReasonUnder = worksheet.getCells().get("K" + (41 - deleteCnt + 1));
 
 			Style bReasonUnderStyle = bReasonUnder.getStyle();
 			Style cReasonUnderStyle = cReasonUnder.getStyle();
@@ -1140,10 +1141,10 @@ public class AsposeAppStamp {
 			kReasonUnder.setStyle(kReasonUnderStyle);
 
 			// before remark
-			Cell bRemark = worksheet.getCells().get("B" + (38 - deleteCnt + 2));
-			Cell cRemark = worksheet.getCells().get("C" + (38 - deleteCnt + 2));
-			Cell dRemark = worksheet.getCells().get("D" + (38 - deleteCnt + 2));
-			Cell kRemark = worksheet.getCells().get("K" + (38 - deleteCnt + 2));
+			Cell bRemark = worksheet.getCells().get("B" + (41 - deleteCnt + 2));
+			Cell cRemark = worksheet.getCells().get("C" + (41 - deleteCnt + 2));
+			Cell dRemark = worksheet.getCells().get("D" + (41 - deleteCnt + 2));
+			Cell kRemark = worksheet.getCells().get("K" + (41 - deleteCnt + 2));
 
 			Style bRemarkStyle = bRemark.getStyle();
 			Style cRemarkStyle = cRemark.getStyle();
@@ -1163,30 +1164,30 @@ public class AsposeAppStamp {
 			kRemark.setStyle(kRemarkStyle);
 
 			// remark
-			Cell bRemarkLabel = cells.get("B" + (38 - deleteCnt + 3));
-			Cell cRemarkLabel = cells.get("C" + (38 - deleteCnt + 3));
-			Cell dRemarkLabel = cells.get("D" + (38 - deleteCnt + 3));
-			Cell kRemarkLabel = cells.get("K" + (38 - deleteCnt + 3));
+			Cell bRemarkLabel = cells.get("B" + (41 - deleteCnt + 3));
+			Cell cRemarkLabel = cells.get("C" + (41 - deleteCnt + 3));
+			Cell dRemarkLabel = cells.get("D" + (41 - deleteCnt + 3));
+			Cell kRemarkLabel = cells.get("K" + (41 - deleteCnt + 3));
 
 			bRemarkLabel.setStyle(bReasonLabelStyle);
 			cRemarkLabel.setStyle(cReasonLabelStyle);
 			dRemarkLabel.setStyle(dReasonLabelStyle);
 			kRemarkLabel.setStyle(kReasonLabelStyle);
 
-			cells.merge(38 - deleteCnt + 2, 1, 1, 2);
-			cells.merge(38 - deleteCnt + 2, 3, 1, 8);
+			cells.merge(41 - deleteCnt + 2, 1, 1, 2);
+			cells.merge(41 - deleteCnt + 2, 3, 1, 8);
 
 			// under remark
-			Cell bRemarkUnder = worksheet.getCells().get("B" + (38 - deleteCnt + 4));
-			Cell cRemarkUnder = worksheet.getCells().get("C" + (38 - deleteCnt + 4));
-			Cell dRemarkUnder = worksheet.getCells().get("D" + (38 - deleteCnt + 4));
-			Cell eRemarkUnder = worksheet.getCells().get("E" + (38 - deleteCnt + 4));
-			Cell fRemarkUnder = worksheet.getCells().get("F" + (38 - deleteCnt + 4));
-			Cell gRemarkUnder = worksheet.getCells().get("G" + (38 - deleteCnt + 4));
-			Cell hRemarkUnder = worksheet.getCells().get("H" + (38 - deleteCnt + 4));
-			Cell iRemarkUnder = worksheet.getCells().get("I" + (38 - deleteCnt + 4));
-			Cell jRemarkUnder = worksheet.getCells().get("J" + (38 - deleteCnt + 4));
-			Cell kRemarkUnder = worksheet.getCells().get("K" + (38 - deleteCnt + 4));
+			Cell bRemarkUnder = worksheet.getCells().get("B" + (41 - deleteCnt + 4));
+			Cell cRemarkUnder = worksheet.getCells().get("C" + (41 - deleteCnt + 4));
+			Cell dRemarkUnder = worksheet.getCells().get("D" + (41 - deleteCnt + 4));
+			Cell eRemarkUnder = worksheet.getCells().get("E" + (41 - deleteCnt + 4));
+			Cell fRemarkUnder = worksheet.getCells().get("F" + (41 - deleteCnt + 4));
+			Cell gRemarkUnder = worksheet.getCells().get("G" + (41 - deleteCnt + 4));
+			Cell hRemarkUnder = worksheet.getCells().get("H" + (41 - deleteCnt + 4));
+			Cell iRemarkUnder = worksheet.getCells().get("I" + (41 - deleteCnt + 4));
+			Cell jRemarkUnder = worksheet.getCells().get("J" + (41 - deleteCnt + 4));
+			Cell kRemarkUnder = worksheet.getCells().get("K" + (41 - deleteCnt + 4));
 
 			bRemarkUnder.setStyle(bReasonUnderStyle);
 			cRemarkUnder.setStyle(cReasonUnderStyle);
@@ -1200,9 +1201,9 @@ public class AsposeAppStamp {
 			kRemarkUnder.setStyle(kReasonUnderStyle);
 
 			// print bottom
-			Cell reasonLabel = worksheet.getCells().get("B" + (38 - deleteCnt));
-			Cell remarkLabel = worksheet.getCells().get("B" + (41 - deleteCnt));
-			Cell reasonContent = worksheet.getCells().get("D" + (38 - deleteCnt));
+			Cell reasonLabel = worksheet.getCells().get("B" + (41 - deleteCnt));
+			Cell remarkLabel = worksheet.getCells().get("B" + (44 - deleteCnt));
+			Cell reasonContent = worksheet.getCells().get("D" + (41 - deleteCnt));
 
 			this.printBottomKAF002(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 		}
