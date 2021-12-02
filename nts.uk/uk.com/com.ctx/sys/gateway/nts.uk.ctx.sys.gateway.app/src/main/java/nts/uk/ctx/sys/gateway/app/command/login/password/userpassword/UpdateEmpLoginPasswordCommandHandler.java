@@ -1,17 +1,22 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password.userpassword;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BundledBusinessException;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.ChangeLoginPasswordOfUser;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
 /**
@@ -43,16 +48,24 @@ public class UpdateEmpLoginPasswordCommandHandler extends CommandHandler<UpdateE
 	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateEmpLoginPasswordCommand> context) {
-		
-		val require = requireProvider.create();
-		val command = context.getCommand();
-		
-		Optional<User> userOpt = userRepo.getByAssociatedPersonId(command.getPersonId());
-		
-		if (userOpt.isPresent()) {
-			val atomTask = ChangeLoginPasswordOfUser.change(require, userOpt.get().getUserID(), command.getPassword());
+		try {
+			val require = requireProvider.create();
+			val command = context.getCommand();
 			
-			transaction.execute(atomTask);
+			Optional<User> userOpt = userRepo.getByAssociatedPersonId(command.getPersonId());
+			
+			if (userOpt.isPresent()) {
+				val atomTask = ChangeLoginPasswordOfUser.change(require, userOpt.get().getUserID(), command.getPassword());
+				
+				transaction.execute(atomTask);
+			}
+		} catch(BundledBusinessException bundledEx) {
+			List<BusinessException> exList = bundledEx.cloneExceptions();
+			if (exList.size() > 1) {
+				throw bundledEx;
+			} else if (exList.size() > 0) {
+				throw exList.get(0);
+			}
 		}
 	}
 	
