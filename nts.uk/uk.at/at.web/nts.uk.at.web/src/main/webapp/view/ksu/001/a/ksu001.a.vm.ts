@@ -3203,7 +3203,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let listMaxNumberPeopleEmp: Array<any> = [];
                     let lengthEmp = 0;
                     _.forEach(employment, item => {
-                        if (item.numberPeople.length > length) {
+                        if (item.numberPeople.length > lengthEmp) {
                             lengthEmp = item.numberPeople.length;
                             listMaxNumberPeopleEmp = item.numberPeople;
                         }
@@ -3275,7 +3275,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let listMaxNumberPeopleCls: Array<any> = [];
                     let lengthCls = 0;
                     _.forEach(classification, item => {
-                        if (item.numberPeople.length > length) {
+                        if (item.numberPeople.length > lengthCls) {
                             lengthCls = item.numberPeople.length;
                             listMaxNumberPeopleCls = item.numberPeople;
                         }
@@ -3349,7 +3349,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let listMaxNumberPeoplePos: Array<any> = [];
                     let lengthPos = 0;
                     _.forEach(jobTitleInfo, item => {
-                        if (item.numberPeople.length > length) {
+                        if (item.numberPeople.length > lengthPos) {
                             lengthPos = item.numberPeople.length;
                             listMaxNumberPeoplePos = item.numberPeople;
                         }
