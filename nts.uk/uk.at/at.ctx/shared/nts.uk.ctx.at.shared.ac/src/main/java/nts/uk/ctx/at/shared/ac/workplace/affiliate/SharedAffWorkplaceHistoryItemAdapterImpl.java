@@ -23,8 +23,7 @@ public class SharedAffWorkplaceHistoryItemAdapterImpl implements SharedAffWorkpl
                         x.getHistoryId(),
                         x.getEmployeeId(),
                         x.getWorkplaceId(),
-                        x.getNormalWorkplaceId(),
-                        x.getWorkLocationCode()
+                        x.getNormalWorkplaceId()
                 )).collect(Collectors.toList());
     }
 }
