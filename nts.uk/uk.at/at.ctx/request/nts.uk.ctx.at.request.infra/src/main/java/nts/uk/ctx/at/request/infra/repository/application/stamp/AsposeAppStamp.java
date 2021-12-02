@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampApp;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -351,9 +353,9 @@ public class AsposeAppStamp {
 					}
 					
 					if (appStampOutputOp.get().getAppStampReflectOptional().get().getSupportReflectAtr().isUse()
-							&& appStampOutputOp.get().isUseCheering() && destTimeApp.getSupportWorkNo().isPresent()
-							&& destTimeApp.getSupportWorkNo().get().v() <= appStampOutputOp.get().getMaxOfCheer()) {
-						String value = supportTimes.get(destTimeApp.getSupportWorkNo().get().v());
+							&& appStampOutputOp.get().isUseCheering()
+							&& destTimeApp.getSupportWorkNo().map(WorkNo::v).orElse(0) <= appStampOutputOp.get().getMaxOfCheer()) {
+						String value = supportTimes.get(destTimeApp.getEngraveFrameNo());
 						if (destTimeApp.getTimeStampAppEnum().equals(TimeStampAppEnum.CHEERING)) {
 							if (destTimeApp.getStartEndClassification().equals(StartEndClassification.START) ) {
 								value = timeStampApp.getTimeOfDay().getFullText() + HALF_WIDTH_SPACE + "～"
@@ -361,7 +363,7 @@ public class AsposeAppStamp {
 							} else {
 								value += timeStampApp.getTimeOfDay().getFullText();
 							}
-							supportTimes.put(destTimeApp.getSupportWorkNo().get().v(), value);
+							supportTimes.put(destTimeApp.getEngraveFrameNo(), value);
 						}
 					}
 				}
@@ -640,7 +642,7 @@ public class AsposeAppStamp {
 
 			// Copy cells
 			try {
-				for (int i = 8; i <= 35; i++) {
+				for (int i = 8; i <= 38; i++) {
 					cells.copyRow(cells, 7, i);
 				}
 			} catch (Exception e) {
@@ -707,7 +709,7 @@ public class AsposeAppStamp {
 			Cell cellB36 = cells.get("B36");
 			Cell cellD36 = cells.get("D36");
 			
-			for (Entry<Integer, String> entry: supportTimes.entrySet()) {
+			for (Entry<Integer, String> entry: new TreeMap<>(supportTimes).descendingMap().entrySet()) {
 				int index = entry.getKey() - 1;
 				if (!entry.getValue().equals(EMPTY)) {
 					String value = I18NText.getText("KAF002_86", String.valueOf(entry.getKey()));

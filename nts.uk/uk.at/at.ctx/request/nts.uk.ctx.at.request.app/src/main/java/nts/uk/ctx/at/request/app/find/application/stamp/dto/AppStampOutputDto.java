@@ -39,16 +39,16 @@ public class AppStampOutputDto {
 	public Boolean useTemporary;
 
 //  場所名
-	private List<WorkLocationNameImported> workLocationNames;
+	public List<WorkLocationNameImported> workLocationNames;
 	
 //  職場名
-	private List<WorkplaceNameImported> workplaceNames;
+	public List<WorkplaceNameImported> workplaceNames;
 	
 // 応援を利用する
-	private boolean useCheering;
+	public Boolean useCheering;
 
 // 最大応援回数
-	private int maxOfCheer;
+	public Integer maxOfCheer;
 
 	public static AppStampOutputDto fromDomain(AppStampOutput appStampOutput) {
 		return new AppStampOutputDto(

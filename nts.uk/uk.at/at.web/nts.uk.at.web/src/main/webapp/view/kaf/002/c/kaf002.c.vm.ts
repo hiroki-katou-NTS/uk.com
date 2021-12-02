@@ -392,7 +392,21 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                    element.flagObservable(true);
                }
            }
-       }
+        } else if (type === STAMPTYPE.CHEERING) {
+          if (!_.isEmpty(timeStampAppDto)) {
+            const items = _.filter(timeStampAppDto, data => data.destinationTimeApp.engraveFrameNo === element.id);
+            _.forEach(items, data => {
+              if (data.appStampGoOutAtr) {
+                element.typeReason = String(data.appStampGoOutAtr);
+              }
+              if (data.destinationTimeApp.startEndClassification === 0) {
+                element.startTimeRequest(data.timeOfDay);
+              } else if (data.destinationTimeApp.startEndClassification === 1) {
+                element.endTimeRequest(data.timeOfDay);
+              }
+            });
+          }
+        }
         
     }
     bindActualData() {
@@ -552,7 +566,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
           let list = [];
           for (let i = 1; i <= 3; i++) {
               let dataObject = new TimePlaceOutput(i);
-              list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));
+              const gridItem = new GridItem(dataObject, STAMPTYPE.CHEERING);
+              self.bindDataRequest(gridItem, STAMPTYPE.CHEERING);
+              list.push(gridItem);
           }
           
           return list;

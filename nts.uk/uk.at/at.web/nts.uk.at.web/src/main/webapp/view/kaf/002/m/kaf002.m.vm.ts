@@ -652,7 +652,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         ntsControl: 'Button_WorkPlace', hidden: self.kaf002Data.appStampSetting.wkpDisAtr == 0,
                     },
                     {
-                        headerText: self.$i18n('KAF002_82'), key: 'workLocaitonCD', dataType: 'string', width: 230,
+                        headerText: self.$i18n('KAF002_82'), key: 'workLocationCD', dataType: 'string', width: 230,
                         ntsControl: 'Button_WorkLocation', hidden: self.kaf002Data.appStampSetting.useLocationSelection == 0,
                     },
                     { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: 100 }
