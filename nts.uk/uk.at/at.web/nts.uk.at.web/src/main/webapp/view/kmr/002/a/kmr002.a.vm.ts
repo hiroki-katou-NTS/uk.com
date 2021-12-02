@@ -9,12 +9,7 @@ module nts.uk.at.view.kmr002.a.model {
     import block = nts.uk.ui.block;
     import service = nts.uk.at.view.kmr002.a.service;
     export class ScreenModel {
-		modeFuture: KnockoutObservable<boolean> = ko.pureComputed(() => {
-			if(moment(this.date()).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
-				return false;
-			}
-			return true;
-		});
+		modeFuture: KnockoutObservable<boolean> = ko.observable(true);
 		date: KnockoutObservable<any> = ko.observable(moment(new Date()).format("YYYY/MM/DD"));
 		frameOption: KnockoutObservableArray<any> = ko.observableArray([]);
 		currentFrameNo: KnockoutObservable<number> = ko.observable(null);
@@ -115,7 +110,15 @@ module nts.uk.at.view.kmr002.a.model {
             let self = this,
                 dfd = $.Deferred<any>();
 			self.date.subscribe((value) => {
-				self.getData();	
+				if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
+					self.modeFuture(false);
+				} else {
+					self.modeFuture(true);
+				}
+				if(!self.modeFuture()) {
+					error({ messageId: 'Msg_2283' });	
+				}
+				self.getData();
 			});
 			dfd.resolve();
             return dfd.promise();
