@@ -149,6 +149,7 @@ class KDP002BViewModel extends ko.ViewModel {
                     $('#close-button').focus();
                 });
             }
+            vm.settingSizeView();
         }, 300);
 
         vm.showBtnNoti.subscribe(() => {
@@ -159,14 +160,11 @@ class KDP002BViewModel extends ko.ViewModel {
             vm.settingSizeView();
         });
 
-        setTimeout(() => {
-            if (vm.modeNikoNiko) {
-                if (ko.unwrap(vm.resultDisplayTime) == 0) {
-                    vm.modeZeroTime(false);
-                    vm.$window.size(500, 470);
-                }
+        if (vm.modeNikoNiko) {
+            if (ko.unwrap(vm.resultDisplayTime) == 0) {
+                vm.modeZeroTime(false);
             }
-        }, 50);
+        }
 
         vm.showBtnNoti.valueHasMutated();
     }
@@ -195,9 +193,17 @@ class KDP002BViewModel extends ko.ViewModel {
         if (!ko.unwrap(vm.showBtnNoti)) {
             if (!ko.unwrap(vm.modeNikoNiko)) {
                 if (vm.workPlace() != "") {
-                    vm.$window.size(555, 470);
+                    if (ko.unwrap(vm.modeZeroTime)) {
+                        vm.$window.size(555, 470);
+                    }else {
+                        vm.$window.size(525, 470);
+                    }
                 } else {
-                    vm.$window.size(530, 470);
+                    if (ko.unwrap(vm.modeZeroTime)) {
+                        vm.$window.size(530, 470);
+                    }else {
+                        vm.$window.size(500, 470);
+                    }
                 }
             } else {
                 if (vm.workPlace() != "") {
