@@ -530,12 +530,12 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
 
     private void setValue(Cells cells, int row, int col, String value) {
         cells.get(row, col).setValue(value);
-        if (value != null && !value.contains("(") && !value.contains("[") &&
-                !value.contains(TextResource.localize("KDR003_120"))) {
-            Style style = cells.get(row, col).getStyle();
-            style.setHorizontalAlignment(TextAlignmentType.CENTER);
-            cells.get(row, col).setStyle(style);
-        }
+//        if (value != null && !value.contains("(") && !value.contains("[") &&
+//                !value.contains(TextResource.localize("KDR003_120"))) {
+//            Style style = cells.get(row, col).getStyle();
+//            style.setHorizontalAlignment(TextAlignmentType.CENTER);
+//            cells.get(row, col).setStyle(style);
+//        }
     }
 
     private int checkPageBreakEndPage(Worksheet sheet, Cells cells, List<Integer> wkpIndexes, List<Integer> empIndexes, int currentRow) {
