@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavori
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDaySetItem;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDaySetTs;
 import nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset.KrcdtTaskFavDaySetItemPk;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -211,26 +212,17 @@ public class JpaOneDayFavoriteTaskSetRepository extends JpaRepository implements
 
 			for (KrcdtTaskFavDaySetItem i : ts.krcdtTaskFavDaySetItemList) {
 
-				TaskContentForEachSupportFrame frame1 = new TaskContentForEachSupportFrame(
-						new SupportFrameNo(i.pk.supTaskNo), new TaskContent(4, new WorkCode(i.taskCd1)));
+				List<TaskContent> taskContentList = new ArrayList<>();
+				taskContentList.add(new TaskContent(4, new WorkCode(i.taskCd1)));
+				taskContentList.add(new TaskContent(5, new WorkCode(i.taskCd2)));
+				taskContentList.add(new TaskContent(6, new WorkCode(i.taskCd3)));
+				taskContentList.add(new TaskContent(7, new WorkCode(i.taskCd4)));
+				taskContentList.add(new TaskContent(8, new WorkCode(i.taskCd5)));
+				
+				TaskContentForEachSupportFrame frame = new TaskContentForEachSupportFrame(
+						new SupportFrameNo(i.pk.supTaskNo), taskContentList, Optional.of(new AttendanceTime(i.taskTime)));
 
-				TaskContentForEachSupportFrame frame2 = new TaskContentForEachSupportFrame(
-						new SupportFrameNo(i.pk.supTaskNo), new TaskContent(5, new WorkCode(i.taskCd2)));
-
-				TaskContentForEachSupportFrame frame3 = new TaskContentForEachSupportFrame(
-						new SupportFrameNo(i.pk.supTaskNo), new TaskContent(6, new WorkCode(i.taskCd3)));
-
-				TaskContentForEachSupportFrame frame4 = new TaskContentForEachSupportFrame(
-						new SupportFrameNo(i.pk.supTaskNo), new TaskContent(7, new WorkCode(i.taskCd4)));
-
-				TaskContentForEachSupportFrame frame5 = new TaskContentForEachSupportFrame(
-						new SupportFrameNo(i.pk.supTaskNo), new TaskContent(8, new WorkCode(i.taskCd5)));
-
-				taskContents.add(frame1);
-				taskContents.add(frame2);
-				taskContents.add(frame3);
-				taskContents.add(frame4);
-				taskContents.add(frame5);
+				taskContents.add(frame);
 			}
 
 			TaskBlockDetailContent block = new TaskBlockDetailContent(new TimeWithDayAttr(ts.pk.startClock),
