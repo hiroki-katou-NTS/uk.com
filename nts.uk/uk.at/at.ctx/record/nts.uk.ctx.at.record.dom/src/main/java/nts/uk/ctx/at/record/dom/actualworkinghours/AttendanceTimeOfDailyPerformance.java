@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -132,7 +131,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 */
 	public static IntegrationOfDaily calcTimeResult(
 			VacationClass vacation, WorkType workType,
-			Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet,
+			Optional<SettingOfFlexWork> flexCalcMethod,
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			List<DivergenceTimeRoot> divergenceTimeList,
 			CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
@@ -158,7 +157,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																   workType, 
 																   vacation, 
 																   flexCalcMethod, 
-																   bonusPayAutoCalcSet, 
 																   eachCompanyTimeSet, 
 																   scheduleReGetClass,
 																   conditionItem, 
@@ -187,7 +185,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			calcResult = Optional.of(collectCalculationResult(vacation,
 															  workType,
 															  flexCalcMethod,
-															  bonusPayAutoCalcSet,
 															  eachCompanyTimeSet,
 															  forCalcDivergenceDto,
 															  divergenceTimeList,
@@ -435,14 +432,14 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 * @return　計算結果
 	 */
 	public static AttendanceTimeOfDailyPerformance calcTimeResultForContinusWork(ManageReGetClass recordReGetClass, WorkType workType, 
-			VacationClass vacation, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, 
+			VacationClass vacation, Optional<SettingOfFlexWork> flexCalcMethod, 
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, ManageReGetClass scheduleReGetClass, WorkingConditionItem conditionItem, 
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, 
 			Optional<WorkTimeCode> recordWorkTimeCode){
 		
 		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 												   vacation, 
-												   flexCalcMethod, bonusPayAutoCalcSet, 
+												   flexCalcMethod,
 												   eachCompanyTimeSet, scheduleReGetClass,conditionItem,
 												   predetermineTimeSetByPersonInfo,recordWorkTimeCode);
 		
@@ -472,7 +469,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 	 */
 	private static AttendanceTimeOfDailyPerformance collectCalculationResult(
 				VacationClass vacation, WorkType workType,
-				Optional<SettingOfFlexWork> flexCalcMethod,BonusPayAutoCalcSet bonusPayAutoCalcSet,
+				Optional<SettingOfFlexWork> flexCalcMethod,
 				List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 				DailyRecordToAttendanceItemConverter forCalcDivergenceDto, List<DivergenceTimeRoot> divergenceTimeList,
 				CalculateOfTotalConstraintTime calculateOfTotalConstraintTime, ManageReGetClass scheduleReGetClass,
@@ -485,7 +482,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 		/*日別実績の勤務予定時間の計算*/
 		val workScheduleTime = calcWorkSheduleTime(recordReGetClass, workType, 
 													vacation, 
-												   flexCalcMethod, bonusPayAutoCalcSet, 
+												    flexCalcMethod,
 												    eachCompanyTimeSet, scheduleReGetClass,conditionItem,
 												    predetermineTimeSetByPersonInfo,
 												    recordWorkTimeCode);
@@ -499,7 +496,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 			    workType,
 			    workDailyAtr,
 			    flexCalcMethod,
-				bonusPayAutoCalcSet,
 				eachCompanyTimeSet,
 				forCalcDivergenceDto,
 				divergenceTimeList,
@@ -598,7 +594,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 															   WorkType workType, 
 															   VacationClass vacationClass, 
 															   Optional<SettingOfFlexWork> flexCalcMethod,
-															   BonusPayAutoCalcSet bonusPayAutoCalcSet, 
 															   List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 															   ManageReGetClass scheRegetManage
 															   ,WorkingConditionItem conditionItem,
@@ -629,7 +624,6 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 																   scheRegetManage.getWorkType().get(), 
 																   workDailyAtr, //就業時間帯依存
 																   flexCalcMethod, //詳細が決まってなさそう(2018.6.21)
-																   bonusPayAutoCalcSet, //会社共通
 																   eachCompanyTimeSet, //会社共通 
 																   conditionItem,
 																   predetermineTimeSetByPersonInfo,
