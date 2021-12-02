@@ -72,3 +72,16 @@ input {
 .tabs-content {
 	padding-bottom: 8px !important;
 }
+.btn_workplace .nts-button-container,
+.btn_worklocation .nts-button-container {
+	min-width: 75px;
+}
+.btn_workplace > div,
+.btn_worklocation > div {
+	display: flex;
+}
+.btn_workplace > div > div,
+.btn_worklocation > div > div {
+	white-space: nowrap;
+}
+

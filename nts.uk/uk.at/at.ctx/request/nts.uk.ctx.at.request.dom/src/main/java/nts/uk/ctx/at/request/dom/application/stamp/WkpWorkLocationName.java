@@ -4,6 +4,8 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkLocationNameImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkplaceNameImported;
 
 /**
  * Workplace and work location name
@@ -15,9 +17,9 @@ import lombok.NoArgsConstructor;
 public class WkpWorkLocationName {
 
 	/** The work location names. */
-	private List<String> workLocationNames;
+	private List<WorkLocationNameImported> workLocationNames;
 
 	/** The workplace names. */
-	private List<String> workplaceNames;
+	private List<WorkplaceNameImported> workplaceNames;
 
 }

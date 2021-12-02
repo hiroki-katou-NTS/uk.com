@@ -7,6 +7,8 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkLocationNameImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkplaceNameImported;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
@@ -45,10 +47,10 @@ public class AppStampOutput {
 	private Optional<Boolean> useTemporary = Optional.empty();
 
 //  場所名
-	private List<String> workLocationNames;
+	private List<WorkLocationNameImported> workLocationNames;
 	
 //  職場名
-	private List<String> workplaceNames;
+	private List<WorkplaceNameImported> workplaceNames;
 	
 // 応援を利用する
 	private boolean useCheering;

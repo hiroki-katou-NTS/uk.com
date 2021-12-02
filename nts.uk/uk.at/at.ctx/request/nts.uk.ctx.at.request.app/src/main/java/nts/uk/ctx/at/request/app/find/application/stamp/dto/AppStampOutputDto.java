@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkLocationNameImported;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkplaceNameImported;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 
 @AllArgsConstructor
@@ -37,10 +39,10 @@ public class AppStampOutputDto {
 	public Boolean useTemporary;
 
 //  場所名
-	private List<String> workLocationNames;
+	private List<WorkLocationNameImported> workLocationNames;
 	
 //  職場名
-	private List<String> workplaceNames;
+	private List<WorkplaceNameImported> workplaceNames;
 	
 // 応援を利用する
 	private boolean useCheering;

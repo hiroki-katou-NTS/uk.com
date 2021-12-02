@@ -79,12 +79,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
 
         appDate: KnockoutObservable<any>;
+        kaf002Data: any;
 
         created(params: any) {
 
             const self = this;
 
             self.appDate = params.appDate;
+            self.kaf002Data = params.kaf002Data;
 			const comment1 = params.comment1 as KnockoutObservable<Comment>;
 			self.comment1(ko.unwrap(comment1));
 			comment1.subscribe((comment) => {
@@ -559,23 +561,25 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
             } else if (type === STAMPTYPE.ATTENDENCE) {
                 if ($('#' + id).length) {
-                    $('#' + id).ntsGrid(self.getAttendanceGrid(isChrome, dataSource, headerFlagContent, statesTable));
+                    $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
                 }
             } else if (type === STAMPTYPE.CHEERING) {
                 if ($('#' + id).length) {
-                    $('#' + id).ntsGrid(self.getAttendanceGrid(isChrome, dataSource, headerFlagContent, statesTable));
+                    $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
                     
-                    const $expandRow = $('<tr id="trLinkCheer">');
-                    const $firstCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">');
-                    const $secondCol = $('<td colspan="5">');
-                    const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
-                    const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline">${self.$i18n('KAF002_85', ['0'])}</a>`)
-                    $secondCol__div__link.click(() => self.doSomething(self.dataSource[items[0].index]));
-                    $secondCol__div.append($secondCol__div__link);
-                    $secondCol.append($secondCol__div);
-                    $expandRow.append($firstCol);
-                    $expandRow.append($secondCol);
-                    $('#' + id).append($expandRow);
+                    if (self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3) {
+                        const $expandRow = $('<tr id="trLinkCheer">');
+                        const $firstCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">');
+                        const $secondCol = $('<td colspan="5">');
+                        const $secondCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">');
+                        const $secondCol__div__link = $(`<a style="color: blue; text-decoration: underline">${self.$i18n('KAF002_85', [self.kaf002Data.maxOfCheer])}</a>`)
+                        $secondCol__div__link.click(() => self.doSomething(self.dataSource[items[0].index]));
+                        $secondCol__div.append($secondCol__div__link);
+                        $secondCol.append($secondCol__div);
+                        $expandRow.append($firstCol);
+                        $expandRow.append($secondCol);
+                        $('#' + id).append($expandRow);
+                    }
                 }
             } else {
                 if ($('#' + id).length) {
@@ -627,10 +631,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         }
 
-        private getAttendanceGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
+        private getAtdOrCheeringGrid(isChrome: boolean, dataSource: any, headerFlagContent: any, statesTable: any) {
             const self = this;
             let options = {
-                width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '880px' : '980px',
                 height: isChrome ? (ko.toJS(self.isPreAtr) ? '310px' : '340px') : (ko.toJS(self.isPreAtr) ? '310px' : '340px'),
                 dataSource: dataSource,
                 primaryKey: 'id',
@@ -639,11 +642,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 hidePrimaryKey: true,
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'number', width: 0, hidden: true },
+                    { headerText: '', key: 'index', dataType: 'number', hidden: true }, 
+                    { headerText: '', key: 'idGetList', dataType: 'number', hidden: true },
                     { headerText: '', key: 'text1', dataType: 'string', width: 120 },
                     { headerText: self.$i18n('KAF002_22'), key: 'startTime', dataType: 'string', width: 140 },
                     { headerText: self.$i18n('KAF002_23'), key: 'endTime', dataType: 'string', width: 140 },
-                    { headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: 230, ntsControl: 'Button_WorkPlace' },
-                    { headerText: self.$i18n('KAF002_82'), key: 'workLocaiton', dataType: 'string', width: 230, ntsControl: 'Button_WorkLocation' },
+                    {
+                        headerText: self.$i18n('KAF002_81'), key: 'workplaceId', dataType: 'string', width: 230,
+                        ntsControl: 'Button_WorkPlace', hidden: self.kaf002Data.appStampSetting.wkpDisAtr == 0,
+                    },
+                    {
+                        headerText: self.$i18n('KAF002_82'), key: 'workLocaitonCD', dataType: 'string', width: 230,
+                        ntsControl: 'Button_WorkLocation', hidden: self.kaf002Data.appStampSetting.useLocationSelection == 0,
+                    },
                     { headerText: headerFlagContent, key: 'flag', dataType: 'string', width: 100 }
                 ],
                 features: [
@@ -687,19 +698,34 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                             const inputCDL008: any = {
                                 startMode: 0, // workplace
                                 isMultiple: false,
-                                showNoSelection: true,
-                                selectedCodes: '',
+                                showNoSelection: false,
+                                selectedCodes: data.workplaceId || '',
                                 isShowBaseDate: false,
-                                baseDate: _.isNil(self.appDate())
-                                    ? moment.utc().toISOString()
-                                    : moment.utc(self.appDate(), 'YYYY/MM/DD').toISOString(),
+                                baseDate: _.isNil(self.appDate()) || _.isEmpty(self.appDate())
+                                    ? moment.utc().toDate()
+                                    : moment.utc(self.appDate(), 'YYYY/MM/DD').toDate(),
                                 selectedSystemType: 2, //employment
                                 isrestrictionOfReferenceRange: false
                             };
                             nts.uk.ui.windows.setShared('inputCDL008', inputCDL008);
 
                             nts.uk.ui.windows.sub.modal("com", "/view/cdl/008/a/index.xhtml").onClosed(() => {
-                                
+                                const isCancel = nts.uk.ui.windows.getShared('CDL008Cancel');
+                                if (isCancel) return;
+
+                                const selected = nts.uk.ui.windows.getShared('outputCDL008');
+                                data.workplaceId = selected;
+                                self.dataSource[data.index][data.idGetList].workplaceId = selected;
+
+                                const selectedInfor = nts.uk.ui.windows.getShared('workplaceInfor')
+                                const $selected = $(`<div>${selectedInfor[0].displayName}</div>`);
+                                if (self.selectedTab() == 'tab-1') {
+                                    $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                }
+                                if (self.selectedTab() == 'tab-6') {
+                                    $('#grid6_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                }
+
                             });
                         },
                         controlType: 'Button'
@@ -710,7 +736,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         click: function(data: any) {
                             nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', '');
                             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-
+                                const returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                                const workLocationCD = returnWorkLocationCD !== undefined? returnWorkLocationCD : "";
+                                data.workLocationCD = workLocationCD;
+                                self.dataSource[data.index][data.idGetList].workLocationCD = workLocationCD;
                             });
                         },
                         controlType: 'Button'
@@ -728,7 +757,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
     export class GridItem {
         id: number;
-        flag: string;
+        flag: any;
         startTimeRequest: KnockoutObservable<number> = ko.observable(null);
         endTimeRequest: KnockoutObservable<number> = ko.observable(null);
         startTimeActual: number;
@@ -743,11 +772,17 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         nameStart: string;
         nameEnd: string;
         workplace: string;
+        workplaceId: string;
         workLocation: string;
+        workLocationCD: string;
+        idGetList: number;
 
         typeStamp: STAMPTYPE;
         constructor( dataObject: TimePlaceOutput, typeStamp: STAMPTYPE ) {
             const self = this;
+            self.workplaceId = dataObject.workplaceId;
+            self.workLocationCD = dataObject.opWorkLocationCD;
+
             self.typeStamp = typeStamp;
             self.id = dataObject.frameNo;
             self.typeReason = dataObject.opGoOutReasonAtr ? String(dataObject.opGoOutReasonAtr) : (STAMPTYPE.GOOUT_RETURNING == typeStamp ? '0' : null);
@@ -806,7 +841,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 this.text1 = nts.uk.resource.getText( 'KAF002_86', [dataObject.frameNo] );
 				this.nameStart = nts.uk.resource.getText('KAF002_99', [dataObject.frameNo]);
 				this.nameEnd = nts.uk.resource.getText('KAF002_100', [dataObject.frameNo]);
+                param = param + 7;
             }
+
             this.startTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + start + '</span>'
                 + '<div align="center">'
@@ -825,6 +862,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>';
 
             this.flag = '<div align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
+
+            self.idGetList = idGetList;
         }
 
 
@@ -836,6 +875,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             let param = 'dataSource[' + String(self.index) + ']';
 
             let idGetList = self.id - 1;
+            self.idGetList = idGetList;
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<span style="display: block; text-align: center">' + start + '</span>'
                 + '<div align="center">'
@@ -859,6 +899,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             let param = 'dataSource[' + String(self.index) + ']';
             let idGetList = self.id - 1;
+            self.idGetList = idGetList;
             self.flagObservable(false);
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
@@ -921,12 +962,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
         opStartTime: number;
 
+        workplaceId: string;
+
         constructor(index: number) {
             this.opWorkLocationCD = null;
             this.opGoOutReasonAtr = null;
             this.frameNo = index;
             this.opStartTime = null;
             this.opEndTime = null;
+            this.workplaceId= null;
         }
 
     }

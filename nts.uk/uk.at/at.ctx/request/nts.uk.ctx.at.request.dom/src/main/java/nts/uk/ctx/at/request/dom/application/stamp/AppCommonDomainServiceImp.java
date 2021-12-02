@@ -13,14 +13,6 @@ import java.util.stream.Stream;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
-import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
-
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.error.BusinessException;
@@ -31,8 +23,6 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.WorkLocationAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkLocationNameImported;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.WorkplaceNameImported;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -44,6 +34,13 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.MaximumNumberOfSupport;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSetting;
+import nts.uk.ctx.at.shared.dom.supportmanagement.supportoperationsetting.SupportOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
 
@@ -185,20 +182,14 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		// 職場名を取得する＝true　AND　職場ID（List）NOT　Empty
 		if (isGetWorkPlaceName && !workPlaceIds.isEmpty()) {
 			// 職場名を取得する
-			result.setWorkplaceNames(this.workplaceAdapter.findWkpInfo(workPlaceIds, baseDate)
-									     .stream()
-									     .map(WorkplaceNameImported::getWkpName)
-									     .collect(Collectors.toList()));
+			result.setWorkplaceNames(this.workplaceAdapter.findWkpInfo(workPlaceIds, baseDate));
 		}
 
 		// INPUT.「場所名を取得する」をチェックする
 		// 場所名を取得する＝true　AND　場所コード（List）NOT　Empty
 		if (isGetWorkLocationName && !workLocationCds.isEmpty()) {
 			// 場所名を取得する
-			result.setWorkLocationNames(this.workLocationAdapter.findWorkLocationName(workLocationCds)
-										    .stream()
-										    .map(WorkLocationNameImported::getWorkLocationName)
-										    .collect(Collectors.toList()));
+			result.setWorkLocationNames(this.workLocationAdapter.findWorkLocationName(workLocationCds));
 		}
 
 		return result;

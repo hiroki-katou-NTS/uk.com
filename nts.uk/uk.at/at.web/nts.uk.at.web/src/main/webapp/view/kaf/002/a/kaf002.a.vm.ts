@@ -666,7 +666,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 			let length = _.filter(self.dataSourceOb()[0], (i: GridItem) => i.typeStamp == STAMPTYPE.ATTENDENCE).length;
             _.forEach(self.dataSourceOb(), (items: GridItem, index) => {
 //                出勤／退勤 , 外出
-                if (index == 0 || index == 1) {                    
+                if (index == 0 || index == 1 || index == 5) {                    
                     _.forEach(items, (el: GridItem) => {                       
                         if (!ko.toJS(el.flagObservable)) {
                             if (!_.isNull(ko.toJS(el.startTimeRequest)) && ko.toJS(el.startTimeRequest) !== '') {
@@ -677,7 +677,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 destinationTimeApp.engraveFrameNo = (el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - length : el.id);
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
-                                timeStampAppDto.workLocationCd = null;
+                                timeStampAppDto.workLocationCd = el.workLocationCD;
+                                timeStampAppDto.wkpId = el.workplaceId;
                                 if (!_.isNull(el.typeReason)) {
                                     timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);                                    
                                 }
@@ -775,11 +776,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         public timeOfDay: number;
         public workLocationCd?: string;
         public appStampGoOutAtr?: number;
-        public TimeStampAppDto(destinationTimeApp: DestinationTimeAppDto, timeOfDay: number, workLocationCd?: string, appStampGoOutAtr?: number) {
+        public wkpId?: string;
+        public TimeStampAppDto(destinationTimeApp: DestinationTimeAppDto, timeOfDay: number, workLocationCd?: string, appStampGoOutAtr?: number, wkpId?: string) {
             this.destinationTimeApp = destinationTimeApp;
             this.timeOfDay = timeOfDay;
             this.workLocationCd = workLocationCd;
             this.appStampGoOutAtr = appStampGoOutAtr;
+            this.wkpId = wkpId;
         }        
     }
     export class DestinationTimeAppDto {
