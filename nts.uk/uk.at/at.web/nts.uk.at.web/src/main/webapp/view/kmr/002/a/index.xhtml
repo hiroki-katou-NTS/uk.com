@@ -39,7 +39,7 @@
 				<div class="table" style="margin-left: 15px; margin-bottom: 10px;">
 					<div class="cell">
 						<div data-bind="ntsSwitchButton: {
-									name: '#[KML001_72]',
+									name: '#[KMR002_18]',
 									options: frameOption,
 									optionsValue: 'frameNo',
 									optionsText: 'receptionHours.receptionName',
@@ -75,6 +75,7 @@
 										</div>
 										<div style="display: inline-block; vertical-align: middle;">
 											<input style="width: 25px;" data-bind="ntsNumberEditor: {
+												name: '#[KMR002_22]',
 												value: bentoCount,
 												constraint: 'BentoReservationCount',
 												enable: $parent.modeFuture() &amp;&amp; $parent.canOrder() }" />
