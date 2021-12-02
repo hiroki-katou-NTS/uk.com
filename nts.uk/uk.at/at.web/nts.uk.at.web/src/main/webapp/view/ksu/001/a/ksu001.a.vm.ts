@@ -792,7 +792,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (self.mode() == UpdateMode.DETERMINE){
 
             }
-            
             self.setDataWorkType(listWorkTypeInfo);
         }
         
