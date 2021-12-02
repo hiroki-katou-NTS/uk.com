@@ -220,7 +220,9 @@ module nts.uk.ui.at.kdw013 {
         // 応援勤務枠No
         frameNo: number;
         // 作業内容
-        taskContent: TaskContentDto;
+        taskContent: TaskContentDto[];
+		// 作業時間
+		attendanceTime: number;
     }
 
     export type OneDayFavoriteSetDto = {

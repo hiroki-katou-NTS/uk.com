@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.onedayfavoriteset;
 
+import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.record.dom.daily.ouen.SupportFrameNo;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.TaskContent;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * ValueObject: 応援枠ごとの作業内容
@@ -20,6 +24,9 @@ public class TaskContentForEachSupportFrame implements DomainValue{
 	private final SupportFrameNo frameNo;
 	
 	/** 作業内容*/
-	private final TaskContent taskContent;
+	private final List<TaskContent> taskContent;
+	
+	/** 作業時間*/
+	private final Optional<AttendanceTime> attendanceTime;
 }
  
