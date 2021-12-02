@@ -547,5 +547,10 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				WorkInfoOfDailyAttendance workInformation) {
 			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
 		}
+		
+		@Override
+		public Optional<WorkTimeSetting> getWorkTime(String cid, String workTimeCode) {
+			return workTimeSettingRepository.findByCode(cid, workTimeCode);
+		}
 	}
 }

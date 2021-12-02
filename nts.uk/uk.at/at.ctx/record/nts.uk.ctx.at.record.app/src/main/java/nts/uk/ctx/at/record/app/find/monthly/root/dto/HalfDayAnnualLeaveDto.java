@@ -24,12 +24,12 @@ public class HalfDayAnnualLeaveDto implements ItemConst, AttendanceItemDataGate 
 
 	/** 使用数 */
 	@AttendanceItemLayout(jpPropertyName = USAGE, layout = LAYOUT_B)
-	private HalfDayAnnLeaRemainingNumDto usedNum;
+	private HalfDayAnnLeaUsedNumDto usedNum;
 
 	public static HalfDayAnnualLeaveDto from(HalfDayAnnualLeave domain) {
 		return domain == null ? null : new HalfDayAnnualLeaveDto(
 						HalfDayAnnLeaRemainingNumDto.from(domain.getRemainingNum()),
-						HalfDayAnnLeaRemainingNumDto.from(domain.getUsedNum()));
+						HalfDayAnnLeaUsedNumDto.from(domain.getUsedNum()));
 	}
 
 	public HalfDayAnnualLeave toDomain() {
@@ -42,8 +42,9 @@ public class HalfDayAnnualLeaveDto implements ItemConst, AttendanceItemDataGate 
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
 		case REMAIN:
-		case USAGE:
 			return new HalfDayAnnLeaRemainingNumDto();
+		case USAGE:
+			return new HalfDayAnnLeaUsedNumDto();
 		default:
 			break;
 		}
@@ -69,7 +70,7 @@ public class HalfDayAnnualLeaveDto implements ItemConst, AttendanceItemDataGate 
 		case REMAIN:
 			remainingNum = (HalfDayAnnLeaRemainingNumDto) value; break;
 		case USAGE:
-			usedNum = (HalfDayAnnLeaRemainingNumDto) value; break;
+			usedNum = (HalfDayAnnLeaUsedNumDto) value; break;
 		default:
 			break;
 		}

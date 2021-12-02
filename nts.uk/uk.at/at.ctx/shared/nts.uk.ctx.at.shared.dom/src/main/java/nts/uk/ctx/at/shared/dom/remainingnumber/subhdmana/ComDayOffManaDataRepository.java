@@ -113,4 +113,5 @@ public interface ComDayOffManaDataRepository {
 	void deleteAfter(String sid, boolean unknownDateFlag, GeneralDate target);
 	
 	Optional<CompensatoryDayOffManaData> findBySidAndDate(String sid, GeneralDate date);
+
 }
