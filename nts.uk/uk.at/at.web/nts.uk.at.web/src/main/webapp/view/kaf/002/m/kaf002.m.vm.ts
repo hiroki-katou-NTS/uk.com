@@ -720,16 +720,23 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 if (isCancel) return;
 
                                 const selected = nts.uk.ui.windows.getShared('outputCDL008');
+                                if (data.workplaceId === selected) return;
                                 data.workplaceId = selected;
                                 self.dataSource[data.index][data.idGetList].workplaceId = selected;
 
                                 const selectedInfor = nts.uk.ui.windows.getShared('workplaceInfor')
-                                const $selected = $(`<div class="limited-label">${selectedInfor[0].displayName}</div>`);
+                                const $selected = $(`<div class="limited-label label-workplace-id">${selectedInfor[0].displayName}</div>`);
                                 if (self.selectedTab() == 'tab-1') {
-                                    $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    $('#grid1_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
+                                    if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+                                        $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    }
                                 }
                                 if (self.selectedTab() == 'tab-6') {
-                                    $('#grid6_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    $('#grid6_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
+                                    if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+                                        $('#grid6_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    }
                                 }
 
                             });
@@ -740,19 +747,27 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         name: 'Button_WorkLocation',
                         text: nts.uk.resource.getText('KAF002_84'),
                         click: function(data: any) {
-                            nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', '');
+                            nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', data.workLocationCD);
                             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                                 const returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                                const returnWorkLocationName = nts.uk.ui.windows.getShared("KDL010workLocationName");
                                 const workLocationCD = returnWorkLocationCD !== undefined? returnWorkLocationCD : "";
+                                if (data.workLocationCD === workLocationCD) return;
                                 data.workLocationCD = workLocationCD;
                                 self.dataSource[data.index][data.idGetList].workLocationCD = workLocationCD;
 
-                                const $selected = $(`<div class="limited-label">${workLocationCD}</div>`);
+                                const $selected = $(`<div class="limited-label label-work-location">${returnWorkLocationName}</div>`);
                                 if (self.selectedTab() == 'tab-1') {
-                                    $('#grid1_container .nts-grid-control-workLocaitonCD-' + data.id).append($selected);
+                                    $('#grid1_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
+                                    if (!_.isEmpty(data.workLocationCD)) {
+                                        $('#grid1_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    }
                                 }
                                 if (self.selectedTab() == 'tab-6') {
-                                    $('#grid6_container .nts-grid-control-workLocaitonCD-' + data.id).append($selected);
+                                    $('#grid6_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
+                                    if (!_.isEmpty(data.workLocationCD)) {
+                                        $('#grid6_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    }
                                 }
                             });
                         },
