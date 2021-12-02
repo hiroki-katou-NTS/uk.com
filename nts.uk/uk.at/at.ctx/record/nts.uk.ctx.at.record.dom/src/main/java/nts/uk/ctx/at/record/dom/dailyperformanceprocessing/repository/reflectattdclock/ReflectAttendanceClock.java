@@ -457,7 +457,7 @@ public class ReflectAttendanceClock {
 		}
 		
 		//反映済み区分をtrueにする (反映済み区分 = true)
-		stamp.setReflectedCategory(true);
+		stamp.getImprintReflectionStatus().markAsReflected(integrationOfDaily.getYmd());
 		return ReflectStampOuput.REFLECT;
 	}
 	
