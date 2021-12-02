@@ -142,6 +142,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             worksheet.setGridlinesVisible(false);
             this.printHeader(worksheet, dataSource, comment);
             this.printContent(worksheet, dataSource);
+            this.handlePageBreak(worksheet, dataSource);
             reportContext.processDesigner();
             if (preview) {
                 worksheet.getCells().get(startRow, 0).setValue(" ");
@@ -157,7 +158,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 workbook.save(ServerSystemProperties.fileStoragePath() + "\\" + fileName, options);
             } else {
                 this.settingPage(worksheet, dataSource);
-                this.handlePageBreak(worksheet, dataSource);
                 if (excel) {
                     worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
                     // save as excel file
@@ -933,14 +933,23 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 case WORKTIME_PEOPLE:
                     Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<CodeNameValue>>> shiftTimeMap = (Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<CodeNameValue>>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
                     List<CodeNameValue> masters;
+                    List<String> workCodes = shiftTimeMap.entrySet()
+                            .stream()
+                            .map(x -> x.getValue())
+                            .flatMap(x -> x.stream())
+                            .map(x -> x.getWorkMethod().getCode())
+                            .distinct()
+                            .collect(Collectors.toList());
                     if (dataSource.getOutputSetting().getOutputItem().getDisplayAttendanceItems().contains(ScheduleTableAttendanceItem.SHIFT)) {
-                        masters = shiftMasterRepo.getAllByCid(companyId).stream()
-                                .map(s -> new CodeNameValue(s.getShiftMasterCode(), s.getShiftMasterName()))
+                        masters = shiftMasterRepo.getByListShiftMaterCd2(companyId, workCodes).stream()
+                                .map(s -> new CodeNameValue(s.getShiftMasterCode().v(), s.getDisplayInfor().getName().v()))
                                 .collect(Collectors.toList());
                     } else {
-                        masters = workTimeSettingRepo.findByCompanyId(companyId).stream()
-                                .map(w -> new CodeNameValue(w.getWorktimeCode().v(), w.getWorkTimeDisplayName().getWorkTimeAbName().v()))
-                                .collect(Collectors.toList());
+                        masters = workCodes.isEmpty()
+                                ? new ArrayList<>() // Arrays.asList(new CodeNameValue("", ""))
+                                : workTimeSettingRepo.findByCodes(companyId, workCodes).stream()
+                                        .map(w -> new CodeNameValue(w.getWorktimeCode().v(), w.getWorkTimeDisplayName().getWorkTimeName().v()))
+                                        .collect(Collectors.toList());
                     }
                     for (int i = 0; i < masters.size(); i++) {
                         if (i != 0) {
@@ -1192,7 +1201,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     break;
             }
         }
-        maxRowPerPage = (int) Math.floor(totalColWidth / 3.8);
+        maxRowPerPage = (int) Math.floor(totalColWidth / 3.9);
         int addedHeaderRows = 0;
         for (int i = 0; i < empIndexes.size(); i++) {
             if (empIndexes.get(i) + addedHeaderRows - start > maxRowPerPage) {
