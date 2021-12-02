@@ -145,7 +145,10 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             this.handlePageBreak(worksheet, dataSource);
             reportContext.processDesigner();
             if (preview) {
+                // do not remove these two lines
                 worksheet.getCells().get(startRow, 0).setValue(" ");
+                worksheet.getCells().get(startRow + 1, 0).setValue(" ");
+
                 worksheet.getCells().setColumnWidth(PERSONAL_INFO_COLUMN, 15);
                 worksheet.getCells().setColumnWidth(PERSONAL_INFO_COLUMN + 1, 10);
                 if (worksheet.getCells().getColumnWidth(ADDITIONAL_PERSONAL_INFO_COLUMN) != 0) worksheet.getCells().setColumnWidth(ADDITIONAL_PERSONAL_INFO_COLUMN, 12);
