@@ -729,11 +729,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 const $selected = $(`<div class="limited-label label-workplace-id">${selectedInfor[0].displayName}</div>`);
                                 if (self.selectedTab() == 'tab-1') {
                                     $('#grid1_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
-                                    $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+                                        $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    }
                                 }
                                 if (self.selectedTab() == 'tab-6') {
                                     $('#grid6_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
-                                    $('#grid6_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
+                                        $('#grid6_container .nts-grid-control-workplaceId-' + data.id).append($selected);
+                                    }
                                 }
 
                             });
@@ -756,11 +760,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 const $selected = $(`<div class="limited-label label-work-location">${returnWorkLocationName}</div>`);
                                 if (self.selectedTab() == 'tab-1') {
                                     $('#grid1_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
-                                    $('#grid1_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    if (!_.isEmpty(data.workLocationCD)) {
+                                        $('#grid1_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    }
                                 }
                                 if (self.selectedTab() == 'tab-6') {
                                     $('#grid6_container .nts-grid-control-workLocationCD-' + data.id + ' .label-work-location').remove();
-                                    $('#grid6_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    if (!_.isEmpty(data.workLocationCD)) {
+                                        $('#grid6_container .nts-grid-control-workLocationCD-' + data.id).append($selected);
+                                    }
                                 }
                             });
                         },
