@@ -18,9 +18,10 @@ module cps003.g.vm {
             var dfd = $.Deferred();
             let paramA = getShared("CPS003G_ERROR_LIST"), paramC: GridDtoError = getShared("CPS003G_ERROR_LIST"),
                 paramSorted = _.sortBy(paramA, ['no']);
+            let count = 0;
             self.data = _.map(paramSorted, a => {
                 return {
-                    id : a.employeeId + a.itemName + a.no,
+                    id : a.employeeId + a.itemName + a.no + (count++),
                     empCd: a.empCd, empName: a.empName,
                     employeeId: a.employeeId, errorType: a.errorType == 0 ? text("CPS003_127") : text("CPS003_128"),
                     isDisplayRegister: a.displayRegister, itemName: a.itemName, message: a.message, no: a.no,
