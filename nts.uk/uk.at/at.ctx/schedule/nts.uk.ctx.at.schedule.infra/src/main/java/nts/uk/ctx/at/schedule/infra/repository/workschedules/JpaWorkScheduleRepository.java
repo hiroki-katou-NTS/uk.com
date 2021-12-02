@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -57,6 +56,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTi
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTsPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchTask;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchTaskPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchTimePK;
 import nts.uk.shr.com.context.AppContexts;
@@ -807,22 +807,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		return Optional.of(data.get(0));
 	}
 
-//	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
-//	@Override
-//	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
-//		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
-//				.setParameter("employeeIDs", employeeIDs)
-//				.getSingleOrNull();
-//		return Optional.ofNullable(date);
-//	}
 
-
-	@Override
-	public List<AffInfoForWorkSchedule> getAffiliationInfor(String sid, DatePeriod period) {
-		List<WorkSchedule>  data = this.getListBySid(sid, period);
-		List<AffInfoForWorkSchedule> result = data.stream().map(c->new AffInfoForWorkSchedule(c.getEmployeeID(), c.getYmd(), c.getAffInfo()) ).collect(Collectors.toList());
-		return result;
-	}
 	
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
@@ -848,6 +833,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			Map<Pair<String, GeneralDate>, List<KscdtSchComeLate>> mapPairComeLate = this.getKscdtSchComeLates(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchGoingOut>> mapPairGoingOut = this.getKscdtSchGoingOuts(listEmp, period);
 			Map<Pair<String, GeneralDate>, List<KscdtSchLeaveEarly>> mapPairLeaveEarly = this.getKscdtSchLeaveEarlys(listEmp, period);
+			 Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask =  this.getKscdtSchTasks(listEmp, period);
 			
 			// WorkSchedule
 			Map<Pair<String, GeneralDate>, KscdtSchBasicInfo> mapPairSchBasicInfo = this.getSchBasicInfo(listEmp, period);
@@ -882,6 +868,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							scheTime.kscdtSchComeLate = mapPairComeLate.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchGoingOut = mapPairGoingOut.getOrDefault(key, new ArrayList<>());
 							scheTime.kscdtSchLeaveEarly = mapPairLeaveEarly.getOrDefault(key, new ArrayList<>());
+							scheTime.kscdtSchTask = mapPairKscdtSchTask.getOrDefault(key, new ArrayList<>());
 							
 							basicInfo.kscdtSchTime = scheTime;
 						}
@@ -1213,7 +1200,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						hdComHourlyTime, hd60hTime, hd60hHourlyTime, hdspTime, hdspHourlyTime, hdstkTime, hdHourlyTime,
 						hdHourlyShortageTime, absenceTime, vacationAddTime, staggeredWhTime,
 						new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), 
-						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(),
+						new ArrayList<>(), new ArrayList<>(),new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
 						prsWorkTimeAmount, premiumWorkTimeTotal, premiumAmountTotal, useDailyHDSub);
 			});
 		} catch (SQLException ex) {
@@ -1525,5 +1512,38 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
 
 		return mapPairLeaveEarly;
+	}
+	
+	// KSCDT_SCH_TASK
+	private Map<Pair<String, GeneralDate>, List<KscdtSchTask>> getKscdtSchTasks(String listEmp, DatePeriod period) {
+
+		List<KscdtSchTask> listKscdtSchTask = new ArrayList<>();
+
+		String QUERY = "SELECT KSCDT_SCH_TASK.SID, KSCDT_SCH_TASK.YMD, KSCDT_SCH_TASK.CID,  "
+				+ " KSCDT_SCH_TASK.SERIAL_NO, KSCDT_SCH_TASK.TASK_CODE, KSCDT_SCH_TASK.START_CLOCK, "
+				+ " KSCDT_SCH_TASK.END_CLOCK" 
+				+ " FROM KSCDT_SCH_TASK" + " WHERE KSCDT_SCH_TASK.SID IN " + listEmp
+				+ " AND KSCDT_SCH_TASK.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
+
+		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY)) {
+			listKscdtSchTask = new NtsResultSet(stmt.executeQuery()).getList(rs -> {
+				String sid = rs.getString("SID");
+				GeneralDate ymd = GeneralDate.fromString(rs.getString("YMD"), "yyyy-MM-dd");
+				String cid = rs.getString("CID");
+				Integer serialNo = rs.getInt("SERIAL_NO");
+				String taskCode = rs.getString("TASK_CODE");
+				Integer startClock = rs.getInt("START_CLOCK");
+				Integer endClock = rs.getInt("END_CLOCK");
+
+				return new KscdtSchTask(new KscdtSchTaskPK(sid, ymd, serialNo), taskCode, startClock, endClock, cid);
+			});
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		}
+
+		Map<Pair<String, GeneralDate>, List<KscdtSchTask>> mapPairKscdtSchTask = listKscdtSchTask.stream()
+				.collect(Collectors.groupingBy(x -> Pair.of(x.pk.sid, x.pk.ymd)));
+
+		return mapPairKscdtSchTask;
 	}
 }

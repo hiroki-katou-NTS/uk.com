@@ -3,7 +3,6 @@
  */
 package nts.uk.screen.at.app.ksu001.processcommon;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.GetWorkTypeServiceShare;
->>>>>>> pj/at/release_ver4
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeDto;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.shr.com.context.AppContexts;
@@ -89,7 +87,7 @@ public class GetListWorkTypeAvailable {
 		
 	}
 	
-	private WorkTypeInfomation convertOutput(WorkTypeDto x) {
+	private Optional<WorkTypeInfomation> convertOutput(WorkTypeDto x) {
 		// 就業時間帯の必須チェック
 		SetupType workTimeSetting = 
 				basicScheduleService.checkNeededOfWorkTimeSetting(x.getWorkTypeCode());
