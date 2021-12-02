@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 <div class="two-panel" style="height: 100%; width: 1260px">
                     <div class="left-panel"
                         style="padding-bottom: 5px; width: calc(1260px - 388px); height: inherit;">
-                        <div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: hidden;">
+                        <div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px;overflow-x: auto;">
                             <div class="table"
                                 style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                                 <div class="cell" style="vertical-align: middle;">
@@ -91,7 +91,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                             isVisibleComlumn: isVisibleComlumn,
                                             isPreAtr: isPreAtr,
                                             comment1: comment1,
-                                            comment2: comment2
+                                            comment2: comment2,
+                                            appDate: application().appDate,
+												                    kaf002Data: data
                                         }
                             }
                             "
@@ -162,7 +164,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                               new TabM(this.$i18n('KAF002_76'), true, true),
                               new TabM(this.$i18n('KAF002_32'), true, true),
                               new TabM(this.$i18n('KAF002_33'), true, true),
-                              new TabM(this.$i18n('KAF002_34'), false, true)];
+                              new TabM(this.$i18n('KAF002_34'), true, true)];
        
     //  ※M2.1_2 = ※M
     //  打刻申請起動時の表示情報.打刻申請設定.取消の機能の使用する　＝　使用する(use)
@@ -263,7 +265,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
                     self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
                     // not use
-                    self.tabs()[5].visible(false);
+                    self.tabs()[5].visible(true);
                 
                 } 
               } 
@@ -546,6 +548,15 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             return list;
         })();
         
+        let items7 = (function() {
+          let list = [];
+          for (let i = 1; i <= 3; i++) {
+              let dataObject = new TimePlaceOutput(i);
+              list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));
+          }
+          
+          return list;
+        })();
         
         let dataSource = [];
      // case change date
@@ -562,6 +573,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         dataSource.push( items4 );
         dataSource.push( items5 );
         dataSource.push( items6 );
+        dataSource.push(items7);
         self.dataSourceOb( dataSource );
     }
     
@@ -837,8 +849,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
                         self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
                         self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
-                        // not use
-                        self.tabs()[5].visible(false);
+                        self.tabs()[5].visible(true);
                     
                     } 
                     self.bindComment(self.data);
