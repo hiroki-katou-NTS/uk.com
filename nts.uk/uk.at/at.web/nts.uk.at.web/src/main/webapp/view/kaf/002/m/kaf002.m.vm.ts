@@ -441,7 +441,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                     let paramString = 'enableList[' + String(index) + ']';
                     headerFlagContent = numberDisable != items.length ? '<div class="ntsCheckbox-002" style="display: block" align="center" data-bind="ntsCheckBox: { checked: ' + paramString + '}">' + self.$i18n('KAF002_72') + '</div>' : '<div style="display: block" align="center">' + self.$i18n('KAF002_72') + '</div>';
 
-                    dataSource = items.length >= 10 && self.isLinkList[index] ? items.slice(0, 3) : items;
+                    const maxLength = type === STAMPTYPE.CHEERING ? 3 : 10;
+                    dataSource = items.length >= maxLength && self.isLinkList[index] ? items.slice(0, 3) : items;
                 }
 
             });
@@ -568,7 +569,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if ($('#' + id).length) {
                     $('#' + id).ntsGrid(self.getAtdOrCheeringGrid(isChrome, dataSource, headerFlagContent, statesTable));
                     
-                    if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3) {
+                    if (self.kaf002Data && self.kaf002Data.maxOfCheer && self.kaf002Data.maxOfCheer > 3 && self.isLinkList[items[0].index]) {
                         const $expandRow = $('<tr id="trLinkCheer">');
                         const $firstCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">');
                         const $secondCol = $('<td colspan="5">');
@@ -607,14 +608,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
                 if ($('#' + id).length) {
                     const $expandRow = $('<tr id="trLink2">');
-                    const $firstCol = $('<td>')
                     const $secondCol = $('<td class="titleCorlor" style="height: 50px; background-color: #CFF1A5">')
                     const $thirdCol = $('<td colspan="4">');
                     const $thirdCol__div = $('<div id="moreRow' + String(items[0].index) + '" style="display: block" align="center">')
                     $thirdCol__div.append('<a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource[' + items[0].index + ']), text: \'' + self.$i18n('KAF002_73') + '\'"></a>');
                     
                     $thirdCol.append($thirdCol__div);
-                    $expandRow.append($firstCol);
                     $expandRow.append($secondCol);
                     $expandRow.append($thirdCol);
                     $('#' + id).append($expandRow);

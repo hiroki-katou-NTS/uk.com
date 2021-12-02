@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
-        dataSourceOb: KnockoutObservableArray<any> = null;
+        dataSourceOb: KnockoutObservableArray<any> = ko.observableArray([]);
         application: KnockoutObservable<Application>;
         selectedTab: KnockoutObservable<string> = ko.observable('');
         isM: KnockoutObservable<boolean> = ko.observable(false);
@@ -68,6 +68,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isCondition9: boolean = true;
         data : any;
 		isFromOther: boolean = false;
+    maxSupport: number = 0;
 
     bindComment(data: any) {
         const self = this;
@@ -151,6 +152,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).done((res: any) => {
             if (res) {
                 self.data = res;
+                self.maxSupport = res.maxOfCheer;
                 self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                 self.bindReasonList(self.data);
                 self.bindTabM(self.data);
@@ -165,6 +167,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                     el.focus();                                                    
                 }
             }
+            self.initData();
         }).fail(res => {
             self.showError(res);
         }).always(() => {
@@ -193,6 +196,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
         let attendenceCommon = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
         
+        if (_.isEmpty(self.dataSourceOb())) return;
         if (reflect.temporaryAttendence == 0) {
             self.dataSourceOb()[0].pop();
             self.dataSourceOb()[0].pop();
@@ -220,8 +224,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                  self.tabs()[2].visible(reflect.breakTime == 1);
                  self.tabs()[3].visible(reflect.parentHours == 1);
                  self.tabs()[4].visible(reflect.nurseTime == 1);
-                 // not use
-                 self.tabs()[5].visible(true);
+                 self.tabs()[5].visible(reflect.startAndEndSupport === 1 && data.useCheering);
              
              } 
            } 
@@ -356,6 +359,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             .done((res: any) => {
                 if (res) {
                     self.data = res;
+                    self.maxSupport = res.maxOfCheer;
                     self.initData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                     self.bindReasonList(self.data);
@@ -521,7 +525,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let itemsCheering = (function() {
             let list = [];
             let nursingTime = stampRecord.nursingTime;
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= self.maxSupport; i++) {
                 let dataObject = new TimePlaceOutput(i);
                 _.forEach(nursingTime, item => {
                     if (item.frameNo == i) {
@@ -619,7 +623,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             
             let items7 = (function() {
                 let list = [];
-                for (let i = 1; i <= 3; i++) {
+                for (let i = 1; i <= self.maxSupport; i++) {
                     let dataObject = new TimePlaceOutput(i);
                     list.push(new GridItem(dataObject, STAMPTYPE.CHEERING));
                 }

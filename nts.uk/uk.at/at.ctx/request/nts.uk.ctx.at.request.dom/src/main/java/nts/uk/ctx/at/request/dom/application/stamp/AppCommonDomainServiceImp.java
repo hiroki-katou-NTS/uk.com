@@ -129,6 +129,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		
 		// ドメイン「応援の運用設定」を取得する
 		SupportOperationSetting supportOperationSetting = this.supportOperationSettingRepo.get(companyId);
+		appStampOutput.setUseCheering(supportOperationSetting.isUsed());
+		appStampOutput.setMaxOfCheer(supportOperationSetting.getMaxNumberOfSupportOfDay().v());
 		
 		// 応援の運用設定.利用するか　＝　true
 		if (supportOperationSetting.isSupportDestinationCanSpecifySupporter()) {
