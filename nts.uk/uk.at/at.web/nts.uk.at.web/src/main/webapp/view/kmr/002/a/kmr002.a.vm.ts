@@ -110,6 +110,11 @@ module nts.uk.at.view.kmr002.a.model {
             let self = this,
                 dfd = $.Deferred<any>();
 			self.date.subscribe((value) => {
+				nts.uk.ui.errors.clearAll();
+				$('#dateSelect').ntsError('check');
+				if(nts.uk.ui.errors.hasError()) {
+					return;
+				}
 				if(moment(value).isBefore(moment(new Date()).format("YYYY/MM/DD"))) {
 					self.modeFuture(false);
 				} else {

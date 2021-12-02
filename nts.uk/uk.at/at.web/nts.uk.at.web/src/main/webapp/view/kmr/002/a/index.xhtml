@@ -30,9 +30,10 @@
 						<span>#{i18n.getText('KMR002_17')}</span>
 					</div>
 					<div class="cell">
-						<div style="padding-left: 20px;" data-bind="ntsDatePicker: { 
+						<div style="padding-left: 20px;" id="dateSelect" data-bind="ntsDatePicker: { 
 									name: '#[KMR002_17]',
-									value: date }">
+									value: date,
+									required: true }">
 						</div>
 					</div>
 				</div>
