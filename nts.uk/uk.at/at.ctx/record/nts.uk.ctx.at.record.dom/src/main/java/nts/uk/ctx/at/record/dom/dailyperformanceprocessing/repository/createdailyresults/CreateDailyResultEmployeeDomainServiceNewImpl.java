@@ -11,10 +11,13 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsCondition;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.CreatingDailyResultsConditionRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.AchievementAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.GetPeriodCanProcesse;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.IgnoreFlagDuringLock;
@@ -27,6 +30,8 @@ import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
@@ -54,9 +59,6 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 	private EmploymentAdapter employmentAdapter;
 
 	@Inject
-	private GetPeriodCanProcesse getPeriodCanProcesse;
-
-	@Inject
 	private ClosureStatusManagementRepository closureStatusManagementRepo;
 
 	@Inject
@@ -76,7 +78,12 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 	
 	@Inject
 	private RegisterDailyAchievements registerDailyAchievements; 
+	@Inject
+	private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
+	@Inject
+	private EmpEmployeeAdapter employeeAdapter;
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public OutputCreateDailyResult createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
 			DatePeriod periodTimes, String companyId, Optional<EmpCalAndSumExeLog> empCalAndSumExeLog,
@@ -105,13 +112,13 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 		}
 
 		GetPeriodCanProcesseRequireImpl require = new GetPeriodCanProcesseRequireImpl(closureStatusManagementRepo,
-				closureEmploymentRepo, closureRepository, actualLockRepository);
+				closureEmploymentRepo, closureRepository, actualLockRepository, employmentAdapter, 
+				creatingDailyResultsConditionRepo, employeeAdapter);
 		IgnoreFlagDuringLock ignoreFlagDuringLock = checkLock.isPresent() && checkLock.get().booleanValue()
 				? IgnoreFlagDuringLock.CAN_CAL_LOCK
 				: IgnoreFlagDuringLock.CANNOT_CAL_LOCK;
 		// 作成できる期間一覧を求める
-		@SuppressWarnings("static-access")
-		List<DatePeriod> listPeriod = getPeriodCanProcesse.get(require, employeeId, periodTimes, listEmploymentHis,
+		List<DatePeriod> listPeriod = GetPeriodCanProcesse.get(require, companyId, employeeId, periodTimes, listEmploymentHis,
 				ignoreFlagDuringLock, AchievementAtr.DAILY);
 
 		// 取得できた期間一覧をループする
@@ -144,17 +151,13 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 
 	@AllArgsConstructor
 	private class GetPeriodCanProcesseRequireImpl implements GetPeriodCanProcesse.Require {
-		@Inject
 		private ClosureStatusManagementRepository closureStatusManagementRepo;
-
-		@Inject
 		private ClosureEmploymentRepository closureEmploymentRepo;
-
-		@Inject
 		private ClosureRepository closureRepository;
-
-		@Inject
 		private ActualLockRepository actualLockRepository;
+		private EmploymentAdapter employmentAdapter;
+		private CreatingDailyResultsConditionRepository creatingDailyResultsConditionRepo;
+		private EmpEmployeeAdapter employeeAdapter;
 
 		@Override
 		public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
@@ -185,6 +188,21 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 		public Closure findClosureById(int closureId) {
 			String companyId = AppContexts.user().companyId();
 			return closureRepository.findById(companyId, closureId).get();
+		}
+
+		@Override
+		public Optional<CreatingDailyResultsCondition> creatingDailyResultsCondition(String cid) {
+			return creatingDailyResultsConditionRepo.findByCid(cid);
+		}
+
+		@Override
+		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+			return employeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+		}
+
+		@Override
+		public List<EmploymentHistoryImported> getEmpHistBySid(String companyId, String employeeId) {
+			return employmentAdapter.getEmpHistBySid(companyId, employeeId);
 		}
 
 	}
