@@ -26,7 +26,7 @@ public interface BentoMenuRepository {
 
 	public BentoMenu getBentoMenuByEndDate(String companyID, GeneralDate date);
 
-	public void add(BentoMenu bentoMenu);
+	public void addBentoMenu(BentoMenu bentoMenu);
 
 	public void update(BentoMenu bentoMenu);
 

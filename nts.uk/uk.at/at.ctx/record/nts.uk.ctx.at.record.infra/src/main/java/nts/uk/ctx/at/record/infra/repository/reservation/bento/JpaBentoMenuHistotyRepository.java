@@ -1,20 +1,20 @@
 package nts.uk.ctx.at.record.infra.repository.reservation.bento;
 
-import lombok.val;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
+
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHist;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHistPK;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuPK;
 import nts.uk.shr.com.history.DateHistoryItem;
-
-import javax.ejb.Stateless;
-import java.util.*;
 
 @Stateless
 public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBentoMenuHistoryRepository {
@@ -60,7 +60,10 @@ public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBen
          val entity = this.queryProxy().find(new KrcmtBentoMenuHistPK(companyId,historyId),KrcmtBentoMenuHist.class);
          if(entity.isPresent()){
              this.commandProxy().remove(KrcmtBentoMenuHist.class,new KrcmtBentoMenuHistPK(companyId,historyId));
-             this.commandProxy().remove(KrcmtBentoMenu.class,new KrcmtBentoMenuPK(companyId,historyId));
+             new NtsStatement("delete from KRCMT_BENTO where CID = @companyID and HIST_ID = @histID", this.jdbcProxy())
+             .paramString("companyID", companyId)
+             .paramString("histID", historyId)
+             .execute();
          }
     }
 

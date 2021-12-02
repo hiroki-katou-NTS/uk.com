@@ -1,12 +1,22 @@
 package nts.uk.screen.at.app.reservation;
 
-import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.context.AppContexts;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
+
+import org.apache.logging.log4j.util.Strings;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
+import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationRecTimeZone;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReservationSettingRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
 public class BentoMenuSetScreenProcessor {
@@ -16,6 +26,15 @@ public class BentoMenuSetScreenProcessor {
 
     @Inject
     private BentoReservationScreenRepository bentoReservationScreenRepository;
+    
+    @Inject
+    private ReservationSettingRepository reservationSettingRepository;
+    
+    @Inject
+    private BentoMenuRepository bentoMenuRepository;
+    
+    @Inject
+    private IBentoMenuHistoryRepository iBentoMenuHistoryRepository;
 
     public BentoMenuJoinBentoSettingDto findDataBentoMenu() {
         String companyID = AppContexts.user().companyId();
@@ -33,20 +52,28 @@ public class BentoMenuSetScreenProcessor {
     public BentoJoinReservationSetting getBentoMenuByHist(BentoRequest request) {
         String companyID = AppContexts.user().companyId();
         GeneralDate generalDate = GeneralDate.max();
-
-        // 1:取得する(会社ID　＝　ログイン会社ID):運用区別
-        BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
-        if (reservationSettingDto == null){
-            throw new BusinessException("Msg_1847");
+        
+        // 1: 会社IDと予約の運用区別によって予約受付時間帯を取得する
+        List<ReservationRecTimeZone> reservationRecTimeZoneLst = reservationSettingRepository.getReservationRecTimeZoneByOpDist(companyID, 0);
+        
+        // 2: 取得する
+        Optional<BentoMenuHistory> opBentoMenuHistory = iBentoMenuHistoryRepository.findByCompanyId(companyID);
+        String histID = Strings.EMPTY;
+        GeneralDate startDate = null;
+        GeneralDate endDate = null;
+        if(opBentoMenuHistory.isPresent()) {
+        	Optional<DateHistoryItem> opDateHistoryItem = opBentoMenuHistory.get().getHistoryItems().stream().filter(x -> x.contains(generalDate)).findAny();
+        	if(opDateHistoryItem.isPresent()) {
+        		histID = opDateHistoryItem.get().identifier();
+        		startDate = opDateHistoryItem.get().start();
+        		endDate = opDateHistoryItem.get().end();
+        	}
         }
+        
+        // 2.1: 弁当メニューを取得
+        BentoMenu bentoMenu = bentoMenuRepository.getBentoMenuByHistId(companyID, histID);
 
-        // 2:取得する(会社ID＝ログイン会社ID,基準日＝Input．基準日)
-        List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
-        if (bentomenuJoinBentoDtos.size() == 0){
-            throw new BusinessException("Msg_1848");
-        }
-
-        return BentoJoinReservationSetting.setData(bentomenuJoinBentoDtos,reservationSettingDto);
+        return BentoJoinReservationSetting.setData(reservationRecTimeZoneLst, startDate, endDate, bentoMenu);
     }
 
     public List<WorkLocationDto> getWorkLocationByContr() {

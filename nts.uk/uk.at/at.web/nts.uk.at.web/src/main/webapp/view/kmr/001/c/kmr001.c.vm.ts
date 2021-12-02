@@ -5,8 +5,8 @@ module nts.uk.at.kmr001.c {
     import confirm = nts.uk.ui.dialog.confirm;
 
     const API = {
-        GET_LIST_WORK_LOCATION: 'screen/at/record/reservation/bento-menu/getworklocation',
-        GET_ALL: 'screen/at/record/reservation/bento-menu/getbentomenubyhist',
+        GET_LIST_WORK_LOCATION: 'at/record/reservation/bento-menu/getworklocation',
+        GET_ALL: 'at/record/reservation/bento-menu/getbentomenubyhist',
         CREATE_BENTO: 'bento/updateitemsetting/add',
         UPDATE_BENTO: 'bento/updateitemsetting/update',
         DELETE_BENTO: 'bento/updateitemsetting/delete',
@@ -80,12 +80,7 @@ module nts.uk.at.kmr001.c {
         created() {
             const vm = this;
 
-            vm.model().reservationAtr1.subscribe(data => {
-                if (data) {
-                    vm.$errors("clear", ".reservationAtr");
-                }
-            });
-            vm.model().reservationAtr2.subscribe(data => {
+            vm.model().receptionTimezoneNo.subscribe(data => {
                 if (data) {
                     vm.$errors("clear", ".reservationAtr");
                 }
@@ -178,12 +173,12 @@ module nts.uk.at.kmr001.c {
                 if (!valid) {
                     return;
                 }
-                if (!vm.model().reservationAtr2() && !vm.model().reservationAtr1()) {
+                if (!_.includes([1,2], vm.model().receptionTimezoneNo())) {
                     vm.$errors(".reservationAtr", { messageId: 'MsgB_1', messageParams: [vm.$i18n('KMR001_47')] });
                     return;
                 }
                 vm.$blockui("invisible");
-                if (vm.listIdBentoMenu.indexOf(Number(vm.selectedBentoSetting())) >= 0) {
+                if (vm.listIdBentoMenu.indexOf(Number(vm.selectedBentoSetting())) < 0) {
                     const param = {
                         histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null,
                         frameNo: vm.selectedBentoSetting(),
@@ -192,8 +187,7 @@ module nts.uk.at.kmr001.c {
                         amount1: model.price1(),
                         amount2: model.price2(),
                         unit: model.unitName(),
-                        canBookClosesingTime1: model.reservationAtr1(),
-                        canBookClosesingTime2: model.reservationAtr2()
+                        receptionTimezoneNo: model.receptionTimezoneNo()
                     };
                     //create bento
                     vm.$ajax(API.CREATE_BENTO, param).done(() => {
@@ -209,11 +203,10 @@ module nts.uk.at.kmr001.c {
                         amount1: model.price1(),
                         amount2: model.price2(),
                         unit: model.unitName(),
-                        canBookClosesingTime1: model.reservationAtr1(),
-                        canBookClosesingTime2: model.reservationAtr2()
+                        receptionTimezoneNo: model.receptionTimezoneNo()
                     };
                     //update bento
-                    vm.$ajax(API.CREATE_BENTO, param).done(() => {
+                    vm.$ajax(API.UPDATE_BENTO, param).done(() => {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.reloadPage());
                     }).always(() => vm.$blockui("clear"));
                 }
@@ -314,7 +307,7 @@ module nts.uk.at.kmr001.c {
 
                     vm.model().updateData(
                         bentoDtos[0].bentoName, bentoDtos[0].unitName,
-                        bentoDtos[0].reservationAtr1, bentoDtos[0].reservationAtr2,
+                        bentoDtos[0].receptionTimezoneNo,
                         Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
                         bentoDtos[0].workLocationCode
                     );
@@ -329,7 +322,7 @@ module nts.uk.at.kmr001.c {
                     if (bento.length > 0) {
                         vm.model().updateData(
                             bento[0].bentoName, bento[0].unitName,
-                            bento[0].reservationAtr1, bento[0].reservationAtr2,
+                            bento[0].receptionTimezoneNo,
                             Number(bento[0].price1), Number(bento[0].price2),
                             bento[0].workLocationCode
                         );
@@ -339,7 +332,7 @@ module nts.uk.at.kmr001.c {
                     } else {
                         vm.model().updateData(
                             '', null,
-                            false, false,
+                            0,
                             null, null,
                             vm.workLocationList().length > 0 ? vm.workLocationList()[0].id : ''
                         );
@@ -385,8 +378,7 @@ module nts.uk.at.kmr001.c {
 
     class BentoMenuSetting {
         bentoName: KnockoutObservable<string> = ko.observable("");
-        reservationAtr1: KnockoutObservable<boolean> = ko.observable(false);
-        reservationAtr2: KnockoutObservable<boolean> = ko.observable(false);
+        receptionTimezoneNo: KnockoutObservable<number> = ko.observable(0);
         unitName: KnockoutObservable<string> = ko.observable("");
         price1: KnockoutObservable<number> = ko.observable(null);
         price2: KnockoutObservable<number> = ko.observable(null);
@@ -395,12 +387,11 @@ module nts.uk.at.kmr001.c {
         constructor() { }
 
         updateData(bentoName: string, unitName: string,
-            reservationAtr1: boolean, reservationAtr2: boolean,
+            receptionTimezoneNo: number,
             price1: number, price2: number,
             workLocationCode: string) {
             this.bentoName(bentoName);
-            this.reservationAtr1(reservationAtr1);
-            this.reservationAtr2(reservationAtr2);
+            this.receptionTimezoneNo(receptionTimezoneNo);
             this.unitName(unitName);
             this.price1(price1);
             this.price2(price2);

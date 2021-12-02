@@ -1,11 +1,10 @@
 package nts.uk.ctx.at.record.infra.entity.reservation.bentomenu;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,8 +18,6 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
-import java.util.Optional;
 
 @Entity
 @Table(name = "KRCMT_BENTO")
@@ -49,13 +46,6 @@ public class KrcmtBento extends ContractUkJpaEntity {
     @Column(name = "FRAME_NO")
     public int receptionTimezoneNo;
 
-    @ManyToOne
-    @PrimaryKeyJoinColumns({
-            @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-            @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID")
-    })
-    public KrcmtBentoMenu bentoMenu;
-
     @Override
     protected Object getKey() {
         return pk;
@@ -72,7 +62,7 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 Optional.of(new WorkLocationCode(workLocationCode)));
     }
 
-    public static KrcmtBento fromDomain(Bento bento, String hisId, KrcmtBentoMenu krcmtBentoMenu) {
+    public static KrcmtBento fromDomain(Bento bento, String hisId) {
         return new KrcmtBento(
                 new KrcmtBentoPK(
                         AppContexts.user().companyId(),
@@ -84,8 +74,7 @@ public class KrcmtBento extends ContractUkJpaEntity {
                 bento.getAmount1().v(),
                 bento.getAmount2().v(),
                 bento.getWorkLocationCode().isPresent() ? bento.getWorkLocationCode().get().v() : null,
-        		bento.getReceptionTimezoneNo().value,
-                krcmtBentoMenu
+        		bento.getReceptionTimezoneNo().value
         );
     }
 

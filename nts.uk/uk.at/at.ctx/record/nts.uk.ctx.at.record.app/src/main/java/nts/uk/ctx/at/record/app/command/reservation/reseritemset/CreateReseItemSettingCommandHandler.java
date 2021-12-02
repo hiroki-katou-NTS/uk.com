@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -32,7 +33,7 @@ public class CreateReseItemSettingCommandHandler extends CommandHandler<CreateRe
                 new BentoAmount(command.getAmount1()),
                 command.getAmount2() == null ? new BentoAmount(0) : new BentoAmount(command.getAmount2()),
                 new BentoReservationUnitName(command.getUnit()),
-                command.isCanBookClosesingTime1()?ReservationClosingTimeFrame.FRAME1:ReservationClosingTimeFrame.FRAME2,
+                EnumAdaptor.valueOf(command.getReceptionTimezoneNo(), ReservationClosingTimeFrame.class),
                 command.getWorkLocationCode() != null?
                         Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty()
         );

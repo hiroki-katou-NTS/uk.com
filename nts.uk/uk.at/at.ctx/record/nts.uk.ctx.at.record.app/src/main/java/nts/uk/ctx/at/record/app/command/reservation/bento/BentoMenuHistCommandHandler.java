@@ -123,9 +123,9 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
                 Bento bento = new Bento(1,new BentoName(bentoName),new BentoAmount(1000),
                         new BentoAmount(0),new BentoReservationUnitName(unit),
                         ReservationClosingTimeFrame.FRAME1,workLocationCode);
-                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento)));
+                bentoMenuRepository.addBentoMenu(new BentoMenu(hist.identifier() , Arrays.asList(bento)));
             }else {
-                bentoMenuRepository.add(new BentoMenu(hist.identifier() , bentos));
+                bentoMenuRepository.addBentoMenu(new BentoMenu(hist.identifier() , bentos));
             }
 
         }

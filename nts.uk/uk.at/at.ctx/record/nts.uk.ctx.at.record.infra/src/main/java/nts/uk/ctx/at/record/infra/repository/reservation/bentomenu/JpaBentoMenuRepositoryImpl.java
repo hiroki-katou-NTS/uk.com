@@ -18,6 +18,7 @@ import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -29,8 +30,8 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoReservationUnitName;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuPK;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBento;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -264,17 +265,29 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	}
 
 	@Override
-	public void add(BentoMenu bentoMenu) {
-		commandProxy().insert(KrcmtBentoMenu.fromDomain(bentoMenu));
+	public void addBentoMenu(BentoMenu bentoMenu) {
+		List<KrcmtBento> bentos = new ArrayList<>();
+		for(Bento bento : bentoMenu.getMenu()) {
+			bentos.add(KrcmtBento.fromDomain(bento, bentoMenu.getHistoryID()));
+		}
+		commandProxy().insertAll(bentos);
 	}
 
 	@Override
 	public void update(BentoMenu bentoMenu) {
-		commandProxy().update(KrcmtBentoMenu.fromDomain(bentoMenu));
+		String companyID = AppContexts.user().companyId();
+		new NtsStatement("delete from KRCMT_BENTO where CID = @companyID and HIST_ID = @histID", this.jdbcProxy())
+        .paramString("companyID", companyID)
+        .paramString("histID", bentoMenu.getHistoryID())
+        .execute();
+		commandProxy().updateAll(bentoMenu.getMenu().stream().map(x -> KrcmtBento.fromDomain(x, bentoMenu.getHistoryID())).collect(Collectors.toList()));
 	}
 
 	@Override
 	public void delete(String companyId, String historyId) {
-		this.commandProxy().remove(KrcmtBentoMenu.class, new KrcmtBentoMenuPK(companyId, historyId));
+		new NtsStatement("delete from KRCMT_BENTO where CID = @companyID and HIST_ID = @histID", this.jdbcProxy())
+        .paramString("companyID", companyId)
+        .paramString("histID", historyId)
+        .execute();
 	}
 }
