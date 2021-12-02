@@ -5606,8 +5606,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         btnOpenKDL055(): void {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let lockCells = $("#extable").exTable("lockCells");
@@ -5628,8 +5626,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         openKDL055(): void {
             let self = this, dfd = $.Deferred();
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor: IUserInfor = JSON.parse(item.get());
+            let userInfor = self.userInfor;
             let param: any = { sIDs: self.sids(), startDate: moment(self.dateTimePrev()).format('YYYY/MM/DD'), endDate: moment(self.dateTimeAfter()).format('YYYY/MM/DD') };
             setShared('dataShareDialogKDL055A', param);
             nts.uk.ui.windows.sub.modal("/view/kdl/055/a/index.xhtml").onClosed(() => {
