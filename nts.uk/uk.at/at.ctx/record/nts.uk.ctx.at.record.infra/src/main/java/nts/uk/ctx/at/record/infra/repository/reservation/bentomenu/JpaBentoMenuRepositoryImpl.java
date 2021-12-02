@@ -290,4 +290,25 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
         .paramString("histID", historyId)
         .execute();
 	}
+
+	@Override
+	public List<Bento> getBento(String companyID, GeneralDate date, Optional<WorkLocationCode> workLocationCode) {
+		String query =
+				"SELECT c.CID, c.HIST_ID, c.MENU_FRAME, c.WORK_LOCATION_CD, c.BENTO_NAME, c.UNIT_NAME, c.PRICE1, c.PRICE2, c.FRAME_NO " + 
+				"FROM KRCMT_BENTO_MENU_HIST a LEFT JOIN KRCMT_BENTO c ON a.HIST_ID = c.HIST_ID AND a.CID = c.CID " + 
+				"WHERE c.CID = @companyID AND a.START_YMD <= @date AND a.END_YMD >= @date";
+		return new NtsStatement(query, this.jdbcProxy())
+        .paramString("companyID", companyID)
+        .paramDate("date", date)
+        .getList(x -> {
+        	return new Bento(
+        			x.getInt("MENU_FRAME"), 
+        			new BentoName(x.getString("BENTO_NAME")), 
+        			new BentoAmount(x.getInt("PRICE1")), 
+        			new BentoAmount(x.getInt("PRICE2")), 
+        			new BentoReservationUnitName(x.getString("UNIT_NAME")), 
+        			EnumAdaptor.valueOf(x.getInt("FRAME_NO"), ReservationClosingTimeFrame.class), 
+        			Optional.empty());
+        });
+	}
 }

@@ -31,5 +31,8 @@ public interface BentoMenuRepository {
 	public void update(BentoMenu bentoMenu);
 
 	public void delete(String companyId, String historyId);
+	
+	// 	[3]  弁当を取得する
+	public List<Bento> getBento(String companyID, GeneralDate date, Optional<WorkLocationCode> workLocationCode);
 
 }

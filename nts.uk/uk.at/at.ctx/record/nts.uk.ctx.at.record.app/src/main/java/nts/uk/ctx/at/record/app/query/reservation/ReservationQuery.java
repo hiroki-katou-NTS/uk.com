@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -67,8 +67,8 @@ public class ReservationQuery {
 				reservationRegisterInfo, 
 				new ReservationDate(date, EnumAdaptor.valueOf(1, ReservationClosingTimeFrame.class)));
 		// 5: 取得する
-		BentoMenu bentoMenu = bentoMenuRepo.getBentoMenu(companyId, date, Optional.empty());
-		if(bentoMenu==null) {
+		List<Bento> menu = bentoMenuRepo.getBento(companyId, date, Optional.empty());
+		if(menu.isEmpty()) {
 			throw new BusinessException("Msg_1604");
 		}
 		// 6: create
@@ -79,7 +79,7 @@ public class ReservationQuery {
 		BentoMenuByClosingTime bentoMenuByClosingTime = BentoMenuByClosingTime.createForCurrent(
 				AppContexts.user().roles().forAttendance(), 
 				reservationSetting, 
-				bentoMenu.getMenu(), 
+				menu, 
 				orderAtr,
 				date);
 		return new ReservationDto(
