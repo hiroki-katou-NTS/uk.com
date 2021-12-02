@@ -2256,9 +2256,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 let taskBlocks = _.map(eventInDay, e => {
                                                     let taskContents = []
                                                     _.forEach(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => {
+                                                        let tcs = [],
+                                                            attendanceTime = null;
                                                         _.forEach(td.taskItemValues, ti => {
-                                                            taskContents.push({ frameNo: td.supNo, taskContent: { itemId: ti.itemId, taskCode: ti.value } });
+                                                            if (ti.itemId == 3) {
+                                                                attendanceTime = ti.value;
+                                                            }
+                                                            tcs.push({ itemId: ti.itemId, taskCode: ti.value });
                                                         });
+                                                        taskContents.push({ frameNo: td.supNo, attendanceTime, taskContents: tcs });
                                                     });
                                                    
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
