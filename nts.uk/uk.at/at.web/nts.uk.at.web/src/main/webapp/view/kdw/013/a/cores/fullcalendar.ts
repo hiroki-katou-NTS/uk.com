@@ -2889,7 +2889,6 @@ module nts.uk.ui.at.kdw013.calendar {
                   }
 				  
                    const sEvent = _.find(vm.calendar.getEvents(), e => { return e.extendedProps.id == extendedProps.id });
-
                         sEvent.setExtendedProp('isChanged', true);
                         updateEvents();
 
@@ -3109,11 +3108,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60).toDate();
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
                             let wg = {
-                                workCD1: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId = 4), 'taskCode', null),
-                                workCD2: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId = 5), 'taskCode', null),
-                                workCD3: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId = 6), 'taskCode', null),
-                                workCD4: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId = 7), 'taskCode', null),
-                                workCD5: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId = 8), 'taskCode', null),
+                                workCD1: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 4), 'taskCode', null),
+                                workCD2: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 5), 'taskCode', null),
+                                workCD3: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 6), 'taskCode', null),
+                                workCD4: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 7), 'taskCode', null),
+                                workCD5: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 8), 'taskCode', null),
                             }
                             let taskDetails = []
                             _.forEach(_.get(task, 'taskContents'), tc => {
