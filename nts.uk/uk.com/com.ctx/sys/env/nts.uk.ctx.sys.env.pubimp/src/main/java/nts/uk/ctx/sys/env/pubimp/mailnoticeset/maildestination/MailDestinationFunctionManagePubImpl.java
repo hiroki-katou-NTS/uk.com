@@ -80,6 +80,6 @@ public class MailDestinationFunctionManagePubImpl implements MailDestinationFunc
 						availableMailAddress.getOptCompanyMobileMailAddress().orElse(null),
 						availableMailAddress.getOptPersonalMailAddress().orElse(null),
 						availableMailAddress.getOptPersonalMobileMailAddress().orElse(null))
-				.stream().map(MailAddress::v).filter(Objects::nonNull).collect(Collectors.toList());
+				.stream().filter(Objects::nonNull).map(MailAddress::v).collect(Collectors.toList());
 	}
 }
