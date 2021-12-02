@@ -7,106 +7,106 @@ module nts.uk.at.view.kmk005.b {
             timeItemList: KnockoutObservableArray<TimeItem>;            
             
             /** Bonus pay time */
-            useAtr1: KnockoutObservable<number> = ko.observable(1);
+            useAtr1: KnockoutObservable<number> = ko.observable(0);
             timeItemId1: KnockoutObservable<string> = ko.observable('');
             timeItemName1: KnockoutObservable<string> = ko.observable('');
-            isRequired1: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired1: KnockoutObservable<boolean> = ko.observable(false);
             
-            useAtr2: KnockoutObservable<number> = ko.observable(1);
+            useAtr2: KnockoutObservable<number> = ko.observable(0);
             timeItemId2 : KnockoutObservable<string> = ko.observable('');
             timeItemName2 : KnockoutObservable<string> = ko.observable('');
-            isRequired2: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired2: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr3: KnockoutObservable<number> = ko.observable(1);
+            useAtr3: KnockoutObservable<number> = ko.observable(0);
             timeItemId3: KnockoutObservable<string> = ko.observable('');
             timeItemName3: KnockoutObservable<string> = ko.observable('');
-            isRequired3: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired3: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr4: KnockoutObservable<number> = ko.observable(1);
+            useAtr4: KnockoutObservable<number> = ko.observable(0);
             timeItemId4: KnockoutObservable<string> = ko.observable('');
             timeItemName4: KnockoutObservable<string> = ko.observable('');
-            isRequired4: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired4: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr5: KnockoutObservable<number> = ko.observable(1);
+            useAtr5: KnockoutObservable<number> = ko.observable(0);
             timeItemId5: KnockoutObservable<string> = ko.observable('');
             timeItemName5: KnockoutObservable<string> = ko.observable('');
-            isRequired5: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired5: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr6: KnockoutObservable<number> = ko.observable(1);
+            useAtr6: KnockoutObservable<number> = ko.observable(0);
             timeItemId6: KnockoutObservable<string> = ko.observable('');
             timeItemName6: KnockoutObservable<string> = ko.observable('');
-            isRequired6: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired6: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr7: KnockoutObservable<number> = ko.observable(1);
+            useAtr7: KnockoutObservable<number> = ko.observable(0);
             timeItemId7: KnockoutObservable<string> = ko.observable('');
             timeItemName7: KnockoutObservable<string> = ko.observable('');
-            isRequired7: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired7: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr8: KnockoutObservable<number> = ko.observable(1);
+            useAtr8: KnockoutObservable<number> = ko.observable(0);
             timeItemId8: KnockoutObservable<string> = ko.observable('');
             timeItemName8: KnockoutObservable<string> = ko.observable('');
-            isRequired8: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired8: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr9: KnockoutObservable<number> = ko.observable(1);
+            useAtr9: KnockoutObservable<number> = ko.observable(0);
             timeItemId9: KnockoutObservable<string> = ko.observable('');
             timeItemName9: KnockoutObservable<string> = ko.observable('');
-            isRequired9: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired9: KnockoutObservable<boolean> = ko.observable(false);
 
-            useAtr10: KnockoutObservable<number> = ko.observable(1);
+            useAtr10: KnockoutObservable<number> = ko.observable(0);
             timeItemId10: KnockoutObservable<string> = ko.observable('');
             timeItemName10: KnockoutObservable<string> = ko.observable('');
-            isRequired10: KnockoutObservable<boolean> = ko.observable(true);
+            isRequired10: KnockoutObservable<boolean> = ko.observable(false);
 
              /** Bonus pay special time */
-             useSpecAtr1: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr1: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId1: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName1: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired1: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired1: KnockoutObservable<boolean> = ko.observable(false);
              
-             useSpecAtr2: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr2: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId2: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName2: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired2: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired2: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr3: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr3: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId3: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName3: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired3: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired3: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr4: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr4: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId4: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName4: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired4: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired4: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr5: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr5: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId5: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName5: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired5: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired5: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr6: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr6: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId6: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName6: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired6: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired6: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr7: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr7: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId7: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName7: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired7: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired7: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr8: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr8: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId8: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName8: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired8: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired8: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr9: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr9: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId9: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName9: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired9: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired9: KnockoutObservable<boolean> = ko.observable(false);
  
-             useSpecAtr10: KnockoutObservable<number> = ko.observable(1);
+             useSpecAtr10: KnockoutObservable<number> = ko.observable(0);
              timeItemSpecId10: KnockoutObservable<string> = ko.observable('');
              timeItemSpecName10: KnockoutObservable<string> = ko.observable('');
-             isSpecRequired10: KnockoutObservable<boolean> = ko.observable(true);
+             isSpecRequired10: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 var self = this;
