@@ -2256,9 +2256,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                                 let taskBlocks = _.map(eventInDay, e => {
                                                     let taskContents = []
                                                     _.forEach(_.get(e, 'extendedProps.taskBlock.taskDetails', []), td => {
+                                                        let tcs = [],
+                                                            attendanceTime = null;
                                                         _.forEach(td.taskItemValues, ti => {
-                                                            taskContents.push({ frameNo: td.supNo, taskContent: { itemId: ti.itemId, taskCode: ti.value } });
+                                                            if (ti.itemId == 3) {
+                                                                attendanceTime = ti.value;
+                                                            }
+                                                            tcs.push({ itemId: ti.itemId, taskCode: ti.value });
                                                         });
+                                                        taskContents.push({ frameNo: td.supNo, attendanceTime, taskContents: tcs });
                                                     });
                                                    
                                                     return { startTime: getTimeOfDate(e.start), endTime: getTimeOfDate(e.end), taskContents };
@@ -2883,7 +2889,6 @@ module nts.uk.ui.at.kdw013.calendar {
                   }
 				  
                    const sEvent = _.find(vm.calendar.getEvents(), e => { return e.extendedProps.id == extendedProps.id });
-
                         sEvent.setExtendedProp('isChanged', true);
                         updateEvents();
 
@@ -3005,6 +3010,15 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     if (isTaskDrop) {
                         let taskItemValues = _.map(_.get(extendedProps, 'dropInfo.favoriteContents', []), ({itemId, taskCode}) => { return { itemId, value: taskCode } });
+                        let isHasEventInDropZone = _.chain(events())
+                            .filter((evn) => { return moment(evn.start).isSameOrBefore(start) && moment(evn.end).isAfter(start)})
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                        
+                        if (isHasEventInDropZone.length) {
+                            return;
+                        }
                         
                         let wg = {
                             workCD1: _.get(extendedProps, 'dropInfo.favoriteContents[0].taskCode', null),
@@ -3093,29 +3107,24 @@ module nts.uk.ui.at.kdw013.calendar {
                             let timeStart = moment(start).set('hour', task.startTime / 60).set('minute', task.startTime % 60).toDate();
                             let timeEnd = moment(start).set('hour', task.endTime / 60).set('minute', task.endTime % 60).toDate();
                             let workCDs = _.chain(task.taskContents).map(task => task.taskContent.taskCode).value();
-                            let [first] = task.taskContents;
                             let wg = {
-                                workCD1: _.get(task, 'taskContents[0].taskContent.taskCode', null),
-                                workCD2: _.get(task, 'taskContents[1].taskContent.taskCode', null),
-                                workCD3: _.get(task, 'taskContents[2].taskContent.taskCode', null),
-                                workCD4: _.get(task, 'taskContents[3].taskContent.taskCode', null),
-                                workCD5: _.get(task, 'taskContents[4].taskContent.taskCode', null),
+                                workCD1: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 4), 'taskCode', null),
+                                workCD2: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 5), 'taskCode', null),
+                                workCD3: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 6), 'taskCode', null),
+                                workCD4: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 7), 'taskCode', null),
+                                workCD5: _.get(_.find(_.get(task, 'taskContents[0].taskContent', []), tc => tc.itemId == 8), 'taskCode', null),
                             }
                             let taskDetails = []
                             _.forEach(_.get(task, 'taskContents'), tc => {
-                                let td = _.find(taskDetails, ['supNo', tc.frameNo]);
-                                let taskdetail = { itemId: _.get(tc, 'taskContent.itemId'), value: _.get(tc, 'taskContent.taskCode') };
-                                if (td) {
-                                    td.taskItemValues.push(taskdetail);
-                                } else {
-                                    taskDetails.push({ supNo: tc.frameNo, taskItemValues: [taskdetail] });
-                                }
+                                
+                                let taskdetail = _.map(tc.taskContent, tcont => { return { itemId: tcont.itemId, value: tcont.taskCode }; });
+                                taskdetail.push({ itemId: 3, value: tc.attendanceTime });
+                                taskDetails.push({ supNo: tc.frameNo, taskItemValues: taskdetail });
                             });
                             //map item start , end between
                             _.forEach(taskDetails, td => {
                                 td.taskItemValues.push({ itemId: 1, value: task.startTime });
                                 td.taskItemValues.push({ itemId: 2, value: task.endTime });
-                                td.taskItemValues.push({ itemId: 3, value: task.endTime - task.startTime });
                             });
                             events.push({
                                 title: getTitles(taskDetails, vm.params.$settings().tasks, vm.params.$settings().taskFrameUsageSetting),
