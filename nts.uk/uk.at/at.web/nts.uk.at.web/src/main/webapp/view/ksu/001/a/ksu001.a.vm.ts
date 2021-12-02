@@ -3201,12 +3201,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let employment: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.employment,
                         employmentValue = _.filter(employment, item => !_.isEmpty(item.numberPeople));
                     
-                    let listMaxNumberPeople: Array<any> = [];
-                    let length = 0;
+                    let listMaxNumberPeopleEmp: Array<any> = [];
+                    let lengthEmp = 0;
                     _.forEach(employment, item => {
                         if (item.numberPeople.length > length) {
-                            length = item.numberPeople.length;
-                            listMaxNumberPeople = item.numberPeople;
+                            lengthEmp = item.numberPeople.length;
+                            listMaxNumberPeopleEmp = item.numberPeople;
                         }
                     });
                     
@@ -3232,9 +3232,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
                     
-                    let objGroup = _.groupBy(employmentData, 'code');
-                    _.forEach(listMaxNumberPeople, (item, index: number) => {
-                        let groupItem: Array<any> = objGroup[item.code];
+                    let objGroupEmp = _.groupBy(employmentData, 'code');
+                    _.forEach(listMaxNumberPeopleEmp, (item, index: number) => {
+                        let groupItem: Array<any> = objGroupEmp[item.code];
                         let objectEmployment = { sid: '' }, sumEmployment: any = '';
 	                    leftHorzContentDs.push({ 
 							id: 'id' + index, 
@@ -3273,12 +3273,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let classification: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.classification,
                         classificationValue = _.filter(classification, item => !_.isEmpty(item.numberPeople));
                     
-                    let listMaxNumberPeople: Array<any> = [];
-                    let length = 0;
+                    let listMaxNumberPeopleCls: Array<any> = [];
+                    let lengthCls = 0;
                     _.forEach(classification, item => {
                         if (item.numberPeople.length > length) {
-                            length = item.numberPeople.length;
-                            listMaxNumberPeople = item.numberPeople;
+                            lengthCls = item.numberPeople.length;
+                            listMaxNumberPeopleCls = item.numberPeople;
                         }
                     });
                     
@@ -3306,9 +3306,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					});
                     
 
-                    let objGroup = _.groupBy(classificationData, 'code');
-                    _.forEach(listMaxNumberPeople, (item, index: number) => {
-                        let groupItem: Array<any> = objGroup[item.code];
+                    let objGroupCls = _.groupBy(classificationData, 'code');
+                    _.forEach(listMaxNumberPeopleCls , (item, index: number) => {
+                        let groupItem: Array<any> = objGroupCls[item.code];
                         let objectClassification = { sid: '' }, sumClassification: any = '';
 	                    leftHorzContentDs.push({ 
 							id: 'id' + index, 
@@ -3347,12 +3347,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let jobTitleInfo: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
                         jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople));
                     
-                    let listMaxNumberPeople: Array<any> = [];
-                    let length = 0;
+                    let listMaxNumberPeoplePos: Array<any> = [];
+                    let lengthPos = 0;
                     _.forEach(jobTitleInfo, item => {
                         if (item.numberPeople.length > length) {
-                            length = item.numberPeople.length;
-                            listMaxNumberPeople = item.numberPeople;
+                            lengthPos = item.numberPeople.length;
+                            listMaxNumberPeoplePos = item.numberPeople;
                         }
                     });
 
@@ -3378,9 +3378,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
                     
-                    let objGroup = _.groupBy(jobTitleInfoData, 'code');
-					_.forEach(listMaxNumberPeople, (item, index: number) => {
-                        let groupItem: Array<any> = objGroup[item.code];
+                    let objGroupPos = _.groupBy(jobTitleInfoData, 'code');
+					_.forEach(listMaxNumberPeoplePos, (item, index: number) => {
+                        let groupItem: Array<any> = objGroupPos[item.code];
 						let objectJobTitle = { sid: '' }, sumJobTitleInfo: any = '';
 	                    leftHorzContentDs.push({ 
 							id: 'id' + index, 
