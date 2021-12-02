@@ -939,11 +939,16 @@ module nts.uk.ui.at.kdw013.a {
 
         over20TaskDays(dates){
             const vm = this;
+            const data = ko.unwrap(vm.$datas())
             let result = [];
             _.forEach(dates, date => {
                 let eventsInday = _.filter(vm.events(), e => moment(e.start).isSame(moment(date), 'days'));
-                if (_.flattenDeep(_.map(eventsInday, e => _.map(e.extendedProps.taskBlock.taskDetails, td => td.supNo))).length > 20) {
-                    result.push(moment(date).format(DATE_FORMAT));
+                let integrationOfDaily = _.filter(data.lstIntegrationOfDaily, id => moment(id.ymd).isSame(moment(date), 'days'));
+                let idNos = _.map(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.workNo);
+                let eventNos = _.flattenDeep(_.map(eventsInday, e => _.map(e.extendedProps.taskBlock.taskDetails, td => td.supNo)));
+                let removeItemNos = _.get(_.find(vm.removeList(), ri => moment(ri.date).isSame(moment(date), 'days')), 'supNos');
+                if (_.uniq([].concat(_.difference(idNos, removeItemNos), eventNos)).length > 20) {
+                    result.push(moment(date).format('YYYY/MM/DD'));
                 }
             });
             return result;
