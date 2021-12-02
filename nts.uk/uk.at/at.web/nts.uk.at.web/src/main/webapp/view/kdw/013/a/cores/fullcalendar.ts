@@ -3048,7 +3048,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const {lstIntegrationOfDaily} = data;
                             let maxNo = 20;
                             let resultNo;
-                            for (let i = 1; i < maxNo; i++) {
+                            for (let i = 1; i <= maxNo; i++) {
                                 let event = _.find(events, e => _.find(_.get(e, 'extendedProps.taskBlock.taskDetails', []), ['supNo', i]));
                                 let integrationOfDaily = _.find(lstIntegrationOfDaily, (id) => { return moment(start).isSame(moment(id.ymd), 'days'); });
                                 let ouenTime = _.find(_.get(integrationOfDaily, 'ouenTimeSheet', []), ot => ot.timeSheet.start.timeWithDay == null && ot.timeSheet.end.timeWithDay == null && ot.workNo == i)
