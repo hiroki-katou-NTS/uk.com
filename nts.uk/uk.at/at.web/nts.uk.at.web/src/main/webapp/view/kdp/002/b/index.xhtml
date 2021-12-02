@@ -68,8 +68,10 @@
 								<span id="text-b20-2" data-bind="i18n: 'KDP002_97'"></span>
 							</div>
 							<div data-bind="ifnot: $vm.modeNikoNiko">
-								<span id="text-b20-1" data-bind="i18n: resultDisplayTime"></span>
-								<span id="text-b20-2" data-bind="i18n: 'KDP002_48'"></span>
+								<div data-bind="if: $vm.modeZeroTime">
+									<span id="text-b20-1" data-bind="i18n: resultDisplayTime"></span>
+									<span id="text-b20-2" data-bind="i18n: 'KDP002_48'"></span>
+								</div>
 							</div>
 						</div>
 					</div>
