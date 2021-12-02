@@ -160,7 +160,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 							$('#kaf002TabPanel').width(680)							
 					}
                     else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                        $('#kaf002TabPanel').width(1000);
+                        $('#kaf002TabPanel').css('max-width', 1000);
                     }
                     else {
 							$('#kaf002TabPanel').width(550)							
@@ -289,7 +289,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 						$('#kaf002TabPanel').width(680)							
 				}
                 else if (self.selectedTab() === 'tab-1' || self.selectedTab() === 'tab-6') {
-                    $('#kaf002TabPanel').width(1000);
+                  $('#kaf002TabPanel').css('max-width', 1000);
+                  $('#kaf002TabPanel').css("width", "");
                 }
                 else {
 						$('#kaf002TabPanel').width(550)							
@@ -597,7 +598,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 $(buttonWorkplaceAtr).addClass('btn_workplace');
             }
 
-            let buttonWorkLocationAtr = 'td[aria-describedby ="' + id + '_workLocaitonCD"]';
+            let buttonWorkLocationAtr = 'td[aria-describedby ="' + id + '_workLocationCD"]';
             if ($(buttonWorkLocationAtr)) {
                 $(buttonWorkLocationAtr).addClass('btn_worklocation');
             }
