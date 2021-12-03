@@ -933,7 +933,7 @@ public class ScheduleCreatorExecutionTransaction {
 				if(!optEmploymentInfo.isPresent()) {
 					ScheduleErrorLog scheExeLog = ScheduleErrorLog.createErrorLog(internationalization,
 							command.getExecutionId(), creator.getEmployeeId(), dateInPeriod,
-							"Msg_1156");
+							"Msg_1156", "#Com_Person");
 					// ドメインモデル「スケジュール作成エラーログ」を返す
 					preWork.setExecutionLog(Optional.of(scheExeLog));
 					return preWork;
