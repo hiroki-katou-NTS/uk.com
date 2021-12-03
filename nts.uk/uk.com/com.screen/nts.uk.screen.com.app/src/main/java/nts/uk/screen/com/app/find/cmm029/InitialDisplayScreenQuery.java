@@ -39,7 +39,7 @@ public class InitialDisplayScreenQuery {
 	public List<DisplayDataDto> findDisplayData() {
 		String cid = AppContexts.user().companyId();
 		// 1. 標準メニューを取得する(会社ID＝Input. 会社ID)
-		List<StandardMenu> standardMenus = this.standardMenuRepository.findAll(cid);
+		List<StandardMenu> standardMenus = this.standardMenuRepository.findAll1(cid);
 		// 2. 勤務の設定機能を取得する
 		// 3. 休暇の設定機能を取得する
 		// 4. 休日の設定機能を取得する
