@@ -992,7 +992,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
             computedOnedayDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
                 const vm =this;
-                vm.onedayDragItems([]);
+                $( "#one-day-fav" ).html('');
                 if (datas && settings) {
                     const { workGroupDtos } = datas;
                     const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrders} = settings;
@@ -4128,8 +4128,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
                     let clickOnMaster = $(tg).closest('#master-content').length > 0 ;
                     let notClickOnbreakTime = !$(tg).closest('.fc-ckb-break-time').length > 0;
+                    let notClickOnEventNote = !$(tg).closest('.fc-event-note').length > 0;
                     
-                    if (clickOnMaster  && notClickOnbreakTime)
+                    if (clickOnMaster  && notClickOnbreakTime && notClickOnEventNote)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {
