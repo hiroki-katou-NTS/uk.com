@@ -18,10 +18,10 @@ public class AttItemNameDto {
 
 	public Integer attendanceItemId;
 	
-	// 	・勤怠項目.名称 ←「表示名称」 (to ver7)
-	public String displayName;
-	
 	//	・勤怠項目.旧名称 ←「名称」(to ver7)
+	public String oldName;
+	
+	// 	・勤怠項目.名称 ←「表示名称」 (to ver7)
 	public String attendanceItemName;
 	
 	public Integer attendanceItemDisplayNumber;
@@ -45,7 +45,7 @@ public class AttItemNameDto {
 	public AttItemNameDto(AttItemName domain) {
 		super();
 		this.attendanceItemId = domain.getAttendanceItemId();
-		this.displayName = domain.getDisplayName();
+		this.oldName = domain.getOldName();
 		this.attendanceItemName = domain.getAttendanceItemName();
 		this.attendanceItemDisplayNumber = domain.getAttendanceItemDisplayNumber();
 		this.userCanUpdateAtr = domain.getUserCanUpdateAtr();

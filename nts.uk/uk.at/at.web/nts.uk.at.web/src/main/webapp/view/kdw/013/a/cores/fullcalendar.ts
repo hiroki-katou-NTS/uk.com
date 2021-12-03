@@ -910,6 +910,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
         computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcess | null){
                 const vm =this;
+                vm.taskDragItems([]);
                 if (datas && settings) {
                     const { tasks ,favTaskItems ,favTaskDisplayOrders } = settings;
 
@@ -991,6 +992,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
             computedOnedayDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
                 const vm =this;
+                $( "#one-day-fav" ).html('');
                 if (datas && settings) {
                     const { workGroupDtos } = datas;
                     const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrders} = settings;
@@ -1035,10 +1037,10 @@ module nts.uk.ui.at.kdw013.calendar {
                             // update dragger items
                             vm.onedayDragItems(draggers);
                             if (!$('#one-day-fav').hasClass("ui-sortable")) {
-                              $('#one-day-fav').sortable({
-                                forcePlaceholderSize: true,
-                                axis: "y",
-                                update: function( event, ui ) {
+                                $('#one-day-fav').sortable({
+                                    forcePlaceholderSize: true,
+                                    axis: "y",
+                                    update: function(event, ui) {
                                         $("#one-day-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
@@ -1046,20 +1048,20 @@ module nts.uk.ui.at.kdw013.calendar {
                                             let element = rows[i - 1];
                                             sortedList.push({ favId: $(element).attr("data-favId"), order: i });
                                         }
-                                    
-                                        let item = _.find(sortedList,['favId', $(ui.item).attr('data-favId')]);
+
+                                        let item = _.find(sortedList, ['favId', $(ui.item).attr('data-favId')]);
 
                                         let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
 
                                         vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_one_day_dis_order', command))
-                                                .done(() => {
-                                                    vm.params.screenA.reloadOneDayFav();
-                                                }).always(() => vm.$blockui('clear'));
-                                },
-                                out: function(event, ui) {
-                                    $("#one-day-fav").sortable("cancel");
-                                }
-                            }); 
+                                            .done(() => {
+                                                vm.params.screenA.reloadOneDayFav();
+                                            }).always(() => vm.$blockui('clear'));
+                                    },
+                                    out: function(event, ui) {
+                                        $("#one-day-fav").sortable("cancel");
+                                    }
+                                });
                             }
                             
                             return;
@@ -1374,7 +1376,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             id: randomId(),
                                             status: 'normal',
                                             isTimeBreak: true,
-                                            isChanged: true,
+                                            isChanged: false,
                                             taskBlock: {
                                                 manHrContents,
                                                 taskDetails: []
@@ -2586,6 +2588,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.selectedEvents = [{ start, end }, ...rels];
 
                     event.setExtendedProp('isChanged', true);
+                    
                     // update data sources
                     //mutatedEvents();
 
@@ -2682,7 +2685,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const [first] = oEvents;
                             const currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
                             currentEvent.setEnd(first.start);
-
+                            vm.params.screenA.dataChanged(true);
                         } else {
                             oEvents = _.chain(IEvents)
                                 .filter((evn) => {
@@ -2699,7 +2702,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             if (oEvents.length) {
                                 
                                  vm.revertEvent([arg.oldEvent], $caches);
-
+                                return;
                             }
                         }
                     }else{
@@ -2752,7 +2755,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             }                            
                         }
                     }
-                    
+                    vm.params.screenA.dataChanged(true);
                     
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
@@ -4126,8 +4129,9 @@ module nts.uk.ui.at.kdw013.calendar {
                     //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
                     let clickOnMaster = $(tg).closest('#master-content').length > 0 ;
                     let notClickOnbreakTime = !$(tg).closest('.fc-ckb-break-time').length > 0;
+                    let notClickOnEventNote = !$(tg).closest('.fc-event-note').length > 0;
                     
-                    if (clickOnMaster  && notClickOnbreakTime)
+                    if (clickOnMaster  && notClickOnbreakTime && notClickOnEventNote)
                         evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {
