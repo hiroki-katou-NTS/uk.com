@@ -1,0 +1,23 @@
+
+.A_4 span {
+    width: 140px;
+} 
+
+table span{
+    width: 182px;
+}
+tr {
+    padding: 10px;
+}
+#A1_1.disabled {
+	opacity: 0.3;
+	pointer-events: none;
+}
+#A1_2.disabled {
+	opacity: 0.3;
+	pointer-events: none;
+}
+
+.A_4.disabled {
+    display: none;
+}
