@@ -2587,7 +2587,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     event.setExtendedProp('isChanged', true);
                     // update data sources
-                    mutatedEvents();
+                    //mutatedEvents();
 
                     // add new event (no save) if new event is dragging
                     if (!title && extendedProps.status === 'new' && !rels.length) {
@@ -2628,18 +2628,17 @@ module nts.uk.ui.at.kdw013.calendar {
                             .value();
                     
                     const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
-                    
-                    if (extendedProps.isTimeBreak) {
-                        
-                        if (!moment(arg.oldEvent.start).isSame(start, 'days')) {
-                            vm.revertEvent(arg.oldEvent, $caches);
+                    const relBk = _.find(relatedEvents,re => re.extendedProps.isTimeBreak);
+                    if (extendedProps.isTimeBreak || relBk) {
+                        if (arg.delta.days != 0) {
+                            arg.revert();
                             return;
                         }
                         
                         const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
                         const orverideBreak = _.filter(breakInday, br => moment(br.start).isSameOrBefore(start) && moment(br.end).isAfter(start) && (br.extendedProps.id != extendedProps.id));
                         if (orverideBreak.length) {
-                            vm.revertEvent(arg.oldEvent, $caches);
+                            vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
                         
@@ -2649,8 +2648,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         const startAsMinites = (moment(start).hour() * 60) + moment(start).minute();
                         const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
-                        if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440)){
-                            vm.revertEvent(arg.oldEvent, $caches);
+                        if (startAsMinites < _.get(bh, 'start', 0) || endAsMinites > _.get(bh, 'end', 1440) || !moment(start).isSame(end,'days')){
+                            vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
                         
@@ -2699,7 +2698,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                             if (oEvents.length) {
                                 
-                                 vm.revertEvent(arg.oldEvent , $caches);
+                                 vm.revertEvent([arg.oldEvent], $caches);
 
                             }
                         }
@@ -2803,13 +2802,13 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         //valid another day
                         if (!moment(arg.oldEvent.end).isSame(end, 'days')) {
-                            vm.revertEvent(arg.oldEvent, $caches);
+                            vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
                         const breakInday = _.filter(events(), e => moment(e.start).isSame(start, 'days') && e.extendedProps.isTimeBreak);
                         const orverideBreak = _.filter(breakInday, br => moment(br.start).isBefore(end) && (br.extendedProps.id != extendedProps.id));
                         if (orverideBreak.length) {
-                            vm.revertEvent(arg.oldEvent, $caches);
+                            vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
                         
@@ -2819,7 +2818,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         
                         const endAsMinites = (moment(end).hour() * 60) + moment(end).minute();
                         if (endAsMinites > _.get(bh, 'end', 1440)){
-                            vm.revertEvent(arg.oldEvent, $caches);
+                            vm.revertEvent([arg.oldEvent], $caches);
                             return;
                         }
                         return;
@@ -3539,30 +3538,32 @@ module nts.uk.ui.at.kdw013.calendar {
                 return items;
             }
 
-           public revertEvent(oldEvent, caches){
-                let vm = this;
-                _.each(vm.calendar.getEvents(), (e: EventApi) => {
+           public revertEvent(oldEvents, caches){
+              let vm = this;
+              _.forEach(oldEvents, oldEvent => {
 
-                    if (e.extendedProps.id === oldEvent.extendedProps.id) {
-                        e.setExtendedProp('status', 'delete');
-                        e.remove();
-                        caches.new(null);
-                    }
-                });
-                let newEvent = vm.calendar
-                    .addEvent({
-                        id: randomId(),
-                        backgroundColor: oldEvent.backgroundColor,
-                        title: oldEvent.title,
-                        start: oldEvent.start,
-                        end: oldEvent.end,
-                        borderColor: oldEvent.borderColor,
-                        groupId: oldEvent.groupId,
-                        extendedProps: oldEvent.extendedProps
-                    });
-                caches.new(newEvent);
+                  _.each(vm.calendar.getEvents(), (e: EventApi) => {
 
-            }
+                      if (e.extendedProps.id === oldEvent.extendedProps.id) {
+                          e.setExtendedProp('status', 'delete');
+                          e.remove();
+                          caches.new(null);
+                      }
+                  });
+                  let newEvent = vm.calendar
+                      .addEvent({
+                          id: randomId(),
+                          backgroundColor: oldEvent.backgroundColor,
+                          title: oldEvent.title,
+                          start: oldEvent.start,
+                          end: oldEvent.end,
+                          borderColor: oldEvent.borderColor,
+                          groupId: oldEvent.groupId,
+                          extendedProps: oldEvent.extendedProps
+                      });
+                  caches.new(newEvent);
+              });
+          }
 
         public destroyed() {
             const vm = this;
