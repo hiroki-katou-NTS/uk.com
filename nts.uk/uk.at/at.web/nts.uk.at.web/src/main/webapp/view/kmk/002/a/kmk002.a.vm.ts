@@ -2366,7 +2366,7 @@ module nts.uk.at.view.kmk002.a {
                 let hours : number =Math.floor( time/ 60);
                 let minutes :number  = time % 60;
                 if(numbeMminutes < 0){
-                    return   "( -" + hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString()) +")";
+                    return   "(-" + hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString()) +")";
                 }else {
                     return hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString());
                 }
