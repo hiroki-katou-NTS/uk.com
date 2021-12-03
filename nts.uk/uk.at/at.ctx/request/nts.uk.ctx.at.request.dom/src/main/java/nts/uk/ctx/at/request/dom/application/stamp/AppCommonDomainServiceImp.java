@@ -137,23 +137,27 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		appStampOutput.setMaxOfCheer(supportOperationSetting.getMaxNumberOfSupportOfDay().v());
 		
 		// 応援の運用設定.利用するか　＝　true
-		if (supportOperationSetting.isSupportDestinationCanSpecifySupporter()) {
-			List<String> workLocationCDs = Stream.of(stampRecordOutput.getWorkingTime()
+		if (supportOperationSetting.isUsed()) {
+			List<String> workLocationCDs = stampRecordOutput != null 
+					? Stream.of(stampRecordOutput.getWorkingTime()
 													 	   , stampRecordOutput.getExtraordinaryTime()
 													 	   , stampRecordOutput.getSupportTime())
 													.flatMap(Collection::stream)
 													.map(t -> t.getOpWorkLocationCD().orElse(null))
 													.filter(Objects::nonNull)
 													.map(WorkLocationCD::v)
-													.collect(Collectors.toList());
+													.collect(Collectors.toList())
+					: Collections.emptyList();
 			                    					  
-			List<WorkplaceId> workplaceIds = Stream.of(stampRecordOutput.getWorkingTime()
+			List<WorkplaceId> workplaceIds = stampRecordOutput != null 
+					? Stream.of(stampRecordOutput.getWorkingTime()
 										 	   		 , stampRecordOutput.getExtraordinaryTime()
 										 	   		 , stampRecordOutput.getSupportTime())
 													.flatMap(Collection::stream)
 													.map(TimePlaceOutput::getWorkplaceId)
 													.filter(Objects::nonNull)
-													.collect(Collectors.toList()); 
+													.collect(Collectors.toList())
+					: Collections.emptyList(); 
 			WkpWorkLocationName wkpWorkLocationName = this.findWkpAndWorkLocationName(
 					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getWkpDisAtr().isUse(),
 					appStampSettingOptional.isPresent() && appStampSettingOptional.get().getUseLocationSelection().isUse(),
