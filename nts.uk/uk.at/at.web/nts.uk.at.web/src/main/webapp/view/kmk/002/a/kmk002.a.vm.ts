@@ -2358,13 +2358,18 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 return self.formulaAtr() == EnumAdaptor.valueOf('TIME', Enums.ENUM_OPT_ITEM.formulaAtr);
             }
-            public formatTime(time:number):string {
-                if(time == 0){
+            public formatTime(numbeMminutes:number):string {
+                if(numbeMminutes == 0){
                     return "0:00";
                 }
-                let hours : number = Math.floor( time/ 60);
+                let time = Math.abs(numbeMminutes);
+                let hours : number =Math.floor( time/ 60);
                 let minutes :number  = time % 60;
-                return hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString());
+                if(numbeMminutes < 0){
+                    return   "( -" + hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString()) +")";
+                }else {
+                    return hours.toString()+ ":" + (minutes == 0 ? "00" : minutes.toString());
+                }
             }
 
             /**
