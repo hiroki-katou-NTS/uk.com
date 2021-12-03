@@ -910,6 +910,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
         computedTaskDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcess | null){
                 const vm =this;
+                vm.taskDragItems([]);
                 if (datas && settings) {
                     const { tasks ,favTaskItems ,favTaskDisplayOrders } = settings;
 
@@ -991,6 +992,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
             computedOnedayDragItems(datas: a.ChangeDateDto | null, settings: a.StartProcessDto | null){
                 const vm =this;
+                vm.onedayDragItems([]);
                 if (datas && settings) {
                     const { workGroupDtos } = datas;
                     const { tasks, oneDayFavSets, oneDayFavTaskDisplayOrders} = settings;
@@ -1035,10 +1037,10 @@ module nts.uk.ui.at.kdw013.calendar {
                             // update dragger items
                             vm.onedayDragItems(draggers);
                             if (!$('#one-day-fav').hasClass("ui-sortable")) {
-                              $('#one-day-fav').sortable({
-                                forcePlaceholderSize: true,
-                                axis: "y",
-                                update: function( event, ui ) {
+                                $('#one-day-fav').sortable({
+                                    forcePlaceholderSize: true,
+                                    axis: "y",
+                                    update: function(event, ui) {
                                         $("#one-day-fav").sortable("destroy");
                                         let rows = $(event.target).find('li.title');
                                         let sortedList = [];
@@ -1046,20 +1048,20 @@ module nts.uk.ui.at.kdw013.calendar {
                                             let element = rows[i - 1];
                                             sortedList.push({ favId: $(element).attr("data-favId"), order: i });
                                         }
-                                    
-                                        let item = _.find(sortedList,['favId', $(ui.item).attr('data-favId')]);
+
+                                        let item = _.find(sortedList, ['favId', $(ui.item).attr('data-favId')]);
 
                                         let command = { reorderedId: $(ui.item).attr('data-favId'), beforeOrder: $(ui.item).attr('data-order'), afterOrder: item.order };
 
                                         vm.$blockui('grayout').then(() => vm.$ajax('at', '/screen/at/kdw013/a/update_one_day_dis_order', command))
-                                                .done(() => {
-                                                    vm.params.screenA.reloadOneDayFav();
-                                                }).always(() => vm.$blockui('clear'));
-                                },
-                                out: function(event, ui) {
-                                    $("#one-day-fav").sortable("cancel");
-                                }
-                            }); 
+                                            .done(() => {
+                                                vm.params.screenA.reloadOneDayFav();
+                                            }).always(() => vm.$blockui('clear'));
+                                    },
+                                    out: function(event, ui) {
+                                        $("#one-day-fav").sortable("cancel");
+                                    }
+                                });
                             }
                             
                             return;
