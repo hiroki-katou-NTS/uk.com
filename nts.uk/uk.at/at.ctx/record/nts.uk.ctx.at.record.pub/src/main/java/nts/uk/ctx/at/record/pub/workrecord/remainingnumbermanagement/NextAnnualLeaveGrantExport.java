@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt;
@@ -15,7 +16,7 @@ public class NextAnnualLeaveGrantExport {
 	/** 付与年月日 */
 	public GeneralDate grantDate;
 	/** 付与日数 */
-	public GrantDays grantDays;
+	public LeaveGrantDayNumber grantDays;
 	/** 回数 */
 	public GrantNum times;
 	/** 時間年休上限日数 */

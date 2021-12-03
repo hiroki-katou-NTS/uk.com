@@ -335,9 +335,9 @@ public class TotalWorkingTime {
 		val shotrTime = ShortWorkTimeOfDaily.calcShortWorkTime(reGetClass, PremiumAtr.RegularWork);
 		
 		//加給時間
-		val raiseTime = RaiseSalaryTimeOfDailyPerfor.calcBonusPayTime(reGetClass.getCalculationRangeOfOneDay(),
-				reGetClass.getIntegrationOfDaily().getCalAttr().getRasingSalarySetting(), bonusPayAutoCalcSet,
-				reGetClass.getIntegrationOfDaily().getCalAttr());
+		val raiseTime = RaiseSalaryTimeOfDailyPerfor.calcBonusPayTime(recordClass.getCalculationRangeOfOneDay(),
+				recordClass.getCompanyCommonSetting().getBpTimeItemSetting(),
+				recordClass.getIntegrationOfDaily().getCalAttr());
 		//勤務回数
 		val workCount = new WorkTimes(workCounter(reGetClass.getCalculationRangeOfOneDay()));
 		
@@ -1057,8 +1057,8 @@ public class TotalWorkingTime {
 				AttendanceTime excessRow = this.totalCalcTime.minusMinutes(recordClass.getDailyUnit().getDailyTime().valueAsMinutes());
 				//全残業枠時間＋
 				if(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().isPresent()) {
-					final AttendanceTime withinRow = new AttendanceTime(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTotalFrameTime()
-											   					  + this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTransTotalFrameTime()
+					final AttendanceTime withinRow = new AttendanceTime(this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTotalFrameTime().v()
+											   					  + this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().calcTransTotalFrameTime().v()
 											   					  - excessRow.valueAsMinutes());
 					//法定内残業とする時間を計算する
 					this.excessOfStatutoryTimeOfDaily.getOverTimeWork().ifPresent(tc ->{

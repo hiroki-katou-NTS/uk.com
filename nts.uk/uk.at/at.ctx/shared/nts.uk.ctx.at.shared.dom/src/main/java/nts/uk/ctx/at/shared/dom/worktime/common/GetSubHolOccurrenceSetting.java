@@ -19,6 +19,16 @@ public class GetSubHolOccurrenceSetting {
 
 	public static Optional<SubHolTransferSet> process(Require require, String cid, Optional<String> workTimeCode,
 			CompensatoryOccurrenceDivision originAtr) {
+		
+		//	$代休管理設定
+		val comLeavSet = require.findCompensatoryLeaveComSet(cid);
+		//	if($代休管理設定.is not Present())
+		if (comLeavSet == null)
+			return Optional.empty();
+		if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime) && !comLeavSet.isManagedTime()) {
+			return Optional.empty();
+		}
+
 		Optional<WorkTimezoneCommonSet> commonset = Optional.empty();
 		if (workTimeCode.isPresent()) {
 			Optional<WorkTimeSetting> workTimeSet = require.workTimeSetting(cid, new WorkTimeCode(workTimeCode.get()));

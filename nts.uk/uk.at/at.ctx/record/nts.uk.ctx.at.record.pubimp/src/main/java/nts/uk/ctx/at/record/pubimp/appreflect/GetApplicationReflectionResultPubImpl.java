@@ -333,11 +333,6 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		}
 
 		@Override
-		public String getCId() {
-			return companyId;
-		}
-
-		@Override
 		public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
 			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, workTimeCode);
 		}

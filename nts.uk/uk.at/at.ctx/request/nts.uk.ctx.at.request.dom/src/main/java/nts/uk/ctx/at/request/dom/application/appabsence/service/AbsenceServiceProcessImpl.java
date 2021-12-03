@@ -127,7 +127,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeUseInfor;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -2182,7 +2182,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput(), 
                 Arrays.asList(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
                 Optional.of(timeDigestionParam), 
-                false);
+                false, 
+                Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
+                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 
         // 休暇申請登録時チェック処理
         List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates);
@@ -2552,7 +2554,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 EnumAdaptor.valueOf(application.getAppType().value, ApplicationType.class), 
                 Optional.ofNullable(workTypeCode), 
                 Optional.ofNullable(workTimeCode), 
-                new ArrayList<VacationTimeInforNew>(), 
+                new ArrayList<VacationTimeUseInfor>(), 
                 Optional.empty(), 
                 Optional.empty(), 
                 application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),

@@ -102,6 +102,8 @@ public class DailyHolidayWorkPubImpl implements DailyHolidayWorkPub{
 			return this.historyCache.get(employeeId, baseDate);
 		}
 		
+		//private CheckDateForManageCmpLeaveService checkDateForManageCmpLeaveService;
+			//this.checkDateForManageCmpLeaveService = checkDateForManageCmpLeaveService;
 		@Override
 		public Optional<WorkTimeSetting> workTimeSetting(String companyId, WorkTimeCode workTimeCode) {
 			return workTimeSettingRepo.findByCode(companyId, workTimeCode.v());

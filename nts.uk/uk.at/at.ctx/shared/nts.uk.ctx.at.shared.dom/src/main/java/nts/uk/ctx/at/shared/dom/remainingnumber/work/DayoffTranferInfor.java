@@ -3,19 +3,14 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.work;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 /**
  * 代休振替情報
  * @author do_dt
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 @Getter
 public class DayoffTranferInfor {
 	/**	就業時間帯コード */
@@ -24,6 +19,23 @@ public class DayoffTranferInfor {
 	private Optional<TranferTimeInfor> tranferBreakTime;
 	/**	振替残業時間 */
 	private Optional<TranferTimeInfor> tranferOverTime;
+	
+	public DayoffTranferInfor(Optional<String> workTimeCode, Optional<TranferTimeInfor> tranferBreakTime,
+			Optional<TranferTimeInfor> tranferOverTime) {
+		this.workTimeCode = workTimeCode;
+		this.tranferBreakTime = tranferBreakTime;
+		this.tranferOverTime = tranferOverTime;
+		validate();
+	}
+	
+	// inv-1
+	private void validate() {
+		if ((tranferBreakTime.isPresent() && !tranferOverTime.isPresent())
+				|| (!tranferBreakTime.isPresent() && tranferOverTime.isPresent()))
+			return;
+		throw new BusinessException("DayoffTranferInfor validate");
+	}
+	
 	/**
 	 * 振替時間情報を取得する
 	 * @return
@@ -60,6 +72,16 @@ public class DayoffTranferInfor {
 			afterData.setDays(Optional.of(tmp));
 		}
 		return afterData;
+	}
+
+	//作成元区分を取得する
+	public CreateAtr getCreateAtr() {
+		validate();
+		if (this.getTranferBreakTime().isPresent())
+			return this.getTranferBreakTime().get().getCreateAtr();
+		if (this.getTranferOverTime().isPresent())
+			return this.getTranferOverTime().get().getCreateAtr();
+		throw new BusinessException("DayoffTranferInfor validate");
 	}
 
 }

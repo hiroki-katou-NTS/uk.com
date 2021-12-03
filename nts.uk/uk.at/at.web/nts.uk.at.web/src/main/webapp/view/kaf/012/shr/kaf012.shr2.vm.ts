@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
     const template = `
     <div id="kaf012-share-component2">
         <div class="control-group table" style="margin-bottom: 13px">
-            <div class="cell valign-center" style="padding-right: 3px" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
+            <div class="cell valign-center" style="padding-right: 3px" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_5')}"></div>
             <div class="cell valign-center" id="leave-type-switch"
                 data-bind="ntsSwitchButton: {
 						name: $i18n('KAF012_5'),

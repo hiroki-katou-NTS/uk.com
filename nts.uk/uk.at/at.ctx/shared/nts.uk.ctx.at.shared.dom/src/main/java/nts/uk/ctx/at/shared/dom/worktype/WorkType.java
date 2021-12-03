@@ -335,6 +335,7 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 	 *
 	 * @return the work type set
 	 */
+	//勤務種類設定を取得する
 	public WorkTypeSet getWorkTypeSet() {
 		// 1日
 		if (this.isOneDay()) {
@@ -686,4 +687,35 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 		return Optional.empty();
 	}
+	
+	//[10] 代休が発生する勤務種類かどうか判断する
+	public boolean isSubstituteHolidayOccurs() {
+		WorkStyle style = this.checkWorkDay();
+		if(style.equals(WorkStyle.ONE_DAY_REST))
+			return false;
+		
+		if(this.isHolidayWork())
+			return this.getWorkTypeSet().getGenSubHodiday().isCheck();
+		
+		return true;
+	}
+
+	/**
+	 * 出勤時刻自動セットであるか
+	 * @return
+	 */
+	public boolean isAttendanceTimeAutoSet() {
+		return this.workTypeSetList.stream().anyMatch( 
+				workTimeSetting -> workTimeSetting.getAttendanceTime() == WorkTypeSetCheck.CHECK);
+	}
+	
+	/**
+	 * 退勤時刻自動セットであるか
+	 * @return
+	 */
+	public boolean isLeaveTimeAutoSet() {
+		return this.workTypeSetList.stream().anyMatch(
+				workTimeSetting -> workTimeSetting.getTimeLeaveWork() == WorkTypeSetCheck.CHECK);
+	}
+	
 }

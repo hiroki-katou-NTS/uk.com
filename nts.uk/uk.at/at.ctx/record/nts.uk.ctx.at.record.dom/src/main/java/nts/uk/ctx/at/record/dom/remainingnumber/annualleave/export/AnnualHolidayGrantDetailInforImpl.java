@@ -63,14 +63,15 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				Integer vacation = dw == null ? null : (dw.isOneDay() ? 0 : (dw.IsLeaveForMorning() ? 1 : 2));
 				// Fix bug in case of flex
 				if (vacation == null && annData.getCreatorAtr().equals(CreateAtr.FLEXCOMPEN)) {
-					vacation = annData.getUsedNumber().getDays().greaterThan(0.5) ? 0 : 1;
+					vacation = annData.getUsedNumber().getUsedDayNumber().map(mapper->mapper.greaterThan(0.5) ? 0 : 1).orElse(0);
 				}
 
 				AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid, annData.getYmd(),
 						AnnualLeaveUsedNumber.of(
-								Optional.ofNullable(new AnnualLeaveUsedDayNumber(annData.getUsedNumber().getDays().v())),
+								Optional.ofNullable(new AnnualLeaveUsedDayNumber(
+										annData.getUsedNumber().getUsedDayNumber().map(mapper->mapper.v()).orElse(0.0))),
 								Optional.ofNullable(new UsedMinutes(
-										annData.getUsedNumber().getMinutes().map(minute -> minute.v()).orElse(0)))),
+										annData.getUsedNumber().getUsedTime().map(minute -> minute.v()).orElse(0)))),
 						x.isReferenceFlg() ? ReferenceAtr.RECORD
 								: ((annData.getCreatorAtr() == CreateAtr.RECORD
 										|| annData.getCreatorAtr() == CreateAtr.FLEXCOMPEN) ? ReferenceAtr.RECORD

@@ -19,8 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSettingOfWorking
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -55,7 +54,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
@@ -663,26 +661,18 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	/**
 	 * 就業時間内時間帯に入っている加給時間の計算
 	 * アルゴリズム：加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
-	 * @param bonusPayAtr 加給区分
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 加給時間(List)
 	 */
-	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyAttd calcAtrOfDaily) {
+	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
 			bonusPayList.addAll(timeFrame.calcBonusPay(
 					ActualWorkTimeSheetAtr.WithinWorkTime,
-					raisingAutoCalcSet,
-					bonusPayAutoCalcSet,
-					calcAtrOfDaily,
-					bonusPayAtr));
+					bpTimeItemSets,
+					calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
 		return sumBonusPayTime(bonusPayList);
@@ -691,26 +681,18 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	/**
 	 * 就業時間内時間帯に入っている特定加給時間の計算
 	 * アルゴリズム：加給時間の計算
-	 * @param raisingAutoCalcSet 加給の自動計算設定
-	 * @param bonusPayAutoCalcSet 加給自動計算設定
-	 * @param bonusPayAtr 加給区分
+	 * @param bpTimeItemSets 加給自動計算設定
 	 * @param calcAtrOfDaily 日別実績の計算区分
 	 * @return 特定加給時間(List)
 	 */
-	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(
-			AutoCalRaisingSalarySetting raisingAutoCalcSet,
-			BonusPayAutoCalcSet bonusPayAutoCalcSet,
-			BonusPayAtr bonusPayAtr,
-			CalAttrOfDailyAttd calcAtrOfDaily) {
+	public List<BonusPayTime> calcSpecifiedBonusPayTimeInWithinWorkTime(List<BPTimeItemSetting> bpTimeItemSets, CalAttrOfDailyAttd calcAtrOfDaily) {
 		
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
 			bonusPayList.addAll(timeFrame.calcSpacifiedBonusPay(
 					ActualWorkTimeSheetAtr.WithinWorkTime,
-					raisingAutoCalcSet,
-					bonusPayAutoCalcSet,
-					calcAtrOfDaily,
-					bonusPayAtr));
+					bpTimeItemSets,
+					calcAtrOfDaily));
 		}
 		//同じNo同士はここで加算し、Listのサイズを減らす
 		return sumBonusPayTime(bonusPayList);
@@ -1112,20 +1094,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			// 上限実働就業時間をセット
 			this.limitActualWorkTime = Optional.of(new AttendanceTime(elapsedMinutes));
 			
-			for(TimeSheetOfDeductionItem item : deductionTimeSheet.getForDeductionTimeZoneList()) {
-				// 重複している時間帯
-				Optional<TimeSpanForDailyCalc> overlapptingTime =
-						item.getTimeSheet().getDuplicatedWith(new TimeSpanForDailyCalc(startTime, endTime));
-				if(!overlapptingTime.isPresent()) continue;
-				// 重複していた時、対象の控除時間帯から重複開始時刻以降の時間帯を取り出す
-				TimeSheetOfDeductionItem diffSheet = item.reCreateOwn(overlapptingTime.get().getStart(), false);
-				// 控除時間の計算
-				int deductTime = diffSheet.calcTotalTime(NotUseAtr.USE, NotUseAtr.NOT_USE).valueAsMinutes();
-				if (deductTime > 0){
-					// 控除時間分、終了時刻をズラす
-					endTime = endTime.forwardByMinutes(deductTime);
-				}
-			}
+			// 控除時間帯と重複している分、退勤時刻を後ろにずらす
+			endTime = new TimeSpanForDailyCalc(startTime, endTime).forwardByDeductionTime(deductionTimeSheet.getForDeductionTimeZoneList());
+			
 		}
 		// 残業開始時刻
 		TimeWithDayAttr startOverTime = endTime;

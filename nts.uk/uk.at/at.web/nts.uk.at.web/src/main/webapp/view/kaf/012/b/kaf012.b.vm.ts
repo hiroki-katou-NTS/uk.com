@@ -244,15 +244,19 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             || applyTime.careAppTime > 0
                             || applyTime.super60AppTime > 0
                             || applyTime.specialAppTime > 0) {
-                            details.push({
-                                appTimeType: row.appTimeType,
-                                timeZones: [{
-                                    workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
-                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.scheduledTime() : row.timeZones[0].startTime(),
-                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : row.scheduledTime(),
-                                }],
-                                applyTime: applyTime
-                            });
+                                let detail = {
+                                    appTimeType: row.appTimeType,
+                                    timeZones: [{
+                                        workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                                        startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.scheduledTime() : row.timeZones[0].startTime(),
+                                        endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : row.scheduledTime(),
+                                    }],
+                                    applyTime: applyTime
+                                }
+                                if (_.filter(detail.timeZones, timeZone => timeZone.endTime && timeZone.startTime).length === 0) {
+                                    detail.timeZones = [];
+                                }
+                                details.push(detail);
                         }
                     } else {
                         const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == GoingOutReason.PRIVATE && z.enableInput() && (!!z.startTime() || !!z.endTime()));
@@ -342,6 +346,13 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     }
                 }
             });
+            
+            let dfd = $.Deferred();
+            if (errors.length > 0) {
+                nts.uk.ui.dialog.bundledErrors({ errors: errors });
+                dfd.reject(false);
+                return dfd.promise();
+            }
 
             vm.$blockui("show");
             return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component5-comboReason')
@@ -378,12 +389,23 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 							CommonProcess.handleMailResult(result, vm);
 						});
                     }
+                }).then((result: any) => {
+                    if (result) {
+                        return dfd.resolve(true);
+                    }
                 }).fail(err => {
                     // vm.handleError(err);
                     if (err.messageId == "Msg_1687") {
                         $(vm.$el).find('leave-type-switch').focus();
                     }
-                }).always(() => vm.$blockui("hide"));
+                    if (err) {
+                        return dfd.reject(false);
+                    }
+                }).always(() => {
+                    vm.$blockui("hide");
+                    return dfd.promise();
+                });
+                
         }
 
         handleConfirmMessage(listMes: any, res: any): any {

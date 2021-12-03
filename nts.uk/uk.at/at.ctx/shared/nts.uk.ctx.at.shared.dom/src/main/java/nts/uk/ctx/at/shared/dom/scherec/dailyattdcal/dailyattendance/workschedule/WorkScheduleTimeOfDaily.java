@@ -5,12 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.HolidayTimesheetCalculationSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.OvertimeTimesheetCalculationSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.WorkingTimesheetCalculationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -76,19 +71,10 @@ public class WorkScheduleTimeOfDaily {
 		//変動させる場合にしか呼ばれない為、引数として渡す「所定変動区分」には「変動しない」以外が入っている。
 		scheduleManageReGetClass.getWorkTimezoneCommonSet().get().getShortTimeWorkSet().correctDataForFixedChange(flowOTSet.getFixedChangeAtr());
 		
-		//総労働時間計算用にクラスを作成
-		//加給時間計算設定
-		String companyId = companyCommonSetting.getCompensatoryLeaveComSet().getCompanyId();
-		BonusPayAutoCalcSet bonusPayAutoCalcSet = new BonusPayAutoCalcSet(new CompanyId(companyId), 1,
-				WorkingTimesheetCalculationSetting.CalculateAutomatic,
-				OvertimeTimesheetCalculationSetting.CalculateAutomatic,
-				HolidayTimesheetCalculationSetting.CalculateAutomatical);
-		
 		//時刻から所定時間を計算
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
 				scheduleManageReGetClass,
 				Optional.empty(),
-				bonusPayAutoCalcSet,
 				new DeclareTimezoneResult());
 		
 		//設定を元に戻す

@@ -373,7 +373,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			procDate = procDate.addDays(1);
 		}
 		
-		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, new ArrayList<>());
+		return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
 	}
 	
 	/**
@@ -793,7 +793,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		AttendanceTimeMonthWithMinus totalFlexTime = this.flexTime.getTimeSeriesTotalFlexTime(period, false);
 		
 		// フレックス対象時間を集計する
-		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(period, aggregateTotalWorkingTime);
+		AttendanceTimeMonthWithMinus flexTargetTime = this.aggregateFlexTargetTime(period, aggregateTotalWorkingTime, PremiumAtr.PREMIUM);
 		
 		// 週平均超過時間を計算する
 		this.calcExcessWeekAveTime(require, yearMonth, period, closureId, aggregateAtr, flexTargetTime, settingsByFlex);
@@ -1300,7 +1300,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 	 */
 	private AttendanceTimeMonthWithMinus aggregateFlexTargetTime(
 			DatePeriod datePeriod,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime){
+			AggregateTotalWorkingTime aggregateTotalWorkingTime, PremiumAtr premiumAtr){
 		
 		AttendanceTimeMonthWithMinus flexTargetTime = new AttendanceTimeMonthWithMinus(0);
 		
@@ -1310,7 +1310,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			// 加算しない
 			
 			// 加算設定　取得　（割増用）
-			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, PremiumAtr.PREMIUM, this.holidayAdditionMap);
+			addSet = GetAddSet.get(WorkingSystem.FLEX_TIME_WORK, premiumAtr, this.holidayAdditionMap);
 			if (addSet.getErrorInfo().isPresent()){
 				this.errorInfos.add(addSet.getErrorInfo().get());
 			}
@@ -2487,9 +2487,8 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		FlexAggregateMethod flexAggregateMethod = settingsByFlex.getFlexAggrSet().getAggrMethod();
 		if (flexAggregateMethod == FlexAggregateMethod.PRINCIPLE){
 			
-			// 「フレ超過時間」OR「フレ繰越勤務時間」に値が入っているか確認する
-			if (this.flexExcessTime.greaterThan(0) ||
-				this.flexCarryforwardTime.getFlexCarryforwardWorkTime().greaterThan(0)){
+			/** フレックス時間発生するかを確認する */
+			if (this.checkIsFlexTimeOccur(settingsByFlex.getFlexAggrSet())){
 				
 				// 設定上の所定労働時間を確認する
 				// 所定労働時間を求める(代休使用控除する)
@@ -2508,7 +2507,8 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			else if (this.flexShortageTime.greaterThan(0)) {
 				
 				// フレックス対象時間を集計する　→　所定労働時間
-				int predMinutes = this.aggregateFlexTargetTime(datePeriod, aggregateTotalWorkingTime).v();
+				int predMinutes = this.aggregateFlexTargetTime(datePeriod, 
+						aggregateTotalWorkingTime, PremiumAtr.WHEN_SHORTAGE).v();
 				if (predMinutes < 0) predMinutes = 0;
 				
 				// 所定労働時間を返す　（呼び出し元で就業時間に入れる）
@@ -2517,6 +2517,29 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		}
 		
 		return Optional.empty();
+	}
+	
+	/** フレックス時間発生するかを確認する */
+	public boolean checkIsFlexTimeOccur(FlexMonthWorkTimeAggrSet flexAggrSet) {
+		
+		/** 複数月かを確認する */
+		if (!flexAggrSet.isMultiMonthSettlePeriod()) {
+			/** ○「フレ超過時間」 OR 「フレ繰越勤務時間」に値が入っているか確認する */
+			if (this.flexExcessTime.greaterThan(0) ||
+					this.flexCarryforwardTime.getFlexCarryforwardWorkTime().greaterThan(0)) {
+				/** 「発生する」を返す */
+				return true;
+			}
+			/** 「発生しない」を返す */
+			return false;
+		} else {
+			if (this.flexTime.getFlexTimeCurrentMonth().getFlexTime().greaterThan(0)) {
+				/** 「発生する」を返す */
+				return true;
+			}
+			/** 「発生しない」を返す */
+			return false;
+		}
 	}
 	
 	/**
