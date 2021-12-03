@@ -160,14 +160,14 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				
 				let taskInfo : any = {
 					data :{
-						page: taskFilter[0].code,
-						text: taskFilter[0].taskDisplayInfoDto.taskAbName,
-						tooltip: taskFilter[0].taskDisplayInfoDto.taskName,
-						color: taskFilter[0].taskDisplayInfoDto.color
+						page: taskFilter.length > 0 ? taskFilter[0].code : "",
+						text: taskFilter.length > 0 ? taskFilter[0].taskDisplayInfoDto.taskAbName : "",
+						tooltip: taskFilter.length > 0 ? taskFilter[0].taskDisplayInfoDto.taskName : "",
+						color: taskFilter.length > 0 ? taskFilter[0].taskDisplayInfoDto.color : ""
 					}
 				}
 				
-				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo, taskFilter[0].code);
+				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo, taskFilter.length > 0 ? taskFilter[0].code : "");
 				__viewContext.viewModel.viewmodelA.setTaskMode("paste");
 				__viewContext.viewModel.viewmodelA.localStore.work1Selection = value;
 				characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
