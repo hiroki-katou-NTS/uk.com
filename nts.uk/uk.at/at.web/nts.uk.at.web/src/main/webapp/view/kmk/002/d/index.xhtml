@@ -14,6 +14,7 @@
 				};
 			</script>
 			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth
 				nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.InputValue
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -125,7 +126,7 @@
 										data-bind="ntsTimeWithDayEditor: {
 										name: '#[KMK002_172]',
 	                                    value: leftItem.inputValue,
-	                                    constraint: 'TimeWithDayAttr',
+	                                    constraint: 'AnyTimeMonth',
 	                                    option: {
 		                                    grouplength: 3,
 		                                    decimallength: 2
@@ -170,7 +171,7 @@
 										data-bind="ntsTimeWithDayEditor: {
 									  	name: '#[KMK002_172]',
 	                                    value: rightItem.inputValue,
-	                                    constraint: 'TimeWithDayAttr',
+	                                    constraint: 'AnyTimeMonth',
 	                                    option: {
 		                                    grouplength: 3,
 		                                    decimallength: 2
