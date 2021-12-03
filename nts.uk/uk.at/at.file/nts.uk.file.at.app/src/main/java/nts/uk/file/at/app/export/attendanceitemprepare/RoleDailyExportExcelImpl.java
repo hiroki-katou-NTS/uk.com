@@ -380,8 +380,8 @@ public class RoleDailyExportExcelImpl {
                     if(controlItem!=null){
                     	putDataEmptySheet2(data);
                         data.put("コード", c.getAttendanceItemDisplayNumber());
-                        data.put("項目", c.getAttendanceItemName());
-                        data.put("表示名称", c.getDisplayName());
+                        data.put("項目", c.getOldName());
+                        data.put("表示名称", c.getAttendanceItemName());
                         data.put("改行位置", c.getNameLineFeedPosition());
                         String color =controlItem.getHeaderBgColorOfDailyPer();
                         if(color!=null){

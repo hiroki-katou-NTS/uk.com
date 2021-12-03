@@ -58,13 +58,13 @@ module nts.uk.at.view.kdw002.a {
                 self.aICurrentCode.subscribe(displayNumber => {
                     if (displayNumber) {
                         let attendanceItem = _.find(self.attendanceItems(), { displayNumber: Number(displayNumber) });
-                        self.txtItemName(attendanceItem.attendanceItemName);
+                        self.txtItemName(attendanceItem.oldName);
                         // ver8
                         if(attendanceItem.frameCategory != null && attendanceItem.frameCategory != undefined) {
                             self.displayName(attendanceItem.attendanceItemName);
                             self.displayNameEnable(false);
                         } else {
-                            self.displayName(attendanceItem.displayName);
+                            self.displayName(attendanceItem.attendanceItemName);
                             self.displayNameEnable(true);
                         }
                         self.lineBreakPosition(attendanceItem.nameLineFeedPosition); // ver8
@@ -124,8 +124,8 @@ module nts.uk.at.view.kdw002.a {
                 getItemService().done((data: Array<any>) => {
                     let attendanceItems = data.map(item => ({
                         attendanceItemId: item.attendanceItemId,
+                        oldName: item.oldName,
                         attendanceItemName: item.attendanceItemName,
-                        displayName: item.displayName,
                         attendanceAtr: item.typeOfAttendanceItem,
                         nameLineFeedPosition: item.nameLineFeedPosition,
                         displayNumber: item.attendanceItemDisplayNumber,

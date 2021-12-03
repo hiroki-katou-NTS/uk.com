@@ -6,10 +6,10 @@ import lombok.Data;
 public class AttItemOutput {
     private int attendanceItemId;
 
-	// 	・勤怠項目.名称 ←「表示名称」 (to ver7)
-	private String displayName;
+    //	・勤怠項目.旧名称 ←「名称」(to ver7)
+	private String oldName;
 	
-	//	・勤怠項目.旧名称 ←「名称」(to ver7)
+	// 	・勤怠項目.名称 ←「表示名称」 (to ver7)
 	private String attendanceItemName;
 
     private int attendanceItemDisplayNumber;
@@ -32,8 +32,8 @@ public class AttItemOutput {
     
     public AttItemOutput(AttItemName itemName, Integer optionalItemAtr) {
         this.attendanceItemId = itemName.getAttendanceItemId();
+        this.oldName = itemName.getOldName();
         this.attendanceItemName = itemName.getAttendanceItemName();
-        this.displayName = itemName.getDisplayName();
         this.attendanceItemDisplayNumber = itemName.getAttendanceItemDisplayNumber();
         this.userCanUpdateAtr = itemName.getUserCanUpdateAtr();
         this.typeOfAttendanceItem = itemName.getTypeOfAttendanceItem();
