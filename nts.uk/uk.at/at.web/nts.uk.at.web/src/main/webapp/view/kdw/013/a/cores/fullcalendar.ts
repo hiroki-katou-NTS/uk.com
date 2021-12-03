@@ -3663,6 +3663,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const ovl = $tg.hasClass('ui-widget-overlay');
                             const ede = $tg.closest('.fc-oneday-events li').length > 0;
                             const tde = $tg.closest('.fc-task-events li').length > 0;
+                            const cala = $tg.closest('.fc-scrollgrid-section-body').length > 0;
                             
 
                             if (!ede) {
@@ -3689,7 +3690,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
 
                             // close popup if target isn't owner & poper.
-                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event) {
+                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts && !event &&!cala) {
                                 vm.checkEditDialog().done((v) => {
                                     if (v == 'yes') {
 										$('.edit-event .nts-input').ntsError('clear');
