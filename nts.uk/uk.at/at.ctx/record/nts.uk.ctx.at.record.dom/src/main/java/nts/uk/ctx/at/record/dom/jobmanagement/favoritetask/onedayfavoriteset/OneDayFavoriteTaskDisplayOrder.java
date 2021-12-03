@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteDisplayOrder;
 
@@ -63,6 +64,10 @@ public class OneDayFavoriteTaskDisplayOrder extends AggregateRoot {
 
 		// 表示順.追加する($新しいお気に入り)
 		this.displayOrders.add(FavoriteDisplayOrder.addFirstDisorder(favId));
+		
+		if (this.displayOrders.size() >= 100) {
+			throw new BusinessException("Msg_3256");
+		}
 
 		// 表示順：sort $.表示順 ASC
 		this.displayOrders.stream().sorted(Comparator.comparingInt(FavoriteDisplayOrder::getOrder))
