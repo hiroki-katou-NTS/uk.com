@@ -326,6 +326,7 @@ module nts.uk.ui.at.kdw013.c {
 										columns: [
 											{ prop: 'code'},
 											{ prop: 'name', length: 8 },
+											{ prop: 'taskNote' },
 										]}
                                     "></div></td>
                             </tr>
@@ -348,6 +349,7 @@ module nts.uk.ui.at.kdw013.c {
 										columns: [
 											{ prop: 'code', length: 6 },
 											{ prop: 'name', length: 8 },
+											{ prop: 'taskNote' },
 										]}
                                     "></div></td>
                             </tr>
