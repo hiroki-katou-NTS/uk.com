@@ -15,6 +15,7 @@ module nts.uk.at.view.ksu001.a {
 
                 __viewContext.viewModel.viewA.setHeightMainArea();
                 __viewContext.viewModel.viewA.setPositionButonA13A14A15();
+                __viewContext.viewModel.viewA.setExAreaAgency();
                 // fix cho truong hop khởi động ở mode height = fixed.
                 if(data && data.gridHeightSelection == 2){
                    __viewContext.viewModel.viewA.saveHeightGridToLocal(); 

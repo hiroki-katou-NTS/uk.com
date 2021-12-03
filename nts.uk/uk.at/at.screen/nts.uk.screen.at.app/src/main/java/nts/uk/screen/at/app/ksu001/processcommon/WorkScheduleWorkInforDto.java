@@ -72,5 +72,7 @@ public class WorkScheduleWorkInforDto {
 	FIXED(0, "固定勤務"),
 	FLEX(1, "フレックス勤務"),
 	FLOW(2,"流動勤務"), */
+	
+	//就業時間帯の勤務形態 
 	public Integer workTimeForm;
 }

@@ -57,7 +57,7 @@ public class JpaEmployeeMonthlyPerError extends JpaRepository implements Employe
 				domain.getEmployeeID(),
 				domain.getClosureId().value,
 				domain.getClosureDate().getClosureDay().v(),
-				domain.getClosureDate().getLastDayOfMonth() ? 1 : 0);
+				domain.getClosureDate().getLastDayOfMonth());
 		
 		// 登録・更新
 		KrcdtEmployeeMonthlyPerError entity = this.getEntityManager().find(KrcdtEmployeeMonthlyPerError.class, key);

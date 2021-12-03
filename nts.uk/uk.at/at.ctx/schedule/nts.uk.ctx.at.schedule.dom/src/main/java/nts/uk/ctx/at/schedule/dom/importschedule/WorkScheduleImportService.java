@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
@@ -131,8 +131,8 @@ public class WorkScheduleImportService {
 		val checkedScheMngStatus = referableStatus.getOrDefault( true, Collections.emptyList() ).stream()
 				.map( detail -> {
 					// 予定管理状態を取得
-					val status = ScheManaStatuTempo.create( require, detail.getEmployeeId().v(), detail.getYmd() )
-									.getScheManaStatus();
+					val status = EmployeeWorkingStatus.create( require, detail.getEmployeeId().v(), detail.getYmd() )
+									.getWorkingStatus();
 					// 勤務予定が必要か
 					if( !status.needCreateWorkSchedule() ) {
 						// 必要ではない
@@ -236,7 +236,7 @@ public class WorkScheduleImportService {
 
 	public interface Require extends	ScheModifyStartDateService.Require
 									,	GetEmpCanReferService.Require
-									,	ScheManaStatuTempo.Require
+									,	EmployeeWorkingStatus.Require
 									,	ShiftMaster.Require
 	{
 		/**

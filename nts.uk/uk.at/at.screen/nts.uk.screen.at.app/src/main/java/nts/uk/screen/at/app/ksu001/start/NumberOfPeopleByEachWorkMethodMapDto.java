@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.WorkInfo;
 
 
 @AllArgsConstructor
@@ -17,5 +18,5 @@ public class NumberOfPeopleByEachWorkMethodMapDto {
 
 	public GeneralDate date;
 	
-	List<NumberOfPeopleByEachWorkMethod<String>> peopleMethod = Collections.emptyList();
+	public List<NumberOfPeopleByEachWorkMethod<WorkInfo>> peopleMethod = Collections.emptyList();
 }

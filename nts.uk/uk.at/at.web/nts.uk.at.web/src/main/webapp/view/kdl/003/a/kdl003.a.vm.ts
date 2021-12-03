@@ -191,9 +191,10 @@ module nts.uk.at.view.kdl003.a {
 							
 								return false;
 								});
-							} else {
+							} 
+							/*else {
 								self.listWorkType().length = 0;
-							}
+							}*/
 							
 						}
 						

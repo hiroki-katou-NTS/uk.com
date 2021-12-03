@@ -39,7 +39,7 @@ public class AggregateWorkplaceDto {
 	public Map<GeneralDate, Map<ExternalBudgetDto, String>> externalBudget = new HashMap<GeneralDate, Map<ExternalBudgetDto, String>>();
 	
 	// Map<年月日, List<勤務方法別の人数<T>>>
-	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> peopleMethod = new HashMap<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>>();
+	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkInfo>>> peopleMethod = new HashMap<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkInfo>>>();
 	
 	
 	public List<LaborCostAggregationUnitMapDtoList> convertLaborCostAndTime() {
@@ -101,8 +101,10 @@ public class AggregateWorkplaceDto {
 							  .stream()
 							  .map(x -> new ExternalBudgetMapDto(
 									  x.getKey().getExternalBudgetCode(),
-									  x.getKey().getExternalBudgetCode(),
-									  x.getValue()
+									  x.getKey().getExternalBudgetName(),
+									  x.getValue(),
+									  x.getKey().getBudgetAtr(),
+									  x.getKey().getUnitAtr()
 									  ))
 							  .collect(Collectors.toList())
 						)

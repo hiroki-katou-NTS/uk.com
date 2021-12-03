@@ -806,8 +806,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			return Optional.empty();
 		return Optional.of(data.get(0));
 	}
-
-
 	
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
@@ -1140,9 +1138,9 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				+ " KSCDT_SCH_TIME.EXT_BIND_TIME_HDW, KSCDT_SCH_TIME.EXT_VARWK_OTW_TIME_LEGAL, KSCDT_SCH_TIME.EXT_FLEX_TIME, KSCDT_SCH_TIME.EXT_FLEX_TIME_PREAPP,"
 				+ " KSCDT_SCH_TIME.EXT_MIDNITE_OTW_TIME, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_LGHD, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_ILGHD, KSCDT_SCH_TIME.EXT_MIDNITE_HDW_TIME_PUBHD,"
 				+ " KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL, KSCDT_SCH_TIME.EXT_MIDNITE_TOTAL_PREAPP, KSCDT_SCH_TIME.INTERVAL_ATD_CLOCK, KSCDT_SCH_TIME.INTERVAL_TIME,"
-				+ " KSCDT_SCH_TIME.BRK_TOTAL_TIME, KSCDT_SCH_TIME.HDPAID_TIME, KSCDT_SCH_TIME.HDPAID_HOURLY_TIME, KSCDT_SCH_TIME.HDCOM_TIME, KSCDT_SCH_TIME.HDCOM_HOURLY_TIME,"
-				+ " KSCDT_SCH_TIME.HD60H_TIME, KSCDT_SCH_TIME.HD60H_HOURLY_TIME, KSCDT_SCH_TIME.HDSP_TIME, KSCDT_SCH_TIME.HDSP_HOURLY_TIME, KSCDT_SCH_TIME.HDSTK_TIME,"
-				+ " KSCDT_SCH_TIME.HD_HOURLY_TIME, KSCDT_SCH_TIME.HD_HOURLY_SHORTAGE_TIME, KSCDT_SCH_TIME.ABSENCE_TIME, KSCDT_SCH_TIME.VACATION_ADD_TIME, KSCDT_SCH_TIME.STAGGERED_WH_TIME,"
+				+ " KSCDT_SCH_TIME.BRK_TOTAL_TIME, KSCDT_SCH_TIME.USE_DAYLY_HD_PAID, KSCDT_SCH_TIME.USE_HOURLY_HD_PAID, KSCDT_SCH_TIME.USE_DAYLY_HD_COM, KSCDT_SCH_TIME.USE_HOURLY_HD_COM,"
+				+ " KSCDT_SCH_TIME.USE_DAYLY_HD_60H, KSCDT_SCH_TIME.USE_HOURLY_HD_60H, KSCDT_SCH_TIME.USE_DAYLY_HD_SP, KSCDT_SCH_TIME.USE_HOURLY_HD_SP, KSCDT_SCH_TIME.USE_DAYLY_HD_STK,"
+				+ " KSCDT_SCH_TIME.HOURLY_HD_USETIME, KSCDT_SCH_TIME.HOURLY_HD_SHORTAGETIME, KSCDT_SCH_TIME.ABSENCE_TIME, KSCDT_SCH_TIME.VACATION_ADD_TIME, KSCDT_SCH_TIME.STAGGERED_WH_TIME,"
 				+ " KSCDT_SCH_TIME.PRS_WORK_TIME_AMOUNT, KSCDT_SCH_TIME.PREMIUM_WORK_TIME_TOTAL , KSCDT_SCH_TIME.PREMIUM_AMOUNT_TOTAL, KSCDT_SCH_TIME.USE_DAILY_HD_SUB "
 				+ " FROM KSCDT_SCH_TIME" 
 				+ " WHERE KSCDT_SCH_TIME.SID IN " + listEmp + " AND KSCDT_SCH_TIME.YMD BETWEEN " + "'" + period.start() + "' AND '" + period.end() + "' ";
@@ -1173,17 +1171,19 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				Integer intervalAtdClock = rs.getInt("INTERVAL_ATD_CLOCK");
 				Integer intervalTime = rs.getInt("INTERVAL_TIME");
 				Integer brkTotalTime = rs.getInt("BRK_TOTAL_TIME");
-				Integer hdPaidTime = rs.getInt("HDPAID_TIME");
-				Integer hdPaidHourlyTime = rs.getInt("HDPAID_HOURLY_TIME");
-				Integer hdComTime = rs.getInt("HDCOM_TIME");
-				Integer hdComHourlyTime = rs.getInt("HDCOM_HOURLY_TIME");
-				Integer hd60hTime = rs.getInt("HD60H_TIME");
-				Integer hd60hHourlyTime = rs.getInt("HD60H_HOURLY_TIME");
-				Integer hdspTime = rs.getInt("HDSP_TIME");
-				Integer hdspHourlyTime = rs.getInt("HDSP_HOURLY_TIME");
-				Integer hdstkTime = rs.getInt("HDSTK_TIME");
-				Integer hdHourlyTime = rs.getInt("HD_HOURLY_TIME");
-				Integer hdHourlyShortageTime = rs.getInt("HD_HOURLY_SHORTAGE_TIME");
+				
+				Integer hdPaidTime = rs.getInt("USE_DAYLY_HD_PAID");
+				Integer hdPaidHourlyTime = rs.getInt("USE_HOURLY_HD_PAID");
+				Integer hdComTime = rs.getInt("USE_DAYLY_HD_COM");
+				Integer hdComHourlyTime = rs.getInt("USE_HOURLY_HD_COM");
+				Integer hd60hTime = rs.getInt("USE_DAYLY_HD_60H");
+				Integer hd60hHourlyTime = rs.getInt("USE_HOURLY_HD_60H");
+				Integer hdspTime = rs.getInt("USE_DAYLY_HD_SP");
+				Integer hdspHourlyTime = rs.getInt("USE_HOURLY_HD_SP");
+				Integer hdstkTime = rs.getInt("USE_DAYLY_HD_STK");
+				Integer hdHourlyTime = rs.getInt("HOURLY_HD_USETIME");
+				Integer hdHourlyShortageTime = rs.getInt("HOURLY_HD_SHORTAGETIME");
+				
 				Integer absenceTime = rs.getInt("ABSENCE_TIME");
 				Integer vacationAddTime = rs.getInt("VACATION_ADD_TIME");
 				Integer staggeredWhTime = rs.getInt("STAGGERED_WH_TIME");
@@ -1546,4 +1546,5 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 		return mapPairKscdtSchTask;
 	}
+
 }

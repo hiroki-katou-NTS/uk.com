@@ -39,9 +39,9 @@ public interface WorkScheduleRepository {
 	 * @return 勤務予定(List)
 	 */
 	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
-	
+
 	void updateConfirmedState(WorkSchedule workSchedule);
-	
+
 	/**
 	 * Exists
 	 * @param employeeID 社員ID

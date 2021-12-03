@@ -17,15 +17,15 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByScheduleManagementService;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DailyResultAccordScheduleStatusService;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
@@ -86,8 +86,8 @@ public class ScreenQueryPlanAndActual {
 				empLeaveHisAdapter,
 				empLeaveWorkHisAdapter,
 				employmentHisScheduleAdapter);
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> schedule = 
-					WorkScheManaStatusService.getScheduleManagement(
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> schedule = 
+				GetWorkScheduleByScheduleManagementService.getScheduleManagement(
 							require1,
 							sids,
 							datePeriod);
@@ -120,8 +120,8 @@ public class ScreenQueryPlanAndActual {
 					employmentHisScheduleAdapter);
 
 			// 2: 取得する(Require, List<社員ID>, 期間)
-			Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> dailySchedule = 
-					DailyResultAccordScheduleStatusService.get(
+			Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> dailySchedule = 
+					GetDailyRecordByScheduleManagementService.get(
 							require2,
 							sids,
 							datePeriod);
@@ -134,7 +134,7 @@ public class ScreenQueryPlanAndActual {
 		
 	}
 	@AllArgsConstructor
-	private static class Require2 implements DailyResultAccordScheduleStatusService.Require {
+	private static class Require2 implements GetDailyRecordByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, DailyRecordDto> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
@@ -281,7 +281,7 @@ public class ScreenQueryPlanAndActual {
 	}
 	
 	@AllArgsConstructor
-	private static class Require1 implements WorkScheManaStatusService.Require {
+	private static class Require1 implements GetWorkScheduleByScheduleManagementService.Require {
 		
 		
 

@@ -1177,12 +1177,6 @@ public class ProgramsManager {
             "/view/kdl/023/b/index.xhtml");
 
     /**
-     * The Constant KSM001.
-     */
-    public static final Program KSM001A = new Program(WebAppId.AT, ProgramIdConsts.KSM001A, "KSM001_62",
-            "/view/ksm/001/a/index.xhtml");
-
-    /**
      * The Constant KMK009.
      */
     public static final Program KMK009A = new Program(WebAppId.AT, ProgramIdConsts.KMK009A, null,
@@ -2582,6 +2576,10 @@ public class ProgramsManager {
             "/view/cmf/001/b/index.xhtml");
     public static final Program CMF001C = new Program(WebAppId.COM, ProgramIdConsts.CMF001C, "",
             "/view/cmf/001/c/index.xhtml");
+    public static final Program CMF001E = new Program(WebAppId.COM, ProgramIdConsts.CMF001E, "",
+            "/view/cmf/001/e/index.xhtml");
+    public static final Program CMF001F = new Program(WebAppId.COM, ProgramIdConsts.CMF001F, "",
+            "/view/cmf/001/f/index.xhtml");
     public static final Program CMF001X = new Program(WebAppId.COM, ProgramIdConsts.CMF001X, "",
             "/view/cmf/001/x/index.xhtml");
 

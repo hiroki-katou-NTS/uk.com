@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.print.attribute.HashAttributeSet;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
@@ -25,6 +24,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggregatedInformationDto;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggregatedInformation;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 import nts.uk.screen.at.app.ksu001.processcommon.ScreenQueryCreateWorkSchedule;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleShiftBaseResult;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
@@ -73,6 +74,7 @@ public class GetAggregatedInfoFinder {
 		AggregatedInformationDto dto = screenQAggreratedInfo.get(param.listSid, datePeriod, closeDate, isAchievement, targetOrgIdenInfor, personalCounterOp, workplaceCounterOp, param.isShiftMode);
 		
 		List<WorkScheduleWorkInforDto> workScheduleWorkInfors = new ArrayList<>();
+		List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst = new ArrayList<>();
 		WorkScheduleShiftBaseResult workScheduleShiftBaseResult = new WorkScheduleShiftBaseResult(new ArrayList<>(), new HashMap<>());
 		PlanAndActual planAndActual = screenQueryPlanAndActual.getPlanAndActual(param.listSid, datePeriod, param.getActualData);
 		if (param.getWorkschedule) {
@@ -82,21 +84,30 @@ public class GetAggregatedInfoFinder {
 						planAndActual.getDailySchedule(), param.getActualData);
 			} else {
 
-				workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(new ArrayList<>(),
+				workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(param.getListShiftMasterNotNeedGetNew(),
 						planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.getActualData);
+				
+				if(!workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.isEmpty()){
+					workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.forEach((key, value) -> {
+						shiftMasterWithWorkStyleLst.add(new ShiftMasterMapWithWorkStyle(key, value == null || !value.isPresent() ? null : String.valueOf(value.get().value)));
+					});
+				}
 			}
 		}
-		return convertData(dto, workScheduleWorkInfors, workScheduleShiftBaseResult);
+		return convertData(dto, workScheduleWorkInfors, workScheduleShiftBaseResult.listWorkScheduleShift, shiftMasterWithWorkStyleLst);
 	}
 	
-	private AggregatedInformationRs convertData(AggregatedInformationDto dto, List<WorkScheduleWorkInforDto> workScheduleWorkInfors, WorkScheduleShiftBaseResult workScheduleShiftBaseResult) {
+	private AggregatedInformationRs convertData(AggregatedInformationDto dto, 
+			List<WorkScheduleWorkInforDto> workScheduleWorkInfors, 
+			List<ScheduleOfShiftDto> listWorkScheduleShift,
+			List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst) {
 		return new AggregatedInformationRs(
 				convertExternalBudget(dto.externalBudget), 
 				dto.aggrerateSchedule.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(dto.aggrerateSchedule.aggreratePersonal), 
 				dto.aggrerateSchedule.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(dto.aggrerateSchedule.aggrerateWorkplace),
 				workScheduleWorkInfors,
-				workScheduleShiftBaseResult.listWorkScheduleShift,
-				workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle);
+				listWorkScheduleShift,
+				shiftMasterWithWorkStyleLst);
 		
 	}
 
@@ -109,8 +120,12 @@ public class GetAggregatedInfoFinder {
 
 		return externalBudget.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().entrySet().stream()
-						.map(x -> new ExternalBudgetMapDto(x.getKey().getExternalBudgetCode(),
-								x.getKey().getExternalBudgetCode(), x.getValue()))
+						.map(x -> new ExternalBudgetMapDto(
+								x.getKey().getExternalBudgetCode(),
+								x.getKey().getExternalBudgetName(), 
+								x.getValue(),
+								x.getKey().getBudgetAtr(),
+								x.getKey().getUnitAtr()))
 						.collect(Collectors.toList())))
 				.entrySet().stream().map(x -> new ExternalBudgetMapDtoList(x.getKey(), x.getValue()))
 				.collect(Collectors.toList());

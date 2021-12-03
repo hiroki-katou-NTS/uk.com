@@ -17,9 +17,10 @@ module nts.uk.at.view.ksu001.a.service {
         checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect",
         changeConfirmedState: "screen/at/schedule/change-confirmed-state",
         getAggregatedInfo: "screen/at/schedule/get-aggregated-info", // get data A11, A12
-        get28DayPeriod: "screen/at/schedule/get-28day-period"
+        get28DayPeriod: "screen/at/schedule/get-28day-period",
+        changemode: "screen/at/schedule/change-mode"
     }
-
+    
     export function getDataStartScreen(param): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataStartScreen, param);
     }
@@ -90,5 +91,9 @@ module nts.uk.at.view.ksu001.a.service {
     
     export function get28DayPeriod(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.get28DayPeriod, obj);
+    }
+    
+    export function changemode(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.changemode);
     }
 }
