@@ -1036,7 +1036,9 @@ module nts.uk.ui.chart {
                     get() { return self.color; },
                     set(val) {
                         let list = (ruler.definedType[self.name] || {}).list;
+						
                         _.forEach(list, c => {
+							if (!_.isNil(c))
                             c.style.backgroundColor = val;
                         });
                         
