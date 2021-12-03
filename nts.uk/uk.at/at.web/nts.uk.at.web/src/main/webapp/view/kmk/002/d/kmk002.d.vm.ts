@@ -371,6 +371,14 @@ module nts.uk.at.view.kmk002.d {
              */
             public fromDto(dto: ParamToD): void {
                 let self = this;
+                if(!isNullOrEmpty(dto.selectableFormulas)){
+                    for (let i = 0; i <dto.operatorDatasource.length;i++){
+                        let item :FormulaDto = dto.selectableFormulas[i];
+                        let type  = EnumAdaptor.localizedNameOf(item.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
+                        let name = item.symbolValue + type;
+                        item.symbolValue = name;
+                    }
+                }
                 self.formulaId = dto.formulaId;
                 self.formulaName = dto.formulaName;
                 self.formulaAtr = dto.formulaAtr;
@@ -383,8 +391,8 @@ module nts.uk.at.view.kmk002.d {
                 self.enums = dto.enums;
                 self.formulaNumber = dto.formulaNumber;
                 if(!isNullOrEmpty(dto.selectableFormulas)){
-                    self.isD29(self.checkD2_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
-                    self.isD49(self.checkD4_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
+                    self.isD29(self.checkD2_9(self.leftItem.formulaItemId(),self.operator(),self.rightItem.formulaItemId()));
+                    self.isD49(self.checkD4_9(self.leftItem.formulaItemId(),self.operator(),self.rightItem.formulaItemId()));
                 }
 
             }
