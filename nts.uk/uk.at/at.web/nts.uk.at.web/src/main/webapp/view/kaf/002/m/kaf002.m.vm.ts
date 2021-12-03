@@ -732,13 +732,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                 const selectedInfor = nts.uk.ui.windows.getShared('workplaceInfor')
                                 self.dataSource[data.index][data.idGetList].workplaceName = selectedInfor[0].displayName;
                                 const $selected = $(`<div class="limited-label label-workplace-id">${selectedInfor[0].displayName}</div>`);
-                                if (self.selectedTab() == 'tab-1') {
+                                if (data.index === 0) {
                                     $('#grid1_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
                                     if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
                                         $('#grid1_container .nts-grid-control-workplaceId-' + data.id).append($selected);
                                     }
                                 }
-                                if (self.selectedTab() == 'tab-6') {
+                                if (data.index === 5) {
                                     $('#grid6_container .nts-grid-control-workplaceId-' + data.id + ' .label-workplace-id').remove();
                                     if (data.workplaceId && !_.isEmpty(data.workplaceId)) {
                                         $('#grid6_container .nts-grid-control-workplaceId-' + data.id).append($selected);
