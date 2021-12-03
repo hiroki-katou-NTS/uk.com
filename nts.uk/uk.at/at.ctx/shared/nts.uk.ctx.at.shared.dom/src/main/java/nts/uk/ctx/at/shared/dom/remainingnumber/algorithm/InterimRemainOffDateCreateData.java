@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CareUseDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DayoffTranferInfor;
@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.WorkTypeRemainInfor;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CheckDateForManageCmpLeaveService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
@@ -487,7 +488,7 @@ public class InterimRemainOffDateCreateData {
 	}
 
 	/**
-	 * 午前と午後で同じ勤務種類の残数発生明細をまとめる
+	 * 午前と午後で勤務種類別残数情報をまとめる
 	 *
 	 * @param after
 	 *            午前の残数発生使用明細
@@ -496,6 +497,22 @@ public class InterimRemainOffDateCreateData {
 	 */
 	private static Optional<WorkTypeRemainInfor> totalMorningAndAfternoonRemain(Optional<WorkTypeRemainInfor> morning, Optional<WorkTypeRemainInfor> after) {
 
+		//午前と午後で同じ勤務種類の残数発生明細をまとめる
+		totalMorningAndAfternoonOccurrence(morning,after);
+		//午前と午後で同じ特別休暇コードの特休使用明細をまとめる
+		totalMorningAndAfternoonSpecialHoliday(morning,after);
+		//午前と午後で同じ介護看護区分の子の看護介護使用明細をまとめる
+		totalMorningAndAfternoonCare(morning,after);
+
+		return morning;
+	}
+	
+	/**
+	 * 午前と午後で同じ勤務種類の残数発生明細をまとめる
+	 * @param morning
+	 * @param after
+	 */
+	private static void totalMorningAndAfternoonOccurrence(Optional<WorkTypeRemainInfor> morning, Optional<WorkTypeRemainInfor> after){
 		TargetWorkTypes().forEach(wkType -> {
 
 			Optional<OccurrenceUseDetail> morningType = morning.flatMap(x-> x.getOccurrenceDetailData().stream().filter(od ->od.getWorkTypeAtr().equals(wkType) && od.isUseAtr()).findFirst());
@@ -508,9 +525,53 @@ public class InterimRemainOffDateCreateData {
 				morning.get().getOccurrenceDetailData().add(afterNoonType.get());
 			}
 		});
-		
-		return morning;
 	}
+	
+	/**
+	 * 午前と午後で同じ特別休暇コードの特休使用明細をまとめる
+	 * @param morning
+	 * @param after
+	 */
+	private static void totalMorningAndAfternoonSpecialHoliday(Optional<WorkTypeRemainInfor> morning, Optional<WorkTypeRemainInfor> after){
+		SpecialHolidayCode.getCodeList().forEach(code ->{
+			Optional<SpecialHolidayUseDetail> morningCode = morning.flatMap(
+					x-> x.getSpeHolidayDetailData().stream().filter(c -> c.getSpecialHolidayCode() == (code.v())).findFirst());
+			Optional<SpecialHolidayUseDetail> afterCode = after.flatMap(
+					x-> x.getSpeHolidayDetailData().stream().filter(c -> c.getSpecialHolidayCode() == (code.v())).findFirst());
+				
+			if(morningCode.isPresent() && afterCode.isPresent()){
+				morningCode.get().setDays(1);
+			}
+			if(morning.isPresent() && !morningCode.isPresent() && afterCode.isPresent()){
+				morning.get().getSpeHolidayDetailData().add(afterCode.get());
+			}
+		});
+	}
+	
+	/**
+	 * 午前と午後で同じ介護看護区分の子の看護介護使用明細をまとめる
+	 * @param morning
+	 * @param after
+	 */
+	private static void totalMorningAndAfternoonCare(Optional<WorkTypeRemainInfor> morning, Optional<WorkTypeRemainInfor> after){
+		
+		Arrays.asList(CareType.values()).forEach(careType ->{
+			Optional<CareUseDetail> morningCare = morning.flatMap(
+					x -> x.getChildCareDetailData().stream().filter(c -> c.getCareType().equals(careType)).findFirst());
+			Optional<CareUseDetail> afterCare = after.flatMap(
+					x -> x.getChildCareDetailData().stream().filter(c -> c.getCareType().equals(careType)).findFirst());		
+			
+			if(morningCare.isPresent() && afterCare.isPresent()){
+				morningCare.get().setDays(1);
+			}
+			if(morning.isPresent() && !morningCare.isPresent() && afterCare.isPresent()){
+				morning.get().getChildCareDetailData().add(afterCare.get());
+			}
+			
+		} );
+	}
+
+	
 
 	/**
 	 * 対象勤務種類
@@ -524,10 +585,8 @@ public class InterimRemainOffDateCreateData {
 		result.add(WorkTypeClassification.SubstituteHoliday);
 		result.add(WorkTypeClassification.Pause);
 		//không có 公休
-		//result.add(WorkTypeClassification.AnnualHoliday);
 		result.add(WorkTypeClassification.HolidayWork);
 		result.add(WorkTypeClassification.Shooting);
-
 		return result;
 
 	}
