@@ -47,14 +47,17 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 											 option: {width: '200'}          
 									 },
 									 visible: $parent.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1"/>
-					<button style="margin-left: 10px; width: 30px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data)">
+					<button style="width: 30px; border: none; box-shadow: none; padding: 5px;" data-bind="click: $parent.removeMultipleRow.bind($parent, $data)">
 					    <i data-bind="ntsIcon: { no: 237 }"></i>
                     </button>				
 				</div>
 			</div>
-			<button style="width: 30px;" data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10">
-			    <i data-bind="ntsIcon: { no: 236 }"></i>
-            </button>
+			<div style="cursor: pointer; display: inline-block;" data-bind="click: addMultipleRow, visible: multipleOvertimeContents().length < 10">
+				<button style="width: 30px; border: none; box-shadow: none; padding: 5px;">
+					<i data-bind="ntsIcon: { no: 236 }"></i>
+				</button>
+				<span style="position: relative; top: -3px;" data-bind="text: $i18n('KAF005_350')"></span>
+			</div>
 		</div>
 	</div>
 	
