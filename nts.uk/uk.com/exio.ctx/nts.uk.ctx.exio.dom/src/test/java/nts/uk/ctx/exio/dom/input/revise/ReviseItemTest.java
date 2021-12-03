@@ -32,27 +32,27 @@ public class ReviseItemTest {
 		private static Either<ErrorMessage, ?> REVISE_V_RESULT;
 	}
 
-	@Test
-	public void NotCodeConvert() {
-		
-		val reviseItem = new ReviseItem(
-				Dummy.COM_ID, 
-				Dummy.EXI_CODE, 
-				Dummy.DOMAIN_ID,
-				Dummy.EXI_ITEM_NO, 
-				Dummy.REVISE_VALUE);
-		
-		String targetValue = "value";
-		
-		new Expectations() {{
-			reviseValue.revise(targetValue);
-			result = Dummy.REVISE_V_RESULT;
-		}};
-		
-		Either<ItemError, DataItem> result = reviseItem.revise(targetValue);
-		
-		result.ifLeft(err -> assertThat(err).isNotNull());
-		result.ifRight(v -> assertThat(true).isTrue());
-	}
+//	@Test
+//	public void NotCodeConvert() {
+//		
+//		val reviseItem = new ReviseItem(
+//				Dummy.COM_ID, 
+//				Dummy.EXI_CODE, 
+//				Dummy.DOMAIN_ID,
+//				Dummy.EXI_ITEM_NO, 
+//				Dummy.REVISE_VALUE);
+//		
+//		String targetValue = "value";
+//		
+//		new Expectations() {{
+//			reviseValue.revise(targetValue);
+//			result = Dummy.REVISE_V_RESULT;
+//		}};
+//		
+//		Either<ItemError, DataItem> result = reviseItem.revise(targetValue);
+//		
+//		result.ifLeft(err -> assertThat(err).isNotNull());
+//		result.ifRight(v -> assertThat(true).isTrue());
+//	}
 
 }
