@@ -119,7 +119,6 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 	
 	private final String STATUS_REGISTER = "STATUS_REGISTER";
 	private final String STATUS_ERROR = "STATUS_ERROR";
-	private final String LIST_ERROR = "LIST_ERROR";
 	
 	@Override
 	protected void handle(CommandHandlerContext<List<WorkScheduleSaveCommand<T>>> context) {
@@ -173,7 +172,6 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 		
 		// step3
 		List<ResultOfRegisteringWorkSchedule> lstRsHasErrors = lstRsOfRegisWorkSchedule.stream().filter(i -> i.isHasError() == true).collect(Collectors.toList());
-//		ResultRegisWorkSchedule rs = new ResultRegisWorkSchedule();
 		boolean isError = false;
 		List<ErrorInfoOfWorkSchedule> errorInformations = new ArrayList<>();
 		
@@ -199,7 +197,7 @@ public class RegisWorkScheduleCommandHandler<T> extends AsyncCommandHandler<List
 							.add("date", errorInforOfEmp.get(x).getDate().toString())
 							.add("attendanceItemId", errorInforOfEmp.get(x).getAttendanceItemId().isPresent() ? errorInforOfEmp.get(x).getAttendanceItemId().get().toString() : "" )
 							.add("errorMessage", errorInforOfEmp.get(x).getErrorMessage()).build();
-					setter.setData("ERROR" + x, value);
+					setter.setData("ERROR"+k+""+x, value);
 				}
 			}
 		}

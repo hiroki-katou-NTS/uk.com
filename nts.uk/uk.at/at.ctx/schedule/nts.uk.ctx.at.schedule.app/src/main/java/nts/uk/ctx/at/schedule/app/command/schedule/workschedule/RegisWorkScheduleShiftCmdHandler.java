@@ -176,10 +176,7 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 		
 		// step3
 		List<ResultOfRegisteringWorkSchedule> lstRsHasErrors = lstRsOfRegisWorkSchedule.stream().filter(i -> i.isHasError() == true).collect(Collectors.toList());
-		// ResultRegisWorkSchedule rs = new ResultRegisWorkSchedule();
-		// rs.setRegistered(isRegistered);
 		boolean isError = false;
-		List<ErrorInfomation> listErrorInfo = new ArrayList<>();
 		List<ErrorInfoOfWorkSchedule> errorInformations = new ArrayList<>();
 		
 		if (lstRsHasErrors.size() > 0) {
@@ -204,7 +201,7 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends AsyncCommandHandler<Lis
 							.add("date", errorInforOfEmp.get(h).getDate().toString())
 							.add("attendanceItemId", errorInforOfEmp.get(h).getAttendanceItemId().isPresent() ? errorInforOfEmp.get(h).getAttendanceItemId().get().toString() : "" )
 							.add("errorMessage", errorInforOfEmp.get(h).getErrorMessage()).build();
-					setter.setData("ERROR" + h, value);
+					setter.setData("ERROR" + k+""+ h, value);
 				}
 			}
 		}
