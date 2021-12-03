@@ -759,9 +759,21 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 list.push(gridItem);
             }
             
+
             return list;
         })();
         
+        let items7 = (function() {
+          let list = [];
+          for (let i = 1; i <= self.maxSupport; i++) {
+              let dataObject = new TimePlaceOutput(i);
+              const gridItem = new GridItem(dataObject, STAMPTYPE.CHEERING);
+              self.bindDataRequest(gridItem, STAMPTYPE.CHEERING);
+              list.push(gridItem);
+          }
+          
+          return list;
+        })();
         
         let dataSource = [];
      // case change date
@@ -778,6 +790,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         dataSource.push( items4 );
         dataSource.push( items5 );
         dataSource.push( items6 );
+        dataSource.push(items7);
         return dataSource;
     }
     
@@ -882,7 +895,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
                         self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
                         self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
-                        self.tabs()[5].visible(true);
+                        self.tabs()[5].visible(reflect.startAndEndSupport === 1 && self.data.useCheering);
                     
                     } 
                     self.bindComment(self.data);
@@ -1006,7 +1019,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 			let length = _.filter(self.dataSourceOb()[0], (i: GridItem) => i.typeStamp == STAMPTYPE.ATTENDENCE).length;
             _.forEach(self.dataSourceOb(), (items: GridItem, index) => {
 //                出勤／退勤 , 外出
-                if (index == 0 || index == 1) {                    
+                if (index == 0 || index == 1 || index == 5) {                    
                     _.forEach(items, (el: GridItem) => {                       
                         if (!ko.toJS(el.flagObservable)) {
                             if (!_.isNull(ko.toJS(el.startTimeRequest)) && ko.toJS(el.startTimeRequest) !== '') {
@@ -1017,7 +1030,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 destinationTimeApp.engraveFrameNo = (el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - length : el.id);
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
-                                timeStampAppDto.workLocationCd = null;
+                                timeStampAppDto.workLocationCd = el.workLocationCD;
+                                timeStampAppDto.wkpId = el.workplaceId;
                                 if (!_.isNull(el.typeReason)) {
                                     timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);                                    
                                 }
@@ -1033,7 +1047,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 destinationTimeApp.engraveFrameNo = (el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - length : el.id);
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
-                                timeStampAppDto.workLocationCd = null;
+                                timeStampAppDto.workLocationCd = el.workLocationCD;
+                                timeStampAppDto.wkpId = el.workplaceId;
                                 if (!_.isNull(el.typeReason)) {
                                     timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);                                    
                                 }
