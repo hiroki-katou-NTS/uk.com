@@ -31,7 +31,7 @@ module nts.uk.at.view.kmr002.a.model {
 			return '';
 		});
 		canOrder: KnockoutObservable<boolean> = ko.pureComputed(() => {
-			let orderFrame1 = _.find(this.listOrder, o => o.reservationClosingTimeFrame==1);
+			let orderFrame1 = _.find(this.listOrder, o => o.closingTimeFrame==1);
 			if(orderFrame1) {
 				if(orderFrame1.ordered == false && this.currentFrameNo()==1 && this.bentoMenuByClosingTimeDto.reservationTime1) {
 					return true;
@@ -41,7 +41,7 @@ module nts.uk.at.view.kmr002.a.model {
 					return true;
 				}
 			}
-			let orderFrame2 = _.find(this.listOrder, o => o.reservationClosingTimeFrame==2);
+			let orderFrame2 = _.find(this.listOrder, o => o.closingTimeFrame==2);
 			if(orderFrame2) {
 				if(orderFrame2.ordered == false && this.currentFrameNo()==2 && this.bentoMenuByClosingTimeDto.reservationTime2) {
 					return true;
@@ -144,7 +144,7 @@ module nts.uk.at.view.kmr002.a.model {
 				let menu1: Array<Bento> = [];
 				_.forEach(data.bentoMenuByClosingTimeDto.menu1, (item: any) => {
 					let bentoCount = 0;
-					let frame1Item = _.find(data.listOrder, (o: any) => o.reservationClosingTimeFrame==1);
+					let frame1Item = _.find(data.listOrder, (o: any) => o.closingTimeFrame==1);
 					if(frame1Item) {
 						let reservationItem = _.find(frame1Item.listBentoReservationDetail, (o: any) => o.frameNo==item.frameNo);
 						if(reservationItem) {
@@ -157,7 +157,7 @@ module nts.uk.at.view.kmr002.a.model {
 				let menu2: Array<Bento> = [];
 				_.forEach(data.bentoMenuByClosingTimeDto.menu2, (item: any) => {
 					let bentoCount = 0;
-					let frame2Item = _.find(data.listOrder, (o: any) => o.reservationClosingTimeFrame==2);
+					let frame2Item = _.find(data.listOrder, (o: any) => o.closingTimeFrame==2);
 					if(frame2Item) {
 						let reservationItem = _.find(frame2Item.listBentoReservationDetail, (o: any) => o.frameNo==item.frameNo);
 						if(reservationItem) {
