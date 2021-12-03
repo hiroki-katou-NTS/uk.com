@@ -383,8 +383,8 @@ module nts.uk.at.view.kmk002.d {
                 self.enums = dto.enums;
                 self.formulaNumber = dto.formulaNumber;
                 if(!isNullOrEmpty(dto.selectableFormulas)){
-                    self.isD29(self.checkD2_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
-                    self.isD49(self.checkD4_9(dto.selectableFormulas[0].formulaId,self.operator(),dto.selectableFormulas[0].formulaId));
+                    self.isD29(self.checkD2_9(self.leftItem.formulaItemId(),self.operator(),self.rightItem.formulaItemId()));
+                    self.isD49(self.checkD4_9(self.leftItem.formulaItemId(),self.operator(),self.rightItem.formulaItemId()));
                 }
 
             }
