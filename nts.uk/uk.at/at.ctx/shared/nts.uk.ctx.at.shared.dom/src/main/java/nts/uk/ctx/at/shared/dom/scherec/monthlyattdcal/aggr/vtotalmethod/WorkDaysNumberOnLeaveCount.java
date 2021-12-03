@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktype.DailyActualDayCount;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -15,14 +16,30 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
 public class WorkDaysNumberOnLeaveCount extends AggregateRoot {
-	
+
 	// 会社ID						
 	private final String cid;
 
 	// カウントする休暇一覧						
 	private final List<LeaveCountedAsWorkDaysType> countedLeaveList;
+	
+	public WorkDaysNumberOnLeaveCount(String cid, List<LeaveCountedAsWorkDaysType> countedLeaveList) {
+		super();
+		this.cid = cid;
+		this.countedLeaveList = countedLeaveList;
+		
+		if (!checkVacationType(LeaveCountedAsWorkDaysType.SPECIAL_VACATION)
+				|| !checkVacationType(LeaveCountedAsWorkDaysType.ANNUAL_LEAVE)
+				|| !checkVacationType(LeaveCountedAsWorkDaysType.ACCUMULATED_ANNUAL_LEAVE)) {
+			
+			throw new BusinessException("Msg_3258");
+		}
+	}
+
+	private boolean checkVacationType(LeaveCountedAsWorkDaysType type) {
+		return countedLeaveList.stream().filter(c -> c == type).collect(Collectors.toList()).size() == 1;
+	}
 	
 	/** [1] 休暇時の日数カウントを計算する */
 	public DailyActualDayCount countDaysOnHoliday(WorkType workType) {
