@@ -1819,7 +1819,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
         if (!applySetting.isPresent() || !subLeaveReflectSetting.isPresent() || !subWorkReflectSetting.isPresent())
             return data;
 
-        for (int row = 0; row < 11; row++) {
+        for (int row = 0; row < 10; row++) {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 4; col++) {
                 String value;
@@ -1830,14 +1830,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                 else if (col == 1 && row == 0) value = TextResource.localize("KAF022_540");
                 else if (col == 1 && row == 1) value = TextResource.localize("KAF022_583");
                 else if (col == 1 && row == 4) value = TextResource.localize("KAF022_538");
-                else if (col == 1 && row == 5) value = TextResource.localize("KAF022_540");
-                else if (col == 1 && row == 6) value = TextResource.localize("KAF022_582");
-                else if (col == 1 && row == 9) value = TextResource.localize("KAF022_584");
-                else if (col == 1 && row == 10) value = TextResource.localize("KAF022_728");
+//                else if (col == 1 && row == 5) value = TextResource.localize("KAF022_540");
+                else if (col == 1 && row == 5) value = TextResource.localize("KAF022_582");
+                else if (col == 1 && row == 8) value = TextResource.localize("KAF022_584");
+                else if (col == 1 && row == 9) value = TextResource.localize("KAF022_728");
                 else if (col == 2 && row == 2) value = TextResource.localize("KAF022_568");
                 else if (col == 2 && row == 3) value = TextResource.localize("KAF022_569");
-                else if (col == 2 && row == 7) value = TextResource.localize("KAF022_568");
-                else if (col == 2 && row == 8) value = TextResource.localize("KAF022_569");
+                else if (col == 2 && row == 6) value = TextResource.localize("KAF022_568");
+                else if (col == 2 && row == 7) value = TextResource.localize("KAF022_569");
                 else if (col == 3 && row == 0) value = subWorkReflectSetting.get().getReflectAttendanceAtr() == NotUseAtr.USE
                         ? TextResource.localize("KAF022_389") : TextResource.localize("KAF022_390");
                 else if (col == 3 && row == 1) value = applySetting.get().getSubstituteWorkSetting().getComment().getComment().v();
@@ -1847,14 +1847,14 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         ? TextResource.localize("KAF022_101")
                         : subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getReflectWorkHour() == ReflectWorkHourCondition.REFLECT
                                 ? TextResource.localize("KAF022_100") : TextResource.localize("KAF022_171");
-                else if (col == 3 && row == 5) value = subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getReflectAttendance() == NotUseAtr.USE
-                        ? TextResource.localize("KAF022_420") : TextResource.localize("KAF022_421");
-                else if (col == 3 && row == 6) value = applySetting.get().getSubstituteHolidaySetting().getComment().getComment().v();
-                else if (col == 3 && row == 7) value = applySetting.get().getSubstituteHolidaySetting().getComment().getColorCode().v();
-                else if (col == 3 && row == 8) value = applySetting.get().getSubstituteHolidaySetting().getComment().isBold() ? CHECK : NOT_CHECK;
-                else if (col == 3 && row == 9) value = applySetting.get().getSimultaneousSetting().isSimultaneousApplyRequired()
+//                else if (col == 3 && row == 5) value = subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getReflectAttendance() == NotUseAtr.USE
+//                        ? TextResource.localize("KAF022_420") : TextResource.localize("KAF022_421");
+                else if (col == 3 && row == 5) value = applySetting.get().getSubstituteHolidaySetting().getComment().getComment().v();
+                else if (col == 3 && row == 6) value = applySetting.get().getSubstituteHolidaySetting().getComment().getColorCode().v();
+                else if (col == 3 && row == 7) value = applySetting.get().getSubstituteHolidaySetting().getComment().isBold() ? CHECK : NOT_CHECK;
+                else if (col == 3 && row == 8) value = applySetting.get().getSimultaneousSetting().isSimultaneousApplyRequired()
                         ? TextResource.localize("KAF022_292") : TextResource.localize("KAF022_291");
-                else if (col == 3 && row == 10) value = subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getOneDayLeaveDeleteAttendance() == NotUseAtr.USE
+                else if (col == 3 && row == 9) value = subLeaveReflectSetting.get().getWorkInfoAttendanceReflect().getOneDayLeaveDeleteAttendance() == NotUseAtr.USE
                         ? TextResource.localize("KAF022_389") : TextResource.localize("KAF022_390");
 //                else if (col == 3 && row == 11) value = TextResource.localize("KAF022_569");
                 else value = "";
@@ -1863,7 +1863,7 @@ public class PreparationBeforeApplyExportImpl implements MasterListData {
                         MasterCellData.builder()
                                 .columnId(COLUMN_NO_HEADER + col)
                                 .value(value)
-                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(col == 3 && (row == 2 || row == 7) ? value : "#ffffff"))
+                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT).backgroundColor(col == 3 && (row == 2 || row == 6) ? value : "#ffffff"))
                                 .build());
             }
             data.add(MasterData.builder().rowData(rowData).build());
