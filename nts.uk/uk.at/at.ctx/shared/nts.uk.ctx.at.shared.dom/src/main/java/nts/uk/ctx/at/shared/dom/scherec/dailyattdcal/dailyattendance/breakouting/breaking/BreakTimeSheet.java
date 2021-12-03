@@ -41,11 +41,9 @@ public class BreakTimeSheet extends DomainObject {
 	private BreakFrameNo breakFrameNo;
 	
 	//開始 - 時刻（日区分付き）
-	@Setter
 	private TimeWithDayAttr startTime;
 	
 	//終了 - 時刻（日区分付き）
-	@Setter
 	private TimeWithDayAttr endTime;
 	
 	/** 休憩時間: 勤怠時間 */
@@ -59,6 +57,24 @@ public class BreakTimeSheet extends DomainObject {
 		this.endTime = endTime;
 		if(startTime != null && endTime != null){
 			this.breakTime = new AttendanceTime(endTime.valueAsMinutes() - startTime.valueAsMinutes());
+		} else {
+			this.breakTime = AttendanceTime.ZERO;
+		}
+	}
+
+	public void setStartTime(TimeWithDayAttr startTime) {
+		this.startTime = startTime;
+		if(this.startTime != null && this.endTime != null){
+			this.breakTime = new AttendanceTime(this.endTime.valueAsMinutes() - this.startTime.valueAsMinutes());
+		} else {
+			this.breakTime = AttendanceTime.ZERO;
+		}
+	}
+
+	public void setEndTime(TimeWithDayAttr endTime) {
+		this.endTime = endTime;
+		if(this.startTime != null && this.endTime != null){
+			this.breakTime = new AttendanceTime(this.endTime.valueAsMinutes() - this.startTime.valueAsMinutes());
 		} else {
 			this.breakTime = AttendanceTime.ZERO;
 		}
@@ -95,7 +111,7 @@ public class BreakTimeSheet extends DomainObject {
 	
 	/**
 	 * 就業時間帯マスタの休憩時間帯から実績休憩時間帯への型変化
-	 * @param restTimezoneSet　就業時間帯マスタの旧家時間帯
+	 * @param deductionList　就業時間帯マスタの旧家時間帯
 	 * @return 変換後の実績休憩時間帯
 	 */
 	public static List<BreakTimeSheet> covertFromFixRestTimezoneSet(List<DeductionTime> deductionList) {

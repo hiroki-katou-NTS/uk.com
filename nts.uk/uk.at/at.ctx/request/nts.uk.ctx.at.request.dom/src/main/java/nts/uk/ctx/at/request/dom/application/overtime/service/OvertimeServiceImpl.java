@@ -924,9 +924,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			.getPrePostAtr().value;
 
 		if (overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME && dateOp.isPresent()) {
-			appOverTimeRepository.findLatestMultipleOvertimeApp(employeeId, dateOp.get(), EnumAdaptor.valueOf(prePost, PrePostAtr.class)).ifPresent(app -> {
-				output.setLatestMultipleOvertimeApp(app.getMultipleTimesOp());
-			});
+            output.setLatestMultipleOvertimeApp(appOverTimeRepository.findLatestMultipleOvertimeApp(employeeId, dateOp.get(), EnumAdaptor.valueOf(prePost, PrePostAtr.class)));
 		}
 
 		WorkContent workContent = new WorkContent();
@@ -994,8 +992,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					workContent,
 					output.getInfoNoBaseDate().getOverTimeAppSet(),
 					agent,
-					output.getLatestMultipleOvertimeApp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getOvertimeHours() : new ArrayList<>(),
-					output.getLatestMultipleOvertimeApp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getOvertimeReasons() : new ArrayList<>(),
+					output.getLatestMultipleOvertimeApp().isPresent() && output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
+					output.getLatestMultipleOvertimeApp().isPresent() && output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? output.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
 					opAchievementDetail
 			);
 			output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
@@ -1031,9 +1029,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 
 		if (overtimeAppAtr == OvertimeAppAtr.MULTIPLE_OVERTIME && dateOp.isPresent()) {
 			Optional<AppOverTime> app = appOverTimeRepository.findLatestMultipleOvertimeApp(employeeId, dateOp.get(), EnumAdaptor.valueOf(prePost.value, PrePostAtr.class));
-			if (app.isPresent()) {
-				displayInfoOverTime.setLatestMultipleOvertimeApp(app.get().getMultipleTimesOp());
-			}
+            displayInfoOverTime.setLatestMultipleOvertimeApp(app);
 		}
 
 		WorkContent workContent = new WorkContent();
@@ -1101,8 +1097,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workContent,
 				overtimeAppSet,
 				agent,
-				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getOvertimeHours() : new ArrayList<>(),
-				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getOvertimeReasons() : new ArrayList<>(),
+				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() && displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeHours() : new ArrayList<>(),
+				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() && displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().isPresent() ? displayInfoOverTime.getLatestMultipleOvertimeApp().get().getMultipleTimesOp().get().getOvertimeReasons() : new ArrayList<>(),
 				opAchievementDetail
 		);
 		displayInfoOverTime.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());

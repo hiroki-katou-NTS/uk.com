@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.request.app.find.application.overtime.dto.AppOverTimeDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.MultipleOvertimeContentDto;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkInfo;
@@ -33,7 +34,7 @@ public class DisplayInfoOverTimeDto {
 	public WorkInfo workInfo;
 
 	// 最新の複数回残業申請
-	public List<MultipleOvertimeContentDto> latestMultipleOvertimeApp;
+	private AppOverTimeDto latestMultiOvertimeApp;
 	
 	public DisplayInfoOverTimeDto(
 			List<WorkdayoffFrameDto> workdayoffFrames,
@@ -72,7 +73,7 @@ public class DisplayInfoOverTimeDto {
 				InfoWithDateApplicationDto.fromDomain(displayInfoOverTime.getInfoWithDateApplicationOp().orElse(null)),
 				displayInfoOverTime.getCalculatedFlag().value,
 				displayInfoOverTime.getWorkInfo().orElse(null),
-				displayInfoOverTime.getLatestMultipleOvertimeApp().isPresent() ? MultipleOvertimeContentDto.toDto(displayInfoOverTime.getLatestMultipleOvertimeApp().get()) : Collections.emptyList()
+				displayInfoOverTime.getLatestMultipleOvertimeApp().map(AppOverTimeDto::fromDomain).orElse(null)
 		);
 	}
 	public static DisplayInfoOverTimeDto fromDomainChangeDate(DisplayInfoOverTime displayInfoOverTime) {

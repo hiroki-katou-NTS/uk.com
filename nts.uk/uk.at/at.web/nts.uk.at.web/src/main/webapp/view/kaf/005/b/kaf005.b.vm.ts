@@ -18,9 +18,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		<div id="kaf005-b">
 			<div id="contents-area"
 				style="background-color: inherit; height: calc(100vh - 137px);">
-				<div class="two-panel" style="height: 100%;">
+				<div class="two-panel" style="height: 100%; display: inline-flex;">
 					<div class="left-panel"
-						style="width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
+						style="min-width: calc(100% - 388px); height: inherit; padding-bottom: 5px;">
 						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px;"> 
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
@@ -318,13 +318,14 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					if (!_.isEmpty(res.appOverTime.multipleOvertimeContents)) {
                         vm.multipleOvertimeContents([]);
                         res.appOverTime.multipleOvertimeContents.forEach((i: any) => {
-                        	vm.multipleOvertimeContents.push({
-								frameNo: i.frameNo,
-								start: ko.observable(i.startTime),
-								end: ko.observable(i.endTime),
-								fixedReasonCode: ko.observable(i.fixedReasonCode),
-								appReason: ko.observable(i.appReason)
-							});
+                        	vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                                () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                i.frameNo,
+                                i.startTime,
+                                i.endTime,
+                                i.fixedReasonCode,
+                                i.appReason
+                            ));
 						});
 					}
 
@@ -378,13 +379,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             if(!_.isUndefined(defaultReasonTypeItem)) {
                 fixedReasonCode = defaultReasonTypeItem.appStandardReasonCD;
             }
-            vm.multipleOvertimeContents.push({
-                frameNo: 1,
-                start: ko.observable(null),
-                end: ko.observable(null),
-                fixedReasonCode: ko.observable(fixedReasonCode),
-                appReason: ko.observable(null)
-            });
+            vm.multipleOvertimeContents.push(new MultipleOvertimeContent(() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED}, 1));
         }
 
         removeMultipleRow(data: MultipleOvertimeContent) {
@@ -608,9 +603,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			||	failData.messageId == "Msg_1536"
 			||	failData.messageId == "Msg_1537"
 			||	failData.messageId == "Msg_1538"
+			||  failData.messageId == "Msg_3238"
+			||  failData.messageId == "Msg_3248"
 				) {
 				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 				.then(() => {
+                    if (failData.messageId == "Msg_3248") $("#A15_2")[0].scrollIntoView();
 					return $.Deferred().resolve(false);	
 				});	
 			}

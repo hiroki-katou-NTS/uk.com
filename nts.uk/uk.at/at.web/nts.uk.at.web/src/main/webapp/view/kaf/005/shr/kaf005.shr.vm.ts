@@ -501,7 +501,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			this.start.subscribe(value => {
 				if (sub) sub();
 			});
-            this.start.subscribe(value => {
+            this.end.subscribe(value => {
 				if (sub) sub();
             });
 		}

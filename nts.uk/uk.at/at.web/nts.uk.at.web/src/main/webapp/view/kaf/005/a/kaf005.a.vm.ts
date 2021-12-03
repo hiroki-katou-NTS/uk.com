@@ -193,8 +193,34 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								vm.$ajax(API.getLatestMultiApp, params1).done(data => {
                                     if (data) {
                                     	if (data.latestMultiOvertimeApp.workInfoOp) {
-                                    		vm.workInfo().workType(data.latestMultiOvertimeApp.workInfoOp.workType);
-                                    		vm.workInfo().workTime(data.latestMultiOvertimeApp.workInfoOp.workTime);
+                                    	    const workType: Work = {}, workTime: Work = {};
+                                            workType.code = data.latestMultiOvertimeApp.workInfoOp.workType;
+                                            if (!_.isNil(workType.code)) {
+                                                let workTypeList = vm.dataSource.infoBaseDateOutput.worktypes as Array<WorkType>;
+                                                let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
+                                                if (!_.isNil(item)) {
+                                                    workType.name = item.name;
+                                                } else {
+                                                    workType.name = vm.$i18n('KAF005_345');
+                                                }
+                                            } else {
+                                                workType.name = vm.$i18n('KAF005_345');
+                                            }
+                                            workTime.code = data.latestMultiOvertimeApp.workInfoOp.workTime;
+                                            if (!_.isNil(workTime.code)) {
+                                                let workTimeList = vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
+                                                let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+                                                if (!_.isNil(item)) {
+                                                    workTime.name = item.workTimeDisplayName.workTimeName;
+                                                } else {
+                                                    workTime.name = vm.$i18n('KAF005_345');
+                                                }
+
+                                            } else {
+                                                workTime.name = vm.$i18n('KAF005_345');
+                                            }
+                                    		vm.workInfo().workType(workType);
+                                    		vm.workInfo().workTime(workTime);
 										}
                                     	if (!_.isEmpty(data.latestMultiOvertimeApp.workHoursOp)) {
                                             vm.workInfo().workHours1.start(data.latestMultiOvertimeApp.workHoursOp[0].timeZone.startTime);
@@ -209,7 +235,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 										}
                                         if (!_.isEmpty(data.latestMultiOvertimeApp.multipleOvertimeContents)) {
                                     		vm.multipleOvertimeContents([]);
-                                            data.latestMultiOvertimeApp.multipleOvertimeContents.forEach(i => {
+                                            data.latestMultiOvertimeApp.multipleOvertimeContents.forEach((i: any) => {
                                                 vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
                                                 	() => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
                                                     i.frameNo,
@@ -231,6 +257,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                                                     i.end(null);
 												}
                                             });
+										}
+										if (data.latestMultiOvertimeApp.applicationTime) {
+                                    	    if (!_.isEmpty(data.latestMultiOvertimeApp.applicationTime.applicationTime)) {
+
+                                            }
+                                        }
+										if (!_.isEmpty(data.dayOffWorkFrames)) {
+
 										}
                                     }
 								}).fail(error => {
@@ -306,16 +340,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						vm.bindMessageInfo(vm.dataSource);
 						vm.assginTimeTemp();
 						vm.assignWorkHourAndRest();
-                        if (!_.isEmpty(successData.latestMultipleOvertimeApp)) {
+                        if (!_.isEmpty(successData.latestMultiOvertimeApp)) {
                             vm.multipleOvertimeContents([]);
-                            successData.latestMultipleOvertimeApp.forEach(i => {
-                                vm.multipleOvertimeContents.push({
-                                    frameNo: i.frameNo,
-                                    start: ko.observable(i.startTime),
-                                    end: ko.observable(i.endTime),
-                                    fixedReasonCode: ko.observable(i.fixedReasonCode),
-                                    appReason: ko.observable(i.appReason)
-                                });
+                            successData.latestMultiOvertimeApp.multipleOvertimeContents.forEach(i => {
+                                vm.multipleOvertimeContents.push(new MultipleOvertimeContent(
+                                    () => {vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
+                                    i.frameNo,
+                                    i.startTime,
+                                    i.endTime,
+                                    i.fixedReasonCode,
+                                    i.appReason
+                                ));
                             });
                         }
 						// 勤務種類リストと就業時間帯リストがない場合エラーを返す
@@ -452,6 +487,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				|| failData.messageId == "Msg_1537"
 				|| failData.messageId == "Msg_1538"
 				|| failData.messageId == "Msg_3237"
+				|| failData.messageId == "Msg_3238"
 				|| failData.messageId == "Msg_3248"
 				) {
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
@@ -639,9 +675,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.bindOverTime(self.dataSource, 1);
 						self.assginTimeTemp();
 						self.assignWorkHourAndRest(true);
-						if (!_.isEmpty(res.latestMultipleOvertimeApp)) {
+						if (!_.isEmpty(res.latestMultiOvertimeApp)) {
 							self.multipleOvertimeContents([]);
-                            res.latestMultipleOvertimeApp.forEach(i => {
+                            res.latestMultiOvertimeApp.multipleOvertimeContents.forEach((i: any) => {
 								self.multipleOvertimeContents.push(new MultipleOvertimeContent(
                                     () => {self.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED},
                                     i.frameNo,
@@ -1239,7 +1275,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		//  work-info 
 		bindWorkInfo(res: DisplayInfoOverTime, mode?: ACTION) {
 			const self = this;
-			console.log('bindWorkInfo');
 			if (!ko.toJS(self.workInfo)) {
 				let workInfo = {} as WorkInfo;
 				let workType = {} as Work;
@@ -2234,7 +2269,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			let holidayTimeArray = [] as Array<HolidayTime>;
 			let workdayoffFrames = res.workdayoffFrames as Array<WorkdayoffFrame>;
 
-			let calculationResultOp = res.calculationResultOp;
 			// A7_7
 			if (!_.isEmpty(workdayoffFrames)) {
 				_.forEach(workdayoffFrames, (item: WorkdayoffFrame) => {
@@ -2462,8 +2496,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 									}								
 								}
 							})
-							
-							
 						}
 						// A7_12 , A7_16, A7_20
 						let appRoot = calculationResultOp.applicationTimes[0];
@@ -2490,24 +2522,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								});
 							}
 						}
-						
-						
-						
 					}
-	
 				}
-				
-				
-				
-				
-				
+
 				// A7_28
-				 
-				
-				
-				
-				
-				
 				
 				// A7_9
 				// 申請表示情報．申請表示情報(基準日関係あり)．表示する事前申請内容．残業申請．申請時間．申請時間．申請時間
@@ -2615,15 +2633,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 			
 			}
-			
-
-			
-			
-			
-
 			self.holidayTime(holidayTimeArray);
 			self.setColorForHolidayTime(self.isCalculation, self.dataSource);
-
 		}
 
 
@@ -3224,7 +3235,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		isProxy: Boolean;
 		calculationResultOp?: CalculationResult;
 		infoWithDateApplicationOp?: InfoWithDateApplication;
-		calculatedFlag: number;
+		calculatedFlag: number;,
+        latestMultiOvertimeApp?: any
 	}
 	export interface WorkdayoffFrame {
 		workdayoffFrNo: number;

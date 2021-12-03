@@ -241,7 +241,7 @@ public class OvertimeWorkMultipleTimesTest {
         assertThat(result.get(0).getStartTime().v()).isEqualTo(720);
         assertThat(result.get(0).getEndTime().v()).isEqualTo(780);
 
-        // 休憩枠NO2：8:00~8:30
+        // 休憩枠NO2：17:30~18:00
         assertThat(result.get(1).getStartTime().v()).isEqualTo(1050);
         assertThat(result.get(1).getEndTime().v()).isEqualTo(1080);
     }
@@ -455,5 +455,57 @@ public class OvertimeWorkMultipleTimesTest {
         // 休憩枠NO6：22:00~22:30
         assertThat(result.get(5).getStartTime().v()).isEqualTo(1320);
         assertThat(result.get(5).getEndTime().v()).isEqualTo(1350);
+    }
+
+    @Test
+    public void testGetBreakTimeToCalculateOvertime6() {
+        WorkInformation workInfo = new WorkInformation("001", "002");
+        List<TimeZoneWithWorkNo> workingHours = Arrays.asList(new TimeZoneWithWorkNo(1, 510, 1050)); // 勤務時間：　8:30~17:30　（始業終業時刻）
+        List<BreakTimeSheet> breakTimes = new ArrayList<>();
+        breakTimes.add(new BreakTimeSheet(new BreakFrameNo(1), new TimeWithDayAttr(720), new TimeWithDayAttr(780))); // 休憩時間帯：12:00~13:00
+        breakTimes.add(new BreakTimeSheet(new BreakFrameNo(2), new TimeWithDayAttr(1050), new TimeWithDayAttr(1080))); // 休憩時間帯：17:30~18:00
+
+        new Expectations() {
+            {
+                require.getWorkTimeSetting("", "002");
+                result = Optional.of(new WorkTimeSetting(
+                        "",
+                        new WorkTimeCode("002"),
+                        new WorkTimeDivision(WorkTimeDailyAtr.REGULAR_WORK, WorkTimeMethodSet.FIXED_WORK),
+                        AbolishAtr.NOT_ABOLISH,
+                        new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB")),
+                        null,
+                        null
+                ));
+            }
+        };
+
+        OvertimeWorkMultipleTimes target = OvertimeWorkMultipleTimes.create(
+                Arrays.asList(
+                        new OvertimeHour(new OvertimeNumber(1), new TimeSpanForCalc(new TimeWithDayAttr(420), new TimeWithDayAttr(480))), // 残業時間：	7:00~8:00
+                        new OvertimeHour(new OvertimeNumber(2), new TimeSpanForCalc(new TimeWithDayAttr(1170), new TimeWithDayAttr(1230))), // 残業時間：19:30~20:30
+                        new OvertimeHour(new OvertimeNumber(3), new TimeSpanForCalc(new TimeWithDayAttr(1260), new TimeWithDayAttr(1320))) // 残業時間：	21:00~22:00
+                ),
+                Collections.emptyList()
+        );
+
+        List<BreakTimeSheet> result = target.getBreakTimeToCalculateOvertime(require, "", "", GeneralDate.today(), workInfo, workingHours, breakTimes);
+
+        assertThat(result.size()).isEqualTo(4);
+        // 休憩枠NO1：8:00~8:30
+        assertThat(result.get(0).getStartTime().v()).isEqualTo(480);
+        assertThat(result.get(0).getEndTime().v()).isEqualTo(510);
+
+        // 休憩枠NO2：12:00~13:00
+        assertThat(result.get(1).getStartTime().v()).isEqualTo(720);
+        assertThat(result.get(1).getEndTime().v()).isEqualTo(780);
+
+        // 休憩枠NO3：17:30~19:30
+        assertThat(result.get(2).getStartTime().v()).isEqualTo(1050);
+        assertThat(result.get(2).getEndTime().v()).isEqualTo(1170);
+
+        // 休憩枠NO4：20:30~21:00
+        assertThat(result.get(3).getStartTime().v()).isEqualTo(1230);
+        assertThat(result.get(3).getEndTime().v()).isEqualTo(1260);
     }
 }
