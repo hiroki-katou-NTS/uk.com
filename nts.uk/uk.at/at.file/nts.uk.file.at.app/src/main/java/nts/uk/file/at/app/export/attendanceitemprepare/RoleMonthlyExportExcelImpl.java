@@ -288,8 +288,8 @@ public class RoleMonthlyExportExcelImpl  {
                     	 Map<String, Object> data = new HashMap<>();
                          putDataEmptySheet2(data);
                          data.put("コード", c.getAttendanceItemDisplayNumber());
-                         data.put("項目", c.getAttendanceItemName());
-                         data.put("表示名称", c.getDisplayName());
+                         data.put("項目", c.getOldName());
+                         data.put("表示名称", c.getAttendanceItemName());
                          data.put("改行位置", c.getNameLineFeedPosition());
                         if(controlItem.getHeaderBgColorOfMonthlyPer()!=null){
                             data.put("ヘッダー色", controlItem.getHeaderBgColorOfMonthlyPer().replace("#", ""));

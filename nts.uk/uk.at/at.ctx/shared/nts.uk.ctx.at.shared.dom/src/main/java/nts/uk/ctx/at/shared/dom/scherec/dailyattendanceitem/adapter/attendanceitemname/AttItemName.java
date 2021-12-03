@@ -10,10 +10,10 @@ public class AttItemName {
 
 	private int attendanceItemId;
 	
-	// 	・勤怠項目.名称 ←「表示名称」 (to ver7)
-	private String displayName;
-	
 	//	・勤怠項目.旧名称 ←「名称」(to ver7)
+	private String oldName;
+	
+	// 	・勤怠項目.名称 ←「表示名称」 (to ver7)
 	private String attendanceItemName;
 	
 	private int attendanceItemDisplayNumber;

@@ -72,7 +72,7 @@ public class GetScreenUsageDetails {
 			Optional<AttItemName> exist = dailyAttItem.stream()
 					.filter(a -> a.getAttendanceItemId() == f.getAttendanceItemId()).findFirst();
 			if (exist.isPresent()) {
-				f.changeName(exist.get().getDisplayName(), exist.get().getAttendanceItemName());
+				f.changeName(exist.get().getAttendanceItemName(), exist.get().getOldName());
 			}
 		});
 
