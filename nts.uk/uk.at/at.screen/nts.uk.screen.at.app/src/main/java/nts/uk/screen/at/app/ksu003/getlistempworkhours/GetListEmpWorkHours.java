@@ -10,9 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.app.query.task.TaskData;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.screen.at.app.ksu003.getworkselectioninfor.GetOneTask;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -29,7 +29,7 @@ public class GetListEmpWorkHours {
 	@Inject
 	private GetOneTask getOneTask;
 
-	public List<EmpTaskInfoDto> get(Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap) {
+	public List<EmpTaskInfoDto> get(Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap) {
 		String companyID = AppContexts.user().companyId();
 		List<EmpTaskInfoDto> dto = new ArrayList<>();
 		// 取得する (勤務予定リスト: 勤務予定リスト): List＜Optional<社員作業情報 dto>＞

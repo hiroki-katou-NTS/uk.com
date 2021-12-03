@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.ksu003.getworkscheduleinfor;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,14 +15,14 @@ import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -32,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
-import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.GetListEmpWorkHours;
 import nts.uk.shr.com.context.AppContexts;
@@ -69,14 +66,14 @@ public class GetWorkScheduleInfor {
 		//取得する(Require, List<社員ID>, 期間)
 		// Call DS 予定管理状態に応じて勤務予定を取得する
 		RequireImpl requireImpl = new RequireImpl(lstEmpId, datePeriod, workScheduleRepo, empComHisAdapter, workCondRepo, empLeaveHisAdapter, empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap =  WorkScheManaStatusService.getScheduleManagement(requireImpl, lstEmpId, datePeriod);
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap =  GetWorkScheduleByScheduleManagementService.getScheduleManagement(requireImpl, lstEmpId, datePeriod);
 		//Collection<Optional<WorkSchedule>> optWorkSchedule = mngStatusAndWScheMap.values();
 		List<EmpTaskInfoDto> data = getListEmpWorkHours.get(mngStatusAndWScheMap);
 		return data;
 	}
 	
 	@AllArgsConstructor
-	private static class RequireImpl implements WorkScheManaStatusService.Require {
+	private static class RequireImpl implements GetWorkScheduleByScheduleManagementService.Require {
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
 		private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
 		private KeyDateHistoryCache<String, EmployeeLeaveJobPeriodImport> empLeaveJobPeriodCache;

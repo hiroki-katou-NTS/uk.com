@@ -301,7 +301,7 @@ public class DisplayWorkInfoByDateSc {
 			// 2.4
 			TaskInfoDto taskInfoDto = null;
 			//if(param.getSelectedDisplayPeriod() == 2) {
-				Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
+				Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<EmployeeWorkingStatus, Optional<WorkSchedule>>();
 				mngStatusAndWScheMa.put(key, value);
 				
 				EmpTaskInfoDto infoDto = null;
