@@ -40,6 +40,7 @@ public interface WorkScheduleRepository {
 	 */
 	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
 
+	void updateConfirmedState(WorkSchedule workSchedule);
 
 	/**
 	 * Exists
