@@ -127,10 +127,8 @@
 										name: '#[KMK002_172]',
 	                                    value: leftItem.inputValue,
 	                                    constraint: 'AnyTimeMonth',
-	                                    option: {
-		                                    grouplength: 3,
-		                                    decimallength: 2
-	                                    },
+	                                    inputFormat: 'time',
+                                        mode: 'time',
 	                                    readonly: false,
 	                                    enable: leftItem.isInputValue(), 
 	                                    required: true,
@@ -172,10 +170,8 @@
 									  	name: '#[KMK002_172]',
 	                                    value: rightItem.inputValue,
 	                                    constraint: 'AnyTimeMonth',
-	                                    option: {
-		                                    grouplength: 3,
-		                                    decimallength: 2
-	                                    },
+	                                    inputFormat: 'time',
+                                         mode: 'time',
 	                                    readonly: false,
 	                                    enable: rightItem.isInputValue(), 
 	                                    required: true}"/>
