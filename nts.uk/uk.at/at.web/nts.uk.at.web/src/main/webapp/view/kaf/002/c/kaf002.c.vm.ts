@@ -357,11 +357,13 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                              element.endTimeRequest(x.timeOfDay);
                          }    
                          if (!_.isNil(x.wkpId) && !_.isEmpty(x.wkpId)) {
-                          element.workplace = (_.find(self.data.workplaceNames, { "workplaceId": x.wkpId }) as any)?.wkpName || "";
-                         }
-                         if (!_.isNil(x.workLocationCd && !_.isEmpty(x.workLocationCd))) {
-                          element.workLocation = (_.find(self.data.workLocationNames, { "workLocationCode": x.workLocationCd }) as any)?.workLocationName || "";
-                         }
+                          element.workplaceId = x.wkpId;
+                          element.workplaceName = (_.find(self.data.workplaceNames, { "workplaceId": x.wkpId }) as any)?.wkpName || "";
+                        }
+                        if (!_.isNil(x.workLocationCd && !_.isEmpty(x.workLocationCd))) {
+                          element.workLocationCD = x.workLocationCd;
+                          element.workLocationName = (_.find(self.data.workLocationNames, { "workLocationCode": x.workLocationCd }) as any)?.workLocationName || "";
+                        }
                      }
                });
            }
@@ -401,7 +403,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            }
         } else if (type === STAMPTYPE.CHEERING) {
           if (!_.isEmpty(timeStampAppDto)) {
-            const items = _.filter(timeStampAppDto, data => data.destinationTimeApp.engraveFrameNo === element.id);
+            const items = _.filter(timeStampAppDto, data => data.destinationTimeApp.engraveFrameNo === element.id
+              && data.destinationTimeApp.timeStampAppEnum === STAMPTYPE.CHEERING);
             _.forEach(items, data => {
               if (data.appStampGoOutAtr) {
                 element.typeReason = String(data.appStampGoOutAtr);
@@ -415,11 +418,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
               if (!_.isNil(data.wkpId) && !_.isEmpty(data.wkpId)) {
                 element.workplaceId = data.wkpId;
                 element.workplaceName = (_.find(self.data.workplaceNames, { "workplaceId": data.wkpId }) as any)?.wkpName || "";
-               }
-               if (!_.isNil(data.workLocationCd && !_.isEmpty(data.workLocationCd))) {
-                 element.workLocationCD = data.workLocationCd;
+              }
+              if (!_.isNil(data.workLocationCd && !_.isEmpty(data.workLocationCd))) {
+                element.workLocationCD = data.workLocationCd;
                 element.workLocationName = (_.find(self.data.workLocationNames, { "workLocationCode": data.workLocationCd }) as any)?.workLocationName || "";
-               }
+              }
             });
           }
         }
