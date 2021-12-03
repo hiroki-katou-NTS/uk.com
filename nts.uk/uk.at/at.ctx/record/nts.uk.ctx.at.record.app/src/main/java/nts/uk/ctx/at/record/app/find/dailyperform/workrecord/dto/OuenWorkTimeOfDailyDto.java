@@ -36,7 +36,7 @@ public class OuenWorkTimeOfDailyDto extends AttendanceItemCommon {
 	/** 日別勤怠の応援作業時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = TIME,
 			listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<OuenWorkTimeOfDailyAttendanceDto> workTimes;
+	private List<OuenWorkTimeOfDailyAttendanceDto> workTimes = new ArrayList<>();
 	
 	@Override
 	public String employeeId() {
