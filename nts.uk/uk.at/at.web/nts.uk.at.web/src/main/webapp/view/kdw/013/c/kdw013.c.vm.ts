@@ -33,7 +33,7 @@ module nts.uk.ui.at.kdw013.c {
         width: 30px;
     }
     .edit-event table {
-        width: 370px;
+        width: 405px;
     }
     .edit-event table>tbody>tr>td:first-child {
         vertical-align: top;
@@ -260,7 +260,7 @@ module nts.uk.ui.at.kdw013.c {
 			<div class="taskDetails" data-bind="foreach: taskBlocks.taskDetailsView">
                 <table>
 	                <colgroup>
-	                    <col width="105px" />
+	                    <col width="140px" />
 	                </colgroup>
                     <tbody data-bind = "foreach: taskItemValues">
 						<!-- ko if: (itemId == 3) && use -->
@@ -460,7 +460,7 @@ module nts.uk.ui.at.kdw013.c {
 											name: lable,
 											constraint: primitiveValue, 
 											value: value,
-											option: {width: '50px'}}" />
+											option: {width: '70px'}}" />
 									</div>
 								</td>
                             </tr>

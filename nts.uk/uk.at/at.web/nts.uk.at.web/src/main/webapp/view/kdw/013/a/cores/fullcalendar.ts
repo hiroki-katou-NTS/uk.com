@@ -323,7 +323,7 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-popup-editor.show {
             visibility: visible;
-            width: 250px;
+            width: 285px;
 -           height: 270px;
             padding: 10px;
             opacity: 1;
@@ -3968,7 +3968,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     $el.style.left = `${(left || 0) - width - 23}px`;
                                 }
 
-                                $el.style.width = `${width + 20}px`;
+                                $el.style.width = `${width + 20 + 35}px`;
                                 $el.style.height = `${height + 20}px`;
                             }
                         }
