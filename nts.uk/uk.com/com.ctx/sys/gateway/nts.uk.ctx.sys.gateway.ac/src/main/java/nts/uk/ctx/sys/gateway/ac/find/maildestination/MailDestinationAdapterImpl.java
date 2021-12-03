@@ -14,17 +14,16 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.env.pub.maildestination.IMailDestinationPub;
 import nts.uk.ctx.sys.env.pub.maildestination.MailDestination;
+import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.AvailableMailAddressExport;
 import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailAddressNotificationExport;
 import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailDestinationExport;
 import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailDestinationFunctionManageExport;
 import nts.uk.ctx.sys.env.pub.mailnoticeset.maildestination.MailDestinationFunctionManagePub;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.MailDestinationAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.AvailableMailAddressImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailAddressNotificationImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestiImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationFunctionManageImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.dto.SentMailListImport;
 
 /**
  * The Class MailDestinationAdapterImpl.
@@ -84,16 +83,6 @@ public class MailDestinationAdapterImpl implements MailDestinationAdapter {
 	 */
 	private static MailDestiImport convertMailExportToImport(MailDestinationExport destinationExport) {
 		MailAddressNotificationExport addressNotificationExport = destinationExport.getMailAddressNotification();
-		// set SentMailListImport
-		List<SentMailListImport> sentMailLists = destinationExport.getSentMailLists().stream()
-																	.map(t -> new SentMailListImport(t.getMailAddresses(), t.getSid()))
-																	.collect(Collectors.toList());
-		
-		// set AvailableMailAddressImport
-		List<AvailableMailAddressImport> mailAddresses = addressNotificationExport.getMailAddresses()
-					.stream()
-					.map(t -> new AvailableMailAddressImport(t.getSid(), t.getOptCompanyMailAddress(), t.getOptCompanyMobileMailAddress(), t.getOptPersonalMailAddress(), t.getOptPersonalMobileMailAddress()))
-					.collect(Collectors.toList());
 		
 		// set MailDestinationFunctionManageImport
 		Optional<MailDestinationFunctionManageImport> mailDestinationFunctionManage;
@@ -105,10 +94,24 @@ public class MailDestinationAdapterImpl implements MailDestinationAdapter {
 			mailDestinationFunctionManage = Optional.empty();
 		}
 		
-		// set MailAddressNotificationImport
-		MailAddressNotificationImport mailAddressNotification = new MailAddressNotificationImport(mailAddresses, mailDestinationFunctionManage);
+		// set AvailableMailAddressImport
+		Optional<AvailableMailAddressImport> availableMailAddressImport;
+		if (!addressNotificationExport.getMailAddresses().isEmpty()) {
+			AvailableMailAddressExport addressExport = addressNotificationExport.getMailAddresses().get(0);
+			String companyMailAddress = addressExport.getOptCompanyMailAddress().map(t -> t).orElse(null);
+			String companyMobileMailAddress = addressExport.getOptCompanyMobileMailAddress().map(t -> t).orElse(null);
+			String personalMailAddress = addressExport.getOptPersonalMailAddress().map(t -> t).orElse(null);
+			String personalMobileMailAddress = addressExport.getOptPersonalMobileMailAddress().map(t -> t).orElse(null);
+			availableMailAddressImport = Optional.of(new AvailableMailAddressImport(
+					companyMailAddress,
+					companyMobileMailAddress,
+					personalMailAddress,
+					personalMobileMailAddress));
+		} else {
+			availableMailAddressImport = Optional.empty();
+		}
 		
-		return new MailDestiImport(mailAddressNotification, sentMailLists);
+		return new MailDestiImport(availableMailAddressImport, mailDestinationFunctionManage);
 	}
 
 }

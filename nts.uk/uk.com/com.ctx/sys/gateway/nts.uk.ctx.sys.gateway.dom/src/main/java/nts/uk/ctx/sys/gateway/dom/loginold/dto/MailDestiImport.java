@@ -1,6 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.loginold.dto;
 
-import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,13 +10,13 @@ import lombok.Data;
 public class MailDestiImport {
 
 	/**
-	 * メールアドレス詳細
+	 * メールアドレス
 	 */
-	private MailAddressNotificationImport mailAddressNotification;
+	private Optional<AvailableMailAddressImport> mailAddress;
 	
 	/**
-	 * 送信メール一覧
+	 * メール送信先機能管理
 	 */
-	private List<SentMailListImport> sentMailLists;
+	private Optional<MailDestinationFunctionManageImport> mailDestinationFunctionManage;
 	
 }

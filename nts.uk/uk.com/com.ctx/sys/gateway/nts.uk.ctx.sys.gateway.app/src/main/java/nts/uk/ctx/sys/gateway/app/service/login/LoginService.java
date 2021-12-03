@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package nts.uk.ctx.sys.gateway.app.service.login;
 
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import nts.uk.ctx.sys.gateway.dom.login.password.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.password.EmployeeCodeSettingImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.MailDestinationAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.AvailableMailAddressImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestiImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationFunctionManageImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
@@ -154,13 +158,18 @@ public class LoginService {
 			MailDestiImport mailDestiImport = mailDestinationAdapter.getMailDestiOfEmployee(companyId,
 					Arrays.asList(employee.getEmployeeId()), LOGIN_FUNCTION_ID);
 			Optional<UserImportNew> user = this.userAdapter.findUserByAssociateId(employee.getPersonId());
+			AvailableMailAddressImport mailAddressImport = null;
+			
 			// send mail
 			List<SendMailReturnDto> sendMailReturnDtos = new ArrayList<>();
-			if (!mailDestiImport.getSentMailLists().isEmpty()) {
+			if (mailDestiImport.getMailAddress().isPresent()) {
 				List<String> mailAddresses = new ArrayList<>();
-				mailDestiImport.getSentMailLists().stream()
-						.map(t -> t.getMailAddresses())
-						.forEach(t -> mailAddresses.addAll(t));
+				mailAddressImport = mailDestiImport.getMailAddress().get();
+				// add mail address from mailAddressImport
+				mailAddresses.add(mailAddressImport.getCompanyMailAddress());
+				mailAddresses.add(mailAddressImport.getCompanyMobileMailAddress());
+				mailAddresses.add(mailAddressImport.getPersonalMailAddress());
+				mailAddresses.add(mailAddressImport.getPersonalMobileMailAddress());
 				mailAddresses.removeAll(Arrays.asList("", null));
 				if (!mailAddresses.isEmpty()) {
 					sendMailReturnDtos = this.sendMail(mailAddresses, user.get().getLoginId(),
@@ -170,8 +179,8 @@ public class LoginService {
 			
 			// get MailDestinationFunctionManageImport from mailDestiImport
 			MailDestinationFunctionManageImport destinationFunctionManageImport = null;
-			if (mailDestiImport.getMailAddressNotification().getMailDestinationFunctionManage().isPresent()) {
-				destinationFunctionManageImport = mailDestiImport.getMailAddressNotification().getMailDestinationFunctionManage().get();
+			if (mailDestiImport.getMailDestinationFunctionManage().isPresent()) {
+				destinationFunctionManageImport = mailDestiImport.getMailDestinationFunctionManage().get();
 			}
 			
 			StringBuilder message = new StringBuilder("");
@@ -180,7 +189,7 @@ public class LoginService {
 			if (!sendMailReturnDtos.isEmpty() && destinationFunctionManageImport != null) {
 				message.append(TextResource.localize("Msg_3246"));
 				message.append("\n");
-				message.append(setMessageCCG007(destinationFunctionManageImport));
+				message.append(setMessageCCG007(destinationFunctionManageImport, mailAddressImport, true));
 				return new SendMailCCG007DReturnDto(message.toString());
 			}
 			// if send mail failed
@@ -190,7 +199,7 @@ public class LoginService {
 				} else {
 					message.append(TextResource.localize("Msg_3245"));
 					message.append("\n");
-					message.append(setMessageCCG007(destinationFunctionManageImport));
+					message.append(setMessageCCG007(destinationFunctionManageImport, mailAddressImport, false));
 				}
 				RawErrorMessage errorMsg = new RawErrorMessage(message.toString());
 				throw new BusinessException(errorMsg);
@@ -252,30 +261,48 @@ public class LoginService {
 	}
 	
 	/**
-	 * Sets the message CCG007.
+	 * Sets the message CCG 007.
 	 *
 	 * @param destinationFunctionManageImport the destination function manage import
-	 * @param message the message
-	 * @return the string builder
+	 * @param mailAddressImport the mail address import
+	 * @param isSuccess the is success
+	 * @return the string
 	 */
-	private static String setMessageCCG007(MailDestinationFunctionManageImport destinationFunctionManageImport) {
+	private static String setMessageCCG007(MailDestinationFunctionManageImport destinationFunctionManageImport,
+			AvailableMailAddressImport mailAddressImport, boolean isSuccess) {
 		StringBuilder message = new StringBuilder("");
-		if (NotUseAtr.USE.value == destinationFunctionManageImport.getUseCompanyMailAddress()) {
+		if (isConditionValid(isSuccess, mailAddressImport.getCompanyMailAddress(), destinationFunctionManageImport.getUseCompanyMailAddress())) {
 			message.append(I18NText.getText("CDL011_7"));
 			message.append(", ");
 		}
-		if (NotUseAtr.USE.value == destinationFunctionManageImport.getUseCompanyMobileMailAddress()) {
+		if (isConditionValid(isSuccess, mailAddressImport.getCompanyMobileMailAddress(), destinationFunctionManageImport.getUseCompanyMobileMailAddress())) {
 			message.append(I18NText.getText("CDL011_8"));
 			message.append(", ");
 		}
-		if (NotUseAtr.USE.value == destinationFunctionManageImport.getUsePersonalMailAddress()) {
+		if (isConditionValid(isSuccess, mailAddressImport.getPersonalMailAddress(), destinationFunctionManageImport.getUsePersonalMailAddress())) {
 			message.append(I18NText.getText("CDL011_9"));
 			message.append(", ");
 		}
-		if (NotUseAtr.USE.value == destinationFunctionManageImport.getUsePersonalMobileMailAddress()) {
+		if (isConditionValid(isSuccess, mailAddressImport.getPersonalMobileMailAddress(), destinationFunctionManageImport.getUsePersonalMobileMailAddress())) {
 			message.append(I18NText.getText("CDL011_10"));
 			message.append(", ");
 		}
 		return message.substring(0, message.length() - 2);
+	}
+	
+	/**
+	 * Checks if is condition valid.
+	 *
+	 * @param isSuccess the is success
+	 * @param mailAddress the mail address
+	 * @param isUse the is use
+	 * @return true, if is condition valid
+	 */
+	private static boolean isConditionValid(boolean isSuccess, String mailAddress, int isUse) {
+		if ((!isSuccess && isUse == NotUseAtr.USE.value) || (isSuccess && isUse == NotUseAtr.USE.value &&
+				!mailAddress.equals(null) && !mailAddress.equals(""))) {
+			return true;
+		}
+		return false;
 	}
 }
