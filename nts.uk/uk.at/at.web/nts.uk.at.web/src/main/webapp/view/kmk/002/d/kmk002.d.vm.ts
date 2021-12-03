@@ -374,7 +374,7 @@ module nts.uk.at.view.kmk002.d {
                 if(!isNullOrEmpty(dto.selectableFormulas)){
                     for (let i = 0; i <dto.operatorDatasource.length;i++){
                         let item :FormulaDto = dto.selectableFormulas[i];
-                        let type  = EnumAdaptor.localizedNameOf(item.formulaAtr, Enums.ENUM_OPT_ITEM.formulaAtr);
+                        let type  = EnumAdaptor.localizedNameOf(item.formulaAtr, dto.enums.formulaAtr);
                         let name = item.symbolValue + type;
                         item.symbolValue = name;
                     }
