@@ -78,7 +78,7 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
     
     /** 代休管理設定.時間代休の消化単位.管理区分 */
     @Column(name = "TIME_MANAGE_ATR")
-    public int timeManageAtr;
+    public boolean timeManageAtr;
     
     /** 代休管理設定.時間代休の消化単位.消化単位 */
     @Column(name = "DIGESTION_UNIT")
@@ -174,7 +174,7 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
     	
     	// 時間代休の消化単位
     	CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit = new CompensatoryDigestiveTimeUnit(
-    			ManageDistinct.valueOf(this.timeManageAtr), 
+    			ManageDistinct.valueOf(BooleanUtils.toInteger(this.timeManageAtr)), 
     			TimeDigestiveUnit.valueOf(this.digestionUnit));
     	return new CompensatoryLeaveComSetting(
     			this.cid, 
@@ -273,7 +273,7 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
 		this.prepaidGetAllow = prepaidGetAllow;
 		this.expDateMngMethod = expDateMngMethod;
 		this.expCheckMonthNumber = expCheckMonthNumber;
-		this.timeManageAtr = timeManageAtr;
+		this.timeManageAtr = BooleanUtils.toBoolean(timeManageAtr);
 		this.digestionUnit = digestionUnit;
 		this.occurrOtUseAtr = BooleanUtils.toBoolean(occurrOtUseAtr);
 		this.deadlCheckMonth = BooleanUtils.toBoolean(deadlCheckMonth);

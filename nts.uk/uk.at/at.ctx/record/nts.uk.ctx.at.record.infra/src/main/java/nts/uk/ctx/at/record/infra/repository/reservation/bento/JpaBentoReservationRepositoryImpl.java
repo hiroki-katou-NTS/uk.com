@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.database.DatabaseProduct;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -249,9 +250,17 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
                 }
             }
         }
+        
+        boolean isSQL = this.database().is(DatabaseProduct.MSSQLSERVER);
+        
         String orderedParam;
-        if(ordered) orderedParam = "true";
-        else orderedParam = "false,true";
+        if (isSQL) {
+        	if(ordered) orderedParam = "1";
+        	else orderedParam = "0,1";     
+        } else {
+        	if(ordered) orderedParam = "true";
+        	else orderedParam = "false,true";        	
+        }
         query = query.replaceFirst("cardLst", cardLstStr);
         query = query.replaceFirst("startDate", period.start().toString());
         query = query.replaceFirst("endDate", period.end().toString());
